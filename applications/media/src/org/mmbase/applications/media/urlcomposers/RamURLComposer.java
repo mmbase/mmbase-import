@@ -22,15 +22,15 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * This servlet mapping is supposed:
-  <pre><![CDATA[
- <servlet-mapping>
-    <servlet-name>mediafragment</servlet-name>
-    <url-pattern>/mediafragment.*</url-pattern>
-  </servlet-mapping>
-]]></pre>
+  <pre>
+ &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;mediafragment&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/mediafragment.*&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+</pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.6 2003-02-05 15:15:33 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.7 2003-02-05 15:18:01 michiel Exp $
  * @since MMBase-1.7
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
