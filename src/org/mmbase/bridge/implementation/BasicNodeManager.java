@@ -237,5 +237,9 @@ public class BasicNodeManager implements NodeManager, Comparable {
      */
     public int hashCode() {
         return builder.oType;
-    };
+    }
+    
+    public boolean mayCreateNode() {
+        return cloud.check(Operation.CREATE, builder.oType);    
+    }
 }
