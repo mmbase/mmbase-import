@@ -17,16 +17,16 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * mmservers stands for MMBase servers. It is possible to run multiple mmbase servers on one database instance. 
- * Every mmserver node represent a real MMBase server(think of it as a machine where one instance of MMBase is running). 
- * On startup MMBase looks in the mmservers table and looks if he is listed in the list of mmservers, 
- * if not MMBase create a new node containing imfornation about itselve(name/host/os/jdk). the mmservers builder has extra behaviour, 
- * it can communicate with other servers(using multicast). The basic funtionality it provides however is sending information 
- * about changes of node to other mmservers (Listen !! I just have changed node 123). This mechanisme makes it possible to keep 
+ * mmservers stands for MMBase servers. It is possible to run multiple mmbase servers on one database instance.
+ * Every mmserver node represent a real MMBase server(think of it as a machine where one instance of MMBase is running).
+ * On startup MMBase looks in the mmservers table and looks if he is listed in the list of mmservers,
+ * if not MMBase create a new node containing imfornation about itselve(name/host/os/jdk). the mmservers builder has extra behaviour,
+ * it can communicate with other servers(using multicast). The basic funtionality it provides however is sending information
+ * about changes of node to other mmservers (Listen !! I just have changed node 123). This mechanisme makes it possible to keep
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
- *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos. 
- * @author  $Author: keesj $
- * @version $Id: MMServers.java,v 1.29 2004-05-07 13:22:37 keesj Exp $
+ *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
+ * @author  vpro
+ * @version $Id: MMServers.java,v 1.30 2004-10-08 11:51:14 pierre Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -311,6 +311,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
 
     /**
      * @javadoc
+     * @deprecated-now
      */
     /*
     private void startProtocolDrivers() {
@@ -341,12 +342,12 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                         try {
                             port=Integer.parseInt(tmp.substring(pos+1));
                         } catch(NumberFormatException nfe) {
-    						log.error("Can't parse portnr since value isnt integer but "+tmp.substring(pos+1));
-    						log.error(nfe.getMessage());
-    						log.error(Logging.stackTrace(nfe));
-    					}
+                            log.error("Can't parse portnr since value isnt integer but "+tmp.substring(pos+1));
+                            log.error(nfe.getMessage());
+                            log.error(Logging.stackTrace(nfe));
+                        }
                     }
-    
+
                     try {
                         Class newclass=Class.forName("org.mmbase.module.builders.protocoldrivers."+protocol);
                         pd = (ProtocolDriver)newclass.newInstance();
@@ -355,9 +356,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                         name2driver.put(name,pd);
                         log.info("Started driver("+pd+")");
                     } catch (Exception f) {
-    					log.error("Can't load protocolclass("+protocol+")");
-    					log.error(f.getMessage());
-    					//log.error(Logging.stackTrace(f));
+                        log.error("Can't load protocolclass("+protocol+")");
+                        log.error(f.getMessage());
+                        //log.error(Logging.stackTrace(f));
                     }
                 }
             }
