@@ -14,26 +14,33 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
-* Adds an extra parameter to the parent URL tag.
-* 
-* @author Michiel Meeuwissen
-*/
+ * Adds an extra parameter to the parent URL tag.
+ * 
+ * @author Michiel Meeuwissen
+ */
 public class ParamTag extends ContextReferrerTag {
     
     private String name = null;
+    private String value = null;
            
     public void setName(String n) throws JspTagException {
         name = getAttributeValue(n);
+    }
+    public void setValue(String v) throws JspTagException {
+        value = getAttributeValue(v);
     }
 
     public int doAfterBody() throws JspTagException {
 
         // find the parent URL-tag
         UrlTag urlTag = (UrlTag) findParentTag("org.mmbase.bridge.jsp.taglib.pageflow.UrlTag", null);
-
-        // the value is the body context.
         
-        urlTag.addParameter(name, bodyContent.getString());
+        if (value == null) {
+            // the value is the body context.      
+            urlTag.addParameter(name, bodyContent.getString());
+        } else {
+            urlTag.addParameter(name, value);
+        }
         return SKIP_BODY;
     }
 
