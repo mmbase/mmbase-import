@@ -9,16 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import javax.servlet.ServletException;
 
 /**
  * This exception will occur if the getPostParameterByte method is used
  * While the arraylength is larger than the maximum size allowed
  *
  * @author vpro
- * @version $Id: PostValueToLargeException.java,v 1.6 2003-08-29 09:36:55 pierre Exp $
+ * @version $Id: PostValueToLargeException.java,v 1.7 2003-12-03 11:29:20 keesj Exp $
  */
-public class PostValueToLargeException extends ServletException {
+public class PostValueToLargeException extends RuntimeException {
 
     //javadoc is inherited
     public PostValueToLargeException() {
