@@ -36,7 +36,7 @@ public class MultiStatement implements Statement
 
    public void close() throws SQLException {
 		s.close();
-		parent.delLastSQL();
+		// anyone knows what this does ?	parent.delLastSQL();
 		s=null; // lets asign it to null to be sure
    }
 
