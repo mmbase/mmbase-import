@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.86 2003-03-18 16:43:08 michiel Exp $
+ * @version $Id: MMBase.java,v 1.87 2003-04-07 18:12:23 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1181,18 +1181,23 @@ public class MMBase extends ProcessorModule  {
             XMLBuilderReader parser = new XMLBuilderReader(path+builder+".xml", this);
             String status=parser.getStatus();
             if (status.equals("active")) {
-                String classname=parser.getClassFile();
                 log.info("Starting builder : "+objectname);
-                Class newclass=Class.forName(classname);
-
-                bul = (MMObjectBuilder)newclass.newInstance();
+                Class newclass;
+                try {
+                    String classname = parser.getClassFile();
+                    newclass = Class.forName(classname);
+                } catch (ClassNotFoundException cnfe) {
+                    newclass = parser.getParentBuilder().getClass();
+                    log.error(cnfe.toString() + " Falling back to " + newclass.getName());
+                }
+                bul = (MMObjectBuilder) newclass.newInstance();
                 bul.setXMLPath(ipath);
                 bul.setMMBase(this);
                 bul.setTableName(objectname);
 
                 // register the parent builder, if applicable
                 MMObjectBuilder parent=parser.getParentBuilder();
-                if (parent!=null) {
+                if (parent != null) {
                     bul.setParentBuilder(parent);
                 }
 
@@ -1216,7 +1221,7 @@ public class MMBase extends ProcessorModule  {
                 //bul.setDBLayout(fields);
 
             }
-        } catch (Exception e) {
+        } catch (Exception e) { // what kind of exceptions are these?
             loading.remove(objectname);
             log.error(Logging.stackTrace(e));
             return null;
