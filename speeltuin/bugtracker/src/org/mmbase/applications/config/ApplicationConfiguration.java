@@ -11,6 +11,7 @@ package org.mmbase.applications.config;
  * @author  mmbase
  */
 public interface ApplicationConfiguration {
+    public String getName();
     public NodeManagerConfigurations getNodeManagerConfigurations();
     public RelationManagerConfigurations getRelationManagerConfigurations();
     

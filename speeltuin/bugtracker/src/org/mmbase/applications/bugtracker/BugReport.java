@@ -15,9 +15,13 @@ package org.mmbase.applications.bugtracker;
  * @mmbase-nodemanager-field rationale STRING
  * @mmbase-nodemanager-field description STRING
  *
+ * @mmbase-nodemanager-name bugstatusrel
+ * @mmbase-nodemanager-classfile InsRel
+ * @mmbase-nodemanager-extends insrel
+ * @mmbase-nodemanager-field date INTEGER
+ *
  * @mmbase-relationmanager-name bugstatusrel
- * @mmbase-relationamanger-nodemanager bugstatusrel
- * @mmbase-relationmanager-field date INTEGER
+ * @mmbase-relationmanager-nodemanager bugstatusrel
  * @mmbase-relationmanager-source bugreport
  * @mmbase-relationmanager-destination bugreportstatus
  */
