@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.7 2003-02-10 13:24:48 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.8 2003-02-16 18:51:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -206,10 +206,14 @@ public class MediaSources extends MMObjectBuilder {
         List urls = getFilteredURLs(source, null, null);
         if (urls.size() == 0) return "[could not compose URL]";
         URLComposer ri = (URLComposer) urls.get(0);
+        String url = ri.getURL();
+        if (url.startsWith("/")) {
+            url = MMBaseContext.getHtmlRootUrlPath() + url.substring(1);
+        }
         if (ri.isAvailable()) {
-            return "<a href='" + ri.getURL() + "'>" + Format.get(source.getIntValue("format")) + "</a>";
+            return "<a href='" + url + "'>" + Format.get(source.getIntValue("format")) + "</a>";
         } else {
-            return "[<a href='" + ri.getURL() + "'>" + Format.get(source.getIntValue("format")) + "</a>]";
+            return "[<a href='" + url + "'>" + Format.get(source.getIntValue("format")) + "</a>]";
         }
     }
     
@@ -258,7 +262,7 @@ public class MediaSources extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }
-        } else if (FUNCTION_URLS.equals(function)) {
+        } else if (FUNCTION_URLS.equals(function) || FUNCTION_FILTEREDURLS.equals(function)) {
             MMObjectNode fragment;
             if (args == null || args.size() == 0) {
                 fragment = null;
@@ -276,7 +280,11 @@ public class MediaSources extends MMObjectBuilder {
             } else {
                 throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");
             }
-            return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null), null);
+            if (FUNCTION_FILTEREDURLS.equals(function)) {
+                return getFilteredURLs(node, fragment, MediaFragments.translateURLArguments(args, null));
+            } else {
+                return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null), null);
+            }
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, MediaFragments.translateURLArguments(args, null));
         } else if (FUNCTION_AVAILABLE.equals(function)) {
@@ -365,7 +373,9 @@ public class MediaSources extends MMObjectBuilder {
         Iterator i = getProviders(source).iterator();
         while (i.hasNext()) {
             MMObjectNode provider = (MMObjectNode) i.next();
-            log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
+            if (log.isDebugEnabled()) {
+                log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
+            }
             MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
             bul.getURLs(provider, source, fragment, info, urls);
         }

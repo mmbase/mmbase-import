@@ -29,7 +29,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.7 2003-02-10 13:24:48 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.8 2003-02-16 18:51:48 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -171,6 +171,9 @@ public class MediaFragments extends MMObjectBuilder {
         String title = node.getStringValue("title");
         if ("".equals(title)) title = "***";
         if (! "".equals(url)) {
+            if (url.startsWith("/")) {
+                url = MMBaseContext.getHtmlRootUrlPath() + url.substring(1);
+            }
             return "<a href=\"" + url + "\" alt=\"\" >" + title + "</a>";
         } else {
             return "[" + title + "]";
