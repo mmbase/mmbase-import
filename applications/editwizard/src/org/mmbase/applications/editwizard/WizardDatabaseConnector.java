@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.38 2004-02-02 13:38:47 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.39 2004-02-04 14:53:10 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -733,6 +733,21 @@ public class WizardDatabaseConnector {
                 if (!already_exists.equals("true")) {
                     // go ahead. this seems to be a really new one...
                     Utils.setAttribute(node, "status", "new");
+
+                        // check if fields values have been set
+                        // insert values are not sent - this allows use of virtual fields to edit
+                        // other fields
+                        NodeList fields=Utils.selectNodeList(node,"field");
+                        for (int j=0; j<fields.getLength(); j++) {
+                            // if a new field is empty, don't enter it, but use the default value
+                            // as set in the builder's setDefault() method
+                            // note that strictly speaking, this may not be correct
+                            // a better way is perhaps to first retrieve a new node and compare the values
+                            if ("".equals(Utils.getText(fields.item(j)))) {
+                                fields.item(j).getParentNode().removeChild(fields.item(j));
+                            }
+                        }
+
                 } else {
                     // remove it from the list.
                     node.getParentNode().removeChild(node);
