@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.19 2004-11-17 19:38:22 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.20 2004-11-17 20:38:23 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
@@ -145,6 +145,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         if (extradirs != null) {
             extraDirs.addAll(extradirs);
         }
+        extraDirs.add(new Entry("mm:", ResourceLoader.getConfigurationRoot().getResource(".")));
 
         // URIResolvers  cannot be changed, the hashCode can already be calculated and stored.
 
@@ -261,7 +262,11 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
 
             // still not found!
             if (path == null) { 
-                path =  new URL(baseURL, href);
+                if (href.startsWith("file:")) { // don't know excactly why this is good.
+                    path =  new URL(baseURL, href.substring(5));
+                } else {
+                    path =  new URL(baseURL, href);
+                }
                 try {
                     if (path.openConnection().getInputStream() == null) {
                         path = null;
