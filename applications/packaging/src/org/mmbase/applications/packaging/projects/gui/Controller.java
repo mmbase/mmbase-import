@@ -438,21 +438,6 @@ public class Controller {
 				Target t2 = p.getTarget(tid);
 				if (t2 != null) {
 					t.addRelatedTargetsCreate(t2);
-					/* idea to do the create when doing bundle
-					int nv=t2.getNextVersion();
-            				t2.createPackage(nv);
-					PackageInterface pa = PackageManager.getPackage(t2.getId());
-					while (!pa.getVersion().equals(""+nv)) {
-						// really weird way to delay until provider has found
-						// the new package
-						try {
-							Thread.sleep(1000);
-						} catch(Exception e) {}
-					}
-					if (pa!=null) {
-    						setIncludedVersion(project,target,t2.getId(),""+nv);
-					}
-					*/
 				}
 			}
 		}

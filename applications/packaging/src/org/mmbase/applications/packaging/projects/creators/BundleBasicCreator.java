@@ -60,7 +60,17 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 	// lets first see if we need to create related targets
        	for (Iterator i = relatedtargetcreate.iterator(); i.hasNext();) {
 		Target rt = (Target)i.next();
+		// tricky should be make last version based on local number
+		// or remote number, both ways now until i decide.
                 int nv=rt.getNextVersion();
+		PackageInterface p = PackageManager.getPackage(rt.getId());
+		if (p != null) {
+			try {
+				int t=Integer.parseInt(p.getVersion());
+				if (t >= nv) nv = t+1;	
+			} catch(Exception e) {}
+		}
+		
 	        step=getNextPackageStep();
         	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"..");
                 rt.createPackage(nv);
