@@ -1,0 +1,269 @@
+/*
+
+VPRO (C)
+
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
+
+*/
+package org.mmbase.module.gui.html;
+
+import java.util.*;
+import java.sql.*;
+import org.mmbase.module.core.*;
+
+
+/**
+ * EditState, controls the users edit session, keeps EditStatesNodes
+ * (hitlisted)
+ *
+ *
+ * @author Daniel Ockeloen
+ * @author Hans Speijer
+ */
+public class EditStateNode {
+	Hashtable searchValues = new Hashtable();
+	Hashtable htmlValues = new Hashtable();
+	String editNode;
+	String editor;
+	String dutchEditor;
+	String selectionQuery="";
+	MMObjectBuilder mmObjectBuilder;
+	MMObjectNode node;
+	MMBase mmBase;
+	int nodeEditPos=0;
+	boolean insSave=false;
+	Vector insSaveList=new Vector();
+	
+	public EditStateNode(MMBase mmBase) {
+		this.mmBase=mmBase;
+	}
+
+	public boolean setSearchValue(String fieldname,Object value) {
+		searchValues.put(fieldname,value);
+		return(true);
+	}
+
+	public String getSearchValue(String name) {
+		return((String)searchValues.get(name));
+	}
+
+	public Hashtable getSearchValues() {
+		return (searchValues);
+	}
+
+	public boolean isChanged() {
+		if (node.isChanged() || insSaveList.size()>0) {
+			return(true);
+		} else {
+			return(false);
+		}
+	}
+
+	public void clearSearchValues() {
+		searchValues=new Hashtable();
+	}
+
+
+	public boolean setHtmlValue(String fieldname,Object value) {
+		htmlValues.put(fieldname,value);
+		return(true);
+	}
+
+	public String getHtmlValue(String name) {
+		return((String)htmlValues.get(name));
+	}
+
+	public Hashtable getHtmlValues() {
+		return (htmlValues);
+	}
+
+	public void clearHtmlValues() {
+		htmlValues=new Hashtable();
+	}
+
+	public void setEditNode(String number,String userName) {
+		node = mmObjectBuilder.getNode(number);
+		// fix pop name to overide to username
+		if (node!=null) {
+			String ow=node.getStringValue("owner");
+			if (ow.equals("pop")) {
+				node.setValue("owner",userName);
+				node.clearChanged();
+				System.out.println("Replaced owner 'pop' with owner '+userName+'");
+			}	
+		}
+		editNode = number;
+	}
+
+
+	public void getNewNode(String owner) {
+		node = mmObjectBuilder.getNewNode(owner);
+		editNode="-1";
+		delRelationTable();
+		//editNode = "-1"; // signal its a new node
+	}
+
+	public void removeNode() {
+		mmObjectBuilder.removeNode(node);
+	}
+
+	public void removeRelations() {
+		mmObjectBuilder.removeRelations(node);
+	}
+
+	public MMObjectNode getEditNode() {
+		return(node);
+	}
+
+	public MMObjectNode getEditSrcNode() {
+		int snum=node.getIntValue("snumber");
+		if (snum!=-1) {
+			MMObjectNode rnode=mmObjectBuilder.getNode(snum);
+			return(rnode);
+		} else {
+			return(null);
+		}
+	}
+
+
+	public MMObjectNode getEditDstNode() {
+		int dnum=node.getIntValue("dnumber");
+		if (dnum!=-1) {
+			MMObjectNode rnode=mmObjectBuilder.getNode(dnum);
+			return(rnode);
+		} else {
+			return(null);
+		}
+	}
+
+
+
+	public int getEditNodeNumber() {
+		try {
+			int i=Integer.parseInt(editNode);
+			return(i);
+		} catch(Exception e) {
+		}
+		return(-1);
+	}
+
+	public void setBuilder(String name) {
+		mmObjectBuilder = mmBase.getMMObject(name);
+		editor = name;
+		dutchEditor= mmObjectBuilder.dutchSName;
+	}
+
+	public String getBuilderName() {
+		return (editor);
+	}
+
+	public String getDutchBuilderName() {
+		return (dutchEditor);
+	}
+
+	public MMObjectBuilder getBuilder() {
+		return (mmObjectBuilder);
+	}
+
+	public void setSelectionQuery(String query) {
+		selectionQuery = query;
+	}
+
+	public String getSelectionQuery() {
+		return (selectionQuery);
+	}
+
+	public boolean getInsSave() {
+		return (insSave);
+	}
+
+	public void setInsSave(boolean set) {
+		insSave=set;
+	}
+
+	public void setInsSaveNode(MMObjectNode node) {
+		insSaveList.addElement(node);
+		System.out.println("EditStateNode -> "+insSaveList.toString());
+	}
+
+	public Vector getInsSaveList() {
+		return(insSaveList);
+	}
+
+	public void delInsSaveList() {
+		insSaveList=new Vector();
+	}
+
+	public void delRelationTable() {
+		//System.out.println("Del on relation table");
+	}
+
+	/**
+	 * Returns Hashtable with the currently linked items sorted by relation 
+	 * type.
+	 */
+	public Hashtable getRelationTable() {
+		Enumeration enum = mmBase.getTypeRel().getAllowedRelations(node);
+		MMObjectNode typeRel;
+		String typeName;
+
+
+		// build Hashtable with Vectors for all allowed relations 
+		// Key = TypeName for objects that may be linked
+		Hashtable relationTable = new Hashtable();
+		while (enum.hasMoreElements()) {
+			typeRel = (MMObjectNode)enum.nextElement();	
+			int j=-1;
+			if (typeRel.getIntValue("snumber") == node.getIntValue("otype")) { 
+				j=typeRel.getIntValue("dnumber");
+			} else {
+				j=typeRel.getIntValue("snumber");
+			}
+			if (j!=-1) {
+				typeName = mmBase.getTypeDef().getValue(j);
+				relationTable.put(typeName,new Vector());
+			} else {
+				System.out.print("Problem on "+typeRel.toString());
+			}
+				
+		}
+
+		// Hashtable is done now fill it up !!
+		// enumeration contains all objectnodes that are linked to the 
+		// currently edited Node.
+		if (getEditNodeNumber()!=-1) {
+
+		// is this the correct way to get Relations ???? my vote is no !
+		// enum = mmBase.getInsRel().getRelations(getEditNodeNumber());
+		
+		enum = node.getRelations();
+
+		MMObjectNode rel;
+		MMObjectNode target;
+
+		while (enum.hasMoreElements()) {
+		 try {
+			rel = (MMObjectNode)enum.nextElement();	
+			if (rel.getIntValue("snumber") == node.getIntValue("number")) 
+				target = mmObjectBuilder.getNode(rel.getIntValue("dnumber"));
+			else 
+				target = mmObjectBuilder.getNode(rel.getIntValue("snumber"));
+			typeName = mmBase.getTypeDef().getValue(target.getIntValue("otype"));
+			Vector relList = (Vector)relationTable.get(typeName);
+			if (relList != null) {
+				relList.addElement(target);
+				relList.addElement(rel);
+			}
+		  } catch(Exception e) {
+				System.out.println("MMEditStateNode -> problem with a relation, probably a relation with a non active builder");
+		  }
+		}
+		} else {
+			// System.out.println("WOWOW= its -1");
+		}
+		return (relationTable);
+	}
+
+}

@@ -1,0 +1,180 @@
+/*
+
+VPRO (C)
+
+This source file is part of mmbase and is (c) by VPRO until it is being
+placed under opensource. This is a private copy ONLY to be used by the
+MMBase partners.
+
+*/
+package org.mmbase.remote;
+
+import java.net.*;
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+
+/**
+ * @version  3 Okt 1999
+ * @author Daniel Ockeloen
+ */
+public class RemoteBuilder {
+
+    private String  classname   = getClass().getName();
+    private boolean debug       = false;
+    private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
+	private MMProtocolDriver con;
+	private Hashtable values=new Hashtable();
+	private String buildername;
+	private String nodename;
+	public Hashtable props = null; 
+
+	int lease=-1;
+
+	public void init(MMProtocolDriver con,String servicefile) {
+		this.con=con;
+		System.out.println("Starting servicefile : "+servicefile);
+
+		ExtendedProperties Reader=new ExtendedProperties();
+		props = Reader.readProperties(servicefile);
+		buildername=(String)props.get("buildername");
+		nodename=(String)props.get("nodename");
+
+		con.addListener(buildername,nodename,this);
+
+		getNode();
+	}
+
+	public synchronized void getNode() {
+		con.getNode(nodename,buildername);
+		if (con.getProtocol().equals("multicast")) {
+			try {
+				wait(8000);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public void nodeRemoteChanged(String nodename,String buildername,String ctype) {		
+		System.out.println("RemoteBuilder ->  remote change "+buildername+" "+nodename+" "+ctype);
+	}
+
+	public void nodeLocalChanged(String nodename,String buildername,String ctype) {		
+		System.out.println("RemoteBuilder -> local change "+buildername+" "+nodename+" "+ctype);
+	}
+
+
+
+	public synchronized void gotXMLValues(String body) {
+		StringTokenizer tok = new StringTokenizer(body,"\n\r");
+		String xmlline=tok.nextToken();
+		String docline=tok.nextToken();
+		
+	
+		String builderline=tok.nextToken();
+		String endtoken="</"+builderline.substring(1);
+		
+
+		String nodedata=body.substring(body.indexOf(builderline)+builderline.length());
+		nodedata=nodedata.substring(0,nodedata.indexOf(endtoken));
+
+		int bpos=nodedata.indexOf("<");
+		while (bpos!=-1) {
+			String key=nodedata.substring(bpos+1);
+			key=key.substring(0,key.indexOf(">"));
+			String begintoken="<"+key+">";
+			endtoken="</"+key+">";
+			
+			String value=nodedata.substring(nodedata.indexOf(begintoken)+begintoken.length());
+			value=value.substring(0,value.indexOf(endtoken));
+
+			values.put(key,value);
+
+			nodedata=nodedata.substring(nodedata.indexOf(endtoken)+endtoken.length());
+			bpos=nodedata.indexOf("<");
+		}
+		notify();
+	}
+	
+	public String getStringValue(String key) {
+		return((String)values.get(key));
+	}
+
+	public int getIntValue(String key) {
+		try {
+			return(Integer.parseInt(getStringValue(key)));
+		} catch(Exception e) {
+			return(-1);
+		}
+	}
+
+	public void setValue(String key, String value) {
+		values.put(key,value);
+	}
+
+	public void setValue(String key, int value) {
+		values.put(key,""+value);
+	}
+
+	public void commit() {
+		con.commitNode(nodename,buildername,toXML());
+	}
+
+
+	public String toXML() {
+		String body="<?xml version=\"1.0\"?>\n";
+		// body+="<!DOCTYPE mmnode."+buildername+" SYSTEM \"http://openbox.vpro.nl/mmnode/"+buildername+".dtd\">\n";
+		body+="<!DOCTYPE mmnode."+buildername+" SYSTEM \"http://openbox.vpro.nl/mmnode/"+buildername+".dtd\">\n";
+		body+="<"+buildername+">\n";
+		for (Enumeration e=values.keys();e.hasMoreElements();) {
+			String key=(String)e.nextElement();	
+				String value=getStringValue(key);
+				body+="<"+key+">"+value+"</"+key+">\n";
+		}
+		body+="</"+buildername+">\n";
+		return(body);
+	}
+
+
+	public boolean maintainance() {
+		if (lease!=-1 && getStringValue("state").equals("claimed")) {
+			if (lease<1) {
+				setValue("state","waiting");			
+				setValue("info","");
+				commit();
+				System.out.println("C=0 released !");
+			} else {
+				System.out.println("C="+lease);
+				lease--;
+			}
+		} else {
+			lease=-1;
+		}
+
+		getNode();
+		String state=getStringValue("state");
+		// System.out.println("state ("+nodename+")="+state);
+		// does the server think im down ?
+		if (state.equals("down")) {
+			setValue("state","waiting");
+			commit();
+		}
+		return(true);		
+	}
+
+
+	public void setClaimed() {
+		String cmds=getStringValue("info");
+		StringTagger tagger=new StringTagger(cmds);
+		String tmp=tagger.Value("lease");
+		if (tmp!=null) {
+			try {
+				lease=Integer.parseInt(tmp);	
+			} catch(Exception e) {}
+		}
+	}
+}
