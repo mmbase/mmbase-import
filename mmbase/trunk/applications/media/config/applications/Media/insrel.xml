@@ -40,7 +40,7 @@
 	<node number="4011" owner="default" snumber="128" dnumber="3001" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="4013" owner="default" snumber="130" dnumber="3001" rtype="related" dir="bidirectional">
+	<node number="4013" owner="default" snumber="130" dnumber="3003" rtype="related" dir="bidirectional">
 	</node>
 
 	<node number="4015" owner="default" snumber="126" dnumber="3003" rtype="related" dir="bidirectional">
