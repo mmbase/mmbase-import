@@ -9,23 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.tools;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
-import java.util.Date;
-import java.io.*;
-import java.sql.*;
+import java.io.File;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
 import org.mmbase.cache.MultilevelCacheHandler;
 import org.mmbase.cache.MultilevelCacheEntry;
 import org.mmbase.module.core.*;
-import org.mmbase.module.builders.*;
+import org.mmbase.module.builders.Versions;
+import org.mmbase.module.builders.Message; // dependency, needs to be removed
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.gui.html.*;
-import org.mmbase.module.database.*;
-import org.mmbase.module.database.support.*;
 import org.mmbase.module.tools.MMAppTool.*;
 
 import org.mmbase.util.logging.Logger;
@@ -33,36 +27,56 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
+ * @javadoc
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version 11 May 2001
+ * @version $Id: MMAdmin.java,v 1.40 2002-01-24 10:59:50 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
     // logging routines
     private static Logger log = Logging.getLoggerInstance(MMAdmin.class.getName());
 
-    // reference to MMBase
-
+    /**
+     * reference to MMBase
+     * @scope private
+     */
     MMBase mmb=null;
+    /**
+     * @javadoc
+     * @scope private
+     */
     MMAdminProbe probe=null;
+    /**
+     * @javadoc
+     * @scope private
+     */
     String lastmsg="";
+    /**
+     * @javadoc
+     */
     private boolean restartwanted=false;
+    /**
+     * @javadoc
+     */
     private boolean kioskmode=false;
 
+    /**
+     * @javadoc
+     */
     public void init() {
         String dtmp=System.getProperty("mmbase.kiosk");
         if (dtmp!=null && dtmp.equals("yes")) {
             kioskmode=true;
             log.info("*** Server started in kiosk mode ***");
         }
-    	mmb=(MMBase)getModule("MMBASEROOT");
+        mmb=(MMBase)getModule("MMBASEROOT");
         probe = new MMAdminProbe(this);
     }
 
-
     /**
+     * @javadoc
      */
     public MMAdmin() {
     }
@@ -84,8 +98,9 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * Generate a list of values from a command to the processor
+     * @javadoc
      */
-     public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+    public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
@@ -131,10 +146,16 @@ public class MMAdmin extends ProcessorModule {
         return null;
     }
 
+    /**
+     * @javadoc
+     */
     private boolean checkAdmin(scanpage sp, String cmd) {
         return checkUserLoggedOn(sp, cmd, true);
     }
 
+    /**
+     * @javadoc
+     */
     private boolean checkUserLoggedOn(scanpage sp, String cmd, boolean adminonly) {
         String user = null;
         try {
@@ -150,6 +171,7 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * Execute the commands provided in the form values
+     * @javadoc
      */
     public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
         String cmdline,token;
@@ -244,8 +266,9 @@ public class MMAdmin extends ProcessorModule {
     }
 
     /**
-    *    Handle a $MOD command
-    */
+     * Handle a $MOD command
+     * @javadoc
+     */
     public String replace(scanpage sp, String cmds) {
         if(!checkUserLoggedOn(sp,cmds,false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
@@ -291,13 +314,13 @@ public class MMAdmin extends ProcessorModule {
                         MultilevelCacheHandler.setState(false);
                         log.info("turned multilevelcache off");
                     }
-    			} else {
+                } else {
                     if (MultilevelCacheHandler.isActive()) {
-                        return("On");
-    				} else {
-	    				return("Off");
-		    		}
-		    	}
+                        return "On";
+                    } else {
+                        return "Off";
+                    }
+                }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
                 return(""+(MultilevelCacheHandler.getCache("basic").getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
@@ -320,12 +343,15 @@ public class MMAdmin extends ProcessorModule {
                 return(""+(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()));
             } else if (cmd.equals("RELATIONCACHEPERFORMANCE")) {
 
-        	return(""+(1.0*MMObjectNode.getRelationCacheHits())/(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()+0.0000000001)*100);
+            return(""+(1.0*MMObjectNode.getRelationCacheHits())/(MMObjectNode.getRelationCacheHits()+MMObjectNode.getRelationCacheMiss()+0.0000000001)*100);
             }
         }
         return "No command defined";
     }
 
+    /**
+     * @javadoc
+     */
     int getVersion(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
@@ -335,7 +361,9 @@ public class MMAdmin extends ProcessorModule {
         return -1;
     }
 
-
+    /**
+     * @javadoc
+     */
     int getBuilderVersion(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
         XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
@@ -345,6 +373,9 @@ public class MMAdmin extends ProcessorModule {
         return -1;
     }
 
+    /**
+     * @javadoc
+     */
     String getBuilderClass(String bulname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
         XMLBuilderReader bul=new XMLBuilderReader(path+bulname+".xml");
@@ -354,7 +385,9 @@ public class MMAdmin extends ProcessorModule {
         return "";
     }
 
-
+    /**
+     * @javadoc
+     */
     String getModuleClass(String modname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
         XMLModuleReader mod=new XMLModuleReader(path+modname+".xml");
@@ -364,6 +397,9 @@ public class MMAdmin extends ProcessorModule {
         return "";
     }
 
+    /**
+     * @javadoc
+     */
     public void setModuleProperty(Hashtable vars) {
         if (kioskmode) {
             log.warn("refused module property set, am in kiosk mode");
@@ -381,6 +417,10 @@ public class MMAdmin extends ProcessorModule {
 
     }
 
+    /**
+     * @javadoc
+     * @todo should obtain data from the configuration file
+     */
     String getModuleProperty(String modname,String key) {
         /*
         String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
@@ -401,8 +441,9 @@ public class MMAdmin extends ProcessorModule {
 
     }
 
-
-
+    /**
+     * @javadoc
+     */
     String getDescription(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
@@ -412,7 +453,9 @@ public class MMAdmin extends ProcessorModule {
         return "";
     }
 
-
+    /**
+     * @javadoc
+     */
     String getBuilderDescription(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
         XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
@@ -426,6 +469,10 @@ public class MMAdmin extends ProcessorModule {
         return "";
     }
 
+    /**
+     * @javadoc
+     * @todo should obtain data from the configuration file
+     */
     String getModuleDescription(String modulename) {
         /*
         String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
@@ -441,9 +488,16 @@ public class MMAdmin extends ProcessorModule {
         return "";
     }
 
+    /**
+     * @javadoc
+     */
     public void maintainance() {
     }
 
+    /**
+     * @javadoc
+     * @bad-literal time for MMAdminProbe should be a constant or configurable
+     */
     public void doRestart(String user) {
         if (kioskmode) {
             log.warn("MMAdmin> refused to reset the server, am in kiosk mode");
@@ -455,6 +509,9 @@ public class MMAdmin extends ProcessorModule {
         probe = new MMAdminProbe(this,3*1000);
     }
 
+    /**
+     * @javadoc
+     */
     private boolean startAppTool(String appname) {
         if (kioskmode) {
             log.warn("refused starting app tool, am in kiosk mode");
@@ -469,6 +526,9 @@ public class MMAdmin extends ProcessorModule {
         return true;
     }
 
+    /**
+     * @javadoc
+     */
     private boolean installApplication(String applicationname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
@@ -504,6 +564,9 @@ public class MMAdmin extends ProcessorModule {
         return true;
     }
 
+    /**
+     * @javadoc
+     */
     boolean installDataSources(Vector ds,String appname) {
         for (Enumeration h = ds.elements();h.hasMoreElements();) {
             Hashtable bh=(Hashtable)h.nextElement();
@@ -527,7 +590,7 @@ public class MMAdmin extends ProcessorModule {
                     if (b.hasMoreElements()) {
                         // XXX To do : we may want to load the node and check/change the fields
                         MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-                        //log.warn("node allready installed : "+exportnumber);
+                        log.debug("node allready installed : "+exportnumber);
                     } else {
                         newnode.setValue("number",-1);
                         int localnumber=doKeyMergeNode(newnode);
@@ -566,6 +629,9 @@ public class MMAdmin extends ProcessorModule {
         return true;
     }
 
+    /**
+     * @javadoc
+     */
     private int doKeyMergeNode(MMObjectNode newnode) {
         MMObjectBuilder bul=newnode.parent;
         if (bul!=null) {
@@ -607,6 +673,9 @@ public class MMAdmin extends ProcessorModule {
         return -1;
     }
 
+    /**
+     * @javadoc
+     */
     boolean installRelationSources(Vector ds) {
         for (Enumeration h = ds.elements();h.hasMoreElements();) {
             Hashtable bh=(Hashtable)h.nextElement();
@@ -627,15 +696,14 @@ public class MMAdmin extends ProcessorModule {
                     if (b.hasMoreElements()) {
                         // XXX To do : we may want to load the relation node and check/change the fields
                         MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-                        //log.warn("node allready installed : "+exportnumber);
+                        log.debug("node allready installed : "+exportnumber);
                     } else {
                         newnode.setValue("number",-1);
-
                         // The following code determines the 'actual' (synced) numbers for the destination and source nodes
                         // This will normally work well, however:
                         // It is _theoretically_ possible that one or both nodes are _themselves_ relation nodes.
                         // (since relations are nodes).
-                        // Due to the order in which syncing takles place, it is possible that such strcutures will fail
+                        // Due to the order in which syncing takles place, it is possible that such structures will fail
                         // to get imported.
                         // ye be warned.
 
@@ -649,7 +717,6 @@ public class MMAdmin extends ProcessorModule {
                         } else {
                             snumber=-1;
                         }
-
 
                         // find dnumber
                         int dnumber=newnode.getIntValue("dnumber");
@@ -722,6 +789,9 @@ public class MMAdmin extends ProcessorModule {
         return true;
     }
 
+    /**
+     * @javadoc
+     */
     boolean checkAllowedRelations(Vector relations) {
         for (Enumeration h = relations.elements();h.hasMoreElements();) {
             Hashtable bh=(Hashtable)h.nextElement();
@@ -733,6 +803,9 @@ public class MMAdmin extends ProcessorModule {
         return true;
     }
 
+    /**
+     * @javadoc
+     */
     boolean areBuildersLoaded(Vector neededbuilders) {
         for (Enumeration h = neededbuilders.elements();h.hasMoreElements();) {
             Hashtable bh=(Hashtable)h.nextElement();
@@ -759,10 +832,8 @@ public class MMAdmin extends ProcessorModule {
     private void checkRelDef(String sname, String dname, int dir,String sguiname, String dguiname, int builder) {
         RelDef reldef=mmb.getRelDef();
         if (reldef!=null) {
-            Vector res=reldef.searchVector("sname=='"+sname+"'+dname=='"+dname+"'");
-            if (res!=null && res.size()>0) {
-                //log.warn("RefDef ("+sname+","+dname+") allready installed");
-            } else {
+            Enumeration res = reldef.search("WHERE sname='"+sname+"' AND dname='"+dname+"'");
+            if (!res.hasMoreElements()) {
                 MMObjectNode node=reldef.getNewNode("system");
                 node.setValue("sname",sname);
                 node.setValue("dname",dname);
@@ -778,7 +849,7 @@ public class MMAdmin extends ProcessorModule {
                 }
                 int id=reldef.insert("system",node);
                 if (id!=-1) {
-                    // log.warn("RefDef ("+sname+","+dname+") installed");
+                    log.debug("RefDef ("+sname+","+dname+") installed");
                 }
             }
         } else {
@@ -786,7 +857,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
-
+    /**
+     * @javadoc
+     */
     private void checkTypeRel(String sname, String dname, String rname, int count) {
         TypeRel typerel=mmb.getTypeRel();
         if (typerel!=null) {
@@ -802,7 +875,7 @@ public class MMAdmin extends ProcessorModule {
             }
 
             // figure out rnumber
-            int rnumber=reldef.getGuessedNumber(rname);
+            int rnumber=reldef.getNumberByName(rname);
             if (rnumber==-1) {
                 log.warn("no reldef : "+rname+" defined");
                 return;
@@ -829,8 +902,9 @@ public class MMAdmin extends ProcessorModule {
                 node.setValue("rnumber",rnumber);
                 node.setValue("max",count);
                 int id=typerel.insert("system",node);
+                // should throw error if id!=-1?
                 if (id!=-1) {
-                    //log.warn("TypeRel ("+sname+","+dname+","+rname+") installed");
+                    log.debug("TypeRel ("+sname+","+dname+","+rname+") installed");
                 }
             }
         } else {
@@ -838,8 +912,10 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
-    // not used ?
-    // should be dropped ?
+    /**
+     * @javadoc
+     * @deprecated-now not used (?)
+     */
     private void checkRelation(int snumber, int dnumber, String rname, int dir) {
         InsRel insrel=mmb.getInsRel();
         if (insrel!=null) {
@@ -848,7 +924,7 @@ public class MMAdmin extends ProcessorModule {
                 log.warn("can't get reldef builder");
             }
             // figure out rnumber
-            int rnumber=reldef.getGuessedNumber(rname);
+            int rnumber=reldef.getNumberByName(rname);
             if (rnumber==-1) {
                 log.warn("no reldef : "+rname+" defined");
                 return;
@@ -871,16 +947,15 @@ public class MMAdmin extends ProcessorModule {
                     node.setValue("dir",dir);
                 }
                 int id=insrel.insert("system",node);
-                // if (id!=-1) {
-                //  log.info("Relation installed");
-                // }
             }
         } else {
             log.warn("can't get insrel builder");
         }
     }
 
-
+    /**
+     * @javadoc
+     */
     public void probeCall() {
         if (restartwanted) {
             System.exit(0);
@@ -929,6 +1004,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
+    /**
+     * @javadoc
+     */
     private boolean    writeApplication(String appname,String targetpath,String goal) {
         if (kioskmode) {
             log.warn("refused to write application, am in kiosk mode");
@@ -946,6 +1024,9 @@ public class MMAdmin extends ProcessorModule {
         return true;
     }
 
+    /**
+     * @javadoc
+     */
     Vector getApplicationsList() {
         Versions ver=(Versions)mmb.getMMObject("versions");
         if (ver==null) {
@@ -986,10 +1067,16 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
+    /**
+     * @javadoc
+     */
     Vector getBuildersList() {
         return getBuildersList(null);
     }
 
+    /**
+     * @javadoc
+     */
     Vector getBuildersList(StringTokenizer tok) {
         String subpath="";
         if ((tok!=null) && (tok.hasMoreTokens())) {
@@ -1004,6 +1091,9 @@ public class MMAdmin extends ProcessorModule {
         return getBuildersList(path, subpath, ver);
     }
 
+    /**
+     * @javadoc
+     */
     Vector getBuildersList(String configpath, String subpath, Versions ver) {
         Vector results=new Vector();
         File bdir = new File(configpath+subpath);
@@ -1036,6 +1126,9 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
+    /**
+     * @javadoc
+     */
     Vector getModuleProperties(String modulename) {
         Vector results=new Vector();
         String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
@@ -1053,6 +1146,9 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
+    /**
+     * @javadoc
+     */
     Vector getFields(String buildername) {
         Vector results=new Vector();
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
@@ -1061,7 +1157,6 @@ public class MMAdmin extends ProcessorModule {
             Vector defs=bul.getFieldDefs();
             for (Enumeration h = defs.elements();h.hasMoreElements();) {
                 FieldDefs def=(FieldDefs)h.nextElement();
-                //log.debug("DEFS="+def);
                 results.addElement(""+def.getDBPos());
                 results.addElement(""+def.getDBName());
                 int type=def.getDBType();
@@ -1097,20 +1192,15 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
-
+    /**
+     * @javadoc
+     */
     Vector getModulesList() {
-        /*
-        Versions ver=(Versions)mmb.getMMObject("versions");
-        if (ver==null) {
-            log.warn("Versions builder not installed, Can't get to builders");
-            return null;
-        }
-        */
         Vector results=new Vector();
 
         String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
         // new code checks all the *.xml files in builder dir
-            File bdir = new File(path);
+        File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
             if (files == null) return results;
@@ -1136,7 +1226,9 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
-
+    /**
+     * @javadoc
+     */
     Vector getDatabasesList() {
         Versions ver=(Versions)mmb.getMMObject("versions");
         if (ver==null) {
@@ -1168,7 +1260,9 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
-
+    /**
+     * @javadoc
+     */
     private boolean fileExists(String path) {
         File f=new File(path);
         if (f.exists() && f.isFile()) {
@@ -1178,6 +1272,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
+    /**
+     * @javadoc
+     */
     private String getBuilderField(String buildername,String fieldname, String key) {
         MMObjectBuilder bul=getMMObject(buildername);
         if (bul!=null) {
@@ -1250,6 +1347,9 @@ public class MMAdmin extends ProcessorModule {
         return "";
     }
 
+    /**
+     * @javadoc
+     */
     private Vector getISOGuiNames(String buildername, String fieldname) {
         Vector results=new Vector();
         MMObjectBuilder bul=getMMObject(buildername);
@@ -1266,7 +1366,9 @@ public class MMAdmin extends ProcessorModule {
         return results;
     }
 
-
+    /**
+     * @javadoc
+     */
     private String getGuiNameValue(String buildername, String fieldname,String key) {
         MMObjectBuilder bul=getMMObject(buildername);
         if (bul!=null) {
@@ -1279,13 +1381,18 @@ public class MMAdmin extends ProcessorModule {
         return "";
     }
 
-
+    /**
+     * @javadoc
+     */
     public void doModulePosts(String command,Hashtable cmds,Hashtable vars) {
         if (command.equals("SETPROPERTY")) {
             setModuleProperty(vars);
         }
     }
 
+    /**
+     * @javadoc
+     */
     public void doBuilderPosts(String command,Hashtable cmds,Hashtable vars) {
         if (command.equals("SETGUINAME")) {
             setBuilderGuiName(vars);
@@ -1314,6 +1421,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
+    /**
+     * @javadoc
+     */
     public void setBuilderGuiName(Hashtable vars) {
         if (kioskmode) {
             log.warn("refused gui name set, am in kiosk mode");
@@ -1332,7 +1442,9 @@ public class MMAdmin extends ProcessorModule {
         syncBuilderXML(bul,builder);
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderGuiType(Hashtable vars) {
         if (kioskmode) {
             log.warn("refused gui type set, am in kiosk mode");
@@ -1350,7 +1462,9 @@ public class MMAdmin extends ProcessorModule {
         syncBuilderXML(bul,builder);
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderEditorInput(Hashtable vars) {
         if (kioskmode) {
             log.warn("refused editor input set, am in kiosk mode");
@@ -1371,7 +1485,9 @@ public class MMAdmin extends ProcessorModule {
         syncBuilderXML(bul,builder);
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderEditorList(Hashtable vars) {
         if (kioskmode) {
             log.warn("refused editor list set, am in kiosk mode");
@@ -1392,7 +1508,9 @@ public class MMAdmin extends ProcessorModule {
         syncBuilderXML(bul,builder);
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderEditorSearch(Hashtable vars) {
         if (kioskmode) {
             log.warn("refused editor pos set, am in kiosk mode");
@@ -1413,7 +1531,9 @@ public class MMAdmin extends ProcessorModule {
         syncBuilderXML(bul,builder);
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderDBSize(Hashtable vars) {
         if (kioskmode) {
             log.warn("Refused set DBSize field, am in kiosk mode");
@@ -1436,7 +1556,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderDBMMBaseType(Hashtable vars) {
         if (kioskmode) {
             log.warn("Refused set setDBMMBaseType field, am in kiosk mode");
@@ -1468,7 +1590,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderDBState(Hashtable vars) {
         if (kioskmode) {
             log.warn("Refused set DBState field, am in kiosk mode");
@@ -1494,6 +1618,10 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
+    /**
+     * @javadoc
+     * @deprecation contains code taht is commented-out, can be removed (?)
+     */
     public void setBuilderDBKey(Hashtable vars) {
         if (kioskmode) {
             log.warn("Refused set dbkey field, am in kiosk mode");
@@ -1521,7 +1649,9 @@ public class MMAdmin extends ProcessorModule {
         syncBuilderXML(bul,builder);
     }
 
-
+    /**
+     * @javadoc
+     */
     public void setBuilderDBNotNull(Hashtable vars) {
         if (kioskmode) {
             log.warn("Refused set NotNull field, am in kiosk mode");
@@ -1545,6 +1675,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
+    /**
+     * @javadoc
+     */
     public void addBuilderField(Hashtable vars) {
         if (kioskmode) {
             log.warn("Refused add builder field, am in kiosk mode");
@@ -1621,6 +1754,9 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
+    /**
+     * @javadoc
+     */
     public void removeBuilderField(Hashtable vars) {
         if (kioskmode) {
             log.warn("Refused remove builder field, am in kiosk mode");
@@ -1643,62 +1779,74 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
+    /**
+     * @javadoc
+     */
     public void syncBuilderXML(MMObjectBuilder bul,String builder) {
         String savepath=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator+builder+".xml";
         XMLBuilderWriter.writeXMLFile(savepath,bul);
     }
 
+    /**
+     * @javadoc
+     */
     public void syncModuleXML(Module mod,String modname) {
         String savepath=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator+modname+".xml";
         XMLModuleWriter.writeXMLFile(savepath,mod);
     }
 
+    /**
+     * @javadoc
+     */
     public Vector  getMultilevelCacheEntries() {
         Vector results=new Vector();
         Enumeration res=MultilevelCacheHandler.getCache("basic").getOrderedElements();
         while (res.hasMoreElements()) {
             MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
-	        StringTagger tagger=en.getTagger();
+            StringTagger tagger=en.getTagger();
             Vector type=tagger.Values("TYPE");
-    	    Vector where=tagger.Values("WHERE");
-	    	Vector dbsort=tagger.Values("DBSORT");
-    	    Vector dbdir=tagger.Values("DBDIR");
-	    	Vector fields=tagger.Values("FIELDS");
-    		results.addElement(""+en.getKey());
-        	results.addElement(""+type);
-	    	results.addElement(""+fields);
-		    if (where!=null) {
-    		    results.addElement(where.toString());
-    	    } else {
-	    	    results.addElement("");
-    	    }
-	    	if (dbsort!=null) {
-		        results.addElement(dbsort.toString());
+            Vector where=tagger.Values("WHERE");
+            Vector dbsort=tagger.Values("DBSORT");
+            Vector dbdir=tagger.Values("DBDIR");
+            Vector fields=tagger.Values("FIELDS");
+            results.addElement(""+en.getKey());
+            results.addElement(""+type);
+            results.addElement(""+fields);
+            if (where!=null) {
+                results.addElement(where.toString());
             } else {
-	    	    results.addElement("");
-	        }
-    		if (dbdir!=null) {
-	    	    results.addElement(dbdir.toString());
-    		} else {
-	    	    results.addElement("");
-    	    }
-	    	results.addElement(tagger.ValuesString("ALL"));
-    		results.addElement(""+MultilevelCacheHandler.getCache("basic").getCount(en.getKey()));
-        }		
-        return(results);
+                results.addElement("");
+            }
+            if (dbsort!=null) {
+                results.addElement(dbsort.toString());
+            } else {
+                results.addElement("");
+            }
+            if (dbdir!=null) {
+                results.addElement(dbdir.toString());
+            } else {
+                results.addElement("");
+            }
+            results.addElement(tagger.ValuesString("ALL"));
+            results.addElement(""+MultilevelCacheHandler.getCache("basic").getCount(en.getKey()));
+        }
+        return results;
     }
 
-    public Vector  getNodeCacheEntries() {
-	Vector results=new Vector();
-	Enumeration res=MMObjectBuilder.nodeCache.getOrderedElements();
-	while (res.hasMoreElements()) {
-		 MMObjectNode node=(MMObjectNode)res.nextElement();
-		results.addElement(""+MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
-		results.addElement(""+node.getIntValue("number"));
-		results.addElement(node.getStringValue("owner"));
-		results.addElement(mmb.getTypeDef().getValue(node.getIntValue("otype")));
-	}
-	return(results);
+    /**
+     * @javadoc
+     */
+    public Vector getNodeCacheEntries() {
+        Vector results=new Vector();
+        Enumeration res=MMObjectBuilder.nodeCache.getOrderedElements();
+        while (res.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)res.nextElement();
+            results.addElement(""+MMObjectBuilder.nodeCache.getCount(node.getIntegerValue("number")));
+            results.addElement(""+node.getIntValue("number"));
+            results.addElement(node.getStringValue("owner"));
+            results.addElement(mmb.getTypeDef().getValue(node.getIntValue("otype")));
+        }
+        return results;
     }
 
 
