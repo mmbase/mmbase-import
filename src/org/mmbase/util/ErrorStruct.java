@@ -9,25 +9,40 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
-
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-
-import org.mmbase.module.corebuilders.*;
-
+/**
+ * Class for storing error information useful in parsing.
+ * Information that can be stored inlcudes the error type, column and
+ * line number of the parsed text where the error occurred, and a message.
+ * used by the {@link Config} module when parsing XML files.
+ */
 public class ErrorStruct {
+
+    // error type
     String errorType;
+    // line number
     int line;
+    // column number
     int col;
+    // error message
     String msg;
-    
+
+    /**
+     * Creates an error structure, with errortype "none".
+     * @param line the line number where the error occurred
+     * @param col the column number where the error occurred
+     * @param msg the error message
+     */
     public ErrorStruct(int line, int col, String msg) {
 	this("none",line,col,msg);
     }
+
+    /**
+     * Creates an error structure.
+     * @param errorType the type of error,
+     * @param line the line number where the error occurred
+     * @param col the column number where the error occurred
+     * @param msg the error message
+     */
     public ErrorStruct(String errorType, int line, int col, String msg) {
 	this.errorType = errorType;
 	this.line = line;
@@ -35,18 +50,33 @@ public class ErrorStruct {
 	this.msg = msg;
     }
 
+    /**
+     * Returns the error type.
+     * Values that might be expected are "warning", "error" and "fatal".
+     */
     public String getErrorType() {
 	return errorType;
     }
 
+    /**
+     * Returns the line number in the parsed source (file or textbuffer)
+     * where the error occurred.
+     */
     public int getLineNumber() {
 	return line;
     }
 
+    /**
+     * Returns the column number in the parsed source (file or textbuffer)
+     * where the error occurred.
+     */
     public int getColumnNumber() {
 	return col;
     }
 
+    /**
+     * Returns a more detailed error message.
+     */
     public String getMessage() {
 	return msg;
     }

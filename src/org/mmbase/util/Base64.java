@@ -10,13 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 /**
- * Base64 is an implementation of the Base64 algorithm. 
+ * Base64 is an implementation of the Base64 algorithm.
  *
  * @author Daniel
  * @author Rob Vermeulen
  */
 public class Base64 {
- 
+
     private final static char pem2_array[] = {
         'A','B','C','D','E','F','G','H','I','J','K','L','M',
         'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
@@ -24,7 +24,7 @@ public class Base64 {
         'n','o','p','q','r','s','t','u','v','w','x','y','z',
         '0','1','2','3','4','5','6','7','8','9','+','/'
     };
- 
+
     private final static byte pem_array[] = {
         64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,
         64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,62,64,64,64,63,
@@ -38,20 +38,18 @@ public class Base64 {
         64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,
         64,64,64,64,64,64,64,64,64,64,64,64,64
     };
-	
-	/**
-  	 * decodes the base64 string.
-	 *
-	 * @param mimel the string to decode
-	 */
+
+    /**
+     * decodes the base64 string.
+     *
+     * @param mimel the string to decode
+     */
     public static String decode(String mimel) {
-       	int i,a,b,c,d;
-       	String decodeline;
-       	String decodedline;
+        int i,a,b,c,d;
+        String decodeline=mimel;
+        String decodedline="";
         String temp,name;
- 
-        decodeline=mimel;
-        decodedline="";
+
         while (decodeline.length()>3) {
             a=pem_array[decodeline.charAt(0)];
             b=pem_array[decodeline.charAt(1)];
@@ -69,23 +67,23 @@ public class Base64 {
             }
             decodeline=decodeline.substring(4);
         }
-        return(decodedline);
+        return decodedline;
     }
 
-	/**
-	 * encode the base64 string.
-	 *
-	 * @param mimel the string to encode
-	 */ 
+    /**
+     * encode the base64 string.
+     *
+     * @param mimel the string to encode
+     */
     public static String encode(String mimel) {
         int i,a,b,c,d;
         String encodeline;
         String encodedline;
         String temp,name;
- 
+
         encodedline="";
         encodeline=mimel;
- 
+
         if (encodeline.indexOf(0)!=-1) {
             encodeline=encodeline.substring(0,encodeline.indexOf(0));
         }
@@ -101,13 +99,13 @@ public class Base64 {
             encodedline+=(char)pem2_array[(((encodeline.charAt(0))&3)<<4)|(((encodeline.charAt(1))&240)>>4)];
             encodedline+=(char)pem2_array[(((encodeline.charAt(1))&15)<<2)];
             encodedline+="=";
-            } else {
-        } if (encodeline.length()==1) {
+        }
+        if (encodeline.length()==1) {
             encodedline+=(char)pem2_array[((encodeline.charAt(0))&253)>>2];
             encodedline+=(char)pem2_array[(((encodeline.charAt(0))&3)<<4)];
             encodedline+="==";
         }
-        return(encodedline);
+        return encodedline;
     }
 }
 
