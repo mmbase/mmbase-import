@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.19 2003-09-26 18:44:29 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.20 2003-11-25 21:05:27 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -58,7 +58,7 @@ public class StringHandler extends AbstractTypeHandler {
                     String value = node.getContext();
                     buffer.append("<select name=\"" + prefix("owner") + "\">\n");
 
-
+                    addExtraAttributes(buffer);
                     StringList possibleContexts = node.getPossibleContexts();
 
                     if (! possibleContexts.contains(value)) {
@@ -79,7 +79,9 @@ public class StringHandler extends AbstractTypeHandler {
                 }
             } else if(field.getMaxLength() > 2048)  {
                 // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
+                buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
+                addExtraAttributes(buffer);
+                buffer.append(" name=\"");
                 buffer.append(prefix(field.getName()));
                 buffer.append("\">");
                 if (node != null) {
@@ -87,7 +89,9 @@ public class StringHandler extends AbstractTypeHandler {
                 }
                 buffer.append("</textarea>");
             } else if(field.getMaxLength() > 255 )  {
-                buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"");
+                buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
+                addExtraAttributes(buffer);
+                buffer.append(" name=\"");
                 buffer.append(prefix(field.getName()));
                 buffer.append("\">");
                 if (node != null) {
@@ -101,7 +105,9 @@ public class StringHandler extends AbstractTypeHandler {
                     buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
                 }
                 buffer.append(prefix(field.getName()));
-                buffer.append("\" value=\"");
+                buffer.append("\" ");
+                addExtraAttributes(buffer);
+                buffer.append(" value=\"");
                 if (node != null) {
                     buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)));
                 }
