@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: DayMarkersProbe.java,v 1.1 2000-05-30 07:37:44 wwwtech Exp $
+	$Id: DayMarkersProbe.java,v 1.2 2000-05-30 08:32:46 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/05/30 07:37:44  wwwtech
+	Rico: added thread to keep daymarkers up to date for servers running longer then 1 day
+	
 
 */
 package org.mmbase.module.builders;
@@ -26,7 +29,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: DayMarkersProbe.java,v 1.1 2000-05-30 07:37:44 wwwtech Exp $
+ * @version $Id: DayMarkersProbe.java,v 1.2 2000-05-30 08:32:46 wwwtech Exp $
  */
 public class DayMarkersProbe implements Runnable {
 
@@ -86,12 +89,14 @@ public class DayMarkersProbe implements Runnable {
 	 * Main work loop
 	 */
 	public void doWork() {
-		MMObjectNode node,node2;
-
-		try {Thread.sleep(10*60*1000);} catch (InterruptedException e){}
+		try {Thread.sleep(10*(60*1000));} catch (InterruptedException e){}
 		while (kicker!=null) {
 			parent.probeCall();
-			try {Thread.sleep(60*60*1000);} catch (InterruptedException e){}
+			try {
+				Thread.sleep(60*(60*1000));
+			} catch (InterruptedException e){
+				System.out.println("DayMarkersProbe Interrupted");
+			}
 		}
 	}
 
