@@ -18,7 +18,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2002-09-02</date>
-		<edition>$Id: editwizard-reference.xml,v 1.10 2003-07-27 17:47:51 henk Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.11 2003-11-20 12:22:55 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -139,6 +139,13 @@
 						<para>A key that identifies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
 						The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
 						<programlisting format="linespecific">sessionkey=my_key</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>context</term>
+					<listitem>
+						<para>The security context to assign to new objects and relations created by the editwizard. By default, objects are created using a default context defined by the security system (oftend epending on the loged on user). By explicitly specifying this default context. Not that specifying a context different from the default may result in objects that, once created, cannot be changed by the user due to security restrictions. A user needs to be able to change the context on objects he creates, or the parameter cause security errors.</para>
+						<programlisting format="linespecific">context=default</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -339,6 +346,13 @@
 						<para>A key that identifies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
 						The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
 						<programlisting format="linespecific">sessionkey=my_key</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>context</term>
+					<listitem>
+						<para>The security context to assign to new objects and relations created by the editwizard. By default, objects are created using a default context defined by the security system (oftend epending on the loged on user). By explicitly specifying this default context. Not that specifying a context different from the default may result in objects that, once created, cannot be changed by the user due to security restrictions. A user needs to be able to change the context on objects he creates, or the parameter cause security errors.</para>
+						<programlisting format="linespecific">context=default</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
