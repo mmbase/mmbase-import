@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.56 2004-09-27 15:18:08 michiel Exp $
+ * @version $Id: Dove.java,v 1.57 2004-12-02 18:37:52 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -134,12 +134,15 @@ public class Dove extends AbstractDove {
                 String fname = f.getName();
                 if (isDataField(nm,f)) {
                     Element fel;
-                    if (f.getType() != Field.TYPE_BYTE) {
-                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
-                    } else {
+                    int type = f.getType();
+                    if (type == Field.TYPE_BYTE) {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
+                    } else if (type == Field.TYPE_DATETIME || type == Field.TYPE_BOOLEAN) {
+                        fel = addContentElement(FIELD, ""+node.getLongValue(fname), out);
+                    } else {
+                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
                     fel.setAttribute(ELM_NAME, fname);
                 }
@@ -152,12 +155,15 @@ public class Dove extends AbstractDove {
                     err.setAttribute(ELM_TYPE,IS_PARSER);
                 } else if (isDataField(nm,fname)) {
                     Element fel;
-                    if (nm.getField(fname).getType() != Field.TYPE_BYTE) {
-                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
-                    } else {
+                    int type = nm.getField(fname).getType();
+                    if (type == Field.TYPE_BYTE) {
                         fel = addContentElement(FIELD, "", out);
                         byte[] bytes = node.getByteValue(fname);
                         fel.setAttribute(ELM_SIZE, "" + (bytes != null ? bytes.length : 0));
+                    } else if (type == Field.TYPE_DATETIME || type == Field.TYPE_BOOLEAN) {
+                        fel = addContentElement(FIELD, ""+node.getLongValue(fname), out);
+                    } else {
+                        fel = addContentElement(FIELD, node.getStringValue(fname), out);
                     }
                     fel.setAttribute(ELM_NAME, fname);
                 } else {
@@ -629,10 +635,20 @@ public class Dove extends AbstractDove {
                                 case Field.TYPE_BYTE:
                                     dttype="binary";
                                     break;
+                                case Field.TYPE_DATETIME:
+                                    dttype = "datetime";
+                                    break;
+                                case Field.TYPE_BOOLEAN:
+                                    dttype = "boolean";
+                                    break;
                                 default:
                                     dttype = "string";
                                 }
-                                guiType = dttype + "/" + guiType;
+                                if (guiType.equals("")) {
+                                    guiType = dttype + "/" + dttype;
+                                } else {
+                                    guiType = dttype + "/" + guiType;
+                                }
                             }
                         }
                         addContentElement(GUITYPE, guiType, field);
@@ -957,7 +973,13 @@ public class Dove extends AbstractDove {
                 if ((originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String)originalValues.get(key);
-                    String mmbaseValue = node.getStringValue(key);
+                    String mmbaseValue = null;
+                    int type = node.getNodeManager().getField(key).getType();
+                    if (type == Field.TYPE_DATETIME || type == Field.TYPE_BOOLEAN) {
+                        mmbaseValue = ""+node.getLongValue(key);
+                    } else {
+                        mmbaseValue = node.getStringValue(key);
+                    }
                     if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
                         // give error node was changed in cloud
                         Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key, out);
