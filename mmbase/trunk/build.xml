@@ -1163,7 +1163,7 @@ Build-compiler: ${build.compiler}
     <available property="javaactivation.expanded" file="${expand.dir}/${javaactivation.version}"/>
 
     <!-- Log4j -->
-    <property name="log4j.version" value="1.2.7" />
+    <property name="log4j.version" value="1.2.8" />
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url"         value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
     <property name="log4j.jarpath" value="dist/lib/log4j-${log4j.version}.jar" />
