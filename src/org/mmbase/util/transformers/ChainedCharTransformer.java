@@ -15,24 +15,22 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A CharTransformer which wraps N other CharTransformers, and links
- * them with N - 1 new Threads, effectively working as a 'chained'
- * transformer.
+ * A CharTransformer which wraps N other CharTransformers, and links them with N - 1 new Threads,
+ * effectively working as a 'chained' transformer.
  * 
- * The Nth transformation is done by the ChainedCharTransformer
- * instance itself, after starting the N - 1 Threads for the other N -
- * 1 transformations.
+ * The first transformation is done by the ChainedCharTransformer instance itself, after starting
+ * the N - 1 Threads for the other N - 1 transformations.
  *
- * If no CharTransformers are added, and 'transform' is called,
- * logicly, nothing will happen. Add the CopyCharTransformer if
- * necessary.
+ * If no CharTransformers are added, and 'transform' is called, logically, nothing will happen. Add
+ * the CopyCharTransformer if necessary.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
+ * @version $Id: ChainedCharTransformer.java,v 1.9 2003-05-09 22:33:35 michiel Exp $
  */
 
 public class ChainedCharTransformer extends AbstractCharTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
 
     private List charTransformers = new ArrayList();
 
@@ -40,12 +38,17 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
         super();
     }
 
+    /**
+     * Adds a CharTranformer to the chain of CharTransformers.
+     */
     public ChainedCharTransformer add(CharTransformer ct) {
         charTransformers.add(ct);
         return this;
     }
 
     /**
+     * Adds a Collection of CharTranformers to the chain of CharTransformers.
+     *
      * @throws ClassCastException if collecion does not contain only CharTransformers
      */
     public ChainedCharTransformer addAll(Collection col) {
@@ -57,14 +60,21 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
         return this;
     }
 
+    // javadoc inherited
     public Writer transform(Reader startReader, Writer endWriter) {
         try {
             Reader r = null; 
-            Writer  w = endWriter;  
-            boolean closeWriterAfterUse = false;
+            Writer w = endWriter;  
+            boolean closeWriterAfterUse = false; // This boolean indicates if 'w' must be flushed/closed
+                                                 // after use.
 
-            List threads = new ArrayList();          
-            CharTransformer ct = null;
+            List threads = new ArrayList(); // keep track of the started threads, needing to wait
+                                            // for them later.
+            CharTransformer ct;
+
+            // going to loop backward through the list of CharTransformers, and starting threads for
+            // every transformation, besides the last one (which is the first in the chain). This
+            // transformation is performed, and the then started other Threads catch the result.
 
             ListIterator i = charTransformers.listIterator(charTransformers.size());
             while (i.hasPrevious()) {         
@@ -81,7 +91,7 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
                     closeWriterAfterUse = true;
 
                     thread.start();
-                } else { 
+                } else {  // arrived at first in chain, start transforming
                     ct.transform(startReader, w);
                     if (closeWriterAfterUse) {
                         w.flush();
@@ -109,7 +119,14 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
         return "CHAINED"  + charTransformers;
     }
 
-    private class TransformerLink extends Thread {
+    /**
+     * This Thread performs the transformations which are not the first. The Thread performing the
+     * second transformation listens on the PipedReader which is connected to the PipedWriter to
+     * which the first transformation is writing. If this transformation is the last, then it is
+     * writing to the 'final' writer, otherwise it is writing to another PipedWriter, connecting it
+     * to the next transformer in the chain.
+     */
+    private static class TransformerLink extends Thread {
         CharTransformer charTransformer;
         Writer     writer;
         Reader     reader;
@@ -137,7 +154,9 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
         }
 
     }
+    
 
+    // main for testing purposes
     public static void main(String[] args) throws IOException {
         ChainedCharTransformer t = new ChainedCharTransformer().add(new SpaceReducer()).add(new UpperCaser());
         System.out.println("Starting transform");
