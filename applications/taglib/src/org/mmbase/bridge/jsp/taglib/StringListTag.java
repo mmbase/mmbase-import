@@ -28,16 +28,16 @@ import org.mmbase.util.logging.Logging;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.2 2003-08-05 21:54:59 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.3 2003-08-07 17:23:29 michiel Exp $ 
  * @since MMBase-1.7
  */
 
-public class StringListTag extends NodeReferrerTag implements ListProvider, Writer {
+public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { // need to extend NodeRefferer becasue of AliasListTag, no MI in java.
 
     private static Logger log = Logging.getLoggerInstance(StringListTag.class);
 
     protected  List    returnList;
-    protected Iterator returnValues;
+    protected Iterator iterator;
     protected int      currentItemIndex= -1;
 
     protected Attribute  max = Attribute.NULL;
@@ -58,6 +58,10 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     }
     public Object getCurrent() {
         return getWriterValue();
+    }
+
+    public void remove() {
+        iterator.remove();
     }
 
 
@@ -125,10 +129,10 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         } else {
             returnList = getList();
         }
-        returnValues = returnList.iterator();
+        iterator = returnList.iterator();
         // if we get a result from the query
         // evaluate the body , else skip the body
-        if (returnValues.hasNext())
+        if (iterator.hasNext())
             return EVAL_BODY_BUFFERED;
         return SKIP_BODY;
     }
@@ -142,7 +146,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         collector.putAll(contextContainer);
         contextContainer.clear();
 
-        if (returnValues.hasNext()){
+        if (iterator.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
@@ -166,9 +170,9 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
 
     public void doInitBody() throws JspTagException {
-        if (returnValues.hasNext()){
+        if (iterator.hasNext()){
             currentItemIndex ++;
-            helper.setValue("" + returnValues.next());
+            helper.setValue("" + iterator.next());
             if (getId() != null) {
                 getContextProvider().getContainer().register(getId(), helper.getValue());
             }
