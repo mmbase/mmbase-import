@@ -15,7 +15,7 @@
     	    <!ATTLIST identify type CDATA #REQUIRED > 
 
     <!ELEMENT groups ( group+ ) >
-    	<!ELEMENT group ( contains+ ) >
+    	<!ELEMENT group ( contains* ) >
         <!ATTLIST group name NMTOKEN #REQUIRED >     
     	    <!ELEMENT contains EMPTY >
     	    <!ATTLIST contains named NMTOKEN #REQUIRED >
