@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.30 2000-08-29 15:04:37 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.31 2000-11-06 12:47:01 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.30  2000/08/29 15:04:37  wwwtech
+	Rob: Added TYPENAME tag. usage $MOD-MMBASE-TYPENAME-400 gives person
+	
 	Revision 1.29  2000/08/07 22:25:14  daniel
 	changed LIST RELATIONS to support aliases
 	
@@ -119,7 +122,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.30 2000-08-29 15:04:37 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.31 2000-11-06 12:47:01 vpro Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -1137,7 +1140,7 @@ public class HtmlBase extends ProcessorModule {
 	public String getSearchAge(StringTokenizer tok) {
 		String builder=tok.nextToken();
 		if (debug) {
-			debug("getSeachAge(): BUILDER="+builder);
+			debug("getSearchAge(): BUILDER="+builder);
 		}
 		MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(builder);
 		if (bul!=null) {
