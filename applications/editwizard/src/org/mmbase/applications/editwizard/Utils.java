@@ -39,7 +39,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.28 2003-03-31 10:53:16 michiel Exp $
+ * @version $Id: Utils.java,v 1.29 2003-05-13 11:57:17 michiel Exp $
  */
 public class Utils {
 
@@ -578,7 +578,7 @@ public class Utils {
      * @return    The found node.
      */
     public static Node selectSingleNode(Node contextnode, String xpath) {
-        if (contextnode==null) throw new RuntimeException("context node was null");
+        if (contextnode==null) throw new RuntimeException("Cannot execute xpath '" + xpath + "' on dom.Node which is null");
         try {
             return XPathAPI.selectSingleNode(contextnode, xpath);
         } catch (Exception e) {
