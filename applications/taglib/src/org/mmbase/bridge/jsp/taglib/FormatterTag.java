@@ -40,7 +40,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.35 2003-09-10 11:16:08 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.36 2003-11-19 16:57:41 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -218,7 +218,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
 
     public int doStartTag() throws JspTagException {
-        helper.setTag(this);
+        
         counter = (Counter) pageContext.getAttribute(PAGECONTEXT_COUNTER);
         if (counter == null) {
             log.debug("counter not found");

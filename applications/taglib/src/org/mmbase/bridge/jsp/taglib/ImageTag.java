@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.41 2003-11-06 12:41:21 michiel Exp $ 
+ * @version $Id: ImageTag.java,v 1.42 2003-11-19 16:57:42 michiel Exp $ 
  */
 
 public class ImageTag extends FieldTag {
@@ -105,7 +105,7 @@ public class ImageTag extends FieldTag {
                 ;
             servletPath = node.getFunctionValue("servletpath", args).toString();
         }
-        helper.setTag(this);
+        
         helper.useEscaper(false);
         helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
         if (getId() != null) {

@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.69 2003-08-11 15:27:16 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.70 2003-11-19 16:57:41 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -311,7 +311,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = field.getDescription();
             break;
         }
-        helper.setTag(this);
+        
         helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         helper.setValue(show);
         if (getId() != null) {

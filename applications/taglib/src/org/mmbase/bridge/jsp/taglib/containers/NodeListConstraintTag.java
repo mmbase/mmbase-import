@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.16 2003-11-05 15:42:27 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.17 2003-11-19 16:57:43 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -139,13 +139,15 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
         Cloud cloud = query.getCloud();
         FieldConstraint newConstraint;
-        if (field2!=null && !field2.equals("")) {
+        if (field2 != null && ! field2.equals("")) {
             StepField stepField2 = query.createStepField(field2);
             newConstraint = query.createConstraint(stepField, operator, stepField2);
         } else {
             int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
 
-            if (fieldType != Field.TYPE_STRING && fieldType != Field.TYPE_XML && operator < FieldCompareConstraint.LIKE) {
+            if (fieldType != Field.TYPE_STRING && 
+                fieldType != Field.TYPE_XML &&
+                operator < FieldCompareConstraint.LIKE) {
                 compareValue = getNumberValue(stringValue);
             } else {
                 compareValue = stringValue;

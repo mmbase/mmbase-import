@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.51 2003-10-13 08:34:23 keesj Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.52 2003-11-19 16:57:41 michiel Exp $
  * @see ContextTag
  */
 
@@ -440,7 +440,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * The helper member is only used by 'Writer' extensions.
      */
 
-    final protected WriterHelper helper = new WriterHelper();
+    final protected WriterHelper helper = new WriterHelper(this);
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
     public void setVartype(String t) throws JspTagException {

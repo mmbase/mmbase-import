@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.15 2003-08-27 21:33:33 michiel Exp $ 
+ * @version $Id: IndexTag.java,v 1.16 2003-11-19 16:57:42 michiel Exp $ 
  */
 
 public class IndexTag extends ListReferrerTag implements Writer {
@@ -38,7 +38,7 @@ public class IndexTag extends ListReferrerTag implements Writer {
     }
 
     public int doStartTag() throws JspTagException{
-        helper.setTag(this);
+        
         helper.setValue(new Integer(getList().getIndex() + getOffset()));
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());

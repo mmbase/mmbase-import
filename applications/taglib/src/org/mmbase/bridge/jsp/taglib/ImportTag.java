@@ -23,7 +23,7 @@ import java.util.Iterator;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.39 2003-11-14 13:11:42 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.40 2003-11-19 16:57:42 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -77,7 +77,7 @@ public class ImportTag extends ContextReferrerTag {
     public int doStartTag() throws JspTagException {
         Object value = null;
         log.trace("dostarttag of import");
-        helper.setTag(this);
+        
         if (getId() == null) {
             log.trace("No id was given, using externid ");
             useId = (String) externid.getValue(this);

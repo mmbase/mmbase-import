@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.39 2003-09-10 11:16:09 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.40 2003-11-19 16:57:43 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -115,7 +115,8 @@ public class WriterHelper extends BodyTagSupport {
     private   boolean useEscaper       = true;
 
 
-    public WriterHelper() {
+    public WriterHelper(ContextReferrerTag tag) {
+        thisTag = tag;
     }
 
     /**
@@ -218,6 +219,7 @@ public class WriterHelper extends BodyTagSupport {
         setValue(v, IMPLICITLIST);
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
+        pageContext = thisTag.getPageContext();
         value = null;
         switch (vartype) {
             // these accept a value == null (meaning that they are empty)
@@ -335,17 +337,6 @@ public class WriterHelper extends BodyTagSupport {
         setJspvar();
     }
 
-
-    /**
-     * To evaluate Attributes and to obtain the pagecontext for jspvars, the helper needs the Tag.
-     * Call this in your doStartTag.
-     * @since MMBase-1.7
-     */
-
-    public void setTag(ContextReferrerTag b) {
-        thisTag     = b;
-        pageContext = b.getPageContext();
-    }
 
     public Object getValue() {
         return value;
