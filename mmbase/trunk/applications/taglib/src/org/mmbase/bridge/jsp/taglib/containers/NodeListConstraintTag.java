@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.6 2003-07-31 20:31:40 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.7 2003-08-01 11:03:27 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -96,11 +96,17 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
             compareValue = stringValue;
         }
         Constraint newConstraint;
-        newConstraint = query.createConstraint(query.createStepField(field), operator, compareValue);
+        StepField stepField = query.createStepField(field);
+        log.debug(stepField);
+        if (stepField == null) log.warn("Could not create stepfield with '" + field + "'");
+        newConstraint = query.createConstraint(stepField, operator, compareValue);
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
+            log.debug("compositing constraint");
             newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-            
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("setting constraint " + newConstraint);
         }
         query.setConstraint(newConstraint);
 

@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.179 2003-07-31 20:31:39 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.180 2003-08-01 11:03:27 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4172,4 +4172,43 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
     </attribute>
   </tag>
+
+  <tag>
+    <name>maxnumber</name>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListMaxNumberTag</tagclass>
+    <info>
+      Limits the node list number of iterations.
+    </info>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+
+      <info>
+
+      </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>offset</name>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListOffsetTag</tagclass>
+    <info>
+      
+    </info>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+
+      <info>
+
+      </info>
+    </attribute>
+  </tag>
+
+
+
 </taglib>
