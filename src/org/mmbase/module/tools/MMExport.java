@@ -24,6 +24,8 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * The module which provides access to the multimedia database
@@ -34,6 +36,8 @@ import org.mmbase.module.database.support.*;
  * @author Daniel Ockeloen
  */
 public class MMExport extends ProcessorModule {
+
+    private static Logger log = Logging.getLoggerInstance(MMExport.class.getName()); 
 
 	MMBase mmb=null;
 
@@ -95,15 +99,19 @@ public class MMExport extends ProcessorModule {
 	}
 
 	public void doExportXML(Hashtable cmds, Hashtable vars) {
-		System.out.println("MMExport -> doExportXML started");
-		System.out.println("MMExport -> cmd="+cmds);
-		System.out.println("MMExport -> vars="+vars);
+		log.info("doExportXML started");
+        if (log.isDebugEnabled()) {
+            log.debug("cmd="+cmds);
+            log.debug("vars="+vars);
+        }
 
 		String buildername=(String)vars.get("builder");
 		String exportdir=(String)vars.get("exportdir")+".xml";
 
 		MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(buildername);
-		System.out.println("MMExport -> "+buildername+" "+exportdir+" "+bul);
+        if (log.isDebugEnabled()) {
+            log.debug(" "+buildername+" "+exportdir+" "+bul);
+        }
 		if (bul!=null) {
 			String body="";
 			MMObjectNode node;
@@ -115,13 +123,13 @@ public class MMExport extends ProcessorModule {
 			}	
 			saveFile(exportdir,body);
 		}
-		System.out.println("MMExport -> doExportXML finished");
+		log.info("doExportXML finished");
 	}
 
 
 
 	public boolean saveFile(String filename,String value) {
-		System.out.println("SAVE TO DISK="+filename);
+		log.info("SAVE TO DISK="+filename);
 		File sfile = new File(filename);
 		try {
 			DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
@@ -129,7 +137,7 @@ public class MMExport extends ProcessorModule {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+            log.error(Logging.stackTrace(e));
 			return(false);
 		}
 		return(true);

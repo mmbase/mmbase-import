@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMAdminProbe.java,v 1.2 2000-08-27 21:00:41 daniel Exp $
+$Id: MMAdminProbe.java,v 1.3 2001-04-11 14:22:07 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/08/27 21:00:41  daniel
+Small change to allow server restart
+
 Revision 1.1  2000/08/27 19:04:46  daniel
 changed from examples to admin module
 
@@ -28,15 +31,16 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.2 $ $Date: 2000-08-27 21:00:41 $ 
+ * @version0 $Revision: 1.3 $ $Date: 2001-04-11 14:22:07 $ 
  */
 public class MMAdminProbe implements Runnable {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
+    private static Logger log = Logging.getLoggerInstance(MMAdminProbe.class.getName()); 
 
 	Thread kicker = null;
 	MMAdmin parent=null;
@@ -94,8 +98,8 @@ public class MMAdminProbe implements Runnable {
 		try {
 			doWork();
 		} catch(Exception e) {
-			debug("run(): ERROR: Exception in mmexamples thread!");
-			e.printStackTrace();
+			log.error("run(): Exception in mmexamples thread!");
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
