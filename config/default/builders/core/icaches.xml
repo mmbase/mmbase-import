@@ -60,7 +60,7 @@
 		  <!-- name of the field in the database -->
 		  <name>ckey</name>
 		  <!-- MMBase datatype and demands on it -->
-		  <type state="persistent" notnull="false" key="true">STRING</type>
+		  <type state="persistent" size="255" notnull="false" key="true">STRING</type>
 		</db>
 	 </field>
 
