@@ -24,9 +24,27 @@ import org.mmbase.util.logging.*;
  * If no CharTransformers are added, and 'transform' is called, logically, nothing will happen. Add
  * the CopyCharTransformer if necessary.
  *
+ * Schematicly:
+ * 
+ <pre>
+
+  new ChainedCharTransformer().add(T1).add(T2)....add(TN).transform(R, W);
+
+  ___________  __________       _________
+ /           \/          \     /         \
+ |  R  --> PW - PR --> PW -...- PR --> W  |
+ |     T1     |    T2     |    |   TN     |
+
+ \___________/ \_________/     \_________/
+  
+
+ R: reader, PR: piped reader, W: writer, PW, piped writer, T1 - TN: transformers
+
+  </pre>
+ *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.11 2003-05-12 11:15:35 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.12 2003-05-12 13:12:28 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -39,7 +57,9 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
     }
 
     /**
-     * Adds a CharTranformer to the chain of CharTransformers.
+     * Adds a CharTranformer to the chain of CharTransformers. If the
+     * CharTransformer is a ChainedCharTransformer, then it will not
+     * be added itself, but its elements will be added.
      */
     public ChainedCharTransformer add(CharTransformer ct) {
         if (ct instanceof ChainedCharTransformer) {
@@ -166,7 +186,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
         System.out.println("Starting transform");
         
         t.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out)).flush();
-        //System.out.println(t.transform(new StringReader("hello      world"), new StringWriter()));
+        //System.out.println(t.transform(new StringReader("hello      world")));
 
         System.out.println("Finished transform");
  
