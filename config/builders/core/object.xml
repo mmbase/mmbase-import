@@ -7,6 +7,7 @@
 	<names>
 		<singular xml:lang="en">Object</singular>
 		<singular xml:lang="nl">Object</singular>
+		<singular xml:lang="es">Objeto</singular>
 		<singular xml:lang="eo">Objekto</singular>
 		<singular xml:lang="fr">Objet</singular>
 		<singular xml:lang="fy">Objekt</singular>
@@ -14,6 +15,7 @@
 		<singular xml:lang="ja">舞台</singular><!-- 'buttai' or? 部隊 -->
 		<plural xml:lang="en">Objects</plural>
 		<plural xml:lang="nl">Objecten</plural>
+		<plural xml:lang="es">Objetos</plural>
 		<plural xml:lang="eo">Objektoj</plural>
 		<plural xml:lang="fr">Objets</plural>
 		<plural xml:lang="fy">Objekts</plural>
@@ -24,6 +26,7 @@
 	<descriptions>
 		<description xml:lang="en">Objects</description>
 		<description xml:lang="nl">Objekten</description>
+		<description xml:lang="es">Objetos</description>
 		<description xml:lang="eo">Objektoj</description>
 		<description xml:lang="fr">Objets</description>
 		<description xml:lang="fy">Objekten</description>
@@ -40,6 +43,7 @@
       <descriptions>
         <description xml:lang="en">Unique objectnumber</description>
         <description xml:lang="nl">Uniek objectnummer</description>
+        <description xml:lang="es">Numero unico del objeto</description>
         <description xml:lang="eo">Unika numero de ĉi objekto</description>
       </descriptions>
       
@@ -47,6 +51,7 @@
 				<guiname xml:lang="en">Object</guiname>
 				<guiname xml:lang="nl">Object</guiname>
 				<guiname xml:lang="eo">Objekto</guiname>
+				<guiname xml:lang="es">Objeto</guiname>
 				<guiname xml:lang="fr">Objet</guiname>
 				<guiname xml:lang="fy">Objekt Nummer</guiname>
 				<guiname xml:lang="it">Oggetto</guiname>
@@ -81,6 +86,10 @@
           precies betekent. In de verschillende 'context' implementaties wordt de 'security context'
           in dit veld opgeslagen.
         </description>
+        <description xml:lang="es">
+        Dueño del objeto. Dependiendo de seguridad elegida esta puede significar diversas cosas. 
+        Por Ejemplo, si se usa 'seguridad contexto' el contexto seguridad sera grabado aqui.
+        </description>
         <description xml:lang="eo">
           Posedanto de la objekto. Depende de la elektita sekureca realigo, la signifo de tio povas
           varii. Ekzemple en la diversaj kontektaj realigoj, la 'sekureca konteksto' estas stokata
@@ -91,6 +100,7 @@
 			<gui>
 				<guiname xml:lang="en">Owner</guiname>
 				<guiname xml:lang="nl">Eigenaar</guiname>
+				<guiname xml:lang="es">dueno</guiname>
 				<guiname xml:lang="eo">Posedanto</guiname>
 				<guiname xml:lang="fr">Propriétaire</guiname>
 				<guiname xml:lang="fy">Context</guiname>
