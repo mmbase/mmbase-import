@@ -60,7 +60,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.239 2003-08-06 13:44:53 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.240 2003-08-14 14:59:10 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3717,7 +3717,7 @@ public class MMObjectBuilder extends MMTable {
             // unquote ampersand and quotes (see escapeXML method)
             obj.replace("&", "&amp;");
             obj.replace("\"", "&quot;");
-            obj.replace("'", "&apos;");
+            obj.replace("'", "&#39;");
 
             String alinea=getInitParameter("html.alinea");
             String endofline=getInitParameter("html.endofline");
