@@ -29,6 +29,10 @@ import org.mmbase.module.core.*;
 public class Teasers extends MMObjectBuilder {
 
 
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
+
 	// Temp Temp for searchhack
 	// total table holds nodes !!
 	Hashtable ts_cache_total=new Hashtable();
@@ -38,7 +42,7 @@ public class Teasers extends MMObjectBuilder {
 
 
 
-	public boolean createTeaser(String number) {
+	private boolean createTeaser(String number) {
 		MMObjectNode node=getNode(number);
 		if (node!=null) {
 			fillTeaserSearchTable(node.getIntValue("number"));
@@ -116,8 +120,28 @@ public class Teasers extends MMObjectBuilder {
 			
 		}
 		return(null);
+	}		/**
+	* Generate a list of values from a command to the processor
+	*/
+	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+		Vector results=new Vector();
+		if (tok.hasMoreTokens()) {
+			String cmd=tok.nextToken();
+			//String msg = "getList("+sp.req.getRequestURI()+"): Teasers->"+cmd;
+			//debug( msg );
+
+			if (cmd.equals("KEYWORDS")) {
+				results=getKeyWords(tagger);
+			}
+			//debug( msg+" done");
+		}
+		return(results);
 	}
 
+	private Vector getKeyWords(StringTagger tagger)	{		String nodeNr = tagger.Value("NODE");		MMObjectNode node = getNode(nodeNr);
+		if (node==null)
+			return new Vector();		String s = node.getStringValue("title")+" "+node.getStringValue("body");
+		//debug("getKeyWords "+s);		return Keywords.createKeywords(s);	}
 
 	public Object getValue(MMObjectNode node,String field) {
 		if (field.equals("image")) {
@@ -131,9 +155,15 @@ public class Teasers extends MMObjectBuilder {
 	}
 
 	public String getDefaultUrl(int src) {
+
+		debug("getDefaultUrl("+src+")");
+	
 		MMObjectNode node=getNode(src);
-		String url=getUrl(src);
-		if (url!=null) return(url);
+		String url=getUrl(src); // returns the url related to this teaser or null if none
+
+		if (url!=null) 
+			return(url);
+		// No url related to teaser, now walk through all related objects		// and ask their builders for a url through builder.getDefaultUrl(relatedNodeNr)
 		Enumeration e=node.getRelations();
 		while (e.hasMoreElements()) {
 			MMObjectNode node2=(MMObjectNode)e.nextElement();
@@ -141,15 +171,28 @@ public class Teasers extends MMObjectBuilder {
 			if (other==src) {
 				other=node2.getIntValue("snumber");
 			}
+
+			debug("getDefaultUrl("+src+"): other("+other+")");
+
 			MMObjectNode node3=getNode(other);
 			int otype=node3.getIntValue("otype");
+
+			debug("getDefaultUrl("+src+"): found otype("+otype+")");
+
 			MMObjectBuilder bul=mmb.getMMObject(mmb.getTypeDef().getValue(otype));
-			url=bul.getDefaultUrl(node3.getIntValue("number"));
-			if (url!=null) return(url);
+
+			int numbie = node3.getIntValue("number");
+			debug("getDefaultUrl("+src+"): number found("+numbie+"), getting defaultUrl");
+
+			url=bul.getDefaultUrl(numbie);
+
+			if (url!=null) 
+				return(url);
 		}
 		return(null);
 	}
 
+	/* Currently dead code
 	public boolean createTeaserSearchTable() {
 		// create the main object table
 		try {
@@ -169,16 +212,14 @@ public class Teasers extends MMObjectBuilder {
 			con.close();
 			return(true);
 		} catch (SQLException e) {
-			System.out.println("can't create teaser search table ");
+			debug("createTeaserSearchTable(): ERROR: can't create teaser search table ");
 			//e.printStackTrace();
 		}
 		return(false);
 	}
-
-
-	/**
-	* 
 	*/
+
+	/* Currently dead code
 	public boolean createTeaserUrlTable() {
 		// create the main object table
 		try {
@@ -191,23 +232,22 @@ public class Teasers extends MMObjectBuilder {
 			con.close();
 			return(true);
 		} catch (SQLException e) {
-			System.out.println("can't create teaser url table ");
+			debug("createTeaserUrlTable(): can't create teaser url table ");
 		}
 		return(false);
 	}
-
-
-	/**
-	* 
 	*/
+
+	/** Currently dead code
 	public boolean fillTeaserSearchTable() {
 		return(fillTeaserSearchTable(-1));
 	}
-
+	*/
+	
 	/**
 	* 
 	*/
-	public boolean fillTeaserSearchTable(int where) {
+	private boolean fillTeaserSearchTable(int where) {
 		MMObjectNode node2,other;
 		int image;
 		int i=0;
@@ -310,19 +350,20 @@ public class Teasers extends MMObjectBuilder {
 						} catch (Exception r) {
 						}
 					} else {
-						System.out.println("Teasers -> Not Insert");
+						debug("fillTeaserSearchTable("+where+"): ERROR: Not Insert");
 					}
 					
 				}
 			}	
 			return(true);
 		} catch (SQLException e) {
+			debug("fillTeaserSearchTable("+where+"): ERROR: ");
 			e.printStackTrace();
 			return(false);
 		}
 	}
 
-	public boolean addTeaserSearchElementInformix(int number,int ttarget,int ttype, int value, int image,String title,String tbody,String body) {
+	private boolean addTeaserSearchElementInformix(int number,int ttarget,int ttype, int value, int image,String title,String tbody,String body) {
 		byte[] isochars=null;
 		PreparedStatement statement;
 		System.out.println("Teasers -> Adding teaser search element "+number+" -> "+ttarget);
@@ -355,7 +396,7 @@ public class Teasers extends MMObjectBuilder {
 	/**
 	* 
 	*/
-	public boolean delTeaserSearchElement(int number) {
+	private boolean delTeaserSearchElement(int number) {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -371,7 +412,7 @@ public class Teasers extends MMObjectBuilder {
 	/**
 	* 
 	*/
-	public boolean delUrlSearchElement(int number) {
+	private boolean delUrlSearchElement(int number) {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -389,7 +430,7 @@ public class Teasers extends MMObjectBuilder {
 	/**
 	* 
 	*/
-	public Vector globalsearch(String key) {
+	private Vector globalsearch(String key) {
 		key=key.toLowerCase();
 		Vector results=new Vector();
 		try {
@@ -409,8 +450,9 @@ public class Teasers extends MMObjectBuilder {
 		}
 	}
 
-	String getUrl(int src) {
-		Enumeration e=mmb.getInsRel().getRelated(src,8);
+	/** @return the url related to this teaser or null if none
+	 */	private String getUrl(int src) {
+		Enumeration e=mmb.getInsRel().getRelated(src,8); // 8 = objectNr URL
 		if (e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
 			return(node.getStringValue("url"));
@@ -419,9 +461,7 @@ public class Teasers extends MMObjectBuilder {
 	}
 
 
-	/**
-	* 
-	*/
+	/* Currently dead code
 	public boolean fillTeaserUrlTable() {
 		MMObjectNode node2,other;
 		int i=0;
@@ -472,12 +512,12 @@ public class Teasers extends MMObjectBuilder {
 		}
 		return(false);
 	}
-
+	*/
 
 	/**
 	* 
 	*/
-	public boolean fillTeaserUrl(int number) {
+	private boolean fillTeaserUrl(int number) {
 		MMObjectNode node2,other;
 		int i=0;
 		delUrlSearchElement(number);
@@ -499,6 +539,7 @@ public class Teasers extends MMObjectBuilder {
 		return(false);
 	}
 
+	/* Currently dead code
 	public boolean hasRelatedTeaser(String number) {
 		boolean b=false;
 		try {
@@ -515,11 +556,11 @@ public class Teasers extends MMObjectBuilder {
 		}
 		return(b);
 	}
+	*/
 	
-	/**
+	/** Currently dead code
 	* generates a teaser and creates a relation between this new Teaser
 	* and the given node (id).
-	*/
 	public int autoGenerateTeaser(String id) {
 		MMObjectNode node=getNode(id);
 		MMObjectBuilder bul=mmb.getMMObject(mmb.getTypeDef().getValue(node.getIntValue("otype")));
@@ -541,51 +582,35 @@ public class Teasers extends MMObjectBuilder {
 		}
 		return(-1);
 	}
-
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
+	*/
+	/*	Nothing as we would get dup's otherwise
+	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
         super.nodeRemoteChanged(number,builder,ctype);
 		if (builder.equals(tableName)) {
 			// Nothing as we would get dup's otherwise
 		}
 		return(true);
-	}
+	}	*/
 
-	/*
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
+	public boolean nodeLocalChanged(String number,String builder,String ctype) {
         super.nodeLocalChanged(number,builder,ctype);
 		if (builder.equals(tableName) || builder.equals("urls")) {
 			System.out.println("Teasers -> change detected in "+number+" "+builder+" "+ctype);
-			if (ctype.equals("c")) {
+			int nr = Integer.parseInt(number);
+			if (ctype.equals("c") || ctype.equals("n") || ctype.equals("r")) {
 				MMObjectNode node=getNode(number);
 				if (node!=null) {
-					fillTeaserSearchTable(node.getIntValue("number"));
-					fillTeaserUrl(node.getIntValue("number"));
-				}
-			}
-			if (ctype.equals("n")) {
-				MMObjectNode node=getNode(number);
-				if (node!=null) {
-					fillTeaserSearchTable(node.getIntValue("number"));
-					fillTeaserUrl(node.getIntValue("number"));
+					fillTeaserSearchTable(nr);
+					fillTeaserUrl(nr);
 				}
 			}
 			if (ctype.equals("d")) {
-				delTeaserSearchElement(Integer.parseInt(number));
-				delUrlSearchElement(Integer.parseInt(number));
-			}
-			if (ctype.equals("r")) {
-				MMObjectNode node=getNode(number);
-				if (node!=null) {
-					fillTeaserSearchTable(node.getIntValue("number"));
-					fillTeaserUrl(node.getIntValue("number"));
-				}
+				delTeaserSearchElement(nr);
+				delUrlSearchElement(nr);
 			}
 		}
 		return(true);
 	}
-	*/
-
-
 
 	/**
 	 * temp search 
