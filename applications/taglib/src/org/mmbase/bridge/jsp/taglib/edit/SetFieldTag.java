@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.27 2003-12-21 13:27:51 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.28 2003-12-21 18:06:42 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -101,11 +101,9 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
             if (log.isDebugEnabled()) {
                 log.debug("Setting field " + fieldName + " to " + value);
             }
-            if (value instanceof String) {
-                node.setStringValue(fieldName, (String) value);
-            } else {
-                node.setValue(fieldName, value);
-            }
+            
+            node.setValue(fieldName, value);
+
             if (getId() != null) {
                 getContextProvider().getContextContainer().register(getId(), value);
             }
