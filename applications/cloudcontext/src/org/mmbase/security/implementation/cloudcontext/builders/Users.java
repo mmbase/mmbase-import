@@ -18,6 +18,8 @@ import org.mmbase.cache.Cache;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 
 /**
  * This MMObjectBuilder implementation belongs to the object type
@@ -28,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.14 2003-08-19 21:14:55 michiel Exp $
+ * @version $Id: Users.java,v 1.15 2003-09-22 11:12:25 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -275,6 +277,39 @@ public class Users extends MMObjectBuilder {
             return mmobjectnode.getNumber() == mmobjectnode1.getNumber();
         }
         */
+    }
+
+
+    /**
+     * Makes sure unique values and not-null's are filed
+     */
+    public MMObjectNode getNewNode(String owner) {
+        MMObjectNode node = super.getNewNode(owner);
+        MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(owner);
+        node.setValue("defaultcontext", defaultDefaultContext);
+        
+        String baseValue = node.getStringValue("username");
+        if ("".equals(baseValue)) baseValue = "user";
+        int seq = 0;
+        boolean found = false;
+        try {
+            while (! found) {
+                NodeSearchQuery query = new NodeSearchQuery(this);
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("username")), baseValue + seq);      
+                query.setConstraint(constraint);            
+                if (getNodes(query).size() == 0) {
+                    found = true;
+                    break;
+                }
+                seq++;
+            }
+            node.setValue("username",  baseValue + seq);
+        } catch (SearchQueryException e) {
+            node.setValue("username",  baseValue + System.currentTimeMillis());
+        }
+        return node;
+        
+
     }
 
 
