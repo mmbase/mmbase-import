@@ -78,6 +78,16 @@ var menu = new MTMenu();
 	             "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
 </di:hasrole>
 
+<di:hasrole role="filemanager">
+	menu.addItem("<di:translate id="filemanagement">Filemanagement</di:translate>",
+    	         "<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />",
+        	     null,
+            	 "<di:translate id="filemanagement">Filemanagement</di:translate>",
+	          "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+</di:hasrole>
+
+
+
 <di:hasrole role="systemadministrator">
 	menu.addItem("<di:translate id="editComponents">Componenten editor</di:translate>",
     	         "<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />",
