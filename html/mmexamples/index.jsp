@@ -21,7 +21,9 @@
           Here's a list of all working examples. Most of them require you to deploy an application, with
           the same name as the example.
         </p>
-        <br />
+        <p>
+          <a href="<mm:url page="install.jsp" />">Demo-application installation page</a>
+        </p>
       </td>
     </tr>
     
