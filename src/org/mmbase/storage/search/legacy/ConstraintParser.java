@@ -101,7 +101,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.13 2003-08-29 11:45:23 michiel Exp $
+ * @version $Id: ConstraintParser.java,v 1.14 2003-11-24 12:22:04 vpro Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -281,13 +281,22 @@ public class ConstraintParser {
      * {@link org.mmbase.storage.search.Constraint Constraint} object.
      * <p>
      * See {@link ConstraintParser above} for the format of a
-     * <em>SQL-search-condition</em>
+     * <em>SQL-search-condition</em>.
+     * <p>
+     * For backward compatibility the constraint may be preceded by 
+     * <code>"WHERE "</code> or <code>"where "</code>. 
+     * This feature should not be used by new code, as it may not be 
+     * supported in the future.
      *
-     * @param sqlConstraint The SQL constraint string.
+     * @param sqlConstraint The non-null SQL constraint string.
      * @return The constraint.
      */
     public Constraint toConstraint(String sqlConstraint) {
         Constraint result = null;
+        // Trim leading "WHERE " if present.
+        if ( sqlConstraint.toLowerCase().startsWith("where ")) {
+            sqlConstraint = sqlConstraint.substring(6);
+        }
         try {
             ListIterator iTokens = tokenize(sqlConstraint).listIterator();
             result = parseCondition(iTokens);
@@ -298,7 +307,7 @@ public class ConstraintParser {
                 log.service(
                     "Failed to parse Constraint from search condition "
                     + "string: \"" + sqlConstraint + "\", exception:\n"
-                    + Logging.stackTrace(e)
+                    + e + Logging.stackTrace(e)
                     + "\nFalling back to BasicLegacyConstraint...");
             }
             result = new BasicLegacyConstraint(sqlConstraint);
