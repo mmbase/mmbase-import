@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.193 2003-08-18 12:44:06 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.194 2003-08-18 14:13:46 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4422,6 +4422,13 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
     </attribute>
     <attribute>
+      <name>value2</name>
+      <required>false</required>
+      <info>
+        Needed for BETWEEN operator.
+      </info>
+    </attribute>
+    <attribute>
       <name>operator</name>
       <required>true</required>
       <info>
@@ -4453,6 +4460,10 @@ The 0 is just counter, which starts at 0 on every page.
       </possiblevalue>
       <possiblevalue>
         <value>LIKE</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>BETWEEN</value>
+        <info>Should also use value2</info>
       </possiblevalue>
     </attribute>
   </tag>
