@@ -102,7 +102,7 @@ public class MMUsers extends ProcessorModule {
 	de oude gebruiker
 	verwijderen alvorens je de nieuwe gegevens invoert.
 	*/
-	private String createLogin (String loginname, StringTokenizer tokens, scanpage sp)
+	public String createLogin (String loginname, StringTokenizer tokens, scanpage sp)
 	{
 		String address = getRemainingTokens( tokens );
 		if (address.equals(""))
@@ -129,7 +129,7 @@ public class MMUsers extends ProcessorModule {
 							
 				String password = pwgen.getPassword ();
 				int userid = createNewUser (sp, loginname, password, address);
-		
+				
 				if (userid < 0) debug ("Couldn't create a new user!");
 				else sendConfirmationEMail (address, loginname, password);
 			} else {
