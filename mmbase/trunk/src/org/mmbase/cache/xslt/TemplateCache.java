@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.9 2003-01-17 17:15:21 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.10 2003-02-11 18:45:31 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -106,7 +106,7 @@ public class TemplateCache extends Cache {
             if (o instanceof Key) {
                 Key k = (Key) o;                
                 return  (src == null ? k.src == null : src.equals(k.src)) && 
-                    (uri == null ? k.uri == null : uri.equals(k.uri));
+                        (uri == null ? k.uri == null : uri.equals(k.uri));
             } 
             return false;
         }
@@ -216,6 +216,39 @@ public class TemplateCache extends Cache {
             }                
         }
         return res;
+    }
+
+    
+    /**
+     * Invocation of the class from the commandline for testing
+     */
+    public static void main(String[] argv) {
+        log.setLevel(org.mmbase.util.logging.Level.DEBUG);
+        try {
+            File xslFile = File.createTempFile("templatecachetest", ".xsl");
+            log.info("using file " + xslFile);
+            java.io.FileWriter fw = new java.io.FileWriter(xslFile);
+            fw.write("<xsl:stylesheet  version = \"1.1\" xmlns:xsl =\"http://www.w3.org/1999/XSL/Transform\"></xsl:stylesheet>");
+            fw.close();
+            for (int i =0; i<10; i++) {
+                TemplateCache cache = TemplateCache.getCache();       
+                Source xsl = new StreamSource(xslFile);
+                org.mmbase.util.xml.URIResolver uri = new org.mmbase.util.xml.URIResolver(xslFile.getParentFile());
+                Templates cachedXslt = cache.getTemplates(xsl, uri);
+                log.info("template cache size " + cache.size() + " entries: " + cache.getOrderedEntries());
+                if (cachedXslt == null) {
+                    cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
+                    cache.put(xsl, cachedXslt, uri);
+                } else {
+                    if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
+                }
+            }
+            xslFile.delete();
+        } catch (Exception e) {
+            System.err.println("hmm?" + e);
+        }
+        
+
     }
 
 }
