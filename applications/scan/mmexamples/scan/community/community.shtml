@@ -16,7 +16,8 @@
     $MOD-communityprc-CHANNEL-$PARAM1-$PARAM2
 </IF>
 
-<LIST OBJECTS TYPE="community" FIELDS="number,name">
+<LIST OBJECTS TYPE="community" FIELDS="number,name,kind">
+<LIF $ITEM3=EFORUM>
 <tr align="left">
   <th class="header" colspan="2">$ITEM2</th>
   <th class="linkdata"><a href="community.shtml?$ITEM1+OPEN+community">Open all channels</a></th>
@@ -27,6 +28,7 @@
     <PART communitypart.shtml?$ITEM1>
   </td>
 </tr>
+</IF>
 </LIST>
 </table>
 </body></html>
