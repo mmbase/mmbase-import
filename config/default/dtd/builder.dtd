@@ -2,7 +2,7 @@
      builder.dtd
        - DTD for MMBase builder definitions
 -->
-<!ELEMENT builder (status,classfile,searchage,names,properties?,descriptions,fieldlist)>
+<!ELEMENT builder (status,classfile,searchage,names,descriptions,properties?,fieldlist)>
 <!ATTLIST builder maintainer CDATA #IMPLIED>
 <!ATTLIST builder version CDATA #IMPLIED>
 <!ELEMENT descriptions (description*)>
