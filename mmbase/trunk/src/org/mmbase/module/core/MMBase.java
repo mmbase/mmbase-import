@@ -485,18 +485,23 @@ public class MMBase extends ProcessorModule  {
 
 		initBuilder("typedef",path);
 		TypeDef=(TypeDef)getMMObject("typedef");
+		TypeDef.init();
 
 		initBuilder("fielddef",path);
 		FieldDef=(FieldDef)getMMObject("fielddef");
+		FieldDef.init();
 
 		initBuilder("reldef",path);
 		RelDef=(RelDef)getMMObject("reldef");
+		RelDef.init();
 		
 		initBuilder("typerel",path);
 		TypeRel=(TypeRel)getMMObject("typerel");
+		TypeRel.init();
 
 		initBuilder("insrel",path);
 		InsRel=(InsRel)getMMObject("insrel");
+		InsRel.init();
 
 		initBuilder("oalias",path);
 		OAlias=(OAlias)getMMObject("oalias");
@@ -514,6 +519,11 @@ public class MMBase extends ProcessorModule  {
 			}
 		}
 
+		Enumeration t = mmobjs.elements(); 
+		while (t.hasMoreElements()) {
+			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+			fbul.init();
+		}
 		return(true);
 	}
 
@@ -556,7 +566,7 @@ public class MMBase extends ProcessorModule  {
 				bul.setClassName(classname);
 				bul.setSearchAge(""+searchage);
 				bul.setXMLValues(parser.getFieldDefs()); // temp  ?
-				bul.init();
+				//bul.init();
 				// bul.getEditFields();
 				mmobjs.put(objectname,bul);
 
