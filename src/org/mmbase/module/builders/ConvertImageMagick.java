@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.11 2001-03-08 13:40:45 install Exp $
+	$Id: ConvertImageMagick.java,v 1.12 2001-04-26 12:23:19 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.11  2001/03/08 13:40:45  install
+	Rob converted to new logging system
+	
 	Revision 1.10  2001/02/08 10:22:34  vpro
 	Rico: zapped the old code that did the convert
 	
@@ -55,7 +58,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.11 2001-03-08 13:40:45 install Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.12 2001-04-26 12:23:19 vpro Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -88,7 +91,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 		// Cant do more checking then this, i think....
 	
 		log.info("Root="+ConverterRoot);
-		log.debug("Command="+ConverterCommand);
+		log.info("Command="+ConverterCommand);
 	}
 
 	/** This functions converts an image by the given parameters
@@ -277,7 +280,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 		int size;
 		ProcessWriter pw;
 		
-		log.service("ConvertImage(): converting img("+cmd+")");
+		log.info("ConvertImage(): converting img("+cmd+")");
 
 		try {
 			command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
