@@ -13,6 +13,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import javax.servlet.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.*;
@@ -20,7 +21,6 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.legacy.*;
 
 
 /**
@@ -34,7 +34,7 @@ import org.mmbase.storage.search.legacy.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.64 2003-08-27 21:27:17 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.65 2003-09-02 20:14:38 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -263,44 +263,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         */
         // end of check invalid search command
-
-
-        NodeSearchQuery query = new NodeSearchQuery(builder);
-        if (constraints != null) {
-            query.setConstraint(new ConstraintParser(query).toConstraint(constraints));
-        }
-
-
-        // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
-        if (directions == null) {
-            directions = "";
-        }
         
-        if (sorted != null) {
-            StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
-            StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
-            
-            String direction = "UP";
-            while (sortedTokenizer.hasMoreElements()) {
-                String fieldName = sortedTokenizer.nextToken().trim();
-                FieldDefs fieldDefs = builder.getField(fieldName);
-                if (fieldDefs == null) {
-                    throw new IllegalArgumentException("Not a known field of builder " + builder.getTableName() + ": '" + fieldName + "'");
-                }
-                StepField field = query.getField(fieldDefs);
-                BasicSortOrder sortOrder = query.addSortOrder(field);
-                if (directionsTokenizer.hasMoreElements()) {
-                    direction = directionsTokenizer.nextToken().trim();
-                }
-                if (direction.equalsIgnoreCase("DOWN")) {
-                    sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
-                } else {
-                    sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
-                }
-            }
-        }
-        BasicNodeQuery q = new BasicNodeQuery(this, query); // need to wrap bevauses of security.
-        NodeList list = getSecureList(q);
+
+        NodeQuery query = createQuery();
+        Queries.addConstraints(query, constraints);
+        Queries.addSortOrders(query, sorted, directions);
+        NodeList list = cloud.getList(query);
         list.setProperty("constraints", constraints);
         list.setProperty("orderby",     sorted);
         list.setProperty("directions",  directions);
@@ -313,20 +281,19 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      *
      * @since MMBase-1.7
      */
+    /*
     protected NodeList getSecureList(BasicNodeQuery query) {
 
         Authorization auth = cloud.mmbaseCop.getAuthorization();
         boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
 
-        if (query instanceof BasicQuery) {
-            BasicQuery bquery = (BasicQuery) query;
-            if (bquery.isSecure()) {
-                checked = true;
-            } else {
-                Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
-                bquery.setSecurityConstraint(check);
-                checked = bquery.isSecure();
-            }
+        BasicQuery bquery = (BasicQuery) query;
+        if (bquery.isSecure()) {
+            checked = true;
+        } else {
+            Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
+            bquery.setSecurityConstraint(check);
+            checked = bquery.isSecure();
         }
 
         List resultList;
@@ -357,7 +324,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     }
 
-
+    */
 
     public RelationManagerList getAllowedRelations() {
        return getAllowedRelations((NodeManager) null, null, null);
