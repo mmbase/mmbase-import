@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<wizard-schema id="empty">
+	<title>Enter Wizard Title Here</title>
+	<action type="load">
+		<relation destination="article" role="authorrel" >
+			<relation destination="images" role="imagerel" />
+		</relation>
+	</action>
+	
+	<action type="create">
+		<object type="people">
+			<field name="firstname" ftype="string">John</field>
+			<field name="lastname" ftype="string">Doe</field>
+		</object>
+	</action>
+	
+	<form-schema id="step1">
+		<title>test</title>
+		<field name="firstname" ftype="html" xdttype="html">
+			<prompt>First name</prompt>
+		</field>
+		<field name="lastname" ftype="html" xdttype="html">
+			<prompt>Last name</prompt>
+		</field>
+		
+		<list role="authorrel" destination="article" minoccurs="0" maxoccurs="*">
+			<command name="search" nodepath="article" fields="name" age="-1"  >
+				<prompt>Search for article</prompt>
+				<search-filter>
+					<name>title contains</name>
+					<search-fields>name</search-fields>
+				</search-filter>
+			</command>
+			<title>Artikelen</title>
+
+			<item>
+				<!--<field name="name" ftype="data">
+					<prompt>Article:</prompt>
+				</field>
+				<field ftype="data" fdatapath=".//object[@type='images']">
+					<prompt>obj found...</prompt>
+				</field>-->
+				<list role="imagerel" destination="images">
+					<title>imagelist</title>
+					<command name="search" nodepath="images" fields="name" age="-1"  >
+						<prompt>Search</prompt>
+						<search-filter>
+							<name>name</name>
+							<search-fields>name</search-fields>
+						</search-filter>
+					</command>
+					<item>
+						<field fdatapath=".//object[@type='images']" ftype="image">
+							<prompt>Image</prompt>
+						</field>
+					</item>
+					<action type="create">
+						<relation destinationtype="images" role="imagerel">
+						</relation>
+					</action>
+				</list>
+			</item>
+			
+			<action type="create">
+				<relation role="authorrel" destinationtype="article">
+				</relation>
+				<action type="set">
+					<field fdatapath="../field[@name='name']">{relation/object/@number}</field>
+				</action>
+			</action>
+		</list>
+		
+	</form-schema>
+</wizard-schema>

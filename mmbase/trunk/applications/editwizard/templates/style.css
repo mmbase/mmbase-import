@@ -1,0 +1,87 @@
+.pagenav,
+.pagenav-disabled,
+.pagenav-current,
+a.pagenav
+			{ font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; font-size: 8pt; font-weight:900;}
+a.pagenav		{ color: #330099; text-decoration:none;}
+a.pagenav:hover	{ color: #330099; text-decoration:underline;}
+
+body,
+td,
+p,
+div,
+span,
+input,
+select,
+option,
+textarea
+{ font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; font-size:13px; letter-spacing:0.05em; font-weight:400; color:#000000; }
+
+h1	{font-size:22px}
+
+i,
+textarea		{ padding-left:3; }
+.imagebutton	{ cursor:pointer; cursor:hand; xpadding:0; xmargin:0 1 1 0; width:20; height:20; border-style:none; border-width:0; }
+.imagebutton_down	{ cursor:pointer; cursor:hand; xpadding:0; xmargin:1 0 0 1; width:20; height:20; border-style:none; border-width:0; }
+
+.superhead	{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:20px; letter-spacing:0em; color:#000000; }
+.head		{ font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#000000; }
+.subhead	{ font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:12px; letter-spacing:0em; color:#000000; }
+.valid	{ color:#000000; cursor:default; font-weight:bold; }
+.notvalid	{ color:#000000; cursor:default; font-weight:bold; }
+.step		{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#000000; cursor:hand; }
+.divider	{ background-color:#F4E6DA; }
+.listmeta	{ font-size:11px; color:#000000; }
+
+.width400	{ width:400px; }
+.width240	{ width:240px; }
+
+.submit_goto	{ background-color:#F4E6DA; border-width:0; cursor:hand; padding:0; margin:0; font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#b5736b; }
+
+.listcanvas	{ background-color:#F4E6DA; border-style:solid; border-width:0; border-color:#a50000; padding:5; }
+
+.tooltip	{
+		  background-color:#FFFF88;
+		  border-style:solid; border-width:1; border-color:#000000;
+		  padding:3;
+		  position:absolute; top:0; left:0;
+		  visibility:visible;
+		  z-index:1001;
+		  width:250;
+		  font-size:11px;
+		}
+		
+input.submitbutton	{ background-color:#F4E6DA; color:#a50000; border-style:none; cursor:pointer; cursor:hand; text-decoration:underline;
+			  font-family:"Trebuchet MS", Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em;
+			}		
+
+.modaliframe	{
+		  width:402; height:302;
+		  background-color:#F4E6DA;
+		  z-index:3000;
+		}
+
+.unselected_search		{ color:#000000; }
+.selected_search span	{ color:#F4E6DA; }
+.selected_search		{ background-color:#000000; }
+
+.currentstepicon-valid, .currentstepicon, .stepicon-valid, .stepicon, .step, .step-info, .step-disabled
+					{ cursor:pointer; cursor:hand; border-width:0; cursor:hand; font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#000000; }
+
+
+.currentstepicon-valid		{ color:#000000; text-decoration:underline; }
+.currentstepicon			{ color:#000000; text-decoration:underline; }
+.stepicon-valid			{ color:#000000; }
+.stepicon				{ color:#000000; }
+.step					{ font-weight:900; font-size:13px; color:#333399; cursor:hand; text-decoration:underline; }
+.step-info			      { font-weight:900; font-size:13px; color:#333399; cursor:hand; text-decoration:underline; }
+.step-disabled			{ font-weight:900; font-size:13px; color:#333399; cursor:hand; text-decoration:underline; }
+
+.bottombutton			{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:13px; color:#333399; cursor:hand; text-decoration:underline; }
+.bottombutton-disabled		{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:13px; color:#333399; cursor:hand; text-decoration:underline; }
+
+.tableheader		{ color:#000000; font-weight:800; }
+.itemrow,
+.itemrow-hover, .itemrow td, .itemrow-hover td
+			{ cursor:pointer; cursor:hand; color:#330099; }
+.itemrow-hover td	{ text-decoration:underline;  }
