@@ -81,9 +81,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         } else {
             try {
     		    BasicCloudContext.transactionManager.commit(account, transactionContext);
-    		    // Need to call cancel because commit doesn't remove current transaction. Doh.
-    		    // This should be handled in the Transactionmanager
-	    	    BasicCloudContext.transactionManager.cancel(account, transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
