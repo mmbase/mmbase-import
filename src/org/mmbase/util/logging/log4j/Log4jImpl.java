@@ -45,7 +45,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     // It's enough to instantiate a factory once and for all.
     private final static org.apache.log4j.spi.LoggerRepository repository = new LoggerRepository(getRootLogger());
-    private static Logger log = null;
+    private static Logger log = Logging.getLoggerInstance(Log4jImpl.class);
     private static File configurationFile = null;
 
     private static final String classname = Log4jImpl.class.getName();
@@ -112,21 +112,13 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      */
     protected static void doConfigure(File f) {
         String inform = "Parsing " + configurationFile.getAbsolutePath();
-        if (log == null) {
-            System.out.println(inform);
-        } else {
-            log.service(inform);
-        }
+        log.service(inform);
+    
         try {
             DOMConfigurator domConfigurator = new DOMConfigurator();
             domConfigurator.doConfigure(new FileInputStream(configurationFile), repository);
         } catch (java.io.FileNotFoundException e) {
-            String error = "Could not find " + configurationFile  + " to configure logging: " + e.toString();
-            if (log == null) {
-                System.out.println(error);
-            } else {
-                log.error(error);
-            }
+            log.error("Could not find " + configurationFile  + " to configure logging: " + e.toString());
         }
 
     }
