@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.28 $ $Date: 2001-04-09 14:42:25 $
+ * @version $Revision: 1.29 $ $Date: 2001-04-10 20:37:41 $
  */
 public abstract class Module {
 
@@ -47,7 +47,6 @@ public abstract class Module {
 	
 	Hashtable properties;
 	static ModuleProbe mprobe;
-	static boolean debug=false;
 	private String className;
 	String maintainer;
 	int    version;	
