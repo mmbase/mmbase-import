@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.3 2002-04-16 09:39:42 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.4 2002-04-16 11:18:44 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -160,7 +160,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         DateFormat dateFormat = null;
         if (format != null) {            
             Locale locale = Locale.getDefault();
-
+            
             /*
             LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
             if (localeTag != null) {
@@ -429,25 +429,29 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     }
     
     /**
-     * return the start of the day
+     * Finds the start of the day.
+     * @param date A date.
+     * @return The beginning of the day of the given Date
      */
     private Date getBeginOfDay(Date date) throws ParseException {
-        parseFormat.applyPattern("yyyy/MM/dd");
-        String newdate = parseFormat.format(date);
-        newdate +=" 00:00:00";
-        parseFormat.applyPattern("yyyy/MM/dd HH:mm:ss");
-        return parseFormat.parse(newdate);
+        Calendar cal = Calendar.getInstance(); 
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE,      0);
+        cal.set(Calendar.SECOND,      0);
+        return cal.getTime();
     }
     
     /**
-     * return the start of the month
+     * Finds the start of the month
+     * @param date A date.
+     * @return The beginning of the month of the given Date
      */
     private Date getBeginOfMonth(Date date) throws ParseException {
-        parseFormat.applyPattern("yyyy/MM");
-        String newdate=parseFormat.format(date);
-        newdate+="/01 00:00:00";
-        parseFormat.applyPattern("yyyy/MM/dd HH:mm:ss");
-        return parseFormat.parse(newdate);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_MONTH,  1);
+        return getBeginOfDay(cal.getTime());
     }
     
     /**
