@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: MultiRelations.java,v 1.15 2000-12-02 17:46:52 daniel Exp $
+	$Id: MultiRelations.java,v 1.16 2001-03-06 12:30:25 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.15  2000/12/02 17:46:52  daniel
+	updated it to handle illegal field mappings
+	
 	Revision 1.14  2000/11/16 18:04:07  vpro
 	(marcel) fixed bug when multiple relations between objects where allowed and LISTed
 	
@@ -64,7 +67,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.15 2000-12-02 17:46:52 daniel Exp $
+ * @version $Id: MultiRelations.java,v 1.16 2001-03-06 12:30:25 install Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -452,6 +455,7 @@ public class MultiRelations extends MMObjectBuilder {
 			if (pos!=-1) {
 				table=val.substring(0,pos); // table
 				field=val.substring(pos+1); // field
+				field=mmb.getDatabase().getAllowedField(field);
 				if (result.length()>0) {
 					result.append(", ");
 				} else {
