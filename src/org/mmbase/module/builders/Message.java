@@ -107,6 +107,16 @@ public class Message extends MMObjectBuilder {
         boolean result = super.init();
         channelBuilder = (Channel)mmb.getMMObject("channel");
 
+        String maxBody=getInitParameter("maxbodysize");
+        if ((maxBody!=null) && (maxBody.length()>0)) {
+            try {
+               maxBodySize=Integer.parseInt(maxBody);
+            } catch (Exception e) {
+                log.warn("Invalid value for property'maxbodysize' :"+maxBody);
+            }
+        }
+        log.info("Max Body Size = "+maxBodySize);
+
         messageUser=getInitParameter("postas");
         if ((messageUser==null) || (messageUser.length()==0)) {
             messageUser="system";
@@ -305,7 +315,7 @@ public class Message extends MMObjectBuilder {
         message.setValue(F_THREAD,channel);
         message.setValue(F_SEQUENCE,sequence);
         boolean useTimeStamp=(getField(F_TIMESTAMP)!=null);
-        if (useTimeStamp) { 
+        if (useTimeStamp) {
             message.setValue(F_TIMESTAMP, System.currentTimeMillis());
         } else {
             TimeStamp timeStamp = new TimeStamp();
@@ -366,7 +376,7 @@ public class Message extends MMObjectBuilder {
             boolean useTimeStamp=(getField(F_TIMESTAMP) != null);
             if (useTimeStamp) {
                 node.setValue(F_TIMESTAMP, new Long(System.currentTimeMillis()));
-            } else {            
+            } else {
                 TimeStamp timeStamp = new TimeStamp();
                 node.setValue("timestampl", timeStamp.lowIntegerValue());
                 node.setValue("timestamph", timeStamp.highIntegerValue());
@@ -1019,13 +1029,13 @@ public class Message extends MMObjectBuilder {
      */
     public Object getValue(MMObjectNode node, String field) {
         // if we get here, timestamp is NOT an existing field,
-        // so retrieve the values using the two integer fields  
+        // so retrieve the values using the two integer fields
         if (field.equals(F_TIMESTAMP)) {
             TimeStamp ts = new TimeStamp(); // default, return current time
             if (super.getValue(node, F_TIMESTAMP) == null ) { // no value to be found.
                 if (getField(F_TIMESTAMP) == null) { // field does not exist
                     ts = getTimeStamp(node);
-                }                                
+                }
             }
             return "" + ts.getTime();
         }
@@ -1152,7 +1162,7 @@ public class Message extends MMObjectBuilder {
      * Get the nodes timestampl and timestamph and return them as a TimeStamp.
      */
     public TimeStamp getTimeStamp(MMObjectNode node) {
-        return new TimeStamp((Integer)node.getValue("timestampl"), (Integer)node.getValue("timestamph"));        
+        return new TimeStamp((Integer)node.getValue("timestampl"), (Integer)node.getValue("timestamph"));
     }
 
     /**
