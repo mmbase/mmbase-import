@@ -19,14 +19,14 @@ import java.io.Writer;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: CopyCharTransformer.java,v 1.4 2003-05-10 22:23:51 michiel Exp $
+ * @version $Id: CopyCharTransformer.java,v 1.5 2003-05-12 13:10:25 michiel Exp $
  */
 
 public class CopyCharTransformer extends ReaderTransformer implements CharTransformer {
 
     public static CopyCharTransformer instance = new CopyCharTransformer();
 
-    private CopyCharTransformer() {
+    public CopyCharTransformer() {
         super();
     }
 
