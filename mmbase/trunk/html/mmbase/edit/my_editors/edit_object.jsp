@@ -80,79 +80,76 @@ title = "Edit " + ntype + " node";
   <td valign="top" width="80%">
   <!-- start edit form -->
 
-<form enctype="multipart/form-data" method="post" action="<mm:url referids="nr" />">
-<table border="0" cellspacing="0" cellpadding="3" class="table-form">
-<tr bgcolor="#CCCCCC">
-  <td align="center">&nbsp;</td>
-  <td valign="top">
-    <table border="0" width="100%" cellspacing="0" cellpadding="0">
-    <tr>
-      <td class="title-s">Edit node of type <b><mm:nodeinfo type="guinodemanager" /></b> (<mm:nodeinfo type="type" />)</td>
-      <td align="right">
-		<mm:maydelete><a href="delete_object.jsp?nr=<%= nr %>&amp;ntype=<%= ntype %>" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
+	<form enctype="multipart/form-data" method="post" action="<mm:url referids="nr" />">
+	<table border="0" cellspacing="0" cellpadding="3" class="table-form">
+	<tr bgcolor="#CCCCCC">
+	  <td align="center" class="title-s"># <mm:write referid="nr" /></td>
+	  <td valign="top">
+		<table border="0" width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+		  <td class="title-s">Edit node of type <b><mm:nodeinfo type="guinodemanager" /></b> (<mm:nodeinfo type="type" />)</td>
+		  <td align="right">
+			<mm:maydelete><a href="delete_object.jsp?nr=<%= nr %>&amp;ntype=<%= ntype %>" title="delete"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete>
+		  </td>
+		</tr>
+		</table>
 	  </td>
-    </tr>
-    </table>
-  </td>
-</tr>
-<mm:present referid="change">
-<tr>
-  <td>&nbsp;</td>
-  <td>
-	<mm:fieldlist type="edit"><mm:fieldinfo type="useinput" /></mm:fieldlist>
-    <%-- When there is was a alias, create that 1 2 --%> 
-    <mm:present referid="alias_name">
-    	<mm:node id="new_alias">
-        <mm:createalias name="$alias_name" />
-      </mm:node>
-    </mm:present>
-	<p class="message">The node <b><mm:field name="gui()" /></b> (<%= nr %>) is changed.</p>
-  </td>
-</tr>
-</mm:present>
-<mm:maywrite>
-<mm:fieldlist type="edit">
-<tr valign="top">
-  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
-  <td><mm:fieldinfo type="input" />&nbsp;</td>
-</tr>
-</mm:fieldlist>
-<tr>
-  <td>&nbsp;</td>
-  <td><input type="submit" name="change" value="Change" /><p>&nbsp;</p></td>
-</tr>
-</mm:maywrite>
-<mm:maywrite inverse="true">
-<mm:fieldlist type="edit">
-<tr valign="top">
-  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
-  <td><mm:fieldinfo type="guivalue" />&nbsp;</td>
-</tr>
-</mm:fieldlist>
-<tr>
-  <td>&nbsp;</td>
-  <td><p class="message">You are not allowed to edit his node.</p><p>&nbsp;</p></td>
-</tr>
-</mm:maywrite>
-<%-- Aliases --%>
-<tr bgcolor="#CCCCCC" valign="top">
-  <td align="right" class="title-s">Aliases</td>
-  <td class="title-s">
-  	<% String my_constr = ""; %>
-	<mm:aliaslist id="alias">
-		<b><mm:write referid="alias" jspvar="the_alias"><% my_constr = "name='" + (String)the_alias + "'"; %></mm:write></b>
-		<mm:listnodes type="oalias" constraints="<%= my_constr %>">
-			<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete alias"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete> 
-		</mm:listnodes> 
-		<mm:last inverse="true"><br /></mm:last>
-	</mm:aliaslist>
-  </td>
-</tr><tr valign="top">
-  <td align="right" class="name">New alias</td>
-  <td><input type="text" name="alias_name" size="80" maxlength="255" class="small" /><br />An alias is an optional identifier for a node</td>
-</tr>
-</table>
-</form>
+	</tr>
+	<mm:present referid="change">
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>
+		<mm:fieldlist type="edit" fields="owner"><mm:fieldinfo type="useinput" /></mm:fieldlist>
+		<%-- When there is was a alias, create that 1 2 --%> 
+		<mm:present referid="alias_name">
+			<mm:node id="new_alias">
+			<mm:createalias name="$alias_name" />
+		  </mm:node>
+		</mm:present>
+		<p class="message">The node <b><mm:field name="gui()" /></b> (<%= nr %>) is changed.</p>
+	  </td>
+	</tr>
+	</mm:present>
+	<mm:maywrite><mm:import id="formtype">input</mm:import></mm:maywrite>
+	<mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
+	<mm:fieldlist type="edit" fields="owner">
+	<tr valign="top">
+	  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+	  <td><mm:fieldinfo type="$formtype" /> </td>
+	</tr>
+	</mm:fieldlist>
+	<mm:maywrite>
+	<tr>
+	  <td>&nbsp;</td>
+	  <td><input type="submit" name="change" value="Change" /><p>&nbsp;</p></td>
+	</tr>
+	</mm:maywrite>
+	<mm:maywrite inverse="true">
+	<tr>
+	  <td>&nbsp;</td>
+	  <td><p class="message">You are not allowed to edit his node.</p><p>&nbsp;</p></td>
+	</tr>
+	</mm:maywrite>
+	
+	<%-- Aliases --%>
+	<tr bgcolor="#CCCCCC" valign="top">
+	  <td align="right" class="title-s">Aliases</td>
+	  <td class="title-s">
+		<% String my_constr = ""; %>
+		<mm:aliaslist id="alias">
+			<b><mm:write referid="alias" jspvar="the_alias"><% my_constr = "name='" + (String)the_alias + "'"; %></mm:write></b>
+			<mm:listnodes type="oalias" constraints="<%= my_constr %>">
+				<mm:maydelete><a href="delete_object.jsp?nr=<mm:field name="number" />" title="delete alias"><img src="img/mmbase-delete.gif" alt="delete" width="21" height="20" border="0" /></a></mm:maydelete> 
+			</mm:listnodes> 
+			<mm:last inverse="true"><br /></mm:last>
+		</mm:aliaslist>
+	  </td>
+	</tr><tr valign="top">
+	  <td align="right" class="name">New alias</td>
+	  <td><input type="text" name="alias_name" size="80" maxlength="255" class="small" /><br />An alias is an optional identifier for a node</td>
+	</tr>
+	</table>
+	</form>
 
 </td></tr>
 </table>
