@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.65 2002-09-03 12:39:56 eduard Exp $
+ * @version $Id: BasicCloud.java,v 1.66 2002-09-20 08:58:25 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -147,7 +147,7 @@ public class BasicCloud implements Cloud, Cloneable {
         multilevel_cache = MultilevelCacheHandler.getCache();
     }
 
-    // Makes a node otr Relation object based on an MMObjectNode
+    // Makes a node or Relation object based on an MMObjectNode
     Node makeNode(MMObjectNode node, String nodenumber) {
         NodeManager nm = getNodeManager(node.parent.getTableName());
         int nodenr=node.getNumber();
@@ -185,6 +185,29 @@ public class BasicCloud implements Cloud, Cloneable {
             throw new NotFoundException(message);
         } else {
             return makeNode(node,nodenumber);
+        }
+    }
+
+    public boolean hasNode(int nodenumber) {
+        return hasNode(""+nodenumber);
+    }
+
+    public boolean hasNode(String nodenumber) {
+        MMObjectNode node;
+        try {
+            node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
+        } catch (RuntimeException e) {
+            return false; // error - node inaccessible or does not exist
+        }
+        if (node==null) {
+            return false; // node does not exist
+        } else {
+            int nodenr=node.getNumber();
+            if (nodenr==-1) { 
+               return true;  // temporary node
+            } else {
+               return check(Operation.READ,node.getNumber()); // check read access
+            }
         }
     }
 
