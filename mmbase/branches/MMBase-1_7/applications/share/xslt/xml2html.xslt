@@ -48,35 +48,36 @@
 
   <!-- create a seperate file for every tag -->
   <xsl:apply-templates select="tag|taginterface" mode="file" />
-    <!-- create a toc file -->
-    <!-- xsl:document href="{$basedirfiles}/toc.html"-->
-      <xalan:write file="{$basedirfiles}/toc.html"><!-- xsl:document not supported by xalan.. Sigh..-->
-      <html>
-        <head>
-          <title>MMBase taglib - Table Of Contents</title>
-        </head>
-        <body 
-          bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
-          <h1>MMBase taglib <xsl:value-of select="/taglib/tlibversion" /> documentation</h1>
-          <xsl:apply-templates select="info" />
-            <xsl:for-each select="/taglib/tagtypes/type">
-              <a href="mmbase-taglib-{@name}.html"><xsl:value-of select="description" /></a><br />
-            </xsl:for-each>
-            <hr />
-          All 'tags' in seperate files (these are small jsp's, probably will be possible to add working examples): <br />
-          groups: <br />
-          <xsl:apply-templates select="taginterface" mode="toc" >
-            <xsl:sort select="name" />
-            <xsl:with-param name="file"  select="true()" />
-          </xsl:apply-templates><br />
-          tags: <br />
-          <xsl:apply-templates select="tag" mode="toc" >
-            <xsl:sort select="name" />
-            <xsl:with-param name="file"  select="true()" />
-          </xsl:apply-templates><br />
-        </body>
-      </html>
-    </xalan:write>
+    
+  <!-- create a toc file -->
+  <!-- xsl:document href="{$basedirfiles}/toc.html"-->
+  <xalan:write file="{$basedirfiles}/toc.html"><!-- xsl:document not supported by xalan.. Sigh..-->
+  <html>
+    <head>
+      <title>MMBase taglib - Table Of Contents</title>
+    </head>
+    <body 
+      bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
+      <h1>MMBase taglib <xsl:value-of select="/taglib/tlibversion" /> documentation</h1>
+      <xsl:apply-templates select="info" />
+        <xsl:for-each select="/taglib/tagtypes/type">
+          <a href="mmbase-taglib-{@name}.html"><xsl:value-of select="description" /></a><br />
+        </xsl:for-each>
+        <hr />
+        All 'tags' in seperate files (these are small jsp's, probably will be possible to add working examples): <br />
+        groups: <br />
+        <xsl:apply-templates select="taginterface" mode="toc" >
+          <xsl:sort select="name" />
+          <xsl:with-param name="file"  select="true()" />
+        </xsl:apply-templates><br />
+        tags: <br />
+        <xsl:apply-templates select="tag" mode="toc" >
+          <xsl:sort select="name" />
+          <xsl:with-param name="file"  select="true()" />
+        </xsl:apply-templates><br />
+      </body>
+    </html>
+  </xalan:write>
   <!-- /xsl:document-->
 </xsl:template>
 
@@ -197,24 +198,24 @@
             This document lists the current tags implemented for MMBase (version <xsl:value-of
             select="/taglib/tlibversion" />)
 	    </p>
-            <p>
-                Attributes in <font color="{$reqcolor}"><xsl:value-of select="$reqcolor" /></font> are
-                required.
-	    </p>
-              <p>
-                <font color="{$extendscolor}"><xsl:value-of select="$extendscolor" /></font> entries
-                are no tags, but describe a group of tags. Tags can belong to several groups.
-              </p>
-	    <p>
-                If a tag definition contains a body section this means that the
-                tag might do something with the content of the body.
-              </p>
-          </td>
-          <td></td>
-        </tr>
-      </table>
-    </body>
-  </html>
+      <p>
+        Attributes in <font color="{$reqcolor}"><xsl:value-of select="$reqcolor" /></font> are
+      required.
+    </p>
+    <p>
+      <font color="{$extendscolor}"><xsl:value-of select="$extendscolor" /></font> entries
+      are no tags, but describe a group of tags. Tags can belong to several groups.
+    </p>
+    <p>
+      If a tag definition contains a body section this means that the
+      tag might do something with the content of the body.
+    </p>
+  </td>
+  <td></td>
+</tr>
+</table>
+</body>
+</html>
 </xsl:template>
 
 
@@ -608,7 +609,23 @@
 </xsl:template>
 
 <xsl:template match="info">
-  <xsl:apply-templates select="p|text()|em|a|ul|pre" />  
+  <xsl:apply-templates select="p|text()|em|a|ul|pre|taglibcontent|document" />  
+</xsl:template>
+
+<xsl:template match="document">  
+  <!-- I hate XSL -->
+  <xsl:if test="@mode = 'escapers'"> 
+    <xsl:apply-templates select="document(@file)" mode="escapers"/>
+  </xsl:if>
+  <xsl:if test="@mode = 'postprocessors'">
+    <xsl:apply-templates select="document(@file)"  mode="postprocessors"/>
+  </xsl:if>
+  <xsl:if test="@mode = 'content'">
+    <xsl:apply-templates select="document(@file)"  mode="content"/>
+  </xsl:if>
+  <xsl:if test="not(@mode)">
+    <xsl:apply-templates select="document(@file)" />
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="p|text()|a|ul|pre">
@@ -620,5 +637,41 @@
     <xsl:apply-templates />
   </xsl:copy>
 </xsl:template>
+
+<xsl:template match="escaper|postprocessor">
+  <tr>
+    <td valign="top"><xsl:value-of select="@id" /></td>
+    <td valign="top"><xsl:apply-templates select="info"/></td>
+  </tr>  
+</xsl:template>
+
+<xsl:template match="taglibcontent" mode="escapers">
+  <table bgcolor="#99ccff" width="100%">
+    <tr><th valign="top"><a name="escapers "/>Escaper</th><th></th></tr>
+    <xsl:apply-templates select="escaper|postprocessor"/>
+  </table>
+</xsl:template>
+<xsl:template match="taglibcontent" mode="postprocessors">
+  <table bgcolor="#99ccff" width="100%">
+    <tr><th valign="top"><a name="postprocessors" />Postprocessor</th><th></th></tr>
+    <xsl:apply-templates select="postprocessor"/>
+  </table>    
+</xsl:template>
+<xsl:template match="taglibcontent" mode="content">
+  <table bgcolor="#99ffff" width="100%">
+    <tr><th valign="top"><a name="contenttypes" />Content-Type</th><th valign="top">Default escaper</th><th valign="top">Default postprocessor</th><th valign="top">Default encoding</th></tr>
+    <xsl:for-each select="content">
+      <tr>
+        <td valign="top"><xsl:value-of select="@type" /></td>
+        <td valign="top"><xsl:value-of select="@defaultescaper" /></td>
+        <td valign="top"><xsl:value-of select="@defaultpostprocessor" /></td>
+        <td valign="top"><xsl:value-of select="@defaultencoding" /></td>
+      </tr>      
+    </xsl:for-each>
+  </table>
+</xsl:template>
+
+
+
 
 </xsl:stylesheet>
