@@ -289,10 +289,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			}
 
 			if (_debug) {
-				if(oName.equals("createObject")) {
-					debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
-				} else {
+				if(oName.equals("createRelation")) {
 					debug("-> " + oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
+				} else {
+					debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
 				}
 			}
 
@@ -342,12 +342,16 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				// no-op we only need current object context
 			}
 			if (oName.equals("deleteObject")) {
-				//delete from temp cloud
-				transactionManager.removeNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
-				// destroy
-				tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
-				currentObjectContext = null;
-				transactionInfo.knownObjectContexts.remove(id);
+				if (oMmbaseId==null) { 
+					//delete from temp cloud
+					currentObjectContext = tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(), id);
+					transactionManager.removeNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
+					// destroy
+					tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
+					transactionInfo.knownObjectContexts.remove(id);
+				} else {
+					//delete MMBase node
+				}
 			}
 			
 
@@ -368,10 +372,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			} 
 			
 			if (_debug) {
-				if(oName.equals("createObject")) {
-					debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
-				} else {
+				if(oName.equals("createRelation")) {
 					debug("<- " + oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
+				} else {
+					debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
 				}
 			}
 		}
