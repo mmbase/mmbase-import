@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueConstraint.java,v 1.9 2004-01-30 12:25:49 pierre Exp $
+ * @version $Id: BasicFieldValueConstraint.java,v 1.10 2004-03-15 14:54:25 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
@@ -49,7 +49,7 @@ implements FieldValueConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueConstraint setValue(Object value) {
-        value = BasicStepField.testValue(value, getField());
+        BasicStepField.testValue(value, getField());
         this.value = value;
         return this;
     }
