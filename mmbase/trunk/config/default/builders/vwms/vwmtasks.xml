@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="vwmtasks" maintainer="mmbase.org" version="0" extends="object">
 
 <!-- <status>
     what is the status of this builder options : active or inactive
@@ -52,7 +52,12 @@
 -->
 <fieldlist>
     <!-- POS 3 : <field> 'wantedcpu'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Machine</guiname>
@@ -80,7 +85,12 @@
     </field>
 
     <!-- POS 4 : <field> 'vwm'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">VWM</guiname>
@@ -108,7 +118,12 @@
     </field>
 
     <!-- POS 5 : <field> 'status'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">State</guiname>
@@ -136,7 +151,12 @@
     </field>
 
     <!-- POS 6 : <field> 'claimedcpu'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Processor</guiname>
@@ -164,7 +184,12 @@
     </field>
 
     <!-- POS 7 : <field> 'wantedtime'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Start Time</guiname>
@@ -192,7 +217,12 @@
     </field>
 
     <!-- POS 8 : <field> 'changedtime'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Last Changed on</guiname>
@@ -220,7 +250,12 @@
     </field>
 
     <!-- POS 9 : <field> 'expiretime'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Experiration Time</guiname>
@@ -248,7 +283,12 @@
     </field>
 
     <!-- POS 10 : <field> 'task'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Task</guiname>
@@ -276,7 +316,12 @@
     </field>
 
     <!-- POS 11 : <field> 'id'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">ID</guiname>
@@ -304,7 +349,12 @@
     </field>
 
     <!-- POS 12 : <field> 'data'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Data</guiname>

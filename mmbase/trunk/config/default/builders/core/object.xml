@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" >
+<builder name="object" maintainer="mmbase.org" version="0" >
 
   <!-- <status>
   what is the status of this builder options : active or inactive
@@ -75,6 +75,16 @@
   <fieldlist>
     <!-- POS 1 : <field> 'number' is a default field (see docs) -->
     <field>
+
+    <!-- <descriptions>
+    small description of the builder for human reading
+    -->
+    <descriptions>
+      <!-- descriptions per language as defined by ISO 639  -->
+      <description xml:lang="en">Unique objectnumber</description>
+      <description xml:lang="nl">Uniek objectnummer</description>
+    </descriptions>
+
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Object</guiname>
@@ -109,6 +119,13 @@
 
     <!-- POS 2 : <field> 'owner' is a default field (see docs) -->
     <field>
+
+    <descriptions>
+      <!-- descriptions per language as defined by ISO 639  -->
+      <description xml:lang="en">Object's owner</description>
+      <description xml:lang="nl">Eigenaar van het object</description>
+    </descriptions>
+
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Owner</guiname>

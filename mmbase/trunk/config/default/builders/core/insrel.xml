@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="insrel" maintainer="mmbase.org" version="0" extends="object">
 
 <classfile>org.mmbase.module.corebuilders.InsRel</classfile>
 
@@ -38,6 +38,11 @@
 <fieldlist>
   <!-- POS 3 : <field> 'snumber'  -->
   <field>
+    <descriptions>
+      <!-- descriptions per language as defined by ISO 639  -->
+      <description xml:lang="en">Objectnumber of this relation's source</description>
+      <description xml:lang="nl">Objectnummer van de bron van deze relatie</description>
+    </descriptions>
     <!-- gui related -->
     <gui>
       <guiname xml:lang="en">Source</guiname>
@@ -68,6 +73,11 @@
 
   <!-- POS 4 : <field> 'dnumber'  -->
   <field>
+    <descriptions>
+      <!-- descriptions per language as defined by ISO 639  -->
+      <description xml:lang="en">Objectnumber of this relation's destination</description>
+      <description xml:lang="nl">Objectnummer van het doel van deze relatie</description>
+    </descriptions>
     <!-- gui related -->
     <gui>
       <guiname xml:lang="en">Destination</guiname>
@@ -98,6 +108,12 @@
 
   <!-- POS 5 : <field> 'rnumber'  -->
   <field>
+    <descriptions>
+      <!-- descriptions per language as defined by ISO 639  -->
+      <description xml:lang="en">This relation's type objectnumber</description>
+      <description xml:lang="nl">Objectnummer van het relatietype van
+      deze relatie</description>
+    </descriptions>
     <!-- gui related -->
     <gui>
       <guiname xml:lang="en">Relation</guiname>
@@ -128,6 +144,13 @@
 
   <!-- POS 6 : <field> 'dir'  -->
   <field>
+    <descriptions>
+      <!-- descriptions per language as defined by ISO 639  -->
+      <description xml:lang="en">Directionality of this relation, can
+      be uni or bi-directional (0 or 1)</description>
+      <description xml:lang="nl">Richting van deze relatie, kan
+      eenricht of tweerichting zijn (0 of 1)</description>
+    </descriptions>
     <!-- gui related -->
     <gui>
       <guiname xml:lang="en">Direction</guiname>

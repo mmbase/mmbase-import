@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="oalias" maintainer="mmbase.org" version="0" extends="object">
 
   <classfile>org.mmbase.module.corebuilders.OAlias</classfile>
 
@@ -45,6 +45,13 @@
   <fieldlist>
     <!-- POS 3 : <field> 'name'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Name which can be used instead of
+        an objectnumber</description>
+        <description xml:lang="nl">Deze naam kan gebruikt worden in
+        plaats van een objectnummer</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Name</guiname>
@@ -75,6 +82,11 @@
 
     <!-- POS 4 : <field> 'description'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Description of the object alias</description>
+        <description xml:lang="nl">Omschrijving van de object alias</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Description</guiname>
@@ -105,6 +117,13 @@
 
     <!-- POS 5 : <field> 'destination'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">The objectnumber of the object this
+        alias reffers to</description>
+        <description xml:lang="nl">Het objectnummer van het object
+        waar deze alias naar verwijst</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Target</guiname>

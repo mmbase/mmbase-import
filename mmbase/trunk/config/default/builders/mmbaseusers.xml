@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="www.mmbase.org" version="1" extends="object">
+<builder name="mmbaseusers" maintainer="www.mmbase.org" version="1" extends="object">
 
   <status>inactive</status>
   <classfile>org.mmbase.security.implementation.cloud.UserBuilder</classfile>
@@ -26,7 +26,12 @@
   </properties>
 
   <fieldlist>
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">UserName</guiname>
         <guiname xml:lang="nl">Gebruiker</guiname>
@@ -45,7 +50,12 @@
         <type state="persistent" size="32" notnull="true" key="true">STRING</type>
       </db>
     </field>
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Password</guiname>
         <guiname xml:lang="nl">Wachtwoord</guiname>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="images" maintainer="mmbase.org" version="0" extends="object">
 
   <classfile>Images</classfile>
   <searchage>31</searchage>
@@ -65,6 +65,11 @@
   <fieldlist>
     <!-- POS 3 : <field> 'title'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Title of the image</description>
+        <description xml:lang="nl">Titel van de afbeelding</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Title</guiname>
@@ -96,6 +101,11 @@
 
     <!-- POS 4 : <field> 'description'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Description of the image</description>
+        <description xml:lang="nl">Omschrijving van de afbeelding</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Description</guiname>
@@ -127,6 +137,11 @@
 
     <!-- POS 5 : <field> 'handle'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">The image itself (binary data)</description>
+        <description xml:lang="nl">De afbeelding zelf (binarie data)</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Image</guiname>
@@ -158,6 +173,11 @@
 
     <!-- POS 6 : <field> 'itype'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Mimetype of the image</description>
+        <description xml:lang="nl">Mimetype van de afbeelding</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">ImageType</guiname>
