@@ -95,7 +95,7 @@
   <section>
     <title>MMBase Include</title>
     <para>
-      The MMBase Include has great resemblence with the JSP Include Action,
+      The MMBase Include has great resemblance with the JSP Include Action,
       parameter names and subtags have the same names:
 <programlisting><![CDATA[<mm:include page="includes/page.jsp?param1=value">
   <mm:param name="param2" value="value2" />
@@ -124,7 +124,7 @@
         The functionality that finds a template for a given list of
         objects is called smartpath. Smartpath is a function on a node, 
         which returns the best possible path for that node. The standard
-        behaviour of Smartpath is to return a path that exists of the
+        behavior of Smartpath is to return a path that exists of the
         node numbers, possibly postfixed by a random string. So, if
         <computeroutput>getSmartPath()</computeroutput> is called on 
         node number 138, in a directory where one of the subdirectories
@@ -133,7 +133,7 @@
         value is returned.
       </para>
       <para>
-        The default behaviour described here can be overridden by a
+        The default behavior described here can be overridden by a
         developer by creating a new builder class for a nodemanager.
         For all following examples, we assume that such a special class
         has been written, that uses the value of the <computeroutput>title</computeroutput>

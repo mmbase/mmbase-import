@@ -5,7 +5,7 @@
 	<articleinfo>
 		<title>XML Importer overview (a.k.a. TCP 2.0)</title>
 		<date>24 December 2001</date>
-		<edition>$Id: overview.xml,v 1.3 2003-06-30 12:10:13 johannes Exp $</edition>
+		<edition>$Id: overview.xml,v 1.4 2003-07-01 14:45:29 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Rob</firstname>
@@ -105,7 +105,7 @@
 			 <listitem>Commit the transaction.</listitem>
 		</orderedlist>
 
-		<para>This transaction will result in both objects and the relation to be present in MMBase, regardless of what was present before the transaction, and without duplicates being created. This is the behaviour we are looking for.</para>
+		<para>This transaction will result in both objects and the relation to be present in MMBase, regardless of what was present before the transaction, and without duplicates being created. This is the behavior we are looking for.</para>
 
 </section>
 <section>
@@ -242,7 +242,7 @@ In the next stage duplicates_transactions.XML is processed. The user has to be c
 
 			<itemizedlist>
 			 <listitem>XML-files: A method will be provided that reads and executes transactions directly from a valid XML-file.</listitem>
-			 <listitem>Programmatically: TCP2.0 will be implemented in a number of classes/methods that mirror the syntax used in XML. These provide a new interface to TCP, giving direct access to its functionality without the need to translate these to XML first.</listitem>
+			 <listitem>Programatically: TCP2.0 will be implemented in a number of classes/methods that mirror the syntax used in XML. These provide a new interface to TCP, giving direct access to its functionality without the need to translate these to XML first.</listitem>
 			</itemizedlist>
 			<para>This example performs the same actions as the first XML-example above:</para>
 			<programlisting format="linespecific"><![CDATA[
