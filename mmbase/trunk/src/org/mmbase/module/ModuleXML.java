@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.6 $ $Date: 2000-06-20 09:40:39 $
+ * @version $Revision: 1.7 $ $Date: 2000-07-18 18:59:43 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -69,7 +69,20 @@ public abstract class ModuleXML extends Module {
 		}
 
 		if (debug) debug("loadModulesFromDisk(): mmbase.config="+System.getProperty("mmbase.config"));
-		mmbaseconfig=System.getProperty("mmbase.config");
+		
+		String dtmp=System.getProperty("mmbase.mode");
+		if (dtmp!=null && dtmp.equals("demo")) {
+			String curdir=System.getProperty("user.dir");
+			if (curdir.endsWith("/orion")) {
+				curdir=curdir.substring(0,curdir.length()-6);
+			}
+			mmbaseconfig=curdir+"/config";
+			System.out.println("DEMO CONFIG="+mmbaseconfig);
+		} else {
+       		 	mmbaseconfig=System.getProperty("mmbase.config");
+		}
+
+
 		MMBaseContext.setConfigPath(mmbaseconfig);
 		
 		// the container for the started modules
