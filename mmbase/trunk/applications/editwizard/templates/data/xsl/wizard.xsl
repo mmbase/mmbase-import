@@ -8,7 +8,7 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.109 2004-01-09 14:10:09 pierre Exp $
+    @version $Id: wizard.xsl,v 1.110 2004-01-12 22:07:12 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -115,10 +115,7 @@
               // Start the htmlarea's.
               for (var i = 0; i < htmlAreas.length; i++) {
                 var editor = new HTMLArea(htmlAreas[i]);
-                customize(editor, "]]></xsl:text>
-      <xsl:value-of select="$htmlareadir"/>
-      <xsl:text disable-output-escaping="yes">
-        <![CDATA[");
+                customize(editor, "]]></xsl:text><xsl:value-of select="$htmlareadir"/><xsl:text disable-output-escaping="yes"><![CDATA[");
                 editor.generate();
                 htmlAreas[i] = editor;
               }
@@ -212,7 +209,23 @@
   <xsl:template name="bodyform">
     <tr class="formcanvas">
       <td>
-        <form name="form" method="post" action="{$formwizardpage}" id="{/wizard/curform}" message_pattern="{$message_pattern}" message_required="{$message_required}" message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}" message_min="{$message_min}" message_max="{$message_max}" message_mindate="{$message_mindate}" message_maxdate="{$message_maxdate}" message_dateformat="{$message_dateformat}" message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}" message_listtooshort="{$message_listtooshort}" invalidlist="{/wizard/form[@invalidlist]/@invalidlist}" filter_required="{$filter_required}">
+        <form name="form" method="post" action="{$formwizardpage}" id="{/wizard/curform}" 
+        	message_pattern="{$message_pattern}" message_required="{$message_required}" 
+        	message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}" 
+        	message_min="{$message_min}" message_max="{$message_max}" message_mindate="{$message_mindate}" 
+        	message_maxdate="{$message_maxdate}" message_dateformat="{$message_dateformat}" 
+        	message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}" 
+        	message_listtooshort="{$message_listtooshort}"
+        	invalidlist="{/wizard/form[@invalidlist]/@invalidlist}" filter_required="{$filter_required}">
+          <xsl:choose>
+            <xsl:when test="/*/step[@valid='false'][not(@form-schema=/wizard/curform)]">
+              <xsl:attribute name="otherforms">invalid</xsl:attribute>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:attribute name="otherforms">valid</xsl:attribute>
+            </xsl:otherwise>
+          </xsl:choose>
+        	
           <input type="hidden" name="curform" value="{/wizard/curform}"/>
           <input type="hidden" name="cmd" value="" id="hiddencmdfield"/>
 
@@ -232,21 +245,14 @@
       <xsl:apply-templates select="/*/steps-validator"/>
     </div>
     <div id="editform" class="editform">
-      <xsl:choose>
-        <xsl:when test="/*/step[@valid='false'][not(@form-schema=/wizard/curform)]">
-          <xsl:attribute name="otherforms">invalid</xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="otherforms">valid</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
-
       <table class="formcontent">
         <xsl:apply-templates select="form[@id=/wizard/curform]"/>
       </table>
     </div>
     <div id="commandbuttonbar" class="buttonscontent">
-      <xsl:call-template name="buttons"/>
+    	<xsl:for-each select="/*/steps-validator">
+        <xsl:call-template name="buttons"/>
+      </xsl:for-each>
     </div>
   </xsl:template>
 
@@ -314,14 +320,9 @@
 
   <xsl:template name="stepsattributes">
     <xsl:attribute name="href">javascript:doGotoForm('<xsl:value-of select="@form-schema"/>');</xsl:attribute>
-    <xsl:attribute name="titlevalid">
-      <xsl:value-of select="$tooltip_valid"/>
-    </xsl:attribute>
-    <xsl:attribute name="id">step-<xsl:value-of select="@form-schema"/>
-    </xsl:attribute>
-    <xsl:attribute name="titlenotvalid">
-      <xsl:value-of select="$tooltip_not_valid"/>
-    </xsl:attribute>
+    <xsl:attribute name="titlevalid"><xsl:value-of select="$tooltip_valid"/></xsl:attribute>
+    <xsl:attribute name="id">step-<xsl:value-of select="@form-schema"/></xsl:attribute>
+    <xsl:attribute name="titlenotvalid"><xsl:value-of select="$tooltip_not_valid"/></xsl:attribute>
     <xsl:attribute name="title">
       <xsl:value-of select="/*/form[@id=current()/@form-schema]/title"/>
       <xsl:if test="@valid=&apos;false&apos;">
@@ -384,15 +385,11 @@
     <a href="javascript:doSave();" id="bottombutton-save" unselectable="on" titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}">
       <xsl:if test="@allowsave='true'">
         <xsl:attribute name="class">bottombutton</xsl:attribute>
-        <xsl:attribute name="title">
-          <xsl:value-of select="$tooltip_save"/>
-        </xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="$tooltip_save"/></xsl:attribute>
       </xsl:if>
       <xsl:if test="@allowsave='false'">
         <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
-        <xsl:attribute name="title">
-          <xsl:value-of select="$tooltip_no_save"/>
-        </xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="$tooltip_no_save"/></xsl:attribute>
       </xsl:if>
       <xsl:call-template name="prompt_save"/>
     </a>
@@ -408,15 +405,11 @@
     <a href="javascript:doSaveOnly();" id="bottombutton-saveonly" unselectable="on" titlesave="{$tooltip_save_only}" titlenosave="{$tooltip_no_save}">
       <xsl:if test="@allowsave='true'">
         <xsl:attribute name="class">bottombutton</xsl:attribute>
-        <xsl:attribute name="title">
-          <xsl:value-of select="$tooltip_save_only"/>
-        </xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="$tooltip_save_only"/></xsl:attribute>
       </xsl:if>
       <xsl:if test="@allowsave='false'">
         <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
-        <xsl:attribute name="title">
-          <xsl:value-of select="$tooltip_no_save"/>
-        </xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="$tooltip_no_save"/></xsl:attribute>
       </xsl:if>
       <xsl:call-template name="prompt_save_only"/>
     </a>
