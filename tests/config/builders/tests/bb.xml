@@ -139,6 +139,41 @@
         <type key="false" notnull="false" state="persistent">NODE</type>
       </db>
     </field>
+
+
+    <field>
+      <gui>
+        <guiname xml:lang="en">DateTimeField</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <db>
+        <name>datetimefield</name>
+        <type key="false" notnull="false" state="persistent">DATETIME</type>
+      </db>
+    </field>
+
+    <field>
+      <gui>
+        <guiname xml:lang="en">BooleanField</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <db>
+        <name>booleanfield</name>
+        <type key="false" notnull="false" state="persistent">BOOLEAN</type>
+      </db>
+    </field>
+
+    <field>
+      <gui>
+        <guiname xml:lang="en">ListField</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <db>
+        <name>listfield</name>
+        <type key="false" notnull="false" state="persistent">LIST[BOOLEAN]</type>
+      </db>
+    </field>
+
    
   </fieldlist>
 </builder>
