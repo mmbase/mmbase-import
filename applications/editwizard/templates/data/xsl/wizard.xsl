@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.60 2002-07-26 17:16:08 michiel Exp $
+  @version $Id: wizard.xsl,v 1.61 2002-08-02 14:20:39 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -214,6 +214,7 @@
       message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}"
       message_listtooshort="{$message_listtooshort}"
       invalidlist="{/wizard/form[@id=/wizard/curform]/@invalidlist}"
+      filter_required="{$filter_required}"
       >
       <input type="hidden" name="curform" value="{/wizard/curform}" />
       <input type="hidden" name="cmd" value="" id="hiddencmdfield" />

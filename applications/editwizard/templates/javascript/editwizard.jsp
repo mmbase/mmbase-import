@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.15 2002-08-02 12:20:09 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.16 2002-08-02 14:20:40 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -110,7 +110,12 @@ function doSearch(el, cmd, sessionkey) {
 
     var filterrequired = el.getAttribute("filterrequired");
     if (filterrequired=="true" && searchterm=="") {
-        alert("Search filter required");
+        var form = document.forms["form"];
+        var errmsg=form.getAttribute("filter_required")
+        if (errmsg==null || errmsg=="") {
+            errmsg="Entering a search term is required";                        
+        }
+        alert(errmsg);
         return;
     }
 
