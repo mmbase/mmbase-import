@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.16 2003-05-07 21:27:12 michiel Exp $
+ * @version $Id: Encode.java,v 1.17 2003-05-09 12:19:39 kees Exp $
  **/
 public class Encode {
 
@@ -182,6 +182,7 @@ public class Encode {
         Encode e = new Encode(encoding);
         return e.decode(toDecode);
     }
+    
     public static byte[] decodeBytes(String encoding, String toDecode) {
         Encode e = new Encode(encoding);
         return e.decodeBytes(toDecode);
