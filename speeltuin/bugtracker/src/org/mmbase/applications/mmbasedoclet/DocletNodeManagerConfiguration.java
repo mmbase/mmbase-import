@@ -66,7 +66,7 @@ public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
     
     public String getDescription() {
         if (description == null){
-            return getNodeManagerName();
+            return getName();
         }
         return description;
     }
@@ -74,7 +74,9 @@ public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
     public void addFieldConfiguration(FieldConfiguration fieldConfiguration){
         fieldConfigurations.add(fieldConfiguration);
     }
-    
+    public void setExtends(String extendsString){
+        this.parentNodeManagerName = extendsString;
+    }
     public String getExtends() {
         return parentNodeManagerName;
     }
@@ -83,7 +85,7 @@ public class DocletNodeManagerConfiguration implements NodeManagerConfiguration{
         return fieldConfigurations;
     }
     
-    public String getNodeManagerName() {
+    public String getName() {
         return name;
     }
     
