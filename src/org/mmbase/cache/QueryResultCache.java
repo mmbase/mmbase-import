@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseObserver;
+import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
@@ -26,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.2 2003-07-17 17:01:17 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.3 2004-02-20 18:10:05 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -37,15 +36,51 @@ abstract public class QueryResultCache extends Cache {
     private static Logger log = Logging.getLoggerInstance(QueryResultCache.class);
 
 
+    /**
+     * Need reference to all existing these caches, to be able to invalidate them.
+     */
+    private static Set queryCaches = new HashSet();
+
+    /**
+     * Explicitely invalidates all Query caches for a certain builder. This is used in
+     * MMObjectBuilder for 'local' changes, to ensure that imediate select after update always
+     * works.
+     * 
+     * @return number of entries invalidated
+     */
+    public static  int invalidateAll(MMObjectBuilder builder) {
+   
+        int result = 0;
+        while (builder != null) {
+            String tn = builder.getTableName();
+            Iterator i = queryCaches.iterator();
+            while (i.hasNext()) {
+                QueryResultCache cache = (QueryResultCache) i.next();
+                    Observer observer = (Observer) cache.observers.get(tn);
+                    if (observer != null) {
+                        result += observer.nodeChanged();
+                    }
+            }
+            builder = builder.getParentBuilder();
+        }
+        return result;
+    }
+
+
     // Keep a map of the existing Observers, for each nodemanager one.
     // @todo I think it can be done with one Observer instance too, (in which case we can as well
     // let QueryResultCache implement MMBaseObserver itself)
     private Map observers = new HashMap();
 
 
-    QueryResultCache(int size) {
+
+
+     QueryResultCache(int size) {
         super(size);
+        log.info("Instantiated a " + this.getClass().getName()); // should happend limited number of times
+        queryCaches.add(this);
     }
+  
 
 
     /**
@@ -116,7 +151,7 @@ abstract public class QueryResultCache extends Cache {
 
     private class Observer implements MMBaseObserver {        
         /**
-         * This list contains the types (as a string) which are to be invalidated.
+         * This set contains the types (as a string) which are to be invalidated.
          *
          */
         private Set cacheKeys = new HashSet(); // using java default for initial size. Someone tried 50.
@@ -141,10 +176,14 @@ abstract public class QueryResultCache extends Cache {
             mmb.addRemoteObserver(type, this);
         }
 
+
+
+
         /**
          * If something changes this function is called, and the observer multilevel cache entries are removed.
+         * @return number of keys invalidated
          */
-        protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
+        protected int nodeChanged() {
 
             List removedKeys = new ArrayList();
             // clear the entries from the cache.
@@ -154,25 +193,32 @@ abstract public class QueryResultCache extends Cache {
                 }
                 cacheKeys.clear();
             }
+            int result = removedKeys.size();
+            if (result == 0) return 0;
+
             // remove now from Cache (and from other Observers)
             Iterator i = removedKeys.iterator();
             while (i.hasNext()) {
                 Object key = i.next();
                 QueryResultCache.this.remove(key);
+                result++;
             }
 
-            return true;
+            return result;
         }
         
 
         // javadoc inherited (from MMBaseObserver)
         public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
-            return nodeChanged(machine, number, builder, ctype);
+            return nodeChanged() > 0; //machine, number, builder, ctype);
         }
 
         // javadoc inherited (from MMBaseObserver)
         public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-            return nodeChanged(machine, number, builder, ctype);
+            // local changes are solved in MMObjectBuilder itself.
+            // return nodeChanged() > 0; //machine, number, builder, ctype);
+            return true;
+
         }
         
         /**
