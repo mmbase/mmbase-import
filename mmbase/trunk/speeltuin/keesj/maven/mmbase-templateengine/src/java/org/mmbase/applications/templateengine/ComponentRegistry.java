@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * registry of the reusable components
  * @author keesj
- * @version $Id: ComponentRegistry.java,v 1.1.1.1 2004-04-02 14:58:47 keesj Exp $
+ * @version $Id: ComponentRegistry.java,v 1.2 2004-04-05 11:52:32 keesj Exp $
   */
 public class ComponentRegistry {
     private static Logger log = Logging.getLoggerInstance(ComponentRegistry.class);
@@ -57,7 +57,7 @@ public class ComponentRegistry {
         try {
             Component g = components.getComponentByName(name);
             if (g != null)
-                return (Component) g.clone();
+                return (Component)g.clone();
         } catch (CloneNotSupportedException e) {
             log.error("component " + name + " (class) does not allow cloning:" + Logging.stackTrace(e));
         }
@@ -75,7 +75,7 @@ public class ComponentRegistry {
         try {
             Container c = containers.getContainerByName(name);
             if (c != null)
-                return (Container) c.clone();
+                return (Container)c.clone();
         } catch (CloneNotSupportedException e) {
             log.error("container " + name + " (class) does not allow cloning:" + Logging.stackTrace(e));
         }
@@ -108,7 +108,7 @@ public class ComponentRegistry {
         try {
             Template t = templates.getTemplateByName(name);
             if (t != null)
-                return (Template) t.clone();
+                return (Template)t.clone();
         } catch (CloneNotSupportedException e) {
             log.error("template " + name + " (class) does not allow cloning:" + Logging.stackTrace(e));
         }
@@ -123,7 +123,6 @@ public class ComponentRegistry {
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(MMBaseContext.getConfigPath() + "/te", "registry.xml"))));
         } catch (FileNotFoundException e4) {
-            // TODO Auto-generated catch block
             String message = "can not find " + MMBaseContext.getConfigPath() + "/te/registry.xml";
             log.warn(message);
             //throw new RuntimeException(message,e4); jva 1.4
@@ -192,18 +191,7 @@ public class ComponentRegistry {
                     continue;
                 }
                 if (className == null || name == null || path == null || description == null || layout == null) {
-                    log.error(
-                        "container can not be loaded because some parameters are missing(className,name,path,description,layout)("
-                            + className
-                            + ","
-                            + name
-                            + ","
-                            + path
-                            + ","
-                            + description
-                            + ","
-                            + layout
-                            + ")");
+                    log.error("container can not be loaded because some parameters are missing(className,name,path,description,layout)(" + className + "," + name + "," + path + "," + description + "," + layout + ")");
                     continue;
                 }
                 Container c = containers.getContainerByName(name);
@@ -245,18 +233,7 @@ public class ComponentRegistry {
                         Constructor constructor = clazz.getConstructor(new Class[] { String.class, LayoutManager.class });
 
                         if (className == null || name == null || path == null || description == null || layout == null) {
-                            log.error(
-                                "template can not be loaded because some parameters are missing(className,name,path,description,layout)("
-                                    + className
-                                    + ","
-                                    + name
-                                    + ","
-                                    + path
-                                    + ","
-                                    + description
-                                    + ","
-                                    + layout
-                                    + ")");
+                            log.error("template can not be loaded because some parameters are missing(className,name,path,description,layout)(" + className + "," + name + "," + path + "," + description + "," + layout + ")");
                             continue;
                         }
 
@@ -274,7 +251,7 @@ public class ComponentRegistry {
 
                         log.debug("adding template with name " + name);
                         try {
-                            t = (Template) constructor.newInstance(new Object[] { path, lom });
+                            t = (Template)constructor.newInstance(new Object[] { path, lom });
                             t.setName(name);
                             t.setDescription(description);
                             templates.add(t);
@@ -307,16 +284,7 @@ public class ComponentRegistry {
                 String path = child.getProperty("path");
                 String description = child.getProperty("description");
                 if (className == null || name == null || description == null) {
-                    log.error(
-                        "component can not be loaded because some parameters are missing(className,name,description)("
-                            + className
-                            + ","
-                            + name
-                            + ","
-                            + path
-                            + ","
-                            + description
-                            + ")");
+                    log.error("component can not be loaded because some parameters are missing(className,name,description)(" + className + "," + name + "," + path + "," + description + ")");
                     continue;
                 }
                 Component c = components.getComponentByName(name);
@@ -342,7 +310,7 @@ public class ComponentRegistry {
                     try {
                         Object o = clazz.newInstance();
                         if (o instanceof Component) {
-                            c = (Component) o;
+                            c = (Component)o;
                             c.setName(name);
                             c.setDescription(description);
 
