@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.20 2002-07-18 15:43:34 michiel Exp $
+  @version $Id: list.xsl,v 1.21 2002-07-18 16:22:44 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -182,7 +182,7 @@
            </xsl:if>
            </td>
          </xsl:if>
-         <td><xsl:value-of select="@index" />.<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+         <td class="number"><xsl:value-of select="@index" />.<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
          </td>
          <xsl:apply-templates select="field" />
      </tr>
@@ -194,13 +194,13 @@
       <xsl:if test="object[@number&gt;0]">
         <tr>
           <xsl:if test="$deletable='true'">
-            <td></td>
+            <th></th>
           </xsl:if>
-          <td class="tableheader">#</td>
+          <th class="number">#</th>
           <xsl:for-each select="object[1]/field">
-            <td class="tableheader">
+            <th>
               <xsl:value-of select="@name" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-            </td>
+            </th>
           </xsl:for-each>
         </tr>
       </xsl:if>
