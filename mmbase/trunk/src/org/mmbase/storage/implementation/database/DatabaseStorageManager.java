@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.33 2003-12-28 19:49:38 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.34 2004-01-06 13:16:31 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -144,14 +144,9 @@ public class DatabaseStorageManager implements StorageManager {
                     releaseActiveConnection();
                     inTransaction = false;
                     throw new StorageException(se);
-                } finally {
-                    // setting active connection to null ??!!
-                    releaseActiveConnection(); 
                 }
-                inTransaction = true;
-            } else {
-                inTransaction = true;
             }
+            inTransaction = true;
             changes = new HashMap();
         }
 
@@ -167,7 +162,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (activeConnection == null) {
                     throw new StorageException("No active connection");
                 }
-                
+
                 try {
                     activeConnection.commit();
                 } catch (SQLException se) {
