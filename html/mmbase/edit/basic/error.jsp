@@ -1,9 +1,10 @@
 <%@ page isErrorPage="true" import="java.util.*" 
-%><%@ include file="page_base.jsp"
-%>
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><html>
+<head>
 <mm:write referid="style" />
 <title>MMBase editors - Error</title>
-</header>
+</head>
 <body>
 <h1>Sorry, an error happened</h1>
 <h2><%= exception.getMessage() %></h2>
@@ -16,4 +17,5 @@ Stacktrace:
 <hr />
 Please contact your system administrator about this.
 
-<%@include file="footfoot.jsp" %>
+</body>
+</html>
