@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="iso-8859-1" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
   <!-- 
   Demonstrating overriding of standard wizard.xsl 
 
-  @version   $Id: wizard.xsl,v 1.2.2.1 2003-05-15 12:14:42 vpro Exp $
+  @version   $Id: wizard.xsl,v 1.2.2.2 2003-05-22 10:04:56 vpro Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
