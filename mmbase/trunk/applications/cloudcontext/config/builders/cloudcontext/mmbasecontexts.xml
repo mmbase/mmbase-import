@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mmbasecontexts" maintainer="mmbase.org" version="0" extends="object">
+<builder extends="object" maintainer="mmbase.org" name="mmbasecontexts" version="0">
   <classfile>org.mmbase.security.implementation.cloudcontext.builders.Contexts</classfile>
 
   <!-- if you associate (by 'account' field) people nodes you might like this -->
@@ -51,7 +51,7 @@
       </editor>
       <db>
         <name>name</name>
-        <type state="persistent" size="32" notnull="true" key="true">STRING</type>
+        <type key="true" notnull="true" size="32" state="persistent">STRING</type>
       </db>
     </field>
     <field>
@@ -63,7 +63,7 @@
       </gui>
       <db>
         <name>description</name>
-        <type state="persistent" size="1024" notnull="false">STRING</type>
+        <type notnull="false" size="1024" state="persistent">STRING</type>
       </db>
     </field>
   </fieldlist>
