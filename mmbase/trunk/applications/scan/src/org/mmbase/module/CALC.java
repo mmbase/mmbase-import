@@ -15,36 +15,14 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  */
 public class CALC extends ProcessorModule {
-
-	private String classname = getClass().getName();
-
-	public void init() {
-	}
-
-	public void reload() {
-	}
-
-	public void onload() {
-	}
-
-	public void unload() {
-	}
-
-	public void shutdown() {
-	}
-
-
-	/**
-	 * CALC, a support module for servscan.
-	 */
-	public CALC() {
-	}
-
+    private static Logger log = Logging.getLoggerInstance(CALC.class.getName());
+ 
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
@@ -61,8 +39,8 @@ public class CALC extends ProcessorModule {
 	 * Execute the commands provided in the form values
 	 */
 	public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-		debug("CMDS="+cmds);
-		debug("VARS="+vars);
+		log.debug("CMDS="+cmds);
+		log.debug("VARS="+vars);
 		return(false);
 	}
 
@@ -78,25 +56,18 @@ public class CALC extends ProcessorModule {
 			}
 			return(doCalc(cmd));
 		}
+		log.warn("Calc replace was involed with no decent command");
 		return("No command defined");
 	}
 	
-
 	String doCalc(String cmd) {
-//		System.out.println("CMD="+cmd);
+		log.service("Calc module calculates "+cmd);
 		ExprCalc cl=new ExprCalc(cmd);
+		log.warn("Calc converts number Natural number");
 		return(""+(int)(cl.getResult()+0.5));
 	}
 
-
-
 	public String getModuleInfo() {
 		return("Support routines simple calc, Daniel Ockeloen");
-	}
-
-
-	private void debug( String msg )
-	{
-		System.out.println( classname +":"+msg );
 	}
 }
