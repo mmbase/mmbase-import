@@ -20,7 +20,8 @@
   </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="mediafragments"  to="mediasources" type="related" />
+    <relation from="mediafragments"  to="mediasources"   type="related" />
+    <relation from="mediafragments"  to="mediafragments" type="parent" />
 
     <!-- the following should not be needed (because of inheritance) -->
     <relation from="audiofragments"  to="audiosources" type="related" />
