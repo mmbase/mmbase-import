@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Databases</title>
-<link rel="stylesheet" type="text/css" href="../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -45,7 +45,7 @@
   <td class="data"><%=database.getStringValue("item3")%></td>
   <td class="data"><%=database.getStringValue("item4")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="database/actions.jsp?database="+database.getStringValue("item1")%>" />"><img src="../images/search.gif" border="0" alt="view" /></a>
+    <a href="<mm:url page="<%="database/actions.jsp?database="+database.getStringValue("item1")%>" />"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="view" /></a>
   </td>
 </tr>
 <% } %>
@@ -69,7 +69,7 @@
   <td class="data"><%=pool.getStringValue("item2")%></td>
   <td class="data"><%=pool.getStringValue("item3")%></td>
   <td class="navigate">
-    <a href="<mm:url page="<%="database/connections.jsp?pool="+pool.getStringValue("item1")%>"/>"><img src="../images/search.gif" border="0" alt="next" /></a>
+    <a href="<mm:url page="<%="database/connections.jsp?pool="+pool.getStringValue("item1")%>"/>"><img src="<mm:url page="/mmbase/style/images/search.gif" />" border="0" alt="next" /></a>
   </td>
 </tr>
 <% } %>
@@ -77,7 +77,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
+    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
     <td class="data" colspan="4">Return to home page</td>
   </tr>
 </table>

@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Servers</title>
-<link rel="stylesheet" type="text/css" href="../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -51,7 +51,7 @@
     </td>
     <td class="navigate" width="14">
         <mm:field name="name" id="server">
-        <a href="<mm:url page="server/actions.jsp?server=$server" />"><img src="../images/next.gif" alt="next" border="0" /></a>
+        <a href="<mm:url page="server/actions.jsp?server=$server" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
         </mm:field>
     </td>
 </tr>
@@ -60,7 +60,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="6">Return to home page</td>
 </tr>
 </table>
