@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.39 2003-06-10 15:28:20 michiel Exp $
+     * @version  $Id: list.jsp,v 1.40 2003-06-10 16:51:03 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -109,11 +109,12 @@ if (listConfig.wizard != null) {
 
 }
 
+
 // fire query
 NodeList results;
 
 // do not list anything if search is forced and no searchvalue given
-if (listConfig.forceSearch && listConfig.searchFields!=null && "".equals(listConfig.searchValue)) {
+if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields!=null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();    
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
@@ -153,7 +154,6 @@ if (titles != null) {
    }
 }
 
-log.trace("hoi");
 
 String mainManager=listConfig.mainObjectName;
 if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.substring(0,mainManager.length()-1);
