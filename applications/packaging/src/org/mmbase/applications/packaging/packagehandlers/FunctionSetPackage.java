@@ -30,7 +30,6 @@ import org.xml.sax.*;
  * FunctionSetPackage, Handler for html packages
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class FunctionSetPackage extends BasicPackage implements PackageInterface {
 
