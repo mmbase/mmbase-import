@@ -54,6 +54,8 @@
     -->
         <!--
             TODO: Why is this setting not in the jdbc.xml?
+	    keesj:This setting defines what mmbase database.xml file to use
+	    so I don't think this is in the wrong place
         -->
     <property name="database">hsqldb</property>
 
@@ -133,7 +135,7 @@
     compatibility. Perhaps this will change to UTF-8 once this is
     tested well.
     -->
-        <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get urf-8 -->
+        <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get utf-8 -->
     <property name="encoding">UTF-8</property>
 
   </properties>
