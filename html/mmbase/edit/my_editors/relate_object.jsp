@@ -100,7 +100,7 @@ int list_index = 0;		// Index value of the list
   <mm:nodeinfo nodetype="$ntype" type="guitype" />  (<%= node_type %>)</td>
   <td>
 	<a href="#search" title="search"><img src="img/mmbase-search.gif" alt="search" width="21" height="20" border="0" /></a>
-	<a href="new_object.jsp?type=<%= node_type %>" title="new"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
+	<a href="new_object.jsp?ntype=<%= node_type %>" title="new"><img src="img/mmbase-new.gif" alt="new" width="21" height="20" border="0" /></a>
  </td>
 </tr>
 <mm:listnodes id="node_number" type="$ntype" 
@@ -205,14 +205,14 @@ int list_index = 0;		// Index value of the list
 	  <td class="name" align="right">Source</td>
 	  <td>
 		<mm:node number="<%= node_nr %>" id="source_node">
-			<b><mm:field name="gui()" /></b><br><mm:nodeinfo type="guinodemanager" />
+			<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
 		</mm:node> 
 	  </td>
 	</tr><tr valign="top">
 	  <td class="name" align="right">Destination</td>
 	  <td>
 		<mm:node number="<%= rel_nr %>" id="dest_node">
-			<b><mm:field name="gui()" /></b><br><mm:nodeinfo type="guinodemanager" />
+			<b><mm:field name="gui()" /></b><br /><mm:nodeinfo type="guinodemanager" />
 		</mm:node>
 	  </td>
 	</tr><tr valign="top">
@@ -222,21 +222,21 @@ int list_index = 0;		// Index value of the list
 	
 	<mm:notpresent referid="verander_ok">
 		<!-- Create a relation: go to edit relation when it has > 1 editable fields (then it is a relation with a value) -->
+		<mm:notpresent referid="verander">
+			<tr><td colspan="2"><p class="message">We've succeeded! The nodes have been related.</td></tr>
+		</mm:notpresent>
 		<mm:createrelation source="source_node" destination="dest_node" role="<%= rel_kind %>" id="the_relation">
 			<mm:fieldlist type="edit"><mm:first><mm:import id="verander">ok</mm:import></mm:first></mm:fieldlist>
 			<mm:field name="number" jspvar="the_rel" vartype="String" write="false">
 				<% new_nr = the_rel; %>
 			</mm:field>
 		</mm:createrelation>
-		<mm:notpresent referid="verander">
-			<tr><td colspan="2"><p class="message">We've succeeded! The nodes have been related.</td></tr>
-		</mm:notpresent>
 	</mm:notpresent>
 
 	<mm:present referid="verander">
 		<%-- Edit relation: needed when a relation has a value (like position f.e.) --%>
 		<mm:node number="<%= new_nr %>">
-			<tr bgcolor="#CCCCCC"><td colspan="2" class="title-s">Edit the relation</td></tr>
+			<tr bgcolor="#CCCCCC"><td>&nbsp;</td><td class="title-s">Edit the relation</td></tr>
 			<form method="post" action="<mm:url referids="nr,rnr"><mm:param name="new_nr"><%= new_nr %></mm:param></mm:url>">
 			<mm:fieldlist type="edit">
 			<tr>
@@ -251,12 +251,12 @@ int list_index = 0;		// Index value of the list
 
 	<mm:present referid="verander_ok">
 		<!-- Save relation -->
+		<tr><td colspan="2"><p class="message">We've succeeded! The nodes have been related and your input is saved.</p></td></tr>
 		<mm:node number="<%= new_nr %>">
 		    <mm:fieldlist type="edit">
 				 <mm:fieldinfo type="useinput" />
 			</mm:fieldlist>
 		</mm:node>
-		<tr><td colspan="2"><p class="message">We've succeeded! The nodes have been related and your input is saved.</p></td></tr>
 	</mm:present>
 
 	</table>
