@@ -420,16 +420,31 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					currentObjectContext = (String)transactionInfo.knownObjectContexts.get(id);
 				}
 				if (oName.equals("deleteObject")) {
-					if (oMmbaseId==null) { 
-						//delete from temp cloud
-						currentObjectContext = tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(), id);
-						transactionManager.removeNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
-						// destroy
-						tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
-						transactionInfo.knownObjectContexts.remove(id);
-					} else {
-						//delete MMBase node
+					if (id==null) { 
+						throw new TransactionHandlerException(oName + " no id specified");
 					}
+					//delete from temp cloud
+					currentObjectContext = tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(), id);
+					transactionManager.removeNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
+					// destroy
+					tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
+					transactionInfo.knownObjectContexts.remove(id);
+					continue;
+				}
+				if (oName.equals("markObjectDelete")) {
+					debug("markObjectDelete is not tested !!!!!!!",0);
+					if (oMmbaseId==null) { 
+						throw new TransactionHandlerException(oName + " no mmbaseId specified");
+					}
+					// Mark persitent object deleted.
+					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
+					transactionManager.deleteObject(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
+					// destroy
+					tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
+					if(transactionInfo.knownObjectContexts.containsKey(id)) {
+						transactionInfo.knownObjectContexts.remove(id);
+					}
+					continue;
 				}
 			
 
