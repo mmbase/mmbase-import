@@ -112,7 +112,7 @@ public class MMEdit extends ProcessorModule {
 
                 if      (what.equals ("DAYS"))    v = numberList (1, 31);
                 else if (what.equals ("MONTHS"))  v = allMonths ();
-                else if (what.equals ("YEARS"))   v = numberList (1980, 2002);
+                else if (what.equals ("YEARS"))   v = numberList (1901, 2005);
                 else if (what.equals ("HOURS"))   v = numberList (0, 23);
                 else if (what.equals ("MINUTES")) v = numberList (0, 59);
 		else if (what.equals ("SECONDS")) v = numberList (0, 59);
