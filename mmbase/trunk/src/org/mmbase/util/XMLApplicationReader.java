@@ -43,10 +43,12 @@ public class XMLApplicationReader  {
             parser.parse(filename);
             document = parser.getDocument();
 
-	    /*
+
+	   /*
 	    System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
 	    System.out.println("Application name="+getApplicationName());	
 	    System.out.println("Application version="+getApplicationVersion());	
+	    System.out.println("Application auto-deploy="+getApplicationAutoDeploy());	
 	    System.out.println("Needed builders="+getNeededBuilders());	
 	    System.out.println("Needed reldefs="+getNeededRelDefs());	
 	    System.out.println("Allowed relations="+getAllowedRelations());	
@@ -95,6 +97,24 @@ public class XMLApplicationReader  {
 		}
 	}
 	return(-1);
+    }
+
+    /**
+    * get the version of this application
+    */
+    public boolean getApplicationAutoDeploy() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		NamedNodeMap nm=n1.getAttributes();
+		if (nm!=null) {
+			Node n2=nm.getNamedItem("auto-deploy");
+			if (n2!=null) {
+				String tmp=n2.getNodeValue();
+				if (tmp.equals("true")) return(true);
+			}
+		}
+	}
+	return(false);
     }
 
 
