@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.136 2005-03-16 10:50:12 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.137 2005-03-29 14:48:15 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -46,6 +46,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public final static Object VALUE_NULL = new Object() {
             public String toString() { return "[FIELD VALUE NULL]"; }
         };
+
+    /**
+     * Large fields (blobs) are loaded 'lazily', so only on explicit request. Until the first exlicit request this value is stored in such fields.
+     * It can be set back into the field with {@link #storeValue}, to unload the field again.
+     */
+    public final static String VALUE_SHORTED = "$SHORTED";
 
     /**
      * @deprecated use RelationsCache.getCache().getHits()
@@ -126,20 +132,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     private MMObjectBuilder builder = null;
 
-    /**
-     * Used to make fields from multiple nodes (for multilevel for example)
-     * possible.
-     * This is a 'default' value.
-     * XXX: specifying the prefix in the fieldName SHOULD override this field.
-     *
-     * MM: The function of this variable is not very clear. I think a Node should either be
-     *     not a clusternode, in which case it does not need prefixed fields, or it should be a clusternode
-     *     and then fields might be prefixed, but anyway it should be implemented in ClusterNode itself.
-     *     Also in the comments of getStringValue someone said something about this prefix not being needed.
-
-     * @scope private
-     */
-    public String prefix="";
 
 
     /**
@@ -386,7 +378,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.6.2
      */
     String defaultToString() {
-        StringBuffer result = new StringBuffer("prefix='" + prefix + "'");
+        StringBuffer result = new StringBuffer();
         try {
             Set entrySet = values.entrySet();
             synchronized(values) {
@@ -407,6 +399,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         } catch(Throwable e) {
             result.append("" + values); // simpler version...
         }
+        result.append(super.toString());
         return result.toString();
     }
 
@@ -435,7 +428,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
      */
-    public void storeValue(String fieldName,Object fieldValue) {
+    public void storeValue(String fieldName, Object fieldValue) {
         if (fieldValue == null) {
             values.remove(fieldName);
         } else {
@@ -665,7 +658,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (! initializing && !changed.contains(fieldName) && state==FieldDefs.DBSTATE_PERSISTENT) {
+        if (! initializing && !changed.contains(fieldName) && state == FieldDefs.DBSTATE_PERSISTENT) {
             changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
@@ -699,14 +692,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Object getValue(String fieldName) {
 
         // get the value from the values table
-        Object o = retrieveValue(prefix + fieldName);
+        Object o = retrieveValue(fieldName);
 
         // explicitly load byte values if they are 'shortened'
         // should probably be made more generic for other values
-        if ("$SHORTED".equals(o) && getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
-            o = parent.getShortedByte(fieldName, getNumber());
+        if (VALUE_SHORTED.equals(o) &&  // could use == if we are sure that everybody uses the constant
+            getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
+            o = parent.getShortedByte(fieldName, this);
             // should we do this? May give memory issues
-            storeValue(prefix + fieldName, o);
+            storeValue(fieldName, o);
         }
 
         // routine to check for indirect values
@@ -738,7 +732,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // get mapped into a real value. this saves speed and memory
         // because every blob/text mapping is a extra request to the
         // database
-        if (tmp.indexOf("$SHORTED") == 0) {
+        if (VALUE_SHORTED.equals(tmp)) {
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for
             // multiple database support.
@@ -748,39 +742,23 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 log.debug("getStringValue(): fieldName "+fieldName+" has type "+type);
             }
             // check if for known mapped types
-            if (type==FieldDefs.TYPE_STRING) {
+            if (type == FieldDefs.TYPE_STRING) {
                 MMObjectBuilder bul;
 
                 int number=getNumber();
-                // check if its in a multilevel node (than we have no node number and
-                // XXX:Not needed, since checking takes place in MultiRelations!
-                // Can be dropped
-                if (prefix!=null && prefix.length()>0) {
-                    String tmptable="";
-                    int pos=prefix.indexOf('.');
-                    if (pos!=-1) {
-                        tmptable=prefix.substring(0,pos);
-                    } else {
-                        tmptable=prefix;
-                    }
-                    //                    number=getNumber();
-                    bul=parent.mmb.getMMObject(tmptable);
-                    log.debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldName);
-                } else {
-                    bul=parent;
-                }
+                bul = parent;
 
                 // call our builder with the convert request this will probably
                 // map it to the database we are running.
-                String tmp2=bul.getShortedText(fieldName,  number);
+                String tmp2 = bul.getShortedText(fieldName,  this);
 
                 // did we get a result then store it in the values for next use
                 // and return it.
                 // we could in the future also leave it unmapped in the values
                 // or make this programmable per builder ?
-                if (tmp2!=null) {
+                if (tmp2 != null) {
                     // store the unmapped value (replacing the $SHORTED text)
-                    storeValue(prefix+fieldName,tmp2);
+                    storeValue(fieldName, tmp2);
                     // return the found and now unmapped value
                     return tmp2;
                 } else {
@@ -875,7 +853,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 // We should't get here... already gets handled by getValue()!
                 b = parent.getShortedByte(fieldName, getNumber());
                 // should we do this? May give memory issues
-                storeValue(prefix + fieldName, b);
+                storeValue(fieldName, b);
                 if (b == null) {
                     b = new byte[0];
                 }
@@ -1035,15 +1013,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's DBType
      */
     public int getDBType(String fieldName) {
-        if (prefix != null && prefix.length()>0) {
-            // If the prefix is set use the builder contained therein
-            int pos=prefix.indexOf('.');
-            if (pos==-1) pos=prefix.length();
-            MMObjectBuilder bul=parent.mmb.getMMObject(prefix.substring(0,pos));
-            return bul.getDBType(fieldName);
-        } else {
-            return parent.getDBType(fieldName);
-        }
+        return parent.getDBType(fieldName);
     }
 
     /**
