@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.10 2001-02-20 17:45:17 vpro Exp $
+$Id: g2encoders.java,v 1.11 2001-03-07 14:19:32 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2001/02/20 17:45:17  vpro
+Davzev: Added method comments, more debug and moved doMakeDir() sothat it only will be called when state is encode.
+
 Revision 1.9  2001/02/19 10:10:11  vpro
 Davzev: Changed wrong debug in doMakeDir.
 
@@ -31,7 +34,7 @@ import org.mmbase.service.interfaces.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.10 $ $Date: 2001-02-20 17:45:17 $
+ * @version $Revision: 1.11 $ $Date: 2001-03-07 14:19:32 $
  */
 public class g2encoders extends RemoteBuilder {
 	private boolean debug = true;
@@ -94,13 +97,14 @@ public class g2encoders extends RemoteBuilder {
 	 * @param ctype the node changetype.
 	 */
 	public void nodeChanged(String serviceRef,String buildername,String ctype) {		
-		if (debug) debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): Getting node from mmbase.");
+		if (debug) debug("nodeChanged("+serviceRef+","+buildername+","+ctype+") Getting "+buildername+" node "+serviceRef+" to find out what to do.");
 		// Gets the node by requesting it from the mmbase space through remotexml.
 		getNode(); 
 				
 		String state=getStringValue("state");
 		debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): state("+state+")");
 		if (state.equals("version")) {
+			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
 		} else if (state.equals("encode")) {
 			// All encoded files are filed under objectnr subdirectory.
@@ -108,8 +112,10 @@ public class g2encoders extends RemoteBuilder {
 			doMakeDir(); 
 			// Start the encoding process.
 			doEncode();
+		} else if (state.equals("busy")) {
+			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): "+buildername+" RemoteBuilder named "+getStringValue("name")+" is "+state);
 		} else {
-			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): ERROR, Unknown state:"+state);
+			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): ERROR unknown state: "+state+", ignoring it");
 		}
 	}
 
