@@ -17,7 +17,6 @@
 
 <mm:node number="$learnobject">
 
-<a href="<%= request.getContextPath() %>/pdf.db?number=<mm:write referid="learnobject"/>" style="align: right">Bekijk als PDF</a>.
 <mm:import id="layout"><mm:field name="layout"/></mm:import>
 <mm:import id="imagelayout"><mm:field name="imagelayout"/></mm:import>
   <h2> <mm:field name="name"/></h2>
