@@ -1,6 +1,0 @@
-<!--
-      stats.dtd
-        - DTD for MMBase stats module
--->
-<!ELEMENT stats (AllowCache)>
-<!ELEMENT AllowCache (#PCDATA)>
