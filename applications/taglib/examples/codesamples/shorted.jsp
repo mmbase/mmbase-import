@@ -1,7 +1,7 @@
 <mm:formatter>
 <mm:field name="title" />
 <mm:xslt>
-  <xsl:template match="field" >
+  <xsl:template match="field[not(@notfilled)]" >
     <h1>
     <xsl:value-of select="substring(., 0, 5)" />
     ...</h1>
