@@ -4,12 +4,12 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
+<!ELEMENT forums (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,email*,layout*,xslts*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postarea*,avatars*,contactinfo?,smileys?,privatemessages?,postingsperpage?)>
+<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postarea*,avatars*,email*,layout*,contactinfo?,smileys?,privatemessages?,postingsperpage?)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
@@ -59,6 +59,15 @@
 <!ELEMENT avatars (upload*,gallery*)>
 <!ELEMENT upload EMPTY>
 <!ATTLIST upload enable (false|true) #IMPLIED>
+
+<!ELEMENT email (#PCDATA)>
+<!ATTLIST email from CDATA #IMPLIED>
+
+<!ELEMENT layout (header*,footer*)>
+<!ELEMENT header EMPTY>
+<!ATTLIST header path CDATA #IMPLIED>
+<!ELEMENT footer EMPTY>
+<!ATTLIST footer path CDATA #IMPLIED>
 
 <!ELEMENT xslts (postings*)>
 <!ELEMENT postings EMPTY>
