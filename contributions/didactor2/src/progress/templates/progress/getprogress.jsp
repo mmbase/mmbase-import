@@ -35,10 +35,12 @@
       <mm:compare referid="nodetype" value="tests">
 
             <% nof_tests++; %>
-            <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><mm:treeinclude page="/progress/teststatus.jsp" objectlist="$includePath" referids="$referids"><mm:param name="copybookNo"><mm:write referid="copybookNo"/></mm:param><mm:param name="testNo"><mm:field name="number"/></mm:param></mm:treeinclude></mm:import>
+<%--            <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><mm:treeinclude page="/progress/teststatus.jsp" objectlist="$includePath" referids="$referids"><mm:param name="copybookNo"><mm:write referid="copybookNo"/></mm:param><mm:param name="testNo"><mm:field name="number"/></mm:param></mm:treeinclude></mm:import>
             <%
                 testStatus = testStatus.trim();
-            %><mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><%= testStatus %></mm:import>
+            %><mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><%= testStatus %></mm:import>--%>
+            <mm:import id="testNo" reset="true"><mm:field name="number"/></mm:import>
+            <%@include file="teststatus.jsp"%>
             <mm:compare referid="teststatus" value="passed">
                 <% nof_tests_passed++; %>
             </mm:compare>
