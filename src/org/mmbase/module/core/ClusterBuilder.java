@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.58 2004-03-05 15:19:46 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.59 2004-04-26 14:59:11 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -1225,12 +1225,17 @@ public class ClusterBuilder extends VirtualBuilder {
             }
 
             BasicStep nodesStep= getNodesStep(query.getSteps(), nodeNumber.intValue());
-            if (nodesStep != null) {
-                Iterator iNodeNumbers= snodes.iterator();
-                while (iNodeNumbers.hasNext()) {
-                    Integer number= (Integer)iNodeNumbers.next();
-                    nodesStep.addNode(number.intValue());
-                }
+            
+            if (nodesStep == null) {
+                // specified a node which is not of the type of one of the steps.
+                // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
+                nodesStep = (BasicStep) query.getSteps().get(0);
+            }
+
+            Iterator iNodeNumbers= snodes.iterator();
+            while (iNodeNumbers.hasNext()) {
+                Integer number= (Integer)iNodeNumbers.next();
+                nodesStep.addNode(number.intValue());
             }
         }
 
@@ -1579,8 +1584,8 @@ public class ClusterBuilder extends VirtualBuilder {
             return null;
         }
 
-        MMObjectBuilder builder= node.parent;
-        BasicStep result= null;
+        MMObjectBuilder builder = node.parent;
+        BasicStep result = null;
         do {
             // Find step corresponding to builder.
             Iterator iSteps= steps.iterator();
@@ -1588,12 +1593,18 @@ public class ClusterBuilder extends VirtualBuilder {
                 BasicStep step= (BasicStep)iSteps.next();
                 if (step.getTableName().equals(builder.tableName)) {
                     // Found.
-                    result= step;
+                    result = step;
                 }
             }
             // Not found, then try again with parentbuilder.
-            builder= builder.getParentBuilder();
+            builder = builder.getParentBuilder();
         } while (builder != null && result == null);
+
+        /*
+          if (result == null) {
+          throw new RuntimeException("Node '" + nodeNumber + "' not of one of the types " + steps);
+          }
+        */
 
         return result;
     }
