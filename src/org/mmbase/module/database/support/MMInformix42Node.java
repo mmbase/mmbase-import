@@ -27,7 +27,7 @@ import org.mmbase.util.*;
 * @author Daniel Ockeloen
 * @author Mark Huijser
 * @version 12 Mar 1997
-* @$Revision: 1.27 $ $Date: 2000-11-22 12:02:35 $
+* @$Revision: 1.28 $ $Date: 2000-11-27 23:40:34 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -340,6 +340,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                 mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
                         }
                 }
+		node.clearChanged();
                 if (debug) debug("INSERTED="+node);
                 return(number);
         }
