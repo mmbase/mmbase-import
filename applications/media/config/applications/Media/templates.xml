@@ -9,15 +9,15 @@
 	</node>
 
 	<node number="7001" owner="default">
-		<name>Object template</name>
-		<description>Produces pieces of HTML to include in your page</description>
+		<name>Link</name>
+		<description>Produces pieces of HTML to include (with &lt;object&gt;) in your page</description>
 		<url>/mediahtml?type=link&amp;</url>
 		<mimetype>text/html</mimetype>
 	</node>
 
-	<node number="7001" owner="default">
-		<name>Object template</name>
-		<description>Produces pieces of HTML to include in your page</description>
+	<node number="7002" owner="default">
+		<name>Link + intro</name>
+		<description>Produces pieces of HTML to include (with &lt;object&gt;) in your page</description>
 		<url>/mediahtml?type=link_intro&amp;</url>
 		<mimetype>text/html</mimetype>
 	</node>

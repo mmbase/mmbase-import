@@ -21,7 +21,7 @@
 </mm:field>
 <h1><mm:field name="title" /></h1>
 <table>
-<tr><th>Format</th><th>URL</th></tr>
+<tr><th>Description</th><th>URL</th></tr>
 <mm:log jspvar="log">
 <mm:field name="filteredurls(ram,wmp,rm)" jspvar="urls" vartype="list">
    <%
@@ -37,7 +37,7 @@
            completeIndication = " (*)";
            foundNonFragments = true;
          }
-         out.println("<tr><td>" + uc.getFormat() + "</td><td><a href='" + url + "'>" + url + "</a>" + completeIndication + "</td></tr>"); 
+         out.println("<tr><td>" + uc.getGUIIndicator(locale) + "</td><td><a href='" + url + "'>" + url + "</a>" + completeIndication + "</td></tr>"); 
        
 
       }

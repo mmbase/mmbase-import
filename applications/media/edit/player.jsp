@@ -54,7 +54,9 @@
     <td valign="top" bgcolor="#717171">
           <mm:write referid="player">
           <mm:compare value="real">
-              <mm:import id="source"><%=thisServer(request, /mediafragment.rm)%>?format=rm&environment=false&fragment=<mm:field name="number" /></mm:import>
+              <mm:field name="url(ram)" jspvar="url">
+                <mm:import id="source"><%=thisServer(request, url)%></mm:import>
+              </mm:field>
               <embed src="<mm:write referid="source" />"
                 width="260" 
                 height="300"   
