@@ -93,7 +93,7 @@
 <!ELEMENT fieldset ( prompt*, field+, prompt* ) >
 
 <!ELEMENT field ( #PCDATA | optionlist | prompt | description | prefix | postfix )* >
-<!ATTLIST field dtpattern NMTOKEN #IMPLIED >
+<!ATTLIST field dtpattern CDATA #IMPLIED >
 <!ATTLIST field dtmax NMTOKEN #IMPLIED >
 <!ATTLIST field dtmin NMTOKEN #IMPLIED >
 <!ATTLIST field dtmaxlength NMTOKEN #IMPLIED >
