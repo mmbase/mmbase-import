@@ -63,7 +63,9 @@
     </mm:present>
    <%@include file="commitGroupOrUserRights.jsp" %>
    </mm:context>
-
+<mm:import id="current">groups</mm:import>
+<%@include file="navigate.div.jsp" %>
+<%@include file="you.div.jsp" %>
 
     <h1><mm:field name="gui()" /> (commited)</h1>
    <%@include file="group.div.jsp" %>
