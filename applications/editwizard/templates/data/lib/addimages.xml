@@ -1,0 +1,34 @@
+<list fdatapath="relation[object/@type='images']" minoccurs="0" maxoccurs="*" type="image" defaultdisplaymode="summarize" hidecommand="">
+		<title>Related images</title>
+		<description>These are the images that are related to this news item.</description>
+
+		<command name="search" nodepath="images" fields="title,description">
+			<prompt>Search for images </prompt>
+		</command>
+
+		<!--  
+        Here displaytype is "image" with displaymode "summarize", which is picked 
+        up in the XSL that creates the actual HTML form and translated to an 
+        actual list of images, instead of a dropdown or textfield displaying 
+        just the name (or whatever).
+        
+        So displaytype="image" is a special case.
+        
+        The fields below with ftype="data" are used in the creation of the image 
+        list, so that the images also have some textual description.
+		-->
+		<item displaymode="summarize" displaytype="image">
+			<title>A view to an image</title>
+			<description></description>
+			<field name="name" fdatapath="object/field[@name='title']" ftype="data" />
+			<field name="description" fdatapath="object/field[@name='description']" ftype="data" />
+		</item>
+
+		<item displaymode="add">
+			<action type="create">
+				<relation role="related" destinationtype="images" >
+				</relation>
+			</action>
+		</item>
+	</list>
+

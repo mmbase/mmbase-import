@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<wizard-schema id="empty">
+	<title>Enter Wizard Title Here</title>
+
+	<action type="create">
+		<object type="#objecttype">
+			<field name="#fieldname">defaultvalue for this field</field>
+		</object>
+	</action>
+	
+	<action type="delete" />
+	
+	<action type="load">
+		<relation destination="#objecttype" role="#role" />
+		<relation destination="#objecttype" role="#role" />
+
+		<field name="#fieldname" />
+		<field name="#fieldname" />
+		<field name="#fieldname" />
+	</action>
+	
+	<steps>
+		<step form-schema="step1" />
+	</steps>
+
+	<form-schema id="step1">
+		<title>Enter form title here</title>
+		<field name="fieldname" >
+			<prompt>Field Prompt</prompt>
+		</field>
+		
+		<list role="related" destination="#objecttype" minoccurs="0" maxoccurs="*">
+			<command name="search" startnodes="#startnodes" nodepath="#nodepath" fields="#fieldlist" orderby="#fieldnames" constraints="#constraints" age="#age"  >
+				<prompt>#Search command prompt</prompt>
+				<search-filter>
+					<name>firstname contains</name>
+					<search-fields>firstname</search-fields>
+				</search-filter>
+				<search-filter>
+					<name>lastname contains</name>
+					<search-fields>lastname</search-fields>
+				</search-filter>
+			</command>
+
+			<item>
+				<field name="#fieldname" >
+					<prompt>Field prompt</prompt>
+					<description>Field Description</description>
+				</field>
+			</item>
+			
+			<action type="create">
+				<relation destinationtype="#objecttype" role="#role">
+				</relation>
+			</action>
+		</list>
+		
+	</form-schema>
+</wizard-schema>
