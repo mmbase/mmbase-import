@@ -15,6 +15,7 @@ var player = null;
 function getPlayer() {
   // autodetection on what kind of javascript to use
   if (player == null) {
+     alert(navigator.plugins);
      try {
         parent.frames['left'].document.embeddedplayer.GetPosition();
         player = "real";
@@ -22,13 +23,17 @@ function getPlayer() {
         try {
            parent.frames['left'].document.embeddedplayer.GetTime();
            player = "qt";
+           if(navigator.appName.search("Internet") && navigator.platform.search("Mac")) { // does this check work?
+               alert("Quick-time for apple internet explorer does not support javascript");
+           }
         } catch (e) {
             player="wm";
         }
      }
-     //    alert("Setting player to '" + player + "'");
+     //alert("Setting player to '" + player + "'" + " on " + navigator.appName + " " + navigator.platform);
+
    }
-   //     player = parent.frames['left'].document.body.id;
+   //  player = parent.frames['left'].document.body.id;
    //  alert("Getting player to '" + player);
   return player;
 }
