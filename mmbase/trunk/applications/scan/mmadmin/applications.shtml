@@ -1,0 +1,66 @@
+<PROCESSOR MMEXAMPLES>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
+<PART /mmadmin/nav.shtml?4>
+<BR>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Naam</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Version</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Installed</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Maintainer</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Auto-Deploy</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Actions</B>
+	</TD>
+</TR>
+
+<LIST APPLICATIONS PROCESSOR="MMEXAMPLES" ITEMS="5">
+<TR>
+		<TD BGCOLOR="#444477">
+			$ITEM1
+		</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM2
+		</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM3
+		</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM4
+		</TD>
+		<TD BGCOLOR="#444477">
+			$ITEM5
+		</TD>
+		<TD BGCOLOR="#444477">
+			<A HREF="applications_actions.shtml?$ITEM1">
+			<FONT COLOR="#FFFFFF">select</FONT>
+			</A>
+		</TD>
+</TR>
+</LIST>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
