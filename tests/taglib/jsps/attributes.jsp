@@ -1,3 +1,4 @@
+<%@ page isELIgnored="true" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><html>
 <body>
@@ -16,7 +17,7 @@
   <tr><td>After change</td><td>DEF</td><td><mm:write value="$abcde" /></td><td>fails in mmbase 1.6.0/resin</td></tr>
   <tr><td>String + var</td><td>ABCDEF</td><td><mm:write value="ABC$abcde" /></td><td>&nbsp;</td></tr>
   <mm:import id="DEF">xyz</mm:import>
-  <tr><td>Var in var</td><td>xyz</td><td><mm:write value=" ${$abcde}" /></td><td>fails before 1.7.0.20030326,  ok in 1.6</tr>
+  <tr><td>Var in var</td><td>xyz</td><td><mm:write value="${$abcde}" /></td><td>fails before 1.7.0.20030326,  ok in 1.6</tr>
   <tr><td>Expr. without var</td><td>20</td><td><mm:write value="${+2*10}" /></td><td>&nbsp;</td></tr>
   <mm:import id="a">3</mm:import>
   <mm:import id="b">10</mm:import>
