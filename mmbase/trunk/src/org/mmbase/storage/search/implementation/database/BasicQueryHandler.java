@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.23 2004-03-09 12:56:05 rob Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.24 2004-03-09 13:43:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -72,27 +72,29 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
         // Flag, set if offset must be supported by skipping results.
         boolean mustSkipResults =
-        (query.getOffset() != SearchQuery.DEFAULT_OFFSET)
-        && (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_NONE);
-        log.debug("Database offset support = "+(sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE));
-        log.debug("mustSkipResults= "+mustSkipResults);
+            (query.getOffset() != SearchQuery.DEFAULT_OFFSET) && 
+            (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Database offset support = " + (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) != SearchQueryHandler.SUPPORT_NONE));
+            log.debug("mustSkipResults = " + mustSkipResults);
+        }
 
         // Flag, set if sql handler supports maxnumber.
-        boolean sqlHandlerSupportsMaxNumber =
-        sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        != SearchQueryHandler.SUPPORT_NONE;
-        log.debug("Database max support = "+sqlHandlerSupportsMaxNumber);
+        boolean sqlHandlerSupportsMaxNumber = sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) != SearchQueryHandler.SUPPORT_NONE;
+        if (log.isDebugEnabled()) {
+            log.debug("Database max support = " + sqlHandlerSupportsMaxNumber);
+        }
+
+        int maxNumber = query.getMaxNumber(); // needed often, store to avoid function calls
 
         // Flag, set if maxnumber must be supported by truncating results.
-        boolean mustTruncateResults =
-        (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER)
-        && (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_NONE);
+        boolean mustTruncateResults = (maxNumber != SearchQuery.DEFAULT_MAX_NUMBER) && (! sqlHandlerSupportsMaxNumber);
+
        
         // Generate the SQL string for the query.
         try {
-            if (mustSkipResults) {
+            if (mustSkipResults) { // offset not supported, but needed
                 log.debug("offset used in query and not supported in database.");
                 ModifiableQuery modifiedQuery = new ModifiableQuery(query);
                 modifiedQuery.setOffset(SearchQuery.DEFAULT_OFFSET);
@@ -100,12 +102,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 if (mustTruncateResults) {
                     log.debug("max used in query but not supported in database.");
                     // Weak support for offset, weak support for maxnumber:
-                    modifiedQuery.setMaxNumber(Integer.MAX_VALUE);              
-                } else if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
+                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // appy no maximum, but truncate result
+                } else if (maxNumber != SearchQuery.DEFAULT_MAX_NUMBER) {
                     log.debug("max used in query and supported by database.");
                     // Because offset is not supported add max with the offset.
                     // Weak support for offset, sql handler supports maxnumber:
-                    modifiedQuery.setMaxNumber(query.getOffset() + query.getMaxNumber());
+                    modifiedQuery.setMaxNumber(query.getOffset() + maxNumber);
                 }
                 sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
                 
@@ -116,7 +118,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     // Sql handler supports offset, or not offset is specified.
                     // weak support for maxnumber:
                     ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-                    modifiedQuery.setMaxNumber(Integer.MAX_VALUE);
+                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // appy no maximum, but truncate result
                     sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
                 } else {
                     // Offset not used, maxnumber not used.
@@ -124,7 +126,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     sqlString = sqlHandler.toSql(query, sqlHandler);
                 }
             }
-           // TODO: test maximum sql statement length is not exceeded.
+            // TODO: test maximum sql statement length is not exceeded.
 
             // Execute the SQL and store results as cluster-/real nodes.
             MMJdbc2NodeInterface database = mmbase.getDatabase();
@@ -132,9 +134,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
             try {
-                // Skip results to provide weak support for offset.
                 if (mustSkipResults) {
-                    log.debug("Skip data before the index.");
+                    log.debug("skipping results, to provide weak support for offset");
                     for (int i = 0; i < query.getOffset(); i++) {
                         rs.next();
                     }
@@ -143,7 +144,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 // Read results.
                 // Truncate results to provide weak support for maxnumber.
                 while (rs.next()
-                && (sqlHandlerSupportsMaxNumber || results.size() < query.getMaxNumber())
+                       && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber)
                        ) {
                     MMObjectNode node = null;
                     if (builder instanceof ClusterBuilder) {
@@ -159,6 +160,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     // start initializing a node
                     node.start();
                     for (int i = 0; i < fields.length; i++) {
+
                         String fieldName;
                         String prefix;
 
@@ -201,7 +203,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
         } catch (Exception e) {
             // Something went wrong, log exception
             // and rethrow as SearchQueryException.
-            log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
+            if (log.isDebugEnabled()) {
+                log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
+            }
             throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getMessage(), e);
         } finally {
             mmbase.closeConnection(con, stmt);
