@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.41 2002-06-07 12:10:34 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.42 2002-07-03 14:41:54 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -79,9 +79,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     log.error(converterPath + " specified by images.xml does not exist");
                 } else if(!checkConvCom.isFile()) {
                     log.error(converterPath + " specified by images.xml is not a file");
-                } else if(!checkConvCom.canRead()) {
-                    log.error(converterPath + " specified by images.xml is not readable");
-                }
+                } 
             }
         }
         // do a test-run, maybe slow during startup, but when it is done this way, we can also output some additional info in the log about version..
@@ -112,8 +110,10 @@ public class ConvertImageMagick implements ImageConvertInterface {
             } else {
                 log.error("converter from location " + converterPath + ", gave strange result: " + outputstream.toString() + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
             }
-        } catch (Exception e) {
-            log.error(converterPath + " could not be executed ("+ e.toString() +")conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+        } catch (SecurityException e) {
+            log.error("Was not permitted to execute (because of SecurityManager) " + converterPath + " ("+ e.toString() +") conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
+        } catch (IOException e) {
+            log.error("An I/O error occured while executing " + converterPath + " ("+ e.toString() +") conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
         }
         // Cant do more checking then this, i think....
         tmp=(String)params.get("ImageConvert.ColorizeHexScale");
