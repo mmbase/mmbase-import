@@ -54,44 +54,4 @@ public abstract class ReaderTransformer implements CharTransformer {
         Writer sw = transformBack(new StringReader(r));
         return sw.toString();
     }
-
-
-    /**
-     * An implemention for tranform(Reader, Writer) based on transform(String).
-     * Evil, evil, but convention sometimes. 
-     * These functions can be used by extensions to implement transform and transformBack
-     */
-    protected Writer transformUtil(Reader r, Writer w)  {
-        try {
-            StringWriter sw = new StringWriter();
-            while (true) {
-                int c = r.read();
-                if (c == -1) break;
-                sw.write(c);
-            }
-            String result = transform(sw.toString());
-            w.write(result);
-        } catch (java.io.IOException e) {
-            log.error(e.toString());
-            log.debug(Logging.stackTrace(e));
-        }
-        return w;
-    }
-
-    protected Writer transformBackUtil(Reader r, Writer w)  {
-        try {
-            StringWriter sw = new StringWriter();
-            while (true) {
-                int c = r.read();
-                if (c == -1) break;
-                sw.write(c);
-            }
-            String result = transformBack(sw.toString());
-            w.write(result);
-        } catch (java.io.IOException e) {
-            log.error(e.toString());
-            log.debug(Logging.stackTrace(e));
-        }
-        return w;
-    }    
 }
