@@ -46,7 +46,7 @@ public class RelatedTag extends ListTag {
             node = getCloud().getNode((String)StringSplitter.split(nodesString, ",").elementAt(0));
         } else {
             node = getNode();
-            nodesString = node.getStringValue("number");
+            searchNodes = node.getStringValue("number");
         }
         String nodeType=node.getNodeManager().getName();
         // adapt the path to include the (needed) starting nodemanager name
