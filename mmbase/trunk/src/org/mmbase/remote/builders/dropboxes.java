@@ -1,15 +1,3 @@
-/*
-
-$Id: dropboxes.java,v 1.2 2000-02-28 16:39:27 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-$Log: not supported by cvs2svn $
-*/
 package org.mmbase.remote.builders;
 
 import java.net.*;
@@ -23,7 +11,7 @@ import org.mmbase.service.implementations.*;
 
 
 /**
- * @version $Revision: 1.2 $ $Date: 2000-02-28 16:39:27 $ 
+ * @version $Revision: 1.3 $ $Date: 2000-03-29 09:48:10 $ 
  * @author Daniel Ockeloen
  */
 public class dropboxes extends RemoteBuilder {
@@ -119,7 +107,7 @@ public class dropboxes extends RemoteBuilder {
 
 	void getConfig() {
 		classname=(String)props.get("implementation");
-		if( debug ) debug("getConfig(): impl("+classname+")");p
+		if( debug ) debug("getConfig(): impl("+classname+")");
 		try {
 			Class newclass=Class.forName(classname);
 			impl = (dropboxInterface)newclass.newInstance();

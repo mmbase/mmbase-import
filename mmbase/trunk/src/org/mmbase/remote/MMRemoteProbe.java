@@ -1,6 +1,3 @@
-/*
-*/
-
 package org.mmbase.remote;
 
 import java.lang.*;
@@ -77,6 +74,7 @@ public class MMRemoteProbe implements Runnable {
 	 */
 	public void doWork() {
 		try {
+			if (debug) debug("doWork()");
 			con.commitNode(servicenr,"mmservers",toXML());
 			Thread.sleep(60*1000);
 		} catch(Exception e) {
