@@ -1,4 +1,4 @@
-<!ELEMENT wizard-schema ( title+, task-description*, description*, action+, lists?, steps?, form-schema+ ) >
+<!ELEMENT wizard-schema ( title+, task-description*, description*, action*, lists?, steps?, form-schema+ ) >
 <!ATTLIST wizard-schema id NMTOKEN #IMPLIED >
 
 <!ELEMENT title ( #PCDATA ) >
