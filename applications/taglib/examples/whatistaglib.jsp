@@ -14,18 +14,19 @@
       <%-- based on normal xslt, but a little changed --%>
       <xsl:import href="mm:xslt/mmxf2xhtml.xslt" />
       <xsl:param name="color">green</xsl:param>
-      <xsl:template match = "section" >
-        <xsl:if test="count(ancestor::section)=0"><h1 style="color:{$color};"><xsl:value-of select="@title" /></h1></xsl:if>
-        <xsl:if test="count(ancestor::section)=1"><h2 style="color:red;"><strong><xsl:value-of select="@title" /></strong></h2></xsl:if>
-        <xsl:apply-templates select = "section|p|ul" />
-      </xsl:template>        
+      <xsl:template match = "h" >
+        <xsl:if test="count(ancestor::section)=1"><xsl:if test="string(.)"><h1 style="color:{$color};"><xsl:value-of select="." /></h1></xsl:if></xsl:if>
+        <xsl:if test="count(ancestor::section)=2"><h2 style="color:red;"><strong><xsl:value-of select="." /></strong></h2></xsl:if>
+      </xsl:template>
     </mm:xslt>
     <mmxf>
-      <section title="What is MMBase Taglib?">
+      <section>
+        <h>What is MMBase Taglib?</h>
         <p>
           This question can be split up in two sub-questions.
         </p>
-        <section title="What is MMBase?">
+        <section>
+          <h>What is MMBase?</h>
           <p>
             I think we can assume that we know what is MMBase, but here are some definitions:
           </p>
@@ -34,7 +35,8 @@
             <li>MMBase is a program that connects a database, which is filled by somebody else, to your webpages</li>
           </ul>  
         </section>
-        <section title="What is a taglib?">
+        <section>
+          <h>What is a taglib?</h>
           <p>
             A taglib is a library of prefabricated functionality wrapped in an XML syntax, which can
             be used easily in other documents using XML (like) syntaxes like HTML.
