@@ -7,7 +7,7 @@
 	the changes are persistent then)
 
 	@since   MMBase-1.6
-	@version $Id: caches.xml,v 1.8 2004-02-03 15:41:46 michiel Exp $
+	@version $Id: caches.xml,v 1.8.2.1 2004-12-14 13:00:05 marcel Exp $
 	@author  Michiel Meeuwissen
 
 -->
@@ -43,7 +43,7 @@
 	<!-- related nodes -->
 	<cache name="RelatedNodesCache">
 		<status>active</status>
-		<size>300</size>
+		<size>4096</size>
 	</cache>
 
 	<!-- relation nodes -->
