@@ -65,4 +65,101 @@
 	<mm:booleanfunction set="mmpb" name="deleteAllowedRelation" referids="modelfilename,oldfrom,oldto,oldtype" />
 </mm:compare>
 
+<mm:compare value="setbuilderdescription" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="language" />
+	<mm:import externid="newdescription" />
+	<mm:booleanfunction set="mmpb" name="setBuilderDescription" referids="modelfilename,builder,language,newdescription" />
+</mm:compare>
+
+
+<mm:compare value="setbuilderfielddescription" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="field" />
+	<mm:import externid="language" />
+	<mm:import externid="newdescription" />
+	<mm:booleanfunction set="mmpb" name="setBuilderFieldDescription" referids="modelfilename,builder,field,language,newdescription" />
+</mm:compare>
+
+
+<mm:compare value="addbuilderfield" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="newdbname" />
+	<mm:import externid="newdbtype" />
+	<mm:import externid="newdbstate" />
+	<mm:import externid="newdbsize" />
+	<mm:booleanfunction set="mmpb" name="addBuilderField" referids="modelfilename,builder,newdbname,newdbtype,newdbstate,newdbsize" />
+</mm:compare>
+
+
+<mm:compare value="deleteneededbuilderfield" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="oldfield" />
+	<mm:booleanfunction set="mmpb" name="deleteNeededBuilderField" referids="modelfilename,builder,oldfield" />
+</mm:compare>
+
+
+<mm:compare value="setbuilderfieldpositions" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="field" />
+	<mm:import externid="newinputpos" />
+	<mm:import externid="newsearchpos" />
+	<mm:import externid="newlistpos" />
+	<mm:booleanfunction set="mmpb" name="setBuilderFieldPositions" referids="modelfilename,builder,field,newinputpos,newsearchpos,newlistpos" />
+</mm:compare>
+
+<mm:compare value="setbuilderfielddbvalues" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="field" />
+	<mm:import externid="newdbname" />
+	<mm:import externid="newdbtype" />
+	<mm:import externid="newdbstatus" />
+	<mm:import externid="newdbsize" />
+	<mm:import externid="newdbkey" />
+	<mm:import externid="newdbnotnull" />
+	<mm:booleanfunction set="mmpb" name="setBuilderFieldDBValues" referids="modelfilename,builder,field,newdbname,newdbtype,newdbstatus,newdbsize,newdbkey,newdbnotnull" />
+</mm:compare>
+
+
+<mm:compare value="setbuilderfieldguiname" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="field" />
+	<mm:import externid="language" />
+	<mm:import externid="newguiname" />
+	<mm:booleanfunction set="mmpb" name="setBuilderFieldGuiName" referids="modelfilename,builder,field,language,newguiname" />
+</mm:compare>
+
+<mm:compare value="setbuildernames" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="language" />
+	<mm:import externid="newsingularname" />
+	<mm:import externid="newpluralname" />
+	<mm:booleanfunction set="mmpb" name="setBuilderSingularName" referids="modelfilename,builder,language,newsingularname@newname" />
+	<mm:booleanfunction set="mmpb" name="setBuilderPluralName" referids="modelfilename,builder,language,newpluralname@newname" />
+</mm:compare>
+
+
+<mm:compare value="setbuilderssc" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="newstatus" />
+	<mm:import externid="newsearchage" />
+	<mm:import externid="newclassname" />
+	<mm:booleanfunction set="mmpb" name="setBuilderStatus" referids="modelfilename,builder,newstatus" />
+	<mm:booleanfunction set="mmpb" name="setBuilderSearchAge" referids="modelfilename,builder,newsearchage" />
+	<mm:booleanfunction set="mmpb" name="setBuilderClassName" referids="modelfilename,builder,newclassname" />
+</mm:compare>
+
+
+<mm:compare value="setbuildernmve" referid="action">
+	<mm:import externid="builder" />
+	<mm:import externid="newname" />
+	<mm:import externid="newmaintainer" />
+	<mm:import externid="newversion" />
+	<mm:import externid="newextends" />
+	<mm:booleanfunction set="mmpb" name="setBuilderMaintainer" referids="modelfilename,builder,newmaintainer" />
+	<mm:booleanfunction set="mmpb" name="setBuilderVersion" referids="modelfilename,builder,newversion" />
+	<mm:booleanfunction set="mmpb" name="setBuilderExtends" referids="modelfilename,builder,newextends" />
+	<mm:booleanfunction set="mmpb" name="setBuilderName" referids="modelfilename,builder,newname" />
+</mm:compare>
+
 </mm:cloud>
