@@ -22,6 +22,7 @@ import org.mmbase.bridge.NodeManager;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.StringSplitter;
 
 /**
  * This class makes a tag which can list the fields of a NodeManager.
@@ -93,7 +94,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         fields = getAttribute(f);
     }
     protected java.util.List getFields() throws JspTagException {
-        return  org.mmbase.bridge.jsp.taglib.util.StringSplitter.split(getAttributeValue(fields.getString(this)));
+        return StringSplitter.split(getAttributeValue(fields.getString(this)));
     }
 
     public NodeProvider getNodeProvider() {
