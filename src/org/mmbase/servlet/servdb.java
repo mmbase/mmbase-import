@@ -907,25 +907,18 @@ public class servdb extends JamesServlet {
 			//String url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
 
             String url = null;
-
-            MMObjectBuilder b = mmbase.getMMObject( "cdtracks" );
-            MMObjectNode    n = b.getNode( number );
+			
+			AudioParts audioPartsBuilder = (AudioParts)mmbase.getMMObject("audioparts");
+			if (audioPartsBuilder == null)
+				return null;
+            MMObjectNode n = audioPartsBuilder.getNode( number );
             if( n != null ) {
                 if( n.getName().equals("audioparts")) {
                     // url = getAudiopartUrl( mmbase, number, sp, speed, channels );
 					if( debug ) debug("getRAStream(): node("+number+"), speed("+speed+"), channels("+channels+"): found audiopart");
-                    url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
-                } else {
-                    if( n.getName().equals("cdtracks"))
-                    {
-                        // url = getCdtracksUrl( mmbase, number, sp, speed, channels );
-						if( debug ) debug("getRAStream(): node("+number+"), speed("+speed+"), channels("+channels+"): found cdtrack");
-                        url = ((CDTracks)mmbase.getMMObject("cdtracks")).getCdtracksUrl( mmbase, number, sp, speed, channels);
-                    } else
-                        debug("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not cdtrack or audiopart!");
-                }
-            } else
-                debug("getRAStream("+number+","+speed+","+channels+"): ERROR: No reference to mmbase!");
+                    url = audioPartsBuilder.getAudiopartUrl( mmbase, sp, number, speed, channels);
+                } else debug("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not audiopart!");
+            } else debug("getRAStream("+number+","+speed+","+channels+"): ERROR: Node not found!");
 
 			if( debug ) debug("getRAStream(): result: I have url("+url+") as result ");
 			if( url != null )
