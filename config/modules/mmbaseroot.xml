@@ -79,6 +79,13 @@
 	<property name="multicastport">16080</property>
 
 	<!--
+	name="multicastttl" sets the Time To Live for a datapackage send by a Multicast.
+        Time to live determines the number of hops a package can make.
+        The default, 1, is generally enough, but higher values may be needed on some networks.
+	-->
+	<property name="multicastttl">1</property>
+
+	<!--
 	name="host" the host or ip number of the machine this mmbase node is
 	running on. Its important that this name is set correctly because its
 	used for communication between mmbase nodes and external devices
