@@ -103,6 +103,6 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	</mm:last>
 </mm:list>
 
-</div>
+</div></div>
 <%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
