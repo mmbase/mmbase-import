@@ -1319,7 +1319,7 @@ Change directory to ${build.dir}/orion and run:
     <available property="jai.expanded"
                file="${expand.dir}/${jai.version}"/>
     <!-- Log4j -->
-    <!--property name="log4j.version" value="1.2beta2" /-->
+    <!--property name="log4j.version" value="1.2beta3" /-->
 	<property name="log4j.version" value="1.1.3" /> 
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
@@ -1509,7 +1509,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="generate.remote"
           description="Generate the source for the remote classes"
-          depends="init,compile.remote.generator,check.mmci.xml.present"
+	depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
           unless="mmci.xml.present">
     <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
        using the sun jaxp implementation. By forking we do not use the ant classloader -->
