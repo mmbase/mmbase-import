@@ -34,7 +34,7 @@
 <!ELEMENT search (#PCDATA)>
 <!ELEMENT db (name,type?)>
 <!ELEMENT name (#PCDATA)>
-<!ATTLIST name xml:lang NMTOKEN "en">
+<!ATTLIST name xml:lang NMTOKEN #IMPLIED > <!-- should be removed, language does not make sense on database field name-->
 <!ELEMENT type (#PCDATA)>
 <!ATTLIST type state (persistent|virtual|system) #REQUIRED>
 <!ATTLIST type size CDATA #IMPLIED>
