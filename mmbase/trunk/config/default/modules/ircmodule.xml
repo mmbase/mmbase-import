@@ -11,7 +11,7 @@
   <!-- <classfile>
 	main classfile that this module is defined in
   -->
-  <classfile>org.mmbase.module.Counter</classfile>
+  <classfile>org.mmbase.module.IrcModule</classfile>
 
   <!-- <properties>
      you can define properties to be used by the classfile (if used) it uses
