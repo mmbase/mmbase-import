@@ -95,7 +95,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
 
         if (doCompare((Comparable)compare1, (Comparable)compare2) != getInverse() ) {
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
         }
