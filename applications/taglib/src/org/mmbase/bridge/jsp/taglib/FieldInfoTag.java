@@ -189,7 +189,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * the name attribute of form elements.
      * 
      */
-    private String prefix(String s) {
+    private String prefix(String s) throws JspTagException {
         String id = findFieldProvider().getId();
         if (id == null) id = "";
         if (id.equals("") ) {
