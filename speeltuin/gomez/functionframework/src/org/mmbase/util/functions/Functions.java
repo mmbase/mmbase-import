@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: Functions.java,v 1.2 2004-11-25 12:53:02 pierre Exp $
  */
 public class Functions {
 
@@ -143,7 +143,7 @@ public class Functions {
                         // This code will be removed in the future
                         if (MMObjectBuilder.class.isAssignableFrom(clazz)) {
                             Parameter nodeParameter = new Parameter("node", MMObjectNode.class);
-                            boolean hasNodeParameter = false;;
+                            boolean hasNodeParameter = false;
                             for (int j = 0; !hasNodeParameter && j<params.length; j++) {
                                 hasNodeParameter = params[j].equals(nodeParameter);
                             }
