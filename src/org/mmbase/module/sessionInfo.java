@@ -210,5 +210,9 @@ public class sessionInfo {
 	{
 		System.out.println( "("+this+")"+ classname +": ["+cookie+"] "+ msg );
 	}
+
+	public String toString() {
+		return("sessionInfo="+values.toString());
+	}
 }
 
