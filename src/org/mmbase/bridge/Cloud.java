@@ -19,7 +19,7 @@ import org.mmbase.storage.search.SearchQuery;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.34 2003-04-29 20:07:43 michiel Exp $
+ * @version $Id: Cloud.java,v 1.35 2003-06-23 14:23:33 kees Exp $
  */
 public interface Cloud {
 
@@ -420,9 +420,9 @@ public interface Cloud {
      *                      original node manager name of the field and a dot
      *                      in cases where more than one node manager in the
      *                      path has a field with the same name.
-     * @param constraints   Contraints to prevent nodes from being
+     * @param constraints   Constraints to prevent nodes from being
      *                      included in the resulting list which would normally
-     *                      by included or <code>null</code> if no contraints
+     *                      by included or <code>null</code> if no constraints
      *                      should be applied.
      * @param orderby       A comma separated list of field names on which the
      *                      returned list should be sorted or <code>null</code>

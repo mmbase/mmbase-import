@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.22 2002-11-04 12:26:01 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.23 2003-06-23 14:24:49 kees Exp $
  */
 public interface NodeManager extends Node {
 
@@ -174,9 +174,9 @@ public interface NodeManager extends Node {
      * For more info consult a SQL tutorial like
      * <a href="http://w3.one.net/~jhoffman/sqltut.htm">this one</a>.
      *
-     * @param constraints   Contraints to prevent nodes from being
+     * @param constraints   Constraints to prevent nodes from being
      *                      included in the resulting list which would normally
-     *                      by included or <code>null</code> if no contraints
+     *                      by included or <code>null</code> if no constraints
      *                      should be applied .
      * @param orderby       A comma separated list of field names on which the
      *                      returned list should be sorted or <code>null</code>
