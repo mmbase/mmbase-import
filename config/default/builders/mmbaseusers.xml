@@ -15,7 +15,7 @@
 	</descriptions>
 
 	<properties>
-            <property name="encoding">BASE64</property>	
+            <property name="encoding">MD5</property>	
         </properties>
 
 	<fieldlist>		
