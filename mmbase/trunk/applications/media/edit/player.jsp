@@ -95,6 +95,7 @@
                  <embed src="<mm:field name="url(mov,ram,wmp)" />" width="260" height="300" autoplay="true"
                     controller="true"
                     name="embeddedplayer"
+                    enablejavascript="true"
                     pluginspage="http://www.apple.com/quicktime/download/"> </embed> </object>
      </mm:compare>
          </mm:write>

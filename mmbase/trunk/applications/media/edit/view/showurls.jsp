@@ -22,7 +22,7 @@
 <h1><%= m.getString("urlsto") %>: <mm:field name="title" /></h1>
 
 <mm:log jspvar="log">
-<mm:field name="filteredurls(smil,html,ram,wmp,rm)" jspvar="urls" vartype="list">
+<mm:field name="filteredurls(smil,html,ram,wmp,rm,mov)" jspvar="urls" vartype="list">
    <%
       Iterator i = urls.iterator();
       int accesskey = 1;
@@ -39,7 +39,7 @@
          }
          String description = uc.getDescription(options);
          out.println("<h3>" + uc.getGUIIndicator(options) + "</h3>" + 
-                     "<p><a type='audio/x-pn-realaudio' accesskey='" + accesskey++ + "' href='" + url + "'>" + url + "</a>" + completeIndication + "<//p>" + 
+                     "<p><a accesskey='" + accesskey++ + "' href='" + url + "'>" + url + "</a>" + completeIndication + "<//p>" + 
                      (description != null ? "<p>" + description + "</p>" : "")
                       ); 
        
