@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * HttpPost handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.23 2003-08-29 09:36:55 pierre Exp $
+ * @version $Id: HttpPost.java,v 1.24 2003-10-17 14:51:36 keesj Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -28,12 +28,12 @@ import org.mmbase.util.logging.Logging;
 public class HttpPost {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(HttpPost.class.getName());
+    private static Logger log = Logging.getLoggerInstance(HttpPost.class);
 
     public static final String CONFIG_FILE = "httppost.xml";
     public static final String MAX_PROPERTY = "maxfilesize";
 
-    private static final int maxLoop=2048;
+    private static final int maxLoop = 2048;
 
     /**
      * are the postparameters decoded yet?
@@ -48,26 +48,26 @@ public class HttpPost {
     /**
      * Maximum postparametersize to decode the the parameters into memory
      */
-    private static final int maximumPostbufferSize = 1*1024*1024; // 1024 switch to disk needs to be param
+    private static final int maximumPostbufferSize = 1 * 1024 * 1024; // 1024 switch to disk needs to be param
 
     /**
     * post buffer, holds the values ones decoded
     */
-    private Hashtable postValues=new Hashtable();
+    private Hashtable postValues = new Hashtable();
 
     /**
      * maxFileSize for a property
      */
-    private int maxFileSize = 4*1024*1024; // 4 Mb
+    private int maxFileSize = 4 * 1024 * 1024; // 4 Mb
 
     /**
      * Some postparameters are decoded to disk
      */
-    private boolean postToDisk=false;
+    private boolean postToDisk = false;
 
     /**
      */
-    private HttpServletRequest req=null;
+    private HttpServletRequest req = null;
 
     private static Map properties = null;
 
@@ -79,8 +79,8 @@ public class HttpPost {
             org.mmbase.util.xml.UtilReader reader = new org.mmbase.util.xml.UtilReader(CONFIG_FILE);
             properties = reader.getProperties();
         }
-        if(properties.containsKey(MAX_PROPERTY)) {
-            maxFileSize = Integer.parseInt(""+properties.get(MAX_PROPERTY));
+        if (properties.containsKey(MAX_PROPERTY)) {
+            maxFileSize = Integer.parseInt("" + properties.get(MAX_PROPERTY));
             log.debug("Setting maxfilesize to " + maxFileSize);
         }
         postid = System.currentTimeMillis();
@@ -99,27 +99,27 @@ public class HttpPost {
      */
     public void reset() {
         /* removing postValueFiles */
-        if(postToDisk) {
+        if (postToDisk) {
             File f = new File("/tmp/");
             String[] files = f.list();
-            for (int i=0;i<files.length;i++) {
-                if(files[i].indexOf("form_"+postid)==0) {
-                    File    postValueFile = new File("/tmp/"+files[i]);
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].indexOf("form_" + postid) == 0) {
+                    File postValueFile = new File("/tmp/" + files[i]);
                     postValueFile.delete();
                 }
             }
         }
-        postid=0;             // reset postid value
-        postToDisk=false;     // default, write postValues to memory
+        postid = 0; // reset postid value
+        postToDisk = false; // default, write postValues to memory
     }
 
-//    /**
-//     * @return the maximumsize of the postparametervalues to decode into memory
-//     */
-//
-//    public int getMaximumPostbufferSize() {
-//        return MaximumPostbufferSize;
-//    }
+    //    /**
+    //     * @return the maximumsize of the postparametervalues to decode into memory
+    //     */
+    //
+    //    public int getMaximumPostbufferSize() {
+    //        return MaximumPostbufferSize;
+    //    }
 
     /**
     * This method checks if the parameter is a multivalued one
@@ -129,9 +129,11 @@ public class HttpPost {
     * @see #getPostMultiParameter
     * @see #getPostParameter
     */
-    public boolean checkPostMultiParameter(String name) {        
-        if (!postDecoded) decodePost(req);
-        
+    public boolean checkPostMultiParameter(String name) {
+        if (!postDecoded) {
+            decodePost(req);
+        }
+
         Object obj = postValues.get(name);
         if (obj == null) {
             return false;
@@ -151,7 +153,8 @@ public class HttpPost {
     * @see #checkPostMultiParameter
     */
     public Hashtable getPostParameters() {
-        if (!postDecoded) decodePost(req);
+        if (!postDecoded)
+            decodePost(req);
         return postValues;
     }
 
@@ -165,29 +168,29 @@ public class HttpPost {
     */
     public byte[] getPostParameterBytes(String name) throws PostValueToLargeException {
         // decode when not done yet..
-        if (!postDecoded) decodePost(req);
-        
+        if (!postDecoded)
+            decodePost(req);
+
         // when the parameter was not found, return null
-        Object obj = postValues.get(name);        
-        if (obj==null) {
-            return null;            
+        Object obj = postValues.get(name);
+        if (obj == null) {
+            return null;
         }
 
         // when it is an instance of String throw the exeption
-        if (obj instanceof String)  {            
+        if (obj instanceof String) {
             String msg = "Use getPostParameterFile";
             log.warn(msg);
             throw new PostValueToLargeException("Use getPostParameterFile");
         }
         if (obj instanceof Vector) {
-            Vector v = (Vector) obj;
+            Vector v = (Vector)obj;
             byte[] data = (byte[])v.elementAt(0);
             return data;
         }
-        byte[] data = (byte[]) obj;
+        byte[] data = (byte[])obj;
         return data;
     }
-    
 
     /**
     * This method returns the value of the postparameter as a Vector.
@@ -199,7 +202,7 @@ public class HttpPost {
     public Vector getPostMultiParameter(String name) {
         return getPostMultiParameter(name, null);
     }
-    
+
     /**
     * This method returns the value of the postparameter as a Vector.
     * In case of a parameter with one value, it returns it as a Vector
@@ -208,40 +211,50 @@ public class HttpPost {
     * @see #checkPostMultiParameter
     */
     public Vector getPostMultiParameter(String name, String encoding) {
+
         // decode when not done yet..
-        if (!postDecoded) decodePost(req);
-        
-        // when the parameter was not found, return null
-        Object obj = postValues.get(name);        
-        if (obj==null) {
-            return null;            
+        if (!postDecoded) {
+            decodePost(req);
         }
-        
-        Vector results= new Vector();
+
+        // when the parameter was not found, return null
+        Object obj = postValues.get(name);
+        if (obj == null) {
+            return null;
+        }
+
+        Vector results = new Vector();
         if (obj instanceof Vector) {
             Vector v = (Vector)obj;
-            Enumeration e= v.elements();
-            while(e.hasMoreElements()) {
-                byte[] data = (byte[])e.nextElement();
-                results.addElement(getString(data, encoding));
+            Enumeration e = v.elements();
+            while (e.hasMoreElements()) {
+                Object o = e.nextElement();
+                if (o.getClass().isArray() ) {
+                    byte[] data = (byte[])o;
+                    results.addElement(getString(data, encoding));
+                } else {
+                	if (!  (o instanceof String)){
+                		log.warn("unknown data type "+ o.getClass().getName()+" for parameter " + name  );
+                	}
+                    results.addElement(o);
+                }
+
             }
-        } 
-        else {
+        } else {
             // we assume that obj will be byte[]
-            byte[] data = (byte[]) obj;
+            byte[] data = (byte[])obj;
             results.addElement(getString(data, encoding));
         }
         return results;
     }
-    
+
     private static String getString(byte[] data, String encoding) {
-        if(encoding == null) {
+        if (encoding == null) {
             return new String(data);
         }
         try {
             return new String(data, encoding);
-        }
-        catch(java.io.UnsupportedEncodingException uee) {
+        } catch (java.io.UnsupportedEncodingException uee) {
             log.warn("encoding was:" + encoding + "\n" + Logging.stackTrace(uee));
             return new String(data);
         }
@@ -250,7 +263,7 @@ public class HttpPost {
     /**
      * @return true is the post was posted to a file (not in memory)
      **/
-    public boolean isPostedToFile(){
+    public boolean isPostedToFile() {
         return postToDisk;
     }
 
@@ -261,33 +274,34 @@ public class HttpPost {
     * @see #checkPostMultiParameter
     */
     public String getPostParameterFile(String name) {
-        Object obj=null;
+        Object obj = null;
         Vector v;
 
-        if (!postDecoded) decodePost(req);
-        if ((obj=postValues.get(name))!=null) {
+        if (!postDecoded)
+            decodePost(req);
+        if ((obj = postValues.get(name)) != null) {
             // convert byte[] into filename
             if (!(obj instanceof String)) {
-                postToDisk=true;
-                String filename = "/tmp/form_"+postid+"_"+name;
-                RandomAccessFile raf=null;
+                postToDisk = true;
+                String filename = "/tmp/form_" + postid + "_" + name;
+                RandomAccessFile raf = null;
                 try {
-                    raf = new RandomAccessFile(filename,"rw");
+                    raf = new RandomAccessFile(filename, "rw");
                     if (obj instanceof Vector) {
-                        v=(Vector)obj;
+                        v = (Vector)obj;
                         raf.write((byte[])v.elementAt(0));
                     } else {
                         raf.write((byte[])obj);
                     }
                     raf.close();
                 } catch (Exception e) {
-                    log.error("getPostParameterFile("+name+"): "+e);
+                    log.error("getPostParameterFile(" + name + "): " + e);
                 }
                 return filename;
             }
 
             if (obj instanceof Vector) {
-                v=(Vector)obj;
+                v = (Vector)obj;
                 return (String)v.elementAt(0);
             } else {
                 return (String)obj;
@@ -297,7 +311,6 @@ public class HttpPost {
         }
     }
 
-
     /**
     * This method returns the value of the postparameter as a String.
     * If it is a parameter with multiple values it returns the first one.
@@ -305,30 +318,30 @@ public class HttpPost {
     * @see #checkPostMultiParameter
     */
     public String getPostParameter(String name) {
-        Object obj=null;
+        Object obj = null;
         Vector v;
 
-        if (!postDecoded) decodePost(req);
-        if ((obj=postValues.get(name))!=null) {
+        if (!postDecoded)
+            decodePost(req);
+        if ((obj = postValues.get(name)) != null) {
             try {
                 if (obj instanceof String)
                     throw new PostValueToLargeException("Use getPostParameterFile");
                 // Catch the exception right here, it should be thrown but
                 // that's against the Servlet-API Interface
-            }
-            catch (Exception e) {
-                log.error("getPostParameter("+name+"): "+e);
+            } catch (Exception e) {
+                log.error("getPostParameter(" + name + "): " + e);
             }
             if (obj instanceof Vector) {
-                v=(Vector)obj;
+                v = (Vector)obj;
                 Object elem = v.elementAt(0);
                 if (elem instanceof String) {
                     return (String)elem;
                 } else {
-                    return new String((byte[])v.elementAt(0),0);
+                    return new String((byte[])v.elementAt(0), 0);
                 }
             } else {
-                return new String((byte[])obj,0);
+                return new String((byte[])obj, 0);
             }
         } else {
             return null;
@@ -336,21 +349,22 @@ public class HttpPost {
     }
 
     private void decodePost(HttpServletRequest req) {
-        postDecoded=true;
-        byte[] postbuffer=null;
+        postDecoded = true;
+        byte[] postbuffer = null;
 
-        if (req.getHeader("Content-length")!=null || req.getHeader("Content-Length")!=null) {
-            postbuffer=readContentLength(req);
-            String line=(String)req.getHeader("Content-type");
-            if (line==null) line=(String)req.getHeader("Content-Type");
-            if (line!=null) {
-                if (line.indexOf("application/x-www-form-urlencoded")!=-1) {
-                    readPostUrlEncoded(postbuffer,postValues);
-                } else if (line.indexOf("multipart/form-data")!=-1) {
-                    if(!postToDisk) {
-                        readPostFormData(postbuffer,postValues,line);
+        if (req.getHeader("Content-length") != null || req.getHeader("Content-Length") != null) {
+            postbuffer = readContentLength(req);
+            String line = (String)req.getHeader("Content-type");
+            if (line == null)
+                line = (String)req.getHeader("Content-Type");
+            if (line != null) {
+                if (line.indexOf("application/x-www-form-urlencoded") != -1) {
+                    readPostUrlEncoded(postbuffer, postValues);
+                } else if (line.indexOf("multipart/form-data") != -1) {
+                    if (!postToDisk) {
+                        readPostFormData(postbuffer, postValues, line);
                     } else {
-                        readPostFormData("/tmp/form_"+postid,postValues,line);
+                        readPostFormData("/tmp/form_" + postid, postValues, line);
                     }
                 } else {
                     log.error("decodePost(): found no 'post' tag in post.");
@@ -370,82 +384,82 @@ public class HttpPost {
     * @return byte[] buffer of length defined in the content-length mimeheader
     */
     public byte[] readContentLength(HttpServletRequest req) {
-        int len,len2,len3;
-        byte buffer[]=null;
-        DataInputStream    connect_in=null ;
+        int len, len2, len3;
+        byte buffer[] = null;
+        DataInputStream connect_in = null;
 
-        int i=0;
+        int i = 0;
 
         try {
-            connect_in=new DataInputStream(req.getInputStream());
-        } catch(Exception e) {
+            connect_in = new DataInputStream(req.getInputStream());
+        } catch (Exception e) {
             log.error("readContentLength(): can't open input stream");
         }
 
-        len=req.getContentLength();
+        len = req.getContentLength();
         // Maximum postsize
-        if (len<maximumPostbufferSize) {
+        if (len < maximumPostbufferSize) {
             log.debug("readContentLength(): writing to memory.");
             try {
-                buffer=new byte[len];
-                len2=connect_in.read(buffer,0,len);
-                while (len2<len && i<maxLoop) {
-                    log.debug("readContentLength(): found len2( "+len2+")");
-                    len3=connect_in.read(buffer,len2,len-len2);
-                    if (len3==-1) {
+                buffer = new byte[len];
+                len2 = connect_in.read(buffer, 0, len);
+                while (len2 < len && i < maxLoop) {
+                    log.debug("readContentLength(): found len2( " + len2 + ")");
+                    len3 = connect_in.read(buffer, len2, len - len2);
+                    if (len3 == -1) {
                         log.debug("readContentLength(): WARNING: EOF while not Content Length");
                         break;
                     } else {
-                        len2+=len3;
+                        len2 += len3;
                     }
                     i++;
                 }
-                if (i>=maxLoop) {
-                    log.info("readContentLength(): (memory) broken out of loop after "+i+" times");
+                if (i >= maxLoop) {
+                    log.info("readContentLength(): (memory) broken out of loop after " + i + " times");
                 }
             } catch (Exception e) {
-                log.error("readContentLength(): Can't read post msg from client");               
-                log.error(Logging.stackTrace(e));                
-                buffer[len-1] = -1;
+                log.error("readContentLength(): Can't read post msg from client");
+                log.error(Logging.stackTrace(e));
+                buffer[len - 1] = -1;
                 // just to return _something_... 
                 // Mozilla 0.9.7 (and 0.9.6?) had a bug here. Now they are only slow, but work, if you don't supply a file...
 
             }
-        } else if (len<maxFileSize) {
-            log.debug("readContentLength(): writing to disk" );
+        } else if (len < maxFileSize) {
+            log.debug("readContentLength(): writing to disk");
             try {
-                postToDisk=true;
-                RandomAccessFile raf = new RandomAccessFile("/tmp/form_"+postid,"rw");
-                int bufferlength=64000;
-                buffer=new byte[bufferlength];
-                int index1=0,totallength=0;
+                postToDisk = true;
+                RandomAccessFile raf = new RandomAccessFile("/tmp/form_" + postid, "rw");
+                int bufferlength = 64000;
+                buffer = new byte[bufferlength];
+                int index1 = 0, totallength = 0;
 
-                index1=connect_in.read(buffer);
-                raf.write(buffer,0,index1);
-                totallength+=index1;
+                index1 = connect_in.read(buffer);
+                raf.write(buffer, 0, index1);
+                totallength += index1;
                 log.debug("readContentLength(): writing to disk: +");
 
-                while (totallength<len && i<maxLoop) {
-                    index1=connect_in.read(buffer);
-                    raf.write(buffer,0,index1);
-                    if (index1==-1) {
+                while (totallength < len && i < maxLoop) {
+                    index1 = connect_in.read(buffer);
+                    raf.write(buffer, 0, index1);
+                    if (index1 == -1) {
                         log.error("readContentLength(): EOF while not Content Length");
                         break;
                     } else {
-                        totallength+=index1;
+                        totallength += index1;
                     }
                     i++;
                 }
-                if (i>=maxLoop) {
-                    log.info("readContentLength(): (disk) broken out of loop after "+i+" times");
+                if (i >= maxLoop) {
+                    log.info("readContentLength(): (disk) broken out of loop after " + i + " times");
                 }
-                log.info(" written("+totallength+")");
+                log.info(" written(" + totallength + ")");
                 raf.close();
             } catch (Exception e) {
-                log.error("readContentLength(): "+e);
+                log.error("readContentLength(): " + e);
             }
         } else {
-            log.error("readContentLength(): post too large: "+len+" size");
+            log.error("readContentLength(): post too large: " + len + " size");
         }
         return buffer;
     }
@@ -464,36 +478,35 @@ public class HttpPost {
         String origline = line;
         line = origline.toLowerCase();
 
-
         // Get the content disposition, should be "form-data"
         int start = line.indexOf("content-disposition: ");
         int end = line.indexOf(";");
         if (start == -1 || end == -1) {
             throw new IOException("Content disposition corrupt: " + origline);
         }
-        String disposition = line.substring(start+21,end);
+        String disposition = line.substring(start + 21, end);
         if (!disposition.equals("form-data")) {
             throw new IOException("Invalid content disposition: " + disposition);
         }
 
         // Get the field name
-        start = line.indexOf("name=\"",end); // start at last semicolon
-        end = line.indexOf("\"",start+7);   // skip name=\"
+        start = line.indexOf("name=\"", end); // start at last semicolon
+        end = line.indexOf("\"", start + 7); // skip name=\"
         if (start == -1 || end == -1) {
             throw new IOException("Content disposition corrupt: " + origline);
         }
-        String name = origline.substring(start+6,end);
+        String name = origline.substring(start + 6, end);
 
         // Get the filename, if give
         String filename = null;
-        start = line.indexOf("filename=\"", end + 2);  // start after name
-        end = line.indexOf("\"", start + 10);          // skip filename=\"
-        if (start != -1 && end != -1) {                // note the !=
-            filename = origline.substring(start+10,end);
+        start = line.indexOf("filename=\"", end + 2); // start after name
+        end = line.indexOf("\"", start + 10); // skip filename=\"
+        if (start != -1 && end != -1) { // note the !=
+            filename = origline.substring(start + 10, end);
             // The filename may contain a full path. Cut to just the filename
             int slash = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
             if (slash > -1) {
-                filename = filename.substring(slash+1);  // past last slash
+                filename = filename.substring(slash + 1); // past last slash
             }
 
             if (filename.equals("")) {
@@ -528,7 +541,7 @@ public class HttpPost {
             if (start == -1) {
                 throw new IOException("Content type corrupt: " + origline);
             }
-            contentType = line.substring(start+1);
+            contentType = line.substring(start + 1);
         } else if (line.length() != 0) { // no content type, so should be empty
             throw new IOException("Malformed line after disposition: " + origline);
         }
@@ -536,44 +549,42 @@ public class HttpPost {
         return contentType;
     }
 
-
-
     /**
     * read post info from buffer, must be defined in multipart/form-data format.
     *
     * @param postbuffer buffer with the postbuffer information
     * @param post_header hashtable to put the postbuffer information in
     */
-    public boolean readPostFormData(byte[] postbuffer,Hashtable post_header, String line) {
-        int i2,i3,i4,start2,end2;
+    public boolean readPostFormData(byte[] postbuffer, Hashtable post_header, String line) {
+        int i2, i3, i4, start2, end2;
         String r;
-        String templine="--"+line.substring(line.indexOf("boundary=")+9);
+        String templine = "--" + line.substring(line.indexOf("boundary=") + 9);
         byte[] marker = new byte[templine.length()];
         byte[] marker2 = new byte[4];
         byte[] marker3 = new byte[1];
         byte[] marker4 = new byte[1];
         byte[] dest;
-        marker2[0]=(byte)'\r';
-        marker2[1]=(byte)'\n';
-        marker2[2]=(byte)'\r';
-        marker2[3]=(byte)'\n';
-        marker3[0]=(byte)'=';
-        marker4[0]=(byte)'\"';
-        templine.getBytes(0,templine.length(),marker,0);
+        marker2[0] = (byte)'\r';
+        marker2[1] = (byte)'\n';
+        marker2[2] = (byte)'\r';
+        marker2[3] = (byte)'\n';
+        marker3[0] = (byte)'=';
+        marker4[0] = (byte)'\"';
+        templine.getBytes(0, templine.length(), marker, 0);
 
-        start2=indexOf(postbuffer,marker,0)+marker.length;
+        start2 = indexOf(postbuffer, marker, 0) + marker.length;
 
-        int z=0;
+        int z = 0;
         do {
             // hunt second one
-            end2=indexOf(postbuffer,marker,start2);
-            if (end2<0) {
+            end2 = indexOf(postbuffer, marker, start2);
+            if (end2 < 0) {
                 log.error("readPostFormData(): postbuffer < 0 !!!! ");
                 break;
             }
 
             // get all the data in between
-            i2=indexOf(postbuffer,marker2,start2);
+            i2 = indexOf(postbuffer, marker2, start2);
 
             // [begin] I guess that the "content-disposition" is between the start2 and i2, -cjr
             // XXX Quite messy, this code (until [end]) stands outside of the rest of the extraction code and
@@ -585,37 +596,38 @@ public class HttpPost {
              *   Content-type: image/gif
              *
              */
-            String disposition = new String(postbuffer,start2+2,i2-(start2+2));
-            int separator = indexOf(postbuffer,new byte[]{(byte)'\r',(byte)'\n'},start2+2);
+            String disposition = new String(postbuffer, start2 + 2, i2 - (start2 + 2));
+            int separator = indexOf(postbuffer, new byte[] {(byte)'\r', (byte)'\n' }, start2 + 2);
 
-            int filesize = (end2-i2-6);
-            if (filesize < 0) filesize = 0; // some browser bugs
+            int filesize = (end2 - i2 - 6);
+            if (filesize < 0)
+                filesize = 0; // some browser bugs
             /**
              * No separator in Content-disposition: .. implies that there is only a name,
              * no filename, and hence that it is no file upload. The code under "if" above
              * is applicable for file uploads only.
              */
-            if (separator > start2+2 && separator < i2) {
+            if (separator > start2 + 2 && separator < i2) {
                 try {
-                    String[] dispositionInfo = extractDispositionInfo(disposition.substring(0,separator-(start2+2)));
-                    String mimetype = extractContentType(disposition.substring(separator-(start2+2)+2));
+                    String[] dispositionInfo = extractDispositionInfo(disposition.substring(0, separator - (start2 + 2)));
+                    String mimetype = extractContentType(disposition.substring(separator - (start2 + 2) + 2));
                     String fieldname = dispositionInfo[1];
-                    String filename = dispositionInfo[2];                    
+                    String filename = dispositionInfo[2];
                     Vector v1 = new Vector();
                     v1.addElement(mimetype.getBytes());
-                    addpostinfo(post_header,fieldname+"_type",v1);
+                    addpostinfo(post_header, fieldname + "_type", v1);
                     Vector v2 = new Vector();
                     v2.addElement(filename.getBytes());
-                    addpostinfo(post_header,fieldname+"_name",v2);
+                    addpostinfo(post_header, fieldname + "_name", v2);
 
                     Vector v3 = new Vector();
-                    v3.addElement(""+filesize);
-                    addpostinfo(post_header,fieldname+"_size",v3);
+                    v3.addElement("" + filesize);
+                    addpostinfo(post_header, fieldname + "_size", v3);
 
                     if (log.isDebugEnabled()) {
-                        log.debug("mimetype = "+ mimetype);
+                        log.debug("mimetype = " + mimetype);
                         log.debug("filename = " + dispositionInfo[2]);
-                        log.debug("filesize = "+ filesize);
+                        log.debug("filesize = " + filesize);
                     }
                 } catch (IOException e) {
                     log.error(e.getMessage());
@@ -623,21 +635,21 @@ public class HttpPost {
             }
             // [end]
 
-            i3=indexOf(postbuffer,marker3,start2+2)+2;
-            i4=indexOf(postbuffer,marker4,i3+2);
-            r=new String(postbuffer,0,i3,(i4-i3)); // extraction of fieldname
+            i3 = indexOf(postbuffer, marker3, start2 + 2) + 2;
+            i4 = indexOf(postbuffer, marker4, i3 + 2);
+            r = new String(postbuffer, 0, i3, (i4 - i3)); // extraction of fieldname
             // log.debug("readPostFormData(): r="+r);
             // copy it to a buffer
             dest = new byte[filesize];
-            System.arraycopy(postbuffer, i2+4, dest, 0,  filesize);
+            System.arraycopy(postbuffer, i2 + 4, dest, 0, filesize);
             // r2=new String(postbuffer,0,i2+4,((end2-i2))-6);
 
-            addpostinfo(post_header,r,dest);
-            start2=end2+marker.length;
+            addpostinfo(post_header, r, dest);
+            start2 = end2 + marker.length;
             z++;
-        } while (postbuffer[start2]!='-' && z<maxLoop);
-        if (z>=maxLoop) {
-            log.info("readPostFormData: broken out of loop after "+z+" times");
+        } while (postbuffer[start2] != '-' && z < maxLoop);
+        if (z >= maxLoop) {
+            log.info("readPostFormData: broken out of loop after " + z + " times");
         }
         return false;
     }
@@ -653,148 +665,147 @@ public class HttpPost {
     * @param post_header hashtable to put the fromFile information in
     */
     public boolean readPostFormData(String formFile, Hashtable post_header, String line) {
-        FileInputStream fis=null;
-        RandomAccessFile raf=null;
+        FileInputStream fis = null;
+        RandomAccessFile raf = null;
         try {
             fis = new FileInputStream(formFile);
         } catch (Exception e) {
-            System.out.println("WorkerPostHandler -> File "+formFile +" not exist");
+            System.out.println("WorkerPostHandler -> File " + formFile + " not exist");
         }
-        int i,i2,i3,i4,start2,end2;
+        int i, i2, i3, i4, start2, end2;
         String r;
-        String templine="--"+line.substring(line.indexOf("boundary=")+9);
+        String templine = "--" + line.substring(line.indexOf("boundary=") + 9);
         byte[] marker = new byte[templine.length()];
         byte[] marker2 = new byte[4];
         byte[] marker3 = new byte[1];
         byte[] marker4 = new byte[1];
         byte[] dest;
-        marker2[0]=(byte)'\r';
-        marker2[1]=(byte)'\n';
-        marker2[2]=(byte)'\r';
-        marker2[3]=(byte)'\n';
-        marker3[0]=(byte)'=';
-        marker4[0]=(byte)'\"';
-        templine.getBytes(0,templine.length(),marker,0);
+        marker2[0] = (byte)'\r';
+        marker2[1] = (byte)'\n';
+        marker2[2] = (byte)'\r';
+        marker2[3] = (byte)'\n';
+        marker3[0] = (byte)'=';
+        marker4[0] = (byte)'\"';
+        templine.getBytes(0, templine.length(), marker, 0);
         log.info("readPostFormData(): begin");
 
-        int offset=0;
-//        int temp=0;
-        int len=64000;
+        int offset = 0;
+        //        int temp=0;
+        int len = 64000;
         byte postbuffer[] = new byte[len];
         try {
             // Lees eerst stuk van het bestand.
             len = fis.read(postbuffer);
 
             // find first magic cookie
-            start2=indexOf(postbuffer,marker,0)+marker.length;
-            i=0;
+            start2 = indexOf(postbuffer, marker, 0) + marker.length;
+            i = 0;
             do {
                 // Get keyword
-                i3=indexOf(postbuffer,marker3,start2+2)+2;
-                i4=indexOf(postbuffer,marker4,i3+2);
-                r=new String(postbuffer,0,i3,(i4-i3));
-                log.debug("readPostFormData(): postName="+r);
+                i3 = indexOf(postbuffer, marker3, start2 + 2) + 2;
+                i4 = indexOf(postbuffer, marker4, i3 + 2);
+                r = new String(postbuffer, 0, i3, (i4 - i3));
+                log.debug("readPostFormData(): postName=" + r);
 
                 // hunt second one
-                end2=indexOf(postbuffer,marker,start2);
-                i2=indexOf(postbuffer,marker2,start2);
+                end2 = indexOf(postbuffer, marker, start2);
+                i2 = indexOf(postbuffer, marker2, start2);
 
-                if(end2==-1) {
+                if (end2 == -1) {
                     log.info("readPostFormData(): writing to postValue: ");
-                    raf = new RandomAccessFile("/tmp/form_"+postid+"_"+r,"rw");
-                    addpostinfo(post_header,r,"/tmp/form_"+postid+"_"+r);
+                    raf = new RandomAccessFile("/tmp/form_" + postid + "_" + r, "rw");
+                    addpostinfo(post_header, r, "/tmp/form_" + postid + "_" + r);
                     try {
-                        raf.write(postbuffer,i2+4,len-(i2+4));
+                        raf.write(postbuffer, i2 + 4, len - (i2 + 4));
                     } catch (Exception e) {
-                        log.error("readPostFormData(): Cannot write into file(1)"+e);
+                        log.error("readPostFormData(): Cannot write into file(1)" + e);
                     }
-                    offset=len-i2+4;
-                    int j=0;
+                    offset = len - i2 + 4;
+                    int j = 0;
                     do {
                         // should we do something with temp? it is never read again
                         //temp = 
                         fis.read(postbuffer);
 
-                        end2=indexOf(postbuffer,marker,0);
-                        if(end2==-1) {
+                        end2 = indexOf(postbuffer, marker, 0);
+                        if (end2 == -1) {
                             raf.write(postbuffer);
                         } else {
-                            raf.write(postbuffer,0,end2-2);
+                            raf.write(postbuffer, 0, end2 - 2);
                         }
-                        offset+=len;
+                        offset += len;
                         j++;
-                    } while (end2==-1 && j<maxLoop);
-                    if (j>=maxLoop) {
-                        log.info("readPostFormData(): (inner) broken out of loop after "+j+" times");
+                    } while (end2 == -1 && j < maxLoop);
+                    if (j >= maxLoop) {
+                        log.info("readPostFormData(): (inner) broken out of loop after " + j + " times");
                     }
-                    start2=end2+marker.length;
+                    start2 = end2 + marker.length;
                     raf.close();
                 } else {
-                    dest = new byte[(end2-i2)-6];
-                    System.arraycopy(postbuffer, i2+4, dest, 0, (end2-i2)-6);
+                    dest = new byte[(end2 - i2) - 6];
+                    System.arraycopy(postbuffer, i2 + 4, dest, 0, (end2 - i2) - 6);
 
-                    addpostinfo(post_header,r,dest);
-                    start2=end2+marker.length;
+                    addpostinfo(post_header, r, dest);
+                    start2 = end2 + marker.length;
                 }
                 i++;
-            } while (postbuffer[start2]!='-' && i<maxLoop);
-            if (i>=maxLoop) {
-                log.info("readPostFormData(): (outer) broken out of loop after "+i+" times");
+            }
+            while (postbuffer[start2] != '-' && i < maxLoop);
+            if (i >= maxLoop) {
+                log.info("readPostFormData(): (outer) broken out of loop after " + i + " times");
             }
         } catch (Exception e) {
-            log.error("readPostFormData(): Reached end of file: "+e);
+            log.error("readPostFormData(): Reached end of file: " + e);
         }
         return false;
     }
 
-    private final void addpostinfo(Hashtable postinfo,String name,Object value) {
+    private final void addpostinfo(Hashtable postinfo, String name, Object value) {
         Object obj;
-        Vector v=null;
+        Vector v = null;
 
         if (postinfo.containsKey(name)) {
-            obj=postinfo.get(name);
+            obj = postinfo.get(name);
             if (obj instanceof byte[]) {
-                v=new Vector();
+                v = new Vector();
                 v.addElement((byte[])obj); // Add the first one
-                v.addElement(value);       // Then the one given
-                postinfo.put(name,v);
+                v.addElement(value); // Then the one given
+                postinfo.put(name, v);
             } else if (obj instanceof Vector) {
-                v=(Vector)obj;
+                v = (Vector)obj;
                 v.addElement(value);
             } else {
-                log.error("addpostinfo("+name+","+value+"): object "+v+" is not Vector or byte[]");
+                log.error("addpostinfo(" + name + "," + value + "): object " + v + " is not Vector or byte[]");
             }
         } else {
-            postinfo.put(name,value);
+            postinfo.put(name, value);
         }
     }
 
-
-    private final void addpostinfo2(Hashtable postinfo,String name,String values) {
+    private final void addpostinfo2(Hashtable postinfo, String name, String values) {
         Object obj;
-        Vector v=null;
+        Vector v = null;
 
         byte[] value = new byte[values.length()];
-        values.getBytes(0,values.length(),value,0);
+        values.getBytes(0, values.length(), value, 0);
 
         if (postinfo.containsKey(name)) {
-            obj=postinfo.get(name);
+            obj = postinfo.get(name);
             if (obj instanceof byte[]) {
-                v=new Vector();
-                v.addElement((byte[])obj);    // Add the first one
-                v.addElement(value);        // Then add the current one
-                postinfo.put(name,v);
+                v = new Vector();
+                v.addElement((byte[])obj); // Add the first one
+                v.addElement(value); // Then add the current one
+                postinfo.put(name, v);
             } else if (obj instanceof Vector) {
-                v=(Vector)obj;
+                v = (Vector)obj;
                 v.addElement(value);
             } else {
-                log.error("addpostinfo("+name+","+value+"): object "+v+" is not Vector or byte[]");
+                log.error("addpostinfo(" + name + "," + value + "): object " + v + " is not Vector or byte[]");
             }
         } else {
-            postinfo.put(name,value);
+            postinfo.put(name, value);
         }
     }
-
 
     /**
     * read post info from buffer, must be defined in UrlEncode format.
@@ -802,39 +813,38 @@ public class HttpPost {
     * @param postbuffer buffer with the postbuffer information
     * @param post_header hashtable to put the postbuffer information in
     */
-    private boolean readPostUrlEncoded(byte[] postbuffer,Hashtable post_header) {
-        String mimestr="";
-        int i=0,idx;
+    private boolean readPostUrlEncoded(byte[] postbuffer, Hashtable post_header) {
+        String mimestr = "";
+        int i = 0, idx;
         char letter;
 
-        String buffer = new String(postbuffer,0);
-        buffer=buffer.replace('+',' ');
-        StringTokenizer tok = new StringTokenizer(buffer,"&");
-        int z=0;
-        while (tok.hasMoreTokens() && i<maxLoop) {
-            mimestr=tok.nextToken();
-            if ((idx=mimestr.indexOf('='))!=-1) {
-                while ((i=mimestr.indexOf('%',i))!=-1) {
+        String buffer = new String(postbuffer, 0);
+        buffer = buffer.replace('+', ' ');
+        StringTokenizer tok = new StringTokenizer(buffer, "&");
+        int z = 0;
+        while (tok.hasMoreTokens() && i < maxLoop) {
+            mimestr = tok.nextToken();
+            if ((idx = mimestr.indexOf('=')) != -1) {
+                while ((i = mimestr.indexOf('%', i)) != -1) {
                     // Unescape the 'invalids' in the buffer (%xx) form
                     try {
-                        letter=(char)Integer.parseInt(mimestr.substring(i+1,i+3),16);
-                        mimestr=mimestr.substring(0,i)+letter+mimestr.substring(i+3);
+                        letter = (char)Integer.parseInt(mimestr.substring(i + 1, i + 3), 16);
+                        mimestr = mimestr.substring(0, i) + letter + mimestr.substring(i + 3);
                     } catch (Exception e) {}
 
                     i++;
                 }
-                addpostinfo2(post_header,mimestr.substring(0,idx),mimestr.substring(idx+1));
+                addpostinfo2(post_header, mimestr.substring(0, idx), mimestr.substring(idx + 1));
             } else {
-                addpostinfo2(post_header,mimestr,"");
+                addpostinfo2(post_header, mimestr, "");
             }
             z++;
         }
-        if (z>=maxLoop) {
-            log.info("readPostUrlEncoded: broken out of loop after "+z+" times");
+        if (z >= maxLoop) {
+            log.info("readPostUrlEncoded: broken out of loop after " + z + " times");
         }
         return true;
     }
-
 
     /**
      * gives the index of a bytearray in a bytearray
@@ -851,8 +861,7 @@ public class HttpPost {
         // Yikes !!! Bij gebruik van continue test wordt de variable i (in de for) niet
         // opnieuw gedeclareerd. continue test kan gezien worden als ga verder met de for.
         // test is dus zeker GEEN label.
-test:
-        for (int i = ((fromIndex < 0) ? 0 : fromIndex); i <= max ; i++) {
+        test : for (int i = ((fromIndex < 0) ? 0 : fromIndex); i <= max; i++) {
             int n = v2.length;
             int j = i;
             int k = 0;
