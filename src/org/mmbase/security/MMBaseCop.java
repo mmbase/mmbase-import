@@ -56,51 +56,55 @@ public class MMBaseCop extends java.lang.SecurityManager  {
 	    throw new SecurityException("security attibure active must have value of true or false");
 	}
 
-      	// load our authentication...
-      	String authClass = reader.getElementAttributeValue(reader.getElementByPath("security.authentication"),"class");
-      	if(authClass == null) {
-	    log.error("attribute class could not be found in authentication("+configPath+")");
-    	    throw new java.util.NoSuchElementException("class in authentication");
-	}
-      	String authUrl = reader.getElementAttributeValue(reader.getElementByPath("security.authentication"),"url");
-      	if(authUrl == null) {
-	    log.error("attribute url could not be found in authentication("+configPath+")");
-	    throw new java.util.NoSuchElementException("url in authentication");
-	}
-        File authFile = new File(authUrl);
-        if (! authFile.isAbsolute()) { // so relative to currently
-            // being parsed file. make it absolute, 
-            log.debug("authentication file was not absolutely given (" + authUrl + ")");
-            authFile = new File(configFile.getParent() + File.separator + authUrl);
-            log.debug("will use: " + authFile.getAbsolutePath());
-            
-        }
-        
+      	if(active) {
+    	    // load our authentication...
+    	    String authClass = reader.getElementAttributeValue(reader.getElementByPath("security.authentication"),"class");
+      	    if(authClass == null) {
+	    	log.error("attribute class could not be found in authentication("+configPath+")");
+    	    	throw new java.util.NoSuchElementException("class in authentication");
+	    }
+      	    String authUrl = reader.getElementAttributeValue(reader.getElementByPath("security.authentication"),"url");
+      	    if(authUrl == null) {
+	    	log.error("attribute url could not be found in authentication("+configPath+")");
+	    	throw new java.util.NoSuchElementException("url in authentication");
+	    }
+	    // make the url absolute in case it isn't:
+            File authFile = new File(authUrl);
+            if (! authFile.isAbsolute()) { // so relative to currently
+            	// being parsed file. make it absolute, 
+            	log.debug("authentication file was not absolutely given (" + authUrl + ")");
+            	authFile = new File(configFile.getParent() + File.separator + authUrl);
+            	log.debug("will use: " + authFile.getAbsolutePath());            
+            }
+      	    loadAuthentication(authClass, authFile.getAbsolutePath());
 
-      	loadAuthentication(authClass, authFile.getAbsolutePath());
-
-      	// load our authorization...
-      	String auteClass = reader.getElementAttributeValue(reader.getElementByPath("security.authorization"),"class");
-      	if(auteClass == null) {
-	    log.error("attribute class could not be found in auhotization("+configPath+")");
-	    throw new java.util.NoSuchElementException("class in authorization");
+      	    // load our authorization...
+      	    String auteClass = reader.getElementAttributeValue(reader.getElementByPath("security.authorization"),"class");
+      	    if(auteClass == null) {
+	    	log.error("attribute class could not be found in auhotization("+configPath+")");
+	    	throw new java.util.NoSuchElementException("class in authorization");
+	    }
+      	    String auteUrl = reader.getElementAttributeValue(reader.getElementByPath("security.authorization"),"url");
+      	    if(auteUrl == null) {
+	    	log.error("attribute url could not be found in auhotization("+configPath+")");
+	    	throw new java.util.NoSuchElementException("url in authorization");
+	    }
+            // make the url absolute in case it isn't:
+            File auteFile = new File(auteUrl); 
+            if (! auteFile.isAbsolute()) { // so relative to currently
+            	// being parsed file. make it absolute, 
+            	log.debug("authorization file was not absolutely given (" + auteUrl + ")");
+            	auteFile = new File(configFile.getParent() + File.separator + auteUrl);
+            	log.debug("will use: " + auteFile.getAbsolutePath());            
+            }
+      	    loadAuthorization(auteClass, auteFile.getAbsolutePath());
 	}
-      	String auteUrl = reader.getElementAttributeValue(reader.getElementByPath("security.authorization"),"url");
-      	if(auteUrl == null) {
-	    log.error("attribute url could not be found in auhotization("+configPath+")");
-	    throw new java.util.NoSuchElementException("url in authorization");
+	else {
+    	    authentication = new NoAuthentication();
+	    authentication.load(this, null);
+	    authorization = new NoAuthorization();
+	    authorization.load(this, null);	    
 	}
-        // make the url absolute in case it isn't:
-        File auteFile = new File(auteUrl); 
-        if (! auteFile.isAbsolute()) { // so relative to currently
-            // being parsed file. make it absolute, 
-            log.debug("authorization file was not absolutely given (" + auteUrl + ")");
-            auteFile = new File(configFile.getParent() + File.separator + auteUrl);
-            log.debug("will use: " + auteFile.getAbsolutePath());
-            
-        }
-      	loadAuthorization(auteClass, auteFile.getAbsolutePath());
-
         // load the sharedSecret
       	String sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
       	if(sharedSecret == null) {
