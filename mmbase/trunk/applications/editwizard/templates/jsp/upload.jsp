@@ -29,7 +29,7 @@ if (did==null) {
 </script>
 <body>
 <div id="form">
-	<form action="processuploads.jsp?wizard=<%=ewconfig.wizard%>&maxsize=<%=ewconfig.maxupload%>" enctype="multipart/form-data" method="POST" >
+	<form action="processuploads.jsp?popup=true&wizard=<%=ewconfig.wizard%>&maxsize=<%=ewconfig.maxupload%>" enctype="multipart/form-data" method="POST" >
 		<input type="file" name="<%=did%>" onchange="upload();"></input><br />
 		<input type="button" onclick="upload();" value="upload"></input><br />
 	</form>
