@@ -59,7 +59,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         packageStep step=getNextPackageStep();
         step.setUserFeedBack("bundle/basic packager started");
 
-	String newfilename=MMBaseContext.getConfigPath()+"/packaging/build/"+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_bundle_basic_"+newversion;
+	String newfilename=getBuildPath()+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_bundle_basic_"+newversion;
 
 	try {
   		JarOutputStream jarfile = new JarOutputStream(new FileOutputStream(newfilename+".tmb"),new Manifest());

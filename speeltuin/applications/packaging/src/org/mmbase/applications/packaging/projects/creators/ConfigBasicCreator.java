@@ -70,7 +70,7 @@ public class ConfigBasicCreator extends BasicCreator implements CreatorInterface
         step=getNextPackageStep();
         step.setUserFeedBack("used exclude : "+exclude);
 
-        String newfilename=MMBaseContext.getConfigPath()+"/packaging/build/"+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_config_basic_"+newversion;
+        String newfilename=getBuildPath()+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_config_basic_"+newversion;
 	try {
   		JarOutputStream jarfile = new JarOutputStream(new FileOutputStream(newfilename+".tmp"),new Manifest());
 
