@@ -62,7 +62,20 @@ public class HttpAuth {
 
 		// load the properties file of this server
 
-		String accountconfig=System.getProperty("mmbase.config");
+		
+		String accountconfig;
+
+                String dtmp=System.getProperty("mmbase.mode");
+                if (dtmp!=null && dtmp.equals("demo")) {
+                        String curdir=System.getProperty("user.dir");
+                        if (curdir.endsWith("/orion")) {
+                                curdir=curdir.substring(0,curdir.length()-6);
+                        }
+                        accountconfig=curdir+"/config";
+                } else {
+                        accountconfig=System.getProperty("mmbase.config");
+                }
+
 		Hashtable accounts = Reader.readProperties(accountconfig+"/accounts.properties");
 
 		// oke try loading all these modules and start em up
