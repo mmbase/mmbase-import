@@ -15,9 +15,11 @@ import java.util.List;
 
 /**
  * Utility class for splitting delimited values.
+ *
+ * @deprecated better use String.split()
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.2 2004-02-18 12:29:26 pierre Exp $
+ * @version $Id: StringSplitter.java,v 1.3 2004-09-30 17:19:50 pierre Exp $
  */
 public class StringSplitter {
 

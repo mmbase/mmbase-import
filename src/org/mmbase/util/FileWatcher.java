@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.24 2004-09-15 12:18:24 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.25 2004-09-30 17:19:49 pierre Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -100,6 +100,7 @@ public abstract class FileWatcher {
     }
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
+     * @scope public
      * @param file The file that was changed..
      */
     abstract protected void onChange(File file);
@@ -299,8 +300,8 @@ public abstract class FileWatcher {
 
         /**
          * Set of watchers to be added. This set is used because
-         * in the run method of the this thread the filewachter implementation might decide to 
-         * add a new fileWachter (for example in in the onChange method) 
+         * in the run method of the this thread the filewachter implementation might decide to
+         * add a new fileWachter (for example in in the onChange method)
          */
         private Set watchersToAdd = new HashSet();
 
@@ -510,7 +511,7 @@ public abstract class FileWatcher {
         public void remove() {
             FileWatcher.this.remove(lastFile);
         }
-        
+
     }
 
 }
