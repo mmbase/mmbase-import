@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.38 2004-05-07 13:19:38 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.39 2004-06-26 16:01:03 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -273,6 +273,7 @@ public class BasicQuery implements Query  {
         // code copied from createStepField, should be centralized
         if (used) throw new BridgeException("Query was used already");
         int dot = fieldIdentifier.indexOf('.');
+        if (dot <= 0) throw new BridgeException("No step alias found in field identifier '" + fieldIdentifier + "'");
         String stepAlias = fieldIdentifier.substring(0, dot);
         String fieldName = fieldIdentifier.substring(dot + 1);
         Step step = getStep(stepAlias);
