@@ -7,10 +7,19 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*  
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module;
  
 import org.mmbase.util.LRUHashtable;
 
+/**
+ * The interface class for the cache module.
+ *
+ * @author  $Author: wwwtech $
+ * @version $Revision: 1.6 $
+ */
 public interface cacheInterface {
 	public void init();
 	public LRUHashtable lines();
