@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.44 2001-03-29 22:41:10 daniel Exp $
+$Id: scanparser.java,v 1.45 2001-05-17 17:22:14 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.44  2001/03/29 22:41:10  daniel
+added page crc support
+
 Revision 1.43  2001/03/12 11:53:41  pierre
 pierre: removed nonsensical debug code
 
@@ -155,7 +158,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.44 $ $Date: 2001-03-29 22:41:10 $
+ * @$Revision: 1.45 $ $Date: 2001-05-17 17:22:14 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -770,14 +773,16 @@ public class scanparser extends ProcessorModule {
 			return("Usage of '..' in filepath not allowed!");
 		}
 
+
  		if ((filename.length()>0) && (filename.charAt(0)!='/')) {
- 			//davzev trying out part from dir 4okt2000
- 			String servletPath = sp.req.getServletPath();
- 			//debug("do_part: filename:"+servletPath.substring(0,servletPath.lastIndexOf("/")+1)+filename);
+ 			String servletPath = sp.req_line;
+			if (sp.req!=null) {
+				servletPath=sp.req.getServletPath();
+			}
  			filename = servletPath.substring(0,servletPath.lastIndexOf("/")+1)+filename;
  			if (log.isDebugEnabled()) log.debug("do_part: filename:"+filename);
  		}
- 
+
 
 		// Test if we are going circular
 		if (sp.partlevel>8) {
