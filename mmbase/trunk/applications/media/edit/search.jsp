@@ -13,7 +13,7 @@
  <h1>Zoek</h1>
   <p>
   <table>
-  <form target="content" action="view.jsp" >   
+  <form target="content" action="<mm:url page="view.jsp" />" >   
     <tr><td>Type</td><td><select name="type">
        <option value="mediafragments">Audio/Video</option>
        <option value="audiofragments">Audio</option>

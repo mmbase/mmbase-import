@@ -12,7 +12,7 @@
   <form name="config" method="post">
   <table class="edit" summary="streammager configuration">  
    <tr><td>Language</td>  
-         <td><input type="text" size="30" name="lang" value="<mm:write referid="config.lang" />" />
+         <td><nobr><input type="text" size="5" name="lang" value="<mm:write referid="config.lang" />" />
               <select name="languages" onChange="document.forms['config'].elements['lang'].value = document.forms['config'].elements['languages'].value;">
            <mm:import id="langs" vartype="list">en,nl</mm:import>
            <mm:aliaslist referid="langs">
@@ -21,7 +21,7 @@
            <mm:notpresent referid="found">
              <option value="<mm:write referid="config.lang" />" selected="selected"><mm:locale language="$config.lang" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></option>
            </mm:notpresent>            
-         </select>
+         </select></nobr>
          </td>
      </tr>
      <tr><td>Format</td>  
