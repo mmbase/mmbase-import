@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.123 2004-03-08 17:45:50 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.123.2.1 2004-04-13 13:29:33 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -391,7 +391,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public void setNodeValue(String fieldName, Node value) {
         value = (Node) ValueIntercepter.processSet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), value);
-        if (value instanceof BasicNode) {
+        if (value == null) {
+            setValueWithoutProcess(fieldName, null);
+        } else if (value instanceof BasicNode) {
             setValueWithoutProcess(fieldName, ((BasicNode)value).getNode());
         } else {
             setValueWithoutProcess(fieldName, new Integer(value.getNumber()));
