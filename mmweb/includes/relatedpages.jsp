@@ -1,4 +1,4 @@
-﻿<%-- a div to include with related pages
+<%-- a div to include with related pages
 --%><mm:present referid="page">
 <div class="relatedpages">
 <mm:list nodes="$page" path="pages1,posrel,pages2" searchdir="source">
