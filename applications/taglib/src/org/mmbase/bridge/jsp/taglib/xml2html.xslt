@@ -303,10 +303,18 @@
     </head>
     <body 
       bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
+     <xsl:text disable-output-escaping="yes">
+      &lt;mm:cloud&gt;
+      &lt;mm:node jspvar="node" number="taglib.documentation" notfound="providenull"&gt;
+      </xsl:text>
     <h1><xsl:value-of select="name" /></h1>
     <xsl:apply-templates select="." mode="full">
       <xsl:with-param name="file" select="true()" />
     </xsl:apply-templates>
+     <xsl:text disable-output-escaping="yes">
+       &lt;/mm:node&gt;
+       &lt;/mm:cloud&gt;
+      </xsl:text>
     </body>
   </html>
   </xalan:write>
