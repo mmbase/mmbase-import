@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 8; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -15,6 +15,12 @@ import java.sql.*;
 import org.mmbase.module.*;
 import org.mmbase.module.database.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * MMTable is the base abstraction of a cloud of objects stored in one database tabel,
  * essentially a cloud of objects of the same type.
@@ -27,6 +33,8 @@ import org.mmbase.module.database.*;
  * @version 31 januari 2001
  */
 public class MMTable {
+
+    private static Logger log = Logging.getLoggerInstance(MMTable.class.getName()); 
 
     /**
     * The MMBase module that this table belongs to
@@ -61,8 +69,9 @@ public class MMTable {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			System.out.println("SELECT count(*) FROM "+mmb.getBaseName()+"_"+tableName+";");
-			ResultSet rs=stmt.executeQuery("SELECT count(*) FROM "+mmb.getBaseName()+"_"+tableName+";");
+            String query = "SELECT count(*) FROM " + mmb.getBaseName() + "_" + tableName + ";";
+			log.info(query);
+			ResultSet rs=stmt.executeQuery(query);
 			int i=-1;
 			while(rs.next()) {
 				i=rs.getInt(1);
@@ -86,10 +95,10 @@ public class MMTable {
     */
 	public boolean created() {
 		if (size()==-1) {
-			System.out.println("TABLE "+tableName+" NOT FOUND");
+			log.error("TABLE "+tableName+" NOT FOUND");
 			return(false);
 		} else {
-			System.out.println("TABLE "+tableName+" FOUND");
+			log.error("TABLE "+tableName+" FOUND");
 			return(true);
 		}
 		// better:

@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -16,6 +16,9 @@ import java.io.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * MultiCastChangesSender is a thread object sending the nodes found in the
  * sending queue over the multicast 'channel'
@@ -24,6 +27,8 @@ import org.mmbase.util.*;
  * @author Rico Jansen
  */
 public class MultiCastChangesSender implements Runnable {
+
+    private static Logger log = Logging.getLoggerInstance(MultiCastChangesSender.class.getName()); 
 
 	Thread kicker = null;
 	MMBaseMultiCast parent=null;
@@ -76,13 +81,11 @@ public class MultiCastChangesSender implements Runnable {
 				ms = new MulticastSocket();
 				ms.joinGroup(ia);
 			} catch(Exception e) {
-				System.out.println("MMBaseMultiCast -> ");
-				e.printStackTrace();
+                log.error(Logging.stackTrace(e));
 			}
 			doWork();
 		} catch (Exception e) {
-			System.out.println("MultiCastChangesSender -> ");
-			e.printStackTrace();
+            log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -99,8 +102,8 @@ public class MultiCastChangesSender implements Runnable {
 			try {
 				ms.send(dp, (byte)1);
 			} catch (IOException e) {
-				System.out.println("MMBaseMulticast -> can't send message");
-				e.printStackTrace();
+				log.error("can't send message");
+                log.error(Logging.stackTrace(e));
 			}
 			parent.outcount++;
 		}

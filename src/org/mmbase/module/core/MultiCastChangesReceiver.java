@@ -16,6 +16,9 @@ import java.io.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * MultiCastChangesReceiver is a thread object that reads the receive queue
  * and spawns them to call the objects (listeners) who need to know.
@@ -25,9 +28,7 @@ import org.mmbase.util.*;
  */
 public class MultiCastChangesReceiver implements Runnable {
 
-	final static boolean debug=true;
-	private String classname = getClass().getName();
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    private static Logger log = Logging.getLoggerInstance(MultiCastChangesReceiver.class.getName()); 
 	
 	Thread kicker = null;
 	MMBaseMultiCast parent=null;
@@ -70,8 +71,7 @@ public class MultiCastChangesReceiver implements Runnable {
 			try {
 				doWork();
 			} catch (Exception e) {
-				System.out.println("MultiCastChangesReceiver -> ");
-				e.printStackTrace();
+                log.error(Logging.stackTrace(e));
 			}
 		}
 	}
@@ -100,13 +100,13 @@ public class MultiCastChangesReceiver implements Runnable {
 									if (tok.hasMoreTokens()) {
 										String xml=tok.nextToken("");	
 										parent.commitXML(machine,vnr,id,tb,ctype,xml);
-									} else debug ("doWork("+chars+"): ERROR: 'xml' could not be extracted from this string!");
+									} else log.error("doWork("+chars+"): 'xml' could not be extracted from this string!");
 								} 
-							} else debug ("doWork("+chars+"): ERROR: 'ctype' could not be extracted from this string!");
-						} else debug ("doWork("+chars+"): ERROR: 'tb' could not be extracted from this string!");
-					} else debug ("doWork("+chars+"): ERROR: 'id' could not be extracted from this string!");
-				} else debug ("doWork("+chars+"): ERROR: 'vnr' could not be extracted from this string!"); 
-			} else debug ("doWork("+chars+"): ERROR: 'machine' could not be extracted from this string!");
+							} else log.error("doWork("+chars+"): 'ctype' could not be extracted from this string!");
+						} else log.error("doWork("+chars+"): 'tb' could not be extracted from this string!");
+					} else log.error("doWork("+chars+"): 'id' could not be extracted from this string!");
+				} else log.error("doWork("+chars+"): 'vnr' could not be extracted from this string!"); 
+			} else log.error("doWork("+chars+"): 'machine' could not be extracted from this string!");
 		}
 	}
 }

@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -17,10 +17,16 @@ import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.InsRel;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /*
-	$Id: TemporaryNodeManager.java,v 1.19 2001-04-06 13:43:55 jaco Exp $
+	$Id: TemporaryNodeManager.java,v 1.20 2001-04-10 17:32:05 michiel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.19  2001/04/06 13:43:55  jaco
+	jaco: Throw an exception if a field doesn't exist.
+	
 	Revision 1.18  2001/03/23 03:31:00  eduard
 	eduard: it's late and i now throw an exception in this case... has to be looked at later... otherwise will generate nullpointer exceptions...
 	
@@ -81,12 +87,11 @@ import org.mmbase.module.corebuilders.InsRel;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.19 2001-04-06 13:43:55 jaco Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.20 2001-04-10 17:32:05 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
-	private String	_classname = getClass().getName();
-	private boolean _debug=false;
-	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
+
+    private static Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class.getName()); 
 
 	private MMBase mmbase;
 
@@ -95,15 +100,19 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	}
 
 	public String createTmpNode(String type,String owner,String key) {
-		if (_debug) debug("createTmpNode : type="+type+" owner="+owner+" key="+key);
+		if (log.isDebugEnabled()) {
+            log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
+        }
 		if (owner.length()>12) owner=owner.substring(0,12);
 		MMObjectBuilder builder=mmbase.getMMObject(type);
 		MMObjectNode node;
 		if (builder!=null) {
 			node=builder.getNewTmpNode(owner,getTmpKey(owner,key));
-			if (_debug) debug("New tmpnode "+node);
+            if (log.isDebugEnabled()) {
+                log.debug("New tmpnode " + node);
+            }
 		} else {
-			debug("Can't find builder "+type);
+            log.error("Can't find builder " + type);
 		}
 		return(key);
 	}
@@ -137,7 +146,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	public String deleteTmpNode(String owner,String key) {
 		MMObjectBuilder b=mmbase.getMMObject("typedef");
 		b.removeTmpNode(getTmpKey(owner,key));
-		if (_debug) debug("delete node "+getTmpKey(owner,key));
+		if (log.isDebugEnabled()) {
+            log.debug("delete node " + getTmpKey(owner,key));
+        }
 		return(key);
 	}
 
@@ -147,7 +158,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		node=bul.getTmpNode(getTmpKey(owner,key));
 		// fallback to normal nodes
 		if (node==null) {
-			if (_debug) debug("getNode tmp not node found "+key);
+			if (log.isDebugEnabled()) {
+                log.debug("getNode tmp not node found " + key);
+            }
 			node=bul.getNode(key);
 			if(node==null) throw new java.lang.RuntimeException("HUGE ERROR, NODE NOT FOUND !!" + key);
 		}
@@ -164,10 +177,12 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		MMObjectNode node;
 		node=bul.getTmpNode(getTmpKey(owner,key));
 		if (node==null) {
-			if (_debug) debug("getObject not tmp node found "+key);
+			if (log.isDebugEnabled()) {
+                log.debug("getObject not tmp node found " + key);
+            }
 			node=bul.getNode(dbkey);
 			if (node==null) {
-				debug("Node not found in database "+dbkey);
+				log.warn("Node not found in database " + dbkey);
 			} else {
 				bul.putTmpNode(getTmpKey(owner,key),node);
 			}
@@ -205,18 +220,18 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 								i=Integer.parseInt(stringValue);
 								node.setValue(field,i);
 							} catch (NumberFormatException x) {
-								debug("Value for field "+field+" is not a number "+stringValue);
+								log.error("Value for field " + field + " is not a number " + stringValue);
 							}
 							break;
 						case FieldDefs.TYPE_BYTE:
-							debug("We don't support casts from String to Byte");
+							log.error("We don't support casts from String to Byte");
 							break;
 						case FieldDefs.TYPE_FLOAT:
 							try {
 								f=Float.parseFloat(stringValue);
 								node.setValue(field,f);
 							} catch (NumberFormatException x) {
-								debug("Value for field "+field+" is not a number "+stringValue);
+								log.error("Value for field " + field + " is not a number " + stringValue);
 							}
 							break;
 						case FieldDefs.TYPE_DOUBLE:
@@ -224,7 +239,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 								d=Double.parseDouble(stringValue);
 								node.setValue(field,d);
 							} catch (NumberFormatException x) {
-								debug("Value for field "+field+" is not a number "+stringValue);
+								log.error("Value for field " + field + " is not a number " + stringValue);
 							}
 							break;
 						case FieldDefs.TYPE_LONG:
@@ -232,11 +247,11 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 								l=Long.parseLong(stringValue);
 								node.setValue(field,l);
 							} catch (NumberFormatException x) {
-								debug("Value for field "+field+" is not a number "+stringValue);
+								log.error("Value for field "+field+" is not a number "+stringValue);
 							}
 							break;
 						default:
-							debug("Unknown type for field "+field);
+							log.error("Unknown type for field "+field);
 							break;
 					}
 				} else {
@@ -248,7 +263,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 				return("unknown");
 			}
 		} else {
-			debug("setObjectField(): Can't find node : "+key);
+			log.error("setObjectField(): Can't find node : "+key);
 		}
 		return("");
 	}
@@ -259,7 +274,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		MMObjectNode node;
 		node=getNode(owner,key);
 		if (node==null) {
-			debug("getObjectFieldAsString(): node "+key+" not found!");
+			log.error("getObjectFieldAsString(): node " + key + " not found!");
 			rtn="";
 		} else {
 			rtn=node.getValueAsString(field);
@@ -272,7 +287,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		MMObjectNode node;
 		node=getNode(owner,key);
 		if (node==null) {
-			debug("getObjectFieldAsString(): node "+key+" not found!");
+			log.error("getObjectFieldAsString(): node " + key + " not found!");
 			rtn="";
 		} else {
 			rtn=node.getValueAsString(field);
