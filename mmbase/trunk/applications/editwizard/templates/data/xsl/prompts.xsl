@@ -5,7 +5,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.8 2002-08-13 06:50:50 michiel Exp $
+  @version $Id: prompts.xsl,v 1.9 2002-08-21 17:25:52 michiel Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -27,6 +27,7 @@
   <option value="11">november</option>
   <option value="12">december</option>
 </xsl:template>
+<xsl:variable name="time_at">at</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
 <xsl:template name="prompt_file_upload">File Upload</xsl:template>
 <xsl:template name="prompt_uploaded">Uploaded:</xsl:template>
