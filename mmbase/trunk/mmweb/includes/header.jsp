@@ -1,3 +1,5 @@
+<%-- Too little comments in this file to grasp the general idea by non-initiated --%>
+
 <% String componentTitle = "header";%>
 <%@include file="cachesettings.jsp" %>
 <% String userFullName = (String) session.getAttribute("user_node_name"); %>
@@ -24,30 +26,26 @@
    </head>
 <body>
 <%@ include file="nav.jsp" %>
+<%-- tables in tables in tables!! Why?! --%>
 <table border="0" cellspacing="0" cellpadding="0" class="content">
-<tr><td>
-<table border="0" cellspacing="0" cellpadding="0" class="layout">
-<tr>
- <td><table cellpadding="0" cellspacing="0" border="0" id="hiero" width="100%">
-   <tr><mm:node number="$portal" notfound="skipbody">
-	<mm:log>1</mm:log>
-     <mm:related path="posrel,images" fields="posrel.pos" max="3" orderby="posrel.pos">
-	<mm:context>
-           <mm:field name="posrel.pos" id="pos">
-              <mm:node element="images">
-		<td width="33%" <mm:compare referid="pos" value="2" inverse="true"> background="<mm:image/>"
-                                </mm:compare> >
-                <mm:compare referid="pos" value="2">
-	              <a href="index.jsp"><img src="<mm:image/>" alt="MMBase" border="0" /></a>
-                </mm:compare>
-	        <mm:compare referid="pos" value="2" inverse="true">&nbsp;</mm:compare>
-                </td>
-	      </mm:node>
-            </mm:field>
-         </mm:context>
-    </mm:related>
-	<mm:log>2</mm:log>
-     </mm:node>
+  <tr>
+   <td>
+    <table border="0" cellspacing="0" cellpadding="0" class="layout">
+    <tr>
+     <td>
+       <table cellpadding="0" cellspacing="0" border="0" id="hiero" width="100%">
+         <tr>
+          <mm:node number="$portal" notfound="skipbody">
+           <mm:relatednodes role="posrel" type="images" max="3" orderby="posrel.pos">
+           <mm:index>
+              <td width="33%" <mm:compare value="2" inverse="true"> background="<mm:image/>"</mm:compare> >
+              <mm:compare value="2">
+	          <a href="index.jsp"><img src="<mm:image/>" alt="MMBase" border="0" /></a>
+              </mm:compare>
+	      <mm:compare value="2" inverse="true">&nbsp;</mm:compare></td>
+           </mm:index>
+     </mm:relatednodes>
+    </mm:node>
     </tr></table>
   </td>
 </tr>
@@ -57,32 +55,28 @@
 	    <td width="100%"><span class="breadcrum"><%@ include file="/includes/breadcrums.jsp" %></span></td>
 
 <!-- tab menu -->
-<mm:compare referid="portal" value="home" inverse="true">
-	<mm:node number="home">
-	<mm:field name="number" id="thisportal" write="false">
-	<mm:compare referid="portal" value="$thisportal">
+    <mm:node number="home">
+       <mm:field name="number">
+	<mm:compare referid2="portal">
 		<!-- selected -->
 		<td style="background-color: rgb(255, 255, 255);">[&nbsp;&nbsp;<mm:field name="name"/>&nbsp;&nbsp;]&nbsp;</td>
         </mm:compare>
-	<mm:compare referid="portal" value="$thisportal" inverse="true">
+	<mm:compare referid2="portal" inverse="true">
 <td><a href="<mm:url page="/"><mm:param name="portal"><mm:field name="number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="name"/>&nbsp;&nbsp;]&nbsp;</a></td>
         </mm:compare>
 	</mm:field>
-	<mm:remove referid="thisportal"/>
 	</mm:node>
-</mm:compare>
 
 <mm:list nodes="home" path="portals1,posrel,portals2" searchdir="destination" orderby="posrel.pos" directions="UP">
-	<mm:field name="portals2.number" id="thisportal" write="false">
-	<mm:compare referid="portal" value="$thisportal">
+	<mm:field name="portals2.number">
+	<mm:compare referid2="portal">
 <td style="background-color: rgb(255, 255, 255);">[&nbsp;&nbsp;<mm:field name="portals2.name"/>&nbsp;&nbsp;]&nbsp;</td>
 	</mm:compare>
-	<mm:compare referid="portal" value="$thisportal" inverse="true">
+	<mm:compare referid2="portal" inverse="true">
 <td><a href="<mm:url page="/"><mm:param name="portal"><mm:field name="portals2.number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="portals2.name"/>&nbsp;&nbsp;]&nbsp;</a></td>
 	</mm:compare>
 	</mm:field>
-	<mm:remove referid="thisportal"/>
-</mm:list>
+    </mm:list>
 <!-- end tab menu -->
 
 <%  String rightContent = "";
