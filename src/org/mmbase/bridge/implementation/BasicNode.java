@@ -321,6 +321,8 @@ public class BasicNode implements Node {
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
             temporaryNodeId=-1;
+            // invalid nodereference: fix!
+            noderef=mmb.getTypeDef().getNode(noderef.getNumber());
         }
 	changed = false;
     }
@@ -337,7 +339,8 @@ public class BasicNode implements Node {
                 isnew=false;
                 noderef=null;
             } else {
-                // should we update the node?, reset fields? etc...
+                // update the node, reset fields etc...
+                noderef=mmb.getTypeDef().getNode(noderef.getNumber());
             }
             temporaryNodeId=-1;
         }
