@@ -58,9 +58,12 @@ import org.mmbase.module.core.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.15 2002-12-03 21:24:26 michiel Exp $
+ * @version $Id: Config.java,v 1.16 2002-12-18 20:57:15 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.14.6.2  2002/12/18 20:53:03  michiel
+ * fix for #4780
+ *
  * Revision 1.14.6.1  2002/12/03 21:22:31  michiel
  * fixes for bugs #4249, #3713 and #4393 plus a little cleaning in the process. All related to DTD resolving / XML validation
  *
@@ -105,7 +108,7 @@ public class Config extends ProcessorModule {
     // debug routines
     private static Logger log = Logging.getLoggerInstance(Config.class.getName());
     private String classname = getClass().getName();
-    private String configpath;
+    // private String configpath;
 
 
     class ParseResult {
@@ -237,7 +240,7 @@ public class Config extends ProcessorModule {
     }
 
     public void init() {
-        configpath = MMBaseContext.getConfigPath();
+        //        configpath = MMBaseContext.getConfigPath();
     }
 
 
@@ -285,15 +288,15 @@ public class Config extends ProcessorModule {
                 if (argv.length == 1) {
                     if (category == null || category.equals("")) {
                         // Show main configuration file categories
-                        return listConfigDirectories(configpath);
+                        return listConfigDirectories(MMBaseContext.getConfigPath());
                     } else {
-                        Vector item1List = listDirectory(configpath+File.separator+category);
+                        Vector item1List = listDirectory(MMBaseContext.getConfigPath() + File.separator + category);
                         Vector item2List = new Vector();
                         Vector item3List = new Vector();
                         Enumeration enum = item1List.elements();
                         String path;
                         while (enum.hasMoreElements()) {
-                            path = configpath+File.separator+category+File.separator+(String)enum.nextElement()+".xml";
+                            path = MMBaseContext.getConfigPath() +File.separator+category+File.separator+(String)enum.nextElement()+".xml";
                             item2List.addElement(path);
                             if (category.equalsIgnoreCase("builders")) {
                                 item3List.addElement(builderIsActive(path) ? "true" : "false");
@@ -357,7 +360,7 @@ public class Config extends ProcessorModule {
         File dir = new File(path);
         String[] list = dir.list();
         for (int i=0;i<list.length;i++) {
-            File f = new File(configpath+File.separator+list[i]);
+            File f = new File(MMBaseContext.getConfigPath()+File.separator+list[i]);
             if (!list[i].equalsIgnoreCase("CVS") && f.isDirectory()) {
                 v.addElement(list[i]);
             }
@@ -437,7 +440,7 @@ public class Config extends ProcessorModule {
         String res = "";
         Vector builderList;
         try {
-            builderList = listDirectory(configpath+File.separator+"builders");
+            builderList = listDirectory(MMBaseContext.getConfigPath()+File.separator+"builders");
         } catch (IOException e) {
             log.error("Error reading builder directory: "+e.getMessage());
             builderList = new Vector();
@@ -445,7 +448,7 @@ public class Config extends ProcessorModule {
         String buildername, path;
         for (int i=0;i<builderList.size();i++) {
             buildername = (String)builderList.elementAt(i);
-            path = configpath+File.separator+"builders"+File.separator+buildername+".xml";
+            path = MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator+buildername+".xml";
             if (builderIsActive(path)) {
                 res = res + buildername + eol;
             }
@@ -475,7 +478,7 @@ public class Config extends ProcessorModule {
         } else {
             String dir = argv[1];
             String filename = argv[2]+".xml";
-            String path = configpath+File.separator+dir+File.separator+filename;
+            String path = MMBaseContext.getConfigPath()+File.separator+dir+File.separator+filename;
 
             if (argv[0].equalsIgnoreCase("SHOW")) {
                 return prettyPrintXML(path);
