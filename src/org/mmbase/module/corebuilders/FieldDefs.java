@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.41 2004-09-17 10:00:24 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.42 2004-12-20 17:54:44 pierre Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -45,13 +45,13 @@ public class FieldDefs implements Comparable, Storable {
     /**
      * @since MMBase-1.8
      */
-    public final static int TYPE_DATETIME  = 10;   
+    public final static int TYPE_DATETIME  = 10;
     /**
      * @since MMBase-1.8
      */
     public final static int TYPE_BOOLEAN   = 11;
     /**
-     * 
+     *
      * @since MMBase-1.8
      */
     public final static int TYPE_LIST      = 12;
@@ -59,6 +59,7 @@ public class FieldDefs implements Comparable, Storable {
     public final static int TYPE_MAXVALUE  = 12;
     public final static int TYPE_UNKNOWN   = -1;
 
+    public final static int ORDER_NONE   = -1;
     public final static int ORDER_CREATE = 0;
     public final static int ORDER_EDIT   = 1;
     public final static int ORDER_LIST   = 2;
@@ -149,7 +150,7 @@ public class FieldDefs implements Comparable, Storable {
        if (type < TYPE_MINVALUE || type > TYPE_MAXVALUE) {
             return DBTYPES[0];
        }
-       
+
        return DBTYPES[type - TYPE_MINVALUE + 1];
     }
 
@@ -208,7 +209,7 @@ public class FieldDefs implements Comparable, Storable {
      * Provide a description for the current type.
      * @return the description of the type.
      */
-    public String getDBTypeDescription() {       
+    public String getDBTypeDescription() {
         return typeString;
         //return FieldDefs.getDBTypeDescription(type);
     }
@@ -573,9 +574,9 @@ public class FieldDefs implements Comparable, Storable {
     public boolean equals(Object o) {
         if (o instanceof FieldDefs) {
             FieldDefs f = (FieldDefs) o;
-            return 
-                storageEquals(f) 
-                && descriptions.equals(f.descriptions) 
+            return
+                storageEquals(f)
+                && descriptions.equals(f.descriptions)
                 && guiNames.equals(f.guiNames)
                 && guiType.equals(f.guiType)
                 && guiSearch == f.guiSearch
@@ -593,18 +594,18 @@ public class FieldDefs implements Comparable, Storable {
      * @since MMBase-1.7
      */
     public boolean storageEquals(FieldDefs f) {
-        return 
+        return
             name.equals(f.name)
             && type == f.type
-            && state == f.state 
+            && state == f.state
             && notNull == f.notNull
-            && isKey  == f.isKey 
-            && size == f.size 
+            && isKey  == f.isKey
+            && size == f.size
             && (parent == null ? f.parent == null : parent.equals(f.parent))
-            && (storageIdentifier == null ? f.storageIdentifier == null : storageIdentifier.equals(f.storageIdentifier)) 
-            && storageType == f.storageType 
+            && (storageIdentifier == null ? f.storageIdentifier == null : storageIdentifier.equals(f.storageIdentifier))
+            && storageType == f.storageType
             && pos == f.pos
-            ; 
+            ;
     }
 
     // Storable interfaces
