@@ -55,7 +55,9 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
             throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be an image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
         HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
-        String page = req.getContextPath() + "/img.db?" + node.getNumber() + (template != null ? "+" + template : "");
+        String page = req.getContextPath() + "/img.db?" + node.getNumber() + (template != null ? "+" + template.replace('#', 'X') : "");
+        // servdb ignores everything after #, but # is used for colors in convert.
+        // so, we replace all # by X here, and replace them again in ConvertImageMagick. Sigh...
         helper.setValue(page);
         helper.setJspvar(pageContext);  
         if (getId() != null) {
