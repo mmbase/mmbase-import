@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.24 2003-03-10 11:50:23 pierre Exp $
+ * @version $Id: ImageMaster.java,v 1.25 2004-02-23 19:05:00 pierre Exp $
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -268,10 +268,11 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
                 }
 
                 log.debug("handleMirror: ckey "+ckey);
-                byte[] filebuf=bul.getCkeyNode(ckey);
-                if (filebuf==null) {
+                ByteFieldContainer container=bul.getCkeyNode(ckey);
+                if (container == null) {
                     log.debug("handleMirror: no icaches entry yet");
                 }
+                byte[] filebuf = container.value;
                 log.debug("request size "+filebuf.length);
                 String srcpath=getProperty("test1:path"); // ??? XXX should be changed!
                 // Pass mimetype. should check on succes sor failure!
