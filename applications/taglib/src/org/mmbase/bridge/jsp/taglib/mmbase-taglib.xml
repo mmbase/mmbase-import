@@ -2675,4 +2675,42 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       </info>
     </attribute>
    </tag>
+  <tag>   
+    <name>locale</name>
+    <see>cloud</see>
+    <see>time</see>
+    <tagclass>org.mmbase.bridge.jsp.taglib.LocaleTag</tagclass>
+    <info>
+      Sets a locale. Tags living in its body can request the Locale
+      from it, if they need it.
+    </info>
+    <attribute>
+      <name>language</name>
+      <required>required</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        A two letter language code.
+      </info>
+      <examplevalue>
+        <value>nl</value>
+      </examplevalue>
+      <examplevalue>
+        <value>en</value>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>country</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        A two letter country code.
+      </info>
+      <examplevalue>
+        <value>BE</value>
+      </examplevalue>
+      <examplevalue>
+        <value>UK</value>
+      </examplevalue>
+    </attribute>
+   </tag>
 </taglib>
