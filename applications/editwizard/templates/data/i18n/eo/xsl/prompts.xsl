@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: prompts.xsl,v 1.5 2002-08-21 18:01:26 michiel Exp $
+  @version $Id: prompts.xsl,v 1.6 2004-01-07 22:18:18 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -59,7 +59,8 @@
 <xsl:variable name="tooltip_delete">Forigu ĉi tiun eron</xsl:variable>
 <xsl:template name="prompt_delete_confirmation" >Ĉu vi certas ke vi volas forigi ĉi tiun eron?</xsl:template>
 <!-- save button prompts and tooltips -->
-<xsl:template name="prompt_save">Konservu</xsl:template>
+<xsl:template name="prompt_save">Konservu &amp; eliru</xsl:template>
+<xsl:template name="prompt_save_only">Konservu</xsl:template>
 <xsl:variable name="tooltip_save">Konservu ĉiujn ŝanĝojn.</xsl:variable>
 <xsl:variable name="tooltip_no_save">Ne eblas konservi la ŝanĝojn, kelkaj informeroj ne estas korekte plenumitaj.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
