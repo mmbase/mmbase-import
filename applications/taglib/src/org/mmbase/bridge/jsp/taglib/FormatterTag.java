@@ -27,7 +27,7 @@ import org.mmbase.bridge.util.xml.Generator;
 
 
 import java.io.File;
-import org.mmbase.module.core.MMBaseContext; 
+import org.mmbase.module.core.MMBaseContext;
 import javax.servlet.jsp.PageContext;
 
 import org.mmbase.util.xml.URIResolver;
@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  * The formatter can reformat its body. It usually uses XSL for this.
  *
  *
- * @since  MMBase-1.6 
+ * @since  MMBase-1.6
  * @author Michiel Meeuwissen
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
@@ -50,10 +50,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     private static Logger log = Logging.getLoggerInstance(FormatterTag.class.getName());
 
     // standard Writer properties:
-    protected WriterHelper helper = new WriterHelper(); 
+    protected WriterHelper helper = new WriterHelper();
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    public void setVartype(String t) throws JspTagException { 
+    public void setVartype(String t) throws JspTagException {
         throw new JspTagException("Url tag can only produces Strings");
     }
     public void setJspvar(String j) {
@@ -68,19 +68,19 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     public void haveBody() {
         helper.haveBody();
     }
-           
+
     protected String   xslt    = null;
     protected int      format  = FORMAT_UNSET;
     protected String   options = null;
 
     protected Source   xsltSource = null;
-  
+
     private static javax.xml.parsers.DocumentBuilder        documentBuilder;
     private File cwd;
-    
+
 
     // formats that needs XML input, when setting these 'wantXML' will be true, and a DOM Document will be created.
-    
+
     // XSLT transformations:
     private static final int FORMAT_XHTML      = 1;
     private static final int FORMAT_PRESENTXML = 2;
@@ -90,7 +90,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     // wants XML, but uses Encode to output (no XSLT is used).
     private static final int FORMAT_ESCAPEXMLPRETTY = 500;
-    
+
 
     // These formats take the body as a string. So the body doesn't need to be valid XML.
     private static final int FORMAT_ESCAPEXML       = 1001;
@@ -98,12 +98,12 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     private static final int FORMAT_LOWERCASE       = 1003;
     private static final int FORMAT_UPPERCASE       = 1004;
 
-    
+
     private static final int FORMAT_UNSET           = -1;
 
 
     static {
-        log.service("static init of FormatterTag.");    
+        log.service("static init of FormatterTag.");
 
         try {
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
@@ -119,7 +119,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * Must store the XML somewhere. This will contain the central DOM Document.
      *
      */
-    private   Generator xmlGenerator  = null;  
+    private   Generator xmlGenerator  = null;
 
     /**
      * A handle necessary when using the Timer Tag;
@@ -139,9 +139,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     public void setFormat(String f) throws JspTagException {
         String fs = getAttributeValue(f);
         if ("xhtml".equalsIgnoreCase(fs)) {
-            format = FORMAT_XHTML;            
+            format = FORMAT_XHTML;
         } else if ("presentxml".equalsIgnoreCase(fs)) {
-            format = FORMAT_PRESENTXML;            
+            format = FORMAT_PRESENTXML;
         } else if ("code".equalsIgnoreCase(fs)) {
             format = FORMAT_CODE;
         } else if ("escapexml".equalsIgnoreCase(fs)) {
@@ -156,7 +156,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             format = FORMAT_RICH;
         } else {
             throw new JspTagException("Unknown format " + fs + "(" + f + ")");
-        }         
+        }
     }
 
     public void setOptions(String o) throws JspTagException {
@@ -188,15 +188,15 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         // return format < 1000;
         return xmlGenerator != null;
     }
-   
+
 
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
         javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-        cwd = new File(pageContext.getServletContext().getRealPath(request.getServletPath())).getParentFile(); 
-    }            
-    
-    public int doStartTag() throws JspTagException {  
+        cwd = new File(pageContext.getServletContext().getRealPath(request.getServletPath())).getParentFile();
+    }
+
+    public int doStartTag() throws JspTagException {
         // serve parent timer tag:
         TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
         if (t != null) {
@@ -209,7 +209,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         if (format > FORMAT_UNSET  && xslt != null) {
             throw new JspTagException ("One of the attributes xslt and format must be specified, or none (then you have to use an mm:xslt subtag.");
         }
-    
+
         if (format < 1000) {  // also if format is unset.
             xmlGenerator = new Generator(documentBuilder);
         } else {
@@ -222,8 +222,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
         if (helper.getJspvar() == null) {
-            helper.overrideWrite(true); 
-        }        
+            helper.overrideWrite(true);
+        }
 
         // If there is some bodycontent, then we can add also that to
         // the Document. This is of course mainly useful for debugging purposes.
@@ -237,17 +237,17 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");
                 Document bodyContentDocument;
                 try {
-                    bodyContentDocument = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8"))); 
+                    bodyContentDocument = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8")));
                 } catch (Exception e) {
                     throw new JspTagException(body + ":" +  e.toString());
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("created an element: " + bodyContentDocument.getDocumentElement().getTagName());            
+                    log.debug("created an element: " + bodyContentDocument.getDocumentElement().getTagName());
                 }
                 Document doc = xmlGenerator.getDocument();
                 org.w3c.dom.Node field = doc.importNode(bodyContentDocument.getDocumentElement(), true);
                 doc.appendChild(field);
-            } 
+            }
         }
 
         if (log.isDebugEnabled()) {
@@ -300,19 +300,19 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                     options = "yyyy-MM-dd HH:mm:ss";
                 }
                 // iso 8601 for date/time
-    	    	dateFormat.applyPattern(options);
-	    	java.util.Date datum = new java.util.Date((new Long(body)).longValue() * 1000);
+                dateFormat.applyPattern(options);
+            java.util.Date datum = new java.util.Date((new Long(body)).longValue() * 1000);
                 helper.setValue(dateFormat.format(datum));
                 break;
             }
         } else {
-            
+
             if (xslt != null) {
                 if (xsltSource != null) {
                     throw new JspTagException("Cannot use  'xslt' subtag and the 'xslt' attribute");
                 }
                 if (log.isDebugEnabled()) log.debug("Transforming with " + xslt);
-                                                                                 
+
                 helper.setValue(xslTransform(xslt));
             } else {
                 if (xsltSource == null) {
@@ -323,8 +323,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
 
 
-        helper.setJspvar(pageContext);  
-        
+        helper.setJspvar(pageContext);
+
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
@@ -356,10 +356,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      */
     private String xslTransform(Source xsl) throws JspTagException {
         log.debug("transforming");
-        
+
         TemplateCache cache= TemplateCache.getCache();
         Templates cachedXslt = cache.getTemplates(xsl);
-        if (cachedXslt == null) { 
+        if (cachedXslt == null) {
             try {
                 cachedXslt = getFactory().newTemplates(xsl);
                 cache.put(xsl, cachedXslt);
@@ -370,26 +370,26 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
         }
-        
+
         // set some parameters to the XSLT style sheet.
         java.util.Map params = new java.util.HashMap();
-        String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath(); 
+        String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
-        params.put("formatter_imgdb", context + "/" + org.mmbase.module.builders.AbstractImages.IMGDB);        
-        // getting the language from the locale, this is perhaps not a very good idea, 
+        params.put("formatter_imgdb", context + org.mmbase.module.builders.AbstractImages.getIMGDB());
+        // getting the language from the locale, this is perhaps not a very good idea,
         // but for the moment, I don't know a sensible other place to get it from.
         params.put("formatter_language", java.util.Locale.getDefault().getLanguage());
-        
+
         return ResultCache.getCache().get(cachedXslt, xsl,  params, null, xmlGenerator.getDocument());
-    
+
     }
-    /**    
+    /**
      * @see #xslTransform
      * @param A name of an XSLT file.
      */
     private String xslTransform(String xsl) throws JspTagException {
         try {
-            return xslTransform(getFactory().getURIResolver().resolve(xsl, null));        
+            return xslTransform(getFactory().getURIResolver().resolve(xsl, null));
          } catch (javax.xml.transform.TransformerException e) {
              throw new JspTagException(e.toString() + ": " + Logging.stackTrace(e)); // probably the file could not be found.
          }
