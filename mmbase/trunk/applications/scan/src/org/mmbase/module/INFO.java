@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.12 $ $Date: 2000-05-19 16:01:17 $
+ * @$Revision: 1.13 $ $Date: 2000-05-19 16:06:47 $
  */
 public class INFO extends ProcessorModule {
 
@@ -154,7 +154,7 @@ public class INFO extends ProcessorModule {
 			return("Illegal browser command");	
 		} else {
 			String tmp=sp.req.getHeader("User-Agent");
-			tmp.toLowerCase();
+			tmp = tmp.toLowerCase();
 			if (tmp.indexOf("windows 95")!=-1 || tmp.indexOf("win95")!=-1) {
 				return("WIN95");
 			} else if (tmp.indexOf("win98")!=-1) {
