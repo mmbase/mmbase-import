@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.7 2003-09-01 13:29:46 pierre Exp $
+ * @version $Id: Schemes.java,v 1.8 2003-09-04 12:16:38 pierre Exp $
  */
 public final class Schemes {
 
@@ -116,6 +116,7 @@ public final class Schemes {
      *    <li>{2} a symbolic name for the key</li>
      *    <li>{3} the field to create the key for</li>
      *    <li>{4} the basic storage element (name of the object table)</li>
+     *    <li>{5} the name of the number field</li>
      *  </ul>
      */
     public static final String CREATE_PRIMARY_KEY = "create-primary-key-scheme";
@@ -126,7 +127,7 @@ public final class Schemes {
     public static final String CREATE_PRIMARY_KEY_DEFAULT = "PRIMARY KEY ({3})";
 
     /**
-     *  Name of the scheme for creating a secondary (unique) key.
+     *  Name of the scheme for creating a unique key.
      *  The parameters accepted are:
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
@@ -134,9 +135,10 @@ public final class Schemes {
      *    <li>{2} a symbolic name for the key</li>
      *    <li>{3} the field (or fieldlist) to create the key for</li>
      *    <li>{4} the basic storage element (name of the object table)</li>
+     *    <li>{5} the name of the number field</li>
      *  </ul>
      */
-    public static final String CREATE_SECONDARY_KEY = "create-secondary-key-scheme";
+    public static final String CREATE_UNIQUE_KEY = "create-unique-key-scheme";
 
     /**
      *  Name of the scheme for creating a foreign (referential) key.
@@ -147,6 +149,7 @@ public final class Schemes {
      *    <li>{2} a symbolic name for the key</li>
      *    <li>{3} the field to create the key for</li>
      *    <li>{4} the basic storage element referenced (name of the object table)</li>
+     *    <li>{5} the name of the number field</li>
      *  </ul>
      */
     public static final String CREATE_FOREIGN_KEY = "create-foreign-key-scheme";

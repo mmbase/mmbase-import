@@ -2,30 +2,30 @@
 <!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
 <storage>
 	<!-- Informix configuration resource. -->
-  <storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
+	<storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
 
 	<!-- use the manager for relational databases -->
-  <storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
+	<storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
 
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.InformixSqlHandler" />
 
 	<attributes>
-	 	<!-- Automatically prefix reserved words with "m_", currently turned OFF!  -->
+		<!-- Automatically prefix reserved words with "m_", currently turned OFF!  -->
 		<!-- <attribute name="default-storage-identifier-prefix">m</attribute> -->
 
-	  <!-- Not sure about this option, so turned it off -->
+		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />
 
 		<!-- Support composite (unique) indexes -->
 		<option name="database-supports-composite-index" value="true" />
 
-	  <!-- Unique index declaration -->
-    <scheme name="create-secondary-key-scheme">UNIQUE ({2})</scheme>
+		<!-- Unique index declaration -->
+		<scheme name="create-unique-key-scheme">UNIQUE ({2})</scheme>
 
-	  <!-- Informix supports extensions and uses row types -->
+		<!-- Informix supports extensions and uses row types -->
 		<scheme name="create-rowtype-scheme">create row type {1}_t ({2}) under {3}_t</scheme>
 		<scheme name="create-table-scheme">create table {1} of type {1}_t ({3} {5}) under {6}</scheme>
-	  <!-- Informix uses row types -->
+		<!-- Informix uses row types -->
 		<scheme name="create-object-rowtype-scheme">create row type {1}_t ({2})</scheme>
 		<scheme name="create-object-table-scheme">create table {1} of type {1}_t ({3} {5})</scheme>
 
@@ -48,7 +48,7 @@
 	</type-mappings>
 
 	<!-- Hypersonic disallowed fields
-	     This is a sample
+			 This is a sample
 	-->
 	<disallowed-fields >
 		<disallowed-field name="database" replacement="dtbs" />
