@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.42 2002-03-26 12:54:00 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.43 2002-03-29 21:28:41 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -318,32 +318,32 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("MODULECLASSFILE")) {
                 return ""+getModuleClass(tok.nextToken());
             } else if (cmd.equals("MULTILEVELCACHEHITS")) {
-                return(""+MultilevelCacheHandler.getCache("basic").getHits());
+                return(""+MultilevelCacheHandler.getCache().getHits());
             } else if (cmd.equals("MULTILEVELCACHEMISSES")) {
-                return(""+MultilevelCacheHandler.getCache("basic").getMisses());
+                return(""+MultilevelCacheHandler.getCache().getMisses());
             } else if (cmd.equals("MULTILEVELCACHEREQUESTS")) {
-                return(""+(MultilevelCacheHandler.getCache("basic").getHits()+MultilevelCacheHandler.getCache("basic").getMisses()));
+                return(""+(MultilevelCacheHandler.getCache().getHits()+MultilevelCacheHandler.getCache().getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
-                return(""+(MultilevelCacheHandler.getCache("basic").getRatio()*100));
+                return(""+(MultilevelCacheHandler.getCache().getRatio()*100));
             } else if (cmd.equals("MULTILEVELCACHESTATE")) {
                 if (tok.hasMoreTokens()) {
                     String state=tok.nextToken();
                     if (state.equalsIgnoreCase("On")) {
-                        MultilevelCacheHandler.setState(true);
+                        MultilevelCacheHandler.getCache().setActive(true);
                         log.info("turned multilevelcache on");
                     } else if (state.equalsIgnoreCase("Off")) {
-                        MultilevelCacheHandler.setState(false);
+                        MultilevelCacheHandler.getCache().setActive(false);
                         log.info("turned multilevelcache off");
                     }
                 } else {
-                    if (MultilevelCacheHandler.isActive()) {
+                    if (MultilevelCacheHandler.getCache().isActive()) {
                         return "On";
                     } else {
                         return "Off";
                     }
                 }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                return(""+(MultilevelCacheHandler.getCache("basic").getSize()));
+                return(""+(MultilevelCacheHandler.getCache().getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return(""+MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -1834,7 +1834,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector  getMultilevelCacheEntries() {
         Vector results=new Vector();
-        Enumeration res=MultilevelCacheHandler.getCache("basic").getOrderedElements();
+        Enumeration res=MultilevelCacheHandler.getCache().getOrderedElements();
         while (res.hasMoreElements()) {
             MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
             StringTagger tagger=en.getTagger();
@@ -1862,7 +1862,7 @@ public class MMAdmin extends ProcessorModule {
                 results.addElement("");
             }
             results.addElement(tagger.ValuesString("ALL"));
-            results.addElement(""+MultilevelCacheHandler.getCache("basic").getCount(en.getKey()));
+            results.addElement(""+MultilevelCacheHandler.getCache().getCount(en.getKey()));
         }
         return results;
     }
