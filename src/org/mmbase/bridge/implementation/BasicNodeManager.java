@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.54.2.1 2003-02-18 21:06:21 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.54.2.2 2003-04-08 14:32:22 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -307,7 +307,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                         }
                     }
                 }
-                nodes.add(n); 
+                nodes.add(n);
             }
         }
         return new BasicRelationManagerList(nodes,cloud);
@@ -399,16 +399,5 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public void delete(boolean deleteRelations) {
         super.delete(deleteRelations);
         builder=null;  // invalidate (builder does not exist any more)
-    }
-
-    /**
-     * Compares two NodeManagers, and returns true if they are equal.
-     * This effectively means that both objects are nodemanagers, and they both have the same number and cloud
-     * @param o the object to compare it with
-     */
-    public boolean equals(Object o) {
-        return (o instanceof NodeManager) &&
-               getNumber()==((NodeManager)o).getNumber() &&
-               cloud.equals(((NodeManager)o).getCloud());
     }
 }
