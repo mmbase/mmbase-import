@@ -6,30 +6,42 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.17 2004-01-08 15:56:07 michiel Exp $
+    @version $Id: prompts.xsl,v 1.18 2004-01-12 22:07:12 nico Exp $
     
     prompts used in this editwizard. 
     Override these prompts to change the view in your own versions.
   -->
 
   <!-- prompts for starting a editwizard -->
+  <xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
   <xsl:template name="prompt_edit_wizard">
-    <img src="{$mediadir}neworg.gif" class="imgbutton">
-      <xsl:if test="prompt">
-        <xsl:attribute name="alt">
-          <xsl:value-of select="prompt" />
-        </xsl:attribute>
-      </xsl:if>
-    </img>
+    <!--img src="{$mediadir}neworg.gif" class="imgbutton">
+      <xsl:choose>
+        <xsl:when test="prompt">
+          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img-->
+		<xsl:choose>
+			<xsl:when test="prompt"><xsl:value-of select="prompt" /></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
+		</xsl:choose>
   </xsl:template>
-
+  
+  <xsl:variable name="tooltip_add_wizard">Nieuw</xsl:variable>
   <xsl:template name="prompt_add_wizard">
     <img src="{$mediadir}new.gif" class="imgbutton">
-      <xsl:if test="prompt">
-        <xsl:attribute name="alt">
-          <xsl:value-of select="prompt" />
-        </xsl:attribute>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="prompt">
+          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt"><xsl:value-of select="$tooltip_add_wizard" /></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
     </img>
   </xsl:template>
 
