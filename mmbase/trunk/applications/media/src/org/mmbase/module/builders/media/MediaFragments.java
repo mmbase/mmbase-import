@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.23 2003-01-21 23:04:00 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.24 2003-01-22 11:00:03 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -350,9 +350,12 @@ public class MediaFragments extends MMObjectBuilder {
      */
     public List getSources(MMObjectNode mediafragment) {
         if (log.isDebugEnabled()) log.debug("Get mediasources mediafragment "+mediafragment.getNumber());
-        while(isSubFragment(mediafragment)) {
+        // just to bu sure not to enter an infinite loop:
+        Set parents = new HashSet();
+        while((! parents.contains(mediafragment.getStringValue("number")))  && isSubFragment(mediafragment)) {
             if (log.isDebugEnabled()) log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
             mediafragment = getParentFragment(mediafragment);
+            parents.add(mediafragment.getStringValue("number"));
         }
         List mediasources = mediafragment.getRelatedNodes("mediasources");
         if (mediasources == null) {
