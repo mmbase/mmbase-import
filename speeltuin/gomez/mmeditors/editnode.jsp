@@ -150,7 +150,38 @@
          Module mmbase = cloud.getCloudContext().getModule("mmbase");
          if (mmbase!=null) authtype = mmbase.getInfo("GETAUTHTYPE");
 
-         for(Iterator allrel=manager.getAllowedRelations().iterator(); allrel.hasNext();) {
+         RelationManagerList allowedRelations = manager.getAllowedRelations();
+         class ARComparator implements java.util.Comparator {
+            private NodeManager manager;
+         
+            ARComparator(NodeManager manager) {
+               this.manager = manager;
+            }
+         
+            public int compare(Object o1, Object o2) {
+                String s1 = "";
+                try {
+                  NodeManager mn1 = ((RelationManager)o1).getDestinationManager();
+                  if (mn1.equals(manager)) {
+                    mn1 = ((RelationManager)o1).getSourceManager();
+                  }
+                  s1=mn1.getGUIName();
+                } catch (Exception e) {}
+                String s2 = "";
+                try {
+                  NodeManager mn2 = ((RelationManager)o2).getDestinationManager();
+                  if (mn2.equals(manager)) {
+                    mn2 = ((RelationManager)o2).getSourceManager();
+                  }
+                  s2=mn2.getGUIName();
+                } catch (Exception e) {}
+                return s1.toUpperCase().compareTo(s2.toUpperCase());
+             }
+         } // MMCI doesn't sort, do it ourselves.
+         java.util.Collections.sort(allowedRelations, new ARComparator(manager)); 
+         
+         
+         for(Iterator allrel=allowedRelations.iterator(); allrel.hasNext();) {
            RelationManager relman=(RelationManager)allrel.next();
            NodeManager mn = null;
            String relrole = null;
@@ -227,7 +258,7 @@
       <% if (!"none".equals(currentState)) { %>
       <tr>
         <td class="editprompt"><%=mmlanguage.getInfo("GET-save_changes")%></td>
-        <% if (role!=null) { %>
+        <% if (role==null) { %>
           <td class="navlink"><a href="<mm:url page="editor.jsp"><mm:param name="action">save</mm:param></mm:url>" target="_top">##</a></td>
         <% } else { %>
           <td class="navlink"><a href="<mm:url page="editor.jsp"><mm:param name="action">save</mm:param><mm:param name="createrelation">true</mm:param></mm:url>" target="_top">##</a></td>
@@ -238,10 +269,10 @@
         <td class="navlink"><a href="<mm:url page="editor.jsp"><mm:param name="action">cancel</mm:param></mm:url>" target="_top">##</a></td>
       </tr>
       <% } else if (isRelation) { %>
-          <tr>
-            <td class="editprompt"><%=mmlanguage.getInfo("GET-remove_relation")%></td>
-            <td class="navlink" ><a href="deletenode.jsp" target="workarea">##</a></td>
-          </tr>
+        <tr>
+          <td class="editprompt"><%=mmlanguage.getInfo("GET-remove_relation")%></td>
+          <td class="navlink" ><a href="deletenode.jsp" target="workarea">##</a></td>
+        </tr>
         <tr>
           <td class="editprompt"><%=mmlanguage.getInfo("GET-back")%></td>
           <td class="navlink"><a href="<mm:url page="editor.jsp" ><mm:param name="manager">?</mm:param><mm:param name="depth"><%=states.size()-1%></mm:param></mm:url>" target="_top">##</a></td>
