@@ -17,12 +17,13 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.security.*;
 
 /**
+ * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.25 2003-11-19 13:03:10 pierre Exp $
+ * @version $Id: TransactionManager.java,v 1.26 2003-11-26 17:55:07 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
-    private static Logger log = Logging.getLoggerInstance(TransactionManager.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TransactionManager.class);
 
     public static final String EXISTS_NO="no";
     public static final int I_EXISTS_NO=0;
