@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.126 2004-09-17 09:54:21 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.127 2004-09-20 11:59:41 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -518,7 +518,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 //                throw new RuntimeException("field with name '" + fieldName + "' may not be empty");
 //            }
             if(value.length()==0) {
-                fieldValue = null;
+                fieldValue = VALUE_NULL;
             } else {
                 Document doc = toXML(value, fieldName);
                 if(doc != null) {
