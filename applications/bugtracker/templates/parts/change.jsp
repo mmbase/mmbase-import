@@ -20,7 +20,7 @@
 					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">removeMaintainer.jsp</mm:param></mm:url>">Remove maintainer <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 
 				<mm:list nodes="$bugreport" path="users,rolerel,bugreports" constraints="users.number=$user and rolerel.role='interested'">
-					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">removemyselfinterested</mm:param></mm:url>">Remove yourself as interested <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">removemyselfinterested</mm:param></mm:url>" max="1">Remove yourself as interested <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 					<mm:import id="userfound" />
 				</mm:list>
 
@@ -33,7 +33,7 @@
 			<!-- user but not a commitor -->
 				<mm:present referid="commitor" inverse="true">
 					You (<mm:field name="firstname" /> <mm:field name="lastname" />) have the status of developer this allows you the following actions<p />
-				<mm:list nodes="$bugreport" path="users,rolerel,bugreports" constraints="users.number=$user and rolerel.role='interested'">
+				<mm:list nodes="$bugreport" path="users,rolerel,bugreports" constraints="users.number=$user and rolerel.role='interested'" max="1">
 					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">removemyselfinterested</mm:param></mm:url>">Remove yourself as interested <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 					<mm:import id="userfound" />
 				</mm:list>
