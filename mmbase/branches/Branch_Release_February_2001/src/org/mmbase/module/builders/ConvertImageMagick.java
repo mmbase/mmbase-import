@@ -8,9 +8,18 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.8 2001-01-26 15:21:32 install Exp $
+	$Id: ConvertImageMagick.java,v 1.8.2.1 2001-02-14 15:34:35 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2001/02/08 10:22:34  vpro
+	Rico: zapped the old code that did the convert
+	
+	Revision 1.9  2001/02/08 10:20:39  vpro
+	Rico: changed the processing by using a Threaded writer to fix the "half" image bug using code provided by Kees Jongenburg
+	
+	Revision 1.8  2001/01/26 15:21:32  install
+	Rob turned debug off
+	
 	Revision 1.7  2001/01/26 14:58:08  install
 	Rob added some features
 	
@@ -45,7 +54,7 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.8 2001-01-26 15:21:32 install Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.8.2.1 2001-02-14 15:34:35 install Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
@@ -261,61 +270,40 @@ public class ConvertImageMagick implements ImageConvertInterface {
 	}
 	
 	private byte[] ConvertImage(byte[] pict,String cmd, String format) {	
-		Process p=null;
-        String s="",tmp="";
-		DataInputStream dip= null;
-		DataInputStream diperror= null;
-		String command;
-		PrintStream out=null;	
-		RandomAccessFile  dos=null;	
-
+		InputStream in;
+		Runtime runtime=Runtime.getRuntime();
+		String command="";
+		Process p;
+		ByteArrayOutputStream imagestream;
+		byte[] inputbuffer=new byte[2048],image=null;
+		int size;
+		ProcessWriter pw;
+		
 		if (debug) debug("ConvertImage(): converting img("+cmd+")");
 
-		byte[] result=new byte[1024*1024];
 		try {
 			command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
-			if (debug) debug("ConvertImage(): "+command);
-			p = (Runtime.getRuntime()).exec(command);
-        	PrintStream printStream = new PrintStream(p.getOutputStream()); // set the input stream for cgi
-			printStream.write(pict,0,pict.length);
-			printStream.flush();	
-			printStream.close();	
+			if (debug) debug("Starting convert");
+			p=runtime.exec(command);
+			in=p.getInputStream();
+			pw=new ProcessWriter(new ByteArrayInputStream(pict),p.getOutputStream());
+			if (debug) debug("Starting writer");
+			pw.start();
+
+			imagestream=new ByteArrayOutputStream();
+			size=0;
+			if (debug) debug("Reading image");
+			while((size=in.read(inputbuffer))>0) {
+				if (debug) debug("Reading data size "+size);
+				imagestream.write(inputbuffer,0,size);
+			}
+			if (debug) debug("Done converting"); 
+			image=imagestream.toByteArray();
 		} catch (Exception e) {
-			s+=e.toString();
-			out.print(s);
-			return(null);
+			debug("Failure converting image "+cmd+" "+format);
+			debug("Message : "+e.getMessage());
 		}
-
-		dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
-
-		// look on the input stream
-        try {
-			int len3=0;
-			int len2=0;
-
-           	len2=dip.read(result,0,result.length);
-			while (len2!=-1) { 
-           		len3=dip.read(result,len2,result.length-len2);
-				if (len3==-1) {
-					break;
-				} else {
-					len2+=len3;
-				}
-			}
-			dip.close();
-			byte[] res=new byte[len2];
-	    	System.arraycopy(result, 0, res, 0, len2);
-			if (debug) debug("ConvertImage(): ok "+cmd+" len "+len2);
-			return(res);
-        } catch (Exception e) {
-			debug("ConvertImage(): convert failed ! img("+cmd+")");
-			e.printStackTrace();
-        	try {
-				dip.close();
-        	} catch (Exception f) {
-			}
-			return(null);
-		}
+		return(image);
 	}
 
 }
