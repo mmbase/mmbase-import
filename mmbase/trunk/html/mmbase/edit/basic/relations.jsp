@@ -6,7 +6,7 @@
   <mm:import externid="backpage_ok"     required="true" from="parent"/>
 
 
-  <%-- Make sure that we are in a node; 
+  <%-- Make sure that we are in a node;
        not specifying by 'numer' or 'referid' attribute makes the tag look for a parent 'NodeProvider' --%>
   <mm:node id="this_node" jspvar="node">
 
@@ -14,13 +14,7 @@
 
 
     <%-- Determin the number of the nodemanager --%>
-    <mm:import id="typedefNumber">0</mm:import>
-    <mm:nodeinfo type="nodemanager">
-     <mm:listnodes type="typedef" constraints="name='$_'"><%-- need to query typedef :-( --%>
-         <mm:remove referid="typedefNumber" />
-         <mm:field  name="number" id="typedefNumber" write="false" />
-     </mm:listnodes>
-    </mm:nodeinfo>
+    <mm:field  name="otype" id="typedefNumber" write="false" />
 
     <table class="list" summary="relation overview" width="100%">
         <tr>
@@ -50,7 +44,7 @@
                         <mm:param name="direction">create_child</mm:param><%-- WHY CANT I USE DNAME as ROLE????  --%>
                         </mm:url>'>
                        <span class="create"></span><span class="alt">+</span>
-                   </a>                
+                   </a>
                 </td>
             </tr>
             <%-- list all nodesof this specific relation type.. --%>
@@ -66,7 +60,7 @@
                 </td>
                 <td class="data">
                     <%-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder --%>
-                    <%= cloud.getNode(insrelNode.getNumber()).getStringValue("sgui($config.session,)") %>                
+                    <%= cloud.getNode(insrelNode.getNumber()).getStringValue("sgui($config.session,)") %>
                 </td>
                 <td class="navigate">
                     <%-- delete the relation node, not sure about the node_type argument! --%>
@@ -91,7 +85,7 @@
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <mm:field name="sgui($config.session,)" />               
+                    <mm:field name="sgui($config.session,)" />
                 </td>
                 <td class="navigate">
                     <%-- edit the related node --%>
@@ -145,7 +139,7 @@
                         <%-- END WHY CANT I USE DNAME as ROLE???? --%>
                         </mm:url>'>
                       <span class="create"></span><span class="alt">+</span>
-                   </a> 
+                   </a>
                 </td>
             </tr>
             <%-- list all nodesof this specific relation type.. --%>
