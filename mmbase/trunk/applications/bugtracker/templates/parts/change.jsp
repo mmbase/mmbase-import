@@ -12,12 +12,12 @@
    <mm:node referid="user">
     <mm:present referid="commitor">
        You (<mm:field name="firstname" /> <mm:field name="lastname" />) have the status of commitor this allows you the following actions<br><br>
-					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">updateBugreport.jsp</mm:param></mm:url>">Update report <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<a href="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="btemplate">updateBugreport.jsp</mm:param></mm:url>">Update report <img src="images/arrow-right.png" border="0"></a><p />
 					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action" value="deletebugreport"/></mm:url>" onclick="return  confirm('You are about to delete a bug report!');">Delete this bugreport <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 
-					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">addMaintainer.jsp</mm:param></mm:url>">Add maintainer <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="btemplate">addMaintainer.jsp</mm:param></mm:url>">Add maintainer <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 
-					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template">removeMaintainer.jsp</mm:param></mm:url>">Remove maintainer <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
+					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="btemplate">removeMaintainer.jsp</mm:param></mm:url>">Remove maintainer <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />
 
 				<mm:list nodes="$bugreport" path="users,rolerel,bugreports" constraints="users.number=$user and rolerel.role='interested'">
 					<A HREF="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="action">removemyselfinterested</mm:param></mm:url>" max="1">Remove yourself as interested <IMG SRC="images/arrow-right.png" BORDER="0"></A><p />

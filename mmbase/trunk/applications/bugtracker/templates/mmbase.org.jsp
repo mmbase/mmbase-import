@@ -4,22 +4,39 @@
 %>
 <mm:cloud>
 
+<%--
+<mm:import id="portal">199</mm:import>
+<mm:import id="page">546</mm:import>
+--%>
+
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp"%>
+
+
+<%--
+ <%@include file="actions.jsp" %>
+ <%@include file="showMessage.jsp" %>
+--%>
+
+<mm:import id="parameterspresent" externid="parameters" />
+<mm:import externid="parameters">portal,page</mm:import>
+
+
 <td colspan="2">
+
 
   <%@include file="login.jsp" %>
 
-  <mm:import externid="template">main.jsp</mm:import>
+  <mm:import externid="btemplate">main.jsp</mm:import>
 
-  <mm:notpresent referid="parametersgiven">
-    <mm:include debug="html" referids="project,page" page="$template">
-      <mm:param name="parameters" value="project,page" />
-    </mm:include>
+  <mm:notpresent referid="parameterspresent">
+    <mm:include debug="html" referids="parameters,$parameters" page="$btemplate" />
   </mm:notpresent>
-  <mm:present referid="parametersgiven">
-    <mm:include debug="html" page="$template" />
-  </mm:present>  
+  <mm:present referid="parameterspresent">
+    <mm:include debug="html"  page="$btemplate" />
+  </mm:present>
+
+
 </td>
 <%@include file="/includes/footer.jsp"%>
 </mm:cloud>

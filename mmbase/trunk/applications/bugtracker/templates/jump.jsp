@@ -7,7 +7,7 @@ page language="java" contentType="text/html; charset=utf-8"%>
     <mm:constraint field="bugid" value="$id"/>
     <mm:maxnumber value="1"/>
     <mm:listnodes jspvar="node">
-        <mm:url id="url" write="false" page="index.jsp" referids="parameters,$parameters"><mm:param name="template" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="number" /></mm:param></mm:url>
+        <mm:url id="url" write="false" page="index.jsp" referids="parameters,$parameters"><mm:param name="btemplate" value="fullview.jsp" /><mm:param name="bugreport"><mm:field name="number" /></mm:param></mm:url>
         <mm:redirect referid="url"/>
     </mm:listnodes>
   </mm:listnodescontainer>
