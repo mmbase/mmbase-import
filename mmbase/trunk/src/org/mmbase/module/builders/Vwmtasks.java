@@ -54,7 +54,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
 	 */
 	public void run() {
 		kicker.setPriority(Thread.MIN_PRIORITY+1);  
-		System.out.println("VWMtasks -> getVwmTasks thread started");
+		if (debug) System.out.println("VWMtasks -> getVwmTasks thread started");
 		while (kicker!=null) {
 			try {Thread.sleep(37*1000);} catch (InterruptedException e){}
 			getVwmTasks();
