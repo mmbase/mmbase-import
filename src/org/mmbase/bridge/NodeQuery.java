@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * A Query especially fit for getQuery of NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeQuery.java,v 1.1 2003-07-25 14:10:30 michiel Exp $
+ * @version $Id: NodeQuery.java,v 1.2 2003-07-25 14:23:17 michiel Exp $
  * @since MMBase-1.7
  */
 public interface NodeQuery extends Query {
@@ -27,10 +27,11 @@ public interface NodeQuery extends Query {
 
     NodeManager getNodeManager();
 
+
     /**
-     * Since a NodeQuery has only one Step, you can impose a sort order directly on the field.
+     * Find the step field with given name
      */
-        
-    SortOrder addSortOrder(Field f, int direction);
-    
+
+    StepField getStepField(String fieldName);
+
 }
