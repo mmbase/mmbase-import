@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.72 2002-08-21 18:01:26 michiel Exp $
+  @version $Id: wizard.xsl,v 1.73 2002-08-23 21:56:08 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -277,7 +277,7 @@
       <xsl:call-template name="prompt" />
     </td>
     <td class="field" colspan="{$colspan}">
-      <table><tr>
+      <table style="width: 100%;"><tr>
       <xsl:for-each select="field">
         <td><nobr>
         <xsl:call-template name="fieldintern" />
@@ -610,7 +610,15 @@
           </xsl:for-each>          
         </xsl:otherwise>
       </xsl:choose>
-  </xsl:template><!-- item -->
+      <xsl:for-each select="list">
+        <td class="fieldprompt">
+          <span class="valid">
+            <xsl:value-of select="prompt|title" />
+           </span>
+      </td>
+        <xsl:apply-templates select="." />
+      </xsl:for-each>
+    </xsl:template><!-- item -->
 
   <!-- produces a bunch of links -->
   <xsl:template name="itembuttons">
@@ -660,7 +668,7 @@
       <xsl:if test="item">
         <table class="itemlist"><!-- three columns -->       
           <xsl:apply-templates select="item" />          
-        </table>
+        </table>       
       </xsl:if>
 
 
