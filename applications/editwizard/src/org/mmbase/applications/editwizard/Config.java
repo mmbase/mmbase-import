@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.11 2002-06-24 12:33:19 pierre Exp $
+ * @version $Id: Config.java,v 1.12 2002-07-09 14:11:35 pierre Exp $
  */
 
 public class Config {
@@ -38,11 +38,11 @@ public class Config {
     public int         list_maxpagecount = 10;
     public int         maxupload = 4 * 1024 * 1024; // 1 MByte max uploadsize
     public Stack       subObjects = new Stack(); // stores the Lists and Wizards.
-    public String      wizard;
     public String      sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String      backPage;
 
     static public abstract class SubConfig {
+        public String wizard;
         public String page;
     }
 
@@ -167,8 +167,8 @@ public class Config {
         public Config.WizardConfig createWizard(Cloud cloud) throws SecurityException, WizardException {
             WizardConfig wizard = new WizardConfig();
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
-            config(wizard); // determin the objectnumber.
-            wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, config.wizard, wizard.objectNumber, cloud);
+            config(wizard); // determine the objectnumber and assign the wizard name.
+            wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, wizard.wizard, wizard.objectNumber, cloud);
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);
