@@ -58,7 +58,7 @@ import org.mmbase.security.MMBaseCop;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.5 2002-03-11 11:02:31 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.6 2002-05-30 12:56:07 pierre Exp $
  */
 
 public abstract class AbstractDove {
@@ -153,7 +153,7 @@ public abstract class AbstractDove {
      * @param tagname name of the new element
      * @param content content of the new element as a string
      * @param out the element to which to add the new Element.
-     * @reyturn the newly created element
+     * @return the newly created element
      */
     protected Element addContentElement(String tagname,String content, Element out) {
         Element el=doc.createElement(tagname);
@@ -168,7 +168,7 @@ public abstract class AbstractDove {
      * Retrieves the first child node of an element that is itself an element.
      * If none exist, it returns <code>null</code>.
      * @param item the element to find the first child element of
-     * @reyturn the first child element, or <code>null</code>.
+     * @return the first child element, or <code>null</code>.
      */
     protected Element getFirstElement(Node item) {
         if (item==null) return null;
@@ -180,10 +180,25 @@ public abstract class AbstractDove {
     }
 
     /**
+     * Retrieves the first child node of an element that is itself an element, and has the specified tagname.
+     * If none exist, it returns <code>null</code>.
+     * @param item the element to find the first child element of
+     * @param tagname the tagname of the element desired
+     * @return the first child element, or <code>null</code>.
+     */
+    protected Element getFirstElement(Node item, String tagname) {
+        Element elm=getFirstElement(item);
+        if (elm!=null && !elm.getTagName().equals(tagname)) {
+            elm=getNextElement(elm,tagname);
+        }
+        return elm;
+    }
+
+    /**
      * Retrieves the next sibling of an element that is itself an element.
      * If none exist, it returns <code>null</code>.
      * @param item the element to find the sibling element of
-     * @reyturn the sibling element, or <code>null</code>.
+     * @return the sibling element, or <code>null</code>.
      */
     protected Element getNextElement(Node item) {
         if (item==null) return null;
@@ -191,6 +206,21 @@ public abstract class AbstractDove {
             item=item.getNextSibling();
         } while ((item!=null) && !(item instanceof Element));
         return (Element)item;
+    }
+
+    /**
+     * Retrieves the the next sibling of an element that is itself an element, and has the specified tagname.
+     * If none exist, it returns <code>null</code>.
+     * @param item the element to find the sibling element of
+     * @param tagname the tagname of the element desired
+     * @return the first child element, or <code>null</code>.
+     */
+    protected Element getNextElement(Node item, String tagname) {
+        Element elm=getNextElement(item);
+        while (elm!=null && !elm.getTagName().equals(tagname)) {
+            elm=getNextElement(elm);
+        }
+        return elm;
     }
 
 
