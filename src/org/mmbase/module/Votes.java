@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Class Votes
  * 
- * @javadoc
+ * @obsolete
  */
 
 public 	class Votes {
