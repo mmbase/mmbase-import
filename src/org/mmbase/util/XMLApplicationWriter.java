@@ -147,17 +147,19 @@ public class XMLApplicationWriter  {
     }
 
     static String getDescription(XMLApplicationReader app) {
-	String body="\t<description>\n";
-	body+=app.getDescription();
-	body+="\t</description>\n";
+	String body="\t<description>";
+	String tmp=app.getDescription();
+	if (tmp!=null && !tmp.equals("")) body+=tmp;
+	body+="</description>\n\n";
 	return(body);
     }
 
 
     static String getInstallNotice(XMLApplicationReader app) {
-	String body="\t<install-notice>\n";
-	body+=app.getInstallNotice();
-	body+="\t</install-notice>\n";
+	String body="\t<install-notice>";
+	String tmp=app.getInstallNotice();
+	if (tmp!=null && !tmp.equals("")) body+=tmp;
+	body+="</install-notice>\n";
 	return(body);
     }
 
