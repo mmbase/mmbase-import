@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.47.2.1 2004-10-15 18:38:52 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.47.2.2 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -208,7 +208,6 @@ public class WriterHelper extends BodyTagSupport {
      * @deprecated jspvar will be set by setValue then
      */
     public void setJspvar(PageContext p) throws JspTagException {
-        pageContext = p;
         setJspvar();
     }
 
@@ -226,7 +225,6 @@ public class WriterHelper extends BodyTagSupport {
         setValue(v, IMPLICITLIST);
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
-        pageContext = thisTag.getPageContext();
         value = null;
         switch (vartype) {
             // these accept a value == null (meaning that they are empty)
@@ -373,7 +371,7 @@ public class WriterHelper extends BodyTagSupport {
         if (value != null) {
             // if the underlying implementation uses a Hashtable (TomCat) then the value may not be null
             // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
-            pageContext.setAttribute(jspvar, value);
+            thisTag.getPageContext().setAttribute(jspvar, value);
         }
     }
 
@@ -434,6 +432,7 @@ public class WriterHelper extends BodyTagSupport {
 
 
     public String getString() {
+        bodyContent = thisTag.getBodyContent();
         if (bodyContent != null) {
             return bodyContent.getString();
         } else {
@@ -449,7 +448,6 @@ public class WriterHelper extends BodyTagSupport {
 
     public int doAfterBody() throws JspException {
         bodyContent = thisTag.getBodyContent();
-        //
         return super.doAfterBody();
     }
 
@@ -459,13 +457,14 @@ public class WriterHelper extends BodyTagSupport {
      * It decides if to write or not.
      */
     public int doEndTag() throws JspTagException {
-        log.debug("doEndTag of WriterHelper");
+        if (log.isDebugEnabled()) {            
+            log.debug("doEndTag of WriterHelper value: '" + value + "'");
+        }
         try {
-            String body = getString();
+            String body = getString(); // un-nulls also bodyContent
             if (isWrite()) {
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
-                if (pageContext == null) throw new JspTagException("PageContext is null. No value set?");
-                getPageString(pageContext.getOut()).write(body);
+                getPageString(thisTag.getPageContext().getOut()).write(body);
             } else {
                 log.debug("not writing to page");
             }
@@ -485,7 +484,6 @@ public class WriterHelper extends BodyTagSupport {
         overrideWrite = null; // for use next time
         hasBody       = false;
         bodyContent   = null;
-        pageContext   = null;
         value         = null;
     }
 

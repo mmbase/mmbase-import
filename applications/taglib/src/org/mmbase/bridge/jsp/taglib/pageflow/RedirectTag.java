@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * Does a redirect, using the features of UrlTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RedirectTag.java,v 1.1.2.3 2004-06-29 09:23:17 michiel Exp $
+ * @version $Id: RedirectTag.java,v 1.1.2.4 2005-03-14 18:33:24 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -54,6 +54,7 @@ public class RedirectTag extends UrlTag  {
         } catch (java.io.IOException io) {
             throw new TaglibException(io);
         }
+        super.doEndTag();        
 	return SKIP_PAGE;
     }
 

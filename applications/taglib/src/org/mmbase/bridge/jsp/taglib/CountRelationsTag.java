@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.20.2.2 2004-07-26 20:12:14 nico Exp $ 
+ * @version $Id: CountRelationsTag.java,v 1.20.2.3 2005-03-14 18:33:24 michiel Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
@@ -72,6 +72,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     }
 
     public int doEndTag() throws JspTagException {
+        super.doEndTag();        
         return helper.doEndTag();
     }
 }

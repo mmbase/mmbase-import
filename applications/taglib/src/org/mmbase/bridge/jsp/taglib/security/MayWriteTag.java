@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be changed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayWriteTag.java,v 1.8 2003-06-06 10:03:33 pierre Exp $
+ * @version $Id: MayWriteTag.java,v 1.8.2.1 2005-03-14 18:33:24 michiel Exp $
  */
 
 public class MayWriteTag extends NodeReferrerTag implements Condition {
@@ -50,9 +50,4 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
             throw new JspTagException("IO Error: " + e.getMessage());
         }
     }
-
-    public int doEndTag() throws JspTagException {     
-        return EVAL_PAGE;
-    }
-
 }

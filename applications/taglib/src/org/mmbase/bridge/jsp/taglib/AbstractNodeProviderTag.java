@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.30 2004-03-23 21:42:46 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.30.2.1 2005-03-14 18:33:24 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -88,6 +88,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
     
     public int doEndTag() throws JspTagException {
+        super.doEndTag();        
         return nodeHelper.doEndTag();
     }
 }
