@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.13 2002-08-16 18:18:12 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.14 2002-09-30 13:20:54 rob Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -378,8 +378,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             }
         }
         
-        // Roll to the correct day
-        calendar.roll(Calendar.DAY_OF_WEEK,diff);
+        // Go to the correct day
+        calendar.add(Calendar.DAY_OF_WEEK,diff);
         
         return getBeginOfDay(calendar.getTime());
     }
@@ -417,8 +417,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 }
             }
         }
-        // go to the correct month
-        calendar.roll(Calendar.MONTH,diff);
+        // Go to the correct month
+        calendar.add(Calendar.MONTH,diff);
         
         return getBeginOfMonth(calendar.getTime());
     }
