@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.18 2004-11-26 20:10:01 michiel Exp $
+#  $Id: cvsmail,v 1.19 2004-11-26 20:48:33 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -33,7 +33,7 @@ my $dir = shift @files;
 
 my $child;
 if ($child = fork()) {
-	print $child;
+	#print $child;
 	# would need to disown here!
     exit 0; # be 'ready' immediatiely, don't let the commiter wait
 } else { 
@@ -79,8 +79,12 @@ if ($child = fork()) {
     
 
     # do the mailing
-    if (1) {
-	my $mail = new FileHandle("|mutt -s \"$subject\" $toaddress -e 'my_hdr From: $user <$cvsuser\@mmbase.org>'");
+    #if (1) {
+	my $extra = "";
+	if ($cvsuser =~ /cvs/) {
+		$extra = "-e 'my_hdr From: $user <$cvsuser\@mmbase.org>'";
+	}
+	my $mail = new FileHandle("|mutt -s \"$subject\" $toaddress $extra");
 	# for mutt: 	
 	print $mail $message."\n";
 	
@@ -101,6 +105,6 @@ if ($child = fork()) {
 	}
 	
 	$mail->close();
-    }
+    #}
 } 
 
