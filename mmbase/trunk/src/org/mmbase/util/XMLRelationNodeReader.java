@@ -42,6 +42,9 @@ public class XMLRelationNodeReader  {
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             //Errors errors = new Errors();
             //parser.setErrorHandler(errors);
+
+            EntityResolver resolver = new XMLEntityResolver();
+            parser.setEntityResolver(resolver);
 	    filename="file:///"+filename;
             parser.parse(filename);
             document = parser.getDocument();
@@ -66,6 +69,10 @@ public class XMLRelationNodeReader  {
     public String getExportSource() {
 	Vector nodes=new Vector();
 	Node n1=document.getFirstChild();
+
+	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+		n1=n1.getNextSibling();
+	}
 	while (n1!=null) {
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
@@ -83,6 +90,9 @@ public class XMLRelationNodeReader  {
     public int getTimeStamp() {
 	Vector nodes=new Vector();
 	Node n1=document.getFirstChild();
+	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+		n1=n1.getNextSibling();
+	}
 	while (n1!=null) {
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
@@ -100,6 +110,9 @@ public class XMLRelationNodeReader  {
     public Vector getNodes(MMBase mmbase) {
 	Vector nodes=new Vector();
 	Node n1=document.getFirstChild();
+	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+		n1=n1.getNextSibling();
+	}
 	while (n1!=null) {
 		MMObjectBuilder bul=mmbase.getMMObject(n1.getNodeName());
 		if (bul!=null) {
