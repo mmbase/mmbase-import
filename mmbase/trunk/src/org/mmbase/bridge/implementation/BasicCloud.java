@@ -246,25 +246,36 @@ public class BasicCloud implements Cloud, Cloneable {
 	}
 
     public Transaction createTransaction() {
-        return createTransaction(null);
+        return createTransaction(null,false);
     }
 
     public Transaction createTransaction(String name){
+        return createTransaction(name,false);
+    }
+
+    public Transaction createTransaction(String name, boolean overwrite) {
       getAccount();
       if (name==null) {
         name="Tran"+uniqueId();
-      } else if (transactions.get(name)!=null) {
-	        throw new BasicBridgeException("Transaction already exists name = " + name);
+      } else {
+            Transaction oldtransaction=(Transaction)transactions.get(name);
+            if (oldtransaction!=null) {
+                if (overwrite) {
+                    oldtransaction.cancel();
+                } else {
+	                throw new BasicBridgeException("Transaction already exists name = " + name);
+    	        }
+    	    }
       }
       Transaction transaction = new BasicTransaction(name,this);
       transactions.put(name,transaction);
       return transaction;
-    }
+    };
 
     public Transaction getTransaction(String name) {
         Transaction tran=(Transaction)transactions.get(name);
         if (tran==null) {
-            tran = createTransaction(name);
+            tran = createTransaction(name,false);
         }
         return tran;
     }
