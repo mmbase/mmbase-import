@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.130 2004-11-17 15:55:01 pierre Exp $
+ * @version $Id: Wizard.java,v 1.131 2004-12-03 14:46:02 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -2518,6 +2518,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // Dove returns the following Non-XML Schema conformant types:
             // - binary (minLength, maxLength)
             // - datetime
+            // - boolean
             //
             // The 'binary' type can be defined as :
             //  <xsd:simpleType name="binary">
