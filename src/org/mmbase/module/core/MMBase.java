@@ -264,6 +264,20 @@ public class MMBase extends ProcessorModule  {
 		}
 	}
 
+	public Connection getDirectConnection() {
+		try {
+			Connection con=jdbc.getDirectConnection(jdbc.makeUrl());
+			return(con);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return(null);
+		} catch (Exception e) {
+			debug("Can't get a JDBC connection (JDBC module error)"+e);
+			e.printStackTrace();
+			return(null);
+		}
+	}
+
 	public String getBaseName() {
 		return(baseName);
 	}
