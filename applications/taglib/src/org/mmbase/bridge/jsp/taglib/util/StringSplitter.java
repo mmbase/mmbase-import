@@ -9,36 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 /**
  * Simple util methods to split strings.
  *
+ * @deprecated
  **/
 
-public class StringSplitter {
-
-    /**
-     * Simple util method to split comma separated values
-     * to a list. Useful for attributes.
-     * @param string the string to split
-     * @param delimiter
-     * @return a Vector containing the elements, the elements are also trimed     
-     */
-
-    static public List split(String attribute, String delimiter) {
-        List retval = new ArrayList();
-        StringTokenizer st = new StringTokenizer(attribute, delimiter);
-        while(st.hasMoreTokens()){
-            retval.add(st.nextToken().trim());
-        }
-        return retval;
-    }
-
-    static public List split(String string) {
-        return split(string, ",");
-    }
-
+public class StringSplitter extends org.mmbase.util.StringSplitter {
 }
