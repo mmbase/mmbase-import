@@ -87,8 +87,9 @@ Applications build file
   <target name="install">
     <ant dir="editwizard"    target="dependent.install" />
     <ant dir="email"         target="install" />
+    <ant dir="community"     target="install" />
     <!-- ant dir="cloudcontext"  target="install" /-->
-    <!-- ant dir="rmmci"         target="install" /-->
+    <!-- ant dir="rmmci"         target="install" /--><!-- does not work yet -->
   </target>
 
   <target name="clean">
