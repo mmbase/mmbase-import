@@ -28,13 +28,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.74 2004-09-20 16:37:23 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.75 2004-09-22 15:00:09 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
 
-    // conatisn a list of buffered keys
+    // contains a list of buffered keys
     protected static final List sequenceKeys = new LinkedList();
 
     // maximum size of the key buffer
@@ -331,7 +331,6 @@ public class DatabaseStorageManager implements StorageManager {
      * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
-
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -361,19 +360,18 @@ public class DatabaseStorageManager implements StorageManager {
         } else {
             untrimmedResult = result.getString(index);
         }
-        if(untrimmedResult!=null && factory.hasOption(Attributes.TRIM_STRINGS)) {
+        if (untrimmedResult != null && factory.hasOption(Attributes.TRIM_STRINGS)) {
              return untrimmedResult.trim();
         }
         return untrimmedResult;
     }
 
-    /*
+    /**
      * Retrieve the XML (as a string) for a specified object field.
      * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Unlike
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
-
      * @param result the resultset to retrieve the xml from
      * @param index the index of the xml in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -385,8 +383,43 @@ public class DatabaseStorageManager implements StorageManager {
          return getStringValue(result, index, field);
      }
 
+    /**
+     * Retrieve a date for a specified object field.
+     * The default method uses {@link ResultSet#getTimestamp(int)} to obtain the date.
+     * @param result the resultset to retrieve the value from
+     * @param index the index of the value in the resultset
+     * @param field the (MMBase) fieldtype. This value can be null
+     * @return the retrieved java.util.Date value, <code>null</code> if no text was stored
+     * @throws SQLException when a database error occurs
+     * @throws StorageException when data is incompatible or the function is not supported
+     */
+    protected java.util.Date getDateTimeValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
+        Timestamp ts = result.getTimestamp(index);
+        if (ts==null) {
+            return null;
+        } else {
+            return new java.util.Date(ts.getTime());
+        }
+    }
 
-
+    /**
+     * Retrieve a boolean value for a specified object field.
+     * The default method uses {@link ResultSet#getBoolean(int)} to obtain the date.
+     * @param result the resultset to retrieve the value from
+     * @param index the index of the value in the resultset
+     * @param field the (MMBase) fieldtype. This value can be null
+     * @return the retrieved Boolean value, <code>null</code> if no text was stored
+     * @throws SQLException when a database error occurs
+     * @throws StorageException when data is incompatible or the function is not supported
+     */
+    protected Boolean getBooleanValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
+        boolean value = result.getBoolean(index);
+        if (result.wasNull()) {
+            return null;
+        } else {
+            return new Boolean(value);
+        }
+    }
 
     /**
      * Determine whether a field (such as a large text or a blob) should be shortened or not.
@@ -553,7 +586,10 @@ public class DatabaseStorageManager implements StorageManager {
             File binaryFile = getBinaryFile(node, fieldName);
             binaryFile.getParentFile().mkdirs(); // make sure all directory exist.
             Object value = node.getValue(fieldName);
-
+            if (value == null && field.getDBNotNull()) {
+                value = new byte[] {};
+                node.storeValue(field.getDBName(), value);
+            }
             if (value instanceof byte[]) {
                 DataOutputStream byteStream = new DataOutputStream(new FileOutputStream(binaryFile));
                 byteStream.write((byte[])value);
@@ -647,6 +683,7 @@ public class DatabaseStorageManager implements StorageManager {
         builder.preCommit(node);
         create(node, builder);
         commitChange(node, "n");
+//        refresh(node);
         return nodeNumber;
     }
 
@@ -771,6 +808,7 @@ public class DatabaseStorageManager implements StorageManager {
         builder.preCommit(node);
         change(node, builder);
         commitChange(node, "c");
+//        refresh(node);
     }
 
     /**
@@ -847,36 +885,37 @@ public class DatabaseStorageManager implements StorageManager {
         case FieldDefs.TYPE_FLOAT :
         case FieldDefs.TYPE_DOUBLE :
         case FieldDefs.TYPE_LONG :
-            setNumericValue(statement, index, value, field);
+            setNumericValue(statement, index, value, field, node);
             break;
         case FieldDefs.TYPE_BOOLEAN :
-            setBooleanValue(statement, index, value, field);
+            setBooleanValue(statement, index, value, field, node);
+            break;
         case FieldDefs.TYPE_DATETIME :
-            setDateTimeValue(statement, index, value, field);
+            setDateTimeValue(statement, index, value, field, node);
             break;
             // Store nodes
         case FieldDefs.TYPE_NODE :
             // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
-            setNodeValue(statement, index, value, field);
+            setNodeValue(statement, index, value, field, node);
             break;
             // Store strings
         case FieldDefs.TYPE_XML :
-            setXMLValue(statement, index, value, field);
+            setXMLValue(statement, index, value, field, node);
             break;
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
             // retrieve a (old, or nonexistent) value from the storage
-            setStringValue(statement, index, value, field);
+            setStringValue(statement, index, value, field, node);
             break;
             // Store binary data
         case FieldDefs.TYPE_BYTE : {
             // note: do not use getByteValue, as this may attempt to
             // retrieve a (old, or nonexistent) value from the storage
-            setBinaryValue(statement, index, value, field);
+            setBinaryValue(statement, index, value, field, node);
             break;
         }
         case FieldDefs.TYPE_LIST : {
-            setListValue(statement, index, value, field);
+            setListValue(statement, index, value, field, node);
             break;
         }
         default :    // unknown field type - error
@@ -893,7 +932,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param index the index of the field in the prepared statement
      * @param value the numeric value to store, which will be checked for null.
      * @param field the MMBase field, containing meta-information
-     * @param type  java.sql.Type constant
+     * @param node the node that contains the data.
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      * @return true if a null value was set, false otherwise
@@ -927,28 +966,40 @@ public class DatabaseStorageManager implements StorageManager {
      * @param value the numeric value to store. This may be a String, MMObjectNode, Numeric, or other value - the
      *        method will convert it to the appropriate value.
      * @param field the MMBase field, containing meta-information
+     * @param node the node that contains the data. Used to update this node if the database layer makes changes
+     *             to the data (i.e. creating a default value for a non-null field that had a null value)
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setNumericValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
+    protected void setNumericValue(PreparedStatement statement, int index, Object value, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
         // Store integers, floats, doubles and longs
-        switch (field.getDBType()) { // it does this switch part twice now?
-        case FieldDefs.TYPE_INTEGER :
-            if (setNullValue(statement, index, value, field, java.sql.Types.INTEGER)) break;
-            statement.setInt(index, Casting.toInt(value));
-            break;
-        case FieldDefs.TYPE_FLOAT :
-            if (setNullValue(statement, index, value, field, java.sql.Types.REAL)) break;
-            statement.setFloat(index, Casting.toFloat(value));
-            break;
-        case FieldDefs.TYPE_DOUBLE :
-            if (setNullValue(statement, index, value, field, java.sql.Types.DOUBLE)) break;
-            statement.setDouble(index, Casting.toDouble(value));
-            break;
-        case FieldDefs.TYPE_LONG :
-            if (setNullValue(statement, index, value, field, java.sql.Types.BIGINT)) break;
-            statement.setLong(index, Casting.toLong(value));
-            break;
+        if (!setNullValue(statement, index, value, field, field.getDBType())) {
+            switch (field.getDBType()) { // it does this switch part twice now?
+                case FieldDefs.TYPE_INTEGER : {
+                    int storeValue = Casting.toInt(value);
+                    statement.setInt(index, storeValue);
+                    node.storeValue(field.getDBName(),new Integer(storeValue));
+                    break;
+                }
+                case FieldDefs.TYPE_FLOAT : {
+                    float storeValue = Casting.toFloat(value);
+                    statement.setFloat(index, storeValue);
+                    node.storeValue(field.getDBName(),new Float(storeValue));
+                    break;
+                }
+                case FieldDefs.TYPE_DOUBLE : {
+                    double storeValue = Casting.toDouble(value);
+                    statement.setDouble(index, storeValue);
+                    node.storeValue(field.getDBName(),new Double(storeValue));
+                    break;
+                }
+                case FieldDefs.TYPE_LONG : {
+                    long storeValue = Casting.toLong(value);
+                    statement.setLong(index, storeValue);
+                    node.storeValue(field.getDBName(),new Long(storeValue));
+                    break;
+                }
+            }
         }
     }
 
@@ -962,49 +1013,90 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to override this behavior.
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param node the node to store
+     * @param nodeValue the node to store
      * @param field the MMBase field, containing meta-information
+     * @param node the node that contains the data.
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setNodeValue(PreparedStatement statement, int index, Object node, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, node, field, java.sql.Types.INTEGER)) return;
-
-        int nodeNumber = Casting.toInt(node);
-
-        if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
-            throw new StorageException("The NODE field with name " + field.getDBName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
+    protected void setNodeValue(PreparedStatement statement, int index, Object nodeValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (!setNullValue(statement, index, nodeValue, field, java.sql.Types.INTEGER)) {
+            int nodeNumber = Casting.toInt(nodeValue);
+            if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
+                throw new StorageException("The NODE field with name " + field.getDBName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
+            }
+            // retrieve node as a numeric value
+            statement.setInt(index, nodeNumber);
         }
-
-        // retrieve node as a numeric value
-        statement.setInt(index, nodeNumber);
     }
 
     /**
+     * Store a boolean value of a field in a prepared statement.
+     * The method uses the Casting class to convert to the appropriate value.
+     * Null values are stored as NULL if possible, otherwise they are stored as <code>false</code>
+     * Override this method if you use another way to store booleans
      * @since MMBase-1.8
+     * @param statement the prepared statement
+     * @param index the index of the field in the prepared statement
+     * @param objectValue the data (boolean) to store
+     * @param field the MMBase field, containing meta-information
+     * @param node the node that contains the data. Used to update this node if the database layer makes changes
+     *             to the data (i.e. creating a default value for a non-null field that had a null value)
+     * @throws StorageException if the data is invalid or missing
+     * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setBooleanValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) return;
-        boolean bool = Casting.toBoolean(value);
-        statement.setBoolean(index, bool);
+    protected void setBooleanValue(PreparedStatement statement, int index, Object value, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (!setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) {
+            boolean bool = Casting.toBoolean(value);
+            statement.setBoolean(index, bool);
+            node.storeValue(field.getDBName(),new Boolean(bool));
+        }
     }
 
+    /**
+     * Store a Date value of a field in a prepared statement.
+     * The method uses the Casting class to convert to the appropriate value.
+     * Null values are stored as NULL if possible, otherwise they are stored as the date 31/12/1969 23:59:59 (-1)
+     * Override this method if you use another way to store dates
+     * @since MMBase-1.8
+     * @param statement the prepared statement
+     * @param index the index of the field in the prepared statement
+     * @param objectValue the data (date) to store
+     * @param field the MMBase field, containing meta-information
+     * @param node the node that contains the data. Used to update this node if the database layer makes changes
+     *             to the data (i.e. creating a default value for a non-null field that had a null value)
+     * @throws StorageException if the data is invalid or missing
+     * @throws SQLException if an error occurred while filling in the fields
+     */
+    protected void setDateTimeValue(PreparedStatement statement, int index, Object value, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (!setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) {
+            java.util.Date date = Casting.toDate(value);
+            statement.setTimestamp(index, new Timestamp(date.getTime()));
+            node.storeValue(field.getDBName(), date);
+        }
+    }
 
     /**
+     * Store a List value of a field in a prepared statement.
+     * The method uses the Casting class to convert to the appropriate value.
+     * Null values are stored as NULL if possible, otherwise they are stored as an empty list.
+     * Override this method if you use another way to store lists
      * @since MMBase-1.8
+     * @param statement the prepared statement
+     * @param index the index of the field in the prepared statement
+     * @param objectValue the data (List) to store
+     * @param field the MMBase field, containing meta-information. This value can be null
+     * @param node the node that contains the data. Used to update this node if the database layer makes changes
+     *             to the data (i.e. creating a default value for a non-null field that had a null value)
+     * @throws StorageException if the data is invalid or missing
+     * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setDateTimeValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, value, field, java.sql.Types.TIMESTAMP)) return;
-        java.util.Date date = Casting.toDate(value);
-        statement.setTimestamp(index, new Timestamp(date.getTime()));
-    }
-    /**
-     * @since MMBase-1.8
-     */
-    protected void setListValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) return;
-        List list = Casting.toList(value);
-        statement.setObject(index, list);
+    protected void setListValue(PreparedStatement statement, int index, Object value, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (!setNullValue(statement, index, value, field, java.sql.Types.BOOLEAN)) {
+            List list = Casting.toList(value);
+            statement.setObject(index, list);
+            node.storeValue(field.getDBName(), list);
+        }
     }
 
     /**
@@ -1015,20 +1107,23 @@ public class DatabaseStorageManager implements StorageManager {
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
      * @param objectValue the data (byte array) to store
-     * @param field the MMBase field, containing meta-information. This value can be null
+     * @param field the MMBase field, containing meta-information
+     * @param node the node that contains the data. Used to update this node if the database layer makes changes
+     *             to the data (i.e. creating a default value for a non-null field that had a null value)
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setBinaryValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) return;
-        byte[] value = Casting.toByte(objectValue);
-
-        try {
-            InputStream stream = new ByteArrayInputStream(value);
-            statement.setBinaryStream(index, stream, value.length);
-            stream.close();
-        } catch (IOException ie) {
-            throw new StorageException(ie);
+    protected void setBinaryValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) {
+            byte[] value = Casting.toByte(objectValue);
+            try {
+                InputStream stream = new ByteArrayInputStream(value);
+                statement.setBinaryStream(index, stream, value.length);
+                stream.close();
+            } catch (IOException ie) {
+                throw new StorageException(ie);
+            }
+            node.storeValue(field.getDBName(),value);
         }
     }
 
@@ -1043,27 +1138,29 @@ public class DatabaseStorageManager implements StorageManager {
      * @param index the index of the field in the prepared statement
      * @param objectValue the text to store
      * @param field the MMBase field, containing meta-information
+     * @param node the node that contains the data.
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;
-        String value = Casting.toString(objectValue);
-
-        // Store data as a binary stream when the code is a clob or blob, or
-        // when database-force-encode-text is true.
-        if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
-            byte[] rawchars = null;
-            try {
-                rawchars = value.getBytes(factory.getMMBase().getEncoding());
-                ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
-                statement.setBinaryStream(index, stream, rawchars.length);
-                stream.close();
-            } catch (IOException ie) {
-                throw new StorageException(ie);
+    protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) {
+            String value = Casting.toString(objectValue);
+            // Store data as a binary stream when the code is a clob or blob, or
+            // when database-force-encode-text is true.
+            if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+                byte[] rawchars = null;
+                try {
+                    rawchars = value.getBytes(factory.getMMBase().getEncoding());
+                    ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
+                    statement.setBinaryStream(index, stream, rawchars.length);
+                    stream.close();
+                } catch (IOException ie) {
+                    throw new StorageException(ie);
+                }
+            } else {
+                statement.setString(index, value);
             }
-        } else {
-            statement.setString(index, value);
+            if (objectValue == null) node.storeValue(field.getDBName(),value);
         }
     }
 
@@ -1072,10 +1169,12 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to override this behavior.
      * @since MMBase-1.7.1
      */
-    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        setStringValue(statement, index, objectValue, field);
+    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+        if (objectValue == null && field.getDBNotNull()) objectValue = "";
+        objectValue = Casting.toXML(objectValue, null, null);
+        node.storeValue(field.getDBName(),objectValue);
+        setStringValue(statement, index, objectValue, field, node);
     }
-
 
     // javadoc is inherited
     public void delete(MMObjectNode node) throws StorageException {
@@ -1171,6 +1270,51 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+
+    /**
+     * Reloads the data from a anode form teh adtabase.
+     * Use this after a create or change action, so the data in memory is consistent with
+     * any data stored in the database.
+     * @param node the node to refresh
+     */
+    protected void refresh(MMObjectNode node) throws StorageException {
+        Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
+        try {
+            getActiveConnection();
+            MMObjectBuilder builder = node.getBuilder();
+            // get a builders fields
+            List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
+            List fields = new ArrayList();
+            StringBuffer fieldNames = null;
+            for (Iterator f = builderFields.iterator(); f.hasNext();) {
+                FieldDefs field = (FieldDefs)f.next();
+                if (field.inStorage() && !shorten(field)) {
+                    // store the fieldname and the value parameter
+                    String fieldName = (String)factory.getStorageIdentifier(field);
+                    if (fieldNames == null) {
+                        fieldNames = new StringBuffer(fieldName);
+                    } else {
+                        fieldNames.append(',').append(fieldName);
+                    }
+                }
+            }
+            String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), builder.getField("number"), new Integer(node.getNumber())});
+            Statement s = activeConnection.createStatement();
+            ResultSet result = null;
+            try {
+                result = s.executeQuery(query);
+                fillNode(node, result, builder);
+            } finally {
+                if (result != null) result.close();
+                s.close();
+            }
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        } finally {
+            releaseActiveConnection();
+        }
+    }
+
     /**
      * Fills a single Node from the resultset of a query.
      * You can use this method to iterate through a query, creating multiple nodes, provided the resultset still contains
@@ -1219,6 +1363,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @param result the resultset
      * @param index the index of the field in the resultset
      * @param field the expected MMBase field type. This can be null
+     * @param node the node that contains the data.
      * @return the value
      * @throws StorageException if the value cannot be retrieved from the resultset
      */
@@ -1238,6 +1383,12 @@ public class DatabaseStorageManager implements StorageManager {
                 }
                 case FieldDefs.TYPE_BYTE : {
                     return getBinaryValue(result, index, field);
+                }
+                case FieldDefs.TYPE_DATETIME : {
+                    return getDateTimeValue(result, index, field);
+                }
+                case FieldDefs.TYPE_BOOLEAN : {
+                    return getBooleanValue(result, index, field);
                 }
                 default : {
                     return result.getObject(index);
