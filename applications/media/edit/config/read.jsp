@@ -38,7 +38,7 @@
   <mm:write  referid="quality" cookie="mediaeditors_quality" />
   <mm:write  referid="player"  cookie="mediaeditors_player" />
 
-  <mm:import id="editwizards"><%=org.mmbase.applications.media.urlcomposers.Config.editwizardsDir == null ? "/mmapps/editwizard" : org.mmbase.applications.media.urlcomposers.Config.editwizardsDir%></mm:import>
+  <mm:import id="editwizards"><%=org.mmbase.applications.media.urlcomposers.Config.editwizardsDir == null ? "/mmbase/edit/wizard" : org.mmbase.applications.media.urlcomposers.Config.editwizardsDir%></mm:import>
 </mm:cloud>
 </mm:context>
 
