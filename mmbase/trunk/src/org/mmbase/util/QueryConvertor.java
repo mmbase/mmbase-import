@@ -102,8 +102,8 @@ class DBConditionItem extends ParseItem {
 		}
 
 		value = DBValue.abstractCreation(item.substring(conditionPos+2));
-		// System.out.println("Id="+identifier);
-		// System.out.println("val="+value);
+		//System.out.println("Id="+identifier);
+		//System.out.println("val="+value);
 
 		operatorChar = item.charAt(conditionPos + 1);
 		// System.out.println("char="+operatorChar);
