@@ -728,13 +728,15 @@ Change directory to ${build.dir}/orion and run:
   <target name="web" description="Make the things which must appear in the web-servers html directory"
          depends="init.compile">
     <mkdir dir="${web.dir}"/>
+    <mkdir dir="${web.dir}/taglibdoc"/>
+    <mkdir dir="${web.dir}/communitytaglibdoc"/>
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
           fork="yes"
           failonerror="yes">
-      <arg value="-Q"/>
       <arg value="-XML"/>
+      <arg value="-DIAG"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
@@ -747,13 +749,17 @@ Change directory to ${build.dir}/orion and run:
           classpathref="compile"
           fork="yes"
           failonerror="yes">
-      <arg value="-Q"/>
+      <arg value="-EDUMP"/>
+      <arg value="-DIAG"/>
+      <arg value="-PARAM"/>
+      <arg value="basedir"/>
+      <arg value="${web.dir}"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.html"/>
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
     <!-- create the mmcommunity tld: -->
     <java classname="org.apache.xalan.xslt.Process"
@@ -761,7 +767,7 @@ Change directory to ${build.dir}/orion and run:
           fork="yes"
           failonerror="yes">
       <arg value="-Q"/>
-      <arg value="-XML"/>
+      <arg value="-DIAG"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
       <arg value="-OUT"/>
@@ -774,9 +780,15 @@ Change directory to ${build.dir}/orion and run:
           classpathref="compile"
           fork="yes"
           failonerror="yes">
-      <arg value="-Q"/>
+      <arg value="-DIAG"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
+      <arg value="-PARAM"/>
+      <arg value="basedir"/>
+      <arg value="'${web.dir}/'"/>
+      <arg value="-PARAM"/>
+      <arg value="files"/>
+      <arg value="communitytaglibdoc"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
@@ -797,8 +809,6 @@ Change directory to ${build.dir}/orion and run:
     <java classname="org.apache.xalan.xslt.Process"
           fork="yes"
           failonerror="yes">
-      <arg value="-Q"/>
-      <arg value="-XML"/>
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
@@ -1418,7 +1428,7 @@ Change directory to ${build.dir}/orion and run:
     <available property="jai.expanded"
                file="${expand.dir}/${jai.version}"/>
     <!-- Log4j -->
-    <!-- property name="log4j.version" value="1.2" /-->
+    <!-- property name="log4j.version" value="1.2.3" /-->
     <property name="log4j.version" value="1.1.3" /> 
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url" value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
