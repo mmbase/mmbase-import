@@ -14,7 +14,7 @@ Selecting a news node:
 </mm:node>
 </mm:listnodes>
 <p>
-Reusing it in the same page:
+Reusing it in the same page.
 </p>
 <mm:node referid="news_node">
    <mm:field name="title" />
