@@ -121,9 +121,15 @@
 	<mm:import id="email" externid="newemail" />
 	<mm:import id="gender" externid="newgender" />
 	<mm:import id="location" externid="newlocation" />
-	<mm:booleanfunction set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location">
-	</mm:booleanfunction>
-</mm:compare>
+	<mm:import id="newpassword" externid="newpassword" />
+	<mm:import id="newconfirmpassword" externid="newconfirmpassword" />
+	<mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
+        <mm:write referid="feedback" session="feedback_message"/>
+
+        <mm:compare referid="feedback" value="passwordchanged">
+          <mm:write referid="newpassword" cookie="cwf$forumid" />
+        </mm:compare>
+ </mm:compare>
 
 <mm:compare value="true" referid="adminmode">
 <mm:compare value="newpostarea" referid="action">

@@ -11,14 +11,15 @@
 <mm:import externid="postareaid" />
 <mm:import externid="posterid" id="profileid" />
 <mm:import externid="profile">personal</mm:import>
-
+<mm:import id="feedbackdefault"></mm:import>
+<mm:write session="feedback_message" referid="feedbackdefault"/>
 <%-- login part --%>
 <%@ include file="getposterid.jsp" %>
 <%@ include file="thememanager/loadvars.jsp" %>
 <%-- end login part --%>
 
 <%-- action check --%>
-<mm:import externid="action" />
+<mm:import externid="action" reset="true"/>
 <mm:present referid="action">
   <mm:include page="actions.jsp" />
 </mm:present>
@@ -70,6 +71,9 @@
         <mm:param name="profile" value="personal" />
         </mm:url>"><mm:write referid="mlg_personal"/></a>
         </li>
+        <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+        <mm:field name="contactinfoenabled">
+          <mm:compare value="true">
         <mm:compare value="contact" referid="profile">
         <li class="selected">
         </mm:compare>
@@ -86,12 +90,21 @@
         <mm:param name="profile" value="contact" />
         </mm:url>"><mm:write referid="mlg_contact"/></a>
         </li>
+        </mm:compare>
+        </mm:field>
+        </mm:nodefunction>
+        <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+        <mm:field name="avatarsdisabled">
+          <mm:compare value="false">
+<mm:import id="avatardisabled"/>
         <mm:compare value="avatar" referid="profile">
         <li class="selected">
         </mm:compare>
         <mm:compare value="avatar" referid="profile" inverse="true">
         <li>
         </mm:compare>
+
+ 
         <a href="<mm:url page="profile.jsp">
         <mm:param name="forumid" value="$forumid" />
         <mm:present referid="postareaid">
@@ -102,6 +115,10 @@
         <mm:param name="profile" value="avatar" />
         </mm:url>"><mm:write referid="mlg_avatar"/></a>
         </li>
+
+        </mm:compare>
+        </mm:field>
+        </mm:nodefunction>
       </ul>
     </div>
     
@@ -117,10 +134,29 @@
         <mm:param name="profile" value="$profile" />
         </mm:url>" method="post"> 
         <mm:node number="$profileid">
-
         <mm:functioncontainer>
           <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
           <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
+
+        <div class="row">
+        <span class="feedback">
+        <mm:import externid="feedback_message" from="session" id="feedback"/>
+        <mm:compare referid="feedback" value="true">
+          <mm:write referid="mlg_ProfileUpdated"/>
+        </mm:compare>
+        <mm:compare referid="feedback" value="false">
+          <mm:write referid="mlg_ProfileUpdateFailed"/>
+        </mm:compare>
+        <mm:compare referid="feedback" value="passwordchanged">
+          <mm:write referid="mlg_PasswordChanged"/>
+<mm:import id="accounttocookie"><mm:field name="account" /></mm:import>
+          <mm:write referid="accounttocookie" cookie="caf$forumid"/>
+        </mm:compare>
+        <mm:compare referid="feedback" value="newpasswordnotequal">
+          <mm:write referid="mlg_Password_notequal"/>
+        </mm:compare>
+        </span>
+        </div>
         <div class="row">
           <input type="hidden" name="action" value="editposter" />
           <span class="label"><mm:write referid="mlg_Account"/></span>
@@ -168,11 +204,24 @@
           </span>
         </div>
         <div class="row">
+          <span class="label"><mm:write referid="mlg_NewPassword"/></span>
+          <span class="formw">
+            <input name="newpassword" type="password" size="25"/>
+          </span>
+        </div>
+        <div class="row">
+          <span class="label"><mm:write referid="mlg_NewConfirmPassword"/></span>
+          <span class="formw">
+            <input name="newconfirmpassword" type="password" size="25" />
+          </span>
+        </div>
+        <%-- TODO: not yet implemented
+          <div class="row">
           <span class="label"><mm:write referid="mlg_Level"/></span>
           <span class="formw">
             level123
           </span>
-        </div>
+        </div>--%>
         <div class="row">
           <span class="label"><mm:write referid="mlg_Posts"/></span>
           <span class="formw">
@@ -203,10 +252,15 @@
         </div>
 
     </mm:compare>
-
+        <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+        <mm:field name="contactinfoenabled">
+          <mm:compare value="true">
     <mm:compare value="contact" referid="profile">
         <mm:write referid="mlg_Not_implemented"/>  
     </mm:compare>
+</mm:compare>
+</mm:field>
+</mm:nodefunction>
 
     <mm:compare value="avatar" referid="profile">
       <form enctype="multipart/form-data" action="<mm:url page="actions_avatar.jsp">
@@ -252,6 +306,9 @@
  
         </mm:node>
 
+        <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+        <mm:field name="avatarsuploadenabled">
+          <mm:compare value="true">
         <div class="row">
           <span class="label"><mm:write referid="mlg_Upload_avatar"/></span>
           <span class="formw">
@@ -261,13 +318,19 @@
             <input type="submit" name="addavatar" value="<mm:write referid="mlg_Upload"/>" />
           </span>
         </div>
+          </mm:compare>
+        </mm:field>
+        <mm:field name="avatarsgalleryenabled">
+          <mm:compare value="true">
         <div class="row">
           <span class="label"><mm:write referid="mlg_Select_avatar_from_the_list"/></span>
           <span class="formw">
             <input type="submit" name="selectavatar" value="<mm:write referid="mlg_Select"/>"/>
           </span>
         </div>
-
+          </mm:compare>
+        </mm:field>
+        </mm:nodefunction>
     </mm:compare>
 
     <div class="spacer">&nbsp;</div>
@@ -298,6 +361,9 @@
         <mm:param name="profile" value="personal" />
         </mm:url>"><mm:write referid="mlg_personal"/></a>
         </li>
+        <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+        <mm:field name="contactinfoenabled">
+          <mm:compare value="true">
         <mm:compare value="contact" referid="profile">
         <li class="selected">
         </mm:compare>
@@ -314,12 +380,19 @@
         <mm:param name="profile" value="contact" />
         </mm:url>"><mm:write referid="mlg_contact"/></a>
         </li>
+</mm:compare>
+</mm:field>
+</mm:nodefunction>
+    <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+      <mm:field name="avatarsdisabled">
+        <mm:compare value="false">
         <mm:compare value="avatar" referid="profile">
         <li class="selected">
         </mm:compare>
         <mm:compare value="avatar" referid="profile" inverse="true">
         <li>
         </mm:compare>
+
         <a href="<mm:url page="profile.jsp">
         <mm:param name="forumid" value="$forumid" />
         <mm:present referid="postareaid">
@@ -329,7 +402,7 @@
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="avatar" />
         </mm:url>"><mm:write referid="mlg_avatar"/></a>
-        </li>
+        </li></mm:compare></mm:field></mm:nodefunction>
       </ul>
     </div>
     
@@ -352,10 +425,11 @@
           <span class="label"><mm:write referid="mlg_Lastname"/></span>
           <span class="formw"><mm:field name="lastname" /></span>
         </div>
+        <%-- TODO: gebruiker moet zelf kiezen of email getoond wordt of niet, voor nu default niet
         <div class="row">
           <span class="label"><mm:write referid="mlg_Email"/></span>
           <span class="formw"><mm:field name="email" /></span>
-        </div>
+        </div>--%>
         <div class="row">
           <span class="label"><mm:write referid="mlg_Location"/></span>
           <span class="formw"><mm:field name="location" /></span>
@@ -364,10 +438,11 @@
           <span class="label"><mm:write referid="mlg_Gender"/></span>
           <span class="formw"><mm:field name="gender" /></span>
         </div>
+        <%-- TODO: not yet implemented
         <div class="row">
           <span class="label"><mm:write referid="mlg_Level"/></span>
           <span class="formw">level123</span>
-        </div>
+        </div>--%>
         <div class="row">
           <span class="label"><mm:write referid="mlg_Messages"/></span>
           <span class="formw"><mm:field name="accountpostcount" /></span>
@@ -389,10 +464,18 @@
         </mm:node>
 
     </mm:compare>
-
+        <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+        <mm:field name="contactinfoenabled">
+          <mm:compare value="true">
     <mm:compare value="contact" referid="profile">
     boe
     </mm:compare>
+</mm:compare>
+</mm:field>
+</mm:nodefunction>
+    <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+      <mm:field name="avatarsdisabled">
+        <mm:compare value="false">
 
     <mm:compare value="avatar" referid="profile">
  
@@ -418,6 +501,10 @@
         </mm:node>
 
     </mm:compare>
+    </mm:compare>
+
+</mm:field>
+    </mm:nodefunction>
 
     <div class="spacer">&nbsp;</div>
 

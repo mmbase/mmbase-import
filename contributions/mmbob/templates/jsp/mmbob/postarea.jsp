@@ -20,6 +20,14 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
+<mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+  <mm:field name="postingsperpage" id="pagesize" write="false"/>
+</mm:nodefunction>
+
+<mm:notpresent referid="pagesize">
+<mm:import id="pagesize">20</mm:import>
+</mm:notpresent>
+
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -79,7 +87,7 @@
     </mm:compare>
   </tr>
 
-  <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page">
+  <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page,pagesize">
   <tr>
     <td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td>
     <td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td>
