@@ -22,11 +22,11 @@ import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 /**
-* NodeTag provides the fields of a node
-*
-* @author Rob Vermeulen
-* @author Michiel Meeuwissen
-*/
+ * NodeTag provides the fields of a node
+ *
+ * @author Rob Vermeulen
+ * @author Michiel Meeuwissen
+ */
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(NodeTag.class.getName());
@@ -65,7 +65,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
 
     public int doStartTag() throws JspTagException{
-        node = null;
+        Node node = null;
         if (referid != null) {
             // try to find if already in context.
             log.debug("looking up Node with " + referid + " in context");
@@ -105,7 +105,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
             }
         }
-        //setNodeVar(node);
+        setNodeVar(node);
         //log.debug("found node " + node.getValue("gui()"));
         return EVAL_BODY_TAG;
     }
@@ -113,6 +113,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     public void doInitBody() throws JspTagException {
         log.debug("fillvars");
         fillVars();
+        if (id != null && ! "".equals(id)) {
+            getContextTag().registerNode(id, getNodeVar());
+        }
+
     }
 
     /**
@@ -128,9 +132,4 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         return SKIP_BODY;
     }
 
-
-    public int doEndTag() throws JspTagException {
-        node = null;
-        return EVAL_PAGE;
-    }
 }
