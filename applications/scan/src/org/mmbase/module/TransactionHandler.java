@@ -298,7 +298,7 @@ public class TransactionHandler
 					transactionInfo.knownObjectContexts.put(id, currentObjectContext);
 				}
 				// add to tmp cloud
-				transactionManager.addNode(currentTransactionContext, currentObjectContext);
+				transactionManager.addNode(currentTransactionContext, tmpObjectManager.getTmpKey(userTransactionInfo.user.getName(),currentObjectContext));
 			} 
 			if (oName.equals("getObject")) {
 				// check for existence
@@ -314,14 +314,14 @@ public class TransactionHandler
 				if (!anonymousObject)
 					transactionInfo.knownObjectContexts.put(id, currentObjectContext);
 				// add to tmp cloud
-				transactionManager.addNode(currentTransactionContext, currentObjectContext);
+				transactionManager.addNode(currentTransactionContext, tmpObjectManager.getTmpKey(userTransactionInfo.user.getName(),currentObjectContext));
 			}
 			if (oName.equals("openObject")) {
 				// no-op we only need current object context
 			}
 			if (oName.equals("deleteObject")) {
 				//delete from temp cloud
-				transactionManager.removeNode(currentTransactionContext, currentObjectContext);
+				transactionManager.removeNode(currentTransactionContext, tmpObjectManager.getTmpKey(userTransactionInfo.user.getName(),currentObjectContext));
 				// destroy
 				tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
 				currentObjectContext = null;
