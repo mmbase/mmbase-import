@@ -63,14 +63,16 @@ public class LinkFinder extends ReaderTransformer implements CharTransformer {
                 word.setLength(l);
                 w = word.toString();
             }
+            if (l > 0) {
 
-            // to allow for . , and like in the end, we tear those of.
-            char d = word.charAt(l - 1); 
-            while (! Character.isLetterOrDigit(d)) {
-                postFix.insert(0, d);
-                word.setLength(--l);
-                if (l == 0) break;
-                d = word.charAt(l - 1); 
+                // to allow for . , and like in the end, we tear those of.
+                char d = word.charAt(l - 1); 
+                while (! Character.isLetterOrDigit(d)) {
+                    postFix.insert(0, d);
+                    word.setLength(--l);
+                    if (l == 0) break;
+                    d = word.charAt(l - 1); 
+                }
             }
         }
 
