@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.1 2002-06-28 20:47:42 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.2 2002-06-28 22:36:12 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -84,30 +84,33 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             } else {
                 servletPath = getDefaultPath();
             }
-            // remove first slash
-            if (servletPath.startsWith("/")) servletPath = servletPath.substring(1);
             
-            // add '?' if it wasn't already there (only needed if not terminated with /)
-            if (! servletPath.endsWith("/")) servletPath = servletPath + "?";
-            
-            if (context != null) {
-                if (context.endsWith("/")) {
-                    servletPath = context + servletPath;
-                } else {
-                    servletPath = context + "/" + servletPath;
+            if (servletPath.startsWith("/")) {                     
+                // if it not starts with / then no use adding context.                    
+                if (context != null) {
+                    if (context.endsWith("/")) {
+                        servletPath = context + servletPath.substring(1);
+                    } else {
+                        servletPath = context + servletPath;
+                    }
                 }
             }
             log.service(getAssociation() + " are served on: " + servletPath);
         }
-       if (fileName == null) {
-            return servletPath;
+        String result;
+        if (fileName == null) {
+            result = servletPath;
         } else {
             if (servletPath.endsWith("/")) {
-                return servletPath + fileName;
+                result =  servletPath + fileName;
             } else {
-                return servletPath + "/" + fileName;
+                result = servletPath;
             }
         }
+        
+        // add '?' if it wasn't already there (only needed if not terminated with /)
+        if (! result.endsWith("/")) result = result + "?";
+        return result;
     }
 
 
@@ -115,6 +118,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * Returns the path to the  servlet. 
      * @see #getServletPath(String, String)
      */
+    protected String getServletPath(String fileName) {
+        return getServletPath(MMBaseContext.getHtmlRootUrlPath(), fileName);
+    }
     protected String getServletPath() {
         return getServletPath(MMBaseContext.getHtmlRootUrlPath(), null);
     }
