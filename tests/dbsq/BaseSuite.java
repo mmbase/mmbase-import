@@ -4,7 +4,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BaseSuite extends TestCase {
     
@@ -34,7 +34,6 @@ public class BaseSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite("BaseSuite");
         suite.addTest(org.mmbase.module.core.CoreSuite.suite());
-        suite.addTest(org.mmbase.module.database.support.SupportSuite.suite());
         suite.addTest(org.mmbase.storage.search.implementation.ImplementationSuite.suite());
         suite.addTest(org.mmbase.storage.search.legacy.LegacySuite.suite());
         suite.addTest(org.mmbase.util.UtilSuite.suite());
