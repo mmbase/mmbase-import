@@ -3,13 +3,11 @@
 <body>
 <h1>Testing taglib</h1>
 <h2>cloud, transaction</h2>
-<mm:log>0</mm:log>
 <mm:import id="curtime"><%= System.currentTimeMillis()%></mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud">
 
 This number must increase on reload: <mm:write referid="curtime" />
 <h3>Canceling transaction</h3>
-<mm:log>0</mm:log>
 <mm:transaction name="mytrans" commitonclose="false">
   <mm:createnode type="news">
     <mm:setfield name="title">Test node, created in transaction, canceled</mm:setfield>
@@ -17,7 +15,6 @@ This number must increase on reload: <mm:write referid="curtime" />
   </mm:createnode>
   <mm:cancel />
 </mm:transaction>
-<mm:log>1</mm:log>
 Transaction was canceled, following should not result anything:
 <mm:listnodes id="l" type="news" constraints="subtitle = '$curtime'">
   <mm:field name="gui()" />
@@ -32,21 +29,17 @@ Transaction was canceled, following should not result anything:
   </mm:createnode>
 </mm:transaction>
 transaction was commited, following should result anything:
-<mm:listnodes id="node" type="news" constraints="subtitle = '$curtime'" max="1">
+<mm:listnodes id="node" type="news" constraints="subtitle = '$curtime'" max="1" jspvar="node">
+  <mm:log><%=node %></mm:log>
   <mm:field name="subtitle">
     <mm:compare referid2="curtime">
         YES (created node was <mm:field id="nodenumber" name="number" />)
         <mm:write referid="nodenumber" session="testnodenumber" />         
         <mm:write referid="node" session="testnode" />         
     </mm:compare>
-    <mm:compare referid2="curtime" inverse="true">
-        NOOOOO!
-       <mm:write id="nodenumber" value="NNOTFOUNFDNODE" />
-    </mm:compare>
   </mm:field>
    <mm:field name="title" />
 </mm:listnodes>
-<mm:log>5</mm:log>
 <br />
 <h3>Creating relation in transaction</h3>
 <mm:transaction name="mytranc">
@@ -55,9 +48,7 @@ transaction was commited, following should result anything:
      <mm:setfield name="description">Test node2, created in transaction, made relation to it</mm:setfield>
 	   <mm:setfield name="url">http://<mm:write referid="curtime" /></mm:setfield>
   </mm:createnode>
-  <mm:createrelation source="node1" destination="node2" role="posrel">
-     <mm:setfield name="pos">123</mm:setfield>
-  </mm:createrelation>
+  <mm:createrelation source="node1" destination="node2" role="posrel" />
 </mm:transaction>
 <hr />
 logged on as: <%= cloud.getUser().getIdentifier() %><br />

@@ -182,20 +182,41 @@ Ok, did not throw exception with id in a list (Does in 1.6)<br />
 <mm:stringlist referid="testlist">
    <mm:write id="some_list_id" />
 </mm:stringlist>
- WRONG, should have thrown exception (id was used already(.<br />
+ WRONG, should have thrown exception (id was used already).<br />
  <% } catch (Exception e) { %>
  Ok, did throw exception.<br />
 <% } %>
 
 <% try { %>
 <mm:stringlist referid="testlist">
-   <mm:write id="testlist" />
+   <mm:write id="some_list_id" />
 </mm:stringlist>
- WRONG, should have thrown exception (id was used already(.<br />
+ WRONG, should have thrown exception (id was used already).<br />
  <% } catch (Exception e) { %>
  Ok, did throw exception.<br />
 <% } %>
 
+<mm:stringlist referid="testlist">
+ <mm:first>
+   <mm:remove referid="some_list_id" />
+</mm:first>
+</mm:stringlist>
+
+<mm:present referid="some_list_id">
+  WRONG, 'testlist' was removed,<br />
+</mm:present>
+<mm:present referid="some_list_id" inverse="true">
+  Ok, 'testlist' was removed (in a list)<br />
+</mm:present>
+
+<mm:import id="abcde" />
+
+<mm:present referid="abcde">
+afdlsk
+</mm:present>
+<mm:notpresent referid="abcde">
+afdlsk
+</mm:notpresent>
 
 
 

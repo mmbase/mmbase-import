@@ -34,25 +34,17 @@
 <% Cache cache = Cache.getCache(cacheName); 
   if (cache != null) {
 %>
-<mm:import externid="removeentry" />
-<mm:present referid="removeentry">
- <mm:write referid="removeentry" jspvar="entry" vartype="string">
- <% cache.remove(entry); %>
-  </mm:write>
-</mm:present>
 <h1><%= cache.getDescription() %> Cache</h1>
 <table width="100%" border="1" celpadding="1">
-<tr><th>#</th><th>Key</th><th>Value</th><mm:compare referid="bytesize" value="true"><th>Size (byte)</th><th></th></mm:compare></tr>
+<tr><th>Key</th><th>Value</th><mm:compare referid="bytesize" value="true"><th>Size (byte)</th></mm:compare></tr>
 <%
-    Iterator i = cache.getOrderedEntries(50).iterator();
-    int j = 0;
+    Iterator i = cache.getOrderedEntries(500).iterator();
     while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
-            Object key = entry.getKey();
-        out.println("<tr><td>" + ++j + "</td><td>'" + key + "'" + key.getClass().getName() + "</td><td>" +
+        out.println("<tr><td>" + entry.getKey() + "</td><td>" +
                   entry.getValue() + "("+ entry.getValue().getClass() +")</td>" +
                   ("true".equals(bytesize) ? "<td>" + (SizeOf.getByteSize(entry.getValue()) + SizeOf.getByteSize(entry.getKey())) + "</td>" : "")
-              + "<td><a href=\"?cache=" + cache.getName() + "&removeentry=" + entry.getKey() + "\">Remove</a></td></tr>");
+              + "</tr>");
     }
 }
 %>
