@@ -39,7 +39,7 @@ public class ListTag extends AbstractNodeListTag {
      * instead).
      * @param nodes a node or a comma separated list of nodes.
      */
-    public void setStartnodes(String nodes) throws JspTagException {
+    public void setNodes(String nodes) throws JspTagException {
         // parse/map the nodes they can be params, sessions or aliases
         // instead of just numbers
         nodesString=parseNodes(nodes);
