@@ -1,5 +1,5 @@
   <action type="create">
-		<object type="&fragments;">
+		<object type="&type;fragments">
 			<field name="title">Don't forget to add a title</field>
 		</object>
 	</action>

@@ -1,6 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@include file="readconfig.jsp" %><mm:locale language="$config.lang">
+%><%@include file="config/read.jsp" %><mm:locale language="$config.lang">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd">
 <html>
   <head>
@@ -27,7 +27,7 @@
     <p align="right">
       <a href="<mm:url page="search.jsp" />">Search</a>
  |
-    <a href="<mm:url page="config.jsp?referrer=poolselector.jsp" />">Config</a>
+    <a href="<mm:url page="config/?referrer=../poolselector.jsp" />">Config</a>
     </p>
    </mm:node>
   </body>
