@@ -426,11 +426,10 @@ public class BasicCloud implements Cloud, Cloneable {
         } else {
             throw new BridgeException("No nodePath specified.");
         }
-        if (fields!=null && (!fields.trim().equals(""))) {
-            pars+=" FIELDS='"+fields+"'";
-        } else {
-            throw new BridgeException("No fields specified.");
-        }
+
+        if (fields == null) fields = "";
+        pars += " FIELDS='"+fields+"'";
+        
         if (orderby!=null) {
             pars+=" SORTED='"+orderby+"'";
         }
