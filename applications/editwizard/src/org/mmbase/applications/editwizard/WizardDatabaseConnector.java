@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.27 2003-03-31 10:53:16 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.28 2003-06-02 12:30:09 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -78,11 +78,12 @@ public class WizardDatabaseConnector {
     /**
      * This method loads relations from MMBase and stores the result in the given object node.
      *
-     * @param       object          The objectNode where the results should be appended to.
-     * @param       objectnumber    The objectnumber of the parentobject from where the relations should originate.
-     * @param       loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
+     * @param  object          The objectNode where the results should be appended to.
+     * @param  objectnumber    The objectnumber of the parentobject from where the relations should originate.
+     * @param  loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
+     * @throws WizardException if loading the realtions fails
      */
-    private void loadRelations(Node object, String objectnumber, Node loadaction) throws Exception {
+    private void loadRelations(Node object, String objectnumber, Node loadaction) throws WizardException {
         // loads relations using the loadaction rules
         if ((org.mmbase.Version.getMajor()==1) && (org.mmbase.Version.getMinor()==5)) {
             // backward compatibilty: The Dove included with MMBase 1.5 does not
@@ -115,8 +116,9 @@ public class WizardDatabaseConnector {
      * @param       object          The objectNode where the results should be appended to.
      * @param       objectnumber    The objectnumber of the parentobject from where the relations should originate.
      * @param       loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
+     * @throws WizardException if loading the realtions fails
      */
-    private void loadRelations15(Node object, String objectnumber, Node loadaction) throws Exception {
+    private void loadRelations15(Node object, String objectnumber, Node loadaction) throws WizardException {
         NodeList reldefs = Utils.selectNodeList(loadaction, "relation");
         if (reldefs.getLength()>0) getRelations(object, objectnumber, reldefs);
 
@@ -146,8 +148,9 @@ public class WizardDatabaseConnector {
      * @param schema The schema carrying all the information needed for loading the proper object and related fields and objects.
      * @param objectnumber The objectnumber of the object to start with.
      * @return The resulting data document.
+     * @throws WizardException if loading the schema fails
      */
-    public Document load(Node schema, String objectnumber) throws Exception {
+    public Document load(Node schema, String objectnumber) throws WizardException {
         // intialize data xml
         Document data = Utils.parseXML("<data />");
 
@@ -169,7 +172,7 @@ public class WizardDatabaseConnector {
             if (loadaction!=null) {
                 loadRelations(object, objectnumber, loadaction);
             }
-        } catch (Exception e) {
+        } catch (WizardException e) {
             log.error("Could not load object ["+objectnumber+"]. MMBase returned some errors.\n"+e.getMessage());
             throw e;
         }
@@ -180,10 +183,11 @@ public class WizardDatabaseConnector {
     /**
      * This method gets constraint information from mmbase about a specific objecttype.
      *
-     * @param     objecttype      the objecttype where you want constraint information from.
-     * @return   the constraintsnode as received from mmbase (Dove)
+     * @param  objecttype      the objecttype where you want constraint information from.
+     * @return the constraintsnode as received from mmbase (Dove)
+     * @throws WizardException if the constraints could not be obtained
      */
-    public Node getConstraints(String objecttype) throws Exception {
+    public Node getConstraints(String objecttype) throws WizardException {
         // fires getData command and places result in targetNode
         ConnectorCommand cmd = new ConnectorCommandGetConstraints(objecttype);
         fireCommand(cmd);
@@ -193,14 +197,17 @@ public class WizardDatabaseConnector {
             Node result = cmd.getResponseXML().getFirstChild().cloneNode(true);
             return result;
         } else {
-            throw new Exception("getConstraints command not succesful, for objecttype " + objecttype);
+            throw new WizardException("Could not obtain constraints for " + objecttype + " : " + cmd.getError());
         }
     }
 
     /**
      * This method retrieves a list from mmbase. It uses a query which is sent to mmbase.
+     * @param  query  the node containign the query to run
+     * @return a node containing as its childnodes the list of nodes queried
+     * @throws WizardException if the constraints could not be obtained
      */
-    public Node getList(Node query) throws Exception {
+    public Node getList(Node query) throws WizardException {
         // fires getData command and places result in targetNode
         ConnectorCommand cmd = new ConnectorCommandGetList(query);
         fireCommand(cmd);
@@ -211,30 +218,32 @@ public class WizardDatabaseConnector {
             Node result = cmd.getResponseXML().cloneNode(true);
             return result;
         } else {
-            throw new Exception("getList command not succesful");
+            throw new WizardException("Could not get list : " + cmd.getError());
         }
     }
 
     /**
      * This method retrieves data (objectdata) from mmbase.
      *
-     * @param     targetNode      Results are appended to this targetNode.
-     * @param     objectnumber    The number of the object to load.
-     * @return   The resulting node with the objectdata.
+     * @param  targetNode      Results are appended to this targetNode.
+     * @param  objectnumber    The number of the object to load.
+     * @return The resulting node with the objectdata.
+     * @throws WizardException if loading the object fails
      */
-    public Node getData(Node targetNode, String objectnumber) throws Exception {
+    public Node getData(Node targetNode, String objectnumber) throws WizardException {
         return getData(targetNode, objectnumber, null);
     }
 
     /**
      * This method retrieves data (objectdata) from mmbase.
      *
-     * @param     targetNode      Results are appended to this targetNode.
-     * @param     objectnumber    The number of the object to load.
-     * @param     restrictions    These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
-     * @return   The resulting node with the objectdata.
+     * @param  targetNode      Results are appended to this targetNode.
+     * @param  objectnumber    The number of the object to load.
+     * @param  restrictions    These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
+     * @throws WizardException if the object could not be retrieved
+     * @return The resulting node with the objectdata.
      */
-    public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws Exception {
+    public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws WizardException {
         // fires getData command and places result in targetNode
         Node objectNode=getDataNode(targetNode.getOwnerDocument(), objectnumber, restrictions);
         // place object in targetNode
@@ -245,12 +254,13 @@ public class WizardDatabaseConnector {
     /**
      * This method retrieves data (objectdata) from mmbase.
      *
-     * @param     document      Results are imported in this document
-     * @param     objectnumber    The number of the object to load.
-     * @param     restrictions    These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
-     * @return   The resulting node with the objectdata.
+     * @param  document     Results are imported in this document
+     * @param  objectnumber The number of the object to load.
+     * @param  restrictions These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
+     * @return The resulting node with the objectdata.
+     * @throws WizardException if the object could not be retrieved
      */
-    public Node getDataNode(Document document, String objectnumber, NodeList restrictions) throws Exception {
+    public Node getDataNode(Document document, String objectnumber, NodeList restrictions) throws WizardException {
         // fires getData command and places result in targetNode
         ConnectorCommandGetData cmd = new ConnectorCommandGetData(objectnumber, restrictions);
         fireCommand(cmd);
@@ -267,23 +277,30 @@ public class WizardDatabaseConnector {
             tagDataNode(objectNode);
             return objectNode;
         } else {
-            throw new Exception("Could not fire getData command for object " + objectnumber);
+            throw new WizardException("Could not obtain object " + objectnumber + " : " + cmd.getError());
         }
     }
 
-    public void getRelations(Node targetNode, String objectnumber) throws Exception {
+    /**
+     * This method gets relation information from mmbase.
+     *
+     * @param  targetNode      The targetnode where the results should be appended.
+     * @param  objectnumber    The objectnumber of the parent object from where the relations originate.
+     * @throws WizardException if the relations could not be obtained
+     */
+    public void getRelations(Node targetNode, String objectnumber) throws WizardException {
         getRelations(targetNode, objectnumber, null);
     }
 
     /**
      * This method gets relation information from mmbase.
      *
-     * @param       targetNode      The targetnode where the results should be appended.
-     * @param       objectnumber    The objectnumber of the parent object from where the relations originate.
-     * @param       loadaction      The loadaction data as defined in the schema. These are used as 'restrictions'.
-     *
+     * @param  targetNode      The targetnode where the results should be appended.
+     * @param  objectnumber    The objectnumber of the parent object from where the relations originate.
+     * @param  loadaction      The loadaction data as defined in the schema. These are used as 'restrictions'.
+     * @throws WizardException if the relations could not be obtained
      */
-    public void getRelations(Node targetNode, String objectnumber, NodeList queryrelations) throws WizardException, SecurityException {
+    public void getRelations(Node targetNode, String objectnumber, NodeList queryrelations) throws WizardException {
         // fires getRelations command and places results targetNode
         ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, queryrelations);
         fireCommand(cmd);
@@ -295,18 +312,19 @@ public class WizardDatabaseConnector {
             }
             Utils.appendNodeList(relations, targetNode);
         } else {
-            throw new WizardException("Could NOT fire getRelations command for object " + objectnumber);
+            throw new WizardException("Could not ontain relations for " + objectnumber + "  : " + cmd.getError());
         }
     }
 
     /**
      * This method gets a new temporarily object of the given type.
      *
-     * @param       targetNode      The place where the results should be appended.
-     * @param       objecttype      The objecttype which should be created.
-     * @return     The resulting object node.
+     * @param  targetNode        The place where the results should be appended.
+     * @param  objecttype        The objecttype which should be created.
+     * @return The resulting object node.
+     * @throws WizardException   if the node could not be created
      */
-    public Node getNew(Node targetNode, String objecttype) throws WizardException, SecurityException {
+    public Node getNew(Node targetNode, String objecttype) throws WizardException {
         // fires getNew command and places result in targetNode
         ConnectorCommandGetNew cmd = new ConnectorCommandGetNew(objecttype);
         fireCommand(cmd);
@@ -320,7 +338,7 @@ public class WizardDatabaseConnector {
             targetNode.appendChild(objectNode);
             return objectNode;
         } else {
-            throw new WizardException("getNew command returned an error. Objecttype=" + cmd.getError());
+            throw new WizardException("Could not create new object of type " + objecttype + " : " + cmd.getError());
         }
     }
 
@@ -334,12 +352,13 @@ public class WizardDatabaseConnector {
      * @param destinationObjectNumber the number of the destination object
      * @param destinationType         the type of the destination object
      * @return The resulting relation node.
+     * @throws WizardException   if the relation could not be created
      */
     public Node getNewRelation(Node targetNode, String role,
                               String sourceObjectNumber, String sourceType,
-                              String destinationObjectNumber, String destinationType, String createDir) throws WizardException, SecurityException {
+                              String destinationObjectNumber, String destinationType) throws WizardException {
         // fires getNewRelation command and places result in targetNode
-        ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceObjectNumber, sourceType, destinationObjectNumber, destinationType, createDir);
+        ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceObjectNumber, sourceType, destinationObjectNumber, destinationType);
         fireCommand(cmd);
 
         if (!cmd.hasError()) {
@@ -348,9 +367,10 @@ public class WizardDatabaseConnector {
             targetNode.appendChild(objectNode);
             return objectNode;
         } else {
-            throw new WizardException("getNewRelation command returned an error. role="+role +
-                        ", source="+sourceObjectNumber+" ("+sourceType+")"+
-                        ", destination="+destinationObjectNumber+" ("+destinationType+")");
+            throw new WizardException("Could not create new relation, role=" + role +
+                        ", source=" + sourceObjectNumber + " (" + sourceType + ")" +
+                        ", destination=" + destinationObjectNumber + " ("+destinationType+")" +
+                        " : " + cmd.getError());
         }
     }
 
@@ -405,8 +425,9 @@ public class WizardDatabaseConnector {
      * @param objectDef The objectdefinition.
      * @param params The params to use when creating the objects and relations.
      * @return The resulting object(tree) node.
+     * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params) throws WizardException, SecurityException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params) throws WizardException {
         return createObject(data, targetParentNode, objectDef, params, 1);
     }
 
@@ -440,8 +461,9 @@ public class WizardDatabaseConnector {
      * @param createorder ordernr under which this object is added (i.e. when added to a list)
      *                     The first ordernr in a list is 1
      * @return The resulting object(tree) node.
+     * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException, SecurityException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException {
 
         String objecttype = Utils.getAttribute(objectDef, "type");
 
@@ -488,8 +510,6 @@ public class WizardDatabaseConnector {
             String dnumber = Utils.getAttribute(relation, "destination", null);
             dnumber=Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
             String dtype = "";
-
-            String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
             Node inside_object = null;
             Node inside_objectdef = Utils.selectSingleNode(relation, "object");
             if (dnumber!=null) {
@@ -516,7 +536,7 @@ public class WizardDatabaseConnector {
                 }
             }
 
-            Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype, createDir);
+            Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype);
             fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
 
             tagDataNode(relationNode);
@@ -568,8 +588,9 @@ public class WizardDatabaseConnector {
 
     /**
      * This is an internal method which is used to fire a command to connect to mmbase via Dove.
+     * @throws WizardException   if the command failed
      */
-    private Document fireCommand(ConnectorCommand command) throws SecurityException,WizardException {
+    private Document fireCommand(ConnectorCommand command) throws WizardException {
         List tmp = new Vector();
         tmp.add(command);
         return fireCommandList(tmp);
@@ -577,8 +598,9 @@ public class WizardDatabaseConnector {
 
     /**
      * This is an internal method which is used to fire commands to connect to mmbase via Dove.
+     * @throws WizardException   if one or more commands failed
      */
-    private Document fireCommandList(List commands) throws SecurityException,WizardException {
+    private Document fireCommandList(List commands) throws WizardException {
         // send commands away from here... away!
         // first create request xml
         Document req = Utils.parseXML("<request/>");
