@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>2003-02-14</date>
-    <edition>$Id: codingstandards.xml,v 1.5 2003-07-27 17:47:50 henk Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.6 2004-02-17 10:21:13 gerard Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -30,15 +30,21 @@
 
       <itemizedlist>
         <listitem>
-          <ulink url="http://java.sun.com/docs/codeconv/">Code Conventions for the JavaTM Programming Language</ulink>
+          <para>
+            <ulink url="http://java.sun.com/docs/codeconv/">Code Conventions for the JavaTM Programming Language</ulink>
+          </para>
           <simpara>This is the basis for these guidelines. Unless otherwise specified, the conventions described here follow those as outlined in the above document.</simpara>
         </listitem>
         <listitem>
-          <ulink url="http://www.ambysoft.com/javaCodingStandards.html">AmbySoft Inc. Coding Standards for Java</ulink>
+          <para>
+            <ulink url="http://www.ambysoft.com/javaCodingStandards.html">AmbySoft Inc. Coding Standards for Java</ulink>
+          </para>
           <simpara>This document contains several suggestions which were used to expand the standard conventions, especially for naming identifiers.</simpara>
         </listitem>
         <listitem>
-          <ulink url="http://www.objectmentor.com/publications/naming.htm">Ottinger's Rules for Variable and Class Naming</ulink>
+          <para>
+            <ulink url="http://www.objectmentor.com/publications/naming.htm">Ottinger's Rules for Variable and Class Naming</ulink>
+          </para>
           <simpara>This document also contains suggestions for naming, focused on improving the readability of your code.</simpara>
         </listitem>
       </itemizedlist>
@@ -64,7 +70,7 @@
             <listitem>
               <simpara>For a class/interface:</simpara>
               <simpara><token>@author</token> (by alphabetical order)</simpara>
-              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.5 2003-07-27 17:47:50 henk Exp $ , so that CVS can insert the correct version number.)</simpara>
+              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.6 2004-02-17 10:21:13 gerard Exp $ , so that CVS can insert the correct version number.)</simpara>
             </listitem>
             <listitem>
               <simpara>For a member function:</simpara>
