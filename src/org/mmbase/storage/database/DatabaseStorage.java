@@ -11,6 +11,7 @@ package org.mmbase.storage.database;
 
 import java.util.*;
 import java.sql.*;
+import java.io.File;
 
 import org.mmbase.module.database.JDBCInterface;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.XMLDatabaseReader;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.4 2003-05-02 20:24:39 michiel Exp $
+ * @version $Id: DatabaseStorage.java,v 1.5 2003-06-24 09:47:25 michiel Exp $
  */
 public interface DatabaseStorage extends Storage  {
 
@@ -48,15 +49,9 @@ public interface DatabaseStorage extends Storage  {
      * This reads database specific content from the database configuration document.
      * If needed, the code creates a 'numbertable' for mmbase to track number generation.
      * @param mmb the MBase instance that uses this database layer
-     * @param document the database configuration document
+     * @param reader the database configuration reader
      */
-    public void init(MMBase mmb, XMLDatabaseReader document);
-
-    /**
-     * This reads database specific content from the database configuration document.
-     * @param document the database configuration document
-     */
-    public void deployDatabaseDocument(XMLDatabaseReader document);
+    public void init(MMBase mmb, XMLDatabaseReader reader);
 
     /**
      * Returns whether binary objects are stored as files (rather than in the database)
@@ -75,14 +70,14 @@ public interface DatabaseStorage extends Storage  {
      * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @return the file path
      */
-    public String getBinaryFilePath();
+    public File getBinaryFilePath();
 
     /**
      * Sets the filepath where binary objects are stored.
      * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @param path the file path
      */
-    public void setBinaryFilePath(String path);
+    public void setBinaryFilePath(File path);
 
     /**
      * Sets the mapping of MMBase fieldnames (typically reserved words) to database fieldnames.
