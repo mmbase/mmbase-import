@@ -20,7 +20,6 @@ export CLASSPATH
 #
 # For more information about the arguments read MMBase argument in the system
 # administration section at the www.mmbase.org site.
- 
 
 while [ 1==1 ]; do
 echo 'Starting MMBase at ' `date`
