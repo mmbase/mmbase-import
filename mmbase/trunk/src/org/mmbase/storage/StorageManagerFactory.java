@@ -32,11 +32,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.5 2003-11-18 14:59:35 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.6 2004-02-05 12:37:18 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
-    // logger
     private static final Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
 
     /**
@@ -304,7 +303,7 @@ public abstract class StorageManagerFactory {
             }
             InputSource in = new InputSource(resource);
             in.setSystemId("resource://" + storagepath);
-            return new StorageReader(this,in);
+            return new StorageReader(this, in);
         } else {
             // otherwise return null
             return null;
@@ -371,7 +370,7 @@ public abstract class StorageManagerFactory {
      * expanded with arguments.
      * If no scheme is present, the default pattern is used to create a scheme and add it to the factory.
      * @param key the key of the attribute
-     * @param defaltPattern the pattern to use for the default scheme, <code>null</code> if there is no default
+     * @param defaultPattern the pattern to use for the default scheme, <code>null</code> if there is no default
      * @return the scheme value, <code>null</code> if there is no scheme
      */
     public Scheme getScheme(Object key, String defaultPattern) {
