@@ -25,12 +25,8 @@ import java.io.*;
 public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 
     private String  classname   = getClass().getName();
-    private boolean debug       = false;
-
-    private void debug( String msg ) {
-        if( debug )
-            System.out.println( classname +":"+ msg );
-    }
+    private boolean debug       = RemoteBuilder.debug;
+    private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	Thread kicker = null;
 	int follownr=1;
@@ -51,6 +47,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 	private Hashtable listeners=new Hashtable();
 
 	public MMRemoteMultiCast(String machineName,String host, int port) {
+		if( debug ) debug("MMRemoteMultiCast("+machineName+","+host+","+port+")");
+
 		this.mport=port;
 		this.multicastaddress=host;	
 		this.machineName=machineName;
@@ -94,7 +92,7 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 			kicker.setPriority(Thread.NORM_PRIORITY+1);  
 			doWork();
 		} catch(Exception e) {
-			System.out.println("MMBaseMultiCast -> ");
+			debug("run(): ERROR: ");
 			e.printStackTrace();
 		}
 	}
@@ -104,49 +102,60 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 	 */
 	public void doWork() {
 		InetAddress ia=null;
-		String s;
+		String s = null;
 		StringTokenizer tok;
 
-		System.out.println("MMRemoteMultiCast started");
+		debug("doWork(): started...");
 		try {
 			ia = InetAddress.getByName(multicastaddress);
 		} catch(Exception e) {
-			System.out.println("MMRemoteMultiCast -> ");
+			debug("doWork(): ERROR: On address("+multicastaddress+"): ");
 			e.printStackTrace();
 		}
 		try {
 			MulticastSocket ms = new MulticastSocket(mport);
 			ms.joinGroup(ia);
+			DatagramPacket dp;
+
 			while (true) {
 				try {
-					DatagramPacket dp = new DatagramPacket(new byte[dpsize], dpsize);
+					dp = new DatagramPacket(new byte[dpsize], dpsize);
 					ms.receive(dp);
 					s=new String(dp.getData(),0,0,dp.getLength());
 					nodesTospawn.append(s);
 				} catch (Exception f) {
-					System.out.println("MMBaseMultiCast -> ");
+					debug("doWork(): ERROR: On address("+multicastaddress+","+mport+"): while receiving("+s+"): ");
 					f.printStackTrace();
 				}
 			}
+
 		} catch(Exception e) {
-			System.out.println("MMBaseMultiCast -> ");
+			debug("doWork(): ERROR: On address("+multicastaddress+","+mport+"): while receiving("+s+"): ");
 			e.printStackTrace();
 		}
 	}
 
 	public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
-		// System.out.println("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
+		if( debug ) debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+")");
 
 		String mapper=tb+"/"+id;
 		RemoteBuilder serv=(RemoteBuilder)listeners.get(mapper);
-		if (serv==null) return(true);
+		if (serv==null)
+		{
+			debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): ERROR: could not get RemoteBuilder("+mapper+")!");
+		 	return(true);
+		}
 
 		if (machine.equals(machineName)) {
 			try { 
 				if (!ctype.equals("g") && !ctype.equals("s")) {
 					new MMRemoteMultiCastProbe(this,serv,id,tb,ctype,false);
 				}
-			} catch(Exception e) {
+				else
+					if( debug ) debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): Warning: Unknown type '"+ctype+"' (not g/s)");
+
+			} catch(Exception e) {	
+				debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): ERROR: while received from local: ");
 				e.printStackTrace();
 			}
 		
@@ -154,6 +163,7 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 			try { 
 				new MMRemoteMultiCastProbe(this,serv,id,tb,ctype,true);
 			} catch(Exception e) {
+				debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): ERROR: while received from remote: ");
 				e.printStackTrace();
 			}
 		}
@@ -162,7 +172,7 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 
 
 	public boolean handleXML(String machine,String vnr,String id,String tb,String ctype,String xml) {
-		// System.out.println("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"' "+xml);
+		if( debug ) debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+","+xml+")");
 		if (machine.equals(machineName)) {
 			// do nothing its for myself !!
 		} else {
@@ -175,6 +185,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 	}
 
 	public boolean changedNode(int nodenr,String tableName,String type) {
+		if( debug ) debug("changedNode("+nodenr+","+tableName+","+type+")");
+
 		String chars=machineName+","+(follownr++)+","+nodenr+","+tableName+","+type;
 		nodesTosend.append(chars);
 		return(true);
@@ -182,6 +194,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 
 
 	public boolean commitNode(String nodenr,String tableName,String xml) {
+		if( debug ) debug("commitNode("+nodenr+","+tableName+","+xml+")");
+
 		String chars=machineName+","+(follownr++)+","+nodenr+","+tableName+",s,"+xml;
 		nodesTosend.append(chars);
 		return(true);
@@ -189,6 +203,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 
 
 	public boolean getNode(String nodenr,String tableName) {
+		if( debug ) debug("geNode("+nodenr+","+tableName+")");
+
 		String chars=machineName+","+(follownr++)+","+nodenr+","+tableName+",g";
 		// extra sleep to allow the database to save its indexes
 		nodesTosend.append(chars);
@@ -196,6 +212,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 	}
 	
 	public boolean addListener(String buildername,String nodenr,RemoteBuilder serv) {
+		if( debug ) debug("addListener("+buildername+","+nodenr+","+serv+")");
+
 		listeners.put(buildername+"/"+nodenr,serv);	
 		return(true);
 	}
@@ -215,5 +233,4 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 	public String toString() {
 		return "";
 	}
-	
 }
