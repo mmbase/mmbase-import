@@ -26,7 +26,7 @@ import javax.servlet.jsp.PageContext;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.5 2003-06-11 09:09:10 kees Exp $
+ * @version $Id: ByteHandler.java,v 1.6 2003-08-15 19:38:00 michiel Exp $
  */
 
 public class ByteHandler extends AbstractTypeHandler {
@@ -35,8 +35,8 @@ public class ByteHandler extends AbstractTypeHandler {
      * Constructor for ByteHandler.
      * @param context
      */
-    public ByteHandler(FieldInfoTag context) {
-        super(context);
+    public ByteHandler(FieldInfoTag tag) {
+        super(tag);
     }
     
     /**
@@ -45,9 +45,9 @@ public class ByteHandler extends AbstractTypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
         args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-        args.set("language", context.getCloud().getLocale().getLanguage());
-        args.set("session",  context.getSessionName());
-        PageContext pc = context.getContextTag().getPageContext();
+        args.set("language", tag.getCloud().getLocale().getLanguage());
+        args.set("session",  tag.getSessionName());
+        PageContext pc = tag.getContextTag().getPageContext();
         args.set("response", pc.getResponse());
         args.set("request",  pc.getRequest());
         return  (node != null ? node.getFunctionValue("gui", args).toString() : "") +
@@ -59,7 +59,7 @@ public class ByteHandler extends AbstractTypeHandler {
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {        
         String fieldName = field.getName();
-        byte [] bytes  = context.getContextTag().getBytes(prefix(fieldName));
+        byte [] bytes  = tag.getContextTag().getBytes(prefix(fieldName));
         if (bytes.length > 0) {
             node.setByteValue(fieldName, bytes);
         }
