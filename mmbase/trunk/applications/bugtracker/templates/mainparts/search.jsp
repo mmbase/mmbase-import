@@ -11,7 +11,7 @@
          <mm:listnodes>
            <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="smaintainer">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
         </mm:listnodes>
-      </mm:listnodescontainer>>
+      </mm:listnodescontainer>
     </select>
   </td>
   <td colspan="4">
@@ -23,7 +23,7 @@
          <mm:listnodes>
            <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="ssubmitter">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
         </mm:listnodes>
-      </mm:listnodescontainer>>
+      </mm:listnodescontainer>
     </select>
   </td>
   <td colspan="2">&nbsp;</td>
@@ -238,10 +238,10 @@
      <mm:write referid="noffset">
        <mm:isgreaterthan value="0">
          <mm:isgreaterthan value="15">
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>"><img src="<mm:url page="$base/images/arrow-left.gif" />" border="0" /></a>
+           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>" alt="first page" title="first page"><img src="<mm:url page="$base/images/arrow-left.gif" />" border="0" /></a>
          </mm:isgreaterthan>
          <mm:write id="previouspage" value="${+ $noffset - 15}" vartype="integer" write="false" />
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>"><img src="<mm:url page="$base/images/arrow-left.gif" />" border="0" /></a>
+         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>" alt="previous page" title="previous page"><img src="<mm:url page="$base/images/arrow-left.gif" />" border="0" /></a>
        </mm:isgreaterthan>
      </mm:write>
    </td>
@@ -274,10 +274,10 @@
   <td colspan="1" class="listpaging">
      <mm:write value="${+ $noffset + 15}" vartype="integer">
        <mm:islessthan value="$total">
-         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" /></a>
+         <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>" alt="next page" title="next page"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" /></a>
          <mm:islessthan value="${+ $total - 15}">
            <mm:write id="lastoffset" value="${+ ($lastpage  - 1) * 15}" vartype="integer" write="false" />
-           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" /></a>
+           <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>" alt="last page" title="last page"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" /></a>
          </mm:islessthan>
        </mm:islessthan>
      </mm:write>
