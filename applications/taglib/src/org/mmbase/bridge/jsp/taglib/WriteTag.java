@@ -120,6 +120,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
                 throw new JspTagException(v.toString() + " is not of the right type to write to cookie. It is a (" +  v.getClass().getName() + ")");
             }
             c.setMaxAge(MAX_COOKIE_AGE);
+            c.setPath("/");
             ((HttpServletResponse)pageContext.getResponse()).addCookie(c);
             helper.overrideWrite(false);
         }
