@@ -43,6 +43,9 @@ import java.lang.Integer;
  */
 public class MediaSourceFilter extends GroupComparator {    
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
+
+    public static String MAIN_TAG         = "mediasourcefilter";
+    public static String FILTERCONFIGS_TAG = "filterConfigs";
         
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -75,19 +78,23 @@ public class MediaSourceFilter extends GroupComparator {
         }
         clear();
 
-        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());        
-        for(Enumeration e = reader.getChildElements("mediasourcefilter.chain","filter"); e.hasMoreElements();) {
-            Element chainelement=(Element)e.nextElement();
-            String chainvalue = reader.getElementValue(chainelement);
+        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
+        Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
+        for(Enumeration e = reader.getChildElements(MAIN_TAG + ".chain","filter"); e.hasMoreElements();) {
+            Element chainElement=(Element)e.nextElement();
+            String chainValue = reader.getElementValue(chainElement);
             try {
-                Class newclass = Class.forName(chainvalue);
-                add((ResponseInfoComparator) newclass.newInstance());
+                Class newclass = Class.forName(chainValue);
+                ResponseInfoComparator ri = (ResponseInfoComparator) newclass.newInstance();
+                add(ri);
+                log.service("Added medisourcefilter " + chainValue);
+                ri.configure(reader, filterConfigs);
             } catch (ClassNotFoundException ex) {
-                log.error("Cannot load filter " + chainvalue + "\n" + ex);
+                log.error("Cannot load filter " + chainValue + "\n" + ex);
             } catch (InstantiationException ex1) {
-                log.error("Cannot load filter " + chainvalue + "\n" + ex1);
+                log.error("Cannot load filter " + chainValue + "\n" + ex1);
             } catch (IllegalAccessException ex2) {
-                log.error("Cannot load filter " + chainvalue + "\n" + ex2);
+                log.error("Cannot load filter " + chainValue + "\n" + ex2);
             }                   
         }
     }

@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 /**
  * This can sort according to properties of real streams.
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.1 2003-01-07 22:21:03 michiel Exp $
+ * @version $Id: RealComparator.java,v 1.2 2003-01-08 08:50:18 michiel Exp $
  */
 public class RealComparator extends  PreferenceComparator {
     private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
@@ -40,7 +40,8 @@ public class RealComparator extends  PreferenceComparator {
             minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.minchannels")));
             maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.maxchannels")));
         } catch (Exception ex) {
-            log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information");
+            log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
+            log.error(Logging.stackTrace(ex));
         }
         if(log.isDebugEnabled()) {
             log.debug("Minspeed="   + minSpeed);
