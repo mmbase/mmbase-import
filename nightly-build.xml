@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.4 2002-11-12 22:06:17 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.5 2002-11-12 22:36:58 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -73,13 +73,13 @@ README.txt     This file
 mmbase-src.zip The source from which this build was made
 mmbase-lib.zip The libraries against which the source were compiled
 mmbase.jar     The mmbase.jar (containing all mmbase classes and the mmbase taglib descriptor (tld))
-
-mmbase.war     A web-application archive, configured for an hsql database, and complete with documentation and editors
-minimalistic-mmbase.war   A base for a production installation. Very clean
+mmbase-${date}-zip
+               Todays distro (containing a mmbase web application configured for hsql database)
 dtd            The dtd's unpacked from the source directory
 api            API-documentation
-mmdocs         Other documentation (also in mmbase.war)
-nightly-build.xml  Used to generate all this with ant. You can download only this and redo everything locally (you need jdk 1.2/1.3, ant 1.4, cvs, internet-connection, more?)
+mmdocs         Other documentation (also in distro)
+nightly-build.xml  Used to generate all this with ant. You can download only this and redo everything locally (you need jdk 1.2/\
+1.3, ant 1.4, cvs, internet-connection, more?)
 </echo>
 
     <zip zipfile="${sourcepackage.path}"
@@ -157,7 +157,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     <copy file="${build.dir}/mmbase/mmbase.war"              tofile="${warpackage.file}"/>
     <copy file="${build.dir}/mmbase/minimalistic-mmbase.war" tofile="${minwarpackage.file}"/>
     -->
-    <copy dir="${destination.dir}">
+    <copy todir="${destination.dir}">
     	<fileset dir="${build.dir}">
 	  <include name="**/*.zip"/>	  
         </fileset>
