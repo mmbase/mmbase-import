@@ -16,67 +16,73 @@ import java.util.*;
  * MultiPoolHandler handles multi pools so we can have more than one database
  * open and they can all have a multipool.
  *
- */	
+ */
+ 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class MultiPoolHandler {
-private int maxConnections;
-private int maxQuerys;
-Hashtable Pools=new Hashtable();
-DatabaseSupport databasesupport;
+    private static Logger log = Logging.getLoggerInstance(MultiPoolHandler.class.getName());
+    private int maxConnections;
+    private int maxQuerys;
+    Hashtable Pools=new Hashtable();
+    DatabaseSupport databasesupport;
 
-	public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections) {
-		this.maxConnections=maxConnections;
-		this.maxQuerys=500;
-		this.databasesupport=databasesupport;
-	}
-	public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections,int maxQuerys) {
-		this.maxConnections=maxConnections;
-		this.maxQuerys=maxQuerys;
-		this.databasesupport=databasesupport;
-	}
+    public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections) {
+	this.maxConnections=maxConnections;
+	this.maxQuerys=500;
+	this.databasesupport=databasesupport;
+    }
 
-	public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-		MultiPool pool=(MultiPool)Pools.get(url+","+name+","+password);
-		if (pool!=null) {
-			return(pool.getFree());
-		} else {
-			pool=new MultiPool(databasesupport,url,name,password,maxConnections,maxQuerys);
-			Pools.put(url+","+name+","+password,pool);
-			return(pool.getFree());
-		}
-	}
+    public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections,int maxQuerys) {
+	this.maxConnections=maxConnections;
+	this.maxQuerys=maxQuerys;
+	this.databasesupport=databasesupport;
+    }
 
-	public void checkTime() {
-		for (Enumeration e=Pools.elements();e.hasMoreElements();) {
-			MultiPool pool=(MultiPool)e.nextElement();
-			pool.checkTime();
-		}
+    public MultiConnection getConnection(String url, String name, String password) throws SQLException {
+	MultiPool pool = (MultiPool) Pools.get(url+","+name+","+password);
+	if (pool!=null) {
+	    return pool.getFree();
+	} else {
+	    pool=new MultiPool(databasesupport,url,name,password,maxConnections,maxQuerys);
+	    Pools.put(url+","+name+","+password,pool);
+	    return pool.getFree();
 	}
+    }
 
-	public Enumeration elements() {
-		return(Pools.elements());
+    public void checkTime() {
+	for (Enumeration e=Pools.elements();e.hasMoreElements();) {
+	    MultiPool pool=(MultiPool)e.nextElement();
+	    pool.checkTime();
 	}
+    }
 
-	public Enumeration keys() {
-		return(Pools.keys());
-	}
+    public Enumeration elements() {
+	return Pools.elements();
+    }
 
-	public MultiPool get(String id) {
-		return((MultiPool)Pools.get(id));
-	}
+    public Enumeration keys() {
+	return Pools.keys();
+    }
 
-	public void setMaxConnections(int max) {
-		maxConnections=max;
-	}
+    public MultiPool get(String id) {
+        return (MultiPool)Pools.get(id);
+    }
 
-	public int getMaxConnections() {
-		return(maxConnections);
-	}
+    public void setMaxConnections(int max) {
+        maxConnections = max;
+    }
 
-	public void setMaxQuerys(int max) {
-		maxQuerys=max;
-	}
+    public int getMaxConnections() {
+        return maxConnections;
+    }
 
-	public int getMaxQuerys() {
-		return(maxQuerys);
-	}
+    public void setMaxQuerys(int max) {
+	maxQuerys=max;
+    }
+
+    public int getMaxQuerys() {
+	return maxQuerys;
+    }
 }
