@@ -187,10 +187,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     public String getAttributeValue(String attribute) throws JspTagException {        
         if (attribute == null) return null;
-        StringBuffer result = new StringBuffer();
 
         // search all occurences of $
         int foundpos     = attribute.indexOf('$');
+        if (foundpos == -1) return attribute; // if none, return imediately.
+
+        StringBuffer result = new StringBuffer();
         int pos          = 0;
         while (foundpos >= 0) { // we found a variable!
             result.append(attribute.substring(pos, foundpos)); // piece of string until now is ready.
@@ -204,9 +206,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 pos = ++foundpos;
                 int opened = 1;
                 while (opened > 0) {
-                    log.debug("pos " + pos);
-                    int posclose = attribute.indexOf("}", pos); 
-                    int posopen  = attribute.indexOf("{", pos);
+                    int posclose = attribute.indexOf('}', pos); 
+                    int posopen  = attribute.indexOf('{', pos);
                     if (posclose == -1) {
                         throw new JspTagException("Unbalanced parentheses in '" + attribute + "'");
                     }
@@ -251,7 +252,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 }
             }
             // ready with this $, search next occasion;
-            foundpos = attribute.indexOf("$", pos);
+            foundpos = attribute.indexOf('$', pos);
         }
         // no more $'es, add rest of string
         result.append(attribute.substring(pos));
@@ -264,10 +265,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      **/
 
     protected Boolean getAttributeBoolean(String b) throws JspTagException {
-        String r = getAttributeValue(b);
-        if ("true".equalsIgnoreCase(r)) {
+        String r = getAttributeValue(b).toLowerCase();
+        if ("true".equals(r)) {
             return Boolean.TRUE;
-        } else if ("false".equalsIgnoreCase(r)) {
+        } else if ("false".equals(r)) {
             return Boolean.FALSE;
         } else {
             throw new JspTagException("'" + r + "' cannot be converted to a boolean");
@@ -389,8 +390,16 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
+        if (log.isDebugEnabled()) { 
+            log.debug("Getting object '" + key + "' from '" + getContextTag().getId() + "'");
+        }
         Object r = getContextTag().getContainerObject(key);
-        if (r == null) return "";
+        if (r == null) { 
+            log.debug("Not found, returning empty string");
+            return "";
+        } else {
+            if (log.isDebugEnabled()) log.debug("found: '" + r + "'");
+        }
         return r;
     }
     /**
