@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.6 2003-07-15 12:50:24 vpro Exp $
+ * @version $Id: RealSorter.java,v 1.7 2003-07-28 08:36:41 vpro Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class);
@@ -40,7 +40,7 @@ public class RealSorter extends  ChainSorter {
     public static final String CONFIG_TAG          = "config.realAudio";
 
     /**
-     * Prefer real a little if this filter is used?
+     * Prefer real a little if this filter is used.
      * Other possibility: Impelmeent it that if one of both URLComposer are no reals, that they are equal then.
      */
 
