@@ -1,6 +1,6 @@
 /*
 
-$Id: Teasers.java,v 1.3 2000-03-17 12:31:27 wwwtech Exp $
+$Id: Teasers.java,v 1.4 2000-03-21 15:45:46 wwwtech Exp $
 
 VPRO (C)
 
@@ -9,6 +9,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/03/17 12:31:27  wwwtech
+- (marcel) added better support for functions in getValue
+
 */
 package org.mmbase.module.builders;
 
@@ -26,15 +29,13 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.3 $ $Date: 2000-03-17 12:31:27 $ 
+ * @version $Revision: 1.4 $ $Date: 2000-03-21 15:45:46 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
 
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
+	public boolean debug = false;
 
 	// Temp Temp for searchhack
 	// total table holds nodes !!
