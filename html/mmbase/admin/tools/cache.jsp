@@ -13,15 +13,18 @@
 
 <table summary="email test" width="93%" cellspacing="1" cellpadding="3" border="0">
 
-<%
-   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+<mm:import externid="active" from="parameters" />
 
-   String mlstate = request.getParameter("multilevelstate");
-   if (mlstate!=null && !mlstate.equals("")) {
-        mmAdmin.getInfo("MULTILEVELCACHESTATE-"+mlstate,request,response);
-   }
-
-%>
+<mm:present referid="active">
+  <mm:import externid="cache" from="parameters" required="true" />  
+  <mm:write referid="active" jspvar="active" vartype="String">
+  <mm:write referid="cache" jspvar="cache" vartype="String">
+  <%
+    // have to test if this works...
+    org.mmbase.cache.Cache.getCache(cache).setActive(active.equals("on") ? true : false);
+  %>
+  </mm:write></mm:write>
+</mm:present>
 
 <tr align="left">
   <th class="header" colspan="2">Cache Monitor - v1.0</th>
@@ -30,44 +33,57 @@
   <td class="multidata" colspan="2"><p>This tools hows the performance of the various MMBase caches.</p></td>
 </tr>
 
+
+<% 
+   java.util.Iterator i = org.mmbase.cache.Cache.getCaches().iterator();
+   while (i.hasNext()) {
+      org.mmbase.cache.Cache cache = org.mmbase.cache.Cache.getCache((String) i.next());
+%>
+
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-  <th class="header" colspan="2">Multi Level Cache Status</th>
+  <th class="header" colspan="2"><%= cache.getDescription() %> Status</th>
 </tr>
 <tr>
   <td class="data" colspan="2">
-  <% if("On".equals(mmAdmin.getInfo("MULTILEVELCACHESTATE",request,response))) { %>
-  <a href="cache.jsp?multilevelstate=off">On</a>
-  <% } else { %>
-  <a href="cache.jsp?multilevelstate=on">Off</a>
+  <% if(cache.isActive()) { %>  
+    <a href="<mm:url>
+        <mm:param name="cache"><%=cache.getName()%></mm:param>
+        <mm:param name="active">off</mm:param>
+      </mm:url>" >On</a>
+        <% } else { %>
+    <a href="<mm:url>
+        <mm:param name="cache"><%=cache.getName()%></mm:param>
+        <mm:param name="active">on</mm:param>
+      </mm:url>" >Off</a>
   <% } %>
   </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
-  <th class="header">Multi Level Cache Property</th>
+  <th class="header"><%= cache.getDescription() %> Property</th>
   <th class="header">Value</th>
 </tr>
 <tr>
   <td class="data">Requests</td>
-  <td class="data"><%=mmAdmin.getInfo("MULTILEVELCACHEREQUESTS",request,response)%></td>
+  <td class="data"><%= cache.getHits() + cache.getMisses() %></td>
 </tr>
 <tr>
   <td class="data">Hits</td>
-  <td class="data"><%=mmAdmin.getInfo("MULTILEVELCACHEHITS",request,response)%></td>
+  <td class="data"><%= cache.getHits() %></td>
 </tr>
 <tr>
   <td class="data">Misses</td>
-  <td class="data"><%=mmAdmin.getInfo("MULTILEVELCACHEMISSES",request,response)%></td>
+  <td class="data"><%= cache.getMisses() %></td>
 </tr>
 <tr>
   <td class="data">Size</td>
-  <td class="data"><%=mmAdmin.getInfo("MULTILEVELCACHESIZE",request,response)%></td>
+  <td class="data"><%= cache.getSize() %></td>
 </tr>
 <tr>
   <td class="data">Performance</td>
-  <td class="data"><%=mmAdmin.getInfo("MULTILEVELCACHEPERFORMANCE",request,response)%></td>
+  <td class="data"><%= cache.getRatio() * 100 %> %</td>
 </tr>
 <tr>
   <td class="data">Show first 500 entry's of the cache</td>
@@ -75,6 +91,15 @@
     <a href="cache/multilevelcache.jsp"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
+
+<% } 
+
+ Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+
+%>
+
+
+
 
 <tr><td>&nbsp;</td></tr>
 <tr align="left">
