@@ -1,17 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mediafragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021115165540">
-	<node number="527" owner="michiel">
-		<start>29032</start>
+<mediafragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
+	<node number="550" owner="michiel">
+		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
 		<body></body>
-		<stop>235562</stop>
-		<title>item 0</title>
+		<stop>-1</stop>
+		<title>25 november</title>
 		<subtitle></subtitle>
 		<intro></intro>
 	</node>
 
-	<node number="505" owner="admin">
+	<node number="548" owner="michiel">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>18 november</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="543" owner="michiel">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Journaal van 20 uur</title>
+		<subtitle>test</subtitle>
+		<intro>test</intro>
+	</node>
+
+	<node number="540" owner="michiel">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Noorderlicht items</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="539" owner="michiel">
+		<start>220605</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>221602</stop>
+		<title>item 0</title>
+		<subtitle>asdf</subtitle>
+		<intro>asfasdf</intro>
+	</node>
+
+	<node number="557" owner="michiel">
+		<start>910087</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>1444004</stop>
+		<title>Item 3</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="556" owner="michiel">
+		<start>224488</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>910087</stop>
+		<title>Item 2</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="555" owner="michiel">
+		<start>17160</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>224488</stop>
+		<title>Item 1</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="162" owner="admin">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -20,28 +97,6 @@
 		<title>Noorderlicht</title>
 		<subtitle>fasd</subtitle>
 		<intro>asdfasdf</intro>
-	</node>
-
-	<node number="514" owner="michiel">
-		<start>16361</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>350305</stop>
-		<title>item1</title>
-		<subtitle></subtitle>
-		<intro></intro>
-	</node>
-
-	<node number="525" owner="admin">
-		<start>-1</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>-1</stop>
-		<title>2000 Journaal van maandag</title>
-		<subtitle>dasfdasf</subtitle>
-		<intro>asdfasfd</intro>
 	</node>
 
 </mediafragments>

@@ -20,7 +20,13 @@
 	<action type="delete" />
 	
 	<action type="load">
-		<relation destination="mediasources"   role="related" />
+    <relation destination="mediasources"   role="related">
+      <object>
+        <relation destination="mediaproviders"   role="related">
+          <object />
+        </relation>
+      </object>
+    </relation>
 		<relation destination="mediafragments" role="parent" />
 		<relation destination="publishtimes"   role="related" />
 	</action>
