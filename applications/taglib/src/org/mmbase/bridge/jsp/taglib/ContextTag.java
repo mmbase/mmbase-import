@@ -76,6 +76,7 @@ public class ContextTag extends ContextReferrerTag {
     public static final int LOCATION_MULTIPART      = 20;
     public static final int LOCATION_SESSION        = 30;
     public static final int LOCATION_COOKIE         = 40;
+    public static final int LOCATION_ATTRIBUTES     = 50;
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
@@ -98,17 +99,23 @@ public class ContextTag extends ContextReferrerTag {
             location = ContextTag.LOCATION_MULTIPART;
         } else if ("cookie".equalsIgnoreCase(s)) {
             location = ContextTag.LOCATION_COOKIE;
+        } else if ("attributes".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_ATTRIBUTES;
         } else {
             throw new JspTagException("Unknown location '" + s + "'");
         }
         return location;
     }
+
     public static String locationToString(int i) {
         switch(i) {
         case LOCATION_PARENT:      return "parent";
         case LOCATION_PARAMETERS:  return "parameters";
         case LOCATION_SESSION:     return "session";
         case LOCATION_PAGE:        return "page";
+        case LOCATION_MULTIPART:   return "multipart";
+        case LOCATION_COOKIE:      return "cookie";
+        case LOCATION_ATTRIBUTES:  return "attributes";
         default:                   return "<>";
         }
     }
@@ -225,7 +232,7 @@ public class ContextTag extends ContextReferrerTag {
 
     // avoid casting
     private HttpServletRequest getHttpRequest() {
-        if (httpRequest == null) {            
+        if (httpRequest == null) {
             httpRequest = (HttpServletRequest) pageContext.getRequest();
             if (log.isDebugEnabled()) {
                 Enumeration e = httpRequest.getParameterNames();
@@ -396,6 +403,9 @@ public class ContextTag extends ContextReferrerTag {
         case LOCATION_PAGE:
             //result = pageContext.getAttribute(referid);
             break;
+        case LOCATION_ATTRIBUTES:
+            result = getHttpRequest().getAttribute(referid);
+            break;
         default:
             result = null;
         }
@@ -423,7 +433,7 @@ public class ContextTag extends ContextReferrerTag {
 		mes = "Object with id " + newid + " was already registered in the root context.";
 	    } else {
 		mes = "Object with id " + newid + " was already registered in Context '" + getId()  + "'.";
-	    } 
+	    }
             log.debug(mes);
             throw new JspTagException(mes);
         }
@@ -431,6 +441,9 @@ public class ContextTag extends ContextReferrerTag {
         log.debug("searching in parent");
         Object result;
         result = findAndRegister(LOCATION_PARENT, externid, newid, false); // don't check, we have checked already.
+        if (result != null) return result;
+        log.debug("searching in parameters");
+        result = findAndRegister(LOCATION_ATTRIBUTES, externid, newid, false);
         if (result != null) return result;
         log.debug("searching in parameters");
         result = findAndRegister(LOCATION_PARAMETERS, externid, newid, false);
@@ -455,7 +468,7 @@ public class ContextTag extends ContextReferrerTag {
     public static boolean isContextIdentifierChar(char c) {
         return isContextVarNameChar(c) || c == '.' || c =='/'; // / for forward compatibility?
     }
-    
+
     /**
      * Register an Object with a key in the context. If the Context is
      * a session context, then it will be put in the session, otherwise in the hashmap.
@@ -497,7 +510,7 @@ public class ContextTag extends ContextReferrerTag {
 		mes = "Object with id " + newid + " was already registered in the root context.";
 	    } else {
 		mes = "Object with id " + newid + " was already registered in Context '" + getId()  + "'.";
-	    } 
+	    }
             log.debug(mes);
             throw new JspTagException(mes);
         }
@@ -709,30 +722,30 @@ class MMultipartRequest {
         try {
             log.debug("Getting bytes for " + param);
             return o.getPostParameterBytes(param);
-        } 
+        }
         catch (org.mmbase.util.PostValueToLargeException e) {
             log.warn(Logging.stackTrace(e));
             throw new JspTagException(Logging.stackTrace(e));
         }
     }
-    
+
     /**
      * Method to retrieve the parameter
      * @param param The name of the parameter
      * @return <code>null</code> if parameter not found, when a single occurence of the parameter
-     * the result as a <code>String</code> using the encoding specified. When if was a MulitParameter parameter, it will return 
+     * the result as a <code>String</code> using the encoding specified. When if was a MulitParameter parameter, it will return
      * a <code>Vector</code> of <code>String</code>'s
-     */    
+     */
     public Object getParameterValues(String param) throws JspTagException {
         // this method will return null, if the parameter is not set...
         if(!o.getPostParameters().containsKey(param)) {
             return null;
         }
-        // if it is a PostMultiParameter, return it..            
+        // if it is a PostMultiParameter, return it..
         if (o.checkPostMultiParameter(param)) {
             log.debug("This is a multiparameter!");
             return o.getPostMultiParameter(param, coding);
-        } 
+        }
 
         // get the info as String...
         byte data[] = null;
