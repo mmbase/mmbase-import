@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.3 2003-07-21 20:51:35 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.4 2003-07-21 21:22:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQuery implements Query  {
@@ -90,12 +90,18 @@ public class BasicQuery implements Query  {
         return step;
     }
 
+
     public RelationStep addRelationStep(RelationManager rm) {
+        return addRelationStep(rm, RelationStep.DIRECTIONS_BOTH); // would 'DESTINATION' not be better?
+    }
+    public RelationStep addRelationStep(RelationManager rm, int dir) {
+
+
         if (used) throw new BridgeException("Query was used already");
         InsRel insrel =  (InsRel) ((BasicRelationManager)rm).builder;
         MMObjectBuilder otherBuilder = ((BasicNodeManager) rm.getDestinationManager()).builder;        
         BasicRelationStep step = query.addRelationStep(insrel, otherBuilder);
-        //step.setDirectionality(RelationStep.DESTINATION);  // why is the default BOTH?
+        step.setDirectionality(dir); 
         ((BasicStep) step.getNext()).setAlias(rm.getDestinationManager().getName());
         return step;
     }
