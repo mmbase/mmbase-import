@@ -50,7 +50,7 @@
       <optionlist select="metadatatypes" />
     </field>
 
-    <field name="maxvalues" ftype="int" dtmin="0" dtrequired="true">
+    <field name="maxvalues" ftype="int" dtrequired="false">
       <prompt>Maximaal aantal waarden</prompt>
     </field>
 
