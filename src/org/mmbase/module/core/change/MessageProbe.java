@@ -7,17 +7,19 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.core;
+package org.mmbase.module.core.change;
+
+import org.mmbase.module.core.MMObjectBuilder;
 
 /**
- * MMBaseMultiCastProbe a thread object started to handle all nofity's needed when
+ * MessageProbe a thread object started to handle all nofity's needed when
  * one is received.
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MMBaseMultiCastProbe.java,v 1.7 2004-02-09 13:24:22 pierre Exp $
+ * @version $Id: MessageProbe.java,v 1.1 2004-10-09 10:51:07 nico Exp $
  */
-public class MMBaseMultiCastProbe implements Runnable {
+public class MessageProbe implements Runnable {
 
     /**
      * @javadoc
@@ -28,7 +30,7 @@ public class MMBaseMultiCastProbe implements Runnable {
      * @javadoc
      * @scope private
      */
-    MMBaseMultiCast parent=null;
+    SharedStorage parent=null;
     /**
      * @javadoc
      * @scope private
@@ -63,7 +65,7 @@ public class MMBaseMultiCastProbe implements Runnable {
     /**
      * @javadoc
      */
-    public MMBaseMultiCastProbe(MMBaseMultiCast parent,MMObjectBuilder bul,String machine,
+    public MessageProbe(SharedStorage parent,MMObjectBuilder bul,String machine,
             String id,String tb,String ctype,boolean remote) {
         this.parent=parent;
         this.bul=bul;
@@ -85,7 +87,7 @@ public class MMBaseMultiCastProbe implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this,"MMBaseMultiCastProbe");
+            kicker = new Thread(this,"MessageProbe");
             kicker.setDaemon(true);
             kicker.start();
         }

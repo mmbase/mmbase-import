@@ -15,6 +15,7 @@ import java.util.*;
 
 import org.mmbase.module.*;
 import org.mmbase.module.builders.*;
+import org.mmbase.module.core.change.MMBaseChangeDummy;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
@@ -37,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.119 2004-10-04 14:12:19 pierre Exp $
+ * @version $Id: MMBase.java,v 1.120 2004-10-09 10:51:04 nico Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -76,28 +77,6 @@ public class MMBase extends ProcessorModule {
      * Reference to the MMBase singleton. Used for quick reference by getMMBase();
      */
     private static MMBase mmbaseroot = null;
-
-    /**
-     * Defines what 'channel' we are talking to when using multicast.
-     * @rename multicastHost
-     * @todo move this property and configuration to MultiCast class
-     */
-    String multicasthost = null;
-
-    /**
-     * Determines on what port does this multicast talking between nodes take place.
-     * This can be set to any port but check if something else on
-     * your network is allready using multicast when you have problems.
-     * @rename multicastPort
-     * @todo move this property and configuration to MultiCast class
-     */
-    int multicastport = -1;
-
-    /**
-     * Determines the Time To Live for a multicast datapacket
-     * @todo move this property and configuration to MultiCast class
-     */
-    int multicastTTL = 1;
 
     /**
      * Time in seconds, when mmbase was started.
@@ -359,25 +338,6 @@ public class MMBase extends ProcessorModule {
             host = tmp;
         }
 
-        tmp = getInitParameter("MULTICASTPORT");
-        if (tmp != null && !tmp.equals("")) {
-            try {
-                multicastport = Integer.parseInt(tmp);
-            } catch (Exception e) {}
-        }
-
-        tmp = getInitParameter("MULTICASTHOST");
-        if (tmp != null && !tmp.equals("")) {
-            multicasthost = tmp;
-        }
-
-        tmp = getInitParameter("MULTICASTTTL");
-        if (tmp != null && !tmp.equals("")) {
-            try {
-                multicastTTL = Integer.parseInt(tmp);
-            } catch (Exception e) {}
-        }
-
         tmp = getInitParameter("COOKIEDOMAIN");
         if (tmp != null && !tmp.equals("")) {
             cookieDomain = tmp;
@@ -401,14 +361,7 @@ public class MMBase extends ProcessorModule {
             return;
         }
 
-
-        if (multicasthost != null) {
-            log.debug("Starting Multicasting");
-            mmc = new MMBaseMultiCast(MMBase.this);
-        } else {
-            log.debug("Not starting Multicasting");
-            mmc = new MMBaseChangeDummy(MMBase.this);
-        }
+        initializeSharedStorage(getInitParameter("SHAREDSTORAGE"));
 
         builderpath = getInitParameter("BUILDERFILE");
         if (builderpath == null || builderpath.equals("")) {
@@ -489,6 +442,28 @@ public class MMBase extends ProcessorModule {
 
     }
 
+
+    /**
+     * @param initParameter
+     */
+    private void initializeSharedStorage(String sharedStorageClass) {
+        if (sharedStorageClass != null) {
+            log.debug("Starting Multicasting: " + sharedStorageClass);
+            
+            Class newclass;
+            try {
+                newclass = Class.forName(sharedStorageClass);
+                mmc = (MMBaseChangeInterface) newclass.newInstance();
+            } catch (Exception e) {
+                log.error("Failed to start MMBaseChangeInterface: " + e.getMessage());
+                mmc = new MMBaseChangeDummy();
+            }
+        } else {
+            log.debug("Not starting MMBaseChangeInterface");
+            mmc = new MMBaseChangeDummy();
+        }
+        mmc.init(this);
+    }
 
     // javadoc inherited
     protected void shutdown() {
