@@ -126,6 +126,32 @@ strong
 	color: #CCEB6F;
 }
 
+/* Header */
+.header
+{
+        visibility: visible;
+        background: #FFFFFF;
+}
+                                                                                                                          
+/*
+   The "bodypart" right under the header should be positioned
+   right under the header eg by using "margin-top"
+*/
+.bodypart
+{
+        /*margin-top: 50px;*/
+        visibility: visible;
+        background: #FFFFFF;
+}
+                                                                                                                          
+/* Footer */
+.footer
+{
+        visibility: visible;
+        background: #FFFFFF;
+}
+
+
 .layout { width: 100%; }
 
 .layout, .layout th, 	.layout td
