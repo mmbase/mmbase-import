@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.8 2003-08-04 10:16:05 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.9 2003-08-05 11:12:20 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -52,16 +52,6 @@ public class StorageReader extends DocumentReader  {
      * that depend on factory information (such as schemes)
      */
     protected StorageManagerFactory factory; 
-
-    /**
-     * Constructor
-     * @param factory the factory for which to read the storage configuration
-     * @param path the filename
-     */
-    public StorageReader(StorageManagerFactory factory, String path) {
-        super(path, DocumentReader.validate(), StorageReader.class);
-        this.factory = factory;
-    }
 
     /**
      * Constructor.
