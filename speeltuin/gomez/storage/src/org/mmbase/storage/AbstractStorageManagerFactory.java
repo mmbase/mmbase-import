@@ -14,6 +14,7 @@ import java.util.*;
 import org.xml.sax.InputSource;
 
 import org.mmbase.storage.util.StorageReader;
+import org.mmbase.storage.util.Scheme;
 import org.mmbase.module.core.MMBase;
 
 /**
@@ -21,7 +22,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.7 2003-07-24 12:29:04 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.8 2003-07-25 12:42:05 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -70,7 +71,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     protected void load() throws StorageException {
         StorageReader reader = getDocumentReader();
         // get the storage manager class
-        storageManagerClass = reader.getStorageManagerClass(this);
+        storageManagerClass = reader.getStorageManagerClass();
         // get attributes
         setAttributes(reader.getAttributes());
         // get disallowed fields
@@ -121,7 +122,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
             }
             InputSource in = new InputSource(resource);
             in.setSystemId("resource://" + storagepath);
-            return new StorageReader(in);
+            return new StorageReader(this,in);
         }
     }
     
@@ -141,6 +142,18 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         attributes.put(key,value);
     }
 
+    public Scheme getScheme(Object key) {
+        return (Scheme)getAttribute(key);
+    }
+
+    public void setScheme(Object key, Scheme value) {
+        setAttribute(key,(Scheme)value);
+    }
+    
+    public void setScheme(Object key, String value) {
+        setAttribute(key,new Scheme(this,value));
+    }
+    
     public boolean hasOption(Object key) {
         Object o = getAttribute(key);
         return (o instanceof Boolean) && ((Boolean)o).booleanValue();
