@@ -162,6 +162,12 @@ public interface Node {
 	 public String toString();
 
 	/**
+	 * Checks whether the Node has any relations
+	 * @return <code>true</code> if the node has relations
+	 */
+	public boolean hasRelations();
+		
+	/**
 	 * Removes all relations of the node
 	 */
 	public void removeRelations();
