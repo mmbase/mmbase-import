@@ -22,7 +22,7 @@ import javax.xml.transform.Source;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.14 2004-12-17 15:37:11 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.15 2004-12-20 14:57:48 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -32,6 +32,20 @@ public class XsltTag extends ContextReferrerTag  {
 
     private Attribute ext = Attribute.NULL;
     private FormatterTag formatter;
+
+
+    /**
+     * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
+     * 
+     * @since MMBase-1.8
+     */
+    public static String escape(String escaper, String string) {
+        try {
+            return ContentTag.getCharTransformer(escaper).transform(string);
+        } catch (Exception e) {
+            return "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
+        }
+    }
 
 
     /**
@@ -67,8 +81,7 @@ public class XsltTag extends ContextReferrerTag  {
         String xsltString;
         String body = bodyContent != null ? bodyContent.getString() : "";
         if (getReferid() == null) {
-            xsltString = body;
-
+            xsltString = body.trim();
         } else {
             xsltString = getString(getReferid());
             if (! "".equals(body)) {
@@ -85,7 +98,9 @@ public class XsltTag extends ContextReferrerTag  {
                 totalString = xsltString;
             } else {
                 totalString =
-                    "<xsl:stylesheet xmlns:xsl = \"http://www.w3.org/1999/XSL/Transform\" version = \"1.0\" >\n" +
+                    "<xsl:stylesheet xmlns:xsl = \"http://www.w3.org/1999/XSL/Transform\" version = \"1.0\"" + 
+                    " xmlns:taglib=\"" + getClass().getName() + "\"" + 
+                    " extension-element-prefixes=\"taglib\" >\n" +
                     xsltString +
                     "\n</xsl:stylesheet>";
             }
