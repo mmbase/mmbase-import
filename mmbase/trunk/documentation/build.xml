@@ -82,7 +82,7 @@
   </target>
 
   <!-- copy all the images and resources -->
-  <target name="documentation.resources" depends="download,style.copy">
+  <target name="documentation.resources" depends="style.copy">
     <copy todir="${documentation.dest.dir}/" >
       <fileset dir="${documentation.src.dir}" >
         <exclude name="**/*.xml"/>
@@ -115,7 +115,7 @@
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.static.copy,mmbase.jar"
+          depends="documentation.static.copy,mmbase.jar,download"
           description="Create HTML documentation from the DocBook sources">
 
     <java classname="org.mmbase.util.XSLTransformer"
@@ -145,7 +145,7 @@
   <!-- ================================================================================ -->
   <!-- Perform docbook2pdf conversion                                                   -->
   <!-- ================================================================================ -->
-  <target name="documentation.pdf"  depends="mmbase.jar"
+  <target name="documentation.pdf"  depends="mmbase.jar,download"
           description="Create PDF documentation from the DocBook sources">
 
     <mkdir dir="${documentation.temp.dir}" />
@@ -193,7 +193,7 @@
     <copy file="${jai.codec.jar}" todir="${fop.home}/lib"/>
     <copy file="${jai.core.jar}" todir="${fop.home}/lib"/>
 
-    <!-- needed jars for fop-task        -->
+    <!-- needed jars for fop-task         -->
     <path id="fop.classpath">
       <pathelement location="${fop.avalon.jar}"/>
       <pathelement location="${fop.batik.jar}"/>
