@@ -11,7 +11,7 @@
   Defines the database driver that handles the abstraction between
   mmbase and the given jdbs/database we are using.
   -->
-  <mmbasedriver>org.mmbase.module.database.support.MMMysql42Node</mmbasedriver>
+  <mmbasedriver>org.mmbase.storage.database.RelationalDatabaseStorage</mmbasedriver>
   
   <!-- <sqlhandler>
   Defines the SqlHandler that converts SearchQuery objects to sql statements.
