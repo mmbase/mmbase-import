@@ -3,7 +3,73 @@
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
-<project name="community" default="jar" basedir=".">
+<project name="community" default="dependent.jar" basedir=".">
   <property name="project.name"   value="community" />
+  <property name="source-community.xml" value="org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml" />
   &base;
+
+
+
+  <target name="dependent.jar" depends="community.tld,jar" />
+  <target name="dependent.package" depends="dependent.jar,package" />
+
+
+  <target name="community.tld.check">
+    <uptodate property="community.tld.uptodate" targetfile="${web.dir}/mmcommunity-taglib.tld" >
+      <srcfiles dir="${source-src.dir}" includes="${source-community.xml},${xml2tld}" />
+    </uptodate>
+  </target>
+
+  <target name="community.tld" description="Make the MMBase community taglib tld"
+          depends="compile,community.tld.check" unless="community.tld.uptodate">
+    <mkdir dir="${project.metainf.dir}" />
+    <!-- create the mmcommunity tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-community.xml}"/>
+      <arg value="-OUT"/>
+      <arg value="${project.metainf.dir}/taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2tld.xslt" />
+    </java>
+  </target>
+
+
+  <target name="community.doc.check">
+    <uptodate property="community.doc.uptodate" targetfile="${reference.dir}/mmcommunity-taglib.html" >
+      <srcfiles dir="${source-src.dir}" includes="${source-community.xml},${xml2html}" />
+    </uptodate>
+  </target>
+
+
+  <target name="community.doc" description="Make the MMBase community taglib documentation"
+          depends="init,community.doc.check" unless="community.doc.uptodate">
+    <mkdir dir="${project.build.dir}/doc"/>
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-community.xml}" />
+      <arg value="-PARAM"/>
+      <arg value="basedir"/>
+      <arg value="${project.build.dir}/doc"/>
+      <arg value="-PARAM"/>
+      <arg value="files"/>
+      <arg value="community-taglib" />
+      <arg value="-OUT"/>
+      <arg value="${project.build.dir}/doc" />
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2html.xslt" />
+    </java>
+  </target>
+
+
 </project>
