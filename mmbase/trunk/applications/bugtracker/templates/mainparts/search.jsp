@@ -1,6 +1,21 @@
 <form action="<mm:url referids="portal?,page?,base" page="/" />" method="POST">
 <table cellspacing="0" cellpadding="0" class="list" width="97%">
 <tr class="listsearch">
+  <td colspan="3">
+   Maintainer:
+   <select name="smaintainer">
+     <option value="-1">any</option>
+       <mm:listnodescontainer path="users,groups">
+         <mm:constraint field="groups.name" value="BugTrackerCommitors" />
+         <mm:sortorder  field="lastname" />
+         <mm:listnodes>
+           <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="smaintainer">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
+        </mm:listnodes>
+      </mm:listnodescontainer>>
+    </select>
+  </td>
+</tr>
+<tr class="listsearch">
    <td width="50">
       <input name="sbugid" size="4" />
     </td>
@@ -65,7 +80,6 @@
 	</td>
 	<td width="300">
 	<input name="sissue" size="20" value="<mm:write referid="sissue" />" />
-	<a href="<mm:url referids="portal?,page?" page="$base/advancedsearch.jsp" />">a</a>
 	</td>
 	<td>
 	<input type="submit" value="search" />
@@ -79,8 +93,27 @@
 
 <mm:url id="pagingurl" referids="portal?,page?,base,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority" write="false" />
 
-<mm:listcontainer path="pools,bugreports,areas">
-  <mm:constraint field="pools.number" value="BugTracker.Start" />
+<mm:write referid="smaintainer">
+  <mm:compare value="-1">
+    <mm:import id="root">pools</mm:import>
+  </mm:compare>
+  <mm:compare value="-1" inverse="true">
+    <mm:import id="root">users,rolerel</mm:import>
+  </mm:compare>
+</mm:write>
+
+<mm:listcontainer path="$root,bugreports,areas">
+  <mm:write referid="smaintainer">
+    <mm:compare value="-1">
+      <mm:constraint field="pools.number" value="BugTracker.Start" />
+    </mm:compare>
+    <mm:compare value="-1" inverse="true">
+      <mm:constraint field="rolerel.role" value="maintainer" />
+      <mm:constraint field="users.number" value="$_" />
+    </mm:compare>
+  </mm:write>
+
+  
   <mm:sortorder  field="bugreports.bugid" direction="down" />
 
   <mm:write referid="sissue">
