@@ -1,4 +1,10 @@
-<html><head><title>Mozilla Public License version 1.0</title></head>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page import="org.mmbase.bridge.*" %>
+
+<mm:cloud name="mmbase" method="asis">
+<html><head><title>Mozilla Public License version 1.0</title>
+<link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css">
+</head>
 <body bgcolor="#ffffff" text="#000000" link="#0000ee" vlink="#551a8b" alink="#ff0000">
 
 <p align="center">
@@ -417,3 +423,4 @@
     </p><p>Contributor(s): ______________________________________.''
 
 </p></ul></body></html>
+</mm:cloud>
