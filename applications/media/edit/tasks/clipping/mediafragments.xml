@@ -6,7 +6,15 @@
   <action type="delete" />
 
   <action type="create">
-    <object type="&type;fragments" />
+    <object type="&type;fragments">
+      <field name="title">Groep fragmenten</field>
+      <relation role="related" destination="{$origin}" />
+      <relation destinationtype="publishtimes" role="related" >
+        <object type="publishtimes">
+          <field name="end">4102441200</field>
+        </object>
+      </relation>
+    </object>
   </action>
 
 	<action type="load">
@@ -22,7 +30,7 @@
     <title xml:lang="en">Meta info + Valid time</title>
     <title xml:lang="nl">Meta info + Geldigheid</title>
 
-    <list searchdir="source" role="posrel" destination="&type;fragments" maxoccurs="1" >
+    <list searchdir="source" role="posrel" destination="&type;fragments" minoccurs="1" maxoccurs="1" >
       <title xml:lang="en">Base (source) stream</title>
       <title xml:lang="nl">Basis (bron) stream</title>
       <item>
@@ -31,10 +39,10 @@
         <field ftype="startwizard" inline="true" wizardname="tasks/base/&type;fragments" />
        </fieldset>
       </item>
-      <command name="search" nodepath="pools,&type;fragments" fields="pools.name,&type;fragments.title" orderby="&type;fragments.title" age="-1" >
+      <command name="search" startnodes="{$superorigin}" nodepath="pools,parent,pools2,base,&type;fragments" fields="pools2.name,&type;fragments.title" orderby="&type;fragments.title" age="-1" >
         <search-filter>
           <name>Title</name>
-          <search-fields>&type;fragments.title</search-fields>
+          <search-fields>&type;fragments.title|pools2.name</search-fields>
         </search-filter>
       </command>
 
@@ -54,10 +62,11 @@
     <list role="previous" destination="&type;fragments" minoccurs="0" maxoccurs="1" searchdir="destination" >
       <title xml:lang="en">Introduction (optional)</title>
       <title xml:lang="nl">Introductie (optioneel)</title>
-      <command name="search" nodepath="&type;fragments" fields="title" orderby="title" age="-1" >
+      <command name="search" startnodes="{$superorigin}" nodepath="pools,parent,pools2,base,&type;fragments" fields="&type;fragments.title" orderby="&type;fragments.title" age="-1" >
         <search-filter>
-          <name>Title</name>
-          <search-fields>title</search-fields>
+          <name xml:lang="en">Title</name>
+          <name xml:lang="nl">Titel</name>
+          <search-fields>&type;fragments.title</search-fields>
           <default>intro</default>
         </search-filter>
       </command>
@@ -72,11 +81,12 @@
     <list role="previous" destination="&type;fragments" minoccurs="0" maxoccurs="1" searchdir="source">
       <title xml:lang="en">Outtroduction (optional)</title>
       <title xml:lang="nl">Uittroductie (optioneel)</title>
-      <command name="search" nodepath="&type;fragments" fields="title" orderby="title" age="-1" >
+      <command name="search" startnodes="{$superorigin}" nodepath="pools,parent,pools2,base,&type;fragments" fields="&type;fragments.title" orderby="&type;fragments.title" age="-1" >
         <search-filter>
-          <name>Title</name>
-          <search-fields>title</search-fields>
-          <default>intro</default>
+          <name xml:lang="en">Title</name>
+          <name xml:lang="nl">Titel</name>
+          <search-fields>&type;fragments.title</search-fields>
+          <default>outtro</default>
         </search-filter>
       </command>
       <item>

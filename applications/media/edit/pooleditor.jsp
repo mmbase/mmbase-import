@@ -10,7 +10,7 @@
   <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>  
 <head>
 <mm:import externid="origin"><mm:write referid="config.mediaeditors_origin"  /></mm:import>
-
+<mm:import externid="subcats" />
 <body class="content">
    <h1><%=m.getString("categories")%></h1>
    <%-- search form --%>
@@ -18,11 +18,12 @@
    <mm:context>
      <form action="<mm:url />" method="post">
        <table summary="pools" style="width: 100%">
-         <mm:fieldlist nodetype="pools" type="search" id="searchform">
+         <mm:fieldlist nodetype="pools" fields="name,description,owner" id="searchform">
            <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="searchinput" /></td</tr>
          </mm:fieldlist>
          <tr><td /><td><input type="submit" value="<%=m.getString("search")%>" name="search" /></td></tr>
          <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
+         <input type="hidden" name="subcats" value="<mm:write referid="subcats" />" />
        </table>
      </form>
    </mm:context>
@@ -35,12 +36,15 @@
 
     <%-- new node --%>
     <mm:compare referid="number" value="new">
+      <mm:node id="media_node" number="$origin">
+        <mm:field name="owner" id="owner" write="false" />
+      </mm:node>
       <mm:createnode id="newpool" type="pools">
         <mm:fieldlist fields="name,description">
           <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
+        <mm:setcontext><mm:write referid="owner" /></mm:setcontext>
       </mm:createnode>
-      <mm:node id="media_node" number="$origin" />
       <mm:createrelation source="media_node" destination="newpool" role="parent" />
     </mm:compare>
 
@@ -83,7 +87,7 @@
       
       <mm:present referid="search">
         <%-- handle search form --%>
-        <mm:fieldlist nodetype="pools" type="search" id="searchform">
+        <mm:fieldlist nodetype="pools" fields="name,description,owner" id="searchform">
           <mm:fieldinfo type="usesearchinput" />
         </mm:fieldlist>
       </mm:present>
@@ -98,20 +102,28 @@
         <th colspan="2">#: <mm:size /></th>
       </tr>
 
-      <mm:maycreate type="pools">
-
-        <form method="post" action="<mm:url />">
-        <mm:fieldlist node="" nodetype="pools" fields="name,description">
-          <td><mm:fieldinfo type="input" /></td>
-        </mm:fieldlist>
-        <td />
-        <td colspan="2">
-          <input type="hidden" name="number" value="new" />
-          <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
-          <input type="submit" name="submitnode" value="<%=m.getString("new")%>" /></td>
-        </form>
-      </mm:maycreate>
-
+      <tr>
+        <mm:maycreate type="pools">
+          <mm:maywrite>
+            <mm:import id="maycreate" />
+            <form method="post" action="<mm:url />">
+              <mm:fieldlist node="" nodetype="pools" fields="name,description">
+                <td><mm:fieldinfo type="input" /></td>
+              </mm:fieldlist>
+              <td />
+              <td colspan="2">
+                <input type="hidden" name="number" value="new" />
+                <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
+                <input type="hidden" name="subcats" value="<mm:write referid="subcats" />" />
+                <input type="submit" name="submitnode" value="<%=m.getString("new")%>" />
+              </td>
+            </form>
+          </mm:maywrite>
+        </mm:maycreate>
+        <mm:notpresent referid="maycreate">
+          <td colspan="3">U mag geen nieuwe categorie&euml;n maken.</td>
+        </mm:notpresent>
+      </tr>
       <mm:maxnumber value="$pagelength" />
 
       <%-- show results --%>
@@ -125,6 +137,7 @@
             <td>
               <input type="hidden" name="number" value="<mm:field name="number" />" />
               <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
+              <input type="hidden" name="subcats" value="<mm:write referid="subcats" />" />
               <input type="submit" name="submitnode" value="submit" /></td>
             </form>
           </mm:maywrite>
@@ -135,22 +148,23 @@
             <td></td>
           </mm:maywrite>
           <td>
-          <mm:maydelete>
-            <mm:countrelations>
-              <mm:compare value="1">
-                <form method="post" action="<mm:url />">
-                <input type="hidden" name="number" value="<mm:field name="number" />" />
-                <input type="submit" name="deletenode" value="delete" /></td>
-                <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
-                </form>
-              </mm:compare>
-            </mm:countrelations>
-          </mm:maydelete>
-          <mm:countrelations type="pools" role="parent" searchdir="destination">
-            <mm:isgreaterthan value="0">
-              <a href="<mm:url><mm:param name="origin"><mm:field name="number" /></mm:param></mm:url>">Sub-categorie&euml;n</a>
-            </mm:isgreaterthan>
-          </mm:countrelations>
+            <nobr>
+              <form method="post" action="<mm:url />">
+              <mm:maydelete>
+                <mm:countrelations>
+                  <mm:compare value="1">
+                      <input type="hidden" name="number" value="<mm:field name="number" />" />
+                      <input type="submit" name="deletenode" value="delete" />
+                      <input type="hidden" name="origin" value="<mm:write referid="origin" />" />
+                      <input type="hidden" name="subcats" value="<mm:write referid="subcats" />" />
+                  </mm:compare>
+                </mm:countrelations>
+              </mm:maydelete>
+              <mm:isnotempty referid="subcats">
+                <a href="<mm:url><mm:param name="origin"><mm:field name="number" /></mm:param></mm:url>">Sub-categorie&euml;n</a>
+              </mm:isnotempty>
+            </form>
+            </nobr>
           </td>
         </tr>
       </mm:relatednodes>

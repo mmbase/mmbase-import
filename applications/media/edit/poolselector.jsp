@@ -37,14 +37,25 @@
             <mm:constraint field="pools1.number" value="$config.mediaeditors_origin" />
           </mm:isnotempty>
         </mm:write>
-        <mm:related>
+        <mm:context>
+        <mm:related id="related">
           <li>
-            <a href="javascript:setContentFrame('<mm:url page="edit.jsp"><mm:param name="origin"><mm:field name="pools2.number" /></mm:param></mm:url>');">
-              <mm:write referid="config.mediaeditors_origin"><mm:isempty><mm:field name="pools1.name" />  - </mm:isempty></mm:write>
-              <mm:field name="pools2.name" />
-            </a>
+            <mm:node element="pools1"><mm:field id="superorigin" name="number" write="false" /></mm:node>
+            <mm:node element="pools2">
+              <mm:maywrite>
+                <a href="javascript:setContentFrame('<mm:url referids="superorigin" page="edit.jsp"><mm:param name="origin"><mm:field name="number" /></mm:param></mm:url>');">
+                  <mm:write referid="config.mediaeditors_origin"><mm:isempty><mm:field node="related" name="pools1.name" />  - </mm:isempty></mm:write>
+                  <mm:field name="name" />
+                </a>
+              </mm:maywrite>
+              <mm:maywrite inverse="true">
+                <mm:write referid="config.mediaeditors_origin"><mm:isempty><mm:field node="related" name="pools1.name" />  - </mm:isempty></mm:write>
+                <mm:field name="name" />
+              </mm:maywrite>
+            </mm:node>
           </li>
         </mm:related>
+        </mm:context>
       </mm:relatedcontainer>
     </ul>
     

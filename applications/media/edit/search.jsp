@@ -13,9 +13,10 @@
 
 <mm:notpresent referid="config.mediaeditors_origin_set"> 
   <body class="left">
-    Selecteer een streammanager-categorie, of <a href="<mm:url page="login.jsp" />">log in</a>.
+    Selecteer een streammanager-categorie.
     <form action="<mm:url />" >  
-      <select name="mediaeditors_origin">
+    <mm:import id="user"><%=cloud.getUser().getIdentifier()%></mm:import>
+      <select name="mediaeditors_origin_<mm:write referid="user" />">
         <mm:node number="media.allstreams">
           <mm:relatednodes id="origin" directions="destination" role="parent" type="pools" orderby="pools.name">            
             <option value="<mm:field name="number" />"><mm:field name="name" /></option>
@@ -25,6 +26,9 @@
       <br />
       <%=m.getString("send")%><button type="submit"><img src="media/search.gif" /></button>
     </form>
+    <!-- p>
+      U kunt ook onmiddelijk <a href="<mm:url page="login.jsp" />">inloggen</a>.
+    </p-->
   </body>
 </mm:notpresent>
 
@@ -70,7 +74,7 @@
               </option>
             </mm:related>
           </mm:relatedcontainer>
-          </mm:node>
+        </mm:node>
       </select>
     </td>
   </tr>
@@ -80,7 +84,6 @@
 </form>
 </table>
 </p>
-</mm:node>
 </body>
 </mm:present>
 </html>

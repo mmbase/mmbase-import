@@ -20,10 +20,10 @@
   <a href="<mm:url page="${dir}search.jsp?logout=true" />">Logout</a>
 <% } else { %>
   |
-  <a href="<mm:url page="${dir}login.jsp" />">Login</a>
+  <a <mm:compare value="login">class="current"</mm:compare> href="<mm:url page="${dir}login.jsp" />">Login</a>
 <% } %>
   |
   <a <mm:compare value="config">class="current"</mm:compare> href="<mm:url page="${dir}config/" />"><%=m.getString("config")%></a>
-</mm:write>
 </p>
+</mm:write>
 </mm:context>

@@ -132,6 +132,7 @@ mimetype:      <mm:field name="mimetype()" /><br />
 mimetype:      <mm:field name="contenttype()" /><br />
 format:      <mm:field name="format(ram,wmf)" /><br />
 -->
+<!--
 <hr />
 <form name="force">
   <select name="forceplayer" onChange="document.forms['force'].submit()">
@@ -142,6 +143,7 @@ format:      <mm:field name="format(ram,wmf)" /><br />
   </select>
   <input type="hidden" name="fragment" value="<mm:field name="number" />" />
 </form>
+-->
 <mm:import id="foundnode" />
 </mm:node>
 <mm:notpresent referid="foundnode">

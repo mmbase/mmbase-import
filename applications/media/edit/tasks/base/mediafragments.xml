@@ -6,8 +6,8 @@
 
 	<action type="create">
 		<object type="&type;fragments">
-			<field name="title">Don't forget to add a title</field>
-       <relation role="related" destination="{$origin}" />
+      <field name="title">Basis fragment (met bronnen)</field>
+      <relation role="base" destination="{$origin}" />
 		</object>
 	</action>
 	
@@ -45,11 +45,11 @@
       </field>
       </item>
 
-    <command name="startwizard" wizardname="tasks/base/&type;sources" inline="true"  objectnumber="new" origin="{$origin}" />
-	      <action type="create">
-		    <relation  role="related">
+      <command name="startwizard" wizardname="tasks/base/&type;sources" inline="true"  objectnumber="new" origin="{$origin}" />
+      <action type="create">
+        <relation  role="related">
           <object type="&type;sources" />
         </relation>
-	     </action>
-       </list>
+      </action>
+    </list>
   </form-schema>
