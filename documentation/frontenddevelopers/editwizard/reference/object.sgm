@@ -1,0 +1,11 @@
+<section id="object">
+	<title>object</title>
+	<formalpara>
+		<title>Syntax</title>
+		<para><programlisting><![CDATA[<object [type="{objecttype}"] />]]></programlisting></para>
+	</formalpara>
+	<formalpara>
+		<title>Usage</title>
+		<para>TODO</para>
+	</formalpara>
+</section>
