@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Useful for building execution pipes.
  *
  * @author Kees Jongenburger
- * @version $Id: ProcessWriter.java,v 1.5 2002-01-24 09:13:42 eduard Exp $
+ * @version $Id: ProcessWriter.java,v 1.6 2003-04-25 11:21:22 kees Exp $
  */
 public class ProcessWriter implements Runnable{
 
@@ -99,8 +99,8 @@ public class ProcessWriter implements Runnable{
             if (in == null ) {
                 log.warn("Inputstream is null");
             }
-              if (out == null ) {
-                log.warn("Inputstream is null");
+            if (out == null ) {
+                log.warn("Outputstream is null");
             }
         }
     }
