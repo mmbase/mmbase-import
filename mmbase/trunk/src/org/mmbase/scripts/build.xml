@@ -245,6 +245,7 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${servlet.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${xml-apis.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
@@ -1296,14 +1297,17 @@ Change directory to ${build.dir}/orion and run:
     <available property="hsql.expanded"
                file="${expand.dir}/${hsql.version}"/>
     <!-- Xalan and Xerces -->
-    <property name="xalan.version" value="xalan-j_2_1_0"/>
-    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}.tar.gz"/>
-    <property name="xalan.jar" value="${expand.dir}/${xalan.version}/bin/xalan.jar"/>
-    <property name="xerces.jar" value="${expand.dir}/${xalan.version}/bin/xerces.jar"/>
+    <property name="xalan.version" value="xalan-j_2_2"/>
+    <property name="xalan.fullversion" value="xalan-j_2_2_0"/>
+    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}-bin.tar.gz"/>
+    <property name="xalan.jar" value="${expand.dir}/${xalan.fullversion}/bin/xalan.jar"/>
+    <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xerces.jar"/>
+    <property name="xml-apis.jar" value="${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar"/>
+
     <available property="xalan.present"
-               file="${download.dir}/${xalan.version}.tar.gz"/>
+               file="${download.dir}/${xalan.version}-bin.tar.gz"/>
     <available property="xalan.expanded"
-               file="${expand.dir}/${xalan.version}"/>
+               file="${expand.dir}/${xalan.fullversion}"/>
     <!-- JAI -->
     <property name="jai.version" value="jai1_0_2-lib-solaris"/>
     <property name="jai.url" value="http://java.sun.com/Download3?protocol=HTTP%20download&amp;referer=http://java.sun.com/products/java-media/jai/downloads/download-1_0_2.html&amp;download-name=jai1_0_2-lib-solaris.tar.gz&amp;config-file=jai1_0_2.config&amp;platform=solaris&amp;domain-checked="/>
@@ -1401,14 +1405,14 @@ Change directory to ${build.dir}/orion and run:
 
   <target name="get.xalan" depends="init.get" unless="xalan.present">
     <get src="${xalan.url}"
-         dest="${download.dir}/${xalan.version}.tar.gz"
+         dest="${download.dir}/${xalan.version}-bin.tar.gz"
          verbose="on"/>
   </target>
 
   <target name="expand.xalan" depends="get.xalan" unless="xalan.expanded">
-    <gunzip src="${download.dir}/${xalan.version}.tar.gz" dest="${expand.dir}"/>
-    <untar src="${expand.dir}/${xalan.version}.tar" dest="${expand.dir}"/>
-    <delete file="${expand.dir}/${xalan.version}.tar"/>
+    <gunzip src="${download.dir}/${xalan.version}-bin.tar.gz" dest="${expand.dir}"/>
+    <untar src="${expand.dir}/${xalan.version}-bin.tar" dest="${expand.dir}"/>
+    <delete file="${expand.dir}/${xalan.version}-bin.tar"/>
   </target>
 
   <target name="get.jai" depends="init.get" unless="jai.present">
