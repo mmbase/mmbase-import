@@ -2,18 +2,18 @@
 	<node number="138" owner="system">
 		<name>edit</name>
 		<id>-1</id>
-		<url>/mmeditors/index.shtml</url>
+		<url>/mmeditors/jsp/index.jsp</url>
 	</node>
 
 	<node number="139" owner="system">
 		<name>admin</name>
 		<id>-1</id>
-		<url>/mmadmin/index.shtml</url>
+		<url>/mmadmin/jsp/index.jsp</url>
 	</node>
 
 	<node number="625" owner="system">
 		<name>demo</name>
 		<id>-1</id>
-		<url>/mmadmin/examples/index.html</url>
+		<url>/mmexamples/index.html</url>
 	</node>
 </jumpers>
