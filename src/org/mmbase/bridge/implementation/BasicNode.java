@@ -539,12 +539,8 @@ public class BasicNode implements Node {
     public void createAlias(String aliasName) {
         edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
-            NodeManager aliasManager=cloud.getNodeManager("oalias");
-            Node aliasNode=aliasManager.createNode();
-            aliasNode.setStringValue("name",aliasName);
-            // set the tmp field _destination to the temporaryNodeId of the node
-            // this will be resolved by the transaction manager
-            aliasNode.setValue("_destination", getValue("_number"));
+            String aliasContext=BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName,account,"a"+temporaryNodeId, ""+temporaryNodeId);
+            ((BasicTransaction)cloud).add(aliasContext);
         } else if (isnew) {
             String message;
             message = "Cannot add alias to a new node that has not been "
