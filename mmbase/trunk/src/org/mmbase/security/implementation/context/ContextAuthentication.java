@@ -28,6 +28,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Authentication based on a config..
+ * @javadoc
+ *
+ * @author Eduard Witteveen
+ * @version $Id: ContextAuthentication.java,v 1.8 2002-06-07 12:56:59 pierre Exp $
  */
 public class ContextAuthentication extends Authentication {
     private static Logger log=Logging.getLoggerInstance(ContextAuthentication.class.getName());

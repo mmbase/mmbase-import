@@ -15,10 +15,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- *  This UserContext class provides a storage for the authentication
- *  and authorization, so that information can be shared.
- *  This class is NOT a container class for client related stuff, altrough
- *  this is possible.
+ * This UserContext class provides a storage for the authentication
+ * and authorization, so that information can be shared.
+ * This class is NOT a container class for client related stuff, altrough
+ * this is possible.
+ *
+ * @author Eduard Witteveen
+ * @version $Id: ContextUserContext.java,v 1.4 2002-06-07 12:57:01 pierre Exp $
  */
 public class ContextUserContext extends UserContext {
     private static Logger log = Logging.getLoggerInstance(ContextUserContext.class.getName());
