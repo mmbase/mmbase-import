@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.debug;
 
-import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.*;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,11 +23,28 @@ import org.mmbase.util.logging.Logging;
  **/
 
 public class LogTag extends ContextReferrerTag {
+    private Logger log;           
+    private boolean doLog;
+    private int counter = 0; // A counter for every page. Because of this even <mm:log /> gets usefull.
+
+
+    public void setPageContext(PageContext pc) {
+        /* Determin only once per page if it can log */
+        super.setPageContext(pc);        
+        log = Logging.getLoggerInstance("MMBASE-PAGE" + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
+        doLog = log.isServiceEnabled();        
+    }
+
+    public int doStartTag() throws JspTagException {
+        if (doLog) {            
+            return EVAL_BODY_BUFFERED;
+        } else {
+            return SKIP_BODY;
+        }        
+    }
 
     public int doAfterBody() throws JspTagException {
-        String thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.');        
-        Logger log = Logging.getLoggerInstance("MMBASE-PAGE" + thisPage);
-        log.service(bodyContent.getString());
+        if (doLog) log.service(counter++ + ": " + bodyContent.getString());
         return SKIP_BODY;
     }    
 }
