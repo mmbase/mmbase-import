@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+  <status>active</status>
+
+  <classfile>org.mmbase.applications.crontab.modules.JCrontabModule</classfile>
+  <properties>  
+    <property name="1">
+      */1 5-23 * * *
+      org.mmbase.applications.crontab.TestCronJob2
+    </property>
+  </properties>
+ 
+</module>
