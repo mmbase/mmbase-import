@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.12 2001-08-24 07:31:35 pierre Exp $
+ * @version $Id: TransactionResolver.java,v 1.13 2002-04-17 13:17:43 pierre Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
@@ -53,7 +53,8 @@ public class TransactionResolver {
                 fd=(FieldDefs)f.nextElement();
                 dbtype=fd.getDBType();
                 log.debug("TransactionResolver - type "+dbtype+","+fd.getDBName()+","+fd.getDBState());
-                if (dbtype==FieldDefs.TYPE_INTEGER) {
+                if ((dbtype==FieldDefs.TYPE_INTEGER)||
+                    (dbtype==FieldDefs.TYPE_NODE)) {
                     state=fd.getDBState();
                     if (state==FieldDefs.DBSTATE_PERSISTENT || state==FieldDefs.DBSTATE_SYSTEM) {
                         // Database field of type integer
@@ -149,7 +150,8 @@ public class TransactionResolver {
             for (Enumeration f=bul.getFields().elements();f.hasMoreElements();) {
                 fd=(FieldDefs)f.nextElement();
                 dbtype=fd.getDBType();
-                if (dbtype==FieldDefs.TYPE_INTEGER) {
+                if ((dbtype==FieldDefs.TYPE_INTEGER)||
+                    (dbtype==FieldDefs.TYPE_NODE)) {
                     field=fd.getDBName();
                     number=node.getIntValue(field);
                     if (number==-1) {

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.6 2002-04-08 15:23:39 eduard Exp $
+ * @version $Id: Generator.java,v 1.7 2002-04-17 13:17:37 pierre Exp $
  */
 public  class Generator {
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
@@ -69,7 +69,7 @@ public  class Generator {
             rootElement = addRootElement(node);
         }
         Element nodeElement = getNodeElement(rootElement, node);
-        
+
         // when not there, create and add all the fields...
         if(nodeElement == null) {
             // when we are a relation, add relation stuff....
@@ -78,15 +78,15 @@ public  class Generator {
                 nodeElement = addNodeElement(rootElement, node);
                 Element sourceElement = addNode(relation.getSource());
                 Element destinationElement = addNode(relation.getDestination());
-        
+
                 sourceElement.appendChild(createRelationEntry(relation, true));
                 destinationElement.appendChild(createRelationEntry(relation, false));
             }
-            // adding a normal node 
+            // adding a normal node
             else {
                 nodeElement = addNodeElement(rootElement, node);
             }
-            
+
             // process the fields
             FieldIterator i = node.getNodeManager().getFields().fieldIterator();
             while(i.hasNext()) {
@@ -96,11 +96,11 @@ public  class Generator {
         }
         return nodeElement;
     }
-    
+
     /**
      * Adds one Relation to a DOM Document.
      * @param An MMBase bridge Node.
-     */    
+     */
     public Element addRelation(Relation relation) {
         return addNode(relation);
     }
@@ -115,7 +115,7 @@ public  class Generator {
             addNode(i.nextNode());
         }
     }
-    
+
     /**
      * Adds one Relation to a DOM Document.
      * @param An MMBase bridge Node.
@@ -126,7 +126,7 @@ public  class Generator {
             addNode(i.nextRelation());
         }
     }
-    
+
     /**
      * Returns the working DOM document.
      */
@@ -148,7 +148,7 @@ public  class Generator {
     public String toString(boolean ident) {
         return toString(tree, ident);
     }
-     
+
     public static String toString(Document doc, boolean ident) {
         try {
             org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
@@ -161,17 +161,17 @@ public  class Generator {
             java.io.StringWriter result = new java.io.StringWriter();
             org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
             prettyXML.serialize(doc);
-            return result.toString();    
-        } 
+            return result.toString();
+        }
         catch (Exception e) {
             return e.toString();
         }
-    }    
+    }
     /**
      * This is a helper function that Executes an XPATH query on the give DOM Node.
      * Its only use is to do some error handling.
      * @param A XPath query (as a string)
-     * @return An DOM Element or null (if nothing found)      
+     * @return An DOM Element or null (if nothing found)
      */
     protected Element getXMLElement(org.w3c.dom.Node node, String xpath) {
         if (log.isDebugEnabled()) log.debug("gonna execute the query:" + xpath);
@@ -191,7 +191,7 @@ public  class Generator {
     private Element getRootElement() {
         return getXMLElement(tree, "/objects");
     }
-    
+
     private Element getNodeElement(Element rootElement, Node node) {
         return getXMLElement(rootElement, "object[@id='" + node.getNumber() + "']");
     }
@@ -199,7 +199,7 @@ public  class Generator {
     private Element getFieldElement(Element nodeElement, Field field) {
         return getXMLElement(nodeElement, "field[@name='" + field.getName() + "']");
     }
-    
+
     private Element addRootElement(Node node) {
         Element rootElement = tree.createElement("objects");
         org.w3c.dom.Attr attr = tree.createAttribute("root");
@@ -208,10 +208,10 @@ public  class Generator {
         tree.appendChild(rootElement);
         return rootElement;
     }
-    
+
     private Element addNodeElement(Element rootElement, Node node) {
         Element nodeElement = tree.createElement("object");
-        
+
         // the id...
         org.w3c.dom.Attr attr = tree.createAttribute("id");
         attr.setValue("" + node.getNumber());
@@ -224,9 +224,9 @@ public  class Generator {
 
         rootElement.appendChild(nodeElement);
         return nodeElement;
-    }    
+    }
 
-    private Element addFieldElement(Element nodeElement, Node node, Field field) {    
+    private Element addFieldElement(Element nodeElement, Node node, Field field) {
         Element fieldElement = tree.createElement("field");
 
         org.w3c.dom.Attr attr;
@@ -254,11 +254,11 @@ public  class Generator {
         attr = tree.createAttribute("position-list");
         attr.setValue("" + getFieldPosition(field, node.getNodeManager().getFields(NodeManager.ORDER_LIST)));
         fieldElement.setAttributeNode(attr);
-        
+
         // format
         attr = tree.createAttribute("format");
         attr.setValue(getFieldFormat(node, field));
-        fieldElement.setAttributeNode(attr);        
+        fieldElement.setAttributeNode(attr);
 
         // insert the actual value inside the field thing!
         switch(field.getType()) {
@@ -275,31 +275,32 @@ public  class Generator {
                 fieldElement.appendChild(tree.createTextNode(transformer.transform(node.getByteValue(field.getName()))));
             default:
                 fieldElement.appendChild(tree.createTextNode(node.getStringValue(field.getName())));
-        }        
+        }
         nodeElement.appendChild(fieldElement);
         return fieldElement;
     }
-    
+
     private String getFieldFormat(Node node, Field field) {
         switch (field.getType()) {
             case Field.TYPE_XML:
                 return "xml";
             case Field.TYPE_STRING:
                 return "string";
+            case Field.TYPE_NODE:
+                return "object";  // better would be "node" ?
             case Field.TYPE_INTEGER:
             case Field.TYPE_LONG:
                 // was it a builder?
                 String fieldName = field.getName();
                 String guiType = field.getGUIType();
-                
+
                 // I want a object database type!
-                if(fieldName.equals("otype") 
-                || fieldName.equals("snumber") 
-                || fieldName.equals("dnumber") 
-                || fieldName.equals("rnumber") 
-                || fieldName.equals("role") 
+                if(fieldName.equals("otype")
+                || fieldName.equals("snumber")
+                || fieldName.equals("dnumber")
+                || fieldName.equals("rnumber")
+                || fieldName.equals("role")
                 || guiType.equals("reldefs")) {
-                    return "object";
                 }
                 if(guiType.equals("eventtime")) {
                     return "date";
@@ -313,7 +314,7 @@ public  class Generator {
                 return "unknown";
         }
     }
-    
+
     private int getFieldPosition(Field field, FieldList list) {
         for(int i=0; i < list.size(); i++) {
             if(list.getField(i).equals(field)) {
@@ -325,14 +326,14 @@ public  class Generator {
 
     private Element createRelationEntry(Relation relation, boolean createSourceEntry) {
         Element fieldElement = tree.createElement("relation");
-        
 
-        // we have to know what the relation type was...        
+
+        // we have to know what the relation type was...
         Cloud cloud = relation.getCloud();
         Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
-        
-        
-        org.w3c.dom.Attr attr;        
+
+
+        org.w3c.dom.Attr attr;
         // the role
         attr = tree.createAttribute("role");
         if(createSourceEntry) {
@@ -348,16 +349,16 @@ public  class Generator {
         attr.setValue("" + relation.getNumber());
         fieldElement.setAttributeNode(attr);
 
-        // related 
-        attr = tree.createAttribute("related");        
+        // related
+        attr = tree.createAttribute("related");
         if(createSourceEntry) {
             attr.setValue("" + relation.getDestination().getNumber());
         }
         else {
             attr.setValue("" + relation.getSource().getNumber());
-        }        
+        }
         fieldElement.setAttributeNode(attr);
-        
+
         // type
         attr = tree.createAttribute("type");
         if(createSourceEntry) {
@@ -365,8 +366,8 @@ public  class Generator {
         }
         else {
             attr.setValue("destination");
-        }        
+        }
         fieldElement.setAttributeNode(attr);
         return fieldElement;
-    }    
+    }
 }

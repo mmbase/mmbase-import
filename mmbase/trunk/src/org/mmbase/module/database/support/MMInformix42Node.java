@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
 * @author Mark Huijser
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.33 $ $Date: 2002-02-19 19:47:52 $
+* @$Revision: 1.34 $ $Date: 2002-04-17 13:17:45 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -37,7 +37,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(MMInformix42Node.class.getName());
-	
+
     private boolean keySupported = true;
 
     private int currentdbkey=-1;
@@ -121,7 +121,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 
                 if (!tableName.equals("insrel")&&!tableName.equals("typerel")&&!tableName.equals("reldef")&&
                     !name.equals("owner")&&!name.equals("otype")&&!name.equals("snumber")&&
-                    !name.equals("dnumber")&&!name.equals("rnumber")&&!name.equals("dir")&& 
+                    !name.equals("dnumber")&&!name.equals("rnumber")&&!name.equals("dir")&&
                     def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                     if(createtype==null) {
                         createtype=part;
@@ -365,6 +365,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         int type = node.getDBType(key);
         if (type==FieldDefs.TYPE_INTEGER) {
             stmt.setInt(i, node.getIntValue(key));
+        } if (type==FieldDefs.TYPE_NODE) {
+            stmt.setInt(i, node.getIntValue(key));
         } else if (type==FieldDefs.TYPE_FLOAT) {
             stmt.setFloat(i, node.getFloatValue(key));
         } else if (type==FieldDefs.TYPE_DOUBLE) {
@@ -451,7 +453,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 //String tmp=rs.getString(i);
                 String tmp = null;
                 try {
-                    tmp = new String(rs.getBytes(i), mmb.getEncoding());                
+                    tmp = new String(rs.getBytes(i), mmb.getEncoding());
                 } catch (Exception e) {
                     log.error(e.toString());
                 }
@@ -462,6 +464,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                     node.setValue(prefix+fieldname,tmp.trim());
                 }
                 break;
+            case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
                 node.setValue(prefix+fieldname,rs.getInt(i));
                 break;
@@ -519,7 +522,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             if (siz==0 || siz==-1) return("");
             input=new DataInputStream(inp);
             rawchars=new byte[siz];
-            input.readFully(rawchars);           
+            input.readFully(rawchars);
             str = new String(rawchars, mmb.getEncoding());
             input.close(); // this also closes the underlying stream
         } catch (Exception e) {
@@ -794,7 +797,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             key=(String)e.nextElement();
             // a extra check should be added to filter temp values
             // like properties
-				
+
             // is this key disallowed ? ifso map it back
             if (disallowed2allowed.containsKey(key)) {
                 key=(String)disallowed2allowed.get(key);
@@ -818,6 +821,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                     key=(String)e.nextElement();
                     type=node.getDBType(key);
                     if (type==FieldDefs.TYPE_INTEGER) {
+                        stmt.setInt(i,node.getIntValue(key));
+                    } if (type==FieldDefs.TYPE_NODE) {
                         stmt.setInt(i,node.getIntValue(key));
                     } else if (type==FieldDefs.TYPE_FLOAT) {
                         stmt.setFloat(i,node.getFloatValue(key));
@@ -858,8 +863,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         }
         return(true);
     }
-    /* end copy old method overiding new one, stolen from MMSQL92Node.java,v 1.50 2001/04/20 08:33:25, which has now mutliple table support */	
-	
+    /* end copy old method overiding new one, stolen from MMSQL92Node.java,v 1.50 2001/04/20 08:33:25, which has now mutliple table support */
+
     /* removed to compile for new version, daniel
        public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
        if (log.isDebugEnabled()) log.trace("Method: commit()");

@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.73 $ $Date: 2002-04-09 08:12:19 $
+ * @version $Revision: 1.74 $ $Date: 2002-04-17 13:17:41 $
  */
 
 public class MMObjectNode {
@@ -377,6 +377,7 @@ public class MMObjectNode {
             case FieldDefs.TYPE_STRING:
                 setValue( fieldName, value);
                 break;
+            case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
                 Integer i;
                 try {
@@ -657,7 +658,7 @@ public class MMObjectNode {
         } else if (i instanceof Number) {
             res=parent.getNode(((Number)i).intValue());
         } else if (i!=null) {
-            res=parent.getNode(""+i);
+            res=parent.getNode(i.toString());
         }
         return res;
     }

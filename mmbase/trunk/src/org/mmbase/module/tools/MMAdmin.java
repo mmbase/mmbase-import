@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.44 2002-04-16 14:59:58 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.45 2002-04-17 13:17:50 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1180,27 +1180,7 @@ public class MMAdmin extends ProcessorModule {
                 FieldDefs def=(FieldDefs)h.nextElement();
                 results.addElement(""+def.getDBPos());
                 results.addElement(""+def.getDBName());
-                int type=def.getDBType();
-                switch (type) {
-                    case FieldDefs.TYPE_STRING:
-                        results.addElement("STRING");
-                    break;
-                    case FieldDefs.TYPE_INTEGER:
-                        results.addElement("INTEGER");
-                        break;
-                    case FieldDefs.TYPE_LONG:
-                        results.addElement("LONG");
-                        break;
-                    case FieldDefs.TYPE_FLOAT:
-                        results.addElement("FLOAT");
-                        break;
-                    case FieldDefs.TYPE_DOUBLE:
-                        results.addElement("DOUBLE");
-                        break;
-                    case FieldDefs.TYPE_BYTE:
-                        results.addElement("BYTE");
-                        break;
-                }
+                results.addElement(def.getDBTypeDescription());
                 int size=def.getDBSize();
                 if (size==-1) {
                     results.addElement("fixed");
@@ -1322,24 +1302,9 @@ public class MMAdmin extends ProcessorModule {
                     return "fixed";
                 }
             } else if (key.equals("dbstate")) {
-                int state=def.getDBState();
-                switch (state) {
-                    case FieldDefs.DBSTATE_VIRTUAL: return "virtual";
-                    case FieldDefs.DBSTATE_PERSISTENT: return "persistent";
-                    case FieldDefs.DBSTATE_SYSTEM: return "system";
-                    case FieldDefs.DBSTATE_UNKNOWN: return "unknown";
-                }
+                return def.getDBStateDescription();
             } else if (key.equals("dbmmbasetype")) {
-                int type=def.getDBType();
-                switch (type) {
-                    case FieldDefs.TYPE_STRING: return "STRING";
-                    case FieldDefs.TYPE_INTEGER: return "INTEGER";
-                    case FieldDefs.TYPE_BYTE: return "BYTE";
-                    case FieldDefs.TYPE_FLOAT: return "FLOAT";
-                    case FieldDefs.TYPE_DOUBLE: return "DOUBLE";
-                    case FieldDefs.TYPE_LONG: return "LONG";
-                    case FieldDefs.TYPE_UNKNOWN: return "UNKNOWN";
-                }
+                return def.getDBTypeDescription();
             } else if (key.equals("editorinput")) {
                 int pos=def.getGUIPos();
                 if (pos==-1) {
@@ -1592,19 +1557,7 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
-            if (value.equals("STRING")) {
-                def.setDBType(FieldDefs.TYPE_STRING);
-            } else if (value.equals("INTEGER")) {
-                def.setDBType(FieldDefs.TYPE_INTEGER);
-            } else if (value.equals("BYTE")) {
-                def.setDBType(FieldDefs.TYPE_BYTE);
-            } else if (value.equals("FLOAT")) {
-                def.setDBType(FieldDefs.TYPE_FLOAT);
-            } else if (value.equals("DOUBLE")) {
-                def.setDBType(FieldDefs.TYPE_DOUBLE);
-            } else if (value.equals("LONG")) {
-                def.setDBType(FieldDefs.TYPE_LONG);
-            }
+            def.setDBType(value);
         }
         if (mmb.getDatabase().changeField(bul,fieldname)) {
             syncBuilderXML(bul,builder);
@@ -1626,13 +1579,7 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
-            if (value.equals("virtual")) {
-                def.setDBState(FieldDefs.DBSTATE_VIRTUAL);
-            } else if (value.equals("persistent")) {
-                def.setDBState(FieldDefs.DBSTATE_PERSISTENT);
-            } else if (value.equals("system")) {
-                def.setDBState(FieldDefs.DBSTATE_SYSTEM);
-            }
+            def.setDBState(value);
         }
         if (mmb.getDatabase().changeField(bul,fieldname)) {
             syncBuilderXML(bul,builder);
@@ -1721,43 +1668,16 @@ public class MMAdmin extends ProcessorModule {
             def.setGUIName("en",value);
 
             value=(String)vars.get("mmbasetype");
-            if (value.equals("STRING")) {
-                def.setDBType(FieldDefs.TYPE_STRING);
-            } else if (value.equals("INTEGER")) {
-                def.setDBType(FieldDefs.TYPE_INTEGER);
-            } else if (value.equals("BYTE")) {
-                def.setDBType(FieldDefs.TYPE_BYTE);
-            } else if (value.equals("FLOAT")) {
-                def.setDBType(FieldDefs.TYPE_FLOAT);
-            } else if (value.equals("DOUBLE")) {
-                def.setDBType(FieldDefs.TYPE_DOUBLE);
-            } else if (value.equals("LONG")) {
-                def.setDBType(FieldDefs.TYPE_LONG);
-            }
-
+            def.setDBType(value);
 
             value=(String)vars.get("dbstate");
-            if (value.equals("virtual")) {
-                def.setDBState(FieldDefs.DBSTATE_VIRTUAL);
-            } else if (value.equals("persistent")) {
-                def.setDBState(FieldDefs.DBSTATE_PERSISTENT);
-            } else if (value.equals("system")) {
-                def.setDBState(FieldDefs.DBSTATE_SYSTEM);
-            }
+            def.setDBState(value);
 
             value=(String)vars.get("dbnotnull");
-            if (value.equals("true")) {
-                def.setDBNotNull(true);
-            } else {
-                def.setDBNotNull(false);
-            }
+            def.setDBNotNull(value.equals("true"));
 
             value=(String)vars.get("dbkey");
-            if (value.equals("true")) {
-                def.setDBKey(true);
-            } else {
-                def.setDBKey(false);
-            }
+            def.setDBKey(value.equals("true"));
 
             value=(String)vars.get("dbsize");
             try {

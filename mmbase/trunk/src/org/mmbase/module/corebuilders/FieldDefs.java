@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.27 2002-04-17 08:27:39 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.28 2002-04-17 13:17:44 pierre Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -40,7 +40,8 @@ public class FieldDefs implements Comparable {
     public final static int TYPE_DOUBLE = 6;
     public final static int TYPE_LONG = 7;
     public final static int TYPE_XML = 8;
-    public final static int TYPE_MAXVALUE = 8;
+    public final static int TYPE_NODE = 9;
+    public final static int TYPE_MAXVALUE = 9;
     public final static int TYPE_UNKNOWN = -1;
 
     public final static int ORDER_CREATE = 0;
@@ -55,7 +56,7 @@ public class FieldDefs implements Comparable {
         { "UNKNOWN", "VIRTUAL", "UNKNOWN", "PERSISTENT", "SYSTEM" };
 
     private final static String[] DBTYPES =
-        { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML" };
+        { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE" };
 
     /**
      * @scope private
@@ -161,6 +162,7 @@ public class FieldDefs implements Comparable {
         if (type.equals("FLOAT"))   return TYPE_FLOAT;
         if (type.equals("DOUBLE"))  return TYPE_DOUBLE;
         if (type.equals("LONG"))    return TYPE_LONG;
+        if (type.equals("NODE"))    return TYPE_NODE;
         return TYPE_UNKNOWN;
     }
 

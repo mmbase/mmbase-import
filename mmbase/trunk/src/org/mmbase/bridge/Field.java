@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.6 2002-02-22 14:28:24 michiel Exp $
+ * @version $Id: Field.java,v 1.7 2002-04-17 13:17:36 pierre Exp $
  */
 public interface Field {
 
@@ -24,8 +24,8 @@ public interface Field {
     public final static int STATE_PERSISTENT = 2;
     public final static int STATE_SYSTEM     = 3;
     public final static int STATE_UNKNOWN    = -1;
-    
-    
+
+
     public final static int TYPE_STRING  = 1;
     public final static int TYPE_INTEGER = 2;
     public final static int TYPE_BYTE    = 4;
@@ -33,8 +33,9 @@ public interface Field {
     public final static int TYPE_DOUBLE  = 6;
     public final static int TYPE_LONG    = 7;
     public final static int TYPE_XML     = 8;
+    public final static int TYPE_NODE    = 9;
     public final static int TYPE_UNKNOWN = -1;
-    
+
     /**
      * Returns the node manager this field belongs to.
      *
@@ -49,7 +50,7 @@ public interface Field {
      */
     public String getName();
 
- 	
+
     /**
      * Returns the GUI name for the data type this field contains.
      *
@@ -63,7 +64,7 @@ public interface Field {
      * @return  the GUI name for this field
      */
     public String getGUIName();
-    
+
     /**
      * Returns the identifier for the data type this field contains.
      *
@@ -71,7 +72,7 @@ public interface Field {
      *          contains
      */
     public int getType();
-    
+
     /**
      * Returns this field's state identifier.
      *
@@ -89,5 +90,5 @@ public interface Field {
      */
 
     public int getMaxLength();
-	
+
 }
