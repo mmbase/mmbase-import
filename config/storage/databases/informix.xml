@@ -78,6 +78,7 @@
     <disallowed-field name="sum" replacement="mmsum" /> <!-- standard SQL keyword -->
     <disallowed-field name="text" replacement="mmtext" />
     <disallowed-field name="times" replacement="mmtimes" />
+    <disallowed-field name="type" replacement="typ" /> <!-- standard SQL keyword -->
     <disallowed-field name="variance" replacement="mmvariance" />
   </disallowed-fields>
 
