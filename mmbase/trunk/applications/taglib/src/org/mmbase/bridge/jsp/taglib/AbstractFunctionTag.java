@@ -9,16 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.containers.*;
+import java.util.List;
+
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.*;
-
-import java.util.*;
+import org.mmbase.bridge.jsp.taglib.containers.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.logging.*;
 
 /**
  * The Function tag can be used as a child of a 'NodeProvider' tag (but not on clusternodes?). It
@@ -26,7 +23,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.2 2003-08-12 18:13:40 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.3 2003-08-29 12:12:25 keesj Exp $
  */
 public class AbstractFunctionTag extends NodeReferrerTag implements FunctionContainerReferrer {
 

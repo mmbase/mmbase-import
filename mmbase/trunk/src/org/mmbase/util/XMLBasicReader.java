@@ -11,21 +11,12 @@ package org.mmbase.util;
 
 import java.util.*;
 
-import java.io.FileInputStream;
-import java.io.StringReader;
-
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-
-import org.w3c.dom.*;
-
 import javax.xml.parsers.DocumentBuilder;
 
+import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.DocumentReader;
-
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 /**
  * XMLBasicReader has two goals.
@@ -43,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.37 2003-08-18 16:50:52 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.38 2003-08-29 12:12:30 keesj Exp $
  */
 public class XMLBasicReader extends DocumentReader {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class);

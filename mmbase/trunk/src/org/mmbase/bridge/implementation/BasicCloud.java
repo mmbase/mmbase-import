@@ -12,14 +12,12 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.cache.MultilevelCache;
-import org.mmbase.cache.AggregatedResultCache;
+import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -29,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.100 2003-08-27 21:25:06 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.101 2003-08-29 12:12:28 keesj Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);

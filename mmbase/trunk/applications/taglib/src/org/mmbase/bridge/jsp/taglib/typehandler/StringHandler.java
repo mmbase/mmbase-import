@@ -11,15 +11,13 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.*;
 
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.util.Encode;
-import org.mmbase.util.transformers.Sql;
-import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.Encode;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.transformers.Sql;
 
 /**
  * A TypeHandler for strings. textareas, text-input. Search values are SQL escaped.
@@ -27,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.16 2003-08-27 21:33:42 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.17 2003-08-29 12:12:28 keesj Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {

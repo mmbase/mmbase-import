@@ -10,14 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import org.mmbase.storage.search.*;
-import java.util.SortedSet;
 
 /**
  * A Node-Query is a query that queries node-lists, in contradiction to a normal Query which can
  * query 'cluster nodes' and even more generally 'result nodes' too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeQuery.java,v 1.5 2003-08-27 21:23:45 michiel Exp $
+ * @version $Id: NodeQuery.java,v 1.6 2003-08-29 12:12:29 keesj Exp $
  * @since MMBase-1.7
  */
 public interface NodeQuery extends Query {
