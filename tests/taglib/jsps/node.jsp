@@ -1,4 +1,3 @@
-<%@page errorPage="error.jsp" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <html>
 <title>Testing MMBase/taglib</title>
@@ -52,6 +51,7 @@
 <h3>field-function wrap, html</h3>
 <mm:node referid="node">
   <mm:field name="html(wrap(title, 10))" />
+   <mm:field name="info()" />
 </mm:node>
 
 
@@ -198,10 +198,17 @@ using list tag: <br />
      <mm:related path="posrel,urls" fields="urls.url">
        7  related url (used related, with role): <mm:field name="urls.url" /><br />
      </mm:related>
+       <%-- CONTAINER TESTS --%>
      <mm:relatedcontainer path="posrel,urls">
        relatedcontainer: size  <mm:size /> (should be 1) <br />
        <mm:related>
           8  related url (used related): <mm:field name="urls.url" /><br />
+          <mm:node element="urls">
+            8.1  related url (used element): <mm:field name="url" /><br />
+          </mm:node>
+          <mm:node element="posrel">
+            8.2  related url (used element): <mm:field name="pos" /><br />
+          </mm:node>
        </mm:related>
      </mm:relatedcontainer>
      <% try  { %>
@@ -214,10 +221,11 @@ using list tag: <br />
      <% } catch (Exception e) { %>
         OK, threw an exception with role is 'related' (news->urls does not exist)<br />
      <% } %>
-     <mm:relatedcontainer path="urls">
-       relatedcontainer: size  <mm:size /> (should be 2) <br />
+     <mm:relatedcontainer path="urls2">
+       <mm:constraint field="urls2.url" value="$url" /> <!-- testing also constraint -->
+       relatedcontainer: size  <mm:size /> (should be 2) <br />      
        <mm:related>
-          9.<mm:index />  related url (used related): <mm:field name="urls.url" /><br />
+          9.<mm:index />  related url (used related): <mm:field name="urls2.url" /><br />
        </mm:related>
      </mm:relatedcontainer>
      <mm:relatedcontainer path="urls" searchdirs="source">
