@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd" [
-         <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
-         <!ENTITY priority  "org.mmbase.util.logging.log4j.Log4jPriority" >
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" [
+         <!ENTITY mmlevel  "org.mmbase.util.logging.log4j.Log4jLevel" >
          <!ENTITY logdir   "/tmp/" >
 ]>
 
@@ -44,13 +43,13 @@
   
   <!-- categories -->
 
-  <category name="MMBASE-PAGE" class ="&logger;" additivity="false" >
-    <priority class="&priority;" value ="service" />
+  <logger name="MMBASE-PAGE" additivity="false" >
+    <level class="&mmlevel;" value ="service" />
     <appender-ref ref="pagedebug" />
-  </category>
+  </logger>
   
   <root>
-    <priority class="&priority;" value ="debug" />
+    <level class="&mmlevel;" value ="debug" />
     <appender-ref ref="logfile" />
     <appender-ref ref="errorfile" />
   </root>
