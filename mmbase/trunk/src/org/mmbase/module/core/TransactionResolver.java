@@ -11,46 +11,14 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
-/*
-	$Id: TransactionResolver.java,v 1.9 2001-02-05 11:41:44 daniel Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.8  2000/12/30 14:06:06  daniel
-	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
-	
-	Revision 1.7  2000/12/14 10:54:52  rico
-	Rico: added John Balder's changes for exception handling
-	
-	Revision 1.6  2000/11/24 12:15:22  vpro
-	Rico: fixed exist testing
-	
-	Revision 1.5  2000/11/22 13:11:25  vpro
-	Rico: added deleteObject support
-	
-	Revision 1.4  2000/11/15 12:17:05  vpro
-	Rico: fixed resolver for existing nodes
-	
-	Revision 1.3  2000/11/13 16:11:01  vpro
-	Rico: added more debug
-	
-	Revision 1.2  2000/10/13 11:41:34  vpro
-	Rico: made it working
-	
-	Revision 1.1  2000/08/14 19:19:05  rico
-	Rico: added the temporary node and transaction support.
-	      note that this is rather untested but based on previously
-	      working code.
-	
-*/
+import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.9 2001-02-05 11:41:44 daniel Exp $
+ * @version $Id: TransactionResolver.java,v 1.10 2001-03-02 12:51:44 install Exp $
  */
 public class TransactionResolver {
-	private String	_classname = getClass().getName();
-	private boolean _debug=false;
-	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
+    private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
 
 	MMBase mmbase;
 
@@ -81,11 +49,11 @@ public class TransactionResolver {
 		for (Enumeration e=nodes.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			bul=mmbase.getMMObject(node.getName());
-			if (_debug) debug("builder "+node.getName()+" builder "+bul);
+			log.debug("TransactionResolver - builder "+node.getName()+" builder "+bul);
 			for (Enumeration f=bul.getFields().elements();f.hasMoreElements();) {
 				fd=(FieldDefs)f.nextElement();
 				dbtype=fd.getDBType();
-				if (_debug) debug("type "+dbtype+","+fd.getDBName()+","+fd.getDBState());
+				log.debug("TransactionResolver - type "+dbtype+","+fd.getDBName()+","+fd.getDBState());
 				if (dbtype==FieldDefs.TYPE_INTEGER) {
 					state=fd.getDBState();
 					if (state==FieldDefs.DBSTATE_PERSISTENT || state==FieldDefs.DBSTATE_SYSTEM) {
@@ -99,7 +67,7 @@ public class TransactionResolver {
 								// Key is not set
 								key=node.getStringValue(tmpfield);
 								if (key!=null) {
-									if (_debug) debug("key,field "+field+" - "+key);
+									log.debug("TransactionResolver - key,field "+field+" - "+key);
 									// keep fieldnumber key
 									if (!numbers.containsKey(key)) numbers.put(key,neg);
 									// keep node + field to change
@@ -112,12 +80,12 @@ public class TransactionResolver {
 										nnodes.put(node,v);
 									}
 								} else {
-									if (_debug) debug("Can't find key for field "+tmpfield+" node "+node+" (warning)");
+									log.debug("TransactionResolver - Can't find key for field "+tmpfield+" node "+node+" (warning)");
 								}
 								if (field.equals("number")) node.setValue("_exists",TransactionManager.EXISTS_NO);
 							} else {
 								// Key is already set
-								if (_debug) debug("Key for value "+field+" is already set "+ikey);
+								log.debug("TransactionResolver - Key for value "+field+" is already set "+ikey);
 								// Mark it as existing
 								if (field.equals("number")) {
 									// test for remove here
@@ -129,19 +97,19 @@ public class TransactionResolver {
 									if (key!=null) {
 										numbers.put( key, new Integer(ikey));
 									} else {
-										if (_debug) debug("Can't find key for field "+tmpfield+" node "+node);
+										log.debug("TransactionResolver - Can't find key for field "+tmpfield+" node "+node);
 									}
 								}
 							}
 						} else {
-							debug("DBstate for "+tmpfield+" is not set to 0 but is "+node.getDBState(field));
+							log.debug("TransctionResolver - DBstate for "+tmpfield+" is not set to 0 but is "+node.getDBState(field));
 						}
 					}
 				}
 			}
 		}
 
-		if (_debug) debug("nnodes "+nnodes);
+		log.debug("TransactionResolver - nnodes "+nnodes);
 
 		// Get the numbers
 		number=0;
@@ -157,7 +125,7 @@ public class TransactionResolver {
 				numbers.put(key,new Integer(number));
 			}
 		}
-		if (_debug) debug("numbers "+numbers);
+		log.debug("TransactionResolver - numbers "+numbers);
 
 		// put numbers in the right place
 		for (Enumeration e=nnodes.keys();e.hasMoreElements();) {
@@ -165,12 +133,12 @@ public class TransactionResolver {
 			v=(Vector)nnodes.get(node);
 			for (Enumeration f=v.elements();f.hasMoreElements();) {
 				field=(String)f.nextElement();
-				if (_debug) debug("Field "+field);
+				log.debug("TransactionResolver - Field "+field);
 				tmpfield="_"+field;
 				key=node.getStringValue(tmpfield);
-				if (_debug) debug("Key "+key);
+				log.debug("TransactionResolver - Key "+key);
 				number=((Integer)numbers.get(key)).intValue();
-				if (_debug) debug("Number "+number);
+				log.debug("TransactionResolver - Number "+number);
 				node.setValue(field,number);
 			}
 		}
