@@ -14,7 +14,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 // TODO: invalid tablenames should not be replaced like fieldnames, the must be left untouched.
 public class BasicSqlHandler implements SqlHandler {
@@ -239,7 +239,12 @@ public class BasicSqlHandler implements SqlHandler {
             // Tablename, prefixed with basename and underscore
             sb.append(mmbase.getBaseName()).
             append("_").
-            append(getAllowedValue(tableName));
+            //Currently no replacement strategy is implemented for
+            //invalid tablenames.
+            //This would be useful, but requires modification to 
+            //the insert/update/delete code as well.
+            //append(getAllowedValue(tableName));
+            append(tableName);
             
             // Table alias
             sb.append(" ").

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -64,14 +64,24 @@ public class BasicStepFieldTest extends TestCase {
     
     /** Test of constructor. **/
     public void testConstructor() {
-        // TODO: test IllegalArgumentException for null step of null field.
-        
         Step step2 = new BasicStep(builder2);
         // FieldDefs object does not belong to step, should throw IllegalArgumentException.
         try {
             BasicStepField stepField = new BasicStepField(step2, fieldDefs);
             fail("FieldDefs object does not belong to step, should throw IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}            
+        } catch (IllegalArgumentException e) {}
+        
+        // Null step, should throw IllegalArgumentException.
+        try {
+            new BasicStepField(null, fieldDefs);
+            fail("Null step, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+        
+        // Null field, should throw IllegalArgumentException.
+        try {
+            new BasicStepField(step2, null);
+            fail("Null field, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
     }
     
     /** Test of setAlias method, of class org.mmbase.storage.search.implementation.BasicStepField. */
