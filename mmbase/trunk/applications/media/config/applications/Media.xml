@@ -26,6 +26,9 @@
     <!-- the following should not be needed (because of inheritance) -->
     <relation from="audiofragments"  to="audiosources" type="related" />
     <relation from="videofragments"  to="videosources" type="related" />
+
+    <relation from="videofragments"  to="mediasources" type="related" />
+    <relation from="videofragments"  to="mediafragments" type="related" />
   </allowedrelationlist>
 
   <datasourcelist>

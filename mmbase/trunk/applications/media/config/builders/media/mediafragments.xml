@@ -158,7 +158,7 @@
 		<gui>
 			<guiname xml:lang="nl">Stop</guiname>
 			<guiname xml:lang="en">Stop</guiname>
-			<guitype>string</guitype>
+			<guitype></guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -212,7 +212,7 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Classification</guiname>
+			<guiname xml:lang="en">Classification</guiname>
 			<guiname xml:lang="nl">Classificatie</guiname>
 			<guitype>integer</guitype>
 		</gui>
