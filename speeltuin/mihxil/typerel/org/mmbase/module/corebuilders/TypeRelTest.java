@@ -8,7 +8,7 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.3 2003-02-27 14:16:26 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.4 2003-02-27 14:17:32 michiel Exp $
  */
 public class TypeRelTest extends TestCase {
 
@@ -42,11 +42,11 @@ public class TypeRelTest extends TestCase {
     protected Node createRelDefNode(String role, int dir) {
         // create a new relation-definition
         Node reldef = relDefManager.createNode();
-        reldef.setValue("sname", BIDIRROLE);
-        reldef.setValue("dname", BIDIRROLE);
-        reldef.setValue("sguiname", BIDIRROLE);
-        reldef.setValue("dguiname", BIDIRROLE);
-        reldef.setIntValue("dir", 2);
+        reldef.setValue("sname", role);
+        reldef.setValue("dname", role);
+        reldef.setValue("sguiname", role);
+        reldef.setValue("dguiname", role);
+        reldef.setIntValue("dir", dir);
         reldef.setNodeValue("builder", insRelManager);
         reldef.commit();
         createdNodes.add(reldef);
