@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL.java,v 1.7 2004-06-15 21:22:02 robmaris Exp $
+ * @version $Id: PostgreSQL.java,v 1.5.2.1 2004-06-15 21:38:35 robmaris Exp $
  * @since MMBase-1.7
  */
 public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterface   {

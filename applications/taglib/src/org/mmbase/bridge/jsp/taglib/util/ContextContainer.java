@@ -24,10 +24,10 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.26 2005-01-04 13:44:43 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.21.2.2 2004-08-31 16:45:16 rob Exp $
  **/
 
-public abstract class ContextContainer extends AbstractMap implements Map {
+public class ContextContainer extends HashMap {
     private static final Logger log = Logging.getLoggerInstance(ContextContainer.class);
 
     public static final int LOCATION_NOTSET         = -10;
@@ -95,25 +95,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
     }
 
 
-    /**
-     * Returns the Map which will is used for actually storing stuff.
-     *
-     * @since MMBase-1.8
-     */
-    protected abstract Map getBacking();
-
-    /**
-     * @since MMBase-1.8
-     */
-    public abstract void release();
-
-    public Set entrySet() {
-        return getBacking().entrySet();
-    }
-
-    private   final String id;
-    protected final ContextContainer parent;
-    protected final PageContext pageContext;
+    private String id;
+    protected ContextContainer parent;
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -121,13 +104,11 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * has an id.
      */
 
-    public ContextContainer(PageContext pc, String i, ContextContainer p) {        
+    public ContextContainer(String i, ContextContainer p) {
+        super();
         id = i;
         parent = p;
-        pageContext = pc;
     }
-
-
 
 
     public String getId() {
@@ -165,7 +146,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (key.indexOf('.') != -1) {
             throw new JspTagException("Key may not contain dots (" + key + ")");
         }
-        return getBacking().put(key, value);
+        return super.put(key, value);
     }
     public boolean containsKey(Object key) {
         throw new RuntimeException("Error, key should be string in ContextContainers!");
@@ -211,7 +192,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * Like containsKey but doesn't check for dots.
      */
     private boolean simpleContainsKey(String key, boolean checkParent) {
-        boolean result = getBacking().containsKey(key);
+        boolean result = super.containsKey(key);
         if (result == false && checkParent && parent != null) {
             result = parent.simpleContainsKey(key, true);
         }
@@ -242,7 +223,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
     private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
-        Object result =  getBacking().get(key);
+        Object result =  super.get(key);
         if (result == null && checkParent && parent != null) {
             return parent.simpleGet(key, true);
         }
@@ -273,7 +254,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
 
     public Set keySet() {
-        HashSet result = new HashSet(getBacking().keySet());
+        HashSet result = new HashSet(super.keySet());
         if (parent != null) {
             result.addAll(parent.keySet());
         }
@@ -287,7 +268,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         if (checkParent) {
             return keySet();
         } else {
-            return getBacking().keySet();
+            return super.keySet();
         }
     }
 
@@ -359,7 +340,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             
             log.debug("Valid");
             //pageContext.setAttribute(id, n);
-            if ((! newId.equals("_")) && check && isRegistered(newId)) {
+            if (check && isRegistered(newId)) {
                 JspTagException e = new JspTagException("Object with id " + newId + " was already registered in " + this);
                 if (log.isDebugEnabled()) {
                     log.debug(Logging.stackTrace(e));
@@ -658,23 +639,20 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         }
     }
 
-
-
     static String getDefaultCharacterEncoding(PageContext pageContext) {
-       String charEnc = pageContext.getResponse().getCharacterEncoding();
-       if(charEnc!=null) {
-           return charEnc;
-       }
-       log.error("page encoding not specified, using iso-8859-1");
-       return "iso-8859-1";
+        String charEnc = pageContext.getResponse().getCharacterEncoding();
+        if(charEnc!=null) {
+            return charEnc;
+        }
+        log.error("page encoding not specified, using iso-8859-1");
+        return "iso-8859-1";
     }
-
 
     public String toString() {
         if (id == null) {
-            return "the context without id (root?)" + getBacking().toString();
+            return "the context without id (root?)" + super.toString();
         } else {
-            return "context '" + id  + "'" + getBacking().toString();
+            return "context '" + id  + "'" + super.toString();
         }
     }
 

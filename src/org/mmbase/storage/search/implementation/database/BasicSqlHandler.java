@@ -14,15 +14,13 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
-import java.text.SimpleDateFormat;
-import java.text.FieldPosition;
 
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.42 2004-12-23 17:31:05 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.32.2.4 2004-09-07 12:58:47 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -93,13 +91,6 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final FieldPosition dontcareFieldPosition = new FieldPosition(SimpleDateFormat.YEAR_FIELD);
-
-    protected void appendDateValue(StringBuffer sb, Date value) {
-        dateFormat.format(value, sb, dontcareFieldPosition);
-    }
-
     /**
      * Represents field value as a string, appending the result to a
      * stringbuffer.
@@ -130,21 +121,6 @@ public class BasicSqlHandler implements SqlHandler {
             sb.append("'").
             append(stringValue).
             append("'");
-        } else if (fieldType == FieldDefs.TYPE_DATETIME) {
-            if (value instanceof Integer) {
-                sb.append(((Integer) value).intValue());
-            } else {
-                sb.append("'");
-                appendDateValue(sb, (Date) value);
-                sb.append("'");
-            }
-        } else if (fieldType == FieldDefs.TYPE_BOOLEAN) {
-            boolean isTrue = ((Boolean) value).booleanValue();
-            if (isTrue) {
-                sb.append("TRUE");
-            } else {
-                sb.append("FALSE");
-            }
         } else {
             // Numerical field:
             // represent integeral Number values as integer, other
@@ -278,7 +254,8 @@ public class BasicSqlHandler implements SqlHandler {
                     if (fieldAlias != null) {
                         sbGroups.append(getAllowedValue(fieldAlias));
                     } else {
-                        appendField(sbGroups, step, fieldName, multipleSteps);
+                        appendField(sbGroups, step,
+                            fieldName, multipleSteps);
                     }
                 } else {
 
@@ -594,46 +571,6 @@ public class BasicSqlHandler implements SqlHandler {
     }
     */
 
-    /**
-     * @javadoc
-     */
-    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
-        String datePartFunction = null;
-        switch (datePart) {
-            case -1:
-                break;
-            case FieldValueDateConstraint.YEAR:
-                datePartFunction = "YEAR";
-                break;
-            case FieldValueDateConstraint.MONTH:
-                datePartFunction = "MONTH";
-                break;
-            case FieldValueDateConstraint.DAY_OF_MONTH:
-                datePartFunction = "DAY";
-                break;
-            case FieldValueDateConstraint.HOUR:
-                datePartFunction = "HOUR";
-                break;
-            case FieldValueDateConstraint.MINUTE:
-                datePartFunction = "MINUTE";
-                break;
-            case FieldValueDateConstraint.SECOND:
-                datePartFunction = "SECOND";
-                break;
-            default:
-                throw new UnsupportedOperationException("This date partition function (" + datePart + ") is not supported.");
-        }
-        if (datePartFunction != null) {
-            sb.append("EXTRACT(");
-            sb.append(datePartFunction);
-            sb.append(" FROM ");
-        }
-        appendField(sb, step, fieldName, multipleSteps);
-        if (datePartFunction != null) {
-            sb.append(")");
-        }
-    }
-
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
@@ -732,10 +669,7 @@ public class BasicSqlHandler implements SqlHandler {
                     sb.append(overallInverse? "NOT (": "");
                 }
 
-                if (fieldConstraint instanceof FieldValueDateConstraint) {
-                    int part = ((FieldValueDateConstraint)fieldConstraint).getPart();
-                    appendDateField(sb, step, fieldName, multipleSteps, part);
-                } else if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
+                if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
                     sb.append("LOWER(");
                     appendField(sb, step, fieldName, multipleSteps);
@@ -815,6 +749,7 @@ public class BasicSqlHandler implements SqlHandler {
                 if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
                     sb.append(overallInverse? ")": "");
                 }
+
             } else {
                 throw new UnsupportedOperationException(
                 "Unknown constraint type: "
@@ -936,14 +871,16 @@ public class BasicSqlHandler implements SqlHandler {
             throw new IllegalStateException(
             "Invalid logical operator: " + compositeConstraint.getLogicalOperator()
             + ", must be either "
-            + CompositeConstraint.LOGICAL_AND + " or " + CompositeConstraint.LOGICAL_OR);
+            + CompositeConstraint.LOGICAL_AND + " or "
+            + CompositeConstraint.LOGICAL_OR);
         }
         List childs = compositeConstraint.getChilds();
 
         // Test for at least 1 child.
         if (childs.isEmpty()) {
             throw new IllegalStateException(
-            "Composite constraint has no child (at least 1 child is required).");
+            "Composite constraint has no child "
+            + "(at least 1 child is required).");
         }
 
         boolean hasMultipleChilds = childs.size() > 1;

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: MulticastChangesReceiver.java,v 1.1 2004-10-09 10:51:07 nico Exp $
+ * @version $Id: MulticastChangesReceiver.java,v 1.1.2.1 2004-10-09 10:51:43 nico Exp $
  */
 public class MulticastChangesReceiver implements Runnable {
 

@@ -9,9 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.*;
+import java.util.List;
+import java.util.Iterator;
 import org.mmbase.module.core.*;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.UriParser;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -25,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.41 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ImageCaches.java,v 1.37.2.2 2004-08-26 12:18:26 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -59,7 +60,7 @@ public class ImageCaches extends AbstractImages {
 
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters a) {
         StringBuffer servlet = new StringBuffer();
-        HttpServletRequest req = (HttpServletRequest) a.get(Parameter.REQUEST);
+        HttpServletRequest req = (HttpServletRequest) a.get("request");
         if (req != null) {
             servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
         } else {
@@ -69,24 +70,17 @@ public class ImageCaches extends AbstractImages {
         servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
-        HttpServletResponse res = (HttpServletResponse) a.get(Parameter.RESPONSE);
-        String heightAndWidth = "";
+        HttpServletResponse res = (HttpServletResponse) a.get("response");
         if (origNode != null) {
-
-            List cacheArgs =  new ParametersImpl(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
-            MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
-            //heightAndWidth = "heigth=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
-            heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
-            imageThumb = servlet.toString() + thumb.getNumber();
-            if (res != null) {
-                imageThumb = res.encodeURL(imageThumb);
-            }
+            List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
+            imageThumb = servlet.toString() + origNode.getFunctionValue("cache", cacheArgs);
+            if (res != null) imageThumb = res.encodeURL(imageThumb);
         } else {
             imageThumb = "";
         }
         String image      = servlet.toString() + node.getNumber();
         if (res != null) image = res.encodeURL(image);
-        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" + title + "\" /></a>";
+        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
     // javadoc inherited
@@ -103,7 +97,6 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
     protected MMObjectNode getCachedNode(String ckey) {
-        log.debug("Getting cached noded for " + ckey);
         List nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
@@ -148,17 +141,14 @@ public class ImageCaches extends AbstractImages {
     /**
      * Return a @link{ ByteFieldContainer} containing the bytes and object number
      * for the cached image with a certain ckey, or null, if not cached.
-     * @param ckey the ckey to search for
-     * @return null, or a @link{ByteFieldContainer} object
-     * @since MMBase-1.7
+     * @param ckey teh ckey to search for
+     * @return null, or a @link{ ByteFieldContainer} object
      */
     public ByteFieldContainer getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
         if(handleCache.contains(ckey)) {
             // found the node in the cache..
-            log.debug("Found in handleCache!");
-            ByteFieldContainer result = (ByteFieldContainer) handleCache.get(ckey);
-            log.debug("Found number " + result.number);
+            return (ByteFieldContainer) handleCache.get(ckey);
         }
         log.debug("not found in handle cache, getting it from database.");
         MMObjectNode node = getCachedNode(ckey);
@@ -177,14 +167,13 @@ public class ImageCaches extends AbstractImages {
             log.error(msg);
             throw new RuntimeException(msg);
         }
-
         ByteFieldContainer result = new ByteFieldContainer(node.getNumber(), data);
         // is this not configurable?
         // only cache small images.
-        if (data.length< (100 * 1024))  {
+        if (data.length< (100*1024))  {
             handleCache.put(ckey, result);
         }
-        return result;
+        return result;        
     }
 
     /**
@@ -206,7 +195,6 @@ public class ImageCaches extends AbstractImages {
      * method only accessable on package level, since only Images should call it..
      *
      * @param node The image node, which is the original of the cached modifications
-     * @since MMBase-1.7
      */
     protected void invalidate(MMObjectNode imageNode) {
         if (log.isDebugEnabled()) {
@@ -253,13 +241,13 @@ public class ImageCaches extends AbstractImages {
     }
 
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) {
-            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype);
-        }
-        if (ctype.equals("d")) {
+        if (log.isDebugEnabled()) {            
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
+        }        
+        if (ctype.equals("d")) {            
             handleCache.removeCacheNumber(Integer.parseInt(number));
         }
-        return super.nodeLocalChanged(machine, number, builder, ctype);
+        return super.nodeLocalChanged(machine, number, builder, ctype);        
     }
 
 

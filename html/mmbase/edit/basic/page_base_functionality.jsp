@@ -1,5 +1,5 @@
 <%-- uncomment this, if your JSP-engine is JSP2.0 (see release-notes) --%><%--@page isELIgnored="true"  
---%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*,org.mmbase.util.xml.UtilReader"
+--%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*"
 %><%!
 
 // stack stuff (for the bread-crumb). Might appear a tag for this sometime.
@@ -40,7 +40,7 @@ if (urlStack == null) {
 }
 
 
-%><mm:content postprocessor="swallow">
+%>
 <mm:import externid="pop" />
 <mm:import externid="push" />
 <mm:import externid="nopush" />
@@ -71,18 +71,18 @@ if (urlStack == null) {
   <mm:import id="liststyle"   externid="mmjspeditors_liststyle" from="parameters,cookie,this">short</mm:import>  
   <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
   <mm:import id="lang"        externid="mmjspeditors_language"  from="parameters,cookie,this" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
-  <mm:import id="country"     externid="mmjspeditors_country"   from="parameters,cookie,this" />
   <mm:import id="method"      externid="mmjspeditors_method"    from="parameters,cookie,this" >loginpage</mm:import>
   <mm:import id="session"     externid="mmjspeditors_session"   from="parameters,cookie,this">mmbase_editors_cloud</mm:import>
   <mm:import externid="batches" from="parameters,this" >30</mm:import>
 </mm:context>
 
-<mm:import id="rank"><%= UtilReader.get("editors.xml").getProperties().getProperty("rank", "basic user")%></mm:import>
-
-
 <mm:write referid="config" session="mmeditors_config" />
-</mm:content><% 
-java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
-%><mm:locale language="$config.lang" country="$config.country" jspvar="locale"><%
+
+<% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
+   java.util.Locale locale = null; %>
+<mm:write referid="config.lang" jspvar="lang" vartype="string">
+<%
+  locale  =  new java.util.Locale(lang, "");
   m = java.util.ResourceBundle.getBundle("org.mmbase.jspeditors.editors", locale);
-%></mm:locale>
+%>
+</mm:write>

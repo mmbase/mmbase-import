@@ -13,7 +13,7 @@ package org.mmbase.module.core;
 /**
  * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.4 2004-10-09 10:51:03 nico Exp $
+ * @version $Id: MMBaseChangeInterface.java,v 1.3.2.1 2004-10-09 10:51:47 nico Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {

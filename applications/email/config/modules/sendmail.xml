@@ -7,10 +7,5 @@
     <property name="encoding">ISO-8859-1</property>
     <property name="context">java:comp/env</property>
     <property name="datasource">mail/Session</property>
-    <!--
-    if you don't want to use jndi you can remove the above properties
-    and set the mailhost using the mailhost property
-    <property name="mailhost">smtp</property>
-    -->
   </properties>
 </module>

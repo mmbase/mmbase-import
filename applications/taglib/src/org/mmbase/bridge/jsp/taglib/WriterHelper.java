@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.mmbase.util.StringSplitter;
 import org.mmbase.util.transformers.CharTransformer;
-import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.57 2005-01-06 20:24:33 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.47.2.1 2004-10-15 18:38:52 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -39,8 +39,6 @@ public class WriterHelper extends BodyTagSupport {
     private static final Logger log = Logging.getLoggerInstance(WriterHelper.class);
     public static boolean NOIMPLICITLIST = true;
     public static boolean IMPLICITLIST   = false;
-
-    public static final String STACK_ATTRIBUTE = "org_mmbase_taglib__stack";
 
     static final int TYPE_UNKNOWN = -10;
     static final int TYPE_UNSET   = -1;
@@ -59,9 +57,8 @@ public class WriterHelper extends BodyTagSupport {
     static final int TYPE_NODE    = 20;
     static final int TYPE_CLOUD   = 21;
     static final int TYPE_TRANSACTION   = 22;
-    static final int TYPE_FIELD         = 23;
-    static final int TYPE_FIELDVALUE    = 24;
-    static final int TYPE_BOOLEAN       = 25;
+    static final int TYPE_FIELD   = 23;
+    static final int TYPE_FIELDVALUE   = 24;
 
 
     static final int stringToType(String tt) {
@@ -98,8 +95,6 @@ public class WriterHelper extends BodyTagSupport {
             return TYPE_FIELD;
         } else if ("fieldvalue".equals(t)) {
             return TYPE_FIELDVALUE;
-        } else if ("boolean".equals(t)) {
-            return TYPE_BOOLEAN;
         } else {
             return TYPE_UNKNOWN;
         }
@@ -114,14 +109,6 @@ public class WriterHelper extends BodyTagSupport {
     private   int     vartype          = TYPE_UNSET;
 
     private   ContextReferrerTag thisTag  = null;
-
-
-    /**
-     * 'underscore' stack, containing the values for '_'.
-     * @since MMBase_1.8
-     */
-    private   Stack _Stack;
-    private   boolean pushed = false;
 
     private   boolean hasBody          = false;
 
@@ -241,115 +228,131 @@ public class WriterHelper extends BodyTagSupport {
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         pageContext = thisTag.getPageContext();
         value = null;
-        if (noImplicitList && vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
+        switch (vartype) {
+            // these accept a value == null (meaning that they are empty)
+        case TYPE_LIST:
+            if (v instanceof String || v == null) {
+                if (! "".equals(v)) {
+                    value = StringSplitter.split((String) v);
+                } else {
+                    value = new ArrayList();
+                }
+            } else if (v instanceof List) {
+                value = v;
+            } else if (v instanceof Collection) {
+                value = new ArrayList((Collection) v);
+            } else { // dont' know any more
+                value = v; // wil perhaps fail
+                
+            }
+            setJspvar();
+            return;
+        case TYPE_VECTOR: // I think the type Vector should be deprecated?
+            if (v == null) {
+                // if a vector is requested, but the value is not present,
+                // make a vector of size 0.
+                value = new Vector();
+            } else if (! (v instanceof Vector)) {
+                // if a vector is requested, but the value is not a vector,
+                if (! (v instanceof Collection)) {
+                    // not even a Collection!
+                    // make a vector of size 1.
+                    value = new Vector();
+                    ((Vector)value).add(v);
+                } else {
+                    value = new Vector((Collection)v);
+                }
+            } else {
+                value = v;
+            }
+            setJspvar();
+            return;
+        }
+
+        // other can't be valid and still do something reasonable with 'null'.
+        if (v == null) {
+            value = null;
+            setJspvar();
+            return;
+        }
+
+        if (noImplicitList) {
             // Take last of list if vartype defined not to be a list:
             if (v instanceof List) {
-                List l = (List) v;
-                if (l.size() > 0) {
-                    v = l.get(l.size() - 1);
-                } else {
-                    v = null;
+                if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
+                    List l = (List) v;
+                    if (l.size() > 0) {
+                        v = l.get(l.size() - 1);
+                    } else {
+                        v = null;
+                    }
                 }
             }
         }
-        if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR) {
-            switch (vartype) {
-                // these accept a value == null (meaning that they are empty)
-                case TYPE_LIST:
-                    if (! (v instanceof List)) {
-                        v = Casting.toList(v);
-                    }
-                    break;
-                case TYPE_VECTOR: // I think the type Vector should be deprecated?
-                    if (v == null) {
-                        // if a vector is requested, but the value is not present,
-                        // make a vector of size 0.
-                        v = new Vector();
-                    } else if (! (v instanceof Vector)) {
-                        // if a vector is requested, but the value is not a vector,
-                        if (! (v instanceof Collection)) {
-                            // not even a Collection!
-                            // make a vector of size 1.
-                            Vector vector = new Vector();
-                            vector.add(v);
-                            v = vector;
-                        } else {
-                            v = new Vector((Collection)v);
-                        }
-                    }
-                    break;
-                case TYPE_UNSET:
-                    v = v; // leave it as it was.
-                    break;
-                case TYPE_INTEGER:
-                    if (! (v instanceof Integer)) {
-                        v = Casting.toInteger(v);
-                    }
-                    break;
-                case TYPE_DOUBLE:
-                    if (! (v instanceof Double)) {
-                        v = new Double(Casting.toDouble(v));
-                    }
-                    break;
-                case TYPE_LONG:
-                    if (! (v instanceof Long)) {
-                        v = new Long(Casting.toLong(v));
-                    }
-                    break;
-                case TYPE_FLOAT:
-                    if (! (v instanceof Float)) {
-                        v = new Float(Casting.toFloat(v));
-                    }
-                    break;
-                case TYPE_DECIMAL:
-                    if (! (v instanceof java.math.BigDecimal)) {
-                        v =  new java.math.BigDecimal(v.toString());
-                    }
-                    break;
-                case TYPE_STRING:
-                    if (! (v instanceof String)) {
-                        v = Casting.toString(v);
-                    }
-                    break;
-                case TYPE_DATE:
-                    if (! (v instanceof Date)) {
-                        v = Casting.toDate(v);
-                    }
-                    break;
-                case TYPE_BOOLEAN:
-                    if (! (v instanceof Boolean)) {
-                        v = new Boolean(Casting.toBoolean(v));
-                    }
-                    break;
-                case TYPE_NODE:
-                    if (! (v instanceof org.mmbase.bridge.Node)) {
-                        throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
-                    }
-                    break;
+
+        // types which cannot accept null;
+        switch (vartype) {
+        case TYPE_UNSET:
+            value = v; // leave it as it was.
+            setJspvar();
+            return;
+        case TYPE_INTEGER:
+            if (! (v instanceof Integer)) {
+                value = Casting.toInteger((v.toString()));
+                setJspvar();
+                return;
             }
-            value = v;
+            break;
+        case TYPE_DOUBLE:
+            if (! (v instanceof Double)) {
+                value = new Double(v.toString());
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_LONG:
+            if (! (v instanceof Long)) {
+                value = new Long(v.toString());
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_FLOAT:
+            if (! (v instanceof Float)) {
+                value =  new Float(v.toString());
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_DECIMAL:
+            if (! (v instanceof java.math.BigDecimal)) {
+                value =  new java.math.BigDecimal(v.toString());
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_STRING:
+            if (! (v instanceof String)) {
+                value = Casting.toString(v);
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_DATE:
+            if (! (v instanceof Date)) {
+                value = Casting.toDate(v);
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_NODE:
+            if (! (v instanceof org.mmbase.bridge.Node)) {
+                throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
+            }
+            break;
         }
-
-        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
-        if (_Stack == null) {
-            _Stack = new Stack();
-            pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
-        }
-
+        if (value == null) value = v;
         setJspvar();
-        if (pushed) {
-            if (log.isDebugEnabled()) {
-                log.debug("Value was set already by this tag");
-            }
-            _Stack.set(_Stack.size() - 1, value);
-        } else {
-            _Stack.push(value);
-            pushed = true;
-        }
-        pageContext.setAttribute("_", Casting.wrapToString(value));
-        if (log.isDebugEnabled()) {
-            log.debug("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
-        }
     }
 
 
@@ -364,15 +367,10 @@ public class WriterHelper extends BodyTagSupport {
 
     private void setJspvar() throws JspTagException {
         if (jspvar == null) return;
-
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
         if (value != null) {
-            Object was = pageContext.getAttribute(jspvar);
-            if (!pushed && was != null && ! was.equals(value)) {
-                // throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was.getClass().getName() + " " + was + "), can't write " + value.getClass().getName() + " " + value + " in it. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
-            }
             // if the underlying implementation uses a Hashtable (TomCat) then the value may not be null
             // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
             pageContext.setAttribute(jspvar, value);
@@ -416,7 +414,7 @@ public class WriterHelper extends BodyTagSupport {
             }
             if (escaper != null) {
                 w.write(escaper.transform(Casting.toString(value)));
-                return w;
+                return w;                
             } else {
                 return  Casting.toWriter(w, value);
             }
@@ -445,34 +443,14 @@ public class WriterHelper extends BodyTagSupport {
     }
 
     /**
-     * Pops one value of the _-stack, if not yet happend, if stack exists.
-     * Puts the value of peek in "_" then, if not the stack is empty now, in which case "_" is removed.
-     * @since MMBase-1.8
-     */
-    private void pop_Stack() throws JspTagException {
-        if (_Stack != null) {
-            Object pop = _Stack.pop();
-            if (log.isDebugEnabled()) {
-                log.debug("Removed " + pop +  "( " + (pop == null ? "NULL" : pop.getClass().getName()) + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
-            }
-            if (_Stack.empty()) {
-                pageContext.removeAttribute("_");
-            } else {
-                pageContext.setAttribute("_", Casting.wrapToString(_Stack.peek()));
-            }
-            _Stack = null;
-        }
-    }
-
-    /**
      * Sets the bodycontent (to be used in doEndTag)
      * @since MMBase-1.7
      */
-    public int doAfterBody() throws JspTagException {
+
+    public int doAfterBody() throws JspException {
         bodyContent = thisTag.getBodyContent();
-        pop_Stack();
-        pushed = false;
-        return SKIP_BODY;
+        //
+        return super.doAfterBody();
     }
 
     /**
@@ -498,7 +476,6 @@ public class WriterHelper extends BodyTagSupport {
         } catch (IOException ioe){
             throw new TaglibException(ioe);
         }
-        pop_Stack();
         release();
         log.debug("End of doEndTag");
         return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
@@ -510,8 +487,6 @@ public class WriterHelper extends BodyTagSupport {
         bodyContent   = null;
         pageContext   = null;
         value         = null;
-        _Stack        = null;
-        pushed        = false;
     }
 
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mediasources"   maintainer="mediaproject.mmbase.org" version="0" extends="object">
+<builder name="mediasources" extends="object">
   <status>active</status>
   
   <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
@@ -19,13 +19,6 @@
     <description xml:lang="en">Descriptions of the physical media file</description>
     <description xml:lang="nl">Beschrijving van het daadwerkelijke media bestand</description>
   </descriptions>
-
-	<properties>
-    <!--
-    If no provider objects are related to a media-source, an URL can be generated with the 'default' provider, if one is specified here.
-    -->    
-		<property name="default.provider.alias">default.provider</property>
-	</properties>
   
   <fieldlist>
     <field>
@@ -47,7 +40,7 @@
       </gui>
       <editor>
         <positions>
-          <list>1</list>
+          <input>1</input><list>1</list><search>1</search>
         </positions>
       </editor>
       <db>
@@ -56,13 +49,14 @@
       </db>
     </field>
     
+    <!-- <field> 'codec'  -->
     <field>     
       <descriptions>
         <description xml:lang="en">
-          Codec stands for Coder/Decoder. Basically it is a piece of software or a driver that adds
-          a support for certain video/audio format for your operating system. With codec, your system
-          recognizes the format the codec is built for and allows you to play the audio/video file (=decode)
-          or in some cases, to change another audio/video file into that format (=(en)code).
+          I'v not the faintest idea what this is.
+        </description>
+        <description xml:lang="nl">
+          Geen idee.
         </description>
       </descriptions>
       <gui>
@@ -70,20 +64,25 @@
         <guiname xml:lang="nl">Codec</guiname>
         <guitype>org.mmbase.applications.media.resources.codecs</guitype>
       </gui>
+      <editor>
+        <positions>
+          <input>2</input><list>2</list><search>2</search>
+        </positions>
+      </editor>
       <db>
         <name>codec</name>
         <type state="persistent" notnull="false">INTEGER</type>
       </db>
     </field>
-
-
+    
+    <!-- <field> 'bitrate'  -->
     <field>
       <descriptions>
         <description xml:lang="en">
-          Defines how much physical space one second of audio or video takes in bits.
+          I'v not the faintest Idea what this is.
         </description>
         <description xml:lang="nl">
-          Hoeveel bit opslagcapaciteit per seconde.
+          Geen idee.
         </description>
       </descriptions>
       <gui>
@@ -91,16 +90,25 @@
         <guiname xml:lang="nl">Bitrate</guiname>
         <guitype>integer</guitype>
       </gui>
+      <editor>
+        <positions>
+          <input>3</input><list>3</list><search>3</search>
+        </positions>
+      </editor>
       <db>
         <name>bitrate</name>
         <type state="persistent" notnull="false">INTEGER</type>
       </db>
     </field>
     
+    <!--  <field> 'channels'  -->
     <field>
       <descriptions>
         <description xml:lang="en">
-          Number of channels in this stream.
+          I'v not the faintest Idea what this is.
+        </description>
+        <description xml:lang="nl">
+          Geen idee.
         </description>
       </descriptions>
 
@@ -109,6 +117,11 @@
         <guiname xml:lang="nl">Kanalen</guiname>
         <guitype>org.mmbase.applications.media.builders.resources.channels</guitype>
       </gui>
+      <editor>
+        <positions>
+          <input>4</input><list>4</list><search>4</search>
+        </positions>
+      </editor>
       <db>
         <name>channels</name>
         <type state="persistent" notnull="false">INTEGER</type>
@@ -119,7 +132,7 @@
       <descriptions>
         <description xml:lang="en">
           Relative URL of the stream on the server. The url of the
-          server is determined by the related mediaprovider object.
+          server is determined by ?
         </description>
         <description xml:lang="nl">
           Relatieve URL.
@@ -132,15 +145,16 @@
       </gui>
       <editor>
         <positions>
-          <list>7</list>
+          <input>7</input><list>7</list><search>7</search>
         </positions>
       </editor>
       <db>
         <name>url</name>
-        <type state="persistent" key="true" size="255" notnull="true">STRING</type>
+        <type state="persistent" size="255" notnull="false">STRING</type>
       </db>
     </field>
 
+  <!-- <field> 'state'  -->
     <field>
       <descriptions>
         <description xml:lang="en">
@@ -154,7 +168,7 @@
       </gui>
       <editor>
         <positions>
-          <list>8</list>
+          <input>8</input><list>8</list><search>8</search>
         </positions>
       </editor>
       <db>
@@ -183,28 +197,6 @@
       <db>
         <name>filesize</name>
         <type state="persistent" notnull="false">LONG</type>
-      </db>
-    </field>
-
-    <field>
-      <descriptions>
-        <description xml:lang="en">
-          Last modified time-stamp of the file which is backing the stream.
-        </description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">File's timestamp</guiname>
-        <guiname xml:lang="nl">Laatste wijziging van het bestand</guiname>
-        <guitype>eventtime</guitype>
-      </gui>
-      <editor>
-        <positions>
-          <input>-1</input><list>9</list><search>-1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>filelastmodified</name>
-        <type key="true" state="persistent" notnull="false">LONG</type>
       </db>
     </field>
   </fieldlist>

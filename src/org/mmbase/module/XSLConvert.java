@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
 */
 package org.mmbase.module;
 
@@ -24,15 +24,13 @@ import org.mmbase.util.logging.Logging;
  *   $MOD-XSLCONVERT-xmlPath-xslFile
  * where xmlPath is the path relative to mmbase.config and xslFile is
  * and xsl file located in the subdirectory xslt of mmbase.config.
- *
- * @application XSL or Tools
- * @move org.mmbase.util.xml
+ * 
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLConvert.java,v 1.12 2004-10-25 08:08:36 pierre Exp $
+ * @version $Id: XSLConvert.java,v 1.8 2003-03-10 11:50:13 pierre Exp $
  */
 public class XSLConvert extends ProcessorModule {
 
-    private static final Logger log = Logging.getLoggerInstance(XSLConvert.class);
+    private static Logger log = Logging.getLoggerInstance(XSLConvert.class.getName()); 
 
     private String configpath;
 
@@ -40,22 +38,45 @@ public class XSLConvert extends ProcessorModule {
         configpath = MMBaseContext.getConfigPath();
     }
 
+
+
+    public void reload() {}
+
+
+
+
+    public void onload() {}
+
+
+
+
+    public void unload() {}
+
+
+
+
+    public void shutdown() {}
+
+
+    /**
+     * CALC, a support module for servscan.
+     */
     public XSLConvert() {}
 
     /**
      * Generate a list of values from a command to the processor
-     *
+     * 
      * NOT IMPLEMENTED FOR XSLConvert
      */
-    public Vector  getList(PageInfo sp,StringTagger tagger, String value) {
+    public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         return null;
     }
 
     /**
      * Execute the commands provided in the form values
      */
-    public boolean process(PageInfo sp, Hashtable cmds,Hashtable vars) {
-        return false;
+    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
+        return(false);
     }
 
     /**
@@ -67,7 +88,7 @@ public class XSLConvert extends ProcessorModule {
     *  - xmlPath is the path relative to mmbase.config and,
     *  - xslFile is xsl file located in the subdirectory xslt of mmbase.config.
     */
-    public String replace(PageInfo sp, String cmds) {
+    public String replace(scanpage sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         int count = tok.countTokens();
         String[] argv = new String[count];
@@ -106,11 +127,12 @@ public class XSLConvert extends ProcessorModule {
             log.debug("XML file = "+xmlPath);
             log.debug("XSL file = "+xslPath);
         }
-        return XSLTransformer.transform(xmlPath,xslPath);
+        XSLTransformer T = new XSLTransformer();
+        return T.transform(xmlPath,xslPath);
     }
 
     public String getModuleInfo() {
-        return "Support XSL transformations of XML files, cjr@dds.nl";
+        return("Support XSL transformations of XML files, cjr@dds.nl");
     }
 
 }

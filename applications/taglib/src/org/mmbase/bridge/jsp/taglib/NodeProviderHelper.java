@@ -14,8 +14,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.6 2005-01-06 20:24:33 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.2.2.1 2004-07-05 17:19:59 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -33,7 +32,6 @@ public class NodeProviderHelper implements NodeProvider {
     private static final Logger log = Logging.getLoggerInstance(NodeProviderHelper.class);
         
     private   Node   node;        
-    private   Query  query = null;
     private   String jspvar = null;
     private   boolean  modified = false;
     private   ContextReferrerTag thisTag;
@@ -74,17 +72,6 @@ public class NodeProviderHelper implements NodeProvider {
     }
     
 
-    public void setGeneratingQuery(Query q) {
-        query = q;
-    }
-
-    public Query getGeneratingQuery() throws JspTagException {
-        if (query == null) {
-            query = Queries.createNodeQuery(getNodeVar());
-        } 
-        return query;
-    }
-
     public String getId() {
         try {
             return (String) thisTag.id.getValue(thisTag);
@@ -93,25 +80,18 @@ public class NodeProviderHelper implements NodeProvider {
         }
     }
 
-
-    boolean checked = false; // need to check jspvar/pagecontext-var conflict only first time.
+    
     /**
      * Fill the jsp and context vars
      *
      */
 
     public void fillVars() throws JspTagException {    
+        if (jspvar != null && node != null) {
+            thisTag.getPageContext().setAttribute(jspvar, node);
+        }
         if (thisTag.id != Attribute.NULL) {
             thisTag.getContextProvider().getContextContainer().registerNode(getId(), node);
-        }
-        if (jspvar != null && node != null && ! checked) {
-            PageContext pc = thisTag.getPageContext();
-            Object was = pc.getAttribute(jspvar);
-            if (was != null && ! was.equals(node)) {
-                throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was + "), can't write " + node + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
-            }
-            checked = true;
-            pc.setAttribute(jspvar, node);
         }
     }
                
@@ -150,7 +130,7 @@ public class NodeProviderHelper implements NodeProvider {
     **/
     public int doAfterBody() throws JspTagException {
         if (modified) {
-            log.service("Committing node " + node.getNumber() + " for user " + node.getCloud().getUser().getIdentifier());
+            log.service("node was changed ! calling commit");
             node.commit();
         }
         return BodyTagSupport.SKIP_BODY;
@@ -160,7 +140,6 @@ public class NodeProviderHelper implements NodeProvider {
         // to enable gc:
         node     = null;
         modified = false;
-        checked  = false;
         return BodyTagSupport.EVAL_PAGE;
     }
 }

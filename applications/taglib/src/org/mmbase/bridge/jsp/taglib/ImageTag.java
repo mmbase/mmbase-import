@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.UriParser;
 import org.mmbase.module.builders.AbstractServletBuilder;
 import org.mmbase.module.builders.Images;
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.51 2005-01-03 18:06:21 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.45.2.2 2004-07-26 20:12:16 nico Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -93,25 +93,20 @@ public class ImageTag extends FieldTag {
             // the node/image itself
             number = node.getStringValue("number");
         } else {
-            if ("false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.url.convert"))) {
-                number = "" + node.getNumber() + "+" + t;
-            } else {
-                // the cached image
-                number = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
-            }
+            // the cached image
+            number = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
         }
 
         if (makeRelative == null) {            
-            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");            
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
 
-
         String servletPath;
         {
-            Parameters args = new ParametersImpl(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
+            Parameters args = new Parameters(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
                 .set("session",  sessionName)
-                .set("context",  makeRelative.booleanValue() ?
+                .set("context",  makeRelative.booleanValue() ? 
                      UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") :
                      req.getContextPath()
                      )
@@ -119,8 +114,6 @@ public class ImageTag extends FieldTag {
                 ;
             servletPath = node.getFunctionValue("servletpath", args).toString();
         }
-
-        super.handleEditTag();
 
         helper.useEscaper(false);
         helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));

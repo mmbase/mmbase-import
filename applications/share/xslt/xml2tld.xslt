@@ -15,7 +15,6 @@
 </xsl:text>
     <taglib>
       <xsl:apply-templates select="tlibversion | shortname | jspversion | uri | info" />
-      <xsl:apply-templates select="function" mode="base" />
       <xsl:apply-templates select="tag" mode="base" />
     </taglib>
   </xsl:template>
@@ -32,14 +31,6 @@
       <xsl:apply-templates select="attribute"/> 
     </tag>
   </xsl:template>
-
-  <xsl:template match="function" mode="base" >
-    <function>
-      <xsl:apply-templates select="name | description | function-class | function-signature | example" />
-      <xsl:apply-templates select="extends" />
-      <xsl:apply-templates select="attribute"/> 
-    </function>
-  </xsl:template>
   
   <xsl:template match="tag|taginterface" mode="extends">
     <xsl:apply-templates select="extends" />
@@ -54,7 +45,7 @@
     <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*" mode="extends" />
   </xsl:template>
   
-  <xsl:template match="tlibversion|shortname|jspversion|uri|name|tagclass|teiclass|bodycontent|required|rtexprvalue|example|function-class|function-signature">
+  <xsl:template match="tlibversion|shortname|jspversion|uri|name|tagclass|teiclass|bodycontent|required|rtexprvalue">
     <xsl:copy-of select="." />
   </xsl:template>
   

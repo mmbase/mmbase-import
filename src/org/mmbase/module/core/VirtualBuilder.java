@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.11 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: VirtualBuilder.java,v 1.9 2003-12-17 20:45:03 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -156,15 +156,14 @@ public class VirtualBuilder extends MMObjectBuilder {
     }
 
     /**
-     * Performs some necessary postprocessing on nodes retrieved from a
+     * Performs some necessary postprocessing on nodes retrieved from a 
      * search query.
-     * Since virtual nodes are not real nodes, this method is empty,
-     * overriding the behaviour defined in
+     * Since virtual nodes are not real nodes, this method is empty, 
+     * overriding the behaviour defined in 
      * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)
      * MMObjectBuilder}.
-     *
+     * 
      * @param results The (virtual) nodes.
-     * @since MMBase-1.7
      */
     public void processSearchResults(List results) {
         // empty!

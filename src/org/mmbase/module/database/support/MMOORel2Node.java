@@ -29,8 +29,8 @@ import org.mmbase.util.logging.Logging;
 * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
 *             StorageManager implementation.
 * @author Daniel Ockeloen
-* @version $Id: MMOORel2Node.java,v 1.12 2004-06-15 21:18:28 robmaris Exp $
-* @version $Id: MMOORel2Node.java,v 1.12 2004-06-15 21:18:28 robmaris Exp $
+* @version $Id: MMOORel2Node.java,v 1.11.2.1 2004-06-15 21:38:34 robmaris Exp $
+* @version $Id: MMOORel2Node.java,v 1.11.2.1 2004-06-15 21:38:34 robmaris Exp $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 

@@ -18,8 +18,6 @@ import org.mmbase.bridge.util.fields.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.functions.Function;
-import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 
@@ -32,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.137 2004-12-14 08:52:47 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.123.2.4 2004-07-20 13:03:08 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -100,7 +98,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * from the cloud (such as a temporary nodemanager for a result list).
      * @param node the MMObjectNode to base the node on
      * @param nodeManager the NodeManager to use for administrating this Node
-     * @throws IllegalArgumentException If node is null
      */
     BasicNode(MMObjectNode node, NodeManager nodeManager) {
         this.nodeManager = nodeManager;
@@ -112,8 +109,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Instantiates a node, linking it to a specified cloud
      * The NodeManager for the node is requested from the Cloud.
      * @param node the MMObjectNode to base the node on
-     * @param cloud the cloud to which this node belongs
-     * @throws IllegalArgumentException If node is null
+     * @param Cloud the cloud to which this node belongs
      */
     BasicNode(MMObjectNode node, Cloud cloud) {
         this.cloud = (BasicCloud) cloud;
@@ -124,7 +120,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * Instantiates a new node (for insert), using a specified nodeManager.
      * @param node a temporary MMObjectNode that is the base for the node
-     * @param cloud the cloud to create the node in
+     * @param nodeManager the node manager to create the node with
      * @param id the id of the node in the temporary cloud
      */
     BasicNode(MMObjectNode node, Cloud cloud, int id) {
@@ -230,7 +226,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     protected void setNode(MMObjectNode n) {
         if (n == null) {
-            throw new IllegalArgumentException("Passed Node is null");
+            String message = "Passed Node is null";
+            log.error(message);
+            throw new IllegalArgumentException(message);
         }
         noderef = n;
     }
@@ -255,7 +253,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Returns whether this is a new (not yet committed) node.
-     * @return is a new node
      */
     boolean isNew() {
         return isnew;
@@ -328,35 +325,25 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Setting value with default method (depending on field's type)
-     * @param fieldName name of the field
-     * @param value set value
      */
     public void setValue(String fieldName, Object value) {
         int type = nodeManager.getField(fieldName).getType();
-        if (value == null) {
-            setValueWithoutProcess(fieldName, value);
-        } else {
-            switch(type) {
-                case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-                case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
-                case Field.TYPE_BYTE:    setByteValue(fieldName, Casting.toByte(value)); break;
-                case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-                case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-                case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-                case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
-                case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
-                case Field.TYPE_DATETIME:setDateValue(fieldName, Casting.toDate(value)); break;
-                case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
-                case Field.TYPE_LIST:    setListValue(fieldName, Casting.toList(value)); break;
-                default:                 setValueWithoutProcess(fieldName, value);
-            }
+        switch(type) {
+        case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+        case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+        case Field.TYPE_BYTE:    setByteValue(fieldName, Casting.toByte(value)); break;
+        case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+        case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+        case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+        case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
+        case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
+        default:                 setValueWithoutProcess(fieldName, value);
         }
+
     }
 
     /**
      * Like setValue, but withouth the valueinterceptor, this is called by nthe other set-values.
-     * @param fieldName name of field
-     * @param value new value of the field
      * @todo setting certain specific fields (i.e. snumber) should be directed to a dedicated
      *       method such as setSource(), where applicable.
      * @since MMBase-1.7
@@ -379,8 +366,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Protected method to be able to set rnumber when creating a relation.
-     * @param fieldName name of field
-     * @param value new value of field
      * @since MMBase-1.7
      */
     protected void setValueWithoutChecks(String fieldName, Object value) {
@@ -392,24 +377,16 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setObjectValue(String fieldName, Object value) {
-        value = ValueIntercepter.processSet(0, this, nodeManager.getField(fieldName), value);
+        value = (Node) ValueIntercepter.processSet(0, this, nodeManager.getField(fieldName), value);
         setValueWithoutProcess(fieldName, value);
     }
 
 
     public void setBooleanValue(String fieldName, boolean value) {
-        Boolean bool = (Boolean) ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), Boolean.valueOf(value));
-        setValueWithoutProcess(fieldName, bool);
-    }
-
-    public void setDateValue(String fieldName, Date value) {
-        value = (Date) ValueIntercepter.processSet(Field.TYPE_DATETIME, this, nodeManager.getField(fieldName), value);
-        setValueWithoutProcess(fieldName, value);
-    }
-
-    public void setListValue(String fieldName, List value) {
-        value = (List) ValueIntercepter.processSet(Field.TYPE_LIST, this, nodeManager.getField(fieldName), value);
-        setValueWithoutProcess(fieldName, value);
+        Boolean booleanValue = new Boolean(value);
+        setValue(fieldName, booleanValue);
+        //booleanValue = (Boolean) ValueIntercepter.processSet(Field.TYPE_BOOLEAN, this, nodeManager.getField(fieldName), booleanValue);
+        //setValueWithoutProcess(fieldName, booleanValue);
     }
 
     public void setNodeValue(String fieldName, Node value) {
@@ -453,9 +430,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setStringValue(String fieldName, String value) {
-log.info("setString on node " + getNumber() +" for "+fieldName+" : "+value);
+//        log.info("setString on node " + getNumber());
         value = (String) ValueIntercepter.processSet(Field.TYPE_STRING, this, nodeManager.getField(fieldName), value);
-log.info("setString :" + value);
         setValueWithoutProcess(fieldName, value);
     }
 
@@ -472,29 +448,26 @@ log.info("setString :" + value);
 
 
     public Object getValue(String fieldName) {
-        Object value = noderef.getValue(fieldName);
-        if (value == null || value == MMObjectNode.VALUE_NULL) return null;
         if (nodeManager.hasField(fieldName)) {
             int type = nodeManager.getField(fieldName).getType();
+            Object value = noderef.getValue(fieldName);
+            if (value == null || value == MMObjectNode.VALUE_NULL) return null;
             switch(type) {
-                case Field.TYPE_STRING:  return getStringValue(fieldName);
-                case Field.TYPE_BYTE:    return getByteValue(fieldName);
-                case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
-                case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-                case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-                case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
-                case Field.TYPE_XML:     return getXMLValue(fieldName);
-                case Field.TYPE_NODE:    return getNodeValue(fieldName);
-                case Field.TYPE_BOOLEAN: return new Boolean(getBooleanValue(fieldName));
-                case Field.TYPE_DATETIME:return getDateValue(fieldName);
-                case Field.TYPE_LIST:    return getListValue(fieldName);
-                default:
-                    log.error("Unknown fieldtype '" + type + "'");
-                    return value;
+            case Field.TYPE_STRING:  return getStringValue(fieldName);
+            case Field.TYPE_BYTE:    return getByteValue(fieldName);
+            case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+            case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+            case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+            case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+            case Field.TYPE_XML:     return getXMLValue(fieldName);
+            case Field.TYPE_NODE:    return getNodeValue(fieldName);
+            default:
+                log.error("Unknown fieldtype '" + type + "'");
+                return value;
             }
         } else {
             //log.warn("Requesting value of unknown field '" + fieldName + "')");
-            return value;
+            return noderef.getValue(fieldName);
         }
 
     }
@@ -507,15 +480,9 @@ log.info("setString :" + value);
         return result;
     }
 
+
     public boolean getBooleanValue(String fieldName) {
         return noderef.getBooleanValue(fieldName);
-    }
-
-    public Date getDateValue(String fieldName) {
-        return noderef.getDateValue(fieldName);
-    }
-    public List getListValue(String fieldName) {
-        return noderef.getListValue(fieldName);
     }
 
     public Node getNodeValue(String fieldName) {
@@ -599,6 +566,10 @@ log.info("setString :" + value);
         return new BasicFieldValue(this, field);
     }
 
+    public FieldValue getFunctionValue(String functionName, List arguments) {
+        return new BasicFunctionValue(this, getNode(), getNode().getFunctionValue(functionName, arguments));
+    }
+
     public Document getXMLValue(String fieldName) {
         return getNode().getXMLValue(fieldName);
     }
@@ -616,11 +587,6 @@ log.info("setString :" + value);
             cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
         edit(ACTION_COMMIT);
-        FieldIterator fi = nodeManager.getFields().fieldIterator();
-        while (fi.hasNext()) {
-            Field field = fi.nextField();
-            ValueIntercepter.commit(this, field);
-        }
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();
@@ -849,13 +815,6 @@ log.info("setString :" + value);
 
 
     /**
-     * Returns a list of relations of the given node.
-     * @param role role of the relation
-     * @param nodeManager node manager on the other side of the relation
-     * @param searchDir direction of the relation
-     * @return list of relations
-     * @throws NotFoundException
-     *
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
@@ -979,10 +938,6 @@ log.info("setString :" + value);
     }
 
     /**
-     * @param nodeManager node manager on the other side of the relation
-     * @param role role of the relation
-     * @param searchDir direction of the relation
-     * @return List of related nodes
      * @see Queries#createRelatedNodesQuery Should perhaps be implemented with that.
      * @since MMBase-1.6
      */
@@ -1184,8 +1139,6 @@ log.info("setString :" + value);
      * and (if needed) on their owning clouds.
      *
      * @param o the object to compare it with
-     * @return 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
-     * and +1 if the object passed is a NodeManager and smaller than this manager.
      */
     public int compareTo(Object o) {
         Node n = (Node)o;
@@ -1218,8 +1171,6 @@ log.info("setString :" + value);
     }
 
     /**
-     * @see java.lang.Object#hashCode()
-     *
      * @since MMBase-1.6.2
      */
     public int hashCode() {
@@ -1230,38 +1181,10 @@ log.info("setString :" + value);
      * Compares two nodes, and returns true if they are equal.
      * This effectively means that both objects are nodes, and they both have the same number and cloud
      * @param o the object to compare it with
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
         return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && cloud.equals(((Node)o).getCloud());
-    }
 
-    public Set getFunctions() {
-        Set functions = getNode().getFunctions();
-        // wrap functions
-        Set functionSet = new HashSet();
-        for (Iterator i = functions.iterator(); i.hasNext(); ) {
-            Function fun = (Function)i.next();
-            functionSet.add(new BasicFunction(this,fun));
-        }
-        return functionSet;
-    }
-
-    public Function getFunction(String functionName) {
-        Function function = getNode().getFunction(functionName);
-        if (function == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
-        }
-        return new BasicFunction(this, function);
-    }
-
-    public Parameters createParameters(String functionName) {
-        return getFunction(functionName).createParameters();
-    }
-
-    public FieldValue getFunctionValue(String functionName, List parameters) {
-        return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
     }
 
 }

@@ -12,13 +12,14 @@ package org.mmbase.security.implementation.basic;
 
 import org.w3c.dom.Element;
 import org.mmbase.util.XMLBasicReader;
-import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.security.Rank;
+import org.mmbase.security.UserContext;
+import org.mmbase.security.Authentication;
 
-import org.mmbase.security.*;
-import org.mmbase.security.SecurityException;
-
-import java.util.*;
-
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -33,23 +34,15 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.8 2004-04-19 17:23:46 michiel Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.7 2004-04-08 11:03:54 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
-    private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
-
-    public static final String PUBLIC_ID_BASICSECURITY_1_0 = "-//MMBase//DTD securitybasicauth config 1.0//EN";
-    public static final String DTD_BASICSECURITY_1_0       = " securitybasicauth_1_0.dtd";
-    
-    
-    static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_BASICSECURITY_1_0, DTD_BASICSECURITY_1_0, AuthenticationHandler.class);
-    }
+    private static Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);
 
     // hashmap of the modules..
-    private Map modules = new HashMap();
+    private HashMap modules = new HashMap();
     // hashmap of the ranks of the modules..
-    private Map moduleRanks = new HashMap();
+    private HashMap moduleRanks = new HashMap();
 
     protected void load() {
         log.debug("using: '" + configFile + "' as config file for authentication");
@@ -70,12 +63,11 @@ public class AuthenticationHandler extends Authentication {
                 throw new SecurityException("module attribute class was not defined in :" + configFile + " for module: " + modName);
             }
             String modRankString = reader.getElementAttributeValue(modTag, "rank");
-            Rank modRank;
             if (modRankString.equals("")) {
-                modRank = null;
-            } else {
-                modRank = Rank.getRank(modRankString);
+                log.error("module attribute rank was not defined in :" + configFile + " for module: " + modName);
+                throw new SecurityException("module attribute rank was not defined in :" + configFile + " for module: " + modName);
             }
+            Rank modRank = Rank.getRank(modRankString);
 
             log.debug("Trying to load login module with name: " + modName);
 
@@ -113,7 +105,7 @@ public class AuthenticationHandler extends Authentication {
         LoginModule module = (LoginModule)modules.get(moduleName);
         if (module == null) {
             log.error("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
-            throw new UnknownAuthenticationMethodException("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
+            throw new SecurityException("Login Module with name '" + moduleName + "' not found ! (available:" + listModules() + ")");
         }
         NameContext newUser = new NameContext((Rank)moduleRanks.get(moduleName));
         if (module.login(newUser, loginInfo, parameters)) {

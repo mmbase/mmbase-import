@@ -16,29 +16,31 @@ import java.util.StringTokenizer;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.*;
 
+
 /**
  * Class Keywords is a util class to extract keywords from a string
- * See {@link #getIgnoreVector} for config options
- * @deprecated-now not used anywhere
- * @author vpro
- * @version $Id: Keywords.java,v 1.7 2004-09-30 08:52:12 pierre Exp $
+ * See {#link #getIgnoreVector} for config options
  */
+
 public class Keywords {
     private static final int MINKEYWORDLENGTH = 2;
     private static Vector ignoreVector;
     // logger
     private static Logger log = Logging.getLoggerInstance(Keywords.class.getName());
 
+
     /**
-     * Retrieves the list of words to ignore.
-     * Words are read from keywordstoignore.txt in the MMBase config dir. Each word should be
+     * Retrieves the list of words from keywordstoignore.txt in the
+     * MMBase config dir and stores them in the Vector ignoreVector. Each word should be
      * placed on a new line. Lines starting with # are comments and words shorter than
-     * MINKEYWORDLENGTH will not be added to the ignoreVector.
-     * The internal ignoreVector is filled with content of keywordstoignore.txt or an
+     * MINKEYWORDLENGTH will not be added to the ignoreVector
+     * @return none, ifnoreVector si fileld with with content of keywordstoignore.txt or an
      * empty ignoreVector and a error msg written to the logs when an IOException is thrown.
      */
+
     private static void getIgnoreVector() {
         ignoreVector = new Vector();
+
         String fileName = MMBaseContext.getConfigPath()
                           + "/keywordstoignore.txt";
         char sep = System.getProperty("file.separator").charAt(0);
@@ -62,7 +64,7 @@ public class Keywords {
     }
 
     /**
-     * createKeywords creates keywords from the passed string.
+     * createKeywords creates keywords from the passed string s
      * It ignores words shorter than MINKEYWORDLENGTH and words
      * given by ignoreVector.
      * @param String s: the string to convert to keywords
@@ -73,6 +75,7 @@ public class Keywords {
         if (ignoreVector == null) getIgnoreVector();
         StringTokenizer tok = new StringTokenizer( s, " \t\n\r,.;~`!#&()+={}[]:;\"'<>?/\\|" );
         String token;
+
         while (tok.hasMoreTokens()) {
             token = tok.nextToken().toLowerCase();
             if ((token.length()>=MINKEYWORDLENGTH) && !ignoreVector.contains(token)

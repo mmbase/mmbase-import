@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Sending email with MMBase</title>
+
+    <date>2003-07-14</date>
+
+    <edition>$Id: email.xml,v 1.3 2003-08-29 13:11:47 keesj Exp $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Henk</firstname>
+
+        <surname>Hangyi</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section>
+    <title>The MMBase email module</title>
+
+    <para>The MMBase 1.6 release contains an email module which makes it
+    possible to send email with MMBase. The module consist of the following
+    components</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>the module configuration file: /conf/modules/sendmail.xml</para>
+      </listitem>
+
+      <listitem>
+							<para>the builder: config/applications/MyUsers/builders/email.xml</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>the module configuration file: sendmail.xml</title>
+
+    <para>In sendmail.xml you can set the status of the email module to be
+    active or inactive. Furthermore you can select the module which MMBase
+    will use to send email.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>SendMail</para>
+
+        <example>
+          <title>Example configuration to let MMBase use SendMail</title>
+
+          <programlisting>&#60;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&#62;
+&#60;!DOCTYPE module PUBLIC &#34;-//MMBase/ DTD module config 1.0//EN&#34; &#34;http://www.mmbase.org/dtd/module_1_0.dtd&#34;&#62;
+&#60;status&#62;active&#60;/status&#62;
+&#60;classfile&#62;org.mmbase.module.SendMail&#60;/classfile&#62;
+    &#60;properties&#62;
+        &#60;property name=&#34;mailhost&#34;&#62;smtp.xs4all.nl&#60;/property&#62;
+    &#60;/properties&#62;
+&#60;/module&#62;</programlisting>
+        </example>
+      </listitem>
+
+      <listitem>
+        <para>JMSendMail</para>
+
+        <example>
+          <title>Example configuration to let MMBase use JMSendMail</title>
+
+          <programlisting>&#60;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&#62;
+&#60;!DOCTYPE module PUBLIC &#34;-//MMBase/ DTD module config 1.0//EN&#34; &#34;http://www.mmbase.org/dtd/module_1_0.dtd&#34;&#62;
+&#60;module maintainer=&#34;mmbase.org&#34; version=&#34;0&#34;&#62;
+  &#60;status&#62;active&#60;/status&#62;
+  &#60;classfile&#62;org.mmbase.module.JMSendMail&#60;/classfile&#62;
+  &#60;properties&#62;
+    &#60;property name=&#34;context&#34;&#62;java:comp/env&#60;/property&#62;
+    &#60;property name=&#34;datasource&#34;&#62;mail/MMBase&#60;/property&#62;
+  &#60;/properties&#62;
+&#60;/module&#62;</programlisting>
+
+          <para>TO DO: in the case of JMSendMail where is the mailhost
+          specified?</para>
+        </example>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>the builder: email.xml</title>
+
+    <para>The email builder has the following fields.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>subject</para>
+      </listitem>
+
+      <listitem>
+        <para>from</para>
+      </listitem>
+
+      <listitem>
+        <para>to</para>
+      </listitem>
+
+      <listitem>
+        <para>replyto</para>
+      </listitem>
+
+      <listitem>
+        <para>bodyurl (TO DO: how and when does this work ?)</para>
+      </listitem>
+
+      <listitem>
+        <para>body</para>
+
+        <para>Is the body of your email message.</para>
+
+        <note>
+          <para>If you add &#60;HTML&#62; ... &#60;/HTML&#62; to the body
+          field, the email message will be send as html mail. The
+          &#60;HTML&#62; tags have to be in uppercase.</para>
+        </note>
+      </listitem>
+
+      <listitem>
+        <para>mailtype</para>
+
+        <para>Type of the email: 1:one shot email, 2: repeat email, 3: oneshot
+        email, but keep result</para>
+      </listitem>
+
+      <listitem>
+        <para>mailstatus</para>
+      </listitem>
+
+      <listitem>
+        <para>mailtime</para>
+
+        <para>Time to send this mail</para>
+      </listitem>
+
+      <listitem>
+        <para>buildtime</para>
+
+        <para>Time this email was created</para>
+      </listitem>
+
+      <listitem>
+        <para>repeattime</para>
+
+        <para>Time period after which sending of the email is repeated (TO DO:
+        what is the unit of time used here?)</para>
+      </listitem>
+
+      <listitem>
+        <para>mailedtime</para>
+
+        <para>Last time on this email was send</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Using the MMBase email module</title>
+
+    <para>Of course you can use the mmeditors or another MMBase editor to
+    create nodes of type email, and thereby send email from MMBase. Much more
+    meaningfull however is to use the email module to send email from your JSP
+    pages. The next programlisting shows how you can do this:</para>
+
+    <programlisting>&#60;mm:createnode type=&#34;email&#34;&#62;
+   &#60;mm:setfield name=&#34;subject&#34;&#62;&#60;%= articleTitle %&#62;&#60;/mm:setfield&#62;
+   &#60;mm:setfield name=&#34;from&#34;&#62;me@mmbase.org&#60;/mm:setfield&#62;
+   &#60;mm:setfield name=&#34;to&#34;&#62;you@mmbase.org&#60;/mm:setfield&#62;
+   &#60;mm:setfield name=&#34;replyto&#34;&#62;you@mmbase.org&#60;/mm:setfield&#62;
+   &#60;mm:setfield name=&#34;body&#34;&#62;&#60;%= &#34;&#60;HTML&#62;&#34; + articleText + &#34;&#60;/HTML&#62;&#34; %&#62;&#60;/mm:setfield&#62;
+&#60;/mm:createnode&#62;</programlisting>
+
+    <para>In the programlisting articleTitle is a jsp variable containing the
+    subject of the email message and articleText is a jsp variable containg
+    the html text for the email body.</para>
+  </section>
+</article>

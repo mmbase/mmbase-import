@@ -38,11 +38,10 @@ import org.mmbase.util.logging.*;
  * {@link MMObjectNode#getNodeValue(String) getNodeValue()} method, using
  * the builder name (or step alias) as argument.
  *
- * @sql
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.67 2004-12-23 12:11:38 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.58.2.2 2004-08-10 15:02:57 keesj Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -51,7 +50,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Search for all valid relations.
      * When searching relations, return both relations from source to deastination and from destination to source,
      * provided there is an allowed relation in that directon.
-     * @deprecated use {@link RelationStep#DIRECTIONS_BOTH}
+     * @deprecated use {@link RelationStep.DIRECTIONS_BOTH}
      *             In future versions of MMBase (1.8 and up) this will be the default value
      */
     public static final int SEARCH_BOTH = RelationStep.DIRECTIONS_BOTH;
@@ -59,14 +58,14 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Search for destinations,
      * When searching relations, return only relations from source to deastination.
-     * @deprecated use {@link RelationStep#DIRECTIONS_DESTINATION}
+     * @deprecated use {@link RelationStep.DIRECTIONS_DESTINATION}
      */
     public static final int SEARCH_DESTINATION = RelationStep.DIRECTIONS_DESTINATION;
 
     /**
      * Seach for sources.
      * When searching a multilevel, return only relations from destination to source, provided directionality allows
-     * @deprecated use {@link RelationStep#DIRECTIONS_SOURCE}
+     * @deprecated use {@link RelationStep.DIRECTIONS_SOURCE}
      */
     public static final int SEARCH_SOURCE = RelationStep.DIRECTIONS_SOURCE;
 
@@ -74,7 +73,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Search for all relations.  When searching a multilevel, return both relations from source to
      * deastination and from destination to source.  Allowed relations are not checked - ALL
      * relations are used. This makes more inefficient queries, but it is not really wrong.
-     * @deprecated use {@link RelationStep#DIRECTIONS_ALL}
+     * @deprecated use {@link RelationStep.DIRECTIONS_ALL}
      */
     public static final int SEARCH_ALL = RelationStep.DIRECTIONS_ALL;
 
@@ -84,9 +83,8 @@ public class ClusterBuilder extends VirtualBuilder {
      * The returned set is decided through the typerel tabel. However, if both directions ARE somehow supported, the
      * system only returns source to destination relations.
      * This is the default value (for compatibility purposes).
-     * @deprecated use {@link RelationStep#DIRECTIONS_EITHER}.
-     *             In future versions of MMBase (1.8 and up) the default value will be
-     *             {@link RelationStep#DIRECTIONS_BOTH}
+     * @deprecated use {@link RelationStep.DIRECTIONS_EITHER}.
+     *             In future versions of MMBase (1.8 and up) the default value will be {@link RelationStep.DIRECTIONS_BOTH}
      */
     public static final int SEARCH_EITHER = RelationStep.DIRECTIONS_EITHER;
 
@@ -200,11 +198,12 @@ public class ClusterBuilder extends VirtualBuilder {
         if ((pos != -1) && (node instanceof ClusterNode)) {
             bulname= field.substring(0, pos);
         }
-        MMObjectNode n = ((ClusterNode)node).getRealNode(bulname);
+        MMObjectNode n= ((ClusterNode)node).getRealNode(bulname);
         if (n == null) {
             n = node;
         }
-        MMObjectBuilder bul= n.getBuilder();
+        bulname= getTrueTableName(bulname);
+        MMObjectBuilder bul= mmb.getMMObject(bulname);
         if (bul != null) {
             String tmp= field.substring(pos + 1);
             return bul.getGUIIndicator(tmp, n);
@@ -632,7 +631,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param table name of the original table
      * @return A <code>String</code> containing the table name
      */
-    private String getTableName(String table) {
+    private String getTableName(String table) {     	     
         int end = table.length() ;
         if (end == 0) throw new IllegalArgumentException("Table name too short '" + table + "'");
         while (Character.isDigit(table.charAt(end -1))) --end;
@@ -1218,7 +1217,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 } catch (NumberFormatException e) {
                     // maybe it was not an integer, hmm lets look in OAlias
                     // table then
-                    nodeNumber= new Integer(mmb.getOAlias().getNumber(str));
+                    nodeNumber= new Integer(mmb.OAlias.getNumber(str));
                     if (nodeNumber.intValue() < 0) {
                         nodeNumber= new Integer(0);
                     }
@@ -1227,7 +1226,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
 
             BasicStep nodesStep= getNodesStep(query.getSteps(), nodeNumber.intValue());
-
+            
             if (nodesStep == null) {
                 // specified a node which is not of the type of one of the steps.
                 // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).

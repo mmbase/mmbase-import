@@ -1,6 +1,6 @@
 <% String title = "Home"; %>
 <%@ include file="inc_top.jsp" %>
-<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="$rank">
+<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
 <mm:import externid="ntype" jspvar="ntype" />
 <mm:import externid="nr" />
 <% String path1 = ntype;		// Eerst stukje van kruimelpad %>
@@ -89,7 +89,6 @@ for (int i = 0; i < l.size(); i++) {
 
 <!-- Search and search results -->
 <%@ include file="inc_searchresults.jsp" %>
-<p><a name="search">&nbsp;</a></p>
 <%@ include file="inc_searchform.jsp" %>
 
 </td>

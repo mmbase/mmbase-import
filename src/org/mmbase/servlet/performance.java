@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename  Performance
  * @author  vpro
- * @version $Id: performance.java,v 1.13 2004-11-08 12:44:54 michiel Exp $
+ * @version $Id: performance.java,v 1.11.2.1 2004-11-08 12:40:39 michiel Exp $
  */
 public class performance extends BridgeServlet {
     // logging

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 
@@ -20,12 +19,11 @@ import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
  * 
  * @since MMBase-1.7
  * @author Michiel Meeuwissen
- * @version $Id: ContextProvider.java,v 1.5 2005-01-05 20:49:36 michiel Exp $
+ * @version $Id: ContextProvider.java,v 1.4 2003-08-11 15:27:15 michiel Exp $
  **/
 
 public interface ContextProvider  extends TagIdentifier {
 
     public ContextContainer getContextContainer() throws JspTagException;
-    public PageContext      getPageContext() throws JspTagException;
 
 }

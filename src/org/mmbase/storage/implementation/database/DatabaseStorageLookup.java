@@ -16,7 +16,6 @@ import org.xml.sax.InputSource;
 
 import org.mmbase.storage.*;
 
-import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,14 +26,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.6 2004-12-03 14:57:55 pierre Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.4 2004-02-05 08:23:58 pierre Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageLookup.class);
 
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH     = "storage/databases/lookup.xml";
+    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
 
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0 = "-//MMBase//DTD storage config 1.0//EN";
@@ -50,31 +48,16 @@ public class DatabaseStorageLookup extends DocumentReader {
      * Register the Public Ids for DTDs used by StorageReader
      * This method is called by XMLEntityResolver.
      */
-    static  {
+    public static void registerPublicIDs() {
         org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0, DTD_DATABASE_STORAGE_LOOKUP_1_0, DatabaseStorageLookup.class);
-    }
-
-    /**
-     * @since MMBase-1.8
-     */
-    private static InputSource getInputSource() {
-        InputSource is = null;
-        try {
-            is = ResourceLoader.getConfigurationRoot().getInputSource(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH);
-        } catch (java.io.IOException ioe) {
-        }
-        if (is == null) { // 1.7 compatibility
-            return new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK));
-        } else {
-            return is;
-        }
     }
 
     /**
      * Constructor, accesses the storage lookup xml resource
      */
     protected DatabaseStorageLookup() {
-        super(getInputSource(), DocumentReader.validate(), DatabaseStorageLookup.class);
+        super(new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH)),
+              DocumentReader.validate(), DatabaseStorageLookup.class);
     }
 
     /**

@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueInConstraint.java,v 1.12 2004-12-23 17:31:05 pierre Exp $
+ * @version $Id: BasicFieldValueInConstraint.java,v 1.10 2004-03-15 14:54:26 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
@@ -43,7 +43,20 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
      */
     public BasicFieldValueInConstraint addValue(Object value) {
         BasicStepField.testValue(value, getField());
-        values.add(value);
+        if (value instanceof Number) {
+            // Add value as string. This facilitates comparison of
+            // numerical values of different type.
+            Number numberValue = (Number) value;
+            // Represent integral value as integer,
+            // other values as floating point.
+            if (numberValue.intValue() == numberValue.doubleValue()) {
+                values.add(Integer.toString(numberValue.intValue()));
+            } else {
+                values.add(numberValue.toString());
+            }
+        } else {
+            values.add(value.toString());
+        }
         return this;
     }
 
@@ -79,14 +92,10 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
 
     // javadoc is inherited
     public String toString() {
-        String fieldName = getField().getAlias();
-        if (fieldName == null) {
-            fieldName = getField().getFieldName();
-        }
         StringBuffer sb = new StringBuffer("FieldValueInConstraint(inverse:").
         append(isInverse()).
         append(", field:").
-        append(fieldName).
+        append(getField().getAlias()). // TODO RvM: handle null alias.
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(", values:").

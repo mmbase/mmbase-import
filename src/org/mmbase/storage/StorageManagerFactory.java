@@ -19,8 +19,6 @@ import org.mmbase.storage.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
-import org.mmbase.util.ResourceLoader;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -32,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.9 2004-11-26 19:52:06 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.7.2.1 2004-09-07 12:58:46 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -63,8 +61,8 @@ public abstract class StorageManagerFactory {
      */
     protected ChangeManager changeManager;
 
-    /** 
-     * The map with disallowed fieldnames and (if given) alternates
+    /** The map with disallowed fieldnames and (if given) alternates
+     *
      */
     protected SortedMap disallowedFields;
 
@@ -81,8 +79,6 @@ public abstract class StorageManagerFactory {
      * Assign a value to this class if you want to set a default query handler.
      */
     protected List queryHandlerClasses = new ArrayList();
-
-
 
     /**
      * The default storage factory class.
@@ -139,14 +135,12 @@ public abstract class StorageManagerFactory {
      * @throws StorageError when something went wrong during configuration of the factory, or when the storage cannot be accessed
      */
     protected final void init(MMBase mmbase) throws StorageError {
-        log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
         disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         typeMappings = Collections.synchronizedList(new ArrayList());
         changeManager = new ChangeManager(mmbase);
         try {
-            log.service("loading Storage Manager factory " + this.getClass().getName());
             load();
         } catch (StorageException se) {
             // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
@@ -242,7 +236,7 @@ public abstract class StorageManagerFactory {
             }
         }
 
-        log.service("get type mappings");
+        // get type mappings
         typeMappings.addAll(reader.getTypeMappings());
         Collections.sort(typeMappings);
 
@@ -255,7 +249,6 @@ public abstract class StorageManagerFactory {
         } else if (queryHandlerClasses.size() == 0) {
             throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
         }
-        log.service("Found queryhandlers " + queryHandlerClasses);
         // instantiate handler(s)
         Iterator iHandlers = reader.getSearchQueryHandlerClasses().iterator();
         Object handler = null;
@@ -317,18 +310,16 @@ public abstract class StorageManagerFactory {
      */
     public StorageReader getDocumentReader() throws StorageException {
         // determine storage resource.
-        String storagePath = mmbase.getInitParameter("storage");
+        String storagepath = mmbase.getInitParameter("storage");
         // use the parameter set in mmbaseroot if it is given
-        if (storagePath != null) {
-            try {
-                InputSource resource = ResourceLoader.getConfigurationRoot().getInputSource(storagePath);
-                if (resource == null) {
-                    throw new StorageConfigurationException("Storage resource '" + storagePath + "' not found.");
-                }
-                return new StorageReader(this, resource);
-            } catch (java.io.IOException ioe) {
-                throw  new StorageConfigurationException(ioe);
+        if (storagepath != null) {
+            InputStream resource = this.getClass().getResourceAsStream(storagepath);
+            if (resource == null) {
+                throw new StorageConfigurationException("Storage resource '"+storagepath+"' not found.");
             }
+            InputSource in = new InputSource(resource);
+            in.setSystemId("resource://" + storagepath);
+            return new StorageReader(this, in);
         } else {
             // otherwise return null
             return null;
@@ -567,8 +558,5 @@ public abstract class StorageManagerFactory {
      * @return  <code>true</code> if trasnactions are supported
      */
     abstract public boolean supportsTransactions();
-
-
-
 
 }

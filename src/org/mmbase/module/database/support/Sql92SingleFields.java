@@ -10,6 +10,8 @@ package org.mmbase.module.database.support;
 import java.util.*;
 import java.sql.*;
 
+import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
+
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
@@ -21,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92SingleFields.java,v 1.6 2004-09-23 11:30:52 pierre Exp $
+ * @version $Id: Sql92SingleFields.java,v 1.4.2.1 2004-06-15 21:38:35 robmaris Exp $
  */
 public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92SingleFields.class.getName());
@@ -100,11 +102,11 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
      * @since MMBase-1.6
      * @param parent the parent builder to register
      * @param child the builder to register as the parent's child
-     * @throws UnsupportedOperationException when the databse layer does not allow extension of this builder
+     * @throws UnsupportedDatabaseOperationException when the databse layer does not allow extension of this builder
      */
-    public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child) throws UnsupportedOperationException {
+    public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child) throws UnsupportedDatabaseOperationException {
         if (!isAllowedParentBuilder(parent)) {
-            throw new UnsupportedOperationException("Cannot extend the builder with name "+parent.getTableName());
+            throw new UnsupportedDatabaseOperationException("Cannot extend the builder with name "+parent.getTableName());
         }
     }
 

@@ -110,7 +110,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.21 2004-07-09 14:03:17 michiel Exp $
+ * @version $Id: ConstraintParser.java,v 1.20.2.1 2004-07-09 14:03:47 michiel Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {

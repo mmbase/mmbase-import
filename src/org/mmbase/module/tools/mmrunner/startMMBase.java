@@ -1,33 +1,25 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
  */
 package org.mmbase.module.tools.mmrunner;
 
 import java.io.*;
 
-/**
- * @javadoc
- *
- * @deprecated MMRunner is not used anymore
- * @rename StartMMBase
- * @author Daniel Ockeloen
- * @version $Id: startMMBase.java,v 1.13 2004-10-07 12:22:24 pierre Exp $
- */
 public class startMMBase extends Object {
-
+    
     static String runnerVersion="0.6";
     static String appserverVersion="Orion 1.4.5";
     static String cmsVersion="MMBase 1.2.3";
     static String databaseVersion="Hypersonic 1.4.3";
     static boolean config=false;
-
-
+    
+    
     public static void main(String[] args) {
         String mode;
         System.out.println("\nStarting MMBase (runner version "+runnerVersion+")");
@@ -40,19 +32,19 @@ public class startMMBase extends Object {
         } else {
             mode="loop";
         }
-
+        
         // should be moved to own method in time
         String curdir=System.getProperty("user.dir");
         if (curdir.endsWith("orion")) {
             curdir=curdir.substring(0,curdir.length()-6);
         }
-
+        
         // detect if this is the first startup
         if (firstContact(curdir) || config) {
             System.out.println("\nDetecting this is first run, need to ask a few questions.");
             setupMMRunner(curdir);
         }
-
+        
         System.out.println("\n----- starting java with parameters  -----");
         String configdir="-Dmmbase.config="+curdir+"/config/ ";
         System.out.println(configdir);
@@ -67,7 +59,7 @@ public class startMMBase extends Object {
         System.out.println("Starting Application server : "+appserverVersion);
         System.out.println("Loading  CMS : "+cmsVersion);
         System.out.println("Loading  JDBC Database : "+databaseVersion+"\n");
-
+        
         String activehost=getSetting(curdir+"/config/modules/mmbaseroot.xml","\"host\">","<");
         String activeport=getSetting(curdir+"/orion/config/default-web-site.xml","port=\"","\"");
         if (mode.equals("loop")) {
@@ -81,17 +73,17 @@ public class startMMBase extends Object {
             System.out.println("Within seconds server can be found at http://"+activehost+":"+activeport);
             String reply=executeSpawn(startupstring);
         }
-
+        
     }
-
-
+    
+    
     static String execute(String command) {
         Process p=null;
         String s="",tmp="";
-
+        
         BufferedReader	dip= null;
         BufferedReader	dep= null;
-
+        
         try {
             p = (Runtime.getRuntime()).exec(command,null);
             p.waitFor();
@@ -100,10 +92,10 @@ public class startMMBase extends Object {
             s+=e.toString();
             return s;
         }
-
+        
         dip = new BufferedReader( new InputStreamReader(p.getInputStream()));
         dep = new BufferedReader( new InputStreamReader(p.getErrorStream()));
-
+        
         try {
             while ((tmp = dip.readLine()) != null) {
                 s+=tmp+"\n";
@@ -117,15 +109,15 @@ public class startMMBase extends Object {
         }
         return s;
     }
-
-
+    
+    
     static String executeSpawn(String command) {
         Process p=null;
         String s="",tmp="";
-
+        
         BufferedReader	dip= null;
         BufferedReader	dep= null;
-
+        
         try {
             p = (Runtime.getRuntime()).exec(command,null);
             //p.waitFor();
@@ -135,18 +127,18 @@ public class startMMBase extends Object {
             return s;
         }
         return("");
-
+        
     }
-
+    
     static private boolean firstContact(String curdir) {
         File f=new File(curdir+"/config/.timestamp");
         return (!f.exists() || !f.isFile());
     }
-
+    
     static void setupMMRunner(String curdir) {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
-
+        
         // first get a valid hostname
         String hostname=null;
         while (hostname==null) {
@@ -155,8 +147,8 @@ public class startMMBase extends Object {
                 hostname="localhost";
             }
         }
-
-
+        
+        
         // first get a valid machinename
         String machinename=null;
         while (machinename==null) {
@@ -165,8 +157,8 @@ public class startMMBase extends Object {
                 machinename="mmbase1";
             }
         }
-
-
+        
+        
         int port=-1;
         while (port==-1) {
             String tmp=getConsoleQuestion(reader,"The ip port the webserver needs to be running (80 - 65535)","Port [4242]");
@@ -178,14 +170,14 @@ public class startMMBase extends Object {
                     if (port<80 || port>65535) {
                         port=-1;
                     }
-
+                    
                 } catch(Exception e) {
                     port=-1;
                 }
             }
         }
-
-
+        
+        
                         /*
                         int mport=-1;
                         while (mport==-1) {
@@ -198,7 +190,7 @@ public class startMMBase extends Object {
                                                 if (mport<10000 || mport>65535 || port==mport) {
                                                         mport=-1;
                                                 }
-
+                         
                                         } catch(Exception e) {
                                                 mport=-1;
                                         }
@@ -206,8 +198,8 @@ public class startMMBase extends Object {
                         }
                          * @rename StartMMBase
                          */
-
-
+        
+        
         // first get new admin password
         String password=null;
         while (password==null) {
@@ -216,7 +208,7 @@ public class startMMBase extends Object {
                 password="admin2k";
             }
         }
-
+        
         // first get new mailing host
         String mailhost=null;
         while (mailhost==null) {
@@ -225,8 +217,8 @@ public class startMMBase extends Object {
                 mailhost="smtp.mmbase.org";
             }
         }
-
-
+        
+        
         // oke now set all these new setting in each of the files
         String activeport=getSetting(curdir+"/orion/config/default-web-site.xml","port=\"","\"");
         updateConfigFile(curdir+"/orion/config/default-web-site.xml","port=\""+activeport+"\"","port=\""+port+"\"");
@@ -238,7 +230,7 @@ public class startMMBase extends Object {
         updateConfigFile(curdir+"/config/modules/sendmail.xml","smtp.mmbase.org",mailhost);
         saveFile(curdir+"/config/.timestamp","mmbase time stamp");
     }
-
+    
     static String getConsoleQuestion(BufferedReader reader,String help, String question) {
         try {
             System.out.println("\n"+help);
@@ -248,7 +240,7 @@ public class startMMBase extends Object {
             return(null);
         }
     }
-
+    
     private static boolean updateConfigFile(String file,String oldstring,String newstring) {
         String body=loadFile(file);
         int len=oldstring.length();
@@ -261,7 +253,7 @@ public class startMMBase extends Object {
         }
         return(true);
     }
-
+    
     private static String getSetting(String file,String setting,String endtoken) {
         String body=loadFile(file);
         int len=setting.length();
@@ -276,8 +268,8 @@ public class startMMBase extends Object {
         }
         return("");
     }
-
-
+    
+    
     static boolean saveFile(String filename,String value) {
         File sfile = new File(filename);
         try {
@@ -290,8 +282,8 @@ public class startMMBase extends Object {
         }
         return(true);
     }
-
-
+    
+    
     static String loadFile(String filename) {
         try {
             File sfile = new File(filename);

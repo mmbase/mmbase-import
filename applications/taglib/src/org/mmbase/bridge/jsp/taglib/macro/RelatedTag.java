@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.26 2004-07-26 20:18:03 nico Exp $
+ * @version $Id: RelatedTag.java,v 1.24.2.2 2004-07-26 20:12:23 nico Exp $
  */
 public class RelatedTag extends ListTag {
     // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);

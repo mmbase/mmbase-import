@@ -20,9 +20,8 @@ import org.mmbase.util.logging.*;
 /**
  * Redirects request based on information supplied by the jumpers builder.
  *
- * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.12 2005-01-07 11:29:03 gerard Exp $
+ * @version $Id: JumpersFilter.java,v 1.9.2.2 2005-01-07 11:29:38 gerard Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);

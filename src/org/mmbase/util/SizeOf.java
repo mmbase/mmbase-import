@@ -1,19 +1,15 @@
-/*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
-*/
 package org.mmbase.util;
 
 // necessary for SizeOf
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,16 +17,15 @@ import org.mmbase.util.logging.Logging;
 /**
  * Implementation of sizeof.
  *
- * @javadoc
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.9 2004-09-30 17:19:49 pierre Exp $
  */
+
 public class SizeOf {
     private static Logger log = Logging.getLoggerInstance(SizeOf.class.getName());
-
-    private static final int SZ_REF = 4;
-    private static int size_prim(Class t) {
+    
+    private static final int SZ_REF = 4;               
+    private static int size_prim(Class t) { 
         if      (t == Boolean.TYPE)   return 1;
         else if (t == Byte.TYPE)      return 1;
         else if (t == Character.TYPE) return 2;
@@ -42,19 +37,19 @@ public class SizeOf {
         else if (t == Void.TYPE)      return 0;
         else return SZ_REF;
     }
-
-    public static int sizeof(boolean b) { return 1; }
-    public static int sizeof(byte b)    { return 1; }
+        
+    public static int sizeof(boolean b) { return 1; }        
+    public static int sizeof(byte b)    { return 1; }        
     public static int sizeof(char c)    { return 2; }
-    public static int sizeof(short s)   { return 2; }
+    public static int sizeof(short s)   { return 2; }        
     public static int sizeof(int i)     { return 4; }
-    public static int sizeof(long l)    { return 8; }
-    public static int sizeof(float f)   { return 4; }
+    public static int sizeof(long l)    { return 8; }        
+    public static int sizeof(float f)   { return 4; }        
     public static int sizeof(double d)  { return 8; }
 
     // To avoid infinite loops (cyclic references):
     private Set countedObjects = new HashSet();
-
+    
     public static int getByteSize(Object obj) {
         return new SizeOf().sizeof(obj);
     }
@@ -71,9 +66,9 @@ public class SizeOf {
             log.trace("adding to countedObject");
             countedObjects.add(obj);
         }
-
+            
         Class c = obj.getClass();
-
+            
         if (c.isArray()) {
             log.debug("an array");
             return size_arr(obj, c);
@@ -93,7 +88,7 @@ public class SizeOf {
             return size_inst(obj, c);
         }
     }
-
+        
     private int sizeof(Map m) {
         log.debug("sizeof Map");
         int len = size_inst(m, m.getClass());
@@ -138,21 +133,21 @@ public class SizeOf {
 
     private int sizeof(String m) {
         log.debug("sizeof String " + m);
-        int len = size_inst(m, m.getClass());
+        int len = size_inst(m, m.getClass());            
         return len + m.getBytes().length;
     }
 
     private int sizeof(SizeMeasurable m) {
         log.debug("sizeof SizeMeasureable " + m);
-        int len = size_inst(m, m.getClass());
+        int len = size_inst(m, m.getClass());            
         return len + m.getByteSize(this);
     }
-
+        
 
     private int size_inst(Object obj, Class c) {
         Field flds[] = c.getDeclaredFields();
         int sz = 0;
-
+            
         for (int i = 0; i < flds.length; i++) {
             Field f = flds[i];
             if (!c.isInterface() &&  (f.getModifiers() & Modifier.STATIC) != 0) {
@@ -160,7 +155,7 @@ public class SizeOf {
             }
             sz += size_prim(f.getType());
             try {
-                sz += sizeof(f.get(obj)); // recursion
+                sz += sizeof(f.get(obj)); // recursion        
                 if (log.isDebugEnabled()) log.debug("found an (accessible) field " + f);
             } catch (java.lang.IllegalAccessException e) {
                 // well...
@@ -168,23 +163,23 @@ public class SizeOf {
 
             }
         }
-
+            
         if (c.getSuperclass() != null) {
             sz += size_inst(obj, c.getSuperclass());
         }
-
+            
         Class cv[] = c.getInterfaces();
         for (int i = 0; i < cv.length; i++) {
             sz += size_inst(obj, cv[i]);
         }
-
+            
         return sz;
     }
-
+        
     private int size_arr(Object obj, Class c) {
         Class ct = c.getComponentType();
         int len = Array.getLength(obj);
-
+            
         if (ct.isPrimitive()) {
             return len * size_prim(ct);
         }

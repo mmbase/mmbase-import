@@ -1,5 +1,5 @@
 <%@include file="../header.jsp" %>
-  <mm:cloud name="mmbase" method="http" jspvar="cloud" rank="$rank">
+  <mm:cloud name="mmbase" method="http" jspvar="cloud">
   <mm:import externid="device" vartype="String" jspvar="device" required="true" />
   <%  Stack states = (Stack)session.getValue("mmeditors_states");
       Properties state = (Properties)states.peek();

@@ -15,18 +15,17 @@ import java.util.Iterator;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.FieldValue;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.functions.Functions;
 import org.mmbase.util.logging.*;
 
+
+
 /**
- * The function tags can be used as a child of a 'NodeProvider' tag (though posisbly
- * not on clusternodes).
- * It can also be used stand alone, when using the attributes to specify on which object the
+ * The function tags can be used as a child of a 'NodeProvider' tag (but not on clusternodes?), but
+ * it can also be used stand alone, when using the attributes to specify on which object the
  * function must be called (besides nodes, it can be called on node-manager, modules, sets).
  *
  * This is the absctract implementation, providing only the result of the function. The several
@@ -35,13 +34,11 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.15 2005-01-03 22:39:36 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.5.2.3 2004-07-26 20:12:20 nico Exp $
  */
-abstract public class AbstractFunctionTag extends NodeReferrerTag {
+abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
     private static final Logger log = Logging.getLoggerInstance(AbstractFunctionTag.class);
-
-    public static final String THISPAGE = "THISPAGE";
 
     protected Attribute container   = Attribute.NULL;
     protected Attribute name        = Attribute.NULL;
@@ -50,18 +47,17 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     protected Attribute module      = Attribute.NULL;
     protected Attribute nodeManager = Attribute.NULL;
 
-    protected Attribute functionSet = Attribute.NULL;
+    protected Attribute functionSet = Attribute.NULL; 
 
-    protected Attribute functionClass = Attribute.NULL;
+    protected Attribute referids    = Attribute.NULL; 
 
-    protected Attribute referids    = Attribute.NULL;
 
     public void setName(String n) throws JspTagException {
         name = getAttribute(n);
     }
 
     public void setContainer(String c) throws JspTagException {
-        container = getAttribute(c);
+        container = getAttribute(c); 
     }
 
     public void setParameters(String p)  throws JspTagException {
@@ -76,12 +72,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         nodeManager = getAttribute(n);
     }
 
+
     public void setSet(String s) throws JspTagException {
         functionSet = getAttribute(s);
-    }
-
-    public void setClassname(String c) throws JspTagException {
-        functionClass = getAttribute(c);
     }
 
     public void setReferids(String r) throws JspTagException {
@@ -91,54 +84,39 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     /**
      * Gets function object, and checks consistency of attributes.
      */
+
     protected final Function getFunction(String functionName) throws JspTagException {
         Function function;
-        // now determin on what the object the function must be done.
+        // now determin on what the object the function must be done.        
         if (nodeManager != Attribute.NULL) {
-            if (module != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
-                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
+            if (module != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
+                throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
             }
-            return  FunctionFactory.getFunction(getCloudVar().getNodeManager(nodeManager.getString(this)), functionName); // or:  nodeManager.getFunction(functionName);
+            return  FunctionFactory.getFunction(getCloudVar().getNodeManager(nodeManager.getString(this)), functionName);
         } else if (module != Attribute.NULL) {
-            if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
-                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
+            if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
+                throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
             }
-            return FunctionFactory.getFunction(getCloudContext().getModule(module.getString(this)), functionName); // or:  module.getFunction(functionName);
+            return FunctionFactory.getFunction(getCloudContext().getModule(module.getString(this)), functionName);
         } else if (functionSet != Attribute.NULL) {
-            if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL || functionClass != Attribute.NULL) {
-                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
+            if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL) {
+                throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
             }
             String set = functionSet.getString(this);
-            if (set.equals(THISPAGE)) {
-                Class jspClass = pageContext.getPage().getClass();
-                Method method = Functions.getMethodFromClass(jspClass, functionName);
-                return FunctionFactory.getFunction(method, functionName); // or: new MethodFunction(method, functionName);
-            } else {
-                return FunctionFactory.getFunction(getCloudVar(), set, functionName); // return getCloud().getFunction(set, functionName);
-                // return FunctionFactory.getFunction(set, functionName); // or: FunctionSets.getFunction(set, functionName);
-            }
-        } else if (functionClass != Attribute.NULL) {
-            if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL || functionSet != Attribute.NULL) {
-                throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
-            }
-            String className = functionClass.getString(this);
-            try {
-                Class clazz;
-                if (className.indexOf(".") == -1) {
-                    Class jspClass = pageContext.getPage().getClass();
-                    clazz   = BeanFunction.getClass(jspClass, className);
+            if (set.startsWith("THISPAGE")) {
+                Class claz = pageContext.getPage().getClass();
+
+                if (set.equals("THISPAGE")) {
+                    Method method = MethodFunction.getFirstMethod(claz, functionName);                    
+                    return  FunctionFactory.getFunction(method, functionName);
                 } else {
-                    clazz = Class.forName(className);
+                    throw new UnsupportedOperationException("Local beans not yet supported");
                 }
-                return FunctionFactory.getFunction(clazz, functionName); // BeanFunction.getFunction(clazz,functionName)
-            } catch (Exception e) {
-                // possible execptions thrown when instantiating bean functions:
-                // IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException
-                throw new TaglibException(e);
+            } else {
+                return FunctionFactory.getFunction(functionSet.getString(this), functionName);
             }
-
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
-
+ 
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
                 FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
                 if (functionContainer != null) {
@@ -147,7 +125,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 } else {
                     // ingore.
                 }
-            }
+            } 
             // it is possible that a 'closer' node provider is meant
             FunctionContainerOrNodeProvider functionOrNode;
 
@@ -159,7 +137,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
             if (functionOrNode != null) {
                 if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use
-                    return FunctionFactory.getFunction(getNode(), functionName); // NodeFunction.getFunction(getNode(),functionName)
+                    return FunctionFactory.getFunction(getNode(), functionName);
                 } else { // just use the functioncontainer
                     return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
                 }
@@ -170,82 +148,79 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     }
 
+    
+
+
+
     protected final void fillStandardParameters(Parameters p) throws JspTagException {
         log.debug("Filling standard parameters");
-        p.setIfDefined(Parameter.RESPONSE, pageContext.getResponse());
-        p.setIfDefined(Parameter.REQUEST, pageContext.getRequest());
-        // locale parameters
-        java.util.Locale locale = getLocale();
-        p.setIfDefined(Parameter.LANGUAGE, locale.getLanguage());
-        p.setIfDefined(Parameter.LOCALE, locale);
-        p.setIfDefined(Parameter.CLOUD, getCloudVar());
-        p.setIfDefined(Parameter.USER, getCloudVar().getUser());
+        if (p.hasParameter(Parameter.RESPONSE)) {
+            p.set(Parameter.RESPONSE, pageContext.getResponse());
+        }
+        if (p.hasParameter(Parameter.REQUEST)) {
+            p.set(Parameter.REQUEST, pageContext.getRequest());
+        }
+        if (p.hasParameter(Parameter.LANGUAGE)) {
+            LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+            if (localeTag != null) {
+                p.set(Parameter.LANGUAGE, localeTag.getLocale().getLanguage());
+            }
+        }
+        if (p.hasParameter(Parameter.CLOUD)) {
+            p.set(Parameter.CLOUD, getCloudVar());
+        }
+        if (p.hasParameter(Parameter.USER)) {
+            p.set(Parameter.USER, getCloudVar().getUser());
+        }
     }
 
     protected final Object getFunctionValue() throws JspTagException {
-        return getFunctionValue(true);
-    }
 
-    protected final Object getFunctionValue(boolean register) throws JspTagException {
+        FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
+        log.debug("Getting function value. Container " + functionContainer);
+
         String functionName = name.getString(this);
-        Object value;
-        if (getReferid()  != null) {
-            if (! "".equals(functionName)) {
-                throw new TaglibException("Cannot specify both 'referid' and 'name' attributes on a function tag");
-            }
-            value = getObject(getReferid());
+
+        Function function;
+        if ("".equals(functionName)) {  // no name given, certainly must use container.
+            function = functionContainer.getFunction(functionContainer.getName());
         } else {
-            FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-            log.debug("Getting function value. Container " + functionContainer);
-
-            Function function;
-            if ("".equals(functionName)) {  // no name given, certainly must use container.
-                function = functionContainer.getFunction(functionContainer.getName());
-            } else {
-                // name given, try self:
-                function = getFunction(functionName);
-            }
-
-            if (function == null) {
-                throw new JspTagException("Could not determine the name of the function to be executed");
-            }
-            Parameters params;
-            try {
-                params = function.createParameters();
-            } catch (IllegalStateException ise) {
-                log.warn("Undefined parameters for function '" + functionName + "', trying without definition.");
-                params = new AutodefiningParameters();
-            }
-            params.setAutoCasting(true);
-
-            if (functionContainer != null) {
-                Iterator i = functionContainer.getParameters().iterator();
-                while (i.hasNext()) {
-                    FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
-                    params.set(entry.getKey(), entry.getValue());
-                }
-            }
-            if (referids != Attribute.NULL) {
-                params.setAll(Referids.getReferids(referids, this));
-            }
-
-            fillStandardParameters(params);
-
-            if (log.isDebugEnabled()) {
-                log.debug("using parameters " + params);
-            }
-
-            params.checkRequiredParameters();
-
-            value =  function.getFunctionValue(params);
-            if (value instanceof FieldValue) {
-                value = ((FieldValue) value).get();
-            }
+            // name given, try self:
+            function = getFunction(functionName);
         }
-        if (register && getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), value);
+        
+        if (function == null) {
+            throw new JspTagException("Could not determin the name of the function to be executed");
         }
-        return value;
+        Parameters params;
+        if (function.getParameterDefinition() == null) {
+            log.warn("Could not find parameter definition for function '" + functionName + "', trying without definition.");
+            params = new AutodefiningParameters();
+        } else {
+            params = function.getNewParameters();
+        }
+        params.setAutoCasting(true);
+
+        if (functionContainer != null) {
+            Iterator i = functionContainer.getParameters().iterator();
+            while (i.hasNext()) {
+                FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
+                params.set(entry.getKey(), entry.getValue());
+            }        
+        }
+        if (referids != Attribute.NULL) {
+            params.setAll(Referids.getReferids(referids, this));
+        }
+
+        fillStandardParameters(params);
+
+        if (log.isDebugEnabled()) {
+            log.debug("using parameters " + params);
+        }
+
+        params.checkRequiredParameters();
+
+        return function.getFunctionValue(params);
     }
 
 }

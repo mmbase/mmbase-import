@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.18 2004-10-25 08:08:34 pierre Exp $
+ * @version $Id: Community.java,v 1.15 2004-02-23 18:59:34 pierre Exp $
  */
 
 public class Community extends MMObjectBuilder {
@@ -36,7 +36,7 @@ public class Community extends MMObjectBuilder {
     public static final String STR_FORUM = "forum";
 
     //logger
-    private static final Logger log = Logging.getLoggerInstance(Community.class);
+    private static Logger log = Logging.getLoggerInstance(Community.class.getName());
 
     private Channel channelBuilder;
     private MMObjectBuilder mapBuilder;
@@ -139,11 +139,11 @@ public class Community extends MMObjectBuilder {
      * <li> communitynr-OPEN : opens all channels that are connected to this community</li>
      * <li> communitynr-CLOSE: closes all channels that are connected to this community</li>
      * </ul>
-     * @param PageInfo the current page context
+     * @param scanpage the current page context
      * @param tok the tokenized command
      * @return the empty string
      */
-    public String replace(PageInfo sp, StringTokenizer tok) {
+    public String replace(scanpage sp, StringTokenizer tok) {
         // The first thing we expect is a community number.
         if (!tok.hasMoreElements()) {
             log.error("replace(): community number expected after $MOD-BUILDER-community-.");

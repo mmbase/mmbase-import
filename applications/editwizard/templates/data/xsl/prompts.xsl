@@ -2,30 +2,40 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <!--
     prompts.xls
-
+    
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.25 2005-01-04 16:17:05 michiel Exp $
-
-    prompts used in this editwizard.
+    @version $Id: prompts.xsl,v 1.20.2.2 2004-09-15 13:04:25 jaco Exp $
+    
+    prompts used in this editwizard. 
     Override these prompts to change the view in your own versions.
   -->
 
   <!-- prompts for starting a editwizard -->
   <xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
   <xsl:template name="prompt_edit_wizard">
-    <xsl:choose>
-      <xsl:when test="prompt"><xsl:apply-templates select="prompt"/></xsl:when>
-      <xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
-    </xsl:choose>
+    <!--img src="{$mediadir}neworg.gif" class="imgbutton">
+      <xsl:choose>
+        <xsl:when test="prompt">
+          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img-->
+		<xsl:choose>
+			<xsl:when test="prompt"><xsl:value-of select="prompt" /></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
+		</xsl:choose>
   </xsl:template>
-
-  <xsl:variable name="tooltip_add_wizard">New</xsl:variable>
+  
+  <xsl:variable name="tooltip_add_wizard">Nieuw</xsl:variable>
   <xsl:template name="prompt_add_wizard">
-    <xsl:if test="prompt">
-      <xsl:apply-templates select="prompt"/>
-    </xsl:if>
+		<xsl:if test="prompt">
+			<xsl:value-of select="prompt"/>
+		</xsl:if>
     <img src="{$mediadir}new.gif" class="imgbutton">
       <xsl:choose>
         <xsl:when test="prompt">
@@ -38,18 +48,18 @@
     </img>
   </xsl:template>
 
-  <xsl:variable name="date_january">january</xsl:variable>
-  <xsl:variable name="date_february">february</xsl:variable>
-  <xsl:variable name="date_march">march</xsl:variable>
-  <xsl:variable name="date_april">april</xsl:variable>
-  <xsl:variable name="date_may">may</xsl:variable>
-  <xsl:variable name="date_june">june</xsl:variable>
-  <xsl:variable name="date_july">july</xsl:variable>
-  <xsl:variable name="date_august">august</xsl:variable>
-  <xsl:variable name="date_september">september</xsl:variable>
-  <xsl:variable name="date_october">october</xsl:variable>
-  <xsl:variable name="date_november">november</xsl:variable>
-  <xsl:variable name="date_december">december</xsl:variable>
+	<xsl:variable name="date_january">january</xsl:variable>
+	<xsl:variable name="date_february">february</xsl:variable>
+	<xsl:variable name="date_march">march</xsl:variable>
+	<xsl:variable name="date_april">april</xsl:variable>
+	<xsl:variable name="date_may">may</xsl:variable>
+	<xsl:variable name="date_june">june</xsl:variable>
+	<xsl:variable name="date_july">july</xsl:variable>
+	<xsl:variable name="date_august">august</xsl:variable>
+	<xsl:variable name="date_september">september</xsl:variable>
+	<xsl:variable name="date_october">october</xsl:variable>
+	<xsl:variable name="date_november">november</xsl:variable>
+	<xsl:variable name="date_december">december</xsl:variable>
 
   <xsl:variable name="time_daymonth" />
   <!-- Between day and month. Sadly, order cannot yet be adjusted -->
@@ -184,15 +194,6 @@
       <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pages <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
   </xsl:template>
   <xsl:variable name="tooltip_edit_list">These are the items that you can edit.</xsl:variable>
-  <xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
-  <xsl:variable name="tooltip_sort_up">up</xsl:variable>
-  <xsl:variable name="tooltip_sort_down">down</xsl:variable>
-  <xsl:template name="prompt_sort_up">
-    <img src="{$mediadir}sortup.png" alt="{$tooltip_up}" height="15" width="15" />
-  </xsl:template>
-  <xsl:template name="prompt_sort_down">
-    <img src="{$mediadir}sortdown.png" alt="{$tooltip_up}" height="15" width="15" />
-  </xsl:template>
 
   <!-- searchlist prompts/tooltips -->
   <xsl:variable name="searchpage_title">Search Results</xsl:variable>
@@ -217,7 +218,7 @@
   <xsl:variable name="message_notvalid">{0} is not valid</xsl:variable>
   <xsl:variable name="message_listtooshort">List {0} has too few entries</xsl:variable>
 
-  <!-- prompt for debug link -->
+	<!-- prompt for debug link -->
   <xsl:template name="prompt_debug">[debug]</xsl:template>
 
 </xsl:stylesheet>

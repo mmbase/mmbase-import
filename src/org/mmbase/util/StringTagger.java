@@ -14,18 +14,18 @@ import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+
 /**
- * StringTagger, Creates a object with tags and fields from a String.
- * Its ideal for name-value pairs and name-value pairs with multivalues.
- * It also provides support for quoted values, and recognizes values that are 'function' calls with
- * their own parameter list (allowing to ignore any tokens within these lists when parsing).
- *
- * @application SCAN
- * @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
- * @author Daniel Ockeloen
- * @author Pierre van Rooden
- * @version $Id: StringTagger.java,v 1.16 2004-09-30 17:19:50 pierre Exp $
- */
+* StringTagger, Creates a object with tags and fields from a String.
+* Its ideal for name-value pairs and name-value pairs with multivalues.
+* It also provides support for quoted values, and recognizes values that are 'function' calls with
+* their own parameter list (allowing to ignore any tokens within these lists when parsing).
+*
+* @author Daniel Ockeloen
+* @author Pierre van Rooden
+* @version $Id: StringTagger.java,v 1.14 2003-09-01 13:29:46 pierre Exp $
+* @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
+*/
 public class StringTagger implements Map {
 
     // logger
@@ -121,7 +121,6 @@ public class StringTagger implements Map {
      * Parses the given line, and stores all value-pairs found in the
      * tokens and multitokens fields.
      * @param line : to be tagged line (why is this a parameter when it can eb retrieved from startline?)
-     * @since MMBase-1.7
      */
     protected void createTagger(String line) {
         StringTokenizer tok2 = new StringTokenizer(line+tagStart,""+tagSeparator+tagStart,true);
@@ -192,7 +191,6 @@ public class StringTagger implements Map {
      * Handles and splits a tag in its component parts, and store the elemements in
      * the tokens and multitokens fields.
      * @param tag the string containing the tag
-     * @since MMBase-1.7
      */
     protected void splitTag(String tag) {
         int    tagPos = tag.indexOf(tagSeparator);

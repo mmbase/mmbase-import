@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.9 2004-12-21 18:21:40 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.5.2.7 2004-12-21 18:21:30 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */

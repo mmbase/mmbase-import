@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.48 2005-01-06 20:23:39 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.41.2.5 2004-12-15 14:55:43 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -77,7 +77,6 @@ public class ImportTag extends ContextReferrerTag {
 
     public int doStartTag() throws JspTagException {
         Object value = null;
-        helper.overrideWrite(false);
         log.trace("dostarttag of import");
         
         if (getId() == null) {
@@ -125,7 +124,7 @@ public class ImportTag extends ContextReferrerTag {
                 if (fromString.equals("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                     throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in session, because there is no session");
                 }
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : ("in " + fromString)));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : fromString));
             }
             if (found) {
                 value = getObject(useId);
@@ -208,7 +207,7 @@ public class ImportTag extends ContextReferrerTag {
         found = false; // for use next time
         useId = null;
         bodyContent = null;
-        helper.doEndTag();
+        helper.release();
         log.debug("end of importag");
         super.doEndTag();
         return EVAL_PAGE;

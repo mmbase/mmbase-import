@@ -12,111 +12,57 @@ package org.mmbase.util.functions;
 import java.util.*;
 
 /**
- * Description of the return type of certain function. This wraps a Class object but it has some
- * extra members. Can be used as a constructor argument of {@link Function} objects or as an
- * argument of {@link Function#setReturnType}.
+ * Description of the return type of certain function. This wraps a Class object but it has some extra 
+ * members.
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.7 2004-12-20 10:37:50 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.2 2004-02-11 20:43:21 keesj Exp $
  * @since MMBase-1.7
  */
-public class ReturnType extends AbstractDataType {
+public class ReturnType {
 
-    /**
-     * The return type of a function that does not return a thing.
-     */
-    public static final ReturnType VOID = new ReturnType(void.class, "Does not return anything");
+    public static final ReturnType VOID = new ReturnType(null, "Does not return anything");
+    public static final Object     VOID_VALUE = new Object();
 
-    /**
-     * The return type of a function that returns a String.
-     */
-    public static final ReturnType STRING = new ReturnType(String.class, "String");
-
-    /**
-     * The return type of a function that returns a Integer.
-     */
-    public static final ReturnType INTEGER = new ReturnType(Integer.class, "Integer");
-
-    /**
-     * The return type of a function that returns a Long.
-     */
-    public static final ReturnType LONG = new ReturnType(Long.class, "Long");
-
-    /**
-     * The return type of a function that returns a Double.
-     */
-    public static final ReturnType DOUBLE = new ReturnType(Double.class, "Double");
-
-    /**
-     * The return type of a function that returns a Boolean.
-     */
-    public static final ReturnType BOOLEAN = new ReturnType(Boolean.class, "Boolean");
-
-    /**
-     * The return type of a function that returns a List.
-     */
-    public static final ReturnType LIST = new ReturnType(List.class, "List");
-
-    /**
-     * The return type of a function that returns a Set.
-     */
-    public static final ReturnType SET = new ReturnType(Set.class, "Set");
-
-    /**
-     * The return type of a function is unknown.
-     */
-    public static final ReturnType UNKNOWN = new ReturnType(Object.class, "unknown");
-
-    /**
-     * The return type of a function is None
-     */
-    public static final ReturnType NONE = new ReturnType(Object.class, "none");
-
-    /**
-     * Can be return by functions that don't want to return anything. (The function framework
-     * requires you to return <em>something</em>).
-     */
-    public static final Object VOID_VALUE = new Object();
-
-    private Map typeStruct = new HashMap(); // key -> ReturnType
+    private Class type;
+    private String description;
+    private Map   typeStruct = new HashMap(); // key -> ReturnType
 
     public  ReturnType(Class type, String description) {
-        super("RETURN_VALUE", type);
-        setDescription(description);
-    }
+        this.type = type;
+        this.description = description;
+    }  
 
-    public Object getDefaultValue() {
-        return null;
+    /**
+     * @return The 'Class' object which this object is wrapping.
+     */
+    public Class getType() {
+        return type;
     }
-
-    public void setDefaultValue(Object def) {
-        throw new UnsupportedOperationException("You cannot define a default value for a return type");
-    }
-
-    public boolean isRequired() {
-        return false;
+    
+    /**
+     * @return A description of the return value. For documentation purposes.
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * If the return type is like a map or struct (key-values pairs), then you might want to describe the
+     * If the return type is like a map or struct (key-values pairs), then you might want to describe the 
      * types of the values seperately too.
      */
-    public ReturnType addSubType(String name,  ReturnType type) {
-        return (ReturnType) typeStruct.put(name, type);
+
+    ReturnType addSubType(String name,  ReturnType type) {
+        return (ReturnType) typeStruct.put(name, type); 
     }
 
-    /**
-     * @return Unmodifiable Map containing the 'subtypes' in case the type is Map. An empty Map otherwise.
-     */
     public Map getSubTypes() {
         return Collections.unmodifiableMap(typeStruct);
     }
 
 
-    public String toString() {
-        return getType().getName();
-    }
+
 
 }

@@ -12,9 +12,6 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.WriterReferrer;
-
-import org.mmbase.util.Casting;
-import org.mmbase.bridge.Node;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -28,7 +25,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.36 2005-01-04 10:28:11 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.35 2004-03-29 16:37:33 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -68,13 +65,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         if (referid2 == Attribute.NULL) {
             throw new JspTagException("Attribute 'value' or 'referid2' must be indicated");
         }
-        Object o =  getObject(referid2.getString(this));
-        if (o instanceof Node) {
-            return "" + ((Node)o).getNumber();
-        } else {
-            return o;
-        }
-        
+        return getObject(referid2.getString(this));
+
     }
 
 
@@ -91,8 +83,6 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         if (compare1 instanceof Boolean) {
             compare1 = compare1.toString();
         } else if (compare1 instanceof List) {
-            compare1 = org.mmbase.util.Casting.toString(compare1);
-        } else if (compare1 instanceof Node) {
             compare1 = org.mmbase.util.Casting.toString(compare1);
         }
 
@@ -137,8 +127,6 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                     }
                 } else if (compare2 instanceof Number) {
                     compare2 = new BigDecimal(compare2.toString());
-                } else if (compare2 instanceof Node) {
-                    compare2 = new BigDecimal(((Node)compare2).getNumber());
                 }
 
                 if (doCompare((Comparable)compare1, (Comparable)compare2)) {

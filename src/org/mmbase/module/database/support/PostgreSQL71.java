@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.30 2004-06-15 21:23:03 robmaris Exp $
+ * @version $Id: PostgreSQL71.java,v 1.29.2.1 2004-06-15 21:38:35 robmaris Exp $
  */
 public class PostgreSQL71 extends PostgreSQL {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());

@@ -26,7 +26,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: Multicast.java,v 1.1.2.1 2004-10-09 10:51:44 nico Exp $
  */
 public class Multicast extends SharedStorage {
 
