@@ -40,7 +40,6 @@ public class IncludeTag extends UrlTag {
 
         try {
             bodyContent.clear(); // newlines and such must be removed            
-
             String gotUrl = getUrl(false);// false: don't write &amp; tags but real &.
             // if not absolute, make it absolute:
             // (how does one check something like that?)
@@ -91,11 +90,10 @@ public class IncludeTag extends UrlTag {
                 connection.setRequestProperty("Cookie", koekjes); 
             }
             
-            BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+            InputStreamReader in = new InputStreamReader (connection.getInputStream());
             
-            String line = null;
-            while ((line = in.readLine()) != null ) {
-                bodyContent.println(line);
+            while (in.ready()) {
+                bodyContent.write(in.read());
             }
 	    
             if (getId() != null) {
