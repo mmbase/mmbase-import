@@ -1691,12 +1691,13 @@ public class MMObjectBuilder extends MMTable {
 		String rtn="";
 		if (body!=null) {
 			StringObject obj=new StringObject(body);
+			obj.replace("<","&lt;");
+			obj.replace(">","&gt;");
+
 			obj.replace("\r\n\r\n","<P>");
 			obj.replace("\n\n","<P>");
 			obj.replace("\r\n","<BR>");
 			obj.replace("\n","<BR>");
-			obj.replace("<","&lt;");
-			obj.replace(">","&gt;");
 			rtn=obj.toString();
 		}
 		return(rtn);
