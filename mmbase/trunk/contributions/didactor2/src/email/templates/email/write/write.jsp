@@ -69,6 +69,12 @@
     </mm:node>
   </mm:present>
 
+  <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=1">
+    <mm:field name="mailboxes.number" id="mailboxNumber" write="false"/>
+    <mm:node referid="mailboxNumber" id="mailboxNode"/>
+  </mm:list>
+
+
 
   
   <%-- edit existing email (not yet sent) --%>
@@ -118,8 +124,11 @@
 	<mm:import id="testforinput"><mm:write referid="to"/><mm:write referid="cc"/><mm:write referid="body"/><mm:write referid="subject"/></mm:import>
 	<mm:isnotempty referid="testforinput">
 	    <mm:createnode type="emails" id="emailNode"/>
-	    <mm:import id="id" reset="true"><mm:write referid="emailNode"/></mm:import>
-	</mm:isnotempty>
+            <mm:node referid="emailNode">
+	        <mm:import id="id" reset="true"><mm:field name="number"/></mm:import>
+            </mm:node>
+	  <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
+        </mm:isnotempty>
     </mm:present>
 
   
@@ -154,13 +163,6 @@
         <mm:setfield name="type">0</mm:setfield>
         <mm:setfield name="date"><%=System.currentTimeMillis()/1000%></mm:setfield>
   </mm:node>
-
-  <mm:list nodes="$user" path="people,mailboxes" fields="mailboxes.number" constraints="mailboxes.type=1">
-    <mm:field name="mailboxes.number" id="mailboxNumber" write="false"/>
-    <mm:node referid="mailboxNumber" id="mailboxNode"/>
-  </mm:list>
-
-  <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
 
     <mm:import id="testattachment" externid="att_handle"/>
     <mm:compare referid="testattachment" value="" inverse="true">
@@ -296,7 +298,7 @@
 
   </div>
   <div class="contentBodywit">
-
+<br><br><br>
   <form action="<mm:treefile write="true" page="/email/write/write.jsp" objectlist="$includePath">
                 <mm:notpresent referid="course"><mm:param name="provider" value="$provider"/></mm:notpresent>
                 </mm:treefile>" method="post" enctype="multipart/form-data" name="webmailForm">
