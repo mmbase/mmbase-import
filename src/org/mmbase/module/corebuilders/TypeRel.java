@@ -32,36 +32,36 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.44 2003-08-07 14:31:18 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.45 2003-08-13 14:33:30 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
-    private static Logger log = Logging.getLoggerInstance(TypeRel.class);
+    private static final Logger log = Logging.getLoggerInstance(TypeRel.class);
 
     /**
      * Constant for {@link #contains}: return only typerels that
      * exactly match.
      */
-    public static int STRICT = 0;
+    public static final int STRICT = 0;
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder or its descendants
      */
-    public static int INCLUDE_DESCENDANTS = 1;
+    public static final int INCLUDE_DESCENDANTS = 1;
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder or its parents
      */
-    public static int INCLUDE_PARENTS = 2;
+    public static final int INCLUDE_PARENTS = 2;
 
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder, its descendants, or its parents
      */
-    public static int INCLUDE_PARENTS_AND_DESCENDANTS = 3;
+    public static final int INCLUDE_PARENTS_AND_DESCENDANTS = 3;
 
     /**
      * TypeRel should contain only a limited amount of nodes, so we
@@ -179,7 +179,9 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
         typeRelNodes.addAll(added);
         if (bidirectional) inverseTypeRelNodes.addAll(added);
-        log.debug("Added to typerelcache: " + added);
+        if (log.isDebugEnabled()) {
+            log.debug("Added to typerelcache: " + added);
+        }
         return added;
     }
 
@@ -193,16 +195,14 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
-        int snumber=node.getIntValue("snumber");
-        int dnumber=node.getIntValue("dnumber");
-        int rnumber=node.getIntValue("rnumber");
-        if (contains(snumber,dnumber,rnumber,STRICT)) {
-            log.error("The typerel with snumber="+snumber+", dnumber="+dnumber+
-                          ", rnumber="+rnumber+" already exists");
-            throw new RuntimeException("The typerel with snumber="+snumber+", dnumber="+dnumber+
-                                        ", rnumber="+rnumber+" already exists");
+        int snumber = node.getIntValue("snumber");
+        int dnumber = node.getIntValue("dnumber");
+        int rnumber = node.getIntValue("rnumber");
+        if (contains(snumber, dnumber, rnumber, STRICT)) {
+            log.error("The typerel with snumber=" + snumber + ", dnumber=" + dnumber+ ", rnumber=" + rnumber + " already exists");
+            throw new RuntimeException("The typerel with snumber=" + snumber + ", dnumber=" + dnumber+ ", rnumber=" + rnumber + " already exists");
         }
-        int res = super.insert(owner,node);
+        int res = super.insert(owner, node);
         return res;
     }
 
@@ -434,15 +434,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @since MMBase-1.6.2
      */
     public boolean contains(int n1,int n2, int r, int restriction) {
-        if (restriction == INCLUDE_DESCENDANTS) {
-            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        } else if (restriction == INCLUDE_PARENTS) {
-            return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        } else if (restriction == INCLUDE_PARENTS_AND_DESCENDANTS) {
-            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r)) ||
-                   parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        } else { // STRICT
-            SortedSet existingNodes=typeRelNodes.getBySourceDestinationRole(n1,n2,r);
+        switch(restriction) {
+        case INCLUDE_DESCENDANTS:             return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        case INCLUDE_PARENTS:                 return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        case INCLUDE_PARENTS_AND_DESCENDANTS: return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r)) || parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        default: // STRICT
+            SortedSet existingNodes = typeRelNodes.getBySourceDestinationRole(n1,n2,r);
             return (existingNodes.size() > 0 && !((MMObjectNode)existingNodes.first()).isVirtual());
         }
     }
