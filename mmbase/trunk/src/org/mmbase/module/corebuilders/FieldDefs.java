@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.39 2003-12-17 21:09:03 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.40 2004-01-06 12:22:39 michiel Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -538,6 +538,47 @@ public class FieldDefs implements Comparable, Storable {
                " DBSTATE=" + getDBStateDescription() +
                " DBNOTNULL=" + notNull + " DBPos=" + pos + " DBSIZE=" + size +
                " isKey=" + isKey + " DBDocType=" + docType;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.7
+     */
+    public boolean equals(Object o) {
+        if (o instanceof FieldDefs) {
+            FieldDefs f = (FieldDefs) o;
+            return 
+                storageEquals(f) 
+                && descriptions.equals(f.descriptions) 
+                && guiNames.equals(f.guiNames)
+                && guiType.equals(f.guiType)
+                && guiSearch == f.guiSearch
+                && guiList  ==  f.guiList
+                && guiPos   == f.guiPos
+                && (docType == null ? f.docType == null : docType.equals(f.docType))
+                ;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Whether this FieldDefs object is equal to another for storage purposes (so, ignoring gui and documentation fields)
+     * @since MMBase-1.7
+     */
+    public boolean storageEquals(FieldDefs f) {
+        return 
+            name.equals(f.name)
+            && type == f.type
+            && state == f.state 
+            && notNull == f.notNull
+            && isKey  == f.isKey 
+            && size == f.size 
+            && (parent == null ? f.parent == null : parent.equals(f.parent))
+            && (storageIdentifier == null ? f.storageIdentifier == null : storageIdentifier.equals(f.storageIdentifier)) 
+            && storageType == f.storageType 
+            && pos == f.pos
+            ; 
     }
 
     // Storable interfaces
