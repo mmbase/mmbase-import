@@ -19,6 +19,10 @@
 		<!-- remove empty parenthesis in table definitions -->
 		<option name="database-remove-empty-definitions" />
 
+        <!-- Unique index declaration -->
+        <scheme name="create-composite-key-scheme">UNIQUE ({2}) CONSTRAINT {1}_constraint</scheme>
+        <scheme name="create-foreign-key-scheme">FOREIGN KEY ({2}) REFERENCES {3} ({4}) CONSTRAINT {1}_{2}_foreignkey</scheme>
+
 		<!-- Informix supports extensions and uses row types -->
 		<scheme name="create-rowtype-scheme">create row type {1}_t ({2}) under {3}_t</scheme>
 		<scheme name="create-table-scheme">create table {1} of type {1}_t ({3} {5}) under {6}</scheme>
