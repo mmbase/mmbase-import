@@ -85,7 +85,7 @@ public class Email extends MMObjectBuilder {
 	* it mails and removed itself from the cloud when done
 	*/
 	public void checkRepeatMail(MMObjectNode node) {
-
+		System.out.println("CHECK REPEAT MAIL");
 		int mailstatus=node.getIntValue("mailstatus");
 		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
 
@@ -117,7 +117,6 @@ public class Email extends MMObjectBuilder {
 	*/
 	public int sendMailNode(MMObjectNode node) {
 			String subject=getSubject(node);
-			//String to=node.getStringValue("to");
 			String to=getTo(node);
 			String from=node.getStringValue("from");
 			String replyto=node.getStringValue("replyto");
@@ -166,14 +165,13 @@ public class Email extends MMObjectBuilder {
 			to=getPeoplesEmail(node);
 			String tmp=getUsersEmail(node);	
 			if (tmp!=null) {
-				if (to.equals("")) {
+				if (to==null || to.equals("")) {
 					to=tmp;
 				} else {
 					to=","+tmp;
 				}
 			}
 		}
-		System.out.println("TO="+to);
 		return(to);
 	}
 
