@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.38 2005-03-01 14:23:40 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.39 2005-03-01 14:57:48 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -182,8 +182,8 @@ public class BasicCloudContext implements CloudContext {
         return new BasicStringList();
     }
 
-    public AuthenticationData getAuthentication(String cloudName) throws NotFoundException {
-        checkExists(cloudName);
+    public AuthenticationData getAuthentication() throws NotFoundException {
+        // checkExists(cloudName);
         return mmb.getMMBaseCop().getAuthentication();
     }
 
