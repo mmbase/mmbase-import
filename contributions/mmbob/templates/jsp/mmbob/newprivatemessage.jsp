@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
@@ -19,6 +14,9 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
@@ -26,27 +24,34 @@
 </mm:present>
 <!-- end action check -->
 
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
+
 <div class="header">
     <%@ include file="header.jsp" %>
 </div>
-                                                                                              
+
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <tr><th colspan="3">Stuur prive bericht</th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg_send"/> <mm:write referid="mlg_private_message" /></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
-	<tr><th>Naar</th><td colspan="2">
+	<tr><th><mm:write referid="mlg_To"/></th><td colspan="2">
 		<mm:node number="$postingid">
 		<mm:field name="c_poster" />
 		<input name="to" type="hidden" value="<mm:field name="c_poster" />">
 		<input name="poster" type="hidden" value="<mm:node referid="posterid"><mm:field name="account" /></mm:node>">
 	</td></tr>
-	<tr><th>Onderwerp</th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>
+	<tr><th><mm:write referid="mlg_Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>
 	</mm:node>
-	<tr><th>Bericht</th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
+	<tr><th><mm:write referid="mlg_Message" /></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="newprivatemessage">
-	<center><input type="submit" value="Verstuur bericht">
+	<center><input type="submit" value="<mm:write referid="mlg_Send"/> <mm:write referid="mlg_message"/>">
   	</form>
 	</td>
 	<td>
@@ -57,7 +62,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Laat maar">
+	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
   	</form>
 	</td>
 	</tr>
@@ -70,5 +75,7 @@
                                                                                               
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
