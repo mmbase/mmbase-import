@@ -11,22 +11,12 @@ import org.mmbase.applications.crontab.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+
 /**
- *  MMBase cronjobs builder
- * @mmbase-application-name MMBaseCrontabApp
- *
- * @mmbase-nodemanager-name cronjobs
- * @mmbase-nodemanager-classfile org.mmbase.applications.crontab.builders.CronJobs
- * @mmbase-nodemanager-field name string
- * @mmbase-nodemanager-field crontime string
- * @mmbase-nodemanager-field classfile string
- * @mmbase-nodemanager-field config string
- *
- * @mmbase-relationtype-name related
- *
- * @mmbase-relationmanager-source cronjobs
- * @mmbase-relationmanager-destination mmservers
- * @mmbase-relationmanager-type related
+ * Builder that holds cronjobs and listens to changes.
+ *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
+ *  <b>The builder uses the bridge to get a cloud using class security.</b> 
+ * @author Kees Jongenburger
  */
 public class CronJobs extends MMObjectBuilder implements Runnable {
 
@@ -40,48 +30,69 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
         t.start();
     }
 
+	/**
+	 * This thread wait's for MMBase to be started and then adds all the crontEntries to the CronDaemon
+	 */
     public void run() {
         while (!MMBase.getMMBase().getState()) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 log.warn("thread interrupted, cronjobs will not be loaded");
+                return;
             }
         }
+
         cronDaemon = CronDaemon.getInstance();
-        NodeIterator nodeIterator = LocalContext.getCloudContext().getCloud("mmbase").getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
+        NodeIterator nodeIterator = getCloud().getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
         while (nodeIterator.hasNext()) {
             cronDaemon.add(createJCronEntry(nodeIterator.nextNode()));
         }
     }
 
+    /**
+     * Inserts a cronjob into the database, and create and adds a  cronEntry to the CronDeamon 
+     */
     public int insert(String owner, MMObjectNode objectNodenode) {
         int number = super.insert(owner, objectNodenode);
-        Node node = LocalContext.getCloudContext().getCloud("mmbase").getNode(number);
+        Node node = getCloud().getNode(number);
         cronDaemon.add(createJCronEntry(node));
         return number;
     }
 
-    private CronEntry createJCronEntry(Node node) {
-        try {
-            return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"));
-        } catch (Throwable e) {
-            System.err.println(e.getMessage());
-        }
-        return null;
-    }
 
+    /**
+     * Commits a cronjob to the database.
+     * On commit of a cronjob, the job is first removed from the cronDeamon and a new cronEntry is created and added to the CronDaemon.
+     */
     public boolean commit(MMObjectNode objectNodenode) {
         boolean retval = super.commit(objectNodenode);
-        Node node = LocalContext.getCloudContext().getCloud("mmbase").getNode(objectNodenode.getNumber());
+        Node node = getCloud().getNode(objectNodenode.getNumber());
         cronDaemon.remove(cronDaemon.getCronEntry("" + node.getNumber()));
         cronDaemon.add(createJCronEntry(node));
         return retval;
     }
 
+    /**
+     * removes the node from the database and also removes it from the CronDaemon
+     */
     public void removeNode(MMObjectNode objectNodenode) {
+        String number = "" + objectNodenode.getNumber();
         super.removeNode(objectNodenode);
-        Node node = LocalContext.getCloudContext().getCloud("mmbase").getNode(objectNodenode.getNumber());
-        cronDaemon.remove(cronDaemon.getCronEntry("" + node.getNumber()));
+        cronDaemon.remove(cronDaemon.getCronEntry(number));
+    }
+    
+    
+	private CronEntry createJCronEntry(Node node) {
+		try {
+			return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"));
+		} catch (Throwable e) {
+			System.err.println(e.getMessage());
+		}
+		return null;
+	}
+
+    private Cloud getCloud() {
+        return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
     }
 }
