@@ -19,6 +19,10 @@ import org.mmbase.storage.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.util.transformers.Transformers;
+
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -30,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.7.2.1 2004-09-07 12:58:46 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.7.2.2 2005-02-03 09:14:36 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -79,6 +83,16 @@ public abstract class StorageManagerFactory {
      * Assign a value to this class if you want to set a default query handler.
      */
     protected List queryHandlerClasses = new ArrayList();
+
+    /**
+     * @see #getSetSurrogator()
+     */
+    protected CharTransformer setSurrogator = null;
+
+    /**
+     * @see #getGetSurrogator()
+     */
+    protected CharTransformer getSurrogator = null;
 
     /**
      * The default storage factory class.
@@ -220,6 +234,7 @@ public abstract class StorageManagerFactory {
 
         // get attributes
         setAttributes(reader.getAttributes());
+        
         // get disallowed fields, and add these to the default list
         disallowedFields.putAll(reader.getDisallowedFields());
 
@@ -262,6 +277,19 @@ public abstract class StorageManagerFactory {
         }
         // initialize query handler.
         queryHandler = instantiateQueryHandler(handler);
+
+        {
+            String surr = (String) getAttribute(Attributes.SET_SURROGATOR);
+            if (surr != null && ! surr.equals("")) {
+                setSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
+            }
+            
+            surr = (String) getAttribute(Attributes.GET_SURROGATOR);
+            if (surr != null && ! surr.equals("")) {
+                getSurrogator = Transformers.getCharTransformer(surr, null, "StorageManagerFactory#load", false);
+            }
+        }
+
     }
 
     /**
@@ -366,7 +394,7 @@ public abstract class StorageManagerFactory {
      * @param value the value of the attribute
      */
     public void setAttribute(Object key, Object value) {
-        attributes.put(key,value);
+        attributes.put(key, value);
     }
 
     /**
@@ -558,5 +586,21 @@ public abstract class StorageManagerFactory {
      * @return  <code>true</code> if trasnactions are supported
      */
     abstract public boolean supportsTransactions();
+
+    /**
+     * Returns a filter which can be used to filter strings taken from storage or <code>null</code> if none defined.
+     * @since MMBase-1.7.4
+     */
+    public CharTransformer getGetSurrogator() {
+        return getSurrogator;
+    }
+
+    /**
+     * Returns a filter which can be used to filter strings which are to be set into storage or <code>null</code> if none defined.
+     * @since MMBase-1.7.4
+     */
+    public CharTransformer getSetSurrogator() {
+        return setSurrogator;
+    }
 
 }
