@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.79.2.2 2002-11-21 13:36:27 pierre Exp $
+ * @version $Id: MMBase.java,v 1.79.2.3 2003-02-19 19:03:09 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -413,6 +413,8 @@ public class MMBase extends ProcessorModule  {
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
         }
+
+        TypeRel.readCache();
 
         // signal that MMBase is up and running
         mmbasestate=STATE_UP;
@@ -1022,7 +1024,6 @@ public class MMBase extends ProcessorModule  {
                 bi.remove();
             }
         }
-
         log.debug("**** end of initBuilders");
         return true;
     }
@@ -1167,7 +1168,7 @@ public class MMBase extends ProcessorModule  {
      * @return the loaded builder object.
      */
     public MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
-        MMObjectBuilder bul=getMMObject(builder);
+        MMObjectBuilder bul = getMMObject(builder);
         if (bul != null) {
             log.debug("Builder '"+builder+"' is already loaded");
             return bul;

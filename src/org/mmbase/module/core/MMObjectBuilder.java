@@ -50,9 +50,9 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.13 2003-02-14 08:59:34 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.14 2003-02-19 19:03:08 michiel Exp $
  */
-public class MMObjectBuilder extends MMTable {
+public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.SizeMeasurable {{
     
     // Max size of the object type cache
     public final static int OBJ2TYPE_MAX_SIZE=20000;
@@ -548,7 +548,25 @@ public class MMObjectBuilder extends MMTable {
     protected List  getAncestors() {
         return ancestors;
     }
-    
+
+    /**
+     * Creates list of descendant-builders. 
+     *
+     * @since MMBase-1.6.2     
+     */
+    public List getDescendants() {
+        ArrayList result = new ArrayList();
+        Enumeration e = mmb.getMMObjects();
+        while(e.hasMoreElements()) {
+            MMObjectBuilder builder = (MMObjectBuilder) e.nextElement();
+            if (builder.isExtensionOf(this)) {
+                result.add(builder);
+            }
+        }
+        return result;
+    }
+
+
     /**
      * Sets the builder that this builder extends, and registers it in the database layer.
      * @param parent the extended (parent) builder, or null if not available
@@ -3475,6 +3493,15 @@ public class MMObjectBuilder extends MMTable {
     public String toString() {
         return getSingularName();
     }
+
+    /**
+     * Implements for MMObjectNode
+     * @since MMBase-1.6.2
+     */
+
+    public String toString(MMObjectNode n) {
+        return n.defaultToString();
+    }
     /**
      * Equals must be implemented because of the list of MMObjectBuilder which is used for ancestors
      *
@@ -3487,6 +3514,26 @@ public class MMObjectBuilder extends MMTable {
         }
         return false;
     }
+
+    /**
+     * Implements equals for nodes (this is in MMObjectBuilder because you cannot override MMObjectNode)
+     *
+     * @since MMBase-1.6.2
+     */
+
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
+        return o1.defaultEquals(o2);
+    }
+
+    /**
+     * Implements for MMObjectNode
+     * @since MMBase-1.6.2
+     */
+
+    public int hashCode(MMObjectNode o) {
+        return 127 * o.getNumber();
+    }
+
 }
 
 
