@@ -80,9 +80,9 @@ public class MMXFDocument extends XMLDocument {
             
             try {
                 if (tagType == MMXF.MMXF) {
-                    doc.writeLock();
+                    // doc.writeLock(); does not compielr with JAVAC?
                     tag = new Tag(tagType, doc.createBranchElement(pe, getStyle("root")));
-                    doc.writeUnlock();
+                    // doc.writeUnlock();
                 }  else if (tagType == MMXF.SECTION) {            
                     debug("new section!!");
                     /*
@@ -100,9 +100,9 @@ public class MMXFDocument extends XMLDocument {
                 } else if (tagType == MMXF.P) {
                     debug("create the branch for p");
                     // create the branch..
-                    doc.writeLock();
+                    //doc.writeLock();
                     tag = new Tag(tagType, doc.createBranchElement(pe, getStyle("p")));
-                    doc.writeUnlock();
+                    //doc.writeUnlock();
                 } else {
                     tag = new Tag(tagType, null);
                 }
@@ -161,9 +161,9 @@ public class MMXFDocument extends XMLDocument {
                 if (tag.getType() == MMXF.EM) {
                     debug("chardata EM");
                     doc.insertString(pos, charData, getStyle("emphasize"));
-                    doc.writeLock();
+                    //doc.writeLock();
                     doc.createLeafElement(parent().getElement(), getStyle("emphasize"), pos, charData.length());
-                    doc.writeUnlock();
+                    //doc.writeUnlock();
                 } else {
                     debug("chardata OTHER");
                     doc.insertString(pos, charData, getStyle("label"));

@@ -7,20 +7,23 @@ XMLCLASSES  = xml/XMLDocument.class xml/Tag.class xml/TagType.class xml/parse/Re
 XMLPARSER   = xml/parse/Parser.class xml/parse/Responder.class
 MMXFCLASSES = mmxf/MMXF.class mmxf/MMXFDocument.class mmxf/MMXFEditorKit.class mmxf/MMXFStyle.class mmxf/MMXFWriter.class
 CLASSES     = KitTest.class MMEditorPane.class $(XMLCLASSES) $(XMLPARSER) $(MMXFCLASSES)
+JAVA        = java
+JAVAC       = jikes
+
 
 test: $(CLASSES)
-	java org.mmbase.util.swing.KitTest text/mmxf
+	$(JAVA) org.mmbase.util.swing.KitTest text/mmxf
 
 testhtml: $(CLASSES)
-	java org.mmbase.util.swing.KitTest text/html
+	$(JAVA) org.mmbase.util.swing.KitTest text/html
 
 
 test2: $(CLASSES) Test.class
-	java org.mmbase.util.swing.Test
+	$(JAVA) org.mmbase.util.swing.Test
 
 
 %.class: %.java
-	jikes $<
+	$(JAVAC) $<
 
 clean:
 	rm $(CLASSES)
