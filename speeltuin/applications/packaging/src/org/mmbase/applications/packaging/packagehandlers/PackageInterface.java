@@ -61,5 +61,9 @@ public interface PackageInterface {
 
 	public String getPath();
         public boolean getDependsFailed();
+        public int getProgressBarValue();
+        public void setProgressBar(int stepcount);
+        public void increaseProgressBar();
+        public void increaseProgressBar(int stepcount);
 
 }

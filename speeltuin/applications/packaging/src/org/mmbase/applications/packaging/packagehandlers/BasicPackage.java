@@ -58,6 +58,8 @@ public class BasicPackage implements PackageInterface {
     private boolean dependsfailed=false;
     private BundleInterface parentbundle=null;
     private ArrayList initiators,supporters,contacts,developers;
+    private float progressbar=0;
+    private float progressstep=1;
 
 
     // the install manager keeps track of what happend during a install
@@ -475,5 +477,23 @@ public class BasicPackage implements PackageInterface {
 	}
 	return list;
    }
+
+    public void setProgressBar(int stepcount) {
+        progressbar=1;
+        progressstep=100/(float)stepcount;
+    }
+
+    public void increaseProgressBar() {
+        increaseProgressBar(1);
+    }
+
+    public void increaseProgressBar(int stepcount) {
+        progressbar+=(stepcount*progressstep);
+    }
+
+   public int getProgressBarValue() {
+        return (int)progressbar;
+   }
+
 
 }

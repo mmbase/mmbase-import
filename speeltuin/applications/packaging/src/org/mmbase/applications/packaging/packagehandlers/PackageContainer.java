@@ -290,4 +290,20 @@ public class PackageContainer implements PackageInterface {
 	activePackage.init(n,provider,name,type,maintainer,version,date,path);
   }
 
+    public void setProgressBar(int stepcount) {
+        activePackage.setProgressBar(stepcount);
+    }
+
+    public void increaseProgressBar() {
+        activePackage.increaseProgressBar();
+    }
+
+    public void increaseProgressBar(int stepcount) {
+        activePackage.increaseProgressBar(stepcount);
+    }
+
+   public int getProgressBarValue() {
+        return activePackage.getProgressBarValue();
+   }
+
 }
