@@ -6,7 +6,7 @@
 %><%@ page import="org.mmbase.applications.editwizard.*"
 %><%
     Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, ewconfig.wizard, null, cloud);
-    Node deleteaction = Utils.selectSingleNode(wiz.schema, "/*/action[@type='delete']");
+    Node deleteaction = Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']");
     if (deleteaction != null) {
         // Ok. let's delete this object.
         org.mmbase.bridge.Node obj = cloud.getNode(request.getParameter("objectnumber"));
