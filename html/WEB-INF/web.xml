@@ -7,7 +7,11 @@
     <param-value>/</param-value>
   </context-param>
 
-  <!-- Filter for jumpers -->
+  <!-- Filter for jumpers
+       uncomment this code if you want to activate te jumeprs filter.
+       You need to install thr jumpers builder first
+	-->
+  <!--
   <filter>
     <filter-name>Jumpers Filter</filter-name>
     <display-name>Jumpers Filter</display-name>
@@ -19,6 +23,7 @@
     <filter-name>Jumpers Filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  -->
 
   <!-- The base MMBase servlet can inform about the current MMBase version which is running. -->
   <servlet>
