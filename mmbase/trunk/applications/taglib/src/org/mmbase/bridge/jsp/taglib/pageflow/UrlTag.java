@@ -96,13 +96,17 @@ public class UrlTag extends ContextReferrerTag {
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
             show = response.encodeURL(show);
         }
-    
+
+        if (getId() != null) {
+            getContextTag().register(getId(), show);
+        }
+            
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, show);
         } else {
             try {                
                 bodyContent.clear();
-                bodyContent.print(show);
+                bodyContent.print(show);                
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             } catch (java.io.IOException e) {
                 throw new JspTagException (e.toString());            
