@@ -17,13 +17,13 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 
 /**
- * Query result cache used for getList from NodeManager and getRelatedNodes from Node
- * (lists of Nodes).
+ * Query result cache used for getRelatedNodes from MMObjectNodes. Entries are invalidated on the
+ * normal QueryResultCache way, but also if the one node from which the related nodes were requested is
+ * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.1 2003-07-14 21:01:03 michiel Exp $
- * @see   org.mmbase.bridge.implementation.BasicNodeManager
- * @see   org.mmbase.bridge.implementation.BasicNode
+ * @version $Id: RelatedNodesCache.java,v 1.2 2003-07-17 17:01:17 michiel Exp $
+ * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */
 
@@ -52,7 +52,9 @@ public class RelatedNodesCache extends QueryResultCache {
     }
 
     // nodenumber -> set of keys
-    // used to sync this cache with node-cache. If node not any more in node-cache, then we decide to also remove its related nodes.
+    // Used to sync this cache with node-cache. If node not any more in node-cache, then we decide to also remove its related nodes.
+    // This seems a plausible thing to do.
+
     private Map numberToKeys = new HashMap();
 
     

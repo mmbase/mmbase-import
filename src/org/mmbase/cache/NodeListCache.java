@@ -17,13 +17,12 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 
 /**
- * Query result cache used for getList from NodeManager and getRelatedNodes from Node
- * (lists of Nodes).
+ * Query result cache used for getNodes from MMObjectBuilder. So it contains only simple nodes (no
+ * clusternodes)
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListCache.java,v 1.1 2003-07-14 21:00:13 michiel Exp $
- * @see   org.mmbase.bridge.implementation.BasicNodeManager
- * @see   org.mmbase.bridge.implementation.BasicNode
+ * @version $Id: NodeListCache.java,v 1.2 2003-07-17 17:01:17 michiel Exp $
+ * @see   org.mmbase.module.core.MMObjectBuilder#getNodes
  * @since MMBase-1.7
  */
 
