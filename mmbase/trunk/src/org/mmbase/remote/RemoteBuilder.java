@@ -21,9 +21,9 @@ import java.util.*;
  */
 public class RemoteBuilder {
 
-    private String  classname   = getClass().getName();
-    private boolean debug       = false;
-    private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    public	static 	boolean debug       = true;
+    private 		String  classname   = getClass().getName();
+    private 		void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	private MMProtocolDriver con;
 	private Hashtable values=new Hashtable();
@@ -35,7 +35,7 @@ public class RemoteBuilder {
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		this.con=con;
-		System.out.println("Starting servicefile : "+servicefile);
+		debug("init("+con+","+servicefile+")");
 
 		ExtendedProperties Reader=new ExtendedProperties();
 		props = Reader.readProperties(servicefile);
@@ -60,16 +60,18 @@ public class RemoteBuilder {
 
 
 	public void nodeRemoteChanged(String nodename,String buildername,String ctype) {		
-		System.out.println("RemoteBuilder ->  remote change "+buildername+" "+nodename+" "+ctype);
+		if( debug ) debug("nodeRemoteChanged("+nodename+","+buildername+","+ctype+")");
 	}
 
 	public void nodeLocalChanged(String nodename,String buildername,String ctype) {		
-		System.out.println("RemoteBuilder -> local change "+buildername+" "+nodename+" "+ctype);
+		if( debug ) debug("nodeLocalChanged("+nodename+","+buildername+","+ctype+")");
 	}
 
 
 
 	public synchronized void gotXMLValues(String body) {
+
+	
 		StringTokenizer tok = new StringTokenizer(body,"\n\r");
 		String xmlline=tok.nextToken();
 		String docline=tok.nextToken();
