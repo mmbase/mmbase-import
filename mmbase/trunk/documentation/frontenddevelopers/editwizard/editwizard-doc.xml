@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.11 2002-12-20 13:35:32 pierre Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.12 2003-04-03 11:45:12 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -43,8 +43,8 @@
 	<section id="installation">
 		<title>Installation</title>
 		<para>If you install and run an 1.6 or higher release of MMBase, the editwizards will be included.</para>
-		<para>To let the editwizards run properly, the /mmapps/editwizard directory must be in place (default installed). This directory contains the JSP pages, the wizards, images, XSL's and CSS stylesheets and client-side Javascript code - in shirt, all the fiels needed to run the wizards.</para>
-		<para>For all practival purposes, you only need to remember the location of tey fiels wizard.jsp (which you call to edit a specific object or create a new one), and list.jsp (which you use to list objects which you can then select for edit).</para>
+		<para>To let the editwizards run properly, the /mmapps/editwizard directory must be in place (default installed). This directory contains the JSP pages, the wizards, images, XSL's and CSS stylesheets and client-side Javascript code - in short, all the files needed to run the wizards.</para>
+		<para>For all practival purposes, you only need to remember the location of the files wizard.jsp (which you call to edit a specific object or create a new one), and list.jsp (which you use to list objects which you can then select for edit).</para>
 		<para>You are free to move the /mmapps/editwizard directory somewhere else. If you do, you need to change the calls in the examples below so they point to the right directory.</para>
 		<section id="requirements">
 			<title>Requirements and Assumptions</title>
@@ -132,6 +132,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 			<programlisting format="linespecific">
 			<![CDATA[
 <?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="some_id">
 	<!-- give the wizard a title -->
 	<title>Practice</title>
@@ -168,7 +169,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 			<title>Step 3. Get it working</title>
 			<para>Check if your newly created wizard works.</para>
 			<para>Open your webbrowser and type in the url to the editwizards list.jsp page, as follows (replace with the correct domain name if your site does not run at localhost:4242) :</para>
-			<programlisting format="linespecific">http://localhost:4242/mmapps/editwizard/list.jsp?wizard=practice/simple&amp;nodepath=people&amp;fields=firstname</programlisting>
+			<programlisting format="linespecific">http://localhost:4242/mmapps/editwizard/jsp/list.jsp?wizard=practice/simple&amp;nodepath=people&amp;fields=firstname</programlisting>
 			<para>
 			The list.jsp page is one of two pages you can call to start the wizards. List.jsp reads the xml you provide as the 'wizard' parameter, and creates a list of items to pick from - either to edit or to delete. It may also provide a button with which you can add new people.</para>
 			<para>You should see a login screen first. Login as you would with the MMEditors or the MMBase admin. After you logged in, you're screen may look like this:</para>
@@ -278,6 +279,8 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 			<para>In the practice directory, create a new file named people.xml. Enter the following xml:</para>
 			<programlisting format="linespecific">
 			<![CDATA[
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="people">
 	<title>People</title>
 
@@ -400,7 +403,59 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 			</orderedlist>
 		</section>
 	</section>
-
+<section
+><title
+>Using include and extends</title
+><para
+>You can keep your editwizards manageable by using the include and extends commands to place parts of your editwizard in seperate files.</para
+><itemizedlist
+><listitem
+><para
+>include</para
+><para
+>Can be used to place actions, lists and optionlists in seperate files</para
+></listitem
+><listitem
+><para
+>extends</para
+><para
+>Can be used to place form-schema&#39;s in seperate files.</para
+></listitem
+><listitem
+><para
+>Example</para
+><programlisting format="linespecific"><![CDATA[
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+	<title>Artikel</title>
+	<action include="wizards/article/create_article.xml" />
+    <action include="wizards/article/delete_article.xml" />
+	<action include="wizards/article/load_article.xml" />
+	<lists>
+		<optionlist include="wizards/types/article_type.xml" /> 
+	</lists>
+	<steps>
+		<step form-schema="basic" />
+		<step form-schema="paragraphs" />
+	</steps>
+	<form-schema id="basic" extends="wizards/article/edit_article.xml" />
+	<form-schema id="paragraphs">
+		<list include="wizards/paragraphs/add_paragraphs.xml" /> 
+	</form-schema>
+</wizard-schema>
+]]></programlisting
+><note
+><para
+>Every file that is included or used in an extend should have a valide doctype. For instance, in case a list in included, this list should start with:</para
+><programlisting format="linespecific"><![CDATA[
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+]]></programlisting></note
+></listitem
+></itemizedlist
+></section
+>
 	<section id="reference">
 		<title>Reference</title>
 		<para>This reference describes the syntax of the wizards and how to access them using a browser.</para>
@@ -1131,8 +1186,17 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 				<varlistentry>
 					<term>Example</term>
 					<listitem>
-						<para>(See also: the &lt;action type="create" /&gt; example and the &lt;object /&gt; example.</para>
-					</listitem>
+						<programlisting format="linespecific"><![CDATA[
+<action type="create">
+		<relation role="posrel">
+			<object type="paragraph" />
+			<field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
+		</relation>
+</action>
+				]]></programlisting>
+				<para>TO DO: Trick with the counter should be documented.</para>
+				<para>(See also: the &lt;action type="create" /&gt; example and the &lt;object /&gt; example.)</para>
+				</listitem>
 				</varlistentry>
 			</variablelist>
 			<variablelist>
