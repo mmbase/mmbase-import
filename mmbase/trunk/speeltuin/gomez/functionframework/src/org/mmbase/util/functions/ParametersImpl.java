@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ParametersImpl.java,v 1.2 2004-12-02 09:22:32 pierre Exp $
+ * @version $Id: ParametersImpl.java,v 1.3 2004-12-02 09:40:52 pierre Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -84,13 +84,15 @@ public class ParametersImpl extends AbstractList implements Parameters {
      */
     public ParametersImpl(DataType[] def, List values) {
         this(def);
-        if (log.isDebugEnabled()) {
-            if (values.size() > definition.length) {
-                log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
+        if (values!=null) {
+            if (log.isDebugEnabled()) {
+                if (values.size() > definition.length) {
+                    log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
+                }
             }
-        }
-        for (int i = 0; i < values.size(); i++) {
-            set(i, values.get(i));
+            for (int i = 0; i < values.size(); i++) {
+                set(i, values.get(i));
+            }
         }
     }
 
