@@ -3,15 +3,17 @@
 <builder extends="object">
 <status>active</status>
 
-
-<classfile>org.mmbase.module.builders.media.MediaSource</classfile>
+<classfile>org.mmbase.module.builders.media.MediaSources</classfile>
 
 <searchage>14</searchage>
 
 <names>
-	<singular xml:lang="en">AudioSource</singular>
+	<!-- singles per language as defined by ISO 639 -->
+	<singular xml:lang="en">Audio_source</singular>
 	<singular xml:lang="nl">Audiobron</singular>
-	<plural xml:lang="en">AudioSources</plural>
+
+	<!-- plural per language as defined by ISO 639 -->
+	<plural xml:lang="en">Audio_sources</plural>
 	<plural xml:lang="nl">Audiobronnen</plural>
 </names>
 
@@ -21,7 +23,7 @@
 </descriptions>
 
 <fieldlist>
-	<!-- POS 1 : <field> 'format'  -->
+	<!-- POS 3 : <field> 'format'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
@@ -49,48 +51,19 @@
 		</db>
 	</field>
 
-	<!-- POS 2 : <field> 'url'  -->
+	<!-- POS 4 : <field> 'Codec'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="en">Url</guiname>
-			<guiname xml:lang="nl">Url</guiname>
-			<guitype>string</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>2</input>
-				<!-- position in list area of the editor -->
-				<list>-1</list>
-				<!-- position in search area of the editor -->
-				<search>-1</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>url</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="false">STRING</type>
-		</db>
-	</field>
-
-
-	<!-- POS 3 : <field> 'status'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="en">status</guiname>
-			<guiname xml:lang="nl">status</guiname>
+			<guiname xml:lang="en">Codec</guiname>
+			<guiname xml:lang="nl">Codec</guiname>
 			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
 			<positions>
 				<!-- position in the input area of the editor -->
-				<input>3</input>
+				<input>-1</input>
 				<!-- position in list area of the editor -->
 				<list>2</list>
 				<!-- position in search area of the editor -->
@@ -100,63 +73,35 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>status</name>
+			<name>codec</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
 
-	<!-- POS 4 : <field> 'cpu'  -->
+	<!-- POS 5 : <field> 'bitrate'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="en">Processor</guiname>
-			<guiname xml:lang="nl">Verwerker</guiname>
-			<guitype>string</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>4</input>
-				<!-- position in list area of the editor -->
-				<list>3</list>
-				<!-- position in search area of the editor -->
-				<search>-1</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>cpu</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false">STRING</type>
-		</db>
-	</field>
-
-	<!-- POS 5 : <field> 'speed'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="en">Speed</guiname>
-			<guiname xml:lang="nl">Snelheid</guiname>
+			<guiname xml:lang="en">Bitrate</guiname>
+			<guiname xml:lang="nl">Bitrate</guiname>
 			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
 			<positions>
 				<!-- position in the input area of the editor -->
-				<input>5</input>
+				<input>3</input>
 				<!-- position in list area of the editor -->
-				<list>4</list>
+				<list>3</list>
 				<!-- position in search area of the editor -->
-				<search>4</search>
+				<search>3</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>speed</name>
+			<name>bitrate</name>
 			<!-- MMBase datatype and demands on it -->
 			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
@@ -174,11 +119,11 @@
 		<editor>
 			<positions>
 				<!-- position in the input area of the editor -->
-				<input>6</input>
+				<input>4</input>
 				<!-- position in list area of the editor -->
-				<list>5</list>
+				<list>4</list>
 				<!-- position in search area of the editor -->
-				<search>5</search>
+				<search>4</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
@@ -189,10 +134,61 @@
 			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
+	
+	<!-- POS 7 : <field> 'url'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="en">Url</guiname>
+			<guiname xml:lang="nl">Url</guiname>
+			<guitype>string</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>7</input>
+				<!-- position in list area of the editor -->
+				<list>7</list>
+				<!-- position in search area of the editor -->
+				<search>7</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>url</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" size="255" notnull="false">STRING</type>
+		</db>
+	</field>
 
-
+	<!-- POS 8 : <field> 'state'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="en">State</guiname>
+			<guiname xml:lang="nl">Toestand</guiname>
+			<guitype>integer</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>8</input>
+				<!-- position in list area of the editor -->
+				<list>8</list>
+				<!-- position in search area of the editor -->
+				<search>8</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>state</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" notnull="true">INTEGER</type>
+		</db>
+	</field>
 </fieldlist>
-
-
 </builder>
-

@@ -3,14 +3,16 @@
 <builder extends="object">
 <status>active</status>
 
-
-<classfile>org.mmbase.module.builders.media.MediaProvider</classfile>
+<classfile>org.mmbase.module.builders.media.MediaProviders</classfile>
 
 <names>
-	<singular xml:lang="en">MediaProvider</singular>
-	<singular xml:lang="nl">MediaProvider</singular>
-	<plural xml:lang="en">MediaProviders</plural>
-	<plural xml:lang="nl">MediaProviders</plural>
+	<!-- singles per language as defined by ISO 639 -->
+	<singular xml:lang="en">Media_provider</singular>
+	<singular xml:lang="nl">Mediaprovider</singular>
+
+	<!-- plural per language as defined by ISO 639 -->
+	<plural xml:lang="en">Media_providers</plural>
+	<plural xml:lang="nl">Mediaproviders</plural>
 </names>
 
 <descriptions>
@@ -23,18 +25,14 @@
   a key/value system. Its a optional tag.
   -->
   <properties>
-    
     <!-- specify which protocols to use for which media formats -->
     <property name="g2/sure">rtsp://</property>
     <property name="ra">pnm://</property>
     <property name="default">http://</property>
-
-    <!-- generic property for all converters -->
-    <property name="MaxConcurrentRequests">3</property>
   </properties>
 
 <fieldlist>
-	<!-- POS 1 : <field> 'name'  -->
+	<!-- POS 3 : <field> 'name'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
@@ -62,7 +60,7 @@
 		</db>
 	</field>
 
-	<!-- POS 2 : <field> 'Rooturl'  -->
+	<!-- POS 4 : <field> 'Rooturl'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
@@ -86,18 +84,16 @@
 			<!-- name of the field in the database -->
 			<name>rooturl</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="80" notnull="true">STRING</type>
+			<type state="persistent" size="200" notnull="false">STRING</type>
 		</db>
 	</field>
 
-
-
-	<!-- POS 3 : <field> 'status'  -->
+	<!-- POS 5 : <field> 'state'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="en">Status</guiname>
-			<guiname xml:lang="nl">Status</guiname>
+			<guiname xml:lang="en">State</guiname>
+			<guiname xml:lang="nl">Toestand</guiname>
 			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -114,13 +110,13 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>status</name>
+			<name>state</name>
 			<!-- MMBase datatype and demands on it -->
 			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
 
-	<!-- POS 4 : <field> 'rootpath'  -->
+	<!-- POS 6 : <field> 'rootpath'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
@@ -144,7 +140,7 @@
 			<!-- name of the field in the database -->
 			<name>rootpath</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="80" notnull="true">STRING</type>
+			<type state="persistent" size="i200" notnull="false">STRING</type>
 		</db>
 	</field>
 
@@ -153,8 +149,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="en">Info</guiname>
-			<guiname xml:lang="nl">Info</guiname>
+			<guiname xml:lang="en">Informacion</guiname>
+			<guiname xml:lang="nl">Informatie</guiname>
 			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -163,9 +159,9 @@
 				<!-- position in the input area of the editor -->
 				<input>5</input>
 				<!-- position in list area of the editor -->
-				<list>-1</list>
+				<list>5</list>
 				<!-- position in search area of the editor -->
-				<search>5</search>
+				<search>-1</search>
 			</positions>
 		</editor>
 		<!-- database related  -->
@@ -176,9 +172,5 @@
 			<type state="persistent" size="300" notnull="false">STRING</type>
 		</db>
 	</field>
-
 </fieldlist>
-
-
 </builder>
-
