@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.14 2003-08-27 19:37:12 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.15 2004-04-19 16:38:59 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
@@ -124,9 +124,7 @@ public class ContextAuthentication extends Authentication {
     public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
-            String msg = "could not load module with name:" +  moduleName;
-            log.error(msg);
-            throw new SecurityException(msg);
+            throw new UnknownAuthenticationMethodException("could not load module with name:" +  moduleName);
         }
         ContextLoginModule module = (ContextLoginModule) loginModules.get(moduleName);
         // and we do the login...
