@@ -10,13 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.tests.*;
 
 /**
  * Test class <code>NodeManager</code> from the bridge package.
  *
  * @author Jaco de Groot
  */
-public class NodeManagerTest extends org.mmbase.tests.BridgeTest {
+public class NodeManagerTest extends BridgeTest {
     Cloud cloud;
     Node node;
     int nrOfTestNodes;

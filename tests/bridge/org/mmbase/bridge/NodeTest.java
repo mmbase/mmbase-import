@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import java.util.Iterator;
+import org.mmbase.tests.*;
 
 /**
  * Basic test class to test <code>Node</code> from the bridge package.
@@ -18,7 +19,7 @@ import java.util.Iterator;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  */
-public abstract class NodeTest extends org.mmbase.tests.BridgeTest {
+public abstract class NodeTest extends BridgeTest {
     Node node;
     String[] fieldTypes = {"byte", "double", "float", "int", "long", "string"};
 
