@@ -38,7 +38,7 @@ import org.mmbase.bridge.implementation.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.7 2004-12-06 16:13:38 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.8 2004-12-15 13:46:51 daniel Exp $ 
  */
 public class FunctionSets {
 
@@ -257,7 +257,11 @@ public class FunctionSets {
         if (!fullyQualified) {
             if (className.equals("int")) { // needed?
                 return int.class;
-            }
+            } else if (className.equals("NodeList")) { 
+		return org.mmbase.bridge.NodeList.class;
+            } else if (className.equals("Node")) { 
+		return org.mmbase.bridge.Node.class;
+	    } 
             fullClassName = "java.lang." + fullClassName;
         }
         try {
