@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.15 2000-05-25 12:55:05 wwwtech Exp $
+$Id: JamesServlet.java,v 1.16 2000-06-20 14:44:06 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2000/05/25 12:55:05  wwwtech
+Wilbert: Add and use of static support method getRequestURL
+
 Revision 1.14  2000/05/25 10:46:32  wwwtech
 Wilbert: minor optimalisation of methods inc & decRefCount()
 
@@ -54,7 +57,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.15 2000-05-25 12:55:05 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.16 2000-06-20 14:44:06 install Exp $
 */
 
 class DebugServlet {
@@ -79,7 +82,6 @@ class DebugServlet {
 	
 public class JamesServlet extends HttpServlet {
     protected String classname = getClass().getName();
-    //public boolean debug = false;
     protected void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	// org.mmbase
 
@@ -385,11 +387,13 @@ public class JamesServlet extends HttpServlet {
 			if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
 			else { s.refCount++; s.URIs.addElement(URL); }
 		}// sync
+		/*
 		if ((printCount & 31)==0) {
 			debug("Running servlets: "+curCount);
 			for(Enumeration e=runningServlets.elements(); e.hasMoreElements();)
 				System.out.println(e.nextElement());
 		}
+		*/
 	}
 	
     public void init(ServletConfig config) throws ServletException {
