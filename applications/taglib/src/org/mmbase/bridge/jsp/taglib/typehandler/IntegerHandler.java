@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.17 2003-08-27 21:33:42 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.18 2003-11-07 14:11:25 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -165,12 +165,13 @@ public class IntegerHandler extends AbstractTypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         String guiType = field.getGUIType();
         String fieldName = field.getName();
+        long currentValue = node.getLongValue(fieldName);
         if (guiType.equals("boolean")) {
             String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
             fieldValue = tag.encode(fieldValue, field);
-            if (fieldValue == null) {
+            if (fieldValue == null && currentValue != 0) {
                 node.setIntValue(fieldName, 0);
-            } else {
+            } else if (currentValue != 1) {
                 node.setIntValue(fieldName, 1);
             }
             return "";

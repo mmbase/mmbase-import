@@ -11,21 +11,28 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
+
+import org.mmbase.storage.search.*;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 /**
  * The 'date' type does not exist yet, this class is used in IntegerHandler and LongHandler now.
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.9 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.10 2003-11-07 14:11:25 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
+
+    private static final Logger log = Logging.getLoggerInstance(DateHandler.class);
 
     private static int DATE_FACTOR      = 1000; // MMBase stores dates in seconds not in milliseconds
     private static boolean EXIST_YEAR_0 = false;
@@ -74,6 +81,28 @@ public class DateHandler extends AbstractTypeHandler {
         buffer.append(cal.getTime().getTime()/DATE_FACTOR);
         buffer.append("\" />");
         // give also present value, this makes it possible to see if user changed this field.
+
+        if (search) {
+            String name = prefix(field.getName() + "_search");
+            String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
+            if (searchi == null) searchi = "no";
+            buffer.append("<select name=\"" + name + "\">\n");
+            buffer.append("  <option value=\"no\" ");
+            if (searchi.equals("no")) buffer.append(" selected=\"selected\" ");
+            buffer.append("> </option>");
+            buffer.append("  <option value=\"less\" ");
+            if (searchi.equals("less")) buffer.append(" selected=\"selected\" ");
+            buffer.append(">&lt;</option>");
+            buffer.append("  <option value=\"greater\" ");
+            if (searchi.equals("greater")) buffer.append(" selected=\"selected\" ");
+            buffer.append(">&gt;</option>");
+            buffer.append("  <option value=\"equal\" ");
+            if (searchi.equals("equal")) buffer.append(" selected=\"selected\" ");
+            buffer.append(">=</option>");
+            buffer.append("</select>");
+        }
+
+
 
         String options = tag.getOptions();
         if (options == null || options.indexOf("date") > -1) {
@@ -154,6 +183,7 @@ public class DateHandler extends AbstractTypeHandler {
             buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_minute") + "\" value=\"0\" />");
             buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_second") + "\" value=\"0\" />");
         }
+
         return buffer.toString();
     }
 
@@ -195,13 +225,7 @@ public class DateHandler extends AbstractTypeHandler {
     }
 
 
-    /**
-     * @see TypeHandler#whereHtmlInput(Field)
-     */
-    public String whereHtmlInput(Field field) throws JspTagException {
-
-        StringBuffer buffer = new StringBuffer();
-        String guitype = field.getGUIType();
+    protected long getSpecifiedValue(Field field) throws JspTagException {
         String fieldName = field.getName();
         Calendar cal = Calendar.getInstance();
         String input_day    =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day"));
@@ -210,8 +234,8 @@ public class DateHandler extends AbstractTypeHandler {
         String input_hour   =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hour"));
         String input_minute =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute"));
         String input_second =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second"));
-        if (input_day==null || input_hour==null) {
-            return null;
+        if (input_day == null || input_hour == null) {
+            return -1;
         }
         try {
             Integer day    = new Integer(input_day);
@@ -224,15 +248,57 @@ public class DateHandler extends AbstractTypeHandler {
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
         }
-        // check if changed:
-        if (! tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName)).equals("" + cal.getTime().getTime() / DATE_FACTOR)) {
-            buffer.append("( [" + fieldName + "] >" + (cal.getTime().getTime() / DATE_FACTOR) + ")");
+        return cal.getTime().getTime() / DATE_FACTOR;       
+    }
+
+    /**
+     * @see TypeHandler#whereHtmlInput(Field)
+     */
+    public String whereHtmlInput(Field field) throws JspTagException {            
+     String fieldName = field.getName();
+        String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
+        if (operator == null || operator.equals("no")) {
+            return null;
+        }
+  
+        long time = getSpecifiedValue(field);
+        if (time == -1) return null;
+
+        if (operator.equals("greater")) {
+            return "( [" + fieldName + "] >" + time + ")";
+        } else if (operator.equals("smaller")) {
+            return "( [" + fieldName + "] <" + time + ")";
+        } else if (operator.equals("equal")) {
+            return "( [" + fieldName + "] = " + time + ")";
         } else {
+            log.warn("Found unknown operator value '" + operator + "'");
+            return null;
+        }
+    }
+
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+        String fieldName = field.getName();
+        String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
+        if (operator == null || operator.equals("no")) {
             return null;
         }
 
+        String time = "" + getSpecifiedValue(field);
 
-        return buffer.toString();
+        Constraint con;
+        if (operator.equals("greater")) {
+            con = NodeListConstraintTag.buildConstraint(query, fieldName, null, FieldCompareConstraint.GREATER, time, null);
+        } else if (operator.equals("less")) {
+            con = NodeListConstraintTag.buildConstraint(query, fieldName, null, FieldCompareConstraint.LESS, time, null);
+        } else if (operator.equals("equal")) {
+            con = NodeListConstraintTag.buildConstraint(query, fieldName, null, FieldCompareConstraint.EQUAL, time, null);
+        } else {
+            log.warn("Found unknown operator value '" + operator + "'");
+            return null;
+        }
+        return NodeListConstraintTag.addConstraintToQuery(query, con);
+
     }
+
 
 }
