@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -16,14 +16,16 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Daniel Ockeloen
  * @version 10 Dec 2000
  */
 public class Users extends MMObjectBuilder {
 
-	// debug level make sure its false in cvs !
-	public boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(Users.class.getName()); 
 
 	// cache the 100 most active users, enh. is to allow
 	// people to set it in users.xml
@@ -32,7 +34,6 @@ public class Users extends MMObjectBuilder {
 	// rico's funkie password generator
 	private PasswordGeneratorInterface pwgen = new PasswordGenerator ();
 	
-
 	/**
 	* replace call, when called in format MMBASE-BUILDER-users-xxxxx
 	*/
@@ -78,7 +79,9 @@ public class Users extends MMObjectBuilder {
 		if (n!=null) {
 
 			// we have it in the cache so return that
-			if (debug) debug("user positive cache");
+			if (log.isDebugEnabled()) {
+                log.debug("user positive cache");
+            }
 			return(n.intValue());
 		}
 
@@ -104,7 +107,9 @@ public class Users extends MMObjectBuilder {
 						// cache and return it
 						int number=node2.getIntValue("number");
 						cache.put(key,new Integer(number));
-						if (debug) debug("users positive");
+						if (log.isDebugEnabled()) {
+                            log.debug("users positive");
+                        }
 						return(number);
 					}
 				}

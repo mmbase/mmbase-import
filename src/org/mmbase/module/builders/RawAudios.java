@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,8 +8,11 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: RawAudios.java,v 1.9 2000-08-02 15:10:50 gerard Exp $
+$Id: RawAudios.java,v 1.10 2001-04-10 12:20:39 michiel Exp $
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/08/02 15:10:50  gerard
+gerard: changed .ra into .mp3 for getFullName and type=mp3
+
 Revision 1.8  2000/07/04 11:51:12  vpro
 davzev: Fixed a bug in method getHostName having to do with string manipulation of the url field.
 
@@ -48,19 +51,18 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.9 $ $Date: 2000-08-02 15:10:50 $
+ * @$Revision: 1.10 $ $Date: 2001-04-10 12:20:39 $
  *
  */
 public class RawAudios extends MMObjectBuilder {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	//private void debug ( String msg ) { System.out.println( classname +":"+ msg ); }
-	private static void debug2( String msg ) { System.out.println( "org.mmbase.modules.builders.RawAudios:"+ msg ); }
+    private static Logger log = Logging.getLoggerInstance(RawAudios.class.getName()); 
 
  	public boolean replaceCache=true;
 
@@ -169,7 +171,8 @@ public class RawAudios extends MMObjectBuilder {
 		audios=search("WHERE id="+id);
 		while(audios.hasMoreElements()) {
 			node=(MMObjectNode)audios.nextElement();
-			debug("removeAudio("+id+"): Zapping "+node.getIntValue("number")+","+node.getStringValue("url"));
+            log.service("removeAudio(" + id + "): Zapping " +
+                        node.getIntValue("number") + "," + node.getStringValue("url"));
 			removeRelations(node);
 			removeNode(node);
 			zapPhysical(node);
@@ -264,14 +267,18 @@ public class RawAudios extends MMObjectBuilder {
 
 		f=new File(path,name);
 		if (f.isDirectory()) {
-			debug("removeFile("+path+"/"+name+"): Removing dir "+f.getPath());
+            if (log.isServiceEnabled()) {
+                log.service("removeFile(" + path + "/" + name + "): Removing dir " + f.getPath());
+            }
 			if (!f.delete()) {
-				debug("removeFile("+path+"/"+name+"): Can't delete directory "+f.getPath());
+				log.error("removeFile(" + path + "/" + name + "): Can't delete directory " + f.getPath());
 			}
 		} else {
-			debug("Removing file "+f.getPath());
+            if (log.isServiceEnabled()) {
+                log.service("Removing file " + f.getPath());
+            }
 			if (!f.delete()) {
-				debug("removeFile("+path+"/"+name+"): Can't delete file "+f.getPath());
+				log.error("removeFile("+path+"/"+name+"): Can't delete file "+f.getPath());
 			}
 		}
 	}
@@ -290,7 +297,10 @@ public class RawAudios extends MMObjectBuilder {
 		if (format == RA_FORMAT) {
 			fileName = ""+(speed/1000)+"_"+channels+".ra";
 		} else if (format == WAV_FORMAT) {
-			debug2("getFileName("+format+","+speed+","+channels+"): Yeah right!! I'm NOT giving you the wav filename!");
+            if (log.isDebugEnabled()) {
+                log.debug("getFileName(" + format + "," + speed + "," + channels + 
+                          "): Yeah right!! I'm NOT giving you the wav filename!");
+            }
 		} else if (format == SURESTREAM_FORMAT) {
 			fileName = SURESTREAM_FILENAME;
 		}
@@ -328,7 +338,8 @@ public class RawAudios extends MMObjectBuilder {
 					if (hostName.indexOf(" ") != -1) 
 						hostName = hostName.substring(0,hostName.indexOf(" "));
 				} else {
-					debug2("getHostName("+url+"): ERROR: Url field contains "+FLIPSYMBOL+" symbol but NO "+HOSTSYMBOL+" symbol -> returning defaulthost:"+DEFAULTHOST);
+					log.error("getHostName(" + url + "): Url field contains " + FLIPSYMBOL + 
+                              " symbol but NO " + HOSTSYMBOL + " symbol -> returning defaulthost:" + DEFAULTHOST);
 					hostName = DEFAULTHOST;
 				}
 			} else {
@@ -340,7 +351,8 @@ public class RawAudios extends MMObjectBuilder {
 		} catch (Exception e) {
 			// If the format of the Url field is changed, an exception could be thrown during manipulation,
 			// then return the defaulthost.
-			debug2("getHostName("+url+"): ERROR: Url field format is unknown to me, returning defaulthost("+DEFAULTHOST+"), exception was: " + e.toString());
+			log.error("getHostName(" + url + "): Url field format is unknown to me, returning defaulthost(" + 
+                      DEFAULTHOST + "), exception was: " + e.toString());
 			return DEFAULTHOST;
 		}
 	}
