@@ -34,7 +34,7 @@
 					<mm:param name="postthreadid" value="$postthreadid" />
 					<mm:param name="postingid" value="$postingid" />
 				</mm:url>" method="post">
-	<input type="hidden" name="admincheck" value="true">
+	<input type="hidden" name="moderatorcheck" value="true">
 	<input type="hidden" name="action" value="removepost">
 	<p />
 	<center>
