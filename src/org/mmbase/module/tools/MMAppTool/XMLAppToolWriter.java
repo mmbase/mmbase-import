@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
 */
 public class XMLAppToolWriter  {
 
-    public static void writeXMLFile(AppCanvas can,String targetpath) {
+    public static void writeXMLFile(AppCanvas can,String filename) {
 
 	String body="<mmapptoolconfig>\n\n";
 
@@ -39,7 +39,7 @@ public class XMLAppToolWriter  {
 	body+=getBuilders(can.getBuilderOvals());
 	// close the file
 	body+="</mmapptoolconfig>\n\n";
-	saveFile("/tmp/mmapptoolconfig.xml",body);
+	saveFile(filename,body);
     }
 
     private static String getBuilders(Vector builders) {
