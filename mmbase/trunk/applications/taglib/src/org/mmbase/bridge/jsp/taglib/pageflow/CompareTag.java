@@ -24,7 +24,7 @@ import java.util.*;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.27 2003-08-27 21:33:40 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.28 2003-12-24 11:21:33 nico Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -113,6 +113,16 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                     compare2 = new java.math.BigDecimal(0);
                 } else {
                     compare2 = new java.math.BigDecimal((String)compare2);
+                }
+            }
+            
+            if ((compare2 instanceof Number) && (compare1 instanceof String)) {
+                log.debug("found an instance of Number");
+                compare2 = new java.math.BigDecimal(compare2.toString());
+                if ("".equals(compare1)) { // do something reasonable in IsEmpty
+                    compare1=new java.math.BigDecimal(0);
+                } else {
+                    compare1 = new java.math.BigDecimal((String)compare1);
                 }
             }
             
