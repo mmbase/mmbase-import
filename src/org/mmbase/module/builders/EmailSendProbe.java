@@ -71,7 +71,6 @@ public class EmailSendProbe implements Runnable {
 	 */
 	public synchronized void run() {
 		kicker.setPriority(Thread.MIN_PRIORITY+1);  
-		//System.out.println("EmailSendProbe -> started probe");
 		while (kicker!=null) {
 				if (tasks.size()>0) {
 					anode=(MMObjectNode)tasks.elementAt(0);
@@ -87,7 +86,6 @@ public class EmailSendProbe implements Runnable {
 						ttime=anode.getIntValue("mailtime")-ttime;
 						if (ttime<3) {
 							// time has come handle this task now !
-							System.out.println("EmailSendProbe Handle Task NOW");
 							try {
 								parent.performTask(anode);
 							} catch (Exception e) {
@@ -95,7 +93,6 @@ public class EmailSendProbe implements Runnable {
 							}
 							tasks.removeElement(anode);
 						} else {
-							System.out.println("EmailSendProbe wait for "+ttime);
 							wait(ttime*1000);
 						}
 					}
@@ -113,7 +110,6 @@ public class EmailSendProbe implements Runnable {
 		}
 		// is the active node
 		if (tasks.size()==0 || node==tasks.elementAt(0)) {
-			System.out.println("EmailSendProbe : notify()");
 			notify();
 		}
 		return(true);
