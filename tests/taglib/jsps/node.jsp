@@ -159,7 +159,7 @@ using list tag: <br />
        4  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>  
      <mm:relatednodes type="urls" searchdir="source">
-         SHOULD NOT SEE THIS <br />
+         SHOULD NOT SEE THIS  (searchdir without role not honoured)<br />
      </mm:relatednodes>  
      <mm:relatednodes type="urls" role="related">
          SHOULD NOT SEE THIS (role is not 'related' but 'posrel') <br />
