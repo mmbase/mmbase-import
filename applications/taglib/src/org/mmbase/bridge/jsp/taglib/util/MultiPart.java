@@ -22,7 +22,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.6 2004-10-11 11:19:03 pierre Exp $
+ * @version $Id: MultiPart.java,v 1.7 2004-10-11 13:40:23 pierre Exp $
  **/
 
 public class MultiPart {
@@ -232,9 +232,7 @@ public class MultiPart {
 */
             // get the info as String...
             byte[] data = getBytes(param);
-            if (data == null) {
-                throw new JspTagException("retrieved no data for parameter:" + param);
-            }
+            if (data == null) return null;
 
             String encoding = coding;
             // determine encoding
