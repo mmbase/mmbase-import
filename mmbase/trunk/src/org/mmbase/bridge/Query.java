@@ -16,21 +16,32 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.8 2003-07-28 09:39:04 michiel Exp $
+ * @version $Id: Query.java,v 1.9 2003-07-29 17:04:03 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
 
+
     /**
-     * Adds a NodeManager to this Query.
+     * Wheter this query is 'aggregating'. You can only use 'addAggregatedField' on aggregating querys.
+     * @todo Should this not appear in SearchQuery itself? Or should there be an AggregatingQuery interface?
+     * It is now used in BasicCloud.getList.
+     */
+    boolean isAggregating(); 
+
+    /**
+     * Adds a NodeManager to this Query. This can normally be done only once. After that you need
+     * to use (one of the) 'addRelationStep'.
      *
      * @param nodeManager The nodeManager associated with the step.
      * @return The 'step' wrapping the NodeManager.
      * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @see #addRelationStep
      */
     Step addStep(NodeManager nodeManager);
     
     
+
     /**
      * Adds new RelationManager to the query.  Adds the next Step (containing the Destination
      * Manager) as well, it can be retrieved by calling <code> {@link
@@ -54,6 +65,19 @@ public interface Query extends SearchQuery, Cloneable {
      */
     RelationStep addRelationStep(RelationManager relationManager, int searchDir);
 
+    /*
+     * If you need to add a 'related' NodeManager without specifying an actual RelationManager, then
+     * simply use these addRelationStep.
+     */
+
+    RelationStep addRelationStep(NodeManager otherManager);
+
+    /**
+     * Also explicitely state the direction of the relation. This can be needed if the
+     * RelationManager has two equals sides.
+     */
+    RelationStep addRelationStep(NodeManager otherManager, int searchDir);
+
     /**
      * Adds a field to a step.
      */
@@ -62,7 +86,15 @@ public interface Query extends SearchQuery, Cloneable {
     /**
      * Creates a StepField object withouth adding it (e.g. needed for aggregated queries).
      */
-    StepField getStepField(Step step, Field field);
+    StepField createStepField(Step step, Field field);
+
+
+    /**
+     * Creates the step field for the given name. For a NodeQuery the arguments is simply the name of the
+     * field. For a 'normal' query, it should be prefixed by the (automatic) alias of the Step.
+     */
+
+    StepField createStepField(String fieldIdentifer);
 
     /**
      * Add an aggregated field to a step
@@ -133,6 +165,9 @@ public interface Query extends SearchQuery, Cloneable {
     /**
      * Combines two Constraints to one new one, using a boolean operator (AND or OR). Every new
      * constraint must be combined with the ones you already have with such a new CompositeConstraint.
+     *
+     * If the first constraint is a composite constraint (with the same logical operator), then the
+     * second one will simply be added.
      */
     CompositeConstraint         createConstraint(Constraint c1, int op, Constraint c2);
 
