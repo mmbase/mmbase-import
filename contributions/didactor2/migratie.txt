@@ -8,9 +8,10 @@ de mogelijkheid om een beschrijving van zichzelf te geven. Hiervoor moet een
 desription veld aan de people tabel worden toegevoegd. Verder worden er nu
 standaard per gebruiker 3 typen portfolio's aangemaakt.
 
-- Stop de applicatie en draai de volgende SQL:
+- Stop de applicatie en draai de volgende SQL statements:
 
     alter table mmb_people add column description blob;
+    alter table mmb_contacts add column description blob;
 
 - Start de applicatie met de nieuwe war file zodat de Portfolio applicatie
   gedeployed wordt.
