@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.cloudcontext;
 
 import java.util.*;
+
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBaseObserver;
@@ -23,17 +24,18 @@ import org.mmbase.security.SecurityException;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.13 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: User.java,v 1.14 2005-03-01 14:28:30 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
-public class User extends UserContext implements MMBaseObserver {
+public class User extends BasicUser implements MMBaseObserver {
     protected MMObjectNode node;
     private long key;
 
     /**
      * @javadoc
      */
-    User(MMObjectNode n, long l) {
+    protected User(MMObjectNode n, long l, String app) {
+        super(app);
         node = n;
         key = l;
         Users.getBuilder().addLocalObserver(this);
@@ -71,14 +73,14 @@ public class User extends UserContext implements MMBaseObserver {
     /**
      * @javadoc
      */
-    long getKey() {
+    protected long getKey() {
         return key;
     }
 
     /**
      * @javadoc
      */
-    boolean isValid() {
+    public boolean isValid() {
         return (node == null) || Users.getBuilder().isValid(node);
     }
 

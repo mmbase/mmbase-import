@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.41 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Contexts.java,v 1.42 2005-03-01 14:29:48 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -902,9 +902,9 @@ public class Contexts extends MMObjectBuilder {
     /**
      * util
      */
-    protected MMObjectNode getUserNode(org.mmbase.bridge.User bridgeUser) {
+    protected MMObjectNode getUserNode(UserContext user) {
         Users users = Users.getBuilder();
-        return users.getUser(bridgeUser.getIdentifier());
+        return users.getUser(user.getIdentifier());
     }
 
     protected MMObjectNode getGroupOrUserNode(Parameters a) {
@@ -952,35 +952,35 @@ public class Contexts extends MMObjectBuilder {
             }
         } else if (function.equals("grant")) {
             Parameters a = Functions.buildParameters(GRANT_PARAMETERS, args);
-            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("revoke")) {
             Parameters a = Functions.buildParameters(REVOKE_PARAMETERS, args);
-            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("maygrant")) {
             Parameters a = Functions.buildParameters(MAYGRANT_PARAMETERS, args);
-            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("mayrevoke")) {
             Parameters a = Functions.buildParameters(MAYREVOKE_PARAMETERS, args);
-            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((UserContext) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("may")) {
             Parameters a = Functions.buildParameters(MAY_PARAMETERS, args);
-            MMObjectNode checkingUser = getUserNode((org.mmbase.bridge.User) a.get(Parameter.USER));
+            MMObjectNode checkingUser = getUserNode((UserContext) a.get(Parameter.USER));
             if (checkingUser == null) {
                 throw new SecurityException("Self was not supplied");
             }
