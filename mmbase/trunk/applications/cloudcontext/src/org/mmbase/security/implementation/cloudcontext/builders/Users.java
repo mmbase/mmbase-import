@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.33 2005-03-15 09:10:23 michiel Exp $
+ * @version $Id: Users.java,v 1.34 2005-03-16 23:46:17 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -158,7 +158,7 @@ public class Users extends MMObjectBuilder {
                     log.warn("Cannot change username (unless account is blocked)");
                     return false; // hmm?
                     */
-                    log.info("Changing account '" + originalValue + "' to '" + value + "'");
+                    log.debug("Changing account '" + originalValue + "' to '" + value + "'");
                 }
             }
         }
