@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @move org.mmbase.util.xml
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it?
- * @version $Id: XMLApplicationWriter.java,v 1.23 2003-04-10 07:59:42 pierre Exp $
+ * @version $Id: XMLApplicationWriter.java,v 1.24 2003-11-19 13:20:10 pierre Exp $
  */
 public class XMLApplicationWriter  {
 
@@ -255,6 +255,8 @@ public class XMLApplicationWriter  {
             if (type.equals("depth")) {
                 XMLContextDepthReader capp=new XMLContextDepthReader(path);
                 XMLContextDepthWriterII.writeContext(app,capp,targetpath,mmb,resultmsgs);
+            } else if (type.equals("full")) {
+                XMLFullBackupWriter.writeContext(app, targetpath, mmb, resultmsgs);
             }
         }
     }
