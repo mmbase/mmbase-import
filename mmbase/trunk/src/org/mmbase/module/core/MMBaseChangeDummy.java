@@ -26,48 +26,48 @@ import org.mmbase.util.logging.*;
  */
 public class MMBaseChangeDummy implements MMBaseChangeInterface {
 
-	// debug routines
-	private static Logger log = Logging.getLoggerInstance(MMBaseChangeDummy.class.getName());
-	
-	MMBase parent;
+    // debug routines
+    private static Logger log = Logging.getLoggerInstance(MMBaseChangeDummy.class.getName());
+    
+    MMBase parent;
 
-	public MMBaseChangeDummy(MMBase parent) {
-		this.parent=parent;
-	}
+    public MMBaseChangeDummy(MMBase parent) {
+        this.parent=parent;
+    }
 
-	public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
-		log.debug("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
+    public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
+        log.debug("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
 
-		MMObjectBuilder bul=parent.getMMObject(tb);
-		if (bul==null) {
-			System.out.println("MMBaseChangeDummy -> Unknown builder="+tb);
-			return(false);
-		} 
-	
-		bul.nodeLocalChanged(id,tb,ctype);
-		return(true);
-	}
+        MMObjectBuilder bul=parent.getMMObject(tb);
+        if (bul==null) {
+            System.out.println("MMBaseChangeDummy -> Unknown builder="+tb);
+            return(false);
+        } 
+    
+        bul.nodeLocalChanged(machine, id,tb,ctype);
+        return(true);
+    }
 
-	public boolean changedNode(int nodenr,String tableName,String type) {
-	    MMObjectBuilder bul=parent.getMMObject(tableName);
-		if (bul!=null) {
-		    bul.nodeLocalChanged(""+nodenr,tableName,type);
-		}
-		return(true);
-	}
+    public boolean changedNode(int nodenr,String tableName,String type) {
+        MMObjectBuilder bul=parent.getMMObject(tableName);
+        if (bul!=null) {
+            bul.nodeLocalChanged(null, ""+nodenr,tableName,type);
+        }
+        return(true);
+    }
 
-	public boolean waitUntilNodeChanged(MMObjectNode node) {
-		return(true);
-	}
-
-
-	public void checkWaitingNodes(String snumber) {
-	}
+    public boolean waitUntilNodeChanged(MMObjectNode node) {
+        return(true);
+    }
 
 
+    public void checkWaitingNodes(String snumber) {
+    }
 
-	public boolean commitXML(String machine,String vnr,String id,String tb,String ctype,String xml) {
-		return(true);
-	}
+
+
+    public boolean commitXML(String machine,String vnr,String id,String tb,String ctype,String xml) {
+        return(true);
+    }
 
 }
