@@ -353,7 +353,7 @@ public abstract class FileWatcher  { //extends Thread {
             i++;
         }
         protected void finalize() {
-            System.out.println(toString() + ":" + i);
+            System.out.println(this.toString() + ":" + i);
         }
     }
 
