@@ -12,15 +12,14 @@ package org.mmbase.module.builders.vwms;
 import java.lang.*;
 import java.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
  */
 public class FileCopier implements Runnable {
 
-	private String  classname = getClass().getName();
-	private boolean debug	  = false;
-	private void	debug(String msg){System.out.println(classname+":"+msg);}
+    private static Logger log = Logging.getLoggerInstance(FileCopier.class.getName());
 
 	Thread kicker = null;
 	int sleepTime=8888;
@@ -75,17 +74,16 @@ public class FileCopier implements Runnable {
 		//String sshpath="/sr/local/bin";
 		aFile2Copy afile;
 	
-		if (debug) debug("Active");
+		log.debug("Active");
 		while (kicker!=null) {
 			afile=(aFile2Copy)files.get();
 			if (afile!=null) {
-				if (debug) debug("Copying "+afile.srcpath+"/"+afile.filename);
+				log.info("Copying "+afile.srcpath+"/"+afile.filename);
 				SCPcopy scpcopy=new SCPcopy(afile.sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
 				scpcopy.copy(afile.srcpath,afile.filename);
 			} else {
-				debug("afile is null ?");
+				log.error("afile is null ?");
 			}
 		}
 	}
-
 }

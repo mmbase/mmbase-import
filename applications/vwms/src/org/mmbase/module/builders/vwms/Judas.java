@@ -18,6 +18,7 @@ import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.builders.Properties;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
@@ -25,12 +26,13 @@ import org.mmbase.module.builders.Properties;
  */
 
 public class Judas extends Vwm implements MMBaseObserver {
+
+    private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
 	private JudasURLpusher pusher=null;
 	private boolean firstProbeCall = true;
-	boolean debug=false;
 
 	public Judas() {
-		System.out.println("Yo Judas and im alive");
+		log.info("VWM Judas started");
 	}
 
     /**
@@ -41,43 +43,43 @@ public class Judas extends Vwm implements MMBaseObserver {
      */
     public boolean performTask(MMObjectNode taskNode) {
 		String curTime = DateSupport.date2string((int)(DateSupport.currentTimeMillis()/1000));
-		debug("performTask: Vwm Judas performing another task, it is now:"+curTime);
+		log.info("performTask: Vwm Judas performing another task, it is now:"+curTime);
 
         // Sets tasknode state to claimed.
         claim(taskNode);
         String taskName=taskNode.getStringValue("task");
         if (taskName.equals("ReloadFiles")) {
-            debug("performTask: Performing task: "+taskName);
+            log.service("performTask: Performing task: "+taskName);
             try {
                 boolean success = performReloadFiles(taskNode);
                 if (!success)
-                    System.out.println("Judas:performTask: Warning: performReloadFiles returned false!");
+                    log.warn("Judas:performTask: Warning: performReloadFiles returned false!");
                 // Set tasknode state to finished.
                 performed(taskNode);
                 return true;
             } catch (Exception e) {
-                System.out.println("Judas:performTask: Perform "+taskName+" exception"+e);
+                log.error("Judas:performTask: Perform "+taskName+" exception"+e);
                 e.printStackTrace();
                 return false;
             }
         } else if (taskName.equals("ReloadJukeboxes")) {
-            debug("performTask: Performing task: "+taskName);
+            log.service("performTask: Performing task: "+taskName);
             // 'ReloadJukeboxes' has the same implementation as 'ReloadFiles', this is correct.
             // The difference in taskname is required so this tasknode can be reused which happens in probeCall.
             try {
                 boolean success = performReloadFiles(taskNode);
                 if (!success)
-                    System.out.println("Judas:performTask: Warning: performReloadFiles returned false!");
+                    log.warn("Judas:performTask: Warning: performReloadFiles returned false!");
                 // Set tasknode state to finished.
                 performed(taskNode);
                 return true;
             } catch (Exception e) {
-                System.out.println("Judas:performTask: Perform "+taskName+" exception"+e);
+                log.error("Judas:performTask: Perform "+taskName+" exception"+e);
                 e.printStackTrace();
                 return false;
             }
         } else {
-            System.out.println("Judas:performTask: Don't know task with name: "+taskName);
+            log.warn("Judas:performTask: Don't know task with name: "+taskName);
             return false;
         }
     }
@@ -99,11 +101,11 @@ public class Judas extends Vwm implements MMBaseObserver {
 				urlsNode = (MMObjectNode)e.nextElement();
 				url = urlsNode.getStringValue("url");
 				addURL(url);
-				debug("performReloadFiles: adding url: "+url);
+				log.info("performReloadFiles: adding url: "+url);
 			}
 			return true;
 		} else {
-			debug("performReloadFiles: No urls related with task "+taskNode.getStringValue("task")+" nr:"+taskNumber);
+			log.debug("performReloadFiles: No urls related with task "+taskNode.getStringValue("task")+" nr:"+taskNumber);
 			return false;
 		}
 	}
@@ -116,12 +118,12 @@ public class Judas extends Vwm implements MMBaseObserver {
 	public boolean probeCall() {
 		if (pusher==null) {
 			pusher=new JudasURLpusher(this);
-			System.out.println("Judas -> Starting URL pusher");
+			log.info("Judas -> Starting URL pusher");
 		}
 	
 		if (firstProbeCall) { 
 			firstProbeCall = false;	
-			System.out.println("Judas -> Adding observers");
+			log.debug("Judas -> Adding observers");
 
 			// add news for 3voor12 
 			Vwms.mmb.addLocalObserver("news",this);
@@ -160,8 +162,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 		// The maintanancetime for this bot HAS TO BE 1 hour = > 3600 sec.
 		boolean success = false;
 		success = reuseReloadJukeboxesTask();
-		if (!success) debug("probeCall: Error reuseReloadJukeboxesTask returned false");
-
+		if (!success) {
+			log.debug("probeCall: Error reuseReloadJukeboxesTask returned false");
+		}
 		return(true);
 	}
 
@@ -190,7 +193,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		Vwmtasks vwmtask = (Vwmtasks)Vwms.mmb.getMMObject("vwmtasks");
 		Enumeration e= vwmtask.searchWithWhere("task='"+TASK+"' AND vwm='"+getName()+"' AND wantedcpu='"+MACHINE+"' AND status='"+STATE_DONE+"'");
 		if (e.hasMoreElements()) {
-			debug("probeCall: Reusing 'ReloadJukeboxes' task.");
+			log.debug("probeCall: Reusing 'ReloadJukeboxes' task.");
 			MMObjectNode taskNode = (MMObjectNode) e.nextElement();
 
 			// Get date information from nodes' data field.
@@ -200,7 +203,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 			int hourOfDay = Integer.parseInt((String)props.get("HOUR_OF_DAY"));
 
 			if ((curDayOfWeek == dayOfWeek) && (curHourOfDay == hourOfDay)) {
-				debug(methodName+": dayOfWeek:"+dayOfWeek+" hourOfDay:"+hourOfDay+" -> writting out task again.");
+				log.debug(methodName+": dayOfWeek:"+dayOfWeek+" hourOfDay:"+hourOfDay+" -> writting out task again.");
 				// The task will actually start ten minutes later.
 				int starttime = (int) ((DateSupport.currentTimeMillis()/1000) + 10*60);
 				taskNode.setValue("wantedtime",starttime);
@@ -209,11 +212,11 @@ public class Judas extends Vwm implements MMBaseObserver {
 				taskNode.commit();
 				return true;
 			} else {
-				debug(methodName+": It isn't time yet.");
+				log.debug(methodName+": It isn't time yet.");
 				return true;
 			}
 		} else {
-			System.out.println("Judas: Error can't find task "+TASK);
+			log.error("Judas: Error can't find task "+TASK);
 			return false;
 		}
 	}
@@ -228,7 +231,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 	}
 
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		System.out.println("Judas -> sees that a "+builder+" "+number+" has changed type="+ctype);
+		log.debug("Judas -> sees that a "+builder+" "+number+" has changed type="+ctype);
 
 		// check if its a valid track in the cache 
 		int inumber=-1;
@@ -284,18 +287,18 @@ public class Judas extends Vwm implements MMBaseObserver {
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
+			log.info("Judas -> found nodes "+node);
 			int prog=node.getIntValue("programs.number");
 			int episode=node.getIntValue("episodes.number");
 
 			// extra check for 5jaar site !!
 			if (prog==1615807) {
-				System.out.println("5 jaar check="+prog);
+				log.info("5 jaar check="+prog);
 				String url="/data/projecten/5JAAR2HOOG/1.1/aflevering/aflevering-txt.shtml?"+episode;
 				addURL(url);
 			} else if (false && prog==2215511) {
 				// Kaft toer
-				System.out.println("Judas -> Kaft toer check");
+				log.info("Judas -> Kaft toer check");
 				String url="/data/kaft/kafttoer/1.0/episode/one_episode.shtml?"+prog+"+"+episode;
 				addURL(url);
 
@@ -364,14 +367,14 @@ public class Judas extends Vwm implements MMBaseObserver {
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
+			log.info("Judas -> found nodes "+node);
 			int prog=node.getIntValue("programs.number");
 			int episode=node.getIntValue("episodes.number");
 			int item=node.getIntValue("items.number");
 
 			// extra check for 5jaar site !!
 			if (prog==1615807) {
-				System.out.println("5 jaar check="+prog);
+				log.info("5 jaar check="+prog);
 			
 				InsRel bul=(InsRel)Vwms.mmb.getMMObject("insrel");		
 				Enumeration g=bul.getRelated(item,5);
@@ -385,7 +388,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 				addURL(url);
 			} else if (false && prog==2215511) {
 				// Kaft toer
-				System.out.println("Judas -> Kaft toer check");
+				log.info("Judas -> Kaft toer check");
 				String url="/data/kaft/kafttoer/1.0/episode/one_episode.shtml?"+prog+"+"+episode;
 				addURL(url);
 
@@ -440,14 +443,14 @@ public class Judas extends Vwm implements MMBaseObserver {
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
+			log.info("Judas -> found nodes "+node);
 			int prog=node.getIntValue("programs.number");
 			int episode=node.getIntValue("episodes.number");
 			int item=node.getIntValue("items.number");
 			int people=node.getIntValue("people.number");
 
 			if (false && prog==2215511) {
-				System.out.println("Judas -> Kaft toer check");
+				log.info("Judas -> Kaft toer check");
 				// Kaft toer
 				String url="/data/kaft/kafttoer/1.0/item/item.shtml?"+prog+"+"+episode+"+"+people+"+"+item;
 				addURL(url);
@@ -512,7 +515,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("programs.number");
 		fields.addElement("episodes.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
-		if (debug) debug("shows: portals,maps,programs,episodes result "+vec);
+		log.debug("shows: portals,maps,programs,episodes result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -564,7 +567,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("programs.number");
 		fields.addElement("episodes.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.number>"+daymark75+"",ordervec,dirvec);
-		if (debug) debug("audioparts: portals,maps,programs,episodes result "+vec);
+		log.debug("audioparts: portals,maps,programs,episodes result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -626,7 +629,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("audioparts.number");
 		fields.addElement("audioparts.class");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.number>"+daymark75+" AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
-		if (debug) debug("audioparts_tracks: portals,maps,programs,audioparts result "+vec);
+		log.debug("audioparts_tracks: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -655,7 +658,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 
 					break;
 				default:
-					debug("Invalid query result!, got a classtype that wasn't queried");
+					log.error("Invalid query result!, got a classtype that wasn't queried");
 					break;
 			}
 		}
@@ -704,7 +707,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("audioparts.number");
 		fields.addElement("audioparts.class");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
-		if (debug) debug("audioparts_month: portals,maps,programs,audioparts result "+vec);
+		log.debug("audioparts_month: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -728,7 +731,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 				case 4: // DJ Set
 					break;
 				default:
-					debug("Invalid query result!, got a classtype that wasn't queried");
+					log.error("Invalid query result!, got a classtype that wasn't queried");
 					break;
 			}
 		}
@@ -782,7 +785,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("audioparts.class");
 		fields.addElement("categories.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND groups1.number=groups2.number AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
-		if (debug) debug("audioparts_categorie: portals,maps,programs,audioparts result "+vec);
+		log.debug("audioparts_categorie: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -810,7 +813,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 				case 4: // DJ Set
 					break;
 				default:
-					debug("Invalid query result!, got a classtype that wasn't queried");
+					log.error("Invalid query result!, got a classtype that wasn't queried");
 					break;
 			}
 		}
@@ -856,9 +859,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("mmevents");
 			fields=new Vector();
 			fields.addElement("portals.number");
-			if (debug) debug("event check datesupport");
+			log.debug("event check datesupport");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND episodes.number>"+daymark35+" AND mmevents.number>"+daymark35+" AND (mmevents.stop>"+(cur-10*60)+" AND mmevents.stop<"+(cur+10*60)+") OR (mmevents.start>"+(cur-10*60)+" AND mmevents.start<"+(cur+10*60)+")",ordervec,dirvec);
-			if (debug) debug("result "+vec);
+			log.debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 				addURL("/3voor12/shows/shows.shtml?2534202",PriorityURL.MAX_PRIORITY);
@@ -874,9 +877,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("mmevents");
 			fields=new Vector();
 			fields.addElement("maps.number");
-			if (debug) debug("map news check");
+			log.debug("map news check");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where maps.number=2584688 AND news.number>"+daymark10+"",ordervec,dirvec);
-			if (debug) debug("result "+vec);
+			log.debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 			}
@@ -890,9 +893,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("audioparts");
 			fields=new Vector();
 			fields.addElement("programs.number");
-			if (debug) debug("group track check");
+			log.debug("group track check");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where programs.number=2635958 AND audioparts.number>"+daymark10+"",ordervec,dirvec);
-			if (debug) debug("result "+vec);
+			log.debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 			}
@@ -907,9 +910,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			tables.addElement("mmevents");
 			fields=new Vector();
 			fields.addElement("maps.number");
-			if (debug) debug("map news check specials");
+			log.debug("map news check specials");
 			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where maps.number=2635958 AND news.number>"+daymark10+"",ordervec,dirvec);
-			if (debug) debug("result "+vec);
+			log.debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
 			}
@@ -958,7 +961,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("groups.number");
 		fields.addElement("categories.number");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
-		if (debug) debug("audioparts_groups: portals,maps,programs,groups result "+vec);
+		log.debug("audioparts_groups: portals,maps,programs,groups result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -1017,7 +1020,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		fields.addElement("news.number");
 		fields.addElement("news.type");
 		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
-		if (debug) debug("journalism: portals,maps,programs,news result "+vec);
+		log.debug("journalism: portals,maps,programs,news result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
 			node=(MMObjectNode)e.nextElement();
 			portal=node.getIntValue("portals.number");
@@ -1061,7 +1064,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 	}
 
 	public boolean pushReload(String url) {
-		System.out.println("Judas -> pushing ="+url);
+		log.info("Judas -> pushing ="+url);
 		url=url.replace('?',':')+".asis";
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		Enumeration e=bul.search("WHERE filename='"+url+"' AND service='pages' AND subservice='main'");

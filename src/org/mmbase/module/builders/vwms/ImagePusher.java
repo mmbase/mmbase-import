@@ -14,12 +14,14 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
  */
 public class ImagePusher implements Runnable {
 
+    private static Logger log = Logging.getLoggerInstance(ImagePusher.class.getName());
 	Thread kicker = null;
 	int sleepTime=4444;
 	ImageMaster parent;
@@ -77,7 +79,7 @@ public class ImagePusher implements Runnable {
 		aFile2Copy file;
 		Hashtable files;
 	
-		System.out.println("ImagePusher Active");
+		log.info("ImagePusher Active");
 		while (kicker!=null) {
 			try { Thread.sleep(sleepTime); } catch (InterruptedException e) {}
 			if (parent.files.size()>0) {
@@ -85,7 +87,7 @@ public class ImagePusher implements Runnable {
 					procfiles=parent.files;
 					parent.files=new Vector();
 				}
-				System.out.println("ImagePusher processing "+procfiles.size()+" files");
+				log.service("ImagePusher processing "+procfiles.size()+" files");
 				files=killdups(procfiles);
 				for (Enumeration e =files.keys();e.hasMoreElements();) {
 					file=(aFile2Copy)e.nextElement();
@@ -102,7 +104,7 @@ public class ImagePusher implements Runnable {
 			file=(aFile2Copy)e.nextElement();
 			hfiles.put(file,"feep");
 		}
-		System.out.println("ImagePusher -> "+files.size()+" - "+hfiles.size()+" dups "+(files.size()-hfiles.size()));
+		log.info("ImagePusher -> "+files.size()+" - "+hfiles.size()+" dups "+(files.size()-hfiles.size()));
 		return(hfiles);
 	}
 }
