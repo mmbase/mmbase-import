@@ -31,9 +31,11 @@ import java.util.*;
  * As AttachmentServlet, but the mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.1 2002-06-30 20:15:52 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.2 2002-07-24 19:43:18 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @see ImageServlet
+ * @see AttachmentServlet
  */
 public class HandleServlet extends BridgeServlet {
     private static Logger log;
