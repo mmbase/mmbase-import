@@ -463,6 +463,9 @@ builddate=${builddate}
         <include name="utils/**/*.xml"/>
       </fileset>
     </copy>
+    <echo file="${build.dir}/classes/org/mmbase/config/applications/INDEX">
+Basics.xml
+    </echo>
   </target>
 
   <target name="compile" description="Compile the source directory" depends="init.compile">
