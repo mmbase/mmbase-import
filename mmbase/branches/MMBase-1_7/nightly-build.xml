@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.19.2.3 2004-05-01 20:54:02 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.19.2.4 2004-05-08 14:20:03 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -49,7 +49,7 @@
 
   <property name="cvsroot" value=":pserver:guest@www.mmbase.org:/usr/local/cvs" />
   <property name="checkoutcommand" value="checkout -D ${date} all" />
-  <property name="updatecommand" value="-q update -d -P MMBase-1_7 -D ${date} " />
+  <property name="updatecommand" value="-q update -d -P -r MMBase-1_7 -D ${date} " />
 
   <target name="init.cvs">
     <available property="checkout.available" file="${source.dir}"/>
