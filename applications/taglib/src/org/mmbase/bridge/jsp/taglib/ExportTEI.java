@@ -28,30 +28,36 @@ public class ExportTEI extends TagExtraInfo {
     }
 
     public VariableInfo[] getVariableInfo(TagData data) {
-        VariableInfo[] variableInfo =  new VariableInfo[1];
-        
-        String typeAttribute    = (String) data.getAttribute("type"); 
-        if (typeAttribute == null) typeAttribute = "Object";
-        
-        String type = "java.lang.Object";
-        
-        if ("Object".equalsIgnoreCase(typeAttribute)) {
-            type = "java.lang.Object";
-        } else if ("String".equalsIgnoreCase(typeAttribute)) {
-            type = "java.lang.String";
-        } else if ("Node".equalsIgnoreCase(typeAttribute)) {
-            type = "org.mmbase.bridge.Node";
-        } else {
-            //type = "java.lang.Object"; 
-            throw new RuntimeException("Unknown type '" + typeAttribute + "'");
-        }
-        
+        VariableInfo[] variableInfo = null;
+
         String jspvarAttribute  = (String) data.getAttribute("jspvar"); 
+
+        if (jspvarAttribute != null) {
+            variableInfo = new VariableInfo[1];
             
-        variableInfo[0] =  new VariableInfo(jspvarAttribute,
-                                            type,
-                                            true,
-                                            VariableInfo.NESTED);
+            String typeAttribute    = (String) data.getAttribute("type"); 
+            if (typeAttribute == null) typeAttribute = "Object";
+            
+            String type = "java.lang.Object";
+            
+            if ("Object".equalsIgnoreCase(typeAttribute)) {
+                type = "java.lang.Object";
+            } else if ("String".equalsIgnoreCase(typeAttribute)) {
+                type = "java.lang.String";
+            } else if ("Node".equalsIgnoreCase(typeAttribute)) {
+                type = "org.mmbase.bridge.Node";
+            } else {
+                //type = "java.lang.Object"; 
+                throw new RuntimeException("Unknown type '" + typeAttribute + "'");
+            }
+            
+            
+            
+            variableInfo[0] =  new VariableInfo(jspvarAttribute,
+                                                type,
+                                                true,
+                                                VariableInfo.NESTED);
+        }
         return variableInfo;
     }        
 }
