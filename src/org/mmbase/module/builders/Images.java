@@ -30,7 +30,7 @@ import org.mmbase.util.Argument;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.77 2003-05-19 09:59:13 michiel Exp $
+ * @version $Id: Images.java,v 1.78 2003-06-05 13:18:46 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -644,8 +644,8 @@ public class Images extends AbstractImages {
                 if (!mimetype.equals(MagicFile.FAILED)) {
                     // determine itype
                     if (mimetype.startsWith("image/")) {
-                        itype=mimetype.substring(6);
-                        log.info("set itype to "+itype);
+                        itype = mimetype.substring(6);
+                        log.debug("set itype to " + itype);
                     } else {
                         log.warn("Mimetype "+mimetype+" is not an image type");
                     }
