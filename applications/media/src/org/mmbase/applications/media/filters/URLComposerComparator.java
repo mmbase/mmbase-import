@@ -8,9 +8,9 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.builders.media.ResponseInfo;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
@@ -22,22 +22,22 @@ import org.w3c.dom.Element;
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class ResponseInfoComparator implements Comparator, MediaFilter {
+abstract public class URLComposerComparator implements Comparator, MediaFilter {
 
     /**
      * Implement this.
      */
 
-    abstract  protected int compareResponseInfo(ResponseInfo o1, ResponseInfo o2); 
+    abstract  protected int compareURLComposer(URLComposer o1, URLComposer o2); 
     
     public void configure(XMLBasicReader reader, Element e) {
         // nothing to be configured on default.
     }
          
     final public int compare(Object o1, Object o2) {
-        ResponseInfo ri1  = (ResponseInfo) o1;
-        ResponseInfo ri2  = (ResponseInfo) o2;
-        return compareResponseInfo(ri1, ri2);
+        URLComposer ri1  = (URLComposer) o1;
+        URLComposer ri2  = (URLComposer) o2;
+        return compareURLComposer(ri1, ri2);
     }
 
     public List filter(List responseInfos) {

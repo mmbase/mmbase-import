@@ -8,11 +8,11 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.builders.media.ResponseInfo;
-import org.mmbase.module.builders.media.MediaSources;
-import org.mmbase.module.builders.media.Format;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.builders.MediaSources;
+import org.mmbase.applications.media.builders.Format;
 import java.util.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * This can sort a list with the requested formats on top.
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatComparator.java,v 1.2 2003-02-03 11:06:35 michiel Exp $
+ * @version $Id: ServerFormatComparator.java,v 1.1 2003-02-03 17:50:25 michiel Exp $
  */
 public class ServerFormatComparator extends  FormatComparator {
     private static Logger log = Logging.getLoggerInstance(ServerFormatComparator.class.getName());

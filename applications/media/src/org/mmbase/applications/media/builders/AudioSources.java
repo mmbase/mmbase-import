@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
   
 */
 
-package org.mmbase.module.builders.media;
+package org.mmbase.applications.media.builders;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMObjectNode;
 
 /**
  * @author Rob Vermeulen
- * @version $Id: AudioSources.java,v 1.2 2003-01-03 21:35:43 michiel Exp $
+ * @version $Id: AudioSources.java,v 1.1 2003-02-03 17:50:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class AudioSources extends MediaSources {    

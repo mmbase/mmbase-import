@@ -7,7 +7,7 @@
  See http://www.MMBase.org/license
   */
 
-package org.mmbase.module.builders.media;
+package org.mmbase.applications.media.builders;
 
 import java.util.*;
 import java.net.URL;
@@ -28,7 +28,9 @@ import org.mmbase.util.XMLBasicReader;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.media.*;
+
+import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.filters.MediaSourceFilter;
 
 
 import org.w3c.dom.Document;
@@ -44,7 +46,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.30 2003-01-29 12:23:43 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.1 2003-02-03 17:50:19 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -68,7 +70,7 @@ public class MediaSources extends MMObjectBuilder {
     
     // Status
     public final static int    DONE   = 3; // jikes
-    public final static String STATUS_RESOURCE = "org.mmbase.module.builders.media.resources.states";
+    public final static String STATUS_RESOURCE = "org.mmbase.applications.media.builders.resources.states";
     
     public final static int MONO   = 1;
     public final static int STEREO = 2;
@@ -158,7 +160,7 @@ public class MediaSources extends MMObjectBuilder {
     protected String getURL(MMObjectNode source, Map info) {
         List urls = getSortedURLs(source, null, info);
         if (urls.size() == 0) return "[could not compose URL]";
-        ResponseInfo ri = (ResponseInfo) urls.get(0);
+        URLComposer ri = (URLComposer) urls.get(0);
         return ri.getURL();
     }
     
@@ -233,7 +235,7 @@ public class MediaSources extends MMObjectBuilder {
     public String getGUIIndicator(MMObjectNode source) {
         List urls = getSortedURLs(source, null, null);
         if (urls.size() == 0) return "[could not compose URL]";
-        ResponseInfo ri = (ResponseInfo) urls.get(0);
+        URLComposer ri = (URLComposer) urls.get(0);
         if (ri.isAvailable()) {
             return "<a href='" + ri.getURL() + "'>" + Format.get(source.getIntValue("format")) + "</a>";
         } else {
@@ -275,7 +277,7 @@ public class MediaSources extends MMObjectBuilder {
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("absoluteurl", "(<??>)");
             info.put("urlresult", "(<??>) ");
-            info.put(FUNCTION_URLS, "(fragment) A list of all possible URLs to this source/fragment (Really MediaURLComposer.ResponseInfo's)");
+            info.put(FUNCTION_URLS, "(fragment) A list of all possible URLs to this source/fragment (Really MediaURLComposer.URLComposer's)");
             info.put(FUNCTION_FORMAT, "() Shorthand for gui(format)");
             info.put(FUNCTION_CODEC, "() Shorthand for gui(codec)");
             info.put(FUNCTION_MIMETYPE, "() Returns the mime-type for this source");

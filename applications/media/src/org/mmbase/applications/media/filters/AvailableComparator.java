@@ -8,21 +8,21 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.builders.media.ResponseInfo;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
 
 /**
  * This can sort a list with the available urls on top.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableComparator.java,v 1.1 2003-01-07 22:21:02 michiel Exp $
+ * @version $Id: AvailableComparator.java,v 1.1 2003-02-03 17:50:22 michiel Exp $
  */
 public class AvailableComparator extends  PreferenceComparator {
 
     public  AvailableComparator() {
     }
     
-    public int getPreference(ResponseInfo ri) {        
+    public int getPreference(URLComposer ri) {        
         if (! ri.isAvailable()) {
             return -1; // very bad choice.
         } else {

@@ -8,20 +8,20 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.builders.media.ResponseInfo;
-import org.mmbase.module.builders.media.MediaSources;
-import org.mmbase.module.builders.media.Format;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.builders.MediaSources;
+import org.mmbase.applications.media.Format;
 import java.util.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * This can sort a list with the requested formats on top for a client, so the 'ResponseInfo' is used.
+ * This can sort a list with the requested formats on top for a client, so the 'URLComposer' is used.
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatComparator.java,v 1.3 2003-01-21 23:04:00 michiel Exp $
+ * @version $Id: ClientFormatComparator.java,v 1.1 2003-02-03 17:50:22 michiel Exp $
  */
 public class ClientFormatComparator extends  PreferenceComparator {
     private static Logger log = Logging.getLoggerInstance(ClientFormatComparator.class.getName());
@@ -30,7 +30,7 @@ public class ClientFormatComparator extends  PreferenceComparator {
     public  ClientFormatComparator() {
     }
     
-    protected int getPreference(ResponseInfo ri) {
+    protected int getPreference(URLComposer ri) {
         Object format = ri.getInfo().get("format");        
         if (log.isDebugEnabled()) { log.debug("Client's preference " + format); }
         if (format == null) {                  

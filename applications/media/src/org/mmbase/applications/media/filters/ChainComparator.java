@@ -8,9 +8,9 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.builders.media.ResponseInfo;
+import org.mmbase.applications.media.urlcomposers.URLComposer;
 import java.util.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
@@ -18,9 +18,9 @@ import org.w3c.dom.Element;
 /**
  * Chains some comparators
  * @author  Michiel Meeuwissen
- * @version $Id: ChainComparator.java,v 1.2 2003-01-14 20:36:20 michiel Exp $
+ * @version $Id: ChainComparator.java,v 1.1 2003-02-03 17:50:22 michiel Exp $
  */
-public class ChainComparator extends  ResponseInfoComparator {
+public class ChainComparator extends  URLComposerComparator {
 
     private List comparators;
     public  ChainComparator() {
@@ -35,7 +35,7 @@ public class ChainComparator extends  ResponseInfoComparator {
     /**
      * Add one filter to the chain
      */
-    public void add(ResponseInfoComparator ri) {
+    public void add(URLComposerComparator ri) {
         comparators.add(ri);
     }
 
@@ -49,15 +49,15 @@ public class ChainComparator extends  ResponseInfoComparator {
     public void configure(XMLBasicReader reader, Element e) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
-            ResponseInfoComparator ri = (ResponseInfoComparator) i.next();
+            URLComposerComparator ri = (URLComposerComparator) i.next();
             ri.configure(reader, e);
         }
     }
 
-    public int compareResponseInfo(ResponseInfo o1, ResponseInfo o2) {
+    public int compareURLComposer(URLComposer o1, URLComposer o2) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
-            int comp = ((ResponseInfoComparator) i.next()).compare(o1, o2); 
+            int comp = ((URLComposerComparator) i.next()).compare(o1, o2); 
             if (comp != 0) return comp; 
         }
         return 0;

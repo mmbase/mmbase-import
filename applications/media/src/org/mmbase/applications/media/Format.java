@@ -7,7 +7,7 @@
  See http://www.MMBase.org/license
  */
 
-package org.mmbase.module.builders.media;
+package org.mmbase.applications.media;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -17,13 +17,13 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.4 2003-01-24 10:38:33 rob Exp $
+ * @version $Id: Format.java,v 1.1 2003-02-03 17:50:18 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
 public final class Format {   // final class!!
     private static Logger log = Logging.getLoggerInstance(Format.class.getName());
-    public final static String RESOURCE = "org.mmbase.module.builders.media.resources.formats";
+    public final static String RESOURCE = "org.mmbase.applications.media.builders.resources.formats";
     
     private static List formats = new ArrayList(); // to make possible to get the Format object by int.
     private int    number; // for storage     

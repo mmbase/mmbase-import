@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.MMObjectNode;

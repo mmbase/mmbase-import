@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.util.media;
+package org.mmbase.applications.media.filters;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface MediaFilter {
     
-    public List filter(List responseInfos);
+    public List filter(List urlcomposers);
     public void configure(XMLBasicReader reader, Element e);
 }
 
