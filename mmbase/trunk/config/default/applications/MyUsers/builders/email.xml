@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="email" maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: email.xml,v 1.1 2002-11-17 21:19:49 gerard Exp $ -->  
-  <status>inactive</status>
+<!-- @version $Id: email.xml,v 1.2 2002-11-19 23:09:27 kees Exp $ -->  
+  <status>active</status>
   <classfile>Email</classfile>
   <searchage>14</searchage>
   <names>

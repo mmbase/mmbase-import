@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="cameras" maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: cameras.xml,v 1.1 2002-11-17 21:01:13 gerard Exp $ -->
+<!-- @version $Id: cameras.xml,v 1.2 2002-11-19 23:09:26 kees Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
-<status>inactive</status>
+<status>active</status>
 
 <!-- <classfile>
     This is a optional tag, it names the classfile that allows you to add
