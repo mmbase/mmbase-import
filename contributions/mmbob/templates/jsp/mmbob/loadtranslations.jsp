@@ -17,7 +17,100 @@
 <mm:import id="keyword" reset="true">Messages</mm:import><mm:import id="mlg_Messages"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 <mm:import id="keyword" reset="true">Members</mm:import><mm:import id="mlg_Members"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Member</mm:import><mm:import id="mlg_Member"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 <mm:import id="keyword" reset="true">Topics</mm:import><mm:import id="mlg_Topics"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 <mm:import id="keyword" reset="true">Views</mm:import><mm:import id="mlg_Views"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Last_posting</mm:import><mm:import id="mlg_Last_posting"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+
+<mm:import id="keyword" reset="true">At_the_moment</mm:import><mm:import id="mlg_At_the_moment"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">online</mm:import><mm:import id="mlg_online"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Online</mm:import><mm:import id="mlg_Online"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">members</mm:import><mm:import id="mlg_members"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">member</mm:import><mm:import id="mlg_member"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Logout</mm:import><mm:import id="mlg_Logout"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Anonymous</mm:import><mm:import id="mlg_Anonymous"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">you_have</mm:import><mm:import id="mlg_you_have"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">private_messages</mm:import><mm:import id="mlg_private_messages"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">private_message</mm:import><mm:import id="mlg_private_message"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">new</mm:import><mm:import id="mlg_new"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">unread</mm:import><mm:import id="mlg_unread"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">and</mm:import><mm:import id="mlg_and"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+
+<mm:import id="keyword" reset="true">by</mm:import><mm:import id="mlg_by"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">area_name</mm:import><mm:import id="mlg_area_name"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">topics</mm:import><mm:import id="mlg_topics"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">messages</mm:import><mm:import id="mlg_messages"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">views</mm:import><mm:import id="mlg_views"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">last_posting</mm:import><mm:import id="mlg_last_posting"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">no_messages</mm:import><mm:import id="mlg_no_messages"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Admin_tasks</mm:import><mm:import id="mlg_Admin_tasks"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">change_forum</mm:import><mm:import id="mlg_change_forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">add_new_area</mm:import><mm:import id="mlg_add_new_area"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">The_moderator_team</mm:import><mm:import id="mlg_The_moderator_team"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Members_online</mm:import><mm:import id="mlg_Members_online"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">All_members</mm:import><mm:import id="mlg_All_members"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Moderators</mm:import><mm:import id="mlg_Moderators"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">MMBob_system_error</mm:import><mm:import id="mlg_MMBob_system_error"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">ERROR</mm:import><mm:import id="mlg_ERROR"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">login_failed</mm:import><mm:import id="mlg_login_failed"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">forgot_your_password</mm:import><mm:import id="mlg_forgot_your_password"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">login</mm:import><mm:import id="mlg_login"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">account</mm:import><mm:import id="mlg_account"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">password</mm:import><mm:import id="mlg_password"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Level</mm:import><mm:import id="mlg_Level"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Posts</mm:import><mm:import id="mlg_Posts"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Gender</mm:import><mm:import id="mlg_Gender"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Location</mm:import><mm:import id="mlg_Location"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Member_since</mm:import><mm:import id="mlg_Member_since"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Last_visit</mm:import><mm:import id="mlg_Last_visit"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">New</mm:import><mm:import id="mlg_New"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Add_forum</mm:import><mm:import id="mlg_Add_forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Remove_forum</mm:import><mm:import id="mlg_Remove_forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Forum</mm:import><mm:import id="mlg_Forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Area_name</mm:import><mm:import id="mlg_Area_name"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">topic</mm:import><mm:import id="mlg_topic"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Topic</mm:import><mm:import id="mlg_Topic"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">posted_by</mm:import><mm:import id="mlg_posted_by"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">replies</mm:import><mm:import id="mlg_replies"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">moderator</mm:import><mm:import id="mlg_moderator"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">Pages</mm:import><mm:import id="mlg_Pages"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">author</mm:import><mm:import id="mlg_author"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">change_area</mm:import><mm:import id="mlg_change_area"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">remove_area</mm:import><mm:import id="mlg_remove_area"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">add_moderator</mm:import><mm:import id="mlg_add_moderator"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">remove_moderator</mm:import><mm:import id="mlg_remove_moderator"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">open_topic</mm:import><mm:import id="mlg_open_topic"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">open_topic_unread</mm:import><mm:import id="mlg_open_topic_unread"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">open_topic_popular</mm:import><mm:import id="mlg_open_topic_popular"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">open_topic_popular_unread</mm:import><mm:import id="mlg_open_topic_popular_unread"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">pinned_topic</mm:import><mm:import id="mlg_pinned_topic"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">closed_topic</mm:import><mm:import id="mlg_closed_topic"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">topic_to_which_you_have_contributed</mm:import><mm:import id="mlg_topic_to_which_you_have_contributed"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">last_time_edited</mm:import><mm:import id="mlg_last_time_edited"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Fast_reply</mm:import><mm:import id="mlg_Fast_reply"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Name</mm:import><mm:import id="mlg_Name"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Reply</mm:import><mm:import id="mlg_Reply"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Post_reply</mm:import><mm:import id="mlg_Post_reply"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+
+
+
