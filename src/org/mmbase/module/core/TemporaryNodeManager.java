@@ -20,74 +20,9 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-/*
-	$Id: TemporaryNodeManager.java,v 1.20 2001-04-10 17:32:05 michiel Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.19  2001/04/06 13:43:55  jaco
-	jaco: Throw an exception if a field doesn't exist.
-	
-	Revision 1.18  2001/03/23 03:31:00  eduard
-	eduard: it's late and i now throw an exception in this case... has to be looked at later... otherwise will generate nullpointer exceptions...
-	
-	Revision 1.17  2001/03/09 13:57:40  pierre
-	pierre: changed so builder for relation is correctly determined
-	
-	Revision 1.16  2001/03/06 11:00:10  install
-	Rico: fixed accessObject duplicate bug
-	
-	Revision 1.15  2001/03/02 13:56:44  install
-	Rico: fixed TCP bug concerning keys, NOTE this sets extra field defs for the _number , _dnumber , _snumber fields when needed
-	
-	Revision 1.14  2001/01/08 12:31:58  install
-	Rob: fixed bug 5180, added check for valid relationname
-	
-	Revision 1.13  2000/12/30 14:06:56  daniel
-	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
-	
-	Revision 1.12  2000/11/13 15:33:47  vpro
-	Rico: added relation support, note that this must be changed when the whole relation mess changes
-	
-	Revision 1.11  2000/11/13 11:09:41  install
-	*** empty log message ***
-	
-	Revision 1.10  2000/11/08 16:24:13  vpro
-	Rico: fixed key bussiness
-	
-	Revision 1.9  2000/11/08 16:11:52  vpro
-	Rico: added temporary key method
-	
-	Revision 1.8  2000/11/08 14:46:29  vpro
-	Rico: added splitting into datatypes
-	
-	Revision 1.7  2000/11/08 14:31:23  vpro
-	Rico: returns right keys
-	
-	Revision 1.6  2000/11/08 14:24:46  vpro
-	Rico: fixed getObject
-	
-	Revision 1.5  2000/11/08 13:24:19  vpro
-	Rico: included owner in operations
-	
-	Revision 1.4  2000/10/26 13:10:37  vpro
-	Rico: fixed b0rken uncompilable code
-	
-	Revision 1.3  2000/10/13 11:41:34  vpro
-	Rico: made it working
-	
-	Revision 1.2  2000/10/13 09:39:54  vpro
-	Rico: added a method
-	
-	Revision 1.1  2000/08/14 19:19:06  rico
-	Rico: added the temporary node and transaction support.
-	      note that this is rather untested but based on previously
-	      working code.
-	
-*/
-
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.20 2001-04-10 17:32:05 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.21 2001-04-18 09:41:03 install Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -100,17 +35,13 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	}
 
 	public String createTmpNode(String type,String owner,String key) {
-		if (log.isDebugEnabled()) {
-            log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
-        }
+        log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
 		if (owner.length()>12) owner=owner.substring(0,12);
 		MMObjectBuilder builder=mmbase.getMMObject(type);
 		MMObjectNode node;
 		if (builder!=null) {
 			node=builder.getNewTmpNode(owner,getTmpKey(owner,key));
-            if (log.isDebugEnabled()) {
-                log.debug("New tmpnode " + node);
-            }
+            log.debug("New tmpnode " + node);
 		} else {
             log.error("Can't find builder " + type);
 		}
@@ -146,9 +77,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	public String deleteTmpNode(String owner,String key) {
 		MMObjectBuilder b=mmbase.getMMObject("typedef");
 		b.removeTmpNode(getTmpKey(owner,key));
-		if (log.isDebugEnabled()) {
-            log.debug("delete node " + getTmpKey(owner,key));
-        }
+        log.debug("delete node " + getTmpKey(owner,key));
 		return(key);
 	}
 
@@ -158,9 +87,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		node=bul.getTmpNode(getTmpKey(owner,key));
 		// fallback to normal nodes
 		if (node==null) {
-			if (log.isDebugEnabled()) {
-                log.debug("getNode tmp not node found " + key);
-            }
+            log.debug("getNode tmp not node found " + key);
 			node=bul.getNode(key);
 			if(node==null) throw new java.lang.RuntimeException("HUGE ERROR, NODE NOT FOUND !!" + key);
 		}
@@ -177,9 +104,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		MMObjectNode node;
 		node=bul.getTmpNode(getTmpKey(owner,key));
 		if (node==null) {
-			if (log.isDebugEnabled()) {
-                log.debug("getObject not tmp node found " + key);
-            }
+            log.debug("getObject not tmp node found " + key);
 			node=bul.getNode(dbkey);
 			if (node==null) {
 				log.warn("Node not found in database " + dbkey);
