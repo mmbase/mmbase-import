@@ -34,17 +34,16 @@ public class XMLRelationNodeReader extends XMLBasicReader {
       Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
 
 
-	/**
-	 * Constructor
-	 * @param filename from the file to read from
-	 * @param applicationpath the path where this application was exported to
-	 * @param mmbase
-	 */
-	public XMLRelationNodeReader(String filename, MMBase mmbase) 
-	{
-		super(filename);
-	}
-
+    /**
+     * Constructor
+     * @param filename from the file to read from
+     * @param applicationpath the path where this application was exported to
+     * @param mmbase
+     */
+    public XMLRelationNodeReader(String filename, MMBase mmbase) {
+        super(filename, false);
+    }
+    
    /**
    * get the name of this application
    */
