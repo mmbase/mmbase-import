@@ -29,10 +29,10 @@ public class ListRelationsTag extends AbstractNodeListTag {
     private String type = null;
     private String role = null;
 
-    private Node   relatedtoNode = null;
+    private Node   relatedfromNode = null;
     
-    Node getRelatedtoNode() {
-        return relatedtoNode;
+    Node getRelatedfromNode() {
+        return relatedfromNode;
     }
 
     /**
@@ -51,20 +51,26 @@ public class ListRelationsTag extends AbstractNodeListTag {
     public int doStartTag() throws JspTagException{
         int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
+            relatedfromNode =  (Node) getObject(getReferid() + ":relatedfromNode");
+            // hmm, this might be a hack...
             return superresult;
         }
         // obtain a reference to the node through a parent tag
-        relatedtoNode = getNode();
-        if (relatedtoNode == null) {
+        relatedfromNode = getNode();
+        if (relatedfromNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
+        if (getId() != null) {
+            getContextTag().register(getId() + ":relatedfromNode", relatedfromNode);
+        }
+
         RelationList nodes;
         if (type == null && role == null) {
-            nodes = relatedtoNode.getRelations();
+            nodes = relatedfromNode.getRelations();
         } else if (type == null) {
-            nodes = relatedtoNode.getRelations(role);
+            nodes = relatedfromNode.getRelations(role);
         } else {
-            nodes = relatedtoNode.getRelations(role, type);
+            nodes = relatedfromNode.getRelations(role, type);
         }
         return setReturnValues(nodes, true);
     }
