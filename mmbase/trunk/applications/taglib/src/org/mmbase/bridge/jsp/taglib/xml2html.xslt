@@ -104,7 +104,7 @@
       <body 
         bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
         <h1>MMBase taglib <xsl:value-of select="tlibversion" /> documentation</h1>
-        <h2><xsl:value-of select="tagtypes/type[@name=$type]/description" /></h2>
+        <xsl:if test="not($type='all')"><h2><xsl:value-of select="tagtypes/type[@name=$type]/description" /></h2></xsl:if>
       <table width="100%" cellpadding="5">
         <tr>
           <td width="30"></td>
@@ -493,10 +493,10 @@
 </xsl:template>
 
 <xsl:template match="info">
-  <xsl:apply-templates select="p|text()|em|a" />  
+  <xsl:apply-templates select="p|text()|em|a|ul" />  
 </xsl:template>
 
-<xsl:template match="p|text()|a">
+<xsl:template match="p|text()|a|ul">
   <xsl:copy-of select="." />
 </xsl:template>
 

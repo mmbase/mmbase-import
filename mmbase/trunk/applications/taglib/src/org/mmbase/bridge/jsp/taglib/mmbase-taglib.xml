@@ -223,8 +223,9 @@ See mmexamples/taglib for more elaborated examples.
     <type>util.context</type>
     <info>
       Contextreferrer tags refer to the context. This means that (most of) their attributes can
-      contain `context' variables. All tags are contextreferrers or specialisations of it.
+      contain `context' variables (referred to by '$'). All tags are contextreferrers or specialisations of it.
     </info>
+    <see tag="context" />
     <attribute>
       <name>context</name>
       <required>false</required>
@@ -242,6 +243,7 @@ See mmexamples/taglib for more elaborated examples.
       A contextwriter is a contextreferrer, but it can also write itself to the context (using the
       id attibute).
     </info>
+    <see tag="context" />
     <attribute>
       <name>id</name>
       <required>false</required>
@@ -261,12 +263,13 @@ See mmexamples/taglib for more elaborated examples.
       A contextreader is a contextwriter, but besides writing itself to the context, it can also
       read itself back from the context.
     </info>
+    <see tag="context" />
     <attribute>
       <name>referid</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    Reuses a previously defined tag of the same type.
+        Reuses a previously defined tag of the same type.
       </info>
     </attribute>
   </taginterface>
@@ -470,7 +473,7 @@ See mmexamples/taglib for more elaborated examples.
           strings compare differently than numbers.
         </p>
       </info>
-      <see>isgreaterthan</see>
+      <see tag="isgreaterthan" />
       <possiblevalue>
         <value>Object</value>
         <info>java.lang.Object</info>
@@ -544,14 +547,18 @@ See mmexamples/taglib for more elaborated examples.
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      Returns a list of nodes. Starting at one or more nodes traversals are made according to a
-      specified path of nodemanagers. One traversal makes up one record returned by the list. All
-      possible traversals that can be made starting at one or more nodes of the same type and
-      following a specified path are returned. Additional attributes can be used to exclude records
-      from the returned list or to influence the order of the returned list.  Because the returned
-      records can contain more than one node you will have to prefix the field name with the
-      nodemanager name and a dot if you want to refer to them. When using a jsp variable a
-      underscore has to be used to separate a nodemanager name from a field name.
+      Returns a list of (cluster) nodes. Starting at one or more nodes
+      traversals are made according to a specified path of
+      nodemanagers. One traversal makes up one record returned by the
+      list. All possible traversals that can be made starting at one
+      or more nodes of the same type and following a specified path
+      are returned. Additional attributes can be used to exclude
+      records from the returned list or to influence the order of the
+      returned list.  Because the returned records can contain more
+      than one node (such a record that contains fields from several
+      'nodes' is referred to as a 'clusternode') you will have to
+      prefix the field name with the nodemanager name and a dot if you
+      want to refer to them.
     </info>
     <see tag="listnodes" />
     <see tag="node" attribute="element"/>
@@ -820,6 +827,7 @@ See mmexamples/taglib for more elaborated examples.
       <name>path</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="path" />
       <info>
         This attribute is the same as the path attribute of the list tag except
         that the first nodemanager should be ommitted. The first nodemanager
@@ -830,41 +838,49 @@ See mmexamples/taglib for more elaborated examples.
       <name>fields</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="fields" />
     </attribute>
     <attribute>
       <name>constraints</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="constraints" />
     </attribute>
     <attribute>
       <name>orderby</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="orderby" />
     </attribute>
     <attribute>
       <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="directions" />
     </attribute>
     <attribute>
       <name>distinct</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="distinct" />
     </attribute>
     <attribute>
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="max" />
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="offset" />
     </attribute>
     <attribute>
       <name>searchdir</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="searchdir" />
     </attribute>
     <example>&lt;mm:node number="123"&gt;
   &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
@@ -913,33 +929,36 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        See <a href="#list.constraints">list</a>, but notice that it is not necessary to prefix the
+        See constraints attribute of list, but notice that it is not necessary to prefix the
         field names with `nodemanager' names. You can put the field names in [] to enable 'key word
         escaping'. E.g. in some databases 'status' is not a valid field name. [status] will
         translate the fieldname in the right way.
       </info>
+      <see tag="list" attribute="constraints" />
     </attribute>
     <attribute>
       <name>orderby</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="orderby" />
     </attribute>
     <attribute>
       <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="directions" />
     </attribute>
     <attribute>
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
+      <see tag="list" attribute="max" />
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
+      <see tag="list" attribute="offset" />
     </attribute>
     <example>&lt;mm:listnodes type="mags"  &gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
@@ -973,6 +992,7 @@ See mmexamples/taglib for more elaborated examples.
       <requirednote>
         You cannot use 'orderby' or 'constraints' if you do not use 'type'.
       </requirednote>
+      <see tag="listnodes" attribute="type" />
     </attribute>
     <attribute>
       <name>constraints</name>
@@ -981,6 +1001,7 @@ See mmexamples/taglib for more elaborated examples.
         You also need to supply 'type'.
       </requirednote>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="constraints" />
     </attribute>
     <attribute>
       <name>orderby</name>
@@ -989,21 +1010,25 @@ See mmexamples/taglib for more elaborated examples.
         You also need to supply 'type'.
       </requirednote>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="orderby" />
     </attribute>
     <attribute>
       <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="directions" />
     </attribute>
     <attribute>
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="max" />
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="offset" />
     </attribute>
     <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
@@ -1019,6 +1044,7 @@ See mmexamples/taglib for more elaborated examples.
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListEvenTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is an even item</info>
+    <see tag="first" />
     <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
@@ -1029,6 +1055,7 @@ See mmexamples/taglib for more elaborated examples.
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListOddTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is an odd item</info>
+    <see tag="first" />
     <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
@@ -1038,12 +1065,19 @@ See mmexamples/taglib for more elaborated examples.
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListChangedTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>Can be used in a list to determine if this item has changed compared to the previous one.
-     The criteria applies to the first field given in the orderby attribute of the accompanying list.
-     This field should also be included in the fields attribute of a list or related tag, to make the field
-     accessible.
-     The first item of a list is always concidered 'changed'.
+    <info>
+      <p>
+        Can be used in a list to determine if this item has changed compared to the previous one.
+        The criteria applies to the first field given in the orderby attribute of the accompanying list.
+        This field should also be included in the fields attribute of a list or related tag, to make the field
+        accessible.
+      </p>
+      <p>
+        The first item of a list is always considered 'changed'.
+      </p>
      </info>
+    <see tag="first" />
+    <see tag="listcondition" />
     <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
@@ -1078,6 +1112,7 @@ See mmexamples/taglib for more elaborated examples.
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is the
     last item in the list.</info>
+    <see tag="first" />
     <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
@@ -1337,8 +1372,9 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-    The name of the node manager, identifying the node in a list or related list tag.
+        The name of the node manager, identifying the node in a list or related list tag (clusternode providers).
       </info>
+      <see tag="clusternodeprovider" />
     </attribute>
     <example>Assume that node with number has a field title.
 Then the following code can be used to
@@ -1572,6 +1608,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
         itself (or one of the subcontextes).
       </p>
     </info>
+    <see tag="createrelation" />
     <example>Use a context inside another context (inside the default 'context')
                 and import parameters:
 &lt;mm:import id="hoi"&gt;greetings from amsterdam&lt;/mm:import&gt;
@@ -1592,6 +1629,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <info>
       Creates a relation between two nodes.
     </info>
+    <see tag="maycreaterelation" />
     <attribute>
       <name>role</name>
       <required>true</required>
@@ -1680,6 +1718,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     look for a surrounding fieldlist tag to retrieve name and node from.
       </info>
     </attribute>
+    <see tag="createnode" />
     <example>See the example for tag 'createnode'.</example>
   </tag>
   <tag>
@@ -1852,6 +1891,7 @@ transaction was commited, following should result anything:
       of the node (the name of the `nodemanager').
     </info>
     <see tag="fieldinfo" />
+    <see tag="nodeinfo" />
     <attribute>
       <name>nodetype</name>
       <required>false</required>
@@ -1920,6 +1960,8 @@ transaction was commited, following should result anything:
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
     <see tag="field" />
     <see tag="fieldlist" />
+    <see tag="nodeinfo" />
+    <see tag="cloud" />
     <info>
       <p>
         The fieldinfo tag can be used inside a FieldProvider. It's basic
@@ -2323,16 +2365,23 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <type>util.context</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.RemoveTag</tagclass>
     <info>
-    Remove an object from the context.
+      Removes an object from the context. Often it is nicer to use
+      'anonymous' contextes to avoid naming conflicts.
     </info>
+    <see tag="context" />
     <attribute>
       <name>referid</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info/>
+      <info>
+        The id of the variable to be removed>
+      </info>      
     </attribute>
-    <example>See the example for tag 'transaction'.
+    <example>
+     Set variable 'a' to something.
+     &lt;mm:import id="a"&gt;aaaa&lt;/mm:import&gt;
+     Set the value of a to another value.
+     &lt;mm:remove referid="a" /&gt;&lt;mm:import id="a"&gt;aaab&lt;/mm:import&gt;
     </example>
   </tag>
   <tag>
@@ -2344,7 +2393,40 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
-    Returns an URL with parameters from the context.
+      <p>
+        Returns an URL with parameters from the context. Parameters can
+        be specified in three ways:
+      </p>
+      <ul>
+        <li>
+          Simply write it in the 'page' attribute (with ? and
+          &amp;amp; (or simply &amp; if you don't produce XHTML), you
+          can use the $-notation te refer to context variable values.
+        </li>
+        <li>
+          Use the 'referids' attribute to specify a list of context
+          variables to add to the URL. The disadvantage is that you
+          can use another name for the parameter then the name of the
+          variable.
+        </li>
+        <li>
+          Use 'mm:param' subtags.
+        </li>
+      </ul>
+      <p>
+        This tag also takes care of the 'application' context if you
+        start the page attribute with '/'. This makes your
+        applications better portable.
+      </p>
+      <p>
+        It also does an URLEncode, which can be necessary if the
+        browsers does not support cookies and your page needs the
+        session.
+      </p>
+      <p>
+        You don't need it for URLs outside your application server
+        application. It is very advicable to use it otherwise.
+      </p>
     </info>
     <see tag="param" />
     <see tag="image" />
@@ -2354,9 +2436,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-    Specify which parameters. A comma seperated list of context
-    variable id's.
-    </info>
+        Specify which parameters. A comma seperated list of context
+        variable id's.
+      </info>
     </attribute>
     <attribute>
       <name>page</name>
@@ -2364,7 +2446,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-    The url to refer to. If not specified, then it becomes the
+        The url to refer to. If not specified, then it becomes the
         result of getRequestURI.
     </info>
     </attribute>
@@ -2512,33 +2594,36 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     <see tag="isempty" />
     <see tag="isnotempty" />
+    <see tag="isgreaterthan" />
+    <see tag="islessthan" />
     <attribute>
       <name>referid</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Which context variable.
+        Which context variable to compare. It this attribute is
+        missing, then the value of the parent 'writer' is taken.
       </info>
     </attribute>
     <attribute>
       <name>value</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <requirednote>
-        Either `value' or `referid2' must be present.
-      </requirednote>
+      <requirednote>Either `value' or `referid2' must be present.</requirednote>
       <info>
-        The value which the context variable must have, this is always a String.
+        The value to which you want to compare, this is always a String.
       </info>
     </attribute>
     <attribute>
       <name>referid2</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
+      <requirednote>Either `value' or `referid2' must be present.</requirednote>
+      <see tag="writer" attribute="vartype" />
       <info>
-        The value can also be another context variable, which is not necessarely a string.
+        The value can also be another context variable, which is not
+        necessarely a string. The type (set by 'vartype') is taken
+        into account.
       </info>
     </attribute>
     <example>
@@ -2616,9 +2701,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
     <info>
-      The body evaluated if the compared value is greater, working
-      only for numbers.
+      The body evaluated if the compared value is greater. Works for
+      numbers, but also for strings. If you want to evaluate 'is
+      greater than or equal' then try &lt;mm:islessthan inverse="true" ... /&gt;
     </info>
+    <see tag="islessthan" />
     <example>
 &lt;mm:import id="number" vartype="integer" &gt;5&lt;/mm:import&gt;
 &lt;mm:import id="compare" vartype="integer" &gt;6&lt;/mm:import&gt;
@@ -2639,7 +2726,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsLessThanTag</tagclass>
     <info>
       The body evaluated if the compared value is smaller. This is more
-      or less the inverse of isgreatehan, of course.
+      or less the inverse of isgreaterhan, of course, but not precisely.
     </info>
     <see tag="isgreaterthan" />
     <example>See the example for tag 'isgreaterthan'.</example>
@@ -2692,6 +2779,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Check if node may be deleted.
     </info>
+    <see tag="deletenode" />
     <example>See the example for tag 'deletenode'.
     </example>
   </tag>
@@ -2728,14 +2816,17 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <attribute>
       <name>role</name>
       <required>true</required>
+      <see tag="createrelation" attribute="role" />
     </attribute>
     <attribute>
       <name>source</name>
       <required>true</required>
+      <see tag="createrelation" attribute="source" />
     </attribute>
     <attribute>
       <name>destination</name>
       <required>true</required>
+      <see tag="createrelation" attribute="destination" />
     </attribute>
     <see tag="createrelation" />
     <example>
@@ -2923,6 +3014,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       The index of the current item of the current list.
     </info>
+    <see tag="first" />
+    <see tag="last" />
     <attribute>
       <name>offset</name>
       <required>false</required>
@@ -2991,6 +3084,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see tag="param" />
     <see tag="url" />
+    <see tag="treeinclude" />
+    <see tag="leafinclude" />
     <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
@@ -3015,6 +3110,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see tag="param" />
     <see tag="url" />
+    <see tag="leafinclude" />
     <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
@@ -3070,6 +3166,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     <see tag="include" />
     <see tag="treefile" />
+    <see tag="leafinclude" />
     <see tag="param" />
     <see tag="url" />
     <example>See the example for tag 'leafinclude'.</example>
