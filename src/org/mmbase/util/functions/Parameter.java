@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
+import org.mmbase.bridge.DataType;
 import java.util.*;
 
 /**
@@ -21,11 +22,11 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.12 2005-03-01 15:12:39 michiel Exp $
+ * @version $Id: Parameter.java,v 1.13 2005-03-16 15:59:51 michiel Exp $
  * @see Parameters
  */
 
-public class Parameter extends AbstractDataType {
+public class Parameter extends org.mmbase.bridge.implementation.AbstractDataType {
 
     /**
      * Parameters which might be needed in lots of Parameter definition arrays.
@@ -75,7 +76,7 @@ public class Parameter extends AbstractDataType {
      * @param defaultValue the value to use if the parameter has no value set (default is <code>null</code>)
      */
     public Parameter(String name, Class type, Object defaultValue) {
-        super(name,type);
+        super(name, type);
         this.defaultValue = defaultValue;
     }
 
@@ -84,7 +85,7 @@ public class Parameter extends AbstractDataType {
      * Copy-constructor, just to copy it with different requiredness
      */
     public Parameter(DataType p, boolean required) {
-        super(p.getName(),p.getType());
+        super(p.getName(), p.getTypeAsClass());
         this.required = required;
         if (! required) { // otherwise it makes no sense
             this.defaultValue = p.getDefaultValue();
@@ -96,7 +97,7 @@ public class Parameter extends AbstractDataType {
      * Copy-constructor, just to copy it with different defaultValue (which implies that it is not required now)
      */
     public Parameter(DataType p, Object defaultValue) {
-        super(p.getName(),p.getType());
+        super(p.getName(), p.getTypeAsClass());
         this.defaultValue = defaultValue;
         // not need to copy 'required', it should be 'false'.
     }
