@@ -1,11 +1,14 @@
 /*
 
+$Id: MMServersProbe.java,v 1.2 2000-02-24 14:08:20 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders;
 
@@ -20,9 +23,13 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 14-Jan-1998
+ * @version0 $Revision: 1.2 $ $Date: 2000-02-24 14:08:20 $ 
  */
 public class MMServersProbe implements Runnable {
+
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
 
 	Thread kicker = null;
 	MMServers parent=null;
@@ -68,7 +75,7 @@ public class MMServersProbe implements Runnable {
 			try {
 				doWork();
 			} catch(Exception e) {
-				System.out.println("MMServers -> Exception in mmservers thread");
+				debug("run(): ERROR: Exception in mmservers thread!");
 				e.printStackTrace();
 			}
 		}
