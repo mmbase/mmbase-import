@@ -19,13 +19,14 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * Container cognate for ListNodesTag.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.7 2003-09-03 19:40:04 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.8 2003-12-18 09:05:42 michiel Exp $
  */
-public class ListNodesContainerTag extends NodeReferrerTag implements NodeListContainer { 
-             // nodereferrer because RelatedNodesContainer extension
+public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer { 
+    // nodereferrer because RelatedNodesContainer extension
 
 
     private static final Logger log = Logging.getLoggerInstance(ListNodesContainerTag.class);
@@ -54,6 +55,10 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeListCo
 
 
     public Query getQuery() {
+        return getNodeQuery();
+    }
+
+    public NodeQuery getNodeQuery() {
         if (query.isUsed()) query = (NodeQuery) query.clone();
         return query;
     }

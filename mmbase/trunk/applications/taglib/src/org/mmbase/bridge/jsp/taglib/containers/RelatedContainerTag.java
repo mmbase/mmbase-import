@@ -16,17 +16,17 @@ import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.Step;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.5 2003-12-03 06:57:41 keesj Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.6 2003-12-18 09:05:48 michiel Exp $
  */
-public class RelatedContainerTag extends NodeReferrerTag implements NodeListContainer {
+public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
-    private static final Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
+    //  private static final Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
 
     private Query     query      = null;
     private Attribute path       = Attribute.NULL;

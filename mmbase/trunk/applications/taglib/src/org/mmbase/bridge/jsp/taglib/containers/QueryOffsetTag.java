@@ -14,18 +14,18 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
- * Applies a maxnumber to the surrounding query.
+ * Applies an offset to the surrounding query.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListOffsetTag.java,v 1.4 2003-08-29 12:12:24 keesj Exp $
+ * @version $Id: QueryOffsetTag.java,v 1.1 2003-12-18 09:05:47 michiel Exp $
  */
-public class NodeListOffsetTag extends CloudReferrerTag implements NodeListContainerReferrer {
+public class QueryOffsetTag extends CloudReferrerTag implements QueryContainerReferrer {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeListMaxNumberTag.class);
+    //private static final Logger log = Logging.getLoggerInstance(NodeListMaxNumberTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
@@ -41,7 +41,7 @@ public class NodeListOffsetTag extends CloudReferrerTag implements NodeListConta
 
 
     public int doStartTag() throws JspTagException { 
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         
         query.setOffset(offset.getInt(this, 0));
