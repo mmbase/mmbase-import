@@ -22,14 +22,13 @@ import org.mmbase.util.logging.*;
 import org.mmbase.module.ProcessorModule;
 
 
-
 /**
  * RemoteMMCI is a MMBase module that starts a Remote Method Invocation
- * registry and binds a remote MMCI to the server. Look a rmmci.xml for configuration
- * options. Note in the configuration of mmbaseroot.xml the host should be a valid
+ * registry and binds a remote MMCI context to the server. Look a rmmci.xml for configuration
+ * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
- * @Author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteMMCI.java,v 1.3 2002-01-09 13:20:31 kees Exp $
+ * @Author Kees Jongenburger <keesj@dds.nl>
+ * @version $Id: RemoteMMCI.java,v 1.4 2003-01-09 10:21:33 kees Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -66,7 +65,7 @@ public class RemoteMMCI extends ProcessorModule {
         if (portString != null){
             try{
                 registryPort = Integer.parseInt(portString);
-            } catch (NumberFormatException nfe){ log.warn("port parameter of rmmci.xml if not ot type int");};
+            } catch (NumberFormatException nfe){ log.warn("port parameter of rmmci.xml is not ot type int");};
         } else {
             log.warn("missing port init param, using (default)=("+ registryPort +")");
         }
@@ -133,7 +132,7 @@ public class RemoteMMCI extends ProcessorModule {
             
             //bind it to the registry.
             reg.rebind(bindName,remoteCloudContext);
-            log.info("Module RemoteMMCI Running on tcp (port,name)=("+ registryPort +","+ bindName +")");
+            log.info("Module RemoteMMCI Running on (tcp port,name)=("+ registryPort +","+ bindName +")");
         } catch (java.rmi.RemoteException rex) {
             log.fatal("RMI Registry not started because of exception {" + rex.getMessage() + "}");
 	    return;
