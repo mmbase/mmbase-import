@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.15 2003-08-15 19:42:28 michiel Exp $
+ * @version $Id: Contexts.java,v 1.16 2003-08-15 20:30:13 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -249,8 +249,8 @@ public class Contexts extends MMObjectBuilder {
                     }
                     return true;
                 }
-            if (operation == Operation.DELETE) {
-                // may not delete own user.
+            if (operation == Operation.DELETE || operation == Operation.CHANGE_CONTEXT) {
+                // may not delete/give away own user.
                 return false;
             }
         }
