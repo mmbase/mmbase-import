@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author Michiel Meeuwissen 
  **/
 
-public interface Writer extends TagIdentifier {
+public interface Writer {
 
     /**
      * Wether to write to page or not. This has to default to 'false'
