@@ -116,6 +116,14 @@ menu.makeLastSubmenu(rolestree, true);
 </di:hasrole>
 
 
+ <di:hasrole role="filemanager">          
+       menu.addItem("<fmt:message key="filemanagement"/>", 
+               "<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />",
+                             null,
+                         "<fmt:message key="filemanagement"/",
+                          "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");                                           </di:hasrole>
+
+
 <%-- has to be only for admin I believe --%>
 menu.addItem("<fmt:message key="metadata"/>","",null,"");
 var metatree = new MTMenu();
