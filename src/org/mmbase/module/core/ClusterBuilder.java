@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.4.2.1 2002-03-18 14:24:59 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.4.2.2 2002-10-03 07:23:30 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -869,7 +869,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
                     // get the allowed relation definitions
                     typenode = (MMObjectNode)e.nextElement();
-                    desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("snumber")==ro);
+                    desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("dnumber")==ro);
                     srctodest= (searchdir!=SEARCH_SOURCE) && (srctodest || typenode.getIntValue("snumber")==so);
                     if (desttosrc && srctodest) break;
                 }
