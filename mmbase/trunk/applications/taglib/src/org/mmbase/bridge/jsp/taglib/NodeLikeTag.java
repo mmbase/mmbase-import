@@ -42,11 +42,11 @@ abstract public class NodeLikeTag extends MMTaglib {
      * to this tag.
      */
 
-    public Node getNode() {
+    public Node getNodeVar() {
         return node;
     }
 
-    protected void setNode (Node n) {
+    protected void setNodeVar (Node n) {
         node = n;
     }
 
@@ -56,7 +56,6 @@ abstract public class NodeLikeTag extends MMTaglib {
     public void setFields(String f){
 	fields = f;
     }
-
 
 
     abstract public void doInitBody() throws JspException;
@@ -75,13 +74,6 @@ abstract public class NodeLikeTag extends MMTaglib {
 	//once here and onces specific attributes are set
 	//maybe this can be done better I do not know
 
-	// prefix is used when nesting tags to be able to make a difference
-	// between the variable declared in the root tag ant this tag
-	String id = "";
-	if (data.getAttribute("id") != null){
-            id = "" + data.getAttribute("id");
-	}
-        log.debug("id : " + id);
 
 	//the tag parameter fields defines what variables should be available
 	//within the body of the tag currently the only thing we do here
@@ -95,11 +87,23 @@ abstract public class NodeLikeTag extends MMTaglib {
         if (fieldss == null) fieldss = "";
 
         Vector fields  = stringSplitter(fieldss, ",");
-        
-        //size +1 since we return every variable + one hashTable
-        //for every iteration
-        //variableInfo =    new VariableInfo[fields.size() + 1];
-        variableInfo =    new VariableInfo[(fields.size())];
+
+
+        int nodeVariable = 0; 
+        // number of node-variable to be defined. 
+        // is 0 or 1 now, but will become more for multi-level lists (not yet ready)
+
+        // prefix is used when nesting tags to be able to make a difference
+	// between the variable declared in the root tag ant this tag
+	String id = "";
+	if (data.getAttribute("id") != null){
+            id = "" + data.getAttribute("id");
+            nodeVariable = 1;
+	}
+        log.debug("id : " + id);
+
+       
+        variableInfo =    new VariableInfo[(fields.size()) + nodeVariable];
         int j = 0;
         for (int i = 0 ; i < fields.size(); i++){
             String field = (String)fields.elementAt(i);
@@ -120,6 +124,12 @@ abstract public class NodeLikeTag extends MMTaglib {
                                                  VariableInfo.NESTED);            
             */
         }
+        if (nodeVariable == 1) {
+            variableInfo[j] = new VariableInfo(id,
+                                               "org.mmbase.bridge.Node",
+                                               true,
+                                               VariableInfo.NESTED);
+        }
 	return variableInfo;
     }
 
@@ -135,6 +145,10 @@ abstract public class NodeLikeTag extends MMTaglib {
                                      "" + node.getValue(field));
             //pageContext.setAttribute(getPrefix() + "item"+(j++) ,
             //                         "" + node.getValue(field));
+        }
+        String id = getId();
+        if (id != null && id != "") {
+            pageContext.setAttribute(id, node);
         }
     }
 
@@ -153,6 +167,10 @@ abstract public class NodeLikeTag extends MMTaglib {
 	    retval.addElement(st.nextToken().trim());
 	}
 	return retval;
+    }
+    
+    protected Vector stringSplitter(String string) {
+        return stringSplitter(string, ",");
     }
 
     private String getSimpleReturnValueName(String fieldName){
