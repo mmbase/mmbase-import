@@ -4,7 +4,7 @@
 <h1>Testing taglib</h1>
 <h2>cloud, transaction</h2>
 <mm:import id="curtime"><%= System.currentTimeMillis()%></mm:import>
-<mm:cloud method="http" jspvar="cloud">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud">
 
 This number must increase on reload: <mm:write referid="curtime" />
 <h3>Canceling transaction</h3>
