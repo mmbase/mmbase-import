@@ -15,8 +15,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
-import java.util.ResourceBundle;
-import java.util.Enumeration;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.4 2003-06-06 10:03:36 pierre Exp $
+ * @version $Id: EnumHandler.java,v 1.5 2003-07-15 12:29:25 pierre Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -62,7 +61,13 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuffer buffer = new StringBuffer();
+        Map enumValues = new TreeMap(); 
         Enumeration e = bundle.getKeys();
+        while (e.hasMoreElements()) {
+            String propertyKey = (String) e.nextElement();
+            Integer key = new Integer(propertyKey);
+            enumValues.put(key, bundle.getString(propertyKey));
+        }
 
         buffer.append("<select name=\"");
         buffer.append(prefix(field.getName()));
@@ -72,20 +77,16 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             value = node.getIntValue(field.getName());
         }
 
-
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
-            int listvalue = Integer.parseInt(key);
+        for(Iterator i = enumValues.keySet().iterator(); i.hasNext(); ) { 
+            Integer key = (Integer) i.next();
             buffer.append("<option value=\"");
-            buffer.append(listvalue);
+            buffer.append(key);
             buffer.append("\"");
-            if (node != null) {
-                if (listvalue == value) {
-                    buffer.append(" selected=\"selected\"");
-                }
+            if ((node != null) && (key.intValue() == value)) {
+                buffer.append(" selected=\"selected\"");
             }
             buffer.append(">");
-            buffer.append(bundle.getString(key));
+            buffer.append(enumValues.get(key));
             buffer.append("</option>\n");
         }
         buffer.append("</select>");
