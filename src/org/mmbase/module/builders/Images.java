@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.92 2004-02-23 19:05:00 pierre Exp $
+ * @version $Id: Images.java,v 1.93 2004-03-10 18:13:47 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -673,11 +673,13 @@ public class Images extends AbstractImages {
      */
     protected void determineImageType(MMObjectNode node) {
         String itype = node.getStringValue("itype");
-        if (itype == null || itype.equals("")) {
+        if ((itype == null || itype.equals("")) &&  // itype unset
+            node.getValue("handle") != null        // handle present
+            ) {
             itype = "";
             try {
                 MagicFile magicFile = MagicFile.getInstance();
-                String mimetype=magicFile.getMimeType(node.getByteValue("handle"));
+                String mimetype = magicFile.getMimeType(node.getByteValue("handle"));
                 if (!mimetype.equals(MagicFile.FAILED)) {
                     // determine itype
                     if (mimetype.startsWith("image/")) {
