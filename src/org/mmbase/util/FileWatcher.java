@@ -191,7 +191,7 @@ public abstract class FileWatcher extends Thread {
 	    while(i.hasNext()) {
 	    	FileEntry fe = (FileEntry) i.next();       
 		if(fe.changed()) {
-		    log.info("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
+		    log.service("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
 		    onChange(fe.getFile());
                     if (continueAfterChange) {                        
                         fe.updated(); // onChange was called now, it can be marked up-to-date again
