@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.32 2004-05-08 10:35:40 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.33 2004-05-08 10:38:28 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -109,7 +109,7 @@ public class MediaFragments extends MMObjectBuilder {
      * {@inheritDoc}
      */
     public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaSources.class, function);
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaFragments.class, function);
     }
     /**
      * {@inheritDoc}
