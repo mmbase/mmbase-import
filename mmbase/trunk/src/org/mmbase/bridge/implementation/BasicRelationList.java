@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.8 2002-09-23 14:31:04 pierre Exp $
+ * @version $Id: BasicRelationList.java,v 1.9 2002-09-25 14:57:48 pierre Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
@@ -28,8 +28,8 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
     /**
      * ...
      */
-    BasicRelationList(Cloud cloud) {
-        super(cloud);
+    BasicRelationList() {
+        super();
     }
 
     /**

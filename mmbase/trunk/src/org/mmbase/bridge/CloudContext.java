@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.17 2002-09-23 15:57:34 pierre Exp $
+ * @version $Id: CloudContext.java,v 1.18 2002-09-25 14:57:47 pierre Exp $
  */
 public interface CloudContext {
 
@@ -62,16 +62,15 @@ public interface CloudContext {
     /**
      * Returns the names of all the clouds known to the system
      *
-     * @return                      A StringList of all clouds names known to
-     *                               our Context
+     * @return  A StringList of all clouds names known to our Context
      */
     public StringList getCloudNames();
 
     /**
      * Returns the default character encoding, which can be used as a default.
      *
-     * @return                       A string with the character encoding
-     * @since                        MMBase-1.6
+     * @return  A string with the character encoding
+     * @since   MMBase-1.6
      *
      */
     public String getDefaultCharacterEncoding();
@@ -80,10 +79,65 @@ public interface CloudContext {
     /**
      * Returns the default locale setting.
      *
-     * @return                       A Locale object
-     * @since                        MMBase-1.6
-     *
+     * @return  A Locale object
+     * @since   MMBase-1.6
      */
     public java.util.Locale getDefaultLocale();
+    
+    /**
+     * Returns a new, empty field list
+     *
+     * @return  The empty list
+     * @since   MMBase-1.6
+     */
+    public FieldList createFieldList();
+    
+    /**
+     * Returns a new, empty node list
+     *
+     * @return  The empty list
+     * @since   MMBase-1.6
+     */
+    public NodeList createNodeList();
+    
+    /**
+     * Returns a new, empty relation list
+     *
+     * @return  The empty list
+     * @since   MMBase-1.6
+     */
+    public RelationList createRelationList();
+    
+    /**
+     * Returns a new, empty node manager list
+     *
+     * @return  The empty list
+     * @since   MMBase-1.6
+     */
+    public NodeManagerList createNodeManagerList();
+    
+    /**
+     * Returns a new, empty relation manager list
+     *
+     * @return  The empty list
+     * @since   MMBase-1.6
+     */
+    public RelationManagerList createRelationManagerList();
+    
+    /**
+     * Returns a new, empty module list
+     *
+     * @return  The empty list
+     * @since   MMBase-1.6
+     */
+    public ModuleList createModuleList();
+    
+    /**
+     * Returns a new, empty string list
+     *
+     * @return  The empty list
+     * @since   MMBase-1.6
+     */
+    public StringList createStringList();
     
  }

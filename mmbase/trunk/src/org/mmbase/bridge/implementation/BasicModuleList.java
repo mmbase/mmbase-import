@@ -20,24 +20,20 @@ import org.mmbase.util.logging.*;
  * A list of Modules
  *
  * @author Pierre van Rooden
- * @version $Id: BasicModuleList.java,v 1.6 2002-09-23 14:31:03 pierre Exp $
+ * @version $Id: BasicModuleList.java,v 1.7 2002-09-25 14:57:47 pierre Exp $
  */
 public class BasicModuleList extends BasicList implements ModuleList {
     private static Logger log = Logging.getLoggerInstance(BasicModuleList.class.getName());
 
-    private CloudContext cloudcontext;
-
-    BasicModuleList(CloudContext cloudcontext) {
+    BasicModuleList() {
         super();
-        this.cloudcontext=cloudcontext;
     }
 
     /**
      * ...
      */
-    BasicModuleList(Collection c, CloudContext cloudcontext) {
+    BasicModuleList(Collection c) {
         super(c);
-        this.cloudcontext=cloudcontext;
     }
 
     protected Object validate(Object o) throws ClassCastException {
