@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.70 2002-10-04 14:47:14 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.71 2002-10-07 09:52:31 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -71,7 +71,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * (a temporary number assigend by the system).
      * @scope private
      */
-    protected int temporaryNodeId=-1;
+    protected int temporaryNodeId = -1;
 
     /**
      * The account this node is edited under.
@@ -118,10 +118,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param id the id of the node in the temporary cloud
      */
     BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
-        this.nodeManager=nodeManager;
-        noderef=node;
-        temporaryNodeId=id;
-        isnew=true;
+        this.nodeManager = nodeManager;
+        noderef = node;
+        temporaryNodeId = id;
+        isnew = true;
         init();
         edit(ACTION_CREATE);
     }
@@ -132,16 +132,16 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Sets references to MMBase modules and initializes state in case of a transaction.
      */
     protected void init() {
-        if (cloud==null) {
-            cloud=(BasicCloud)nodeManager.getCloud();
+        if (cloud == null) {
+            cloud = (BasicCloud) nodeManager.getCloud();
         }
-        if (nodeManager==null) {
+        if (nodeManager == null) {
             // determine nodemanager, unless the node is the 'typedef' node
             // (needs to point towards itself)
-            if (noderef.getBuilder().oType!=noderef.getNumber()) {
-                nodeManager=cloud.getNodeManager(noderef.getBuilder().getTableName());
+            if (noderef.getBuilder().oType != noderef.getNumber()) {
+                nodeManager = cloud.getNodeManager(noderef.getBuilder().getTableName());
             } else {
-                nodeManager=(NodeManager)this;
+                nodeManager = (NodeManager) this;
             }
         }
         // create shortcut to mmbase
@@ -149,7 +149,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // check whether the node is currently in transaction
         // and intialize temporaryNodeId if that is the case
         if ((cloud instanceof BasicTransaction) && ( ((BasicTransaction)cloud).contains(noderef))) {
-            temporaryNodeId=noderef.getNumber();
+            if (temporaryNodeId == -1) {
+                temporaryNodeId = noderef.getNumber();
+            }
         }
     }
 
@@ -269,13 +271,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
+            
             if (action == ACTION_CREATE) {
                 String message;
-                message = "This node cannot be added. It was not correctly "
-                    + "instantiated (internal error).";
+                message = "This node cannot be added. It was not correctly " + 
+                          "instantiated (internal error).";
                 log.error(message);
                 throw new BridgeException(message);
             }
+            
 
             // when editing a temporary node id must exist (otherwise create one)
             // This also applies if you remove a node in a transaction (as the transction manager requires a temporary node)
@@ -448,19 +452,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         edit(ACTION_COMMIT);
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
-            MMObjectNode node= getNode();
+            MMObjectNode node = getNode();
             if (isnew) {
                 node.insert(cloud.getUser().getIdentifier());
                 //node.insert("bridge");
                 cloud.createSecurityInfo(getNumber());
-                isnew=false;
+                isnew = false;
             } else {
                 node.getBuilder().safeCommit(node);
                 cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
-            temporaryNodeId=-1;
+            temporaryNodeId = -1;
             // invalid nodereference: fix!
             noderef=mmb.getTypeDef().getNode(noderef.getNumber());
         }
