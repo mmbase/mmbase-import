@@ -200,13 +200,13 @@ public class MediaSourceFilter {
             if(format.equals("RA")) {
                 node = getRealAudio(mediasources, wantedspeed, wantedchannels);
             } else if(format.equals("MP3")) {
-                node = getFormat(mediasources, MediaSource.MP3_FORMAT);
+                node = getFormat(mediasources, MediaSources.MP3_FORMAT);
             } else if(format.equals("WAV")) {
-                node = getFormat(mediasources, MediaSource.WAV_FORMAT);
+                node = getFormat(mediasources, MediaSources.WAV_FORMAT);
             } else if(format.equals("G2")) {
-                node = getFormat(mediasources, MediaSource.SURESTREAM_FORMAT);
+                node = getFormat(mediasources, MediaSources.SURESTREAM_FORMAT);
             } else if(format.equals("MP2")) {
-                node = getFormat(mediasources, MediaSource.MP2_FORMAT);
+                node = getFormat(mediasources, MediaSources.MP2_FORMAT);
             }
             if (node!=null) {
                 log.debug("found mediasource format "+format);
@@ -230,7 +230,7 @@ public class MediaSourceFilter {
             MMObjectNode mediaSource = (MMObjectNode)e.nextElement();
             
             // Is the MediaSource ready for use && is it of format surestream
-            if( mediaSource.getIntValue("status") == MediaSource.DONE &&
+            if( mediaSource.getIntValue("status") == MediaSources.DONE &&
             mediaSource.getIntValue("format") == format ) {
                 log.debug("stream found "+mediaSource.getStringValue("number"));
                 return mediaSource;
@@ -269,8 +269,8 @@ public class MediaSourceFilter {
             MMObjectNode mediaSource = (MMObjectNode) e.nextElement();
             
             // Is the MediaSource ready for use && is format realaudio
-            if( mediaSource.getIntValue("status") == MediaSource.DONE  &&
-            mediaSource.getIntValue("format") == MediaSource.RA_FORMAT ) {
+            if( mediaSource.getIntValue("status") == MediaSources.DONE  &&
+            mediaSource.getIntValue("format") == MediaSources.RA_FORMAT ) {
                 if(mediaSourceBuilder.getSpeed(mediaSource) <= wantedspeed && mediaSourceBuilder.getChannels(mediaSource) <= wantedchannels) {
                     if(bestR5==null) {
                         bestR5 = mediaSource;
