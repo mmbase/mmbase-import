@@ -1163,7 +1163,6 @@ public class servdb extends JamesServlet {
     */
     private void setSessionSpeed( sessionInfo session, int speed ) {
         sessions.setValue( session,  "SETTING_RASPEED", "" + speed );
-        sessions.saveValue( session, "SETTING_RASPEED" );
     }
 
 
@@ -1206,7 +1205,6 @@ public class servdb extends JamesServlet {
     */
     private void setSessionChannels( sessionInfo session, int channels ) {
         sessions.setValue( session,  "SETTING_RASPEED", "" + channels );
-        sessions.saveValue( session, "SETTING_RASPEED" );
     }
 
 
