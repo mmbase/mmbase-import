@@ -21,7 +21,7 @@ import java.util.jar.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.22 2004-01-24 21:16:41 gerard Exp $
+ * @version $Id: Version.java,v 1.23 2004-02-04 19:00:55 michiel Exp $
  */
 public class Version {
 
@@ -83,7 +83,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String getNumber() {
-        return getMajor() + "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "-rc1" : getBuildDate());
+        return getMajor() + "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "-rc2" : getBuildDate());
     }
 
     /**
