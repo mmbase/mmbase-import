@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.17 2002-10-16 12:00:12 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.18 2002-10-16 15:48:13 pierre Exp $
  */
 public interface NodeManager extends Node {
 
@@ -65,11 +65,21 @@ public interface NodeManager extends Node {
 
     /**
      * Returns the descriptive name of this node manager. This name will be in
-     * the default language (defined in mmbaseroot.xml).
+     * the language of teh current cloud  (defined in cloud.getLocale()).
      *
      * @return the descriptive name of this node manager
      */
     public String getGUIName();
+
+    /**
+     * Returns the descriptive name of this node manager. This name will be in
+     * the language of the current cloud  (defined in cloud.getLocale()).
+     *
+     * @param plurality the plurality (number of objects) for which to return a description
+     *                  (1 = singular, 0,2 or greater = plural)
+     * @return the descriptive name of this node manager
+     */
+    public String getGUIName(int plurality);
 
     /**
      * Returns the description of this node manager.
