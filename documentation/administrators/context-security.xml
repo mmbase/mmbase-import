@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Context Security Configuration</title>
     <date>12 February 2003</date>
-    <edition>$Id: context-security.xml,v 1.7 2003-02-27 15:48:47 pierre Exp $</edition>
+    <edition>$Id: context-security.xml,v 1.8 2003-06-30 13:04:10 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -48,7 +48,7 @@
         <revnumber>0.4</revnumber>
         <date>07 February 2003</date>
         <authorinitials>PvR</authorinitials>
-        <revremark>Placed security farmework and xml how-to in separate documents</revremark>
+        <revremark>Placed security framework and xml how-to in separate documents</revremark>
       </revision>
     </revhistory>
   </articleinfo>
