@@ -32,6 +32,7 @@ public class MMExamples extends ProcessorModule {
 
 	MMBase mmb=null;
 	MMExamplesProbe probe=null;
+	String lastmsg="";
 
 	public void init() {
 		mmb=(MMBase)getModule("MMBASEROOT");		
@@ -81,11 +82,14 @@ public class MMExamples extends ProcessorModule {
 					int installedversion=ver.getInstalledVersion(name,"application");
 					if (installedversion==-1 || version>installedversion) {
 						if (installedversion==-1) {
-							System.out.println("installing application : "+name);
+							System.out.println("Installing application : "+name);
 						} else {	
 							System.out.println("installing application : "+name+" new version from "+installedversion+" to "+version);
 						}
 						if (installApplication(name)) {
+							lastmsg="Application loaded oke<BR><BR>\n";
+							lastmsg+="The application has the following install notice for you : <BR><BR>\n";
+							lastmsg+=app.getInstallNotice();
 							if (installedversion==-1) {
 								ver.setInstalledVersion(name,"application",maintainer,version);
 							} else {
@@ -94,8 +98,13 @@ public class MMExamples extends ProcessorModule {
 						} else {
 							System.out.println("Problem installing application : "+name);
 						}
+					} else { 
+							lastmsg="Application was allready loaded (or a higher version)<BR><BR>\n";
+							lastmsg+="To remind you here is the install notice for you again : <BR><BR>\n";
+							lastmsg+=app.getInstallNotice();
 					}
-
+				} else {
+					lastmsg="Install error can't find xml file";
 				}
 			} else if (token.equals("SAVE")) {
 				String appname=(String)cmds.get(cmdline);
@@ -116,10 +125,34 @@ public class MMExamples extends ProcessorModule {
 		StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
-			if (cmd.equals("FIELD")) { 
+			if (cmd.equals("VERSION")) { 
+				return(""+getVersion(tok.nextToken()));
+			} else if (cmd.equals("DESCRIPTION")) { 
+				return(getDescription(tok.nextToken()));
+			} else if (cmd.equals("LASTMSG")) { 
+				return(lastmsg);
 			}
 		}
 		return("No command defined");
+	}
+
+	int getVersion(String appname) {
+		String path=MMBaseContext.getConfigPath()+("/applications/");
+		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
+		if (app!=null) {
+			return(app.getApplicationVersion());
+		}
+		return(-1);
+	}
+
+
+	String getDescription(String appname) {
+		String path=MMBaseContext.getConfigPath()+("/applications/");
+		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
+		if (app!=null) {
+			return(app.getDescription());
+		}
+		return("");
 	}
 
 	public void maintainance() {
@@ -517,7 +550,13 @@ public class MMExamples extends ProcessorModule {
 	private boolean	writeApplication(String appname,String targetpath,String goal) {
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
-		XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
+		Vector savestats=XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
+		lastmsg="Application saved oke<BR><BR>\n";
+		lastmsg+="Some statistics on the save : <BR><BR>\n";
+		for (Enumeration h = savestats.elements();h.hasMoreElements();) {
+			String result=(String)h.nextElement();	
+			lastmsg+=result+"<BR><BR>\n";
+		}
 		return(true);
 	}
 
