@@ -16,8 +16,14 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * ClusterNode is a representation of a 'cluster' of objectnodes.
- * It represents a set of related nodes, retrieved using a multilevel query.
+ * ClusterNode combines fields of different nodes in a single "virtual" node.<br/>
+ * This corresponds to the way that an SQL "join" select statement combines 
+ * fields of different tables in result rows.
+ * <p>
+ * The individual fields are retrieved from a set of related nodes using a 
+ * multilevel query, i.e. a query joining tables using the relations between 
+ * the tables.
+ * <p>
  * This class overrides a number of methods, allowing direct access to data in
  * the nodes which form the 'virtual' node.
  * <br />
@@ -35,7 +41,8 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.12 2003-09-10 11:11:20 pierre Exp $
+ * @version $Id: ClusterNode.java,v 1.13 2003-12-01 14:42:41 robmaris Exp $
+ * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
 
