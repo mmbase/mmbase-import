@@ -1,0 +1,67 @@
+<PROCESSOR MMEXAMPLES>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="beeld/bg1.jpg" TEXT="#FFFFFF" BGCOLOR="#fffffe" LINK="#000000" ALINK="#ffffff" VLINK="#333333"><CENTER>
+<BR>
+<BR>
+<BR>
+<PART /mmadmin/nav.shtml>
+<BR>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>MMEdit example tool</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>&nbsp;</B>
+	</TD>
+</TR>
+<TR>
+	<FORM ACTION="examples.shtml" METHOD="POST">
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			Which Example	
+		</TD>
+		<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+			<SELECT INPUT NAME="SESSION-MMEXAMPLESEL">
+			<IF $SESSION-MMEXAMPLESEL^==Basics><OPTION SELECTED><ELSE><OPTION></IF>
+			Basics	
+			<IF $SESSION-MMEXAMPLESEL^==MyYahoo><OPTION SELECTED><ELSE><OPTION></IF>
+			MyYahoo
+
+			<IF $SESSION-MMEXAMPLESEL^==MyNews><OPTION SELECTED><ELSE><OPTION></IF>
+			MyNews
+			<IF $SESSION-MMEXAMPLESEL^==BasicAuth><OPTION SELECTED><ELSE><OPTION></IF>
+			BasicAuth
+			</SELECT>
+			<INPUT TYPE="SUBMIT" VALUE="SHOW">
+		</TD>
+	</FORM>
+</TR>
+</TABLE>
+<BR>
+<IF $SESSION-MMEXAMPLESEL^=N>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Example : $SESSION-MMEXAMPLESEL^</B>
+	</FONT>
+	</TD>
+</TR>
+<TR>
+	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg" LINK="#FFFFFF" VLINK="#FFFFFF">
+	<INCLUDE /mmadmin/examples/$SESSION-MMEXAMPLESEL^.shtml>
+	</TD>
+</TR>
+</IF>
+</TABLE>
+
+</CENTER>
+</BODY>
+</HTML>

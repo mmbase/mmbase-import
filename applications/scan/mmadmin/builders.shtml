@@ -1,0 +1,39 @@
+<PROCESSOR MMBASE>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+<INCLUDE /javascript/beeldvergroting/beeldvergroting.txt>
+</HEAD>
+
+<BODY BACKGROUND="beeld/bg1.jpg" TEXT="#FFFFFF" BGCOLOR="#fffffe" LINK="#000000" ALINK="#ffffff" VLINK="#333333"><CENTER>
+<BR>
+<BR>
+<BR>
+<PART /mmadmin/nav.shtml>
+<BR>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TR>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Name</B>
+	</TD>
+	<TD BGCOLOR="FFFFFF">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>description</B>
+	</TD>
+</TR>
+<LIST OBJECTS TYPE="typedef" FIELDS="name,description" WHERE="">
+<TR>
+	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	$ITEM1
+	</TD>
+	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	$ITEM2&nbsp;
+	</TD>
+</TR>
+</LIST>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
