@@ -45,12 +45,13 @@
           <td><mm:fieldinfo type="guivalue" /></td>
         </mm:fieldlist>
         <td class="commands">
-          <a href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="Wijzigen" title="Wijzigen" /></a>
+          <a href="<mm:url referids="currentgroup@group,parameters,$parameters,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=m.getString("update")%>" title="<%=m.getString("update")%>" /></a>
           <mm:maydelete>
             <mm:relatednodescontainer role="contains" searchdirs="destination">
               <mm:size>
                 <mm:compare value="0">
-                  <a href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="Verwijderen" title="Verwijderen" /></a>
+                  <a onclick="return confirm('<%=m.getString("reallydeletegroups")%>');"
+                  href="<mm:url referids="currentgroup@group,parameters,$parameters"><mm:param name="url">delete_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=m.getString("delete")%>" title="<%=m.getString("delete")%>" /></a>
                 </mm:compare>
               </mm:size>
             </mm:relatednodescontainer>
