@@ -202,7 +202,7 @@ public class BundleManager {
     /**
      * return all bundles versions of this id
      */
-    public static Enumeration getBundleVersions(String id) {
+    public static Iterator getBundleVersions(String id) {
         Object o = bundles.get(id);
         if (o != null) {
             BundleContainer bc = (BundleContainer)o;
@@ -219,12 +219,12 @@ public class BundleManager {
         Iterator e = bundles.values().iterator();
         while (e.hasNext()) {
             BundleContainer pc = (BundleContainer)e.next();
-            Enumeration e2 = pc.getVersions();
-            while (e2.hasMoreElements()) {
-               BundleVersionContainer pvc = (BundleVersionContainer)e2.nextElement();
-               Enumeration e3 = pvc.getBundles();
-               while (e3.hasMoreElements()) {
-                   BasicBundle p = (BasicBundle)e3.nextElement();
+            Iterator e2 = pc.getVersions();
+            while (e2.hasNext()) {
+               BundleVersionContainer pvc = (BundleVersionContainer)e2.next();
+               Iterator e3 = pvc.getBundles();
+               while (e3.hasNext()) {
+                   BasicBundle p = (BasicBundle)e3.next();
                    ProviderInterface prov = p.getProvider();
                    if (wantedprov == prov) {
                        long providertime = p.getProvider().lastSeen();
