@@ -21,7 +21,7 @@ import java.util.List;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: Parameters.java,v 1.13 2004-12-16 18:19:19 michiel Exp $
+ * @version $Id: Parameters.java,v 1.14 2005-03-01 17:14:31 michiel Exp $
  */
 
 public interface Parameters extends List {
@@ -33,7 +33,9 @@ public interface Parameters extends List {
     /**
      * When using reflection, you might need the Parameters as a Class[]. This function provides it.
      */
-    public Class[] toClassArray() ;
+    public Class[] toClassArray();
+
+    public DataType[] getDefinition();
 
     /**
      * Sets the 'auto casting' property (which on default is false)
