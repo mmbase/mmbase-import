@@ -130,8 +130,14 @@ using list tag: <br />
    <mm:node element="news">
      <em>node element="news"</em>:<br />
      title: <mm:field name="title" /><br />
-     <em>should follow twice the related URL:</em><br />
+     <em>should follow four times the related URL:</em><br />
      <mm:relatednodes type="urls">
+        related url (used relatednodes): <mm:field name="url" /><br />
+     </mm:relatednodes>
+     <mm:relatednodes type="urls" orderby="description">
+        related url (used relatednodes): <mm:field name="url" /><br />
+     </mm:relatednodes>
+     <mm:relatednodes type="urls" orderby="description" constraints="">
         related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
      <mm:related path="urls">

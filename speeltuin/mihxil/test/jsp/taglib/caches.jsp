@@ -42,7 +42,7 @@
     while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
         out.println("<tr><td>" + entry.getKey() + "</td><td>" +
-                  entry.getValue() + "</td>" +
+                  entry.getValue() + "("+ entry.getValue().getClass() +")</td>" +
                   ("true".equals(bytesize) ? "<td>" + (SizeOf.getByteSize(entry.getValue()) + SizeOf.getByteSize(entry.getKey())) + "</td>" : "")
               + "</tr>");
     }
@@ -56,6 +56,7 @@
 </mm:present>
 <mm:compare referid="bytesize" value="true">
   <br />
+  Total size: <%= Cache.getTotalByteSize() %><br />
   Size of <a href="session.jsp">session:</a> <%= SizeOf.getByteSize(session) %>
 </mm:compare>
 <hr />
