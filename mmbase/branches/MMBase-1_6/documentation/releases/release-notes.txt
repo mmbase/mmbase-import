@@ -62,6 +62,7 @@ Taglib New Features:
  - mm:locale : for setting country locale and language
  - mm:cloud tag: new loginpage attribute
 
+
 ==========================
 BUG FIXES AND IMPROVEMENTS:
 ==========================
