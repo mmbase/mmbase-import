@@ -22,7 +22,28 @@ import org.mmbase.util.*;
  */
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 	Hashtable vwm_cache = new Hashtable ();
+	private String emailFromDomain;
+	private String emailReturnPath;
+	private String emailTo;
 
+	public boolean init () {
+		super.init ();
+
+		// get email config and check it
+   		emailFromDomain = getInitParameter("fromdomain");
+		if (emailFromDomain == null || emailFromDomain.equals("")) debug (" missing init param from");
+		if(emailFromDomain.equals("@yourcompany.nl")) 
+			debug (" fromdomain init parameter is still default, please change!!!!");
+		emailReturnPath = getInitParameter("returnpath");
+		if (emailReturnPath == null || emailReturnPath.equals("")) debug (" missing init param returnpath");
+		if(emailReturnPath.equals("youremail@yourcompany.nl")) 
+			debug (" returnpath init parameter is still default, please change!!!!");
+		emailTo = getInitParameter("to");
+		if (emailTo == null || emailTo.equals("")) debug ("missing init param subject");
+ 		if(emailTo.equals("youremail@yourcompany.nl")) 
+			debug (" to init parameter is still default, please change!!!!");
+		return (true);
+	}
 
 	public String getGUIIndicator (String field, MMObjectNode node) {
 		if (field.equals ("status")) {
@@ -102,14 +123,19 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 		}
 	}
 
+	public boolean sendMail(String who,String subject, String msg) {
+		//using default to mailadres
+		return(sendMail(who,emailTo,subject,msg));
+	}
+
+
 
 	public boolean sendMail(String who,String to,String subject, String msg) {
-		String reply="james@vpro.nl";
-		String from="vwm_"+who+"@vpro.nl";
+		String from="vwm_"+who+emailFromDomain;
 		Mail mail=new Mail(to,from);
 		mail.setSubject("Mail van VWM : "+who+ " : "+subject);
 		mail.setDate();
-		mail.setReplyTo(reply); // should be from
+		mail.setReplyTo(emailReturnPath); // should be from
 
 		if (msg!=null && msg.length()>0) {
 			mail.setText(msg);
