@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.WriterReferrer;
 import org.mmbase.bridge.jsp.taglib.Writer;
@@ -29,14 +30,14 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
 
     private static Logger log = Logging.getLoggerInstance(CompareTag.class.getName());
 
-    private String value;
+    private Attribute value = Attribute.NULL;
     public void setValue(String v) throws JspTagException {
-        value =  getAttributeValue(v);
+        value =  getAttribute(v);
     }
 
-    private String referid2 = null;
+    private Attribute referid2 = Attribute.NULL;
     public void setReferid2(String r) throws JspTagException {
-        referid2 = getAttributeValue(r);
+        referid2 = getAttribute(r);
     }
 
     protected boolean doCompare(Comparable v1, Comparable v2) {
@@ -47,10 +48,10 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
     }
 
     protected Object getCompare2() throws JspTagException {
-        if (referid2 == null) {
+        if (referid2 == Attribute.NULL) {
             throw new JspTagException("Attribute 'value' or 'referid2' must be indicated");
         }
-        return getObject(referid2);
+        return getObject(referid2.getString(this));
 
     }
 
@@ -69,9 +70,9 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
 
         Object compare2;
-        if (value != null) {
-            compare2 = value;
-            if (referid2 != null) {
+        if (value != Attribute.NULL) {
+            compare2 = value.getValue(this);
+            if (referid2 != Attribute.NULL) {
                 throw new JspTagException("Cannot indicate 'referid2' and 'value' attributes both");
             }
         } else {

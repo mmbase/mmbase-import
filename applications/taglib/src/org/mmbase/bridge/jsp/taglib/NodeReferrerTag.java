@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.Tag;
@@ -34,7 +34,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
 
-    private String parentNodeId = null;
+    private Attribute parentNodeId = Attribute.NULL;
 
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
@@ -42,8 +42,8 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
      * ancestor.
      **/
 
-    public void setNode(String node){
-        parentNodeId = node;
+    public void setNode(String node) throws JspTagException {
+        parentNodeId = getAttribute(node);
     }
 
     /**
@@ -52,7 +52,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */	
     public NodeProvider findNodeProvider() throws JspTagException {        
-        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
+        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId.getString(this));
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
@@ -60,7 +60,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */	
     public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {        
-        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId, throwexception);
+        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId.getString(this), throwexception);
     }
 
     /**
