@@ -394,10 +394,19 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>number</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
+        <requirednote>Either 'number' or 'parameter' or 'key' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
 	  The nodenumber or alias identifying this node in MMBase.
+	</info>
+    </attribute>
+    <attribute>
+        <name>key</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'parameter' or 'key' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  Get the node from the context with this key.
 	</info>
     </attribute>
     <attribute>
@@ -618,6 +627,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         </info>
     </attribute>
     <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>       
+        </info>
+    </attribute>
+    <attribute>
         <name>source</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
@@ -654,7 +670,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     Creates a new node
     </info>
     <attribute>
-        <name>type</name>
+        <name>nodemanager</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>   
@@ -860,7 +876,9 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>fieldinfo</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
-    <info>This thing can be used inside a FieldListTag</info>
+    <info>This thing can be used inside a FieldListTag, or directly
+    inside a NodeProvider if you indicate with the field attribute
+    about which field you want to have information.</info>
     <attribute>
       <name>type</name>
       <required>true</required>
@@ -885,6 +903,90 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <info>The value of this field. Can only be used if in a NodeProviderTag.
         </info>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The field about which you want to have information. Only
+      if you want to use this tag directly under a nodeprovider tag.</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>present</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.PresentTag</tagclass>
+    <info>
+    Checks if a certain key is present in the parent Context tag.
+    </info>
+    <attribute>
+        <name>key</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	 </info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>notpresent</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.NotPresentTag</tagclass>
+    <info>
+    Checks if a certain key is missing in the parent Context tag.
+    </info>
+    <attribute>
+        <name>key</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	 </info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>export</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ExportTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.ExportTEI</teiclass>
+    <info>
+    Can be used to create an jsp variable from a variable in the context.
+    </info>
+    <attribute>
+        <name>context</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	If you want to get it from another context than the direct parent.
+	</info>
+    </attribute>
+    <attribute>
+        <name>key</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	The key of the variable to get.
+	</info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	The name of the variable to create.
+	</info>
+    </attribute>
+    <attribute>
+        <name>type</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	The type of the variable to create (default java.lang.Object)
+	</info>
+	<possiblevalue>
+          <value>Object</value>
+        </possiblevalue>
+	<possiblevalue>
+          <value>String</value>
+        </possiblevalue>
+	<possiblevalue>
+          <value>Node</value>
+        </possiblevalue>
     </attribute>
   </tag>
 </taglib>
