@@ -39,7 +39,7 @@
 	    <tr>
 		<td class="listItem"><di:translate id="message">Message</di:translate></td>
 		<td class="listItem"><a href="<mm:treefile page="/forum/thread.jsp" objectlist="$includePath" referids="$referids">
-                    <mm:param name="class"><mm:field name="classess.number"/></mm:param>
+                    <mm:param name="class"><mm:field name="classes.number"/></mm:param>
 		    <mm:param name="forum"><mm:field name="forums.number"/></mm:param>
 		    <mm:param name="thread"><mm:field name="forumthreads.number"/></mm:param>
 		    </mm:treefile>"><mm:field name="forums.name"/> &gt; <mm:field name="forumthreads.name"/> &gt;  <mm:field name="forummessages.title"/></a></td>

@@ -171,7 +171,8 @@ This message is also create by this page.
       </os:cache>
 --%>
       <mm:notpresent referid="print">
-            <form method="post" name="newmessage">
+            <form method="post" name="newmessage" action="<mm:treefile page="/forum/thread.jsp" objectlist="$includePath" referids="$referids"/>">
+                <input type="hidden" name="forum" value="<mm:write referid="forum"/>">
 	      <input type="text" name="title" value="<mm:isempty referid="insertedmessageok"><mm:write referid="title"/></mm:isempty>" size="40"><di:translate id="title">Title</di:translate><br>
               <textarea cols=60 rows=6 name="message"><mm:isempty referid="insertedmessageok"><mm:write referid="message"/></mm:isempty></textarea><di:translate id="message">Message</di:translate>
 	      <br clear="all">
