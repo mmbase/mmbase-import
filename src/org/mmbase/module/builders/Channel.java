@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * (Note that is would be possible to make a Writer that stores data in a node
  * or a builder, but this has not been implemented yet).
  * XXX: Currently, recorder info is NOT stored in the channel. A recorder has to
- * be activated manually (using $MOD-channelnr-RECORD-FILE-filname).
+g * be activated manually (using $MOD-channelnr-RECORD-FILE-filname).
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
@@ -483,7 +483,7 @@ public class Channel extends MMObjectBuilder {
 
     /**
      * Retrieve a list of users connected to a channel.
-     * The tagger parameter contains the parameters for the list.
+     * The params parameter contains the parameters for the list.
      * <ul>
      * <li>CHANNEL should containt the number or alias of the channel node</li>
      * <li>TYPE may conmtain the user's object type. The default is the
@@ -492,32 +492,17 @@ public class Channel extends MMObjectBuilder {
      * <li>SORTFIELDS may contain the names of the fields to sort on</li>
      * <li>SORTDIRS may contain the sort-order for the fields in SORTFIELDS</li>
      * </ul>
-     * @param tagger contains the parameters for this list command.
+     * @param params contains the parameters for this list command.
      * @return a vector with the (string) values of the requested fields, per user.
      */
-    public Vector getListUsers(StringTagger tagger) {
-        Vector result = new Vector();
-        String id = tagger.Value("CHANNEL");
-        MMObjectNode node = getNode(id);
-        if ((node == null) || !(node.parent instanceof Channel)) {
-            log.debug("getListUsers(): no or incorrect channel specified");
-            return result;
-        }
-        String usertype = tagger.Value("TYPE");
-        if (usertype==null) usertype= defaultUserType;
-
+    public Vector getListUsers(StringTagger params) {
+        Vector relatedUsers = getNodeListUsers(params);
         // Get the fieldnames out of the FIELDS attribute.
-        Vector fields = tagger.Values("FIELDS");
-        // Put in tagger the number of fields that will get returned.
-        tagger.setValue("ITEMS","" + fields.size());
+        Vector fields = params.Values("FIELDS");
+        // Put in params the number of fields that will get returned.
+        params.setValue("ITEMS","" + fields.size());
 
-        /* Create a Comparator, provided SORTFIELDS is specified.
-         * Sortdirections can be specified in SORTDIRS.
-         */
-        Vector sortFields = tagger.Values("SORTFIELDS");
-        Vector sortDirs = tagger.Values("SORTDIRS");
-        Vector relatedUsers = getListUsers(node,usertype,sortFields,sortDirs);
-
+        Vector result=new Vector();
         MMObjectNode relatedUser;
         String field;
         for (Iterator i=relatedUsers.iterator(); i.hasNext();) {
@@ -531,17 +516,56 @@ public class Channel extends MMObjectBuilder {
     }
 
     /**
-     * Retrieve a sorted list of users connected to a channel.
-     * @param channel the channel
-     * @param usertype the type of the userobjects to retrieve
-     * @param sortFields the fields on which to sort the users. <code>null</code>
-     *          means the result is not no sorted
-     * @param sortDirs the direction to sort the fields in (UP or DOWN).
-     *          <code>null</code> means the sort is ascending (UP)
-     * @return a vector with the nodes of the users.
+     * Retrieve a list of users connected to a channel.
+     * The params parameter contains the parameters for the list.
+     * <ul>
+     * <li>CHANNEL should containt the number or alias of the channel node</li>
+     * <li>TYPE may conmtain the user's object type. The default is the
+     *          value specified in the builder properties</li>
+     * <li>FIELDS should contain the names of the fields whose values to return</li>
+     * <li>SORTFIELDS may contain the names of the fields to sort on</li>
+     * <li>SORTDIRS may contain the sort-order for the fields in SORTFIELDS</li>
+     * </ul>
+     * @param params contains the parameters for this list command.
+     * @return a vector with the user nodes.
      */
-    public Vector getListUsers(MMObjectNode channel, String usertype,
-                               Vector sortFields, Vector sortDirs) {
+    public Vector getNodeListUsers(Map params) {
+        Vector result = new Vector();
+        String id = (String)params.get("CHANNEL");
+        MMObjectNode node = getNode(id);
+        if ((node == null) || !(node.parent instanceof Channel)) {
+            log.debug("getListUsers(): no or incorrect channel specified");
+            return result;
+        }
+        String usertype = (String)params.get("TYPE");
+        if (usertype==null) usertype= defaultUserType;
+
+        int offset=0;
+        String tmp = (String)params.get("FROMCOUNT");
+        if (tmp!=null) offset=Integer.parseInt(tmp);
+        int max=Integer.MAX_VALUE;
+        tmp = (String)params.get("MAXCOUNT");
+        if (tmp!=null) max=Integer.parseInt(tmp);
+
+        /* Create a Comparator, provided SORTFIELDS is specified.
+         * Sortdirections can be specified in SORTDIRS.
+         *
+         * Note: this is not very nice, but we prefer to use
+         * the more generic  Map over StringTagger.
+         * However, the get() method of StringTagger always returns a string.
+         * We need to fix StringTagger so that get() always returns the
+         * _original_ value.
+         */
+        Vector sortFields;
+        Vector sortDirs;
+        if (params instanceof StringTagger) {
+            sortFields = ((StringTagger)params).Values("SORTFIELDS");
+            sortDirs = ((StringTagger)params).Values("SORTDIRS");
+        } else {
+            sortFields = (Vector)params.get("SORTFIELDS");
+            sortDirs = (Vector)params.get("SORTDIRS");
+        }
+
         NodeComparator compareUsers=null;
         if (sortFields!=null) {
             if (sortDirs == null) {
@@ -550,7 +574,7 @@ public class Channel extends MMObjectBuilder {
                 compareUsers = new NodeComparator(sortFields, sortDirs);
             }
         }
-        return getListUsers(channel, usertype, compareUsers);
+        return getListUsers(node, usertype, compareUsers,offset, max);
     }
 
     /**
@@ -561,8 +585,9 @@ public class Channel extends MMObjectBuilder {
      *          means the result is not no sorted
      * @return a vector with the nodes of the users.
      */
-    public Vector getListUsers(MMObjectNode channel, String usertype, Comparator compareUsers) {
-        Vector relatedUsers = messageBuilder.getTemporaryRelated(channel,usertype);
+    public Vector getListUsers(MMObjectNode channel, String usertype,
+                               Comparator compareUsers, int offset, int max) {
+        Vector relatedUsers = messageBuilder.getTemporaryRelated(channel,usertype,offset,max);
         if (compareUsers!=null) {
             Collections.sort(relatedUsers,compareUsers);
         }
