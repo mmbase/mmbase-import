@@ -15,7 +15,10 @@
     fourth field: (optional) a configuration string (in CronJobs aquirable by cronEntry.getConfiguration())
     fifth field: (optional) the type of the job. 'mustbeone' (defaul) 'short' or 'canbemore'.
     -->
+    <!--
+	Just a test-cron job. This one uses class-security, so that might give errors if you don't have that (e.g. in 1.7)
     <property name="testjob">*/1 5-23 * * *|org.mmbase.applications.crontab.TestCronJob||</property>
+    -->
 
     <!-- 
       Another example: mmbase statistics.
