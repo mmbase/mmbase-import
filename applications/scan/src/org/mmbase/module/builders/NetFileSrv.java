@@ -37,35 +37,32 @@ public class NetFileSrv extends MMObjectBuilder {
 
 	public boolean fileChange(String number,String ctype) {
 		try {
-		System.out.println("NetFileSrv-> "+number+" "+ctype);
-		MMObjectNode node=getNode(number);
-		//System.out.println("NetFileSrv-> "+node);
-		String service=node.getStringValue("service");
-		String subservice=node.getStringValue("subservice");
-		String servicestr=service+"/"+subservice;
-		Object bot=service2bot.get(servicestr);
-		System.out.println("BOT1="+bot);
-		if (bot!=null) {
-			if (bot instanceof VwmServiceInterface){
-				 ((VwmServiceInterface)bot).fileChange(number,ctype);
-			} else {
-				System.out.println("NetFileSrv-> Problem bot NOT a VwmServiceInterface !!!");
-			}
-		} else {
-			// figure out the bot for this service/subservice
-			bot=getAttachedBot(service,subservice);	
-			System.out.println("BOT2="+service+"/"+subservice+" B="+bot);
+			debug(number+" "+ctype);
+			MMObjectNode node=getNode(number);
+			String service=node.getStringValue("service");
+			String subservice=node.getStringValue("subservice");
+			String servicestr=service+"/"+subservice;
+			Object bot=service2bot.get(servicestr);
 			if (bot!=null) {
-				service2bot.put(servicestr,bot);
-				if (bot instanceof VwmServiceInterface) {
-					((VwmServiceInterface)bot).fileChange(number,ctype);
+				if (bot instanceof VwmServiceInterface){
+					 ((VwmServiceInterface)bot).fileChange(number,ctype);
 				} else {
-					System.out.println("NetFileSrv-> Problem bot NOT a VwmServiceInterface !!!");
+					debug("Problem bot NOT a VwmServiceInterface !!!");
+				}
+			} else {
+				// figure out the bot for this service/subservice
+				bot=getAttachedBot(service,subservice);	
+				if (bot!=null) {
+					service2bot.put(servicestr,bot);
+					if (bot instanceof VwmServiceInterface) {
+						((VwmServiceInterface)bot).fileChange(number,ctype);
+					} else {
+						debug("Problem bot NOT a VwmServiceInterface !!!");
+					}
 				}
 			}
-		}
-		//System.out.println("NetFileSrv-> "+servicestr);
 		} catch (Exception e) {
+			debug("Exception "+e);
 			e.printStackTrace();
 		}
 		return(true);
@@ -73,7 +70,6 @@ public class NetFileSrv extends MMObjectBuilder {
 
 
 	public boolean fileChange(String service,String subservice,String filename) {
-		//System.out.println("NetFileSrv-> "+filename);
 		String servicestr=service+"/"+subservice;
 		Object bot=service2bot.get(servicestr);
 		if (bot!=null) {
@@ -86,7 +82,6 @@ public class NetFileSrv extends MMObjectBuilder {
 				if (bot instanceof VwmServiceInterface) ((VwmServiceInterface)bot).fileChange(service,subservice,filename);
 			}
 		}
-		//System.out.println("NetFileSrv-> "+servicestr);
 		return(true);
 	}
 
@@ -94,18 +89,15 @@ public class NetFileSrv extends MMObjectBuilder {
 		Enumeration e=search("WHERE service='"+service+"' AND subservice='"+subservice+"'");
 		while (e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("NetFileSrv-> "+node);
 			int number=node.getIntValue("number");
 			Enumeration f=mmb.getInsRel().getRelated(""+number,"vwms");
 			while (f.hasMoreElements()) {
 				MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
-				//System.out.println("NetFileSrv-> "+vwmnode);
 				Vwms vwms=(Vwms)mmb.getMMObject("vwms");	
 				if (vwms!=null) {
 					String name=vwmnode.getStringValue("name");
 					VwmServiceInterface vwm=(VwmServiceInterface)vwms.getVwm(name);
 					if (vwm!=null) {
-						System.out.println("NetFileSrv-> found vwm ! "+vwm);
 						return(vwm);
 					}
 				}

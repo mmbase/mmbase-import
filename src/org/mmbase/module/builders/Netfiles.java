@@ -41,9 +41,8 @@ public class Netfiles extends MMObjectBuilder {
 
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
 		super.nodeRemoteChanged(number,builder,ctype);
-		//System.out.println("CHANGE="+mmb.getMachineName());
 		if (mmb.getMachineName().equals("twohigh")) {
-		System.out.println("Netfiles-> Change : "+number+" "+builder+" "+ctype);
+		debug("Change : "+number+" "+builder+" "+ctype);
 		if (netfilesrv==null) {
 			netfilesrv=(NetFileSrv)mmb.getMMObject("netfilesrv");
 			if (netfilesrv!=null) netfilesrv.fileChange(number,ctype);
@@ -57,7 +56,7 @@ public class Netfiles extends MMObjectBuilder {
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
 		super.nodeLocalChanged(number,builder,ctype);
 		if (mmb.getMachineName().equals("twohigh")) {
-		System.out.println("Netfiles-> Change : "+number+" "+builder+" "+ctype);
+		debug("Change : "+number+" "+builder+" "+ctype);
 		if (netfilesrv==null) {
 			netfilesrv=(NetFileSrv)mmb.getMMObject("netfilesrv");
 			if (netfilesrv!=null) netfilesrv.fileChange(number,ctype);

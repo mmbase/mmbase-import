@@ -19,7 +19,7 @@ import org.mmbase.util.*;
 public class FileCopier implements Runnable {
 
 	private String  classname = getClass().getName();
-	private boolean debug	  = true;
+	private boolean debug	  = false;
 	private void	debug(String msg){System.out.println(classname+":"+msg);}
 
 	Thread kicker = null;
@@ -75,11 +75,11 @@ public class FileCopier implements Runnable {
 		String sshpath="/usr/local/bin";
 		aFile2Copy afile;
 	
-		debug("Active");
+		if (debug) debug("Active");
 		while (kicker!=null) {
 			afile=(aFile2Copy)files.get();
 			if (afile!=null) {
-				debug("Copying "+afile.srcpath+"/"+afile.filename);
+				if (debug) debug("Copying "+afile.srcpath+"/"+afile.filename);
 				SCPcopy scpcopy=new SCPcopy(sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
 				scpcopy.copy(afile.srcpath,afile.filename);
 			} else {

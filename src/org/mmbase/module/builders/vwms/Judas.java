@@ -729,13 +729,11 @@ private JudasURLpusher pusher=null;
 		System.out.println("Judas -> pushing ="+url);
 		url=url.replace('?',':')+".asis";
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
-		System.out.println("WHERE filename='"+url+"' AND service='pages' AND subservice='main'");
 		Enumeration e=bul.search("WHERE filename='"+url+"' AND service='pages' AND subservice='main'");
 		if (e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
 			node.setValue("status",4);
 			node.commit();
-//			System.out.println("CHECKNODE="+bul.getNode(node.getIntValue("number")));
 		}
 		return(true);
 	}
