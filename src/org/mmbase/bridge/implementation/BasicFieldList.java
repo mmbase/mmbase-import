@@ -9,10 +9,12 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-import org.mmbase.bridge.*;
-import org.mmbase.module.corebuilders.*;
+
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import org.mmbase.bridge.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of nodes
@@ -20,6 +22,7 @@ import java.util.NoSuchElementException;
  * @author Pierre van Rooden
  */
 public class BasicFieldList extends BasicList implements FieldList {
+    private static Logger log = Logging.getLoggerInstance(BasicFieldList.class.getName());
 
     private Cloud cloud;
     NodeManager nodemanager=null;
@@ -66,13 +69,19 @@ public class BasicFieldList extends BasicList implements FieldList {
         
         public void set(Object o) {
             if (! (o instanceof Field)) {
-                throw new BridgeException("Object must be of type Field" );
+                String message;
+                message = "Object must be of type Field.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.set(index, o);
         }
         public void add(Object o) {
             if (! (o instanceof Field)) {
-                throw new BridgeException("Object must be of type Field" );
+                String message;
+                message = "Object must be of type Field.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.add(index, o);
         }

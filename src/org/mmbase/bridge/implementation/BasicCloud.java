@@ -14,6 +14,7 @@ import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.util.StringTagger;
+import org.mmbase.util.logging.*;
 import java.util.*;
 
 /**
@@ -22,6 +23,7 @@ import java.util.*;
  * @author Pierre van Rooden
  */
 public class BasicCloud implements Cloud, Cloneable {
+    private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
 
     // link to cloud context
     private BasicCloudContext cloudContext = null;
@@ -93,9 +95,19 @@ public class BasicCloud implements Cloud, Cloneable {
         // do authentication.....
         mmbaseCop = mmb.getMMBaseCop();
 	
-        if(mmbaseCop == null) throw new BridgeException("Couldnt find the MMBaseCop");
+        if (mmbaseCop == null) {
+            String message;
+            message = "Couldn't find the MMBaseCop.";
+            log.error(message);
+            throw new BridgeException(message);
+        }
 	org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
-        if ( uc == null ) throw new BridgeException("login invalid");
+        if (uc == null) {
+            String message;
+            message = "Login invalid.";
+            log.error(message);
+            throw new BridgeException(message);
+        }
 	userContext = new BasicUser(mmbaseCop, uc);
         // end authentication...
 
@@ -119,17 +131,23 @@ public class BasicCloud implements Cloud, Cloneable {
             node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
         // Catch the exception in case of a negative nodenumber.
         } catch (StringIndexOutOfBoundsException e) {
-            throw new BridgeException("Node with number " + nodenumber
-                                      + " does not exist.");
+            String message;
+            message = "Node with number " + nodenumber + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         // Catch the exception in case of a positive nodenumber wich is not
         // found.
         } catch (RuntimeException e) {
-            throw new BridgeException("Node with number " + nodenumber
-                                      + " does not exist.");
+            String message;
+            message = "Node with number " + nodenumber + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         if (node==null) {
-            throw new BridgeException("Node with number " + nodenumber
-                                      + " does not exist.");
+            String message;
+            message = "Node with number " + nodenumber + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             assert(Operation.READ,nodenumber);
             if (node.getNumber()==-1) {
@@ -143,8 +161,10 @@ public class BasicCloud implements Cloud, Cloneable {
     public Node getNode(String nodenumber) {
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
         if (node==null) {
-            throw new BridgeException("Node with number " + nodenumber
-                                      + " does not exist.");
+            String message;
+            message = "Node with number " + nodenumber + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             assert(Operation.READ,node.getNumber());
             if (node.getIntValue("number")==-1) {
@@ -158,8 +178,10 @@ public class BasicCloud implements Cloud, Cloneable {
     public Node getNodeByAlias(String aliasname) {
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,aliasname);
         if ((node==null) || (node.getNumber()==-1)) {
-            throw new BridgeException("node with alias " + aliasname
-                                      + " does not exist.");
+            String message;
+            message = "Node with alias " + aliasname + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             assert(Operation.READ,node.getNumber());
             return new BasicNode(node, getNodeManager(node.parent.getTableName()));
@@ -182,10 +204,13 @@ public class BasicCloud implements Cloud, Cloneable {
         NodeManager nodeManager=(NodeManager)nodeManagerCache.get(nodeManagerName);
         if (nodeManager==null) {
             MMObjectBuilder bul=cloudContext.mmb.getMMObject(nodeManagerName);
-            if (bul==null)
-                throw new BridgeException("Node manager with name "
-                                          + nodeManagerName
-                                          + " does not exist.");
+            if (bul==null) {
+                String message;
+                message = "Node manager with name " + nodeManagerName
+                          + " does not exist.";
+                log.error(message);
+                throw new BridgeException(message);
+            }
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
         }
@@ -263,25 +288,34 @@ public class BasicCloud implements Cloud, Cloneable {
         // uses getguesed number, maybe have to fix this later
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
-            throw new BridgeException("Role " + roleName + " does not exist.");
+            String message;
+            message = "Role " + roleName + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         int n1=typedef.getIntValue(sourceManagerName);
         if (n1==-1) {
-            throw new BridgeException("Source type " + sourceManagerName
-                                      + " does not exist.");
+            String message;
+            message = "Source type " + sourceManagerName + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         int n2=typedef.getIntValue(destinationManagerName);
         if (n2==-1) {
-            throw new BridgeException("Destination type "
-                                      + destinationManagerName
-                                      + " does not exist.");
+            String message;
+            message = "Destination type " + destinationManagerName
+                      + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         RelationManager rm=getRelationManager(n1,n2,r);
         if (rm==null) {
-            throw new BridgeException("Relation manager from "
-                                      + sourceManagerName + " to "
-                                      + destinationManagerName + " as "
-                                      + roleName + " does not exist.");
+            String message;
+            message = "Relation manager from " + sourceManagerName + " to "
+                      + destinationManagerName + " as " + roleName
+                      + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             return rm;
         }
@@ -290,12 +324,17 @@ public class BasicCloud implements Cloud, Cloneable {
     public RelationManager getRelationManager(String roleName) {
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
-            throw new BridgeException("Role " + roleName + " does not exist.");
+            String message;
+            message = "Role " + roleName + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         RelationManager rm=getRelationManager(r);
         if (rm==null) {
-            throw new BridgeException("Relation manager for " + roleName
-                                      + " does not exist.");
+            String message;
+            message = "Relation manager for " + roleName + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             return rm;
         }
@@ -328,8 +367,11 @@ public class BasicCloud implements Cloud, Cloneable {
                   if (overwrite) {
                       oldtransaction.cancel();
                   } else {
-                      throw new BridgeException("Transaction already exists name = "
-                                                + name);
+                      String message;
+                      message = "Transaction with name " + name
+                                + "already exists.";
+                      log.error(message);
+                      throw new BridgeException(message);
                   }
               }
         }
@@ -427,7 +469,10 @@ public class BasicCloud implements Cloud, Cloneable {
         if (nodePath != null && (!nodePath.trim().equals(""))) {
             pars+=" TYPES='"+nodePath+"'";
         } else {
-            throw new BridgeException("No nodePath specified.");
+            String message;
+            message = "No nodePath specified.";
+            log.error(message);
+            throw new BridgeException(message);
         }
 
         if (fields == null) fields = "";
@@ -482,8 +527,10 @@ public class BasicCloud implements Cloud, Cloneable {
             }
             return new BasicNodeList(v,this,tempNodeManager);
         } else {
-            throw new BridgeException("getList failed, parameters are invalid :"
-                                      + pars + " - " + constraints);
+            String message;
+            message = "Parameters are invalid :" + pars + " - " + constraints; 
+            log.error(message);
+            throw new BridgeException(message);
         }
     }
 

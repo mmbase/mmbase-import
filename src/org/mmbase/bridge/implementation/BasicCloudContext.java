@@ -25,6 +25,7 @@ import javax.servlet.http.*;
  * @author Pierre van Rooden
  */
 public class BasicCloudContext implements CloudContext {
+    private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
 
     /**
     * Link to the mmbase root
@@ -73,7 +74,11 @@ public class BasicCloudContext implements CloudContext {
         } 
 	else {
 	    // why dont we start mmbase, when there isnt a running instance, just change the check...
-            throw new BridgeException("MMBase has not been started, and cannot be started by this Class");
+            String message;
+            message = "MMBase has not been started, and cannot be started by "
+                      + "this Class.";
+            log.error(message);
+            throw new BridgeException(message);
         }
     }
 
@@ -85,8 +90,10 @@ public class BasicCloudContext implements CloudContext {
     public Module getModule(String moduleName) {
     	Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
-            throw new BridgeException("Module " + moduleName
-                                      + " does not exist.");
+            String message;
+            message = "Module " + moduleName + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         return mod;
     }
@@ -97,7 +104,10 @@ public class BasicCloudContext implements CloudContext {
         
     public Cloud getCloud(String name, String application, HashMap loginInfo) {
     	if ( !localClouds.contains(name) ) {
-	     throw new BridgeException("Cloud " + name + " does not exist.");
+             String message;
+             message = "Cloud " + name + " does not exist.";
+             log.error(message);
+	     throw new BridgeException(message);
 	}
 	return new BasicCloud(name, application, loginInfo,this);
     }
