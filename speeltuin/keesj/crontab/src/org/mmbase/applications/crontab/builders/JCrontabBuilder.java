@@ -8,7 +8,7 @@ import org.mmbase.applications.crontab.*;
 import org.mmbase.bridge.*;
 /**
  *
- * @mmbase-application-name MMCrontabApp
+ * @mmbase-application-name MMBaseCrontabApp
  *
  * @mmbase-nodemanager-name crontab
  * @mmbase-nodemanager-classfile org.mmbase.applications.crontab.builders.JCrontabBuilder
