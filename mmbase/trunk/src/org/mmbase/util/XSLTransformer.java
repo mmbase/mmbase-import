@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.22 2004-10-04 11:29:35 pierre Exp $
+ * @version $Id: XSLTransformer.java,v 1.23 2004-11-11 17:53:07 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -113,6 +113,7 @@ public class XSLTransformer {
 
         TemplateCache cache= TemplateCache.getCache();
         Source xsl = new StreamSource(xslFile);
+        //xsl.setSystemId(xslFile.toURL().toString());
         URIResolver uri;
         if (considerDir) {
             uri = new URIResolver(xslFile.getParentFile());
@@ -126,7 +127,8 @@ public class XSLTransformer {
             log.debug("template cache size " + cache.size() + " entries");
         }
         if (cachedXslt == null) {
-            cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
+            TransformerFactory tf = FactoryCache.getCache().getFactory(uri);
+            cachedXslt = tf.newTemplates(xsl);
             cache.put(xsl, cachedXslt, uri);
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
@@ -168,8 +170,9 @@ public class XSLTransformer {
         db.setErrorHandler(handler);
         db.setEntityResolver(resolver);
         org.w3c.dom.Document xmlDoc = db.parse(xmlFile);
-
-        transform(new DOMSource(xmlDoc), xslFile, result, params, considerDir);
+        Source s = new DOMSource(xmlDoc);
+        s.setSystemId(xmlFile.toURL().toString());
+        transform(s, xslFile, result, params, considerDir);
     }
 
 

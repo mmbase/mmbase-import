@@ -9,16 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
-import javax.xml.transform.Source;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.net.*;
+import java.util.*;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.SizeMeasurable;
+import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -43,15 +42,15 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.17 2004-05-09 14:53:34 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.18 2004-11-11 17:51:23 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
     
     private static final Logger log = Logging.getLoggerInstance(URIResolver.class);
 
-    private EntryList     extraDirs;  // prefix -> File pairs
-    private File          cwd;
+    private EntryList     extraDirs;  // prefix -> URL pairs
+    private URL           cwd;
     private int           hashCode;
 
 
@@ -70,25 +69,48 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * @see org.mmbase.cache.xslt.FactoryCache
      */
 
-    public URIResolver(File c, boolean overhead) {
+    public URIResolver(URL c, boolean overhead) {
         cwd      = c;
         hashCode = c.hashCode();
     }
     /**
      * Create an URIResolver for a certain directory.
      * @param c   The directory for which this URIResolver must be created.     
-     * 
      */
 
-    public URIResolver(File c) {
+    public URIResolver(URL c) {
         this(c, null);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    private static URL toURL(File f) {
+        try {
+            return f.toURL();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    /**
+     * @deprecated
+     */
+    public URIResolver(File f) {        
+        this(toURL(f), null);
     }
 
     /**
      * Create an URIResolver without support for a certain directory. (Will be taken the first root).
      */
     public URIResolver() {
-        this(null, null); 
+        this((URL) null, null); 
+    }
+
+    /**
+     * @deprecated
+     */
+    public URIResolver(File f, EntryList extradirs) {
+        this(toURL(f), extradirs);
     }
 
     /**
@@ -101,13 +123,15 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * 'extra dir' available, namely the MMBase configuration
      * directory (with prefix mm:)
      */
-    public URIResolver(File c, EntryList extradirs) {
+    public URIResolver(URL c, EntryList extradirs) {
         if (log.isDebugEnabled()) log.debug("Creating URI Resolver for " + c);
         if (c == null) {
-            log.debug("No working directory specified, using filesystem root");
             File[] roots = File.listRoots();
             if (roots != null && roots.length > 0) {
-                cwd = roots[0];
+                try {
+                    cwd = roots[0].toURL();
+                } catch (Exception e) {
+                }
             } else {
                 log.warn("No filesystem root available, trying with 'null'");
                 cwd = null; 
@@ -121,7 +145,6 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         if (extradirs != null) {
             extraDirs.addAll(extradirs);
         }
-        extraDirs.add(new Entry("mm:", new File(MMBaseContext.getConfigPath())));
 
         // URIResolvers  cannot be changed, the hashCode can already be calculated and stored.
 
@@ -140,22 +163,9 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * Returns the working directory which was supplied in the
      * constructor.
      *
-     */
-    
-    public File getCwd() {
+     */    
+    public URL getCwd() {
         return cwd;
-    }
-
-    /**
-     * Resolves a given string to a File. 
-     * 
-     * @param href A string, which can be a relative Path or an URI
-     *             starting with mm: or one of the other configured prefixes.
-     * @return A File
-     */
-
-    public File resolveToFile(String href) {
-        return resolveToFile(href, null);
     }
 
     /**
@@ -168,7 +178,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         Iterator i = extraDirs.iterator();            
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
-            result += File.pathSeparatorChar + entry.getDir().getAbsolutePath();
+            result += File.pathSeparatorChar + entry.getDir().toString();
         }
         return result;        
     }
@@ -179,88 +189,91 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * @return A List with prefix:path Strings.
      */
     public List getPrefixPath() {
-        Vector result = new Vector();
+        List result = new ArrayList();
         result.add(cwd.toString());
         Iterator i = extraDirs.iterator();            
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
-            result.add(entry.getPrefix() + entry.getDir().getAbsolutePath());
+            result.add(entry.getPrefix() + entry.getDir().toString());
         }
         return result;        
     }
     
-
-
     /**
-     * Resolves the string href (possible with use of base directory
-     * 'base') to a File.  If href is a relative Path (without
-     * prefix), and cannot be found in the cwd or 'base', then all
-     * 'extra' dirs are tried, until it finds a file that exists. It
-     * starts with first entry in these 'extradirs' List and ends with
-     * the MMBase configuration directory.
-     * 
-     * @param href
-     * @param base
-     * @return A File
-     * @see #resolveToFile
-     * @throws I
+     * @deprecated
      */
-    public File resolveToFile(String href, String base) {       
+    public File resolveToFile(String href) {
+        return resolveToFile(href, null);
+    }
+    /**
+     * @deprecated
+     */
+    public File resolveToFile(String href,  String base)  {
+        try {
+            return new File(resolveToURL(href, base).getFile());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public URL resolveToURL(final String href,  final String base) throws TransformerException {
         if (log.isDebugEnabled()) {
-            log.debug("Using resolver of " + cwd.toString() + " href: " + href + "   base: " + base);
-
+            log.debug("Using resolver  " + this + " to resolve href: " + href + "   base: " + base);
         }
-        File path = null;
-        if (base == null  // 'base' is often 'null', but happily, this object knows about cwd itself.
-            || base.endsWith("javax.xml.transform.stream.StreamSource"))  {
-            base = cwd.toString() + File.separator + "A_STREAM_SOURCE_NOT_A_FILE";
-        }
-
-        { // check all known prefixes
-            Iterator i = extraDirs.iterator();            
-            while (i.hasNext()) {
-                Entry entry = (Entry) i.next();
-                if (href.startsWith(entry.getPrefix())) {
-                    path = new File(entry.getDir(), href.substring(entry.getPrefixLength()));
+        try {
+            URL baseURL;
+            if (base == null  // 'base' is often 'null', but happily, this object knows about cwd itself.
+                || base.endsWith("javax.xml.transform.stream.StreamSource"))  {
+                baseURL = cwd;
+            } else {
+                baseURL = new URL(base);
+            }
+            
+            URL path = null;
+            { // check all known prefixes
+                Iterator i = extraDirs.iterator();            
+                while (i.hasNext()) {
+                    Entry entry = (Entry) i.next();
+                    if (href.startsWith(entry.getPrefix())) { //explicitely stated!
+                        path = new URL(entry.getDir(), href.substring(entry.getPrefixLength())); 
+                        break;
+                    }
+                    try {
+                        URL u = new URL(entry.getDir(), href);
+                        // getDoInput does not work for every connection.
+                        if (u.openConnection().getInputStream() != null) {                    
+                            path = u;
+                            break;
+                        }
+                    } catch (MalformedURLException mfe) {
+                        log.error(mfe);
+                    } catch (java.io.IOException io) {
+                        //log.info("" + u + " cannot be opened");
+                        // ignore, try next one.
+                    }
                 }            
             }
-        }
 
-        if (path == null) { // still not found
-            if (href.startsWith("file:")) {
-                href = href.substring(5);
-            }            
-            path = new File(href);
-            
-            if (! path.isAbsolute()) { // an opportunity to use base of cwd
-                if (base.startsWith("file:/")) {
-                    try {
-                        path = new File(new File(new URI(base).getPath()).getParent(), href); 
-                    } catch (URISyntaxException e) {
-                        throw new IllegalArgumentException("base: " + base + " is not a valid file: " + e.toString());
+            // still not found!
+            if (path == null) { 
+                path =  new URL(baseURL, href);
+                try {
+                    if (path.openConnection().getInputStream() == null) {
+                        path = null;
                     }
-                } else { // I don't know what is in base, but I do know that I don't know how to use it. Use cwd.
-                    path = new File(cwd, href); // look in cwd.
+                } catch (Exception e) {
+                    path = null;
                 }
 
-                if (! path.isFile()) { // still no file? Try searching it in all dir which are configured.
-                    if (log.isDebugEnabled()) log.debug(path.toString() + "does not exist, trying defaults");
-                    Iterator i = extraDirs.iterator();
-                    while (i.hasNext() && ! path.isFile()) {
-                        Entry entry = (Entry) i.next();
-                        path = new File(entry.getDir(), href);
-                    }
-                }
             }
+            if (log.isDebugEnabled()) {
+                log.debug("Returning " + path);
+            }
+            return path;
+            
+        } catch (Exception e) {
+            throw new TransformerException(e);
         }
-        if (log.isDebugEnabled()) log.debug("using " + path.toString());
-        if (! path.isFile()) {
-            throw new IllegalArgumentException("Could not resolve '" + href + "'\n with path " + this + " and href: '" + href + "'   base: '" + base + "'");
-        }
-        if (! path.canRead()) {
-            throw new IllegalArgumentException("Resolved to non-readable file ('" + path + "')\n with path " + this);
-        }
-        return path;
     }
 
     /**
@@ -269,8 +282,16 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * @see javax.xml.transform.URIResolver
      **/
     
-    public Source resolve(String href,  String base) throws javax.xml.transform.TransformerException {
-        return new javax.xml.transform.stream.StreamSource(resolveToFile(href, base));
+    public Source resolve(String href,  String base) throws TransformerException {
+        try {
+            URL u = resolveToURL(href, base);
+            if (u == null) return null;
+            Source source = new StreamSource(u.openStream());
+            source.setSystemId(u.toString());
+            return source;
+        } catch (Exception e) {
+            throw new TransformerException(e);
+        }
     }
 
 
@@ -306,14 +327,14 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         return sizeof.sizeof(extraDirs);
     }
     public String toString() {
-        return getPrefixPath().toString();
+        return cwd.toString() + " " + getPrefixPath().toString();
     }
 
     /**
      * This is a list of prefix/directory pairs which is used in the constructor of URIResolver.
      */
 
-    static public class EntryList extends Vector {
+    static public class EntryList extends ArrayList {
         public EntryList() {
         }
 
@@ -329,10 +350,23 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
          * Adds an prefix/dir entry to the List. 
          * @return The list again, so you can easily 'chain' a few.
          * @throws IllegalArgumentException if d is not a directory.
+         * @deprecated
          */
         public EntryList add(String p, File d) {
-            add(new Entry(p, d));
-            return this;
+            try {
+                add(new Entry(p, d.toURI().toURL()));
+                return this;
+            } catch (Exception e) {
+                return this;
+            }
+        }
+        public EntryList add(String p, URL u) {
+            try {
+                add(new Entry(p, u));
+                return this;
+            } catch (Exception e) {
+                return this;
+            }
         }
     }
 
@@ -345,22 +379,25 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
 
     static class Entry {
         private String prefix;
-        private File   dir;
+        private URL    dir;
         private int    prefixLength;
 
-        Entry(String p, File d) {
+        Entry(String p, URL u) {
             prefix = p;
-            dir    = d;
+            dir = u;
             prefixLength = prefix.length(); // avoid calculating it again.
+            
+            /*
             if (! d.isDirectory()) {
                 throw new IllegalArgumentException(d.toString() + " is not an existing directory");
             }
+            */
         }
     
         String getPrefix() {
             return prefix;
         }
-        File getDir() {
+        URL getDir() {
             return dir;
         }
         int getPrefixLength() {
@@ -382,6 +419,27 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
 
         public int hashCode() {
             return dir.hashCode();
+        }
+
+    }
+
+    /**
+     * For testing only
+     * @mmbase-1.8
+     */
+    public static void main(String argv[]) {
+        try {
+            URIResolver resolver = new URIResolver(new URL("file:///tmp/"));
+            System.out.println("Resolving with " + resolver);
+            String href, base;
+            
+            href = "xsl/list.xsl";  base = null;
+            System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
+            href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
+            System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
+
+        } catch (Throwable t) {
+            System.err.println(t.getClass().getName() + " : " + t.getMessage());
         }
 
     }
