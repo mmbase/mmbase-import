@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.8.2.1 2002-11-26 10:00:32 pierre Exp $
+  @version $Id: caches.xml,v 1.8.2.2 2003-02-26 12:53:30 vpro Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -38,6 +38,12 @@
   <cache name="AliasCache">
     <status>active</status>
     <size>128</size>
+  </cache>
+
+  <!-- Object type cache in MMObjectBuilder -->
+  <cache name="TypeCache">
+    <status>active</status>
+    <size>20000</size>
   </cache>
 
 
