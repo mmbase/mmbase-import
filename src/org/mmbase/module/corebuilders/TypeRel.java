@@ -166,4 +166,25 @@ public class TypeRel extends MMObjectBuilder {
 		return(null);
 	}
 
+    public Vector getAllowedRelationsNames(int number1,int number2) {
+        try {
+            MultiConnection con=mmb.getConnection();
+            Statement stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE (snumber="+number1+" AND dnumber="+number2+") OR (snumber="+number2+" AND dnumber="+number1+");");
+            MMObjectNode node;
+            Vector results=new Vector();
+            while(rs.next()) {
+                int rnumber=rs.getInt(6);
+                MMObjectNode snode=mmb.getRelDef().getNode(rnumber);
+                results.addElement(snode.getStringValue("sname"));
+            }
+            stmt.close();
+            con.close();
+            return(results);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return(null);
+        }
+    }
+
 }
