@@ -50,13 +50,16 @@ public class ImageTag extends FieldTag {
         /* perhaps 'getSessionName' should be added to CloudProvider
          * EXPERIMENTAL 
          */
-        String sessionName = "cloud_mmbase";
-        CloudTag ct = null;
-        ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
-        if (ct != null) {
-            sessionName = ct.getSessionName();
-        }        
+        String sessionName = "";
 
+        if(! getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) { 
+            sessionName = "cloud_mmbase";
+            CloudTag ct = null;
+            ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
+            if (ct != null) {
+                sessionName = ct.getSessionName();
+            }        
+        }
 
         String url;
         if (template == null) {
