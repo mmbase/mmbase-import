@@ -181,9 +181,11 @@ public class BasicBundle implements BundleInterface {
                 changed = false;
                 while (e.hasNext()) {
                     Object o=e.next();
+		    /*
         	    if (o instanceof HashMap) {
 	            } else {
     	            }
+		    */
                     HashMap np = (HashMap)o;
                     String tmp=(String)np.get("id");
                     pkg = PackageManager.getPackage(tmp);
@@ -200,7 +202,8 @@ public class BasicBundle implements BundleInterface {
                                 changed = true;
                             } else {
                                 if (pkg.getDependsFailed()) {
-                                    removeInstallStep(step);
+                                	step.setUserFeedBack("calling package installer "+name+"...skipped");
+                                    //removeInstallStep(step);
                                 } else {
                                     step.setUserFeedBack("calling package installer "+name+"...failed");
                                     return false;
