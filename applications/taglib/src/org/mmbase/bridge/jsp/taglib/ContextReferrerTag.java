@@ -11,15 +11,14 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.Node;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-
-
-import org.mmbase.util.ExprCalc;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -45,8 +44,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected ContextTag pageContextTag = null;
 
-    protected String     contextId = null; // context to which this tag is referring to.
-    protected String     referid = null;
+    protected Attribute  contextId = Attribute.NULL; // context to which this tag is referring to.
+    protected Attribute  referid =   Attribute.NULL;
 
     private String       thisPage = null;
 
@@ -101,11 +100,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     public void setReferid(String r) throws JspTagException {
-        referid = getAttributeValue(r);
+        referid = getAttribute(r);
     }
 
     protected String getReferid() throws JspTagException {
-        return referid;
+        return (String) referid.getValue(this);
     }
 
     /*
@@ -164,9 +163,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * 
      */
 
-    public void setContext(String c) {
-        if (log.isDebugEnabled()) log.debug("setting contextid to '" + c + "'");
-        contextId = c;
+    public void setContext(String c) throws JspTagException {
+        contextId = getAttribute(c);
     }
 
     /**
@@ -183,80 +181,20 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * even use $-vars inside ${}, you can do in this way some
      * arithmetic on variables.
      *
+     * @deprecated Call getAttribute in the set-method and 'toString(tag)' when using
+     *             it. This is better for perfomrnace and makes sure the impl. works in all servlet
+     *             containers. 
      */
 
     public String getAttributeValue(String attribute) throws JspTagException {        
         if (attribute == null) return null;
-
-        // search all occurences of $
-        int foundpos     = attribute.indexOf('$');
-        if (foundpos == -1) return attribute; // if none, return imediately.
-
-        StringBuffer result = new StringBuffer();
-        int pos          = 0;
-        while (foundpos >= 0) { // we found a variable!
-            result.append(attribute.substring(pos, foundpos)); // piece of string until now is ready.
-            foundpos ++;
-            if (foundpos >= attribute.length()) { // end of string
-                break;
-            }
-
-            if (attribute.charAt(foundpos) == '{') { // using parentheses
-                // find matching closing parenthes
-                pos = ++foundpos;
-                int opened = 1;
-                while (opened > 0) {
-                    int posclose = attribute.indexOf('}', pos); 
-                    int posopen  = attribute.indexOf('{', pos);
-                    if (posclose == -1) {
-                        throw new JspTagException("Unbalanced parentheses in '" + attribute + "'");
-                    }
-                    if (posopen > -1 && posopen < posclose) { // another one was opened!
-                        opened++;
-                        pos = posopen + 1;
-                    } else {
-                        opened--;
-                        pos = posclose + 1;
-                    }
-                }
-                String varName = getAttributeValue(attribute.substring(foundpos, pos - 1)); // even variable names can be in a variable, why not...
-                if (varName.length() < 1) throw new JspTagException("Expression too short in " + attribute);
-                if (varName.equals("_")) {
-                    result.append(findWriter().getWriterValue());
-                } else if (varName.charAt(0) == '+') { // make simple aritmetic possible
-                    ExprCalc cl = new ExprCalc(varName.substring(1));
-                    result.append(cl.getResult());
-                } else {
-                    result.append(getString(varName));
-                }
-            } else { // not using parentheses.
-                StringBuffer varName = new StringBuffer(); //
-                char c = attribute.charAt(pos = foundpos);
-                if (c == '$') { // make escaping of $ possible
-                    result.append(c);
-                    pos++; 
-                } else {        // search until non-identifier
-                    while (ContextTag.isContextIdentifierChar(c)) {
-                        varName.append(c);
-                        pos++;
-                        if (pos >= attribute.length()) break; // end of string
-                        c = attribute.charAt(pos);
-                    }
-                    // hmm a little bit of code repitition. Should think of something...
-                    if (varName.length() < 1) throw new JspTagException("Expression too short in " + attribute);
-                    if (varName.toString().equals("_")) {
-                        result.append(findWriter().getWriterValue());
-                    } else {
-                        result.append(getString(varName.toString()));
-                    }
-                }
-            }
-            // ready with this $, search next occasion;
-            foundpos = attribute.indexOf('$', pos);
-        }
-        // no more $'es, add rest of string
-        result.append(attribute.substring(pos));
-        return result.toString();
+        return (String) getAttribute(attribute).getValue(this);        
+    }
+    /**
+     * @since MMBase-1.6.1
+     */
+    public Attribute getAttribute(String attribute) throws JspTagException {
+        return Attribute.getAttribute(attribute);
     }
 
     /**
@@ -352,7 +290,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     public ContextTag getContextTag() throws JspTagException {
-        return getContextTag(contextId);
+        return getContextTag(contextId.getString(this));
     }
     /**
      * Finds a parent context tag using an id. 
@@ -388,7 +326,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      */
 
-    protected Object getObject(String key) throws JspTagException {
+    public Object getObject(String key) throws JspTagException {
         // does the key contain '.', then start searching on pageContextTag, otherwise in parent.
         if (log.isDebugEnabled()) { 
             log.debug("Getting object '" + key + "' from '" + getContextTag().getId() + "'");

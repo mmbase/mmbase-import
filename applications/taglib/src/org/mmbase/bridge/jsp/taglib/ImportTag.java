@@ -103,7 +103,7 @@ public class ImportTag extends WriteTag {
         }
 
         if (externid != null) {            
-            log.trace("Externid was given " + externid);
+            if (log.isDebugEnabled()) log.trace("Externid was given " + externid);
             if (from == ContextTag.LOCATION_NOTSET) {
                 found = (getContextTag().findAndRegister(externid, useId) != null);
             } else {
