@@ -8,24 +8,17 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.util.Queries;
-
 import org.mmbase.bridge.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.logging.*;
 
 /**
  * Like listnodes tag, but is is also a node-referrer, and substracts the related nodes of the referred node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnRelatedNodesTag.java,v 1.6 2003-11-07 10:40:31 michiel Exp $
+ * @version $Id: UnRelatedNodesTag.java,v 1.7 2003-12-03 06:57:39 keesj Exp $
  * @since MMBase-1.7
  */
 

@@ -8,17 +8,14 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import java.util.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  * RelatedNodesTag, provides functionality for listing single related nodes in MMBase
@@ -27,18 +24,17 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.29 2003-11-07 10:40:31 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.30 2003-12-03 06:57:39 keesj Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static final Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
-    protected Attribute type      = Attribute.NULL;
-    protected Attribute path      = Attribute.NULL;
-    protected Attribute role      = Attribute.NULL;
+    protected Attribute type = Attribute.NULL;
+    protected Attribute path = Attribute.NULL;
+    protected Attribute role = Attribute.NULL;
     protected Attribute searchDir = Attribute.NULL;
 
     protected Attribute container = Attribute.NULL;
-
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -67,12 +63,11 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         searchDir = getAttribute(search);
     }
 
-
     /**
      * Performs the search
      */
     public int doStartTag() throws JspTagException {
-        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
+        int superresult = doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
@@ -102,7 +97,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), (String) searchDir.getValue(this));
             Step step3 = step2.getNext();
 
-            query.setNodeStep(step3);  // makes it ready for use as NodeQuery
+            query.setNodeStep(step3); // makes it ready for use as NodeQuery
 
             if (constraints != Attribute.NULL) {
                 Queries.addConstraints(query, (String) constraints.getValue(this));
@@ -124,4 +119,3 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         return setReturnValues(nodes, true);
     }
 }
-
