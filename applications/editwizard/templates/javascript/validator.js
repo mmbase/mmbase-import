@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.23 2003-11-12 14:15:22 michiel Exp $
+ * @version  $Id: validator.js,v 1.24 2003-12-19 09:39:05 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -15,7 +15,7 @@ var formValid = null;
 
 //constructor
 function Validator() {
-    //properties     
+    //properties
     //methods
 
 }
@@ -44,17 +44,16 @@ function validate_validator(event, el) {
     // called from html: when user pressed a key or leaves a field.
 
     if (!el) var el = event.srcElement || event.target;
- 
 
     if (event.type == "blur" || event.type == "change") {
-       formValid = null;
-	   doValidateAndUpdateButtons();
+       formValid = validateElement_validator(el) && doValidateForm(el);
+       doValidateAndUpdateButtons(formValid);
     } else if (event.type == "keyup")  {
        if (formValid == null) {
           formValid = doValidateForm(el);
        }
-       var valid = validateElement_validator(el) && formValid; 
-	   doValidateAndUpdateButtons(valid);
+       var valid = validateElement_validator(el) && formValid;
+       doValidateAndUpdateButtons(valid);
     }
 
 }
@@ -100,6 +99,7 @@ function DayOfWeek(day,month,year) {
 }
 
 function validateElement_validator(el, silent) {
+
     var form = document.forms[0];
     var superId = el.getAttribute("super");
     if (superId != null) {
@@ -109,7 +109,6 @@ function validateElement_validator(el, silent) {
     var v = getValue_validator(el);
     var err = "";
 
-	
     if (el.dtpattern) {
         var re = new RegExp(el.dtpattern);
         if (!v.match(re)) err += getToolTipValue(form,'message_pattern', "the value {0} does not match the required pattern", v);
@@ -124,8 +123,8 @@ function validateElement_validator(el, silent) {
             minlength = el.getAttribute("dtminlength");
             if ((minlength != null) && (minlength!="") && (v.length < minlength)) {
                 err += getToolTipValue(form,'message_minlength', "value must be at least {0} characters", minlength);
-				break;
-            }				
+                                break;
+            }
             maxlength = el.getAttribute("dtmaxlength");
             if ((maxlength != null) && (maxlength!="") && (v.length > maxlength)) {
                 err += getToolTipValue(form,'message_maxlength', "value must be at most {0} characters", maxlength);
@@ -150,7 +149,9 @@ function validateElement_validator(el, silent) {
                            "value is required; please select a value");
             }
             break;
+
         case "datetime":
+
             if ((el.getAttribute("ftype") == "datetime") || (el.getAttribute("ftype") == "date")) {
                 var month =form.elements["internal_" + id + "_month"].selectedIndex;
                 var day = form.elements["internal_" + id + "_day"].selectedIndex+1;
@@ -181,7 +182,7 @@ function validateElement_validator(el, silent) {
                 leap = 1;
             } else {
                 leap = 0;
-            }		  
+            }
 
             if ((month < 0) || (month > 11)) {
                 err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (wrong month)");
@@ -208,7 +209,7 @@ function validateElement_validator(el, silent) {
             date.setFullYear(year);
             date.setMonth(month, day);
             date.setHours(hours, minutes);
-			
+
             var ms = date.getTime();
 
             {
@@ -238,8 +239,8 @@ function validateElement_validator(el, silent) {
             var DSTstartMS = Date.parse(DSTstart);
             var DSTendMS = Date.parse(DSTend);
 
-            // If Daylight Saving Time is active and clientNavigator=MSIE/Mac, add 60 minutes 
-            // 
+            // If Daylight Saving Time is active and clientNavigator=MSIE/Mac, add 60 minutes
+            //
             if ((navigator.appVersion.indexOf('MSIE')!=-1) && (navigator.appVersion.indexOf('Mac')!=-1) && (ms>DSTstartMS) && (ms<DSTendMS)) {
                 if (err.length == 0) {
                     form.elements[id].value = Math.round(ms/1000-(60*60));
@@ -275,14 +276,14 @@ function validateElement_validator(el, silent) {
             } catch(e) {}
         }
     }
-	
+
     return err.length == 0; // true == valid, false == invalid
 }
 
 
 function doValidateForm(el) {
     // checks if the other elements of this form are valid
-    
+
     //    alert("validating form " + el);
     var invalid = false;
     form = document.forms[0];
@@ -304,7 +305,7 @@ function doValidateForm(el) {
 
 function doValidateAndUpdateButtons(valid) {
     // marks current form valid or not
-	//
+        //
 
     if (valid == null) {
         valid = doValidateForm(null);
@@ -337,7 +338,7 @@ function doValidateAndUpdateButtons(valid) {
         savebut.className = "bottombutton";
         var usetext = getToolTipValue(savebut, "titlesave", "Stores all changes.");
         savebut.title = usetext;
-		if (saveonlybut != null) {
+                if (saveonlybut != null) {
           saveonlybut.className = "bottombutton";
           var usetext = getToolTipValue(saveonlybut, "titlesave", "Stores all changes.");
           saveonlybut.title = usetext;
@@ -346,7 +347,7 @@ function doValidateAndUpdateButtons(valid) {
         savebut.className = "bottombutton-disabled";
         var usetext = getToolTipValue(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
         savebut.title = usetext;
-		if (saveonlybut != null) {
+                if (saveonlybut != null) {
            saveonlybut.className = "bottombutton-disabled";
            var usetext = getToolTipValue(saveonlybut,"titlenosave", "You cannot save because one or more forms are invalid.");
            saveonlybut.title = usetext;
