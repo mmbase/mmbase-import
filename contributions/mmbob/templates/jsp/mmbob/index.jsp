@@ -54,7 +54,19 @@
           <mm:present referid="loginfailed">
             <br />
             <center>
-              <h4><mm:write referid="mlg_login_failed" /></h4>
+              <h4>
+               <mm:write referid="loginfailedreason">
+                 <mm:compare value="account blocked">
+                   ** <mm:write referid="mlg_Account_disabled"/> **
+                 </mm:compare>
+                 <mm:compare value="account not valid">
+                   ** <mm:write referid="mlg_Account_not_found" /> **
+                 </mm:compare>
+                 <mm:compare value="password not valid">
+                   ** <mm:write referid="mlg_Wrong_password" /> **
+                 </mm:compare>
+               </mm:write>
+              </h4>
             </center>
             <center>
               <a href="<mm:url page="remail.jsp" referids="forumid" />"><mm:write referid="mlg_forgot_your_password" /></a>
