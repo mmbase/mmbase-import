@@ -13,13 +13,13 @@ body.basic table, body.basic p {
 
 /* submit buttons */
 .buttons {
-    text-align: right
+  text-align: right
 }
 
 
 /* input boxes */
 .small {
-    width: 100%;
+  width: 100%;
 }
 
 textarea {
@@ -27,10 +27,10 @@ textarea {
 }
 
 textarea.small {
-    height: 6em;
+  height: 6em;
 }
 textarea.big {
-    height: 15em;
+  height: 15em;
 }
 
 input {
@@ -39,11 +39,12 @@ input {
 /* footers */
 
 p.foot {
-	margin-bottom: 0px;
-	margin-top: 0px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 p.foot2 {
-    margin-bottom: 0px;
-   margin-top: 0px;
-    float: right;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  float: right;
 }
+
