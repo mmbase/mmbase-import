@@ -9,20 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import java.util.*;
-import org.mmbase.util.*;
+import org.mmbase.util.Mail;
+import java.util.Map;
+import javax.mail.internet.MimeMultipart;
 
 /**
- * @javadoc
+ * This extension of SendMailInterface also support multipart-mails.
  */
 
-public interface SendMailInterface {
-    public boolean sendMail(String from, String to, String data);
-    public boolean sendMail(String from, String to, String data, Map headers);
-    public boolean sendMail(Mail mail);
+public interface SendMailInterface extends org.mmbase.module.SendMailInterface {
+
     /**
-     * checks the e-mail address
+     * Sends a 'multipart' mail.
      */
-    public String verify(String name);
-    public List   expand(String name);
+    public boolean sendMultiPartMail(String from, String to, Map headers, MimeMultipart mmpart);
+
+
 }
