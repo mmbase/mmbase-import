@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -16,6 +16,9 @@ import java.io.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * admin module, keeps track of all the worker pools
  * and adds/kills workers if needed (depending on
@@ -25,6 +28,8 @@ import org.mmbase.util.*;
  * @author Daniel Ockeloen
  */
 public class ModuleProbe implements Runnable {
+
+    private static Logger log = Logging.getLoggerInstance(ModuleProbe.class.getName()); 
 
 	Thread kicker = null;
 	String name;
@@ -80,7 +85,7 @@ public class ModuleProbe implements Runnable {
 						Module mod=(Module)mods.get(key);
 						mod.maintainance();
 					} catch(Exception er) {
-						System.out.println("Module -> error on maintainance call : "+key);
+						log.error("error on maintainance call : " + key);
 					}		
 				}
 			}

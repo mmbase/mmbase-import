@@ -16,6 +16,9 @@ import java.io.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Case Roole, cjr@dds.nl
  *
@@ -26,9 +29,12 @@ import org.mmbase.util.*;
  * where xmlPath is the path relative to mmbase.config and xslFile is
  * and xsl file located in the subdirectory xslt of mmbase.config.
  * 
- * $Id: XSLConvert.java,v 1.3 2000-08-22 09:34:30 daniel Exp $
+ * $Id: XSLConvert.java,v 1.4 2001-04-11 10:06:55 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/08/22 09:34:30  daniel
+ * small fix for mmdemo
+ *
  * Revision 1.2  2000/08/10 20:06:04  case
  * cjr: removed some debug and added description of module
  *
@@ -38,21 +44,21 @@ import org.mmbase.util.*;
  */
 public class XSLConvert extends ProcessorModule {
 
-    private String classname = getClass().getName();
+    private static Logger log = Logging.getLoggerInstance(XSLConvert.class.getName()); 
+
     private String configpath;
-    private static boolean debug = false;
 
     public void init() {
-                String dtmp=System.getProperty("mmbase.mode");
-                if (dtmp!=null && dtmp.equals("demo")) {
-                        String curdir=System.getProperty("user.dir");
-                        if (curdir.endsWith("orion")) {
-                                curdir=curdir.substring(0,curdir.length()-6);
-                        }
-                        configpath=curdir+"/config";
-                } else {
-                        configpath=System.getProperty("mmbase.config");
-                }
+        String dtmp=System.getProperty("mmbase.mode");
+        if (dtmp!=null && dtmp.equals("demo")) {
+            String curdir=System.getProperty("user.dir");
+            if (curdir.endsWith("orion")) {
+                curdir=curdir.substring(0,curdir.length()-6);
+            }
+            configpath=curdir+"/config";
+        } else {
+            configpath=System.getProperty("mmbase.config");
+        }
         //configpath = System.getProperty("mmbase.config");
         if (configpath.endsWith(File.separator)) {
             configpath = configpath.substring(0,configpath.length()-1);
@@ -144,9 +150,9 @@ public class XSLConvert extends ProcessorModule {
      */
     public String transform(String xmlPath, String xslPath) {
         // Do nothing for the time being
-        if (debug) {
-            debug("XML file = "+xmlPath);
-            debug("XSL file = "+xslPath);
+        if (log.isDebugEnabled()) {
+            log.debug("XML file = "+xmlPath);
+            log.debug("XSL file = "+xslPath);
         }
         XSLTransformer T = new XSLTransformer();
         return T.transform(xmlPath,xslPath);
@@ -156,7 +162,4 @@ public class XSLConvert extends ProcessorModule {
         return("Support XSL transformations of XML files, cjr@dds.nl");
     }
 
-    private void debug( String msg ) {
-        System.out.println( classname +":"+msg );
-    }
 }
