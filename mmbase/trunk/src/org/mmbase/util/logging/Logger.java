@@ -135,5 +135,6 @@ public interface Logger {
      */
 
     public void setPriority(Level p);
+  
 		
 }

@@ -123,7 +123,7 @@ public class Logging {
             Method getDocument = domParserClass.getMethod("getDocument", new Class [] {});
             
             setFeature.invoke(parser, new Object[] { "http://apache.org/xml/features/dom/defer-node-expansion",        new Boolean(true)});
-            setFeature.invoke(parser, new Object[] { "http://apache.org/xml/features/continue-after-fatal-error",  new Boolean(true)});
+            // setFeature.invoke(parser, new Object[] { "http://apache.org/xml/features/continue-after-fatal-error",  new Boolean(true)});
             
             configfile="file://" + configfile;
             
@@ -257,6 +257,8 @@ public class Logging {
      * the stack trace to standard error, which with the log4j
      * implementation will appear in the log file too, but this is a
      * little nicer. 
+     * 
+     * It is also possible to call 'error' or 'fatal' with an extra argument. 
      *
      * @param e the Throwable from which the stack trace must be stringified.
      *
