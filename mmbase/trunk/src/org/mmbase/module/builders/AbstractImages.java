@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.9 2002-06-28 20:50:05 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.10 2002-06-28 22:36:11 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -33,7 +33,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         return "images";
     }
     protected String getDefaultPath() {
-        return "img.db";
+        return "/img.db";
     }
 
     /**
