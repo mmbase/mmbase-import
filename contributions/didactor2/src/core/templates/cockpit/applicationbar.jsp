@@ -7,9 +7,9 @@
 			<a title="<fmt:message key="HOME" />" href="<mm:url page="/index.jsp" />" class="menubar"><fmt:message key="HOME" /></a>
     	</div>
     	
+<mm:isgreaterthan referid="user" value="0">
 		<div class="menuSeperatorApplicationMenubar"></div>
 
-<mm:isgreaterthan referid="user" value="0">
         <div class="menuItemApplicationMenubar">
         <mm:node number="$user">
             <a title="<fmt:message key="LOGOUT" />" href="<mm:url page="/logout.jsp" />" class="menubar"><fmt:message key="LOGOUT" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
@@ -17,7 +17,6 @@
     </div>
    	
 		<div class="menuSeperatorApplicationMenubar"></div>
-</mm:isgreaterthan>
 
                 
 		<div class="menuItemApplicationMenubar">
@@ -35,6 +34,7 @@
                 <a title="<fmt:message key="PRINT" />" href="javascript:printThis();"  class="menubar"><fmt:message key="PRINT"/></a>
                 </div>
                 
+</mm:isgreaterthan>
 	</div>
 
 <script language="JavaScript">
