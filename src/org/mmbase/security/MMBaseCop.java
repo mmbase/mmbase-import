@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.20 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: MMBaseCop.java,v 1.21 2005-03-01 13:59:54 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
@@ -38,6 +38,7 @@ public class MMBaseCop extends SecurityManager  {
     public MMBaseCop() throws java.io.IOException, NoSuchMethodException, SecurityException {
         super();
         config = new MMBaseCopConfig(this);
+        config.load();
         log.service("Done loading security configuration");
     }
 
@@ -59,9 +60,8 @@ public class MMBaseCop extends SecurityManager  {
     }
 
     private final MMBaseCopConfig getConfig() {
-        synchronized(this) {
-            return config;
-        }
+        if (config == null) throw new RuntimeException("No MMBaseCopConfig in MMBaseCop!!");
+        return config;
     }
 
     /**
