@@ -30,7 +30,7 @@
 	-->
 	<properties>
 		<property name="JumperCacheSize">1000</property>
-		<property name="JumperNotFoundURL">/index.html</property>
+		<!-- property name="JumperNotFoundURL">/index.html</property-->
 	</properties>
 
 	<fieldlist>
