@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>5 december 2002</date>
-		<edition>$Id: builders.xml,v 1.5 2003-05-22 08:33:48 michiel Exp $</edition>
+		<edition>$Id: builders.xml,v 1.6 2003-05-22 08:42:17 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -33,7 +33,7 @@
 		</para>
 		<programlisting format="linespecific"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="..." maintainer="..." version="..." extends="...">
 	<status>...</status>
 	<classfile>...</classfile>
