@@ -52,7 +52,12 @@ public class sessionInfo {
 	}
 
 	public String setValue(String key,String value) {
-		return((String)values.put(key,value));
+		if (isSecure(value)) {
+			return((String)values.put(key,value));
+		} else {
+			System.out.println("ERROR: Illegal input, action blocked");
+			return("illegal input,see error log");
+		}
 	}
 
 	/**
@@ -66,8 +71,12 @@ public class sessionInfo {
 		if (v==null) {
 			// not found so create it
 			v=new Vector();
-			v.addElement(value);
-			setvalues.put(key,v);
+			if (isSecure(value)) {
+				v.addElement(value);
+				setvalues.put(key,v);
+			} else {
+				System.out.println("ERROR: Illegal input, action blocked");
+			}
 			if( debug ) debug("sessionset="+v.toString());	
 		} else {
 			if (!v.contains(value)) {
@@ -90,11 +99,19 @@ public class sessionInfo {
 		if (v==null) {
 			// not found so create it
 			v=new Vector();
-			v.addElement(value);
-			setvalues.put(key,v);
+			if (isSecure(value)) {
+				v.addElement(value);
+				setvalues.put(key,v);
+			} else {
+				System.out.println("ERROR: Illegal input, action blocked");
+			}
 			if( debug ) debug("sessionset="+v.toString());	
 		} else {
-			v.addElement(value);
+			if (isSecure(value)) {
+				v.addElement(value);
+			} else {
+				System.out.println("ERROR: Illegal input, action blocked");
+			}
 			if( debug ) debug("sessionset="+v.toString());	
 		}
 	}
@@ -231,6 +248,23 @@ public class sessionInfo {
 
 	public String toString() {
 		return("sessionInfo="+values.toString());
+	}
+
+
+	private boolean isSecure(String value) {
+		Vector words=new Vector();
+		words.addElement("<transaction");
+		words.addElement("<create");
+		words.addElement("<delete");
+		words.addElement("<mark");
+		words.addElement("<setField");
+		words.addElement("<DO");
+		Enumeration e = words.elements();
+		while (e.hasMoreElements()) {
+			String check=(String)e.nextElement();
+			if (value.indexOf(check)!=-1) return(false);
+		}
+		return(true);
 	}
 }
 
