@@ -39,7 +39,7 @@ public class ListTag extends AbstractNodeListTag {
      * instead).
      * @param nodes a node or a comma separated list of nodes.
      */
-    public void setNodes(String nodes) throws JspTagException {
+    public void setStartnodes(String nodes) throws JspTagException {
         // parse/map the nodes they can be params, sessions or aliases
         // instead of just numbers
         nodesString=parseNodes(nodes);
@@ -71,7 +71,7 @@ public class ListTag extends AbstractNodeListTag {
      * <code>source</code>, and <code>all</code>
      * @param search the swerach value
      */
-    public void setSearch(String search) throws JspTagException {
+    public void setSearchdir(String search) throws JspTagException {
         searchString = getAttributeValue(search).toUpperCase().trim();
         if (searchString.length()==0) {
             searchString="BOTH";
@@ -96,7 +96,10 @@ public class ListTag extends AbstractNodeListTag {
      */
     public int doStartTag() throws JspTagException{
         String searchNodes= (nodesString == null)? "-1" : nodesString;
-        boolean searchDistinct= (distinctString != null);
+        boolean searchDistinct = false;
+        if ("true".equals(distinctString) || "yes".equals(distinctString)) {
+            searchDistinct = true;
+        }
         NodeList nodes = getCloudProviderVar().getList(searchNodes,
                                               pathString,
                                               fields,

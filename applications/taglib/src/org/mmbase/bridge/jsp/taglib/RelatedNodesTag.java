@@ -25,20 +25,15 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
+ * @author Jaco de Groot
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class.getName());
+    private String nodeString;
+    protected String typeString;
 
-    protected String typeString=null;
-
-    private String parentNodeId = null;
-
-    /**
-     * Node makes it possible to refer to another node than the direct
-     * ancestor.
-     */
-    public void setNode(String node){
-        parentNodeId = node;
+    public void setNode(String node) throws JspTagException {
+        nodeString = node;
     }
 
     /**
@@ -51,12 +46,19 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     /**
      * Performs the search
      */
-    public int doStartTag() throws JspTagException{
-        NodeProvider nodeProvider =
-          (NodeProvider)findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
-        Node node=nodeProvider.getNodeVar();
+    public int doStartTag() throws JspTagException {
+        Node node;
+        if (nodeString != null && !nodeString.equals("")) {
+            node = getCloudProviderVar().getNode(nodeString);
+        } else {
+            NodeProvider nodeProvider;
+            String classname = "org.mmbase.bridge.jsp.taglib.NodeProvider";
+            nodeProvider = (NodeProvider)findParentTag(classname, null);
+            node = nodeProvider.getNodeVar();
+        }
         NodeList nodes;
-        if ((whereString!=null)|| (sortedString!=null)) {
+        if ((whereString != null && !whereString.equals(""))
+                || (sortedString != null && !sortedString.equals(""))) {
             NodeManager manager=getCloudProviderVar().getNodeManager(typeString);
             NodeList initialnodes = node.getRelatedNodes(typeString);
             String where=null;

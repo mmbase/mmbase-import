@@ -40,33 +40,61 @@ one or more examplevalue tags is you want to give some example values.
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
-  <info>Tag library for MMBase based on MMCI(MMBase Cloud Interface).</info>
+  <info>
+    Tag library for MMBase. MMBase consists of a cloud of nodes (objects) wich
+    can be related to each other. Relations can be seen as nodes with two arms
+    wich they use to connect two other nodes. Nodes of a specific type (like a
+    person node who holds a person's data) have their own nodemanager. A node
+    manager can have functions wich are specific for the type of nodes it is
+    managing. Just like a cloud can contain different type of nodes it can
+    contain different type of relations. And just like specific type of nodes
+    have their own nodemanager, relations of a specific type have their own
+    relation manager.
+  </info>
   <tag>
     <name>list</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      Returns a list of nodes. Starting at one or more specified nodes
-      traversals are made according to a specified path. One traversal makes up
+      Returns a list of nodes. Starting at one or more nodes
+      traversals are made according to a specified path of nodemanagers. One
+      traversal makes up
       one record returned by the list. All possible traversals that can be made
       starting at one or more nodes of the same type and following a specified
-      path are returned. Because the returned records can contain more than one
+      path are returned. Additional attributes can be used to exclude records
+      from the returned list or to influence the order of the returned list.
+      Because the returned records can contain more than one
       node you will have to prefix the field name with the nodemanager name and
-      a dot if you want to refer to them.
+      a dot if you want to refer to them. When using a jsp variable a underscore
+      has to be used to separate a nodemanager name from a field name.
     </info>
     <attribute>
-      <name>nodes</name>
+      <name>startnodes</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>Comma-separated list of nodes, this attribute defines the starting point of the list. The parameter is equivalent to node.</info>
+      <info>
+        Comma-separated list of nodes that should be used as start nodes.
+        The start nodes don't have to be a member of the first nodemanager in
+        the path. For example, if the start nodes belong to the second
+        nodemanager in
+        a path with a length of three nodemanagers, traversals will go into two
+        directions at the same time. All traversals that make up a complete path
+        are returned. If a node belongs to the last nodemanager in a path
+        traversals will go from right to left starting at the last nodemanager.
+        All start nodes specified in this attribute have to belong to the same
+        nodemanager. Nodes that belong to a different nodemanager than the first
+        node are ignored
+        In case this attribute is not specified all nodes from the first
+        nodemanager in the path are used as start nodes.
+      </info>
     </attribute>
     <attribute>
       <name>path</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A comma seperated list of nodemanagers which specifies the path
+        A comma-seperated list of nodemanagers which specifies the path
         that should be followed. It is possible to explicitly specify a
         relationmanager that should be used to go from one node to an other. If
         no relationmanager is specified between two nodemanagers, all possible
@@ -104,25 +132,91 @@ one or more examplevalue tags is you want to give some example values.
       </info>
     </attribute>
     <attribute>
-      <name>where</name>
+      <name>constraints</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+    <info>
+      Contraints to prevent records from being included in the returned list.
+      These constraints follow the syntax of the SQL where clause. It's a good
+      practice to use uppercase letters for the operators and lowercase letters
+      for the fieldnames.
+    </info>
+    <examplevalue>
+      <value>url.number = 100</value>
+      <info>!=, &lt;, &gt;, &lt;= and &gt;= can also be used</info>
+    </examplevalue>
+    <examplevalue>
+      <value>person.name = 'admin'</value>
+    </examplevalue>
+    <examplevalue>
+      <value>person.email IS NULL"</value>
+      <info>indicating the email field should be empty</info>
+    </examplevalue>
+    <examplevalue>
+      <value>person.email LIKE '%.org'</value>
+      <info>indication the email should end with .org</info>
+    </examplevalue>
+    <examplevalue>
+      <value>url.number BETWEEN 30 AND 50</value>
+    </examplevalue>
+    <examplevalue>
+      <value>person.name IN ('admin', 'anonymous')</value>
+    </examplevalue>
+    <examplevalue>
+      <value>NOT (url.number = 100)</value>
+    </examplevalue>
+    <examplevalue>
+      <value>person.email IS NOT NULL"</value>
+      <info>indicating the email field should not be empty</info>
+    </examplevalue>
+    <examplevalue>
+      <value>person.email NOT LIKE '%.org'</value>
+      <info>indication the email should not end with .org</info>
+    </examplevalue>
+    <examplevalue>
+      <value>url.number NOT BETWEEN 30 AND 50</value>
+    </examplevalue>
+    <examplevalue>
+      <value>person.name NOT IN ('admin', 'anonymous')</value>
+    </examplevalue>
+    <examplevalue>
+      <value>LOWER(user.name) = 'admin'</value>
+      <info>this will also allow 'Admin' to be returned</info>
+    </examplevalue>
+    <examplevalue>
+      <value>LENGTH(user.name) > 5</value>
+      <info>
+        this will only allow name with a length greater than 5 to be
+        returned
+      </info>
+    </examplevalue>
+    <examplevalue>
+      <value>((number=100) OR (name='admin') AND email LIKE '%.org')</value>
+      <info>Linking constraints together using AND and OR</info>
+    </examplevalue>
+    <examplevalue>
+      <value>name='aaa''bbb'</value>
+      <info>
+        To only retrieve the string aaa'bbb. A single quote can be escaped using
+        it twice for every single occurence.
+      </info>
+    </examplevalue>
     </attribute>
     <attribute>
-      <name>sorted</name>
+      <name>orderby</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A comma separated list of field names on which the returned list should
+        A comma-separated list of field names on which the returned list should
         be sorted.
       </info>
     </attribute>
     <attribute>
-      <name>direction</name>
+      <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A comma separated list of values indicating wether to sort up
+        A comma-separated list of values indicating wether to sort up
         (ascending) or down (descending) on the corresponding field in the
         orderby  parameter or null if sorting on all fields should be up. The
         value DOWN (case insensitive) indicates that sorting on the
@@ -147,24 +241,38 @@ one or more examplevalue tags is you want to give some example values.
       <name>distinct</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        If set to 'true' or 'yes' all records who have exactly the same values
+        will not be added a second time to the returned list.
+      </info>
     </attribute>
     <attribute>
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The maximum number of results.</info>
+      <info>The maximum number of records to return.</info>
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The start index.</info>
+      <info>The first number of records to skip.</info>
     </attribute>
     <attribute>
-      <name>search</name>
+      <name>searchdir</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info></info>
+      <info>
+        Determines how directionality affects the search. If set to
+        &quot;destination&quot; relations in a path will only be followed
+        if valid relation exist from source to destination. If set to
+        &quot;source&quot; relations in a path will only be followed if
+        valid relations exist from destination to source. To follow all
+        relations ignoring their directionality set this attribute to
+        &quot;all&quot;. Any other value for this attribute will follow
+        relations the way they are defined (either source to destination,
+        destination to source or both).
+      </info>
     </attribute>
     <attribute>
       <name>id</name>
@@ -183,12 +291,12 @@ one or more examplevalue tags is you want to give some example values.
       </info>
     </attribute>
 
-<example>&lt;mm:list nodes="123" path="mags,news" fields="mags.title,news.number"&gt;
+<example>&lt;mm:list startnodes="123" path="mags,news" fields="mags.title,news.number"&gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
   &lt;%= mags_title %&gt;
 &lt;/mm:list&gt;</example>
 
-<example>&lt;mm:list nodes="123" path="mags,posrel,news" sorted="posrel.pos" fields="news.title"&gt;
+<example>&lt;mm:list startnodes="123" path="mags,posrel,news" sorted="posrel.pos" fields="news.title"&gt;
   &lt;mm:head&gt;news in this magazine, ordered&lt;/mm:head&gt;
   &lt;%= news_title %&gt;
 &lt;/mm:list&gt;</example>
@@ -200,22 +308,29 @@ one or more examplevalue tags is you want to give some example values.
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      The related tag is the same as the list tag except that is doesn't
-      provide a node attribute. Instead it will take the surrounding node tag
-      as his startnode.
-      Path should not contain the parent node's nodemanager. 
-      This is automatically added by the tag.
+      The related tag is the same as the list tag except that it always needs
+      one or more start nodes from wich the nodemanager will be taken
+      and prefixed to the path specified bij the path attribute.
     </info>
     <attribute>
-      <name>node</name>
+      <name>startnodes</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>Referer to the parent node.</info>
+      <info>
+        If no startnodes attribute is given the related tag will look for a
+        surrounding node provider tag and use the node provided by that tag as
+        his start node.
+      </info>
     </attribute>
-    <attribute>  
+    <attribute>
       <name>path</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        This attribute is the same as the path attribute of the list tag except
+        that the first nodemanager should be left behind. The first nodemanager
+        is taken from the start nodes.
+      </info>
     </attribute>
     <attribute>
       <name>fields</name>
@@ -223,17 +338,17 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>where</name>
+      <name>constraints</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>sorted</name>
+      <name>orderby</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>direction</name>
+      <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -253,7 +368,7 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>search</name>
+      <name>searchdir</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -279,84 +394,65 @@ one or more examplevalue tags is you want to give some example values.
     <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
-    <info>The list tag provides a syntax to list objects of a single type managed by MMBase.</info>
+    <info>
+      The listnodes tag can be used to retrieve nodes managed by a certain
+      nodemanager. The syntax of the attributes are the same as the syntax of
+      the attributes of the list tag except that it is not needed to prefix
+      the fieldnames with nodemanager names.
+    </info>
     <attribute>
       <name>type</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>A NodeManagers. This determines the type of object to return</info>
-      <examplevalue>
-        <value>mags</value>
-      </examplevalue>
+      <info>
+        The name of the nodemanager managing the type of nodes that should be
+        listed.
+      </info>
     </attribute>
     <attribute>
       <name>fields</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>
-        Comma-separated list of fields that should be made available in the
-        page. In the jsp page the values are available in form of Strings
-        e.g. title is available can be accessed using &lt;%= title %&gt;.
-      </info>
     </attribute>
     <attribute>
-      <name>where</name>
+      <name>constraints</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>sorted</name>
+      <name>orderby</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>
-        The fields on which the result set must be sorted.
-      </info>
     </attribute>
     <attribute>
-      <name>direction</name>
+      <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>
-        The direction of sorting.
-      </info>
-      <possiblevalue>
-        <value>UP</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>DOWN</value>
-      </possiblevalue>
     </attribute>
     <attribute>
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>The maximum number of results.</info>
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>The start index.</info>
     </attribute>
     <attribute>
       <name>id</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>
-        See the 'id' attribute of the Node tag.
-      </info>
     </attribute>
     <attribute>
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>
-        See the 'jspvar' attribute of the Node tag.
-      </info>
     </attribute>
+
 <example>&lt;mm:listnodes type="mags" fields="title" &gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
   &lt;%= title %&gt;
@@ -369,11 +465,24 @@ one or more examplevalue tags is you want to give some example values.
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-        The relatednodes tag provides a syntax to list related objects managed by MMBase
+      The relatednodes tag can be used to retrieve nodes of a certain type
+      related to a node of another type. The syntax of the attributes are the
+      same as the syntax of the attributes of the list tag except that it is
+      not needed to prefix the fieldnames with a nodemanager name.
     </info>
     <attribute>
-      <name>type</name>
+      <name>node</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The node from wich the related nodes should be returned. If this
+        attribute is not set the relatednodes tag will look for a surrounding
+        node provider tag and use the node provided by that tag.
+      </info>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>true</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
@@ -382,17 +491,17 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>where</name>
+      <name>constraints</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>sorted</name>
+      <name>orderby</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>direction</name>
+      <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -1490,6 +1599,15 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
 	<refercontext>true</refercontext>
 	<info>	
 	Specify which parameters, otherwise all parameters.
+	</info>
+    </attribute>
+    <attribute>
+        <name>extraparameters</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>	
+	You can also add some new parameters like this. A list of
+        key=value.
 	</info>
     </attribute>
     <attribute>
