@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.48 2004-03-23 22:50:54 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.48.2.1 2004-06-15 17:35:16 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -223,7 +223,7 @@ public class IncludeTag extends UrlTag {
      */
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
-            if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
+            if (log.isDebugEnabled()) log.trace("Citing " + relativeUrl);
             if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
                 throw new JspTagException("Not allowed to cite " + relativeUrl);
             }
@@ -251,14 +251,32 @@ public class IncludeTag extends UrlTag {
 
 
             if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
-            FileReader reader = new FileReader(file);
-            StringWriter string = new StringWriter();
-            int c = reader.read();
+            FileInputStream inputStream = new FileInputStream(file);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            int c = inputStream.read();
             while (c != -1) {
-                string.write(c);
-                c = reader.read();
+                bytes.write(c);
+                c = inputStream.read();
             }
-            helper.setValue(debugStart(urlFile) + string.toString() + debugEnd(urlFile));
+            byte[] allBytes = bytes.toByteArray();
+            String encoding = GenericResponseWrapper.getXMLEncoding(allBytes);
+
+            String fileContents;
+            if (encoding == null) {
+                log.debug("Could not find XML encoding in file");
+                if (file.getName().endsWith(".xml")) {
+                    log.debug("Supposing UTF-8");
+                    fileContents = new String(allBytes, "UTF-8");
+                } else {
+                    log.debug("NOT XML");
+                    // use default encoding for other files               
+                    fileContents = new String(allBytes, System.getProperty("file.encoding"));
+                }
+            } else {
+                log.debug("Found " + encoding);
+                fileContents = new String(allBytes, encoding);
+            }
+            helper.setValue(debugStart(urlFile) + fileContents + debugEnd(urlFile));
         } catch (IOException e) {
             throw new TaglibException (e);
         }
@@ -376,8 +394,8 @@ public class IncludeTag extends UrlTag {
                 }
                 // Reset include level and URI to previous state
                 includeLevel--;
-                request.setAttribute("includeTagLevel",new Integer(includeLevel));
-                request.setAttribute("includeTagURI",previncludeURI);
+                request.setAttribute("includeTagLevel", new Integer(includeLevel));
+                request.setAttribute("includeTagURI", previncludeURI);
             } else { // really absolute
                 if (getCite()) {
                     cite(bodyContent, gotUrl, request);
