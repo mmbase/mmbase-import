@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A helper class to implement referids attribute.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Referids.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
+ * @version $Id: Referids.java,v 1.3 2004-05-07 13:42:22 pierre Exp $
  * @since MMBase-1.7
  */
 public class  Referids  {
@@ -33,6 +33,7 @@ public class  Referids  {
         Iterator i = referids.getList(tag).iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
+            if (key.equals("")) continue;
             int at = key.indexOf('@');
             String urlKey;
             if (at > -1) {
@@ -57,7 +58,7 @@ public class  Referids  {
                 result.put(urlKey, value);
             } else if ((! mayBeMissing) || tag.getContextProvider().getContextContainer().isPresent(key)) {
                 Object value = tag.getObject(key);
-                if (value != null) {                       
+                if (value != null) {
                     if (log.isDebugEnabled()) {
                         log.debug("adding parameter (with referids) " + key + "/" + value);
                     }
