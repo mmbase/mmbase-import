@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.42 2001-09-12 14:49:37 eduard Exp $
+ * @version $Id: Images.java,v 1.43 2001-10-03 17:59:04 michiel Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -78,9 +78,25 @@ public class Images extends MMObjectBuilder {
 
     public String getGUIIndicator(MMObjectNode node) {
         int num=node.getIntValue("number");
-        if (num!=-1) {
-                    // NOTE that this has to be configurable instead of static like this
-                    return("<a href=\"/img.db?"+node.getIntValue("number")+"\" target=\"_new\"><img src=\"/img.db?"+node.getIntValue("number")+"+s(100x60)\" border=\"0\" alt=\"" + node.getStringValue("title") + "\" /></a>");
+        if (num != -1) {
+            // NOTE that this has to be configurable instead of static like this
+            String image      = "/img.db?" + num;
+            String imagethumb = image + "+s(100x60)";
+
+            javax.servlet.ServletContext sc = MMBaseContext.getServletContext();
+            if (sc != null) {
+                try {
+                    return("<a href=\"" + 
+                           MMBaseContext.getServletContext().getResource(image) + 
+                           "\"\" target=\"_new\"><img src=\"" + 
+                           MMBaseContext.getServletContext().getResource(imagethumb) +"\" border=\"0\" alt=\"" + 
+                           node.getStringValue("title") + "\" /></a>");
+                } catch (java.net.MalformedURLException e) {
+                    log.error(e.toString());
+                }
+            } else {
+                return("<a href=\"/" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"" + node.getStringValue("title") + "\" /></a>");
+            }
         }
         return(null);
     }
