@@ -65,7 +65,7 @@
 		<td style="background-color: rgb(255, 255, 255);">[&nbsp;&nbsp;<mm:field name="name"/>&nbsp;&nbsp;]&nbsp;</td>
         </mm:compare>
 	<mm:compare referid="portal" value="$thisportal" inverse="true">
-<td><a href="<mm:url page="/index.jsp"><mm:param name="portal"><mm:field name="number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="name"/>&nbsp;&nbsp;]&nbsp;</a></td>
+<td><a href="<mm:url page="/"><mm:param name="portal"><mm:field name="number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="name"/>&nbsp;&nbsp;]&nbsp;</a></td>
         </mm:compare>
 	</mm:field>
 	<mm:remove referid="thisportal"/>
@@ -78,7 +78,7 @@
 <td style="background-color: rgb(255, 255, 255);">[&nbsp;&nbsp;<mm:field name="portals2.name"/>&nbsp;&nbsp;]&nbsp;</td>
 	</mm:compare>
 	<mm:compare referid="portal" value="$thisportal" inverse="true">
-<td><a href="<mm:url page="/index.jsp"><mm:param name="portal"><mm:field name="portals2.number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="portals2.name"/>&nbsp;&nbsp;]&nbsp;</a></td>
+<td><a href="<mm:url page="/"><mm:param name="portal"><mm:field name="portals2.number"/></mm:param></mm:url>">[&nbsp;&nbsp;<mm:field name="portals2.name"/>&nbsp;&nbsp;]&nbsp;</a></td>
 	</mm:compare>
 	</mm:field>
 	<mm:remove referid="thisportal"/>
