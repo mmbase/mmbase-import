@@ -293,9 +293,12 @@ public class PostThread {
     private void syncNode(int queue) {
      node.setIntValue("postcount",postcount);
      node.setIntValue("viewcount",viewcount);
+     node.setIntValue("lastposternumber",lastposternumber);
+     node.setIntValue("lastpostnumber",lastpostnumber);
      node.setIntValue("c_lastposttime",lastposttime);
      node.setStringValue("c_lastposter",lastposter);
      node.setStringValue("c_lastpostsubject",lastpostsubject);
+     
      ForumManager.syncNode(node,queue);
     }
 
