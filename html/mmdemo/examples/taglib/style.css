@@ -1,0 +1,18 @@
+
+textarea.huge {
+   height: 60em;
+}
+
+textarea.small {
+   height: 10em;
+}
+
+textarea {
+    height: 20em;
+    width: 100%;    
+}
+
+
+pre {
+	width: 100%;
+}
