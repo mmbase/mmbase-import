@@ -23,13 +23,23 @@ import org.mmbase.module.core.*;
  * @author Hans Speijer
  */
 public class EditState {
+
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
+
 	Vector nodes=new Vector();
 	EditStateNode curNode;
 	MMBase mmBase;
 	
 	public EditState(MMBase mmBase) {
-		this.mmBase=mmBase;
-		//pushState();
+		if( mmBase != null )
+		{
+			this.mmBase=mmBase;
+			//pushState();
+		}
+		else
+			debug("EditState("+mmBase+"): ERROR: MMBase is not valid!");
 	}
 
 	public boolean pushState() {
@@ -54,11 +64,31 @@ public class EditState {
 	}
 
 	public boolean setSearchValue(String fieldname,Object value) {
-		return(curNode.setSearchValue(fieldname,value));
+		boolean result = false;
+
+		if( fieldname != null )
+			if( !fieldname.equals("") )
+				result = curNode.setSearchValue(fieldname,value);
+			else
+				debug("setSearchValue("+fieldname+","+value+"): ERROR: fieldname is empty!");
+		else
+			debug("setSearchValue("+fieldname+","+value+"): ERROR: fieldname is null!");
+		
+		return result;
 	}
 
 	public String getSearchValue(String name) {
-		return(curNode.getSearchValue(name));
+		String result = null;
+
+		if(name!=null)
+			if( !name.equals("") )
+				result = curNode.getSearchValue(name);
+			else
+				debug("getSeachValue("+name+"): ERROR: name is empty!");
+		else
+			debug("getSeachValue("+name+"): ERROR: name is null!");
+
+		return result;
 	}
 
 	public Hashtable getSearchValues() {
@@ -71,11 +101,31 @@ public class EditState {
 
 
 	public boolean setHtmlValue(String fieldname,Object value) {
-		return(curNode.setHtmlValue(fieldname,value));
+		boolean result = false;
+
+		if( fieldname != null )
+			if( !fieldname.equals("") )
+				result = curNode.setHtmlValue(fieldname,value);
+			else
+				debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is !");
+		else
+			debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is null!");
+		
+		return result;
 	}
 
 	public String getHtmlValue(String name) {
-		return(curNode.getHtmlValue(name));
+		String result = null;
+		
+		if( name != null )
+			if( !name.equals("") )	
+				result = curNode.getHtmlValue(name);
+			else
+				debug("getHtmlValue("+name+"): ERROR: name is empty!");
+		else
+			debug("getHtmlValue("+name+"): ERROR: name is null!");
+
+		return result;
 	}
 
 	public Hashtable getHtmlValues() {
@@ -87,13 +137,26 @@ public class EditState {
 	}
 
 	public void setEditNode(String number,String userName) {
-		delInsSaveList();
-		curNode.setEditNode(number,userName);
+		if( number != null )
+			if(!number.equals(""))
+				if(userName!=null)
+					if(!userName.equals(""))
+					{
+						delInsSaveList();
+						curNode.setEditNode(number,userName);
+					}
+					else
+						debug("setEditNode("+number+","+userName+"): ERROR: username is empty!");
+				else
+					debug("setEditNode("+number+","+userName+"): ERROR: username is null!");
+			else
+				debug("setEditNode("+number+","+userName+"): ERROR: number is empty!");
+		else
+			debug("setEditNode("+number+","+userName+"): ERROR: number is null!");
 	}
 
 	public MMObjectNode getEditNode() {
 		if (curNode == null) return null;
-
 		return(curNode.getEditNode());
 	}
 
@@ -224,12 +287,27 @@ public class EditState {
 	}
 
 	public void setBuilder(String name) {
-		pushState();
-		curNode.setBuilder(name);
+		if( name != null )
+		{
+			if( !name.equals("") )
+			{
+				//if( curNode != null )
+				{
+					pushState();
+					curNode.setBuilder(name);
+				} //else debug("setBuilder("+name+"): ERROR: curNode is null!");
+			} else debug("setBuilder("+name+"): ERROR: name is empty!");
+		} else debug("setBuilder("+name+"): ERROR: name is null!");
 	}
 
 	public String getBuilderName() {
-		return (curNode.getBuilderName());
+		String result= null;
+		if( curNode != null )
+			result = curNode.getBuilderName();
+		else
+			debug("getBuilderName(): ERROR: curNode("+curNode+") is null!");
+
+		return result;
 	}
 
 	public MMObjectBuilder getBuilder() {
@@ -255,7 +333,7 @@ public class EditState {
 		int src=curNode.getEditNodeNumber();
 		EditStateNode node2=(EditStateNode)nodes.elementAt(pos-1);
 		if (node2!=null) {
-			System.out.println("EditState -> Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
+			debug("addRelation("+owner+"): Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
 		}
 		mmBase.getInsRel().insert(owner,node2.getEditNodeNumber(),src,14);
 		return(true);
@@ -280,5 +358,4 @@ public class EditState {
 	public Hashtable getRelationTable() {
 		return(curNode.getRelationTable());
 	}
-
 }
