@@ -9,25 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-
-
-import org.mmbase.bridge.jsp.taglib.Writer;
-import org.mmbase.bridge.jsp.taglib.WriterHelper;
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
+
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerFactory;
 
 import org.mmbase.bridge.util.xml.Generator;
 
-
 import java.io.File;
-import org.mmbase.module.core.MMBaseContext;
+import java.util.*;
 import javax.servlet.jsp.PageContext;
 
 import org.mmbase.util.xml.URIResolver;
@@ -332,7 +328,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 }
                 // iso 8601 for date/time
                 dateFormat.applyPattern(options);
-            java.util.Date datum = new java.util.Date((new Long(body)).longValue() * 1000);
+                Date datum = new Date((new Long(body)).longValue() * 1000);
                 helper.setValue(dateFormat.format(datum));
                 break;
             }
@@ -409,14 +405,32 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
 
         // set some parameters to the XSLT style sheet.
-        java.util.Map params = new java.util.HashMap();
+        Map params = new HashMap();
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
-        params.put("formatter_imgdb",org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
+        params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         // getting the language from the locale, this is perhaps not a very good idea,
         // but for the moment, I don't know a sensible other place to get it from.
-        params.put("formatter_language", java.util.Locale.getDefault().getLanguage());
+        // --> should be get from bridge as soon as possible.
+        params.put("formatter_language", Locale.getDefault().getLanguage());
 
+        //other options
+        // a=b,c=d,e=f
+        if (options != null) {
+            Iterator i = StringSplitter.split(options).iterator();
+            while (i.hasNext()) {
+                String option = (String) i.next();
+                List   o = StringSplitter.split(option, "=");
+                if (o.size() != 2) {
+                    throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
+                    
+                } else {
+                    if (log.isDebugEnabled()) log.debug("Setting XSLT option " + option);
+                    params.put(o.get(0), o.get(1));
+                }
+            }
+        }
+       
         return ResultCache.getCache().get(cachedXslt, xsl,  params, null, doc);
 
     }
