@@ -107,12 +107,20 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
         if (referids != Attribute.NULL) {
             Iterator i = referids.getList(this).iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
+                String key = (String) i.next();
+                int at = key.indexOf('@');
+                String urlKey;
+                if (at > -1) {
+                    urlKey = key.substring(at + 1, key.length());
+                    key = key.substring(0, at);
+                } else {
+                    urlKey = key;
+                }
                 String value = getString(key);
                 if (log.isDebugEnabled()) {
                     log.debug("adding parameter (with referids) " + key + "/" + value);
                 }
-                show.append(connector).append(key).append("=");
+                show.append(connector).append(urlKey).append("=");
                 if (value != null) {
                     paramEscaper.transform(new StringReader(value), w);
                 }
