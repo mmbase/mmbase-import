@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE contextconfig PUBLIC "-//MMBase/DTD context config 1.1//EN" "http://www.mmbase.org/dtd/securitycontextconfig_1_1.dtd">
+<!DOCTYPE contextconfig PUBLIC "-//MMBase/DTD context config 1.2//EN" "http://www.mmbase.org/dtd/securitycontextconfig_1_2.dtd">
 <!-- the configuration for the user->group*->context->object security -->
 <contextconfig>
+  <!--
+  In global rights can be granted to the whole system.
+  When all users are allowed to read everything, it would be a performance boost to
+  add the operation -read- as an allowed operation in global.
+  -->  
+<!--  <global>
+    <allowed operation="read" />    
+  </global> -->
+    
   <!--
   login modules are used for authentication of the users,
   the name is the method which is used during the login

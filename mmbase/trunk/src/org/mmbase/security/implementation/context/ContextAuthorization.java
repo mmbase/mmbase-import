@@ -32,12 +32,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.21 2002-07-26 08:47:34 vpro Exp $
+ * @version $Id: ContextAuthorization.java,v 1.22 2002-08-30 14:02:52 eduard Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
     private Document 	    document;
-    private ContextCache    cache= new ContextCache();
+    private ContextCache    cache = new ContextCache();
+    /** contains elements of type = Operation */
+    private Set             globalAllowedOperations = new HashSet();
 
     private Map 	    replaceNotFound = new HashMap();
     private Map 	    userDefaultContexts = new HashMap();
@@ -52,6 +54,7 @@ public class ContextAuthorization extends Authorization {
             userDefaultContexts.clear();
             // reload the security xml document
             document = org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(in);
+            getGlobalAllowedOperations();
         } catch(org.xml.sax.SAXException se) {
             log.error("error parsing file :"+configFile);
             String message = "error loading configfile :'" + configFile + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
@@ -209,6 +212,11 @@ public class ContextAuthorization extends Authorization {
             String msg = "the usercontext was expired";
             log.error(msg);
             throw new java.lang.SecurityException(msg);
+        }
+        // operations can be granted for the whole system...
+        if(globalAllowedOperations.contains(operation)) {
+            log.debug("not retrieving the node, since operation:" + operation + " is granted to everyone");
+            return true;
         }
 
         //  look which groups belong to this,...
@@ -437,6 +445,29 @@ public class ContextAuthorization extends Authorization {
             verify(user, nodeNumber, Operation.WRITE);
         } else {
             throw new RuntimeException("Called check with wrong operation " + operation);
+        }
+    }
+
+    private void getGlobalAllowedOperations() {
+        // get all the Operations and add them to the globalAllowedOperations set..
+        String xpath = "/contextconfig/global/allowed";
+        log.debug("gonna execute the query:" + xpath );
+        NodeIterator found;
+        try {
+            found = XPathAPI.selectNodeIterator(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            log.error("error executing query: '"+xpath+"' ");
+            log.error( Logging.stackTrace(te));
+            throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
+        }
+        Node allowed;
+        for(allowed = found.nextNode(); allowed != null; allowed = found.nextNode()) {
+            NamedNodeMap nnm = allowed.getAttributes();
+            Node contextNameNode = nnm.getNamedItem("operation");
+            Operation operation = Operation.getOperation(contextNameNode.getNodeValue());
+            log.info("Everyone may do operation:" + operation);
+            if(globalAllowedOperations.contains(operation)) throw new java.lang.SecurityException("operation:" + operation + " already in allowed list");
+            globalAllowedOperations.add(operation);
         }
     }
 
