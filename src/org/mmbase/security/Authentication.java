@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *  authorization, you have to extend this class.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Authentication.java,v 1.15 2002-07-01 12:58:15 michiel Exp $
+ * @version $Id: Authentication.java,v 1.16 2003-06-16 17:27:09 michiel Exp $
  */
 public abstract class Authentication {
     private static Logger log = Logging.getLoggerInstance(Authentication.class.getName());
@@ -85,7 +85,7 @@ public abstract class Authentication {
     public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
 
     /**
-     *	The method returns the Rank of a UserContext
+     *	The method returns wether the UserContext has become invalid for some reason (change in security config?)
      *	@param usercontext The UserContext of which we want to know the rights
      *	@return <code>true</code> when valid, otherwise <code>false</code>
      *	@exception org.mmbase.security.SecurityException When something strang happend
