@@ -32,29 +32,51 @@ public class BasicModuleList extends BasicList implements ModuleList {
     }
 
     /**
-	*
-	*/
-	public Module getModule(int index) {
-        return (Module)getObject(index);
-	}
+    *
+    */
+    public Module getModule(int index) {
+        return (Module)get(index);
+    }
 
-	/**
-	*
-	*/
-	public ModuleIterator moduleIterator() {
-	    return new BasicModuleIterator(this);
-	};
+    /**
+    *
+    */
+    public ModuleIterator moduleIterator() {
+        return new BasicModuleIterator(this);
+    };
 
-	public class BasicModuleIterator extends BasicIterator implements ModuleIterator {
-	
-	    BasicModuleIterator(BasicList list) {
-	        super(list);
-	    }
-	
-	    public Module nextModule() {
-	        return (Module)nextObject();
-	    }
-	
-	}
-	
+    public class BasicModuleIterator extends BasicIterator implements ModuleIterator {
+    
+        BasicModuleIterator(BasicList list) {
+            super(list);
+        }
+        
+        public void set(Object o) {
+            if (! (o instanceof Module)) {
+                throw new BridgeException("Object must be of type Module");
+            }
+            list.set(index, o);
+        }
+        public void add(Object o) {
+            if (! (o instanceof Module)) {
+                throw new BridgeException("Object must be of type Module");
+            }
+            list.add(index, o);
+        }
+
+        public void set(Module m) {
+            list.set(index, m);
+        }
+
+        public void add(Module m) {
+            list.add(index, m);
+        }
+
+    
+        public Module nextModule() {
+            return (Module)next();
+        }
+    
+    }
+    
 }

@@ -34,39 +34,59 @@ public class BasicFieldList extends BasicList implements FieldList {
     }
 
     /**
-	*
-	*/
-	public Object get(int index) {
-    	Object o=getObject(index);
-    	if (o instanceof Field) {
-    	    return (Field)o;
-    	}
-    	Field f = new BasicField((FieldDefs)o,nodemanager);
-    	objects[index]=f;
+    *
+    */
+    public Object convert(Object o, int index) {
+        if (o instanceof Field) {
+            return o;
+        }
+        Field f = new BasicField((FieldDefs)o,nodemanager);
+        set(index, f);
         return f;
-	}
+    }
 
-	public Field getField(int index) {
-	    return (Field)get(index);
-	}
-	
-	/**
-	*
-	*/
-	public FieldIterator fieldIterator() {
-	    return new BasicFieldIterator(this);
-	};
+    public Field getField(int index) {
+        return (Field)get(index);
+    }
+    
+    /**
+    *
+    */
+    public FieldIterator fieldIterator() {
+        return new BasicFieldIterator(this);
+    };
 
-	
-	public class BasicFieldIterator extends BasicIterator implements FieldIterator {
-	
-	    BasicFieldIterator(BasicList list) {
-	        super(list);
-	    }
-	
-	    public Field nextField() {
-	        return (Field)nextObject();
-	    }
-	
-	}
+    
+    public class BasicFieldIterator extends BasicIterator implements FieldIterator {
+    
+        BasicFieldIterator(BasicList list) {
+            super(list);
+        }
+
+        
+        public void set(Object o) {
+            if (! (o instanceof Field)) {
+                throw new BridgeException("Object must be of type Field" );
+            }
+            list.set(index, o);
+        }
+        public void add(Object o) {
+            if (! (o instanceof Field)) {
+                throw new BridgeException("Object must be of type Field" );
+            }
+            list.add(index, o);
+        }
+
+        public void set(Field f) {
+            list.set(index, f);
+        }
+        public void add(Field f) {
+            list.add(index, f);
+        }
+    
+        public Field nextField() {
+            return (Field) next();
+        }
+    
+    }
 }

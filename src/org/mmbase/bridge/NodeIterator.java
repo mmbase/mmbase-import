@@ -9,18 +9,18 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Iterator;
+import java.util.ListIterator;
 
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
  */
-public interface NodeIterator extends Iterator {
+public interface NodeIterator extends ListIterator {
 
-	/**
-	*
-	*/
-	public Node nextNode();
+    /**
+     *
+     */
+    public Node nextNode();
 	
 }
