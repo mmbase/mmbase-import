@@ -254,6 +254,17 @@ public class XMLBuilderReader  {
 				}
 			}
 
+                        n3=nm.getNamedItem("key");
+                        if (n3!=null) {
+                                if (n3.getNodeValue().equals("true")) {
+                                        def.isKey=true;
+                                } else {
+                                        def.isKey=false;
+                                }
+                        }
+
+
+
 			n3=nm.getNamedItem("state");
 			if (n3!=null) {
 				String tmp=n3.getNodeValue();
