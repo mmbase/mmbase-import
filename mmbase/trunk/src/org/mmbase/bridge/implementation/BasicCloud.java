@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.91 2003-07-21 15:24:49 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.92 2003-07-21 21:04:00 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -601,7 +601,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     // javadoc inherited
-    public NodeList getList(SearchQuery query) {
+    public NodeList getList(Query query) {
 
         List resultList; // result with all Cluster - MMObjectNodes (without security)
 
@@ -622,6 +622,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 multilevelCache.put(query, resultList);
             }
         }
+
+        query.markUsed();
 
         //assert(resultList != null);
         if (log.isDebugEnabled()) {
@@ -719,7 +721,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         }
 
         // create query object
-        SearchQuery query;
+        Query query;
         {
             ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
             int search = -1;
@@ -733,7 +735,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             List orderVec = StringSplitter.split(orderby);
             List d = StringSplitter.split(directions);
             try {
-                query = clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search);
+                query = new BasicQuery(clusterBuilder.getMultiLevelSearchQuery(snodes, f, distinct ? "YES" : "NO", tables, constraints, orderVec, d, search));
             } catch (IllegalArgumentException iae) {
                 throw new BridgeException(iae);
             }
