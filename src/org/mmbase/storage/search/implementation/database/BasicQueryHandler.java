@@ -27,7 +27,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.9 2003-08-27 21:39:13 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.10 2003-08-27 21:45:39 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -205,7 +205,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
             // Something went wrong, log exception
             // and rethrow as SearchQueryException.
             log.debug("Query failed:" + query + "\n" + Logging.stackTrace(e));
-            throw new SearchQueryException(query.toString(), e);
+            //throw new SearchQueryException(query.toString(), e);
+            throw new SearchQueryException(query.toString());
         } finally {
             mmbase.closeConnection(con, stmt);
         }
