@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: CP1252Surrogator.java,v 1.4 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: CP1252Surrogator.java,v 1.5 2005-02-02 10:12:37 michiel Exp $
  */
 
 public class CP1252Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
@@ -71,7 +71,7 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
                 case 142: w.write('Z');    break; // LATIN CAPITAL LETTER Z WITH CARON
                 case 143: w.write('?');    break; // 
                 case 144: w.write('?');    break; // 
-                case 145: w.write('`');    break; // LEFT SINGLE QUOTATION MARK
+                case 145: w.write('\'');    break; // LEFT SINGLE QUOTATION MARK
                 case 146: w.write('\'');   break; // RIGHT SINGLE QUOTATION MARK
                 case 147: w.write('\"');   break; // LEFT DOUBLE QUOTATION MARK
                 case 148: w.write('\"');   break; // RIGHT DOUBLE QUOTATION MARK
