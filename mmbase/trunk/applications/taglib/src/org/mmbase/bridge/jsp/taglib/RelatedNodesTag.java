@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.25 2003-09-03 19:40:03 michiel Exp $ 
+ * @version $Id: RelatedNodesTag.java,v 1.26 2003-09-08 12:05:13 michiel Exp $ 
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -78,10 +78,9 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         }
         RelatedNodesContainerTag c = (RelatedNodesContainerTag) findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
 
-
         NodeQuery query;
         Cloud cloud = getCloud();
-        if (c == null) {
+        if (type != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
 
             // obtain a reference to the node through a parent tag
             Node parentNode = getNode();
@@ -108,6 +107,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             Queries.addConstraints(query, (String) constraints.getValue(this));
             Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
         } else {
+            if (c == null) throw new JspTagException("No type attribute found, and container missing");
             query = (NodeQuery) c.getQuery();
             Queries.addConstraints(query, (String) constraints.getValue(this));
             Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
