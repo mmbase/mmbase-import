@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.92 2003-02-03 15:50:13 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.93 2003-02-04 17:15:47 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1138,9 +1138,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         Vector allNodes = getRelatedNodes();
         Vector result = new Vector();
         for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
-            MMObjectNode node = (MMObjectNode) e.nextElement();
-            
-            if (parent.equals(wantedType) || parent.isExtensionOf(wantedType)) {
+            MMObjectNode node = (MMObjectNode) e.nextElement();            
+            if (node.parent.equals(wantedType) || node.parent.isExtensionOf(wantedType)) {
                 result.add(node);
             }
         }
