@@ -188,7 +188,7 @@ one or more examplevalue tags is you want to give some example values.
     <info>The who tag provides a syntax to list users connected to a channel.</info>
     <attribute>
       <name>channel</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>Node number, or node alias. This attribute defines the parent of the message list.</info>
     </attribute>
@@ -284,20 +284,6 @@ one or more examplevalue tags is you want to give some example values.
         <value>name</value>
         <info>The name of the author</info>
       </examplevalue>
-    </attribute>
-    <attribute>
-      <name>skiponempty</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
- 	  <info>If true, the body of teh tag is skipped when the requested value is unavailable.</info>
-      <possiblevalue>
-        <value>true</value>
-        <info>Skip body when not available. Default</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>false</value>
-        <info>Never skip body</info>
-      </possiblevalue>
     </attribute>
     <attribute>
       <name>jspvar</name>
@@ -892,7 +878,7 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
     <attribute>
         <name>channel</name>
-        <required>true</required>
+        <required>false</required>
          <rtexprvalue>true</rtexprvalue>
 	<info>
 	  The nodenumber or alias identifying the channel node to connect to.
