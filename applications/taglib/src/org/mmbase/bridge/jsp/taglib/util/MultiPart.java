@@ -22,7 +22,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.8 2004-10-12 08:17:52 pierre Exp $
+ * @version $Id: MultiPart.java,v 1.9 2004-12-16 18:35:18 michiel Exp $
  **/
 
 public class MultiPart {
@@ -38,7 +38,7 @@ public class MultiPart {
     }
 
     public static MMultipartRequest getMultipartRequest(PageContext pageContext) {
-        MMultipartRequest multipartRequest = (MMultipartRequest)pageContext.getAttribute(MULTIPARTREQUEST_KEY);
+        MMultipartRequest multipartRequest = (MMultipartRequest)pageContext.getAttribute(MULTIPARTREQUEST_KEY, PageContext.REQUEST_SCOPE);
         if (multipartRequest == null) {
             log.debug("Creating new MultipartRequest");
             multipartRequest = new MMultipartRequest((HttpServletRequest)pageContext.getRequest(), ContextContainer.getDefaultCharacterEncoding(pageContext));
@@ -56,7 +56,7 @@ public class MultiPart {
                     log.debug("not a multipart request");
                 }
             }
-            pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest);
+            pageContext.setAttribute(MULTIPARTREQUEST_KEY, multipartRequest, PageContext.REQUEST_SCOPE);
         }
         return multipartRequest;
     }
