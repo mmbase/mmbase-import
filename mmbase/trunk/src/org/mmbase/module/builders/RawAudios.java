@@ -8,8 +8,11 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: RawAudios.java,v 1.8 2000-07-04 11:51:12 vpro Exp $
+$Id: RawAudios.java,v 1.9 2000-08-02 15:10:50 gerard Exp $
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/07/04 11:51:12  vpro
+davzev: Fixed a bug in method getHostName having to do with string manipulation of the url field.
+
 Revision 1.7  2000/03/30 13:11:33  wwwtech
 Rico: added license
 
@@ -49,7 +52,7 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.8 $ $Date: 2000-07-04 11:51:12 $
+ * @$Revision: 1.9 $ $Date: 2000-08-02 15:10:50 $
  *
  */
 public class RawAudios extends MMObjectBuilder {
@@ -231,7 +234,7 @@ public class RawAudios extends MMObjectBuilder {
 		channels=node.getIntValue("channels");
 		switch(iformat) {
 			case 1: // mp3
-				path="/data/audio/mp3/"+id+"/"+speed+"_"+channels+".ra";
+				path="/data/audio/mp3/"+id+"/"+speed+"_"+channels+".mp3";
 				break;
 			case 2: // ra
 				path="/data/audio/ra/"+id+"/"+speed+"_"+channels+".ra";
