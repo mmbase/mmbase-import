@@ -56,7 +56,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         } else {
             number = relationNode.getIntValue("dnumber");
         }
-        node = getCloudProviderVar().getNode(number);       
+        node = getCloud().getNode(number);       
         setNodeVar(node);
         return EVAL_BODY_TAG;
     }
@@ -64,7 +64,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
     public void doInitBody() throws JspTagException {
         log.debug("fillvars");
         fillVars();
-        if (id != null && ! "".equals(id)) {
+        if (id != null) {
             getContextTag().registerNode(id, getNodeVar());
         }
 

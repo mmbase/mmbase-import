@@ -124,7 +124,7 @@ public class TreeTag extends AbstractNodeListTag {
         }
         params.put("FIELDS",fieldlist);
         try {
-            Cloud cloud=getCloudProviderVar();
+            Cloud cloud=getCloud();
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
 

@@ -74,7 +74,7 @@ public class InfoTag extends  CloudReferrerTag {
             if (module != null) {
                 throw new JspTagException("Cannot give both module and nodemanager");
             }
-            result = getCloudProviderVar().getNodeManager(nodeManager).getInfo(command,
+            result = getCloud().getNodeManager(nodeManager).getInfo(command,
                                                                            pageContext.getRequest(),
                 pageContext.getResponse());
         } else if (module != null) {

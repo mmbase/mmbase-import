@@ -118,14 +118,14 @@ public class ListTag extends AbstractNodeListTag {
             searchDistinct = true;
         }
         log.debug("pathstring " + pathString);
-        NodeList nodes = getCloudProviderVar().getList(searchNodes,
-                                              pathString,
-                                              fields,
-                                              whereString,
-                                              sortedString,
-                                              directionString,
-                                              searchString,
-                                              searchDistinct);
+        NodeList nodes = getCloud().getList(searchNodes,
+                                            pathString,
+                                            fields,
+                                            whereString,
+                                            sortedString,
+                                            directionString,
+                                            searchString,
+                                            searchDistinct);
         return setReturnValues(nodes,true);
     }
 
