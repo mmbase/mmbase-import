@@ -52,16 +52,27 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       <name>command</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        On a non-multilevel list, you can also do a 'command'. The
+        'getList(command)' method from the NodeManager interface will
+        be called then.
+      </info>
     </attribute>
     <attribute>
       <name>sorted</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        The fields on which the result set must be sorted. 
+      </info>
     </attribute>
     <attribute>
       <name>direction</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        The direction of sorting. 'UP' or 'DOWN'.
+      </info>
     </attribute>
     <attribute>
       <name>distinct</name>
@@ -72,7 +83,7 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The maximum allowed results.</info>
+      <info>The maximum number of results.</info>
     </attribute>
     <attribute>
       <name>offset</name>
@@ -84,6 +95,9 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       <name>id</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'id' attribute of the Node tag. 
+      </info>    
     </attribute>
     <example>&lt;mm:list node="123" type="mags,news" fields="mags.title,news.number"&gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
@@ -135,7 +149,7 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       following values:
       <ul>
        <li>'http': will use http protocol to ask name and password
-       from the user. If the 'logon' password is specified too, then
+       from the user. If the 'logon' attribute is specified too, then
        logging on will fail if the user does not use that
        username. The 'pwd' attribute will be ignored.</li>
        <li>'anonymous': Ignore the 'logon' attribute and create (or
@@ -195,26 +209,58 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
     <name>node</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeTag</teiclass>
-    <info></info>
+    <info>
+      A tag to make a node available. Normally it will enclose
+      some field tags.
+    </info>
     <attribute>
         <name>number</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>
+	  The nodenumber or alias identifying this node in MMBase.
+	</info>
     </attribute>
     <attribute>
         <name>parameter</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>
+	  <p>
+ 	   The request parameter name which contains the nodenumber or
+	   alias indentifying this node in MMBase.
+          </p>
+	  <p>
+	   One of the attributes 'number' or 'parameter' must be supplied.
+	  </p>
+	</info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>
+	<p>
+	  The fields you want to have from this node. Other fields are
+	  available as well, but will only be accessible with the
+	  field-tag. Field indicated in this 'fields' attribute will
+	  also get a jsp-variable.
+	</p>
+	</info>
     </attribute>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>
+	<p>
+	  With the 'id' attribute you define an unique identifier for
+	  this node. At the same time this defines an jsp 'Node'
+	  variable with this name. If you have defined 'fields' too,
+	  then these fields will have jsp-variables prefixed with this
+	  id and an underscore.
+	</p>
+        </info>	
     </attribute>    
     <attribute>
         <name>type</name>
@@ -289,7 +335,7 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
         <rtexprvalue>false</rtexprvalue>
 	<info>
 	  The id of the list to which this condition must apply
-	  to. Default it it the enclosing one.
+	  to. Default it is the enclosing one.
         </info>
     </attribute>
   </tag>
