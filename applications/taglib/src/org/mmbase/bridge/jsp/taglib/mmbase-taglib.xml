@@ -2034,15 +2034,15 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
     <info>
-	  
+	  The body evaluated if the compared value is greater.
     </info>
   </tag>
   <tag>
     <name>islessthan</name>
     <extends>compare</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsLessThanTag</tagclass>
     <info>
-	  
+	  The body evaluated if the compared value is smaller.
     </info>
   </tag>
   <tag>
