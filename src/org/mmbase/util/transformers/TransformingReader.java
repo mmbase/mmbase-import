@@ -51,7 +51,7 @@ public class TransformingReader extends PipedReader {
         PipedWriter w = new PipedWriter();
         try {            
             connect(w);
-            link = new CharTransformerLink(charTransformer, in, w, false);
+            link = new CharTransformerLink(charTransformer, in, w, true);
             ChainedCharTransformer.executor.execute(link);          
         } catch (IOException ioe) {
             log.error(ioe.getMessage() + Logging.stackTrace(ioe));
@@ -67,7 +67,7 @@ public class TransformingReader extends PipedReader {
     }
 
     public synchronized int read(char cbuf[], int off, int len)  throws IOException {
-        int result =  super.read(cbuf, off, len);
+        int result = super.read(cbuf, off, len);
         if (result == -1) {
             waitReady();
         }
@@ -78,15 +78,15 @@ public class TransformingReader extends PipedReader {
      * Wait until the transformation is ready
      */
     protected void waitReady() {
-       try {
-           while (! link.ready()) {                
-               synchronized(link) { // make sure we have the lock
-                   link.wait();
-               }
-           }
-       } catch (InterruptedException ie) {
-           log.warn("" + ie);
-       }
+        try {
+            while (! link.ready()) {                
+                synchronized(link) { // make sure we have the lock
+                    link.wait();
+                }
+            }
+        } catch (InterruptedException ie) {
+            log.warn("" + ie);
+        }
     }
 
 
@@ -96,6 +96,7 @@ public class TransformingReader extends PipedReader {
      * ALso closes the wrapped Reader.
      */   
     public void close() throws IOException {   
+        log.info("closing");
         super.close();
         in.close();
     }
@@ -108,22 +109,38 @@ public class TransformingReader extends PipedReader {
         if (args.length > 0) {
             testString = args[0];
         }
-        Reader in = new StringReader(testString);
  
+
+        BufferedReader reader = new BufferedReader(new TransformingReader(new StringReader(testString), new UnicodeEscaper()));
+
+        try {
+            while(true) {
+                String line = reader.readLine();
+                if (line == null) break;
+                System.out.println(line);
+            }
+        } catch (Exception e) {
+            log.error(e + Logging.stackTrace(e));
+        }
+
+        
         ChainedCharTransformer t = new ChainedCharTransformer();
         t.add(new UnicodeEscaper());
         t.add(new UpperCaser());
         t.add(new SpaceReducer());
         t.add(new Trimmer());
-
-        BufferedReader reader = new BufferedReader(new TransformingReader(in, t));
-
-         while(true) {
-            String line = reader.readLine();
-            if (line == null) break;
-            System.out.println(line);
-         }
-
+        
+        reader = new BufferedReader(new TransformingReader(new StringReader(testString), t));
+        
+        try {
+            while(true) {
+                String line = reader.readLine();
+                if (line == null) break;
+                System.out.println(line);
+            }
+        } catch (Exception e) {
+            log.error(e + Logging.stackTrace(e));
+        }
     }
 
 

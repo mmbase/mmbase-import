@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.19 2004-10-15 18:30:50 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.20 2004-10-29 21:24:34 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -102,10 +102,9 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
     // javadoc inherited
     public Writer transform(Reader startReader, Writer endWriter) {
         try {
-            Reader r = null; 
+            PipedReader r = null; 
             Writer w = endWriter;  
-            boolean closeWriterAfterUse = w instanceof PipedWriter; // This boolean indicates if 'w' must be flushed/closed
-                                                 // after use.
+            boolean closeWriterAfterUse = false; // This boolean indicates if 'w' must be flushed/closed after use.
 
             List links = new ArrayList(); // keep track of the started threads, needing to wait
                                             // for them later.
@@ -121,7 +120,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
                     r = new PipedReader();
                     CharTransformerLink link =  new CharTransformerLink(ct, r, w, closeWriterAfterUse);
                     links.add(link);
-                    w = new PipedWriter((PipedReader) r);  
+                    w = new PipedWriter(r);  
                     closeWriterAfterUse = true;
                     executor.execute(link);
                 } else {  // arrived at first in chain, start transforming
