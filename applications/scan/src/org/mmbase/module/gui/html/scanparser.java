@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.20 2000-07-22 21:12:20 daniel Exp $
+$Id: scanparser.java,v 1.21 2000-09-08 11:44:19 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.20  2000/07/22 21:12:20  daniel
+changes mmbase.mode
+
 Revision 1.19  2000/07/22 15:13:49  daniel
 removed some debug
 
@@ -80,7 +83,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.20 $ $Date: 2000-07-22 21:12:20 $
+ * @$Revision: 1.21 $ $Date: 2000-09-08 11:44:19 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1413,7 +1416,7 @@ public class scanparser extends ProcessorModule {
 							int i=Integer.parseInt(sortedpos);
 							result=doMAlphaSort(result,i,numitems);	
 						} catch(Exception e) {
-							debug("do_list(): Error in SORTPOS");
+							debug("do_list(): ERROR in SORTPOS (sortpos counts from 0 .. n)");
 						}	
 					} else {
 						result=doMAlphaSort(result,1,numitems);	
