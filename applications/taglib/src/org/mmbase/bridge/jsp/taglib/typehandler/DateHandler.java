@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.14 2004-01-19 17:22:09 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.15 2004-04-23 13:37:11 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -352,7 +352,8 @@ public class DateHandler extends AbstractTypeHandler {
             log.warn("Found unknown operator value '" + operator + "'");
             return null;
         }
-        return Queries.addConstraint(query, con);
+        Queries.addConstraint(query, con);
+        return con;
 
     }
 
