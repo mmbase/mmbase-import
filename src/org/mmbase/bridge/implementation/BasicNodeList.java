@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.23 2003-09-03 20:56:23 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.24 2003-09-10 18:39:20 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
@@ -70,19 +70,6 @@ public class BasicNodeList extends BasicList implements NodeList {
                 } else {
                     node = new BasicRelation(coreNode, nodeManager);
                 }    
-            } else if (coreNode instanceof ClusterNode && !(nodeManager instanceof VirtualNodeManager)) { 
-                // a 'real' nodeManager was speficied, but with  'clustered' query.
-                // it is possible (from 1.7 onwards) that a cluster-result still represents one real node (other fields not added)
-                NodeQuery query = (NodeQuery) getProperty(NodeList.QUERY_PROPERTY);                
-                String tablePrefix = query.getNodeStep().getAlias();
-                //if (tablePrefix == null) tablePrefix = query.getNodeStep().getTableName();
-                MMObjectNode newNode = new MMObjectNode(((BasicNodeManager) nodeManager).builder, (ClusterNode) coreNode, tablePrefix);
-                if (coreNode.getOType() != nodeManager.getNumber()) {
-                    node = cloud.getNode(coreNode.getNumber()); // should be smarter, should be queried all together!
-                } else {
-                    node = new BasicNode(newNode, nodeManager);
-                }
-                // will lead exceptions of ClusterNode is not a 'node' result.
             } else {
                 // 'normal' node
                 if(nodeManager == null)  {
