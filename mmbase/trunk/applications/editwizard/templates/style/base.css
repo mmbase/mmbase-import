@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: base.css,v 1.6 2002-07-18 15:53:19 michiel Exp $
+  @version  $Id: base.css,v 1.7 2002-07-18 16:20:29 michiel Exp $
   
 */
 
@@ -95,5 +95,4 @@ a.pagenav:hover	{
 .bottombutton				{ font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color:#18248C;  }
 .bottombutton-disabled		{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default; }
 
-.tableheader		{ color:#CCCCCC; font-weight:900; }
 .imageupload		{ padding:5px;}
