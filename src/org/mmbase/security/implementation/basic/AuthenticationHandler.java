@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * Authentication based on a config file..
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.3 2002-06-07 12:56:57 pierre Exp $
+ * @version $Id: AuthenticationHandler.java,v 1.4 2002-10-25 13:23:25 michiel Exp $
  */
 public class AuthenticationHandler extends Authentication {
     private static Logger log=Logging.getLoggerInstance(AuthenticationHandler.class.getName());
@@ -42,7 +42,7 @@ public class AuthenticationHandler extends Authentication {
 
     protected void load() {
         log.debug("using: '" +  configFile + "' as config file for authentication");
-        XMLBasicReader reader = new XMLBasicReader(configFile.getAbsolutePath());
+        XMLBasicReader reader = new XMLBasicReader(configFile.getAbsolutePath(), getClass());
 
         log.debug("Trying to load all loginmodules:");
         Enumeration list = reader.getChildElements(reader.getElementByPath("authentication"),"loginmodule");
