@@ -42,7 +42,7 @@ public interface CloudInterface {
 	 * gets a builder
 	 * @return the builder with given buildername 
 	 */
-	public BuilderInterface getBuilder(String buildername);
+	public NodeTypeInterface getNodeType(String nodetype);
 
 	/**
 	 * creates a node of a specific type
