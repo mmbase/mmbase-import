@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.29 2003-08-28 15:31:12 pierre Exp $
+ * @version $Id: MultiConnection.java,v 1.30 2004-01-06 13:05:10 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -39,7 +39,7 @@ public class MultiConnection implements Connection {
     public final static int CON_FAILED = 3;
     
     // logging
-    private static Logger log = Logging.getLoggerInstance(MultiConnection.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MultiConnection.class);
     
     /**
      * @javadoc

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.33 2003-11-10 21:18:02 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.34 2004-01-06 13:05:10 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -154,12 +154,12 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      */
     public String setObjectField(String owner,String key,String field,Object value) {
         String stringValue;
-        MMObjectNode node=getNode(owner,key);
-        if (node!=null) {
-            int type=node.getDBType(field);
-            if (type>=0) {
+        MMObjectNode node = getNode(owner,key);
+        if (node != null) {
+            int type = node.getDBType(field);
+            if (type >= 0) {
                 if (value instanceof String) {
-                    stringValue=(String)value;
+                    stringValue = (String)value;
                     switch(type) {
                     case FieldDefs.TYPE_XML:
                     case FieldDefs.TYPE_STRING:
@@ -210,7 +210,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
                         break;
                     }
                 } else {
-                    node.setValue(field,value);
+                    node.setValue(field, value);
                 }
             } else {
                 node.setValue(field, value);
