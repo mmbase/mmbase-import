@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?xml-stylesheet type="text/css"
-href="file:/C:/Program Files/XMLmind_XML_Editor/css/docbook.css"
-?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+href="file:/C:/apps/XXE/css/docbook.css"
+?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article
 ><articleinfo
 ><date
@@ -156,7 +158,7 @@ id="gettingstarted"
 ><title
 >Step 1. Deciding what to do</title
 ><para
->First, you need to decide what your wizard should do. In our first example, we just want to let the user edit the plain fields of a very- simple object. We use the builder: "people" to make our first wizard.</para
+>First, you need to decide what your wizard should do. In our first example, we just want to let the user edit the plain fields of a very- simple object. We use the builder: &#34;people&#34; to make our first wizard.</para
 ><para
 >Users will be able to add, delete and change people-objects (persons in real-life) using this wizard. If you just want to see how it’s done, see the working example in the editwizard installation.</para
 ><para
@@ -168,27 +170,7 @@ id="gettingstarted"
 ><para
 >Create a text file in the subdir you decided, with the extension &#34;.xml&#34;. In our example, it should be named: /practice/simple.xml . Open the newly created simple.xml in a text-editor and copy or type the following code into simple.xml. Save the simple.xml file.</para
 ><programlisting
->&#60;?xml version=&#34;1.0&#34;?&#62;
-&#60;wizard-schema id=&#34;some_id&#34;&#62;
-&#60;title&#62;Practice&#60;/title&#62;
-
-&#60;action type=&#34;create&#34;&#62;
-&#60;object type=&#34;people&#34; /&#62;
-&#60;/action&#62;
-
-&#60;action type=&#34;delete&#34; /&#62;
-
-&#60;form-schema id=&#34;step1&#34;&#62;
-&#60;title&#62;People Wizard&#60;/title&#62;
-&#60;field name=&#34;firstname&#34;&#62;
-&#60;prompt&#62;Firstname&#60;/prompt&#62;
-&#60;/field&#62;
-&#60;field name=&#34;lastname&#34;&#62;
-&#60;prompt&#62;Lastname&#60;/prompt&#62;
-&#60;/field&#62;
-&#60;/form-schema&#62;
-
-&#60;/wizard-schema&#62;</programlisting
+>&#60;?xml version=&#34;1.0&#34;?&#62;&#38;nbsp;&#38;nbsp;&#38;nbsp;&#60;wizard-schema id=&#34;some_id&#34;&#62; &#60;title&#62;Practice&#60;/title&#62; &#60;action type=&#34;create&#34;&#62; &#60;object type=&#34;people&#34; /&#62; &#60;/action&#62; &#60;action type=&#34;delete&#34; /&#62; &#60;form-schema id=&#34;step1&#34;&#62; &#60;title&#62;People Wizard&#60;/title&#62; &#60;field name=&#34;firstname&#34;&#62; &#60;prompt&#62;Firstname&#60;/prompt&#62; &#60;/field&#62; &#60;field name=&#34;lastname&#34;&#62; &#60;prompt&#62;Lastname&#60;/prompt&#62; &#60;/field&#62; &#60;/form-schema&#62; &#60;/wizard-schema&#62;</programlisting
 ></section
 ><section
 ><title
@@ -196,8 +178,7 @@ id="gettingstarted"
 ><para
 >Okay. The wizard is made. How to check if it works? Open your webbrowser and type in the url to your running mmbase website, and add the command to run our created wizard. Eg.:</para
 ><programlisting
->http://localhost:4242/mmapps/editwizard/list.jsp?wizard=practice/simple&#38;nodepath=people&#38;fields=firstname
-</programlisting
+>http://localhost:4242/mmapps/editwizard/list.jsp?wizard=practice/simple&#38;nodepath=people&#38;fields=firstname</programlisting
 ><para
 >You should see a login screen first. Login as you would with the MMEditors or the MMBase admin. After you logged in, you should see a screen like this:</para
 ><figure
@@ -221,7 +202,7 @@ fileref="media/new_person.jpg"
 ></screenshot
 ></figure
 ><para
->Here you can see your first wizard in action! Two fields are visible (as defined in the simple.xml file). Fill in the two fields and press save. Your newly created person should be visible in the list-view. Congratulations. You&#39;ve made -and runned- your first wizard. And now? You can image you can change fieldnames, titles and object-types so that you can edit different objects in the system. Wizard can do a lot more. We'll get to that in the following section.</para
+>Here you can see your first wizard in action! Two fields are visible (as defined in the simple.xml file). Fill in the two fields and press save. Your newly created person should be visible in the list-view. Congratulations. You&#39;ve made -and runned- your first wizard. And now? You can image you can change fieldnames, titles and object-types so that you can edit different objects in the system. Wizard can do a lot more. We&#39;ll get to that in the following section.</para
 ></section
 ></section
 ><section
@@ -237,17 +218,9 @@ id="createaction"
 ><para
 >In the create action is defined what should be created in mmbase if the user clicks on the create-button. A create action is placed inside the /wizard node. You can create multiple objects inside each other (and create relations between them), place default values in some fields. Example:</para
 ><programlisting
->&#60;action type="create" &#62;
-	&#60;object type="people" &#62;
-		&#60;field name="firstname"&#62;NOBODY&#60;/field&#62;
-		&#60;relation role="related"&#62;
-			&#60;object type="news" /&#62;
-		&#60;/relation&#62;
-	&#60;/object&#62;
-&#60;/action&#62;
-</programlisting
+>&#60;action type=&#34;create&#34; &#62; &#60;object type=&#34;people&#34; &#62; &#60;field name=&#34;firstname&#34;&#62;NOBODY&#60;/field&#62; &#60;relation role=&#34;related&#34;&#62; &#60;object type=&#34;news&#34; /&#62; &#60;/relation&#62; &#60;/object&#62; &#60;/action&#62;</programlisting
 ><para
->This action creates 2 objects and 1 relation. A new people object with in the field "firstname" is placed "NOBODY". And, a relation is created between this new people object and a new news object.</para
+>This action creates 2 objects and 1 relation. A new people object with in the field &#34;firstname&#34; is placed &#34;NOBODY&#34;. And, a relation is created between this new people object and a new news object.</para
 ><note
 ><para
 >MMBase will default not allow you to make a relation between people and news. So remove the relation and inside-object node in the object to try it in a wizard.</para
@@ -258,14 +231,14 @@ id="loadaction"
 ><title
 >Load action</title
 ><para
->Generally, the wizard needs to know what objects and relations to ‘load’ before the wizard-pages are displayed. Default, it loads the given mmbase object and its fields. But, in the future, we will need to load objects-over-relations, multiple objects and nested objects. Users can use the load-action to define the load behaviour of the wizards.</para
+>Generally, the wizard needs to know what objects and relations to &#60;load&#60; before the wizard-pages are displayed. Default, it loads the given mmbase object and its fields. But, in the future, we will need to load objects-over-relations, multiple objects and nested objects. Users can use the load-action to define the load behaviour of the wizards.</para
 ></section
 ><section
 id="deleteaction"
 ><title
 >Delete action</title
 ><para
->Place a delete action in the wizard if you want to allow the users to delete objects. Try to remove the &#60;action type="delete" /&#62; from the practice wizard and reload the list to see what the impact is.</para
+>Place a delete action in the wizard if you want to allow the users to delete objects. Try to remove the &#60;action type=&#34;delete&#34; /&#62; from the practice wizard and reload the list to see what the impact is.</para
 ><note
 ><para
 >The delete buttons will disappear.</para
@@ -309,55 +282,7 @@ id="createwizard"
 ><para
 >Create in the practice directory a new file named people.xml. Enter the following xml:</para
 ><programlisting
->&#60;wizard-schema id=&#34;people&#34;&#62;
-  &#60;title&#62;People&#60;/title&#62;
-
-  &#60;action type=&#34;create&#34;&#62;
-    &#60;object type=&#34;people&#34;&#62;
-      &#60;field name=&#34;firstname&#34;&#62;Enter firstname HERE&#60;/field&#62;
-      &#60;/object&#62;
-        &#60;/action&#62;
-  
-  &#60;action type=&#34;delete&#34; /&#62;
-  
-  &#60;action type=&#34;load&#34;&#62;
-    &#60;relation destination=&#34;news&#34; role=&#34;related&#34; /&#62;
-  &#60;/action&#62;
-  
-  &#60;form-schema id=&#34;step1&#34;&#62;
-    &#60;title&#62;People_&#60;/title&#62;
-    &#60;field name=&#34;firstname&#34; &#62;
-      &#60;prompt&#62;Firstname&#60;/prompt&#62;
-      &#60;/field&#62;
-    &#60;field name=&#34;lastname&#34;&#62;
-      &#60;prompt&#62;Lastname&#60;/prompt&#62;
-      &#60;/field&#62;
-    &#60;list role=&#34;related&#34; destination=&#34;news&#34; minoccurs=&#34;0&#34;
-      maxoccurs=&#34;*&#34;&#62;
-      &#60;title&#62;
-        Related newsitems
-        &#60;/title&#62;
-      &#60;command name=&#34;search&#34; nodepath=&#34;news&#34; fields=&#34;title&#34; age=&#34;-1&#34;&#62;
-        &#60;prompt&#62;Search newsitems&#60;/prompt&#62;
-        &#60;search-filter&#62;
-          &#60;name&#62;name contains&#60;/name&#62;
-          &#60;search-fields&#62;title&#60;/search-fields&#62;
-          &#60;/search-filter&#62;
-        &#60;/command&#62;
-
-      &#60;item&#62;
-        &#60;field name=&#34;title&#34; ftype=&#34;data&#34;&#62;
-          &#60;prompt&#62;Newsitem&#60;/prompt&#62;
-          &#60;description&#62;Here you can see the name of the related newsitem&#60;/description&#62;
-          &#60;/field&#62;
-        &#60;/item&#62;
-      &#60;action type=&#34;create&#34;&#62;
-        &#60;relation destinationtype=&#34;news&#34; role=&#34;related&#34;&#62;
-          &#60;/relation&#62;
-        &#60;/action&#62;
-      &#60;/list&#62;
-    &#60;/form-schema&#62;
-&#60;/wizard-schema&#62;</programlisting
+>&#60;wizard-schema id=&#34;people&#34;&#62; &#60;title&#62;People&#60;/title&#62; &#60;action type=&#34;create&#34;&#62; &#60;object type=&#34;people&#34;&#62; &#60;field name=&#34;firstname&#34;&#62;Enter firstname HERE&#60;/field&#62; &#60;/object&#62; &#60;/action&#62; &#60;action type=&#34;delete&#34; /&#62; &#60;action type=&#34;load&#34;&#62; &#60;relation destination=&#34;news&#34; role=&#34;related&#34; /&#62; &#60;/action&#62; &#60;form-schema id=&#34;step1&#34;&#62; &#60;title&#62;People_&#60;/title&#62; &#60;field name=&#34;firstname&#34; &#62; &#60;prompt&#62;Firstname&#60;/prompt&#62; &#60;/field&#62; &#60;field name=&#34;lastname&#34;&#62; &#60;prompt&#62;Lastname&#60;/prompt&#62; &#60;/field&#62; &#60;list role=&#34;related&#34; destination=&#34;news&#34; minoccurs=&#34;0&#34; maxoccurs=&#34;*&#34;&#62; &#60;title&#62; Related newsitems &#60;/title&#62; &#60;command name=&#34;search&#34; nodepath=&#34;news&#34; fields=&#34;title&#34; age=&#34;-1&#34;&#62; &#60;prompt&#62;Search newsitems&#60;/prompt&#62; &#60;search-filter&#62; &#60;name&#62;name contains&#60;/name&#62; &#60;search-fields&#62;title&#60;/search-fields&#62; &#60;/search-filter&#62; &#60;/command&#62; &#60;item&#62; &#60;field name=&#34;title&#34; ftype=&#34;data&#34;&#62; &#60;prompt&#62;Newsitem&#60;/prompt&#62; &#60;description&#62;Here you can see the name of the related newsitem&#60;/description&#62; &#60;/field&#62; &#60;/item&#62; &#60;action type=&#34;create&#34;&#62; &#60;relation destinationtype=&#34;news&#34; role=&#34;related&#34;&#62; &#60;/relation&#62; &#60;/action&#62; &#60;/list&#62; &#60;/form-schema&#62; &#60;/wizard-schema&#62;</programlisting
 ></section
 ><section
 id="testwizard"
@@ -418,6 +343,7 @@ id="testwizard"
 ></section
 ></section
 ><section
+id="reference"
 ><title
 >Reference</title
 ><para
@@ -434,16 +360,10 @@ id="testwizard"
 ><para
 >To run a wizard, you&#39;ll need list.jsp (or wizard.jsp for that matter). You need to use parameters to tell the list.jsp what wizard, what nodes and what fields should be shown. list.jsp fires a query (a given by the parameters shown below) and loads the given wizard. It shows a list of all found nodes and shows edit, delete and create buttons (if the wizard defined such actions). Mainly, list.jsp will create a HTML page which will in contain references to wizard.jsp to start the wizard itself. Note that the list.jsp does NOT run an editwizard itself, it is just a &#39; starter&#39; . Use wizard.jsp if you want to start a wizard directly. The syntax of the list.jsp is as follows:</para
 ><programlisting
->list.jsp?wizard=[wizardname with path]
-	&#38;startnodes=[mmbase-objectnumber-to-start-with-when querying]
-	&#38;nodepath=[buildername]
-	&#38;fields=[enumeration of fields to be shown]
-	&#38;orderby=[orderby clause]
-	&#38;constraints=[where-part]
-	&#38;title=[other wizard title]</programlisting
+>list.jsp?wizard=[wizardname with path] &#38;startnodes=[mmbase-objectnumber-to-start-with-when querying] &#38;nodepath=[buildername] &#38;fields=[enumeration of fields to be shown] &#38;orderby=[orderby clause] &#38;constraints=[where-part] &#38;title=[other wizard title]</programlisting
 ><example
 ><title
->Examples</title
+>How to use list.jsp to list objects</title
 ><programlisting
 >list.jsp?wizard=practice/simple&#38;nodepath=people&#38;fields=firstname,lastname&#38;title=My First Wizard&#38;orderby=lastname</programlisting
 ><programlisting
@@ -465,12 +385,1717 @@ id="testwizard"
 >wizard.jsp?wizard=practice/simple&#38;objectnumber=[objectnumber]</programlisting
 ><example
 ><title
->Examples</title
+>How to use wizard.jsp to start an editwizard</title
 ><programlisting
 >wizard.jsp?wizard=practice/simple&#38;objectnumber=184</programlisting
 ><programlisting
 >wizard.jsp?wizard=practice/simple&#38;objectnumber=new</programlisting
 ></example
+></section
+><section
+><title
+>Syntax reference</title
+><variablelist
+><title
+>wizard</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>This is the root-node of a wizard. Always use a wizard-node to start a wizard.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>id (String) The identifier of the wizard. Not used by the wizards at this time.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;title&#62;(String)&#60;/title&#62; Title of the wizard</para
+><para
+>&#60;form-schema /&#62; See also: form-schema.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;steps /&#62; (see also: steps)</para
+><para
+>&#60;action type=&#34;load&#34; /&#62; (see also: action)</para
+><para
+>&#60;action type=&#34;create&#34; /&#62; (see also: action)</para
+><para
+>&#60;action type=&#34;delete&#34; /&#62; (see also: action)</para
+><para
+>&#60;lists /&#62; (see also: lists)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;wizard&#62; &#60;title&#62;Wizard-Title&#60;/title&#62; &#60;form-schema id=&#34;step1&#34;&#62; &#60;field name=&#34;firstname&#34;&#62; &#60;prompt&#62;Your Firstname&#60;/prompt&#62; &#60;/field&#62; &#60;/form-schema&#62; &#60;/wizard&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>action type=&#34;load&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;action type=&#34;load&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this action to define what the wizard should load when initialising. Mainly, if this node is supplied specific relations will be loaded, specific fields will be loaded or not-loaded. (Note: this syntax should maybe be adjusted in the future.)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>type=&#34;load&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;relation destination=&#34;[buildername]&#34; role=&#34;[rolename]&#34; /&#62; Note: this relation node can contain complex load actions: eg.: relations-in-relations. (Not documented here -for now. See the example below how it works.)</para
+><para
+>&#60;field name=&#34;[fieldname]&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;action type=&#34;load&#34;&#62; &#60;relation destination=&#34;people&#34; role=&#34;related&#34;&#62; &#60;relation destination=&#34;urls&#34; /&#62; &#60;/relation&#62; &#60;field name=&#34;title&#34; /&#62; &#60;field name=&#34;subtitle&#34; /&#62; &#60;field name=&#34;..&#34; /&#62; &#60;/action&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>action type=&#34;create&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>&#60;action type=&#34;create&#34; /&#62; Use this action to define what objects and relations should be created if a user presses the create button. (Or -for that matter- uses the wizard.jsp?objectnumber=new)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>type=&#34;create&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>See needed attributes</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;object type=&#34;[buildername]&#34; /&#62;</para
+><para
+>or &#60;relation role=&#34;[rolename]&#34; (destinationtype=&#34;[buildername]&#34;) (destination=&#34;[objectnumber]&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>See needed childnodes</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;action type=&#34;create&#34;&#62; &#60;object type=&#34;news&#34;&#62; &#60;relation destination=&#34;13234&#34; role=&#34;related&#34;/&#62; &#60;relation role=&#34;posrel&#34;&#62; &#60;field name=&#34;pos&#34;&#62;42&#60;/field&#62; &#60;object type=&#34;images&#34;&#62; &#60;field name=&#34;title&#34;&#62;new image&#60;/field&#62; &#60;/object&#62; &#60;/relation&#62; &#60;/object&#62; &#60;/action&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>action type=&#34;insert&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;insert /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>&#60;action type=&#34;insert&#34; /&#62; Use this action to insert this &#60;list /&#62; in the editwizard with objectnumber is &#34;new &#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>type=&#34;insert&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>See needed attributes</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;list /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;list role=&#34;posrel&#34; destination=&#34;images&#34; minoccurs=&#34;0&#34; maxoccurs=&#34;*&#34; orderby=&#34;field[@name=&#39;pos&#39;]&#34; ordertype=&#34;number&#34;&#62; &#60;title&#62;Images&#60;/title&#62; &#60;item displaymode=&#34;section&#34; displaytype=&#34;image&#34;&#62; &#60;title&#62;Overview&#60;/title&#62; &#60;field fdatapath=&#34;.&#34; ftype=&#34;startwizard&#34; objectnumber=&#34;{object/@number}&#34; wizardname=&#34;images&#34;&#62; &#60;prompt&#62;Change this image&#60;/prompt&#62; &#60;/field&#62; &#60;field name=&#34;title&#34; ftype=&#34;data&#34;&#62; &#60;prompt&#62;Title&#60;/prompt&#62;&#60;/field&#62; &#60;/item&#62; &#60;command name=&#34;insert&#34;/&#62; &#60;action type=&#34;create&#34;&#62; &#60;relation role=&#34;posrel&#34;&#62; &#60;object type=&#34;images&#34; &#62; &#60;field name=&#34;pos&#34;&#62;2&#60;/field&#62; &#60;/object&#62; &#60;/relation&#62; &#60;/action&#62; &#60;/list&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>action type=&#34;delete&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;action type=&#34;delete&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this action to define that users are allowed to delete objects of this kind. If a &#39;delete-action&#39; is defined in the wizard, the list.jsp will show a delete button. If a delete is performed, only the given object is deleted, NOT the related objects.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>type=&#34;delete&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>See needed attributes</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;prompt /&#62; If a prompt-node exists, in the list.jsp there will be prompted for a confirmation with the given text.</para
+><para
+>&#60;description /&#62; If a description is supplied, the given text will be shown as a &#39;hint&#39; on the delete-button.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;action type=&#34;delete&#34;&#62; &#60;prompt&#62;Wilt u echt dit newitem deleten?&#60;/prompt&#62; &#60;description&#62;Click here to delete this newitem&#60;/description&#62; &#60;/action&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>steps</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;steps /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this node to define in what sequence the form-schema&#39;s should be placed. If not supplied, the normal xml-order as found in the wizard&#39;s xml file will be used. So usually, you will not need to use this node.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>None.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;step form-schema=&#34;[form-schema-id]&#39; /&#62; Place one or more &#60;step /&#62; nodes to define the sequence to be used.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>See needed childnodes.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;steps&#62; &#60;step form-schema=&#34;basics&#34; /&#62; &#60;step form-schema=&#34;addmedia&#34; /&#62; &#60;step form-schema=&#34;incontext&#34; /&#62; &#60;/steps&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>form-schema</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;form-schema /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>A wizard will always be needing at least one form-schema. In a form-schema one form (or page) of a wizard is defined. If you are using multiple form-schema&#39;s, supply id&#39;s so that form-schema&#39;s can be identified.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>id=&#34;[form-schema-id]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;title /&#62; Place the title of the form-schema here.</para
+><para
+>&#60;field /&#62; or &#60;list /&#62; (See also: field or list)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;description /&#62; Here you can place your description of the form-schema.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;form-schema id=&#34;step1&#34;&#62; &#60;title&#62;This is a simple Form&#60;/title&#62; &#60;field name=&#34;intro&#34; &#62; &#60;prompt&#62;Enter the Intro-text&#60;/prompt&#62; &#60;/field&#62; &#60;/form-schema&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>object (inside action type=&#34;create&#34;)</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;object type=&#34;[buildername]&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Inside a create-action, you can place an object-node to define what should be created within mmbase if the create-action is performed. With this node, you can define what object should be created, what values should be placed in what fields, and you can define possible new relations that should be created.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>type=&#34;[buildername]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>See needed attributes.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;relation /&#62; If a relation node is placed inside an objectnode, a relation is created relating the object defined by the &#60;object /&#62; node and some other object (eg.: another to-be created object or an existing one.)</para
+><para
+>&#60;field /&#62; In the field nodes inside the object nodes, the user can define the defaultvalues of the designated fields. Eg.: &#60;field name=&#34;firstname&#34;&#62;Enter your firstname&#60;/field&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;action type=&#34;create&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;object type=&#34;news&#34;&#62; &#60;relation destination=&#34;13234&#34; role=&#34;related&#34;/&#62; &#60;relation role=&#34;posrel&#34;&#62; &#60;field name=&#34;pos&#34;&#62;42&#60;/field&#62; &#60;object type=&#34;images&#34;&#62; &#60;field name=&#34;title&#34;&#62;new image&#60;/field&#62; &#60;/object&#62; &#60;/relation&#62; &#60;/object&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>relation (inside action type=&#34;create&#34;)</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;relation /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Usually, the relation is placed inside an object-node (inside a create-action), or it will be placed directly inside a create-action. With this node, the user can make relations between two newly created objects, or, create a relation between one newly created object and an already existing object.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>destinationtype=&#34;[buildername]&#34; This attribute is not used anymore. Forget it I&#39;d say.</para
+><para
+>destination=&#34;[objectnumber or alias]&#34; Use this attribute to point the relation to an already existing object in the mmbase cloud.</para
+><para
+>role=&#34;[relationname]&#34; Use this attribute to define what kind of relation should be created. If omitted, the default InsRel relation is used. Best practice is to always define the role, eg.: &#34;related&#34; or &#34;posrel&#34; etc.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;object /&#62; (see also: object)</para
+><para
+>&#60;field /&#62; Default values of fields of a relation itself can be set also. Eg.: &#60;field name=&#34;pos&#34;&#62;-1&#60;/field&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;action type=&#34;create&#34; /&#62;</para
+><para
+>&#60;object /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><para
+>(See also: the &#60;action type=&#34;create&#34; /&#62; example and the &#60;object /&#62; example.</para
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field (general)</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Field nodes define what form-elements will be placed in the wizard. This fieldnodes in the xml are an important part of the wizard&#39;s definition. For detailed information on what fieldtypes need what kind of settings, see the other fielddefinitions in the reference. Note: the field nodes that can be placed inside a relation or object node have different syntax! (See also: &#60;object type=&#34;create&#34; /&#62;)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>name=&#34;[fieldname]&#34; fdatapath, ftype, dttype, dtrequired, dtminlength, dtmaxlength are automatically retrieved from mmbase. Overriding is always possible, however.</para
+><para
+>or (advanced users:) fdatapath=&#34;[xpath]&#34; and ftype=&#34;[fieldtype]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>ftype=&#34;[fieldtype]&#34; (line|text|enum|date|int)</para
+><para
+>dttype=&#34;[datatype]&#34; (string|int|date|datetime|time|html)</para
+><para
+>dtminlength=&#34;[minlength]&#34;</para
+><para
+>dtmaxlength=&#34;[maxlength]&#34;</para
+><para
+>dtrequired=&#34;[true|false]&#34;</para
+><para
+>rows=&#34;[rowcount]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;prompt /&#62; For every field, a prompt-text can be given. If defined, the prompt text will be visible in front of the field in the wizard.</para
+><para
+>&#60;description /&#62; For every field, a description can be given. If defined, the description will be shown &#34;onmouseover&#34;. If the user move the mouse over the field, the description will be shown in a hint.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;form-schema /&#62;</para
+><para
+>&#60;item /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;form-schema id=&#34;step1&#34;&#62; &#60;title&#62;Example form&#60;/title&#62; &#60;field name=&#34;title&#34; dtminlength=&#34;1&#34; ftype=&#34;line&#34;&#62; &#60;prompt&#62;News Title&#60;/prompt&#62; &#60;description&#62;You can enter the news-title here&#60;/description&#62; &#60;/field&#62; &#60;/form-schema&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field ftype=&#34;line&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field ftype=&#34;line&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>A line-field will show a single-line inputfield in the wizard. Use them for simple text entry.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>dttype=&#34;string&#34;</para
+><para
+>dttype=&#34;int&#34;</para
+><para
+>dtminlength=&#34;[minlength]&#34;</para
+><para
+>dtmaxlength=&#34;[maxlength]&#34;</para
+><para
+>dtrequired=&#34;[true|false]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;field name=&#34;title&#34; dtminlength=&#34;1&#34;&#62; &#60;prompt&#62;Title&#60;/prompt&#62; &#60;/field&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field ftype=&#34;int&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field ftype=&#34;int&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this field for number editing</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>dtmin=&#34;[minvalue]&#34;</para
+><para
+>dtmax=&#34;[maxvalue]&#34;</para
+><para
+>dtrequired=&#34;[true|false]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;field name=&#34;score&#34; dtmin=&#34;100&#34; dtmax=&#34;5000&#34; dtrequired=&#34;true&#34;&#62; &#60;prompt&#62;Enter position&#60;/prompt&#62; &#60;description&#62;Enter value between 100 and 5000 please.&#60;/description&#62; &#60;/field&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field ftype=&#34;date&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field ftype=&#34;date&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this field to edit date, date-time, or time fields.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>dtmin=&#34;[mindate]&#34;</para
+><para
+>dtmax=&#34;[mindate]&#34;</para
+><para
+>dttype=&#34;[date|datetime|time]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;field name=&#34;start&#34; dttype=&#34;date&#34;&#62; &#60;prompt&#62;Startdate&#60;/prompt&#62; &#60;/field&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field ftype=&#34;upload&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field ftype=&#34;upload&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this field to process uploads. Note: Make sure that you use this field in the right context: Usually, this field will store it&#39;s binary-value in a mmbase field named &#39;handle&#39;. See the upload example for more info.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;wizard&#62; &#60;title&#62;Image Upload&#60;/title&#62; &#60;action type=&#34;create&#34;&#62; &#60;object type=&#34;images&#34; /&#62; &#60;/action&#62; &#60;action type=&#34;load&#34;&#62; &#60;field name=&#34;title&#34; /&#62; &#60;field name=&#34;description&#34; /&#62; &#60;/action&#62; &#60;form-schema id=&#34;step1&#34;&#62; &#60;title&#62;Image upload&#60;/title&#62; &#60;field name=&#34;title&#34;&#62; &#60;prompt&#62;Title&#60;/prompt&#62; &#60;/field&#62; &#60;field name=&#34;description&#34; ftype=&#34;text&#34; rows=&#34;8&#34;&#62; &#60;prompt&#62;Description&#60;/prompt&#62; &#60;/field&#62; &#60;field name=&#34;handle&#34; ftype=&#34;upload&#34; dttype=&#34;image&#34;&#62; &#60;prompt&#62;upload&#60;/prompt&#62; &#60;/field&#62; &#60;/form-schema&#62; &#60;/wizard&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field ftype=&#34;startwizard&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field ftype=&#34;startwizard&#34;&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this field to start one wizard, from inside another wizard.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>objectnumber=&#34;{object/@number}&#34;</para
+><para
+>wizardname=&#34;[ name of the wizard ]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>inline=&#34;[true|false]&#34; an inline startwizard will replace the current wizard to create the new object and come back when ready, a not-inline startwizard will pop-up a window to create the new object .</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>None.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;item /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;command name=&#34;startwizard&#34; inline=&#34;false&#34; wizardname=&#34;tasks/myurls&#34; objectnumber=&#34;new&#34;/&#62; &#60;command name=&#34;startwizard&#34; inline=&#34;true&#34; wizardname=&#34;tasks/myurls&#34; objectnumber=&#34;new&#34;/&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field ftype=&#34;data&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field ftype=&#34;data&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this field to show values, but don&#39;t make it editable. In other words: use this to make a read-only field.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;field name=&#34;firstname&#34; ftype=&#34;data&#34;&#62; &#60;prompt&#62;Your firstname is:&#60;/prompt&#62; &#60;/field&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>field ftype=&#34;enum&#34;</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;field ftype=&#34;enum&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this field to make a &#34;dropdown&#34; inputfield. (In HTML-terms: a selectbox).</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;optionlist /&#62; Use this node to define the possible options for the field. (see also: optionlist)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>see field (general)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;field name=&#34;type&#34; ftype=&#34;enum&#34;&#62; &#60;prompt&#62;Articletype&#60;/prompt&#62; &#60;optionlist name=&#34;articletypes&#34;&#62; &#60;option id=&#34;1&#34;&#62;News&#60;/option&#62; &#60;option id=&#34;2&#34;&#62;Interview&#60;/option&#62; &#60;option id=&#34;3&#34;&#62;Information&#60;/option&#62; &#60;/optionlist&#62; &#60;/field&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>list</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;list destination=&#34;[buildername]&#34; role=&#34;[rolename]&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this to show and edit relations and the related objects.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>destination=&#34;[buildername]&#34;</para
+><para
+>role=&#34;[rolename]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>minoccurs=&#34;[minimal required number of items in the list]&#34;</para
+><para
+>maxoccurs=&#34;[maximum number of items in the list]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;item /&#62; (see also: item)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;action type=&#34;create&#34; /&#62; (see also: action)</para
+><para
+>&#60;action type=&#34;insert&#34; /&#62; (see also: action)</para
+><para
+>&#60;command name=&#34;search&#34; /&#62; (see also: command)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;form-schema /&#62;</para
+><para
+>&#60;list /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;list role=&#34;related&#34; destination=&#34;images&#34;&#62; &#60;command name=&#34;search&#34; nodepath=&#34;images&#34; fields=&#34;title&#34; age=&#34;-1&#34;&#62; &#60;/command&#62; &#60;item&#62; &#60;field name=&#34;title&#34; ftype=&#34;image&#34; /&#62; &#60;/item&#62; &#60;action type=&#34;create&#34;&#62; &#60;relation destinationtype=&#34;images&#34; /&#62; &#60;/action&#62; &#60;/list&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>lists</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;lists /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this node to define optionlists in a wizard.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>None.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;optionlist /&#62; (see also:optionlist)</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>See needed childnodes</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;lists&#62; &#60;optionlist name=&#34;priorities&#34;&#62; &#60;option id=&#34;1&#34;&#62;Low&#60;/option&#62; &#60;option id=&#34;2&#34;&#62;High&#60;/option&#62; &#60;/optionlist&#62; &#60;/lists&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>optionlist</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;optionlist /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this node to define an optionlist.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>name=&#34;[optionlistname]&#34; This optional attribute can be used if an optionlist is defined in a &#60;lists /&#62; node. To reference to the defined optionlist, you will need the optionlistname. Eg.: &#60;optionlist select=&#34;earlier_defined_optionlist&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;option id=&#34;[optionid]&#34;&#62;[optionvalue_to_be_shown_in_wizard]&#60;/option&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>See needed childnodes</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;wizard /&#62;</para
+><para
+>&#60;field ftype=&#34;enum&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><para
+>See the example for lists</para
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>command (name=&#34;search&#34;)</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;command name=&#34;search&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use this command inside a list node to define how a user can search for objects and add them to a list.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Attributes (general)</term
+><listitem
+><para
+>See for detailed information how to use nodepath, startnodes, fields, constraints, orderby the documentation of the MMBase taglib.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>name=&#34;search&#34;</para
+><para
+>nodepath=&#34;[buildername_to_start_with]&#34;</para
+><para
+>fields=&#34;[fieldnames of fields to show]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>startnodes=&#34;[objectnumber]&#34;</para
+><para
+>age=&#34;[default age to show in search-field]&#34; use -1 to set it to &#34;any age&#34;, use 1,7,31,365 for day, week, month, year ages.</para
+><para
+>constraints=&#34;[mmbase where part]&#34;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;prompt /&#62; Place the text to be shown in front of the searchfield here.</para
+><para
+>&#60;search-filter /&#62; Defines what extra searchfields should be shown and used in the query. See also: search-filter.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;list /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;list destination=&#34;people&#34; minoccurs=&#34;0&#34; maxoccurs=&#34;*&#34;&#62; &#60;command name=&#34;search&#34; nodepath=&#34;people&#34; fields=&#34;firstname,lastname&#34; orderby=&#34;lastname&#34; age=&#34;-1&#34;&#62; &#60;prompt&#62;#Search command prompt&#60;/prompt&#62; &#60;search-filter&#62; &#60;name&#62;firstname contains&#60;/name&#62; &#60;search-fields&#62;firstname&#60;/search-fields&#62; &#60;/search-filter&#62; &#60;search-filter&#62; &#60;name&#62;lastname contains&#60;/name&#62; &#60;search-fields&#62;lastname&#60;/search-fields&#62; &#60;/search-filter&#62; &#60;/command&#62; &#60;item&#62; &#60;field name=&#34;firstname&#34; &#62; &#60;prompt&#62;Field prompt&#60;/prompt&#62; &#60;description&#62;Field Description&#60;/description&#62; &#60;/field&#62; &#60;/item&#62; &#60;action type=&#34;create&#34;&#62; &#60;relation destinationtype=&#34;people&#34; role=&#34;related&#34; /&#62; &#60;/action&#62; &#60;/list&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>item</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;item /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Every list needs a way to present each occurrence in the list. These occurrences are named: &#34;item&#34;. In an item you can place the same fields as inside a form-schema. So, usually one or more fields are placed in an item.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;field /&#62;</para
+><para
+>or &#60;list /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>&#60;field /&#62;</para
+><para
+>or &#60;list /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;list /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>See the example for list</programlisting
+></listitem
+></varlistentry
+></variablelist
+><variablelist
+><title
+>search-filter</title
+><varlistentry
+><term
+>Syntax</term
+><listitem
+><para
+>&#60;search-filter /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Usage</term
+><listitem
+><para
+>Use the searchfilter to allow the user to fire a free-text query from the wizard. See the command name=&#34;search&#34; example.</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible attributes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Needed childnodes</term
+><listitem
+><para
+>&#60;name /&#62;</para
+><para
+>&#60;search-fields /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible childnodes</term
+><listitem
+><para
+>None</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Possible parents</term
+><listitem
+><para
+>&#60;command name=&#34;search&#34; /&#62;</para
+></listitem
+></varlistentry
+><varlistentry
+><term
+>Example</term
+><listitem
+><programlisting
+>&#60;search-filter&#62; &#60;name&#62;Naam bevat&#60;/name&#62; &#60;search-fields&#62;name&#60;/search-fields&#62; &#60;/search-filter&#62;</programlisting
+></listitem
+></varlistentry
+></variablelist
+></section
+></section
+><section
+id="configuration"
+><title
+>Configuration of the editwizards</title
+><para
+>The editwizards can be configured in a number of ways: where you store the xml configuration files, how the stylesheets and the templates of the editwizards and the language of the prompts.</para
+><section
+id="filelocation"
+><title
+>Location of files</title
+><para
+>The editwizards xml files have to be in a subdirectory of the directory from where the list.jsp or wizard.jsp is executed. The directory from which wizard.jsp and list.jsp are called is denoted the &#34;referring &#34;-directory.</para
+></section
+><section
+id="layout"
+><title
+>Manipulating the editwizard layout</title
+><para
+>The standard editwizard templates and stylesheets can be overridden to adjust them to your own needs and wishes. See the example below on what is possible.</para
+><figure
+><title
+>3 VOOR 12 version of the editwizards</title
+><screenshot
+><graphic
+fileref="media/3v12_skin.jpg"
+></graphic
+></screenshot
+></figure
+><para
+>To override classes of the default stylesheet in &#34;\mmapps\editwizard\style &#34; place a file style.css in the &#34;referring &#34;-directory and any classes you wish to override to this file. To override the xsl templates in \mmapps\editwizard\data\xsl create files called wizard.xsl, list.xsl and base.xsl and add the templates you wish to override in these files. Create a directory &#34;xsl &#34; in the &#34;referring &#34;-directory and place your own *.xsl files in thsi directory.</para
+></section
+><section
+id="internationalisation"
+><title
+>Internationalisation</title
+><para
+>The language of the prompts of the editwizards are defined in \mmapps\editwizard\data\xsl\prompts.xsl. Based on the language specified in mmbaseroot.xml the default prompts are overriden by the language specific prompts in \mmapps\editwizard\data\i18n (is this true ??)</para
 ></section
 ></section
 ></article
