@@ -7,56 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-	$Id: MultiRelations.java,v 1.17 2001-03-07 13:56:05 install Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.16  2001/03/06 12:30:25  install
-	Rico: added patch from Remco van 't Veer for allowed fields in orderstring
-	
-	Revision 1.15  2000/12/02 17:46:52  daniel
-	updated it to handle illegal field mappings
-	
-	Revision 1.14  2000/11/16 18:04:07  vpro
-	(marcel) fixed bug when multiple relations between objects where allowed and LISTed
-	
-	Revision 1.13  2000/11/09 12:16:49  eduard
-	Eduard : searchMultiLevelVector now supports OAliases
-	
-	Revision 1.12  2000/07/15 19:18:09  daniel
-	Fixed a bug with new DBType
-	
-	Revision 1.11  2000/07/15 10:14:42  daniel
-	Changed getDBType to int
-	
-	Revision 1.10  2000/03/30 13:11:32  wwwtech
-	Rico: added license
-	
-	Revision 1.9  2000/03/29 10:59:23  wwwtech
-	Rob: Licenses changed
-	
-	Revision 1.8  2000/03/24 14:33:59  wwwtech
-	Rico: total recompile
-	
-	Revision 1.7  2000/03/21 15:46:13  wwwtech
-	Removed private debug method and private field classname, using inherited instead
-	
-	Revision 1.6  2000/03/20 13:17:30  wwwtech
-	Rico: added super.getValue for global function support
-	
-	Revision 1.5  2000/03/09 10:07:14  wwwtech
-	Rico: Fixed multirelations so where clauses can contain similar tablenames ie like program and subprogram. This would go wrong with the old version
-	
-	Revision 1.4  2000/03/08 14:20:26  wwwtech
-	Rico: zapped several old unused methods
-	
-	Revision 1.3  2000/03/08 14:16:46  wwwtech
-	Rico: fixed the scope of several methods, plus added fix against similar table names going wrong in where clause
-	
-	Revision 1.2  2000/02/24 14:33:49  wwwtech
-	Rico: changed out.println by debug
-	
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -68,14 +18,30 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
+ * MultiRelations is a builder which creates 'virtual' nodes.
+ * The nodes are build out of a set of fields from different nodes, combined through a complex query,
+ * which is in turn based on the relations that exist between nodes.<br>
+ * The builder supplies a method to retrieve these virtual nodes, {@link #searchMultiLevelVector}.
+ * Other public methods in this builder function to handle the requests for data obtained from this particular node.
+ *
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.17 2001-03-07 13:56:05 install Exp $
+ * @author Pierre van Rooden
+ * @version $Id: MultiRelations.java,v 1.18 2001-03-09 13:15:09 pierre Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
-	final static boolean debug=false;
+    // logging variable
+	private static Logger log = Logging.getLoggerInstance(MultiRelations.class.getName());
 
+    /**
+    * Creates an instance of the MultiRelations builder.
+    * Called from the MMBase class.
+    * @param m the MMbase cloud creating the node
+    */
 	public MultiRelations(MMBase m) {
 		this.mmb=m;
 		this.tableName="multirelations";
@@ -85,71 +51,92 @@ public class MultiRelations extends MMObjectBuilder {
 
 	
 	/**
-	* insert a new object, normally not used (only subtables are used)
+    * Creates a new builder table in the current database.
+	* This method does not perform any action in MultiRelations, as there is no actual table associated with this builder.
 	*/
 	public boolean create() {
-		// no create needed this is a virtual builder that will query over
-		// multiple other builders.
-		return(true);
+		return true;
 	}
 
 
 	/**
-	* insert a new object, normally not used (only subtables are used)
+    * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
+	* This method does not perform any action in MultiRelations.
+    * @param owner The administrator creating the node
+    * @param node The object to insert
+    * @return -1 (the insert failed)
 	*/
 	public int insert(String owner,MMObjectNode node) {
-		// no insert allowed on this builder so signal -1
-		return(-1);
+		// no insert allowed on this builder, so signal -1
+		return -1;
 	}
 
+	/**
+    * What should a GUI display for this node.
+    * This version displays the contents of the 'name' field.
+    * @param node The node to display
+    * @return the display of the node as a <code>String</code>
+	*/
 	 public String getGUIIndicator(MMObjectNode node) {
         String str=node.getStringValue("name");
         if (str.length()>15) {
-            return(str.substring(0,12)+"...");
+            return str.substring(0,12)+"...";
         } else {
-            return(str);
+            return str;
         }
     }
 
-
+    /**
+    * What should a GUI display for this node/field combo.
+    * Default is null (indicating to display the field as is)
+    * Override this to display your own choice.
+    * @param node The node to display
+    * @param field the name field of the field to display
+    * @return the display of the node's field as a <code>String</code>, null if not specified
+    */
 	public String getGUIIndicator(String field,MMObjectNode node) {
-		return(null);
+		return null;
 	}
 
 
+    /**
+    * Return a field's database type. The returned value is one of the following values
+    * declared in FieldDefs:
+    * TYPE_STRING,
+    * TYPE_INTEGER,
+    * TYPE_BYTE,
+    * TYPE_FLOAT,
+    * TYPE_DOUBLE,
+    * TYPE_LONG,
+    * TYPE_UNKNOWN (returned if the original builder of the field cannot be determined)
+    * @param the requested field's name
+    * @return the field's type.
+    */
 	public int getDBType(String fieldName) {
 		// oke oke we expect a '.' in the name
 		int pos=fieldName.indexOf('.');
 		if (pos!=-1) {
 			String bulname=fieldName.substring(0,pos);
-			if (getTableNumber(bulname)>=0) bulname=bulname.substring(0,bulname.length()-1);
+			bulname=getTableName(bulname);
 			MMObjectBuilder bul=mmb.getMMObject(bulname);
 			String tmp=fieldName.substring(pos+1);
 			int tmp2=bul.getDBType(tmp);
-			return(tmp2);
+			return tmp2;
 		}
-		return(-1);
+		return FieldDefs.TYPE_UNKNOWN;
 	}
 
-	private Vector getSelectTypes(Vector rfields) {
-		Vector result=new Vector();
-		String val;
-		int pos;
-		for (Enumeration e=rfields.elements();e.hasMoreElements();) {
-			val=(String)e.nextElement();
-    		val=Strip.DoubleQuote(val,Strip.BOTH);
-			pos=val.indexOf('.');
-			if (pos!=-1) {
-				String val2=val.substring(0,pos);
-				result.addElement(val2);
-			}	
-		}
-		return(result);
-	}
-
-
+    /**
+    * Provides additional functionality when obtaining field values.
+    * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
+    * (generally when a fieldname is supplied that doesn't exist).
+    * This method does some ugly things with teh fieldname prefix (as in 'people.lastname').
+    * @param node the node whos efields are queries
+    * @param field the fieldname that is requested
+    * @return the result of the 'function', or null if no valid functions could be determined.
+    */
 	public Object getValue(MMObjectNode node,String fieldName) {
-		// oke oke we expect a '.' in the name
+		// we expect a '.' in the name
 		int pos=fieldName.indexOf('.');
 		if (pos!=-1) {
 			String bulname=fieldName.substring(0,pos);
@@ -159,38 +146,76 @@ public class MultiRelations extends MMObjectBuilder {
 				node.prefix=bulname+".";
 				Object o=bul.getValue(node,fieldName.substring(pos+1));
 				node.prefix="";
-				return(o);
+				return o;
 			} else {
 				bulname=bulname.substring(pos2+1);
 				MMObjectBuilder bul=mmb.getMMObject(bulname);
 				node.prefix=bulname+".";
 				Object o=bul.getValue(node,fieldName.substring(0,pos2)+"("+fieldName.substring(pos+1));
 				node.prefix="";
-				return(o);
+				return o;
 			}
 		} else {
 			super.getValue(node,fieldName);
 		}
-		return(null);
+		return null;
 	}
 
 	/**
-	* Enumerate all the objects that match the searchkeys
+	* Return all the objects that match the searchkeys.
+	* @param snode The number of the node to start the search with. The node has to be present in the first table
+    *      listed in the tables parameter.
+    * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
+    *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
+    *      Examples: 'people.lastname'
+    * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
+    * @param tables The builder chain. A list containing builder names.
+    *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
+    *      a relation builder by placing the name of the builder between two builders to search.
+    *      Example: company,people or typedef,authrel,people.
+    * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+    *      The syntax is either sql (if preceded by "WHERE') or
+    *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
+    * @param orderVec the fieldnames on which you want to sort.
+    * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
+    *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
+    *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
+    * @return a <code>Vector</code> containing all matching nodes
 	*/
 	public Vector searchMultiLevelVector(int snode,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
 		Vector v=new Vector();
 		v.addElement(""+snode);
-		return(searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction));
+		return searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction);
 	}
 
+	/**
+	* Return all the objects that match the searchkeys.
+    * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
+    *      listed in the tables parameter.
+    * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
+    *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
+    *      Examples: 'people.lastname'
+    * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
+    * @param tables The builder chain. A list containing builder names.
+    *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
+    *      a relation builder by placing the name of the builder between two builders to search.
+    *      Example: company,people or typedef,authrel,people.
+    * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
+    *      The syntax is either sql (if preceded by "WHERE') or
+    *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
+    * @param orderVec the fieldnames on which you want to sort.
+    * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
+    *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
+    *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
+    * @return a <code>Vector</code> containing all matching nodes
+	*/
 	public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
 		String stables,relstring,select,order,basenodestring,distinct;
-		Vector rfields,alltables,selectTypes;
+		Vector alltables,selectTypes;
 		MMObjectNode basenode;
 		int snode;
 
 		// Get all the fieldnames
-		rfields=fields;
 		if (pdistinct!=null && pdistinct.equals("YES")) {
 			distinct="distinct";
 		}  else {
@@ -198,22 +223,21 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 
 		// Get ALL tables (including missing reltables)
-		alltables=getAllTables(tables); 
-
+		alltables=getAllTables(tables);
+        if (alltables==null) return null;
+		
 		// Get the destination select string;
-		select=getSelectString(alltables,rfields);
+		select=getSelectString(alltables,fields);
+        if (select==null) return null;
 
 		// Get the tables names corresponding to the fields (for the mapping)
-		selectTypes=getSelectTypes(rfields);
+		selectTypes=getSelectTypes(alltables,select);
 
 		// create the order parts
 		order=getOrderString(alltables,orderVec,direction);
 
 		// get all the table names 
 		stables=getTableString(alltables);
-
-		// get the relation string
-		relstring=getRelationString(alltables);
 
 		// Supporting more then 1 source node or no source node at all
 		// Note that node number -1 is seen as no source node
@@ -224,7 +248,8 @@ public class MultiRelations extends MMObjectBuilder {
 			// go trough the whole list and verify that it are all integers
 			// from last to first,,... since we want snode to be the one that contains the first..
 			for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
-				str = Strip.DoubleQuote((String)snodes.elementAt(i),Strip.BOTH);
+//				str = Strip.DoubleQuote((String)snodes.elementAt(i),Strip.BOTH);
+				str = (String)snodes.elementAt(i);
 				try {			
 					snode=Integer.parseInt(str);
 				}
@@ -243,10 +268,8 @@ public class MultiRelations extends MMObjectBuilder {
 				sidx=alltables.indexOf(basenode.parent.tableName);
 				if (sidx<0) sidx=0;
 				str=idx2char(sidx);
-				bb.append(" (");
 				bb.append(getNodeString(str,snodes));
 				// Check if we got a relation to ourself
-				bb.append(") AND ");
 				basenodestring=bb.toString();
 			} else {
 				basenodestring="";
@@ -254,288 +277,378 @@ public class MultiRelations extends MMObjectBuilder {
 		} else {
 			basenodestring="";
 		}
+		
+		// get the relation string
+		relstring=getRelationString(alltables);
+		if ((relstring.length()>0) && (basenodestring.length()>0)) {
+				relstring=" AND "+relstring;
+		}
 
 		// create the extra where parts
-		if (where!=null && !where.equals("")) {
+		
+		if (where!=null && !where.trim().equals("")) {
 			where=QueryConvertor.altaVista2SQL(where).substring(5);
-			if (relstring.length()>1) {
-				where="AND ("+getWhereConvert(alltables,where,tables)+")";
-			} else {
-				where=" ("+getWhereConvert(alltables,where,tables)+")";
+			where=getWhereConvert(alltables,where,tables);
+			if (basenodestring.length()+relstring.length()>0) {
+				where=" AND ("+where+")";
 			}
 		} else {
 			where="";
 		}
 
 		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			String query="select "+distinct+" "+select+" from "+stables+" where "+basenodestring+" "+relstring +" "+where+" "+order;
-			if (debug) debug("Query "+query);
+            MultiConnection con=null;
+	    	Statement stmt=null;
+		    try {
+    			con=mmb.getConnection();
+	    		stmt=con.createStatement();
+	    		String query;
+	    		if (basenodestring.length()+relstring.length()+where.length()>1) {
+    		    	query="select "+distinct+" "+select+" from "+stables+" where "+basenodestring+relstring+where+" "+order;
+    		    } else {
+    		    	query="select "+distinct+" "+select+" from "+stables+" "+order;
+    		    }
+			    log.debug("Query "+query);
 
-			ResultSet rs=stmt.executeQuery(query);
-			MMObjectNode node;
-			Vector results=new Vector();
-			Integer number;
-			String tmp,prefix;
-			while(rs.next()) {
-				// create a new object and add it to the result vector
-				node=new MMObjectNode(this);
-				ResultSetMetaData rd=rs.getMetaData();
-				String fieldname;String fieldtype;
-				for (int i=1;i<=rd.getColumnCount();i++) {
-					prefix=selectTypes.elementAt(i-1)+".";
-					fieldname=rd.getColumnName(i);	
-					//fieldtype=rd.getColumnTypeName(i);	
-					node=database.decodeDBnodeField(node,fieldname,rs,i,prefix);
-					if (debug) debug("Node="+node);
-				}
-				// clear the changed signal
-				//node.clearChanged(); // huh ?
-				results.addElement(node);
-				// huge trick to fill the caches does it make sense ?
-				number=new Integer(node.getIntValue("number"));
+    			ResultSet rs=stmt.executeQuery(query);
+	    		MMObjectNode node;
+		    	Vector results=new Vector();
+    			String tmp,prefix;
+	    		while(rs.next()) {
+		    		// create a new object and add it to the result vector
+			    	node=new MMObjectNode(this);
+				    ResultSetMetaData rd=rs.getMetaData();
+    				String fieldname;
+	    			for (int i=1;i<=rd.getColumnCount();i++) {
+		    			prefix=selectTypes.elementAt(i-1)+".";
+			    		fieldname=rd.getColumnName(i);	
+					    node=database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+	    			}
+    				results.addElement(node);		    		
+		        }
+    			//  return the results
+	    		return results;
+		    } finally {
+		        mmb.closeConnection(con,stmt);
 			}	
-			stmt.close();
-			con.close();
-			// return the results
-			return(results);
-		} catch (SQLException ee) {
+		} catch (Exception e) {
 			// something went wrong print it to the logs
-			debug("searchMultiLevelVector(): ERROR: ");
-			ee.printStackTrace();
-			return(null);
+			log.error("searchMultiLevelVector(): ERROR: ");
+			log.error(Logging.stackTrace(e));
+			return null;
 		}
 	}
 
+	/**
+	* Stores the tables/builder names used in the request for each field to return.
+	* @param rfields the list of requested fields
+	* @return a list of prefixes of fieldnames
+	*/
+	private Vector getSelectTypes(Vector alltables, String fields) {
+		Vector result=new Vector();
+		String val;
+		int pos;
+		for (Enumeration e=grabFunctionParameters(fields).elements();e.hasMoreElements();) {
+			val=(String)e.nextElement();
+			int idx=val.charAt(0) - 'a';
+			result.addElement(alltables.get(idx));
+		}
+		return result;
+	}
+
+
+	/**
+	* Creates a full chain of table names.
+	* This includes adding relation tables when not specified, and converting table names by
+	* removing numeric extensions (such as peopl1,people2).
+	* @param tables the original chain of tables
+	* @return an expanded list of tablesnames
+	*/
 	private Vector getAllTables(Vector tables) {
 		Vector alltables=new Vector();
-		boolean lastrel=false,isRel;
-		boolean first=true;
+		boolean lastrel=true;  // true: prevents the first tab;le to be preceded by a relation table
 		String curtable;
 
 		for (Enumeration e=tables.elements();e.hasMoreElements();) {
 			curtable=(String)e.nextElement();
-    		curtable= Strip.DoubleQuote(curtable,Strip.BOTH);
-			if (getTableNumber(curtable)>=0) curtable=curtable.substring(0,curtable.length()-1);
-			isRel=mmb.getTypeDef().isRelationTable(curtable);
-			if (lastrel) {
-				if (isRel) {
-					// rel, rel
-					debug("Error , two reltables "+curtable);
-					lastrel=true;
-				} else {
-					// rel, nonrel
-					alltables.addElement(curtable);
-					lastrel=false;
+//    		curtable= getTableName(Strip.DoubleQuote(curtable,Strip.BOTH));
+    		curtable= getTableName(curtable);
+    		// check builder - should throw exception if builder doesn't exist ?
+    		MMObjectBuilder bul = mmb.getMMObject(curtable);
+    		if (bul==null) {
+    		    log.error("getAllTables() : Specified builder "+curtable+" does not exist.");
+    		    return null;
+    		}
+    		if (bul instanceof InsRel) {
+			    alltables.addElement(curtable);
+			    lastrel=!lastrel;  // toggle lastrel - allows for relations to be made to relationnnodes
+            } else {
+				// nonrel, nonrel
+				if (!lastrel) {
+				    alltables.addElement("insrel");
 				}
-			} else {
-				if (isRel) {
-					// nonrel, rel
-					alltables.addElement(curtable);
-					lastrel=true;
-				} else {
-					// nonrel, nonrel
-					if (!first) {
-						 alltables.addElement("insrel");
-					}
-					alltables.addElement(curtable);
-					lastrel=false;
-				}
+				alltables.addElement(curtable);
+				lastrel=false;
 			}
-			first=false;
 		}
-		return(alltables);
+		return alltables ;
 	}
 
+	/**
+	* Returns the number part of a tablename, provided it has one.
+	* The number is the numeric digit appended at a name in order to make using a table more than once possible.
+	* @param table name of the original table
+	* @return An <code>int</code> containing the table number, or -1 if the table has no number
+	*/
 	private int getTableNumber(String table) {
 		char ch;
-		int i;
-
 		ch=table.charAt(table.length()-1);
 		if (Character.isDigit(ch)) {
-			i=Integer.parseInt(""+ch);
+			return Integer.parseInt(""+ch);
 		} else {
-			i=-1;
+			return -1;
 		}
-		return(i);
 	}
 
+	/**
+	* Returns the name part of a tablename.
+	* The name part is the table anme moinus the numeric digit appended at a name (if appliable).
+	* @param table name of the original table
+	* @return A <code>String</code> containing the table name
+	*/
 	private String getTableName(String table) {
 		char ch;
-		String str;
-
 		ch=table.charAt(table.length()-1);
 		if (Character.isDigit(ch)) {
-			str=table.substring(0,table.length()-1);
+			return table.substring(0,table.length()-1);
 		} else {
-			str=table;
+			return table;
 		}
-		return(str);
 	}
 
-	private Vector getFields(Vector tables) {
-		Vector v=new Vector();
-		for (Enumeration e=tables.elements();e.hasMoreElements();) {
-			getFields(v,Strip.DoubleQuote((String)e.nextElement(),Strip.BOTH));
+	/**
+	* Determines the SQL-query version of a tablename.
+	* Thisis done by searching for teh appropriate tablename in a known list, and caclulating a name based on teh index in that list.
+	* @param alltables the tablenames known (used to determine the SQL tablename)
+	* @param table the table name to convert
+	* @return the SQL table name as a <code>String</code>
+	*/
+	private String getSQLTableName(Vector alltables,String table) {
+	    int x=getTableNumber(table);
+	    int idx=-1;
+	    if (x<0) {
+	        idx=alltables.indexOf(table);
+	    } else {
+	        table=getTableName(table);
+	        int y=0;
+	        while(y<x) {
+	            idx=alltables.indexOf(table,idx+1);
+	            y++;
+	        }
+	    }
+		if (idx>=0) {
+		    return idx2char(idx);
+		} else {
+		    return null;
 		}
-		return(v);
+	}
+	
+	/**
+	* Determines the SQL-query version of a field name.
+	* Basically, this means replacing the table name specified in the user's field name by the one created
+	* for the query,
+	* @param alltables the tablenames known (used to determine the SQL tablename)
+	* @param fieldname the field name to convert
+	* @return the SQL field name as a <code>String</code>
+	*/
+	private String getSQLFieldName(Vector alltables,String fieldName) {
+	    int pos=fieldName.indexOf('.'); // check if a tablename precedes the fieldname
+	    if (pos!=-1) {
+	        String table=fieldName.substring(0,pos); // the table
+	        String idxn=getSQLTableName(alltables,table);
+	        if (idxn==null) {
+	            log.error("getSQLFieldName(): The field '"+fieldName+"' has an invalid type specified");
+	        } else {
+	            String field=fieldName.substring(pos+1); // the field
+	            field=mmb.getDatabase().getAllowedField(field);
+	            return idxn+"."+field;	
+	        }
+	    } else {
+	        // field has no type
+	        log.error("getSQLFieldName(): The field '"+fieldName+"' has no type specified");
+	    }
+	    return null;
 	}
 
-	private Vector getFields(String table) {
-		Vector result=new Vector();
-		return(getFields(result,table));
+	/**
+	* Retrieves a comma-seperated list of fieldnames from a value (possibly a function name)
+	*/	
+    private String parseSelectField(Vector alltables, String val) {
+		    // strip the function(s)
+		    String field;
+		    int pos=val.indexOf('(');
+		    if (pos!=-1) {
+		        String result="";
+		        val=val.substring(pos+1);
+		        pos=val.lastIndexOf(')');
+		        if (pos!=-1) {
+		            val=val.substring(0,pos);
+		        }
+		        Vector fields=grabFunctionParameters(val);
+		        for (int i=0; i<fields.size(); i++) {
+		            field=parseSelectField(alltables,(String)fields.get(i));
+		            if(!field.equals("")) {
+    			        if (!result.equals("")) result+=",";
+		                result+=field;
+    			    }
+		        }
+		        return result;
+		    } else {
+		        if (Character.isDigit(val.charAt(0))) {
+		            return "";
+		        }
+    			field=getSQLFieldName(alltables,val);
+	    		if (field==null) {
+		    	    return "";
+			    } else {
+    			    return field;
+	    		}
+		    }
+		
 	}
-
-	private Vector getFields(Vector v,String table) {
-		if (v==null) v=new Vector();
-
-		MMObjectBuilder bul=mmb.getMMObject(table);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			v.addElement(table+"."+(String)r.nextElement());
-		}
-		return(v);
-	}
-
+	
+	/**
+	* Creates a select string for the Multi level query.
+	* This consists of a list of fieldnames, preceded by a tablename.
+	* @param alltables the tablenames to use
+	* @param rfields the fields that were requested
+	* @return a select <code>String</code>
+	*/
 	protected String getSelectString(Vector alltables,Vector rfields) {
 		String result="";
-		String val,table,field;
-		int pos,idx,x,y;
-
+		String val,field;
 		for (Enumeration r=rfields.elements();r.hasMoreElements();) {
-			val=(String)r.nextElement();
-    		val=Strip.DoubleQuote(val,Strip.BOTH);
-			pos=val.indexOf('.');
-			if (pos!=-1) {
-				table=val.substring(0,pos); // the table
-				x=getTableNumber(table);
-				if (x<0) {
-					idx=alltables.indexOf(table);
-				} else {
-					table=val.substring(0,pos-1); // the table
-					y=0;
-					idx=-1;
-					do {
-						idx=alltables.indexOf(table,idx+1);
-						y++;
-					} while(y<x);
-				}
-				if (idx>=0) {
-					field=val.substring(pos+1); // the field
-					field=mmb.getDatabase().getAllowedField(field);
-					if (!result.equals("")) result+=", ";
-					result+=""+idx2char(idx)+"."+field;	
-				}
-			}	
+			val=(String)r.nextElement();			
+//    		val=Strip.DoubleQuote(val,Strip.BOTH);
+            field=parseSelectField(alltables,val);
+            if(!field.equals("")) {
+                if (!result.equals("")) result+=",";
+                result+=field;
+            }
 		}
-//		debug("getSelectString="+result);
-		return(result);
+		if (result.equals("")) {
+	        log.error("getSelectString(): no valid fields could be found");
+		    return null;
+		} else {
+    		return result;
+        }
 	}
 
+	/**
+	* Creates an order string for the Multi level query.
+	* This consists of a list of fieldnames (preceded by a tablename), with an ascending or descending order.
+	* @param alltables the tablenames to use
+	* @param orders the fields that were requested
+	* @param direction the direction of each order field ("UP" or "DOWN")
+	* @return a order <code>String</code>
+	*/
 	private String getOrderString(Vector alltables,Vector orders,Vector direction) {
-		StringBuffer result=new StringBuffer();
-		String val,table,field,dir;
-		int pos,idx,opos;
-		// UP = ASC, DOWN = DESC
+		String result="";
+		String val,field,dir;
+		int opos;
 
-		if (orders==null) return(result.toString());
+		if (orders==null) return result.toString();
 		// Convert direction table
-		for (pos=0;pos<direction.size();pos++) {
+		for (int pos=0; pos<direction.size(); pos++) {
 			val=(String)direction.elementAt(pos);
-    		val=Strip.DoubleQuote(val,Strip.BOTH);
+//    		val=Strip.DoubleQuote(val,Strip.BOTH);
 			if (val.equalsIgnoreCase("DOWN")) {
-				direction.setElementAt("DESC",pos);
+				direction.setElementAt("DESC",pos); // DOWN is DESC
 			} else {
-				direction.setElementAt("ASC",pos);
+				direction.setElementAt("ASC",pos);  // UP is ASC
 			}
 		}
 
 		opos=0;
 		for (Enumeration r=orders.elements();r.hasMoreElements();opos++) {
 			val=(String)r.nextElement();
-    		val=Strip.DoubleQuote(val,Strip.BOTH);
-			pos=val.indexOf('.');
-			if (pos!=-1) {
-				table=val.substring(0,pos); // table
-				field=val.substring(pos+1); // field
-				field=mmb.getDatabase().getAllowedField(field);
-				if (result.length()>0) {
-					result.append(", ");
-				} else {
-					result.append(" ORDER BY ");
-				}
-				idx=alltables.indexOf(table);
-				if (opos<direction.size()) {
-					dir=(String)direction.elementAt(opos);
-				} else {
-					dir=(String)direction.elementAt(0);
-				}
-				if (idx>=0) result.append(idx2char(idx)+"."+field+" "+dir);	
+//    		val=Strip.DoubleQuote(val,Strip.BOTH);
+			field=getSQLFieldName(alltables,val);
+			if (field==null) {
+			    return null;
+			} else {
+    			if (!result.equals("")) {
+	    		    result+=", ";
+		    	} else {
+			        result+=" ORDER BY ";
+    			}
+	    		if (opos<direction.size()) {
+		    	    dir=(String)direction.elementAt(opos);
+			    } else {
+    			    dir=(String)direction.elementAt(0);
+	    		}
+		    	result+=field+" "+dir;
 			}	
 		}
-		return(result.toString());
-	}
-
-	private String getWhereConvert(Vector alltables,String where,Vector tables) {
-		String atable,table,pre,post,result2=where;
-		int i=0,x,y,idx,cx,px;
-		char ch;
-
-		for (Enumeration e=tables.elements();e.hasMoreElements();) {
-			atable=Strip.DoubleQuote((String)e.nextElement(),Strip.BOTH);
-			x=getTableNumber(atable);
-			if (x<0) {
-				idx=alltables.indexOf(atable);
-			} else {
-				table=atable.substring(0,atable.length()-1); // the table
-				y=0;
-				idx=-1;
-				do {
-					idx=alltables.indexOf(table,idx+1);
-					y++;
-				} while(y<x);
-			}
-			// not 100% safe
-			if (idx<0) idx=0;
-
-			// This translates the long tablename to the short one , the
-			// database expects
-			// ie people.account to a.account
-			cx=result2.indexOf(atable+".",0);
-			while (cx!=-1) {
-				if (cx>0) ch=result2.charAt(cx-1);
-				else ch=0;
-				if (!isTableNameChar(ch)) {
-					pre=result2.substring(0,cx);
-					post=result2.substring(cx+atable.length());
-					// make sure field has allowed name
-					int j;
-					StringBuffer b = new StringBuffer();
-					for (j = 1; j < post.length() && (Character.isLetterOrDigit(post.charAt(j)) || post.charAt(j) == '_') ; j++) {
-						b.append(post.charAt(j));
-					}
-					post = "."+ mmb.getDatabase().getAllowedField(b.toString()) + post.substring(j);
-
-					result2=pre+idx2char(idx)+post;
-				}
-				cx=result2.indexOf(atable+".",cx+1);
-			}
-			if (debug) debug("getWhereConvert for table "+atable+"|"+result2+"|");
-		}
-		return(result2.toString());
+		return result;
 	}
 
 	/**
-	 * This method defines what is 'allowed' in tablenames
-	 * Multilevel uses this to find out what is a tablename and what not
-	 */
-	private boolean isTableNameChar(char ch) {
-		boolean rtn=false;
+	* Creates a WHERE clause for the Multi level query.
+	* This involves replacing fieldnames in the clouse with those fit for the SQL query.
+	* @param alltables the tablenames to use
+	* @param string the original where clause
+	* @param tables ?
+	* @return a where clause <code>String</code>
+	*/
+	private String getWhereConvert(Vector alltables,String where,Vector tables) {
+		String atable,table,result=where;
+		int cx;
+		char ch;
 
-		if (ch=='_' || Character.isLetterOrDigit(ch)) rtn=true;
-		return(rtn);
+		for (Enumeration e=tables.elements();e.hasMoreElements();) {
+//			atable=Strip.DoubleQuote((String)e.nextElement(),Strip.BOTH);
+			atable=(String)e.nextElement();
+		    table = getSQLTableName(alltables,atable);
+
+			// This translates the long tablename to the short one
+			// i.e. people.account to a.account.
+			cx=result.indexOf(atable+".",0);
+			while (cx!=-1) {
+				if (cx>0)
+				    ch=result.charAt(cx-1);
+				else
+				    ch=0;
+				if (!isTableNameChar(ch)) {
+				    int fx=cx+atable.length()+1;
+				    int lx;
+                    for (lx=fx;
+                         lx < result.length() && (Character.isLetterOrDigit(result.charAt(lx)) || result.charAt(lx) == '_');
+                         lx++);
+					result=result.substring(0,cx)+
+					       table+"."+
+					       mmb.getDatabase().getAllowedField(result.substring(fx,lx))+
+					       result.substring(lx);
+				}
+				cx=result.indexOf(atable+".",cx+1);
+			}
+			log.debug("getWhereConvert for table "+atable+"|"+result+"|");
+		}
+		return result;
 	}
 
+	/**
+	* This method defines what is 'allowed' in tablenames.
+	* Multilevel uses this to find out what is a tablename and what not
+	*/
+	private boolean isTableNameChar(char ch) {
+		return  (ch=='_') || Character.isLetterOrDigit(ch);
+	}
+
+	/**
+	* This method defines what is 'allowed' in tablenames.
+	* Multilevel uses this to find out what is a tablename and what not
+	*/
 	protected String getTableString(Vector alltables) {
 		StringBuffer result=new StringBuffer("");
 		String val;
@@ -548,104 +661,130 @@ public class MultiRelations extends MMObjectBuilder {
 			result.append(" "+idx2char(idx));	
 			idx++;
 		}
-		return(result.toString());
+		return result.toString();
 	}
 
+	// get a reference to the number field in a table
+	private String numberOf(String table) {
+	    return table+"."+mmb.getDatabase().getNumberString();
+	};
+	
+	
+	/**
+	* Creates a condition string which checks the relations between nodes.
+	* The string can then be added to the query's where clause.
+	* @param alltables the tablenames to use
+	* @return a condition as a <code>String</code>
+	*/
 	protected String getRelationString(Vector alltables) {
 		StringBuffer result=new StringBuffer("");
 		int siz;
-		String src,rel,dst;
+		String src,dst;
 		int so,ro,rnum;
 		TypeDef typedef;
 		TypeRel typerel;
 		InsRel insrel;
+		RelDef reldef;
 
 		typedef=mmb.getTypeDef();
 		typerel=mmb.getTypeRel();
+		reldef=mmb.getRelDef();
 		insrel=mmb.getInsRel();
 		siz=alltables.size()-2;
 		for (int i=0;i<siz;i+=2) {
-			src=(String)alltables.elementAt(i);							// name of table (eg. image)
-			rel=(String)alltables.elementAt(i+1);						// relation type (eg. insrel)
-			dst=(String)alltables.elementAt(i+2);						// name of table (eq. audiopart)
+		    boolean desttosrc=false;
+		    boolean srctodest=false;
+			src=(String)alltables.elementAt(i);							// name of the source table
+			dst=(String)alltables.elementAt(i+2);						// name of destination table
 
-			so=typedef.getIntValue(src);								// get the number of image
-			ro=typedef.getIntValue(dst);								// get the number of audiopart
-
-			MMObjectNode nodes = mmb.getMMObject(src).getNode(so);		// transform them to MMObjectNodes
-			MMObjectNode noded = mmb.getMMObject(dst).getNode(ro);
-			Vector types = typerel.getAllowedRelationsTypes(so, ro);	// get the allowed relations
-
-			Enumeration e= types.elements();
-			MMObjectNode reltypeNode;
-			int x = 0, y=0;
-			rnum = -1;
-			if( e.hasMoreElements() ) { 
-																	// check if specified relation is a valid one
-				// if specified reltype is insrel, check all 
-
-				if( rel.equals("insrel") ) {
-					while( e.hasMoreElements() ) { 
-						reltypeNode = (MMObjectNode)e.nextElement();	
-						if( debug ) debug("getRelationString(): reltypeNode("+reltypeNode+")");
-						rnum = reltypeNode.getIntValue("number");
-						if( debug ) debug("getRelationString(): rnum("+rnum+")");
-						if (insrel.reldefCorrect(so,ro,rnum)) {				// relations all in same directions?
-							x++;
-						} else {
-							y++;
-						}
-					}
-					if( x==0 || y==0 ) {									// allowed when all in same directions
-						if( debug ) 
-							debug("getRelationString(): x("+x+") y("+y+")");
-					} else {
-						debug("getRelationString(): ERROR: src("+src+") has NO unidirectional relations with dst("+dst+")!");
-					}
-				} else {
-					reltypeNode = (MMObjectNode)e.nextElement();	
-					rnum = reltypeNode.getIntValue("number");
-					if( debug ) debug("getRelationString(): one entry found, rnum("+rnum+")");
-				}
-			} else {
-				debug("getRelationString(): ERROR: src("+src+") -> rel("+rel+") -> dst("+dst+") not allowed!");
-			}
+			rnum=-1;
+			so=typedef.getIntValue(src);								// get the number of the source
+			ro=typedef.getIntValue(dst);								// get the number of the destination
 
 			if (!result.toString().equals("")) result.append(" AND ");
-			if (insrel.reldefCorrect(so,ro,rnum)) {
-				result.append(idx2char(i)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".snumber AND "+idx2char(i+2)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".dnumber");
-			} else {
-				result.append(idx2char(i)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".dnumber AND "+idx2char(i+2)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".snumber");
+			
+			// check if  a definite rnumber was requested...
+            if (rnum>-1) {
+			    result.append(idx2char(i+1)+".rnumber="+rnum+" AND ");
+			    srctodest=typerel.reldefCorrect(so,ro,rnum);
+                desttosrc=typerel.reldefCorrect(ro,so,rnum);
+            } else {
+			    MMObjectNode typenode;
+			    for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
+			        // get the allowed relation definitions
+			        typenode = (MMObjectNode)e.nextElement();
+			        desttosrc= desttosrc || typenode.getIntValue("snumber")==so;
+			        srctodest= srctodest || typenode.getIntValue("snumber")==ro;
+			        if (desttosrc && srctodest) break;
+			    }
+            }
 
+			// check for directionality if supported
+			String dirstring="";
+			if (InsRel.usesdir) {
+			    dirstring=" AND "+idx2char(i+1)+".dir=2";
 			}
+			if (desttosrc) {
+			    // there is a typed relation from destination to src
+                if (srctodest) {
+                    // there is ALSO a typed relation from src to destination - make a more complex query
+                    result.append(
+    	    			   "(("+numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
+	    			            numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber ) OR ("+
+    	    			        numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
+			    	            numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring+"))");
+	            } else {
+			        // there is ONLY a typed relation from destination to src - optimized query
+                    result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
+	    			            numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber");
+	            }
+		    } else {
+			    // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
+			    result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".dnumber AND "+
+			                    numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring);
+			}
+			
 		}
-		return(result.toString());
+		return result.toString();
 	}
 
+	/**
+	* Converts an index to a one-character string.
+	* I.e. o becomes 'a', 1 becomes 'b', etc.
+	* This is used to map the tables in a List to alternate names (using their index in the list).
+	* @param idx the index
+	* @return the one-letter name as a <code>String</code>
+	*/
 	protected String idx2char(int idx) {
-		return(""+new Character((char)('a'+idx)));
+		return ""+new Character((char)('a'+idx));
 	}
 
 	private String getNodeString(String bstr,Vector snodes) {
 		String snode,str;
 		StringBuffer bb=new StringBuffer();
 
-		snode=Strip.DoubleQuote((String)snodes.elementAt(0),Strip.BOTH);
+//		snode=Strip.DoubleQuote((String)snodes.elementAt(0),Strip.BOTH);
+		snode=(String)snodes.elementAt(0);
 		if (snodes.size()>1) {
 			bb.append(bstr+"."+mmb.getDatabase().getNumberString()+" in ("+snode);
 			for (int i=1;i<snodes.size();i++) {
-				str=Strip.DoubleQuote((String)snodes.elementAt(i),Strip.BOTH);
+//				str=Strip.DoubleQuote((String)snodes.elementAt(i),Strip.BOTH);
+				str=(String)snodes.elementAt(i);
 				bb.append(","+str);
 			}
 			bb.append(")");
 		} else {
 			bb.append(bstr+"."+mmb.getDatabase().getNumberString()+"="+snode);
 		}
-		return(bb.toString());
+		return bb.toString();
 	}
 
-	/**
-	*/
+    /**
+    * Get text from a blob field. the text is cut if it is to long.
+    * @param fieldname name of the field
+    * @param number number of the object in the table
+    * @return a <code>String</code> containing the contents of a field as text
+    */
 	public String getShortedText(String fieldname,int number) {
 		try {
 			String result=null;
@@ -667,17 +806,21 @@ public class MultiRelations extends MMObjectBuilder {
 			}
 			stmt.close();
 			con.close();
-			return(result);
+			return result;
 		} catch (Exception e) {
-			debug("getShortedText(): Error while trying to load text");
-			e.printStackTrace();
+			log.error("getShortedText(): Error while trying to load text");
+			log.error(Logging.stackTrace(e));
 		}
-		return(null);
+		return null;
 	}
 
 
-	/**
-	*/
+    /**
+    * Get binary data of a database blob field. the data is cut if it is to long.
+    * @param fieldname name of the field
+    * @param number number of the object in the table
+    * @return an array of <code>byte</code> containing the contents of a field as text
+    */
 	public byte[] getShortedByte(String fieldname,int number) {
 		try {
 			byte[] result=null;
@@ -698,12 +841,12 @@ public class MultiRelations extends MMObjectBuilder {
 			}
 			stmt.close();
 			con.close();
-			return(result);
+			return result;
 		} catch (Exception e) {
-			debug("getShortedByte(): Error while trying to load bytes");
-			e.printStackTrace();
+			log.error("getShortedByte(): Error while trying to load bytes");
+			log.error(Logging.stackTrace(e));
 		}
-		return(null);
+		return null;
 	}
 
 }
