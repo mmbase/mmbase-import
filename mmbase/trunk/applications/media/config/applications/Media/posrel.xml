@@ -25,11 +25,29 @@
 	</node>
 
   <!-- mediaproviders -> urlcomposers -->
-	<node number="2000" owner="default" snumber="134" dnumber="1000" rtype="posrel" dir="bidirectional">
+
+	<node number="2004" owner="default" snumber="3001" dnumber="1002" rtype="posrel" dir="bidirectional">
 		<pos>1</pos>
 	</node>
-	<node number="2001" owner="default" snumber="132" dnumber="1001" rtype="posrel" dir="bidirectional">
-		<pos>1</pos>
+	<node number="2005" owner="default" snumber="3001" dnumber="1003" rtype="posrel" dir="bidirectional">
+		<pos>2</pos>
+	</node>
+	<node number="2006" owner="default" snumber="3001" dnumber="1000" rtype="posrel" dir="bidirectional">
+		<pos>3</pos>
 	</node>
 
+	<node number="2008" owner="default" snumber="3002" dnumber="1004" rtype="posrel" dir="bidirectional">
+		<pos>1</pos>
+	</node>
+	<node number="2009" owner="default" snumber="3002" dnumber="1005" rtype="posrel" dir="bidirectional">
+		<pos>2</pos>
+	</node>
+	<node number="2010" owner="default" snumber="3002" dnumber="1000" rtype="posrel" dir="bidirectional">
+		<pos>3</pos>
+	</node>
+
+  <node number="2011" owner="default" snumber="3003" dnumber="1500" rtype="posrel" dir="bidirectional">
+		<pos>1</pos>
+	</node>
+ 
 </posrel>

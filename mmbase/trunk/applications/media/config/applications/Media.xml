@@ -57,7 +57,6 @@
 
     <!-- needed to let relatenodes types="mediaframents" work -->
     <relation from="pools"           to="mediafragments"  type="related" />
-    <relation from="audiofragments"  to="mediasources"    type="related" />
 
     <!-- example -->
     <relation from="mediaproviders"  to="myurlcomposers"     type="posrel" />
@@ -75,11 +74,11 @@
 		<datasource builder="audiosources"     path="Media/audiosources.xml" />
 		<datasource builder="videosources"     path="Media/videosources.xml" />
 
-		<datasource builder="mediaproviders"   path="Media/mediaproviders.xml" />
-		<datasource builder="mediaproviders"   path="Media/mediaurlcomposers.xml" />
+		<datasource builder="mediaproviders"     path="Media/mediaproviders.xml" />
+		<datasource builder="mediaurlcomposers"  path="Media/mediaurlcomposers.xml" />
 
     <!-- example -->
-		<datasource builder="mediaproviders"   path="Media/myurlcomposers.xml" />
+		<datasource builder="myurlcomposers"     path="Media/myurlcomposers.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mediaurlcomposers exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+  <!-- manually created file, objectnumbers from 1000 -->
+
+	<node number="1500" owner="default">
+		<rootpath></rootpath>
+		<protocol>rtsp</protocol>
+	</node>
+
+</mediaurlcomposers>
