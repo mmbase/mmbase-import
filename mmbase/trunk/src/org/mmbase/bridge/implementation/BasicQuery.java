@@ -22,17 +22,23 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.6 2003-07-22 10:55:41 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.7 2003-07-25 14:09:14 michiel Exp $
  * @since MMBase-1.7
+ * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
 public class BasicQuery implements Query  {
+    
 
     private static Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
-    private boolean used = false;
-    private int     aliasSequence = 0;
+    protected boolean used = false;
+    private   int     aliasSequence = 0;
 
-    private BasicSearchQuery query;
+    protected BasicSearchQuery query;
+
+    BasicSearchQuery getQuery() {
+        return query;
+    }
 
     // SearchQuery impl:
 
@@ -184,7 +190,7 @@ public class BasicQuery implements Query  {
 
     public SortOrder addSortOrder(StepField f, int direction) {
         if (used) throw new BridgeException("Query was used already");
-        BasicSortOrder s = new BasicSortOrder(f);
+        BasicSortOrder s = query.addSortOrder(f);
         s.setDirection(direction);
         return s;
         
