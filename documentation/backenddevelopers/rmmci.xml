@@ -7,7 +7,7 @@
 
     <date>2001</date>
 
-    <edition>$Id: rmmci.xml,v 1.16 2003-12-19 11:45:38 mmweb Exp $</edition>
+    <edition>$Id: rmmci.xml,v 1.17 2004-04-06 09:23:50 keesj Exp $</edition>
 
     <authorgroup>
       <author>
@@ -92,9 +92,7 @@
     <section>
       <title>Using BeanShell</title>
 
-      <para>RMMCI allows scripting. first create an rmmci.jar by running the
-      ant rmmci task. this will create a file called rmmci.jar in the build
-      directory. now download <ulink url="http://www.beanshell.org/">http://www.beanshell.org/</ulink>
+			<para>RMMCI allows scripting. get mmbase-rmmci.jar from /WEB-INF/lib . Download <ulink url="http://www.beanshell.org/">http://www.beanshell.org/</ulink>
       (in the example bsh-1.2b7.jar was downloaded) copy both files to a
       directory and create a files called bshdemo.bsh with the content of this
       listing. If now you make the program executable (chmod 755 bshdemo.bsh)
@@ -104,7 +102,7 @@
       <programlisting>#!/bin/sh
 #! The following hack allows java to reside anywhere in the PATH.
 //bin/sh -c &#34;exec java -classpath bsh-1.2b7.jar bsh.Interpreter $0 $*&#34;; exit
-addClassPath(&#34;rmmci.jar&#34;);
+addClassPath(&#34;mmbase-rmmci.jar&#34;);
 import org.mmbase.bridge.*;
 
 cloud = ContextProvider.getCloudContext(&#34;rmi://127.0.0.1:1111/remotecontext&#34;).getCloud(&#34;mmbase&#34;);
@@ -122,7 +120,7 @@ for (x =0 ; x &#60; list.size() ; x++){
 	 <programlisting>
 #!/bin/sh
 //bin/sh -c "exec /usr/local/java/bin/java -classpath /home/keesj/bsh-2.0b1.jar bsh.Interpreter $0 $*"; exit
-addClassPath("/home/keesj/rmmci.jar");
+addClassPath("/home/keesj/mmbase-rmmci.jar");
 
 import org.mmbase.bridge.*;
 
@@ -446,7 +444,7 @@ grant {
 
           <para>and start the JVM with the following option
           <literal>java -Djava.security.policy=rmipolicy.txt -cp
-          .:rmmci.jar:$CLASSPATH MyClassFile</literal></para>
+          .:mmbase-rmmci.jar:$CLASSPATH MyClassFile</literal></para>
         </listitem>
 
         <listitem>
@@ -536,7 +534,7 @@ jdk  : 1.3.0/Java HotSpot(TM) Client VM
         <listitem>
           <para>Creating a build.xml that create a jar rmmci.jar containing
           everything needed for using RMMCI at client side.[DONE the target is
-          called rmmci]</para>
+          called rmmci]. rmmci now lives in the applications directory of mmbase</para>
         </listitem>
 
         <listitem>
@@ -547,12 +545,18 @@ jdk  : 1.3.0/Java HotSpot(TM) Client VM
 
         <listitem>
           <para>Generate better errors send stack traces to the client?.[DONE]
-          bridge Exception a re thrown or containing a root cause</para>
+          bridge Exception are thrown or containing a root cause</para>
         </listitem>
 
         <listitem>
           <para>write guidelines for writing rmmci compatible code (no casting
-          etc).[ALMOST DONE] most casting is possible</para>
+          etc).[DONE] most casting if not all is possible</para>
+        </listitem>
+        <listitem>
+          <para>rmmci has been tested with the Query project but it needs more testing</para>
+        </listitem>
+        <listitem>
+								<para>Performance is not very good. We need to profile the code</para>
         </listitem>
       </itemizedlist>
     </section>
