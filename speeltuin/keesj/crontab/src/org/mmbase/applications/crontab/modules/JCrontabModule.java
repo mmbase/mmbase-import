@@ -29,7 +29,7 @@ public class JCrontabModule extends ReloadableModule {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
             String value = (String) entry.getValue();
-            StringTokenizer tokens = new StringTokenizer(value, "\n|");
+            StringTokenizer tokens = new StringTokenizer(value, "\t\n|");
             String times;
             if (tokens.hasMoreTokens()) {
                 times = tokens.nextToken().trim();
@@ -62,7 +62,6 @@ public class JCrontabModule extends ReloadableModule {
     }
 
     public void reload() {
-        super.reload();
         log.info("Reloading crontab");
         Iterator i = myEntries.iterator();
         while (i.hasNext()) {
