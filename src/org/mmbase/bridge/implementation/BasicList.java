@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import java.util.Collection;
+import java.util.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
  *
  * @author Pierre van Rooden
  */
-public class BasicList {
+public class BasicList extends AbstractList implements List {
 
     // array with nodes.
     // this approach is possible because the NodeList is read-only
@@ -34,7 +34,7 @@ public class BasicList {
         objects=c.toArray();
     }
 
-    protected Object getObject(int index) {
+    public Object getObject(int index) {
 	    try {
     	    return objects[index];
     	} catch (Exception e) {
@@ -42,9 +42,8 @@ public class BasicList {
     	}
     }
 
-	protected List getObjects(int index, int max) {
-	    List ls=Arrays.asList(objects);
-	    return ls.subList(index,index+max);
+    public Object get(int index) {
+        return getObject(index);
     }
 
 	/**
@@ -53,12 +52,37 @@ public class BasicList {
     public int size() {
      return objects.length;
     }
+
+	public class BasicIterator implements Iterator {
+	    BasicList list;
+	    int index=-1;
 	
-	/**
-	*
-	*/
-    public boolean isEmpty() {
-     return size()==0;
-    }
+	    BasicIterator(BasicList list) {
+	        this.list = list;
+	    }
 	
+	    public boolean hasNext() {
+	        return  index<(list.size()-1);
+	    }
+	
+	    public void remove() {
+	        throw new UnsupportedOperationException("Cannot remove from this list");
+	    }
+	
+	    public Object nextObject() {
+	        index++;
+	        if (index>=list.size()) {
+	            index = list.size()+1;
+	            throw new NoSuchElementException("Object does not exits in this list");
+	        } else {
+    	        return list.get(index);
+    	    }
+	    }
+	
+	    public Object next() {
+	        return nextObject();
+	    }
+	
+	}
+    	
 }

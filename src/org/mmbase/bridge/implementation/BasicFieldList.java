@@ -36,7 +36,7 @@ public class BasicFieldList extends BasicList implements FieldList {
     /**
 	*
 	*/
-	public Field get(int index) {
+	public Object get(int index) {
     	Object o=getObject(index);
     	if (o instanceof Field) {
     	    return (Field)o;
@@ -46,36 +46,27 @@ public class BasicFieldList extends BasicList implements FieldList {
         return f;
 	}
 
+	public Field getField(int index) {
+	    return (Field)get(index);
+	}
+	
 	/**
 	*
 	*/
-//	public FieldTypeIterator iterator() {
-//	    return new BasicFieldTypeIterator(this);
-//	};
+	public FieldIterator fieldIterator() {
+	    return new BasicFieldIterator(this);
+	};
 
 	
-	public class BasicFieldIterator { // implements FieldTypeIterator {
-	    FieldList list;
-	    int index=-1;
+	public class BasicFieldIterator extends BasicIterator implements FieldIterator {
 	
-	    BasicFieldIterator(FieldList list) {
-	        this.list = list;
+	    BasicFieldIterator(BasicList list) {
+	        super(list);
 	    }
 	
-	    public boolean hasNext() {
-	        return  index<(list.size()-1);
-	    }
-	
-	    public Field next() {
-	        index++;
-	        if (index>=list.size()) {
-	            index = list.size()+1;
-	            throw new NoSuchElementException("Node does not exits in this list");
-	        } else {
-    	        return list.get(index);
-    	    }
+	    public Field nextField() {
+	        return (Field)nextObject();
 	    }
 	
 	}
-	
 }

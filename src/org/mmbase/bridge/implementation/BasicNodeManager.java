@@ -154,12 +154,11 @@ public class BasicNodeManager implements NodeManager {
      * @param direction indicates whether the sort is ascending (true) or descending (false).
      * @return a <code>List</code> of found nodes
      */
-    public NodeList getList(String constraints, String orderby,
-                            String directions) {
+    public NodeList getList(String constraints, String orderby,String directions) {
         // "String directions" isn't used yet!!
         String where = constraints;
         String sorted = orderby;
-        boolean direction = true;
+        boolean direction = !"DOWN".equals(directions);
 
   		Vector v;
   		if ((where!=null) && (!where.trim().equals(""))) {

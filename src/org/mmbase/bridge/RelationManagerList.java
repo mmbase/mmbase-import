@@ -10,33 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * A list of Relation Managers
  *
  * @author Pierre van Rooden
  */
-public interface RelationManagerList {
+public interface RelationManagerList extends NodeManagerList {
 
 	/**
 	*
 	*/
-	public RelationManager get(int index);
+	public RelationManager getRelationManager(int index);
 
 	/**
 	*
 	*/
-	public boolean isEmpty();
-	
-	/**
-	*
-	*/
-//	public RelationManagerIterator iterator();
-
-	/**
-	*
-	*/
-    public int size();
+	public RelationManagerIterator relationManagerIterator();
 		
 }

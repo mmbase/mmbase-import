@@ -10,33 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * A list of field types
  *
  * @author Pierre van Rooden
  */
-public interface FieldList {
+public interface FieldList extends List {
 
 	/**
 	*
 	*/
-	public Field get(int index);
+	public Field getField(int index);
 
 	/**
 	*
 	*/
-	public boolean isEmpty();
-	
-	/**
-	*
-	*/
-//	public FieldTypeIterator iterator();
-
-	/**
-	*
-	*/
-    public int size();
+	public FieldIterator fieldIterator();
 		
 }

@@ -34,39 +34,33 @@ public class BasicCloudList extends BasicList implements CloudList {
     /**
 	*
 	*/
-	public Cloud get(int index) {
-	    return cloudcontext.getCloud((String)getObject(index));
+	public Object get(int index) {
+	    return cloudcontext.getCloud((String)super.get(index));
 	}
 
+    /**
+	*
+	*/
+	public Cloud getCloud(int index) {
+	    return (Cloud)getObject(index);
+	}
+	
 	/**
 	*
 	*/
-//	public CloudIterator iterator() {
-//	    return new BasicCloudIterator(this);
-//	};
+	public CloudIterator cloudIterator() {
+	    return new BasicCloudIterator(this);
+	};
 	
-	public class BasicCloudIterator { // implements CloudIterator {
-	    CloudList list;
-	    int index=-1;
+	public class BasicCloudIterator extends BasicIterator implements CloudIterator {
 	
-	    BasicCloudIterator(CloudList list) {
-	        this.list = list;
+	    BasicCloudIterator(BasicList list) {
+	        super(list);
 	    }
 	
-	    public boolean hasNext() {
-	        return  index<(list.size()-1);
+	    public Cloud nextCloud() {
+	        return (Cloud)nextObject();
 	    }
-	
-	    public Cloud next() {
-	        index++;
-	        if (index>=list.size()) {
-	            index = list.size()+1;
-	            throw new NoSuchElementException("Cloud does not exits in this list");
-	        } else {
-    	        return list.get(index);
-    	    }
-	    }
-	
 	}
 	
 }

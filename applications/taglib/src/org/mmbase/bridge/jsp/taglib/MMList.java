@@ -202,18 +202,18 @@ public class MMList extends MMTaglib
 	String searchFields= fieldsString;
 	String searchWhere= whereString;
 	String searchSorted= sortedString;
-	String searchDirection= sortedString;
-	boolean searchDistinct= (distinctString == null)? false : true;
+	String searchDirection= directionString;
+	boolean searchDistinct= (distinctString != null);
 
 	String action= "none";
 	try {
-	    boolean multilevel = (StringSplitter(typeString,",").size() > 1)? true : false;
+	    boolean multilevel = (StringSplitter(typeString,",").size() > 1);
 	    if (multilevel){
 		action = "multilevel search";
 		nodes = getDefaultCloud().getList(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct);
 	    } else {
-		boolean hasSearch = (searchWhere == null)? false: true;
-		boolean hasNode = (nodesString == null)? false: true;
+		boolean hasSearch = (searchWhere != null);
+		boolean hasNode = (nodesString != null);
 		if (hasSearch){
 		    if (hasNode){
 			//first hack, the MMCI does not provide a search on a node
@@ -225,7 +225,7 @@ public class MMList extends MMTaglib
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
 //		    boolean direction = ("UP".equals(searchDirection))? true: false;
 //		    nodes= nodeManager.getList(searchWhere,null,direction);
-		    nodes= nodeManager.getList(searchWhere,null,searchDirection);
+		    nodes= nodeManager.getList(searchWhere,searchSorted,searchDirection);
 		} else if (hasNode){
 		    action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
 		    try {
@@ -241,7 +241,7 @@ public class MMList extends MMTaglib
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
 //		    boolean direction = ("UP".equals(searchDirection))? true: false;
 //		    nodes= nodeManager.getList(null,null,direction);
-		    nodes= nodeManager.getList(null,null,searchDirection);
+		    nodes= nodeManager.getList(searchWhere,searchSorted,searchDirection);
 		}
 	    }
 	} catch (NullPointerException npe){
@@ -254,15 +254,16 @@ public class MMList extends MMTaglib
 	    try {
 		int max = Integer.parseInt(maxString);
 		if (max < nodes.size()){
-		    returnValues = nodes.subList(0,max).iterator();
+		    nodes=nodes.subNodeList(0,max);
+		    returnValues = nodes.nodeIterator();
 		}else {
-		    returnValues = nodes.iterator();
+		    returnValues = nodes.nodeIterator();
 		}
 	    } catch (NumberFormatException e){
 		throw new JspException ("MAX Field in tag is no a number");
 	    }
 	} else {
-	    returnValues = nodes.iterator();
+	    returnValues = nodes.nodeIterator();
 	}
 	// if we get a result from the query 
 	// evaluate the body , else skip the body
@@ -292,7 +293,7 @@ public class MMList extends MMTaglib
 
     private void fillVars(){
 	if (returnValues.hasNext()){
-	    Node node = (Node)returnValues.next();
+	    Node node = returnValues.nextNode();
 	    String prefix = getPrefix();
 	    Enumeration returnFieldEnum = StringSplitter(fieldsString,",").elements();
 	    int j=1;	
