@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.38 2004-05-06 12:34:43 keesj Exp $
+ * @version $Id: ImageCaches.java,v 1.39 2004-08-25 14:25:03 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -71,16 +71,23 @@ public class ImageCaches extends AbstractImages {
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
         HttpServletResponse res = (HttpServletResponse) a.get("response");
+        String heightAndWidth = "";
         if (origNode != null) {
-            List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);
-            imageThumb = servlet.toString() + origNode.getFunctionValue("cache", cacheArgs);
-            if (res != null) imageThumb = res.encodeURL(imageThumb);
+
+            List cacheArgs =  new Parameters(Images.CACHE_PARAMETERS).set("template", GUI_IMAGETEMPLATE);           
+            MMObjectNode thumb = (MMObjectNode) origNode.getFunctionValue("cachednode", cacheArgs);
+            //heightAndWidth = "heigth=\"" + getHeight(thumb) + "\" with=\"" + getWidth(thumb) + "\" ";
+            heightAndWidth = ""; // getHeight and getWidth not yet present in AbstractImages
+            imageThumb = servlet.toString() + thumb.getNumber();
+            if (res != null) { 
+                imageThumb = res.encodeURL(imageThumb);
+            }
         } else {
             imageThumb = "";
         }
         String image      = servlet.toString() + node.getNumber();
         if (res != null) image = res.encodeURL(image);
-        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
+        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" " + heightAndWidth + "alt=\"" + title + "\" /></a>";
     }
 
     // javadoc inherited
@@ -141,8 +148,9 @@ public class ImageCaches extends AbstractImages {
     /**
      * Return a @link{ ByteFieldContainer} containing the bytes and object number
      * for the cached image with a certain ckey, or null, if not cached.
-     * @param ckey teh ckey to search for
-     * @return null, or a @link{ ByteFieldContainer} object
+     * @param ckey the ckey to search for
+     * @return null, or a @link{ByteFieldContainer} object
+     * @since MMBase-1.7
      */
     public ByteFieldContainer getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
@@ -167,12 +175,14 @@ public class ImageCaches extends AbstractImages {
             log.error(msg);
             throw new RuntimeException(msg);
         }
+
+        ByteFieldContainer result = new ByteFieldContainer(node.getNumber(), data);
         // is this not configurable?
         // only cache small images.
-        if (data.length< (100*1024))  {
-            handleCache.put(ckey, node);
+        if (data.length< (100 * 1024))  {
+            handleCache.put(ckey, result);
         }
-        return new ByteFieldContainer(node.getNumber(),data);
+        return result;        
     }
 
     /**
