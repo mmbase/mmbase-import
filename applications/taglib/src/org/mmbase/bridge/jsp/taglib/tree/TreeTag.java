@@ -51,7 +51,7 @@ import org.mmbase.util.logging.Logging;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.1 2003-12-18 23:05:45 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.2 2003-12-19 09:39:05 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -107,7 +107,11 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         return tree.size();
     }
     public int getIndex() {
-        return iterator.previousIndex();
+        if (nextNode == null) {
+            return iterator.previousIndex(); 
+        } else {
+            return iterator.previousIndex() - 1;
+        }
     }
 
     public int getIndexOffset() {
