@@ -7,27 +7,26 @@
 <body bgcolor="white">
 <h1>Upload</h1>
 <hr />
+<mm:log jspvar="log">
 <%
 
-	// find editwizard in session
-	String wizardinstance = request.getParameter("wizard");
-	String wizardname = wizardinstance;
-	Wizard wiz = null;
-	
-	if (wizardinstance!=null && !wizardinstance.equals("")) {
-		// ok.
-		int pos = wizardinstance.indexOf("|");
-		if (pos>-1) wizardname = wizardinstance.substring(0, pos);
-		wiz = (Wizard)session.getValue("Wizard_"+wizardinstance);
-	}
-	
-	if (wiz==null) {
-		%>
-			Correct Wizardinstance not found in current session. Make sure you wizard param is set correctly. Maybe the server was restarted?
-			
-		<%
-		return;
-	}
+Config.WizardConfig wizardConfig = null;
+if (ewconfig.subObjects.size() > 0) {
+    if (ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
+        log.debug("checking configuration");
+        wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();
+        Config.WizardConfig checkConfig = new Config.WizardConfig();
+        log.trace("checkConfig" + configurator);
+        configurator.config(checkConfig);
+        if (checkConfig.objectNumber != null && (!checkConfig.objectNumber.equals(wizardConfig.objectNumber))) {
+            log.debug("found wizard is for other other object (" + checkConfig.objectNumber + "!= " + wizardConfig.objectNumber + ")");
+            wizardConfig = null;
+        } else {
+            log.debug("processing request");
+            wizardConfig.wiz.processRequest(request);
+        }
+    }
+} 
 
 	int maxsize = ewconfig.maxupload;
 	try {
@@ -58,7 +57,7 @@
 				}
 
 				byte[] buf = bos.toByteArray();
-				wiz.setUpload(fieldname, buf, f.getFileName(), f.getFilePathName());
+				wizardConfig.wiz.setUpload(fieldname, buf, f.getFileName(), f.getFilePathName());
 			}
 
 		}
@@ -79,5 +78,6 @@
 	
 	
 %>
+</mm:log>
 </body>
 </html>
