@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.12 2000-06-22 13:29:45 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.13 2000-06-22 22:32:44 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/06/22 13:29:45  wwwtech
+daniel
+
 Revision 1.11  2000/06/22 12:56:37  wwwtech
 Daniel
 
@@ -86,7 +89,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.12 $ $Date: 2000-06-22 13:29:45 $
+* @$Revision: 1.13 $ $Date: 2000-06-22 22:32:44 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -115,7 +118,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typesmap.put("text",new Integer(TYPE_TEXT));
 		typesmap.put("TEXT",new Integer(TYPE_TEXT));
 		typesmap.put("BLOB",new Integer(TYPE_BLOB));
-
+		typesmap.put("BYTE",new Integer(TYPE_BLOB));
 	}
 
 	public void init(MMBase mmb) {
@@ -942,6 +945,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		// weird extra code to map to old types
 		if (type.equals("varchar")) type="VARCHAR";
 		if (type.equals("int")) type="INTEGER";
+		if (type.equals("blob")) type="BYTE";
 		// end of weird map
 	
 		// get the wanted size
