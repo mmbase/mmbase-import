@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>Shows the source code of any page</title>
-    <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
     <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %></h1>
     <mm:import externid="page" />
     <script language="javascript"><!--
