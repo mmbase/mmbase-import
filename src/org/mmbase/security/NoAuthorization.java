@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * This class is used when no authorization is configured. Everything is allowed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthorization.java,v 1.8 2003-11-26 19:46:28 michiel Exp $
+ * @version $Id: NoAuthorization.java,v 1.9 2003-11-26 20:23:55 michiel Exp $
  */
 final public class NoAuthorization extends Authorization {
 
@@ -101,4 +101,9 @@ final public class NoAuthorization extends Authorization {
     public Set getPossibleContexts(UserContext user, int nodeid) throws SecurityException {
         return possibleContexts;
     }
+
+    public QueryCheck check(UserContext user, org.mmbase.bridge.Query query, Operation operation) {
+        return COMPLETE_CHECK;
+    }
+
 }
