@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.89 2004-02-13 15:32:03 michiel Exp $
+ * @version $Id: Images.java,v 1.90 2004-02-13 15:45:15 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -709,12 +709,17 @@ public class Images extends AbstractImages {
      * @return The committed node.
      */
     public boolean commit(MMObjectNode node) {
+        Collection changed = node.getChanged();
         // look if we need to invalidate the image cache...
-        boolean imageCacheInvalid = node.getChanged().contains("handle");
+        boolean imageCacheInvalid = changed.contains("handle");
         if(imageCacheInvalid) {
             node.setValue("itype", "");
             determineImageType(node);
         }
+        if (changed.contains("itype") && "".equals(node.getStringValue("itype"))) {
+            determineImageType(node);
+        }
+
         // do the commit
         if(super.commit(node)) {
             // when cache is invalid, invalidate
