@@ -15,12 +15,12 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
-import org.mmbase.hitlisted.*;
 
 /**
  * @author Hans Speijer
  */
 public class PoolBuilder extends MMObjectBuilder {
+	
 
 	String cacheTableName;
 
@@ -53,7 +53,7 @@ public class PoolBuilder extends MMObjectBuilder {
 								   +mmb.baseName+"_"+mmb.getMMObject("decayrel").tableName+" a, "
 								   +mmb.baseName+"_"+mmb.getMMObject("teasers").tableName+" b"
 								   +" WHERE (a.snumber = "+poolId+" OR a.dnumber = "+poolId+")  AND (b.number = a.dnumber or b.number = a.snumber ) AND b.state >"+status+" AND b.value >"+value);
-			results = (new hitlisted()).convertResultSet(rs,results);
+			results = convertResultSet(rs,results);
 			stmt.close();
 			con.close();	
 			
@@ -75,7 +75,7 @@ public class PoolBuilder extends MMObjectBuilder {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+cacheTableName+" WHERE "+sqlWhere);
 			Vector results;
 
-			results = (new hitlisted()).convertResultSet(rs);
+			results = convertResultSet(rs);
 
 			stmt.close();
 			con.close();
@@ -126,7 +126,7 @@ public class PoolBuilder extends MMObjectBuilder {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("SELECT name FROM "+mmb.baseName+"_"+tableName+" WHERE number in "+poolSet);
 
-			results = (new hitlisted()).convertResultSet(rs);
+			results = convertResultSet(rs);
 			
 			stmt.close();
 			con.close();
@@ -142,4 +142,94 @@ public class PoolBuilder extends MMObjectBuilder {
 		
 		return (results);
 	}
+
+
+
+	/**
+	 * Converts a result set into a Vector containing MMObjectNodes for the 
+	 * different items in the JDBC Result Set
+	 */
+	public Vector convertResultSet(ResultSet rs) {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();	
+			MMObjectNode node;
+			Vector results=new Vector();
+			
+			while(rs.next()) {
+				node = new MMObjectNode(this);
+				for (int index = 1; index <= numberOfColumns; index++) {
+					String type=rsmd.getColumnTypeName(index);	
+					String fieldname=rsmd.getColumnName(index);
+					node=database.decodeDBnodeField(node,fieldname,rs,index);
+				}
+				results.addElement(node);
+			}	
+
+			return (results);
+		} catch (SQLException e) {
+			// something went wrong print it to the logs
+			e.printStackTrace();	
+		}
+		
+		return (null);		 
+	}
+
+	/**
+	 * Converts a result set into a Vector containing MMObjectNodes for the 
+	 * different items in the JDBC Result Set
+	 */
+	public Hashtable convertResultSet(ResultSet rs, String columnName) {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();	
+			MMObjectNode node;
+			Hashtable results=new Hashtable();
+			Object key = null;
+			
+			while(rs.next()) {
+				node = new MMObjectNode(this);
+				for (int index = 1; index <= numberOfColumns; index++) {
+					//String type=rsmd.getColumnTypeName(index);	
+					String fieldname=rsmd.getColumnName(index);
+					node=database.decodeDBnodeField(node,fieldname,rs,index);
+				}
+				results.put(key, node);
+			}	
+
+			return (results);
+		} catch (SQLException e) {
+			// something went wrong print it to the logs
+			e.printStackTrace();	
+		}
+		
+		return (null);		 
+	}
+
+	public SortedVector convertResultSet(ResultSet rs, SortedVector sv) {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();	
+			MMObjectNode node;
+			
+
+			while(rs.next()) {
+				node = new MMObjectNode(this);
+				for (int index = 1; index <= numberOfColumns; index++) {
+					//String type=rsmd.getColumnTypeName(index);	
+					String fieldname=rsmd.getColumnName(index);
+					node=database.decodeDBnodeField(node,fieldname,rs,index);
+				}
+				sv.addUniqueSorted(node);
+			}	
+
+			return (sv);
+		} catch (SQLException e) {
+			// something went wrong print it to the logs
+			e.printStackTrace();	
+		}
+		
+		return (null);
+	}
+
 }
