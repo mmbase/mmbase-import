@@ -17,6 +17,10 @@ import org.mmbase.cache.Cache;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
 
+import org.mmbase.util.functions.*;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Maintains jumpers for redirecting urls.
  * The data stored in this builder is used to redirect urls based ons a specific key.
@@ -36,7 +40,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.24 2004-02-03 15:39:16 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.25 2004-06-02 17:02:57 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -80,17 +84,39 @@ public class Jumpers extends MMObjectBuilder {
         return true;
     }
 
-    public String getGUIIndicator(String field,MMObjectNode node) {
-        if (field.equals("url")) {
-            String url=node.getStringValue("url");
-            return("<A HREF=\""+url+"\" TARGET=\"extern\">"+url+"</A>");
-        } else if (field.equals("id")) {
-            return(""+node.getIntValue(field));
-        } else if (field.equals("name")) {
-            return(""+node.getStringValue(field));
+    /**
+     * @since MMBase-1.7.1
+     */
+    protected String getGUIIndicator(MMObjectNode node, Parameters args) {
+        String field = (String) args.get("field");
+        if (field == null || field.equals("url")) {
+            String url = node.getStringValue("url");
+            HttpServletRequest req = (HttpServletRequest) args.get(Parameter.REQUEST);
+            HttpServletResponse res = (HttpServletResponse) args.get(Parameter.RESPONSE);
+            String link;
+            if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("ftp:")) {
+                link = url;
+            } else if (! url.startsWith("/")) { // requested relative to context path
+                link = res.encodeURL(req.getContextPath() + "/" + url);
+            } else {
+                // request relative to host's root
+                if (url.startsWith(req.getContextPath() + "/")) { // in this context! 
+                    link = res.encodeURL(url.substring(req.getContextPath().length() + 1));
+                } else { // in other context
+                    link = url;
+                }
+            }            
+            return("<a href=\"" + link + "\" target=\"extern\">" + url + "</a>");
+        } else {
+            if (field == null || field.equals("")) {
+                return super.getGUIIndicator(node);
+            } else {
+                return super.getGUIIndicator(field, node);
+            }
         }
-        return(null);
+
     }
+
 
     /**
      * Retrieves a jumper for a specified key.
@@ -113,6 +139,29 @@ public class Jumpers extends MMObjectBuilder {
         }
     }
 
+    protected String getJumpByField(String fieldName, String key) {
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        FieldDefs fieldDefs = getField("name");
+        StepField field = query.getField(fieldDefs);
+        FieldDefs numberFieldDefs = getField("number");
+        StepField numberField = query.getField(numberFieldDefs);
+        BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
+        BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, key);
+        query.setConstraint(cons);
+        query.setMaxNumber(1);
+        
+        try {
+            List resultList = getNodes(query);
+            if (resultList.size() > 0) {
+                MMObjectNode node = (MMObjectNode) resultList.get(0);
+                return node.getStringValue("url");                 
+            }
+        } catch (SearchQueryException sqe) {
+            log.error(sqe.getMessage());
+        }
+        return null;
+    }
+
     /**
      * Retrieves a jumper for a specified key.
      * @param key the key to search for.
@@ -120,78 +169,59 @@ public class Jumpers extends MMObjectBuilder {
      */
     public String getJump(String key) {
         String url = null;
-        MMObjectNode node;
-        int ikey;
 
         if (key.equals("")) {
-            url=jumperNotFoundURL;
+            url = jumperNotFoundURL;
         } else {
-            try {
-                ikey=Integer.parseInt(key);
-            } catch (NumberFormatException e) {
-                ikey=-1;
-            }
             url = (String)jumpCache.get(key);
             if (log.isDebugEnabled()) {
-                if (url!=null) {
-                    log.debug("Jumper - Cache hit on "+key);
+                if (url != null) {
+                    log.debug("Jumper - Cache hit on " + key);
                 } else {
-                    log.debug("Jumper - Cache miss on "+key);
+                    log.debug("Jumper - Cache miss on " + key);
                 }
             }
             if (url == null) {
                 // Search jumpers with name;
-                NodeSearchQuery query = new NodeSearchQuery(this);
-                FieldDefs fieldDefs = getField("name");
-                StepField field = query.getField(fieldDefs);
-                FieldDefs numberFieldDefs = getField("number");
-                StepField numberField = query.getField(numberFieldDefs);
-                BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
-                BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, key);
-                query.setConstraint(cons);
-                query.setMaxNumber(1);
-
+                url = getJumpByField("name", key);
+            }
+            int ikey = -1;
+            if (url == null) {
                 try {
-                    List resultList = getNodes(query);
-                    if (resultList.size() > 0) {
-                        node = (MMObjectNode) resultList.get(0);
-                        url = node.getStringValue("url");                 
-                    }
-                } catch (SearchQueryException sqe) {
-                    log.error(sqe.getMessage());
+                    ikey = Integer.parseInt(key);
+                } catch (NumberFormatException e) {
                 }
-            }
-            if (url==null) {
                 // Search jumpers with number (parent);
-                log.debug("Search jumpers with id="+ikey);
-                if (ikey>=0) {
-                    Enumeration res=search("WHERE id="+ikey);
-                    if (res.hasMoreElements()) {
-                        node=(MMObjectNode)res.nextElement();
-                        url=node.getStringValue("url");
-                    }
+                if (ikey >= 0) {
+                    url = getJumpByField("id", key);
                 }
             }
-            if (url==null) {
+            if (url == null) {
                 // no direct url call its builder
-                if (ikey>=0) {
-                    node=getNode(ikey);
-                    if (node!=null) {
-                        String buln=mmb.getTypeDef().getValue(node.getIntValue("otype"));
-                        MMObjectBuilder bul=mmb.getMMObject(buln);
-                        log.debug("getUrl through builder with name="+buln+" and id "+ikey);
-                        if (bul!=null) url=bul.getDefaultUrl(ikey);
+                if (ikey >= 0) {
+                    MMObjectNode node = getNode(ikey);
+                    if (node != null) {
+                        String buln = mmb.getTypeDef().getValue(node.getIntValue("otype"));
+                        MMObjectBuilder bul = mmb.getMMObject(buln);
+                        if (log.isDebugEnabled()) {
+                            log.debug("getUrl through builder with name=" + buln + " and id " + ikey);
+                        }
+                        if (bul != null) {
+                            url = bul.getDefaultUrl(ikey);
+                        }
                     }
                 }
             }
-            if (url!=null && url.length()>0 && !url.equals("null")) {
-                jumpCache.put(key,url);
+            if (url != null && url.length() > 0 && !url.equals("null")) {
+                jumpCache.put(key, url);
                 if (url.equalsIgnoreCase("NOREDIRECT")) {  // return null if the url specified is NOREDIRECT
-                    url=null;
+                    url = null;
                 }
             } else {
-                log.debug("No jumper found for key '"+key+"'");
-                url=jumperNotFoundURL;
+                if (log.isDebugEnabled()) {
+                    log.debug("No jumper found for key '" + key + "'");
+                }
+                url = jumperNotFoundURL;
             }
         }
         return url;
@@ -233,6 +263,20 @@ public class Jumpers extends MMObjectBuilder {
         jumpCache.clear();
         return true;
     }
+
+    protected Object executeFunction(MMObjectNode node, String function, List arguments) {
+         if (function.equals("gui")) {
+             if (arguments == null || arguments.size() == 0) {
+                 return getGUIIndicator(node);
+             } else {
+                 return getGUIIndicator(node, Parameters.get(GUI_PARAMETERS, arguments));
+             }
+         } else {
+             return super.executeFunction(node, function, arguments);
+         }
+
+    }
+
 }
 
 class JumpersCache extends Cache {
