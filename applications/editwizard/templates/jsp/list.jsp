@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.46 2003-12-21 16:15:08 nico Exp $
+     * @version  $Id: list.jsp,v 1.47 2004-04-07 12:36:01 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -131,7 +131,7 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != n
     Queries.addStartNodes(query, listConfig.startNodes);
     Queries.addConstraints(query, listConfig.constraints);
     query.setDistinct(listConfig.distinct);
-    
+
     query.setMaxNumber(len);
     query.setOffset(start );
 
@@ -150,7 +150,7 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != n
     q.setMaxNumber(len);
     q.setOffset(start );
 
-  	results = mgr.getList(q);
+    results = mgr.getList(q);
     resultsSize = Queries.count(q);
 }
 
@@ -247,6 +247,7 @@ java.util.Map params = listConfig.getAttributes();
 
 params.put("start",      String.valueOf(start));
 params.put("referrer",   ewconfig.backPage);
+params.put("referrer_encoded", java.net.URLEncoder.encode(ewconfig.backPage));
 if (ewconfig.templates != null) params.put("templatedir",  ewconfig.templates);
 params.put("len",        String.valueOf(len));
 params.put("sessionkey", ewconfig.sessionKey);

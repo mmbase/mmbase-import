@@ -2,12 +2,12 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <!--
     list.xls
-    
+
     @since  MMBase-1.6
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.36 2004-01-20 18:25:28 michiel Exp $
+    @version $Id: list.xsl,v 1.37 2004-04-07 12:36:00 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -133,8 +133,8 @@
             <tr>
               <xsl:if test="$creatable=&apos;true&apos;">
                 <td>
-                  <a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
-			              <xsl:call-template name="prompt_new" />
+                  <a href="{$wizardpage}&amp;referrer={$referrer_encoded}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
+                    <xsl:call-template name="prompt_new" />
                   </a>
                 </td>
               </xsl:if>
@@ -143,27 +143,27 @@
                   <span class="header">
                     <xsl:call-template name="prompt_search_list" />
                     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                    <xsl:value-of disable-output-escaping="yes" select="$title"/>: 
+                    <xsl:value-of disable-output-escaping="yes" select="$title"/>:
                   </span>
                   <br />
 
                   <xsl:call-template name="search-age" />
-                  
+
                   <select name="realsearchfield">
                     <option value="{$searchfields}">
                       <xsl:call-template name="prompt_search_title" />
                     </option>
                     <xsl:call-template name="search-fields-default" />
                   </select>
-                  
+
                   <input type="hidden" name="proceed" value="true" />
                   <input type="hidden" name="sessionkey" value="{$sessionkey}" />
                   <input type="hidden" name="language" value="${language}" />
                   <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
 
-										<a href="javascript:document.forms[0].submit();">
-											<xsl:call-template name="prompt_search" />
-										</a>
+                    <a href="javascript:document.forms[0].submit();">
+                      <xsl:call-template name="prompt_search" />
+                    </a>
                     <br />
                   <span class="subscript">
                     ( <xsl:call-template name="prompt_age" /> )
@@ -179,42 +179,42 @@
   </xsl:template>
 
   <xsl:template name="search-age">
-		<xsl:choose>
-			<xsl:when test="$searchagetype=&apos;none&apos;"></xsl:when>
-			<xsl:when test="$searchagetype=&apos;edit&apos;">
-				<input
-					type="text"
-					name="age"
-					class="age"
-					value="{$age}" />
-			</xsl:when>
-			<xsl:otherwise>
-				<select name="age" class="input">
-					<xsl:call-template name="searchageoptions">
-						<xsl:with-param name="selectedage" select="$age" />
-					</xsl:call-template>
-				</select>
-			</xsl:otherwise>
-		</xsl:choose>
+    <xsl:choose>
+      <xsl:when test="$searchagetype=&apos;none&apos;"></xsl:when>
+      <xsl:when test="$searchagetype=&apos;edit&apos;">
+        <input
+          type="text"
+          name="age"
+          class="age"
+          value="{$age}" />
+      </xsl:when>
+      <xsl:otherwise>
+        <select name="age" class="input">
+          <xsl:call-template name="searchageoptions">
+            <xsl:with-param name="selectedage" select="$age" />
+          </xsl:call-template>
+        </select>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="search-fields-default">
-		<xsl:if test="$objecttype=&apos;&apos;">
-			<option value="number">
-				<xsl:call-template name="prompt_search_number" />
-			</option>
-			<option value="owner">
-				<xsl:call-template name="prompt_search_owner" />
-			</option>
-		</xsl:if>
-		<xsl:if test="$objecttype!=&apos;&apos;">
-			<option value="{$objecttype}.number">
-				<xsl:call-template name="prompt_search_number" />
-			</option>
-			<option value="{$objecttype}.owner">
-				<xsl:call-template name="prompt_search_owner" />
-			</option>
-		</xsl:if>
+    <xsl:if test="$objecttype=&apos;&apos;">
+      <option value="number">
+        <xsl:call-template name="prompt_search_number" />
+      </option>
+      <option value="owner">
+        <xsl:call-template name="prompt_search_owner" />
+      </option>
+    </xsl:if>
+    <xsl:if test="$objecttype!=&apos;&apos;">
+      <option value="{$objecttype}.number">
+        <xsl:call-template name="prompt_search_number" />
+      </option>
+      <option value="{$objecttype}.owner">
+        <xsl:call-template name="prompt_search_owner" />
+      </option>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="dolist">
@@ -309,15 +309,15 @@
 
   <xsl:template match="field">
     <td class="field">
-	    <xsl:if test="position() &gt; 1">
+      <xsl:if test="position() &gt; 1">
         <nobr>
           <xsl:call-template name="writeCurrentField" />
         </nobr>
-  	  </xsl:if>
-    	<xsl:if test="position()=1">
+      </xsl:if>
+      <xsl:if test="position()=1">
         <xsl:call-template name="writeCurrentField" />
         <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-    	</xsl:if>
+      </xsl:if>
     </td>
   </xsl:template>
 
