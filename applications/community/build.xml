@@ -6,7 +6,7 @@
 <project name="community" default="dependent.jar" basedir=".">
   <property name="project.name"   value="community" />
   <property name="source-community.xml" value="org/mmbase/applications/community/taglib/mmcommunity-taglib.xml" />
-	<property name="project.extra.path" location="../taglib/build/mmbase-taglib.jar" />
+  <property name="project.jars.includes" value="taglib/build/mmbase-taglib.jar" />
   &base;
 
 
