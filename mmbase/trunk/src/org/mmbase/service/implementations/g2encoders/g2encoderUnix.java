@@ -125,6 +125,9 @@ import org.mmbase.service.interfaces.*;
  */
 public class g2encoderUnix implements g2encoderInterface {
 
+	private	String 	classname 	= getClass().getName();
+	private boolean	debug		= true;
+	private void	debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	String command = "/usr/bin/nice /usr/local/rprod/bin/realproducer ";
 
@@ -139,6 +142,11 @@ public class g2encoderUnix implements g2encoderInterface {
 			Thread.sleep(10000);
 		} catch(Exception e) {}
 		return("12.0.0.1");
+	}
+
+	public String getCommand()
+	{
+		return null;
 	}
 
 
@@ -216,7 +224,7 @@ public class g2encoderUnix implements g2encoderInterface {
 		String result = "";
 
 		//cmds+=" targetAudience=28k,56k,singleISDN,dualISDN,cable";
-		System.out.println("LINE="+cmds);
+		debug("doEncode("+cmds+")");
 
 		StringTagger tagger = new StringTagger( cmds );
 
@@ -253,9 +261,9 @@ public class g2encoderUnix implements g2encoderInterface {
 		
 
 		result+=" -t 0,1,2,3,4";
-		System.out.println("EXEC->"+command+result);
+		debug("doEncode(): exec("+command+result+")");
 		result=execute(command+result);
-		System.out.println("EXEC->"+result);
+		debug("doEncode(): result("+result+")");
 		//return result;
 		return("oke");
 	}
@@ -292,7 +300,7 @@ public class g2encoderUnix implements g2encoderInterface {
 	{
 		String result;
 
-		System.out.println("tonum="+params);
+		debug("tonum="+params);
 		if (params != null)
 		{
 			if( !params.equals(""))
@@ -345,7 +353,7 @@ public class g2encoderUnix implements g2encoderInterface {
 	private String audioFormat( String format ) 
 	{
 		String result = null;
-		System.out.println("FORMAT="+format);
+		debug("FORMAT="+format);
 
 		if( format != null )
 		{
@@ -637,10 +645,5 @@ public class g2encoderUnix implements g2encoderInterface {
 		else 	result = true;
 
 		return result;
-	}
-
-	public void debug( String msg ) 
-	{
-		System.out.println("g2encoderUnix:"+ msg );
 	}
 }
