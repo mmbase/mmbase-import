@@ -143,12 +143,13 @@ public class MediaProviderFilter {
      * of mediaprovider filters.
      */
     public synchronized MMObjectNode filterMediaProvider(MMObjectNode mediasource, Map info) {
-        List mediaproviders = mediasourcebuilder.getMediaProviders(mediasource);
+        /*
+        List mediaproviders = mediasourcebuilder.getProviders(mediasource);
         
         // passing the mediaproviders through al the filters
         for (Iterator i = filterChain.iterator(); i.hasNext();) {
             String filter = (String) i.next();
-            log.debug("Using filter " + filter);
+            if (log.isDebugEnabled()) log.debug("Using filter " + filter);
             if(filter.equals("sortProviders")) {
                 mediaproviders = sortMediaProviders(mediaproviders);
             } else if(filter.equals("filterOnHost")) {
@@ -161,6 +162,8 @@ public class MediaProviderFilter {
         }
         
         return  takeOneMediaProvider(mediaproviders);
+        */
+        return null;
     }
     
     
