@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.112 2004-02-24 12:18:14 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.112.2.1 2004-06-11 17:18:13 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -157,7 +157,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     // Makes a node or Relation object based on an MMObjectNode
     Node makeNode(MMObjectNode node, String nodeNumber) {
-        NodeManager nm = getNodeManager(node.parent.getTableName());
         int nodenr = node.getNumber();
         if (nodenr == -1) {
             int nodeid = Integer.parseInt(nodeNumber);
@@ -806,26 +805,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return getList(query);
     }
 
-    /**
-     * set the Context of the current Node
-     */
-    void setContext(int nodeNumber, String context) {
-        mmbaseCop.getAuthorization().setContext(userContext.getUserContext(), nodeNumber, context);
-    }
-
-    /**
-     * get the Context of the current Node
-     */
-    String getContext(int nodeNumber) {
-        return mmbaseCop.getAuthorization().getContext(userContext.getUserContext(), nodeNumber);
-    }
-
-    /**
-     * get the Contextes which can be set to this specific node
-     */
-    StringList getPossibleContexts(int nodeNumber) {
-        return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
-    }
 
     public void setLocale(Locale l) {
         if (l == null) {
