@@ -19,7 +19,8 @@ import org.mmbase.module.corebuilders.*;
 */
 public class XMLApplicationWriter  {
 
-    public static boolean writeXMLFile(XMLApplicationReader app,String targetpath,String goal,MMBase mmb) {
+    public static Vector writeXMLFile(XMLApplicationReader app,String targetpath,String goal,MMBase mmb) {
+	Vector resultmsgs=new Vector();
 	System.out.println("STARTED XML WRITER ON : "+app);
 
 	// again this is a stupid class generating the xml file
@@ -66,11 +67,14 @@ public class XMLApplicationWriter  {
 	saveFile(targetpath+"/"+app.getApplicationName()+".xml",body);
 
 	// now the tricky part starts figure out what nodes to write
-	writeDateSources(app,targetpath,mmb);
+	writeDateSources(app,targetpath,mmb,resultmsgs);
 
 	// now write the context files itself
 	writeContextSources(app,targetpath);
-	return(true);
+
+	resultmsgs.addElement("Writing Application file : "+targetpath+"/"+app.getApplicationName()+".xml");
+		
+	return(resultmsgs);
     }
 
     static String getNeededBuilders(XMLApplicationReader app) {
@@ -191,7 +195,7 @@ public class XMLApplicationWriter  {
 		return(true);
 	}
 
-	private static void writeDateSources(XMLApplicationReader app,String targetpath,MMBase mmb) {
+	private static void writeDateSources(XMLApplicationReader app,String targetpath,MMBase mmb,Vector resultmsgs) {
 
 		Vector builders=app.getContextSources();
 		for (Enumeration e=builders.elements();e.hasMoreElements();) {
@@ -201,10 +205,12 @@ public class XMLApplicationWriter  {
 			String goal=(String)bset.get("goal");
 
 			path=MMBaseContext.getConfigPath()+("/applications/"+path);
-			System.out.println("READ="+path+" type="+type);
+			resultmsgs.addElement("save type : "+type);
+			resultmsgs.addElement("save goal : "+goal);
+
 			if (type.equals("depth")) {
 				XMLContextDepthReader capp=new XMLContextDepthReader(path);
-				XMLContextDepthWriter.writeContext(app,capp,targetpath,mmb);
+				XMLContextDepthWriter.writeContext(app,capp,targetpath,mmb,resultmsgs);
 			}
 		}
 	}

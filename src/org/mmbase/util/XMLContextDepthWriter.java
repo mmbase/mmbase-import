@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.*;
 */
 public class XMLContextDepthWriter  {
 
-    public static boolean writeContext(XMLApplicationReader app,XMLContextDepthReader capp,String targetpath,MMBase mmb) {
+    public static boolean writeContext(XMLApplicationReader app,XMLContextDepthReader capp,String targetpath,MMBase mmb,Vector resultmsgs) {
 
 	// first get the startnode we need to walk x depth
 	int startnode=getStartNode(capp,mmb);
@@ -32,7 +32,7 @@ public class XMLContextDepthWriter  {
 
 	// the trick is to get all nodes until depth x and filter them
 	Vector nodes=getSubNodes(startnode,0,depth,fb,new Vector(),mmb.getTypeDef());
-	System.out.println("Nodes size="+nodes.size());
+	resultmsgs.addElement("Context found : "+nodes.size()+" nodes to save");
 
 	// create the dir for the Data & resource files
 	File file = new File(targetpath+"/"+app.getApplicationName());
@@ -43,18 +43,19 @@ public class XMLContextDepthWriter  {
 	}
 
 	// write DataSources
-	writeDataSources(app,nodes,targetpath,mmb);
+	writeDataSources(app,nodes,targetpath,mmb,resultmsgs);
 
 
 	// write relationSources
-	writeRelationSources(app,nodes,targetpath,mmb);
+	writeRelationSources(app,nodes,targetpath,mmb,resultmsgs);
 
 	return(true);
     }
 
-    static void writeDataSources(XMLApplicationReader app, Vector nodes, String targetpath,MMBase mmb) {
+    static void writeDataSources(XMLApplicationReader app, Vector nodes, String targetpath,MMBase mmb,Vector resultmsgs) {
 	Enumeration res=app.getNeededBuilders().elements();
 	while (res.hasMoreElements()) {
+		int nrofnodes=0;
 		Hashtable bset=(Hashtable)res.nextElement();
 		String name=(String)bset.get("name");
 		int type = mmb.getTypeDef().getIntValue(name);
@@ -86,7 +87,9 @@ public class XMLContextDepthWriter  {
 	
 				// end the node
 				body+="\t</node>\n\n";
+				nrofnodes++;
 			}
+		
 		}
 	
 		// write the footer	
@@ -94,17 +97,20 @@ public class XMLContextDepthWriter  {
 		String filename=targetpath+"/"+app.getApplicationName()+"/"+name+".xml";
 		System.out.println("Writing DataSource="+filename);
 		saveFile(filename,body);
+	
+		resultmsgs.addElement("Saving "+nrofnodes+" "+name+" to : "+filename);
+		
 	}
    }	
 
 
-    static void writeRelationSources(XMLApplicationReader app, Vector nodes, String targetpath,MMBase mmb) {
+    static void writeRelationSources(XMLApplicationReader app, Vector nodes, String targetpath,MMBase mmb,Vector resultmsgs) {
 //	Enumeration res=app.getNeededBuilders().elements();
 //	while (res.hasMoreElements()) {
 //		Hashtable bset=(Hashtable)res.nextElement();
 
-
-
+	
+		int nrofnodes=0;
 		String name="insrel";
 		int type = mmb.getTypeDef().getIntValue(name);
 		MMObjectBuilder bul=mmb.getMMObject(name);
@@ -137,12 +143,14 @@ public class XMLContextDepthWriter  {
 	
 				// end the node
 				body+="\t</node>\n\n";
+				nrofnodes++;
 			}
 		}
 	
 		// write the footer	
 		body+="</"+name+">\n";
 		String filename=targetpath+"/"+app.getApplicationName()+"/"+name+".xml";
+		resultmsgs.addElement("Saving "+nrofnodes+" "+name+" to : "+filename);
 		System.out.println("Writing RelationSource="+filename);
 		saveFile(filename,body);
 	//}
