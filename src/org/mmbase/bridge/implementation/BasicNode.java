@@ -22,34 +22,86 @@ import java.util.*;
  */
 public class BasicNode implements Node {
 
-    public static final int ACTION_EDIT = 1;     // edit node, or change aliasses
-    public static final int ACTION_REMOVE = 2;   // remove node
-    public static final int ACTION_ADDRELATION = 3; // add relations
-    public static final int ACTION_REMOVERELATION = 4; // remove relations
+    public static final int ACTION_ADD = 1;     // add a node
+    public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
+    public static final int ACTION_REMOVE = 3;   // remove node
+    public static final int ACTION_ADDRELATION = 4; // add a relation
+    public static final int ACTION_EDITRELATION = 5; // edit a relation
+    public static final int ACTION_REMOVERELATION = 6; // remove relations
+    public static final int ACTION_COMMIT = 7; // commit a node after changes
 
-
-    // reference to the NodeManager (which also references the Cloud)
+    /**
+    * Reference to the NodeManager
+    */
     protected NodeManager nodeManager;
 
-    // reference to mmbase
-    protected org.mmbase.module.core.MMBase mmb;
+    /**
+    * Reference to the Cloud.
+    */
+    protected BasicCloud cloud;
 
-    // reference to actual object
-    protected MMObjectNode node;
+    /**
+    * Reference to MMBase root.
+    */
+    protected MMBase mmb;
 
+    /**
+    * Reference to actual MMObjectNode object.
+    */
+    protected MMObjectNode noderef;
+
+    /**
+    * Temporary node ID.
+    * this is necessary since there is otherwise no sure (and quick) way to determine
+    * whether a node is in 'edit' mode (i.e. has a temporary node).
+    */
+    protected int temporaryNodeId=-1;
+
+    /**
+    * The account this node is edited under.
+    * This is needed to check whether people have not switched users during an edit.
+    */
+    protected String account=null;
+
+    /**
+    * Determines whether this node was created for insert.
+    */
     protected boolean isnew = false;
 
-  	BasicNode(MMObjectNode node, Cloud cloud) {
-  	    this.nodeManager=cloud.getNodeManager(node.parent.oType);
-  	    this.node=node;
-  	    this.mmb = ((BasicCloudContext)cloud.getCloudContext()).mmb;
-  	}
-  	
+  	/**
+  	* Instantiates a node, linking it to a specified node manager.
+  	*/
   	BasicNode(MMObjectNode node, NodeManager nodeManager) {
   	    this.nodeManager=nodeManager;
-  	    this.node=node;
-  	    this.isnew=true;
-  	    this.mmb = ((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb;
+  	    cloud=(BasicCloud)nodeManager.getCloud();
+  	    noderef=node;
+  	    // create shortcut to mmbase
+  	    mmb = ((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb;
+  	    // check whether the node is currently in transaction
+  	    // and intialize temporaryNodeId if that is the case
+  	    if ((cloud instanceof BasicTransaction) && ( ((BasicTransaction)cloud).contains(noderef))) {
+  	        temporaryNodeId=noderef.getIntValue("number") ;
+  	    }
+  	}
+
+    /**
+    * Instantiates a new node (for insert), using a specified nodeManager.
+    * @param node a temporary MMObjectNode that is the base for the node
+    * @param nodeManager the node manager to create the node with
+    * @param id the id of the node in the temporary cloud
+    */
+  	BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
+  	    this(node, nodeManager);
+  	    temporaryNodeId=id;
+  	    Edit(ACTION_ADD);
+  	    isnew=true;
+  	}
+  	
+  	protected MMObjectNode getNode() {
+  	    if (noderef==null) {
+	        throw new BridgeException("Node is invalidated or removed.");
+	    }
+	    return noderef;
   	}
   	
   	/**
@@ -70,17 +122,68 @@ public class BasicNode implements Node {
      * Retrieves the node ID
      */
     public int getNodeID() {
-        return node.getIntValue("number");
+        int i=getIntValue("number");
+        // new node, thus return temp id.
+        // note that temp id is equal to "number" if the node is edited
+        if (i==-1) {
+            i = temporaryNodeId;
+        }
+        return i;
     }
 	
-    // Edit his node
-    // Check whether edits are allowed and prepare a node for edits if needed
-    // @param action The action to perform. Not yet used.
+    /**
+    * Edit this node.
+    * Check whether edits are allowed and prepare a node for edits if needed.
+    * The type of edit is determined by the action specified, and one of:<br>
+    * ACTION_ADD (add a node),<br>
+    * ACTION_EDIT (edit node, or change aliasses),<br>
+    * ACTION_REMOVE (remove node),<br>
+    * ACTION_ADDRELATION (add a relation),<br>
+    * ACTION_EDITRELATION (edit a relation),<br>
+    * ACTION_REMOVERELATION (remove relations),<br>
+    * ACTION_COMMIT (commit a node after changes)
+    * @param action The action to perform.
+    */
     protected void Edit(int action) {
-	    if (nodeManager instanceof TemporaryNodeManager) {
-            throw new SecurityException("Cannot edit a temporary node.");
+        if (account==null) {
+            account = cloud.getAccount();
+        } else if (account != cloud.getAccount()) {
+            throw new BridgeException("User context changed. Cannot proceed to edit this node .");
+        }
+	    if (nodeManager instanceof VirtualNodeManager) {
+            throw new BridgeException("Cannot make edits to a virtual node.");
 	    }
+	    // check for the existence of a temporary node
+	    if (temporaryNodeId==-1) {
 
+            // when committing a temporary node id must exist (otherwise fail).
+	        if (action == ACTION_COMMIT) {
+                throw new BridgeException("This node cannot be comitted (not changed).");
+    	    }	
+            // when adding a temporary node id must exist (otherwise fail).
+            // this should not occur (hence internal error notice), but we test it anyway.
+	        if (action == ACTION_ADD) {
+                throw new BridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
+	        }	
+
+            // when editing a temporary node id must exist (otherwise create one)
+            // This also applies if you remove a node in a transaction (as the transction manager requires a temporary node)
+            //
+            // XXX: If you edit a node outside a transaction, but do not commit or cancel the edits,
+            // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
+	        if ((action == ACTION_EDIT) ||
+     	        ((action == ACTION_REMOVE) && (nodeManager instanceof BasicTransaction))) {
+     	        int id = getNodeID();
+	            String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+id, ""+id);
+	            if (cloud instanceof BasicTransaction) {
+    	            // store new temporary node in transaction
+    	            ((BasicTransaction)cloud).add(currentObjectContext);
+                }
+                noderef = BasicCloudContext.tmpObjectManager.getNode(account, ""+id);
+                //  check nodetype afterwards?
+                temporaryNodeId=id;
+    	    }
+    	}
     }
 	
 	/**
@@ -90,7 +193,7 @@ public class BasicNode implements Node {
 	 */
 	public void setValue(String attribute, Object value) {
 	    Edit(ACTION_EDIT);
-	    node.setValue(attribute,value);
+	    BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
 	}
 
 	/**
@@ -153,7 +256,7 @@ public class BasicNode implements Node {
 	 * @return value of attribute
 	 */
 	public Object getValue(String attribute) {
-	    return node.getValue(attribute);
+	    return noderef.getValue(attribute);
 	}
 
 	/**
@@ -162,7 +265,7 @@ public class BasicNode implements Node {
 	 * @return value of attribute
 	 */
 	public int getIntValue(String attribute) {
-	    return node.getIntValue(attribute);
+	    return noderef.getIntValue(attribute);
 	}
 
 	/**
@@ -171,7 +274,7 @@ public class BasicNode implements Node {
 	 * @return value of attribute
 	 */
 	public float getFloatValue(String attribute) {
-	    return node.getFloatValue(attribute);
+	    return noderef.getFloatValue(attribute);
 	}
 
 	/**
@@ -180,7 +283,7 @@ public class BasicNode implements Node {
 	 * @return value of attribute
 	 */
 	public long getLongValue(String attribute) {
-	    return node.getLongValue(attribute);
+	    return noderef.getLongValue(attribute);
 	}
 
 
@@ -190,7 +293,7 @@ public class BasicNode implements Node {
 	 * @return value of attribute
 	 */
 	public double getDoubleValue(String attribute) {
-	    return node.getDoubleValue(attribute);
+	    return noderef.getDoubleValue(attribute);
 	}
 
 	/**
@@ -199,7 +302,7 @@ public class BasicNode implements Node {
 	 * @return value of attribute
 	 */
 	public byte[] getByteValue(String attribute) {
-	    return node.getByteValue(attribute);
+	    return noderef.getByteValue(attribute);
 	}
 
 
@@ -209,21 +312,54 @@ public class BasicNode implements Node {
 	 * @return value of attribute
 	 */
 	public String getStringValue(String attribute) {
-	    return node.getStringValue(attribute);
+	    return noderef.getStringValue(attribute);
 	}
 
 	/**
-	 * Commit the node to the database
+	 * Commit the node to the database.
+	 * This fails if the current node is not in edit mode.
+	 * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
 	 */
 	public void commit() {
-	    if (isnew) {
-	        node.insert("system");
-	        isnew=false;
-	    } else {
-	        node.commit();
-	    }
+	    Edit(ACTION_COMMIT);
+	    // ignore commit in transaction (transaction commits)
+	    if (!(cloud instanceof Transaction)) {
+	        MMObjectNode node= getNode();
+	        if (isnew) {
+	            node.insert(cloud.getUserName());
+	            isnew=false;
+	        } else {
+	            node.commit();
+	        }
+	        // remove the temporary node
+	        BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
+	        temporaryNodeId=-1;
+	    }	
 	};
 
+	/**
+	 * Cancel changes to a node
+	 * This fails if the current node is not in edit mode.
+	 * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
+	 */
+	public void cancel() {
+	    Edit(ACTION_COMMIT);
+	    // when in a transaction, let the transaction cancel
+	    if (cloud instanceof Transaction) {
+            ((Transaction)cloud).cancel();
+	    } else {
+	        // remove the temporary node
+	        BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
+	        if (isnew) {
+	            isnew=false;
+	            noderef=null;
+	        } else {
+	            // should we update the node?, reset fields? etc...
+	        }
+	        temporaryNodeId=-1;
+	    }	
+	};
+	
 	/**
 	 * Removes the Node
 	 */
@@ -232,69 +368,142 @@ public class BasicNode implements Node {
 	};
 
 	/**
-	 * Removes the Node.
-	 * @param removeRelations determines whether attached relations are autiomatically deleted. if <code>false</code>,
-	 *        the remove fails if any relations exist.
+	 * Removes the Node.Also removes attached relations if any exist.
 	 */
-	public void remove(boolean removeRelations) {
+	public void removeAll() {
+	    remove(true);
+	};
+
+	
+	private void remove(boolean removeRelations) {
         Edit(ACTION_REMOVE);
-        removeRelations();
-	    node.parent.removeNode(node);
+        if (isnew) {
+    	    // remove a temporary node (no true instantion yet, no relations)
+	        BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
+	        // remove from the Transaction
+	        // note that the node is immediately destroyed !
+	        // possibly older edits will fail if they refernce this node
+	        if (cloud instanceof Transaction) {
+	            ((BasicTransaction)cloud).remove(""+temporaryNodeId);
+	        }
+        } else {
+            // remove a node that is edited, i.e. that already exists
+            // check relations first!
+            if (removeRelations) {
+                // option set, remove relations
+                deleteRelations(-1);
+            } else {
+                // option unset, fail if any relations exit
+	            int relations = getNode().getRelationCount();
+	            if(relations!=0) {
+	                throw new BridgeException("This node cannot be removed. It has "+relations+" relations attached to it.");
+	            }
+            }
+            // remove aliases
+            deleteAliases(null);
+            // in transaction:
+	        if (cloud instanceof BasicTransaction) {
+	            // let the transaction remove the node (as well as its temporary counterpart).
+	            // note that the node still exists until the transaction completes
+	            // a getNode() will still retrieve the node and make edits possible
+    	        // possibly 'older' edits will fail if they reference this node
+	            ((BasicTransaction)cloud).delete(""+temporaryNodeId);
+	        } else {
+	            // remove the node
+    	        if (temporaryNodeId!=-1) {
+	                BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
+    	        }
+	            MMObjectNode node= getNode();
+	            node.parent.removeNode(node);
+	        }
+        }
+        // the node does not exist anymore, so invalidate all references.
+	    temporaryNodeId=-1;
+        noderef=null;
 	}
 	
 	/**
 	 * Converts the node to a string
 	 */
 	 public String toString() {
-	    return node.toString();
+	    return noderef.toString();
 	 };
 
 	/**
-	 * Removes all relations of the node
+ 	 * Removes all relations of certain type.
+	 * @param type Type of relation (-1 = don't care)
 	 */
-	public void removeRelations() {
+	private void deleteRelations(int type) {
         Edit(ACTION_REMOVERELATION);
-	    node.parent.removeRelations(node);
+	    RelDef reldef=mmb.getRelDef();
+	    Enumeration e = getNode().getRelations();
+	    if (e!=null) {
+	        while (e.hasMoreElements()) {
+    			MMObjectNode node = (MMObjectNode)e.nextElement();
+	            if ((type==-1) || (node.getIntValue("rnumber")==type)) {
+	                if (cloud instanceof Transaction) {
+	                    String oMmbaseId = ""+node.getValue("number");
+		    		    String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+oMmbaseId,oMmbaseId);
+					    ((BasicTransaction)cloud).add(currentObjectContext);
+					    ((BasicTransaction)cloud).delete(currentObjectContext);
+	                } else {
+                        node.parent.removeNode(node);
+                    }
+                 }
+            }
+	    }
+	};
+	
+	
+	/**
+	 * Removes all relations of the node.
+	 */
+	public void removeAllRelations() {
+	    deleteRelations(-1);
 	}
 
 	/**
- 	 * Removes all relations of certain type of this node
+ 	 * Removes all relations of this node of a certain type.
 	 * @param type of relation
 	 */
 	public void removeRelations(String type) {
         Edit(ACTION_REMOVERELATION);
-	
-	    // This should be handled in a core class,
-	    // for the moment we implement it here
-	
 	    RelDef reldef=mmb.getRelDef();
-	    int rType=reldef.getGuessedNumber(type);
-	    Enumeration e=node.getRelations() ;
-	    if (e!=null) {
-	        while (e.hasMoreElements()) {
-	            MMObjectNode node=(MMObjectNode)e.nextElement();
-	            if (node.getIntValue("rnumber")==rType) {
-                    reldef.removeNode(node);
-                }
-	        }
-	    }
+    	int rType=reldef.getGuessedNumber(type);
+    	if (rType==-1) {
+    	    throw new BridgeException("Cannot find relation type.");
+    	} else {
+    	    deleteRelations(rType);
+    	}
 	};
 
 	/**
 	 * Retrieve all relations of this node
 	 * @return a code>List</code> of all relations of Node
 	 */
-	public List getRelations() {	
+	private List getRelations(int type) {	
+	
 	    Vector relvector=new Vector();
-	    Enumeration e=node.getRelations() ;
+	    Enumeration e=getNode().getRelations() ;
+	    NodeManager insrelman = cloud.getNodeManager("insrel");
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Relation node = new BasicRelation(mmnode, nodeManager.getCloud());
-	            relvector.add(node);
+	            if ((type==-1) || (mmnode.getIntValue("rnumber")==type)) {
+	                Relation node = new BasicRelation(mmnode, insrelman);
+	                relvector.add(node);
+	            }
 	        }
         }
         return relvector;
+	};
+	
+	/**
+	 * Retrieve all relations of this node
+	 * @return a code>List</code> of all relations of Node
+	 */
+	public List getAllRelations() {	
+	    return getRelations(-1);
 	};
 
 	/**
@@ -305,25 +514,19 @@ public class BasicNode implements Node {
 	public List getRelations(String type) {
 	    Vector relvector=new Vector();
 	    int rType=mmb.getRelDef().getGuessedNumber(type);
-	    Enumeration e=node.getRelations() ;
-	    if (e!=null) {
-	        while (e.hasMoreElements()) {
-	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            if (mmnode.getIntValue("rnumber")==rType) {
-	                Relation node = new BasicRelation(mmnode, nodeManager.getCloud());
-	                relvector.add(node);
-	            }
-	        }
-	    }
-        return relvector;
+    	if (rType==-1) {
+    	    throw new BridgeException("Cannot find relation type.");
+    	} else {
+    	    return getRelations(rType);
+    	}
 	};
 
 	/**
 	 * Count the relations attached to the Node
 	 * @return number of relations
 	 */
-	public int countRelations() {
-	    return getRelations().size();
+	public int countAllRelations() {
+	    return getAllRelations().size();
 	};
 
 	/**
@@ -338,13 +541,13 @@ public class BasicNode implements Node {
 	 * Retrieve all related Nodes
 	 * @return a code>List</code> of all related Nodes
 	 */
-	public List getRelatedNodes() {
+	public List getAllRelatedNodes() {
 	    Vector relvector=new Vector();
-	    Enumeration e=node.getRelatedNodes().elements();
+	    Enumeration e=getNode().getRelatedNodes().elements();
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Node node = new BasicNode(mmnode, nodeManager.getCloud());
+	            Node node = new BasicNode(mmnode, cloud.getNodeManager(mmnode.parent.getTableName()));
 	            relvector.add(node);
 	        }
 	    }
@@ -358,11 +561,11 @@ public class BasicNode implements Node {
 	 */
 	public List getRelatedNodes(String type) {
 	    Vector relvector=new Vector();
-	    Enumeration e=node.getRelatedNodes(type).elements();
+	    Enumeration e=getNode().getRelatedNodes(type).elements();
 	    if (e!=null) {
 	        while (e.hasMoreElements()) {
 	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            Node node = new BasicNode(mmnode, nodeManager.getCloud());
+	            Node node = new BasicNode(mmnode, cloud.getNodeManager(mmnode.parent.getTableName()));
 	            relvector.add(node);
 	        }
 	    }
@@ -375,7 +578,7 @@ public class BasicNode implements Node {
 	 * @return number of related nodes of a specific type
 	 */
 	public int countRelatedNodes(String type) {
-	    return node.getRelationCount(type);
+	    return getNode().getRelationCount(type);
 	};
 	
 	/**
@@ -387,7 +590,7 @@ public class BasicNode implements Node {
 	    OAlias alias=mmb.OAlias;
 	    if (alias!=null) {
 	        for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNodeID()); e.hasMoreElements();) {
-	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
+	            MMObjectNode node=(MMObjectNode)e.nextElement();
 	            aliasvector.add(node.getStringValue("name"));
 	        }
 	    }
@@ -400,22 +603,61 @@ public class BasicNode implements Node {
      */
     public void addAlias(String aliasName) {
         Edit(ACTION_EDIT);
-        node.parent.createAlias(getNodeID(),aliasName);
+        if (cloud instanceof Transaction) {
+	        NodeManager aliasManager=cloud.getNodeManager("oalias");
+	        Node aliasNode=aliasManager.createNode();
+	        aliasNode.setStringValue("name",aliasName);
+	        // set the tmp field _destination to the temporaryNodeId of the node
+	        // this will be resolved by the transaction manager
+	        aliasNode.setValue("_destination", getValue("_number"));
+	    } else if (isnew) {
+            throw new BridgeException("Cannot add alias to a new node that has not been committed.");
+        } else {
+            getNode().parent.createAlias(getNodeID(),aliasName);
+        }
     }
+
+    /**
+     * Delete one or all aliasses of this node
+     * @param aliasName the name of the alias (null means all aliases)
+     */
+    private void deleteAliases(String aliasName) {
+        Edit(ACTION_EDIT);
+	    // A new node cannot have any aliases, except when in a transaction.
+	    // However, there is no point in adding aliasses to a ndoe you plan to delete,
+	    // so no attempt has been made to rectify this (cause its not worth all the trouble).
+	    // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
+	    // Live with it.
+	    if (!isnew) {
+	        String sql = "WHERE (destination"+"="+getNodeID()+")";
+	        if (aliasName!=null) {
+	            sql += " AND (name='"+aliasName+"')";
+	        }
+	        // search existing aliases until the right one is found!
+	        OAlias alias=mmb.getOAlias();
+    	    if (alias!=null) {
+	            for(Enumeration e=alias.search(sql); e.hasMoreElements();) {
+	                MMObjectNode node=(MMObjectNode)e.nextElement();
+	                if (cloud instanceof Transaction) {
+                        BasicTransaction tran=(BasicTransaction) cloud;
+                        String oMmbaseId = ""+node.getValue("number");
+        		        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+oMmbaseId,oMmbaseId);
+					    ((BasicTransaction)cloud).add(currentObjectContext);
+					    ((BasicTransaction)cloud).delete(currentObjectContext);
+	                } else {
+                        alias.removeNode(node);
+                    }
+    	        }
+    	    }
+	    }
+    };
 
     /**
      * Remove an alias of this node
      * @param aliasName the name of the alias
      */
     public void removeAlias(String aliasName) {
-        Edit(ACTION_EDIT);
-	    OAlias alias=mmb.OAlias;
-	    if (alias!=null) {
-	        for(Enumeration e=alias.search("WHERE (destination"+"="+getNodeID()+") AND (name='"+aliasName+"')"); e.hasMoreElements();) {
-	            MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-	            alias.removeNode(node);
-	        }
-	    }
+        deleteAliases(aliasName);
     };
 
     /**
@@ -426,12 +668,16 @@ public class BasicNode implements Node {
      */
     public Relation addRelation(Node destinationNode, RelationManager relationManager) {
         Edit(ACTION_ADDRELATION);
-        // check on insert : cannot create relation is not committed
-	    if (isnew) {
-	        return null;
-	    } else {
-	        Relation relation = relationManager.addRelation(this,destinationNode);
-            return relation;
+        if (relationManager.getCloud() != cloud) {
+            throw new BridgeException("Relation type and node are not in the same transaction or in different clouds");
         }
+        if (destinationNode.getCloud() != cloud) {
+            throw new BridgeException("Destination and node are not in the same transaction or in different clouds");
+        }
+        if (!(cloud instanceof Transaction)  && isnew) {
+            throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
+	    }
+	    Relation relation = relationManager.addRelation(this,destinationNode);
+        return relation;
     };
 }

@@ -48,17 +48,23 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
   	}
 
     /**
-     * Creates a new initialized relation node
-     * @return a node of type <code>Relation</code>
-     */
+    * Creates a new initialized relation node
+    * @return a node of type <code>Relation</code>
+    */
     public Node createNode() {
-        MMObjectNode node= builder.getNewNode("system");
-        if (node==null) {
-	        return null;
-	    } else {
-            return new BasicRelation(node, this);
-	    }
+        // create object as a temporary node
+        int id = cloud.uniqueId();
+        String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
+        // if we are in a transaction, add the node to the transaction;
+        if (cloud instanceof BasicTransaction) {
+            ((BasicTransaction)cloud).add(currentObjectContext);
+        }
+        MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
+        // set the owner to userName instead of account
+        node.setValue("owner",cloud.getUserName());
+        return new BasicRelation(node, this, id);
     }
+
 	
 	/**
 	 * Retrieves the role of the source to the destination
@@ -90,7 +96,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      */
     public NodeManager getSourceManager() {
 	    int nr=typeRelNode.getIntValue("snumber");
-	    return cloud.getNodeManager(nr);
+	    return cloud.getNodeManagerById(nr);
 	}
 
 	/**
@@ -99,7 +105,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      */
     public NodeManager getDestinationManager() {
 	    int nr=typeRelNode.getIntValue("dnumber");
-	    return cloud.getNodeManager(nr);
+	    return cloud.getNodeManagerById(nr);
 	}
 	
 	/**

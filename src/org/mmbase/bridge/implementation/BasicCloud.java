@@ -23,7 +23,7 @@ import java.util.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public class BasicCloud implements Cloud {
+public class BasicCloud implements Cloud, Cloneable {
 
     // link to cloud context
     private BasicCloudContext cloudContext = null;
@@ -31,20 +31,68 @@ public class BasicCloud implements Cloud {
     // link to typedef object for retrieving type info (builders, etc)
     private TypeDef typedef = null;
 
-    // name
-    private String name = null;
+    // name of the cloud
+    protected String name = null;
+
+    // account of the current user (unique)
+    // This is a unique number, unrelated to the user context
+    // It is meant to uniquely identify this session to MMBase
+    // It is NOT used for authorisation!
+    protected String account = null;
+
+    // user name of the current user
+    protected String userName = null;
+
+    // language
+    protected String language = null;
 
     // description
     // note: in future, this is dependend on language settings!
-    private String description = null;
+    protected String description = null;
+
+    // transactions
+    protected HashMap transactions = new HashMap();
+
+    // node managers cache
+    protected HashMap nodeManagerCache = new HashMap();
+
+    // relation manager cache
+    protected HashMap relationManagerCache = new HashMap();
+
+    // parent Cloud, if appropriate
+    protected BasicCloud parentCloud=null;
+    /**
+     *  basic constructor for descendant clouds (i.e. Transaction)
+     */
+    protected BasicCloud() {
+    }
 
     /**
-     *  constructor to call from the CloudContext class
+     *  basic constructor for descendant clouds (i.e. Transaction)
+     */
+    BasicCloud(String cloudName, BasicCloud cloud) {
+        cloudContext=cloud.cloudContext;
+        parentCloud=cloud;
+        typedef = cloud.typedef;
+        language=cloud.language;
+        if (cloudName==null) {
+            name = cloud.name;
+        } else {
+            name = cloud.name+"."+cloudName;
+        }
+        description = cloud.description;
+        account= cloud.account;
+        userName=cloud.userName;
+    }
+
+    /**
+     *  Constructor to call from the CloudContext class
      *  (package only, so cannot be reached from a script)
      */
     BasicCloud(String cloudName, CloudContext cloudcontext) {
         cloudContext=(BasicCloudContext)cloudcontext;
         typedef = cloudContext.mmb.getTypeDef();
+        language = cloudContext.mmb.getLanguage();
 
         // normally, we want the cloud to read it's context from an xml file.
         // the current system does not support multiple clouds yet,
@@ -55,31 +103,43 @@ public class BasicCloud implements Cloud {
     }
 
 	/**
-	 * Retrieve the node from the cloud
+	 * Retrieve the node from the cloud.
+	 * Note : this also retrieves temporary (newly created) nodes
 	 * @param nodenumber the number of the node
 	 * @return the requested node
 	 */
 	public Node getNode(int nodenumber) {
 
-	    MMObjectNode node = typedef.getNode(nodenumber);
+	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
 	    if (node==null) {
 	        return null;
 	    } else {
-	        return new BasicNode(node, this);
+    	    // hack. should be done differently!
+	        if (node.getIntValue("number")==-1) {
+    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()), nodenumber);
+    	    } else {
+    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()));
+    	    }
 	    }
 	}
 
 	/**
-	 * Retrieves the node with given aliasname
+	 * Retrieves the node with the given aliasname.
+	 * Note : this also retrieves temporary (newly created) nodes by id, but cannot use aliasses within a transaction
 	 * @param aliasname the aliasname of the node
 	 * @return the requested node
 	 */
-	public Node getNode(String aliasname) {
-	    MMObjectNode node = typedef.getNode(aliasname);
+	public Node getNodeByAlias(String aliasname) {
+	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,aliasname);
 	    if (node==null) {
 	        return null;
 	    } else {
-	        return new BasicNode(node, this);
+    	    // hack. should be done differently!
+	        if (node.getIntValue("number")==-1) {
+    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()), Integer.parseInt(aliasname));
+    	    } else {
+    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()));
+    	    }
 	    }
 	}
 
@@ -88,11 +148,17 @@ public class BasicCloud implements Cloud {
      * @return an <code>Iterator</code> containing all node managers
      */
     public List getNodeManagers() {
-       Vector nodeManagers = new Vector();
-        for(Enumeration builders = cloudContext.mmb.mmobjs.elements(); builders.hasMoreElements();) {
+        Vector nodeManagers = new Vector();
+        for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)builders.nextElement();
-            NodeManager nodeManager=new BasicNodeManager(bul, this);
-            nodeManagers.add(nodeManager);
+            if (!(bul instanceof org.mmbase.module.builders.MultiRelations)) {
+                NodeManager nodeManager=(NodeManager)nodeManagerCache.get(bul.getTableName());
+                if (nodeManager==null) {
+                    nodeManager=new BasicNodeManager(bul, this);
+                    nodeManagerCache.put(bul.getTableName(),nodeManager);
+                }
+                nodeManagers.add(nodeManager);
+            }
         }
        return nodeManagers;
     }
@@ -103,19 +169,48 @@ public class BasicCloud implements Cloud {
      * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
      */
     public NodeManager getNodeManager(String nodeManagerName) {
-        MMObjectBuilder bul=cloudContext.mmb.getMMObject(nodeManagerName);
-        NodeManager nodeManager=new BasicNodeManager(bul, this);
+        // cache quicker, and you don't get 2000 nodetypes when you do a search....
+        NodeManager nodeManager=(NodeManager)nodeManagerCache.get(nodeManagerName);
+        if (nodeManager==null) {
+            MMObjectBuilder bul=cloudContext.mmb.getMMObject(nodeManagerName);
+            nodeManager=new BasicNodeManager(bul, this);
+            nodeManagerCache.put(nodeManagerName,nodeManager);
+        }
         return nodeManager;
     }
 
 	/**
      * Retrieves a node manager (aka builder)
-     * @param nodeManagerID number of the NodeManager to retrieve
+     * @param nodeManagerId ID of the NodeManager to retrieve
      * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
      */
-    public NodeManager getNodeManager(int nodeManagerID) {
-        return getNodeManager(typedef.getValue(nodeManagerID));
+    NodeManager getNodeManagerById(int nodeManagerId) {
+        return getNodeManager(typedef.getValue(nodeManagerId));
     }
+ 	
+ 	/**
+     * Retrieves a RelationManager.
+     * Note that the Relationmanager is very strict - you cannot retrieve a manager with source and destination reversed.
+     * @param sourceManagerID number of the NodeManager of the source node
+     * @param destinationManagerID number of the NodeManager of the destination node
+     * @param roleID number of the role
+     * @return the requested RelationManager
+     */
+    RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
+        // cache. pretty ugly but at least you don't get 1000+ instances of a relationmanager
+        RelationManager relManager=(RelationManager)relationManagerCache.get(""+sourceManagerId+"/"+destinationManagerId+"/"+roleId);
+        if (relManager==null) {
+            // XXX adapt for other dir too!
+            Enumeration e =cloudContext.mmb.getTypeRel().search("WHERE snumber="+sourceManagerId+" AND dnumber="+destinationManagerId+" AND rnumber="+roleId);
+            if (e.hasMoreElements()) {
+                MMObjectNode node=(MMObjectNode)e.nextElement();
+                relManager = new BasicRelationManager(node,this);
+                relationManagerCache.put(""+sourceManagerId+"/"+destinationManagerId+"/"+roleId,relManager);
+            }
+        }
+        return relManager;
+    };
+
 
  	/**
      * Retrieves a RelationManager
@@ -125,17 +220,11 @@ public class BasicCloud implements Cloud {
      * @return the requested RelationManager
      */
     public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
+        // uses getguesed number, maybe have to fix this later
         int r=cloudContext.mmb.getRelDef().getGuessedNumber(roleName);
         int n1=typedef.getIntValue(sourceManagerName);
         int n2=typedef.getIntValue(destinationManagerName);
-        Enumeration e =cloudContext.mmb.getTypeRel().search("WHERE snumber="+n1+" AND dnumber="+n2+" AND rnumber="+r);
-        if (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-            RelationManager relManager = new BasicRelationManager(node,this);
-            return relManager;
-        } else {
-            return null;
-        }
+        return getRelationManager(n1,n2,r);
     };
 
 	/**
@@ -152,18 +241,48 @@ public class BasicCloud implements Cloud {
         }
     }
 
-	/**
-     * Creates a node using a specified NodeManager
-     * @param nodeManagerID number of the NodeManager defining the node structure
-     * @return the newly created (but not yet committed) node
+	/**	
+ 	 * Create unique number
+	 */
+	static synchronized int uniqueId() {
+		try {
+			Thread.sleep(1); // A bit paranoid, but just to be sure that not two threads steal the same millisecond.
+		} catch (Exception e) {
+		}
+		return (int)(java.lang.System.currentTimeMillis() % Integer.MAX_VALUE);		
+	}
+
+    /**
+     * Creates a non-named transaction on this cloud
+     * @return a <code>Transaction</code> on this cloud
      */
-    public Node createNode(int nodeManagerID) {
-        NodeManager nodeManager = getNodeManager(nodeManagerID);
-	    if (nodeManager==null) {
-	        return null;
-	    } else {
-            return nodeManager.createNode();
-        }
+    public Transaction createTransaction() {
+        return createTransactionByName(null);
+    }
+
+    /**
+     * Creates a transaction on this cloud.
+     * @param name an unique name to use for the transaction
+     * @return a <code>Transaction</code> on this cloud
+     */
+    public Transaction createTransactionByName(String name){
+      if (name==null) {
+        name="Tran"+uniqueId();
+      } else if (transactions.get(name)!=null) {
+	        throw new BridgeException("Transaction already exists name = " + name);
+      }
+      Transaction transaction = new BasicTransaction(name,this);
+      transactions.put(name,transaction);
+      return transaction;
+    }
+
+    /**
+     * Creates a transaction on this cloud.
+     * @param name the unique name to for the transaction
+     * @return the identified <code>Transaction</code>
+     */
+    public Transaction openTransaction(String name) {
+        return (Transaction)transactions.get(name);
     }
 	
 	/**
@@ -189,6 +308,82 @@ public class BasicCloud implements Cloud {
     public String getDescription(){
         return description;
     }
+
+  	/**
+     * Retrieves the current user accountname (unique)
+     * @return the account name
+     */
+    String getAccount() {
+        if (account==null) {
+            throw new SecurityException("User not logged on.");
+        }
+        return account;
+    }
+
+  	/**
+     * Retrieves the current user name
+     * @return the user name
+     */
+    public String getUserName() {
+        if (userName==null) {
+            throw new SecurityException("User not logged on.");
+        }
+        return userName;
+    }
+
+    /**
+     * Retrieves the current selected language
+	 * @return return the language as a <code>String</code>
+     */
+    public String getLanguage() {
+        return language;
+    };
+
+    /**
+     * Sets the current selected language
+	 * @param language the language as a <code>String</code>
+     */
+    public void setLanguage(String language) {
+        this.language=language;
+    };
+  	
+  	/**
+     * Logs on a user.
+     * This results in an environment (a cloud) in which the user is registered.
+	 * @param authenticatorName name of the authentication method to sue
+	 * @param parameters parameters for the authentication
+	 * @return <code>true</code> if succesful (should throw exception?)
+     */
+    public boolean logon(String authenticatorName, Object[] parameters) {
+        if (account!=null) {
+	        throw new SecurityException("Unsupported authentication method");
+        } else {
+	        throw new BridgeException("Invalidly obtained cloud");
+        }
+    }
+  	
+  	/**
+     * Logs off a user.
+     * Resets the user's context to 'anonymous'
+     */
+    public void logoff() {
+        if (account!=null) {
+            userName="anonymous";
+        } else {
+	        throw new BridgeException("Invalidly obtained cloud");
+        }
+    }
+
+    /**
+    * Copies the cloud and return the clone.
+    * @return the copy of this <code>Cloud</code>
+    */
+    BasicCloud getCopy() {
+        BasicCloud cloud=new BasicCloud(null,this);
+        cloud.userName="anonymous";
+        account="U"+uniqueId();
+        return cloud;
+    }  	
 
 	/**
      * Search nodes in a cloud accoridng to a specified filter.
@@ -249,7 +444,7 @@ public class BasicCloud implements Cloud {
   		    for(Enumeration nodeEnum = v.elements(); nodeEnum.hasMoreElements(); ){
   		        MMObjectNode node = (MMObjectNode)nodeEnum.nextElement();
   		        if (tempNodeManager==null) {
-  		            tempNodeManager = new TemporaryNodeManager(node,this);
+  		            tempNodeManager = new VirtualNodeManager(node,this);
   		        }
                 retval.addElement(new BasicNode(node,tempNodeManager));
   		    }

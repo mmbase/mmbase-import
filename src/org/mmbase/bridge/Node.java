@@ -144,11 +144,9 @@ public interface Node {
 	public void remove(); 
 
 	/**
-	 * Removes the Node.
-	 * @param removeRelations determines whether attached relations are autiomatically deleted. if <code>false</code>,
-	 *        the remove fails if any relations exist.
+	 * Removes the Node. Also removes relations if any exist.
 	 */
-	public void remove(boolean removeRelations);
+	public void removeAll();
 	
 	/**
 	 * Converts the node to a string
@@ -158,7 +156,7 @@ public interface Node {
 	/**
 	 * Removes all relations of the node
 	 */
-	public void removeRelations();
+	public void removeAllRelations();
 
 	/**
  	 * Removes all relations of certain type of this node
@@ -170,7 +168,7 @@ public interface Node {
 	 * Retrieve all relations of this node
 	 * @return a <code>List</code> of all relations of Node
 	 */
-	public List getRelations();
+	public List getAllRelations();
 
 	/**
 	 * Gets all relations of a certain type
@@ -183,7 +181,7 @@ public interface Node {
 	 * Count the relations attached to the Node
 	 * @return number of relations
 	 */
-	public int countRelations();
+	public int countAllRelations();
 
 	/**
 	 * Count the relations of a specific type attached to the Node 
@@ -195,7 +193,7 @@ public interface Node {
 	 * Retrieve all related Nodes
 	 * @return a <code>List</code> of all related Nodes
 	 */
-	public List getRelatedNodes();
+	public List getAllRelatedNodes();
 
 	/**
 	 * Retrieve all related nodes maintained by a given NodeManager
@@ -210,7 +208,7 @@ public interface Node {
 	 * @return number of related nodes of a specific type
 	 */
 	public int countRelatedNodes(String type);
-
+	
 	/**
      * Retrieves the aliases of this node
      * @return a <code>List</code> with the alias anmes
