@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.0 - Release Notes
+                     MMBase 1.7.1 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.7.0, relative to the previous release of MMBase (1.6).
+release of MMBase 1.7.1, relative to the previous release of MMBase (1.6).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -95,6 +95,10 @@ MMCI (bridge) New Features:
 -------------------
 Taglib New Features:
 -------------------
+[1.7.1]
+
+- #6441 container attribute missing on function-tags. 
+
 [1.7.0]
 - Content-Tag, which provides default escaping behaviour,
   postprocessing functionality, and content-type information. 
@@ -140,6 +144,25 @@ Generic Improvement:
 ------------------
 Generic Bug Fixes:
 ------------------
+
+[1.7.1]
+- searchquery: 'count' queries by bridge are not equal to count queries by MMObjectBuilder  	
+- If httppost.xml missing, dirty error in log, and you can't add it witout restart then.  	
+- Mmci: Node#countRelations can be a bit slow.  	
+- Database Layer: Storagemanagerfactory does not set the correct default transactionlevel  	
+- searchquery: Use of number IN ([constant]) causes unresolvable queries in Mysql  	
+- searchquery : Inversing one constraint may inverse entire query  	
+- JMSendmail does not properly encode mail messages  	
+- Database Layer: Killed connection can be put back in multi-pool.  	
+- Editwizards: Public ID not registered.  	
+- Editwizards: Edit-rights are not always checked 
+-  dtd's contains 'xml:lang' on db/name, which does not make sense.   	
+- NullPointer in BasicNode.java  	
+- Editwizards: Javascript error on save & close and cancle  	
+- Editwizards: timezone problems  	
+- Editwizards: javascript error on save 
+
+
 [1.7.0]
 - jaxp compliance. MMBase does not longer depend on an old version of
   xerces/xalan/xml-apis when running under java 1.4 you can remove
@@ -174,6 +197,12 @@ Security Bug Fixes:
 -----------------
 Taglib Bug Fixes:
 -----------------
+[1.7.1]
+-  string in 'referids' gives an error   	
+-  In contradiction to node-lists, referid="a" id="a" does not work for mm:fieldlist  	
+-  attribute missing on function-tags.  	
+-  <mm:fieldinfo type="usesearchinput" someimes gives ClassCastException. 
+
 [1.7.0]
  - Working with resin now.
 
