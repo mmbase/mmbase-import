@@ -13,7 +13,7 @@
 <body >
 <table>
   <tr>
-    <th class="main" colspan="3">Welcome to MMBase</th>
+    <th class="main" colspan="3">Welcome to MMBase</th> 
   </tr>
   <tr>
     <td colspan="3">
@@ -24,7 +24,7 @@
         This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.
       </p>
       <p>
-        MMBase has been build under the <a href="mmbase/mpl-1.0.jsp">Mozilla Public License, Version 1.0</a>
+        MMBase has been build under the <a href="<mm:url page="mmbase/mpl-1.0.jsp" />">Mozilla Public License, Version 1.0</a>
       </p>
       <p>
         <b>IMPORTANT:</b> Several pages in the Administrative console require you to enter a username and password. <br />
