@@ -17,7 +17,7 @@
 
     <command name="startwizard" inline="true" wizardname="modules" objectnumber="new" />
 
-    <command name="search" nodepath="modules" fields="name" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="modules" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Modules</prompt>
         <search-filter>
             <name>Naam bevat</name>

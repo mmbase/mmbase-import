@@ -16,7 +16,7 @@
 
     <command name="startwizard" inline="true" wizardname="urlcategories-noorigin" objectnumber="new" />
 
-    <command name="search" nodepath="urlcategories" fields="name" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="urlcategories" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Informatiebronnen</prompt>
         <search-filter>
             <name>Naam bevat</name>

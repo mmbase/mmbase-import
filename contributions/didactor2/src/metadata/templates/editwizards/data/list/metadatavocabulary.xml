@@ -17,7 +17,7 @@
 
         <list extends="list/metavocabulary.xml"/>
     </item>
- 
+
 
 <!--     <action type="create">
         <relation destinationtype="metadata" role="related">
@@ -29,7 +29,7 @@
     </action>-->
 
 
-  <action type="add">   
+  <action type="add">
     <relation destinationtype="metadata" role="related">
       <object type="metadata">
         <relation destinationtype="metadefinition" role="related"/>
@@ -57,7 +57,7 @@
       <prompt>Nieuwe vocabulary selecteren</prompt>
     </command>
 
-<!--    <command name="search" nodepath="metadefinition" fields="name,type,handler" age="7" orderby="number" directions="down" >
+<!--    <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar metadata definities</prompt>
         <search-filter>
             <name>Naam bevat</name>

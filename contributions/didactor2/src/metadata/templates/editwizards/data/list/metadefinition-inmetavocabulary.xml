@@ -15,7 +15,7 @@
       <prompt>Handler</prompt>
     </field>
   </item>
- 
+
 
   <action type="create">
     <relation destinationtype="metadata" role="related">
@@ -30,7 +30,7 @@
   <action type="add">
     <relation destinationtype="metadata" role="related">
       <object type="metadata">
-        <relation destinationtype="metadefinition" role="related"/>        
+        <relation destinationtype="metadefinition" role="related"/>
       </object>
     </relation>
   </action>
@@ -41,7 +41,7 @@
     </relation>
   </action>
 
-  <command name="search" nodepath="metadefinition" fields="name,type,handler" age="7" orderby="number" directions="down" constraints="type=3">
+  <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" constraints="type=3">
     <prompt>Zoeken naar metadata definities</prompt>
     <search-filter>
       <name>Naam bevat</name>
