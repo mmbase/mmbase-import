@@ -9,25 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.io.File;
 import java.util.Set;
-import org.mmbase.util.FileWatcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 /**
- * This class is a empty implementation of the Authorization, it will only
- * return that operations are valid. To make your own implementation of
- * authorization, you have to extend this class.
+ * The abstract implementation of the Authorization. To make your own implementation of
+ * authorization, you have to extend this class, and implement the abstract methods.
  *
  * @author Eduard Witteveen
- * @version $Id: Authorization.java,v 1.15 2003-07-09 07:25:05 michiel Exp $
+ * @version $Id: Authorization.java,v 1.16 2003-07-09 10:03:11 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
     private static Logger log = Logging.getLoggerInstance(Authorization.class);
 
     /**
-     *	This method could be overrided by an extending class.
+     *	This method should be overrided by an extending class.
      *	It has to be called, when a new Node has been created.
      *	This way, the authentication can create default rights
      *	for this object, depending on the UserContext and generate

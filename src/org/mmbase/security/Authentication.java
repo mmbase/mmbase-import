@@ -10,28 +10,25 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import java.util.Map;
-import java.io.File;
-
-import org.mmbase.util.FileWatcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  *  This class is a empty implementation of the Authentication, it will only
- *  return that the authentication succeeded.
+ *  return successful authentications.
  *
- *  To make your own implementation of authorization, you have to extend this class.
+ *  To make your own implementation of authentication, you have to extend this class.
  *
  * @author Eduard Witteveen
- * @version $Id: Authentication.java,v 1.17 2003-07-09 07:25:05 michiel Exp $
+ * @version $Id: Authentication.java,v 1.18 2003-07-09 10:03:11 michiel Exp $
  */
 public abstract class Authentication extends Configurable {
     private static Logger log = Logging.getLoggerInstance(Authentication.class);
 
     /**
      *  This method will verify the login, and give a UserContext back if everything
-     *  was valid
+     *  was valid.
      *	@param manager The class that created this instance.
      *	@param configPath The url which contains the config information for.
      *	                  the authorization.
