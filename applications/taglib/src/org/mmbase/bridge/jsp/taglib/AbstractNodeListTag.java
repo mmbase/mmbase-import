@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  */
-abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListItemInfo {
+abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
     private static Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class.getName());
 
     /**
@@ -72,7 +72,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected boolean changed = true;
 
     /**
-     * Data member to hold an iterationof the values to return.
+     * Data member to hold an iteration of the values to return.
      * This variable is set in {@link #setReturnValues(NodeList)}, which
      * should be called from {@link #doStartTag}, and will be used to
      * fill the return variables for every iteration.
@@ -117,15 +117,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setMax(String m) throws JspTagException {
-        try {
-            m = getAttributeValue(m);
-            if (! "".equals(m)) {
-                max = Integer.parseInt(m);
-            }
-        } catch (NumberFormatException e) {
-            throw new JspTagException("Max should be an integer value "+
-                        "(value found was "+m+")");
-        }
+        max = getAttributeInteger(m).intValue();
     }
 
     /**
@@ -144,15 +136,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setOffset(String o) throws JspTagException {
-        try {
-            o = getAttributeValue(o);
-            if (! "".equals(o)) {
-                offset = Integer.parseInt(o);
-            }
-        } catch (NumberFormatException e) {
-            throw new JspTagException("Offset should be an integer value "+
-                        "(value found was '" + getAttributeValue(o) + "')");
-        }
+        offset = getAttributeInteger(o).intValue();
     }
     /*
     public void setOffset(int o) { // also need with integer argument for Tomcat.
@@ -270,6 +254,12 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (getId() != null) {
             getContextTag().register(getId(), returnList);
         }        
+        if ("".equals(bodyContent.getString())) {
+            FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null,false);
+            if (f != null) {
+                returnList.toXML(f.getDocument());
+            }
+        }
         return  super.doEndTag();
     }
 
