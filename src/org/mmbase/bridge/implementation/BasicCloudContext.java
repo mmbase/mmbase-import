@@ -15,6 +15,7 @@ import org.mmbase.security.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -66,7 +67,7 @@ public class BasicCloudContext implements CloudContext {
             try {
                 securityManager = new org.mmbase.security.SecurityManager(MMBaseContext.getConfigPath()+File.separator+"security"+File.separator+"security.xml");
             } catch (Exception e) {
-                throw new BasicBridgeException(e.toString());
+                throw new BasicBridgeException(e.toString()+"/n"+Logging.stackTrace(e));
             }
 
             // create transaction manager and temporary node manager
