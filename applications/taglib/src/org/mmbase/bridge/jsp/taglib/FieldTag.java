@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.45 2004-09-14 17:59:37 michiel Exp $ 
+ * @version $Id: FieldTag.java,v 1.46 2004-11-26 16:18:19 pierre Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -96,12 +96,12 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         return s;
     }
 
-    
+
     /**
      * @todo  EXPERIMENTAL
      * @since MMBase-1.8
      */
-    protected void handleEditTag() {        
+    protected void handleEditTag() {
         // Andre is busy with this.
     }
 
@@ -146,7 +146,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 case WriterHelper.TYPE_FIELD:
                     value = node.getFieldValue(fieldName).getField();
                     break;
-                default: 
+                default:
                     switch(field.getType()) {
                     case Field.TYPE_BYTE:
                         value = node.getByteValue(fieldName);
@@ -163,6 +163,15 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                         break;
                     case Field.TYPE_FLOAT:
                         value = new Float(node.getFloatValue(fieldName));
+                        break;
+                    case Field.TYPE_DATETIME:
+                        value = node.getDateValue(fieldName);
+                        break;
+                    case Field.TYPE_BOOLEAN:
+                        value = new Boolean(node.getBooleanValue(fieldName));
+                        break;
+                    case Field.TYPE_LIST:
+                        value = node.getListValue(fieldName);
                         break;
                     default:
                         value = convert(node.getStringValue(fieldName));
@@ -187,7 +196,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
     }
-       
+
     /**
      * write the value of the field.
      **/
