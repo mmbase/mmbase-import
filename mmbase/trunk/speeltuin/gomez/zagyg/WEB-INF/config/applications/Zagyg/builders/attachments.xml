@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder extends="content" maintainer="mmbase.org" name="attachments" version="0">
-	<!-- @version $Id: attachments.xml,v 1.1 2004-11-19 10:19:09 pierre Exp $ -->
+	<!-- @version $Id: attachments.xml,v 1.2 2004-11-24 14:11:39 pierre Exp $ -->
 	<classfile>Attachments</classfile>
 	<searchage>31</searchage>
 	<names>
