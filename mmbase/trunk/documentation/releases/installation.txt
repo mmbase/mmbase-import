@@ -54,7 +54,7 @@ Some final notes:
 =================
 
 Jikes:
-If you'd like to use jsp and taglib at a usable speed it is
+If you'd like to develop jsp's and taglib's at a usable speed it is
 recommended to install jikes for compiling jsp. See your
 Servlet-engine's documentation about how to do this.
 
@@ -79,9 +79,7 @@ this by changing the properties in
 <mmbase-webapp/WEB-INF/config/builders/images.xml> into:
 
 <properties> 
-  <property name="ImageConvertClass">
-    org.mmbase.module.builders.ConvertJAI 
-  </property> 
+  <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> 
   <property name="MaxConcurrentRequests">20</property> 
 </properties>
 
