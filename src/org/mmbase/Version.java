@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id
+ * @version $Id: Version.java,v 1.8 2002-02-28 07:33:58 pierre Exp $
  */
 public class Version {
 
