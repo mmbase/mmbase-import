@@ -29,7 +29,7 @@ import org.mmbase.util.FileWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.4 2003-11-16 14:09:52 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.5 2003-11-17 12:46:32 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -37,6 +37,8 @@ public class Authenticate extends Authentication {
     private long extraAdminsUniqueNumber;
 
     private static Properties extraAdmins = null;      // Admins to store outside database. 
+    protected static Map      loggedInExtraAdmins = new HashMap();
+
     protected FileWatcher watchAdmins = new FileWatcher() {            
             public void onChange(File f) {
                 readAdmins(f);
@@ -46,6 +48,7 @@ public class Authenticate extends Authentication {
     protected void readAdmins(File f) {
         try {          
             extraAdmins = new Properties();
+            loggedInExtraAdmins = new HashMap();
             if (f.canRead()) {
                 extraAdmins.load(new FileInputStream(f));
                 log.service("Extra admins " + extraAdmins.keySet());
@@ -77,7 +80,7 @@ public class Authenticate extends Authentication {
             throw new SecurityException(msg);
         }
         if (!users.check()) {
-            String msg = "builder mmbaseusers was not configured correctly";
+           String msg = "builder mmbaseusers was not configured correctly";
             log.error(msg);
             throw new SecurityException(msg);
         }
@@ -112,8 +115,10 @@ public class Authenticate extends Authentication {
             }
             if (extraAdmins.containsKey(userName)) {
                 if(extraAdmins.get(userName).equals(password)) {
-                    log.service("Logged in 'local' admin '" + userName + "'. (from localadmins.properties)");
-                    return new LocalAdmin(userName);
+                    log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
+                    User user = new LocalAdmin(userName);
+                    loggedInExtraAdmins.put(userName, user);
+                    return user;
                 }
             }
             node = users.getUser(userName, password);
@@ -124,6 +129,9 @@ public class Authenticate extends Authentication {
         return new User(node, uniqueNumber);
     }
 
+    public static User getLoggedInExtraAdmin(String userName) {
+        return (User) loggedInExtraAdmins.get(userName);
+    }
     
     // javadoc inherited
     public boolean isValid(UserContext usercontext) throws SecurityException {
@@ -147,15 +155,19 @@ public class Authenticate extends Authentication {
         private String userName;
         private long   l;
         LocalAdmin(String user) {            
-            super(null, uniqueNumber);
+            super(new AdminVirtualNode(), uniqueNumber);            
             l = extraAdminsUniqueNumber;
             userName = user;
         }
         public String getIdentifier() { return userName; }
-        public String getOwnerField() { return userName; }
+        public String  getOwnerField() { return userName; }
         public Rank getRank() throws SecurityException { return Rank.ADMIN; }
-        public MMObjectNode getNode() { return null; }
         public boolean isValid() { return l == extraAdminsUniqueNumber; }
+    }
+    public  class AdminVirtualNode extends VirtualNode {
+        AdminVirtualNode() { 
+            super(Users.getBuilder());
+        }
     }
 
 }

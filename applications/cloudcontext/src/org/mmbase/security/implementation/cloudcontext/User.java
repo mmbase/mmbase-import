@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.8 2003-11-16 14:09:52 michiel Exp $
+ * @version $Id: User.java,v 1.9 2003-11-17 12:46:32 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users;
  */
 public class User extends UserContext implements MMBaseObserver {
@@ -36,8 +36,8 @@ public class User extends UserContext implements MMBaseObserver {
     /**
      * @javadoc
      */
-    User(MMObjectNode mmobjectnode, long l) {
-        node = mmobjectnode;
+    User(MMObjectNode n, long l) {
+        node = n;
         key = l;
         Users.getBuilder().addLocalObserver(this);
     }

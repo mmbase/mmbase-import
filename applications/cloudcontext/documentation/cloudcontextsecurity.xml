@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Cloud Context Security</title>
     <date>2003-09-12</date>
-    <edition>$Id: cloudcontextsecurity.xml,v 1.1 2003-09-12 14:53:55 michiel Exp $</edition>
+    <edition>$Id: cloudcontextsecurity.xml,v 1.2 2003-11-17 12:46:31 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -118,6 +118,26 @@
       and you can configure extra links for users (e.g. make a link to a 'people'
       editwizard to relate people objects to accounts). There is an index.jsp
       available to use them stand-alone. 
+    </para>
+  </section>
+  <section id="extraadmins">
+    <title>'Extra' administration accounts</title>
+    <para>
+      Normally the cloud context security should be configured completely in itself. But it is
+      e.g. possible to forget the admin password or so, and then you could not do certain things any
+      more. You could fix it by temporary disabling security in security.xml and then reset the
+      admin password.
+    </para>
+    <para>
+      This would however temporary let anybody in your web site, and it would be very
+      vulnarable, in that time. When you switch it on then again, then all user have to login again,
+      which is also a (however small) disadvantage. Therefore we have provided an extra feature, which we
+      could refer to as 'extra administrators', which works by use of a property file
+      'admins.properties' in &lt;config dir&gt;/security/admins.properties. This property file contains name/password combinations of
+      'extra' administrators. The file is dynamically loaded and checked (you can change it, place
+      it, remove it), so you can add and remove such administrators on a running MMBase (without affecting 'normal' users).  So as long as you
+      have access to the file system, you can in this way always administrate you site running Cloud
+      Context Security, in a reasonably secure way.
     </para>
   </section>
 </article>
