@@ -5,10 +5,10 @@
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 
 <mm:context>
-  <mm:import externid="user" required="true" />
+  <mm:import externid="deleteuser" required="true" />
 
 
-  <mm:node id="user" referid="user">
+  <mm:node referid="deleteuser">
     <h1><mm:field name="gui()" /></h1>
     <%= getPrompt(m, "deleteduser")%> <mm:field name="gui()" />
     <mm:deletenode deleterelations="true" />

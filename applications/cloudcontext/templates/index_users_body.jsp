@@ -99,7 +99,7 @@
             <mm:compare value="<%="" + org.mmbase.security.Rank.ADMIN.getInt()%>" inverse="true">
               <mm:maydelete>
                 <a onclick="return confirm('<%=getPrompt(m,"reallydeleteusers")%>');"
-                href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
+                href="<mm:url referids="user@deleteuser,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
               </mm:maydelete>
             </mm:compare>
           </mm:function>
