@@ -9,15 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import java.lang.*;
-import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * Support class for scanparser to calculate pages in the background.
  * @author Rico Jansen
- * @verison $Id: PageProcess.java,v 1.3 2002-11-12 16:57:49 pierre Exp $
+ * @verison $Id: PageProcess.java,v 1.4 2003-03-04 14:55:04 nico Exp $
  */
 public class PageProcess implements Runnable {
 

@@ -11,7 +11,6 @@ package org.mmbase.module.gui.html;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
-import java.lang.*;
 import java.util.*;
 
 
