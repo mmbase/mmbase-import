@@ -24,10 +24,10 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.23 2004-08-31 16:47:23 rob Exp $
+ * @version $Id: ContextContainer.java,v 1.24 2004-12-10 19:05:36 michiel Exp $
  **/
 
-public class ContextContainer extends HashMap {
+public abstract class ContextContainer extends AbstractMap implements Map {
     private static final Logger log = Logging.getLoggerInstance(ContextContainer.class);
 
     public static final int LOCATION_NOTSET         = -10;
@@ -95,6 +95,17 @@ public class ContextContainer extends HashMap {
     }
 
 
+    /**
+     * Returns the Map which will is used for actually storing stuff.
+     *
+     * @since MMBase-1.8
+     */
+    protected abstract Map getBacking();
+
+    public Set entrySet() {
+        return getBacking().entrySet();
+    }
+
     private String id;
     protected ContextContainer parent;
 
@@ -105,10 +116,11 @@ public class ContextContainer extends HashMap {
      */
 
     public ContextContainer(String i, ContextContainer p) {
-        super();
         id = i;
         parent = p;
     }
+
+
 
 
     public String getId() {
@@ -146,7 +158,7 @@ public class ContextContainer extends HashMap {
         if (key.indexOf('.') != -1) {
             throw new JspTagException("Key may not contain dots (" + key + ")");
         }
-        return super.put(key, value);
+        return getBacking().put(key, value);
     }
     public boolean containsKey(Object key) {
         throw new RuntimeException("Error, key should be string in ContextContainers!");
@@ -192,7 +204,7 @@ public class ContextContainer extends HashMap {
      * Like containsKey but doesn't check for dots.
      */
     private boolean simpleContainsKey(String key, boolean checkParent) {
-        boolean result = super.containsKey(key);
+        boolean result = getBacking().containsKey(key);
         if (result == false && checkParent && parent != null) {
             result = parent.simpleContainsKey(key, true);
         }
@@ -223,7 +235,7 @@ public class ContextContainer extends HashMap {
      * Like get, but does not try to search dots, because you know already that there aren't.
      */
     private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.
-        Object result =  super.get(key);
+        Object result =  getBacking().get(key);
         if (result == null && checkParent && parent != null) {
             return parent.simpleGet(key, true);
         }
@@ -254,7 +266,7 @@ public class ContextContainer extends HashMap {
 
 
     public Set keySet() {
-        HashSet result = new HashSet(super.keySet());
+        HashSet result = new HashSet(getBacking().keySet());
         if (parent != null) {
             result.addAll(parent.keySet());
         }
@@ -268,7 +280,7 @@ public class ContextContainer extends HashMap {
         if (checkParent) {
             return keySet();
         } else {
-            return super.keySet();
+            return getBacking().keySet();
         }
     }
 
@@ -653,9 +665,9 @@ public class ContextContainer extends HashMap {
 
     public String toString() {
         if (id == null) {
-            return "the context without id (root?)" + super.toString();
+            return "the context without id (root?)" + getBacking().toString();
         } else {
-            return "context '" + id  + "'" + super.toString();
+            return "context '" + id  + "'" + getBacking().toString();
         }
     }
 
