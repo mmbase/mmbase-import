@@ -10,7 +10,7 @@
 <!ATTLIST command nodepath NMTOKEN #IMPLIED >
 <!ATTLIST command objectnumber NMTOKEN #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
-<!ATTLIST command orderby NMTOKEN #IMPLIED >
+<!ATTLIST command orderby CDATA #IMPLIED >
 <!ATTLIST command command NMTOKEN #IMPLIED >
 
 <!ELEMENT default ( #PCDATA ) >
@@ -31,16 +31,16 @@
 <!ELEMENT form-schema ( field | list | subtitle | title )* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
 
-<!ELEMENT item ( title | field | fieldset | list )* >
+<!ELEMENT item ( title | description | field | fieldset | list )* >
 <!ATTLIST item displaytype NMTOKEN #IMPLIED >
 <!ATTLIST item displaymode NMTOKEN #IMPLIED >
 
-<!ELEMENT list ( title | action | command | item | title )* >
+<!ELEMENT list ( title | description | action | command | item | title )* >
 <!ATTLIST list maxoccurs CDATA #IMPLIED >
 <!ATTLIST list minoccurs NMTOKEN #IMPLIED >
 <!ATTLIST list extends CDATA #IMPLIED >
 <!ATTLIST list fdatapath CDATA #IMPLIED >
-<!ATTLIST list destination NMTOKEN #REQUIRED >
+<!ATTLIST list destination NMTOKEN #IMPLIED >
 <!ATTLIST list hidecommand NMTOKEN #IMPLIED >
 <!ATTLIST list orderby CDATA #IMPLIED >
 <!ATTLIST list ordertype NMTOKEN #IMPLIED >
@@ -81,6 +81,8 @@
 <!ELEMENT subtitle ( #PCDATA ) >
 
 <!ELEMENT title ( #PCDATA ) >
+
+<!ELEMENT description ( #PCDATA ) >
 
 <!ELEMENT wizard-schema ( title, action+, lists?, form-schema+ ) >
 <!ATTLIST wizard-schema id NMTOKEN #IMPLIED >
