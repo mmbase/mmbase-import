@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.16 2004-11-23 10:26:48 michiel Exp $
+#  $Id: cvsmail,v 1.17 2004-11-23 10:27:58 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -56,7 +56,7 @@ if ($child = fork()) {
 
 	
     # mail subject:
-    my $subject = "[MMBASE CVS] ".$dir." ";
+    my $subject = "".$dir." ";
     for my $file (@files) {
 	$subject .= (split(",", $file))[0] . " ";
     }
