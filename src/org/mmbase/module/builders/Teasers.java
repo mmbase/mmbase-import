@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @sql in various methods
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: Teasers.java,v 1.19 2002-01-28 14:59:41 pierre Exp $
+ * @version $Id: Teasers.java,v 1.20 2002-01-29 10:57:15 pierre Exp $
  */
 public class Teasers extends MMObjectBuilder {
 
@@ -90,7 +90,7 @@ public class Teasers extends MMObjectBuilder {
      */
     public Object getValue(MMObjectNode node,String field) {
         if (field.equals("image")) {
-            Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),6);
+            Enumeration e=mmb.getInsRel().getRelated(node.getNumber(),"images");
             if (e.hasMoreElements()) {
                 MMObjectNode node2=(MMObjectNode)e.nextElement();
                 return "<IMG SRC=\"/img.db?"+node2.getIntValue("number")+"+s(118x3000)\" ALIGN=\"BOTTOM\">";
