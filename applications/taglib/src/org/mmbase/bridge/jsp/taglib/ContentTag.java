@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.7 2003-05-12 13:49:01 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.8 2003-05-12 14:21:32 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -41,7 +41,7 @@ public class ContentTag extends LocaleTag  {
     private static final CharTransformer COPY = new CopyCharTransformer();
 
     static final ContentTag DEFAULT = new ContentTag() {
-            public CharTransformer getEscaper() { return COPY; } 
+            public CharTransformer getWriteEscaper() { return COPY; } 
             public String  getType()    { return "text/html"; } 
             public String  getEncoding(){ return "iso-8859-1"; } 
         };
@@ -230,9 +230,12 @@ public class ContentTag extends LocaleTag  {
             return c;
         }
     }
+    
+    /** 
+     * Called by children
+     */
 
-
-    protected CharTransformer getWriteEscaper() throws JspTagException {
+    public CharTransformer getWriteEscaper() throws JspTagException {
         if (! escaper.getString(this).equals("")) { 
             return getCharTransformer(escaper.getString(this));
         } 
