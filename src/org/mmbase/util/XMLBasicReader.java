@@ -19,12 +19,17 @@ import org.w3c.dom.traversal.*;
 
 import org.mmbase.module.corebuilders.*;
 
+import org.mmbase.util.logging.*; 
+
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: XMLBasicReader.java,v 1.6 2000-12-20 00:24:53 daniel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.7 2001-03-23 11:07:16 vpro Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2000/12/20 00:24:53  daniel
+ * changed xml parser to file:/// for new xerces/win98/win2000
+ *
  * Revision 1.5  2000/08/18 19:43:45  case
  * cjr: Added getChildElements(element,tag) method to get obtain all child
  *      elements with a certain tag.
@@ -34,6 +39,8 @@ import org.mmbase.module.corebuilders.*;
  *
  */
 public class XMLBasicReader  {
+
+    private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
 
     Document document;
     DOMParser parser;
@@ -80,12 +87,13 @@ public class XMLBasicReader  {
         StringTokenizer st = new StringTokenizer(path,".");
         if (!st.hasMoreTokens()) {
             // faulty path
-            System.err.println("no tokens in path");
+            log.error("No tokens in path");
         } else {
             String root = st.nextToken();
             if (!e.getNodeName().equals(root)) {
                 // path should start with document root element
-                System.err.println("path ["+path+" doesn't start with root element");
+                log.error("path ["+path+"] doesn't start with root element: incorrect xml file" +
+                          "(Did you use new way to configure modules?)");
             } else {
                 while (st.hasMoreTokens()) {
                     String tag = st.nextToken();
