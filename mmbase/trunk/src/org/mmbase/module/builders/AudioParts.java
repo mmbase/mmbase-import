@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.19 2000-12-14 16:22:15 vpro Exp $
+$Id: AudioParts.java,v 1.20 2001-03-08 13:11:30 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.19  2000/12/14 16:22:15  vpro
+davzev: AudioParts and VideoParts now extend from MediaParts
+
 Revision 1.18  2000/12/14 15:53:39  vpro
 davzev: Removed replace() and related GETURL methods, now available in mediaparts, and added methods getMinSpeed,getMinChannels and doGetUrl.
 
@@ -85,14 +88,15 @@ import org.mmbase.module.sessionInfo;
 import org.mmbase.util.media.*;
 import org.mmbase.util.media.audio.*;
 import org.mmbase.module.builders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.19 2000-12-14 16:22:15 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.20 2001-03-08 13:11:30 install Exp $
  * 
  */
 public class AudioParts extends MediaParts {
-
+    private static Logger log = Logging.getLoggerInstance(AudioParts.class.getName());
 
 	public final static int AUDIOSOURCE_DEFAULT=0;
 	public final static int AUDIOSOURCE_DROPBOX=4;
@@ -108,13 +112,13 @@ public class AudioParts extends MediaParts {
 	* pre commit from the editor
 	*/
 	public int preEdit(EditState ed, MMObjectNode node) {
-		//debug("preEdit(): start");
+		log.debug("preEdit(): start");
 		if ( node != null ) {
 			String starttime = ed.getHtmlValue("starttime");
 			String stoptime  = ed.getHtmlValue("stoptime");
 	
-			debug("preEdit("+node.getName()+"):starttime("+starttime+")");
-			debug("preEdit("+node.getName()+"): stoptime("+stoptime+")");
+			log.debug("preEdit("+node.getName()+"):starttime("+starttime+")");
+			log.debug("preEdit("+node.getName()+"): stoptime("+stoptime+")");
 
 			// check if (stop - start) == lengthOfPart, if lengthOfPart != -1
 
@@ -132,7 +136,7 @@ public class AudioParts extends MediaParts {
 					if (starttime.equals("") || starttime.equals("-1")) {
 						removeProperty( node, "starttime" );
 					} else {
-						debug("preEdit("+node+","+starttime+"): ERROR: Dont know what to do with this starttime for this node!");
+						log.error("preEdit("+node+","+starttime+"): ERROR: Dont know what to do with this starttime for this node!");
 					}
 				}
 			}
@@ -153,13 +157,13 @@ public class AudioParts extends MediaParts {
 					if(stoptime.equals("") || stoptime.equals("-1"))
 						removeProperty(node, "stoptime");	
 					else
-						debug("preEdit("+node+","+stoptime+"): ERROR: Dont know what to do this this stoptime for this node!");
+						log.error("preEdit("+node+","+stoptime+"): ERROR: Dont know what to do this this stoptime for this node!");
 				}
 			} else {
 				// error ? daniel	putProperty( node, "stoptime" , "-1");
 			}
 		} else {
-			debug("preEdit(): ERROR: node is null!");
+			log.error("preEdit(): ERROR: node is null!");
 		}
 		return(-1);	
 	}
@@ -402,10 +406,8 @@ public class AudioParts extends MediaParts {
 				}
 			}
 		} else {
-			debug("checktime("+time+"): ERROR: Time is not valid!");
+			log.error("checktime("+time+"): ERROR: Time is not valid!");
 		}
-		
-		//debug("checktime("+time+"): simpleTimeCheck(" + result+")");
 		return result;
 	}
 
@@ -418,20 +420,18 @@ public class AudioParts extends MediaParts {
 				if( t < 100 ) {
 					result = true;
 				} else {
-					debug("checktimeint("+time+"): ERROR: this part is higher than 100!"); 
+					log.error("checktimeint("+time+"): ERROR: this part is higher than 100!"); 
 					result = false;
 				}
 			} else {
-				debug("checktimeint("+time+"): ERROR: Time is negative!");
+				log.error("checktimeint("+time+"): ERROR: Time is negative!");
 				result = false;
 			}
 
 		} catch( NumberFormatException e ) {
-			debug("checktimeint("+time+"): ERROR: Time is not a number!");
+			log.error("checktimeint("+time+"): ERROR: Time is not a number!");
 			result = false;
 		}
-
-		//debug("checktimeint("+time+"): " + result);	
 		return result;
 	}
 
@@ -451,10 +451,10 @@ public class AudioParts extends MediaParts {
 			if( pnode != null ) {
 				result = pnode.getStringValue( "value" );
 			} else {
-				debug("getProperty("+node.getName()+","+key+"): ERROR: No prop found for this item("+id+")!");
+				log.error("getProperty("+node.getName()+","+key+"): ERROR: No prop found for this item("+id+")!");
 			}
 		} else {
-			debug("getProperty("+"null"+","+key+"): ERROR: Node is null!");
+			log.error("getProperty("+"null"+","+key+"): ERROR: Node is null!");
 		}
 		return result;
 	}
@@ -490,7 +490,7 @@ public class AudioParts extends MediaParts {
 				}
 			}
 		} else {
-			debug("putProperty("+"null"+","+key+","+value+"): ERROR: Node is null!");
+			log.error("putProperty("+"null"+","+key+","+value+"): ERROR: Node is null!");
 		}
 	}
 
@@ -500,7 +500,7 @@ public class AudioParts extends MediaParts {
             if (pnode!=null) 
 				pnode.parent.removeNode( pnode );
 			else
-				debug("removeNode("+node+","+key+"): ERROR: Property not found( and cannot remove )");
+				log.error("removeNode("+node+","+key+"): ERROR: Property not found( and cannot remove )");
 		}
 	}
 

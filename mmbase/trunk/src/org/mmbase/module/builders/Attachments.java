@@ -30,6 +30,9 @@ public class Attachments extends MMObjectBuilder {
 
     protected String defaultMimeType = "application/x-binary";
 
+	/**
+	 * this method will be invoked while uploading the file.
+	 */
     public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
      	log.debug("CMDS="+cmds);
        	log.debug("VARS="+vars);

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AnnotRel.java,v 1.10 2001-02-19 11:47:03 daniel Exp $
+$Id: AnnotRel.java,v 1.11 2001-03-08 13:11:30 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2001/02/19 11:47:03  daniel
+small fix to return end on getValue
+
 Revision 1.9  2001/01/18 13:55:02  pierre
 pierre:removed obsolete setDefault code (already present in InsRel)
 
@@ -43,13 +46,16 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.scanpage;
 import org.mmbase.util.RelativeTime;
+import org.mmbase.util.logging.*;
+
 
 /**
  * @author David van Zeventer
  * @version 8 Dec 1999 
- * @$Revision: 1.10 $ $Date: 2001-02-19 11:47:03 $
+ * @$Revision: 1.11 $ $Date: 2001-03-08 13:11:30 $
  */
 public class AnnotRel extends InsRel {
+    private static Logger log = Logging.getLoggerInstance(AnnotRel.class.getName());
 
     // Defining possible annotation types
     public final static int HOURS   = 0;
@@ -126,7 +132,7 @@ public class AnnotRel extends InsRel {
  	 * Execute the commands provided in the form values
 	 */
 	public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
-		System.out.println("AnnotRel::process: This method isn't implemented yet.");
+		log.debug("AnnotRel::process: This method isn't implemented yet.");
 		return false;
 	}
 
@@ -134,7 +140,7 @@ public class AnnotRel extends InsRel {
     * replace all for frontend code
     */
 	public String replace(scanpage sp, StringTokenizer command) {
-		System.out.println("AnnotRel::replace: This method isn't implemented yet.");
+		log.debug("AnnotRel::replace: This method isn't implemented yet.");
         return("");
     }		
 
