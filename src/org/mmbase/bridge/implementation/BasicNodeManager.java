@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.54 2002-11-04 12:26:02 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.55 2003-02-18 21:08:37 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -286,8 +286,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         int dir  = ClusterBuilder.getSearchDir(direction);
 
         Enumeration typerelNodes;
-        if (nodeManager!=null) {
-            int otherOType=nodeManager.getNumber();
+        if (nodeManager != null) {
+            int otherOType = nodeManager.getNumber();
             typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType,otherOType);
         } else {
             typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType);
@@ -296,16 +296,18 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         while (typerelNodes.hasMoreElements()) {
             MMObjectNode n= (MMObjectNode)typerelNodes.nextElement();
             if ((requestedRole==-1) || (requestedRole==n.getIntValue("rnumber"))) {
-                if (thisOType== n.getIntValue("dnumber")) {
-                    if (dir == ClusterBuilder.SEARCH_DESTINATION) {
-                        continue;
-                    }
-                } else {
-                    if (dir == ClusterBuilder.SEARCH_SOURCE) {
-                        continue;
+                if (n.getIntValue("snumber") != n.getIntValue("dnumber")) { // if types are equal, no need to check direction, it is always ok then..
+                    if (thisOType== n.getIntValue("dnumber")) {
+                        if (dir == ClusterBuilder.SEARCH_DESTINATION) {
+                            continue;
+                        }
+                    } else {
+                        if (dir == ClusterBuilder.SEARCH_SOURCE) {
+                            continue;
+                        }
                     }
                 }
-                nodes.add(n);
+                nodes.add(n); 
             }
         }
         return new BasicRelationManagerList(nodes,cloud);
