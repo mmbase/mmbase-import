@@ -15,6 +15,7 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.ParseException;
+import org.mmbase.util.logging.*;
 
 /**
  * TypeDef, one of the meta stucture nodes it is used to define the
@@ -25,6 +26,11 @@ import org.mmbase.module.ParseException;
  */
 public class TypeDef extends MMObjectBuilder {
 
+	/**
+	* Logger routine
+	*/
+	private static Logger log = Logging.getLoggerInstance(TypeDef.class.getName());
+	
 	Hashtable nameCache; 						// object number -> typedef name
 	Hashtable numberCache=new Hashtable(); 		// typedef name -> object number
 	Hashtable descriptionCache; 				// object number -> typedef description
@@ -270,7 +276,7 @@ public class TypeDef extends MMObjectBuilder {
 		if(!typedefsLoaded.contains(name)) {
 			typedefsLoaded.add(name);
 		} else {
-			debug("Builder "+name+" is already loaded!");
+			log.debug("Builder "+name+" is already loaded!");
 		}
 	}
 
@@ -278,7 +284,7 @@ public class TypeDef extends MMObjectBuilder {
 		if(typedefsLoaded.contains(name)) {
 			typedefsLoaded.remove(name);
 		} else {
-			debug("Builder "+name+" is not loaded!");
+			log.debug("Builder "+name+" is not loaded!");
 		}
 	}
 
@@ -286,12 +292,9 @@ public class TypeDef extends MMObjectBuilder {
 		System.out.println("Tataaaaa");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-            //debug("getList("+sp.req.getRequestURI()+"): FORUMS->"+cmd);
-
             if (cmd.equals("builders")) {
 				return typedefsLoaded;
             }
-            //System.out.println("getList("+sp.req.getRequestURI()+"): "+cmd+" done");
         }
 		return null;
     }
