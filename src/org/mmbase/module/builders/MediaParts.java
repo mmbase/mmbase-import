@@ -9,8 +9,11 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.1  2000/12/14 16:19:22  vpro
+davzev: Created MediaParts builder (no table version yet, only java), AudioParts and VideoParts now extend MediaParts.
 
-$Id: MediaParts.java,v 1.1 2000-12-14 16:19:22 vpro Exp $
+
+$Id: MediaParts.java,v 1.2 2001-02-01 16:05:12 vpro Exp $
 */
 package org.mmbase.module.builders;
 
@@ -47,7 +50,7 @@ import org.mmbase.module.builders.*;
  * immediately.
  * 
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.1 2000-12-14 16:19:22 vpro Exp $
+ * @version $Id: MediaParts.java,v 1.2 2001-02-01 16:05:12 vpro Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
 	// Debugging variables
@@ -85,6 +88,17 @@ public abstract class MediaParts extends MMObjectBuilder {
 		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+") ctype:"+ctype);	
 		if (ctype.equals("c"))
 			removeFromUrlCache(number);
+		if (ctype.equals("d")) {
+			try {
+				int num=Integer.parseInt(number);
+				boolean success = removeRaws(num);
+				if (!success) 
+					debug("ERROR: removeRaws was not succesful!");
+			} catch (NumberFormatException nfe) {
+				debug("nodeLocalChanged: ERROR: number value("+number+") is not an integer."); 
+				nfe.printStackTrace();
+			}
+		}
         return true;
     }
 
@@ -119,15 +133,47 @@ public abstract class MediaParts extends MMObjectBuilder {
 			nfe.printStackTrace();
 		}	
 	}
-		   
+
+	/**
+	 * Removes related rawaudio/video objects. 
+	 * @param number objectnumber of audio/videopart. 
+	 * @return true if remove was succesful, false otherwise.
+	 */
+	public boolean removeRaws(int number) {
+		MMObjectBuilder builder = null;
+		Enumeration e = null;
+		MMObjectNode node = getNode(number);
+		MMObjectNode typedefNode = getNode(node.getIntValue("otype"));
+		
+		if (typedefNode.getStringValue("name").equals("audioparts")) {
+			if (debug) debug("removeRaws: Deleting all rawaudios where id="+number);
+			builder = mmb.getMMObject("rawaudios");
+		} else if (typedefNode.getStringValue("name").equals("videoparts")) {
+			if (debug) debug("removeRaws: Deleting all rawaudios where id="+number);
+			builder = mmb.getMMObject("rawvideos");
+		} else {
+			debug("removeRaws: ERROR: Can't delete raws since number:"+number+" is not an audio/videopart but a "+typedefNode.getStringValue("name"));
+			return false;
+		}
+
+		e = builder.search("WHERE id='"+number+"'");	
+		MMObjectNode rawNode = null;
+		while (e.hasMoreElements()) {
+			rawNode = (MMObjectNode)e.nextElement();
+			if (debug) debug("removeRaws: Removing rawobject "+rawNode.getIntValue("number"));
+			builder.removeNode(rawNode);
+		}
+		return true;
+	}
+
     /**
-    * replace all for frontend code
-	* Replace commands available are GETURL (gets mediafile url for an objectnumber),
-	* from cache or not depending on builder property.
-	* @param sp the scanpage	
-	* @param sp the stringtokenizer reference with the replace command.
-	* @return a String the result value of the replace command or null.
-    */
+     * replace all for frontend code
+	 * Replace commands available are GETURL (gets mediafile url for an objectnumber),
+	 * from cache or not depending on builder property.
+	 * @param sp the scanpage	
+	 * @param sp the stringtokenizer reference with the replace command.
+	 * @return a String the result value of the replace command or null.
+     */
     public String replace(scanpage sp,StringTokenizer command) {
 		if (command.hasMoreTokens()) {
             String token=command.nextToken();
