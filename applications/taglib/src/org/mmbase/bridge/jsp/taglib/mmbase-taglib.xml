@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.222 2003-12-18 23:05:44 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.223 2003-12-19 12:55:08 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5300,41 +5300,79 @@ The 0 is just counter, which starts at 0 on every page.
 
 
 	<tag>
-    <name>grows</name>
-		<type>mmbase.tree</type>
+    <name>didgrow</name>
+		<type>mmbase.tree.list</type>
 		<extends>treereferrer</extends>
 		<extends>contextreader</extends>
-		<extends>condition</extends>
-		<tagclass>org.mmbase.bridge.jsp.taglib.tree.GrowsTag</tagclass>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.DidGrowTag</tagclass>
 		<info>
-      Did the tree 'grow'?
+      Did the tree 'grow', and how much (for normal trees, this is 0 or one, so 'didgrow' acts as a 'condition' tag.
 		</info>
 		<since>MMBase-1.7</since>		
     <attribute>
-			<name>to</name>
+			<name>inverse</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
       <info>
-        Wheter it grows to this depth.
+        
+      </info>
+		</attribute>
+	</tag>
+
+	<tag>
+    <name>willgrow</name>
+		<type>mmbase.tree.list</type>
+		<extends>treereferrer</extends>
+		<extends>contextreader</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.WillGrowTag</tagclass>
+		<info>
+      Did the tree 'grow', and how much (for normal trees, this is 0 or one, so 'didgrow' acts as a 'condition' tag.
+		</info>
+		<since>MMBase-1.7</since>		
+    <attribute>
+			<name>inverse</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <info>
+        
+      </info>
+		</attribute>
+	</tag>
+
+	<tag>
+    <name>didshrink</name>
+		<type>mmbase.tree.list</type>
+		<extends>treereferrer</extends>
+		<extends>contextreader</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.DidShrinkTag</tagclass>
+		<info>
+      Did the tree 'grow', and how much (for normal trees, this is 0 or one, so 'didgrow' acts as a 'condition' tag.
+		</info>
+		<since>MMBase-1.7</since>		
+    <attribute>
+			<name>inverse</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+      <info>
+        
       </info>
 		</attribute>
 	</tag>
 
 
-
 	<tag>
-    <name>shrinks</name>
+    <name>willshrink</name>
 		<type>mmbase.tree.list</type>
 		<extends>treereferrer</extends>
 		<extends>contextreader</extends>
     <extends>list</extends>
-		<tagclass>org.mmbase.bridge.jsp.taglib.tree.ShrinksTag</tagclass>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.WillShrinkTag</tagclass>
 		<info>
-      Did the tree 'grow'?
+      Wille the tree shrink.
 		</info>
 		<since>MMBase-1.7</since>		
     <attribute>
-			<name>to</name>
+			<name>inverse</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
       <info>
