@@ -12,8 +12,9 @@ package org.mmbase.service.interfaces;
 import org.mmbase.service.*;
 
 /**
- * @author Daniel Ockeloen
- * @version $Revision: 1.4 $ $Date: 2001-04-19 12:03:08 $
+ * @rename CdplayerInterface
+  * @author Daniel Ockeloen
+ * @version $Revision: 1.5 $ $Date: 2001-12-14 09:33:51 $
  */
 public interface cdplayerInterface extends serviceInterface {
 	public String getVersion();

@@ -19,8 +19,9 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @author Daniel Ockeloen
- * @$Revision: 1.10 $ $Date: 2001-05-04 13:54:57 $
+ * @rename G2encoders
+  * @author Daniel Ockeloen
+ * @$Revision: 1.11 $ $Date: 2001-12-14 09:33:19 $
  */
 public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 

@@ -23,8 +23,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @author Daniel Ockeloen
- * @version $Revision: 1.12 $ $Date: 2001-05-07 15:30:24 $ 
+ * @rename Cdplayers
+  * @author Daniel Ockeloen
+ * @version $Revision: 1.13 $ $Date: 2001-12-14 09:33:18 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 

@@ -29,8 +29,9 @@ import org.mmbase.servlet.JamesServlet;
  * hold all request related information, because we want to extend the model
  * of offline page generation.
  *
- * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.16 2001-11-25 18:32:22 vpro Exp $
+ * @rename Scanpage
+  * @author Daniel Ockeloen
+ * @version $Id: scanpage.java,v 1.17 2001-12-14 09:33:59 pierre Exp $
  */
 public class scanpage {
     // logger

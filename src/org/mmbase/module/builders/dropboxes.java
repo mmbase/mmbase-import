@@ -19,7 +19,8 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @author Daniel Ockeloen
+ * @rename Dropboxes
+  * @author Daniel Ockeloen
  */
 public class dropboxes extends ServiceBuilder implements MMBaseObserver {
 

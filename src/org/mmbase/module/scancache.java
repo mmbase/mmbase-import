@@ -33,7 +33,8 @@ import org.mmbase.module.gui.html.scanparser;
  * Caching is done in pools. Each pool has its own memory cache and files, and has
  * different ways to handle file caching. The pools currently supported are "PAGE" and "HENK".
  *
- * @author Daniel Ockeloen
+ * @rename Scancache
+  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @version 10 Apr 2001
  */

@@ -14,6 +14,13 @@ import java.util.Vector;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
+/**
+ * Class setUserTest
+ * 
+ * @javadoc
+ * @rename SetUserTest
+  */
+
 public class setUserTest {
 
     static private Logger log = Logging.getLoggerInstance(setUserTest.class.getName()); 

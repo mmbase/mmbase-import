@@ -13,6 +13,12 @@ package org.mmbase.module.irc.communication.irc.tcpip;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Class TcpipReceiveThread
+ * 
+ * @javadoc
+ */
+
 public class TcpipReceiveThread extends TcpipThread {
     private static Logger log = Logging.getLoggerInstance(TcpipReceiveThread.class.getName());
 

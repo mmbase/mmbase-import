@@ -16,7 +16,8 @@ import java.lang.String;
  * This is used with the CAHE PAGE mechanism, which copies calculated pages to a mirror server.
  * File2Copy objects are handled by the {@link FileCopier} class.
  *
- * @author Daniel Ockeloen
+ * @rename AFile2Copy
+  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @version 5 Apr 2001
  */

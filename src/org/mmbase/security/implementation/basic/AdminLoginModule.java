@@ -15,6 +15,12 @@ import java.util.HashMap;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Class AdminLoginModule
+ * 
+ * @javadoc
+ */
+
 public class AdminLoginModule implements LoginModule {
     private String key;
     private static Logger log=Logging.getLoggerInstance(AdminLoginModule.class.getName());

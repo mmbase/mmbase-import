@@ -16,6 +16,12 @@ import org.mmbase.util.SortedVector;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Class Votes
+ * 
+ * @javadoc
+ */
+
 public 	class Votes {
 
     private static Logger log = Logging.getLoggerInstance(Votes.class.getName()); 

@@ -25,7 +25,8 @@ import org.mmbase.util.logging.*;
  * jumpersInterceptor is a Tomcat Interceptor based on the servjumpers-servlet.
  * It intercepts all requests to see if it has a jumper it wants to redirect
  * (like www.vpro.nl/3voor12). It's controlled by the jumpers builder.
- * @version 1.0
+ * @rename JumpersInterceptor
+  * @version 1.0
  * @author Gerard van Enk
 
  */

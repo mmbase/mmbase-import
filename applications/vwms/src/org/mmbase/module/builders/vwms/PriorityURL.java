@@ -12,6 +12,12 @@ package org.mmbase.module.builders.vwms;
 import java.lang.String;
 import org.mmbase.util.Sortable;
 
+/**
+ * Class PriorityURL
+ * 
+ * @javadoc
+ */
+
 public class PriorityURL implements Sortable {
 	public static int MIN_PRIORITY=0;
 	public static int LOW_PRIORITY=20;

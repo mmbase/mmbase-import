@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: startRemoteBuilders.java,v 1.14 2001-07-02 16:53:43 vpro Exp $
+$Id: startRemoteBuilders.java,v 1.15 2001-12-14 09:33:32 pierre Exp $
 */
 package org.mmbase.remote;
 
@@ -28,7 +28,8 @@ import java.util.*;
  * example : java org.mmbase.startRemoteBuilders /tmp/cdrom1.cfg
  * </PRE>
  *
- * @version $Revision: 1.14 $ $Date: 2001-07-02 16:53:43 $
+ * @rename StartRemoteBuilders
+  * @version $Revision: 1.15 $ $Date: 2001-12-14 09:33:32 $
  * @author Daniel Ockeloen
  */
 public class startRemoteBuilders { 

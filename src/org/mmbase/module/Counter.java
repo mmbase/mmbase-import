@@ -19,6 +19,12 @@ import org.mmbase.util.scanpage;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Class Counter
+ * 
+ * @javadoc
+ */
+
 public class Counter extends  ProcessorModule implements CounterInterface {
 
     //  ---------------------------------------------------------------------------------- 

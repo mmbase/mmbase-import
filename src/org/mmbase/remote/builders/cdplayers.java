@@ -8,9 +8,17 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.12 2001-04-19 14:02:21 vpro Exp $
+$Id: cdplayers.java,v 1.13 2001-12-14 09:33:33 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2001/04/19 14:02:21  vpro
+Davzev: Changed method doRecord()
+doRecord now receives the exitvalue from the getTrack implementation
+and saves it together with the audiopartnr(=id) in the cdplayers.info field
+as: result=exitvalue id=audiopartnr (eg result=0 id=12345678)
+When implementation can't be found an oldstyle error (result=err reason=nocode) is
+saved in info field which is willingly ignored by new error handling.
+
 Revision 1.10  2001/03/15 16:15:58  vpro
 Davzev: Removed setValue to print what remotebuilder is doing when busy working, cause it distored communication between mmbase and remotebuilders.
 
@@ -42,7 +50,8 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @version $Revision: 1.12 $ $Date: 2001-04-19 14:02:21 $
+ * @rename Cdplayers
+  * @version $Revision: 1.13 $ $Date: 2001-12-14 09:33:33 $
  * @author Daniel Ockeloen
  */
 public class cdplayers extends RemoteBuilder {

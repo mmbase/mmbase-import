@@ -26,6 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Performance Servlet is used for 2 reasons as a basic Servlet test to see if
  * the install went oke (same as SimpleServlet) and to see how fast the JVM is
  * we are running on (very basic test).
+  * @rename Servflash
  */
 public class servflash extends JamesServlet {
     private static Logger log;

@@ -9,6 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
+/**
+ * Class Vote
+ * 
+ * @javadoc
+ */
+
 public 	class 		Vote {
 	public int	number;
 	public int	vote;	

@@ -12,6 +12,13 @@ package org.mmbase.module;
 
 import java.util.Date;
 
+/**
+ * Class cacheline
+ * 
+ * @javadoc
+ * @rename Cacheline
+  */
+
 public class cacheline {
 
 	public Date lastmod;

@@ -23,7 +23,8 @@ import org.mmbase.util.logging.*;
  * jumpers builder).
  * If a jumper is found, it will redirect the jumper to the designation url.
  *
- * @author Daniel Ockeloen
+ * @rename Servjumpers
+  * @author Daniel Ockeloen
  * @version 24 Apr 2001
  */
 public class servjumpers extends JamesServlet {

@@ -18,6 +18,7 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
+  * @rename DropboxDummy
  */
 public class dropboxDummy implements dropboxInterface {
 

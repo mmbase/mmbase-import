@@ -20,7 +20,8 @@ import java.io.*;
  * Does not store filename, so association should eb done manually.
  * Used by the {@link org.mmbase.module.scancache} module.
  *
- * @author Daniel Ockeloen
+ * @rename FileInfo
+  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @version 10 Apr 2001
  */

@@ -33,7 +33,8 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.25 2001-11-26 13:01:48 vpro Exp $
+ * @rename Servscan
+  * @version $Id: servscan.java,v 1.26 2001-12-14 09:33:57 pierre Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
