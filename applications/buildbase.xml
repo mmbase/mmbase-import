@@ -1,0 +1,181 @@
+<!-- ===========================================================================
+
+
+Generic project build file template. 
+
+Generates a jar for your project. 
+
+You can also do a test. (specify test.class).
+This makes sure you use the right class-path and so on.
+
+Create a build.xml with a DOCTYPE like this:
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
+>
+(point to this file)
+
+@author Michiel Meeuwissen.
+
+============================================================================ -->
+
+
+  <!-- =================================================================== -->
+  <!-- Init                                                                -->
+  <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties"/>
+  <property name="build.compiler" value="classic"/>
+  <property name="optimize" value="on"/>
+  <property name="debug" value="off"/>
+  <property name="deprecation" value="on"/>
+
+  <property name="project.source.dir" location="." />
+  <property name="project.build.dir"  location="./build" />
+  <property name="project.javadoc.packages" value="org.mmbase.*"/>
+
+  <property name="build.dir"  location="../../build" /> <!-- mmbase build dir -->
+  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+  <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+
+  <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
+  <property name="project.name" value="a-mmbase-project" />
+  <property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" />
+  <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
+
+  <property name="test.class"   value="org.mmbase.Version" />
+  <property name="test.arg"     value="" />
+  <property name="compile.excludes" value="" />
+
+  <property name="project.jar" value="${project.build.dir}/${project.name}.jar"/>
+
+  <target name="init" depends="">
+    <tstamp/>
+    <mkdir dir="${project.build.dir}"/>
+    <property name="name" value="${project.name}"/>
+    <property name="version" value="${DSTAMP}"/>
+    <property name="distro"  value="1.6.0"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the MMBase jar file                                          -->
+  <!-- =================================================================== -->
+  <target name="jar" description="Create the MMBase project jar file"
+    depends="init,compile">
+
+  <echo message="Copying ${mmbase.classes}" />
+  <copy todir="${project.build.dir}/classes">
+    <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
+  </copy>
+  
+    <echo file="${project.build.dir}/manifest.mf">
+Name: org/mmbase
+Vendor: MMBase community
+URL: http://${project.name}.mmbase.org
+Comment: The MMBase Content Managment System
+Version: ${distro}.${version}
+Distribution: ${distro}
+Build-by: ${ant.version}
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
+</echo>
+
+    <jar jarfile="${project.jar}"
+         basedir="${project.build.dir}/classes"
+	     includes="org/**,nl/**"
+	     manifest="${project.build.dir}/manifest.mf" >
+    </jar>
+
+  </target>
+
+
+
+  <target name="compile" description="Compile the source directory"
+          depends="init">
+
+    <mkdir dir="${project.build.dir}/classes"/>
+    <echo message="java version: ${ant.java.version}" />
+
+    <echo message="copying" />
+
+    <copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
+      <fileset dir="${project.source.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/LICENSE"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xml"/>
+        <exclude name="build/**"/>
+      </fileset>
+    </copy>
+
+    <echo message="compiling" />
+
+    <javac srcdir ="${project.source.dir}"
+           destdir="${project.build.dir}/classes"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}"
+           excludes="${compile.excludes}"
+      >
+      <classpath>
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+      </classpath>
+         <include name="**/*.java"/>
+    </javac>
+  </target>
+
+
+  <target name="clean" description="Clean">
+    <delete dir="${project.build.dir}" />
+  </target>
+
+
+  <target name="doc" description="Documentation" depends="javadocs">
+  </target>
+
+  <target name="javadocs" description="Documentation" depends="init">
+  <mkdir dir="${project.build.dir}/${project.name}-src/docs"/>
+  <mkdir dir="${project.build.dir}/${project.name}-src/docs/api"/>
+  <javadoc packagenames="${project.javadoc.packages}"
+    sourcepath="${project.source.dir}"
+    destdir="${project.build.dir}/${project.name}-src/docs/api"
+    author="true"
+    version="true"
+    use="false"
+    noindex="true"
+    windowtitle="${project.name} API"
+    doctitle="${project.name}"
+    maxmemory="100M"
+    bottom="${project.name} build ${version}">
+      <classpath>
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+      </classpath>
+    </javadoc>
+  </target>
+
+
+  <target name="test">   
+    <java classname="${test.class}"
+      classpathref="run.classpath"
+      fork="true"
+      failonerror="yes">
+      <jvmarg value="-Dmmbase.config=${mmbase.config}" />
+      <arg    value="${test.arg}" />
+      <classpath id="run.classpath">
+        <fileset dir="${build.dir}/lib">
+          <include name="servlet.jar"/>
+        </fileset>
+        <fileset dir="${project.build.dir}">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
+      </classpath>
+    </java>
+  </target>
