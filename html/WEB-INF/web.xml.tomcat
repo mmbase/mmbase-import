@@ -49,7 +49,7 @@
       </servlet-mapping>
 
       <taglib>
-        <taglib-uri>http://www.mmbase.org/mmbase-taglib-0.8</taglib-uri>
+        <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
         <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
       </taglib>
 </web-app>
