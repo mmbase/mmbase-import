@@ -1,14 +1,11 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="1.0"
-  xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform"
-  xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
->
+<xsl:stylesheet version="1.0"  xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform">
 <!--
   prompts.xls
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.2 2002-05-27 15:07:46 pierre Exp $
+  @version $Id: prompts.xsl,v 1.3 2002-05-27 21:35:55 michiel Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
