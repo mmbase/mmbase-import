@@ -23,6 +23,11 @@ import org.mmbase.module.core.*;
  * @author Hans Speijer
  */
 public class EditStateNode {
+
+	private String classname = getClass().getName();	
+	private boolean debug	  = false;
+	private void debug( String msg ){ System.out.println( classname +":"+ msg ); }
+
 	Hashtable searchValues = new Hashtable();
 	Hashtable htmlValues = new Hashtable();
 	String editNode;
@@ -46,7 +51,17 @@ public class EditStateNode {
 	}
 
 	public String getSearchValue(String name) {
-		return((String)searchValues.get(name));
+		String result = null;
+
+		if( name != null )
+			if( !name.equals("") )
+				result = ((String)searchValues.get(name));
+			else
+				debug("getSearchValue("+name+"): ERROR: name is empty!");
+		else
+			debug("getSearchValue("+name+"): ERROR: name is null!");
+
+		return result;
 	}
 
 	public Hashtable getSearchValues() {
@@ -67,7 +82,18 @@ public class EditStateNode {
 
 
 	public boolean setHtmlValue(String fieldname,Object value) {
-		htmlValues.put(fieldname,value);
+		if( fieldname != null )
+		{
+			if(!fieldname.equals(""))	
+			{
+				htmlValues.put(fieldname,value);
+			}
+			else
+				debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is empty!");
+		}
+		else
+			debug("setHtmlValue("+fieldname+","+value+"): ERROR: fieldname is null!");
+
 		return(true);
 	}
 
@@ -91,7 +117,8 @@ public class EditStateNode {
 			if (ow.equals("pop")) {
 				node.setValue("owner",userName);
 				node.clearChanged();
-				System.out.println("Replaced owner 'pop' with owner '+userName+'");
+
+				debug("setEditNode("+number+","+userName+"): Replaced owner 'pop' with owner '+userName+'");
 			}	
 		}
 		editNode = number;
@@ -150,9 +177,20 @@ public class EditStateNode {
 	}
 
 	public void setBuilder(String name) {
-		mmObjectBuilder = mmBase.getMMObject(name);
-		editor = name;
-		dutchEditor= mmObjectBuilder.dutchSName;
+		if( name != null )
+			if( mmBase != null )
+			{
+				mmObjectBuilder = mmBase.getMMObject(name);
+				if( mmObjectBuilder != null )
+					dutchEditor= mmObjectBuilder.dutchSName;
+				else
+					debug("setBuilder("+name+"): ERROR: No MMObjectBuilder found with this name!");
+				editor = name;
+			}
+			else
+				debug("setBuilder("+name+"): ERROR: MMBase is not defined!");	
+		else
+			debug("setBuilder("+name+"): ERROR: Name is not valid!");	
 	}
 
 	public String getBuilderName() {
@@ -185,7 +223,7 @@ public class EditStateNode {
 
 	public void setInsSaveNode(MMObjectNode node) {
 		insSaveList.addElement(node);
-		System.out.println("EditStateNode -> "+insSaveList.toString());
+		debug("setInsSaveNode(): "+insSaveList.toString());
 	}
 
 	public Vector getInsSaveList() {
@@ -197,7 +235,7 @@ public class EditStateNode {
 	}
 
 	public void delRelationTable() {
-		//System.out.println("Del on relation table");
+		debug("delRelationTable(): Del on relation table, here not implemented!");
 	}
 
 	/**
@@ -209,9 +247,9 @@ public class EditStateNode {
 		MMObjectNode typeRel;
 		String typeName;
 
-
 		// build Hashtable with Vectors for all allowed relations 
 		// Key = TypeName for objects that may be linked
+
 		Hashtable relationTable = new Hashtable();
 		while (enum.hasMoreElements()) {
 			typeRel = (MMObjectNode)enum.nextElement();	
@@ -225,7 +263,7 @@ public class EditStateNode {
 				typeName = mmBase.getTypeDef().getValue(j);
 				relationTable.put(typeName,new Vector());
 			} else {
-				System.out.print("Problem on "+typeRel.toString());
+				debug("getRelationTable(): Problem on "+typeRel.toString());
 			}
 				
 		}
@@ -233,37 +271,37 @@ public class EditStateNode {
 		// Hashtable is done now fill it up !!
 		// enumeration contains all objectnodes that are linked to the 
 		// currently edited Node.
+
 		if (getEditNodeNumber()!=-1) {
 
-		// is this the correct way to get Relations ???? my vote is no !
-		// enum = mmBase.getInsRel().getRelations(getEditNodeNumber());
-		
-		enum = node.getRelations();
-
-		MMObjectNode rel;
-		MMObjectNode target;
-
-		while (enum.hasMoreElements()) {
-		 try {
-			rel = (MMObjectNode)enum.nextElement();	
-			if (rel.getIntValue("snumber") == node.getIntValue("number")) 
-				target = mmObjectBuilder.getNode(rel.getIntValue("dnumber"));
-			else 
-				target = mmObjectBuilder.getNode(rel.getIntValue("snumber"));
-			typeName = mmBase.getTypeDef().getValue(target.getIntValue("otype"));
-			Vector relList = (Vector)relationTable.get(typeName);
-			if (relList != null) {
-				relList.addElement(target);
-				relList.addElement(rel);
+			// is this the correct way to get Relations ???? my vote is no !
+			// enum = mmBase.getInsRel().getRelations(getEditNodeNumber());
+			
+			enum = node.getRelations();
+	
+			MMObjectNode rel;
+			MMObjectNode target;
+	
+			while (enum.hasMoreElements()) {
+				try {
+					rel = (MMObjectNode)enum.nextElement();	
+					if (rel.getIntValue("snumber") == node.getIntValue("number")) 
+						target = mmObjectBuilder.getNode(rel.getIntValue("dnumber"));
+					else 
+						target = mmObjectBuilder.getNode(rel.getIntValue("snumber"));
+					typeName = mmBase.getTypeDef().getValue(target.getIntValue("otype"));
+					Vector relList = (Vector)relationTable.get(typeName);
+					if (relList != null) {
+						relList.addElement(target);
+						relList.addElement(rel);
+					}
+				} catch(Exception e) {
+					debug("getRelationTable(): Problem with a relation, probably a relation with a non active builder");
+				}
 			}
-		  } catch(Exception e) {
-				System.out.println("MMEditStateNode -> problem with a relation, probably a relation with a non active builder");
-		  }
-		}
 		} else {
-			// System.out.println("WOWOW= its -1");
+			debug("getRelation(): WOWOW= its -1");
 		}
 		return (relationTable);
 	}
-
 }
