@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManager.java,v 1.3 2000-10-13 11:41:34 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.4 2000-10-26 13:10:37 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/10/13 11:41:34  vpro
+	Rico: made it working
+	
 	Revision 1.2  2000/10/13 09:39:54  vpro
 	Rico: added a method
 	
@@ -28,7 +31,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.3 2000-10-13 11:41:34 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.4 2000-10-26 13:10:37 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -78,7 +81,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	 * added JohnB, 3MPS, 11/10/2000
 	 *
 	 */
-	 public String getObject(String key) {
+	 public String getObject(String key,String owner) {
 		MMObjectBuilder bul=mmbase.getMMObject("typedef");
 		MMObjectNode node;
 		node=bul.getTmpNode(key);
