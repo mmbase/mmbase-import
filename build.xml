@@ -1393,6 +1393,7 @@ Version: MMBase build ${version}
            optimize="${optimize}"
            deprecation="${deprecation}">
            <include name="org/mmbase/bridge/remote/generator/*.java"/>
+           <include name="org/mmbase/bridge/remote/*.java"/>
     </javac>
   </target>
 
@@ -1448,6 +1449,7 @@ Version: MMBase build ${version}
       <src path="${source-src.dir}" />
       <include name="org/mmbase/bridge/remote/*.java"/>
       <include name="org/mmbase/bridge/remote/rmi/*.java"/>
+      <include name="org/mmbase/bridge/remote/util/*.java"/>
       <include name="org/mmbase/bridge/remote/implementation/*.java"/>
     </javac>
     <rmic base="${build.dir}/classes" classpathref="compile.classpath">
@@ -1477,15 +1479,6 @@ Version: MMBase build ${version}
   <target name="clean.remote" depends="init">
     <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote"/>
     <delete failonerror="false" file="${generated-source-src.dir}/MMCI.xml"/>
-    <!-- Transition period. Until everybody removed the remote
-    code from their source-dir, we clean it also there.
-    -->
-    <delete failonerror="false">
-      <fileset dir="${source-src.dir}">
-        <include name="org/mmbase/bridge/remote/*.java"/>
-      </fileset>
-    </delete>
-    <delete file="${source-src.dir}/MMCI.xml"/>
   </target>
 
   <target name="xsltransformer" depends="init.compile">
