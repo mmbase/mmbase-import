@@ -17,12 +17,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * This implementation of the Field Value interface can be used by
- * getFunctionValue of Node.
-
+ * This implementation of the Field Value interface is used by getFunctionValue of Node. This
+ * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: BasicFunctionValue.java,v 1.2 2002-09-30 12:33:08 michiel Exp $
+ * @version  $Id: BasicFunctionValue.java,v 1.3 2002-10-01 05:58:03 michiel Exp $
  * @since    MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -38,7 +37,11 @@ public class BasicFunctionValue implements FieldValue {
         this.mmobjectnode = node;
         this.value        = value;
     }
-    
+
+    /**
+     * Function values cannot be changed
+     * @return false
+     */
     public boolean canModify() {
         return false;
     }
@@ -106,43 +109,93 @@ public class BasicFunctionValue implements FieldValue {
         return (Element) tree.importNode(doc.getDocumentElement(), true);
     }
     
-    // A function result cannot be changed, so all setfunctions throw an exception
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
 
     public void set(Object value) {
         throw CANNOTCHANGE;
     }
 
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
     public void setBoolean(boolean value) {
         throw CANNOTCHANGE;
     }
 
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
+
     public void setFLoat(float value) {
         throw CANNOTCHANGE;
     }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
     
     public void setDouble(double value) {
         throw CANNOTCHANGE;
     }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
     
     public void setLong(long value) {
         throw CANNOTCHANGE;
     }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
     
     public void setInt(int value) {
         throw CANNOTCHANGE;
     }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
     
     public void setByte(byte[] value) {
         throw CANNOTCHANGE;
     }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
     
     public void setString(String value) {
         throw CANNOTCHANGE;
     }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
     
     public void setNode(Node value) {
         throw CANNOTCHANGE;
     }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     */
     
     public void setXML(Document value) {
         throw CANNOTCHANGE;
