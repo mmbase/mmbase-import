@@ -1,0 +1,18 @@
+<!--
+Display list of xml files in configuration category
+-->
+<PROCESSOR MMBASE>
+<SECURE>
+<html>
+<head><title>MMConfig</title></head>
+<body bgcolor="#ffffff">
+
+Configuration files in <i>$PARAM1</i> category:
+<ul>
+<LIST SHOW PROCESSOR="Config" category=$PARAM1>
+<li><a href="configdetail.shtml?show+$PARAM1+$ITEM1">$ITEM1</a>
+</LIST>
+</ul>
+
+</body>
+</html>

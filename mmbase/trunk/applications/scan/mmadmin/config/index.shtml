@@ -1,0 +1,19 @@
+<!--
+Display main configuration categories
+-->
+
+<PROCESSOR MMBASE>
+<SECURE>
+<html>
+<head><title>MMConfig</title></head>
+<body bgcolor="#ffffff">
+
+Main configuration categories:
+<ul>
+<LIST SHOW PROCESSOR="Config">
+<li><a href="configlist.shtml?$ITEM1">$ITEM1</a>
+</LIST>
+</ul>
+
+</body>
+</html>
