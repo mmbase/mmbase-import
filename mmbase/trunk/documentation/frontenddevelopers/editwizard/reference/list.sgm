@@ -26,7 +26,7 @@
 				<term>destinationtype</term>
 				<listitem>
 					<para>The destination type of a related object. This filter is used combined with 'role' to select the objects to show in the list.</para>
-					<note>In MMBase 1.6.3 or lower, this attribute is called 'destination'. While you can still use the 'destination' attribute, in 1.6.4 and up you should concider using the 'destinationtype' attribute instead.</note>
+					<note><para>In MMBase 1.6.3 or lower, this attribute is called 'destination'. While you can still use the 'destination' attribute, in 1.6.4 and up you should concider using the 'destinationtype' attribute instead.</para></note>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
@@ -36,16 +36,16 @@
 				</listitem>
 			</varlistentry>
 		</variablelist></para>
-		<para>or :</para>
-		<para><variablelist>
-			<varlistentry>
-				<term>fdatapath</term>
-				<listitem>
-					<para>The xpath describing the collections of objects to show i this list.</para>
-				</listitem>
-			</varlistentry>
-		</variablelist></para>
 	</formalpara>
+	<para>or :</para>
+	<para><variablelist>
+		<varlistentry>
+			<term>fdatapath</term>
+			<listitem>
+				<para>The xpath describing the collections of objects to show i this list.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist></para>
 	<formalpara>
 		<title>Required Child Nodes</title>
 		<para>None</para>
