@@ -996,8 +996,8 @@ Build-compiler: ${build.compiler}
 
     <!-- Xalan and Xerces -->
     <!--
-    <property name="xalan.version" value="xalan-j_2_4_0"/>
-    <property name="xalan.fullversion" value="xalan-j_2_4_0"/>
+    <property name="xalan.version" value="xalan-j_2_5_1"/>
+    <property name="xalan.fullversion" value="xalan-j_2_5_1"/>
     <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}-bin.tar.gz"/>
     <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar"/>
     -->
