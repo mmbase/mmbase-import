@@ -23,14 +23,17 @@
 		  <hr />
 		  <mm:listnodes type="images" orderby="number" directions="down" max="1">
              <mm:field node="cod" name="subtitle">
-             <img src="<mm:image template="s(600x80!)+f(png)+modulate(200,0)+font(mm:fonts/Arial.ttf)+fill(ff0000)+pointsize(20)+text(20,50,'$_')" />" /> 
+             <img src="<mm:image template="s(600x80!)+f(png)+modulate(200,0)+font(mm:fonts/Arial.ttf)+fill(ff0000)+pointsize(20)+text(20,50,'$_')" />" alt="<mm:field name="title" />" />: <mm:field name="description" />
            </mm:field>
            </mm:listnodes>
 
           <hr />
           <a href="<mm:url page="index.shtml" />">SCAN version of this page</a><br />
-  		  <a href="<mm:url page="default.jsp" />">UTF-8 version of this page</a>
+  	  	  <a href="<mm:url page="default.jsp" />">UTF-8 version of this page</a><br />
+          <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 		</mm:node>
+
+
 	  </body>
 	</html>
 </mm:cloud>  
