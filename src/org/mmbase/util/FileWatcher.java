@@ -17,8 +17,8 @@ CREDITS:
 package org.mmbase.util;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Iterator;
 import org.mmbase.util.logging.*;
 
@@ -61,6 +61,14 @@ import org.mmbase.util.logging.*;
 public abstract class FileWatcher extends Thread {
     static Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
 
+    /**
+     * This class is used by init of logging system.
+     * After configuration of logging, logging must be reinitialized.
+     */
+    public static void reinitLogger() {
+        log = Logging.getLoggerInstance(FileWatcher.class.getName());
+    }
+
     private class FileEntry {
     	// static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
     	private long lastModified; 
@@ -99,11 +107,23 @@ public abstract class FileWatcher extends Thread {
         public String toString() {
             return file.toString() + ":" + lastModified;
         }
+        public boolean equals(Object o) {
+            if (o instanceof FileEntry) {
+                FileEntry fe = (FileEntry) o;
+                return file.equals(fe.file);
+            } else if (o instanceof File) {
+                return file.equals((File) o);
+            }
+            return false;
+        }
+        public int hashCode() {
+            return file.hashCode();
+        }
         
     }
 
-    private List files       = new ArrayList();
-    private List removeFiles = new ArrayList();
+    private Set files       = new HashSet();
+    private Set removeFiles = new HashSet();
 
     /**
      *	The default delay between every file modification check, set to 60
@@ -152,6 +172,7 @@ public abstract class FileWatcher extends Thread {
     	FileEntry fe = new FileEntry(file);
     	synchronized(this) {
 	    files.add(fe);
+            if (removeFiles.remove(fe)) log.service("Canceling removal from filewatcher " + fe); 
 	}
     }
 
@@ -199,26 +220,6 @@ public abstract class FileWatcher extends Thread {
      */
     private boolean changed() {
     	synchronized(this) {
-            // remove files if necessary
-            Iterator ri = removeFiles.iterator();
-            while (ri.hasNext()) {    
-                File f = (File) ri.next();
-                FileEntry found = null;
-                // search the file
-                Iterator i = files.iterator();
-                while (i.hasNext()) {
-                    FileEntry fe = (FileEntry) i.next();
-                    if (fe.getFile().equals(f)) {
-                        found = fe;
-                        break;
-                    }
-                }
-                if (found != null) {
-                    files.remove(found);
-                }
-            }
-            removeFiles.clear();
-
 	    Iterator i = files.iterator();
 	    while(i.hasNext()) {
 	    	FileEntry fe = (FileEntry) i.next();       
@@ -241,6 +242,33 @@ public abstract class FileWatcher extends Thread {
 	return false;
     }
     
+    private void removeFiles() {
+        log.debug("Start");
+        synchronized(this) {
+            // remove files if necessary
+            Iterator ri = removeFiles.iterator();
+            while (ri.hasNext()) {    
+                File f = (File) ri.next();
+                FileEntry found = null;
+                // search the file
+                Iterator i = files.iterator();
+                while (i.hasNext()) {
+                    FileEntry fe = (FileEntry) i.next();
+                    if (fe.getFile().equals(f)) {
+                        found = fe;
+                        break;
+                    }
+                }
+                if (found != null) {
+                    files.remove(found);
+                    log.service("Removed " + found + " from watchlist");
+                }
+            }
+            removeFiles.clear();
+        }
+        log.debug("End");
+    }
+
     /**
      * Looks if we have to stop
      */
@@ -262,6 +290,7 @@ public abstract class FileWatcher extends Thread {
                               "Currently watching: " + toString());
                 }
 	    	Thread.currentThread().sleep(delay);
+                removeFiles();
       	    } catch(InterruptedException e) {
 	    	// no interruption expected
       	    }
