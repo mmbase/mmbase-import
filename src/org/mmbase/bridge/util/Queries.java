@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.20 2004-01-30 12:22:18 pierre Exp $
+ * @version $Id: Queries.java,v 1.21 2004-02-02 11:03:51 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -188,7 +188,7 @@ public class Queries {
                 posa = -1;
             } else {
                 String fieldName = constraints.substring(posa + 1, posb);
-                int posc = fieldName.indexOf('.', posa);
+                int posc = fieldName.indexOf('.');
                 if (posc == -1) {
                     fieldName = dbs.getAllowedField(fieldName);
                 } else {
