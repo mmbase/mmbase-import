@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.25 2004-02-23 18:59:34 pierre Exp $
+ * @version $Id: Users.java,v 1.26 2004-02-25 13:45:05 pierre Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -45,6 +45,11 @@ public class Users extends MMObjectBuilder {
     public final static String FIELD_USERNAME    = "username";
     public final static String FIELD_PASSWORD    = "password";
     public final static String FIELD_DEFAULTCONTEXT    = "defaultcontext";
+    public final static String FIELD_VALID_FROM    = "validfrom";
+    public final static String FIELD_VALID_TO      = "validto";
+    public final static String FIELD_LAST_LOGON    = "lastlogon";
+
+    public final static long VALID_TO_DEFAULT      = 4102441200L; // 1-1-2100
 
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
@@ -202,20 +207,36 @@ public class Users extends MMObjectBuilder {
             return null;
         }
 
-
         if (encode(password).equals(user.getStringValue(FIELD_PASSWORD))) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
-            if (getField(FIELD_STATUS) != null) {
-                Rank userRank = getRank(user);
-                if (userRank == null) {
-                    userRank = Rank.ANONYMOUS;
-                    log.warn("rank for '" + userName + "' is unknown or not registered, using anonymous.");
-                }
-                if (userRank.getInt() < Rank.ADMIN.getInt() && user.getIntValue(FIELD_STATUS) == -1) {
+            Rank userRank = getRank(user);
+            if (userRank == null) {
+                userRank = Rank.ANONYMOUS;
+                log.warn("rank for '" + userName + "' is unknown or not registered, using anonymous.");
+            }
+            if (userRank.getInt() < Rank.ADMIN.getInt() && getField(FIELD_STATUS) != null) {
+                int status = user.getIntValue(FIELD_STATUS);
+                if (status == -1) {
                     throw new SecurityException("account for '" + userName + "' is blocked");
                 }
+            }
+            if (userRank.getInt()<Rank.ADMIN_INT && getField(FIELD_VALID_FROM) != null) {
+                long validFrom = user.getLongValue(FIELD_VALID_FROM);
+                if (validFrom != -1 && validFrom * 1000 > System.currentTimeMillis() ) {
+                    throw new SecurityException("account for '" + userName + "' not yet active");
+                }
+            }
+            if (userRank.getInt()<Rank.ADMIN_INT && getField(FIELD_VALID_TO) != null) {
+                long validTo = user.getLongValue(FIELD_VALID_TO);
+                if (validTo != -1 && validTo * 1000 < System.currentTimeMillis() ) {
+                    throw new SecurityException("account for '" + userName + "' is expired");
+                }
+            }
+            if (getField(FIELD_LAST_LOGON) != null) {
+                user.setValue(FIELD_LAST_LOGON,System.currentTimeMillis() / 1000);
+                user.commit();
             }
             return user;
         } else {
@@ -331,27 +352,26 @@ public class Users extends MMObjectBuilder {
         */
     }
 
-
     /**
      * Makes sure unique values and not-null's are filed
      */
     public void setDefaults(MMObjectNode node) {
-
         MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
         node.setValue(FIELD_DEFAULTCONTEXT, defaultDefaultContext);
-
         node.setValue(FIELD_PASSWORD, "");
-
         setUniqueValue(node, FIELD_USERNAME, "user");
-
-    }
-
+        if (getField(FIELD_VALID_FROM) != null) {
+            node.setValue(FIELD_VALID_FROM,System.currentTimeMillis()/1000);
+        }
+        if (getField(FIELD_VALID_TO) != null) {
+            node.setValue(FIELD_VALID_TO, VALID_TO_DEFAULT);
+        }
+     }
 
     public Parameter[] getParameterDefinition(String function) {
         Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Users.class, function);
         if (params == null) return super.getParameterDefinition(function);
         return params;
-
     }
 
     /**
@@ -360,7 +380,8 @@ public class Users extends MMObjectBuilder {
     public boolean check() {
         return true;
     }
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
+
+   protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (function.equals("info")) {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
@@ -397,7 +418,6 @@ public class Users extends MMObjectBuilder {
             log.debug("Function '" + function + "'  not matched in users");
         }
         return super.executeFunction(node, function, args);
-
     }
 
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
