@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.44 2003-11-26 21:05:42 michiel Exp $
+ * @version $Id: Dove.java,v 1.45 2003-11-27 12:51:14 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -777,7 +777,10 @@ public class Dove extends AbstractDove {
                             values.put("_status",(String)node.getAttribute(ELM_STATUS));
                         }
 
-                        values.put("_context",(String)node.getAttribute(ELM_CONTEXT));
+                        String context = (String)node.getAttribute(ELM_CONTEXT);
+                        if (context!=null && !context.equals("")) {
+                            values.put("_context",context);
+                        }
 
                         if (isRelation) {
                             String role=node.getAttribute(ELM_ROLE);
@@ -968,7 +971,7 @@ public class Dove extends AbstractDove {
             fillFields(alias,newnode,objectelement, values);
             try {
                 String context = (String) values.get("_context");
-                if (context!=null && !context.equals("")) {
+                if (context!=null) {
                   newnode.setContext(context);
                 }
                 newnode.commit();
@@ -1025,7 +1028,7 @@ public class Dove extends AbstractDove {
             fillFields(alias,newnode,relationelement,values);
             try {
                 String context = (String) values.get("_context");
-                if (context!=null && !context.equals("")) {
+                if (context!=null) {
                   newnode.setContext(context);
                 }
                 newnode.commit();
