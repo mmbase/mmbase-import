@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.13 2000-06-20 14:23:08 install Exp $
+$Id: scanparser.java,v 1.14 2000-07-03 08:37:16 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/06/20 14:23:08  install
+Rob: turned debug off
+
 Revision 1.12  2000/05/30 11:35:54  wwwtech
 Wilbert: scanparser (still fake to keep it compilable) passes mimetype to newput2
 
@@ -59,7 +62,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.13 $ $Date: 2000-06-20 14:23:08 $
+ * @$Revision: 1.14 $ $Date: 2000-07-03 08:37:16 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -791,14 +794,22 @@ public class scanparser extends ProcessorModule {
 		int i;
 		String rtn=null;
 		
-		if ((part2!=null) && part2.equals("L")) {
-			// Eval $PARAML: the number of params
-			if (sp.params==null) {
-				sp.getParam(0); // Force build of params
-				if (sp.params==null) // No params
-					return "0";
+		if (part2!=null) {
+			if (part2.equals("L")) {
+				// Eval $PARAML: the number of params
+				if (sp.params==null) {
+					sp.getParam(0); // Force build of params
+					if (sp.params==null) // No params
+						return "0";
+				}
+				return ""+sp.params.size();
 			}
-			return ""+sp.params.size();
+			if (part2.equals("A")) {
+				// Eval $PARAMA
+				if (sp.querystring == null) 
+					return "";
+				return sp.querystring;
+			}
 		}
 		
 		// Handle $PARAMn
@@ -1672,9 +1683,13 @@ public class scanparser extends ProcessorModule {
 			} else {
 				filename=part2;
 			}
+			if ((sp.mimetype==null) || sp.mimetype.equals("")) {
+				sp.mimetype=getMimeTypeFile(filename);
+			}
 	
 			debug("calcPage(): filename="+filename);
 			debug("calcPage(): paramline="+paramline);
+			debug("calcPage(): mimetype="+sp.mimetype);
 			sp.body=getfile(filename);
 	
 			if (sp.body!=null) {
