@@ -52,7 +52,7 @@ public interface CreatorInterface {
 	public boolean decodeItems(Target target);
         public boolean addPackage(Target target,String newpackage);
         public boolean addPackageInitiator(Target target,String newname,String newcompany);
-        Public boolean delPackageInitiator(Target target,String oldname,String oldcompany);
+        public boolean delPackageInitiator(Target target,String oldname,String oldcompany);
         public boolean setPackageInitiator(Target target,String oldname,String newname,String oldcompany,String newcompany);
         public boolean addPackageDeveloper(Target target,String newname,String newcompany);
         public boolean delPackageDeveloper(Target target,String oldname,String oldcompany);
