@@ -27,18 +27,20 @@ import org.mmbase.util.xml.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
+import org.mmbase.bridge.Cloud;
+import org.mmbase.security.Rank;
+
+import javax.servlet.http.*;
 
 /**
  * @javadoc
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.82 2004-02-19 17:34:47 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.83 2004-03-08 18:21:45 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
-
-    // logging routines
-    private static Logger log = Logging.getLoggerInstance(MMAdmin.class);
+    private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
 
     // true: ready (probeCall was called)
     private boolean state = false;
@@ -182,10 +184,36 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private boolean checkUserLoggedOn(scanpage sp, String cmd, boolean adminonly) {
+
+        // check if the we are using jsp, and logged on as user with rank is admin, this means that
+        // there is some user with rank Administrator in the session...        
+
+        HttpSession session = sp.req.getSession(false);
+        Enumeration e = session.getAttributeNames();
+        while (e.hasMoreElements()) {            
+            String attribute = (String) e.nextElement(); 
+            Object o = session.getAttribute(attribute);
+            
+            if (o instanceof Cloud) {
+                Cloud cloud = (Cloud) o;
+                Rank curRank = Rank.getRank(cloud.getUser().getRank());
+                if (curRank.getInt() >= Rank.ADMIN.getInt()) {
+                    // log.service("Found an administrator cloud in session key=" + attribute);
+                    return true;
+                }
+            }
+        }
+
+        // no? try the 'classic' way.
+
         String user = null;
         try {
             user = HttpAuth.getAuthorization(sp.req, sp.res, "www", "Basic");
-        } catch (javax.servlet.ServletException e) {}
+        } catch (javax.servlet.ServletException ex) {}
+       
+
+        
+
         boolean authorized = (user != null) && (!adminonly || "admin".equals(user));
         if (!authorized) {
             lastmsg = "Unauthorized access : " + cmd + " by " + user;
@@ -203,8 +231,9 @@ public class MMAdmin extends ProcessorModule {
 
         for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
             cmdline = (String)h.nextElement();
-            if (!checkAdmin(sp, cmdline))
+            if (!checkAdmin(sp, cmdline)) {
                 return false;
+            }
             StringTokenizer tok = new StringTokenizer(cmdline, "-\n\r");
             token = tok.nextToken();
             if (token.equals("SERVERRESTART")) {
