@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.8 2002-11-22 21:51:37 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.9 2002-11-22 23:32:20 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -165,8 +165,10 @@
           </a>
           </mm:notpresent>
           <br />
+         <%--
           showurl <mm:field name="showurl()" /><br />
           longurl <mm:field name="longurl()" /><br />
+          --%>
        </mm:relatednodes>
       </td>
   </tr>

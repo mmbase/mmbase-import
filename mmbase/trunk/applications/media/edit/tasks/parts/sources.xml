@@ -7,10 +7,6 @@
       <prompt>Url (relative)</prompt>
       <prompt xml:lang="nl">Url (relatief)</prompt>
     </field>
-    <!-- format should be autodetected -->
-    <field ftype="enum" name="format">
-      <optionlist select="formats" />
-    </field>
     
     &sourcefields;
 
