@@ -36,7 +36,6 @@ public class ShareClientSession {
      */
     public ShareClientSession(String callbackurl) {
         this.callbackurl = callbackurl;
-        //log.info("CREATED SHARE CLIENT SESSION ="+callbackurl);
     }
 
 
