@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAgeConstraintTag.java,v 1.1 2003-12-18 09:05:45 michiel Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.2 2004-01-06 19:42:51 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
@@ -58,7 +58,7 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
     }
 
 
-    protected Integer getDayMark(int age) throws JspTagException {
+    protected int getDayMark(int age) throws JspTagException {
         log.debug("finding day mark for " + age + " days ago");
         Cloud cloud = getCloud();
         NodeManager dayMarks = cloud.getNodeManager("daymarks");
@@ -66,16 +66,19 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
         StepField step = query.createStepField("daycount");
         int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
         Integer day = new Integer(currentDay  - age);
+        if (log.isDebugEnabled()) {
+            log.debug("today : " + currentDay + " requested " + day);
+        }
         Constraint constraint = query.createConstraint(step, FieldCompareConstraint.LESS_EQUAL, day);
         query.setConstraint(constraint);
         query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
         query.setMaxNumber(1);
 
-        NodeList result = cloud.getList(query);
+        NodeList result = dayMarks.getList(query);
         if (result.size() == 0) {
-            return new Integer(-1);
+            return -1;
         } else {
-            return new Integer(result.getNode(0).getIntValue("mark"));
+            return result.getNode(0).getIntValue("mark");
         }
 
 
@@ -104,21 +107,26 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
 
         int minAgeInt = minAge.getInt(this, -1);
         int maxAgeInt = maxAge.getInt(this, -1);
+        // if minimal age given:
+        // you need the day marker of the day after that (hence -1 in code below inside the getDayMark), node have to have this number or lower
+        // if maximal age given:
+        // daymarker object of that age must be included, but last object of previous day not, hece the +1 outside the getDayMark
 
         if (maxAgeInt != -1 && minAgeInt > 0) {
-            Integer maxMarker = getDayMark(maxAgeInt);
-            if (maxMarker.intValue() > 0) {
-                newConstraint = query.createConstraint(stepField, maxMarker, getDayMark(minAgeInt));
-            } else{
-                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, getDayMark(minAgeInt));
+            int maxMarker = getDayMark(maxAgeInt);
+            if (maxMarker > 0) {
+                // BETWEEN constraint
+                newConstraint = query.createConstraint(stepField, new Integer(maxMarker + 1), new Integer(getDayMark(minAgeInt - 1)));
+            } else {
+                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(minAgeInt - 1)));
             }
         } else if (maxAgeInt != -1) { // only on max
-            Integer maxMarker = getDayMark(maxAgeInt);
-            if (maxMarker.intValue() > 0) {
-                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, maxMarker);
+            int maxMarker = getDayMark(maxAgeInt);
+            if (maxMarker > 0) {
+                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, new Integer(maxMarker + 1));
             }
         } else if (minAgeInt > 0) {
-            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, getDayMark(minAgeInt));
+            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(minAgeInt - 1)));
         } else {
             // both unspecified
         }
