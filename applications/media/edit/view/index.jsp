@@ -55,7 +55,7 @@
   </mm:list>
   </table>
   <p id="colofon">
-    <img src="../ images/mmbase.png" />
+    <img src="../images/mmbase.png" />
   </p>
 </body>
 </html>
