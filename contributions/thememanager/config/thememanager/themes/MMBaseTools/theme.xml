@@ -4,6 +4,7 @@
 	<stylesheet file="default.css" />
 	<stylesheet id="editor" file="editor.css" />
 	<imageset role="navigation">
+                <image id="help" size="small" file="help.gif" />
                 <image id="arrowleft" size="small" file="arrow-left.gif" />
                 <image id="arrowright" size="small" file="arrow-right.gif" />
                 <image id="back" size="small" file="back.gif" />
