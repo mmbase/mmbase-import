@@ -6,14 +6,15 @@
 <style type="text/css">@import url(css/<mm:write referid="style_sheet" />);</style></mm:import>
 <title>MMBase editors - Error</title>
 </head>
-<body>
+<body class="basic">
 <h1>Sorry, an error happened</h1>
 <h2><%= exception.getMessage() %></h2>
 Stacktrace:
 <pre>
   <%= org.mmbase.util.logging.Logging.stackTrace(exception) %>
 </pre>
-<p>Click <a href="<%=response.encodeURL("search_node.jsp")%>">here</a> to continue.</p>
+<p class="navigate">Continue <a href="<%=response.encodeURL("search_node.jsp")%>"><span class="next"></span><span class="alt">[->]</span></a></p>
+                             
 <hr />
 Please contact your system administrator about this.
 
