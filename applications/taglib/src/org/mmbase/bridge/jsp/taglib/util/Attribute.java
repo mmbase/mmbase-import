@@ -19,18 +19,20 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * MMBase Taglib attributes can contain $-variables. Parsing of these $-variable is
+ * MMBase Taglib attributes can contain $-variables. Parsing of these $-variables is
  * cached. Evaluation of these vars must be postponed until doStartTag because servlet containers can
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.14 2003-08-27 21:33:42 michiel Exp $
+ * @version $Id: Attribute.java,v 1.15 2003-09-02 19:48:58 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public class Attribute {
     private static final Logger log = Logging.getLoggerInstance(Attribute.class);
-    private static AttributeCache cache = new AttributeCache();
+
+    private static AttributeCache cache = new AttributeCache(); 
+    // not sure the cache is actually useful for performance, perhaps it can as well be switched off.
 
     public final static Attribute NULL = new NullAttribute();
 
@@ -52,9 +54,9 @@ public class Attribute {
     /**
      * Whether the attribute contains any $-vars.
      */
-    private boolean containsVars;
+    private  boolean containsVars;
 
-    boolean containsVars() {
+    final boolean containsVars() {
         return containsVars;
     }
 
@@ -65,7 +67,7 @@ public class Attribute {
 
     /**
      * List of AttributeParts (the parsed attribute). This can be null
-     * if containsVars is false (then simply 'attribute' can be return
+     * if containsVars is false (then simply 'attribute' can be returned
      * as value).
      */
     private List    attributeParts;
@@ -84,7 +86,7 @@ public class Attribute {
      * Appends the evaluated Attribute to StringBuffer
      *
      * @param ContextReferrerTag The tag relative to which the variable evalutations must be done
-     *                           (normally 'this')
+     *                           (normally 'this' in a Tag implementation)
      */
 
     public void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
@@ -104,7 +106,8 @@ public class Attribute {
      */
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (! containsVars) return attribute;
-        if (attributeParts.size() == 1) {
+
+        if (attributeParts.size() == 1) { // avoid construction of StringBuffer for this simple case
             Part ap = (Part) attributeParts.get(0);
             return ap.getValue(tag);
         }
@@ -129,9 +132,23 @@ public class Attribute {
         return org.mmbase.util.Casting.toInt(getValue(tag), def);
     }
 
+    /** 
+     * Returns the evaluated Attribute as a List (evalatued to comma-seperated String, which is 'split').
+     * The List is empty if getValue would give empty String or null.
+     *
+     */
+
     public List getList(ContextReferrerTag tag) throws JspTagException {
         return StringSplitter.split(getString(tag));
     }
+
+    /** 
+     * Returns the evaluated Attribute as a boolen (depending on if getValue returns one of the
+     * strings 'true' or 'false' (case insensitve)).
+     *
+     * @param  def If the string is not "true" or "false', then this value is returned.
+     * @return true or false
+     */
 
     public boolean getBoolean(ContextReferrerTag tag, boolean def) throws JspTagException {
         String val = getString(tag).toLowerCase();
@@ -236,8 +253,14 @@ public class Attribute {
      */   
 
     static abstract class Part {
+
         protected Object part;
+
+        /**
+         * Returns the 'type' of a Part as a string. For debugging use.
+         */
         abstract protected String getType();
+
         /**
          * String representation of this AttributePart (for debugging)
          */
@@ -246,8 +269,8 @@ public class Attribute {
         }
 
         abstract Object getValue(ContextReferrerTag tag) throws JspTagException;
-
-        void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
+        
+        final void  appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
             Object value = getValue(tag);
             if (value != null) {
                 buffer.append(Casting.toString(value));
@@ -271,7 +294,7 @@ public class Attribute {
             } 
         }
         protected String getType() { return "Variable"; }
-        Object getValue(ContextReferrerTag tag) throws JspTagException {
+        final Object getValue(ContextReferrerTag tag) throws JspTagException {
             String v;
             if (containsVars) {
                 v = (String) ((Attribute) part).getValue(tag);
@@ -309,7 +332,7 @@ public class Attribute {
             }
         }
         protected String getType() { return "Expression (" + getEvaluated() + ")"; }
-        Object getValue(ContextReferrerTag tag) throws JspTagException {
+        final Object getValue(ContextReferrerTag tag) throws JspTagException {
             if (evaluated) {
                 return part;
             } else {
@@ -327,7 +350,7 @@ public class Attribute {
     static class StringPart extends Part {
         StringPart(String o) {  part = o; }
         protected String getType() { return "String"; }
-        Object getValue(ContextReferrerTag tag) throws JspTagException {
+        final Object getValue(ContextReferrerTag tag) throws JspTagException {
             return part;
         }
     }
@@ -369,10 +392,10 @@ class AttributeException extends JspTagException {
  * The attribute containing 'null' is special. No parsing needed, nothing needed. It is very often
  * used, so we provide an implementation optimized for speed.
  */
-class NullAttribute extends Attribute {
+final class NullAttribute extends Attribute {
     NullAttribute() { }
-    public Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
-    public String getString(ContextReferrerTag tag) throws JspTagException { return ""; }
-    public void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
-    public String toString() { return "NULLATTRIBUTE"; }
+    public final Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
+    public final String getString(ContextReferrerTag tag) throws JspTagException { return ""; }
+    public final void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
+    public final String toString() { return "NULLATTRIBUTE"; }
 }
