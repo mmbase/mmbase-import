@@ -19,8 +19,10 @@
    String cmd=request.getParameter("cmd");
    String country=request.getParameter("country");
    String value=null;
-   if (country!=null) {
+   if (cmd.equals("guiname")) {
        value= mmAdmin.getInfo("GETGUINAMEVALUE-"+builder+"-"+field+"-"+country,request,response);
+   } else if(cmd.equals("description")) {
+       value= mmAdmin.getInfo("GETDESCRIPTION-"+builder+"-"+field+"-"+country,request,response);
    } else {
        value= mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-"+cmd,request,response);
    }
@@ -30,7 +32,7 @@
 <form action="<mm:url page="field.jsp" />" method="POST">
 <tr>
   <th class="header">Property</th>
-  <% if (cmd.equals("newguiname")) { %>
+  <% if (cmd.equals("newguiname") || cmd.equals("newdescription")) { %>
     <th class="header">Country Code / Value</th>
   <% } else { %>
     <th class="header">Value</th>
@@ -52,6 +54,13 @@
 <%@include file="properties/truefalse.jsp" %>
   <% } else if (cmd.equals("newguiname")) {
         cmd="guiname";
+        value=null;
+  %>
+<% property="country"; %>
+<%@include file="properties/iso639.jsp" %>
+/ <input type="text" name="value" value="<%=value%>" />
+  <% } else if (cmd.equals("newdescription")) {
+        cmd="description";
         value=null;
   %>
 <% property="country"; %>

@@ -186,6 +186,44 @@
 
 <tr><td>&nbsp;</td></tr>
 
+<tr>
+  <th class="header">GUI Property</th>
+  <th class="header">Value</th>
+  <th class="navigate">explain</th>
+  <th class="navigate">Change</th>
+</tr>
+
+<%
+    params.clear();
+    params.put("CLOUD", cloud);
+    names=mmAdmin.getList("ISODESCRIPTIONS-"+builder+"-"+field, params,request,response);
+    for (int i=0; i<names.size(); i++) {
+        Node name=names.getNode(i);
+%>
+
+<tr>
+  <td class="data">Description&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
+  <td class="data"><%=name.getStringValue("item2")%></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_description" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="navigate">
+    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=description&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;"+name.getStringValue("item1")+"&country="+name.getStringValue("item1")%>" />"
+    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+  </td>
+</tr>
+<% } %>
+
+<tr>
+  <td class="data">New&nbsp;Description</td>
+  <td class="data">&nbsp;</td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_description" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="navigate">
+    <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=newdescription&name=New&nbsp;Field&nbsp;Name"%>" />"
+    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+  </td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
 <form action="<mm:url page="actions.jsp" />" method="POST">
 <tr>
   <th class="header">Remove Field</th>
