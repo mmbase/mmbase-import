@@ -66,7 +66,7 @@
    </mm:node>
   </mm:cloud>
   <mm:write referid="user" jspvar="node" vartype="node">
-  <% response.sendRedirect("edit_user.jsp?user=" + node.getNumber()); %>
+  <% response.sendRedirect(response.encodeRedirectURL("edit_user.jsp?user=" + node.getNumber())); %>
   </mm:write>
   </body>
 </html>

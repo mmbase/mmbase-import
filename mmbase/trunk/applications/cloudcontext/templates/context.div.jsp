@@ -5,7 +5,7 @@
  </p>
 
 <div class="rights">
-   <form method="post" action="commit_context.jsp">    
+   <form method="post" action="<mm:url page="commit_context.jsp" />">    
    <input type="hidden" name="context" value="<mm:field name="number" />" />
    <table>
      <mm:fieldlist type="edit" fields="owner">
@@ -49,7 +49,7 @@
     </mm:listnodes>
     </mm:functioncontainer> 
     <tr><td class="text"><input type="submit"  name="submit" value="submit" /></td></tr>
-    <tr><td class="text"><a href="index_contexts.jsp">back</a></td></tr>
+    <tr><td class="text"><a href="<mm:url page="index_contexts.jsp" />">back</a></td></tr>
    </table>
    </form>
 </div>

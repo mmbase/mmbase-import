@@ -41,7 +41,7 @@
    </mm:node>
 
 <mm:write referid="context" jspvar="node" vartype="node">
- <% response.sendRedirect("index_contexts.jsp?context=" + node.getNumber()); %>
+ <% response.sendRedirect(response.encodeRedirectURL("index_contexts.jsp?context=" + node.getNumber())); %>
 </mm:write>
 
   </mm:cloud>

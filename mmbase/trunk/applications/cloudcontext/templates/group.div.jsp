@@ -15,7 +15,7 @@
 
 
 <div class="rights">
-   <form method="post" action="commit_group.jsp">    
+   <form method="post" action="<mm:url page="commit_group.jsp" />">    
    <input type="hidden" name="group" value="<mm:field name="number" />" />
    <table>
     <mm:fieldlist type="edit">
