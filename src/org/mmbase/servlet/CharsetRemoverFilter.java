@@ -63,8 +63,11 @@ public class CharsetRemoverFilter implements Filter {
                 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
                 String ct = in.readLine();
                 while (ct != null) {
-                    if (ct.startsWith("#")) continue;
-                    contentTypes.add(ct);
+                    ct.trim();
+                    if (! ct.startsWith("#") && 
+                        ! ct.equals("")) {
+                        contentTypes.add(ct);                        
+                    }
                     ct = in.readLine();
                 }
             } catch (IOException ioe) {
