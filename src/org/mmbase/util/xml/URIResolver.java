@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.11 2003-01-14 17:05:25 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.12 2003-01-17 17:11:06 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {
@@ -68,6 +68,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
      */
 
     public URIResolver(File c, boolean overhead) {
+        cwd      = c;
         hashCode = c.hashCode();
     }
     /**
@@ -127,9 +128,8 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
             // if only the cwd is set, then you alternatively use the cwd has hashCode is this way.
             // it this way in these case it is easy to avoid constructing an URIResolver at all.
         } else {
-            String help = cwd.getAbsolutePath() + extraDirs.toString(); 
-            hashCode = help.hashCode();
-            if (log.isDebugEnabled()) log.debug("getting hashCode " + hashCode + " based on '" + help + "'");
+            hashCode = 31 * cwd.hashCode() + extraDirs.hashCode(); // see also javadoc of List
+            if (log.isDebugEnabled()) log.debug("getting hashCode " + hashCode + " based on '" + extraDirs + "'");
         }
     }
 
@@ -284,7 +284,13 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
      */
     public boolean equals(Object o) {
         if (o != null && (o instanceof URIResolver)) {
-            return hashCode == o.hashCode();
+            URIResolver res = (URIResolver) o;          
+            return (extraDirs == null ? (res.extraDirs == null || res.extraDirs.size() == 1) : 
+                                         extraDirs.equals(res.extraDirs)) && 
+                   cwd.equals(res.cwd);
+            // See java javadoc, lists compare every element, files equal if  point to same file
+            // extraDirs == null?
+            // -> created with first constructor.
         }
         return false;        
     }
@@ -360,6 +366,12 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
         }
         public String toString() {
             return dir.toString();
+        }
+        public boolean equals(Object o) {
+            return dir.equals(o);
+        }
+        public int hashCode() {
+            return dir.hashCode();
         }
 
     }
