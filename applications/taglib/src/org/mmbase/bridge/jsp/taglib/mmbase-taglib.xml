@@ -1001,6 +1001,23 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </info>
     </attribute>
     <attribute>
+      <name>notfound</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+		What to do if the node is not found. The default is to throw an exception.
+	  </info>
+      <possiblevalue>
+        <value>skip|skipbody</value>
+        <info>Simply skip the body if the node is not found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>throw|throwexception</value>
+        <info>Throw an exception if the node is not found</info>
+      </possiblevalue>
+    </attribute>
+    <attribute>
       <name>element</name>
       <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
       <required>false</required>
