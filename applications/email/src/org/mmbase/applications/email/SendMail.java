@@ -141,7 +141,7 @@ public class SendMail extends org.mmbase.module.AbstractSendMail implements Send
         // construct a message
         MimeMessage msg = new MimeMessage(session);
         if (from != null && ! from.equals("")) {
-            msg.setFrom(new InternetAddress(from));
+            msg.addFrom(InternetAddress.parse(from));
         }
 
         msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
