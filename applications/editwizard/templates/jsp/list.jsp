@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.38 2003-06-10 09:13:58 pierre Exp $
+     * @version  $Id: list.jsp,v 1.39 2003-06-10 15:28:20 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -39,8 +39,7 @@ if (! ewconfig.subObjects.empty()) {
         } else {
             if (stack.empty()) {
                 log.error("Empty stack?");
-            } else {
-                
+            } else {                
                 listConfig = (Config.ListConfig) stack.peek();
             }
         }
@@ -52,8 +51,8 @@ if (! ewconfig.subObjects.empty()) {
     }
 }
 
-if (listConfig==null) {
-    listConfig = configurator.createList();
+if (listConfig == null) {
+    listConfig = configurator.createList(cloud);
     if (! popup) {       
         if (log.isDebugEnabled()) log.trace("putting new list on the stack for list " + listConfig.title);
         ewconfig.subObjects.push(listConfig);
@@ -173,7 +172,7 @@ for (int i=start; i< end; i++) {
     }
     for (int j=0; j < listConfig.fieldList.size(); j++) {
         String fieldname = (String)listConfig.fieldList.get(j);
-        String fieldguiname=fieldname;
+        String fieldguiname = fieldname;
         if (listConfig.multilevel) {
             int period=fieldname.indexOf('.');
             String nmname=fieldname.substring(0,period);
@@ -182,7 +181,7 @@ for (int i=start; i< end; i++) {
         } else {
             fieldguiname=item.getNodeManager().getField(fieldname).getGUIName();
         }
-        addField(obj, fieldguiname, item.getStringValue("gui("+fieldname+")"));
+        addField(obj, fieldguiname, item.getStringValue("gui(" + fieldname + ")"));
     }
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
@@ -206,7 +205,7 @@ if (pagecount>maxpages) {
     Utils.setAttribute(pages, "showing", maxpages+"");
 }
 
-for (int i=0; i<pagecount && i<maxpages; i++) {
+for (int i = 0; i<pagecount && i<maxpages; i++) {
     org.w3c.dom.Node pagenode = doc.createElement("page");
     Utils.setAttribute(pagenode, "start", (i*len)+"");
     Utils.setAttribute(pagenode, "current", (i==currentpage)+"");
@@ -234,7 +233,7 @@ if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
 if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
 }
-
+                  
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
