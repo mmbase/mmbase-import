@@ -37,7 +37,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.114 2003-11-19 13:03:10 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.115 2003-11-26 17:51:11 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -163,7 +163,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     // object to sync access to properties
     private Object properties_sync = new Object();
 
-    // temporarily holds a new context for a node
+    /**
+     * temporarily holds a new context for a node
+     * @since MMBase-1.7
+     */
+    
     private String newContext = null;
 
     /**
@@ -250,14 +254,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param user the user who inserts the node.
      *        Used to set security-related information
      * @return the new node key (number field), or -1 if the insert failed
+     * @since MMBase-1.7
      */
     public int insert(UserContext user) {
-        int nodeID = parent.safeInsert(this,user.getIdentifier());
+        int nodeID = parent.safeInsert(this, user.getIdentifier());
         if (nodeID != -1) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
             mmbaseCop.getAuthorization().create(user, nodeID);
             if (newContext != null) {
-                mmbaseCop.getAuthorization().setContext(user,nodeID,newContext);
+                mmbaseCop.getAuthorization().setContext(user, nodeID, newContext);
                 newContext = null;
             }
         }
@@ -269,6 +274,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param user the user who commits the node.
      *        Used to set security-related information
      * @return <code>true</code> if succesful
+     * @since MMBase-1.7
      */
     public boolean commit(UserContext user) {
         boolean success = parent.safeCommit(this);
@@ -276,7 +282,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
             mmbaseCop.getAuthorization().update(user, getNumber());
             if (newContext != null) {
-                mmbaseCop.getAuthorization().setContext(user,getNumber(),newContext);
+                mmbaseCop.getAuthorization().setContext(user,getNumber(), newContext);
                 newContext = null;
             }
         }
@@ -287,22 +293,24 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * Remove this node from the storage
      * @param user the user who removes the node.
      *        Used to set security-related information
+     * @since MMBase-1.7
      */
     public void remove(UserContext user) {
         parent.removeNode(this);
-        parent.getMMBase().getMMBaseCop().getAuthorization().remove((UserContext)user,getNumber());
+        parent.getMMBase().getMMBaseCop().getAuthorization().remove((UserContext)user, getNumber());
     }
 
     /**
-     * Sets teh context for this node
+     * Sets the security context for this node
      * @param user the user who changes the context the node.
      * @param context the new context
      * @param now if <code>true</code>, the context is changed instantly, otherwise it is changed
      *        after the node is send to storage.
+     * @since MMBase-1.7
      */
-    public void setContext (UserContext user, String context, boolean now) {
+    public void setContext(UserContext user, String context, boolean now) {
        if (now) {
-            parent.getMMBase().getMMBaseCop().getAuthorization().setContext(user,getNumber(),context);
+           parent.getMMBase().getMMBaseCop().getAuthorization().setContext(user, getNumber(), context);
        } else {
            newContext = context;
        }
