@@ -21,13 +21,11 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaURLComposers.java,v 1.3 2003-01-07 14:52:56 michiel Exp $
+ * @version $Id: MediaURLComposers.java,v 1.4 2003-01-08 22:23:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaURLComposers extends MMObjectBuilder {    
     private static Logger log = Logging.getLoggerInstance(MediaURLComposers.class.getName());
-
-    public static final String FUNCTION_URL = "url";
     
     /**
      * Returns just an abstract respresentation of an urlcomposer object. Only useful for editors.
@@ -40,29 +38,39 @@ public class MediaURLComposers extends MMObjectBuilder {
     }
 
     /** 
-     * Construct an URL. For this all nodes of importance can be used
+     * A MediaURLComposer can construct one or more URL's for every source/provider combination
+     *
+     * For this all nodes of importance can be used
      * (form the composer to fragment and possibly some other
      * preferences stored in the Map argument)..
      * 
-     * This is the end-point of a chain of 'getFunction' calls to
-     * 'getURLs' which would normally start in a fragment (or possibly
-     * in a source).
-     * 
      * @throws MalformedURLException
      * @throws IllegalArgumentException if provider or source is null
+     * @returns A List of ResponseInfo's
      */
 
-    protected URL getURL(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, List preferences) throws MalformedURLException {        
+    protected List getURLs(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map preferences) {        
         if (provider == null) throw new IllegalArgumentException("Cannot create URL without a provider");
         if (source   == null) throw new IllegalArgumentException("Cannot create URL without a source");
-        return 
-            new URL(composer.getStringValue("protocol"),
-                    provider.getStringValue("host"),
-                    composer.getStringValue("rootpath") + source.getStringValue("url"));
+        List result = new ArrayList();
+        try {
+            result.add(
+                       new URL(composer.getStringValue("protocol"),
+                               provider.getStringValue("host"),
+                               composer.getStringValue("rootpath") + source.getStringValue("url")));
+        } catch (MalformedURLException e) {
+            log.error(e.toString());
+        }
+        return result;
     }
-    protected boolean isAvailable(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, List preferences) {
-        Boolean fragmentAvailable = (Boolean) fragment.getFunctionValue(MediaFragments.FUNCTION_AVAILABLE, null);
-        boolean providerAvailable = (provider.getIntValue("state") == 1); // todo: use symbolic constant
+    protected boolean isAvailable(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map preferences) {
+        Boolean fragmentAvailable;
+        if (fragment != null) {
+            fragmentAvailable = (Boolean) fragment.getFunctionValue(MediaFragments.FUNCTION_AVAILABLE, null);
+        } else {
+            fragmentAvailable = Boolean.TRUE;
+        }
+        boolean providerAvailable = (provider.getIntValue("state") == MediaProviders.STATE_ON); // todo: use symbolic constant
         boolean sourceAvailable = (source.getIntValue("state") == 3); // todo: use symbolic constant
         return fragmentAvailable.booleanValue() && providerAvailable && sourceAvailable;
     }
@@ -72,28 +80,21 @@ public class MediaURLComposers extends MMObjectBuilder {
      * purposes. It translates the executeFunction argument List to
      * the arguments of getURL and wraps the result in a ResponseInfo object.
      *
-     * Final, because I think that you should override getURL.
+     * Final, because I think that you should override getURLs.
+     * 
+     * This function is to be called from the MediaSources implementation (which has to give itself) too
      */
-    final protected ResponseInfo getResponseInfo(MMObjectNode composer, List arguments) throws MalformedURLException {
-        MMObjectNode provider   = null;
-        MMObjectNode source     = null;
-        MMObjectNode fragment   = null;
-        List info   = null;
-        if (arguments != null && arguments.size() > 0) {
-            provider = (MMObjectNode) arguments.get(0);
-            if (arguments.size() > 1) {
-                source = (MMObjectNode) arguments.get(1);
-                if (arguments.size() > 2) {
-                    fragment = (MMObjectNode) arguments.get(2);
-                    if (arguments.size() > 3) {
-                        info = arguments.subList(3, arguments.size());
-                    }
-                }
-            }
-        }
-        URL url        = getURL(composer, provider, source, fragment, info);
+    final public List getResponseInfos(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+        List urls         = getURLs(composer, provider, source, fragment, info);
+        List result = new ArrayList();
         boolean online = isAvailable(composer, provider, source, fragment, info);
-        return new ResponseInfo(url, source, online); 
+        Iterator i = urls.iterator();
+        while (i.hasNext()) {
+            URL url = (URL) i.next();
+            result.add(new ResponseInfo(url, source, online, info));           
+        }
+        return result;
+
     }
     
     protected Object executeFunction(MMObjectNode node, String function, List args) {
@@ -104,17 +105,10 @@ public class MediaURLComposers extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, "info", empty);
-            info.put(FUNCTION_URL, "(provider, source, fragment, info) A ResponseInfo evaluated for this composer/provider/source/fragment");
             if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
-            }
-        } else if (function.equals(FUNCTION_URL)) {
-            try {
-                return getResponseInfo(node, args);
-            } catch (MalformedURLException e) {
-                return "";
             }
         }
         return super.executeFunction(node, function, args);
