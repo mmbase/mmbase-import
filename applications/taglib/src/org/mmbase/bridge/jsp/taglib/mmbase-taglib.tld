@@ -74,6 +74,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>prefix</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
