@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.44.2.3 2003-05-28 12:41:50 vpro Exp $
+ * @version $Id: servdb.java,v 1.44.2.4 2003-05-30 08:32:18 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -235,9 +235,18 @@ public class servdb extends JamesServlet {
                         // ---
                         // img
                         // ---
-
+                        boolean NotANumber=false;
                         Vector params = getParamVector(req);
-                        if (params.size() > 1) {
+                        // Catch alias only images without parameters.
+                        if (params.size()==1) {
+                            NotANumber=false;
+                            try {
+                                Integer.parseInt((String)params.elementAt(0));
+                            } catch (NumberFormatException e) {
+                                NotANumber=true;
+                            }
+                        }
+                        if (params.size() > 1 || NotANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
                             // this is an image number + template, cache the image, and go ahead
