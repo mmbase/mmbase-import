@@ -3,7 +3,7 @@
 <html>
 <head>
   <title>MMExamples - Community</title>
-   <link rel="stylesheet" type="text/css" href="../share/style.css" />
+   <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <body>
   <br />
@@ -17,7 +17,6 @@
          <p>It displays a forum and a chat, it also shows the admin-possibilities.</p>
       </td>
     </tr>
-    <tr><td>&nbsp;</td></tr>
     <tr>
       <th colspan="2">Location of the Community example</th>
     </tr>
@@ -48,14 +47,13 @@
               directory of your MMBase configuration, and setting the content of the "status' tag to "active".
               <% } else {
               %>
-              <mm:url id="url" page="/mmexamples/jsp/community/community.jsp" write="false" />
+              <mm:url id="url" page="community/community.jsp" write="false" />
               This url will show the Community: <a href="<mm:write referid="url" />" target="community"><mm:write referid="url" /></a>
               <% } %>
             </mm:present>
             <br /><br />
         </td>
     </tr>
-    <tr><td>&nbsp;</td></tr>
     <tr>
       <th>Cloud Design</th>
       <th>Picture</th>
@@ -70,10 +68,9 @@ a relation between the people node and the channel.
 A community can be a forum or a chat.
       </td>
       <td>
-        <a href="../share/images/community_cloud.jpg" target="img"><img src="../share/images/community_cloud.jpg" width="300" /></a>
+        <a href="share/images/community_cloud.jpg" target="img"><img src="share/images/community_cloud.jpg" width="300" alt="cloud design"/></a>
       </td>
     </tr>
-    <tr><td>&nbsp;</td></tr>
     <tr>
       <th>Manual</th>
       <th>Picture</th>
@@ -83,7 +80,7 @@ A community can be a forum or a chat.
 The image on the right shows the homepage of the community-example.
 This example shows you the basic features of the community application.
       </td>
-      <td><a href="../share/images/mynews_manual.jpg" target="img"><img src="../share/images/community_manual.jpg" width="300" /></a></td>
+      <td><a href="share/images/mynews_manual.jpg" target="img"><img src="share/images/community_manual.jpg" width="300" alt="community manual" /></a></td>
      </tr>
   </table>
 </body>
