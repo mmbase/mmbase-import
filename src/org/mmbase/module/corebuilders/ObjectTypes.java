@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.19 2002-09-20 12:25:42 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.20 2002-10-03 10:39:17 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -169,7 +169,7 @@ public class ObjectTypes extends TypeDef {
         
         // in future make it also possible to change active / not active... als builder merging, first make this work!
         // TODO: merging code!        
-        MMObjectBuilder builder = getObjectBuilder(node);
+        MMObjectBuilder builder = getBuilder(node);
         
         // first save our config,...
         storeBuilderFile(node);
@@ -200,7 +200,7 @@ public class ObjectTypes extends TypeDef {
         log.info("Remove of builder-node with name '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
 
         // only delete when builder is completely empty...
-        MMObjectBuilder builder = getObjectBuilder(node);
+        MMObjectBuilder builder = getBuilder(node);
         if(builder == null) throw new RuntimeException("I can only delete active builders(otherwise we table's could stay in database..)");
         if(builder != null && builder.size() > 0 ) throw new RuntimeException("Cannot delete node which represents a builder, (otherwise information could get lost..)");
 
@@ -239,7 +239,7 @@ public class ObjectTypes extends TypeDef {
                 node.values.put(fieldname,originalValue);
                 return false;
             } else if (fieldname.equals("config")) {        
-                MMObjectBuilder builder = getObjectBuilder(node);
+                MMObjectBuilder builder = getBuilder(node);
                 // TODO: active / not active code.. IT CAN MESS UP BUILDERS THAT ARE SET INACTIVE, AND STILL HAVE DATA IN DATABASE!
                 if(builder != null && builder.size() > 0) { 
                     throw new RuntimeException("Cannot change builder config it has nodes (otherwise information could get lost..)");
@@ -248,17 +248,6 @@ public class ObjectTypes extends TypeDef {
         }
         return true;
     }   
-
-    /**
-     * Returns the MMObjectBuilder which is represented by the node.
-     * @param   node The node, from which we want to know it;s MMObjectBuilder
-     * @return  The builder which is represented by the node, or <code>null</code>
-     *          When the builder was not loaded.
-     */
-    protected  MMObjectBuilder getObjectBuilder(MMObjectNode node) {
-        String builderName = node.getStringValue("name");
-        return mmb.getMMObject(builderName);    
-    }
 
     /**
      * Returns the path, where the builderfile can be found, for not exising builders, a path will be generated.
@@ -301,7 +290,7 @@ public class ObjectTypes extends TypeDef {
         }
 
         // first request the url from the active builder....
-        MMObjectBuilder builder = getObjectBuilder(node);
+        MMObjectBuilder builder = getBuilder(node);
         if(builder != null) {
             // return the file path,..
             String file = builder.getConfigFile().getAbsoluteFile().getParent();
@@ -436,7 +425,7 @@ public class ObjectTypes extends TypeDef {
         }
         
         // unload the builder,...        
-        MMObjectBuilder builder = getObjectBuilder(node);
+        MMObjectBuilder builder = getBuilder(node);
         if(builder != null) {
             mmb.unloadBuilder(builder);
         }
