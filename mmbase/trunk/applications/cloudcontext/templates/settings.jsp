@@ -1,5 +1,5 @@
 <mm:import externid="stylesheet">style/default.css</mm:import>
-<mm:import externid="rank">project manager</mm:import>
+<mm:import externid="rank">basic user</mm:import>
 <%!
    String getPrompt(java.util.ResourceBundle m, String key) {
      try {
