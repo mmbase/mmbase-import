@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.5 2002-11-13 19:24:34 michiel Exp $;
+ @version $Id: documentation.css,v 1.6 2002-11-13 19:26:16 michiel Exp $;
 */
 
 
@@ -66,11 +66,6 @@ a:hover { // color: red;
  .book, .reference,
  .preface, .colophon { margin-left: 10pt;
                        margin-right: 10pt; }
-
-
-div.navigation {
-  display: hidden;
-}
 
 
 div.navigation {			
