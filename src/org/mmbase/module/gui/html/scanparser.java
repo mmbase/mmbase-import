@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.37 2000-12-18 14:42:05 pierre Exp $
+$Id: scanparser.java,v 1.38 2001-01-04 16:02:35 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.37  2000/12/18 14:42:05  pierre
+pierre: Fixed bug with GOTO withing PART ort TREEPART
+
 Revision 1.36  2000/12/08 13:34:56  pierre
 pierre: fixed use of GOTO in PART and TREEPART. Added optional use of Alias instead of nodenumber to TREEPART (TREEPART ALIAS node+filename)
 
@@ -131,12 +134,11 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.37 $ $Date: 2000-12-18 14:42:05 $
+ * @$Revision: 1.38 $ $Date: 2001-01-04 16:02:35 $
  */
 public class scanparser extends ProcessorModule {
 
 	private	String 	classname 	= getClass().getName();
-	//private boolean	debug		= false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
@@ -917,9 +919,9 @@ public class scanparser extends ProcessorModule {
 	 * TREEPART, TREEFILE, LEAFPART or LEAFFILE
 	 * @param args action+objectnumbers+filepath
 	 * action: PATH or FILE
-	 * objectnumbers: + seperated list of objectnumbers
+	 * objectnumbers: + seperated list of objectnumbers, a ( will start skipping args, a ) will stop skipping args
 	 * filepath: (optional) file to part
-	 * @param leaf TREE or LEAF version
+	 * @param leaf false for TREE and true for LEAF version
 	 */
 	
 	private String do_smart(String args, sessionInfo session, scanpage sp, boolean leaf) throws ParseException {
@@ -960,31 +962,38 @@ public class scanparser extends ProcessorModule {
 		String builderPath = "";
 		Vector nodes = new Vector();
 		String arg = "";
+		boolean skip = false;
 		StringTokenizer tokens = new StringTokenizer(args, "+");
 		while (tokens.hasMoreTokens()) {
 			arg = tokens.nextToken().trim();
 			if ((arg==null) || arg.equals(""))
 				throw new ParseException(cmdName+action+" "+args+": no or empty object number specified");
-			boolean isNumber = true;
-			try { Integer.parseInt(arg); } catch (NumberFormatException n) { isNumber = false; }
-			if (isNumber) {
-				MMObjectNode node = mmbase.getTypeDef().getNode(arg);
-				if (node==null) throw new ParseException(cmdName+action+" node "+arg+" not found");
-				nodes.addElement(node);
-				if (leaf) builderPath += File.separator + node.getName();
+			if (skip) { // Skip all args until closing ) found
+				if (arg.equals(")")) skip = false;
 			}
-			else {
-				// Select the non number as filename to part, first add the remaining tokens
-				while (tokens.hasMoreTokens()) arg+="+"+tokens.nextToken();
-				filename = arg; // Use it as filename
-				args = "";		// Clear args to pass to part and split filename on ? for new args
-				pos = filename.indexOf('?');
-				if (pos>=0) {
-					if (pos<filename.length()-1) args = filename.substring(pos+1);
-					filename = filename.substring(0, pos);
+			else if (arg.equals("(")) skip = true;
+			else { 
+				boolean isNumber = true;
+				try { Integer.parseInt(arg); } catch (NumberFormatException n) { isNumber = false; }
+				if (isNumber) {
+					MMObjectNode node = mmbase.getTypeDef().getNode(arg);
+					if (node==null) throw new ParseException(cmdName+action+" node "+arg+" not found");
+					nodes.addElement(node);
+					if (leaf) builderPath += File.separator + node.getName();
 				}
-				break; // Save one test, we're done
-			}//else
+				else {
+					// Select the non number as filename to part, first add the remaining tokens
+					while (tokens.hasMoreTokens()) arg+="+"+tokens.nextToken();
+					filename = arg; // Use it as filename
+					args = "";		// Clear args to pass to part and split filename on ? for new args
+					pos = filename.indexOf('?');
+					if (pos>=0) {
+						if (pos<filename.length()-1) args = filename.substring(pos+1);
+						filename = filename.substring(0, pos);
+					}
+					break; // Save one test, we're done
+				}//else
+			}//else 
 		}//while
 		
 		// If no part name passed as arg, use parts/buildername.shtml?args
