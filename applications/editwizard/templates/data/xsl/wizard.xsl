@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.22 2002-06-10 12:37:44 pierre Exp $
+  @version $Id: wizard.xsl,v 1.23 2002-06-11 22:28:03 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -28,6 +28,9 @@
     <xsl:apply-templates select="wizard" />
   </xsl:template>
 
+
+  <xsl:template name="beforeform" />
+
   <xsl:template match="wizard">
     <html>
       <head>
@@ -43,6 +46,8 @@
         <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
         <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
 
+        <xsl:call-template name="beforeform" />
+
         <form name="form" method="post" action="{$wizardpage}" id="{/wizard/curform}"
               message_pattern="{$message_pattern}"
               message_required="{$message_required}"
@@ -54,6 +59,7 @@
         >
           <input type="hidden" name="curform" value="{/wizard/curform}" />
           <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
+
 
           <table cellspacing="0" cellpadding="3" border="0" width="100%">
             <tr>
@@ -182,6 +188,11 @@
               </option>
             </xsl:for-each>
           </select>
+        </xsl:when>
+        <xsl:when test="@ftype='enumdata'">
+          <xsl:if test="optionlist/option[@id=current()/value]">
+            <span style="width:400;"><xsl:value-of select="optionlist/option[@id=current()/value]" /></span>
+          </xsl:if>
         </xsl:when>
         <xsl:when test="@ftype='date'">
           <div>
