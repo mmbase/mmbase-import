@@ -1,38 +1,50 @@
 /*
 
+$Id: cache.java,v 1.2 2000-02-24 13:48:10 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
+
 package org.mmbase.module;
- 
 
 import java.lang.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.util.LRUHashtable;
 
 /**
  * Simple file cache system that can be used by any servlet
+ *
+ * @author  $Author: wwwtech $ 
+ * @version $Revision: 1.2 $ $Date: 2000-02-24 13:48:10 $
  */
 public class cache extends Module implements cacheInterface {
 
+	private String 	classname 	= getClass().getName();
+	private boolean debug	 	= false;	
+	private void	debug(String msg ){ System.out.println(classname+":"+msg); }
+
 	boolean state_up = false;
-	Hashtable lines = new Hashtable();
 	int hits,miss;
 	private int MaxLines=1000;
 	private int MaxSize=100*1024;
 	private boolean active=true;
+	LRUHashtable lines = new LRUHashtable( MaxLines );
 
 	public void onload() {
 	}
 
 	public void reload() {
 		readParams();
+		if( MaxLines > 0 ) lines = new LRUHashtable( MaxLines );
 	}
 
 	public void shutdown() {
@@ -59,10 +71,10 @@ public class cache extends Module implements cacheInterface {
 		if (!active) return(null);
 		cacheline o=(cacheline)lines.get(wanted);
 		if (o==null) {
-			//System.out.println("WOW CACHE MIS = "+wanted);
+			//if( debug ) debug("WOW CACHE MIS = "+wanted);
 			miss++;
 		} else {
-			//System.out.println("WOW CACHE HIT = "+wanted);
+			//if( debug ) debug("WOW CACHE HIT = "+wanted);
 			hits++;
 		}
 		return(o);
@@ -75,19 +87,14 @@ public class cache extends Module implements cacheInterface {
 	public cacheline put(Object key,Object value) {
 		if (!active) return(null);
 		// check if there is still room in the cache
-		if (lines.size()<MaxLines) {
-			// there is room so look at the cacheline and check size
-			cacheline line=(cacheline)value;
-			// if size is to big ignore the entry
-			if (line.filesize<MaxSize) {	
-				// cacheline is oke place it in cache
-				return((cacheline)lines.put(key,value));
-			} else {
-				// cacheline to big
-				return(null);
-			}
+		// there is room so look at the cacheline and check size
+		cacheline line=(cacheline)value;
+		// if size is to big ignore the entry
+		if (line.filesize<MaxSize) {	
+			// cacheline is oke place it in cache
+			return((cacheline)lines.put(key,value));
 		} else {
-			// to many lines in cache allready
+			// cacheline to big
 			return(null);
 		}
 	}
@@ -105,6 +112,7 @@ public class cache extends Module implements cacheInterface {
 			state_up=true;
 		}
 		readParams();
+		if( MaxLines > 0 ) lines = new LRUHashtable( MaxLines );
 	}
 
 	public void unload() {
@@ -141,18 +149,25 @@ public class cache extends Module implements cacheInterface {
 	}
 
 	void readParams() {
-		String tmp=getInitParameter("MaxLines");
-		if (tmp!=null) MaxLines=Integer.parseInt(tmp);
-		tmp=getInitParameter("MaxSize");
-		if (tmp!=null) MaxSize=Integer.parseInt(tmp)*1024;
-		tmp=getInitParameter("Active");
+		String tmp = null;
+		try
+		{
+			tmp=getInitParameter("MaxLines");
+			if (tmp!=null) MaxLines=Integer.parseInt(tmp);
+			tmp=getInitParameter("MaxSize");
+			if (tmp!=null) MaxSize=Integer.parseInt(tmp)*1024;
+			tmp=getInitParameter("Active");
+		} catch (NumberFormatException e ) {
+			debug("readParams(): ERROR: " + e ) ;
+		}
+
 		if (tmp!=null && (tmp.equals("yes") || tmp.equals("Yes"))) {
 			active=true;
 		} else {
 			active=false;
+	
 		}
-	}
-
+	}	
 	public String getModuleInfo() {
 		return("this module provides cache function for http requests");	
 	}
