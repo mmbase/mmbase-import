@@ -76,6 +76,39 @@ the same name as the example.<br />
 <tr><td colspan="3">&nbsp;</td></tr>
 
 <tr>
+	<th class="main" colspan="3">Other Demo's</th>
+</tr>
+
+<tr>
+	<th>Name demo</th>
+	<th colspan="2">Description</th>
+</tr>
+
+<tr>
+	<td>Editwizard</td>
+	<td>
+		Different editwizard-examples. TODO: you need editwizards installed!
+	</td>
+	<td class="link" >
+		<a href="<mm:url page="editwizard/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+	</td>
+</tr>
+
+
+<tr>
+	<td>Codings</td>
+	<td>
+		Shows text in different encodings.
+	</td>
+	<td class="link" >
+		<a href="<mm:url page="codings/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+	</td>
+</tr>
+
+
+<tr><td colspan="3">&nbsp;</td></tr>
+
+<tr>
 	<th class="main" colspan="3">SCAN demo's</th>
 </tr>
 <%
@@ -163,41 +196,11 @@ the same name as the example.<br />
     }
 %>
 
-<tr><td colspan="3">&nbsp;</td></tr>
-
-<tr>
-	<th class="main" colspan="3">Other Demo's</th>
-</tr>
-
-<tr>
-	<th>Name demo</th>
-	<th colspan="2">Description</th>
-</tr>
-
-<tr>
-	<td>Editwizard</td>
-	<td>
-		Different editwizard-examples.
-	</td>
-	<td class="link" >
-		<a href="<mm:url page="editwizard/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
-	</td>
-</tr>
-
-
-<tr>
-	<td>Codings</td>
-	<td>
-		Shows text in different encodings.
-	</td>
-	<td class="link" >
-		<a href="<mm:url page="codings/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
-	</td>
-</tr>
 
 <tr><td colspan="3">&nbsp;</td></tr>
 
 </table>
+<a href="<mm:url page=".." />"> back</a>
 </body>
 </html>
 </mm:cloud>
