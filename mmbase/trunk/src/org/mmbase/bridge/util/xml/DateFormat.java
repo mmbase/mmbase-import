@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.9 2004-09-17 10:02:47 michiel Exp $
+ * @version $Id: DateFormat.java,v 1.10 2004-09-29 07:10:24 pierre Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -67,7 +67,7 @@ public class DateFormat {
      */
     public static String format(String number, String fieldName, String pattern, String timeZone, String language, String country) {
         return format("mmbase", number, fieldName, pattern, timeZone, language, country);
-    }   
+    }
 
 
     /**
@@ -115,7 +115,7 @@ public class DateFormat {
 
     /**
      * Formats the fieldvalue to a date pattern
-     * 
+     *
      * @param fieldvalue  time-stamp in seconds
      * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
      * @param timeZone  timezone
@@ -151,7 +151,6 @@ public class DateFormat {
      * Formats a node's field value with the date pattern.
      * This version requires you to supply a DOM node. It will search for a tag of the form
      * &lt;field name='number' &gt; and uses it's contents to retrieve the node.
-     * @deprecated not sure where this is used?
      * @param cloudName the cloud in which to find the node
      * @param node A DOM node (xml) containing the node's fields as subtags
      * @param fieldname the name of the field to format
@@ -167,7 +166,7 @@ public class DateFormat {
     }
 
     /** Returns the year part of the date
-     * 
+     *
      * @param fieldValue  time-stamp
      * @return year part
      */
@@ -176,7 +175,7 @@ public class DateFormat {
     }
 
     /** Returns the month part of the date
-     * 
+     *
      * @param fieldValue  time-stamp
      * @return month part
      */
@@ -184,7 +183,7 @@ public class DateFormat {
         return getDatePart(fieldValue, 1000, Calendar.MONTH, "") + 1;
     }
     /** Returns the day of the month part of the date
-     * 
+     *
      * @param fieldValue  time-stamp
      * @return day of the month part
      */
@@ -192,7 +191,7 @@ public class DateFormat {
         return getDatePart(fieldValue, 1000, Calendar.DAY_OF_MONTH, "");
     }
     /** Returns the hours part of the date
-     * 
+     *
      * @param fieldValue  time-stamp
      * @return hours part
      */
@@ -200,7 +199,7 @@ public class DateFormat {
         return getDatePart(fieldValue, 1000, Calendar.HOUR_OF_DAY, "");
     }
     /** Returns the minutes part of the date
-     * 
+     *
      * @param fieldValue  time-stamp
      * @return minutes part
      */
@@ -208,7 +207,7 @@ public class DateFormat {
         return getDatePart(fieldValue, 1000, Calendar.MINUTE, "");
     }
     /** Returns the seconds part of the date
-     * 
+     *
      * @param fieldValue  time-stamp
      * @return seconds part
      */
@@ -273,7 +272,7 @@ public class DateFormat {
     }
 
     /** Returns the a part of the date
-     * 
+     *
      * @param fieldValue  time-stamp
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @param datePart  which part of the date should be returned. These are Calendar constants
@@ -302,5 +301,5 @@ public class DateFormat {
             return -1;
         }
     }
-    
+
 }
