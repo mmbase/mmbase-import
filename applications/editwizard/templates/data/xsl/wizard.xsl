@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.138 2004-09-23 09:51:13 pierre Exp $
+    @version $Id: wizard.xsl,v 1.139 2004-11-23 14:32:23 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -678,7 +678,14 @@
               <xsl:if test="@selected=&apos;true&apos;">
                 <xsl:attribute name="selected">true</xsl:attribute>
               </xsl:if>
-              <xsl:value-of select="."/>
+              <xsl:choose>
+                <xsl:when test="prompt">
+                  <xsl:call-template name="i18n">
+                    <xsl:with-param name="nodes" select="prompt" />
+                  </xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise><xsl:value-of select="." /></xsl:otherwise>
+              </xsl:choose>
             </option>
           </xsl:for-each>
         </select>
@@ -693,7 +700,16 @@
     <xsl:if test="optionlist/option[@id=current()/value]">
       <xsl:apply-templates select="value" mode="line">
         <xsl:with-param name="val">
-          <xsl:value-of select="optionlist/option[@id=current()/value]"/>
+          <xsl:for-each select="optionlist/option[@id=current()/value]">
+            <xsl:choose >
+              <xsl:when test="prompt">
+                <xsl:call-template name="i18n">
+                  <xsl:with-param name="nodes" select="prompt" />
+                </xsl:call-template>
+              </xsl:when>
+              <xsl:otherwise><xsl:value-of select="." /></xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:if>
