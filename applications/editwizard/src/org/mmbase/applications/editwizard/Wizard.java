@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Wizard.java,v 1.5 2002-02-25 11:53:58 pierre Exp $
+ * @version $Id: Wizard.java,v 1.6 2002-02-25 12:47:05 pierre Exp $
  * 
  */
 public class Wizard {
@@ -34,13 +34,11 @@ public class Wizard {
     // Some of these variables are placed public, for debugging reasons.
     private Document preform;
 
+    /**
+     * The cloud used to connect to MMBase
+     */
     private Cloud cloud;
     
-    // the username and password are stored here.
-    private String user="";
-    private String pass="";
-    private boolean loggedIn = false;
-
     // basepath where all data files reside. Will be set from the jsp files.
     public String path="";
 
@@ -134,33 +132,6 @@ public class Wizard {
     public Wizard(String apath, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
         this(apath);
         initialize(wizardname,dataid,cloud);
-    }
-
-    /**
-     * This method initializes the Wizard instance. Always use one of these methods to start the wizard.
-     *
-     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
-     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
-     */
-    public void initialize(String wizardname, String dataid) throws WizardException, SecurityException{
-        initialize(wizardname,dataid,null,null);
-    }
-
-    /**
-     * Loads the wizard schema, and creates a connection to MMBase using a {@link WizardDatabaseConnector}.
-     * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
-     *
-     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
-     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
-     */
-    public void initialize(String wizardname, String dataid, String user, String pass) throws WizardException, SecurityException {
-        // initialize database connector
-        dbconn = new WizardDatabaseConnector();
-        dbconn.setUserInfo(user,pass,null,null);
-        // add username to variables
-        variables.put("username", user);
-        // actually load the wizard
-        loadWizard(wizardname,dataid);
     }
 
     /**

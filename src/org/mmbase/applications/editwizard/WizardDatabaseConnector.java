@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.3 2002-02-25 11:53:58 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.4 2002-02-25 12:47:06 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -123,140 +123,113 @@ public class WizardDatabaseConnector {
      * @param       objectnumber    The objectnumber of the parentobject from where the relations should originate.
      * @param       loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
      */
-  private void loadRelations(Node object, String objectnumber, Node loadaction) throws Exception {
+    private void loadRelations(Node object, String objectnumber, Node loadaction) throws Exception {
         // loads relations using the loadaction rules
-    Document flatloadaction = Utils.parseXML("<tmp />");
-    NodeList tmprels = Utils.selectNodeList(loadaction, "relation");
-    for (int i=0; i<tmprels.getLength(); i++) {
-        flatloadaction.getDocumentElement().appendChild(flatloadaction.importNode(tmprels.item(i).cloneNode(false), true));
-    }
+        Document flatloadaction = Utils.parseXML("<tmp />");
+        NodeList tmprels = Utils.selectNodeList(loadaction, "relation");
+        for (int i=0; i<tmprels.getLength(); i++) {
+            flatloadaction.getDocumentElement().appendChild(flatloadaction.importNode(tmprels.item(i).cloneNode(false), true));
+        }
 
-    NodeList flatrels = Utils.selectNodeList(flatloadaction, "/*/relation");
-    try {
-        // only get relations if a loadrestriction is placed.
+        NodeList flatrels = Utils.selectNodeList(flatloadaction, "/*/relation");
+        try {
+            // only get relations if a loadrestriction is placed.
             if (flatrels.getLength()>0) getRelations(object, objectnumber, flatrels);
-    } catch (Exception e) {
-        log.debug("Could not getRelations (loadRelations) object ["+objectnumber+"]. MMBase returned some errors. Sorry for that, though.\n"+e.getMessage());
-        throw e;
-    }
+        } catch (Exception e) {
+            log.debug("Could not getRelations (loadRelations) object ["+objectnumber+"]. MMBase returned some errors. Sorry for that, though.\n"+e.getMessage());
+            throw e;
+        }
 
-    // load objects to which relations are pointing
-    NodeList loadactionrestrictionfields = Utils.selectNodeList(loadaction, "field");
-    NodeList rels = Utils.selectNodeList(object, "relation");
-    for (int i=0; i<rels.getLength(); i++) {
-        Node rel = rels.item(i);
-        String parentobjnumber = Utils.getAttribute(rel.getParentNode(), "number");
-        String relatedobject = getOtherRelatedObject(rel, parentobjnumber);
-        Node loadedobj = getData(rel, relatedobject, loadactionrestrictionfields);
+        // load objects to which relations are pointing
+        NodeList loadactionrestrictionfields = Utils.selectNodeList(loadaction, "field");
+        NodeList rels = Utils.selectNodeList(object, "relation");
+        for (int i=0; i<rels.getLength(); i++) {
+            Node rel = rels.item(i);
+            String parentobjnumber = Utils.getAttribute(rel.getParentNode(), "number");
+            String relatedobject = getOtherRelatedObject(rel, parentobjnumber);
+            Node loadedobj = getData(rel, relatedobject, loadactionrestrictionfields);
 
-        // object loaded. Check to see if we need to follow more relations...
-        // find corresponding loadaction settings...
-        String reldestination=Utils.getAttribute(loadedobj, "type");
-        Node deeprels = Utils.selectSingleNode(loadaction, "relation[@destination='"+reldestination+"'][relation/@destination]");
+            // object loaded. Check to see if we need to follow more relations...
+            // find corresponding loadaction settings...
+            String reldestination=Utils.getAttribute(loadedobj, "type");
+            Node deeprels = Utils.selectSingleNode(loadaction, "relation[@destination='"+reldestination+"'][relation/@destination]");
 
-        if (deeprels!=null) {
-            // yep. we should carry on loading! (Recurse!)
-            loadRelations(loadedobj, relatedobject, deeprels);
+            if (deeprels!=null) {
+                // yep. we should carry on loading! (Recurse!)
+                loadRelations(loadedobj, relatedobject, deeprels);
+            }
         }
     }
-  }
 
-  /**
-   * This method loads an object and the necessary relations and fields, according to the given schema.
-   *
-   * @param     schema          The schema carrying all the information needed for loading the proper object and related fields and objects.
-   * @param     objectnumber    The objectnumber of the object to start with.
-   * @return   The resulting data document.
-   */
-  public Document load(Node schema, String objectnumber) throws Exception {
-    // intialize data xml
-    Document data = Utils.parseXML("<data />");
+    /**
+     * This method loads an object and the necessary relations and fields, according to the given schema.
+     *
+     * @param     schema          The schema carrying all the information needed for loading the proper object and related fields and objects.
+     * @param     objectnumber    The objectnumber of the object to start with.
+     * @return   The resulting data document.
+     */
+    public Document load(Node schema, String objectnumber) throws Exception {
+        // intialize data xml
+        Document data = Utils.parseXML("<data />");
 
-    try {
-      // load initial object using object number
-      log.debug("Loading: " + objectnumber);
-      Node object = getData(data.getDocumentElement(), objectnumber);
+        try {
+            // load initial object using object number
+            log.debug("Loading: " + objectnumber);
+            Node object = getData(data.getDocumentElement(), objectnumber);
 
-      // load relations
-      Node loadactionrestrictions = Utils.selectSingleNode(schema, "action[@type='load']");
-      if (loadactionrestrictions==null) {
-        // no action type="load". Give an emptyone.
-        Document tmp = Utils.parseXML("<action type=\"load\" />");
-        loadactionrestrictions = tmp.getDocumentElement();
-      }
-      loadRelations(object, objectnumber, loadactionrestrictions);
-    } catch (Exception e) {
-        log.error("Could not load object ["+objectnumber+"]. MMBase returned some errors.\n"+e.getMessage());
-        throw e;
+            // load relations
+            Node loadactionrestrictions = Utils.selectSingleNode(schema, "action[@type='load']");
+            if (loadactionrestrictions==null) {
+                // no action type="load". Give an emptyone.
+                Document tmp = Utils.parseXML("<action type=\"load\" />");
+                loadactionrestrictions = tmp.getDocumentElement();
+            }
+            loadRelations(object, objectnumber, loadactionrestrictions);
+        } catch (Exception e) {
+            log.error("Could not load object ["+objectnumber+"]. MMBase returned some errors.\n"+e.getMessage());
+            throw e;
+        }
+        tagDataNodes(data);
+        return data;
     }
 
-    tagDataNodes(data);
-    return data;
-  }
+    /**
+     * This method gets constraint information from mmbase about a specific objecttype.
+     *
+     * @param     objecttype      the objecttype where you want constraint information from.
+     * @return   the constraintsnode as received from mmbase (Dove)
+     */
+    public Node getConstraints(String objecttype) throws Exception {
+        // fires getData command and places result in targetNode
+        ConnectorCommand cmd = new ConnectorCommandGetConstraints(objecttype);
+        fireCommand(cmd);
 
-  //////////////////////////////////////////////////////////////////////
-  // MMBase API methods
-  //////////////////////////////////////////////////////////////////////
-
-  /**
-   * This method loads a list from mmbase.
-   *
-   * Depricated.
-   */
-  public Node getList(String objecttype) throws Exception {
-    // fires getData command and places result in targetNode
-    ConnectorCommand cmd = new ConnectorCommandGetList(objecttype);
-    fireCommand(cmd);
-
-    if (!cmd.hasError()) {
-      // place object in targetNode
-        Node result = cmd.responsexml.cloneNode(true);
-        return result;
-    } else {
-      throw new Exception("getList command not succesful, for objecttype " + objecttype);
+        if (!cmd.hasError()) {
+            // place object in targetNode
+            Node result = cmd.responsexml.getFirstChild().cloneNode(true);
+            return result;
+        } else {
+            throw new Exception("getConstraints command not succesful, for objecttype " + objecttype);
+        }
     }
-  }
 
-  /**
-   * This method gets constraint information from mmbase about a specific objecttype.
-   *
-   * @param     objecttype      the objecttype where you want constraint information from.
-   * @return   the constraintsnode as received from mmbase (Dove)
-   */
-  public Node getConstraints(String objecttype) throws Exception {
-    // fires getData command and places result in targetNode
-    ConnectorCommand cmd = new ConnectorCommandGetConstraints(objecttype);
-    fireCommand(cmd);
+    /**
+     * This method retrieves a list from mmbase. It uses a query which is sent to mmbase.
+     */
+    public Node getList(Node query) throws Exception {
+        // fires getData command and places result in targetNode
+        ConnectorCommand cmd = new ConnectorCommandGetList(query);
+        fireCommand(cmd);
 
-    if (!cmd.hasError()) {
-    // place object in targetNode
-    Node result = cmd.responsexml.getFirstChild().cloneNode(true);
-    return result;
-    } else {
-    throw new Exception("getConstraints command not succesful, for objecttype " + objecttype);
+        if (!cmd.hasError()) {
+           // place object in targetNode
+            if (log.isDebugEnabled()) log.debug(Utils.getSerializedXML(cmd.responsexml));
+            Node result = cmd.responsexml.cloneNode(true);
+            return result;
+        } else {
+            throw new Exception("getList command not succesful");
+        }
     }
-  }
-
-
-  /**
-   * This method retrieves a list from mmbase. It uses a query which is sent to mmbase.
-   *
-   * Depricated.
-   */
-  public Node getList(Node query) throws Exception {
-      // fires getData command and places result in targetNode
-      ConnectorCommand cmd = new ConnectorCommandGetList(query);
-      fireCommand(cmd);
-
-      if (!cmd.hasError()) {
-          // place object in targetNode
-          if (log.isDebugEnabled()) log.debug(Utils.getSerializedXML(cmd.responsexml));
-          Node result = cmd.responsexml.cloneNode(true);
-          return result;
-      } else {
-          throw new Exception("getList command not succesful");
-      }
-  }
 
   /**
    * This method retrieves data (objectdata) from mmbase.

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.4 2002-02-25 11:53:58 pierre Exp $
+ * @version $Id: Utils.java,v 1.5 2002-02-25 12:47:05 pierre Exp $
  */
 public class Utils {
 
@@ -134,15 +134,6 @@ public class Utils {
         StringWriter str=new StringWriter();
         printXML(node, str);
         return str.toString();
-    }
-
-    /**
-     * Serialize a node to the System.out
-     *
-     * @param        node    The node to serialize
-     */
-    public static void printXML(Node node)  {
-        printXML(node, new PrintWriter(System.out));
     }
 
     /**
@@ -557,19 +548,12 @@ public class Utils {
         return result.toString();
     }
 
-
-    /**
-     * below some handy xpath utils
-     */
-
     /**
      * This method selects a single node using the given contextnode and xpath.
      * @param contextnode
      * @param xpath
      * @return    The found node. Null if nothing is found.
      */
-
-
     public static Node selectSingleNode(Node contextnode, String xpath) {
         if (contextnode==null) return null;
         try {
