@@ -32,13 +32,13 @@ import org.mmbase.util.logging.Logging;
 public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
     private static Logger log = Logging.getLoggerInstance(AliasListTag.class.getName());
 
+    private StringList     returnList;
     private StringIterator returnValues;
     private String currentAlias;
     private int currentItemIndex= -1;
-    private int listSize = 0;
 
     public int size(){
-        return listSize;
+        return returnList.size();
     }
     public int getIndex() {
         return currentItemIndex;
@@ -47,21 +47,19 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
         return true;
     }
 
+    public Object getCurrent() {
+        return currentAlias;
+    }
+
     /**
-    *
-    **/
+     *
+     *
+     */
     public int doStartTag() throws JspTagException{       
         currentItemIndex= -1;  // reset index        
         Node node = getNode();
-        StringList sl = node.getAliases();
-        {
-            String id = getId();
-            if (id != null && ! "".equals(id)) {
-                getContextTag().register(id, sl);
-            }
-        }
-        listSize = sl.size();
-        returnValues = sl.stringIterator();        
+        returnList = node.getAliases();
+        returnValues = returnList.stringIterator();        
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (returnValues.hasNext())
@@ -70,7 +68,9 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
     }
 
     public int doAfterBody() throws JspTagException {
-        String id = getId();
+        if (getId() != null) {
+            getContextTag().unRegister(getId());            
+        }
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_TAG;
@@ -83,12 +83,23 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
             return SKIP_BODY;
         }
     }
+    public int doEndTag() throws JspTagException {
+        if (getId() != null) {
+            getContextTag().register(getId(), returnList);
+        }        
+        return  EVAL_PAGE;
+    }
 
 
     public void doInitBody() throws JspTagException {
         if (returnValues.hasNext()){
             currentItemIndex ++;
             currentAlias = returnValues.nextString();
+
+            if (getId() != null) {
+                getContextTag().register(getId(), currentAlias);
+            }
+
         }
     }
 }
