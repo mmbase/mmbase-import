@@ -10,12 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.media;
 
-import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.MMObjectNode;
-import java.util.Vector;
+import java.util.*;
 
 /**
- * Though this interface the MediaSourceFilter is able to access filters written
+ * Through this interface the MediaSourceFilter is able to access filters written
  * by external parties. In the mediasourcefilter configuration file the external
  * filters can be specified.
  *
@@ -29,11 +28,10 @@ public interface MediaSourceFilterInterface {
      * mediasources.
      * @param mediasources The set of mediasources available
      * @param mediafragment The requested mediafragment
-     * @param request The servlet request of the user
-     * @param wantedspeed
-     * @param wantedchannels
+     * @param info Is a container for information such as: bitrate, frames/second, request information etc.
+     *
      * @return A new set of filtered mediasources.
      */
-    public Vector filterMediaSource(Vector mediasources, MMObjectNode mediafragment, HttpServletRequest request, int wantedspeed, int wantedchannels);
+    public Vector filterMediaSource(Vector mediasources, MMObjectNode mediafragment, Hashtable info);
 }
 

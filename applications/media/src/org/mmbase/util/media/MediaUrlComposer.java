@@ -24,9 +24,7 @@ import javax.servlet.http.*;
 import org.w3c.dom.Element;
 
 /**
- * The MediaUrlComposer creates additional information in the url. i.e. an url like
- * rpst://streams.omroep.nl/music/jingle.ra, can be expanded to
- * rpst://streams.omroep.nl/music/jungle.ra?start=234&stop=2422&author=Phil%20%collins.
+ * The urlcomposer contains functionality for creating the url, the uri, and the content type.
  * 
  * @author Rob Vermeulen (VPRO)
  */
@@ -88,29 +86,51 @@ public class MediaUrlComposer {
     }
     
     /**
-     * create the url and set the contenttype (probably have to split this)
-     *
+     * create the uri for a certain media source
      */
-    public String composeUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
+    public String getURI(MMObjectNode mediafragment, MMObjectNode mediasource, Hashtable info) {
         
         String url = null;
         int format = mediasource.getIntValue("format");
         if(format==MediaSources.RM_FORMAT || format==MediaSources.RA_FORMAT) {
-            url = createRealURL(mediafragment, mediasource, request, response, wantedspeed, wantedchannels);
+            url = createRealURL(mediafragment, mediasource, info);
+        } else {
+            log.debug("Only readaudio/realmedia is supported");
         }
-        setContentType(mediasource, response);
         return url;
     }
     
     /**
-     * set the contenttype
+     * Set the content type in the response
+     *
      * @param mediasource the mediasource
-     * @param response the response
+     * @param response the HttpSevletResponse
      */
-    private void setContentType(MMObjectNode mediasource, HttpServletResponse response) {
+    public void setContentType(MMObjectNode mediasource, HttpServletResponse response) {
+        response.setContentType(getContentType(mediasource));
+    }
+    
+    /**
+     * resolve the url of the mediasource (e.g. pnm://www.mmbase.org/test/test.ra)
+     *
+     * @param mediasouce the media source
+     * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
+     * @return the url of the media source
+     */
+    public String getUrl(MMObjectNode mediasource, Hashtable info) {
+        return mediasource.getStringValue("url");
+    }
+    
+    /**
+     * Resolve the content type for a certain media source
+     *
+     * @param mediasource the media source
+     * @return the content type
+     */    
+    public String getContentType(MMObjectNode mediasource) {
         String format = mediasource.getStringValue("format");
         if(format==null || format.equals("")) {
-            log.error("No format was given for mediasource "+mediasource.getStringValue("number"));
+            format="*";
         }
         String codec = mediasource.getStringValue("codec");
         if(codec==null || codec.equals("")) {
@@ -125,16 +145,16 @@ public class MediaUrlComposer {
             mimetype += mimeMapping.get("/"+codec);
         } else if (mimeMapping.containsKey("*/*")) {
             mimetype += mimeMapping.get("*/*");
-        }
+        }   
         log.debug("Mimetype for mediasource "+mediasource.getStringValue("number")+" is "+mimetype);
-        response.setContentType(mimetype);
+        return mimetype;
     }
     
     /**
      * Just an implementation of a real url. Maybe we should make this configuratble in the config file.
      * but i don't know if that makes much sence.
      */
-    public String createRealURL(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
+    public String createRealURL(MMObjectNode mediafragment, MMObjectNode mediasource, Hashtable info) {
         Vector params = new Vector();
         String urlpart = "";
         

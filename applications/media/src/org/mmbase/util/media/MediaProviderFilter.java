@@ -143,7 +143,7 @@ public class MediaProviderFilter {
      * The mediaprovider will be found by passing a list of mediaproviders through a chain
      * of mediaprovider filters.
      */
-    public synchronized MMObjectNode filterMediaProvider(MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+    public synchronized MMObjectNode filterMediaProvider(MMObjectNode mediasource, Hashtable info) {
         Vector mediaproviders = mediasourcebuilder.getMediaProviders(mediasource);
         
         // passing the mediaproviders through al the filters
@@ -156,7 +156,7 @@ public class MediaProviderFilter {
                 mediaproviders = filterHostOnDomain("userinfo",mediaproviders);
             } else {
                 MediaProviderFilterInterface mpfi = (MediaProviderFilterInterface)externFilters.get(filter);
-                mediaproviders = mpfi.filterMediaProvider(mediaproviders, mediasource, request, wantedspeed, wantedchannels);
+                mediaproviders = mpfi.filterMediaProvider(mediaproviders, mediasource, info);
             }
         }
         
@@ -251,5 +251,4 @@ public class MediaProviderFilter {
         }
         return providers;
     }
-    
 }
