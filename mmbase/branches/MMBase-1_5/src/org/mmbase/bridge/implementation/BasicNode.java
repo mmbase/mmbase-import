@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.45.2.1 2002-02-20 10:38:23 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.45.2.2 2002-07-03 09:04:51 michiel Exp $
  */
 public class BasicNode implements Node {
 
@@ -209,7 +209,7 @@ public class BasicNode implements Node {
             // XXX: If you edit a node outside a transaction, but do not commit or cancel the edits,
             // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
             if ((action == ACTION_EDIT) ||
-                ((action == ACTION_DELETE) && (nodeManager instanceof BasicTransaction))) {
+                ((action == ACTION_DELETE) && (getCloud() instanceof BasicTransaction))) {
                 int id = getNumber();
                 String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+id, ""+id);
                 if (cloud instanceof BasicTransaction) {
@@ -649,7 +649,6 @@ public class BasicNode implements Node {
      * @param aliasName the name of the alias (null means all aliases)
      */
     private void deleteAliases(String aliasName) {
-        edit(ACTION_EDIT);
         // A new node cannot have any aliases, except when in a transaction.
         // However, there is no point in adding aliasses to a ndoe you plan to delete,
         // so no attempt has been made to rectify this (cause its not worth all the trouble).
@@ -682,6 +681,7 @@ public class BasicNode implements Node {
     };
 
     public void deleteAlias(String aliasName) {
+        edit(ACTION_EDIT);
         deleteAliases(aliasName);
     };
 
