@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 December 2002</date>
-    <edition>$Id: index.xml,v 1.30 2003-06-30 17:23:31 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.31 2003-06-30 17:28:04 michiel Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -189,7 +189,7 @@
           <ulink url="backenddevelopers/storage.html" id="storage">
             Storage layer
           </ulink>
-          <ulink url="backendevelopers/storage.pdf" id="storage.pdf">
+          <ulink url="backenddevelopers/storage.pdf" id="storage.pdf">
            (pdf)
           </ulink>
         </para>
