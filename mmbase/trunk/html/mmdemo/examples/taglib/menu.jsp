@@ -23,5 +23,7 @@
   |
   <a href="relatednodes.jsp">relatednodes</a>
   |
+  <a href="tipsandtricks.jsp">Tips and Tricks (FAQ)</a>
+  |
   <a href="../../../mmdocs/mmbase-taglib.html">taglib doc</a>
 </p>
