@@ -72,7 +72,7 @@ public class BundleManager {
         if (o != null) {
             return (BundleInterface)o;
         }
-        log.error("bundle with id = "+id+" not found");
+        //log.error("bundle with id = "+id+" not found");
         return null;
     }
 
@@ -94,7 +94,7 @@ public class BundleManager {
                 }
             }
         }
-        log.error("bundle with id = "+id+" not found");
+        //log.error("bundle with id = "+id+" not found");
         return null;
     }
 
@@ -108,7 +108,7 @@ public class BundleManager {
                 return p;
             }
         }
-        log.error("bundle with id = "+id+" not found");
+        //log.error("bundle with id = "+id+" not found");
         return null;
     }
 
