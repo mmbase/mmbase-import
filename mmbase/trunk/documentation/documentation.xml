@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
 []>
-<article>
+  <article>
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>December 5, 2002</date>
-		<edition>$Id: documentation.xml,v 1.8 2003-05-09 13:30:41 henk Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.9 2003-06-11 14:02:31 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -100,7 +100,7 @@
 			</itemizedlist>
 		</para>
 		<para>
-			Use section, not sect1, sect2...
+			Use section, &dollar;not sect1, sect2...
 			And, if possible, use CDATA sections in your &lt;programlisting&gt;. This
 			makes it easier to read when editing. CDATA sections look like this:
 		 <programlisting>
