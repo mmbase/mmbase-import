@@ -2,7 +2,7 @@ package org.mmbase.applications.crontab;
 
 
 import java.util.*;
-public class JCronEntries extends Vector{
+public class JCronEntries extends Vector {
     
     public JCronEntries() {
         super();

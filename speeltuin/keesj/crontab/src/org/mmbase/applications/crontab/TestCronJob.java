@@ -5,28 +5,16 @@ import java.util.*;
 import java.io.*;
 import nanoxml.*;
 
-public class TestCronJob implements JCronJob,Runnable{
-    private Thread kicker;
-    
-    
-    public TestCronJob(){
+public class TestCronJob implements JCronJob {
+
+
+    public void init(JCronEntry jCronEntry) {
+    }
+
+    public void stop() {
     }
     
-    
-    public synchronized void kick(JCronEntry jCronEntry){
-        if (kicker == null){
-            System.err.println("start job");
-            kicker = new Thread(this,"JCronJob{"+ jCronEntry.getName() +"}");
-            kicker.start();
-        } else {
-            System.err.println("job still running");
-        }
-        
-    }
-    public synchronized void stop(JCronEntry jCronEntry){
-    }
-    
-    public void run(){
+    public void run() {
         System.err.println("start run job");
         try {
             //URL url = new URL("http://www.bbc.co.uk/syndication/feeds/news/ukfs_news/world/rss091.xml");
@@ -53,7 +41,6 @@ public class TestCronJob implements JCronJob,Runnable{
             System.err.println("EXCEPTION" + e.getMessage());
         }
         System.err.println("stop run job");
-        kicker = null;
     }
     
 }
