@@ -61,15 +61,6 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <target name="compile" depends="prepare">
 
-    <javac srcdir="${src.dir}"
-           destdir="${build.dest}"
-           debug="${debug}"
-           optimize="${optimize}"
-           deprecation="${deprecation}">
-      <exclude name="**/JumpersInterceptor.java" unless="tomcat.present" />
-      <exclude name="**/hitlisted/**" />
-    </javac>
-
     <copydir src="${src.dir}" dest="${build.dest}">
       <include name="**/scripts/**" />
       <include name="**/platform/**" />
@@ -80,8 +71,24 @@ about the Ant build tool.
       <include name="**/*.sh" />
       <include name="**/LICENSE" />
     </copydir>
-  </target>
 
+    <javac srcdir="${src.dir}"
+           destdir="${build.dest}"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+      <exclude name="**/JumpersInterceptor.java" unless="tomcat.present" />
+      <exclude name="**/hitlisted/**" />
+      <exclude name="**/scripts/**" />
+      <exclude name="**/docs/**" />
+      <exclude name="**/log/**" />
+      <exclude name="**/*.properties" />
+      <exclude name="**/*.xml" />
+      <exclude name="**/*.dtd" />
+      <exclude name="**/*.sh" />
+      <exclude name="**/LICENSE" />
+    </javac>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Creates the jar file                                                -->
