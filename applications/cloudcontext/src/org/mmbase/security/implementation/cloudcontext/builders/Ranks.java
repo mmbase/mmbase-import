@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.6 2003-09-22 11:51:54 michiel Exp $
+ * @version $Id: Ranks.java,v 1.7 2003-09-24 21:11:02 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -128,7 +128,7 @@ public class Ranks extends MMObjectBuilder {
     //javadoc inherited
     public void setDefaults(MMObjectNode node) {
         setUniqueValue(node, "name", "rank");
-        setUniqueValue(node, "name", 200);        
+        setUniqueValue(node, "rank", 200);        
     }
 
 
