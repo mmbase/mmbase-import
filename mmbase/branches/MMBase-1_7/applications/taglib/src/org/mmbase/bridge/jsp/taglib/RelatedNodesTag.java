@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.32.2.3 2004-07-23 19:27:47 michiel Exp $
+ * @version $Id: RelatedNodesTag.java,v 1.32.2.4 2004-07-26 20:12:15 nico Exp $
  */
 
 public class RelatedNodesTag extends AbstractNodeListTag {
@@ -96,7 +96,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         RelatedNodesContainerTag c = (RelatedNodesContainerTag) findParentTag(RelatedNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
-        Cloud cloud = getProviderCloudVar();
+        Cloud cloud = getCloudVar();
         if (type != Attribute.NULL || path != Attribute.NULL || c == null || parentNodeId != Attribute.NULL) {
 
             // obtain a reference to the node through a parent tag

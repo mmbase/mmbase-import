@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.20.2.1 2004-07-10 12:12:58 nico Exp $ 
+ * @version $Id: CountRelationsTag.java,v 1.20.2.2 2004-07-26 20:12:14 nico Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
@@ -55,8 +55,8 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
             Node node = getNode();
             NodeManager other = 
                 type == Attribute.NULL ? 
-                getProviderCloudVar().getNodeManager("object") : 
-                getProviderCloudVar().getNodeManager(type.getString(this));
+                getCloudVar().getNodeManager("object") : 
+                getCloudVar().getNodeManager(type.getString(this));
             String direction = (String) searchDir.getValue(this);
             if (direction == null) direction = "BOTH";
             helper.setValue(new Integer(node.countRelatedNodes(other, (String) role.getValue(this), direction)));

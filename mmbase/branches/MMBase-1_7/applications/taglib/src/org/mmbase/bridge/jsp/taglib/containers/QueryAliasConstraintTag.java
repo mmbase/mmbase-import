@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.2.2.1 2004-07-10 12:13:03 nico Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.2.2.2 2004-07-26 20:12:19 nico Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -54,7 +54,7 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
 
 
     protected Integer getAlias(String name) throws JspTagException {
-        Cloud cloud = getProviderCloudVar();
+        Cloud cloud = getCloudVar();
         Node node = cloud.getNode(name);
         return new Integer(node.getNumber());
     }

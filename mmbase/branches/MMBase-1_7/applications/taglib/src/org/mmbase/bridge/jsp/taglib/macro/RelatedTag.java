@@ -27,14 +27,14 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.24.2.1 2004-07-10 12:13:06 nico Exp $
+ * @version $Id: RelatedTag.java,v 1.24.2.2 2004-07-26 20:12:23 nico Exp $
  */
 public class RelatedTag extends ListTag {
     // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
 
     protected Node getBaseNode() throws JspTagException {
         if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {
-            return getProviderCloudVar().getNode((String)StringSplitter.split(nodes.getString(this), ",").get(0));
+            return getCloudVar().getNode((String)StringSplitter.split(nodes.getString(this), ",").get(0));
         } else {
             return getNode();
         }

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.10.2.1 2004-07-10 12:13:01 nico Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.10.2.2 2004-07-26 20:12:18 nico Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -52,7 +52,7 @@ public class TreeIncludeTag extends IncludeTag {
 
     public void doAfterBodySetValue() throws JspTagException {
         // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-        th.setCloud(getProviderCloudVar());
+        th.setCloud(getCloudVar());
     
         // Let IncludeTag do the rest of the work
         includePage();
