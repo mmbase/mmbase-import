@@ -1,4 +1,4 @@
- /*
+/*
  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -6,9 +6,9 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
- */
+*/
 
-package speeltuin.media.org.mmbase.module.builders.media;
+package org.mmbase.module.builders.media;
 
 import java.util.*;
 import java.net.URL;
@@ -68,6 +68,9 @@ public class MediaSource extends MMObjectBuilder {
     
     // MediaProviderFilter helps by resolving the best media provider
     private MediaProviderFilter mediaProviderFilter = new MediaProviderFilter(this);
+    
+    // MediaProviderBuilder
+    private MediaProvider mediaProviderBuilder = null;
 
 
     private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
@@ -84,8 +87,25 @@ public class MediaSource extends MMObjectBuilder {
                 readConfiguration(file);
             }
         };
+     
+   public boolean init() {
+        boolean result = super.init();
+        
+        // Retrieve a reference to the MediaProvider builder
+        mediaProviderBuilder = (MediaProvider) mmb.getMMObject("mediaproviders");
+        
+        if(mediaProviderBuilder==null) {
+            log.error("Builder mediaproviders is not loaded.");
+        } else {
+            log.debug("The builder mediaproviders is retrieved.");
+        }
+        return result;
+    }
+      
     
     public MediaSource() {
+        
+        /*
         cache.putCache();
         log.debug("static init");    
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "mediaservers.xml");
@@ -96,6 +116,7 @@ public class MediaSource extends MMObjectBuilder {
         configWatcher.add(configFile);
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
+         */
     }
 	    
     /**
@@ -199,6 +220,14 @@ public class MediaSource extends MMObjectBuilder {
         return node.getStringValue("url");
     }
     
+    public int getSpeed(MMObjectNode node) {
+        return node.getIntValue("speed");
+    }
+    
+    public int getChannels(MMObjectNode node) {
+        return node.getIntValue("channels");
+    }
+    
    
     public String getGUIIndicator(String field, MMObjectNode node) {
         return "" + getValue(node, "str("+field+")");
@@ -207,7 +236,7 @@ public class MediaSource extends MMObjectBuilder {
     /**
      * return some human readable strings
      */
-    protected Object executeFunction(MMObjectNode node, String function, String field) {
+    public Object executeFunction(MMObjectNode node, String function, String field) {
         if (log.isDebugEnabled()) log.debug("executeFunction  " + function + "(" + field + ") on" + node); 
         if (function.equals("str")) {
             if (field.equals("status")) {
@@ -266,16 +295,26 @@ public class MediaSource extends MMObjectBuilder {
     }
     
     
-    
+    /**
+     * get the url of the mediasource. This url will be created by the MediaProvider
+     * and an uriFilter.
+     * @param mediafragment the mediafragment (maybe not needed...)
+     * @param mediasource the mediasource
+     * @param request the request of the user 
+     * @param wantedspeed
+     * @param wantedchannels
+     * @return the url 
+     */
     public String getUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
-        // Find out the best media provider
-        String protocol = getProtocol(mediasource.getIntValue("format")); 
+        
+        // Find the provider for the url
         MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
+        log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
                
-        // convert the url (response) to a wanted one, with extra information in the url etc.etc.
-        // For the url the mediafragment is important....
-        // Also pluggable ???
-        return protocol + mediaProvider.getStringValue("url")+"uri iets";
+        // Get the protocol and the hostinfomation of the provider.
+        String firstPartUrl = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("url");
+        
+        return firstPartUrl+"rest";
     }
     
      /**
