@@ -44,7 +44,7 @@
     </tr>
   </table>
   
-  <h5>answers to this quetion:</h5>
+  <h5>answers to this question:</h5>
   <mm:relatednodes type="kb_answer" orderby="number" directions="up">
     <div style="max-height:600px;overflow:auto;margin-top:10px;">
       <mm:maycreate type="kb_answer">

@@ -38,12 +38,11 @@
 
 %>
 	
-<%@include file="/includes/header.jsp"%>
+<%@include file="/includes/header.jsp" %>
 
-%>
 <td colspan="2" valign="top">
   <mm:import id="title">MMBase Knowledge Base</mm:import>
-  <mm:include page="index_real.jsp" />
+  <mm:include page="index_real.jsp" referids="title" />
 </td>
 <%@include file="/includes/footer.jsp"
 %></mm:cloud>
