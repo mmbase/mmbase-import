@@ -24,11 +24,15 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 	public IrcModule() {}
 
 	public void receive( String msg ) {
-		StringBuffer sb = new StringBuffer(msg);
-		//debug( classname +":"+ msg );
-		msg=sb.substring(msg.indexOf(']')+1,msg.length());
-		debug( classname +":"+ msg );
-		if(msg.toLowerCase().indexOf("mmbeest")!=-1) com.sendPublic("Ahum, my name is MMBase not MMBeest");
+		debug("#"+msg);
+		IrcMessage im = new IrcMessage(msg);
+		msg=im.getMessage();
+		if(msg.toLowerCase().indexOf("mmbeest")!=-1) { 
+			com.sendPublic("Ahum, my name is MMBase not MMBeest");
+		}
+		if(msg.toLowerCase().indexOf("hi mmbase")!=-1) { 
+			com.sendPublic("Hi "+im.getFromNick());
+		}
 
 		try {
 		StringTokenizer st = new StringTokenizer(msg);
@@ -200,4 +204,62 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 			com.stopit();
 		}
 	}
+
+	class IrcMessage {
+		private String server = null;
+		private String to = null;
+		private String from = null; 		// loeki!~wwwtech@www.mmbase.org
+		private String fromNick = null;		// loeki
+		private String message = null;
+
+	
+		public IrcMessage(String message) {
+			encodeMessage(message);
+		}
+
+		private void encodeMessage(String message) {
+			StringTokenizer st = new StringTokenizer(message,"[],",true);
+			while (st.hasMoreTokens()) {
+				String token = st.nextToken();
+				if(token.indexOf("server")==0) {
+					server=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
+				} else
+				if(token.indexOf("to")==1) {
+					to=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
+				} else
+				if(token.indexOf("from")==1) {
+					from=token.substring(token.indexOf('\'')+1,token.lastIndexOf('\''));
+					try {
+						fromNick=from.substring(0,from.indexOf('!'));
+					} catch (Exception e) {
+					}
+				}
+				if(token.indexOf("]")==0) {
+					if(st.hasMoreTokens()) {
+						message = st.nextToken();	
+					}
+				}
+			} 
+		}
+
+		public String getServer() {
+			return server;
+		}
+
+		public String getTo() {
+			return to;	
+		}
+
+		public String getFrom() {
+			return from;	
+		}
+
+		public String getFromNick() {
+			return fromNick;
+		}
+
+		public String getMessage() {
+			return message;	
+		}
+	}		
 }
