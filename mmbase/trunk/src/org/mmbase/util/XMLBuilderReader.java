@@ -37,11 +37,16 @@ public class XMLBuilderReader  {
             parser.parse(filename);
             document = parser.getDocument();
 
-	
+	    System.out.println("*** START XML CONFIG READER FOR : "+filename);	
 	    System.out.println("builder status="+getStatus());	
 	    System.out.println("builder classfile="+getClassFile());	
 	    System.out.println("builder properties="+getProperties());	
 	    System.out.println("builder fielddefs="+getFieldDefs());	
+	    System.out.println("builder pluralnames="+getPluralNames());	
+	    System.out.println("builder signularnames="+getSingularNames());	
+	    System.out.println("builder descriptions="+getDescriptions());	
+	    System.out.println("builder searchage="+getSearchAge());	
+	    System.out.println("*** END XML CONFIG READER FOR : "+filename);	
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
@@ -66,6 +71,28 @@ public class XMLBuilderReader  {
 	return(null);
     }
 
+    /**
+    * get the Search Age
+    */
+    public int getSearchAge() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("searchage")) {
+				Node n3=n2.getFirstChild();
+				int val=30;
+				try {
+					val=Integer.parseInt(n3.getNodeValue());
+				} catch(Exception e) {}
+		    		return(val);
+			
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(30);
+    }
 
     /**
     * get the classfile of this builder
@@ -104,7 +131,6 @@ public class XMLBuilderReader  {
 					if (n3.getNodeName().equals("field")) {
 						FieldDefs def=decodeFieldDef(n3);
 						def.DBPos=pos++;
-						System.out.println(def);
 						defs.addElement(def);
 					}
 					n3=n3.getNextSibling();
@@ -127,12 +153,19 @@ public class XMLBuilderReader  {
 		// we got the main field node, find the different types and decode
 		Node n2=n1.getFirstChild();
 		while (n2!=null) {
-			//System.out.println("F2="+n2);
 			String name=n2.getNodeName();
 			if (name.equals("gui")) {
-				System.out.println("GUI="+n2);
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					String name2=n3.getNodeName();
+					if (name2.equals("name")) {
+						getGUIName(n3,def);
+					} if (name2.equals("type")) {
+						def.GUIType=getGUIType(n3);
+					}
+					n3=n3.getNextSibling();
+				}
 			} else if (name.equals("db")) {
-				System.out.println("DB="+n2);
 				Node n3=n2.getFirstChild();
 				while (n3!=null) {
 					String name2=n3.getNodeName();
@@ -172,12 +205,19 @@ public class XMLBuilderReader  {
 	public String getDBType(Node n1,FieldDefs def) {
 		Node n2=n1.getFirstChild();
 		String val=n2.getNodeValue();
+		if (val.equals("INTEGER")) val="int";
+		if (val.equals("VARCHAR")) val="varchar";
 		def.DBType=val;
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
+			int size=-1;
 			Node n3=nm.getNamedItem("size");
 			if (n3!=null) {
-				System.out.println("SIZE="+n3.getNodeValue());
+				try {
+					size=Integer.parseInt(n3.getNodeValue());
+					def.DBSize=size;
+				} catch(Exception e) {
+				}
 			}
 
 			n3=nm.getNamedItem("notnull");
@@ -191,7 +231,6 @@ public class XMLBuilderReader  {
 
 			n3=nm.getNamedItem("state");
 			if (n3!=null) {
-				System.out.println("STATUS="+n3.getNodeValue());
 				String tmp=n3.getNodeValue();
 				if (tmp.equals("persistent")) {
 					def.DBState=FieldDefs.DBSTATE_PERSISTENT;
@@ -213,6 +252,13 @@ public class XMLBuilderReader  {
 		return(val);
 	}
  
+	public String getGUIType(Node n1) {
+		Node n2=n1.getFirstChild();
+		String val=n2.getNodeValue();
+		return(val);
+	}
+
+
 	public String getDBName(Node n1) {
 		Node n2=n1.getFirstChild();
 		String val=n2.getNodeValue();
@@ -270,6 +316,114 @@ public class XMLBuilderReader  {
 						NamedNodeMap nm=n3.getAttributes();
 						if (nm!=null) {
 							Node n5=nm.getNamedItem("name");
+							hash.put(n5.getNodeValue(),n4.getNodeValue());
+						}	
+					}
+					n3=n3.getNextSibling();
+				}
+			
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(hash);
+    }
+
+
+    /**
+    * get the descriptions of this builder
+    */
+    public Hashtable getDescriptions() {
+	Hashtable hash=new Hashtable();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("descriptions")) {
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					if (n3.getNodeName().equals("description")) {
+						Node n4=n3.getFirstChild();
+						NamedNodeMap nm=n3.getAttributes();
+						if (nm!=null) {
+							Node n5=nm.getNamedItem("xml:lang");
+							hash.put(n5.getNodeValue(),n4.getNodeValue());
+						}	
+					}
+					n3=n3.getNextSibling();
+				}
+			
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(hash);
+    }
+
+
+
+    /**
+    * get the pluralnames of this builder
+    */
+    public Hashtable getPluralNames() {
+	Hashtable hash=new Hashtable();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("names")) {
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					if (n3.getNodeName().equals("plural")) {
+						Node n4=n3.getFirstChild();
+						NamedNodeMap nm=n3.getAttributes();
+						if (nm!=null) {
+							Node n5=nm.getNamedItem("xml:lang");
+							hash.put(n5.getNodeValue(),n4.getNodeValue());
+						}	
+					}
+					n3=n3.getNextSibling();
+				}
+			
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(hash);
+    }
+
+    /**
+    */
+    public void getGUIName(Node n1,FieldDefs def) {
+	Node n2=n1.getFirstChild();
+	if (n2!=null) {
+		NamedNodeMap nm=n1.getAttributes();
+		if (nm!=null) {
+			Node n3=nm.getNamedItem("xml:lang");
+			def.GUINames.put(n3.getNodeValue(),n2.getNodeValue());
+
+		}	
+	}
+    }
+
+
+    /**
+    * get the pluralnames of this builder
+    */
+    public Hashtable getSingularNames() {
+	Hashtable hash=new Hashtable();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("names")) {
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					if (n3.getNodeName().equals("singular")) {
+						Node n4=n3.getFirstChild();
+						NamedNodeMap nm=n3.getAttributes();
+						if (nm!=null) {
+							Node n5=nm.getNamedItem("xml:lang");
 							hash.put(n5.getNodeValue(),n4.getNodeValue());
 						}	
 					}
