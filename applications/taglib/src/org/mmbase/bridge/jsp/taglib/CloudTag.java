@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.110 2005-03-01 16:43:21 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.111 2005-03-07 10:28:49 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -938,13 +938,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     referrer = referrerPage;
                 }
             }
-            //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
-            RequestDispatcher rd = request.getRequestDispatcher(toFile);
-            request.setAttribute("referrerpage", referrerPage);
-            request.setAttribute("referrer", referrer);
-            request.setAttribute("reason", reason);
-            request.setAttribute("exactreason", exactReason);
-            rd.forward(request, response);
+            if (! response.isCommitted()) {
+                //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
+                RequestDispatcher rd = request.getRequestDispatcher(toFile);
+                request.setAttribute("referrerpage", referrerPage);
+                request.setAttribute("referrer", referrer);
+                request.setAttribute("reason", reason);
+                request.setAttribute("exactreason", exactReason);
+                rd.forward(request, response);
+            }
             return SKIP_BODY;
         } catch (javax.servlet.ServletException ioe) {
             throw new TaglibException("error sending redirect", ioe);
