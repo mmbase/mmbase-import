@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * parameter, extend from this.
  * It also contains a few other 'utily' functions, which can be handy when constructing tags.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  */
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
@@ -39,7 +39,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
 
     static private ContextTag pageContextTag;
-    
+
     private String     contextId = null;
     protected String   referid = null;
 
@@ -48,7 +48,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         super.setPageContext(pc);
         if (pageContextTag == null) {
             log.debug("making the pageContextTag.");
-            pageContextTag = new ContextTag(); 
+            pageContextTag = new ContextTag();
             pageContextTag.setPageContext(pc);
             pageContextTag.setId("context");
             // there is one implicit ContextTag in every page.
@@ -56,7 +56,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             // it is called pageContext, because it is similar to the pageContext, but not the same.
         }
     }
-    
+
     public void setReferid(String r) throws JspTagException {
         referid = getReferIdValue(r);
     }
@@ -68,8 +68,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     /**
      * Release all allocated resources.
      */
-    public void release() {   
-        super.release();       
+    public void release() {
+        super.release();
         id = null;
         referid = null;
         contextId = null;
@@ -87,21 +87,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         contextId = c;
     }
 
-    
-
-    final private StringTokenizer parseAttribute(String attribute) {
-        // searches a dot in 'attribute'.
-        // dots can be escaped with a backslash
-        org.mmbase.util.StringObject s = new org.mmbase.util.StringObject(attribute);        
-        s.replace("\\.", "%%%%%%%%"); // temporary call escaped dots %%%%%%% (hoping that that does not occur by chance)
-        s.replace(".", "\r");         // will split by \r
-        s.replace("%%%%%%%%", ".");   // put the escaped dots back
-        return new StringTokenizer(s.toString(), "\r");
-    }
-
     protected String getReferIdValue(String attribute) {
         // also possible to indicate context in id:
-        StringTokenizer tk = parseAttribute(attribute);
+        StringTokenizer tk = new StringTokenizer(attribute,".");
         attribute = tk.nextToken();
         if (tk.hasMoreTokens()) {
             setContext(attribute);
@@ -118,43 +106,37 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      */
 
-    
+
 
     protected String getAttributeValue(String attribute) throws JspTagException {
-        StringTokenizer tk = parseAttribute(attribute);
-        String attributeValue = tk.nextToken();
-        if (tk.hasMoreTokens()) { 
-            String context;
-            if (attributeValue.equals("")) {
-                context = contextId;
-            } else {
-                context = attributeValue;
-            }
-            log.debug("Attribute " + attribute + " contains reference to context (id=" + context + "), searching context");
-            String param = tk.nextToken();            
-            ContextTag ct = getContextTag(context);        
-            attributeValue = ct.getObjectAsString(param);                       
-            if (attributeValue == null) {
-                throw new JspTagException("Key " + param + " could not be found in context " + context);
-            }
-        } else {                
-            if (attribute.startsWith("param:")) {        // interpret as parameter
-                String param = attribute.substring(6);
-                attributeValue = pageContext.getRequest().getParameter(param);
-                if (attributeValue == null) {
-                    throw new JspTagException("Parameter " + param + " could not be found");
+        String result="";
+        int beginpos = attribute.indexOf("${");
+        int endpos=0;
+        while (beginpos>=0) {
+            result+=attribute.substring(endpos,beginpos);
+            endpos = attribute.indexOf("}",beginpos);
+            if (endpos>=0) {
+                String varname=attribute.substring(beginpos+2,endpos);
+                StringTokenizer tk = new StringTokenizer(varname,".");
+                String context=contextId;
+                String varid = tk.nextToken();
+                if (tk.hasMoreTokens()) {
+                    context = varid;
+                    varid = tk.nextToken();
                 }
-            } else if (attribute.startsWith("session:")){ // interpret as key from session
-                String param = attribute.substring(8);
-                javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-                attributeValue = (String) req.getSession().getAttribute(param);
-                if (attributeValue == null) {
-                    throw new JspTagException("Session attribute " + param + " could not be found");
+                log.info("Attribute " + attribute + " refers " + context + " - "+varid);
+                ContextTag ct = getContextTag(context);
+                String varValue = ct.getObjectAsString(varid);
+                if (varValue == null) {
+                    throw new JspTagException(varid + " could not be found in " + context);
                 }
-            }             
+                result+=varValue;
+            }
+            endpos+=1;
+            beginpos = attribute.indexOf("${",endpos);
         }
-            
-        return attributeValue;        
+        result+=attribute.substring(endpos);
+        return result;
     }
 
     /**
@@ -164,37 +146,37 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @param id        the id of the Tag to find.
      * @param exception if it has to throw an exception if the parent can not be found (default: yes).
      */
-   
+
     final protected TagSupport findParentTag(String classname, String id, boolean exception) throws JspTagException {
         log.debug("finding " + classname);
         Class clazz ;
         try {
             clazz = Class.forName(classname);
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find " + classname + " class");  
+            throw new JspTagException ("Could not find " + classname + " class");
         }
 
-        TagSupport cTag = (TagSupport) findAncestorWithClass((Tag)this, clazz); 
+        TagSupport cTag = (TagSupport) findAncestorWithClass((Tag)this, clazz);
         if (cTag == null) {
             if (exception) {
-                throw new JspTagException ("Could not find parent of type " + classname);  
+                throw new JspTagException ("Could not find parent of type " + classname);
             } else {
                 return null;
             }
         }
-        
-        if (id != null) { // search further, if necessary            
+
+        if (id != null) { // search further, if necessary
             log.debug(" with id ("  + id + ")");
             while (! id.equals(cTag.getId())) {
                 cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
-                        throw new JspTagException ("Could not find parent Tag of type " + classname + " with id " + id);  
+                        throw new JspTagException ("Could not find parent Tag of type " + classname + " with id " + id);
                     } else {
                         return null;
                     }
                 }
-            }            
+            }
         }
         return cTag;
 
@@ -232,7 +214,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     // --------------------------------------------------------------------------------
     // utils
-    
+
     /**
     * Simple util method to split comma separated values
     * to a vector. Usefull for attributes.
@@ -241,7 +223,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     * @return a Vector containing the elements, the elements are also trimed
     */
 
-    static public Vector stringSplitter(String attribute, String delimiter) { 
+    static public Vector stringSplitter(String attribute, String delimiter) {
         Vector retval = new Vector();
         StringTokenizer st = new StringTokenizer(attribute, delimiter);
         while(st.hasMoreTokens()){
