@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mmbasegroups" maintainer="www.mmbase.org" version="1" extends="object">
+<builder name="mmbaseusers" maintainer="www.mmbase.org" version="1" extends="object">
   <classfile>org.mmbase.security.implementation.cloudcontext.builders.Users</classfile>
   <names>
     <singular xml:lang="en">MMBase User</singular>
@@ -20,7 +20,7 @@
       opgeslagen. Wachtwoorden worden gecodeert.
     </description>
     <description xml:lang="eo">
-      MMBase-uzantoj. En ĉi tiu stoko la uzantoj de la sistemo povas stokiĝi. Pasvortoj estas
+      MMBase-uzantoj. En ĉi tiu stoko la uzantoj de la sistemo povas stoki�?i. Pasvortoj estas
       ĉifrataj.
     </description>
   </descriptions>
@@ -77,7 +77,7 @@
       </editor>
       <db>
         <name>defaultcontext</name>
-        <type state="persistent" notnull="false" key="false">NODE</type>
+        <type state="persistent" notnull="true" key="false">NODE</type>
       </db>
     </field>
     <field>
