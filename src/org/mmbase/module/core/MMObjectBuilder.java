@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.222 2003-03-25 18:57:52 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.223 2003-04-08 12:07:01 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -969,7 +969,7 @@ public class MMObjectBuilder extends MMTable {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
                 String query = "SELECT " + thisbuilder.getNonByteArrayFields() +" FROM " + thisbuilder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
- 
+
                 ResultSet rs = stmt.executeQuery(query);
                 try {
                     if (rs.next()) {
@@ -1498,7 +1498,7 @@ public class MMObjectBuilder extends MMTable {
             con = mmb.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            
+
             try {
                 for (int counter = 0; rs.next(); counter++) {
                     // check if we are allowed to do this iteration...
@@ -2924,7 +2924,7 @@ public class MMObjectBuilder extends MMTable {
 
         MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
-        if(pb != null && (pb.equals(bul) || pb.isExtensionOf(bul))) {
+        if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeRemoteChanged(machine, number, builder, ctype);
         }
@@ -2976,7 +2976,7 @@ public class MMObjectBuilder extends MMTable {
 
         MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
-        if(pb != null && (pb.equals(bul) || pb.isExtensionOf(bul))) {
+        if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeLocalChanged(machine, number, builder, ctype);
         }
