@@ -213,7 +213,7 @@ public class MMBase extends ProcessorModule  {
         } catch(Exception e) {
             log.fatal("error loading the mmbase cop: " + e.toString());
             log.error(Logging.stackTrace(e));
-            //System.exit(0);
+            System.exit(0);
         }
     }
 
@@ -989,8 +989,8 @@ public class MMBase extends ProcessorModule  {
    * This value is set using the configuration file.
    * @return the dtd base as a <code>String</code>
    */
-	public String getDTDBase() {
-		return dtdbase;
+        public String getDTDBase() {
+        return dtdbase;
 	}
 
 	/**
