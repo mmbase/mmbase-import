@@ -50,15 +50,13 @@
 	  <mm:field name="name" />
         </mm:node> - <mm:node number="$page" notfound="skipbody"><mm:field name="title" /></mm:node><% if(userFullName != null) { %> - Welcome <%= userFullName %> <% } %>
       </title>
-     <script type="text/javascript" language="javascript" src="/scripts/launchcenter.js"><!-- help IE --></script> 
+     <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/launchcenter.js" />"><!-- help IE --></script> 
      <meta http-equiv="imagetoolbar" content="no" />
-<%-- assuming this page is only included from index.jsp, and this site only deployed on www.mmbase.org --%>
+    <%-- assuming this page is only included from index.jsp, and this site only deployed on www.mmbase.org --%>
      <%-- base href="http://www.mmbase.org/index.jsp" --%>
    </head>
 <body>
-<mm:log>head</mm:log>
 <%@ include file="nav.jsp" %>
-	<mm:log>head2</mm:log>
 <table border="0" cellspacing="0" cellpadding="0" class="content">
 <tr><td>
 <table border="0" cellspacing="0" cellpadding="0" class="layout">
