@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.10 2003-09-03 10:03:18 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.11 2003-09-05 16:27:06 michiel Exp $
  */
 public class ClusterNode extends VirtualNode {
 
@@ -109,6 +109,7 @@ public class ClusterNode extends VirtualNode {
      * @return the node, or <code>null</code> if it does not exist or is unknown
      */
     public MMObjectNode getRealNode(String builderName) {
+        if (builderName == null) return null;
         MMObjectNode node = (MMObjectNode) nodes.get(builderName);
         if (node != null) return node;
         Integer number = (Integer) retrieveValue(builderName + ".number");
@@ -149,6 +150,7 @@ public class ClusterNode extends VirtualNode {
         // Circument interference by the database during initial loading of the node
         // This is not pretty, but the alternative is rewriting all support classes...
         if (initializing) {
+            if (fieldValue == null) fieldValue = MMObjectNode.VALUE_NULL;
             if (! (parent instanceof ClusterBuilder)) {
                 values.put(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
             } else {
@@ -186,6 +188,17 @@ public class ClusterNode extends VirtualNode {
             // XXX: we should check on commas and semicolons too... ?
             return builderName;
         }
+    }
+
+    // MM: special arrangment for if parent is not ClusterBuilder.
+    // could give NPE so this is a fix...  (1.7)
+    public MMObjectBuilder getBuilder() {
+        if (parent instanceof ClusterBuilder) {
+            return super.getBuilder();
+        } else {
+            return parent;
+        }
+        
     }
 
     /**
