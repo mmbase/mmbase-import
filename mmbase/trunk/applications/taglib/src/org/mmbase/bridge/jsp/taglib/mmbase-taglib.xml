@@ -6,6 +6,34 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2tld.xslt  >
 
 To convert this file to html documentation you need  an xslt engine:
 java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
+
+
+The following additional tags are possible between <tag> and </tag>:
+
+  <info>...</info>
+
+  <example>...</example>
+
+
+The following additional tags are possible between <attribute> and </attribute>:
+
+  <requirednote></requirednote> (To note that requirement of this attribute
+                                 is dependant on other conditions.)
+
+  <info>...</info>
+
+  <possiblevalue> (Use one or more to list a possible values)
+    <value>...</value>
+    <info>...</info>
+  </possiblevalue>
+
+  <examplevalue> (Use one ore more to give some example values)
+    <value>...</value>
+    <info>...</info>
+  </examplevalue>
+
+Use one or more possiblevalue tags if you want to list all possible values. Use
+one or more examplevalue tags is you want to give some example values.
 -->
 <taglib>
   <tlibversion>1.0</tlibversion>
@@ -35,13 +63,28 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       <name>type</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot; examples &quot;mags&quot; &quot;mags,news&quot; or &quot;mags,related,news&quot; &quot;mags,news,images&quot; or &quot;mags,related,news,related,images&quot;.</info>
+      <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot;</info>
+      <examplevalue>
+        <value>mags</value>
+      </examplevalue>
+      <examplevalue>
+        <value>mags,news</value>
+      </examplevalue>
+      <examplevalue>
+        <value>mags,related,news</value>
+      </examplevalue>
+      <examplevalue>
+        <value>mags,news,images</value>
+      </examplevalue>
+      <examplevalue>
+        <value>mags,related,news,related,images</value>
+      </examplevalue>
     </attribute>
     <attribute>
       <name>fields</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>Comma-separated list of fields that should be made available in the page. The fields are selected from attributes of the corresponding  node managers defined in type. If the type fields contains more elements eq type=&quot;mags,news&quot; then it is required to append a prefix to each field listed eq fields=&quot;mags.title,news.title&quot;.In the jsp page the values are available in form of Strings eq mags.title is available as mags_title and can be accessed using &lt;%= mags_title &gt;.</info>
+      <info>Comma-separated list of fields that should be made available in the page. The fields are selected from attributes of the corresponding  node managers defined in type. If the type fields contains more elements eg type=&quot;mags,news&quot; then it is required to append a prefix to each field listed eg fields=&quot;mags.title,news.title&quot;.In the jsp page the values are available in form of Strings eg mags.title is available as mags_title and can be accessed using &lt;%= mags_title &gt;.</info>
     </attribute>
     <attribute>
       <name>where</name>
@@ -71,8 +114,14 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The direction of sorting. 'UP' or 'DOWN'.
+        The direction of sorting.
       </info>
+      <possiblevalue>
+        <value>UP</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DOWN</value>
+      </possiblevalue>
     </attribute>
     <attribute>
       <name>distinct</name>
@@ -105,10 +154,12 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
         See the 'id' attribute of the Node tag. 
       </info>    
     </attribute>
-    <example>&lt;mm:list node="123" type="mags,news" fields="mags.title,news.number"&gt;
+
+<example>&lt;mm:list node="123" type="mags,news" fields="mags.title,news.number"&gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
   &lt;%= mags_title %&gt;
 &lt;/mm:list&gt;</example>
+
   </tag>
   <tag>
     <name>related</name>
@@ -216,7 +267,10 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       <name>name</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The name of the cloud eq &quot;mmbase&quot;.</info>
+      <info>The name of the cloud.</info>
+      <examplevalue>
+        <value>mmbase</value>
+      </examplevalue>
     </attribute>
     <attribute>
       <name>logon</name>
@@ -235,19 +289,31 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-      How to get the authentication information. Can have the
-      following values:
-      <ul>
-       <li>'http': will use http protocol to ask name and password
-       from the user. If the 'logon' attribute is specified too, then
-       logging on will fail if the user does not use that
-       username. The 'pwd' attribute will be ignored.</li>
-       <li>'anonymous': Ignore the 'logon' attribute and create (or
-       reuse) a cloud with an anonymous user</li>
-       <li>'asIs': Ignore the 'logon' attribute and reuse the cloud as
-       it is in the session</li>   
-      </ul>
+        Describes how to get the authentication information.
       </info>
+      <possiblevalue>
+        <value>http</value>
+        <info>
+          use http protocol to ask name and password
+          from the user. If the 'logon' attribute is specified too, then
+          logging on will fail if the user does not use that
+          username. The 'pwd' attribute will be ignored.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>anonymous</value>
+        <info>
+          Ignore the 'logon' attribute and create (or
+          reuse) a cloud with an anonymous user.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>asIs</value>
+        <info>
+          Ignore the 'logon' attribute and reuse the cloud as
+          it is in the session.
+        </info>
+      </possiblevalue>
     </attribute>
     <attribute>
       <name>authenticate</name>
@@ -306,6 +372,7 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
     <attribute>
         <name>number</name>
         <required>false</required>
+        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
 	  The nodenumber or alias identifying this node in MMBase.
@@ -314,15 +381,11 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
     <attribute>
         <name>parameter</name>
         <required>false</required>
+        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	  <p>
  	   The request parameter name which contains the nodenumber or
 	   alias indentifying this node in MMBase.
-          </p>
-	  <p>
-	   One of the attributes 'number' or 'parameter' must be supplied.
-	  </p>
 	</info>
     </attribute>
     <attribute>
@@ -330,12 +393,10 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	<p>
 	  The fields you want to have from this node. Other fields are
 	  available as well, but will only be accessible with the
 	  field-tag. Field indicated in this 'fields' attribute will
 	  also get a jsp-variable.
-	</p>
 	</info>
     </attribute>
     <attribute>
@@ -343,20 +404,33 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	<p>
 	  With the 'id' attribute you define an unique identifier for
 	  this node. At the same time this defines an jsp 'Node'
 	  variable with this name. If you have defined 'fields' too,
 	  then these fields will have jsp-variables prefixed with this
 	  id and an underscore.
-	</p>
         </info>	
     </attribute>    
     <attribute>
         <name>type</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-        <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot; examples &quot;mags&quot; &quot;mags,news&quot; or &quot;mags,related,news&quot; &quot;mags,news,images&quot; or &quot;mags,related,news,related,images&quot;.</info>
+        <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot;.</info>
+        <examplevalue>
+          <value>mags</value>
+        </examplevalue>
+        <examplevalue>
+          <value>mags,news</value>
+        </examplevalue>
+        <examplevalue>
+          <value>mags,related,news</value>
+        </examplevalue>
+        <examplevalue>
+          <value>mags,news,images</value>
+        </examplevalue>
+        <examplevalue>
+          <value>mags,related,news,related,images</value>
+        </examplevalue>
     </attribute>
   </tag>
   <tag>
@@ -371,14 +445,8 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	   <p>
-             The 'id' of the node or list from which this field must be
-             taken from.
-           </p>
-	   <p> 
-	     On default this is the node or list which is enclosing
-	     this field.
-	   </p>
+          The 'id' of the node or list from which this field must be taken.
+          By default this is the node or list which is enclosing this field.
         </info>
     </attribute>
     <attribute>
@@ -407,9 +475,37 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
         <name>value</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-          One of 'first', 'last', 'odd', 'even' or 'changed'.
-	</info>
+	<info></info>
+        <possiblevalue>
+          <value>first</value>
+          <info>
+            Show only in first row.
+          </info>
+        </possiblevalue>
+        <possiblevalue>
+          <value>last</value>
+          <info>
+            Show only in last row.
+          </info>
+        </possiblevalue>
+        <possiblevalue>
+          <value>odd</value>
+          <info>
+            Show only when row number is odd.
+          </info>
+        </possiblevalue>
+        <possiblevalue>
+          <value>even</value>
+          <info>
+            Show only when row number is even.
+          </info>
+        </possiblevalue>
+        <possiblevalue>
+          <value>changed</value>
+          <info>
+            Show only when this row differs from the previous row.
+          </info>
+        </possiblevalue>
     </attribute>
     <attribute>
         <name>inverse</name>
