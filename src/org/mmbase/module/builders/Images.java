@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.38 2001-03-30 08:49:55 pierre Exp $
+ * @version $Id: Images.java,v 1.39 2001-04-26 12:23:19 vpro Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -280,8 +280,8 @@ public class Images extends MMObjectBuilder {
 		synchronized(imageRequestTable) {
 			ImageRequest req = (ImageRequest) imageRequestTable.get(ckey);
 			if (req != null) {
-				log.service("ConvertImage: a conversion in progress ("+ckey+")...  (requests="+(req.count()+1)+")");
-				return null;
+				log.info("ConvertImage: a conversion in progress ("+ckey+")...  (requests="+(req.count()+1)+")");
+				return req.getOutput();
 			} else {
 				req = new ImageRequest(objectId, ckey, params, inputPicture);
 				imageRequestTable.put(ckey,req);
