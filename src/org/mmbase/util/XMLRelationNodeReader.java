@@ -88,20 +88,27 @@ public class XMLRelationNodeReader  {
     * get the name of this application
     */
     public int getTimeStamp() {
-    Vector nodes=new Vector();
-    Node n1=document.getFirstChild();
-    if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-        n1=n1.getNextSibling();
-    }
-    while (n1!=null) {
-        NamedNodeMap nm=n1.getAttributes();
-        if (nm!=null) {
-            Node n2=nm.getNamedItem("timestamp");
-            int times=DateSupport.parsedatetime(n2.getNodeValue());
-            return(times);
+        Vector nodes=new Vector();
+        Node n1=document.getFirstChild();
+        if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
+            n1=n1.getNextSibling();
         }
-    }
-    return(-1);
+        while (n1!=null) {
+            NamedNodeMap nm=n1.getAttributes();
+            if (nm!=null) {
+                Node n2=nm.getNamedItem("timestamp");
+                try {
+                    java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat ("yyyyMMddhhmmss", Locale.US);
+                    int times = (int) (formatter.parse(n2.getNodeValue()).getTime()/ 1000);
+                    //int times=DateSupport.parsedatetime(n2.getNodeValue());
+                    return times;
+                } catch (java.text.ParseException e) {
+                    return 0;
+                }
+
+            }
+        }
+        return-1;
     }
 
 
