@@ -28,7 +28,7 @@ import org.mmbase.util.XMLDatabaseReader;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.3 2003-03-04 15:38:42 nico Exp $
+ * @version $Id: DatabaseStorage.java,v 1.4 2003-05-02 20:24:39 michiel Exp $
  */
 public interface DatabaseStorage extends Storage  {
 
@@ -50,7 +50,7 @@ public interface DatabaseStorage extends Storage  {
      * @param mmb the MBase instance that uses this database layer
      * @param document the database configuration document
      */
-    public void init(MMBase mmb,XMLDatabaseReader document);
+    public void init(MMBase mmb, XMLDatabaseReader document);
 
     /**
      * This reads database specific content from the database configuration document.
@@ -208,13 +208,13 @@ public interface DatabaseStorage extends Storage  {
      * Maps a MMBase fieldname to a fieldname acceptable to the database
      * @param fieldname the fieldname to map
      */
-    public String mapToTableFieldName(String fieldname);
+    public String mapToTableFieldName(String fieldName);
 
     /**
      * Maps a database fieldname to a fieldname as used by the MMbase system
      * @param fieldname the fieldname to map
      */
-    public String mapToMMBaseFieldName(String fieldname);
+    public String mapToMMBaseFieldName(String fieldName);
 
     /**
      * Returns the JDBC module used by this class to connect to the database.
@@ -230,7 +230,7 @@ public interface DatabaseStorage extends Storage  {
      * @param rs the ResultSet containing the table row
      * @param i the index of the field in the ResultSet
      */
-    public void loadFieldFromTable(MMObjectNode node,String fieldname, ResultSet rs,int i);
+    public void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i);
 
     /**
      * Set prepared statement field i with value of key from node
