@@ -127,6 +127,15 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     /**
+     * Sets the list maximum with an integer argument. Tomcat needs
+     * this if you feed it with an rtexprvalue of type int.
+     *
+     */
+    public void setMax(int m) {
+        max = m;
+    }
+
+    /**
      * Set the list offset
      * @param max the max number of values returned
      */
@@ -137,6 +146,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             throw new JspTagException("Offset should be an integer value "+
                         "(value found was "+o+")");
         }
+    }
+
+    public void setOffset(int o) { // also need with integer argument for Tomcat.        
+        offset = o;
     }
 
     /**
