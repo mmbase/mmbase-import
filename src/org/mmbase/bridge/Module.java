@@ -38,6 +38,34 @@ public interface Module {
 	public String getDescription();
 
 	/**
+	 * Runs the command with the given parameter(s).
+	 * @param command the command to run, i.e. "MESSAGE-UPDATE".
+         * @param parameters the main parameter for the command. Depends on the command issued. Not all
+         *      commands make use of this parameter.
+	 */
+	public void process(String command, Object parameter);
+
+	/**
+	 * Runs the command with the given parameter(s).
+	 * @param command the command to run, i.e. "MESSAGE-UPDATE".
+         * @param parameters the main parameter for the command. Depends on the command issued. Not all
+         *      commands make use of this parameter.
+         * @param auxparameters additional parameters for this command.
+	 */
+	public void process(String command, Object parameter, Hashtable auxparameters);
+
+	/**
+	 * Runs the command with the given parameter(s).
+	 * @param command the command to run, i.e. "MESSAGE-UPDATE".
+         * @param parameters the main parameter for the command. Depends on the command issued. Not all
+         *      commands make use of this parameter.
+         * @param auxparameters additional parameters for this command.
+	 * @param req the Request item to use for obtaining user information. For backward compatibility.
+	 * @param resp the Response item to use for redirecting users. For backward compatibility.
+	 */
+	public void process(String command, Object parameter, Hashtable auxparameters, ServletRequest req,  ServletResponse resp);
+
+	/**
 	 * Retrieve info from a module based on a command string.
 	 * Similar to the $MOD command in SCAN.
 	 * @param command the info to obtain, i.e. "USER-OS".
@@ -52,7 +80,7 @@ public interface Module {
 	 * @param resp the Response item to use for redirecting users. For backward compatibility.
 	 */
 	public String getInfo(String command, ServletRequest req, ServletResponse resp);
-	
+
 	/**
 	 * Retrieve info (as a list of virtual nodes) from a module based on a command string.
 	 * Similar to the LIST command in SCAN.
@@ -80,6 +108,6 @@ public interface Module {
 	 * @param resp the Response item to use for redirecting users. For backward compatibility.
 	 */
 	public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp);
-	
-	
+
+
 }
