@@ -82,7 +82,7 @@ public class FieldListTag extends FieldReferrerTag implements ListItemInfo, Fiel
         } else if ("all".equals(t)) {
             type = NO_TYPE;
         } else {
-            throw new JspTagException("Unknown field order type " + type);
+            throw new JspTagException("Unknown field order type " + t);
         }
     }
 
