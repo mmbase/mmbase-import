@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: DateFormats.java,v 1.1 2004-06-02 16:17:39 michiel Exp $
+ * @version $Id: DateFormats.java,v 1.1.2.1 2004-06-02 16:25:27 michiel Exp $
  */
 public class DateFormats {
 
