@@ -18,6 +18,7 @@ import org.mmbase.util.*;
 import org.w3c.dom.Element;
 import java.util.*;
 import java.io.File;
+import java.lang.reflect.*;
 /**
  * The URLComposerFactory contains the code to decide which kind of
  * URLComposer is instatiated.  This is a default implementation,
@@ -28,7 +29,7 @@ import java.io.File;
  * formats to URLComposer classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.3 2003-02-03 23:51:00 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.4 2003-02-04 12:40:41 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -39,10 +40,40 @@ public class URLComposerFactory  {
     private static final String COMPOSER_TAG = "urlcomposer";
     private static final String FORMAT_ATT   = "format";
 
+    private static final Class defaultComposerClass = URLComposer.class;
+
+  
     private static URLComposerFactory instance = new URLComposerFactory();
 
-    private Map urlComposerClasses = new HashMap();
-    private Class defaultUrlComposer;
+    private static class ComposerConfig {
+        private static Class[] constructorArgs = new Class[] {
+            MMObjectNode.class, MMObjectNode.class, MMObjectNode.class, Map.class
+        };
+        private Format format;
+        private Class  klass;
+        ComposerConfig(Format f, Class k) {
+            this.format = f;
+            this.klass = k;            
+        }
+        Format getFormat() { return format; }
+        URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) { 
+            try {
+                Constructor c = klass.getConstructor(constructorArgs);
+                return (URLComposer) c.newInstance(new Object[] {provider, source, fragment, info});            
+            } catch (java.lang.NoSuchMethodException e) { 
+                log.error("URLComposer implementation does not contain right constructor " + e.toString());
+            } catch (java.lang.SecurityException f) {
+                log.error("URLComposer implementation does not accessible constructor " + f.toString());
+            }  catch (Exception g) {
+               log.error("URLComposer could not be instantiated " + g.toString());
+            }
+            return null; // could not get instance, this is an error, but go on anyway (implemtnation checks for null)
+        }
+        
+    }
+
+    private List urlComposerClasses = new ArrayList();
+    private ComposerConfig defaultUrlComposer;
 
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -80,8 +111,10 @@ public class URLComposerFactory  {
 
         XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         try {
-            defaultUrlComposer = Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG));
+            defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)));
         } catch (java.lang.ClassNotFoundException e) {
+            defaultUrlComposer = new ComposerConfig(null, defaultComposerClass); 
+            // let it be something in any case
             log.error(e.toString());
         }
               
@@ -90,7 +123,7 @@ public class URLComposerFactory  {
             String  clazz   =  reader.getElementValue(element);
             Format  format  =  Format.get(element.getAttribute(FORMAT_ATT));
             try {
-                urlComposerClasses.put(format, Class.forName(clazz));
+                urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz)));
             } catch (ClassNotFoundException ex) {
                 log.error("Cannot load urlcomposer " + clazz);
             } 
@@ -104,10 +137,29 @@ public class URLComposerFactory  {
         return instance;
     }
 
-    public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        List result = new ArrayList();
-        result.add(new URLComposer(provider, source, info));
-        return result;
+    public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
+        if (urls == null) urls = new ArrayList();
+
+        Format format = Format.get(source.getIntValue("format"));
+        Iterator i = urlComposerClasses.iterator();
+        boolean found = false;
+        while (i.hasNext()) {
+            ComposerConfig cc = (ComposerConfig) i.next();
+            if (format.equals(cc.getFormat())) {
+                URLComposer uc = cc.getInstance(provider, source, fragment, info);
+                if (uc != null && ! urls.contains(uc)) { // avoid duplicates
+                    urls.add(uc);
+                }
+                found = true;
+            }
+        }
+        if (! found) { // use default
+            URLComposer uc = defaultUrlComposer.getInstance(provider, source, fragment, info);
+            if (uc != null && ! urls.contains(uc)) { // avoid duplicates
+                urls.add(uc);
+            }
+        }
+        return urls;
     }
 
 }
