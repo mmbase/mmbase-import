@@ -6,7 +6,9 @@
 %><%@include file="/includes/header.jsp"
 
 %><td colspan="2" valign="top">
-<%@include file="showMessage_real.jsp"%>
+<mm:import externid="base">/development/bugtracker</mm:import>
+
+<%@include  file="showMessage_real.jsp"%>
 
 </td>
 <%@include file="/includes/footer.jsp"
