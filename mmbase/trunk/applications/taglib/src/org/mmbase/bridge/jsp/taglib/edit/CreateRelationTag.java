@@ -51,7 +51,7 @@ public class CreateRelationTag extends CloudReferrerTag {
        
     public int doStartTag() throws JspTagException{            
         CloudProvider c = findCloudProvider();
-        RelationManager rm = c.getCloudVar().getRelationManager(role);
+        RelationManager rm = getCloudProviderVar().getRelationManager(role);
         Node sourceNode      = c.getNode(source);
         Node destinationNode = c.getNode(destination);
         

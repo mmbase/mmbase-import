@@ -34,12 +34,12 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
 
     private HashMap nodes = new HashMap();
       
-    public Cloud getCloudVar() throws JspTagException {
-        return getDefaultCloud();
-    }  
-
     public void  registerNode(String id, Node n) {
         nodes.put(id, n);
+    }
+
+    public Cloud getCloudVar() throws JspTagException {
+        return getCloudProviderVar();
     }
     
     public Node getNode(String id) throws JspTagException {
