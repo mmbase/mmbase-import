@@ -243,6 +243,16 @@ public class Logging {
     }
 
     /**
+     * Returns the stacktrace of the current call. This can be used to get a stacktrace
+     * when no exception was thrown and my help determine the root cause of an error message
+     * (what class called the method that gave the error message.
+     *
+     **/
+    public static String stackTrace() {
+        return stackTrace(new Exception("logging.stacktrace"));
+    } 
+
+    /**
      * Returns the stacktrace of an exception as a string, which can
      * be logged handy.  Doing simply e.printStackTrace() would dump
      * the stack trace to standard error, which with the log4j
