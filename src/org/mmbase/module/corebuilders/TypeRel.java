@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.45 2003-08-13 14:33:30 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.46 2004-02-09 15:12:06 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -131,12 +131,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
 
             MMObjectBuilder sourceBuilder      = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("snumber")));
+            MMObjectBuilder destinationBuilder = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("dnumber")));
+
+
             if (sourceBuilder == null) {
-                log.warn("The source of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
+                if (destinationBuilder == null) {
+                    log.warn("Both source and destination of " + typerel + " are not active builders. Cannot follow descendants.");
+                } else {
+                    log.warn("The source of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
+                }
                 break inheritance;
             }
 
-            MMObjectBuilder destinationBuilder = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("dnumber")));
             if (destinationBuilder == null) {
                 log.warn("The destination of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
                 break inheritance;
