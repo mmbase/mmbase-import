@@ -116,14 +116,11 @@
 	  <td>
 		<form name="searchform" id="searchhome" method="post" action="<mm:url page="/development/search/search.jsp" />">
 		<input type="hidden" name="exclude" value="testing" />
-		<input type="text" name="keywords" size="13" />
-		<input type="submit" name="search" value="Search" /><br />
+		<input type="text" name="keywords" size="13" />	<input type="submit" name="search" value="Search" /><br />
 		<input class="ie" type="radio" name="restrict" value="" checked="checked" /> full site
 		<input class="ie" type="radio" name="restrict" value="mmdocs" /> documentation
 		</form>
 	  </td>
-	</tr><tr>
-	  <td><img src="media/spacer.gif" width="140" height="4" alt="" /></td>
 	</tr><tr>
 	  <td>
 	<mm:time time="today" id="ttoday" jspvar="ttoday" write="false" />
@@ -144,8 +141,6 @@
 	</mm:list>
 	    <p><a href="<mm:url page="index.jsp" referids="portal"><mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present></mm:url>">Agenda &raquo;&raquo;</a></p>
 	  </td>
-	</tr><tr>
-	  <td><img src="media/spacer.gif" width="140" height="4" alt="" /></td>
 	</tr><tr>
 	  <td>
 	  <h5>Bugs this week</h5>
