@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.30 2002-06-13 08:31:22 vpro Exp $
+ * @version $Id: Wizard.java,v 1.31 2002-06-20 15:06:07 pierre Exp $
  *
  */
 public class Wizard {
@@ -1390,10 +1390,10 @@ public class Wizard {
         }
 
         if (objectdef == null) { // still null?
-            throw new WizardException("Could not find action (add or create) to add a item to list with id " + listId);            
+            throw new WizardException("Could not find action (add or create) to add a item to list with id " + listId);
         }
-         
-                             
+
+
         objectdef = objectdef.cloneNode(true);
 
         log.debug("Creating object " + objectdef.getNodeName() + " type " + Utils.getAttribute(objectdef,"type"));
@@ -1678,7 +1678,7 @@ public class Wizard {
                     return 0;
                 }
             } else {
-                return order1.compareTo(order2);
+                return order1.compareToIgnoreCase(order2);
             }
         }
     }
