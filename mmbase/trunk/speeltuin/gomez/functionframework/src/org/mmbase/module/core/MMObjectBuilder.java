@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.2 2004-11-25 12:53:02 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2958,11 +2958,12 @@ public class MMObjectBuilder extends MMTable {
             }
         }
 
-        String field;
-        if (arguments == null || arguments.size() == 0) {
-            field = "";
-        } else {
-            field = (String) arguments.get(0);
+        String field = "";
+        if (arguments != null && arguments.size() == 0) {
+            Object o = arguments.get(0);
+            if (o instanceof String) {
+                field = (String) o;
+            }
         }
 
         // time functions
