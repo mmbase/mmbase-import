@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext;
 
+import org.mmbase.bridge.Query;
 import java.util.Set;
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.module.core.MMObjectNode;
@@ -17,12 +18,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Implementation of Authorization Most implementation is delegated to the Contexts builder.
+ * Implementation of Authorization. Most implementation is delegated to the Contexts builder.
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.6 2003-07-14 21:17:19 michiel Exp $
+ * @version $Id: Verify.java,v 1.7 2003-08-05 21:26:33 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts; 
  */
 public class Verify extends Authorization {
@@ -75,5 +76,11 @@ public class Verify extends Authorization {
     // javadoc inherited
     public Set getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
         return Contexts.getBuilder().getPossibleContexts((User) userContext, nodeId);
+    }
+
+    // javadoc inherited
+    public QueryCheck check(UserContext userContext, Query query, Operation operation) {
+        return Contexts.getBuilder().check((User) userContext, query, operation);
+        
     }
 }
