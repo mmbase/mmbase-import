@@ -9,20 +9,23 @@
     <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
     <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />    
   </head>
-<body>
+<body style="margin-left: 0;">
   <%! Xml  xmlEscaper     = new Xml(Xml.ESCAPE);  %>
   <%
   ResourceLoader resourceLoader = (ResourceLoader) session.getAttribute("resourceedit_document");
   if (resourceLoader == null) resourceLoader = ResourceLoader.getRoot();   
 %>
   <form method="post" name="resource" action="<mm:url />">
-<table>
+<table style="padding: 0">
   <mm:cloud>
   <mm:import externid="dirs" />
   <mm:write referid="dirs" jspvar="dir" vartype="String">
     <mm:isnotempty>
-    <% resourceLoader = new ResourceLoader(resourceLoader, dir); 
-       session.setAttribute("resourceedit_document", resourceLoader);
+    <% if (resourceLoader.equals(ResourceLoader.getRoot())) {
+          if (dir.equals("..")) dir = ""; // can hapen in case of lost session (server restart)
+        }
+        resourceLoader = new ResourceLoader(resourceLoader, dir); 
+        session.setAttribute("resourceedit_document", resourceLoader);
     %>    
     </mm:isnotempty>
   </mm:write>
@@ -140,7 +143,7 @@
             } else {
 %>
       <mm:present referid="save">
-        <mm:import externid="text" jspvar="text" vartype="string" />
+
         <% resourceLoader.storeDocument(resource, doc); %>
       </mm:present>
 <%
@@ -167,6 +170,11 @@
        {
        Reader r = resourceLoader.getReader(resource);
        if (r != null) {
+         ChainedCharTransformer t = new ChainedCharTransformer();
+         t.add(xmlEscaper);
+         if (resource.endsWith(".xml")) { // apply some mmbase code-conventions.
+           t.add(new TabToSpacesTransformer(2));
+         }
          BufferedReader reader = new BufferedReader(new TransformingReader(r, xmlEscaper));
          while(true) {
             String line = reader.readLine();
