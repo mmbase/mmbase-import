@@ -14,6 +14,7 @@ import java.text.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 /**
  * The time taglib provides you easy functionality for using times in your web pages.
@@ -21,7 +22,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.14 2002-09-30 13:20:54 rob Exp $
+ * @version $Id: TimeTag.java,v 1.15 2002-10-16 21:18:49 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -140,8 +141,13 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
     
+    public int doAfterBody() throws JspException {
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
+    }
+
+
     public int doEndTag() throws JspTagException {
-        helper.setBodyContent(bodyContent);
         return helper.doEndTag();
     }
     

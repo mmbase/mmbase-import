@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -69,8 +70,12 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
+    public int doAfterBody() throws JspException {
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
+    }
+
     public int doEndTag() throws JspTagException {
-        helper.setBodyContent(bodyContent);
         return helper.doEndTag();
     }
 }

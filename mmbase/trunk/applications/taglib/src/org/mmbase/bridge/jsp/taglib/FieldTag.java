@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.Node;
@@ -173,12 +174,17 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         return EVAL_BODY_BUFFERED;
     }
 
+
+    public int doAfterBody() throws JspException {
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
+    }
+       
     /**
      * write the value of the field.
      **/
     public int doEndTag() throws JspTagException {
         log.debug("doEndTag van FieldTag");
-        helper.setBodyContent(bodyContent);
         if ((! "".equals(helper.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
         }

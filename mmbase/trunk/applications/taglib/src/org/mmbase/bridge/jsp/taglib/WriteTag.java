@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.Node;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -123,12 +124,16 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
+    public int doAfterBody() throws JspException {
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
+    }
+
+
     public int doEndTag() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("End writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
-        helper.setBodyContent(bodyContent);
-        bodyContent = null;
         return helper.doEndTag();
     }
 }
