@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.12 2002-05-08 08:34:31 michiel Exp $
+ * @version $Id: Utils.java,v 1.13 2002-05-28 15:28:01 michiel Exp $
  */
 public class Utils {
 
@@ -399,10 +399,10 @@ public class Utils {
     public static void transformNode(Node node, File xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
         TemplateCache cache= TemplateCache.getCache();
         Source xsl = new StreamSource(xslFile);
-        Templates cachedXslt = cache.getTemplates(xsl);
+        Templates cachedXslt = cache.getTemplates(xsl, uri);
         if (cachedXslt == null) {
             cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
-            cache.put(xsl, cachedXslt);
+            cache.put(xsl, cachedXslt, uri);
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
         }
