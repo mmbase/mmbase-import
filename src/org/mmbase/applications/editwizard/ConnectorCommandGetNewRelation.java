@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard;
 
 import java.util.Vector;
+import org.mmbase.applications.dove.Dove; 
 import org.w3c.dom.*;
 
 /**
@@ -17,7 +18,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNewRelation.java,v 1.5.2.1 2003-06-02 12:58:20 vpro Exp $
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.5.2.2 2003-06-02 13:26:52 vpro Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {
@@ -32,7 +33,7 @@ public class ConnectorCommandGetNewRelation extends ConnectorCommand {
      * @param destinationType         the type of the destination object
      */
      public ConnectorCommandGetNewRelation(String role, String sourceObjectNumber, String sourceType,
-                                           String destinationObjectNumber, String destinationType String createDir) throws WizardException {
+                                           String destinationObjectNumber, String destinationType, String createDir) throws WizardException {
          super(Dove.GETNEWRELATION);
          addCommandAttr(Dove.ELM_ROLE,            role);
          addCommandAttr(Dove.ELM_SOURCE,          sourceObjectNumber);
