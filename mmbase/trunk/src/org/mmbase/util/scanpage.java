@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.mmbase.module.ProcessorInterface;
 import org.mmbase.module.sessionInfo;
 import org.mmbase.module.sessionsInterface;
-import org.mmbase.servlet.JamesServlet;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.26 2004-10-01 08:41:12 pierre Exp $
+ * @version $Id: scanpage.java,v 1.27 2004-10-09 13:54:33 pierre Exp $
  */
 public class scanpage {
     // logger
@@ -99,7 +99,8 @@ public class scanpage {
 
     /**
      * Construct a scanpage for a servlet
-     */
+     */ 
+/*
     public scanpage(JamesServlet servlet, HttpServletRequest req, HttpServletResponse res, sessionsInterface sessions) {
         setReq(req);
         setRes(res);
@@ -116,6 +117,7 @@ public class scanpage {
         if (sessions!=null) session = sessions.getSession(this, sname);
         CheckEditorReload();
     }
+*/
 
     /**
      * Check whether the page, multilevels etc may be fetched from the caches

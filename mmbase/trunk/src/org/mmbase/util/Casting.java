@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.27 2004-09-24 13:06:26 pierre Exp $
+ * @version $Id: Casting.java,v 1.28 2004-10-09 13:54:29 pierre Exp $
  */
 
 import java.util.*;
@@ -287,21 +287,10 @@ public class Casting {
             // note: we don't use Boolean.valueOf() because that only captures
             // the value "true"
             String s = ((String)b).toLowerCase();
-            if (s.equals("true") || s.equals("yes")) {
-                return true;
-            } else if (s.equals("false") || s.equals("no")) {
-                return false;
-            } else {
-                // still not yet!
-                // Call MMLanguage, and compare to
-                // the 'localized' values of true or yes.
-                org.mmbase.module.gui.html.MMLanguage languages = (org.mmbase.module.gui.html.MMLanguage)org.mmbase.module.Module.getModule("mmlanguage");
-                if (languages != null) {
-                    return s.equals(languages.getFromCoreEnglish("true")) || s.equals(languages.getFromCoreEnglish("yes"));
-                }
-            }
+            return s.equals("true") || s.equals("yes"); 
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**

@@ -32,8 +32,6 @@ import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 
-import org.mmbase.module.gui.html.EditState;  //argh
-
 import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.*;
@@ -65,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.271 2004-10-08 14:56:34 keesj Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.272 2004-10-09 13:54:15 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -506,36 +504,6 @@ public class MMObjectBuilder extends MMTable {
             log.error(msg);
             throw e;
         }
-    }
-
-    /**
-     * Once a insert is done in the editor this method is called.
-     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-     *        'settings' and 'parameters' - value pairs that have been the during the edit process.
-     * @param node The node thatw as inserted
-     * @return An <code>int</code> value. It's meaning is undefined.
-     *        The basic routine returns -1.
-     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-     *    endangering the separation between content and layout, and has an undefined return value.
-     */
-    public int insertDone(EditState ed, MMObjectNode node) {
-        return -1;
-    }
-
-    /**
-     * Check and make last changes before calling {@link #commit} or {@link #insert}.
-     * This method is called by the editor. This differs from {@link #preCommit}, which is called by the database system
-     * <em>during</em> the call to commit or insert.
-     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-     *        'settings' and 'parameters' - value pairs that have been the during the edit process.
-     * @param node The node that was inserted
-     * @return An <code>int</code> value. It's meaning is undefined.
-     *        The basic routine returns -1.
-     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-     *    endangering the separation between content and layout. It also has an undefined return value.
-     */
-    public int preEdit(EditState ed, MMObjectNode node) {
-        return -1;
     }
 
     /**
@@ -3339,8 +3307,7 @@ public class MMObjectBuilder extends MMTable {
      * @param sp The scanpage (containing http and user info) that calls the function
      * @param command a list of strings that describe the (sub)command to execute (the portion after ' PRC-CMD-BUILDER')
      * @param cmds the commands (PRC-CMD) that are iurrently being processed, including the current command.
-     * @param vars variables (PRC-VAR) thatw ere set to be used during processing. the variable 'EDITSTATE' accesses the
-     *       {@link org.mmbase.module.gui.html.EditState} object (if applicable).
+     * @param vars variables (PRC-VAR) thatw ere set to be used during processing.
      * @return the result value as a <code>String</code>
      */
     public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
