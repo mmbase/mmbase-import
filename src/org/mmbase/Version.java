@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.10 2002-03-14 18:19:53 michiel Exp $
+ * @version $Id: Version.java,v 1.11 2002-05-02 13:03:39 michiel Exp $
  */
 public class Version {
    
@@ -43,11 +43,27 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int     getMinor()  { return 6; }    
+
+    /**
+     * Returns the build date of this MMBase. During the build, this
+     * function is changed hard-coded.
+     *
+     * This code will grow with every build you do (because of
+     * limitations of ant), so perhaps you want to clean up this now
+     * and then.
+     *
+     * @since MMBase-1.6
+     */
+    public static String  getBuildDate() {
+        return ""/*BUILDDATE*/
+        ;
+    }
+
     /**
      * Returns the version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static String  getNumber() { return getMajor() +  "." + getMinor(); }    
+    public static String  getNumber() { return getMajor() +  "." + getMinor() + getBuildDate(); }    
 
     /**
      * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
