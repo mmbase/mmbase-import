@@ -31,7 +31,7 @@
       </editor>
       <db>
         <name>operation</name>
-        <type state="PERSISTENT" size="15" notnull="true">STRING</type>
+        <type state="persistent" size="15" notnull="true">STRING</type>
       </db>
     </field>
   </fieldlist>

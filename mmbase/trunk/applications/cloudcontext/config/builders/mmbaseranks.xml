@@ -31,7 +31,7 @@
       </editor>
       <db>
         <name>rank</name>
-        <type state="PERSISTENT" notnull="true" key="true">INTEGER</type>
+        <type state="persistent" notnull="true" key="true">INTEGER</type>
       </db>
     </field>
     <field>
@@ -47,7 +47,7 @@
       </editor>
       <db>
         <name>name</name>
-        <type state="PERSISTENT" size="32" notnull="true" key="true">STRING</type>
+        <type state="persistent" size="32" notnull="true" key="true">STRING</type>
       </db>
     </field>
     <field>
@@ -64,7 +64,7 @@
       </editor>
       <db>
         <name>description</name>
-        <type state="PERSISTENT" size="1024" notnull="true">STRING</type>
+        <type state="persistent" size="1024" notnull="true">STRING</type>
       </db>
     </field>
   </fieldlist>
