@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.147 2002-07-03 16:18:45 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.148 2002-07-19 12:07:32 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2683,6 +2683,8 @@ public class MMObjectBuilder extends MMTable {
             FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setDBPos(2);
+            // required field
+            def.setDBNotNull(true);
             enum = xmlfields.elements();
             while (enum.hasMoreElements()) {
                 FieldDefs field=(FieldDefs)enum.nextElement();
