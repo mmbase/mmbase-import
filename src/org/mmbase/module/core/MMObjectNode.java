@@ -30,6 +30,7 @@ public class MMObjectNode {
 	private String classname = getClass().getName();
 	private boolean debug=false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	private String alias;
 
 	// values holds the name, value fields in this node
 	public Hashtable values=new Hashtable();
@@ -853,6 +854,10 @@ public class MMObjectNode {
 
 	public boolean sendFieldChangeSignal(String fieldname) {
 		return(parent.sendFieldChangeSignal(this,fieldname));	
+	}
+
+	public void setAlias(String alias) {
+		this.alias=alias;
 	}
 
 }
