@@ -1,0 +1,34 @@
+<SECURE><BR>
+
+<PROCESSOR MMBASE>
+<DO SESSION-WHERE=>
+<H3> This pages creates < LIST OBJECTS TAGS ><BR><BR>
+
+Current LIST: <B>&lt;LIST OBJECTS TYPE="$MOD-MMBASE-FIELD-$PARAM1-name^" FIELDS="$MOD-SESSION-SETSTRING-FIELDS" WHERE=".....<BR><BR>
+
+Which restriction do you want to make?<BR><H4>
+e.g. type:<BR>
+name=E'Yourname' (if you want to match with a string)<BR>
+number=$ PARAM1 (if you want to  match with the fist page parameter)<BR>
+where firstname='Rob' (by typing where in the WHERE you're able to use the SQL where)<BR>
+<FORM METHOD=POST ACTION="object4.shtml?$PARAM1">
+        <INPUT TYPE="TEXT" NAME="SESSION-WHERE" value=""><BR>
+        <INPUT TYPE="SUBMIT" VALUE="Select fields"></td>
+</FORM>
+
+<HR>
+<TABLE BORDER=0>
+<LIST OBJECTS TYPE="$MOD-MMBASE-FIELD-$PARAM1-name^" FIELDS="$MOD-SESSION-SETSTRING-FIELDS">
+<TR>
+<TD>$ITEM1
+<TD>$ITEM2
+<TD>$ITEM3
+<TD>$ITEM4
+<TD>$ITEM5
+<TD>$ITEM6
+<TD>$ITEM7
+<TD>$ITEM8
+</LIST>
+</TABLE>
+
+<HR>

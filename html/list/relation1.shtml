@@ -1,0 +1,11 @@
+<SECURE><BR>
+<PROCESSOR MMBASE>
+<H3> This pages creates < LIST RELATION TAGS ><BR><BR>
+
+Current LIST: <B>&lt;LIST RELATION TYPE="..." NODE="...
+<BR><BR>
+<FORM METHOD=POST ACTION="relation2.shtml">
+        <INPUT TYPE="TEXT" NAME="SESSION-NODE" value=""><BR>
+        <INPUT TYPE="SUBMIT" VALUE="Use this node"></td>
+</FORM>
+
