@@ -41,7 +41,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.20 2003-01-07 10:30:09 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.21 2003-01-07 22:31:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -528,20 +528,7 @@ public class MediaSources extends MMObjectBuilder {
         return url+uri;
         */
     }
-        
-    /**
-     * resolve the content type of the mediasource
-     *
-     * @param mediasource the media source
-     * @return the content type
-     */
-    protected String getContentType(MMObjectNode mediasource) {
-        log.debug("Getting content type");
-        return "";
-        //return mediaUrlComposer.getContentType(mediasource);
-    }
-    
-
+      
 
     /**
      * Returns all possible URLs for this source. (A source can be on different providers)
