@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.15 2003-12-19 11:09:34 nico Exp $
+    @version $Id: searchlist.xsl,v 1.16 2004-01-05 11:12:34 nico Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -50,9 +50,7 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="htmltitle">
-    <xsl:value-of select="$searchpage_title" />
-  </xsl:template>
+  <xsl:template name="htmltitle"><xsl:value-of select="$searchpage_title" /></xsl:template>
 
   <xsl:template name="style">
     <link rel="stylesheet" type="text/css" href="{$cssdir}layout/searchlist.css" />
