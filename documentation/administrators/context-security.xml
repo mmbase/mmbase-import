@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Context Security Configuration</title>
     <date>12 February 2003</date>
-    <edition>$Id: context-security.xml,v 1.8 2003-06-30 13:04:10 johannes Exp $</edition>
+    <edition>$Id: context-security.xml,v 1.9 2003-07-01 14:36:59 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -119,7 +119,7 @@
       </section>
       <section>
         <title>Groups</title>
-        <para>A group is a collection of users and groups. In this way you can represent your organisation in the security system. If used properly in combination with contexts for each group.</para>
+        <para>A group is a collection of users and groups. In this way you can represent your organization in the security system. If used properly in combination with contexts for each group.</para>
       </section>
       <section>
         <title>Users</title>

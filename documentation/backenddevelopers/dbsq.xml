@@ -7,7 +7,7 @@
 
     <date>5 December 2002</date>
 
-    <edition>$Id: dbsq.xml,v 1.9 2003-06-30 11:17:38 johannes Exp $</edition>
+    <edition>$Id: dbsq.xml,v 1.10 2003-07-01 14:37:00 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -151,7 +151,7 @@
         </listitem>
 
         <listitem>
-          <para><classname>Step</classname>: a query step, generalises the
+          <para><classname>Step</classname>: a query step, generalizes the
           notion of a table</para>
         </listitem>
 
@@ -743,7 +743,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {
@@ -923,7 +923,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
