@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.5 2002-04-17 13:17:49 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.6 2002-08-15 07:50:09 rob Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -247,7 +247,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      */
     public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
         String buildername=builder.getTableName();
-        return buildername.equals("object") || buildername.equals("insrel");
+        return true; //buildername.equals("object") || buildername.equals("insrel");
     }
 
     /**
