@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.2 2003-02-03 22:50:48 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.3 2003-02-04 12:40:40 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -118,7 +118,7 @@ public class MediaFragments extends MMObjectBuilder {
                 return info.get(args.get(0));
             }            
         } else if (FUNCTION_URLS.equals(function)) {
-            return getURLs(node, translateURLArguments(args, null));
+            return getURLs(node, translateURLArguments(args, null), null);
         } else if (FUNCTION_SORTEDURLS.equals(function)) {
             return getSortedURLs(node, translateURLArguments(args, null));
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
@@ -232,25 +232,21 @@ public class MediaFragments extends MMObjectBuilder {
      *
      * @author mm
      */
-    protected List getURLs(MMObjectNode fragment, Map info) {
-        List result = new ArrayList();
+    protected List getURLs(MMObjectNode fragment, Map info, List urls) {
+        if (urls == null) urls = new ArrayList();
 
         Iterator i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = (MMObjectNode) i.next();
             MediaSources bul    = (MediaSources) source.parent; // cast everytime, because it can be extended
-            List sourcesurls = bul.getURLs(source, fragment, info);
-            if (sourcesurls.removeAll(result)) {
-                log.debug("removed duplicates");
-            }
-            result.addAll(sourcesurls);
+            bul.getURLs(source, fragment, info, urls);
         }
-        return result;        
+        return urls;        
     }   
 
     protected List getSortedURLs(MMObjectNode fragment, Map info) {
         log.debug("getsortedurls");
-        List urls =  getURLs(fragment, info);
+        List urls =  getURLs(fragment, info, null);
         return MainFilter.getInstance().filter(urls);
     }
 

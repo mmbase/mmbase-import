@@ -47,7 +47,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.3 2003-02-03 22:50:48 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.4 2003-02-04 12:40:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -307,7 +307,7 @@ public class MediaSources extends MMObjectBuilder {
             } else {
                 throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");
             }
-            return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null));
+            return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null), null);
         } else if (FUNCTION_URL.equals(function)) {
             return getURL(node, MediaFragments.translateURLArguments(args, null));
         } else if (FUNCTION_AVAILABLE.equals(function)) {
@@ -390,27 +390,23 @@ public class MediaSources extends MMObjectBuilder {
      * @author mm
      */
     
-    public List getURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
-        List result = new ArrayList();
-        
+    protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
+        if (urls == null) urls = new ArrayList();
+
         Iterator i = getProviders(source).iterator();
         while (i.hasNext()) {
             MMObjectNode provider = (MMObjectNode) i.next();
             MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
-            List providersurls = bul.getURLs(provider, source, fragment, info);
-            if (providersurls.removeAll(result)) {// avoid duplicates
-                log.service("removed duplicates");
-            }
-            result.addAll(providersurls);
+            bul.getURLs(provider, source, fragment, info, urls);
         }
-        return result;
+        return urls;
     }
     /**
      * Returns all URLs for this source, but filtered, with the best ones on top.
      * @author mm
      */
     protected List getSortedURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
-        List urls = getURLs(source, fragment, info);
+        List urls = getURLs(source, fragment, info, null);
         return MainFilter.getInstance().filter(urls);
     }
     
