@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.52 2004-02-23 18:59:35 pierre Exp $
+ * @version $Id: Dove.java,v 1.53 2004-05-27 08:43:04 johannes Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -697,6 +697,7 @@ public class Dove extends AbstractDove {
                         querydata.setAttribute(ELM_DIRECTIONS, directions);
                     }
                     out.appendChild(querydata);
+
                     // get node template
                     Element node=getFirstElement(query);
 
@@ -704,10 +705,31 @@ public class Dove extends AbstractDove {
                         Element err = addContentElement(ERROR,"invalid xpath",out);
                         err.setAttribute(ELM_TYPE, IS_CLIENT);
                     } else {
-                        //get node data, bit stupid
+                        String nodepath = xpath.substring(3);
                         try {
-                            NodeManager nm = cloud.getNodeManager(xpath.substring(3));
-                            for(NodeIterator i =nm.getList(where,orderby,directions).nodeIterator(); i.hasNext(); ) {
+                            NodeIterator i = null;
+
+                            if (nodepath.indexOf("/") == -1) {
+                                // If there is no '/' seperator, we only get fields from one nodemanager. This is the fastest
+                                // way of getting those.
+                                i = cloud.getNodeManager(xpath.substring(3)).getList(where,orderby,directions).nodeIterator();
+                            } else {
+                                // If there are '/' seperators, we need to do a multilevel search. Therefore we first need to
+                                // get a list of all the fields (as subnodes) to query.
+                                String fields = "";
+                                Element field = getFirstElement(node, FIELD);
+                                nodepath = nodepath.replace('/', ',');
+                                while (field != null) {
+                                    String fname=(String)field.getAttribute(ELM_NAME);
+                                    if (!fields.equals(""))
+                                        fields += ",";
+                                    fields += fname;
+                                    field = getNextElement(field, FIELD);    
+                                }
+                                i = cloud.getList("", nodepath, fields, where, orderby, directions, null, true).nodeIterator();
+                            }
+
+                            for(; i.hasNext(); ) {
                                 org.mmbase.bridge.Node n=i.nextNode();
                                 Element data=doc.createElement(OBJECT);
                                 data.setAttribute(ELM_NUMBER, ""+n.getNumber());
