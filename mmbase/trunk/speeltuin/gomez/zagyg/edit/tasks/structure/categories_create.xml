@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<wizard-schema id="_create">
+<wizard-schema id="topic_create">
+  <title xml:lang="en">Topics</title>
   <title xml:lang="nl">Topics</title>
 
   <action type="create">
@@ -13,9 +14,9 @@
 
   <lists include="tasks/sitestatlists.xml" />
 
-  <form-schema extends="tasks/categories/schema.xml" id="basics" >
+  <form-schema extends="tasks/structure/schema.xml" id="basics" >
 
-    <list include="tasks/categorytypes/list.xml" />
+    <list include="tasks/meta/categorytypes/list.xml" />
 
   </form-schema>
 </wizard-schema>

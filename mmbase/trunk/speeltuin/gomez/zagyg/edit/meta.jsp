@@ -12,7 +12,7 @@
   <body>
     <mm:import id="tab">meta</mm:import>
     <%@ include file="util/navigation.jsp"%>
-    <mm:import id="wizard">tasks/categorytypes/categorytype</mm:import>
+    <mm:import id="wizard">tasks/meta/categorytypes/categorytype</mm:import>
     <div id="content">
       <% if (Rank.getRank(cloud.getUser().getRank()).getInt() >= 1000) { %>
       <table style="width:100%;">
@@ -92,7 +92,7 @@
             <h1>Templates
               <a href="<mm:url referids="referrer,language" page="${jsps}wizard.jsp">
                 <mm:param name="context">admin</mm:param>
-                <mm:param name="wizard">tasks/templates/template</mm:param>
+                <mm:param name="wizard">tasks/meta/templates/template</mm:param>
                 <mm:param name="objectnumber">new</mm:param>
                 </mm:url>">New Template
               </a>
