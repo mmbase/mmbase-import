@@ -13,10 +13,14 @@ import java.util.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.RelDef;
 /*
-	$Id: TemporaryNodeManager.java,v 1.11 2000-11-13 11:09:41 install Exp $
+	$Id: TemporaryNodeManager.java,v 1.12 2000-11-13 15:33:47 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.11  2000/11/13 11:09:41  install
+	*** empty log message ***
+	
 	Revision 1.10  2000/11/08 16:24:13  vpro
 	Rico: fixed key bussiness
 	
@@ -53,7 +57,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.11 2000-11-13 11:09:41 install Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.12 2000-11-13 15:33:47 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -66,12 +70,6 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		this.mmbase=mmbase;
 	}
 
-	public String createTmpRelation(String type, String owner, String relationSource, String relationDestination) {
-		// I wish Rico good luck :-)
-		return ""; 
-	}
-
-
 	public String createTmpNode(String type,String owner,String key) {
 		if (_debug) debug("createTmpNode : type="+type+" owner="+owner+" key="+key);
 		if (owner.length()>12) owner=owner.substring(0,12);
@@ -83,6 +81,28 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		} else {
 			debug("Can't find builder "+type);
 		}
+		return(key);
+	}
+
+	public String createTmpRelationNode(String type,String owner,String key, String source,String destination) {
+		String bulname="";
+		MMObjectNode node=null;
+		MMObjectBuilder builder=null;
+		RelDef reldef;
+		int rnumber;
+		
+		// decode type to a builder using reldef
+		reldef=(RelDef)mmbase.getMMObject("reldef");
+		rnumber=reldef.getGuessedByName(type);
+		builder=mmbase.getMMObject(type);
+		if (builder==null) builder=mmbase.getMMObject("insrel");
+		bulname=builder.getTableName();
+
+		// Create node
+		createTmpNode(bulname,owner,key);
+		setObjectField(owner,key,"_snumber",getTmpKey(owner,source));
+		setObjectField(owner,key,"_dnumber",getTmpKey(owner,destination));
+		setObjectField(owner,key,"rnumber",""+rnumber);
 		return(key);
 	}
 
