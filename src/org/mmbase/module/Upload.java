@@ -20,6 +20,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.*;
 
 /**
  * the Upload module stores files that are uploaded.
@@ -27,19 +28,15 @@ import org.mmbase.util.*;
  * nog wat uitleg over hoe je de .shtml maakt
  */
 public class Upload extends ProcessorModule {
-    private String classname = getClass().getName();
-    private boolean debug = true;
-	private void debug(String s) {
-		System.out.println(classname+" "+s);
-	}
 
+    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
 	private Hashtable FilesInMemory = new Hashtable();
 	private String fileUploadDirectory = null;
 
-	public Upload() {}
-	public void onload(){}
 	public void init() {
-		 fileUploadDirectory=getInitParameter("fileUploadDirectory");
+    	log.info("Module Upload started");
+		fileUploadDirectory=getInitParameter("fileUploadDirectory");
+    	log.debug("Upload module, fileUploadDirectory = "+fileUploadDirectory);
 	}
 
 	/**
@@ -56,10 +53,10 @@ public class Upload extends ProcessorModule {
 		try {
 			bytes = sp.poster.getPostParameterBytes("file");
 		} catch (Exception e) {
-			debug("Upload postValue to large");
+			log.warn("Upload module postValue to large");
 		}
 
-		if(debug) debug("storing "+filename);
+		log.debug("Upload module is storing "+filename);
 		// Store in memory
 		if(filename.indexOf("mem://")!=-1) {
 
@@ -70,7 +67,7 @@ public class Upload extends ProcessorModule {
            	fi.type = sp.poster.getPostParameter("file_type");
            	fi.size = sp.poster.getPostParameter("file_size");
 			FilesInMemory.put(filename,fi);
-			if(debug) debug("save in memory: "+fi.toString());
+			log.debug("Upload module saves in memory: "+fi.toString());
 			return true;
 		}
 		// Store at filesystem
@@ -81,7 +78,7 @@ public class Upload extends ProcessorModule {
 				fname = sp.poster.getPostParameter("file_name");
 			}
 			saveFile(fileUploadDirectory+fname,bytes);
-			if(debug) debug("saved to disk: "+filename);
+			log.debug("Upload module saved to disk: "+filename);
 			return true;
 		}
 		return false;
@@ -105,7 +102,7 @@ public class Upload extends ProcessorModule {
 	 * @param filename the name of the file, e.g. mem://filename
 	 */
 	public byte[] getFile(String filename) {
-		if(debug) debug("Upload -> getting "+filename);
+		log.debug("Upload module is getting "+filename);
 		// Is file located in memory?
 		if(filename.indexOf("mem://")!=-1) {
 			if(FilesInMemory.containsKey(filename)) {
@@ -152,7 +149,7 @@ public class Upload extends ProcessorModule {
             pageToGrab = new URL(page);
             dis = new DataInputStream(pageToGrab.openStream());
         } catch (Exception e) {
-            if(debug) debug("Upload -> Cannot get page "+page);
+            log.debug("Upload module cannot get page "+page);
             return null;
         }
         StringBuffer tekst= new StringBuffer();
