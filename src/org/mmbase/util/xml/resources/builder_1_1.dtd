@@ -36,7 +36,7 @@
 <!ELEMENT name (#PCDATA)>
 <!ATTLIST name xml:lang NMTOKEN "en">
 <!ELEMENT type (#PCDATA)>
-<!ATTLIST type state CDATA #REQUIRED>
+<!ATTLIST type state (persistent|virtual|system) #REQUIRED>
 <!ATTLIST type size CDATA #IMPLIED>
 <!ATTLIST type key CDATA #IMPLIED>
 <!ATTLIST type doctype CDATA #IMPLIED>
