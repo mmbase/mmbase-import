@@ -25,7 +25,7 @@ import java.util.*;
  * between two values (configured in mediasourcefilter.xml).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.3 2003-01-08 14:50:17 michiel Exp $
+ * @version $Id: RealComparator.java,v 1.4 2003-01-08 14:52:38 michiel Exp $
  */
 public class RealComparator extends  GroupComparator {
     private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
@@ -89,7 +89,7 @@ public class RealComparator extends  GroupComparator {
             int speed    = ri.getSource().getIntValue("speed");
 
             if (speed <= wantedSpeed) {
-                preference += Math.abs(wantedSpeed - speed);
+                preference -= Math.abs(wantedSpeed - speed);
             }
             return preference;
         }
@@ -137,7 +137,7 @@ public class RealComparator extends  GroupComparator {
             int channels    = ri.getSource().getIntValue("channels");
 
             if (channels <= wantedChannels) {
-                preference += Math.abs(wantedChannels - channels);
+                preference -= Math.abs(wantedChannels - channels);
          
             }
             return preference;
