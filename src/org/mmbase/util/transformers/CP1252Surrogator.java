@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: CP1252Surrogator.java,v 1.2.2.1 2004-11-12 21:59:34 michiel Exp $
+ * @version $Id: CP1252Surrogator.java,v 1.2.2.2 2004-11-12 22:49:36 michiel Exp $
  */
 
 public class CP1252Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
@@ -155,13 +155,10 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
 
         CharTransformer transOk  = new CP1252Surrogator();
         CharTransformer transNok = new CP1252Surrogator(WRONG_ENCODED);
-        CharTransformer unicode  = new UnicodeEscaper();
         
         System.out.println("Test-string (CP1252): " + testStringCP1252);        
         // System.out.println("Test-string (ISO-1) : " + testStringISO1); _DOES NOT MAKE SENSE_.
 
-        System.out.println("Java-escaped (CP1252): " + unicode.transform(testStringCP1252));        
-        System.out.println("Java-escaped (ISO-1) : "  + unicode.transform(testStringISO1));        
         System.out.println("Surrogated test-string (CP1252): " + transOk.transform(testStringCP1252));
         System.out.println("Surrogated test-string (ISO-1) : " + transNok.transform(testStringISO1)); // fixe the non-sensical string.
                            
