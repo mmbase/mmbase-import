@@ -227,6 +227,18 @@ public class Controller {
 	}
 
 
+	public MMObjectNode getProjectInfo(String project) {
+         	VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+                MMObjectNode virtual = builder.getNewNode("admin");
+		Project p=ProjectManager.getProject(project);
+		if (p!=null) {
+			virtual.setValue("name",p.getName());
+			virtual.setValue("path",""+p.getPath());
+		}
+		return virtual;
+	}
+
+
 	public List getTargetIncludedPackages(String project,String target) {
 	        List list = new ArrayList();
          	VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
@@ -311,6 +323,11 @@ public class Controller {
 			return true;
 		}
 		return false;
+	}
+
+
+	public boolean changeProjectSettings(String project,String newname,String newpath) {
+		return ProjectManager.changeProjectSettings(project,newname,newpath);
 	}
 
 
@@ -435,6 +452,11 @@ public class Controller {
 			p.deleteTarget(t.getName());
 		}
 		return true;
+	}
+
+
+	public boolean delProject(String project) {
+		return ProjectManager.deleteProject(project);
 	}
 
 

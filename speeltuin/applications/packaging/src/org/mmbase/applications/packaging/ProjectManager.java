@@ -125,6 +125,35 @@ public class ProjectManager {
 	return true;
     }
 
+
+    /**
+    * change project name/path (xml file) changes
+    * both the memory list and the file on disc.
+    *
+    * @return true if the change worked, false if something went wrong
+    */
+    public static boolean changeProjectSettings(String oldname,String newname,String newpath) {
+	Project p=(Project)projects.get(oldname);
+	if (p!=null) {
+		projects.remove(oldname);
+		addProject(newname,newpath);
+		save();
+	}	
+	return true;
+    }
+
+    /**
+    * delete a project to the projectlist (xml file) changes
+    * both the memory list and the file on disc.
+    *
+    * @return true if the delete worked, false if something went wrong
+    */
+    public static boolean deleteProject(String name) {
+	projects.remove(name);
+	save();
+	return true;
+    }
+
     /**
     * read the Projects from disc, the file is defined in your
     * config directory. Uses a xml reader and the dtd's found as
