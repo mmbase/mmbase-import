@@ -213,7 +213,7 @@ public class FieldInfoTag extends NodeReferrerTag {
         
         switch(type) {
         case Field.TYPE_BYTE:
-            node.setByteValue(fieldName, findCloudProvider().getBytes(prefix(fieldName)));
+            node.setByteValue(fieldName, findContext().getBytes(prefix(fieldName)));
             break;
         case Field.TYPE_INTEGER:             
             if (field.getGUIType().equals("eventtime")) {
@@ -343,7 +343,7 @@ public class FieldInfoTag extends NodeReferrerTag {
         
         Field field;
         Node node = null;
-        FieldListTag fieldTag = null;
+        FieldListTag fieldListTag = null;
 
         if (whichField == null) { // must be in FieldList then
             // firstly, search the field:
@@ -355,17 +355,17 @@ public class FieldInfoTag extends NodeReferrerTag {
                 throw new JspTagException ("Could not find FieldListTag class");  
             }
             
-            fieldTag = (FieldListTag) findAncestorWithClass((Tag)this, fieldClass); 
-            if (fieldTag == null) {
+            fieldListTag = (FieldListTag) findAncestorWithClass((Tag)this, fieldClass); 
+            if (fieldListTag == null) {
                 throw new JspTagException ("Could not find parent FieldListTag");  
             }
             
             if (getId() == null) { // inherit id..
-                setId(fieldTag.getId());
+                setId(fieldListTag.getId());
             }
 
 
-            field = fieldTag.getField();
+            field = fieldListTag.getField();
         } else { // not in List, get it from a parent Node
             node = findNodeProvider().getNodeVar();
             field = node.getNodeManager().getField(whichField);
@@ -383,11 +383,8 @@ public class FieldInfoTag extends NodeReferrerTag {
         case TYPE_GUIVALUE:
         case TYPE_INPUT:
             if (node == null) { // try to find nodeProvider
-                try {
-                    node = fieldTag.findNodeProvider().getNodeVar();                    
-                } catch (JspTagException e) {
-                    // if not can be found, then simply node can stay null.
-                }
+                node = fieldListTag.getNodeVar();
+                log.debug("found node " + node);
             }
             break;
         case TYPE_USEINPUT:
