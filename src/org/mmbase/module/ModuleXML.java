@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.17 $ $Date: 2000-12-27 19:58:35 $
+ * @version $Revision: 1.18 $ $Date: 2000-12-27 22:08:22 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -88,6 +88,8 @@ public abstract class ModuleXML extends Module {
                     				}
 						((Module)mod).setMaintainer(parser.getModuleMaintainer());
 						((Module)mod).setVersion(parser.getModuleVersion());
+						((Module)mod).setClassName(parser.getClassFile());
+
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
