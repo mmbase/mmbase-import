@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOracle.java,v 1.1 2001-01-20 12:50:55 daniel Exp $
+$Id: MMOracle.java,v 1.2 2001-01-21 20:01:25 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2001/01/20 12:50:55  daniel
+yes a first stab at the MMOracle db convertor, 80% working
+
 Revision 1.45  2000/12/28 22:22:20  daniel
 added updateTable (with warning)
 
@@ -180,7 +183,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.1 $ $Date: 2001-01-20 12:50:55 $
+* @$Revision: 1.2 $ $Date: 2001-01-21 20:01:25 $
 */
 public class MMOracle implements MMJdbc2NodeInterface {
 
@@ -236,7 +239,13 @@ public class MMOracle implements MMJdbc2NodeInterface {
 			case FieldDefs.TYPE_STRING:
 				String tmp=rs.getString(i);
 				if (tmp==null) { 
-					node.setValue(prefix+fieldname,"");
+					// temp fix try if its a clob !!
+					tmp=getDBText(rs,i);
+					if (tmp!=null) {
+						node.setValue(prefix+fieldname,tmp);
+					} else {
+						node.setValue(prefix+fieldname,"");
+					}	
 				} else {
 					node.setValue(prefix+fieldname,tmp);
 				}
@@ -372,7 +381,6 @@ public class MMOracle implements MMJdbc2NodeInterface {
 			String result=null;
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			// System.out.println("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
 			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
 			if (rs.next()) {
 				result=getDBText(rs,1);
@@ -421,8 +429,9 @@ public class MMOracle implements MMJdbc2NodeInterface {
 		byte[] bytes=null;
 		int siz;
 		try {
-			inp=rs.getBinaryStream(idx);
-			siz=inp.available(); // DIRTY
+			Blob b=rs.getBlob(idx);
+			inp=b.getBinaryStream();
+			siz=(int)b.length();
 			input=new DataInputStream(inp);
 			bytes=new byte[siz];
 			input.readFully(bytes);
@@ -444,18 +453,20 @@ public class MMOracle implements MMJdbc2NodeInterface {
 		byte[] isochars;
 		int siz;
 
-		if (0==1) return("");
 		try {
-			inp=rs.getAsciiStream(idx);
+			Clob c=rs.getClob(idx);
+			inp=c.getAsciiStream();
 			if (inp==null) {
-				//System.out.println("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
+				System.out.println("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
 				 return("");
 			}
 			if (rs.wasNull()) {
 				System.out.println("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
 				return("");
 			}
-			siz=inp.available(); // DIRTY
+			//siz=inp.available(); // DIRTY
+			siz=(int)c.length();
+	
 			if (siz==0 || siz==-1) return("");
 			input=new DataInputStream(inp);
 			isochars=new byte[siz];
@@ -556,12 +567,12 @@ public class MMOracle implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			System.out.println("Error on : "+number+" "+owner+" fake "+tableName+" NODE="+node);
+			e.printStackTrace();
 			try {
 			stmt.close();
 			con.close();
 			} catch(Exception t2) {}
-			e.printStackTrace();
 			return(-1);
 		}
 
@@ -943,7 +954,8 @@ public class MMOracle implements MMJdbc2NodeInterface {
 			if (tmp!=null) {
 				setDBText(i, stmt,tmp);
 			} else {
-				setDBText(i, stmt,"");
+				// this is weird why is "" seen as empty ???
+				setDBText(i, stmt," ");
 			}
 		} else if (type==FieldDefs.TYPE_BYTE) {	
 				setDBByte(i, stmt, node.getByteValue(key));
@@ -952,7 +964,9 @@ public class MMOracle implements MMJdbc2NodeInterface {
 			if (tmp!=null) {
 				stmt.setString(i, tmp);
 			} else {
-				stmt.setString(i, "");
+				//stmt.setString(i, "");
+				// this is weird why is "" seen as empty ???
+				stmt.setString(i, " ");
 			}
 		}
 	}
