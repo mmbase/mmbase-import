@@ -127,8 +127,7 @@ public class HTMLFormGenerator
 		if (type.equalsIgnoreCase("TEXTAREA"))
 		{		// we want a TEXTAREA .....
 
-			String textarea = textArea.generateHTML(sp,proc,params); 
-			return textarea;		
+			return textArea.generateHTML(sp,proc,params);
 		}
 
 		if (type.equalsIgnoreCase("RADIO"))

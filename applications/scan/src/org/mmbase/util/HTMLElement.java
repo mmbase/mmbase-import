@@ -161,7 +161,7 @@ public abstract class HTMLElement
 	/**
 	* Calls the parser and returns the String returned by generate.
 	*/
-	protected String generateHTML(scanpage sp,ProcessorInterface proc, Vector macro)
+	protected String generateHTML(scanpage sp,ProcessorInterface proc, Vector macro) 
 	{
 		if (debug)System.out.println("generateHTML");
 		processor=proc;
@@ -345,8 +345,9 @@ public abstract class HTMLElement
 
 		if (proc && !procdouble)
 		{ //We found a PROC tag so put it in the Processor 
-			
-			valuesList = processor.getList(sp,new StringTagger(""),values); // what is this, should tagger be empty ?
+			valuesList = null;
+			try { valuesList = processor.getList(sp,new StringTagger(""),values); } // what is this, should tagger be empty ?
+			catch (ParseException pe) {}
 			if (valuesList == null)
 			{
 				//moreValues = false;
@@ -362,8 +363,9 @@ public abstract class HTMLElement
 
 		if (procdouble)
 		{ //We found a DOUBLE tag so put it in the Processor 
-			
-			valuesList = processor.getList(sp,new StringTagger(""),values); // what is this, should tagger be empty ?
+			valuesList = null;
+			try { valuesList = processor.getList(sp,new StringTagger(""),values); } // what is this, should tagger be empty ?
+			catch (ParseException pe) {}
 			if (valuesList == null)
 			{
 			    System.out.println("HTMLElement.parse: The processor returned null !!");
