@@ -107,7 +107,7 @@ Applications build file
     <ant dir="xmlimporter"   target="install" />
     <!-- ant dir="cloudcontext"  target="install" /-->
     <!-- ant dir="email"         target="install" /-->
-    <!-- ant dir="rmmci"         target="install" /--><!-- does not work yet -->
+	 <ant dir="rmmci"         target="install" />
   </target>
 
   <target name="clean">
