@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.30 2003-04-07 19:21:45 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.31 2003-04-07 19:46:22 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -53,6 +53,7 @@ public class XMLBasicReader  {
     private static DocumentBuilder altDocumentBuilder = null;
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
+    public    static final String PUBLICID_ERROR = "-//MMBase//DTD error 1.0//EN";
 
     /** set this one to true, and parser will be loaded...  */
 
@@ -84,8 +85,10 @@ public class XMLBasicReader  {
             // try to handle more or less gracefully
             InputSource is = new InputSource();
             is.setSystemId(FILENOTFOUND + path);
-            is.setPublicId("-//MMBase//DTD error 1.0//EN");
-            is.setCharacterStream(new StringReader("<error>" + e.toString() + "</error>"));
+            is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
+                                                   "<!DOCTYPE error PUBLIC \"" + PUBLICID_ERROR + "\"" +
+                                                   " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" + 
+                                                   "<error>" + e.toString() + "</error>"));
             return is;
         }
     }
