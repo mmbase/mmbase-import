@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.11 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ResourceLoader.java,v 1.12 2005-02-11 09:49:59 keesj Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -122,6 +122,7 @@ public class ResourceLoader extends ClassLoader {
      * Protocol prefix used by URL objects in this class.
      */
     public static final URL NODE_URL_CONTEXT;
+    
     static {
         URL temp = null;
         try {
@@ -136,7 +137,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Used when using getResourcePaths for normal class-loaders.
      */
-    protected static final String INDEX            = "INDEX";
+    protected static final String INDEX = "INDEX";
 
     private static  ResourceLoader configRoot = null;
     private static  ResourceLoader webRoot = null;
@@ -231,6 +232,10 @@ public class ResourceLoader extends ClassLoader {
      * Used e.g. when loading builders in MMBase.
      */
     public static String getName(String path) {
+        //avoid NullPointerException in util method
+        if (path == null){
+            return null;
+        }
         int i = path.lastIndexOf('/');
         path = path.substring(i + 1);
 
@@ -246,6 +251,10 @@ public class ResourceLoader extends ClassLoader {
      * Used e.g. when loading builders in MMBase.
      */
     public static String getDirectory(String path) {
+        //avoid NullPointerException in util method
+        if (path == null){
+            return null;
+        }
         int i = path.lastIndexOf('/');
         if (i > 0) {
             path = path.substring(0, i);
@@ -256,21 +265,28 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * The one ResourceLoader which loads from the mmbase config root is static, and can be obtained with this method
+     * Singleton that returns the ResourceLoader for loading mmbase configuration
      */
-    public static ResourceLoader getConfigurationRoot() {
+    public static synchronized ResourceLoader getConfigurationRoot() {
         if (configRoot == null) {
             configRoot = new ResourceLoader();
 
+            //adds a resource that can load from nodes
             configRoot.roots.add(configRoot.new NodeURLStreamHandler(Resources.TYPE_CONFIG));
 
             // mmbase.config settings
             String configPath = null;
             if (servletContext != null) {
                 configPath = servletContext.getInitParameter("mmbase.config");
+                log.debug("found the mmbase config path parameter using the mmbase.config servlet context parameter");
             }
             if (configPath == null) {
                 configPath = System.getProperty("mmbase.config");
+                log.debug("found the mmbase.config path parameter using the mmbase.config system property");
+            } else if (System.getProperty("mmbase.config") != null){
+                //if the configPath at this point was not null and the mmbase.config system property is defined
+                //this deserves a warning message since the setting is masked
+                log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
             }
             if (configPath != null) {
                 if (servletContext != null) {
@@ -310,9 +326,9 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * The one ResourceLoader which loads from the mmbase web root is static, and can be obtained with this method
+     * Singleton that returns the ResourceLoader for witch the base path is the web root
      */
-    public static ResourceLoader getWebRoot() {
+    public static synchronized ResourceLoader getWebRoot() {
         if (webRoot == null) {
             webRoot = new ResourceLoader();
 
@@ -466,8 +482,8 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns a List, containing all URL's which may present the
-     * given resource. This can be used to show what happens.
+     * Returns a List, containing all URL's which may represent the
+     * given resource. This can be used to show what resource whould be loaded and what resource whould be masked
      */
     public List getResourceList(final String name) {
         try {
@@ -502,8 +518,11 @@ public class ResourceLoader extends ClassLoader {
     }
 
     /**
-     * Returns a 'child' ResourceLoader, or a parent if the context is "..".
-     * the {@link #ResourceLoader(ResourceLoader, String)} constructor.
+     * 
+     * 
+     * @param context a context relative to the current resource loader
+     * @returns a new 'child' ResourceLoader or the parent ResourceLoader if the context is ".."
+     * @see #ResourceLoader(ResourceLoader, String)
      */
     public ResourceLoader getChildResourceLoader(String context) {
         if (context.equals("..")) { // should be made a bit smarter, (also recognizing "../..", "/" and those kind of things).
@@ -772,7 +791,6 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Logs warning if 'newer' resources are shadowed by older ones.
      */
-
     void checkShadowedNewerResources(String name) {
         long lastModified = -1;
         URL  usedUrl = null;
