@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -125,7 +125,7 @@ public class BasicSqlHandlerTest extends TestCase {
         String strSql = instance.toSql(query, instance);
         assertTrue(strSql, strSql.equals(
         "SELECT m_title "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         // Set step alias.
         step1.setAlias("i");
@@ -262,7 +262,8 @@ public class BasicSqlHandlerTest extends TestCase {
         assertTrue(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "images m_i," + prefix + "insrel," + prefix + "pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," 
+        + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -480,7 +481,7 @@ public class BasicSqlHandlerTest extends TestCase {
         String strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
         "m_title "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         // Set step alias.
         step1.setAlias("i");
@@ -793,7 +794,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
         "COUNT(m_title) "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAggregationType(
         AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
@@ -802,7 +803,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
         "COUNT(DISTINCT m_title) "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MIN);
         sb.setLength(0);
@@ -810,7 +811,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
         "MIN(m_title) "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MAX);
         sb.setLength(0);
@@ -818,7 +819,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
         "MAX(m_title) "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAlias("maxTitle");
         sb.setLength(0);
@@ -826,7 +827,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assertTrue(strSql, strSql.equals(
         "MAX(m_title) AS maxTitle "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         BasicAggregatedField field4b 
             = (BasicAggregatedField) query.addAggregatedField(
@@ -838,7 +839,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assertTrue(strSql, strSql.equals(
         "MAX(m_title) AS maxTitle,"
         + "COUNT(m_number) "
-        + "FROM " + prefix + "images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4b.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
         sb.setLength(0);
@@ -847,7 +848,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assertTrue(strSql, strSql.equals(
         "MAX(m_title) AS maxTitle,"
         + "m_number "
-        + "FROM " + prefix + "images "
+        + "FROM " + prefix + "images m_images "
         + "GROUP BY m_number"));
 
         field4b.setAlias("imageNumber");
@@ -857,7 +858,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assertTrue(strSql, strSql.equals(
         "MAX(m_title) AS maxTitle,"
         + "m_number AS imageNumber "
-        + "FROM " + prefix + "images "
+        + "FROM " + prefix + "images m_images "
         + "GROUP BY imageNumber"));
     }
     

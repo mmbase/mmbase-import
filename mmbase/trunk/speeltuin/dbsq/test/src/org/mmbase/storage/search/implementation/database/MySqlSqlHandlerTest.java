@@ -14,7 +14,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class MySqlSqlHandlerTest extends TestCase {
     
@@ -115,25 +115,25 @@ public class MySqlSqlHandlerTest extends TestCase {
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
-        + prefix + "images WHERE m_number IS NULL"));
+        + prefix + "images images WHERE m_number IS NULL"));
         
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
-        + prefix + "images WHERE m_number IS NULL LIMIT 100"));
+        + prefix + "images images WHERE m_number IS NULL LIMIT 100"));
         
         query.setOffset(50);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
-        + prefix + "images WHERE m_number IS NULL LIMIT 50,100"));
+        + prefix + "images images WHERE m_number IS NULL LIMIT 50,100"));
 
         query.setMaxNumber(-1);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT m_number FROM " 
-        + prefix + "images WHERE m_number IS NULL LIMIT 50,"
+        + prefix + "images images WHERE m_number IS NULL LIMIT 50,"
         + Integer.MAX_VALUE));
     }
     
