@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.7 2001-01-24 13:42:30 vpro Exp $
+$Id: cdplayers.java,v 1.8 2001-03-07 14:19:32 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2001/01/24 13:42:30  vpro
+davzev: Removed StringTagger classvariable (not used) added printStackTrace to catches.
+
 Revision 1.6  2001/01/05 14:12:33  vpro
 Davzev: Changed var classname in getConfig() to implClassName cause our debug also uses a var name classname.
 
@@ -30,7 +33,7 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @version $Revision: 1.7 $ $Date: 2001-01-24 13:42:30 $
+ * @version $Revision: 1.8 $ $Date: 2001-03-07 14:19:32 $
  * @author Daniel Ockeloen
  */
 public class cdplayers extends RemoteBuilder {
@@ -57,7 +60,7 @@ public class cdplayers extends RemoteBuilder {
 
 	/**
 	 * Called when the service node state was changed on another server, in turn this method calls
-	 * nodeChanged to check out what the new state is.
+	 * nodeChanged to check out and react to  the new state.
 	 * @param serviceRef a String with a reference to the service node who's state has been changed.
 	 * @param builderName a String with the buildername of the node that was changed.
 	 * @param ctype a String with the node change type.
@@ -69,7 +72,7 @@ public class cdplayers extends RemoteBuilder {
 
 	/**
 	 * Called when node was changed on the local side, in turn this routine calls nodeChanged
-	 * to check out what the new state is.
+	 * to check out and react to the new state.
 	 * @param serviceRef a String with a reference to the service node who's state has been changed.
 	 * @param builderName a String with the buildername of the node that was changed.
 	 * @param ctype a String with the node change type.
@@ -109,10 +112,12 @@ public class cdplayers extends RemoteBuilder {
 			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
 		} else if (state.equals("claimed")) {
-			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): doClaimed()");
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): setClaimed()");
 			setClaimed();
+		} else if (state.equals("busy")) {
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): "+buildername+" RemoteBuilder named "+getStringValue("name")+" is "+state);
 		} else {
-			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): ERROR unknown state: "+state);
+			debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): ERROR unknown state: "+state+", ignoring it");
 		}
 	}
 
