@@ -18,6 +18,9 @@
 		<!-- Postgresql extends tables -->
 		<scheme name="create-table-scheme">CREATE TABLE {1} ({4} {5}) INHERITS ({6})</scheme>
 
+		<!-- DROP COLUMN is not supported by Postgresql -->
+		<scheme name="delete-field-scheme" />
+
 		<!-- Postgresql sequences (work differently) -->
 		<scheme name="create-sequence-scheme" />
 		<scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement INCREMENT 1 START {2}</scheme>
