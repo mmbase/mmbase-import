@@ -246,9 +246,13 @@ public class BasicCloud implements Cloud {
   		}	
   		Vector v = multirel.searchMultiLevelVector(snodes,sfields,sdistinct,tables,where,orderVec,sdirection);
   		if (v!=null) {
+  		    NodeType tempNodeType=null;
   		    for(Enumeration nodeEnum = v.elements(); nodeEnum.hasMoreElements(); ){
   		        MMObjectNode node = (MMObjectNode)nodeEnum.nextElement();
-                retval.addElement(new BasicNode(node,this));
+  		        if (tempNodeType==null) {
+  		            tempNodeType = new TemporaryNodeType(node,this);
+  		        }
+                retval.addElement(new BasicNode(node,tempNodeType));
   		    }
 		}
   		return retval;
