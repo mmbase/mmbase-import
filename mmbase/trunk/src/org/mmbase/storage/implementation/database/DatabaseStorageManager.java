@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.36 2004-01-09 23:04:35 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.37 2004-01-11 15:43:58 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -119,7 +119,8 @@ public class DatabaseStorageManager implements StorageManager {
      * If a transaction has been started, the connection is not closed.
      */
     protected void releaseActiveConnection() {
-        if (!(inTransaction && factory.supportsTransactions()) && activeConnection != null) {
+        if (!(inTransaction && factory.supportsTransactions()) && 
+            activeConnection != null) {
             try {
                 activeConnection.close();
             } catch (SQLException se) {
@@ -908,19 +909,16 @@ public class DatabaseStorageManager implements StorageManager {
                 dbtype = field.getDBType();
             switch (dbtype) {
                 // string-type fields
-                case FieldDefs.TYPE_XML :
-                case FieldDefs.TYPE_STRING :
-                    {
-                        return getStringValue(result, index, field);
-                    }
-                case FieldDefs.TYPE_BYTE :
-                    {
-                        return getBinaryValue(result, index, field);
-                    }
-                default :
-                    {
-                        return result.getObject(index);
-                    }
+            case FieldDefs.TYPE_XML :
+            case FieldDefs.TYPE_STRING : {
+                return getStringValue(result, index, field);
+            }
+            case FieldDefs.TYPE_BYTE : {
+                return getBinaryValue(result, index, field);
+            }
+            default : {
+                return result.getObject(index);
+            }
             }
         } catch (SQLException se) {
             throw new StorageException(se);
