@@ -10,13 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.Node;
+
+import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  **/
 
 public class AliasListTag extends NodeReferrerTag implements ListProvider, Writer {
-    private static Logger log = Logging.getLoggerInstance(AliasListTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AliasListTag.class);
 
     private List     returnList;
     private Iterator returnValues;
@@ -49,10 +50,29 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
     }
 
     /**
+     * Lists do implement ContextProvider
+     */
+    protected ContextContainer container;
+    private   Map              collector;
+
+
+
+    // ContextProvider implementation
+    public ContextContainer getContainer() {
+        return container;
+    }
+
+
+    /**
      *
      *
      */
     public int doStartTag() throws JspTagException{
+
+        container = new ContextContainer(null, getContextProvider().getContainer());
+        collector = new HashMap();
+
+
         helper.overrideWrite(false); // default behavior is not to write to page
         helper.setTag(this);
         currentItemIndex= -1;  // reset index
@@ -80,9 +100,12 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
         }
         helper.doAfterBody();
         if (returnValues.hasNext()){
+            collector.putAll(container);
+            container.clear();
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
+            getContextProvider().getContainer().registerAll(collector);
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
