@@ -53,7 +53,7 @@ public class MediaFragments extends MMObjectBuilder {
     // Is the mediafragment builders already init ?
     private boolean           initDone           = false;
     
-    // depricated, for downwards compatability
+    // deprecated, for downwards compatability
     private Map               classification     = null;
     
     public MediaFragments() {
