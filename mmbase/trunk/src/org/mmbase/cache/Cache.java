@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.13 2002-10-25 13:12:38 michiel Exp $
+ * @version $Id: Cache.java,v 1.14 2002-10-29 23:55:06 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
@@ -85,6 +85,15 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
                 } catch (NumberFormatException nfe) {
                     log.error("Could not configure cache " + cacheName + " because the size was wrong: " + nfe.toString());
                 }
+                String maxSize = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.maxEntrySize"));
+                if (!"".equals(maxSize)) {
+                    try {
+                        cache.maxEntrySize = Integer.parseInt(maxSize);
+                        log.service("Setting maximum entry size on " + cacheName + ": " + cache.maxEntrySize + " bytes ");
+                    } catch (NumberFormatException nfe2) {
+                        log.error("Could not set max entry size cache  of " + cacheName + " because " + nfe2.toString());
+                    }
+                }
             }
         }        
     }
@@ -118,6 +127,8 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
 
     private boolean active = true;
+    protected int     maxEntrySize = -1; // no maximum/ implementation does not support;
+
 
 
     public Cache(int size) {
@@ -132,12 +143,36 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
     public String getName() {
         return getClass().getName();
     }
+
     /**
      * Gives a description for this cache type. This can be used in
      * cache overviews.
      */
     public String getDescription() {
         return "An all purpose Cache";
+    }
+
+
+
+    /**
+     * Return the maximum entry size for the cache in bytes.  If the
+     * cache-type support it (default no), then no values bigger then
+     * this will be stored in the cache.
+     */
+    public int getMaxEntrySize() {
+        if (getDefaultMaxEntrySize() > 0) {
+            return maxEntrySize;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * This has to be override by Caches which support max entry size.
+     */
+
+    protected int getDefaultMaxEntrySize() {
+        return -1;
     }
 
     /**
