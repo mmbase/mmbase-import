@@ -1,3 +1,5 @@
+
+
 <%-- check whether the thememanager has been installed --%>
 <mm:import id="thememanager">true</mm:import>
 <%-- use thememanager --%>
@@ -21,6 +23,20 @@
 <mm:present referid="tmpid" inverse="true">
 <mm:import id="themeid">MMBob</mm:import>
 </mm:present>
+<mm:import  id="themename"></mm:import>
+<mm:nodelistfunction set="thememanager" name="getAssignedList">
+   <mm:import reset="true" id="tid"><mm:field name="id"/></mm:import>
+   <mm:import reset="true" id="themeDir"><mm:field name="theme"/></mm:import>
+   <mm:compare referid="themeid" referid2="tid">
+      <mm:import reset="true" id="themename"><mm:field name="theme"/></mm:import> 
+   </mm:compare>
+</mm:nodelistfunction>
+
+<mm:import id="theme_html"><mm:write referid="context"/>/html/<mm:write referid="themename"/></mm:import>
+<mm:import id="theme_images"><mm:write referid="context"/>/images/<mm:write referid="themename"/>/default</mm:import>
+<mm:import id="theme_header"><mm:write referid="theme_html"/>/header.jsp</mm:import>
+<mm:import id="theme_footer"><mm:write referid="theme_html"/>/footer.jsp</mm:import>
+
 <mm:import id="style_default"><mm:function set="thememanager" name="getStyleSheet" referids="context,themeid" /></mm:import> 
 
 <mm:import id="imageid" reset="true">arrowright</mm:import>
@@ -38,6 +54,8 @@
 <mm:import id="image_editmsg"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
 <mm:import id="imageid" reset="true">newmsg</mm:import>
 <mm:import id="image_newmsg"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
+<mm:import id="imageid" reset="true">deletemsg</mm:import>
+<mm:import id="image_deletemsg"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
 <mm:import id="imageid" reset="true">newreply</mm:import>
 <mm:import id="image_newreply"><mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" /></mm:import>
 <mm:import id="imageid" reset="true">medit</mm:import>
@@ -93,6 +111,8 @@
 <mm:import id="image_mood_idea"><img src="<mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" />"></mm:import>
 <mm:import id="imageid" reset="true">mood_suprised</mm:import>
 <mm:import id="image_mood_suprised"><img src="<mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" />"></mm:import>
+<mm:import id="imageid" reset="true">guest</mm:import>
+<mm:import id="image_guest"><img src="<mm:function set="thememanager" name="getThemeImage" referids="imagecontext,themeid,imageid" />"></mm:import>
 
 </mm:present>
 

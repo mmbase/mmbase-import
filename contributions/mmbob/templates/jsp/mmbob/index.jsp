@@ -35,7 +35,9 @@
 <!-- end action check -->
 
 <div class="header">
-    <%@ include file="header.jsp" %>
+ <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
+  <jsp:include page="<%=headerpath%>"/>
+
 </div>
 
 <div class="bodypart">
@@ -48,7 +50,7 @@
       <mm:import id="adminmode"><mm:field name="isadministrator" /></mm:import>
       <tr>
       <mm:compare referid="posterid" value="-1">
-        <th width="100"><mm:field name="accountcreationtype"><mm:compare value="open"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><img src="images/guest.gif" border="0"></a></mm:compare></mm:field></th>
+        <th width="100"><mm:field name="accountcreationtype"><mm:compare value="open"><a href="newposter.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="image_guest"/></a></mm:compare></mm:field></th>
       <td align="left">
         <form action="login.jsp?forumid=<mm:write referid="forumid" />" method="post">
           <mm:present referid="loginfailed">
@@ -219,7 +221,9 @@
 
 </div>                                                                                                                           
 <div class="footer">
-  <%@ include file="footer.jsp" %> 
+  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
+  <jsp:include page="<%=footerpath%>"/>
+
 </div> 
 
 </body>
