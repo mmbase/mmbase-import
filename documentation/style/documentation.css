@@ -1,30 +1,30 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.11 2003-04-24 11:14:49 michiel Exp $;
+ @version $Id: documentation.css,v 1.12 2003-04-24 11:30:52 michiel Exp $;
 */
 
 
 body {
-     font-family: Verdana, Arial, Helvetica, sans-serif;
-     background-color: white;
-     margin-left: 3%;
-     margin-right: 12%;
-     padding-left: 0;
-     padding-right: 0;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  background-color: white;
+  margin-left: 3%;
+  margin-right: 12%;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 
 table {
-         font-size: 9pt;
-         border: none;
-        }
+  font-size: 9pt;
+  border: none;
+}
 td {
-     border-left: none;
-         border-right: none;
+  border-left: none;
+  border-right: none;
 }
 th {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 
 .title,
@@ -56,34 +56,41 @@ a:visited {
   color: #00425A;
 }
 
-a:hover { 
 /*
+a:hover { 
   color: #44BDAD;
   text-decoration: underline; 
-*/
 }
 
+*/
 
- .navfooter, .navheader { 
+.navfooter, .navheader { 
   background-color: #44BDAD;
 }
 
 
-.navfooter table , .navheader table { 
+.navfooter table , 
+.navheader table { 
   padding: 1ex;
   border-spacing: 0;
   color: #44BDAD;
 }
-.navfooter table td, th {  
+.navfooter table td, 
+.navfooter table th {  
    background-color: #00425A;
 }
-.navheader table td, th { 
+.navheader table td, 
+.navheader table th { 
    background-color: #00425A;
 } 
-.navfooter a, .navheader a {
-  color: white; 
-}
 
+.navfooter a:link, 
+.navheader a:link, 
+.navfooter a:visited, 
+.navheader a:visited {
+  font-weight: bold;
+  color: #44BDAD;
+}
 
  .chapter, .refentry,
  .book, .reference,
@@ -127,7 +134,7 @@ div.navigation h2 {
   color: navy;
   font-size: 1em;
   text-align: right;
-  text-weight: bold;
+  font-weight: bold;
 }
 
 div.navigation p {
