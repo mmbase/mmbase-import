@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.23 $ $Date: 2000-10-25 12:34:47 $
+* @$Revision: 1.24 $ $Date: 2000-10-31 15:24:33 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -460,7 +460,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				node.setValue(prefix+fieldname,"$SHORTED");
 				break;
 			default:
-				debug("decodeDBNodeField(): unknown type="+type+" fieldname="+fieldname);
+				debug("decodeDBNodeField(): unknown type="+type+" builder="+node.getTableName()+" fieldname="+fieldname);
 				break;
 			}			
 		} catch(SQLException e) {
