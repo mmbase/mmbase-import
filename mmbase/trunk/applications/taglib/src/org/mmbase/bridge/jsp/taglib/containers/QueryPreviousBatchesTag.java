@@ -23,15 +23,20 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryPreviousBatchesTag.java,v 1.1 2003-12-18 09:05:48 michiel Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.2 2004-01-06 18:10:16 michiel Exp $
  */
 public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
     private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
 
     protected Attribute container  = Attribute.NULL;
+    protected Attribute indexOffsetOffset = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
+    }
+
+    public void setIndexoffset(String i ) throws JspTagException {
+        indexOffsetOffset = getAttribute(i);
     }
 
     protected int indexOffset = 0;
@@ -73,9 +78,9 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
             if (maxSize > 0 && result.size() == maxSize) break;
         }
         if (offset > 0) {
-            indexOffset = offset / maxNumber;
+            indexOffset = offset / maxNumber + indexOffsetOffset.getInt(this, 0);
         } else {
-            indexOffset = 0;
+            indexOffset = indexOffsetOffset.getInt(this, 0);
         }
         
         return result;
