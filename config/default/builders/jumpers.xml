@@ -51,6 +51,7 @@ you can define properties to be used by the classfile (if used) it uses
 a key/value system. Its a optional tag.
 -->
 <properties>
+<property name="JumperNotFoundURL">/index.html</property>
 </properties>
 
 <!-- <fieldlist>
