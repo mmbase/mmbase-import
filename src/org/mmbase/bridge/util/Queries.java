@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.23 2004-02-16 15:55:39 michiel Exp $
+ * @version $Id: Queries.java,v 1.24 2004-02-17 09:07:51 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -580,8 +580,9 @@ public class Queries {
 
     public static List addFields(Query query, String fields) {
         List result = new ArrayList();
-        if (fields == null)
+        if (fields == null) {
             return result;
+        }
         List list = StringSplitter.split(fields);
         Iterator i = list.iterator();
         while (i.hasNext()) {
@@ -635,12 +636,33 @@ public class Queries {
     public static int count(Query query) {
         Cloud cloud = query.getCloud();
         Query count = query.aggregatingClone();
-        Step step = (Step) (count.getSteps().get(0));
-        
-        count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), 
-                                 query.isDistinct() ? AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT : AggregatedField.AGGREGATION_TYPE_COUNT);
+        int type = query.isDistinct() ? AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT : AggregatedField.AGGREGATION_TYPE_COUNT;
+
+        String resultName;
+        if (query instanceof NodeQuery) {
+            // all fields are present of the node-step, so, we could use the number field simply.
+            resultName = "number";
+            NodeQuery nq = (NodeQuery) query;
+            count.addAggregatedField(nq.getNodeStep(), nq.getNodeManager().getField(resultName), type);
+        } else {
+            List fields = query.getFields();
+            if (query.isDistinct()) {
+                if (fields.size() > 1) {
+                    throw new UnsupportedOperationException("Cannot count distinct queries with more than one field");
+                }             
+            } 
+            if (fields.size() == 0) { // for non-distinct queries always the number fields would be available
+                throw new IllegalArgumentException("Cannot count queries with less than one field");
+            }
+            // take a random field
+            StepField sf = (StepField) fields.get(0);
+            Step step = sf.getStep();
+            resultName = sf.getFieldName();
+            
+            count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
+        }
         Node result = (Node) cloud.getList(count).get(0);
-        return result.getIntValue("number");
+        return result.getIntValue(resultName); 
     }
 
     /**
