@@ -32,8 +32,23 @@ import org.mmbase.util.logging.Logging;
  * @author Jaco de Groot 
  */
 
-public class FieldInfoTag extends FieldReferrerTag {
+public class FieldInfoTag extends FieldReferrerTag implements Writer {
     
+    // Writer implementation:
+    protected WriterHelper helper = new WriterHelper();
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+  
     private static Logger log = Logging.getLoggerInstance(FieldInfoTag.class.getName()); 
 
     private static final int TYPE_NAME     = 0;
@@ -80,6 +95,83 @@ public class FieldInfoTag extends FieldReferrerTag {
     }
 
     public int doStartTag() throws JspTagException{
+        
+        Field field;
+        Node node = null;
+        FieldProvider fieldProvider = findFieldProvider();
+
+        field = ((FieldProvider) fieldProvider).getFieldVar();
+
+        // found the field now. Now we can decide what must be shown:
+        String show = null;
+
+        // set node if necessary:
+        switch(type) {
+        case TYPE_INPUT: 
+            if (node == null) { // try to find nodeProvider
+                node = fieldProvider.getNodeVar();                
+            } // node can stay null.
+            break;
+            // these types do really need a NodeProvider somewhere:
+            // so 'node' may not stay null.
+        case TYPE_VALUE:
+        case TYPE_GUIVALUE:
+        case TYPE_USEINPUT:
+            if (node == null) { 
+                node = fieldProvider.getNodeVar();  
+            }
+            if (node == null) {
+                throw new JspTagException("Could not find surrounding NodeProvider, which is needed");
+            }
+            break;
+        default:            
+        }
+
+        switch(type) {
+        case TYPE_NAME:
+            show = field.getName();
+            break;
+        case TYPE_GUINAME:
+            show = field.getGUIName();
+            break;
+        case TYPE_VALUE:           
+            show = decode(node.getStringValue(field.getName()), node);
+            break;
+        case TYPE_GUIVALUE:
+            if (log.isDebugEnabled()) {
+                log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
+            }
+            show = decode(node.getStringValue("gui("+field.getName()+")"), node);
+            if (show.trim().equals("")) {
+                show = decode(node.getStringValue(field.getName()), node);
+            }
+            break;
+        case TYPE_INPUT:
+            show = htmlInput(node, field, false);
+            break;
+        case TYPE_USEINPUT:
+            show = useHtmlInput(node, field);
+            fieldProvider.setModified();
+            break;
+        case TYPE_SEARCHINPUT:
+            show = htmlInput(node, field, true);
+            break;
+        case TYPE_USESEARCHINPUT:
+            show = whereHtmlInput(field); 
+            break;
+        case TYPE_TYPE:
+            show = "" + field.getType();
+            break;
+        case TYPE_GUITYPE:
+            show = field.getGUIType();
+            break;
+        }
+
+        helper.setValue(show);
+        helper.setJspvar(pageContext);  
+        if (getId() != null) {
+            getContextTag().register(getId(), helper.getValue());
+        }
         return EVAL_BODY_TAG;
     }
 
@@ -477,88 +569,7 @@ public class FieldInfoTag extends FieldReferrerTag {
      * Write the value of the fieldinfo.
      */
     public int doAfterBody() throws JspTagException {
-        
-        Field field;
-        Node node = null;
-        FieldProvider fieldProvider = findFieldProvider();
-
-        field = ((FieldProvider) fieldProvider).getFieldVar();
-
-        // found the field now. Now we can decide what must be shown:
-        String show = null;
-
-        // set node if necessary:
-        switch(type) {
-        case TYPE_INPUT: 
-            if (node == null) { // try to find nodeProvider
-                node = fieldProvider.getNodeVar();                
-            } // node can stay null.
-            break;
-            // these types do really need a NodeProvider somewhere:
-            // so 'node' may not stay null.
-        case TYPE_VALUE:
-        case TYPE_GUIVALUE:
-        case TYPE_USEINPUT:
-            if (node == null) { 
-                node = fieldProvider.getNodeVar();  
-            }
-            if (node == null) {
-                throw new JspTagException("Could not find surrounding NodeProvider, which is needed");
-            }
-            break;
-        default:            
-        }
-
-        switch(type) {
-        case TYPE_NAME:
-            show = field.getName();
-            break;
-        case TYPE_GUINAME:
-            show = field.getGUIName();
-            break;
-        case TYPE_VALUE:           
-            show = decode(node.getStringValue(field.getName()), node);
-            break;
-        case TYPE_GUIVALUE:
-            if (log.isDebugEnabled()) {
-                log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
-            }
-            show = decode(node.getStringValue("gui("+field.getName()+")"), node);
-            if (show.trim().equals("")) {
-                show = decode(node.getStringValue(field.getName()), node);
-            }
-            break;
-        case TYPE_INPUT:
-            show = htmlInput(node, field, false);
-            break;
-        case TYPE_USEINPUT:
-            show = useHtmlInput(node, field);
-            fieldProvider.setModified();
-            break;
-        case TYPE_SEARCHINPUT:
-            show = htmlInput(node, field, true);
-            break;
-        case TYPE_USESEARCHINPUT:
-            show = whereHtmlInput(field); 
-            break;
-        case TYPE_TYPE:
-            show = "" + field.getType();
-            break;
-        case TYPE_GUITYPE:
-            show = field.getGUIType();
-            break;
-        }
-
-        try {
-            if (show != null) {
-                String body = bodyContent.getString();
-                bodyContent.clearBody();
-                bodyContent.print(show + body);
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            }        
-        } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());            
-        }        
-        return SKIP_BODY;
+        helper.setBodyContent(bodyContent);
+        return helper.doAfterBody();
     }
 }
