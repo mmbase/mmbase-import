@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.15 2002-10-10 18:20:30 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.16 2002-10-10 19:03:46 michiel Exp $
  */
 public class MultiPool {
 
@@ -92,6 +92,8 @@ public class MultiPool {
 
         int nowTime = (int) (System.currentTimeMillis() / 1000);
         
+        List putBacks = new Vector();
+        int releases = 0;
         synchronized (semaphore) { 
             //lock semaphore, so during the checks, no connections can be acquired or put back
             // (because the methods of semaphore are synchronized)
@@ -110,7 +112,7 @@ public class MultiPool {
                     // between 30 and 120 we putback 'zero' connections
                     if (con.lastSql==null || con.lastSql.length()==0) {
                         log.warn("null connection putBack");
-                        putBack(con);
+                        putBacks.add(con);
                     }
                 } else {
                     // above 120 we close the connection and open a new one
@@ -129,7 +131,7 @@ public class MultiPool {
                     if (newcon != null) { 
                         pool.add(newcon);
                         busyPool.remove(con);
-                        semaphore.release();
+                        releases++;
                         try {
                             con.realclose();
                         } catch(Exception re) {
@@ -164,6 +166,12 @@ public class MultiPool {
             
             }
         } // synchronized(semaphore)
+        semaphore.release(releases);        
+        for (Iterator i = putBacks.iterator(); i.hasNext();) {
+            MultiConnection pb = (MultiConnection) i.next();
+            putBack(pb);
+        } 
+        
     }
 
     /**
