@@ -1,7 +1,7 @@
 <table width="98%" cellspacing="0" cellpadding="0" class="subnav">
 	<tr>
 	<td width="25">
-		<A HREF="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />"><IMG SRC="images/arrow-left.gif"></A>
+	     <A HREF="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />"><IMG SRC="images/arrow-left.gif"></A>
 	</td>
 	<!-- overview flap -->
 	<mm:compare referid="flap" value="overview" inverse="true">
