@@ -260,7 +260,7 @@ public class BasicCloud implements Cloud, Cloneable {
     public RelationManager getRelationManager(String sourceManagerName,
         String destinationManagerName, String roleName) {
         // uses getguesed number, maybe have to fix this later
-        int r=cloudContext.mmb.getRelDef().getGuessedNumber(roleName);
+        int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             throw new BasicBridgeException("Role "+roleName+" does not exist.");
         }
@@ -281,7 +281,7 @@ public class BasicCloud implements Cloud, Cloneable {
     }
 
     public RelationManager getRelationManager(String roleName) {
-        int r=cloudContext.mmb.getRelDef().getGuessedNumber(roleName);
+        int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             throw new BasicBridgeException("Role "+roleName+" does not exist.");
         }
