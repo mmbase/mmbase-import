@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.7 2003-02-25 11:54:14 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.8 2003-02-25 21:38:31 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -513,7 +513,16 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     public String toString(MMObjectNode n) {
-        return getGUIIndicator(n);
+        try {
+            String source      = mmb.getTypeDef().getValue(n.getIntValue("snumber"));
+            String destination = mmb.getTypeDef().getValue(n.getIntValue("dnumber"));
+            MMObjectNode role  = mmb.getRelDef().getNode(n.getIntValue("rnumber")); 
+            return source + "->"+ destination + " (" + (role != null ? role.getStringValue("sname")  : "???" ) +")";
+        } catch (Exception e) {
+            log.warn(e);
+        }
+        return "typerel-node";
     }
+
 }
 
