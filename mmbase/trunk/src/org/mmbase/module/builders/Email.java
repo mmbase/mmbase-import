@@ -36,19 +36,56 @@ public class Email extends MMObjectBuilder {
 	// sendprobe, maintains the queue using a wait/notify setup.
 	private EmailSendProbe sendprobe;
 
-	// The state a email can be in
-	public final static int STATE_UNKNOWN=-1;
-	public final static int STATE_WAITING=0;
-	public final static int STATE_DELIVERED=1;
-	public final static int STATE_FAILED=2;
-	public final static int STATE_SPAMGARDE=3;
-	public final static int STATE_QUEUED=4;
+    // The state a email can be in
+
+    /**
+     * Indicates the state of the email is unknown.
+     *
+     */
+    public final static int STATE_UNKNOWN=-1;
+    /**
+     * Indicates the email is waiting to be queued.
+     *
+     */
+    public final static int STATE_WAITING=0;
+    /**
+     * Indicates the email has been delivered.
+     *
+     */
+    public final static int STATE_DELIVERED=1;
+    /**
+     * Indicates the email has not been delivered due to an failure.
+     *
+     */
+    public final static int STATE_FAILED=2;
+    /**
+     * Indicates the email has been mark as spam.
+     *
+     */
+    public final static int STATE_SPAMGARDE=3;
+    /**
+     * Indicates the email has been queued and is waiting to be delivered.
+     *
+     */
+    public final static int STATE_QUEUED=4;
 
 
-	// The type of supported emails
-	public final static int TYPE_ONESHOT=1;
-	public final static int TYPE_REPEATMAIL=2;
-	public final static int TYPE_ONESHOTKEEP=3;
+    // The type of supported emails
+    /**
+     * Email will be sent and removed after sending.
+     *
+     */
+    public final static int TYPE_ONESHOT=1;
+    /**
+     * Email will be sent and scheduled after sending for a next time
+     *
+     */
+    public final static int TYPE_REPEATMAIL=2;
+    /**
+     * Email will be sent and will not be removed.
+     *
+     */
+    public final static int TYPE_ONESHOTKEEP=3;
 
 	// if oneshot types of mails are used we check for dups
 	private Vector dubcheck=new Vector(100);
@@ -453,6 +490,9 @@ public class Email extends MMObjectBuilder {
 			case TYPE_REPEATMAIL:
 				checkRepeatMail(node);	
 				break;
+            default:
+                checkOneShotMail(node);
+                break;
 		}
 	}
 
