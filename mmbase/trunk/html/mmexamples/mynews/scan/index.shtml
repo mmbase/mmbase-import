@@ -23,7 +23,7 @@
 	<CENTER>
 	<FONT COLOR="#42BDAD" FACE="Arial,Helvetica">
 		$MOD-MMBASE-FIELD-$PARAM1-html_intro^
-		<B>( <A HREF="aboutfull.shtml$PARAM1">more info</A> )</B>
+		<B>( <A HREF="magazine.shtml$PARAM1">more info</A> )</B>
 	</FONT>
 	</CENTER>
 	</TD>
