@@ -144,7 +144,7 @@
 	<table cellspacing="0" cellpadding="0" width="140" class="layout">
 	<tr>
 	  <td>
-		<form name="searchform" method="get" action="/development/search/search_results.jsp">
+		<form name="searchform" method="get" action="<mm:url page="/development/search/search_results.jsp" />">
 		<h4>Search</h4>
 		<input name="words" size="13" type="text"> | <a href="javascript:void(document.searchform.submit())">go</A> 
 		</form>
