@@ -1,4 +1,4 @@
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -12,14 +12,14 @@ import java.util.*;
 
 /**
  * Basic implementation using a database.
- * Uses a {@link org.mmbase.storage.search.SqlHandler SqlHandler}
+ * Uses a {@link org.mmbase.storage.search.implementation.database.SqlHandler SqlHandler}
  * to create SQL string representations of search queries.
  * <p>
  * In order to execute search queries, these are represented as SQL strings
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision
  */
 public class BasicQueryHandler implements SearchQueryHandler {
     

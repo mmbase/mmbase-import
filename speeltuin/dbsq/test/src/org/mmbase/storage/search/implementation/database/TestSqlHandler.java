@@ -4,16 +4,17 @@
  * Created on October 21, 2002, 2:55 PM
  */
 
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.database.SqlHandler;
 
 /**
  * Test implementation of the <@link SqlHandler SqlHandler> interface.
  *
  * @author  Rob van Maris
  */
-public class TestSqlHandler implements org.mmbase.storage.search.SqlHandler {
+public class TestSqlHandler implements SqlHandler {
     public final static String TEST1 = "test1";
     public final static String TEST2 = "test2";
     public final static String TEST3 = "test3";

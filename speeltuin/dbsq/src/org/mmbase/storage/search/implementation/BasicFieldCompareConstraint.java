@@ -8,7 +8,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint 
 implements FieldCompareConstraint {

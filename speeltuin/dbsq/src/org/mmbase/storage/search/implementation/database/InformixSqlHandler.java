@@ -4,7 +4,7 @@
  * Created on October 17, 2002, 3:39 PM
  */
 
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import java.util.*;
 import org.mmbase.storage.search.*;
@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * The Informix query handler, implements {@link 
- * org.mmbase.storage.search.SqlHandler SqlHandler} for standard
+ * org.mmbase.storage.search.implementation.database.SqlHandler SqlHandler} for standard
  * Informix functionality.
  * <br>
  * Derived from {@link BasicSqlHandler BasicSqlHandler}, overrides

@@ -4,7 +4,7 @@
  * Created on October 17, 2002, 4:46 PM
  */
 
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.search.*;
