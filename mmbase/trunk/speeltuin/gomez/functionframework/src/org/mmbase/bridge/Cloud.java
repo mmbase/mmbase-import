@@ -20,7 +20,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: Cloud.java,v 1.2 2004-11-29 14:21:10 pierre Exp $
  */
 public interface Cloud {
 
@@ -577,16 +577,14 @@ public interface Cloud {
      */
     public void setProperty(Object key, Object value);
 
-
     /**
-     * Returns all Function objects from a function set in a map.
+     * Returns all Function objects from a function set.
      * Function sets group functions by name, and are configured in the functionset.xml configuration file.
      * In each entry in the returned map, the key is the function name, and the value is a
      * {@link org.mmbase.util.functions.Function} object.
      *
      * @since MMBase-1.8
      * @param setName name of the function set
-     * @param functionName name of the function
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      * @throws NotFoundException if the function set does not exist
      */

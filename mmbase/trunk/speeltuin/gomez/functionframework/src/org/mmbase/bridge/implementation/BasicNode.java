@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.1 2004-11-24 13:23:03 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.2 2004-11-29 14:21:10 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1233,12 +1233,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && cloud.equals(((Node)o).getCloud());
     }
 
-    public Parameters createParameters(String functionName) {
-        Parameters parameters = getNode().createParameters(functionName);
-        if (parameters == null) {
-            throw new NotFoundException("Function with name " + functionName + "does not exist.");
+    public Set getFunctions() {
+        Set functions = getNode().getFunctions();
+        // wrap functions
+        Set functionSet = new HashSet();
+        for (Iterator i = functions.iterator(); i.hasNext(); ) {
+            Function fun = (Function)i.next();
+            functionSet.add(new BasicFunction(this,fun));
         }
-        return parameters;
+        return functionSet;
     }
 
     public Function getFunction(String functionName) {
@@ -1246,11 +1249,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + "does not exist.");
         }
-        return new BasicFunction(cloud, function);
+        return new BasicFunction(this, function);
     }
 
-    public FieldValue getFunctionValue(String functionName, List arguments) {
-        return new BasicFunctionValue(this, getNode().getFunctionValue(functionName, arguments));
+    public Parameters createParameters(String functionName) {
+        return getFunction(functionName).createParameters();
+    }
+
+    public FieldValue getFunctionValue(String functionName, List parameters) {
+        return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
     }
 
 }
