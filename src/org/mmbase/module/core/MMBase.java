@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.76 2002-10-25 18:44:15 michiel Exp $
+ * @version $Id: MMBase.java,v 1.77 2002-11-01 14:36:18 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -100,7 +100,7 @@ public class MMBase extends ProcessorModule  {
     /**
      * Reference to the TypeDef builder.
      * Should be made private and accessed instead using getTypeDef()
-     * @scope private     
+     * @scope private
      */
     public TypeDef TypeDef;
     /**
@@ -345,7 +345,7 @@ public class MMBase extends ProcessorModule  {
         machineName=getInitParameter("MACHINENAME");
 
         jdbc= (JDBCInterface) getModule("JDBC");
-        
+
 
         if (multicasthost != null) {
             mmc = new MMBaseMultiCast(this);
@@ -646,12 +646,12 @@ public class MMBase extends ProcessorModule  {
     public void closeConnection(MultiConnection con, Statement stmt) {
 	try {
 	    if (stmt!=null) stmt.close();
-	} 
+	}
 	catch(Exception g) {
 	}
 	try {
 	    if (con!=null) con.close();
-	} 
+	}
 	catch(Exception g) {
 	}
     }
@@ -659,18 +659,18 @@ public class MMBase extends ProcessorModule  {
 
     /**
      * Get a database connection that is multiplexed and checked.
-     * @return a <code>MultiConnection</code> 
+     * @return a <code>MultiConnection</code>
      */
     public MultiConnection getConnection() {
 	MultiConnection con = null;
         int timeout = 10; //seconds
-	
+
         int tries = 1;
 	// always return a connection, maybe database down,... so wait in that situation....
 	while(con == null) {
 	    try {
 		con=database.getConnection(jdbc);
-	    } 
+	    }
 	    catch (SQLException sqle){
 		log.fatal("Could not get a multi-connection, will try again over " + timeout + " seconds: " + sqle.getMessage());
                 if (tries == 1) {
@@ -700,7 +700,7 @@ public class MMBase extends ProcessorModule  {
     public Connection getDirectConnection() {
 	Connection con = null;
 	int timeout = 10;
-	
+
         int tries = 1;
 	// always return a connection, maybe database down,... so wait in that situation....
 	while(con == null) {
@@ -1005,11 +1005,18 @@ public class MMBase extends ProcessorModule  {
         }
 
         log.debug("mmobjects, inits");
-        Enumeration t = mmobjs.elements();
-        while (t.hasMoreElements()) {
-            MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
+        Iterator bi = mmobjs.entrySet().iterator();
+        while (bi.hasNext()) {
+            Map.Entry me = (Map.Entry)bi.next();
+            MMObjectBuilder fbul=(MMObjectBuilder)me.getValue();
             log.debug("init " + fbul);
-            initBuilder(fbul);
+            try {
+                initBuilder(fbul);
+            } catch (BuilderConfigurationException e) {
+                // something bad with this builder or its parents - remove it
+                log.error("Removed builder "+fbul.getTableName()+" from the builderlist, as it cannot be initialized.");
+                bi.remove();
+            }
         }
 
         log.debug("**** end of initBuilders");
@@ -1240,7 +1247,7 @@ public class MMBase extends ProcessorModule  {
 		DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
 		if(jdbc == null) throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
 		// How do we know for sure that the JDBC.init() has been called first?
-		// the only way is by using the startModule, (little bit scary to use here)	       
+		// the only way is by using the startModule, (little bit scary to use here)
                 Module m = (Module) jdbc;
                 if(!m.hasStarted()) {
                     // STUPID
@@ -1264,7 +1271,7 @@ public class MMBase extends ProcessorModule  {
 	    // get our config...
 	    XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
 
-	    try {                
+	    try {
                 Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
                 database = (MMJdbc2NodeInterface) newclass.newInstance();
 	    }
@@ -1283,7 +1290,7 @@ public class MMBase extends ProcessorModule  {
 		log.error(msg);
 		throw new RuntimeException(msg);
 	    }
-	    // print information about our database connection..	    
+	    // print information about our database connection..
 	    log.info("Using class: '"+database.getClass().getName()+"' with config: '"+databaseConfig+"'." );
 	    // init the database..
 	    database.init(this, dbdriver);
