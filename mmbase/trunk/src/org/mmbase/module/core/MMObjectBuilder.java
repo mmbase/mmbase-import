@@ -741,7 +741,7 @@ public class MMObjectBuilder extends MMTable {
 		if (fields==null) debug("getDBType(): fielddefs are null on object : "+tableName);
 		FieldDefs node=(FieldDefs)fields.get(fieldName);
 		if (node==null) {
-			debug("getDBType(): PROBLEM Can't find fielddef on : "+fieldName+" builder="+tableName);
+			if (debug) debug("getDBType(): PROBLEM Can't find fielddef on : "+fieldName+" builder="+tableName);
 			return(null);
 		}
 		return(node.getDBType());
