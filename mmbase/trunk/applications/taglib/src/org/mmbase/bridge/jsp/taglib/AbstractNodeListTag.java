@@ -307,9 +307,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 previousValue = value;
             }
             setNodeVar(next);
-            if (getId() != null) {
-                getContextTag().register(getId(), next);
-            }
             fillVars();
         }
     }
