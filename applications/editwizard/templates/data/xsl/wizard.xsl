@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.42 2002-07-15 16:02:23 michiel Exp $
+  @version $Id: wizard.xsl,v 1.43 2002-07-15 16:27:32 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -639,7 +639,7 @@
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
                   <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="{search-filter[1]/default}" style="width:175;" />
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
-                  <span title="{$tooltip_search}" class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');"  >
+                  <span title="{$tooltip_search}" class="imagebutton" onClick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');"  >
                     <xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
                     <xsl:call-template name="prompt_search" />
                   </span>
@@ -686,7 +686,7 @@
            -->
       <xsl:for-each select="command[@name='startwizard']">
         <!-- only if less then maxoccurs -->
-        <xsl:if test="(ancestor::list/@maxoccurs = '*') or count(ancestor::list/item) &lt; ancestor::list/@maxoccurs">
+        <xsl:if test="not(ancestor::list/@maxoccurs) or (ancestor::list/@maxoccurs = '*') or count(ancestor::list/item) &lt; ancestor::list/@maxoccurs">
         <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616">
           <tr>
             <td align="right" valign="top" class="search" width="100%">
