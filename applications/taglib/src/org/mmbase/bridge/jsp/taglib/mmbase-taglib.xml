@@ -106,7 +106,10 @@ one or more examplevalue tags is you want to give some example values.
         relationmanager that should be used to go from one node to an other. If
         no relationmanager is specified between two nodemanagers, all possible
         relationmanagers that can be used to go to the next specified node in
-        the path are followed.
+        the path are followed. It is possible to add a digit (0-9) to the
+        nodemanager name and refer to this nodemanager with his name and this
+        digit appended. This can be usefull if a nodemanager is used more than
+        once in a path.
       </info>
       <examplevalue>
         <value>mags</value>
@@ -122,6 +125,12 @@ one or more examplevalue tags is you want to give some example values.
       </examplevalue>
       <examplevalue>
         <value>mags,related,news,related,images</value>
+      </examplevalue>
+      <examplevalue>
+        <value>pools,pools0,urls</value>
+      </examplevalue>
+      <examplevalue>
+        <value>pools1,pools2,urls,pools3</value>
       </examplevalue>
     </attribute>
     <attribute>
@@ -308,6 +317,12 @@ one or more examplevalue tags is you want to give some example values.
   &lt;mm:field name="news.title" /&gt;
 &lt;/mm:list&gt;</example>
 
+<example>&lt;mm:list path="pools,pools0,urls" fields="pools.name,pools0.name,urls.url"&gt;
+  &lt;mm:field name="pools.name" /&gt;
+  &lt;mm:field name="pools0.name" /&gt;
+  &lt;mm:field name="urls.url" /&gt;
+&lt;/mm:list&gt;</example>
+
   </tag>
   <tag>
     <name>related</name>
@@ -355,7 +370,7 @@ one or more examplevalue tags is you want to give some example values.
       <info>
         This attribute is the same as the path attribute of the list tag except
         that the first nodemanager should be ommitted. The first nodemanager
-        is implied by the parent node.
+        is implied by the parent node and prefixed to the path automaticly.
       </info>
     </attribute>
     <attribute>
@@ -408,12 +423,22 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+
 <example>&lt;mm:node number="123"&gt;
   &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
     &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
     &lt;mm:field name="mags.title" /&gt;
   &lt;/mm:related&gt;
 &lt;/mm:node&gt;</example>
+
+<example>&lt;mm:node number="456"&gt; &lt;!-- node 456 is of type mags --&gt;
+  &lt;mm:field name="title" /&gt;
+  &lt;mm:related path="news0" fields="mags0.title"&gt;
+    &lt;mm:head&gt;related magazines&lt;/mm:head&gt;
+    &lt;mm:field name="mags0.title" /&gt;
+  &lt;/mm:related&gt;
+&lt;/mm:node&gt;</example>
+
   </tag>
   <tag>
     <name>listnodes</name>
