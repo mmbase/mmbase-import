@@ -17,12 +17,12 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * The Function tag can be used as a child of a 'NodeProvider' tag (but not on clusternodes?). It
- * can call functions on the node.
+ * A Function tag for a function with a 'boolean' result. It is a Condition tag, which means that
+ * its body is or is not executed, in this case depending on the result of the function.
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.5 2003-09-10 11:16:07 michiel Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.6 2003-12-21 13:27:50 michiel Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
 

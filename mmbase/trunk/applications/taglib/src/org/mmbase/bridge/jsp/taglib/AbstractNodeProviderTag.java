@@ -14,6 +14,8 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 
+import javax.servlet.jsp.tagext.*;
+
 import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;
@@ -33,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.26 2003-08-27 21:33:29 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.27 2003-12-21 13:27:50 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -110,6 +112,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
 
     public void setModified() {
+        //log.info(Logging.stackTrace());
         modified = true;
     }
 
