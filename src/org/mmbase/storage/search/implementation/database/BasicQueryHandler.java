@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.25 2004-03-09 13:56:00 rob Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.26 2004-03-11 18:14:12 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -60,75 +60,30 @@ public class BasicQueryHandler implements SearchQueryHandler {
     // javadoc is inherited
     public List getNodes(SearchQuery query, MMObjectBuilder builder)     throws SearchQueryException {
 
-        StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
-        List steps = query.getSteps();
-        List results = new ArrayList();
-        String sqlString = null;
+        List results;
         MultiConnection con = null;
         Statement stmt = null;
-
-
-        boolean multipleSteps = steps.size() > 1;
-
-        // Flag, set if offset must be supported by skipping results.
-        boolean mustSkipResults =
-            (query.getOffset() != SearchQuery.DEFAULT_OFFSET) && 
-            (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE);
-
-        if (log.isDebugEnabled()) {
-            log.debug("Database offset support = " + (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) != SearchQueryHandler.SUPPORT_NONE));
-            log.debug("mustSkipResults = " + mustSkipResults);
-        }
-
-        // Flag, set if sql handler supports maxnumber.
-        boolean sqlHandlerSupportsMaxNumber = sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) != SearchQueryHandler.SUPPORT_NONE;
-        if (log.isDebugEnabled()) {
-            log.debug("Database max support = " + sqlHandlerSupportsMaxNumber);
-        }
-
-        int maxNumber = query.getMaxNumber(); // needed often, store to avoid function calls
-
-        // Flag, set if maxnumber must be supported by truncating results.
-        boolean mustTruncateResults = (maxNumber != SearchQuery.DEFAULT_MAX_NUMBER) && (! sqlHandlerSupportsMaxNumber);
-
        
-        // Generate the SQL string for the query.
         try {
-            if (mustSkipResults) { // offset not supported, but needed
-                log.debug("offset used in query and not supported in database.");
-                ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-                modifiedQuery.setOffset(SearchQuery.DEFAULT_OFFSET);
-                
-                if (mustTruncateResults) {
-                    log.debug("max used in query but not supported in database.");
-                    // Weak support for offset, weak support for maxnumber:
-                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // apply no maximum, but truncate result
-                } else if (maxNumber != SearchQuery.DEFAULT_MAX_NUMBER) {
-                    log.debug("max used in query and supported by database.");
-                    // Because offset is not supported add max with the offset.
-                    // Weak support for offset, sql handler supports maxnumber:
-                    modifiedQuery.setMaxNumber(query.getOffset() + maxNumber);
-                }
-                sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
-                
-            } else {
-                log.debug("offset not used or offset is supported by the database.");
-                if (mustTruncateResults) {
-                    log.debug("max used in query but not supported in database.");
-                    // Sql handler supports offset, or not offset is specified.
-                    // weak support for maxnumber:
-                    ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-                    modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // apply no maximum, but truncate result
-                    sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
-                } else {
-                    // Offset not used, maxnumber not used.
-                    log.debug("No need to modify the Query.");
-                    sqlString = sqlHandler.toSql(query, sqlHandler);
-                }
-            }
-            // TODO: test maximum sql statement length is not exceeded.
+            // Flag, set if offset must be supported by skipping results.
+            boolean mustSkipResults =
+                (query.getOffset() != SearchQuery.DEFAULT_OFFSET) && 
+                (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE);
+            
+            
+            // Flag, set if sql handler supports maxnumber.
+            boolean sqlHandlerSupportsMaxNumber = sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) != SearchQueryHandler.SUPPORT_NONE;
 
-            // Execute the SQL and store results as cluster-/real nodes.
+            // report about offset and max support (for debug purposes)
+            if (log.isDebugEnabled()) {
+                log.debug("Database offset support = " + (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) != SearchQueryHandler.SUPPORT_NONE));
+                log.debug("mustSkipResults = " + mustSkipResults);
+                log.debug("Database max support = " + sqlHandlerSupportsMaxNumber);
+            }
+
+            String sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
+     
+            // Execute the SQL
             MMJdbc2NodeInterface database = mmbase.getDatabase();
             con = mmbase.getConnection();
             stmt = con.createStatement();
@@ -140,63 +95,25 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         rs.next();
                     }
                 }
+                
 
-                // Read results.
-                // Truncate results to provide weak support for maxnumber.
-                while (rs.next()
-                       && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber)
-                       ) {
-                    MMObjectNode node = null;
-                    if (builder instanceof ClusterBuilder) {
-                        // Cluster nodes.
-                        node = new ClusterNode(builder, steps.size());
-                    } else if (builder instanceof ResultBuilder) {
-                        // Result nodes.
-                        node = new ResultNode((ResultBuilder) builder);
-                    } else {
-                        // Real nodes.
-                        node = new MMObjectNode(builder);
-                    }
-                    // start initializing a node
-                    node.start();
-                    for (int i = 0; i < fields.length; i++) {
+                // Now store results as cluster-/real nodes.
+                StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
+                int maxNumber = query.getMaxNumber(); 
 
-                        String fieldName;
-                        String prefix;
-
-         
-                        if (builder instanceof ClusterBuilder) {
-                            fieldName = fields[i].getFieldName();
-                            String alias = fields[i].getStep().getAlias();
-                            if (alias == null) {
-                                // Use tablename as alias when no alias is specified.
-                                alias = fields[i].getStep().getTableName();
-                            }
-                            prefix = alias +  '.';
-                        } else if (builder instanceof ResultBuilder) {
-                            fieldName = fields[i].getAlias();
-                            if (fieldName == null) {
-                                fieldName = fields[i].getFieldName();
-                            }
-                            prefix = "";
-                        } else {
-                            prefix = "";
-                            fieldName = fields[i].getFieldName();
-                            if (node.getValue(fieldName) != null) continue;
-                            // already set (node-query must _start_ with all nodes of the node)
-                            // XXXX If getValue can give null for _set_ values, then something must be changed here.
-                            // see also BasicNodeQuery.setNodeStep
-                        }
-                        int fieldType = fields[i].getType();
-                        // TODO: (later) use alternative to decodeDBnodeField, to
-                        // circumvent the code in decodeDBnodeField that tries to
-                        // reverse replacement of "disallowed" fieldnames.
-                        database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
-                    }
-                    // Finished initializing clusternode.
-                    node.finish();
-                    results.add(node);
+                // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
+                if (builder instanceof ClusterBuilder) {
+                    results = readNodes((ClusterBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber, query.getSteps().size());
+                } else if (builder instanceof ResultBuilder) {
+                    results = readNodes((ResultBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
+                } else {
+                    results = readNodes(builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
                 }
+                // TODO: (later) use alternative to decodeDBnodeField, to
+                // circumvent the code in decodeDBnodeField that tries to
+                // reverse replacement of "disallowed" fieldnames.
+
+
             } finally {
                 rs.close();
             }
@@ -211,6 +128,131 @@ public class BasicQueryHandler implements SearchQueryHandler {
             mmbase.closeConnection(con, stmt);
         }
 
+        return results;
+    }
+
+
+    /**
+     * Makes a String of a query, taking into consideration if the database supports offset and
+     * maxnumber features. The resulting String is an SQL query which can be fed to the database.
+     */
+
+    private String createSqlString(SearchQuery query, boolean mustSkipResults, boolean sqlHandlerSupportsMaxNumber) throws SearchQueryException {
+        int maxNumber = query.getMaxNumber(); 
+        // Flag, set if maxnumber must be supported by truncating results.
+        boolean mustTruncateResults = (maxNumber != SearchQuery.DEFAULT_MAX_NUMBER) && (! sqlHandlerSupportsMaxNumber);
+        String sqlString;
+       if (mustSkipResults) { // offset not supported, but needed
+           log.debug("offset used in query and not supported in database.");
+           ModifiableQuery modifiedQuery = new ModifiableQuery(query);
+           modifiedQuery.setOffset(SearchQuery.DEFAULT_OFFSET);
+           
+           if (mustTruncateResults) {
+               log.debug("max used in query but not supported in database.");
+               // Weak support for offset, weak support for maxnumber:
+               modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // apply no maximum, but truncate result
+           } else if (maxNumber != SearchQuery.DEFAULT_MAX_NUMBER) {
+               log.debug("max used in query and supported by database.");
+               // Because offset is not supported add max with the offset.
+               // Weak support for offset, sql handler supports maxnumber:
+               modifiedQuery.setMaxNumber(query.getOffset() + maxNumber);
+           }
+           sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
+           
+       } else {
+           log.debug("offset not used or offset is supported by the database.");
+           if (mustTruncateResults) {
+               log.debug("max used in query but not supported in database.");
+               // Sql handler supports offset, or not offset is specified.
+               // weak support for maxnumber:
+               ModifiableQuery modifiedQuery = new ModifiableQuery(query);
+               modifiedQuery.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // apply no maximum, but truncate result
+               sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
+           } else {
+               // Offset not used, maxnumber not used.
+               log.debug("no need for modifying Query");
+               sqlString = sqlHandler.toSql(query, sqlHandler);
+           }
+       }
+       // TODO: test maximum sql statement length is not exceeded.
+       return sqlString;
+    }
+
+    /**
+     * Read the result list and creates a List of ClusterNodes.
+     */
+    private List readNodes(ClusterBuilder builder, StepField[] fields,   ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) throws SQLException {
+        List results = new ArrayList();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();        
+
+        // Truncate results to provide weak support for maxnumber.
+        while (rs.next() && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber) ) {
+            ClusterNode node = new ClusterNode(builder, numberOfSteps);
+            node.start();   
+            for (int i = 0; i < fields.length; i++) {                
+                String fieldName = fields[i].getFieldName(); // why not getAlias first?
+                Step step = fields[i].getStep();
+                String alias = step.getAlias();
+                if (alias == null) {
+                    // Use tablename as alias when no alias is specified.
+                    alias = step.getTableName();
+                }
+                String prefix = alias +  '.';                
+                database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
+            }
+            node.finish();
+            results.add(node);
+        }
+        return results;
+    }
+
+    /**
+     * Read the result list and creates a List of ResultNodes
+     */
+    private List readNodes(ResultBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
+        List results = new ArrayList();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();        
+
+        // Truncate results to provide weak support for maxnumber.
+        while (rs.next() && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber) ) {
+            ResultNode node = new ResultNode((ResultBuilder) builder);
+            node.start();
+            for (int i = 0; i < fields.length; i++) {                
+                String fieldName = fields[i].getAlias();
+                if (fieldName == null) {
+                    fieldName = fields[i].getFieldName();
+                }
+                database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
+            }
+            node.finish();
+            results.add(node);
+        }
+        return results;
+    }
+
+    /**
+     * Read the result list and creates a List of normal MMObjectNodes.
+     */
+    private List readNodes(MMObjectBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
+        List results= new ArrayList();
+        MMJdbc2NodeInterface database = mmbase.getDatabase();        
+
+        // Truncate results to provide weak support for maxnumber.
+        while (rs.next() && (sqlHandlerSupportsMaxNumber || results.size() < maxNumber) ) {
+            MMObjectNode node = new MMObjectNode(builder);
+            node.start();
+            for (int i = 0; i < fields.length; i++) {                
+                String fieldName =  fields[i].getFieldName();
+                if (node.getValue(fieldName) != null) continue;
+                // already set (node-query must _start_ with all nodes of the node)
+                // XXXX If getValue can give null for _set_ values, then something must be changed here.
+                // see also BasicNodeQuery.setNodeStep
+
+                database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
+            }
+            node.finish();
+            results.add(node);
+        }
         return results;
     }
 
