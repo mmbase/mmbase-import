@@ -32,8 +32,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Titile of the magazine</description>
+          <description xml:lang="nl">Titel van het blad</description>
         </descriptions>
       <!-- gui related -->
       <gui>
@@ -66,8 +66,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Subtitle of the magazine</description>
+          <description xml:lang="nl">Subtitel van het blad</description>
         </descriptions>
       <!-- gui related -->
       <gui>
@@ -100,8 +100,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Introduction text, teaser, or foreword</description>
+          <description xml:lang="nl">Introduktietekst, teaser of voorwoord</description>
         </descriptions>
       <!-- gui related -->
       <gui>
@@ -134,8 +134,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Main text or magazine description</description>
+          <description xml:lang="nl">Hoofdtekst of beschrijving van het* blad</description>
         </descriptions>
       <!-- gui related -->
       <gui>
