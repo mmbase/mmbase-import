@@ -56,6 +56,5 @@
   <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
  </body>
 </html>
-</mm:node>
 </mm:cloud>
 </mm:content>

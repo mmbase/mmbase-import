@@ -21,7 +21,6 @@
         </p>
       </td>
     </tr>
-    <tr><td>&nbsp;</td></tr>
     <tr>
       <th colspan="2">Location of MyYahoo</th>
     </tr>
@@ -33,17 +32,16 @@
         </mm:first>
       </mm:listnodes>
       <mm:notpresent referid="myyahooIsPresent">
-        The MyYahoo application is NOT installed. Please install before using it.<br />
-        You can install the MyYahoo application by going to ADMIN -> APPLICATIONS
+        The MyYahoo application is NOT installed. Please install before using it.
+        You can install the MyYahoo application by going to <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&subcategory=applications" />">ADMIN -> APPLICATIONS</a>
       </mm:notpresent>
       <mm:present referid="myyahooIsPresent">
-        <mm:url id="url" page="/mmexamples/myyahoo/index.jsp" write="false" />
+        <mm:url id="url" page="/mmexamples/myyahoo/" write="false" />
         This url will show the MyYahoo site: <a href="<mm:write referid="url" />" target="myyahoo"><mm:write referid="url" /></a>
       </mm:present>
       <br /><br />
     </td>
   </tr>
-  <tr><td>&nbsp;</td></tr>
   <tr>
     <th>Cloud Design</th>
     <th>Picture</th>
@@ -63,7 +61,6 @@
       </a>
     </td>
   </tr>
-  <tr><td>&nbsp;</td></tr>
   <tr>
     <th>Manual</th>
     <th>Picture</th>
