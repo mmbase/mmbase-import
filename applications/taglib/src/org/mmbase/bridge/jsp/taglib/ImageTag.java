@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.50 2004-12-24 12:01:29 andre Exp $
+ * @version $Id: ImageTag.java,v 1.51 2005-01-03 18:06:21 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -93,14 +93,19 @@ public class ImageTag extends FieldTag {
             // the node/image itself
             number = node.getStringValue("number");
         } else {
-            // the cached image
-            number = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
+            if ("false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.url.convert"))) {
+                number = "" + node.getNumber() + "+" + t;
+            } else {
+                // the cached image
+                number = node.getFunctionValue("cache", new ParametersImpl(Images.CACHE_PARAMETERS).set("template", t)).toString();
+            }
         }
 
-        if (makeRelative == null) {
+        if (makeRelative == null) {            
             String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
             makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
         }
+
 
         String servletPath;
         {
