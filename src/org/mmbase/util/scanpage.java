@@ -25,7 +25,7 @@ import org.mmbase.module.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.8 2000-05-12 14:07:42 wwwtech Exp $
+ * @version $Id: scanpage.java,v 1.9 2000-06-05 16:16:08 wwwtech Exp $
  */
 public class scanpage {
 	public ProcessorInterface processor;
@@ -42,6 +42,7 @@ public class scanpage {
 	public String querystring=null;
 	public String sname=null;
 	public int partlevel=0;
+	public String loadmode="cache";
 
 	public void setReq(HttpServletRequest req) {
 		this.req=req;
