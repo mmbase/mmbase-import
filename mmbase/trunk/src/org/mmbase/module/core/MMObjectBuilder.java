@@ -95,6 +95,7 @@ public class MMObjectBuilder extends MMTable {
 			if (oType==-1) {
 				//mmb.TypeDef.insert("system",tableName,description);
 				MMObjectNode node=mmb.TypeDef.getNewNode("system");
+				node.setValue("otype",1);
 				node.setValue("name",tableName);
 				if (description==null) description="not defined in this langauge";
 				node.setValue("description",description);
