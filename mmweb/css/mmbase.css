@@ -128,6 +128,19 @@ strong
 
 #pagecontent { margin: 0 0 20px 150px; }
 
+#footer
+{
+	font-size: 10px;
+	position: absolute;
+	padding: 4px 0 20px 0;
+	margin: 40px 0 0 0;
+	border-color: #333;
+	border-width: 1px 0 0 0;
+	border-style: solid;
+	text-align: center;
+	width: 100%;
+}
+
 .layout { width: 100%; }
 
 .layout, .layout th, .layout td
@@ -467,3 +480,46 @@ textarea { background-color: #D9DDDE; }
 }
 
 #tabnav a:hover { background: #f3f3f3; }
+
+/* search */
+#searchform { margin: 20px 0 20px 0; }
+#results { margin: 10px 10px 10px 0; }
+#results ul
+{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	/* False value for IE4-5.x/Win. */
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	/* You get it. Good value for compliant browers. */
+}
+
+#results li
+{
+	text-decoration: none;
+	text-align: left;
+	margin: 0 0 1em 0;
+	padding: 0;
+}
+
+#results li a
+{
+	/*	background-color: #EFEFEF;	*/
+	display: block;
+	text-decoration: none;
+}
+
+#results li a:hover
+{
+	color: #330;
+	text-decoration: underline;
+}
+
+#results li a:active
+{
+	color: #CF0;
+	text-decoration: underline;
+}
+.resultcomment { color: #666; }
+/* end search*/
