@@ -243,7 +243,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 String query = request.getQueryString();
                 String thisPage = request.getRequestURI() + (query == null ? "" : "?" + query);
                 try {
-                    response.sendRedirect(response.encodeRedirectURL(thisPage));
+                    String url = response.encodeRedirectURL(thisPage);
+                    response.sendRedirect(url);
                 } catch (IOException e) {
                     throw new JspTagException(e.toString());
                 }
@@ -435,14 +436,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     /**
-     * Checks if the cloud of the session if requested to be 'logged out'. If so, does it, and provides an anonymous cloud.
-     * @return true if cloud had the be logged out (the caller returns
-     * eval-body with an anonymous cloud) and false otherwise (the
-     * caller continues).
+     * Checks if the cloud of the session if requested to be 'logged out'.
      */
-    private final boolean checkLogout() {
-        if (method == METHOD_LOGOUT ||
-            (loginpage != null && LOGINPAGE_COMMAND_LOGOUT.equals(request.getParameter(LOGINPAGE_COMMAND_PARAMETER))))  {
+    private final boolean checkLogoutLoginPage() {
+        if (loginpage != null && LOGINPAGE_COMMAND_LOGOUT.equals(request.getParameter(LOGINPAGE_COMMAND_PARAMETER)))  {
             log.debug("request to log out, remove session atributes, give anonymous cloud.");
             if (cloud != null) {
                 removeRealm();
@@ -456,6 +453,25 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         return false;
     }
+
+    /**
+     * Checks if the cloud of the session if requested to be 'logged out'.
+     */
+    private final boolean checkLogoutMethod() {
+        if(method == METHOD_LOGOUT) {
+            if (cloud != null) {
+                removeRealm();
+                if (session != null) {
+                    log.debug("ok. session is not null");                
+                    session.removeAttribute(getSessionName());       // remove cloud itself
+                }
+            }
+            setAnonymousCloud();
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Creates the member variables session and cookies variables member 
@@ -697,15 +713,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         String reference = from;
         if(request.getQueryString() != null) {
             reference += "?" + request.getQueryString();
-        }
+        }        
         reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
-        from = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", from);
-
-
-        String url = response.encodeRedirectURL(loginpage + "?from=" + from + "&referrer=" + reference + "&reason=" + reason);
+        String url = response.encodeRedirectURL(loginpage + "?referrer=" + reference + "&reason=" + reason);
         try {
             if (log.isDebugEnabled()) log.debug("redirecting to:" + url);
-            response.sendRedirect(url);
+            response.sendRedirect(url);            
             return SKIP_BODY;
         } catch(java.io.IOException ioe) {
             throw new JspTagException ("error sending redirect:" + ioe);
@@ -839,7 +852,20 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (checkAsis())      return evalBody();
         setupSession();
         if(log.isDebugEnabled()) log.debug("startTag " + cloud);
-        if (checkLogout()) return evalBody();
+        if (checkLogoutLoginPage()) {
+            // TODO: find a better page to redirect to!
+            try {
+                String url = request.getRequestURI();
+                response.sendRedirect(url);
+            }
+            catch(java.io.IOException ioe) {
+                throw new JspTagException(Logging.stackTrace(ioe));
+            }
+            return SKIP_BODY;
+        }
+        if (checkLogoutMethod()) {
+            return evalBody();
+        }        
         if (cloud != null) checkValid();
         if (cloud != null) checkCloud();
         if (cloud == null) { 
@@ -859,6 +885,4 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             throw new JspTagException(ioe.toString());
         }
     }
-
-
 }
