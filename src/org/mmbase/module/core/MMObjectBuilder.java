@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.117 $ $Date: 2002-02-21 15:57:43 $
+ * @version $Revision: 1.118 $ $Date: 2002-02-27 16:21:32 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -88,11 +88,6 @@ public class MMObjectBuilder extends MMTable {
      */
     public static MMJdbc2NodeInterface database = null;
 
-    // unused. hitlisted ???
-    static String currentPreCache=null;
-    private static Hashtable fieldDefCache=new Hashtable(40);
-    // unused
-
     /**
      * Determines whether the cache is locked.
      * A locked cache can be read, and nodes can be removed from it (allowing it to
@@ -114,13 +109,14 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Sets debugging on or off
-     * @deprecated : use Logger routines instead
+     * @deprecated-now : use Logger routines instead
      */
     public void setDebug(boolean state) { debug=state; }
 
     /**
      * The current builder's object type
      * Retrieved from the TypeDef builder.
+     * @scope private, use getObjectType()
      */
     public int oType=0;
 
@@ -155,8 +151,10 @@ public class MMObjectBuilder extends MMTable {
     /**
      * The classname as specified in the builder xml file
      * mainly for use in export
+     * @deprecated use getClass.getName()
      */
     public String className="onbekend";
+
     /**
      * Detemines whether the cache need be refreshed?
      * Seems useless, as this value is never changed (always true)
@@ -213,10 +211,11 @@ public class MMObjectBuilder extends MMTable {
      */
     Vector localObservers = new Vector();
 
-    // Unused
+    /**
+     * Statistics buidler.
+     * @deprecated-now unused. Shoudln't be done in this class anyway
+     */
     Statistics statbul;
-    // Unused
-    Hashtable nameCache=new Hashtable();
 
     /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
@@ -227,7 +226,10 @@ public class MMObjectBuilder extends MMTable {
     // contains the builder's field definitions
     protected Hashtable fields;
 
-    // actual classname
+    /**
+     * actual classname
+     * @deprecated use getClass.getName()
+     */
     private String classname = getClass().getName();
 
     // Version information for builder registration
@@ -236,9 +238,6 @@ public class MMObjectBuilder extends MMTable {
 
     // Dutch builder description (?)
     private String dutchSName="onbekend";
-
-    // ???
-    private Vector qlist=new Vector();
 
     /**
      * determines whether builders are created using xml, accessible through {@link #getXMLConfig}
@@ -279,26 +278,24 @@ public class MMObjectBuilder extends MMTable {
         if (!tableName.equals("object") && mmb.getTypeDef()!=null) {
             oType=mmb.getTypeDef().getIntValue(tableName);
             if (oType==-1) {
-                //mmb.getTypeDef().insert("system",tableName,description);
                 MMObjectNode node=mmb.getTypeDef().getNewNode("system");
-                node.setValue("otype",1);
+                node.setValue("number",database.getDBKey());
+                if (this==mmb.getTypeDef()) {
+                    node.setValue("otype",node.getNumber());
+                } else {
+                    node.setValue("otype",mmb.getTypeDef().getObjectType());
+                }
                 node.setValue("name",tableName);
                 if (description==null) description="not defined in this language";
                 node.setValue("description",description);
-                node.insert("system");
-                oType=mmb.getTypeDef().getIntValue(tableName);
+                oType=node.insert("system");
             }
         } else {
             if(!tableName.equals("typedef")) {
                 log.warn("init(): for tablename("+tableName+") -> can't get to typeDef");
             }
         }
-        // hack to override the hard  fields by database (bootstrap)
-        // Hashtable tmp=initFields();
-        // if (tmp.size()>0) fields=tmp;
-        //if (fieldDefCache==null) initAllFields();
         if (obj2type==null) init_obj2type(); // RICO switched ON
-        //if (fields==null) initFields(true);
         return true;
     }
 
@@ -477,27 +474,9 @@ public class MMObjectBuilder extends MMTable {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-        /*
-        // check if node.name in nameCache, remove that also.
-        // --------------------------------------------------
-        String name = node.getStringValue("name");
-        if( name != null && !name.equals("")) {
-            String sNumber = (String)nameCache.get(name);
-            try {
-                int number = Integer.parseInt( sNumber );
-                if( number == node.getNumber()) {
-                    nameCache.remove( name );
-                }
-            } catch( NumberFormatException e ) {
-                log.debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
-            }
-        }
-        */
-
         // removes the node FROM THIS BUILDER
         // seems not a very logical call, as node.parent is the node's actual builder,
         // which may - possibly - be very different from the current builder
-
         database.removeNode(this,node);
     }
 
@@ -539,6 +518,18 @@ public class MMObjectBuilder extends MMTable {
      */
     public boolean isVirtual() {
         return virtual;
+    }
+
+    /**
+     * Returns the objecttype (otype).
+     * This is similar to the otype field value of objects of teh builder,
+     * and the number of the bilder's object in the typedef builder.
+     * In other words: getNode(getObjectType()) returns this builder's
+     * objectnode.
+     * @return the objecttype
+     */
+    public int getObjectType() {
+        return oType;
     }
 
     /**
@@ -2160,7 +2151,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>Vector</code> containing the result values as a <code>String</code>
      */
     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
-        throw new ParseException(classname +" should override the getList method (you've probably made a typo)");
+        throw new ParseException(getClass().getName() +" should override the getList method (you've probably made a typo)");
     }
 
 
@@ -2421,6 +2412,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Set classname of the builder
+     * @deprecated don't use
      */
     public void setClassName(String d) {
         this.className=d;
@@ -2428,6 +2420,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Returns the classname of this builder
+     * @deprecated don't use
      */
     public String getClassName() {
         return className;
@@ -2577,6 +2570,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Maintains statistics. Doesn't work. Needs the statistics builder.
+     * @deprecated-now unused. Shoudln't be done in this class anyway
      * @param type the name of the type of action to keep the stats for.
      */
     private void statCount(String type) {
@@ -2627,19 +2621,11 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getNumberFromName(String name) {
         String number = null;
-
-        //String number=(String)nameCache.get(name);
-        //if (number!=null) {
-        //	return number;
-        //} else {
         Enumeration e=search("name=='"+name+"'");
         if (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
             number=""+node.getNumber();
-            //nameCache.put(name,number);
         }
-        //}
-
         return number;
     }
 
@@ -2686,7 +2672,7 @@ public class MMObjectBuilder extends MMTable {
     // Default replacements for method getHTML()
     private final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     private final static String DEFAULT_EOL = "<br />";
-    
+
     /**
      * Returns a HTML-version of a string.
      * This replaces a number of tokens with HTML sequences.
@@ -2706,7 +2692,7 @@ public class MMObjectBuilder extends MMTable {
      * @param body text to convert
      * @return the convert text
      */
-  
+
     protected String getHTML(String body) {
         String rtn="";
         if (body!=null) {
@@ -2913,7 +2899,7 @@ public class MMObjectBuilder extends MMTable {
      */
     protected void debug( String msg )
     {
-        log.debug( classname +":"+ msg );
+        log.debug(msg );
     }
 
     /**
