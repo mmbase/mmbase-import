@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.31 2003-06-10 09:12:50 pierre Exp $
+ * @version $Id: Utils.java,v 1.32 2003-06-10 10:11:46 pierre Exp $
  */
 public class Utils {
 
@@ -255,7 +255,7 @@ public class Utils {
      * @return     The text string.
      */
     public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) {
-        return selectSingleNodeText(node, xpath, defaultvalue);
+        return selectSingleNodeText(node, xpath, defaultvalue, null);
     }
     
     /**
