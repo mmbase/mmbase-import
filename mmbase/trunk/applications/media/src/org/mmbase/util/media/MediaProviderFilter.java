@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.media;
 
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.builders.*;
+import org.mmbase.module.builders.media.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import javax.servlet.http.HttpServletRequest;
