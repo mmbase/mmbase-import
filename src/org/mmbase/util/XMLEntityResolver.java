@@ -12,7 +12,6 @@ package org.mmbase.util;
 import java.io.*;
 
 import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.*;
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Gerard van Enk
- * @version $Revision: 1.7 $ $Date: 2001-04-18 09:53:42 $
+ * @version $Revision: 1.8 $ $Date: 2001-07-04 08:42:48 $
  */
 public class XMLEntityResolver implements EntityResolver {
 
