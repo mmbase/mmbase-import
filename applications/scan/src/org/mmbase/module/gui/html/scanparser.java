@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.36 2000-12-08 13:34:56 pierre Exp $
+$Id: scanparser.java,v 1.37 2000-12-18 14:42:05 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.36  2000/12/08 13:34:56  pierre
+pierre: fixed use of GOTO in PART and TREEPART. Added optional use of Alias instead of nodenumber to TREEPART (TREEPART ALIAS node+filename)
+
 Revision 1.35  2000/12/06 12:25:36  vpro
 Dirk-Jan: added caching of parts after it mystiriously had disapeared
 
@@ -128,7 +131,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.36 $ $Date: 2000-12-08 13:34:56 $
+ * @$Revision: 1.37 $ $Date: 2000-12-18 14:42:05 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -655,7 +658,7 @@ public class scanparser extends ProcessorModule {
 					case 19: // '<PART '
 						partbody=do_part(body.substring(prepostcmd,postcmd),session,sp,0);
 						if ((sp.rstatus==1) || (sp.rstatus==2)) {
-							newbody=new StringBuffer();
+							return partbody;
 						};
 						newbody.append(partbody);
 						break;
@@ -666,7 +669,7 @@ public class scanparser extends ProcessorModule {
 					case 22: // '<LEAFPART, LEAFFILE'
 						partbody=do_smart(body.substring(prepostcmd,postcmd),session,sp, docmd==22);
 						if ((sp.rstatus==1) || (sp.rstatus==2)) {
-							newbody=new StringBuffer();
+							return partbody;
 						};
 						newbody.append(partbody);
 						break;
