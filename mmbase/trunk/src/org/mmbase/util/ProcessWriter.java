@@ -12,8 +12,11 @@ import java.io.*;
 
 /*
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2001/02/08 10:20:38  vpro
+	Rico: changed the processing by using a Threaded writer to fix the "half" image bug using code provided by Kees Jongenburg
+	
 
-	$Id: ProcessWriter.java,v 1.1 2001-02-08 10:20:38 vpro Exp $
+	$Id: ProcessWriter.java,v 1.2 2001-02-28 15:08:27 kees Exp $
 
 */
 
@@ -21,7 +24,7 @@ import java.io.*;
  * A class to pipe data from one stream to the other as a thread
  * useful for building execution pipes
  * @author Kees Jongenburger
- * @version $Id: ProcessWriter.java,v 1.1 2001-02-08 10:20:38 vpro Exp $
+ * @version $Id: ProcessWriter.java,v 1.2 2001-02-28 15:08:27 kees Exp $
  */
 public class ProcessWriter implements Runnable{
     public boolean debug = false;
@@ -64,7 +67,7 @@ public class ProcessWriter implements Runnable{
 				while((size = in.read(data)) >0 ) {
 				    total += size;
 				    if (debug) debug("Total write"+ total);
-				    printStream.write(data,0,data.length);
+				    printStream.write(data,0,size);
 				    printStream.flush();
 				}
 				printStream.close();
