@@ -24,7 +24,12 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * The syncer for Nodes used in MMBob. There can be different types of syncing mechanisms:
+ * slow for things like statistics and fast for really important things like postings, userinfo, etc
+ * 
  * @author Daniel Ockeloen
+ * @author Gerard van Enk
+ * @version $Id: ForumMMBaseSyncer.java,v 1.5 2005-02-22 15:36:48 gerard Exp $
  */
 public class ForumMMBaseSyncer implements Runnable {
 
@@ -65,6 +70,9 @@ public class ForumMMBaseSyncer implements Runnable {
      * init()
      */
     public void init() {
+        ForumMMBaseSyncerShutdown shutdownsyncer = new ForumMMBaseSyncerShutdown(this);
+        Runtime.getRuntime().addShutdownHook(shutdownsyncer);
+        log.debug("init syncer" + sleeptime);
         // add this syncer to the band of brothers
         brothers.add(this);
         this.start();
@@ -83,11 +91,11 @@ public class ForumMMBaseSyncer implements Runnable {
 
     /**
      * Stops the main Thread.
-     */
-    public void stop() {
+     **/
+    //public void stop() {
         /* Stop thread */
-        kicker = null;
-    }
+    //  kicker = null;
+    //}
 
     /**
      * Main loop, exception protected
@@ -110,7 +118,7 @@ public class ForumMMBaseSyncer implements Runnable {
      */
     public void doWork() {
         kicker.setPriority(Thread.MIN_PRIORITY + 1);
-
+        log.debug("going to do some work");
         while (kicker != null) {
             try {
                 while (dirtyNodes.size() > 0) {
@@ -120,14 +128,34 @@ public class ForumMMBaseSyncer implements Runnable {
                     //log.debug("removing node " + node.getNumber() +" from sync queue "+sleeptime);
                     node.commit();
                     removeFromBrothers(node);
+                    if (kicker.isInterrupted()) throw new InterruptedException();
                     Thread.sleep(delaytime);
                 }
-
-                Thread.sleep(sleeptime);
+                log.debug("going to sleep");
+                if (kicker.isInterrupted()) throw new InterruptedException();
+                kicker.sleep(sleeptime);
             } catch (InterruptedException f2) {
+                shutdownSync();
             }
         }
     }
+
+    public void shutdownSync() {
+                //let's try to commit the nodes before exit
+                log.service("Shut down ForumSyncer, trying to commit changes");
+                try {
+                    while (dirtyNodes.size() > 0) {
+                        Node node = (Node) dirtyNodes.elementAt(0);
+                        dirtyNodes.removeElementAt(0);
+                        log.debug("removing node " + node.getNumber() +" from sync queue "+sleeptime);
+                        node.commit();
+                        removeFromBrothers(node);
+                    } 
+                } catch (Exception ex) {
+                    log.fatal("something went wrong while shutting down Syncer");
+                }
+    }
+
 
     /**
      * remove the given node from the syncQueue
