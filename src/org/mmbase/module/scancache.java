@@ -199,7 +199,7 @@ public class scancache extends Module implements scancacheInterface {
 			// ----------------------
 			// org.mmbase String body="Status:"+(((worker)res).getWriteHeaders()).substring(8);
 
-			String body=getWriteHeaders(value);
+			String body=getWriteHeaders(value, mimeType);
 			body+=value;
 			saveFile(poolName,filename,body);
 			signalNetFileSrv(filename);
@@ -244,15 +244,7 @@ public class scancache extends Module implements scancacheInterface {
 			// obtain and add headers
 			// ----------------------
 			
-			String body="Status: 200 OK\n";
-			body+="Server: OrionCache\n";
-			body+="Content-type: text/html; charset=iso-8859-1\n";
-			body+="Content-length: "+value.length()+"\n";
-			body+="Expires: Wed, 08 Sep 1999 11:12:16 GMT\n";
-			body+="Date: Wed, 08 Sep 1999 13:12:16 GMT\n";
-			body+="Cache-Control: no-cache\n";
-			body+="Pragma: no-cache\n";
-			body+="Last-Modified: Wed, 08 Sep 1999 13:12:16 GMT\n\n";
+			String body=getWriteHeaders(value, mimeType);
 			body+=value;
 
 			if( debug ) debug("newput2("+poolName+","+key+","+value+","+cachetype+"): NEWPUT=SAVE");
@@ -402,10 +394,10 @@ public class scancache extends Module implements scancacheInterface {
 		}
 	}
 
-	String getWriteHeaders(String value) {
+	String getWriteHeaders(String value, String mimeType) {		if ((mimeType==null) || mimeType.equals(""))			mimeType = "text/html; charset=iso-8859-1";
 		String body="Status: 200 OK\n";
 		body+="Server: OrionCache\n";
-		body+="Content-type: text/html; charset=iso-8859-1\n";
+		body+="Content-type: "+mimeType+"\n";
 		body+="Content-length: "+value.length()+"\n";
 		body+="Expires: Fri, 15 Oct 1999 10:44:47 GMT\n";
 		body+="Date: Fri, 15 Oct 1999 12:44:47 GMT\n";
