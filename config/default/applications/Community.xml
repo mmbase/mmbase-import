@@ -55,5 +55,7 @@
 	</description>
 
 	<install-notice>
+    You have succesfully installed the community example
+    application. The pages for this examples can be found under /mmexamples.
 	</install-notice>
 </application>
