@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.79 2003-06-11 13:51:58 michiel Exp $
+ * @version $Id: Images.java,v 1.80 2003-08-15 15:52:41 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -81,7 +81,7 @@ public class Images extends AbstractImages {
         String imageConvertClass  = DEFAULT_IMAGECONVERTCLASS.getName();
         tmp = getInitParameter("ImageConvertClass");
         if (tmp != null) imageConvertClass = tmp;
-        getimageConvertParams(getInitParameters());
+        getImageConvertParams(getInitParameters());
         tmp = getInitParameter("MaxConcurrentRequests");
         if (tmp!=null) {
             try {
@@ -193,14 +193,15 @@ public class Images extends AbstractImages {
     /**
      * called by init..used to retrieve all settings
      */
-    private void getimageConvertParams(Hashtable params) {
+    private void getImageConvertParams(Hashtable params) {
         String key; 
         for (Iterator e=params.keySet().iterator();e.hasNext();) {
-            key=(String)e.next();
+            key = (String)e.next();
             if (key.startsWith("ImageConvert.")) {
                 imageConvertParams.put(key, params.get(key));
             }
         }
+        imageConvertParams.put("configfile", getConfigFile());
     }
 
     private ImageConvertInterface loadImageConverter(String classname) {
