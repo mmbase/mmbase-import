@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.56 2003-03-25 13:21:00 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.57 2003-03-27 09:48:20 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -324,8 +324,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     value = node.getStringValue(field.getName());
                 }
             }
-            log.debug("field " + field.getName() + " gui type: " + field.getGUIType() +
-                      "value: " + value);
+            if (log.isDebugEnabled()) {
+                log.debug("field " + field.getName() + " gui type: " + field.getGUIType() +
+                          "  value: " + value);
+            }
         }
         return getTypeHandler(field.getType()).htmlInput(node, field, search);
     }
