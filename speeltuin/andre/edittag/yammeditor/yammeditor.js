@@ -15,3 +15,8 @@ function toggle(targetId){
   			}
   	}
 }
+// Simple open window script
+function OpenWindow(theURL,winName,features) { 
+  window.open(theURL,winName,features);
+}
+
