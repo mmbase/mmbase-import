@@ -60,7 +60,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>number</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="true">INTEGER</type>
+        <type state="persistent" notnull="true" key="true">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 3 : owner -->
@@ -88,7 +88,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>owner</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="12" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="12" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 4 : name -->
@@ -114,7 +114,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>name</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="255" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 5 : description -->
@@ -140,7 +140,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>description</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="false">STRING</type>
+        <type state="persistent" notnull="true" key="false">STRING</type>
       </db>
     </field>
   </fieldlist>

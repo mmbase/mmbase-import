@@ -65,7 +65,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>number</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="true" key="true">INTEGER</type>
+        <type state="persistent" notnull="true" key="true">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 3 : owner -->
@@ -93,7 +93,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>owner</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="12" notnull="false" key="false">STRING</type>
+        <type state="persistent" size="12" notnull="false" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 4 : name -->
@@ -121,7 +121,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>name</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="64" notnull="false" key="false">STRING</type>
+        <type state="persistent" size="64" notnull="false" key="false">STRING</type>
       </db>
     </field>
     <!-- field definition for field 5 : id -->
@@ -149,7 +149,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>id</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" notnull="false" key="false">INTEGER</type>
+        <type state="persistent" notnull="false" key="false">INTEGER</type>
       </db>
     </field>
     <!-- field definition for field 6 : url -->
@@ -177,7 +177,7 @@ This counts especially when you convert buidler configurations using builder inh
         <!-- name of the field in the database -->
         <name>url</name>
         <!-- MMBase datatype and demands on it -->
-        <type state="PERSISTENT" size="255" notnull="false" key="false">STRING</type>
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
   </fieldlist>
