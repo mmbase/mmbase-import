@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.context;
 
 import org.mmbase.security.*;
+import org.mmbase.security.SecurityException;
 
 import java.util.Map;
 
@@ -25,33 +26,33 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.9 2003-05-08 06:09:24 kees Exp $
+ * @version $Id: ContextLoginModule.java,v 1.10 2003-08-27 19:37:12 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
-    private static Logger log=Logging.getLoggerInstance(ContextLoginModule.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ContextLoginModule.class);
 
     private Document document;
     private long validKey;
     private String name;
     private MMBaseCop manager;
 
-    public void load(Document document, long validKey, String name, MMBaseCop manager) throws org.mmbase.security.SecurityException{
+    public void load(Document document, long validKey, String name, MMBaseCop manager) throws SecurityException{
         this.document = document;
         this.validKey = validKey;
         this.name = name;
         this.manager =manager;
     }
 
-    public abstract ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException;
+    public abstract ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws SecurityException;
 
-    protected ContextUserContext getValidUserContext(String username, Rank rank) throws org.mmbase.security.SecurityException{
+    protected ContextUserContext getValidUserContext(String username, Rank rank) throws SecurityException{
         return new ContextUserContext(username, rank, validKey, manager);
     }
 
-    protected Rank getRank(String username) throws org.mmbase.security.SecurityException {
+    protected Rank getRank(String username) throws SecurityException {
         String xpath = "/contextconfig/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
-        if (log.isDebugEnabled()) log.debug("gonna execute the query:" + xpath);
+        if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath);
         Node found;
         try {
             found = XPathAPI.selectSingleNode(document, xpath);
@@ -74,9 +75,9 @@ public abstract class ContextLoginModule {
         return rank;
     }
 
-    protected String getModuleValue(String username) throws org.mmbase.security.SecurityException {
-        String xpath = "/contextconfig/accounts/user[@name='"+username+"']/identify[@type='"+name+"']";
-        log.debug("gonna execute the query:" + xpath);
+    protected String getModuleValue(String username) throws SecurityException {
+        String xpath = "/contextconfig/accounts/user[@name='" + username + "']/identify[@type='" + name + "']";
+        if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath);
         Node found;
         try {
             found = XPathAPI.selectSingleNode(document, xpath);
@@ -96,7 +97,9 @@ public abstract class ContextLoginModule {
             Node n = nl.item(i);
             if (n.getNodeType() == Node.TEXT_NODE) {
                 String value = n.getNodeValue();
-                log.debug("retrieved the value for user:" + username + " in module: " + name + " value: " + value);
+                if (log.isDebugEnabled()) {
+                    log.debug("retrieved the value for user:" + username + " in module: " + name + " value: " + value);
+                }
                 return value;
             }
         }
