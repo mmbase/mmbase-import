@@ -95,6 +95,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private HttpServletRequest  request;
     private HttpServletResponse response;
 
+    private Locale locale;
+
     /**
      * @return the default cloud context
      **/
@@ -280,7 +282,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private void setAnonymousCloud() {
         log.debug("using a anonymous cloud");
-        String key = cloudName + (cloudURI != null ? "@" +  cloudURI : "");
+        String key = cloudName + (cloudURI != null ? "@" +  cloudURI : "") + (locale != null ? "/" + locale.getLanguage() + "_" + locale.getCountry() : "");
         cloud = (Cloud) anonymousClouds.get(key);
         if (cloud == null) {
             log.debug("couldn't find one");
@@ -316,7 +318,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         getContextTag().setCloudContext(cloud.getCloudContext());
 
 
-        return EVAL_BODY_AGAIN;
+        return EVAL_BODY_BUFFERED;
     }
 
     /**
@@ -324,6 +326,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
     public int doStartTag() throws JspTagException {
 
+        locale = null;
+        LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
+        if (localeTag != null) {
+            locale = localeTag.getLocale();
+        }
         List logon = logonatt != null ? StringSplitter.split(logonatt) : null;
         if (logon != null && logon.size() == 0) logon = null;
 
@@ -369,7 +376,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             log.debug("request to log out, remove session atributes, give anonymous cloud.");
             logout();
             if (session != null) {
-                log.debug("session is not null");
+                log.debug("ok. session is not null");
                 session.removeAttribute(getSessionName());       // remove cloud itself
             }
             setAnonymousCloud();
@@ -537,6 +544,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 }
             }
         }
+        if (locale != null) cloud.setLocale(locale);
         return evalBody();
     }
 
