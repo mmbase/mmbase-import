@@ -16,7 +16,6 @@ import java.util.Hashtable;
  * 
  * @javadoc
  */
-
 public class Test {
     public static void main(String[] argv) {
 	String eol = "\n";
@@ -54,11 +53,3 @@ public class Test {
 	System.out.println(res);
     }
 }
-
-
-
-
-
-
-
-

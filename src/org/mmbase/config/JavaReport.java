@@ -15,7 +15,7 @@ package org.mmbase.config;
  * java -Dmmbase.config=myconfigpath org.mmbase.config.Test
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: JavaReport.java,v 1.3 2003-03-10 11:50:11 pierre Exp $
+ * @version $Id: JavaReport.java,v 1.4 2003-05-01 08:30:33 kees Exp $
  */
 public class JavaReport extends AbstractReport {
     
@@ -70,7 +70,7 @@ public class JavaReport extends AbstractReport {
     // --- private methods ---------------------------------------
     private boolean checkServletAPILoadable() {
 	try {
-	    Class c = Class.forName("java.util.Vector");
+	    Class c = Class.forName("javax.servlet.Servlet");
 	    return true;
 	} catch (Exception e) {
 	    return false;
@@ -94,5 +94,4 @@ public class JavaReport extends AbstractReport {
 	    return false;
 	}
     }
-
 }
