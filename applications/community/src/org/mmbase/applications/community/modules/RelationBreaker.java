@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * After the expiretime has expired the relation is removed.
  * Unfortunately, this class doesn't work. See docs for more info.
  *
-s * @deprecated use NodeBreaker instead
+ * @deprecated use NodeBreaker instead
  *
  * @author Dirk-Jan Hoekstra
  * @version 5 Jan 2001
