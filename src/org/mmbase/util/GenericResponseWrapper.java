@@ -12,8 +12,12 @@ import java.io.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+import java.util.regex.*;
+import java.util.regex.Matcher;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 
 /**
@@ -25,12 +29,27 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.4 2004-05-10 12:48:18 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.5 2004-06-15 16:24:04 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
 
+
+    private static final Pattern XMLHEADER = Pattern.compile("<\\?xml.*?\\sencoding=(?:\"([^\"]+?)\"|'([^']+?)')\\s*\\?>.*", Pattern.DOTALL);    
+    public static final String getXMLEncoding(String xmlString) {
+        Matcher m = XMLHEADER.matcher(xmlString);
+        if (! m.matches()) {
+            return "UTF-8";
+        }  else {
+            String encoding = m.group(1);
+            if (encoding == null) encoding = m.group(2);
+            return encoding;
+        }
+    }
+
+
     private static String DEFAULT_CHARSET = "utf-8";
+    private static String XML_DEFAULT_CHARSET = "utf-8";
     private static String DEFAULT_CONTENTTYPE = "text/html;charset=" + DEFAULT_CHARSET;
 
     private PrintWriter         writer; 
@@ -107,7 +126,12 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         if (i >= 0) {
             characterEncoding = contentType.substring(i + 8);
         } else {
-            characterEncoding = DEFAULT_CHARSET;
+            if (contentType.equals("text/xml")) {
+                // now it get's really interesting, the encoding is present on the _first line of the body_.
+                characterEncoding = XML_DEFAULT_CHARSET; // toString is UTF-8, but it is an inidcation that it could be considered later
+            } else {
+                characterEncoding = DEFAULT_CHARSET;
+            }
         }
         if (log.isDebugEnabled()) {
             log.debug("set contenttype of include page to: '" +  contentType + "' (and character encoding to '" + characterEncoding +  "')");
@@ -122,7 +146,26 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      */
     public String getCharacterEncoding() {
         log.debug(characterEncoding);
+        if (characterEncoding == XML_DEFAULT_CHARSET && outputStream != null) {
+            determinXMLEncoding();
+        }
         return characterEncoding;
+    }
+
+
+    protected byte[] determinXMLEncoding() {
+        byte[] allBytes = bytes.toByteArray();
+        byte[] firstBytes = allBytes;
+        if (allBytes.length > 100) {
+            firstBytes = new byte[100];
+            System.arraycopy(allBytes, 0, firstBytes, 0, 100);
+        }
+        try {
+            characterEncoding = getXMLEncoding(new String(firstBytes, "US-ASCII"));
+        } catch (java.io.UnsupportedEncodingException uee) {
+            // cannot happen, US-ASCII is known
+        }
+        return allBytes;
     }
 
     /**
@@ -133,7 +176,13 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             return string.toString();
         } else if (outputStream != null) {
             try {
-                return new String(bytes.toByteArray(), getCharacterEncoding());
+                byte[] allBytes;
+                if (characterEncoding == XML_DEFAULT_CHARSET) {
+                    allBytes = determinXMLEncoding();
+                } else {
+                    allBytes = bytes.toByteArray();
+                }
+                return new String(allBytes, getCharacterEncoding());
             } catch (Exception e) {
                 return bytes.toString();
             }
