@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.*;
 
 import org.mmbase.module.core.*;
@@ -89,7 +88,7 @@ public class XMLFullBackupWriter extends XMLContextDepthWriterII {
      * @param resultmsgs
      * @todo update javadoc
      */
-    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs) throws SQLException {
+    static void writeNodes(String subTargetPath, MMBase mmb, Vector resultmsgs) {
 
         InsRel insrel = mmb.getInsRel();
 
