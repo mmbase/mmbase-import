@@ -20,11 +20,11 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.48 2004-03-15 15:31:37 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.49 2004-03-19 12:13:48 michiel Exp $
  */
 public class MultiPool {
 
-    private static final Logger log = Logging.getLoggerInstance(MultiPool.class);
+    private static final Logger log    = Logging.getLoggerInstance(MultiPool.class);
 
     private List              pool     = null;
     private List              busyPool = new ArrayList();
@@ -81,9 +81,11 @@ public class MultiPool {
                 }
             }
             semaphore = new DijkstraSemaphore(pool.size());
+            log.service("Connection pool has " + conMax + " connections");
         } catch (InterruptedException ie) {
             log.info("Interrupted: " + ie.getMessage());
         }
+
 
     }
 
@@ -113,7 +115,7 @@ public class MultiPool {
         if (errors > 0) {
             String message = firstError.getMessage();
             if (logStack) {
-                message += Logging.stackTrace(firstError);
+                message += " " + Logging.stackTrace(firstError);
             }  else {
                 int nl = message.indexOf('\n'); // some stupid drivers (postgresql) add stacktrace to message
                 if (nl > 0) {
@@ -139,7 +141,7 @@ public class MultiPool {
      * @since MMBase-1.7
      */
     protected MultiConnection getMultiConnection() throws SQLException {
-        log.service("Getting a new connection for url '" + url + "'");
+        log.debug("Getting a new connection for url '" + url + "'");
         Connection con;
         if (name.equals("url") && password.equals("url")) {
             con = DriverManager.getConnection(url);
@@ -189,9 +191,11 @@ public class MultiPool {
         if (log.isDebugEnabled()) {
             log.debug("JDBC -> Starting the pool check (" + this + ") : busy=" + busyPool.size() + " free=" + pool.size());
         }
-        if (semaphore == null) return; // during start-up this could happen.
+        if (semaphore == null ||  // during start-up this could happen.
+            conMax == 0           // during shut-down this could happen
+            ) return;
         synchronized (semaphore) {
-
+            
             int releaseCount = 0; // number of connection that are put back to pool
 
             //lock semaphore, so during the checks, no connections can be acquired or put back
@@ -237,27 +241,25 @@ public class MultiPool {
                 
 
                 if (isClosed) {
-                    MultiConnection newcon = null;
+                    MultiConnection newCon = null;
                     log.warn("WILL KILL SQL because connection was closed. ID=" + con.hashCode() + " SQL: " + con.lastSql);
                     try {
                         // get a new connection to replace this one
-                        newcon = getMultiConnection();
+                        newCon = getMultiConnection();
                     } catch(SQLException e) {
                         log.error("Can't add connection to pool (after close) " + e.toString());
                     }
-                    if (newcon != null) { // successfully created new connection
+                    if (newCon != null) { // successfully created new connection
                         // we close connections in a seperate thread, for those broken JDBC drivers out there
                         new ConnectionCloser(con);
                     } else {
                         // could not create new connection somewhy, but this one is **** up as well, what to do?
                         // fail every future query:
-                        newcon = con; // simply put it back in the available pool, so everything will fail
+                        newCon = con; // simply put it back in the available pool, so everything will fail
                     }
-                    pool.add(newcon);
+                    pool.add(newCon);
                     releaseCount++;
                     i.remove();
-
-                    con.markedClosed = true; // make sure it cannot be used any more.
                     
                     continue;
                 }
@@ -275,27 +277,26 @@ public class MultiPool {
                 } else if (diff < 120) {
                     // between 30 and 120 we putback 'zero' connections
                     if (con.lastSql == null || con.lastSql.length() == 0) {
-                        log.warn("null connection putBack");
+                        log.warn("null connection putBack " + Logging.stackTrace());
                         pool.add(con);
                         releaseCount++;
                         i.remove();
                     }
                 } else {
                     // above 120 we close the connection and open a new one
-                    MultiConnection newcon = null;
+                    MultiConnection newCon = null;
                     log.warn("WILL KILL SQL after " + diff + " seconds, because it took too long. ID=" + con.hashCode() + " SQL: " + con.lastSql);
                     try {
                         // get a new connection to replace this one
-                        newcon = getMultiConnection();
+                        newCon = getMultiConnection();
                     } catch(SQLException e) {
                         log.error("Can't add connection to pool (after kill) " + e.toString());
                     }
-                    if (newcon != null) { // successfully created new connection
-                        pool.add(newcon);
+                    if (newCon != null) { // successfully created new connection
+                        pool.add(newCon);
                         releaseCount++;
                         i.remove();
                         // we close connections in a seperate thread, for those broken JDBC drivers out there
-                        con.markedClosed = true; // make sure it cannot be used any more.
                         new ConnectionCloser(con);
                     } else {
                         // could not create new connection somewhy, will be retried in the next cycle
@@ -354,21 +355,24 @@ public class MultiPool {
                 }
 
                 semaphore.acquire(); // locks until something free
-
-                log.debug("Getting free connection from pool " + pool.size());
+                if (log.isDebugEnabled()) {
+                    log.debug("Getting free connection from pool " + pool.size());
+                }
                 con = (MultiConnection) pool.remove(0);
                 con.claim();
                 try {
                     if (con.isClosed()) {
-                        log.warn("Got a closed connection from the connection Pool. Trying to get a new one.");
                         con = getMultiConnection();
                         con.claim();
+                        log.service("Got a closed connection from the connection Pool, it was replaced by a new one.");
                     }
                 } catch (SQLException sqe) {
-                    log.error(sqe.getMessage());
+                    log.error("Closed connection could not be replaced because: " + sqe.getClass().getName() + ": " + sqe.getMessage());
                 }
                 busyPool.add(con);
-                log.debug("Pool: " + pool.size() + " busypool: " + busyPool.size());
+                if (log.isDebugEnabled()) {
+                    log.debug("Pool: " + pool.size() + " busypool: " + busyPool.size());
+                }
             }
         } catch (InterruptedException e) {
             log.error("GetFree was Interrupted");
@@ -380,23 +384,20 @@ public class MultiPool {
      * putback the used connection in the pool
      */
     public void putBack(MultiConnection con) {
-        // Don't put back bad connections;
-        try {
-            if (con.isClosed() || con.markedClosed) {
-                return;
-            }
-        } catch (SQLException e) {
-            return;
-        }
         //see comment in method checkTime()
         synchronized (semaphore) {
-            log.debug("Putting back to Pool: " + pool.size() + " from busypool: " + busyPool.size());
+            if (log.isDebugEnabled()) {
+                log.debug("Putting back to Pool: " + pool.size() + " from busypool: " + busyPool.size());
+            }
+
             if (! busyPool.contains(con)) {
                 log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
             }
 
+
             con.release(); //Only resets time connection is busy.
-            MultiConnection oldcon = con;
+
+            MultiConnection oldCon = con;
 
             if (doReconnect && (con.getUsage() > maxQueries)) {
                 log.debug("Re-oppening connection");
@@ -405,18 +406,20 @@ public class MultiPool {
                 try {
                     con = getMultiConnection();
                     gotNew = true;
-                } catch(SQLException re) {
-                    log.error("Can't add connection to pool (during reconnect) " + re.toString());
+                } catch(SQLException sqe) {
+                    log.error("Can't add connection to pool (during reconnect) " + sqe.toString());
                 }
 
                 if (gotNew) { // a new conection has successfully created, the old one can be closed
-                    new ConnectionCloser(oldcon);
+                    new ConnectionCloser(oldCon);
                 }
             }
 
             pool.add(con);
-            busyPool.remove(oldcon);
-            log.debug("Pool: " + pool.size() + " busypool: " + busyPool.size());
+            busyPool.remove(oldCon);
+            if (log.isDebugEnabled()) {
+                log.debug("Pool: " + pool.size() + " busypool: " + busyPool.size());
+            }
             semaphore.release();
         }
     }

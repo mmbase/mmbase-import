@@ -29,16 +29,15 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.32 2004-02-02 18:35:18 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.33 2004-03-19 12:13:47 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
-    public final static int CON_UNUSED = 0;
-    public final static int CON_BUSY = 1;
+    public final static int CON_UNUSED   = 0;
+    public final static int CON_BUSY     = 1;
     public final static int CON_FINISHED = 2;
-    public final static int CON_FAILED = 3;
+    public final static int CON_FAILED   = 3;
     
-    // logging
     private static final Logger log = Logging.getLoggerInstance(MultiConnection.class);
     
     /**
@@ -54,23 +53,16 @@ public class MultiConnection implements Connection {
      */
     String lastSql;
     
-    private long startTimeMillis=0;
+    private long startTimeMillis = 0;
     private int usage=0;
     public int state=0;
-
-    /**
-     * If a connection will be forced to close (which will happen , then it is 'marked closed' first 
-     * Used by MultiPool only (therefore is is package)
-     * @since MMBase-1.7
-     */
-    boolean markedClosed = false;
     
     /**
      * protected constructor for extending classes, so they can use
      * this with for example only a connection..
      */
     protected MultiConnection() {       
-        state=CON_UNUSED;
+        state = CON_UNUSED;
     }
     
     /**
@@ -117,7 +109,7 @@ public class MultiConnection implements Connection {
      * createStatement returns an SQL Statement object
      */
     public Statement createStatement() throws SQLException {
-        MultiStatement s=new MultiStatement(this,con.createStatement());
+        MultiStatement s=new MultiStatement(this, con.createStatement());
         return s;
     }
     
@@ -212,7 +204,6 @@ public class MultiConnection implements Connection {
         } else {                      // query took more than 60 s, that's worth a warning
             log.warn(getLogSqlMessage(time));
         }
-
 
         state = CON_FINISHED;
         // If there is a parent object, this connection belongs to a pool and should not be closed,
@@ -336,7 +327,7 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     public void release() {
-        startTimeMillis=0;
+        startTimeMillis = 0;
     }
     
     /**
@@ -347,14 +338,14 @@ public class MultiConnection implements Connection {
     }
     
     /**
-     * @javadoc
+     * Returns the moment on which the last SQL statement was started in seconds after 1970.
      */
     public int getStartTime() {
-        return (int)(startTimeMillis/1000);
+        return (int) (startTimeMillis / 1000);
     }
     
     /**
-     * @javadoc
+     * Returns the moment on which the last SQL statement was started in milliseconds after 1970.
      */
     public long getStartTimeMillis() {
         return startTimeMillis;
