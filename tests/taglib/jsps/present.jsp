@@ -89,6 +89,11 @@ With integer<br />
 <mm:import id="b5" vartype="integer">9</mm:import>
 <mm:isgreaterthan referid="a5" referid2="b5">OK <mm:write value="$a5 &gt; $b5" /><br /></mm:isgreaterthan>
 <mm:islessthan    referid="a5" referid2="b5">WRONG <mm:write value="$a5 &lt; $b5" /><br /></mm:islessthan>
+With double/integer<br />
+<mm:import id="a7" vartype="double">10</mm:import>
+<mm:import id="b7" vartype="integer">9</mm:import>
+<mm:isgreaterthan referid="a7" referid2="b7">OK <mm:write value="$a7 &gt; $b7" /><br /></mm:isgreaterthan>
+<mm:islessthan    referid="a7" referid2="b7">WRONG <mm:write value="$a7 &lt; $b7" /><br /></mm:islessthan>
 With string (default)<br />
 <mm:import id="a6">bcd</mm:import>
 <mm:import id="b6">abc</mm:import>
