@@ -26,11 +26,11 @@
       <br />
       <%=m.getString("send")%><button type="submit"><img src="media/search.gif" /></button>
     </form>
-    <!-- p>
+    <%-- p>
       U kunt ook onmiddelijk <a href="<mm:url page="login.jsp" />">inloggen</a>.
-    </p-->
+      </p --%>
   </body>
-</mm:notpresent>
+</mm:notpresent><%-- no origin yet --%>
 
 <mm:present referid="config.mediaeditors_origin_set">
 
@@ -85,7 +85,7 @@
 </table>
 </p>
 </body>
-</mm:present>
+</mm:present><%-- origin set --%>
 </html>
 </mm:cloud>
 </mm:content>

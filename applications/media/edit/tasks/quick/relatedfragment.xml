@@ -2,17 +2,11 @@
 List with posrelated fragments 
 -->
 
-<list destination="&type;fragments" searchdir="destination" role="posrel" orderby="field[@name='pos']">
-  <title>Items</title>       
+<list destination="&type;fragments" searchdir="destination" role="posrel" orderby="field[@name='pos']" maxoccurs="1" hidecommand="delete-item">
+  <title>Item (Druk op 'Opslaan' en dan op view)</title>       
   <item>          
-    <!-- field fdatapath="field[@name='pos']" / -->
     <field name="title" />
     <field name="intro" rows="2" />
-
-    <!--field inline="true" ftype="startwizard" wizardname="tasks/clipping/&type;item">
-      <prompt xml:lang="en">Other fields</prompt>
-      <prompt xml:lang="nl">Andere velden</prompt>
-    </field-->
 
     <field name="start"  ftype="realposition">
        <prompt xml:lang="en">In</prompt>
@@ -24,8 +18,6 @@ List with posrelated fragments
     </field>
   </item>
 
-  <!-- command name="startwizard" inline="true" wizardname="tasks/clipping/&type;item" objectnumber="new" origin="{$origin}">
-  </command -->
   <command name="insert" />
 
 	<action type="create">
