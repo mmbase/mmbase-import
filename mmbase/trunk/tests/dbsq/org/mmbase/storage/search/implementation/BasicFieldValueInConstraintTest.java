@@ -11,7 +11,7 @@ import org.mmbase.module.corebuilders.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicFieldValueInConstraintTest extends TestCase {
 
@@ -22,8 +22,6 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     private final static String STRING_TEST_VALUE1 = "kjjdf kjjkl";
     private final static String STRING_TEST_VALUE2 = " KLkljklj KJKLJ ERwe ";
     private final static Integer INTEGER_TEST_VALUE = new Integer(12345);
-    private final static Long LONG_TEST_VALUE = new Long(12345);
-    private final static Float FLOAT_TEST_VALUE2 = new Float(12345.1);
 
     /** Test instance. */
     private BasicFieldValueInConstraint instance = null;
@@ -111,19 +109,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
         instance2.addValue(INTEGER_TEST_VALUE);
         values = new ArrayList(instance2.getValues());
         assertTrue(values.size() == 1);
-        assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
-        // Same value, should not result in new element in values.
-        instance2.addValue(LONG_TEST_VALUE);
-        values = new ArrayList(instance2.getValues());
-        assertTrue(values.size() == 1);
-        assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
-        assertTrue(values.indexOf(LONG_TEST_VALUE.toString()) == 0);
-        BasicFieldValueInConstraint result = instance2.addValue(FLOAT_TEST_VALUE2);
-        values = new ArrayList(instance2.getValues());
-        assertTrue(values.size() == 2);
-        assertTrue(values.indexOf(INTEGER_TEST_VALUE.toString()) == 0);
-        assertTrue(values.indexOf(FLOAT_TEST_VALUE2.toString()) == 1);
-        assertTrue(result == instance2);
+        assertTrue(values.indexOf(INTEGER_TEST_VALUE) == 0);
     }
 
     /** Test of getValues method, of class org.mmbase.storage.search.implementation.BasicFieldValueInConstraint. */
