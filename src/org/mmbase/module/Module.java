@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.45 2003-05-01 15:03:50 kees Exp $
+ * @version $Id: Module.java,v 1.46 2003-07-02 06:20:44 keesj Exp $
  */
 public abstract class Module {
     
@@ -56,7 +56,7 @@ public abstract class Module {
     private Object synobj=new Object();
     
     public Module() {
-        String StartedAt=(new Date(DateSupport.currentTimeMillis())).toString();
+        String StartedAt=(new Date(System.currentTimeMillis())).toString();
         //String StartedAt=(new Date()).toString();
         state.put("Start Time",StartedAt);
         // org.mmbase mimetypes=Environment.getProperties(this,"mimetypes");

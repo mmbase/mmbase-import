@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.13 2003-05-08 06:01:19 kees Exp $
+ * @version $Id: Vwmtasks.java,v 1.14 2003-07-02 06:20:45 keesj Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -133,7 +133,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
      * @return the node to be committed (after changes have been made).
      */
     public MMObjectNode preCommit(MMObjectNode node) {
-        node.setValue("changedtime",(int)(DateSupport.currentTimeMillis()/1000));
+        node.setValue("changedtime",(int)System.currentTimeMillis()/1000);
         return node;
     }
 
@@ -202,7 +202,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         if (vwms==null)
         	vwms = (Vwms)mmb.getMMObject("vwms");
         int checktime = lastchecked;
-        lastchecked= (int)(DateSupport.currentTimeMillis()/1000);
+        lastchecked= (int)(System.currentTimeMillis()/1000);
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
         log.service("Search vwmtasks "+"WHERE changedtime>"+checktime
                 +" AND wantedcpu='"+getMachineName()+"'"

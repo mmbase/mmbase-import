@@ -9,15 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.database;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.sql.ResultSet;
+import java.sql.*;
 
-import org.mmbase.module.database.JDBCInterface;
-
+import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.*;
-import org.mmbase.module.core.*;
 
 /**
  * Support2Storage implements a number of methods that allow a DatabaseStorage class to also implement
@@ -26,7 +22,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.5 2003-06-24 09:55:41 michiel Exp $
+ * @version $Id: Support2Storage.java,v 1.6 2003-07-02 06:20:46 keesj Exp $
  */
 public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseStorage, MMJdbc2NodeInterface {
 
