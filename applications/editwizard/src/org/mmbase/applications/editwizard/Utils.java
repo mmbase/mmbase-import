@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.5 2002-02-25 12:47:05 pierre Exp $
+ * @version $Id: Utils.java,v 1.6 2002-02-27 12:11:11 pierre Exp $
  */
 public class Utils {
 
@@ -41,7 +41,7 @@ public class Utils {
     /**
      * XML Utils
      */
-    
+
     /**
      * This method returns a new instance of a DocumentBuilder.
      *
@@ -116,7 +116,7 @@ public class Utils {
             // This creates a transformer that does a simple identity transform,
             // and thus can be used for all intents and purposes as a serializer.
             Transformer serializer = tfactory.newTransformer();
-                       
+
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             serializer.transform(new DOMSource(node),  new StreamResult(writer));
@@ -213,15 +213,24 @@ public class Utils {
     }
 
     /**
-     * same as above, but without params
+     * Returns the text value of the given node.
+     *
+     * @param       node    the node where you want the text from.
+     * @param       defaultvalue  if no text is found, this defaultvalue will be returned
+     * @return     The value of the containing textnode. If no textnode present, defaultvalue is returned.
      */
     public static String getText(Node node, String defaultvalue) {
         try {
-            if (node.getNodeType()==Node.TEXT_NODE) return node.getNodeValue();
-            if (node.getFirstChild().getNodeType()==Node.TEXT_NODE) return node.getFirstChild().getNodeValue();
-
+            if ((node.getNodeType()==Node.TEXT_NODE) ||
+                (node.getNodeType()==Node.ATTRIBUTE_NODE)) {
+                return node.getNodeValue();
+            }
+            Node childnode=node.getFirstChild();
+            if ((childnode!=null) &&(childnode.getNodeType()==Node.TEXT_NODE)) {
+                return childnode.getNodeValue();
+            }
         } catch (Exception e) {
-            log.warn(Logging.stackTrace(e));
+            log.warn(e.getMessage());
         }
         return defaultvalue;
     }
@@ -248,7 +257,7 @@ public class Utils {
                 }
             } else {
                 return x.toString();
-            }		
+            }
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }
@@ -408,7 +417,7 @@ public class Utils {
             // Set any stylesheet parameters.
             setStylesheetParams(transformer, params);
             if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
-            transformer.transform(new DOMSource(node), result);                       
+            transformer.transform(new DOMSource(node), result);
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }
@@ -432,7 +441,7 @@ public class Utils {
                 doc = node.getOwnerDocument();
             }
             org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
-            
+
             format.setIndenting(true);
             format.setPreserveSpace(false);
             //  format.setOmitXMLDeclaration(true);
@@ -440,7 +449,7 @@ public class Utils {
             java.io.StringWriter result = new java.io.StringWriter();
             org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
             prettyXML.serialize(doc);
-            return result.toString();    
+            return result.toString();
         } catch (Exception e) {
             return e.toString();
         }
@@ -483,9 +492,9 @@ public class Utils {
      */
     public static void transformNode(Node node, String xslfilename, Writer out, Hashtable params) {
         if (log.isDebugEnabled()) log.debug("transforming: " + node.toString());
-        
+
         // UNICODE works like this...
-        java.io.StringWriter res = new java.io.StringWriter();           
+        java.io.StringWriter res = new java.io.StringWriter();
         transformNode(node,xslfilename, new javax.xml.transform.stream.StreamResult(res),  params);
         if (log.isDebugEnabled()) log.debug("transformation result " + res.toString());
         try {
