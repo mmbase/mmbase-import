@@ -8,13 +8,13 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.2 2003-12-03 10:10:07 michiel Exp $
+  @version $Id: prompts.xsl,v 1.3 2004-01-12 22:07:13 nico Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
 <!-- prompts for starting a editwizard -->
-<xsl:template name="prompt_edit_wizard">Change...</xsl:template>
-<xsl:template name="prompt_add_wizard"><img src="{$mediadir}new.gif" border="0" width="20" height="20" alt="(start wizard)"/></xsl:template>
+<xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
+<xsl:variable name="tooltip_add_wizard">New</xsl:variable>
 <!-- prompts for datefields -->
 <xsl:template name="optionlist_months">
   <option value="1">gennaio</option>
