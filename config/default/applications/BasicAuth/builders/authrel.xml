@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="authrel" maintainer="mmbase.org" version="0" extends="insrel">
-<!-- @version $Id: authrel.xml,v 1.8 2002-10-31 13:35:15 pierre Exp $ -->
+<!-- @version $Id: authrel.xml,v 1.9 2002-11-22 16:02:04 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -58,8 +58,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Set (1) or clear (0) creation rights</description>
+          <description xml:lang="nl">Zet (1) of wis(0) creëer rechten</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -92,8 +92,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Set (1) or clear (0) write rights</description>
+          <description xml:lang="nl">Zet (1) of wis(0) schrijf rechten</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -126,8 +126,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Set (1) or clear (0) read rights</description>
+          <description xml:lang="nl">Zet (1) of wis(0) lees rechten</description>
         </descriptions>
         <!-- gui related -->
         <gui>

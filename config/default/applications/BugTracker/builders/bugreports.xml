@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="bugreports" maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: bugreports.xml,v 1.6 2002-10-31 13:35:16 pierre Exp $ -->
+<!-- @version $Id: bugreports.xml,v 1.7 2002-11-22 16:02:04 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -64,8 +64,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Short problem description</description>
+          <description xml:lang="nl">Korte probleem beschrijving</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -97,8 +97,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Version of the system where the problem occurs</description>
+          <description xml:lang="nl">Versienummer van het systeem waarin het probleem zich voordoet</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -131,8 +131,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Type of the problem (i.e. bug, desired feature, documentation)</description>
+          <description xml:lang="nl">Type probleem (bijv storing, wens, documentatie)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -164,8 +164,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Priority of the bug (low, medium, high)</description>
+          <description xml:lang="nl">Prioriteit van het probleem (laag, gemiddeld, hoog)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -198,8 +198,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">State of the bug (i.e. open, solved, accepted)</description>
+          <description xml:lang="nl">Status van het probleem (bv. open, verwerkt, geaccepteerd)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -232,8 +232,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Rationale of the maintainer, motivation for actions performed</description>
+          <description xml:lang="nl">Motivatie voor uitgevoerd onderhoud n.a.v. het probleem</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -265,8 +265,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Extended description of the problem (include log and examples if available)</description>
+          <description xml:lang="nl">Uitgebreide beschrijving van de bug, indien beschikbara met log en voorbeelden</description>
         </descriptions>
         <!-- gui related -->
         <gui>
