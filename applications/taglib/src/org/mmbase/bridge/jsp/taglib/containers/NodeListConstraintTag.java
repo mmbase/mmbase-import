@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -21,12 +22,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.17 2003-11-19 16:57:43 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.18 2003-12-09 20:12:58 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
-
-    private static final int BETWEEN = -1; // not FieldCompareConstraint
-
+  
     private static final Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
@@ -35,13 +34,15 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     protected Attribute field      = Attribute.NULL;
     protected Attribute value      = Attribute.NULL;
+    protected Attribute referid     = Attribute.NULL;
 
-    protected Attribute value2    = Attribute.NULL; // needed for BETWEEN
+    protected Attribute value2      = Attribute.NULL; // needed for BETWEEN
+    protected Attribute referid2    = Attribute.NULL; // needed for BETWEEN
 
 
     protected Attribute inverse    = Attribute.NULL;
 
-    protected Attribute field2     = Attribute.NULL; // not implemented
+    protected Attribute field2     = Attribute.NULL;
 
     protected Attribute caseSensitive = Attribute.NULL;
 
@@ -64,6 +65,14 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     public void setValue2(String v) throws JspTagException {
         value2 = getAttribute(v);
+    }
+
+    public void setReferid(String r) throws JspTagException {
+        referid = getAttribute(r);
+    }
+
+    public void setReferid2(String r) throws JspTagException {
+        referid2 = getAttribute(r);
     }
 
     public void setOperator(String o) throws JspTagException {
@@ -89,97 +98,41 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         }
     }
 
-    protected int getOperator() throws JspTagException {
-        String op = operator.getString(this).toUpperCase();
-        if (op.equals("<") || op.equals("LESS")) {
-            return FieldCompareConstraint.LESS;
-        } else if (op.equals("<=") || op.equals("LESS_EQUAL")) {
-            return FieldCompareConstraint.LESS_EQUAL;
-        } else if (op.equals("=") || op.equals("EQUAL") || op.equals("")) {
-            return FieldCompareConstraint.EQUAL;
-        } else if (op.equals(">") || op.equals("GREATER")) {
-            return FieldCompareConstraint.GREATER;
-        } else if (op.equals(">=") || op.equals("GREATER_EQUAL")) {
-            return FieldCompareConstraint.GREATER_EQUAL;
-        } else if (op.equals("LIKE")) {
-            return FieldCompareConstraint.LIKE;
-        } else if (op.equals("BETWEEN")) {
-            return BETWEEN;
-        //} else if (op.equals("~") || op.equals("REGEXP")) {
-        //  return FieldCompareConstraint.REGEXP;
-        } else {
-            throw new JspTagException("Unknown Field Compare Operator '" + op + "'");
-        }
-    }
 
-    protected static Number getNumberValue(String stringValue) throws JspTagException {
-        try {
-            return  new Integer(stringValue);
-        } catch (NumberFormatException e) {
-            try {
-               return new Double(stringValue);
-            } catch (NumberFormatException e2) {
-                throw new  JspTagException("Operator requires number value ('" + stringValue + "' is not)");
-            }
-        }
-    }
-
-    public static Constraint buildConstraint(Query query, String field, String field2, int operator,
-                                             String stringValue, String stringValue2) throws JspTagException {
-        return buildConstraint(query, field, field2, operator, stringValue, stringValue2, false);
-    }
-
-    protected static Constraint buildConstraint(Query query, String field, String field2, int operator,
-                                          String stringValue, String stringValue2, boolean caseSensitive) throws JspTagException {
-        Object compareValue;
-
-        StepField stepField = query.createStepField(field);
-        if (stepField == null) throw new JspTagException("Could not create stepfield with '" + field + "'");
-        log.debug(stepField);
-
-        Cloud cloud = query.getCloud();
-        FieldConstraint newConstraint;
-        if (field2 != null && ! field2.equals("")) {
-            StepField stepField2 = query.createStepField(field2);
-            newConstraint = query.createConstraint(stepField, operator, stepField2);
-        } else {
-            int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
-
-            if (fieldType != Field.TYPE_STRING && 
-                fieldType != Field.TYPE_XML &&
-                operator < FieldCompareConstraint.LIKE) {
-                compareValue = getNumberValue(stringValue);
-            } else {
-                compareValue = stringValue;
-            }
-            if (operator > 0) {
-                newConstraint = query.createConstraint(stepField, operator, compareValue);
-            } else {
-                if (operator == BETWEEN) {
-                    newConstraint = query.createConstraint(stepField, compareValue, getNumberValue(stringValue2));
-                } else {
-                    throw new RuntimeException("Unknown value for operation " + operator);
-                }
-            }
-        }
-        query.setCaseSensitive(newConstraint, caseSensitive);
-        return newConstraint;
-    }
-
-    public static Constraint addConstraintToQuery(Query query, Constraint newConstraint) throws JspTagException {
-        Constraint constraint = query.getConstraint();
-        if (constraint != null) {
-            log.debug("compositing constraint");
-            Constraint compConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-            query.setConstraint(compConstraint);
-        } else {
-            query.setConstraint(newConstraint);
-        }
-        return newConstraint;
-    }
 
     private Constraint addConstraint(Query query) throws JspTagException {
-        Constraint newConstraint = buildConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this), getCaseSensitive());
+        int op = Queries.getOperator(operator.getString(this));
+
+        Object compareValue;
+        if (value != Attribute.NULL) {
+            if (referid != Attribute.NULL || field2 != Attribute.NULL) throw new JspTagException("Can specify only one of value, referid and field2 attributes on constraint tag");
+            compareValue = value.getString(this);
+        } else if (referid != Attribute.NULL) {
+            if (field2 != Attribute.NULL) throw new JspTagException("Can specify only one of value, referid and field2 attributes on constraint tag");
+            compareValue = getObject(referid.getString(this));
+        } else if (field2 != Attribute.NULL) {
+            compareValue = query.createStepField(field2.getString(this));
+        } else {
+            throw new JspTagException("Should specify one of value, referid and field2 attributes on constraint tag");
+        }
+
+        Object compareValue2 = null;
+        if (op == Queries.OPERATOR_BETWEEN) {
+            if (value2 != Attribute.NULL) {
+                if (referid != Attribute.NULL) throw new JspTagException("Can specify only one of value2, referid2 attributes on constraint tag");
+                compareValue2 = value2.getString(this);
+            } else if (referid2 != Attribute.NULL) {
+                compareValue2 = getObject(referid2.getString(this));
+            } else {
+                throw new JspTagException("Should specify one of value2, referid2 attributes on constraint tag if operator is 'BETWEEN'");
+            }          
+        } 
+        
+        
+        Constraint newConstraint = Queries.createConstraint(query, field.getString(this), Queries.getOperator(operator.getString(this)), compareValue, compareValue2, getCaseSensitive());
+
+
+        //buildConstraint(query, field.getString(this), field2.getString(this), getOperator(), value.getString(this), value2.getString(this), getCaseSensitive());
 
         // if there is a OR or an AND tag, add
         // the constraint to that tag,
@@ -188,7 +141,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         if (cons!=null) {
             cons.addChildConstraint(newConstraint);
         } else {
-            newConstraint = addConstraintToQuery(query, newConstraint);
+            newConstraint = Queries.addConstraint(query, newConstraint);
         }
         return newConstraint;
     }
