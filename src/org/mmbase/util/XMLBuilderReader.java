@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.29 2003-04-10 13:51:37 pierre Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.30 2003-04-11 09:03:49 pierre Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -58,7 +58,7 @@ public class XMLBuilderReader extends XMLBasicReader {
     public static void registerPublicIDs() {
         // various builder dtd versions
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0, DTD_BUILDER_1_0, XMLBuilderReader.class);
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_0, XMLBuilderReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_1, XMLBuilderReader.class);
 
         // legacy public IDs (wrong, don't use these)
         XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0_FAULT, DTD_BUILDER_1_0, XMLBuilderReader.class);
