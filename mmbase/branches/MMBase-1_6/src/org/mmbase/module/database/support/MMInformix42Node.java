@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.41.2.2 2003-03-24 14:18:39 mark Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41.2.3 2003-03-26 10:19:56 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -655,8 +655,10 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 
                     try {
                         contentString = rs.getString(i);
-                        contentBytes = contentString.getBytes();
-                        encodedString = new String(contentBytes, mmb.getEncoding());
+                        if (contentString!=null) {
+                            contentBytes = contentString.getBytes();
+                            encodedString = new String(contentBytes, mmb.getEncoding());
+                        }
                     } catch (Exception e) {
                         log.error("Can't get String from resultset");
                         log.error(e.getMessage());
