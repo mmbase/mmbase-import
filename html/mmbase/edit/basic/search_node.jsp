@@ -48,8 +48,7 @@
                        }
                     } ); // MMCI doesn't sort, do it ourselves.
                     for (int i=0; i<l.size(); i++) {
-                        NodeManager nt = l.getNodeManager(i);
-                    
+                        NodeManager nt = l.getNodeManager(i);                    
                         if ( (nt.mayCreateNode() && !nt.hasField("dnumber")) || !"short".equals(liststyle)) {
                 %>
       	    	    <tr valign="top">
@@ -86,7 +85,7 @@
     	    	<mm:present referid="node_type">		   
 		    <!-- following page needs the param 'to_page' -->
 		    	<mm:import id="to_page"><mm:url page="change_node.jsp"/></mm:import>			       
-			 <%@include file="search_node_with_type.jsp" %>
+	     		 <mm:include referids="to_page" page="search_node_with_type.jsp" />
 		    <!-- end import -->	    	   
                <mm:maycreate type="$node_type">
               	    	<table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">

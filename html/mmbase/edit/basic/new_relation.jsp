@@ -31,7 +31,7 @@
     </mm:compare>     
      
      <tr><td>
-     <%@ include file="search_node_with_type.jsp" %>   
+		<mm:include  referids="to_page" page="search_node_with_type.jsp" />
         <mm:maycreate type="$node_type">
                  <table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
                  <tr>
