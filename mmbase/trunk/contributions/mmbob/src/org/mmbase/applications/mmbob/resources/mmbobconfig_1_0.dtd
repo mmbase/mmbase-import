@@ -9,7 +9,7 @@
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode,guestwritemode,postarea*)>
+<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postarea*)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
