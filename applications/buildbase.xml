@@ -166,11 +166,11 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF" />
     <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="documentation" />
     <zipfileset dir="${project.build.dir}"  includes="documentation/**" />
+    <zipfileset dir="${project.source.dir}" includes="documentation/**" prefix="src" />
     <fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
     <fileset dir="${project.source.dir}">
       <patternset id="root.package.files" >
         <include name="src/**"/>
-        <include name="documentation/**"/>
       </patternset>
     </fileset>
     <!-- the rest are templates -->
