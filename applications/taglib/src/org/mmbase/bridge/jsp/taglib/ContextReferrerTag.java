@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.57.2.2 2004-07-12 08:18:05 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.3 2004-07-23 19:41:09 michiel Exp $
  * @see ContextTag
  */
 
@@ -319,7 +319,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @since MMBase-1.7
      */
 
-    final protected TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
+    final public TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
         TagSupport cTag = (TagSupport) findAncestorWithClass((Tag) this, clazz);
         if (cTag == null) {
             if (exception) {
@@ -470,6 +470,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }
     }
+
 
     // Writer Implmentation
     // Not all ContextReferrerTags are actually Writers, but no m.i. in java.
