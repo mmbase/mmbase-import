@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.24 2002-10-29 10:57:37 michiel Exp $
+  @version $Id: list.xsl,v 1.25 2002-11-14 12:39:31 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -124,7 +124,7 @@
    -->
 ]]></xsl:text>
       </script>
-      <xsl:call-template name="extrastyle" />
+      <xsl:call-template name="extrajavascript" />
   </xsl:template>
 
   <!-- ================================================================================
