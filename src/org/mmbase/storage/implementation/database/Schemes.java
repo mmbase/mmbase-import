@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.1 2003-08-21 09:59:30 pierre Exp $
+ * @version $Id: Schemes.java,v 1.2 2003-08-21 16:16:32 pierre Exp $
  */
 public final class Schemes {
 
@@ -160,7 +160,7 @@ public final class Schemes {
     /**
      *  The default scheme for selecting a node type.
      */
-    public static final String DELETE_NODE_DEFAULT = "DELETE FROM {1} WHERE {2} = {3,number}";
+    public static final String DELETE_NODE_DEFAULT = "DELETE FROM {1} WHERE {2} = {3,number,##########}";
 
     /**
      *  Name of the scheme for dropping a row type.
@@ -203,7 +203,7 @@ public final class Schemes {
     /**
      *  The default scheme for reading a binary field.
      */
-    public static final String GET_BINARY_DATA_DEFAULT = "SELECT {2} FROM {1} WHERE {3} = {4,number}";
+    public static final String GET_BINARY_DATA_DEFAULT = "SELECT {2} FROM {1} WHERE {3} = {4,number,##########}";
 
     /**
      *  Name of the scheme for obtaining the size of a (builder) table.
@@ -236,7 +236,7 @@ public final class Schemes {
     /**
      *  The default scheme for reading a text field.
      */
-    public static final String GET_TEXT_DATA_DEFAULT = "SELECT {2} FROM {1} WHERE {3} = {4,number}";
+    public static final String GET_TEXT_DATA_DEFAULT = "SELECT {2} FROM {1} WHERE {3} = {4,number,##########}";
 
     /**
      *  Name of the scheme for inserting a node.
@@ -270,7 +270,7 @@ public final class Schemes {
     /**
      *  The default scheme for selecting a node.
      */
-    public static final String SELECT_NODE_DEFAULT = "SELECT * FROM {1} WHERE {2} = {3,number}";
+    public static final String SELECT_NODE_DEFAULT = "SELECT * FROM {1} WHERE {2} = {3,number,##########}";
 
     /**
      *  Name of the scheme for selecting a node type.
@@ -287,7 +287,7 @@ public final class Schemes {
     /**
      *  The default scheme for selecting a node type.
      */
-    public static final String SELECT_NODE_TYPE_DEFAULT = "SELECT otype FROM {1} WHERE {2} = {3,number}";
+    public static final String SELECT_NODE_TYPE_DEFAULT = "SELECT otype FROM {1} WHERE {2} = {3,number,##########}";
 
     /**
      *  Name of the scheme for updating a node type.
@@ -305,6 +305,6 @@ public final class Schemes {
     /**
      *  The default scheme for updating a node type.
      */
-    public static final String UPDATE_NODE_DEFAULT = "UPDATE {1} SET {2} WHERE {3} = {4,number}";
+    public static final String UPDATE_NODE_DEFAULT = "UPDATE {1} SET {2} WHERE {3} = {4,number,##########}";
 
 }
