@@ -160,7 +160,7 @@ public class HttpAuth {
         pos = remoteAuthenticationHost.indexOf(':');
         if (pos!=-1) {
             try {
-                remoteAuthenticationPort = Integer.parseInt(remoteAuthenticationHost.substring(pos));
+                remoteAuthenticationPort = Integer.parseInt(remoteAuthenticationHost.substring(pos+1));
             }
             catch (Exception e) {
                 log.error(e.toString());
