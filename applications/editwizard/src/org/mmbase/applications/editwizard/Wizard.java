@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.79 2003-04-24 08:08:22 pierre Exp $
+ * @version $Id: Wizard.java,v 1.80 2003-05-13 12:34:53 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1171,39 +1171,41 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param       form        the pre-html form node
      * @param       field       the form definition field node
-     * @param       datanode     the current context data node. It might be 'null' if the field already contains the 'number' attribute.
+     * @param       dataNode     the current context data node. It might be 'null' if the field already contains the 'number' attribute.
      */
-    private void createFormField(Node form, Node field, Node datanode) throws WizardException {
+    private void createFormField(Node form, Node field, Node dataNode) throws WizardException {
         if (log.isDebugEnabled()) log.debug("Creating form field for " + field + " wizard for obj: " + objectNumber);
         // copy all attributes from fielddefinition to new pre-html field definition
 
-        Node newfield = form.getOwnerDocument().createElement("field");
+        Node newField = form.getOwnerDocument().createElement("field");
 
-        Utils.copyAllAttributes(field, newfield);
+        Utils.copyAllAttributes(field, newField);
         // place newfield in pre-html form
-        form.appendChild(newfield);
+        form.appendChild(newField);
 
-        List exceptattrs = new Vector();
-        exceptattrs.add("fid");
-        // copy all attributes from data to new pre-html field def
-        if (datanode != null && datanode.getNodeType() != Node.ATTRIBUTE_NODE){
-            Utils.copyAllAttributes(datanode, newfield, exceptattrs);
+        {
+            List exceptAttrs = new ArrayList(); // what is this?           
+            exceptAttrs.add("fid");
+            // copy all attributes from data to new pre-html field def
+            if (dataNode != null && dataNode.getNodeType() != Node.ATTRIBUTE_NODE) {
+                Utils.copyAllAttributes(dataNode, newField, exceptAttrs);
+            }
         }
 
-        String ftype = Utils.getAttribute(newfield, "ftype");
-        String dttype = Utils.getAttribute(newfield, "dttype");
+        String ftype = Utils.getAttribute(newField, "ftype");
+        String dttype = Utils.getAttribute(newField, "dttype");
         // place html form field name (so that we always know about which datanode and fieldnode we are talking)
-        String htmlfieldname = calculateFormName(newfield);
-        Utils.setAttribute(newfield, "fieldname", htmlfieldname);
+        String htmlFieldName = calculateFormName(newField);
+        Utils.setAttribute(newField, "fieldname", htmlFieldName);
 
         // place objectNumber as attribute number, if not already was placed there by the copyAllAttributes method.
-        if (datanode != null && Utils.getAttribute(datanode, "number", null) == null) {
-            Utils.setAttribute(newfield, "number", Utils.getAttribute(datanode.getParentNode(),"number"));
+        if (dataNode != null && Utils.getAttribute(dataNode, "number", null) == null) {
+            Utils.setAttribute(newField, "number", Utils.getAttribute(dataNode.getParentNode(), "number"));
         }
 
         // resolve special attributes
         if (ftype.equals("startwizard")) {
-            String wizardObjectNumber = Utils.getAttribute(newfield, "objectnumber", null);
+            String wizardObjectNumber = Utils.getAttribute(newField, "objectnumber", null);
             // if no objectnumber is found, assign the number of the current field.
             // exception is when the direct parent is a form.
             // in that case, we are editting the current object, so instead assign new
@@ -1212,32 +1214,32 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 if (form.getNodeName().equals("form")) {
                     wizardObjectNumber = "new";
                 } else {
-                    wizardObjectNumber = Utils.getAttribute(newfield, "number", "new");
+                    wizardObjectNumber = Utils.getAttribute(newField, "number", "new");
                 }
             }
-            wizardObjectNumber = Utils.transformAttribute(datanode, wizardObjectNumber);
-            Utils.setAttribute(newfield, "objectnumber", wizardObjectNumber);
-            String wizardOrigin = Utils.getAttribute(newfield, "origin", null);
-            if (wizardOrigin==null) {
-                wizardOrigin=dataId;
+            wizardObjectNumber = Utils.transformAttribute(dataNode, wizardObjectNumber);
+            Utils.setAttribute(newField, "objectnumber", wizardObjectNumber);
+            String wizardOrigin = Utils.getAttribute(newField, "origin", null);
+            if (wizardOrigin == null) {
+                wizardOrigin = dataId;
             } else {
-                wizardOrigin = Utils.transformAttribute(datanode, wizardOrigin);
+                wizardOrigin = Utils.transformAttribute(dataNode, wizardOrigin);
             }
-            Utils.setAttribute(newfield, "origin", wizardOrigin);
+            Utils.setAttribute(newField, "origin", wizardOrigin);
         }
 
         // binary type needs special processing
         if ("binary".equals(dttype)) {
-            addBinaryData(newfield);
+            addBinaryData(newField);
         }
 
         NodeList list = Utils.selectNodeList(field, "optionlist|prompt|description|action|prefix|postfix");
-        Utils.appendNodeList(list, newfield);
+        Utils.appendNodeList(list, newField);
         // place value
         // by default, theValue is the text of the node.
         String theValue = "";
         try {
-            if (datanode == null) {
+            if (dataNode == null) {
                 if (ftype.equals("function")) {
                     theValue = Utils.getAttribute(field, "name");
                     log.debug("Found a function field " + theValue);
@@ -1247,23 +1249,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     log.debug("Probably a new node");
                     throw new WizardException("No datanode given for field " + theValue + " and ftype does not equal 'function' or 'startwizard'(but " + ftype + ")");
                 }
-            } else if (datanode.getNodeType() == Node.ATTRIBUTE_NODE){
-                theValue = datanode.getNodeValue();
+            } else if (dataNode.getNodeType() == Node.ATTRIBUTE_NODE){
+                theValue = dataNode.getNodeValue();
             } else {
-                theValue = datanode.getFirstChild().getNodeValue();
+                theValue = dataNode.getFirstChild().getNodeValue();
             }
         } catch (RuntimeException e) {
             log.error(Logging.stackTrace(e));
         }
         // if this is a relation, we want the value of the dnumber field
         if (ftype.equals("relation")) {
-            theValue = Utils.getAttribute(newfield, "destination");
+            theValue = Utils.getAttribute(newField, "destination");
         }
         if (theValue == null) theValue="";
 
         Node value = form.getOwnerDocument().createElement("value");
         Utils.storeText(value, theValue);
-        newfield.appendChild(value);
+        newField.appendChild(value);
     }
 
     private void addSingleCommand(Node field, String commandname, Node datanode){
@@ -1794,44 +1796,48 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * It connects to the Dove, gets the constraints (from cache or not) and merges the values.
      *
-     * @param       fielddef        the fielddefinition as placed in the wizardschema (==definition)
-     * @param       fieldnode       The fieldnode points to the datanode. (This is needed to find out what datatype this field is about).
+     * @param       fieldDef        the fielddefinition as placed in the wizardschema (==definition)
+     * @param       fieldNode       The fieldnode points to the datanode. (This is needed to find out what datatype this field is about).
      */
-    public void mergeConstraints(Node fielddef, Node fieldnode) {
+    public void mergeConstraints(Node fieldDef, Node fieldNode) {
         // load all constraints + merge them with the settings in the schema definition
         //
-        String objecttype = Utils.getAttribute(fieldnode.getParentNode(), "type", null);
-        String fieldname =  Utils.getAttribute(fieldnode, "name", null);
 
-        if (objecttype==null || fieldname==null) {
+        if (fieldNode == null) {
+            log.warn("Tried mergeContraints on fieldNode which is null. FielDef: " + Utils.getXML(fieldDef));
+        }
+        String objectType = Utils.getAttribute(fieldNode.getParentNode(), "type", null);
+        String fieldName =  Utils.getAttribute(fieldNode, "name", null);
+
+        if (objectType == null || fieldName == null) {
             log.debug("wizard.mergeConstraints: objecttype or fieldname could not be retrieved for this field. Field:");
-            log.debug(Utils.getXML(fieldnode));
+            log.debug(Utils.getXML(fieldNode));
             return;
         }
 
-        Node con = getConstraints(objecttype, fieldname);
-        if (con==null) return; // no constraints found. so forget it.
+        Node con = getConstraints(objectType, fieldName);
+        if (con == null) return; // no constraints found. so forget it.
 
         // merge the constraints from mmbase with the constraints placed in the wizard.
 
         // first, only 'guitype' and 'required' values.
         String xmlSchemaType=null;
-        String guitype = Utils.selectSingleNodeText(con, "guitype", "string/line");
-        int pos=guitype.indexOf("/");
-        if (pos!=-1) {
-            xmlSchemaType = guitype.substring(0,pos);
-            guitype=guitype.substring(pos+1);
+        String guiType = Utils.selectSingleNodeText(con, "guitype", "string/line");
+        int pos = guiType.indexOf("/");
+        if (pos != -1) {
+            xmlSchemaType = guiType.substring(0, pos);
+            guiType = guiType.substring(pos + 1);
         }
         String required = Utils.selectSingleNodeText(con,  "required", "false");
-        String guiname = Utils.selectSingleNodeText(con,   "guiname", "");
+        String guiName = Utils.selectSingleNodeText(con,   "guiname", "");
         String description = Utils.selectSingleNodeText(con,   "description", "");
-        String maxlength = Utils.selectSingleNodeText(con, "maxlength", "-1");
+        String maxLength = Utils.selectSingleNodeText(con, "maxlength", "-1");
 
         // dttype?
-        String ftype = Utils.getAttribute(fielddef, "ftype", null);
-        String dttype = Utils.getAttribute(fielddef, "dttype", null);
-        Node prompt = Utils.selectSingleNode(fielddef, "prompt");
-        Node descriptiontag = Utils.selectSingleNode(fielddef, "description");
+        String ftype = Utils.getAttribute(fieldDef, "ftype", null);
+        String dttype = Utils.getAttribute(fieldDef, "dttype", null);
+        Node prompt = Utils.selectSingleNode(fieldDef, "prompt");
+        Node descriptionTag = Utils.selectSingleNode(fieldDef, "description");
         if (dttype == null) {
             // import xmlSchemaType (dttype)
             // note :
@@ -1870,7 +1876,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // import guitype or ftype
             // this is a qualifier, not a real type
             //
-            ftype = guitype;
+            ftype = guiType;
         }
 
         // backward compatibility.
@@ -1916,20 +1922,20 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
         // add guiname as prompt
         if (prompt == null) {
-            Utils.createAndAppendNode(fielddef, "prompt", guiname);
+            Utils.createAndAppendNode(fieldDef, "prompt", guiName);
         }
 
         // add description as helptext
-        if (descriptiontag == null) {
-            Utils.createAndAppendNode(fielddef, "description", description);
+        if (descriptionTag == null) {
+            Utils.createAndAppendNode(fieldDef, "description", description);
         }
 
         // process requiredness
         //
-        String dtrequired = Utils.getAttribute(fielddef, "dtrequired", null);
-        if (dtrequired==null) {
+        String dtrequired = Utils.getAttribute(fieldDef, "dtrequired", null);
+        if (dtrequired == null) {
             // if unknown, determine requiredness according to MMBase
-            dtrequired=required;
+            dtrequired = required;
         }
 
         // fix for old format type 'wizard'
@@ -1938,31 +1944,31 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         // store new attributes in fielddef
-        Utils.setAttribute(fielddef, "ftype", ftype);
-        Utils.setAttribute(fielddef, "dttype", dttype);
-        if (dtrequired!=null) {
-            Utils.setAttribute(fielddef, "dtrequired", dtrequired);
+        Utils.setAttribute(fieldDef, "ftype", ftype);
+        Utils.setAttribute(fieldDef, "dttype", dttype);
+        if (dtrequired != null) {
+            Utils.setAttribute(fieldDef, "dtrequired", dtrequired);
         }
 
         // process min/maxlength for strings
         if ("string".equals(dttype) || "html".equals(dttype)) {
-            String dtminlength = Utils.getAttribute(fielddef, "dtminlength", null);
+            String dtminlength = Utils.getAttribute(fieldDef, "dtminlength", null);
             if (dtminlength==null) {
                 // manually set minlength if required is true
                 if ("true".equals(dtrequired)) {
-                    Utils.setAttribute(fielddef, "dtminlength", "1");
+                    Utils.setAttribute(fieldDef, "dtminlength", "1");
                 }
             }
-            String dtmaxlength = Utils.getAttribute(fielddef, "dtmaxlength", null);
+            String dtmaxlength = Utils.getAttribute(fieldDef, "dtmaxlength", null);
             if (dtmaxlength==null) {
                 int maxlen=-1;
                 try {
-                    maxlen=Integer.parseInt(maxlength);
+                    maxlen = Integer.parseInt(maxLength);
                 } catch(NumberFormatException e) {}
                 // manually set maxlength if given
                 // ignore sizes smaller than 1 and larger than 255
-                if ((maxlen>0) && (maxlen<256)) {
-                    Utils.setAttribute(fielddef, "dtmaxlength", ""+maxlen);
+                if ((maxlen > 0) && (maxlen < 256)) {
+                    Utils.setAttribute(fieldDef, "dtmaxlength", ""+maxlen);
                 }
             }
 
