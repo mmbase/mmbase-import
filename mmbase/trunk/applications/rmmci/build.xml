@@ -148,9 +148,9 @@ Build-compiler: ${build.compiler}
 <!-- Clean the remote-classes                                            -->
 <!-- =================================================================== -->
   <target name="clean">
-    <delete failonerror="false" dir="build/src"/>
-    <delete failonerror="false" dir="build/classes"/>
+    <delete failonerror="false" dir="build"/>
   </target>
+
   <target name="install" depends="rmmci">
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" file="${project.jar.dir}/mmbase-rmmci.jar"/>
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" file="${project.jar.dir}/mmbase-rmmci-server.jar"/>
