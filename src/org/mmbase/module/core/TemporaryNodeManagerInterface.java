@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManagerInterface.java,v 1.4 2000-11-08 13:24:19 vpro Exp $
+	$Id: TemporaryNodeManagerInterface.java,v 1.5 2000-11-08 14:24:46 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/11/08 13:24:19  vpro
+	Rico: included owner in operations
+	
 	Revision 1.3  2000/10/25 14:49:36  install
 	John Balder changed getObject method
 	
@@ -31,13 +34,13 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManagerInterface.java,v 1.4 2000-11-08 13:24:19 vpro Exp $
+ * @version $Id: TemporaryNodeManagerInterface.java,v 1.5 2000-11-08 14:24:46 vpro Exp $
  */
 public interface TemporaryNodeManagerInterface {
 	public String createTmpNode(String type,String owner,String key);
 	public String deleteTmpNode(String owner,String key);
 	public MMObjectNode getNode(String owner,String key);
-	public String getObject(String owner,String key);
+	public String getObject(String owner,String key,String dbkey);
 	public String setObjectField(String owner,String key,String field,Object value);
 	public String getObjectFieldAsString(String owner,String key,String field);
 	public Object getObjectField(String owner,String key,String field);
