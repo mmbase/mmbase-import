@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
@@ -27,6 +27,8 @@ implements FieldValueConstraint {
     
     /**
      * Constructor.
+     * Depending on the field type, the value must be of type 
+     * <code>String</code> or <code>Number</code>.
      *
      * @param field The associated field.
      * @param value The non-null property value.
@@ -38,7 +40,9 @@ implements FieldValueConstraint {
     }
     
     /**
-     * Sets value property.
+     * Sets value property. 
+     * Depending on the field type, the value must be of type 
+     * <code>String</code> or <code>Number</code>.
      *
      * @param value The non-null property value.
      * @throws IllegalArgumentException when an invalid argument is supplied.

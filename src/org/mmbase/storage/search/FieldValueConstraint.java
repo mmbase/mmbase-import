@@ -15,12 +15,18 @@ package org.mmbase.storage.search;
  * This corresponds with comparison operators <, =, > and LIKE in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface FieldValueConstraint extends FieldCompareConstraint {
     /**
-     * Gets the value to compare with. If the associated field type is of string type, when used in combination with the operator <code>LIKE</code>,this may contain the following wildcard characters as well:
+     * Gets the value to compare with. 
+     * Depending on the field type, the value is of type 
+     * <code>String</code> or <code>Number</code>.
+     * <p>
+     * If the associated field type is of string type, when used in 
+     * combination with the operator <code>LIKE</code>, this may contain the 
+     * following wildcard characters as well:
      * <ul>
      * <li>% for any string
      * <li>_ for a single character
