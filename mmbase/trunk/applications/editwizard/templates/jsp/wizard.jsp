@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.8 2002-05-28 14:15:15 pierre Exp $
+     * @version  $Id: wizard.jsp,v 1.9 2002-06-24 12:36:23 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -61,7 +61,16 @@ if (wizardConfig == null) {
     ewconfig.subObjects.push(wizardConfig);
 }
 
-if (wizardConfig.wiz.mayBeClosed()) {
+if (wizardConfig.wiz.startWizard()) {
+    WizardCommand cmd=wizardConfig.wiz.getStartWizardCommand();
+    String parentFid = cmd.getFid();
+    if (parentFid==null) parentFid="";
+    String parentDid = cmd.getDid();
+    if (parentDid==null) parentDid="";
+    String objectnumber = cmd.getParameter(2);
+    String wizardname = cmd.getValue();
+    response.sendRedirect(response.encodeURL("wizard.jsp?fid="+parentFid+"&did="+parentDid+"&proceed=true&wizard="+wizardname+"&sessionkey="+ewconfig.sessionKey+"&objectnumber="+objectnumber));
+} else if (wizardConfig.wiz.mayBeClosed()) {
     log.trace("Closing this wizard");
     response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey="+ewconfig.sessionKey+"&proceed=true&remove=true"));
 } else {
