@@ -57,4 +57,21 @@ public interface CloudContext {
     	 * @throws CloudNotFoundException  if the specified cloud could not be found
 	 */
 	public Cloud getCloud(String name, String application, User user);
+	
+	/**
+	 * Returns the names of all the clouds known to the system
+    	 *
+	 * @return                      A StringList of all clouds names known to 
+	 *   	    	    	    	our Context
+	 */
+	public StringList getCloudNames();
+
+
+	/**
+	 * Returns a new User object, which can be filled, and used for the login
+	 * @return                      a new User object, which can be filled, 
+	 *  	    	    	    	and used for the login
+	 */
+    	public User getNewUser();
+	
  }
