@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.58 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: WriterHelper.java,v 1.59 2005-03-02 23:06:48 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -236,6 +236,17 @@ public class WriterHelper extends BodyTagSupport {
     public void setValue(Object v) throws JspTagException {
         setValue(v, IMPLICITLIST);
     }
+    /**
+     * @since MMBase-1.8
+     */
+    protected CharTransformer getEscaper() throws JspTagException {
+        String e = getEscape();
+        if (e == null) {
+            return (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY);
+        } else {
+            return ContentTag.getCharTransformer(e);
+        }
+    }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         pageContext = thisTag.getPageContext();
         value = null;
@@ -346,7 +357,7 @@ public class WriterHelper extends BodyTagSupport {
             _Stack.push(value);
             pushed = true;
         }
-        pageContext.setAttribute("_", Casting.wrapToString(value));
+        pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
         if (log.isDebugEnabled()) {
             log.debug("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
         }
@@ -458,7 +469,7 @@ public class WriterHelper extends BodyTagSupport {
             if (_Stack.empty()) {
                 pageContext.removeAttribute("_");
             } else {
-                pageContext.setAttribute("_", Casting.wrapToString(_Stack.peek()));
+                pageContext.setAttribute("_", Casting.wrap(_Stack.peek(), getEscaper()));
             }
             _Stack = null;
         }

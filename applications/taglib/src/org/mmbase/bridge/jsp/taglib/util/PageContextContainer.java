@@ -9,9 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
+import org.mmbase.bridge.jsp.taglib.ContentTag;
 import javax.servlet.jsp.PageContext;
 
 import org.mmbase.util.Casting;
+import org.mmbase.util.transformers.CharTransformer;
 
 import java.util.*;
 
@@ -19,7 +21,7 @@ import java.util.*;
  * The page context container stores variables directly in the page context, like JSTL does.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PageContextContainer.java,v 1.6 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: PageContextContainer.java,v 1.7 2005-03-02 23:06:49 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -68,7 +70,7 @@ public class PageContextContainer extends ContextContainer {
                                                     }
                                                     public Object setValue(Object value) {
                                                         Object was = Casting.unWrap(pageContext.getAttribute(name, SCOPE));
-                                                        pageContext.setAttribute(name, Casting.wrapToString(value), SCOPE);
+                                                        pageContext.setAttribute(name, Casting.wrap(value, (CharTransformer) pc.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
                                                         if (value == null) {
                                                             nulls.add(name);
                                                         }
@@ -98,7 +100,7 @@ public class PageContextContainer extends ContextContainer {
                     if (value == null) {
                         nulls.add(key);
                     } else {
-                        pageContext.setAttribute((String) key, Casting.wrapToString(value), SCOPE);
+                        pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pc.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
                     }
                     return was;
                 }
