@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.21 2002-06-30 19:30:13 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.22 2002-06-30 20:12:23 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -53,7 +53,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName) {
-        String servlet    = getServletPath() + sessionName;
+        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb = (origNode != null ? servlet + origNode.getIntValue("cache(s(100x60))") : "");
         String image      = servlet + node.getNumber();
