@@ -131,6 +131,25 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
 
 	public boolean sendMail(String who,String to,String subject, String msg) {
+		// added a kinda weird check so it only checks settings when
+		// needed, daniel.
+
+		if (emailTo==null) {
+			// get email config and check it
+ 	  		emailFromDomain = getInitParameter("fromdomain");
+			if (emailFromDomain == null || emailFromDomain.equals("")) debug (" missing init param from");
+			if(emailFromDomain.equals("@yourcompany.nl")) 
+				debug (" fromdomain init parameter is still default, please change!!!!");
+			emailReturnPath = getInitParameter("returnpath");
+			if (emailReturnPath == null || emailReturnPath.equals("")) debug (" missing init param returnpath");
+			if(emailReturnPath.equals("youremail@yourcompany.nl")) 
+				debug (" returnpath init parameter is still default, please change!!!!");
+			emailTo = getInitParameter("to");
+			if (emailTo == null || emailTo.equals("")) debug ("missing init param subject");
+ 			if(emailTo.equals("youremail@yourcompany.nl")) 
+			debug (" to init parameter is still default, please change!!!!");
+		}
+
 		String from="vwm_"+who+emailFromDomain;
 		Mail mail=new Mail(to,from);
 		mail.setSubject("Mail van VWM : "+who+ " : "+subject);
