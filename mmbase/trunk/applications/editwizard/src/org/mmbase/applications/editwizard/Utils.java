@@ -38,7 +38,7 @@ import org.mmbase.util.XMLErrorHandler;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.24 2002-10-04 23:25:14 michiel Exp $
+ * @version $Id: Utils.java,v 1.25 2002-10-07 08:20:55 michiel Exp $
  */
 public class Utils {
 
@@ -55,11 +55,16 @@ public class Utils {
     /**
      * This method returns an empty XMLDocument.
      *
-     * @return     a new empty Document.
+     * @return     a new empty Document. Returns null if something went wrong.
      */
     public static Document emptyDocument() {
-        DocumentBuilder dBuilder = getDocumentBuilder(false);
-        return dBuilder.newDocument();
+        try {
+            DocumentBuilder dBuilder = getDocumentBuilder(false);
+            return dBuilder.newDocument();
+        } catch (Throwable t) {
+            log.error(Logging.stackTrace(t));
+        }
+        return null;
     }
 
 
@@ -105,9 +110,7 @@ public class Utils {
             DocumentBuilder b = getDocumentBuilder(false);
             StringReader reader = new StringReader(xml);
             return b.parse(new InputSource(reader));
-        } catch (SAXException e) {
-            throw new WizardException("Could not parse schema xml file. xml:"+xml + "\n" + Logging.stackTrace(e));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new WizardException("Could not parse schema xml file. xml:"+xml + "\n" + Logging.stackTrace(e));
         }
     }
@@ -118,12 +121,17 @@ public class Utils {
      * @param        node    The node to serialize
      * @param        writer  The writer where the stream should be written to.
      */
-    public static void printXML(Node node, Writer writer) throws TransformerException {
-        Transformer serializer = FactoryCache.getCache().getDefaultFactory().newTransformer();
-        // shouldn't this tranformer be cached?
-        serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-        serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        serializer.transform(new DOMSource(node),  new StreamResult(writer));
+    public static void printXML(Node node, Writer writer) {
+        try {
+            Transformer serializer = FactoryCache.getCache().getDefaultFactory().newTransformer();
+            // shouldn't this tranformer be cached?
+            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            serializer.transform(new DOMSource(node),  new StreamResult(writer));
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+            throw new RuntimeException(Logging.stackTrace(e));
+        }
     }
 
     /**
@@ -131,7 +139,7 @@ public class Utils {
      *
      * @param        node    The node to serialize
      */
-    public static String getSerializedXML(Node node) throws TransformerException {
+    public static String getSerializedXML(Node node)  {
         StringWriter str=new StringWriter();
         printXML(node, str);
         return str.toString();
@@ -143,7 +151,7 @@ public class Utils {
      * @param        node    The node to serialize
      * @return      The resulting string.
      */
-    public static String getXML(Node node)  throws TransformerException {
+    public static String getXML(Node node)  {
         StringWriter writer = new StringWriter();
         printXML(node, writer);
         return writer.toString();
@@ -181,9 +189,14 @@ public class Utils {
      * @return     The value of the attribute. Returns the defaultvalue if none exists.
      */
     public static String getAttribute(Node node, String name, String defaultvalue) {
-        Node n = node.getAttributes().getNamedItem(name);
-        if (n == null) return defaultvalue;
-        return n.getNodeValue();
+        try {
+            Node n = node.getAttributes().getNamedItem(name);
+            if (n == null) return defaultvalue;
+            return n.getNodeValue();
+        } catch (Exception e) {
+            log.warn(Logging.stackTrace(e));
+            return defaultvalue;
+        }
     }
 
     /**
@@ -216,14 +229,17 @@ public class Utils {
      * @return     The value of the containing textnode. If no textnode present, defaultvalue is returned.
      */
     public static String getText(Node node, String defaultvalue) {
-        
-        if ((node.getNodeType()==Node.TEXT_NODE) ||
-            (node.getNodeType()==Node.ATTRIBUTE_NODE)) {
-            return node.getNodeValue();
-        }
-        Node childnode=node.getFirstChild();
-        if ((childnode!=null) &&(childnode.getNodeType()==Node.TEXT_NODE)) {
-            return childnode.getNodeValue();
+        try {
+            if ((node.getNodeType()==Node.TEXT_NODE) ||
+                (node.getNodeType()==Node.ATTRIBUTE_NODE)) {
+                return node.getNodeValue();
+            }
+            Node childnode=node.getFirstChild();
+            if ((childnode!=null) &&(childnode.getNodeType()==Node.TEXT_NODE)) {
+                return childnode.getNodeValue();
+            }
+        } catch (Exception e) {
+            log.warn(e.getMessage());
         }
         return defaultvalue;
     }
@@ -236,20 +252,25 @@ public class Utils {
      * @param       defaultvalue    this value will be returned when no node is found using the xpath.
      * @return     The text string.
      */
-    public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) throws TransformerException {
-        XObject x=XPathAPI.eval(node, xpath);
-        if (x==null) return defaultvalue;
-        if (x instanceof XNodeSet) {
-            if (x.nodelist().getLength()<1) return defaultvalue;
-            try {
-                return getText(x.nodelist().item(0));
-            } catch (Throwable ignore) {
-                //Error will occur if older Xalan/Xerces is used. If so, we'll just return the string value. Will work in most cases.
+    public static String selectSingleNodeText(Node node, String xpath, String defaultvalue) {
+        try {
+            XObject x=XPathAPI.eval(node, xpath);
+            if (x==null) return defaultvalue;
+            if (x instanceof XNodeSet) {
+                if (x.nodelist().getLength()<1) return defaultvalue;
+                try {
+                    return getText(x.nodelist().item(0));
+                } catch (Throwable ignore) {
+                    //Error will occur if older Xalan/Xerces is used. If so, we'll just return the string value. Will work in most cases.
+                    return x.toString();
+                }
+            } else {
                 return x.toString();
             }
-        } else {
-            return x.toString();
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e)+", evaluating xpath:"+xpath);
         }
+        return defaultvalue;
     }
 
     /**
@@ -503,14 +524,14 @@ public class Utils {
      * @param       attributeTemplate       the template to evaluate.
      * @return     a string with the result.
      */
-    public static String transformAttribute(Node context, String attributeTemplate) throws TransformerException {
+    public static String transformAttribute(Node context, String attributeTemplate) {
         return transformAttribute(context,attributeTemplate,false,null);
     }
 
     /**
      * same as above, but now you can supply if the given attributeTemplate is already a xpath or not. (Default should be false).
      */
-    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsPath) throws TransformerException {
+    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsPath) {
         return transformAttribute(context,attributeTemplate,plainTextIsPath,null);
     }
 
@@ -527,7 +548,7 @@ public class Utils {
        any curly braces, the template is assumed to be a valid xpath (instead
        of plain data). Else the template is assumed to be a valid attribute template.
     */
-    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map params)  throws TransformerException {
+    public static String transformAttribute(Node context, String attributeTemplate, boolean plainTextIsXpath, Map params) {
         if (attributeTemplate==null) return null;
         StringBuffer result = new StringBuffer();
         String template = fillInParams(attributeTemplate, params);
@@ -554,9 +575,14 @@ public class Utils {
      * @param xpath
      * @return    The found node.
      */
-    public static Node selectSingleNode(Node contextnode, String xpath)  throws TransformerException {
+    public static Node selectSingleNode(Node contextnode, String xpath) {
         if (contextnode==null) throw new RuntimeException("context node was null");
-        return XPathAPI.selectSingleNode(contextnode, xpath);
+        try {
+            return XPathAPI.selectSingleNode(contextnode, xpath);
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+            throw new RuntimeException(Logging.stackTrace(e));
+        }
     }
 
     /**
@@ -565,9 +591,14 @@ public class Utils {
      * @param xpath
      * @return    The found nodes in a NodeList.
      */
-    public static NodeList selectNodeList(Node contextnode, String xpath)  throws TransformerException {
+    public static NodeList selectNodeList(Node contextnode, String xpath) {
         if (contextnode==null) throw new RuntimeException("context node was null");
+        try {
             return XPathAPI.selectNodeList(contextnode, xpath);
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+            throw new RuntimeException(Logging.stackTrace(e));
+        }
     }
 
 
