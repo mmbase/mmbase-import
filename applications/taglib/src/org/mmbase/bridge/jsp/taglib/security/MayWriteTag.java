@@ -29,7 +29,7 @@ public class MayWriteTag extends NodeReferrerTag implements ConditionTag {
     }
                
     public int doStartTag() throws JspTagException {
-        if ((findNodeProvider().getNodeVar().mayWrite()) != inverse) {
+        if ((getNode().mayWrite()) != inverse) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;

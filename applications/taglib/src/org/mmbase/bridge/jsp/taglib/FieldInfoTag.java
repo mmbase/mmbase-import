@@ -507,8 +507,7 @@ public class FieldInfoTag extends NodeReferrerTag {
 
             field = fieldListTag.getField();
         } else { // not in List, get it from a parent Node            
-            np = findNodeProvider();
-            node = np.getNodeVar();
+            node = getNode();
             field = node.getNodeManager().getField(whichField);
             if (field == null) {
                 throw new JspTagException("Unknown field '" + whichField + "' for nodemanager " + node.getNodeManager().getName());
@@ -529,8 +528,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             break;
         case TYPE_USEINPUT:
             if (node == null) { 
-                np = findNodeProvider();
-                node = np.getNodeVar();
+                node = getNode();
             }
             np.setModified();
             break;

@@ -1156,7 +1156,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-         The id of the node which will be on the source side of the relation.
+         The id of the node which will be on the destination side of the relation.
 	</info>
     </attribute>
     <example>
@@ -1906,4 +1906,26 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <required>false</required>
     </attribute>
   </tag>
+
+
+
+  <tag>
+    <name>countrelations</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
+    <info>
+      This tag can be used inside a node tag to show the number of relations
+      the node has.
+    </info>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>If specified only the number of relations to the type of nodes
+      specified by this attribute are returned.</info>
+    </attribute>
+  </tag>
+
+
+
+
 </taglib>

@@ -49,7 +49,7 @@ public class GetInfoTag extends NodeReferrerTag {
 
     public int doStartTag() throws JspTagException{
         // firstly, search the node:
-        node = findNodeProvider().getNodeVar();
+        node = getNode();
 
         // found the node now. Now we can decide what must be shown:
         if (key==null) key="name";
