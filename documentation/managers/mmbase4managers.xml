@@ -7,7 +7,7 @@
 
     <date>2002-08</date>
 
-    <edition>$Id: mmbase4managers.xml,v 1.8 2004-02-17 10:40:32 gerard Exp $</edition>
+    <edition>$Id: mmbase4managers.xml,v 1.9 2004-03-10 21:30:43 gerard Exp $</edition>
 
     <authorgroup>
       <author>
@@ -323,7 +323,7 @@
       <para>To gain more insight in the actual layering of the architecture,
       an graphical overview of the architecture is provided.</para>
 
-      <graphic fileref="../general/media/architecture.png" />
+      <graphic fileref="media/architecture.png" />
 
       <para>In the above picture, the green components are plugin-like parts
       of MMBase. By using a common set of access points and negotiating the
