@@ -18,6 +18,10 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.legacy.*;
+
 
 /**
  * This class represents a node's type information object - what used to be the 'builder'.
@@ -29,16 +33,17 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.58 2003-05-08 06:09:19 kees Exp $
+ * @version $Id: BasicNodeManager.java,v 1.59 2003-07-25 14:10:30 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
-    private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
 
     // builder on which the type is based
     protected MMObjectBuilder builder;
 
     // field types
     protected Map fieldTypes = new Hashtable();
+
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -194,8 +199,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f= (Field)fieldTypes.get(fieldName);
-        if (f==null) throw new NotFoundException("Field "+fieldName+" does not exist.");
+        Field f = (Field)fieldTypes.get(fieldName);
+        if (f == null) throw new NotFoundException("Field " + fieldName + " does not exist.");
         return f;
     }
 
@@ -203,43 +208,102 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return fieldTypes.get(fieldName)!=null;
     }
 
-    public NodeList getList(String constraints, String orderby, String directions) {
+    /**
+     *
+     * @since MMBase-1.7
+     */
+    protected NodeList getList(NodeSearchQuery query) {
+        List resultList;
+        try {
+            resultList = builder.getNodes(query); // result with all MMObjectNodes (without security)
+        } catch (SearchQueryException sqe) {
+            throw new BridgeException(sqe);
+        }
+
+        log.debug("checking read rights");
+        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
+        list.autoConvert = false;
+
+        ListIterator i = list.listIterator();
+        while (i.hasNext()) {
+            if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
+                i.remove();
+            }
+        }
+        list.setProperty("query", query);
+        list.autoConvert = true;
+        return list;
+
+    }
+
+    public NodeList getList(NodeQuery query) {
+        query.markUsed();
+        return getList( (NodeSearchQuery)((BasicNodeQuery) query).getQuery());
+
+    }
+
+
+    // javadoc inherited
+    public NodeQuery createQuery() {
+        return new BasicNodeQuery(this);
+    }
+
+
+
+    public NodeList getList(String constraints, String sorted, String directions) {
         MMObjectBuilder builder = getMMObjectBuilder();
 
         // begin of check invalid search command
+        /*
         org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
-        if(orderby != null) orderby  = encoder.encode(orderby);
+        if(orderby != null)    orderby     = encoder.encode(orderby);
         if(directions != null) directions  = encoder.encode(directions);
         if(constraints != null && !cloud.validConstraints(constraints)) {
             throw new BridgeException("invalid contrain:" + constraints);
         }
+        */
         // end of check invalid search command
 
 
-        String where = null;
-        if ((constraints != null) && (!constraints.trim().equals(""))) {
-            where=cloud.convertClauseToDBS(constraints);
+        NodeSearchQuery query = new NodeSearchQuery(builder);
+        if (constraints != null) {
+            query.setConstraint(new ConstraintParser(query).toConstraint(constraints));
         }
-        List v;
-        try {
-            if (orderby != null && (!orderby.trim().equals(""))) {
-                v = builder.searchList(where, orderby, directions);
-            } else {
-                v = builder.searchList(where);
+
+
+        // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
+        if (directions == null) {
+            directions = "";
+        }
+        
+        if (sorted != null) {
+            StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
+            StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
+            
+            String direction = "UP";
+            while (sortedTokenizer.hasMoreElements()) {
+                String fieldName = sortedTokenizer.nextToken().trim();
+                FieldDefs fieldDefs = builder.getField(fieldName);
+                if (fieldDefs == null) {
+                    throw new IllegalArgumentException("Not a known field of builder " + builder.getTableName() + ": '" + fieldName + "'");
+                }
+                StepField field = query.getField(fieldDefs);
+                BasicSortOrder sortOrder = query.addSortOrder(field);
+                if (directionsTokenizer.hasMoreElements()) {
+                    direction = directionsTokenizer.nextToken().trim();
+                }
+                if (direction.equalsIgnoreCase("DOWN")) {
+                    sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
+                } else {
+                    sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
+                }
             }
-        } catch (java.sql.SQLException e) {
-            throw new BridgeException(e);
         }
-        // remove all nodes that cannot be accessed
-        for(int i = v.size() - 1; i >= 0; i--) {
-            if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getNumber())) {
-                v.remove(i);
-            }
-        }
-        NodeList list= new BasicNodeList(v,this);
-        list.setProperty("constraints",constraints);
-        list.setProperty("orderby",orderby);
-        list.setProperty("directions",directions);
+
+        NodeList list = getList(query);
+        list.setProperty("constraints", constraints);
+        list.setProperty("orderby",     sorted);
+        list.setProperty("directions",  directions);
         return list;
 
     }
@@ -275,7 +339,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         } else {
             typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType);
         }
-        List nodes=new Vector();
+        List nodes = new ArrayList();
         while (typerelNodes.hasMoreElements()) {
             MMObjectNode n= (MMObjectNode)typerelNodes.nextElement();
             if ((requestedRole==-1) || (requestedRole==n.getIntValue("rnumber"))) {
