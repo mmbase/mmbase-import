@@ -44,7 +44,7 @@ public class CompareTag extends PresentTag implements ConditionTag {
         String compare;
         if (getReferid() == null) {
             Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
-            Object o = w.getValue();
+            Object o = w.getWriterValue();
             if (o == null) {
                 compare = "";
             } else {

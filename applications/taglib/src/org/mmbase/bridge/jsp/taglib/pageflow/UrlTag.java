@@ -43,7 +43,7 @@ public class UrlTag extends ContextReferrerTag  implements Writer {
     public void setWrite(String w) throws JspTagException {
         helper.setWrite(getAttributeBoolean(w));
     }
-    public Object getValue() throws JspTagException {
+    public Object getWriterValue() throws JspTagException {
         return getUrl();
     }
            
