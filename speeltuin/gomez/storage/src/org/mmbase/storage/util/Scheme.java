@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.5 2003-08-19 10:32:43 pierre Exp $
+ * @version $Id: Scheme.java,v 1.6 2003-08-19 14:18:32 pierre Exp $
  */
 public final class Scheme extends MessageFormat {
 
@@ -37,7 +37,9 @@ public final class Scheme extends MessageFormat {
     /**
      * The factory this scheme belongs to.
      */
-    protected StorageManagerFactory factory;
+    private StorageManagerFactory factory;
+
+    private String orgpattern;
     
     /**
      * Instantiate the Scheme
@@ -46,6 +48,7 @@ public final class Scheme extends MessageFormat {
      */
     public Scheme (StorageManagerFactory factory, String pattern) {
         super(pattern);
+        orgpattern = pattern;
         this.factory = factory;
     }
 
@@ -89,5 +92,9 @@ public final class Scheme extends MessageFormat {
         return super.format(params);
     }
 
+    public String toString() {
+        return orgpattern;
+    }
+    
 }
 

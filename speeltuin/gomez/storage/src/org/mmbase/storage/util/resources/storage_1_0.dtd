@@ -85,6 +85,7 @@
 -->
 <!ELEMENT disallowed-fields (disallowed-field*)>
 <!ATTLIST disallowed-fields case-sensitive (true|false) #IMPLIED>
+<!ATTLIST disallowed-fields enforce (true|false) #IMPLIED>
 
 <!-- 
 	Describe a disallowed fieldname. the name attribute contains the fieldname to disallow.

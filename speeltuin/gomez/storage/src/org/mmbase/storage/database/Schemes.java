@@ -15,7 +15,7 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.7 2003-08-19 10:32:42 pierre Exp $
+ * @version $Id: Schemes.java,v 1.8 2003-08-19 14:18:32 pierre Exp $
  */
 public final class Schemes {
 
@@ -248,7 +248,7 @@ public final class Schemes {
      *    <li>{3} A comma-separated list of value-placeholders to update (a value placehodler takes the format '?')</li>
      *  </ul>
      */
-    public static final String INSERT_NODE = "update-node-scheme";
+    public static final String INSERT_NODE = "insert-node-scheme";
 
     /**
      *  The default scheme for inserting a node type.

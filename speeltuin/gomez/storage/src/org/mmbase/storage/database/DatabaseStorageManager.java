@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.24 2003-08-19 10:32:42 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.25 2003-08-19 14:18:31 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -543,7 +543,7 @@ public class DatabaseStorageManager implements StorageManager {
                     FieldDefs field = (FieldDefs) fields.get(fieldNumber);
                     setValue(ps, fieldNumber+1, node, field);
                 }
-            debug("query:"+query);            
+                debug("query:"+query);            
                 ps.executeUpdate();
             } catch (SQLException se) {
                 throw new StorageException(se);
