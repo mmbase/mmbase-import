@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.17 2003-11-19 13:26:24 michiel Exp $
+ * @version $Id: XmlField.java,v 1.18 2003-12-02 21:34:41 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -598,6 +598,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             case XML :
                 return data;
             case HTML_BLOCK:
+            case HTML_BLOCK_BR:
             case HTML_INLINE:
                 throw new UnsupportedOperationException("Cannot transform");
             default :
@@ -655,28 +656,30 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public String getEncoding() {
         switch (to) {
-            case RICH :
-                return "MMXF_RICH";
-            case POOR :
-                return "MMXF_POOR";
-            case RICHBODY :
-                return "MMXF_BODY_RICH";
-            case POORBODY :
-                return "MMXF_BODY_POOR";
-            case HTML_BLOCK :
-                return "MMXF_HTML_BLOCK";
-            case HTML_INLINE :
-                return "MMXF_HTML_INLINE";
-            case ASCII :
-                return "MMXF_ASCII";
-            case XHTML :
-                return "MMXF_XHTML";
-            case BODY :
-                return "MMXF_BODY";
-            case XML :
-                return "MMXF_MMXF";
-            default :
-                throw new UnknownCodingException(getClass(), to);
+        case RICH :
+            return "MMXF_RICH";
+        case POOR :
+            return "MMXF_POOR";
+        case RICHBODY :
+            return "MMXF_BODY_RICH";
+        case POORBODY :
+            return "MMXF_BODY_POOR";
+        case HTML_BLOCK :
+            return "MMXF_HTML_BLOCK";
+        case HTML_BLOCK_BR :
+            return "MMXF_HTML_BLOCK_BR";
+        case HTML_INLINE :
+            return "MMXF_HTML_INLINE";
+        case ASCII :
+            return "MMXF_ASCII";
+        case XHTML :
+            return "MMXF_XHTML";
+        case BODY :
+            return "MMXF_BODY";
+        case XML :
+            return "MMXF_MMXF";
+        default :
+            throw new UnknownCodingException(getClass(), to);
         }
     }
 }
