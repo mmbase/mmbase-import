@@ -18,4 +18,5 @@ public interface cacheInterface {
 	public boolean clear();
 	public cacheline get(Object key);
 	public cacheline put(Object key,Object value);
+	public cacheline remove(Object key);
 }
