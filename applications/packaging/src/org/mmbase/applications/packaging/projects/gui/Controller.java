@@ -203,6 +203,8 @@ public class Controller {
                     virtual.setValue("log", "false");
                 }
 		virtual.setValue("state",t.getState());
+		virtual.setValue("createprogressbarvalue",t.getProgressBarValue());
+		virtual.setValue("createsubprogressbarvalue",t.getSubProgressBarValue());
             }
             list.add(virtual);
         }
