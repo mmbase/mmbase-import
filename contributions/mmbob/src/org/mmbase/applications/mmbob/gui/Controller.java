@@ -1045,6 +1045,66 @@ public class Controller {
         return true;
     }
 
+   /**
+     * Remove a Poster from a forum
+     *
+     * @param forumid MMBase node number of the forum
+     * @param removeposterid MMBase node number of the poster to be removed
+     * @param activeid MMBase node number of the poster
+     * @return Feedback regarding the success of this action
+     */
+    public boolean removePoster(String forumid, int removeposterid, int activeid) {
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            Poster posterToRemove = f.getPoster(removeposterid);
+            Poster activePoster = f.getPoster(activeid);
+            if (posterToRemove != null && f.isAdministrator(activePoster.getAccount())) {
+                posterToRemove.remove();
+            }
+        }
+        return true;
+    }
+
+    /**
+      * Disable a Poster from a forum
+      *
+      * @param forumid MMBase node number of the forum
+      * @param disableposterid MMBase node number of the poster to be disabled
+      * @param activeid MMBase node number of the poster
+      * @return Feedback regarding the success of this action
+      */
+     public boolean disablePoster(String forumid, int disableposterid, int activeid) {
+         Forum f = ForumManager.getForum(forumid);
+         if (f != null) {
+             Poster posterToDisable = f.getPoster(disableposterid);
+             Poster activePoster = f.getPoster(activeid);
+             if (posterToDisable != null && f.isAdministrator(activePoster.getAccount())) {
+                 posterToDisable.disable();
+             }
+         }
+         return true;
+     }
+
+    /**
+      * Enable a Poster from a forum
+      *
+      * @param forumid MMBase node number of the forum
+      * @param enableposterid MMBase node number of the poster to be disabled
+      * @param activeid MMBase node number of the poster
+      * @return Feedback regarding the success of this action
+      */
+     public boolean enablePoster(String forumid, int enableposterid, int activeid) {
+         Forum f = ForumManager.getForum(forumid);
+         if (f != null) {
+             Poster posterToDisable = f.getPoster(enableposterid);
+             Poster activePoster = f.getPoster(activeid);
+             if (posterToDisable != null && f.isAdministrator(activePoster.getAccount())) {
+                 posterToDisable.enable();
+             }
+         }
+         return true;
+     }
+
 
     /**
      * Add a new postarea to the given forum
