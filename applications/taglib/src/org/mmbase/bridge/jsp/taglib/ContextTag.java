@@ -241,7 +241,7 @@ public class ContextTag extends ContextReferrerTag {
 
     private HttpSession getSession() {
         if (httpSession == null) {
-            httpSession = getHttpRequest().getSession();
+            httpSession = getHttpRequest().getSession(false);
         }
         return httpSession;
     }
@@ -438,8 +438,10 @@ public class ContextTag extends ContextReferrerTag {
             result = findAndRegister(LOCATION_MULTIPART, externid, newid, false);
             if (result != null) return result;
         }
-        log.debug("searching in session");
-        result = findAndRegister(LOCATION_SESSION, externid, newid, false);
+        if (getSession() != null) {
+            log.debug("searching in session");
+            result = findAndRegister(LOCATION_SESSION, externid, newid, false);
+        }
         return result;
     }
 
