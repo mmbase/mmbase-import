@@ -28,23 +28,23 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.12 2003-09-02 21:37:49 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.13 2003-09-10 09:59:02 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
-    
+
     /** Empty StepField array. */
     private static final StepField[] STEP_FIELD_ARRAY = new StepField[0];
-    
+
 
     private static final Logger log = Logging.getLoggerInstance(BasicQueryHandler.class);
-    
+
     /** Sql handler used to generate SQL statements. */
     private SqlHandler sqlHandler = null;
-    
+
     /** MMBase instance. */
     private MMBase mmbase = null;
-    
+
     /**
      * Default constructor.
      *
@@ -56,7 +56,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         // TODO: (later) test if MMBase is properly initialized first.
         mmbase = MMBase.getMMBase();
     }
-    
+
     // javadoc is inherited
     public List getNodes(SearchQuery query, MMObjectBuilder builder)     throws SearchQueryException {
 
@@ -68,18 +68,18 @@ public class BasicQueryHandler implements SearchQueryHandler {
         Statement stmt = null;
 
         boolean multipleSteps = steps.size() > 1;
-        
+
 //        // Flag, set if offset must be supported by skipping results.
-//        boolean mustSkipResults = 
+//        boolean mustSkipResults =
 //        (query.getOffset() != SearchQuery.DEFAULT_OFFSET)
-//        && (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) 
+//        && (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
 //        == SearchQueryHandler.SUPPORT_NONE);
-//        
+//
 //        // Flag, set if sql handler supports maxnumber.
-//        boolean sqlHandlerSupportsMaxNumber = 
+//        boolean sqlHandlerSupportsMaxNumber =
 //        sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
 //        != SearchQueryHandler.SUPPORT_NONE;
-//        
+//
 //        // Flag, set if maxnumber must be supported by truncating results.
 //        boolean mustTruncateResults =
 //        (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER)
@@ -91,16 +91,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
 //            if (mustSkipResults) {
 //                if (mustTruncateResults) {
 //                    // Weak support for offset, weak support for maxnumber:
-//                    // Replace query(offset, maxnumber) by 
+//                    // Replace query(offset, maxnumber) by
 //                    // query(0, Integer.MAX_VALUE).
 //                    ModifiableQuery modifiedQuery = new ModifiableQuery(query);
 //                    modifiedQuery.setOffset(SearchQuery.DEFAULT_OFFSET);
 //                    modifiedQuery.setMaxNumber(Integer.MAX_VALUE);
 //                    sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
-//                } else 
+//                } else
 //                if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
 //                    // Weak support for offset, sql handler supports maxnumber:
-//                    // Replace query (offset, maxnumber) by 
+//                    // Replace query (offset, maxnumber) by
 //                    // query( 0, offset+maxnumber).
 //                    ModifiableQuery modifiedQuery = new ModifiableQuery(query);
 //                    modifiedQuery.setOffset(0);
@@ -113,16 +113,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
 //                }
 //            } else {
 //                if (mustTruncateResults) {
-//                    // Sql handler supports offset, 
+//                    // Sql handler supports offset,
 //                    // weak support for maxnumber:
-//                    // Replace query(offset, maxnumber) by 
+//                    // Replace query(offset, maxnumber) by
 //                    // query(offset, Integer.MAX_VALUE)
 //                    ModifiableQuery modifiedQuery = new ModifiableQuery(query);
 //                    modifiedQuery.setMaxNumber(Integer.MAX_VALUE);
 //                    sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
 //                } else
 //                if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
-//                    // Sql handler supports offset, 
+//                    // Sql handler supports offset,
 //                    // sql handler supports maxnumber:
                     sqlString = sqlHandler.toSql(query, sqlHandler);
 //                } else {
@@ -132,7 +132,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
 //            }
 
             // TODO: test maximum sql statement length is not exceeded.
-            
+
             // Execute the SQL and store results as cluster-/real nodes.
             MMJdbc2NodeInterface database = mmbase.getDatabase();
             con = mmbase.getConnection();
@@ -148,13 +148,14 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
                 // Read results.
                 // Truncate results to provide weak support for maxnumber.
-                while (rs.next() 
+                while (rs.next()
 //                && (sqlHandlerSupportsMaxNumber || results.size() < query.getMaxNumber())
                        ) {
                     MMObjectNode node = null;
                     if (builder instanceof ClusterBuilder) {
                         // Cluster nodes.
                         if (query instanceof NodeQuery) { // hmm
+                            // makes no sense that this is a ClusterNode...
                             node = new ClusterNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()), 1);
                         } else {
                             node = new ClusterNode(builder, steps.size());
@@ -171,16 +172,18 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         String prefix;
                         if (builder instanceof ClusterBuilder) {
                             fieldName = fields[i].getFieldName();
-                            prefix = fields[i].getStep().getAlias();
-
-
-                            // if steps happens to lack an alias, make sure that it still might work:
-                            // (will for example go ok for 'node' clusterresults (containing only fields of one step))
-                            if (! multipleSteps || prefix == null) {
-                                
-                                prefix = fields[i].getStep().getTableName() + '.';
+                            if (query instanceof NodeQuery) { // hmm
+                                // no prefix if node.getBuilder() is not a clusterbuilder
+                                prefix = "";
                             } else {
-                                prefix += '.';
+                                prefix = fields[i].getStep().getAlias();
+                                // if steps happens to lack an alias, make sure that it still might work:
+                                // (will for example go ok for 'node' clusterresults (containing only fields of one step))
+                                if (! multipleSteps || prefix == null) {
+                                    prefix = fields[i].getStep().getTableName() + '.';
+                                } else {
+                                    prefix += '.';
+                                }
                             }
                         } else if (builder instanceof ResultBuilder) {
                             fieldName = fields[i].getAlias();
@@ -217,7 +220,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         }
         return results;
     }
-    
+
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int supportLevel;
@@ -238,16 +241,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     supportLevel = handlerSupport;
                 }
                 break;
-                
+
             default:
                 supportLevel = sqlHandler.getSupportLevel(feature, query);
         }
         return supportLevel;
     }
-    
+
     // javadoc is inherited
     public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException {
         return sqlHandler.getSupportLevel(constraint, query);
     }
-    
+
 }
