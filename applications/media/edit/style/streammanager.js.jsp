@@ -3,6 +3,12 @@
 <mm:import externid="fragment" required="true" />
 <mm:import externid="dir"      required="true" />
 
+function ExplorerFix()  { 
+    for (a in document.links) document.links[a].onfocus =
+    document.links[a].blur; 
+}
+
+if(document.all) document.onmousedown = ExplorerFix;
 
 
 function getPlayerURL(form) {
