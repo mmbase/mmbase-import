@@ -4,8 +4,17 @@ import nanoxml.*;
 import java.io.*;
 import java.util.*;
 
-
+/**
+ * This is a utility class to serialize configurations to xml
+ * @author Kees Jongenburger
+ * @version $Id: ConfigurationXMLWriter.java,v 1.7 2002-06-27 19:20:30 kees Exp $
+ **/
 public abstract class ConfigurationXMLWriter{
+    
+    /**
+     * based on the data in the ApplicationConfiguration this method create Files and directories
+     * containg xml fiels (in the current directory)
+     **/
     public static void writeApplication(ApplicationConfiguration appconfig) {
         try {
             //make the builders directory
@@ -44,6 +53,10 @@ public abstract class ConfigurationXMLWriter{
             System.err.println(ioe.getMessage());
         }
     }
+    
+    /**
+     * @return a String containing the xml definition of the application
+     **/
     public static String createApplicationConfiguration(ApplicationConfiguration appconfig){
         XMLElement xmle = new XMLElement();
         xmle.setTagName("application");
@@ -158,6 +171,9 @@ public abstract class ConfigurationXMLWriter{
         
     }
     
+    /**
+     * @return an String representation of an nodemanager configuration (builder.xml)
+     **/
     public static String createNodeManagerConfiguration(NodeManagerConfiguration nodeManagerConfiguration){
         XMLElement builder = new XMLElement();
         builder.setComment(nodeManagerConfiguration.getName());
@@ -214,6 +230,9 @@ public abstract class ConfigurationXMLWriter{
         return builder.toString();
     }
     
+    /**
+     * @return an string representation of the xml configuration of a node field
+     **/
     public static XMLElement getXMLFieldConfigurations(FieldConfigurations fieldConfigurations){
         XMLElement fieldList = new XMLElement();
         fieldList.setTagName("fieldlist");

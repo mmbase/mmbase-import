@@ -8,6 +8,14 @@ package org.mmbase.applications.bugtracker;
 /**
  *
  * @author  mmbase
+ * @mmbase-nodemanager-name bugtrackeruser
+ * @mmbase-nodemanager-field name
+ * @mmbase-nodemanager-field passwd
+ * @mmbase-nodemanager-field email
+ *
+ * @mmbase-relationmanager-name usergrouprel
+ * @mmbase-relationmanager-source bugtrackeruser
+ * @mmbase-relationmanager-destination bugusergroup
  */
 public class BugtrackerUser {
     

@@ -1,14 +1,9 @@
-/*
- * FieldConfigurations.java
- *
- * Created on June 13, 2002, 12:53 PM
- */
-
 package org.mmbase.applications.config;
 
 /**
- *
- * @author  mmbase
+ * representation of a list of fields
+ * @author Kees Jongenburger
+ * @version $Id: FieldConfigurations.java,v 1.2 2002-06-27 19:20:30 kees Exp $
  */
 public class FieldConfigurations extends java.util.Vector {
     
