@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.6 2003-07-25 14:11:35 michiel Exp $
+ * @version $Id: Query.java,v 1.7 2003-07-25 20:44:30 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -52,12 +52,23 @@ public interface Query extends SearchQuery, Cloneable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      * @throws IllegalStateException when there is no previous step.
      */
-    RelationStep addRelationStep(RelationManager relationManager, int directionality);
+    RelationStep addRelationStep(RelationManager relationManager, int searchDir);
 
     /**
      * Adds a field to a step.
      */
     StepField addField(Step step, Field field);
+
+    /**
+     * Creates a StepField object withouth adding it (e.g. needed for aggregated queries).
+     */
+    StepField getStepField(Step step, Field field);
+
+    /**
+     * Add an aggregated field to a step
+     */
+    AggregatedField addAggregatedField(Step step, Field field, int aggregationType);
+    
 
     /**
      * Specifies wether the query result must contain only 'distinct' results.
@@ -153,5 +164,13 @@ public interface Query extends SearchQuery, Cloneable {
      * Create an (unused) clone
      */
     Object clone();
+
+    /**
+     * Creates an unused aggregate clone of this query. If this query is not itself aggregated, all
+     * fields are removed (but the contraints on them remain), and you can add aggregated fields
+     * then.
+     */
+    Query aggregatedClone();
+
 
 }
