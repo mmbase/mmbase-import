@@ -24,7 +24,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.15 2003-08-05 07:24:04 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.16 2003-08-05 09:07:00 michiel Exp $
  */
 
 public class NodeHandler extends IntegerHandler {
@@ -142,7 +142,7 @@ public class NodeHandler extends IntegerHandler {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
+            if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
                 return null;
             } else {
                 String search =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
@@ -159,14 +159,13 @@ public class NodeHandler extends IntegerHandler {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
-
+            if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
+                return;
             } else {
-                String search =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
-                if (search == null || "".equals(search)) {
-                    return;
+                String value = findString(field);
+                if (value != null) {
+                    NodeListConstraintTag.addConstraint(query, fieldName, getOperator(), value);
                 }
-                NodeListConstraintTag.addConstraint(query, fieldName, getOperator(), search);
                 return;
             }
         }                
