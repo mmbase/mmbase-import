@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.19 2002-09-03 17:50:28 michiel Exp $
+ * @version $Id: Attachments.java,v 1.20 2002-09-03 18:15:29 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -152,9 +152,9 @@ public class Attachments extends AbstractServletBuilder {
             byte[] handle = node.getByteValue("handle");
             node.setValue("size", handle.length); // also the size, why not.
             log.debug("Attachment size of file = " + handle.length);
-            MagicFile magic = new MagicFile();
+            MagicFile magic = MagicFile.getInstance();
             try {
-                String mime = magic.test(handle);
+                String mime = magic.getMimeType(handle);
                 log.service("Found mime-type: " + mime);
                 node.setValue("mimetype", mime);
             } catch (Throwable e) {
