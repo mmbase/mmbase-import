@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.4 2002-10-23 11:50:41 gerard Exp $;
+ @version $Id: documentation.css,v 1.5 2002-11-13 19:24:34 michiel Exp $;
 */
 
 
@@ -69,6 +69,15 @@ a:hover { // color: red;
 
 
 div.navigation {
+  display: hidden;
+}
+
+
+div.navigation {			
+  display: none;
+}
+
+div.navigation[class] {
   display: block;
   background: transparent;
   position: fixed;
