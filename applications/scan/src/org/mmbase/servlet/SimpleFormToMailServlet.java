@@ -95,7 +95,20 @@ public abstract class SimpleFormToMailServlet extends JamesServlet
 		String key, value;
 		while( e.hasMoreElements() ) {
 			key = (String) e.nextElement();
-			value = (String) post.getPostParameter( key );
+
+			Vector v = post.getPostMultiParameter( key );
+			Enumeration e2 = v.elements();
+
+			if( e2.hasMoreElements() ) {
+				value = "";
+				while( e2.hasMoreElements() ) { 
+					value += (String)e2.nextElement();
+					if( e2.hasMoreElements() )
+						value += ",";
+				}
+			} else 
+				value = "unknown";
+
 			result += key +":\t\t" + value + "\n";	
 		}
 		return result;
