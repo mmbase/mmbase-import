@@ -112,6 +112,10 @@ public class mmconfig extends JamesServlet {
 	{	
 		// Open	a output stream so you can write to the client
 		PrintStream out = new PrintStream(res.getOutputStream());
+		String requestURI = req.getRequestURI();
+		if (requestURI.endsWith("/")) {
+		    requestURI = requestURI.substring(0,requestURI.length()-1);
+		}
 		String[] dirlist;
 
 		String configpath = System.getProperty("mmbase.config");
@@ -129,15 +133,15 @@ public class mmconfig extends JamesServlet {
 
 		// WRITE MESSAGE TO CLIENT 
 		out.println("<HTML>");
-		out.println("<HEAD><TITLE>Builders</TITLE></HEAD>");
+		out.println("<HEAD><TITLE>MMBase Configuration</TITLE></HEAD>");
 		out.println("<BODY BGCOLOR=\"#FFFFFF\">");
 
 		if (!pathInfo.hasType()) {
 		    // Toplevel here: give option of database, modules or builders
 		    out.println("<ul>\n"+
-				"<li><a href=\""+req.getRequestURI()+"/databases\">databases</a>\n"+
-				"<li><a href=\""+req.getRequestURI()+"/modules\">modules</a>\n"+
-				"<li><a href=\""+req.getRequestURI()+"/builders\">builders</a>\n"+
+				"<li><a href=\""+requestURI+"/databases\">databases</a>\n"+
+				"<li><a href=\""+requestURI+"/modules\">modules</a>\n"+
+				"<li><a href=\""+requestURI+"/builders\">builders</a>\n"+
 				"</ul>\n"
 				);
 		} else if (pathInfo.getType().equalsIgnoreCase("builders")) {
@@ -172,13 +176,8 @@ public class mmconfig extends JamesServlet {
 			    for (int i=0;i<dirlist.length;i++) {
 				out.println("  <tr>\n");
 				String filename = dirpath+File.separator+dirlist[i];
-				XMLBuilderReader xmlObject = new XMLBuilderReader(filename);
-				out.println("    <td><a href=\""+req.getRequestURI()+"/show/"+dirlist[i]+"\">"+dirlist[i]+"</a></td>\n");
-				if (xmlObject.getStatus().equalsIgnoreCase("active")) {
-				    out.println("    <td bgcolor=\""+active_color+"\"><font color=\""+active_color+"\">#</font></td>\n");
-				} else {
-				    out.println("    <td bgcolor=\""+inactive_color+"\"><font color=\""+inactive_color+"\">#</font></td>\n");
-				}
+				out.println("    <td><a href=\""+requestURI+"/show/"+dirlist[i]+"\">"+dirlist[i]+"</a></td>\n");
+				out.println("    <td><a href=\""+requestURI+"/check/"+dirlist[i]+"\"><font size=-1>check</font></a></td>\n");
 				out.println("  </tr>\n");
 			    }
 			    out.println("</table>\n");
@@ -199,8 +198,16 @@ public class mmconfig extends JamesServlet {
 			    } else {
 				out.println("boom, must have argument to show");
 			    }
+			} else if (pathInfo.getCommand().equalsIgnoreCase("check")) {
+			    if (pathInfo.hasArgument()) {
+				String showfilepath = dirpath+File.separator+pathInfo.getArgument();
+				//displayBuilder(out,showfilepath);
+				checkXML(out,showfilepath);
+			    } else {
+				out.println("boom, must have argument to show");
+			    }
 			} else {
-			    out.println("only show command has been implemented");
+			    out.println("only show and check commands has been implemented");
 			}
 			
 		    } else {
@@ -210,7 +217,8 @@ public class mmconfig extends JamesServlet {
 			    for (int i=0;i<dirlist.length;i++) {
 				out.println("  <tr>\n");
 				String filename = dirpath+File.separator+dirlist[i];
-				out.println("    <td><a href=\""+req.getRequestURI()+"/show/"+dirlist[i]+"\">"+dirlist[i]+"</a></td>\n");
+				out.println("    <td><a href=\""+requestURI+"/show/"+dirlist[i]+"\">"+dirlist[i]+"</a></td>\n");
+				out.println("    <td><a href=\""+requestURI+"/check/"+dirlist[i]+"\"><font size=-1>check</font></a></td>\n");
 				out.println("  </tr>\n");
 			    }
 			    out.println("</table>\n");
@@ -231,10 +239,17 @@ public class mmconfig extends JamesServlet {
 			    } else {
 				out.println("boom, must have argument to show");
 			    }
+			} else if (pathInfo.getCommand().equalsIgnoreCase("check")) {
+			    if (pathInfo.hasArgument()) {
+				String showfilepath = dirpath+File.separator+pathInfo.getArgument();
+				//displayBuilder(out,showfilepath);
+				checkXML(out,showfilepath);
+			    } else {
+				out.println("boom, must have argument to show");
+			    }
 			} else {
 			    out.println("only show command has been implemented");
 			}
-			
 		    } else {
 			try {
 			    dirlist = listDirectory(dirpath);
@@ -242,7 +257,9 @@ public class mmconfig extends JamesServlet {
 			    for (int i=0;i<dirlist.length;i++) {
 				out.println("  <tr>\n");
 				String filename = dirpath+File.separator+dirlist[i];
-				out.println("    <td><a href=\""+req.getRequestURI()+"/show/"+dirlist[i]+"\">"+dirlist[i]+"</a></td>\n");				out.println("  </tr>\n");
+				out.println("    <td><a href=\""+requestURI+"/show/"+dirlist[i]+"\">"+dirlist[i]+"</a></td>\n");
+				out.println("    <td><a href=\""+requestURI+"/check/"+dirlist[i]+"\"><font size=-1>check</font></a></td>\n");
+				out.println("  </tr>\n");
 			    }
 			    out.println("</table>\n");
 			} catch (IOException e) {
