@@ -4,17 +4,18 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect"
   extension-element-prefixes="xalan"
+  xmlns:mm="mmbase-taglib"
  >
 
   <!-- 
        xalan extension used for xalan:write.
 
        According to xslt 1.1 you could simply use xsl:document, but xalan does not
-       support this. Therefore in this stylesheet xsl:document and xalan:write are 
-       used inside each other. This seems to work with xsltproc and xalan-j..     
+       support this. Therefore in this stylesheet xalan:write is used inside each other. This seems
+       to work with xsltproc too.
    -->
 
-  <xsl:output method="xml"
+  <xsl:output method="html"
     version="1.0"
     encoding="UTF-8"
     omit-xml-declaration="yes"
@@ -26,11 +27,20 @@
 <xsl:param name="basedir"></xsl:param>
 <xsl:param name="files">taglib</xsl:param>
 <xsl:variable name="basedirfiles"><xsl:value-of select="$basedir" />/<xsl:value-of select="$files" /></xsl:variable><!-- make sure this directory exists! -->
+
     
 <!-- some configuration -->
 <xsl:variable name="extendscolor">blue</xsl:variable>
 <xsl:variable name="attrcolor">green</xsl:variable>
 <xsl:variable name="reqcolor">red</xsl:variable>
+
+<xsl:template name="directories">
+  <xsl:param name="dir" />
+  <xsl:choose>  
+  <xsl:when test="$dir='examples.taglib'">/mmexamples/taglib</xsl:when>
+  </xsl:choose>
+</xsl:template>
+
 
 <!-- main entry point -->
 <xsl:template match="taglib">
@@ -39,7 +49,7 @@
   <!-- create a seperate file for every tag -->
   <xsl:apply-templates select="tag|taginterface" mode="file" />
     <!-- create a toc file -->
-    <xsl:document href="{$basedirfiles}/toc.html">
+    <!-- xsl:document href="{$basedirfiles}/toc.html"-->
       <xalan:write file="{$basedirfiles}/toc.html"><!-- xsl:document not supported by xalan.. Sigh..-->
       <html>
         <head>
@@ -67,7 +77,7 @@
         </body>
       </html>
     </xalan:write>
-  </xsl:document>
+  <!-- /xsl:document-->
 </xsl:template>
 
 <!-- The several 'types' of tags -->
@@ -81,14 +91,14 @@
     </xsl:apply-templates>
   </xsl:if>
   <!-- and overview files are generated for every type -->
-  <xsl:document href="{$basedirfiles}/mmbase-taglib-{@name}.html">
+  <!-- xsl:document href="{$basedirfiles}/mmbase-taglib-{@name}.html"-->
     <xalan:write file="{$basedirfiles}/mmbase-taglib-{@name}.html">
      <xsl:apply-templates select="/taglib" mode="main">
         <xsl:with-param name="info" select="info" />
         <xsl:with-param name="type" select="@name" />
      </xsl:apply-templates>
    </xalan:write>
-  </xsl:document>
+  <!-- /xsl:document-->
 </xsl:template>
 
 <!-- Generate a list of tag documentation, with toc and info on top -->
@@ -275,11 +285,15 @@
 
 <!-- Create a file for a tag -->
 <xsl:template match="tag|taginterface" mode="file">
-  <xsl:document href="{$basedirfiles}/{name}.jsp">
+  <!-- xsl:document href="{$basedirfiles}/{name}.jsp"-->
     <xalan:write file="{$basedirfiles}/{name}.jsp"><!-- xsl:document not supported by xalan-->
   <html>
     <head>
       <title>MMBase taglib - mm:<xsl:value-of select="name" /></title>
+      <xsl:text disable-output-escaping="yes">
+      &lt;%@page language="java" contentType="text/html; charset=UTF-8" %&gt;
+      &lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"&gt;
+      </xsl:text>
     </head>
     <body 
       bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
@@ -290,7 +304,7 @@
     </body>
   </html>
   </xalan:write>
-  </xsl:document>
+  <!-- /xsl:document-->
 </xsl:template>
 
 <!-- A description for one tag -->
@@ -370,19 +384,47 @@
      </td>
     </tr>  
     </xsl:if>
-
-    <xsl:apply-templates select="example" />
+    <xsl:apply-templates select="example">
+      <xsl:with-param name="file" select="$file" />
+    </xsl:apply-templates>
   </table>
 </xsl:template>
 
 <!-- Examples -->
 <xsl:template match="example">
+  <xsl:param name="file" select="false()" />
    <tr>
+     <xsl:if test="not(include)">      
      <td width="100" valign="top">example</td>
      <td>
-        <pre><xsl:value-of select="."/></pre>
-     </td>
+        <pre>
+          <xsl:value-of select="."/>    
+        </pre>
+      </td>
+    </xsl:if>
+    <xsl:if test="include">
+      <xsl:if test="$file">
+        <xsl:apply-templates select="include" />
+      </xsl:if>
+      <xsl:if test="not($file)">
+        <td>more examples</td><td><a href="{@basedirfiles}/{../../tag/name}">here</a></td>
+      </xsl:if>
+    </xsl:if>
    </tr>
+</xsl:template>
+
+<xsl:template match="include">
+  <td>example</td>
+  <td>
+  <table width="100%">
+    <tr valign="top">
+      <td width="50%"><pre><xsl:text disable-output-escaping="yes">&lt;mm:formatter format="escapexml"&gt;&lt;mm:include cite="true" page="/mmexamples/taglib/</xsl:text>
+      <xsl:value-of select="@href" />
+        <xsl:text disable-output-escaping="yes">" /&gt;&lt;/mm:formatter&gt;</xsl:text></pre></td>
+        <td width="50%"><xsl:text disable-output-escaping="yes">&lt;%@include file="/mmexamples/taglib/</xsl:text><xsl:value-of select="@href" /><xsl:text disable-output-escaping="yes">" %&gt;</xsl:text></td>
+    </tr>
+  </table>
+  </td>
 </xsl:template>
 
 <xsl:template match="extends">
