@@ -8,4 +8,9 @@
   <urlcomposer format="ra" >org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
   <urlcomposer format="rm" >org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
   <urlcomposer format="asf">org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
+
+  <urlcomposer format="ra" >org.mmbase.applications.media.urlcomposers.OmroepcgiURLComposer</urlcomposer>
+  <urlcomposer format="rm" >org.mmbase.applications.media.urlcomposers.OmroepcgiURLComposer</urlcomposer>
+  <urlcomposer format="asf">org.mmbase.applications.media.urlcomposers.OmroepcgiURLComposer</urlcomposer>
+
 </urlcomposers>

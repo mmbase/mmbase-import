@@ -6,7 +6,6 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">videofragments</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">mediaproviders</builder>
-    <builder maintainer="mediaproject.mmbase.org" version="1">mediaurlcomposers</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">mediasources</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">audiosources</builder>
@@ -18,8 +17,6 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">pools</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">publishtimes</builder>
 
-    <!-- example -->
-    <builder maintainer="mediaproject.mmbase.org" version="1">myurlcomposers</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">templates</builder>
   </neededbuilderlist>
@@ -53,7 +50,6 @@
     <relation from="audiosources"    to="mediaproviders"  type="related" />
     <relation from="videosources"    to="mediaproviders"  type="related" />
 
-    <relation from="mediaproviders"  to="mediaurlcomposers"     type="posrel" />
 
     <relation from="pools"           to="videofragments"  type="related" />
     <relation from="pools"           to="audiofragments"  type="related" />
@@ -65,8 +61,7 @@
     <!-- needed to let relatenodes types="mediaframents" work -->
     <relation from="pools"           to="mediafragments"  type="related" />
 
-    <!-- example -->
-    <relation from="mediaproviders"  to="myurlcomposers"     type="posrel" />
+
 
   </allowedrelationlist>
 
@@ -82,10 +77,6 @@
 		<datasource builder="videosources"     path="Media/videosources.xml" />
 
 		<datasource builder="mediaproviders"     path="Media/mediaproviders.xml" />
-		<datasource builder="mediaurlcomposers"  path="Media/mediaurlcomposers.xml" />
-
-    <!-- example -->
-		<datasource builder="myurlcomposers"     path="Media/myurlcomposers.xml" />
 
 		<datasource builder="templates"          path="Media/templates.xml" />
 	</datasourcelist>

@@ -17,10 +17,12 @@
 -->
 
 	<node number="3001" owner="default">
-		<host>streams.omroep.nl</host>
+		<host>cgi.omroep.nl</host>
 		<state>1</state>
-		<name>Real server</name>
-		<info>Creates real media, sb/bb URL's</info>
+		<name>Play cgi script server</name>
+	 	<info>Creates real media/windowmedia, sb/bb URL's</info>
+    <rootpath>/cgi-bin/play?</rootpath>
+    <protocol>http</protocol>
 	</node>
 
 
@@ -28,14 +30,18 @@
 		<host>media.omroep.nl</host>
 		<state>1</state>
 		<name>Windows media server</name>
-		<info>Creates windows media, sb/bb URL's</info>
+		<info>Creates windows media URL's</info>
+    <rootpath></rootpath>
+    <protocol>mms</protocol>
 	</node>
 
 	<node number="3003" owner="default">
 		<host>streams.omroep.nl</host>
 		<state>1</state>
 		<name>Streams server</name>
-		<info>Simply concat</info>
+		<info>Creates real media URL's</info>
+    <rootpath></rootpath>
+    <protocol>rtsp</protocol>
 	</node>
 
 </mediaproviders>
