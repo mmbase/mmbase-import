@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Groups some comparators
  * @author  Michiel Meeuwissen
- * @version $Id: GroupComparator.java,v 1.1 2003-01-07 22:21:02 michiel Exp $
+ * @version $Id: GroupComparator.java,v 1.2 2003-01-08 08:50:18 michiel Exp $
  */
 public class GroupComparator extends  ResponseInfoComparator {
 
@@ -34,7 +34,7 @@ public class GroupComparator extends  ResponseInfoComparator {
     public int compareResponseInfo(ResponseInfo o1, ResponseInfo o2) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
-            int comp = ((ResponseInfoComparator) i.next()).compareResponseInfo(o1, o2); 
+            int comp = ((ResponseInfoComparator) i.next()).compare(o1, o2); 
             if (comp != 0) return comp; 
         }
         return 0;
