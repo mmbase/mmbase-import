@@ -1,4 +1,4 @@
-/*
+ /*
   
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
   
-*/
+  */
 
 package org.mmbase.module.builders.media;
 
@@ -32,6 +32,7 @@ public class MediaProvider extends MMObjectBuilder {
      * @return the protocol belonging to the media format
      */
     private String getDefaultProtocol(String format) {
+        log.debug("checking format "+format);
         Hashtable properties = getInitParameters();
         if(properties.containsKey(format)) {
             // Take protocol for media format from builder definition file.
@@ -51,7 +52,7 @@ public class MediaProvider extends MMObjectBuilder {
      */
     public String getProtocol(MMObjectNode mediasource) {
         // Later check extra protocol objects to evaluate the protocol.
-        // At this point just use the static deafult list.
-        return getDefaultProtocol((String)executeFunction(mediasource, "str", "format"));
+        // At this point just use a list specified in mediaproviders.xml.
+        return getDefaultProtocol((String)mediasource.getStringValue("str(format)"));
     }
 }
