@@ -4,9 +4,12 @@
     <title>Leerblok Editor</title>
 
     <action type="create">
-        <object type="learnblocks">
-        </object>
+       <object type="learnblocks">
+          <relation destination="$origin" role="posrel"/>
+       </object>
     </action>
+
+
     <action type="load">
         <relation destination="learnobjects" role="posrel" />
         <relation destination="mmevents" role="related" />
