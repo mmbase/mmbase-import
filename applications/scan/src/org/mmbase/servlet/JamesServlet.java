@@ -31,11 +31,13 @@ import org.mmbase.util.logging.Logging;
  * JamesServlet is a adaptor class.
  * It is used to extend the basic Servlet to provide services not found in suns Servlet API.
  *
+ * @dependency this code relies on HttpAuth for its authorization.
+ *             This should be done through the MMBase security.
  * @duplicate this code is aimed at the SCAN servlets, and some features (i.e. cookies) do
- *            not communicate well with jsp pages. Functionality might need to be moved
- *            or adapted so that it uses the MMCI.
+ *            not communicate well with jsp pages.
+ *            Functionality might need to be moved or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.44 2004-01-15 23:21:49 michiel Exp $
+ * @version $Id: JamesServlet.java,v 1.45 2004-09-29 10:34:58 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -222,7 +224,6 @@ public class JamesServlet extends MMBaseServlet {
      * @vpro should be made configurable, possibly per servlet
      */
     private static  String proxyName    = "zen.vpro.nl";    // name of proxyserver
-
 
     /**
      * Extract hostname from request, get address and determine the proxies between it.

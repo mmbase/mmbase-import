@@ -21,9 +21,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-  * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash
-  * based on a template and information from within MMBase
-  * @rename Servflash
+ * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash
+ * based on a template and information from within MMBase
+ * @rename Servflash
+ * @application Flash, SCAN
+ * @author Vpro
+ * @version $Id: servflash.java,v 1.14 2004-09-29 10:34:59 pierre Exp $
  */
 public class servflash extends JamesServlet {
     private static Logger log;

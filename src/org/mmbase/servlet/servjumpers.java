@@ -22,9 +22,9 @@ import org.mmbase.util.logging.*;
  * jumpers builder).
  * If a jumper is found, it will redirect the jumper to the designation url.
  *
- * @rename Servjumpers
+ * @deprecated use JumpersFilter
  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.20 2004-05-06 12:34:39 keesj Exp $
+ * @version $Id: servjumpers.java,v 1.21 2004-09-29 10:34:59 pierre Exp $
  * @see    JumpersFilter
  */
 public class servjumpers extends JamesServlet {
@@ -57,12 +57,12 @@ public class servjumpers extends JamesServlet {
                 res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY); // 301
                 res.setContentType("text/html");
                 res.setHeader("Location", url);
-                return; 
+                return;
             }
         }
         finally {  // decrease reference count always
-            decRefCount(req); 
-        } 
+            decRefCount(req);
+        }
     }
 
     /**
