@@ -22,45 +22,24 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * This builder can be used to maintain files
+ * This builder can be used for 'attachments' builders. That is
+ * builders which have a 'handle' field and are associated with the
+ * 'attachments servlet.
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.10 2002-06-27 22:10:21 michiel Exp $ 
+ * @version $Id: Attachments.java,v 1.11 2002-06-28 20:53:13 michiel Exp $ 
  */
-public class Attachments extends MMObjectBuilder {
+public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
 
 
-    /**
-     * Static attachment servlet path
-     */
-    private static String attachmentServletPath = null;
-
-
-    /**
-     * Returns the path to the attachment serlvet.
-     */
-    protected String getServlet(String fileName) {
-        if (attachmentServletPath == null) {
-            attachmentServletPath = MMBaseServlet.getServletPath(MMBaseContext.getHtmlRootUrlPath(), "attachments",  "attachment.db");
-        }
-        if (fileName == null) {
-            return attachmentServletPath;
-        } else {
-            if (attachmentServletPath.endsWith("/")) {
-                return attachmentServletPath + fileName; 
-            } else {
-                return attachmentServletPath + "/" + fileName;
-            }
-        }
-            
+    protected String getAssociation() {
+        return "attachments";
     }
-
-    protected String getServlet() {
-        return getServlet(null);
+    protected String getDefaultPath() {
+        return "attachment.db";
     }
-
 
     /**
      * this method will be invoked while uploading the file.
@@ -102,11 +81,15 @@ public class Attachments extends MMObjectBuilder {
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
                 return "[" + filename + "]";
             } else {
-                return "<a href=\"" + getServlet(filename) + "?" + num + "\" target=\"extern\">[" + filename + "]</a>";
+                return "<a href=\"" + getServletPath(null, filename) + "?" + num + "\" target=\"extern\">[" + filename + "]</a>";
             }            
         }
         return super.getGUIIndicator(field, node);
     }
+
+    /**
+     * @javadoc
+     */
 
     protected boolean setEditFileField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
         MMObjectBuilder obj=ed.getBuilder();
