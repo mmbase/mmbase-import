@@ -17,18 +17,11 @@ Display list of xml files in configuration category
   <td><b>builder</b></td>
   <td><b>status</b></td>
   <td><b>check</b></td>
+  <td><b>source</b></td>
 </tr>
 <LIST SHOW category="builders">
 <tr>
-<LIF $ITEM2=Etrue>
-  <td><a href="configdetail.shtml?show+builders+$ITEM1">$ITEM1</a></td>
-</IF>
-<LIF $ITEM2=Enodtd>
-  <td><a href="configdetail.shtml?show+builders+$ITEM1">$ITEM1</a></td>
-</IF>
-<LIF $ITEM2=Efalse>
-  <td><a href="configdetail.shtml?annotate+builders+$ITEM1">$ITEM1</a></td>
-</IF>
+  <td><a href="xslconvert.shtml?$PARAM1/$ITEM1+builderview">$ITEM1</a></td>
 <LIF $ITEM3=Etrue>
   <td bgcolor="#63DE31"><font color="#63DE31">#</font></td>
 <ELSE>
@@ -43,7 +36,15 @@ Display list of xml files in configuration category
 <LIF $ITEM2=Efalse>
   <td>xml error!</td>
 </IF>
-  <td></td>
+<LIF $ITEM2=Etrue>
+  <td><a href="configdetail.shtml?show+builders+$ITEM1">xml</a></td>
+</IF>
+<LIF $ITEM2=Enodtd>
+  <td><a href="configdetail.shtml?show+builders+$ITEM1">xml</a></td>
+</IF>
+<LIF $ITEM2=Efalse>
+  <td><a href="configdetail.shtml?annotate+builders+$ITEM1">xml</a></td>
+</IF>
 </tr>
 </LIST>
 </table>
