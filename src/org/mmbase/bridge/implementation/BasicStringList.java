@@ -21,15 +21,22 @@ import org.mmbase.util.logging.*;
  * A list of Clouds
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.4 2002-01-31 10:05:12 pierre Exp $
+ * @version $Id: BasicStringList.java,v 1.5 2002-09-23 14:31:04 pierre Exp $
  */
 public class BasicStringList extends BasicList implements StringList {
     private static Logger log = Logging.getLoggerInstance(BasicStringList.class.getName());
+
+    BasicStringList() {
+        super();
+    }
 
     BasicStringList(Collection c) {
         super(c);
     }
 
+    protected Object validate(Object o) throws ClassCastException {
+        return (String)o;
+    }
 
     public String getString(int index) {
         return (String)get(index);
@@ -44,37 +51,8 @@ public class BasicStringList extends BasicList implements StringList {
             super(list);
         }
 
-        public void set(Object o) {
-            if (! (o instanceof String)) {
-                String message;
-                message = "Object must be of type String.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.set(index, o);
-        }
-
-        public void add(Object o) {
-            if (! (o instanceof String)) {
-                String message;
-                message = "Object must be of type String.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.add(index, o);
-        }
-
-        public void set(String s) {
-            list.set(index, s);
-        }
-
-        public void add(String s) {
-            list.add(index, s);
-        }
-
-
         public String nextString() {
-        return (String)next();
+            return (String)next();
         }
     }
 }

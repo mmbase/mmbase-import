@@ -16,9 +16,9 @@ import java.util.List;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.5 2002-03-20 13:16:46 eduard Exp $
+ * @version $Id: NodeList.java,v 1.6 2002-09-23 14:31:02 pierre Exp $
  */
-public interface NodeList extends List {
+public interface NodeList extends BridgeList {
 
     /**
      * Returns the Node at the indicated postion in the list

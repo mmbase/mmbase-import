@@ -16,9 +16,9 @@ import java.util.List;
  * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: StringList.java,v 1.3 2002-01-31 10:05:09 pierre Exp $
+ * @version $Id: StringList.java,v 1.4 2002-09-23 14:31:02 pierre Exp $
  */
-public interface StringList extends List {
+public interface StringList extends BridgeList {
 
     /**
      * Returns the string at the indicated postion in the list

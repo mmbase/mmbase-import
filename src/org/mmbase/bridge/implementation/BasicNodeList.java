@@ -21,13 +21,18 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.13 2002-06-17 11:58:00 eduard Exp $
+ * @version $Id: BasicNodeList.java,v 1.14 2002-09-23 14:31:03 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
     protected Cloud cloud;
     protected NodeManager nodemanager = null;
     
+    BasicNodeList(Cloud cloud) {
+        super();
+        this.cloud=cloud;
+    }
+
     BasicNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud=cloud;
@@ -40,8 +45,8 @@ public class BasicNodeList extends BasicList implements NodeList {
     }
     
     /**
-    *
-    */
+     *
+     */
     public Object convert(Object o, int index) {
         if (o instanceof Node) {
             return o;
@@ -56,13 +61,20 @@ public class BasicNodeList extends BasicList implements NodeList {
         if(coreBuilder instanceof InsRel) {
             // we are an relation,.. this means we have to create a relation..
             node = new BasicRelation(coreNode, manager);
-        }
-        else {
+        } else {
             // 'normal' node
             node = new BasicNode(coreNode, manager);
         }
         set(index, node);
         return node;
+    }
+
+    protected Object validate(Object o) throws ClassCastException {
+        if (o instanceof MMObjectNode) {
+            return o;
+        } else {
+            return (Node)o;
+        }
     }
 
     /**
@@ -92,13 +104,6 @@ public class BasicNodeList extends BasicList implements NodeList {
             super(list);
         }
                 
-        public void set(Node n) {
-            list.set(index, n);
-        }
-        public void add(Node n) {
-            list.add(index, n);
-        }
-
         public Node nextNode() {
             return (Node)next();
         }

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.5 2002-01-31 10:05:12 pierre Exp $
+ * @version $Id: BasicNodeManagerList.java,v 1.6 2002-09-23 14:31:03 pierre Exp $
  */
 public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class.getName());
@@ -28,16 +28,29 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     protected Cloud cloud;
 
     /**
-    * ...
-    */
+     * ...
+     */
+    BasicNodeManagerList(Cloud cloud) {
+        super();
+        this.cloud=cloud;
+    }
+
     BasicNodeManagerList(Collection c, Cloud cloud) {
         super(c);
         this.cloud=cloud;
     }
 
+    protected Object validate(Object o) throws ClassCastException {
+        if (o instanceof String) {
+            return o;
+        } else {
+            return (NodeManager)o;
+        }
+    }
+
     /**
-    *
-    */
+     *
+     */
     public Object convert(Object o, int index) {
         if (o instanceof NodeManager) {
             return o;
@@ -48,15 +61,15 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     }
 
     /**
-    *
-    */
+     *
+     */
     public NodeManager getNodeManager(int index) {
         return (NodeManager) get(index);
     }
 
     /**
-    *
-    */
+     *
+     */
     public NodeManagerIterator nodeManagerIterator() {
         return new BasicNodeManagerIterator(this);
     };
@@ -67,38 +80,9 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
             super(list);
         }
 
-        public void set(Object o) {
-            if (! (o instanceof NodeManager)) {
-                String message;
-                message = "Object must be of type NodeManager.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.set(index, o);
-        }
-        public void add(Object o) {
-            if (! (o instanceof NodeManager)) {
-                String message;
-                message = "Object must be of type NodeManager.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.add(index, o);
-        }
-
-        public void set(NodeManager m) {
-            list.set(index, m);
-        }
-
-        public void add(NodeManager m) {
-            list.add(index, m);
-        }
-
-
         public NodeManager nextNodeManager() {
             return (NodeManager)next();
         }
-
     }
 
 }

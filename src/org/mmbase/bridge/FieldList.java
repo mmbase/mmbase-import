@@ -16,9 +16,9 @@ import java.util.List;
  * A list of field types
  *
  * @author Pierre van Rooden
- * @version $Id: FieldList.java,v 1.3 2002-01-31 10:05:07 pierre Exp $
+ * @version $Id: FieldList.java,v 1.4 2002-09-23 14:31:02 pierre Exp $
  */
-public interface FieldList extends List {
+public interface FieldList extends BridgeList {
 
     /**
      * Returns the Field at the indicated postion in the list

@@ -20,53 +20,61 @@ import org.mmbase.util.logging.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.7 2002-06-17 10:49:47 eduard Exp $
+ * @version $Id: BasicRelationList.java,v 1.8 2002-09-23 14:31:04 pierre Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
 
     /**
-    * ...
-    */
+     * ...
+     */
+    BasicRelationList(Cloud cloud) {
+        super(cloud);
+    }
+
+    /**
+     * ...
+     */
     BasicRelationList(Collection c, Cloud cloud, NodeManager nodemanager) {
         super(c,cloud,nodemanager);
     }
     
+    protected Object validate(Object o) throws ClassCastException {
+        if (o instanceof MMObjectNode) {
+            if (((MMObjectNode) o).getBuilder() instanceof org.mmbase.module.corebuilders.InsRel) {
+                return o;
+            } else {
+                throw new ClassCastException("not a relation node");
+            }
+        } else {
+            return (Relation)o;
+        }
+    }
+
     /**
-    *
-    */
+     *
+     */
     public Relation getRelation(int index) {
         return (Relation)get(index);
     }
 
     /**
-    *
-    */
+     *
+     */
     public RelationList subRelationList(int fromIndex, int toIndex) {
         return new BasicRelationList(subList(fromIndex, toIndex),cloud,nodemanager);
     }
 
     /**
-    *
-    */
+     *
+     */
     public RelationIterator relationIterator() {
         return new BasicRelationIterator(this);
     }
 
-    public class BasicRelationIterator extends BasicIterator implements RelationIterator {        
+    public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {        
         BasicRelationIterator(BasicList list) {
             super(list);
-        }
-            
-        public void set(Relation n) {
-            list.set(index, n);
-        }
-        public void add(Relation n) {
-            list.add(index, n);
-        }
-
-        public Node nextNode() {
-            return nextRelation();
         }
 
         public Relation nextRelation() {
