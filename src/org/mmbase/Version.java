@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.24 2004-02-11 20:43:23 keesj Exp $
+ * @version $Id: Version.java,v 1.25 2004-02-20 17:43:41 michiel Exp $
  */
 public class Version {
 
@@ -79,7 +79,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String getNumber() {
-        return getMajor() + "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "-rc2" : getBuildDate());
+        return getMajor() + "." + getMinor() + "." + getPatchLevel() + "-rc3" + (isRelease() ? "" : getBuildDate());
     }
 
     /**
@@ -87,7 +87,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return true;
+        return false;
     };
 
     /**
