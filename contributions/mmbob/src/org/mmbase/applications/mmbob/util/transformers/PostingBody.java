@@ -19,20 +19,30 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.*;
 
 /**
- * 
+ * xmlize the posting body.
+ * At this moment it will only escape the characters:
+ * & --> &amp;
+ * " --> &quot;
+ * < --> &lt;
+ * > --> &gt;
+ * \r --> ""
+ * \n --> <br />
+ * In the future probably more escaping will be done (urls, images, etc.)
  *
  * @author Gerard van Enk 
  * @since MMBob 
- * @version $Id: PostingBody.java,v 1.1 2004-06-13 14:30:34 daniel Exp $
+ * @version $Id: PostingBody.java,v 1.2 2005-02-22 15:29:12 gerard Exp $
  */
-
 public class PostingBody {
     private static Logger log = Logging.getLoggerInstance(PostingBody.class);
-
+    //map of all characters which need to be replaced
     protected static Map replacements; 
     private static Pattern[] patterns;
     private static Matcher[] matchers;
 
+    /**
+     * Initializes the Map containing the replacements
+     */
     protected static void initReplacements() {
         replacements = new HashMap();
         replacements.put("&","&amp;");
@@ -46,7 +56,6 @@ public class PostingBody {
 
     /**
      * Initializes the pattern array with all possible handlers.
-     *
      */
     protected void initPatterns () {
         if (patterns == null) {
@@ -54,8 +63,6 @@ public class PostingBody {
                 initReplacements();
             }
             patterns = new Pattern[6];
-            //log.debug("er zijn: " + smilies.size() + " smilies");
-            //int i = 0;
             patterns[0] = Pattern.compile("&");
             patterns[1] = Pattern.compile("(?<!(<quote poster=|poster=[\"][\\w\\s]{1,255}))\"");
             patterns[2] = Pattern.compile(">(?<!(poster=[\"][\\w\\s]{1,255})\">|</quote>)");
@@ -65,6 +72,9 @@ public class PostingBody {
         }
     }
 
+    /**
+     * Initializes the matcher array
+     */
     protected void initMatchers() {
         if (matchers == null) {
             if (patterns == null) {
@@ -77,12 +87,21 @@ public class PostingBody {
         }
     }
 
+    /**
+     * transforms the body in the xml-version.
+     *
+     * @param originalBody the body to be transformed
+     */
     public String transform(String originalBody) {
         StringBuffer escapedBody = escapeStandard(originalBody);
-        //escapedBody = handleNewlines(escapedBody);
         return escapedBody.toString();
     }
 
+    /**
+     * really transforms the body in the xml-version.
+     *
+     * @param body the body to be transformed
+     */
     private StringBuffer escapeStandard(String body) {
         int replaced = 0;
         String code = null;
@@ -91,19 +110,20 @@ public class PostingBody {
         boolean found = false;
         StringBuffer resultBuffer = new StringBuffer();
         StringBuffer tempBuffer = new StringBuffer(body);
+        //init matchers if they weren't initialized already
         if (matchers == null) {
             initMatchers();
         }
 
         for (int i = 0; i < matchers.length; i++) {
             resultBuffer = new StringBuffer();
-            matchers[i].reset(tempBuffer);
-            
+            matchers[i].reset(tempBuffer);            
             while (matchers[i].find()) {
-                log.debug("I found the text \"" + matchers[i].group() +
+                if (log.isDebugEnabled()) {
+                    log.debug("found the text \"" + matchers[i].group() +
                                "\" starting at index " + matchers[i].start() +
                                " and ending at index " + matchers[i].end() + ".");
-                //log.debug("bijbehorende image: "+ (String)smilies.get(matchers[i].group()));
+                }
                 found = true;
                 matchers[i].appendReplacement(resultBuffer,"" + (String)replacements.get(matchers[i].group()));
             }
@@ -112,18 +132,15 @@ public class PostingBody {
                 tempBuffer = resultBuffer;
                 found = false;
             } else {
-                log.debug("helaas, niets gevonden");
+                log.debug("nothing found");
                 resultBuffer = tempBuffer;
             }
-
-            //result = originalString.replaceAll("\\(?<=.\\W|\\W.|^\\W\\)\\Q"+code+"\\E\\(?=.\\W|\\W.|\\W$\\)",(String)smilies.get(code));
-            //result = originalString.replaceAll(code,(String)smilies.get(code));
-
         }
-        log.debug("origalString: "+body);
-        log.debug("result: "+resultBuffer.toString());
-        return resultBuffer;
-            
+        if (log.isDebugEnabled()) {
+            log.debug("origalString: "+body);
+            log.debug("result: "+resultBuffer.toString());
+        }
+        return resultBuffer;      
     }
 
 
