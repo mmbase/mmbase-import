@@ -208,6 +208,10 @@ public class BasicNode implements Node {
         }
     }
 
+    public void setBooleanValue(String attribute, boolean value) {
+        setValue(attribute,new Boolean(value));
+    }
+
     public void setIntValue(String attribute, int value) {
         setValue(attribute,new Integer(value));
     }
@@ -234,6 +238,10 @@ public class BasicNode implements Node {
 
     public Object getValue(String attribute) {
         return noderef.getValue(attribute);
+    }
+
+    public boolean getBooleanValue(String attribute) {
+        return noderef.getBooleanValue(attribute);
     }
 
     public int getIntValue(String attribute) {
