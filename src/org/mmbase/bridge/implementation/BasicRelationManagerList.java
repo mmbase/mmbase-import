@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.7 2002-09-23 14:31:04 pierre Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.8 2002-09-25 14:57:48 pierre Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
@@ -27,8 +27,8 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
     /**
      * ...
      */
-    BasicRelationManagerList(Cloud cloud) {
-        super(cloud);
+    BasicRelationManagerList() {
+        super();
     }
 
     BasicRelationManagerList(Collection c, Cloud cloud) {

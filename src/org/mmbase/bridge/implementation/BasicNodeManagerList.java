@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.6 2002-09-23 14:31:03 pierre Exp $
+ * @version $Id: BasicNodeManagerList.java,v 1.7 2002-09-25 14:57:48 pierre Exp $
  */
 public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class.getName());
@@ -30,9 +30,8 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     /**
      * ...
      */
-    BasicNodeManagerList(Cloud cloud) {
+    BasicNodeManagerList() {
         super();
-        this.cloud=cloud;
     }
 
     BasicNodeManagerList(Collection c, Cloud cloud) {
