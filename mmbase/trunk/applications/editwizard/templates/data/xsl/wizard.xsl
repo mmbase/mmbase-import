@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.55 2002-07-19 15:07:53 michiel Exp $
+  @version $Id: wizard.xsl,v 1.56 2002-07-19 18:06:44 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -165,10 +165,6 @@
     <xsl:value-of select="/*/form[@id=current()/@form-schema]/title" />
   </xsl:template>
 
-
-  <!-- If you need extra javascript, then you can override this thing -->
-  <xsl:template name="extrajavascript" />
-  
 
   <!-- ================================================================================
        The following is functionality. You probably don't want to override it.
@@ -492,13 +488,13 @@
         <xsl:when test="@ftype='file'">
           <xsl:choose>
             <xsl:when test="@dttype='data'">
-            <a href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',', string(@number), ')'))}"><xsl:call-template name="prompt_do_download" /></a>
+              <a target="_new" href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a>
             </xsl:when>
             <xsl:otherwise>
               <nobr><input type="hidden" name="{@fieldname}" value="YES" />
                 <xsl:choose>
                   <xsl:when test="not(upload)"><xsl:call-template name="prompt_no_file" /><br />
-                    <a href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',', string(@number), ')'))}"><xsl:call-template name="prompt_do_download" /></a><br />
+                  <a target="_new" href="{node:function(string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a><br />
                   </xsl:when>
                   <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)<br />
                   </xsl:otherwise>
