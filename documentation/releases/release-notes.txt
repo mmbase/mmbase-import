@@ -25,59 +25,73 @@ General New Features:
 
 - Storing blobs (e.g. images) on disk has changed. 
   Blobs are now stored as follows:
-  The number of the object containing the blob is broken up in parts. The 3 least significant digits are ignored.
-  The remaining digits are divided by powers of hundred (pairs of digits of 2).
+  The number of the object containing the blob is broken up in
+  parts. The 3 least significant digits are ignored.
+  The remaining digits are divided by powers of hundred (pairs of
+  digits of 2). 
   These are then broken up in nested directories.
-  For instance, the field 'handle' of node with number 5447637 is stored as:
+  For instance, the field 'handle' of node with number 5447637 is
+  stored as: 
     data/databasename/basename_buildername/54/47/5447637.handle
   while the same field of node number 1205 is stopped as:
     data/databasename/basename_buildername/01/1205.handle
 
-  where 'databasename', 'basename' and 'buildername' are depending on configuration and type of the
-  node. 
+  where 'databasename', 'basename' and 'buildername' are depending on
+  configuration and type of the node. 
 
-  This improves performance on systems when you get a large number of binary fields.
+  This improves performance on systems when you get a large number of
+  binary fields. 
 
-  Note: if you are upgrading from 1.7.0 RC1 you need to convert, because this 'breaking up' into
-  directories did not yet exist then.
+  Note: if you are upgrading from 1.7.0 RC1 you need to convert,
+  because this 'breaking up' into directories did not yet exist then.
 
-  Note: if you are upgrading from 1.6 or early 1.7 builds and used to store blobs on disk using the
-  'old' storage implementation or the 'support' implementation (from < 1.6), then too you need to
-  convert if you want to use the 'new' storage now (which you want). Note that the 'databasename'
-  and 'basename' parts are new in the path (these make it easier to toggle between configurations).
+  Note: if you are upgrading from 1.6 or early 1.7 builds and used to
+  store blobs on disk using the 'old' storage implementation or the
+  'support' implementation (from < 1.6), then too you need to convert
+  if you want to use the 'new' storage now (which you want). Note that
+  the 'databasename' and 'basename' parts are new in the path (these
+  make it easier to toggle between configurations). 
 
-  Make sure the old 'blobdatadir' dir is now WEB-INF/data (use e.g. a symlink)
+  Make sure the old 'blobdatadir' dir is now WEB-INF/data (use e.g. a
+  symlink) 
 
-  You can convert the blobs via the admin pages /mmbase/admin admin->BLOBS (which can also be used
-  to migrate from blobs-in-database to blobs-on-disk).
+  You can convert the blobs via the admin pages /mmbase/admin
+  admin->BLOBS (which can also be used to migrate from
+  blobs-in-database to blobs-on-disk). 
 
-- Query-object, which allows for several new taglib and MMCI features.
+- Query-object, which allows for several new taglib and MMCI
+  features. 
 
-- New storage layer, which allows for real transactions!
+- New storage layer, which allows for real transactions! 
 
-- Some 'applications' (like editwizards) have been split up to seperate jars. This will allow for
-  easiers partial upgrades of installations.
+- Some 'applications' (like editwizards) have been split up to
+  seperate jars. This will allow for easiers partial upgrades of
+  installations. 
 
-- Added functionality to the jsp editors: better paging mechanism.
+- Added functionality to the jsp editors: better paging mechanism. 
 
-- Added functionality to the jsp admin pages: add/change field descriptions
+- Added functionality to the jsp admin pages: add/change field
+  descriptions 
 
 --------------------------
 MMCI (bridge) New Features:
 -------------------------
 [1.7.0]
 
-- All interfaces of the new org.mmbase.storage.search package are part of the 'bridge' now.  There
-  is also a new 'Query' object in org.mmbase.bridge, which allows for query creation and
-  modification in a generic way.
+- All interfaces of the new org.mmbase.storage.search package are part
+  of the 'bridge' now.  There is also a new 'Query' object in
+  org.mmbase.bridge, which allows for query creation and modification
+  in a generic way. 
 
-- The new Query frame work allows for easy execution of 'aggregating queries' (e.g. counts) through the
-  bridge.
+- The new Query frame work allows for easy execution of 'aggregating
+  queries' (e.g. counts) through the bridge.
 
-- The bridge implementation now also lets security modify its queries to exclude read-protected
-  nodes. Depending on the security implementation and configuration this should speed up things.
+- The bridge implementation now also lets security modify its queries
+  to exclude read-protected nodes. Depending on the security
+  implementation and configuration this should speed up things. 
 
-- Several small additions (like Cloud.getRelationManager(NodeManager, NodeManager, String));
+- Several small additions (like Cloud.getRelationManager(NodeManager,
+  NodeManager, String)); 
 
 -------------------
 Taglib New Features:
@@ -85,28 +99,32 @@ Taglib New Features:
 
 [1.7.0]
 
-- Content-Tag, which provides default escaping behaviour, postprocessing functionality, and
-  content-type information.
+- Content-Tag, which provides default escaping behaviour,
+  postprocessing functionality, and content-type information. 
 
 - Container tags.
 
-  - Function Container tag. Allows for more complicated arguments to functions on e.g. Nodes.
+  - Function Container tag. Allows for more complicated arguments to
+    functions on e.g. Nodes. 
+  - List Container Tags. Allow for easier generic queries (using new
+    Query frame work). The Query object can be changed with a
+    'constraint' tag, an 'ageconstraint' tag, a maxnumber tag and an
+    'offset' tag. The query can be executed by the already existing
+    nodelist tags. Also the size tag, can optionally be used outside a
+    list tag now (but inside a list container tag), and will then be
+    calculated by the database (and not progamaticly). 
 
-  - List Container Tags. Allow for easier generic queries (using new Query frame work). The Query
-    object can be changed with a 'constraint' tag, an 'ageconstraint' tag, a maxnumber tag and an
-    'offset' tag. The query can be executed by the already existing nodelist tags. Also the size
-    tag, can optionally be used outside a list tag now (but inside a list container tag), and will
-    then be calculated by the database (and not progamaticly).
+- 'previousbatches' and 'nextbatches' tags. A way to easily make a
+  paging mechanism for big search results.
 
-- 'previousbatches' and 'nextbatches' tags. A way to easily make a paging mechanism for big search
-  results.
-
-- unrelatednodes tag. A tag to list all nodes (of a certain type) which are _not_ related to a node.
+- unrelatednodes tag. A tag to list all nodes (of a certain type)
+  which are _not_ related to a node. 
 
 - compare tag: valueSet attribute
 
-- List-tags now provide a kind of 'temporary' context for taglib variables. In practice this means
-  that inner context tags (or 'remove' tags) will not be needed any more.
+- List-tags now provide a kind of 'temporary' context for taglib
+  variables. In practice this means that inner context tags (or
+  'remove' tags) will not be needed any more. 
 
 ...
 
@@ -120,41 +138,45 @@ Generic Improvement:
 -------------------
 
 [1.7.0]
-- Several tags in builder xmls are no longer mandatory, and sensible defaults will be used instead
-  (for example in the editor section)
-- jspsmartupload has been replaced with jakarta's commons FileUpload component.
+- Several tags in builder xmls are no longer mandatory, and sensible
+  defaults will be used instead  (for example in the editor section)
+- jspsmartupload has been replaced with jakarta's commons FileUpload
+  component. 
 
 ------------------
 Generic Bug Fixes:
 ------------------
 [1.7.0]
-- jaxp compliance. MMBase does not longer depend on an old version of xerces/xalan/xml-apis
-  when running under java 1.4 you can remove those files
+- jaxp compliance. MMBase does not longer depend on an old version of
+  xerces/xalan/xml-apis when running under java 1.4 you can remove
+  those files 
 
-- Logging: The mmbase logger now uses a wrapper so that at startup it first caches the messages until the
-  logger is initialized
+- Logging: The mmbase logger now uses a wrapper so that at startup it
+  first caches the messages until the logger is initialized
 
-- The HandleServlet now remove additional information left in jpeg file by PhotoShop 7 
-  This extra information crashes the image Thread of Internet Exploder. While this was 
-  not a bug it is very convenient
+- The HandleServlet now remove additional information left in jpeg
+  file by PhotoShop 7 This extra information crashes the image Thread
+  of Internet Exploder. While this was not a bug it is very convenient 
 
-- caching of Query results is done better. It is possible to cache everything. In 1.6 some queries
-  accidentely where not cached. This fix is based on the new Query framework.
+- caching of Query results is done better. It is possible to cache
+  everything. In 1.6 some queries accidentely where not cached. This
+  fix is based on the new Query framework. 
 
-- when exporting builder xmls, the state propery of a field is now in lowercase (as defined by the
-  dtd)
+- when exporting builder xmls, the state propery of a field is now in
+  lowercase (as defined by the dtd)
 
-- More robust in case Database not up yet if MMBase starts, or if database restart when MMBase
-  remains up.
+- More robust in case Database not up yet if MMBase starts, or if
+  database restart when MMBase remains up.
 
 ------------------
 Security Bug Fixes:
 ------------------
 [1.7.0]
-- It is for a security implementation possible to define new ranks now.
-
-- Queries are checked by all 'official' security implementations. If there are read-restrictions on
-  defined on your installation, you need to create an index on the owner fields.
+- It is for a security implementation possible to define new ranks
+  now. 
+- Queries are checked by all 'official' security implementations. If
+  there are read-restrictions on defined on your installation, you
+  need to create an index on the owner fields.
 
 
 -----------------
@@ -163,15 +185,17 @@ Taglib Bug Fixes:
 [1.7.0]
  - Working with resin now
 
- - The fields parameter of the list tags (related, list, etc) now no longer accepts fields that do not exist.
-   Note that this means that some pages may give errors now if they specified wrong fieldnames.
+ - The fields parameter of the list tags (related, list, etc) now no
+   longer accepts fields that do not exist. Note that this means that
+   some pages may give errors now if they specified wrong fieldnames. 
 
- - Lots of small attributes-related things, like emulating complete absence of the the attribute
-   when its value is empty. Some attributes (like the 'id' attribute) did not yet accept taglib
-   variables ($-variables), which also has been fixed on several places.
+ - Lots of small attributes-related things, like emulating complete
+   absence of the the attribute when its value is empty. Some
+   attributes (like the 'id' attribute) did not yet accept taglib
+   variables ($-variables), which also has been fixed on several
+   places. 
 
  - URL-tag not a Writer any more.
-
 
 
 -----------------
@@ -184,41 +208,49 @@ Upgrade:
 ========
 [1.7.0]
 - Replace mmbase.jar with the new jars.
-  - if you used editwizards, place mmbase-editwizard.jar (from mmbase-editwizard.zip)
-
-  - if you used community, place mmbase-community.jar (from mmbase-community.zip)
-    You can remove mmcommunity-taglib.tld too and place this in web.xml in stead:
+  - if you used editwizards, place mmbase-editwizard.jar (from
+    mmbase-editwizard.zip) 
+  - if you used community, place mmbase-community.jar (from
+    mmbase-community.zip). You can remove mmcommunity-taglib.tld too
+    and place this in web.xml in stead:
     <taglib>
       <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
       <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
     </taglib>
 
 -  Replace and/org install all shipped jsps too.
-   - generic editors are now shipped under /mmbase/edit/basic. You can follow this new convention
-     and remove /mmeditors.  Or you copy/move the content to the original location /mmeditors/jsp
+   - generic editors are now shipped under /mmbase/edit/basic. You can
+     follow this new convention and remove /mmeditors.  Or you
+     copy/move the content to the original location /mmeditors/jsp 
 
-   - For admin pages goes the same. They are now in /mmbase/admin (used to be /mmadmin/jsp).
+   - For admin pages goes the same. They are now in /mmbase/admin
+     (used to be /mmadmin/jsp).
 
-   - If you need the examples you could replace /mmexamples by the new content of /mmexamples
+   - If you need the examples you could replace /mmexamples by the new
+     content of /mmexamples
 
-   - The editwizard jsp and xsls are shipped in /mmbase/edit/wizard (used to be
-     /mmapps/editwizard). You can also download them seperately in mmbase-editwizard.zip now.
+   - The editwizard jsp and xsls are shipped in /mmbase/edit/wizard
+     (used to be /mmapps/editwizard). You can also download them
+     seperately in mmbase-editwizard.zip now.
 
 - remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead:
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
   </taglib>
-  Note that the taglib is not any more present in mmbase.jar itself. So if you
-  wrote mmbase.jar here in web.xml you have to change it.
+  Note that the taglib is not any more present in mmbase.jar
+  itself. So if you wrote mmbase.jar here in web.xml you have to
+  change it. 
 
 - Clean the working directory of your app-server (to recompile jsp's)
 
-- The fields parameter of the MMBase taglib list tags (related, list, etc) now no longer accepts
-  fields that do not exist. Some pages may give errors now if they specified wrong fieldnames,
-  so you are advised to check your site's pages for this error.
+- The fields parameter of the MMBase taglib list tags (related, list,
+  etc) now no longer accepts fields that do not exist. Some pages may
+  give errors now if they specified wrong fieldnames, so you are
+  advised to check your site's pages for this error. 
 
-- If needed, convert the data directory where mmbase stored binary data
+- If needed, convert the data directory where mmbase stored binary
+  data 
 
 ========================
 Know Issues and Problems:
