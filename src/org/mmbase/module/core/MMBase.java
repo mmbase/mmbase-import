@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.70 2002-09-24 18:24:38 eduard Exp $
+ * @version $Id: MMBase.java,v 1.71 2002-09-25 15:53:01 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -659,22 +659,27 @@ public class MMBase extends ProcessorModule  {
      */
     public MultiConnection getConnection() {
 	MultiConnection con = null;
-	int timeout = 10;
+        int timeout = 10; //seconds
 	
+        int tries = 1;
 	// always return a connection, maybe database down,... so wait in that situation....
 	while(con == null) {
 	    try {
 		con=database.getConnection(jdbc);
 	    } 
 	    catch (SQLException sqle){
-		String msg = "Could not get a multi-connection, will try again over "+timeout+" seconds, failure:\n";
-		msg += Logging.stackTrace(sqle);
-		log.fatal(msg);
+		log.fatal("Could not get a multi-connection, will try again over " + timeout + " seconds: " + sqle.getMessage());
+                if (tries == 1) {
+                    log.error(Logging.stackTrace(sqle));
+                } else {
+                    log.debug(Logging.stackTrace(sqle));
+                }
+                tries++;
 		try {
 		    wait(timeout * 1000);
 		}
 		catch(InterruptedException ie) {
-		    msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
+		    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
 		    log.warn(msg);
 		    throw new RuntimeException(msg);
 		}
@@ -692,20 +697,22 @@ public class MMBase extends ProcessorModule  {
 	Connection con = null;
 	int timeout = 10;
 	
+        int tries = 1;
 	// always return a connection, maybe database down,... so wait in that situation....
 	while(con == null) {
 	    try {
 		con=jdbc.getDirectConnection(jdbc.makeUrl());
-	    } 
-	    catch (SQLException sqle){
-		String msg = "Could not get a connection, will try again over "+timeout+" seconds, failure:\n";
-		msg += Logging.stackTrace(sqle);
-		log.fatal(msg);
+	    } catch (SQLException sqle){
+		log.fatal("Could not get a connection, will try again after " + timeout + " seconds: " + sqle.getMessage());
+		if (tries ==1) {
+                    log.error(Logging.stackTrace(sqle));
+                } else {
+                    log.debug(Logging.stackTrace(sqle));
+                }
 		try {
 		    wait(timeout * 1000);
-		}
-		catch(InterruptedException ie) {
-		    msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
+		} catch(InterruptedException ie) {
+		    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
 		    log.warn(msg);
 		    throw new RuntimeException(msg);
 		}
