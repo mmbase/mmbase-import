@@ -7,12 +7,12 @@
 <mm:import externid="chattername" from="session" />
 
 <mm:node number="Chat" id="channel">
-<mmcommunity:connection channel="Chat" user="${chatter}" action="leave" />
+<mmcommunity:connection channel="Chat" user="$chatter" action="leave" />
  <mmcommunity:post>
   <mm:setfield name="username"><mm:write referid="chattername"/></mm:setfield>
   <mm:setfield name="user"><mm:write referid="chatter"/></mm:setfield>
   <mm:setfield name="channel"><mm:field name="number" node="channel"/></mm:setfield>
-  <mm:setfield name="body"> heeft de MMBase babbeldoos verlaten.</mm:setfield>
+  <mm:setfield name="body"> left the MMBase chat box.</mm:setfield>
  </mmcommunity:post>
 </mm:node><%
 
@@ -25,9 +25,9 @@
 %>
 <html>
 <body>
-<p>U bent nu uitgelogd.</p>
-<p>Terug naar <a href="chats.jsp">MMBase Chat</a></p>
-<p>Terug naar <a href="../voorbeelden.jsp">MMBase Support site</a></p>
+<p>You were logged of</p>
+<p>Back to <a href="<mm:url page="chats.jsp" />">MMBase Chat</a></p>
+<p>Back to <a href="<mm:url page="../community.jsp" />">Community example</a></p>
 </body>
 </html>
 </mm:cloud>
