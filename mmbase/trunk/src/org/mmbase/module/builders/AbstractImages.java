@@ -13,13 +13,14 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.17 2003-03-04 20:10:55 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.18 2003-04-01 08:41:29 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
@@ -78,13 +79,13 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * An image's gui-indicator is of course some &lt;img src&gt;, but it depends on what kind of image
      * (cached, original) what excactly it must be.
      */
-    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, String sessionName);
+    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, HttpServletRequest req, String sessionName);
 
     /**
      * Gui indicator of a whole node.
      */
     protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, "*", res, session);
+        return getGUIIndicatorWithAlt(node, "*", res, null, session);
     }
 
     protected String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node) {

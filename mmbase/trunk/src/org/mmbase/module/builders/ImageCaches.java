@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.28 2003-03-31 17:16:27 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.29 2003-04-01 08:41:29 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -74,9 +74,11 @@ public class ImageCaches extends AbstractImages {
     }
 
     // javadoc inherited
-    protected String getSGUIIndicator(String session, HttpServletResponse res, HttpServletRequest req, MMObjectNode node) {
+    protected String getSGUIIndicator(String session, HttpServletResponse res, 
+                                      //HttpServletRequest req, 
+                                      MMObjectNode node) {
         MMObjectNode origNode = originalImage(node);
-        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), res, req, session);
+        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), res, null, session);
     }
 
 
