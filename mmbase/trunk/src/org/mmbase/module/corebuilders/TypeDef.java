@@ -32,13 +32,13 @@ public class TypeDef extends MMObjectBuilder {
      * Number-to-name cache.
      * @duplicate should be moved to org.mmbase.cache
      */
-    private Map nameCache = new Hashtable(); // object number -> typedef name
+    private Map numberToNameCache = null; // object number -> typedef name
 
     /**
      * Name-to-number cache.
      * @duplicate should be moved to org.mmbase.cache
      */
-    private Map numberCache= new Hashtable(); // typedef name -> object number
+    private Map nameToNumberCache= null; // typedef name -> object number
 
     /**
      * List of known builders.
@@ -53,15 +53,67 @@ public class TypeDef extends MMObjectBuilder {
         broadcastChanges=false;
     }
 
+    protected Map getNumberToNameCache() {
+        if (numberToNameCache==null) readCache();
+        return numberToNameCache;
+    }
+
+    protected Map getNameToNumberCache() {
+        if (nameToNumberCache==null) readCache();
+        return nameToNumberCache;
+    }
+
     /**
-     * Initializes the typedef builder.
-     * Loads a name-to-type and type-to-name cache of active builders.
-     * @return true if init was completed, false if uncompleted.
+     * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
+     * This method indirectly calls {@link #preCommit}.
+     * @param owner The administrator creating the node
+     * @param node The object to insert. The object need be of the same type as the current builder.
+     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
-    public boolean init() {
-        boolean result = super.init();
-        readCache(); // read type info into the caches
+    public int insert(String owner, MMObjectNode node) {
+        int result=super.insert(owner, node);
+        if (result!=-1) {
+            Integer number=node.getIntegerValue("number");
+            String name=node.getStringValue("name");
+            getNameToNumberCache().put(name,number);
+            getNumberToNameCache().put(number,name);
+        }
         return result;
+    }
+
+    /**
+     * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
+     * Use only to commit changes - for adding node, use {@link #insert}.
+     * @param node The node to be committed
+     * @return true if commit successful
+     */
+    public boolean commit(MMObjectNode node) {
+        Integer number=node.getIntegerValue("number");
+        String oldname=node.getStringValue("name");
+        boolean result=super.commit(node);
+        if (result) {
+            String newname=node.getStringValue("name");
+            if (!oldname.equals(newname)) {
+                getNameToNumberCache().remove(oldname);
+                getNameToNumberCache().put(newname,number);
+                getNumberToNameCache().put(number,newname);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Remove a node from the cloud, when the represented builder was active
+     * it will also be unloaded
+     * @param node The node to remove.
+     * @throw RuntimeException When the operation could not be performed
+     */
+    public void removeNode(MMObjectNode node) {
+        Integer number=node.getIntegerValue("number");
+        String name=node.getStringValue("name");
+        super.removeNode(node);
+        getNameToNumberCache().remove(name);
+        getNumberToNameCache().remove(number);
     }
 
     /**
@@ -71,17 +123,20 @@ public class TypeDef extends MMObjectBuilder {
      * @duplicate should be moved to org.mmbase.cache
      * @return always true
      */
-    public boolean readCache() {
+    private boolean readCache() {
+        // at least fill in typedef
         log.service("Reading typedef caches");
         Integer number;
         String name;
+        numberToNameCache = new Hashtable();
+        nameToNumberCache = new Hashtable();
         for (Enumeration e = search(null); e.hasMoreElements();) {
             MMObjectNode n= (MMObjectNode) e.nextElement();
             number= n.getIntegerValue("number");
             name  = n.getStringValue("name");
             if (number != null && name != null) {
-                numberCache.put(name,number);
-                nameCache.put(number,name);
+                nameToNumberCache.put(name,number);
+                numberToNameCache.put(number,name);
             } else {
                 log.error("Could not add typedef cache-entry number/name= " + number + "/" + name);
             }
@@ -96,16 +151,10 @@ public class TypeDef extends MMObjectBuilder {
      * @return the object type as an int, -1 if not defined.
      */
     public int getIntValue(String builderName) {
-        Integer result=(Integer)numberCache.get(builderName);
+        Integer result=(Integer)getNameToNumberCache().get(builderName);
         if (result!=null) {
             return result.intValue();
         } else {
-            // XXX: a bit ugly to do this every time a match fails...
-            readCache();
-            result = (Integer) numberCache.get(builderName);
-            if (result != null) {
-                return result.intValue();
-            }
             return -1;
         }
     }
@@ -116,15 +165,9 @@ public class TypeDef extends MMObjectBuilder {
      * @return the name of the builder as a string, null if not found
      */
     public String getValue(int type) {
-        String result = (String) nameCache.get(new Integer(type));
+        String result = (String) getNumberToNameCache().get(new Integer(type));
         if (result == null) {
-            // XXX: it is ugly here too (see getIntValue()).
-            // but sometimes necessary (when starting Versions)
-            readCache();
-            result = (String) nameCache.get(new Integer(type));
-            if (result == null) {
-                log.error("Could not find builder name for typdef number " + type);
-            }
+            log.error("Could not find builder name for typdef number " + type);
         }
         return result;
     }
@@ -134,10 +177,11 @@ public class TypeDef extends MMObjectBuilder {
      * Obtain the buildername of the requested type
      * @param type the object type
      * @return the name of the builder as a string, "unknown" if not found
+     * @deprecated use getValue(int)
      */
     public String getValue(String type) {
         try {
-            return (String) nameCache.get(new Integer(Integer.parseInt(type)));
+            return (String) getNumberToNameCache().get(new Integer(Integer.parseInt(type)));
         } catch(Exception e) {
             return "unknown";
         }
@@ -217,7 +261,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public MMObjectBuilder getBuilder(MMObjectNode node) {
         String builderName = node.getStringValue("name");
-        return mmb.getMMObject(builderName);    
+        return mmb.getMMObject(builderName);
     }
 
     /**
@@ -334,9 +378,6 @@ public class TypeDef extends MMObjectBuilder {
         return null;
     }
 
-
-
-
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executefunction of typdef");
         if (function.equals("info")) {
@@ -347,7 +388,7 @@ public class TypeDef extends MMObjectBuilder {
                 return info;
             } else {
                 return info.get(args.get(0));
-            }                    
+            }
         } else if (function.equals("gui")) {
             log.debug("GUI of servlet builder with " + args);
             if (args == null || args.size() ==0) {
@@ -362,9 +403,9 @@ public class TypeDef extends MMObjectBuilder {
                 if (rtn == null) return super.executeFunction(node, function, args);
                 return rtn;
             }
-        } else {                   
+        } else {
             return super.executeFunction(node, function, args);
-        }    
+        }
     }
 
 
