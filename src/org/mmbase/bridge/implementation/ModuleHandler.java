@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.17 2002-10-15 15:28:30 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.18 2002-11-01 09:34:11 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -119,9 +119,15 @@ public class ModuleHandler implements Module, Comparable {
                 Hashtable cmds = new Hashtable();
                 if (parameter==null) { parameter="-1"; }
                 cmds.put(command,parameter);
-                Hashtable partab=new Hashtable(auxparameters);
+                // weird change. should be fixed soon in Module.process
+                Hashtable partab=null;
+                if (auxparameters!=null) {
+                    partab=new Hashtable(auxparameters);
+                } else {
+                    partab=new Hashtable();
+                }
                 ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),cmds,partab);
-                auxparameters.putAll(partab);
+                if (auxparameters!=null) auxparameters.putAll(partab);
         } else {
             String message;
                 message = "process() is not supported by this module.";
