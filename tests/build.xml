@@ -16,8 +16,9 @@
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
 
-  <!-- project defaults (not used atm)-->  
-  <!--<property file="${source.dir}/build.properties.default"/>-->
+  <!-- use the build.properties.default from mmbase to define where
+  jars are located -->
+	<property file="${mmbase.source.dir}/build.properties.default"/>
 
   <property name="tests.source.dir"   location="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
@@ -48,6 +49,7 @@
           <include name="*.zip"/>
         </fileset>
       </classpath>
+      
       
       <classpath id="run.classpath">
         <fileset dir="${tests.lib}">
