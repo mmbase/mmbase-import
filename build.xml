@@ -67,12 +67,12 @@ several MMBase-checkouts.
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
 
-  <!-- project defaults -->  
+  <!-- project defaults -->
   <property file="build.properties.default"/>
 
   <property file="build.properties.version"/>
 
-  <property name="build.compiler" value="classic"/>
+  <property name="build.compiler" value="modern"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="on"/>
   <property name="deprecation" value="off"/>
@@ -303,7 +303,7 @@ builddate=${builddate}
     <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
-    
+
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
       <fileset dir="${source-documentation.dir}/releases/legal"/>
@@ -596,7 +596,7 @@ builddate=${builddate}
     </jar>
 
     <delete file="${build.dir}/manifest.mf" />
-    
+
     <!-- still copy mmbase.jar to relase dir for backward compatibility-->
     <copy file="${mmbase.jar}"       todir="${release.lib.dir}" />
   </target>
@@ -757,6 +757,7 @@ Build-compiler: ${build.compiler}
       </classpath>
       <!-- mmbase custom tags -->
       <tag name="deprecated-now" description="Warning: Deprecated now (removed in the next release):" />
+      <tag name="license" description="Warning: License conflict:" />
       <tag name="rename" description="Warning: Will be renamed to:" />
       <tag name="move" description="Warning: Will be moved to:" />
       <tag name="scope" description="Warning: Scope will be changed to:" />
@@ -908,11 +909,11 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
-  <target name="unzipdownloadzip" if="download.zip.present" 
+  <target name="unzipdownloadzip" if="download.zip.present"
           unless="download.dir.present">
     <unzip src="${download.zip}" dest="${download.dir}" overwrite="false" />
   </target>
-  
+
   <target name="init.get" depends="proxyflags">
 
     <available property="download.zip.present" file="${download.zip}" />
@@ -995,7 +996,7 @@ Build-compiler: ${build.compiler}
   <target name="setproxy"  if="useproxy">
     <taskdef name="setproxy"
       classname="org.apache.tools.ant.taskdefs.optional.net.SetProxy" />
-    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/> 
+    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
     <echo message="Using ${proxy.host}:${proxy.port} to download ${sourcefile}"/>
   </target>
 
@@ -1018,7 +1019,7 @@ Build-compiler: ${build.compiler}
     <!-- Extract the package -->
     <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
     <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
-    <delete file="${download.dir}/file.tar"/>    
+    <delete file="${download.dir}/file.tar"/>
   </target>
 
   <target name="downloadbz2" unless="expanded" depends="download,testexpanded">
@@ -1094,7 +1095,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="documentation" 
+  <target name="documentation"
           depends="jar,documentation.builders,mmcidocs">
 
 
