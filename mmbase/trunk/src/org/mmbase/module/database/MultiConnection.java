@@ -15,12 +15,18 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * MultiConnection is a replacement class for Connection it provides you a
  * multiplexed and reuseable connections from the connection pool
  */
 public class MultiConnection implements Connection
 {
+
+    private static Logger log = Logging.getLoggerInstance(MultiConnection.class.getName());
+   
    Connection con=null;
    MultiPool parent;
    private int startTime=0;
@@ -214,7 +220,7 @@ public class MultiConnection implements Connection
    }
 
    public boolean checkSQLError(Exception e) {
-		System.out.println("JDBC CHECK ERROR="+e.toString());	
+		log.error("JDBC CHECK ERROR="+e.toString());	
 		return(true);
    }
 

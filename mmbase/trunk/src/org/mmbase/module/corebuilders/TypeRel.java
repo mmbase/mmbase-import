@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -16,6 +16,10 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.ParseException;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 /**
  * TypeRel defines the allowed relations between two object types.
  *
@@ -24,6 +28,8 @@ import org.mmbase.module.ParseException;
  * @version 2 jan 2001
  */
 public class TypeRel extends MMObjectBuilder {
+
+    private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName()); 
 
 	/**
 	 * Cache, holds the last 128 verified type-relation nodes
@@ -260,7 +266,7 @@ public class TypeRel extends MMObjectBuilder {
                     MMObjectNode node=getNode(number2);
                     return getAllowedRelationsNames(number1,node.getOType());
                 } catch(Exception e) {
-                    e.printStackTrace();
+                    log.error(Logging.stackTrace(e));
                 }
             }
         }
