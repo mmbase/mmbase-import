@@ -18,6 +18,7 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.legacy.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
@@ -40,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.24 2002-12-27 13:53:34 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.25 2002-12-27 19:16:32 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -316,6 +317,26 @@ public class ClusterBuilder extends VirtualBuilder {
             Vector tables,String where, Vector orderVec,Vector direction,
             int searchdir) {
         
+        // Try to handle using the SearchQuery framework.
+        try {
+            SearchQuery query =
+            getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where,
+            orderVec, direction, searchdir);
+            List clusterNodes = getClusterNodes(query);
+            return new Vector(clusterNodes);
+
+        // If this fails, fall back to legacy code.
+        } catch (Exception e) {
+            if (log.isServiceEnabled()) {
+                log.service(
+                    "Failed to create SearchQuery for multilevel search, "
+                    + "exception:\n"
+                    + Logging.stackTrace(e)
+                    + "\nFalling back to legacy code in ClusterBuilder...");
+            }
+        }
+        
+        // Legacy code starts here.
         String stables,relstring,select,order,basenodestring,distinct;
         Vector alltables,selectTypes;
         MMObjectNode basenode;
@@ -576,7 +597,8 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Returns the name part of a tablename.
-     * The name part is the table name minus the numeric digit appended at a name (if appliable).
+     * The name part is the table name minus the numeric digit appended 
+     * to a name (if appliable).
      * @param table name of the original table
      * @return A <code>String</code> containing the table name
      */
@@ -639,7 +661,7 @@ public class ClusterBuilder extends VirtualBuilder {
             String table=fieldName.substring(0,pos); // the table
             String idxn=getSQLTableAlias(alltables,table);
             if (idxn==null) {
-                log.error("getSQLFieldName(): The field '"+fieldName+"' has an invalid type specified");
+                log.error("getSQLFieldName(): The field \""+fieldName+"\" has an invalid type specified");
             } else {
                 String field=fieldName.substring(pos+1); // the field
                 field=mmb.getDatabase().getAllowedField(field);
@@ -647,7 +669,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
         } else {
             // field has no type
-            log.error("getSQLFieldName(): The field '"+fieldName+"' has no type specified");
+            log.error("getSQLFieldName(): The field \""+fieldName+"\" has no type specified");
         }
         return null;
     }
@@ -1293,7 +1315,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 log.error(msg);
                 throw new IllegalArgumentException(msg);
             } else {
-                bul=mmb.getInsRel(); // dummy
+                bul = mmb.getRelDef().getBuilder(rnumber); // relation builder
                 roles.put(tableAlias, new Integer(rnumber));
             }
         } else if (bul instanceof InsRel) {
@@ -1302,6 +1324,8 @@ public class ClusterBuilder extends VirtualBuilder {
                 roles.put(tableAlias, new Integer(rnumber));
             }
         }
+        log.info("resolved table alias \"" + tableAlias + "\" to builder \""
+            + bul.getTableName() + "\"");
         return bul;
     }
     
@@ -1316,6 +1340,7 @@ public class ClusterBuilder extends VirtualBuilder {
      *        resulting table alias is added to this collection.
      * @param originalAliases The originally supplied aliases - generated
      *        aliases should not match any of these.
+     * @return The resulting table alias.
      * @since MMBase-1.7
      */
     // package access!
@@ -1326,6 +1351,7 @@ public class ClusterBuilder extends VirtualBuilder {
         // skipping alternatives that are already in originalAliases.
         if (tableAliases.contains(tableAlias)) {
             tableName = getTableName(tableAlias);
+            
             tableAlias = tableName;
             char ch = '0';
             while (originalAliases.contains(tableAlias)
@@ -1334,8 +1360,8 @@ public class ClusterBuilder extends VirtualBuilder {
                 if (ch > '9') {
                     throw new IndexOutOfBoundsException(
                         "Failed to create unique table alias, because there "
-                        + "are already 11 aliases for this tablename: '" 
-                        + tableName + "'");
+                        + "are already 11 aliases for this tablename: \"" 
+                        + tableName + "\"");
                 }
                 tableAlias = tableName + ch;
                 ch++;
@@ -1372,8 +1398,8 @@ public class ClusterBuilder extends VirtualBuilder {
         if (pos1 != -1 ^ pos2 != -1) {
             // Parenthesis do not match.
             throw new IllegalArgumentException(
-                "Parenthesis do not match in expression: '"
-                    + expression + "'");
+                "Parenthesis do not match in expression: \""
+                    + expression + "\"");
         } else if (pos1 != -1) {
             // Function parameter list containing subexpression(s).
             String parameters = expression.substring(pos1 + 1, pos2);
@@ -1387,7 +1413,7 @@ public class ClusterBuilder extends VirtualBuilder {
             int pos = expression.indexOf('.');
             if (pos < 1 || pos == (expression.length() - 1)) {
                 throw new IllegalArgumentException(
-                    "Invalid fieldname: '" + expression + "'");
+                    "Invalid fieldname: \"" + expression + "\"");
             }
             String stepAlias = expression.substring(0, pos);
             String fieldName = expression.substring(pos + 1);
@@ -1395,7 +1421,7 @@ public class ClusterBuilder extends VirtualBuilder {
             BasicStep step = (BasicStep) stepsByAlias.get(stepAlias);
             if (step == null) {
                 throw new IllegalArgumentException(
-                    "Invalid step alias: '" + stepAlias + "'");
+                    "Invalid step alias: \"" + stepAlias + "\"");
             }
             addField(query, step, fieldName, fieldsByAlias);
         }
@@ -1426,7 +1452,7 @@ public class ClusterBuilder extends VirtualBuilder {
         if (fieldDefs == null) {
             throw new IllegalArgumentException(
                 "Not a known field of builder " + step.getTableName()
-                    + ": '" + fieldName + "'");
+                    + ": \"" + fieldName + "\"");
         }
 
         // Add the stepfield.
@@ -1465,10 +1491,14 @@ public class ClusterBuilder extends VirtualBuilder {
         Iterator iDirections = directions.iterator();
         while (iFieldNames.hasNext()) {
             String fieldName = (String) iFieldNames.next();
-            BasicStepField field = (BasicStepField) fieldsByAlias.get(fieldName);
+            StepField field = (BasicStepField) fieldsByAlias.get(fieldName);
+            if (field == null) {
+                // Field has not been added.
+                field = ConstraintParser.getField(fieldName, query.getSteps());
+            }
             if (field == null) {
                 throw new IllegalArgumentException(
-                    "Invalid fieldname: '" + fieldName + "'");
+                "Invalid fieldname: \"" + fieldName + "\"");
             }
             
             // Add sort order.
