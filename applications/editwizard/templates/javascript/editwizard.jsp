@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.27 2003-05-09 08:32:21 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.28 2003-07-07 12:11:49 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -213,13 +213,13 @@ function doSearch(el, cmd, sessionkey) {
         } else {
             if (searchterm=="") searchterm="0";
             if (searchtype=="greaterthan") {
-                constraints += fieldname+" > "+searchterm;
+                constraints += fieldname + " > " + searchterm;
             } else if (searchtype=="lessthan") {
-                constraints += fieldname+" < "+searchterm;
+                constraints += fieldname + " < " + searchterm;
             } else if (searchtype=="notgreaterthan") {
-                constraints += fieldname+" <= "+searchterm;
+                constraints += fieldname + " <= "+searchterm;
             } else if (searchtype=="notlessthan") {
-                constraints += fieldname+" >= "+searchterm;
+                constraints += fieldname + " >= "+searchterm;
             } else if (searchtype=="notequals") {
                 constraints += fieldname+" != "+searchterm;
             } else { // equals
@@ -228,9 +228,9 @@ function doSearch(el, cmd, sessionkey) {
         }
         // make sure these fields are added to the fields-param, but not if its the number field
         // 
-        if (fields.indexOf(fieldname)==-1 && fieldname.indexOf("number")==-1) {
-            fields += ","+fieldname;
-        }
+        //if (fields.indexOf(fieldname)==-1 && fieldname.indexOf("number")==-1) {
+        //    fields += "," + fieldname;
+        //}
     }
     constraints += ")";
 
@@ -244,7 +244,7 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("distinct", distinct);
     url += setParam("age", searchage+"");
     url += setParam("type", el.getAttribute("type"));
-    url += "&cmd="+cmd;
+    url += "&cmd=" + cmd;
 
 
     try {
