@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.120 2004-02-24 17:43:35 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.121 2004-03-03 14:46:50 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -188,12 +188,16 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the builder of this node
      */
     public MMObjectBuilder getBuilder() {
-        if (builder==null) {
+        if (builder == null) {
             int oType=getOType();
-            if (oType==-1 || parent.oType==oType) {
-                builder=parent;
+            if (oType == -1 || parent.oType == oType) {
+                builder = parent;
             } else {
-                builder=parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(oType));
+                builder = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(oType));
+            }
+            if (builder == null) {
+                log.warn("Builder of node " + getNumber() + " not found, taking 'object'");
+                builder = parent.mmb.getBuilder("object");
             }
         }
         return builder;
