@@ -43,7 +43,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
   <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
-  <property name="documentation.home" value="${source.dir}/documentation" />
+  <property name="documentation.home" value="../../documentation" />
 
   <property name="share.dir"    location="../share" />
 
