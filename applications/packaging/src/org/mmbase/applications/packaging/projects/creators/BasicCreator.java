@@ -30,16 +30,21 @@ import org.xml.sax.*;
  *
  * @author Daniel Ockeloen (MMBased)
  */
-public class BasicCreator implements CreatorInterface {
+public class BasicCreator implements CreatorInterface,Runnable {
     private static Logger log = Logging.getLoggerInstance(BasicCreator.class);
     Class cl;
     String prefix;
+
+    private Target threadtarget;
+    private int threadversion;
+    private String state = "done";
     
     private String type="unknown/unknown";
     private String description="";
 
     private ArrayList packagesteps;
     private packageStep projectstep;
+    ArrayList relatedtargetcreate =  new  ArrayList();
 
     public BasicCreator() {
     }
@@ -112,6 +117,20 @@ public class BasicCreator implements CreatorInterface {
    public boolean createPackage(Target target,int newversion) {
 	log.error("createPackage not implemented by creator : "+this);
 	return false;
+   }
+
+
+   public void createPackageThreaded(Target target,int newversion) {
+       threadtarget = target;
+       threadversion =  newversion;
+       state="creating";
+       Thread kicker = new Thread(this, "packagethread");
+       kicker.start();	
+   }
+
+   public void run() {
+	createPackage(threadtarget,threadversion);
+	state="done";
    }
 
    public boolean addPackageDepends(Target target,String newpackage,String version) {
@@ -935,6 +954,14 @@ public class BasicCreator implements CreatorInterface {
   public String getDefaultTargetName() {
 	log.error("Creator doesn't supply a default target name, method should be overriden");
 	return "unknown";
+  }
+
+  public String getState() {
+	return state;
+  }
+
+  public void addRelatedTargetsCreate(Target t) {
+      relatedtargetcreate.add(t);
   }
 
 

@@ -37,11 +37,9 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 
     private static Logger log = Logging.getLoggerInstance(BundleBasicCreator.class);
 
-
     public static final String DTD_PACKAGING_BUNDLE_BASIC_1_0 = "packaging_bundle_basic_1_0.dtd";
     public static final String PUBLIC_ID_PACKAGING_BUNDLE_BASIC_1_0 = "-//MMBase//DTD packaging_bundle_basic config 1.0//EN";
 
- 
     public static void registerPublicIDs() {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_PACKAGING_BUNDLE_BASIC_1_0, "DTD_PACKAGING_BUNDLE_BASIC_1_0", BundleBasicCreator.class);    }
 
@@ -59,6 +57,29 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         packageStep step=getNextPackageStep();
         step.setUserFeedBack("bundle/basic packager started");
 
+	// lets first see if we need to create related targets
+       	for (Iterator i = relatedtargetcreate.iterator(); i.hasNext();) {
+		Target rt = (Target)i.next();
+                int nv=rt.getNextVersion();
+	        step=getNextPackageStep();
+        	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"..");
+                rt.createPackage(nv);
+                ProviderManager.resetSleepCounter();
+		PackageInterface pa = PackageManager.getPackage(rt.getId());
+		//log.info("PA="+pa+" v="+pa.getVersion());
+		while (!pa.getVersion().equals(""+nv)) {
+			// really weird way to delay until provider has found
+			// the new package
+			try {
+				Thread.sleep(1000);
+			} catch(Exception e) {}
+			//log.info("PA="+pa+" v="+pa.getVersion());
+		}
+                target.setIncludedVersion(rt.getId(),""+nv);
+                ProviderManager.resetSleepCounter();
+        	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"...done");
+	}
+
 	String newfilename=getBuildPath()+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_bundle_basic_"+newversion;
 
 	try {
@@ -74,7 +95,14 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         	for (Iterator i = packages.iterator(); i.hasNext();) {
                		IncludedPackage ip=(IncludedPackage)i.next();
 			if (ip.getIncluded()) {
+				//log.info("Included IP="+ip.getId()+" "+ip.getVersion());
 				PackageInterface p=PackageManager.getPackage(ip.getId(),ip.getVersion());
+				while (p == null) {
+					try {
+						Thread.sleep(1000);
+					} catch(Exception e) {}
+					p=PackageManager.getPackage(ip.getId(),ip.getVersion());
+				}
 				JarFile jf=p.getJarFile();
 				if (jf!=null) {
 					String includename=ip.getId()+"_"+ip.getVersion()+".mmp";	

@@ -16,8 +16,53 @@
 
 <mm:nodelistfunction set="mmpb" name="haveTargetLog" referids="project,target">
         <mm:import id="havelog"><mm:field name="log" /></mm:import>
+	<mm:import id="state"><mm:field name="state" /></mm:import>
 </mm:nodelistfunction>
 
+
+<mm:compare referid="state" value="creating">
+
+<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+<tr>
+<th colspan="2">progress on creating</th>
+</tr>
+<tr>
+<td colspan="2">
+When the create is done you can check state and log to see if all went well
+</td>
+</tr>
+</table>
+<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+<tr>
+<td width="10%" style="background-color: #0000aa">&nbsp;</td><td>&nbsp;</td>
+</tr>
+</td></tr>
+</table>
+<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+<tr>
+<td width="10%" style="background-color: #00aa00">&nbsp;</td><td>&nbsp;</td>
+</tr>
+</td></tr>
+</table>
+
+<script language="JavaScript">
+<!--
+
+function doLoad()
+{
+    // the timeout value should be the same as in the "refresh" meta-tag
+    setTimeout( "refresh()", 1000 );
+}
+
+function refresh()
+{
+    window.location.href ='index.jsp?main=<mm:write referid="main" />&sub=<mm:write referid="sub" />&name=<mm:write referid="name" />&bundle=<mm:write referid="bundle" />&mode=<mm:write referid="mode" />&newmsg=created';
+}
+//-->
+</script>
+</mm:compare>
+
+<mm:compare referid="state" value="creating" inverse="true">
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" border="0">
 <tr>
 <td width="50%" align="middle" valign="top">
@@ -101,6 +146,7 @@
 </td>
 </tr>
 </table>
+</mm:compare>
 
 <mm:write referid="mode">
 <mm:compare value="createview">
@@ -179,7 +225,7 @@
 	<mm:compare referid="logid" value="-1" inverse="true">
         <A HREF="<mm:url page="index.jsp" referids="main,sub,bundle,name,mode"><mm:param name="logid"><mm:write referid="parentlog" /></mm:param></mm:url>"><IMG SRC="<mm:write referid="image_arrowleft" />" BORDER="0" ALIGN="left"></A>
 	</mm:compare>
-	Package log of this Target
+	Package log of this Target (<mm:write referid="state" />)
 	</th>
 </tr>
 <tr>
