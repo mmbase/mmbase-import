@@ -29,7 +29,7 @@ public class DeleteTag extends NodeTag {
         setNumber(msg);
     }
 
-    public int doEndtag() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         Module community=getCloudContext().getModule("communityprc");
         if (community==null)
             throw new JspTagException("Community module not available.");
