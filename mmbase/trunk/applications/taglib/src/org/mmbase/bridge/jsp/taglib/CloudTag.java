@@ -77,7 +77,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static String DEFAULT_CLOUD_NAME = "mmbase";   
     private String jspvar; 
 
-    private static final String REALM = "cloud_realm_";
+    private static final String REALM = "realm_";
 
     private static CloudContext cloudContext;
     
@@ -199,15 +199,18 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         //res.setHeader("Authorization", logon);   would ne nice...
         //keesj:look at the php3 tutorial for an example
 
+
         // if cancel
         // this cannot be done with an exception (which can be a redirect), because the page must 
         // flow ahead, to give the popup opportunity to pop up.
-        try {
-            pageContext.getOut().print(FAILMESSAGE + message); 
+         try {
+            pageContext.getOut().print(FAILMESSAGE + message);
         } catch (IOException ioe) {
             throw new JspTagException(ioe.toString());
         }
-        return SKIP_BODY; 
+        setAnonymousCloud(cloudName); // there must also be _some_ cloud, to avoid exception on u
+        evalBody(); //  register var
+        return SKIP_BODY;
     }
 
     private void logout() {
@@ -283,14 +286,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
         log.debug("startTag " + cloud);
 
-        if (method == METHOD_LOGOUT) {
-            if (cloud != null && (! cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString()))) {
-                log.debug("request to log out, put an anonymous cloud in the session"); 
-                logout();
-                session.removeAttribute(getSessionName());
-            } else {
-                log.debug("request to log out, but cloud is already anonymous. Doing nothing");
-            }
+        if (method == METHOD_LOGOUT) {            
+            log.debug("request to log out, remove session atributes, give anonymous cloud."); 
+            logout();
+            session.removeAttribute(getSessionName());       // remove cloud itself
+            setAnonymousCloud(cloudName);
+            // the available cloud in this case is a anonymous one
+            return evalBody();
         }
 
         if (method == METHOD_ASIS) {
@@ -316,7 +318,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             if (logon == null && rank == null && method != METHOD_UNSET) { 
                 // authorisation was requested, but not indicated for whom 
-                log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());                
+                log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier()); 
                 if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
                     log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
@@ -336,7 +338,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
                 Rank curRank = Rank.getRank(cloud.getUser().getRank());
                 if (curRank.getInt() < rank.getInt()) {
-                    log.debug("logged on, but rank of user is to low. log out first.");
+                    if (log.isDebugEnabled()) {
+                        log.debug("logged on, but rank of user is to low (" + rank.toString() + ". log out first.");
+                    }
                     cloud = null;                    
                     session.removeAttribute(getSessionName());
                 } else {
