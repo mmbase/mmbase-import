@@ -59,15 +59,13 @@ one or more examplevalue tags is you want to give some example values.
         <li>tags for 'nodes'</li>
         <li>tags for the 'fields' within the nodes</li>
         <li>tags for 'lists' of nodes</li>
-        <li>tags for transactions with the object cloud</li>
+        <li>tags for transactions with the object cloud and security</li>
         <li>tags which have to do with context</li>
         <li>tags, which do not directly relate to the MMBase data cloud, but are simply handy sometimes</li>
       </ul>
     </p>
     <p>Tags can use a 'context' to exchange variables with other tags.
-		What is a 'context', 'variable' and 'parameter'???
-		What is the relationship between 'context' and the Implicit JSP Objects, like request, session, application?
-		Please read the <a href="#context">documentation for mm:context</a> if you want to know how this works.
+	Please read the <a href="#context">documentation for mm:context</a> if you want to know how this works.
     </p>
     <p>Note that the different types of tags are non-exclusive.
 		For instance the tag 'maycreate' is a tag which has to do with the context,
@@ -114,14 +112,14 @@ one or more examplevalue tags is you want to give some example values.
       <a href="#relatednode">relatednode</a>
       <a href="#size">size</a>
     </p>
-    <p>Tags for transactions with the object cloud: <a href="#transaction">transaction</a>
+    <p>Tags for transactions with the object cloud and security: <a href="#transaction">transaction</a>
       <a href="#commit">commit</a>
       <a href="#cancel">cancel</a>
+      <a href="#maychangecontext">maychangecontext</a>
+      <a href="#setcontext">setcontext</a>
     </p>
     <p>Tags which have to do with context are: <a href="#cloud">cloud</a>
       <a href="#context">context</a>
-      <a href="#maychangecontext">maychangecontext</a>
-      <a href="#setcontext">setcontext</a>
       <a href="#present">present</a>
       <a href="#notpresent">notpresent</a>
       <a href="#import">import</a>
@@ -145,9 +143,12 @@ one or more examplevalue tags is you want to give some example values.
     </p>
     <p>Tags belong to one or more groups of tags, 'writers', 'readers', 'referrers' or 'providers'. Each group of tags shares common properties and functionality. 
 For instance: the tags 'list', 'related', 'createnode', 'createrelation', 'listnodes' all make use of
-the functionality in the group 'nodeprovider'. See <a href="mmbase-taglib-groups.html">table of groups and tags</a> for an overview of groups and tags. First, groups are described in alphabetic order.
+the functionality in the group 'nodeprovider'. See <a href="mmbase-taglib-groups.html">table of groups and tags</a> for an overview of groups and tags.
+First, groups are described in alphabetic order.
 Followed by a description of the tags, also in alphabetic order.
 See the info about the syntax of the document on how tags and groups are distinguished in the text.
+The examples given in this document are basic examples providing the user with a first idea of syntax and functionality of the tags.
+See mmexamples/taglib for more elaborated examples.
    </p>
   </info>
   <taginterface>
@@ -1137,7 +1138,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         doesn't have much to do with MMBase, and can be acquired with
         jsp or other taglibs too.
       </p>
-	</info>
+    </info>
     <attribute>
       <name>nodemanager</name>
       <required>false</required>
@@ -1562,7 +1563,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
         <value>false</value>
       </possiblevalue>
     </attribute>
-	<example>
+    <example>
 &lt;h3&gt;Canceling transaction&lt;/h3&gt;
 &lt;mm:transaction name="mytrans" commitonclose="false"&gt;
   &lt;mm:createnode type="news"&gt;
@@ -1578,7 +1579,8 @@ Transaction was canceled, following should not result anything:
 &lt;br /&gt;
 &lt;h3&gt;Committing transaction&lt;/h3&gt;
 &lt;mm:transaction name="mytranz" jspvar="trans"&gt;
-  jspvar of type Transaction: &lt;%= trans instanceof org.mmbase.bridge.Transaction %&gt;&lt;br /&gt;
+  jspvar of type Transaction: 
+  	&lt;%= trans instanceof org.mmbase.bridge.Transaction %&gt;&lt;br /&gt;
   &lt;mm:createnode type="news"&gt;
     &lt;mm:setfield name="title"&gt;Test node, created in transaction, commited&lt;/mm:setfield&gt;
     &lt;mm:setfield name="subtitle"&gt;&lt;mm:write referid="curtime" /&gt;&lt;/mm:setfield&gt;
@@ -1600,7 +1602,9 @@ transaction was commited, following should result anything:
 &lt;mm:transaction name="mytranc"&gt;
   &lt;mm:node id="node1" number="$nodenumber" /&gt;
   &lt;mm:createnode id="node2" type="news"&gt;
-     &lt;mm:setfield name="title"&gt;Test node2, created in transaction, made relation to it&lt;/mm:setfield&gt;
+     &lt;mm:setfield name="title"&gt;
+	 	Test node2 with relation, created in transaction
+	 &lt;/mm:setfield&gt;
 	 &lt;mm:setfield name="subtitle"&gt;&lt;mm:write referid="curtime" /&gt;&lt;/mm:setfield&gt;
   &lt;/mm:createnode&gt;
   &lt;mm:createrelation source="node1" destination="node2" role="related" /&gt;
@@ -1621,7 +1625,7 @@ transaction was commited, following should result anything:
       <rtexprvalue>true</rtexprvalue>
       <info>The id of the transaction.</info>
     </attribute>
-	<example>???</example>
+    <example>See the example for tag 'transaction'.</example>
   </tag>
   <tag>
     <name>commit</name>
@@ -1637,7 +1641,7 @@ transaction was commited, following should result anything:
       <rtexprvalue>true</rtexprvalue>
       <info>The id of the transaction.</info>
     </attribute>
-	<example>???</example>
+    <example>See the example for tag 'transaction'.</example>
   </tag>
   <tag>
     <name>deletenode</name>
@@ -1880,6 +1884,17 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 	Which context variable.
       </info>
     </attribute>
+	<example>
+	&lt;mm:context id="other_context"&gt;
+	  &lt;mm:import id="hoi_again"&gt;greetings from hilversum&lt;/mm:import&gt;
+	  &lt;mm:present referid="hoi_again"&gt;
+	  	is present in other_context&lt;br /&gt;
+	  &lt;/mm:present&gt;
+	&lt;/mm:context&gt;
+	&lt;mm:notpresent referid="hoi_again"&gt;
+		is not present in default context&lt;br /&gt;
+	&lt;/mm:notpresent&gt;
+	</example>
   </tag>
   <tag>
     <name>notpresent</name>
@@ -1889,6 +1904,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       Checks if a certain variable is missing in the parent Context tag.
     </info>
     <see>present</see>
+	<example>See the example for tag 'present'</example>
   </tag>
   <tag>
     <name>write</name>
@@ -2091,7 +2107,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <refercontext>true</refercontext>
       <info/>
     </attribute>
-	<example>See the example for tag 'transaction'.
+    <example>See the example for tag 'transaction'.
 	</example>
   </tag>
   <tag>
@@ -2126,7 +2142,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         result of getRequestURI. 
     </info>
     </attribute>
-	<example>
+    <example>
 	&lt;mm:url page="codesamples/index.jsp"&gt;
 		&lt;mm:param name="page" value="home" /&gt;
 	&lt;/mm:url&gt;
@@ -2241,7 +2257,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see>param</see>
     <see>url</see>
-	<example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
+    <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
 	</example>
   </tag>
   <tag>
@@ -2284,6 +2300,15 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 		The value can also be another context variable, which is not necessarely a string.
 	  </info>
     </attribute>
+	<example>
+	&lt;mm:import id="carry_out"&gt;yes&lt;/mm:import&gt;
+	&lt;mm:compare referid="carry_out" value="yes"&gt;
+		Body should be carried out!
+	&lt;/mm:compare&gt;
+	&lt;mm:compare referid="carry_out" value="no"&gt;
+		Body should not be carried out!
+	&lt;/mm:compare&gt;
+	</example>
   </tag>
   <tag>
     <name>isnotempty</name>
@@ -2360,6 +2385,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	  or less the inverse of isgreatehan, of course.
     </info>
     <see>isgreaterthan</see>
+    <example>See the example for tag 'isgreaterthan'.</example>
   </tag>
   <tag>
     <name>aliaslist</name>
@@ -2607,12 +2633,12 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       The size of the current list.
     </info>
-	<example>
+    <example>
 &lt;mm:listnodes type="list"&gt;
 	&lt;mm:first&gt;&lt;mm:size /&gt;&lt;/mm:first&gt;
 &lt;/mm:listnodes&gt;
 	</example>
-	<example>
+    <example>
 &lt;mm:list path="list"&gt;
 	&lt;mm:first&gt;&lt;mm:size /&gt;&lt;/mm:first&gt;
 &lt;/mm:list&gt;
@@ -2663,7 +2689,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	  </info>
     </attribute>
     <extends>contextreferrer</extends>
-	<example>
+    <example>
 	&lt;mm:timer name="listnodes timer"&gt;
 		&lt;mm:listnodes type="list"&gt; &lt;/mm:listnodes&gt;
 	&lt;/mm:timer&gt;
@@ -2694,7 +2720,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see>param</see>
     <see>url</see>
-	<example>See the example for tag 'leafinclude'.</example>
+    <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
     <name>leaffile</name>
@@ -2717,7 +2743,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see>param</see>
     <see>url</see>
-	<example>See the example for tag 'leafinclude'.</example>
+    <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
     <name>treeinclude</name>
@@ -2773,7 +2799,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <see>treefile</see>
     <see>param</see>
     <see>url</see>
-	<example>See the example for tag 'leafinclude'.</example>
+    <example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
     <name>leafinclude</name>
@@ -2830,7 +2856,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
 	The value of the parameter. Is this attribute is missing, then the body of the param tag is used.
     </info>
     </attribute>
-	<example>See the example for tag 'url'.</example>
+    <example>See the example for tag 'url'.</example>
   </tag>
   <tag>
     <name>formatter</name>
@@ -3009,7 +3035,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       </info>
     </attribute>
     -->
-	<example>&lt;mm:time format="yyyy/mm/dd" /&gt; generates 2002/26/21 ????
+    <example>&lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
 	</example>
   </tag>
   <tag>
@@ -3032,7 +3058,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
         in the body this jspvar is available.
       </info>
     </attribute>
-	<example>
+    <example>
 	&lt;mm:log&gt;
 		Log this to the log file
 	&lt;/mm:log&gt;
@@ -3040,7 +3066,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
 	19:16:04,030 SERVICE - 0: Log this to the log file
 	</example>
   </tag>
-  <tag>   
+  <tag>
     <name>locale</name>
     <see>cloud</see>
     <see>time</see>
@@ -3078,17 +3104,17 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     </attribute>
     <attribute>
       <name>country</name>
-       <required>false</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
         A two letter country code according to ISO 3166.
       </info>
       <examplevalue>
         <value>BE</value>
-       </examplevalue>
+      </examplevalue>
       <examplevalue>
         <value>GB</value>
       </examplevalue>
     </attribute>
-  </tag>  
+  </tag>
 </taglib>
