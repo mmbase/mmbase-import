@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.49 2003-09-10 11:16:07 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.50 2003-09-26 18:42:07 michiel Exp $
  * @see ContextTag
  */
 
@@ -385,7 +385,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             }
             if (contextid != null) {
                 if(! contextid.equals(contextTag.getId())) {
-                    throw new JspTagException("Could not find contex tag with id " + contextid + " (page context has id " + contextTag.getId() + ")");
+                    throw new JspTagException("Could not find context tag with id " + contextid + " (page context has id " + contextTag.getId() + ")");
                 }
             }
         }
