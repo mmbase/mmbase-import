@@ -178,9 +178,9 @@ public class MMExamples extends ProcessorModule {
 			for (Enumeration h = vec.elements();h.hasMoreElements();) {
 				FieldDefs def=(FieldDefs)h.nextElement();	
 				if (def.isKey) {
-					String type=def.getDBType();
+					int type=def.getDBType();
 					String name=def.getDBName();
-					if (type.equals("varchar")) {
+					if (type==FieldDefs.TYPE_STRING) {
 						String value=newnode.getStringValue(name);
 						if (checkQ.equals("")) {
 							checkQ+=name+"=='"+value+"'";
