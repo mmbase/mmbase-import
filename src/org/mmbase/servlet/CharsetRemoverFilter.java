@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharsetRemoverFilter.java,v 1.1.2.5 2005-03-10 11:35:11 michiel Exp $
+ * @version $Id: CharsetRemoverFilter.java,v 1.1.2.6 2005-03-11 11:59:06 michiel Exp $
  * @since MMBase-1.7.4
  */
 
@@ -109,15 +109,10 @@ public class CharsetRemoverFilter implements Filter {
                                 log.debug("Wrapping outputstream to avoid charset " + charSet);
                             }
                             try {
-                                writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), charSet), false) {
-                                        public void write(String s, int off, int len) {
-                                            super.write(s, off, len);
-                                            flush();
-                                        }
-
-                                    };
+                                // no need buffering, i supposed the wrapped outputstream is already buffered, using getBufferSize etc.
+                                writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), charSet));
                             } catch (UnsupportedEncodingException uee) {
-                                log.error(uee);
+                                log.error(uee); 
                                 writer = super.getWriter();
                             }
                         } else {
@@ -132,6 +127,16 @@ public class CharsetRemoverFilter implements Filter {
                     }
                     return writer;                        
                 }
+                public void flushBuffer() throws IOException {                    
+                    if (log.isDebugEnabled()) {
+                        log.debug("Flushing for " + ((HttpServletRequest) servletRequest).getRequestURI());
+                    }
+                    if (writer != null) writer.flush();
+                    super.flushBuffer();                    
+                }
+                
+                    
+
         };
         filterChain.doFilter(servletRequest, wrapper);
         
