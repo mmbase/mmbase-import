@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="avatarsets" maintainer="mmbase.org" version="0" extends="imagesets">
+<builder name="forposrel" maintainer="submarine.nl" version="0" extends="insrel">
 	<status>active</status>
 	<searchage>1000</searchage>
 	<names>
 		<!-- singles per language as defined by ISO 639 -->
-		<singular xml:lang="nl">Avatarverzameling</singular>
-		<singular xml:lang="en">Avatarset</singular>
+		<singular xml:lang="en">ForPosRel</singular>
 		<!-- singles per language as defined by ISO 639 -->
-		<plural xml:lang="nl">Avatarverzamelingen</plural>
-		<plural xml:lang="en">Avatarsets</plural>
+		<plural xml:lang="en">ForPosRels</plural>
 	</names>
 	<!-- <descriptions> small description of the builder for human reading -->
 	<descriptions>
-		<description xml:lang="nl">Verzameling avatars</description>
-		<description xml:lang="en">Set of avatars</description>
+		<description xml:lang="en">Relation between Forums and Posters, a place holder at the moment for future relation fields</description>
 	</descriptions>
 	<fieldlist>
 	</fieldlist>
