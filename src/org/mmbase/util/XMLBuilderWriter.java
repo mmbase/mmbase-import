@@ -18,9 +18,12 @@ import org.mmbase.module.corebuilders.*;
 /**
  * @author Daniel Ockeloen
  *
- * @version $Id: XMLBuilderWriter.java,v 1.9 2000-08-29 20:47:05 daniel Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.10 2000-09-15 13:44:38 daniel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2000/08/29 20:47:05  daniel
+ * forgot to write out properties
+ *
  * Revision 1.8  2000/08/19 11:10:05  case
  * cjr: Set encoding=iso-8859-1 so french (and whatnot) chars are allowed
  *
@@ -122,7 +125,7 @@ public class XMLBuilderWriter  {
             for (Enumeration e=props.keys();e.hasMoreElements();) {
                 String name=(String)e.nextElement();
 				String value=(String)props.get(name);
-    			body+="\t<property name=\""+name+"\">"+value+"</property>";
+    			body+="\t<property name=\""+name+"\">"+value+"</property>\n";
 			}
 	    }
 		body+="</properties>\n\n";
