@@ -39,15 +39,16 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
+ * @version $Id: URIResolver.java,v 1.4 2002-04-11 12:00:14 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver {
     
     private static Logger log = Logging.getLoggerInstance(URIResolver.class.getName());
 
-    private List     extraDirs;  // prefix -> File pairs
-    private File     cwd;
-    private int      hashCode;
+    private EntryList     extraDirs;  // prefix -> File pairs
+    private File          cwd;
+    private int           hashCode;
 
 
     /**
@@ -83,17 +84,16 @@ public class URIResolver implements javax.xml.transform.URIResolver {
      * ordered list of URIResolver.Entry's. First in this list are the
      * directories which must be checked first, in case no prefix is
      * given.
-     * @param extradirs A List of URIResolver.Entry's, containing
-     *                 'extra' dirs with prefixes.  If not specified or null, there will still
-     *                  be one 'extra dir' available, namely the MMBase configuration
-     *                  directory (with prefix mm:)
+     * @param extradirs A EntryLis, containing 'extra' dirs with
+     * prefixes.  If not specified or null, there will still be one
+     * 'extra dir' available, namely the MMBase configuration
+     * directory (with prefix mm:)
      */
-    public URIResolver(File c, List extradirs) {
+    public URIResolver(File c, EntryList extradirs) {
         if (log.isDebugEnabled()) log.debug("Creating URI Resolver for " + c);
         cwd = c;
-        extraDirs = new Vector();
+        extraDirs = new EntryList();
         if (extradirs != null) {
-            // XXX: perhaps should throw an exception if not all content of ed are URIResolver.Entry's.
             extraDirs.addAll(extradirs);
         }
         extraDirs.add(new Entry("mm:", new File(MMBaseContext.getConfigPath())));
@@ -135,10 +135,10 @@ public class URIResolver implements javax.xml.transform.URIResolver {
     /**
      * Creates a 'path' string, which is a list of directories. Mainly usefull for debugging, of course.
      * 
-     * @return A String
+     * @return A String which could be used as a shell's path.
      */
     public String getPath() {
-        String result = ".";
+        String result = cwd.toString();
         Iterator i = extraDirs.iterator();            
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
@@ -146,6 +146,24 @@ public class URIResolver implements javax.xml.transform.URIResolver {
         }
         return result;        
     }
+
+    /**
+     * Creates a List of strings, every entry is a directory prefixed with its 'prefix'. Handy during debugging. 
+     *
+     * @return A List with prefix:path Strings.
+     */
+    public List getPrefixPath() {
+        Vector result = new Vector();
+        result.add(cwd.toString());
+        Iterator i = extraDirs.iterator();            
+        while (i.hasNext()) {
+            Entry entry = (Entry) i.next();
+            result.add(entry.getPrefix() + entry.getDir().getAbsolutePath());
+        }
+        return result;        
+    }
+    
+
 
     /**
      * Resolves the string href (possible with use of base directory
@@ -237,21 +255,48 @@ public class URIResolver implements javax.xml.transform.URIResolver {
     }
 
     /**
+     * This is a list of prefix/directory pairs which is used in the constructor of URIResolver.
+     */
+
+    static public class EntryList extends Vector {
+        public EntryList() {
+        }
+
+        /**
+         *
+         * @throws ClassCastException If you don't add an Entry.
+         */
+        public boolean add(Object o) {
+            return super.add((Entry) o);                 
+        }
+
+        /**
+         * Adds an prefix/dir entry to the List. 
+         * @return The list again, so you can easily 'chain' a few.
+         */
+        public EntryList add(String p, File d) {
+            add(new Entry(p, d));
+            return this;
+        }
+    }
+
+    /**
      * Objects of this type connect a prefix (must normally end in :)
      * with a File (which must be a Directory). A List of this type
-     * can be fed to the constructor of URIResolver.
+     * (EntryList) can be fed to the constructor of URIResolver.
      * 
      */
 
-    static public class Entry {
+    static class Entry {
         private String prefix;
         private File   dir;
         private int    prefixLength;
 
-        public Entry(String p, File d) {
+        Entry(String p, File d) {
             prefix = p;
             dir    = d;
             prefixLength = prefix.length(); // avoid calculating it again.
+            // XXX: perhaps should throw an exception if File cannot be a directory.
         }
     
         String getPrefix() {
@@ -264,9 +309,6 @@ public class URIResolver implements javax.xml.transform.URIResolver {
             return prefixLength;
         }
 
-        public String toString() {
-            return prefix + "|" + dir.toString();
-        }
     }
 
 }
