@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.26 2000-07-11 12:27:45 install Exp $
+	$Id: Images.java,v 1.27 2000-07-12 10:41:36 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.26  2000/07/11 12:27:45  install
+	Rob: support for different image devices
+	
 	Revision 1.25  2000/07/06 08:51:29  install
 	Rico: fixed property reading
 	
@@ -89,7 +92,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.26 2000-07-11 12:27:45 install Exp $
+ * @version $Id: Images.java,v 1.27 2000-07-12 10:41:36 install Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -306,10 +309,21 @@ public class Images extends MMObjectBuilder {
 
  	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
 		System.out.println("Images -> getlist");
+		Vector ret = new Vector();
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("devices")) {
 				Vector activeBuilders = mmb.getTypeDef().activeBuilders();
+				if(activeBuilders.contains("scanner")) {
+					ret.addElement("scanner");
+				} else 
+				if(activeBuilders.contains("camera")) {
+					ret.addElement("camera");
+				} else 
+				if(activeBuilders.contains("pccard")) {
+					ret.addElement("pccard");
+				} 
+				return ret;	
 			}
         }
         return(null);
