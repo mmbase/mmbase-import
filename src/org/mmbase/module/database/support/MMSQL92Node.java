@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.13 2000-06-22 22:32:44 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.14 2000-06-23 09:52:29 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/06/22 22:32:44  wwwtech
+Daniel : added byte support
+
 Revision 1.12  2000/06/22 13:29:45  wwwtech
 daniel
 
@@ -89,7 +92,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.13 $ $Date: 2000-06-22 22:32:44 $
+* @$Revision: 1.14 $ $Date: 2000-06-23 09:52:29 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -946,6 +949,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		if (type.equals("varchar")) type="VARCHAR";
 		if (type.equals("int")) type="INTEGER";
 		if (type.equals("blob")) type="BYTE";
+		if (type.equals("byte")) type="BYTE";
 		// end of weird map
 	
 		// get the wanted size
