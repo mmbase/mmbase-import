@@ -17,23 +17,19 @@
   </tr>
   <tr>
     <td class="data">
-      <a target="_blank" href="http://www.mmbase.org">MMBase Home</a>
+        An overview of available MMBase documentation, listed by target group.<br />
     </td>
-    <td class="data">
-      <p>Here you'll find all the documentation you'll need.</p>
+    <td class="navigate" >
+        <a href="<mm:url page="/mmdocs/" />"><img alt=">" src="../images/next.gif" border="0" align="left" /></a>
     </td>
-  </tr>
-  <tr><td>&nbsp;</td></tr>
-  <tr align="left">
-    <th class="header">Topic</th>
-    <th class="header">Description</th>
   </tr>
   <tr>
     <td class="data">
-      <a target="_blank" href="<mm:url page="/mmdocs/config/builders.html" />">Builder configuration</a>
+        More information can be found at the MMBase website:<br />
+        <a target="_blank" href="http://www.mmbase.org">http://www.mmbase.org</a>
     </td>
-    <td class="data">
-      <p>Documentation on the builders.xml layout.</p>
+    <td class="navigate">
+        <a target="_blank" href="http://www.mmbase.org"><img alt=">" src="../images/next.gif" border="0" align="left" /></a>
     </td>
   </tr>
   <tr><td>&nbsp;</td></tr>
