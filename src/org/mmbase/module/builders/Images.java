@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.32 2000-07-20 14:30:32 daniel Exp $
+	$Id: Images.java,v 1.33 2000-07-22 11:44:21 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.32  2000/07/20 14:30:32  daniel
+	Changed because of a missing call, rob did i delete somthing on the port ?
+	
 	Revision 1.31  2000/07/17 12:22:36  install
 	Rob
 	
@@ -107,7 +110,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.32 2000-07-20 14:30:32 daniel Exp $
+ * @version $Id: Images.java,v 1.33 2000-07-22 11:44:21 daniel Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -151,7 +154,7 @@ public class Images extends MMObjectBuilder {
 		}
 		// Startup parrallel converters
 		ireqprocessors=new ImageRequestProcessor[MaxConcurrentRequests];
-		debug("Starting "+MaxConcurrentRequests+" Converters");
+		if (debug) debug("Starting "+MaxConcurrentRequests+" Converters");
 		for (int i=0;i<MaxConcurrentRequests;i++) {
 			ireqprocessors[i]=new ImageRequestProcessor(bul,imageconvert,imageRequestQueue,imageRequestTable);
 		}
@@ -197,7 +200,7 @@ public class Images extends MMObjectBuilder {
 		try {
 			cl=Class.forName(classname);
 			ici=(ImageConvertInterface)cl.newInstance();
-			debug("loadImageConverter(): loaded : "+classname);
+			if (debug) debug("loadImageConverter(): loaded : "+classname);
 		} catch (Exception e) {
 			debug("loadImageConverter(): can't load : "+classname);
 		}
