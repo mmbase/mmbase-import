@@ -171,7 +171,9 @@ Generic Bug Fixes:
 - #6452 If httppost.xml missing, dirty error in log, and you can't add it witout restart then.  	
 - #6437 JMSendmail does not properly encode mail messages  	
 - #6199 Unicode in images (convertimagemagic) is broken again.  	
-- #4413 Show and annotate functions of Config-module ignore encoding of the file.
+- #4413 Show and annotate functions of Config-module ignore encoding
+        of the file.
+- #6521 jsp-editors: input fields are incorrect
 - #6472 jsp-editors: When deleting objects of first page, search result is not rememberd.   	
 - #6457 jsp-editors: 'Stacking' of history doesn't work well if started with search on number. 
 - #6451 Problems on Windows with ImageMagick and text
@@ -268,6 +270,7 @@ Database Layer Bug Fixes:
 Editwizard Bug Fixes:
 ---------------------
 [1.7.1] 
+- #6420 List in list, subitems are not loaded on add. Also remove, readd doesn't work.
 - #6567 Could not trail path element with digit.    	
 - #6564 unable to make file upload mandatory  
 - #6563 popup wizards don't work in deprecated wizard look   	
