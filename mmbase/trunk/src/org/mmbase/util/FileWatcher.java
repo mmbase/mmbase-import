@@ -87,8 +87,9 @@ public abstract class FileWatcher extends Thread {
         
     }
 
-    private ArrayList files = new ArrayList();
-    
+    private ArrayList files       = new ArrayList();
+    private ArrayList removeFiles = new ArrayList();
+
     /**
      *	The default delay between every file modification check, set to 60
      *  seconds.  
@@ -138,6 +139,12 @@ public abstract class FileWatcher extends Thread {
 	}
     }
 
+    public void remove(File file) {
+        synchronized(this) {
+            removeFiles.add(file);
+        }
+    }
+
     /**
      * Add's a file to be checked...
      *@param file The file which has to be monitored..
@@ -153,9 +160,29 @@ public abstract class FileWatcher extends Thread {
      */
     private boolean changed() {
     	synchronized(this) {
+            // remove files if necessary
+            Iterator ri = removeFiles.iterator();
+            while (ri.hasNext()) {    
+                File f = (File) ri.next();
+                FileEntry found = null;
+                // search the file
+                Iterator i = files.iterator();
+                while (i.hasNext()) {
+                    FileEntry fe = (FileEntry) i.next();
+                    if (fe.getFile().equals(f)) {
+                        found = fe;
+                        break;
+                    }
+                }
+                if (found != null) {
+                    files.remove(found);
+                }
+            }
+            removeFiles.clear();
+
 	    Iterator i = files.iterator();
 	    while(i.hasNext()) {
-	    	FileEntry fe = (FileEntry) i.next();
+	    	FileEntry fe = (FileEntry) i.next();       
 		if(fe.changed()) {
 		    log.info("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
 		    onChange(fe.getFile());
