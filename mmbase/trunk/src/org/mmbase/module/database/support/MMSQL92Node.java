@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.70 2002-10-01 19:45:21 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.71 2002-10-09 15:51:03 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -1105,9 +1105,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             }
         }
         if (keySupported) {
-            result=getMatchCREATE(tableName)+"( "+getNumberString()+" integer not null, "+parser.getPrimaryKeyScheme()+" ( "+getNumberString()+" ), "+result+" );";
+            result=getMatchCREATE(tableName) + "( " + parser.getPrimaryKeyScheme()+" ( "+getNumberString()+" ), "+result+" );";
         } else {
-            result=getMatchCREATE(tableName)+"( "+getNumberString()+" integer not null, "+result+" );";
+            result=getMatchCREATE(tableName)+"( " + result + " );";
         }
 
         try {
