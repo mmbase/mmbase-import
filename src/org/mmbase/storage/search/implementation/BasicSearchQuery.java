@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.9 2003-07-29 17:33:09 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.10 2003-08-01 12:12:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -234,7 +234,12 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             return newConstraint;            
         } else if (c instanceof FieldValueBetweenConstraint) {
             FieldValueBetweenConstraint constraint = (FieldValueBetweenConstraint) c;
-            BasicFieldValueBetweenConstraint newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), constraint.getLowerLimit(), constraint.getUpperLimit());
+            BasicFieldValueBetweenConstraint newConstraint;
+            try {
+                newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), new Integer(constraint.getLowerLimit()), new Integer(constraint.getUpperLimit()));
+            } catch (NumberFormatException e) {
+                newConstraint = new BasicFieldValueBetweenConstraint(createNewStepField(q, constraint.getField()), new Double(constraint.getLowerLimit()), new Double(constraint.getUpperLimit()));
+            }
             newConstraint.setInverse(constraint.isInverse());
             return newConstraint;            
         } else if (c instanceof FieldValueInConstraint) {
