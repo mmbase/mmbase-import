@@ -12,11 +12,18 @@ package org.mmbase.service.interfaces;
 import org.mmbase.service.*;
 
 /**
+ * @javadoc
  * @rename G2encoderInterface
-  * @author Daniel Ockeloen
- * @version $Revision: 1.5 $ $Date: 2001-12-14 09:33:52 $
+ * @author Daniel Ockeloen
+ * @version $Id: g2encoderInterface.java,v 1.6 2002-04-29 10:54:19 pierre Exp $
  */
 public interface g2encoderInterface extends serviceInterface {
-	public String getVersion();
-	public int doEncode(String cmds);
+    /**
+     * @javadoc
+     */
+    public String getVersion();
+    /**
+     * @javadoc
+     */
+    public int doEncode(String cmds);
 }
