@@ -78,6 +78,7 @@ NetComponents can be found at:
   <property name="distro"      value="MMBase 1.7.0"/>
   <property name="documentation.builders.language" value="en" />
   <property name="source-config.dir"         location="${source.dir}/config/default"/>
+  <property name="source-config-builders.dir" location="${source.dir}/config/default/builders;${source.dir}/config/default/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="source-html.dir"           location="${source.dir}/html"/>
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
@@ -1614,7 +1615,7 @@ Version: MMBase build ${version}
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
-      <arg value="${source.dir}/config/default/builders" />
+      <arg value="${source-config-builders.dir}" />
     </java>
 
     <!-- convert this file into docbook -->
