@@ -1,5 +1,7 @@
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><mm:content type="text/html">
 <html><head><title>Mozilla Public License version 1.0</title>
-  <link rel="stylesheet" href="style/css/mmbase.css" type="text/css" />
+  <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
 </head>
 <body>
 
@@ -419,3 +421,4 @@
     </p><p>Contributor(s): ______________________________________.''
 
 </p></ul></body></html>
+</mm:content>

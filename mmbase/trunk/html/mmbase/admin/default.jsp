@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:content type="text/html" expires="0">
 <html>
   <head>
     <title>MMBase Administration</title>
@@ -53,7 +54,7 @@
   <th class="header">About MMBase</td>
 </tr>
 <tr>
-  <td class="data"><a href="<mm:url page="about/license.jsp" />">License</a></td>
+  <td class="data"><a href="<mm:url page="/mmbase/mpl-1.0.html" />">License</a></td>
 </tr>
 <tr>
   <td class="data"><a href="<mm:url page="about/about.jsp" />">About</a></td>
@@ -117,3 +118,4 @@
 </noframes>
 
 </html>
+</mm:content>
