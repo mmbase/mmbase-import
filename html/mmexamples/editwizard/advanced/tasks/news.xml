@@ -13,9 +13,9 @@
 
 	<action type="load">
 		<relation destination="people" role="related" />
-		<relation destination="images" role="posrel" />
-		<relation destination="urls" role="posrel" />
-		<relation destination="news" role="posrel"  searchdir="destination" />
+		<relation destination="images" role="posrel"  />
+		<relation destination="urls" role="posrel"    />
+		<relation destination="news" role="posrel"  searchdir="source" />
 	</action>
 
 	<form-schema id="basics">
@@ -148,7 +148,7 @@
       </command>
 
 			<action type="create">
-	      <relation role="posrel" destinationtype="news">
+	      <relation role="posrel" destinationtype="news" createdir="source">
   	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
          </relation>
 			</action>
