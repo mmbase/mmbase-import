@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Vector;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -32,13 +31,8 @@ import org.xml.sax.EntityResolver;
 /**
  * This class reads a node from an exported application
  */
-public class XMLNodeReader {
-
-   private static Logger log =
-      Logging.getLoggerInstance(XMLNodeReader.class.getName());
-
-   Document document;
-   DOMParser parser;
+public class XMLNodeReader extends XMLBasicReader {
+   private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
    String applicationpath;
 
    /**
@@ -47,37 +41,9 @@ public class XMLNodeReader {
     * @param applicationpath the path where this application was exported to
     * @param mmbase
     */
-
-   public XMLNodeReader(
-      String filename,
-      String applicationpath,
-      MMBase mmbase) {
-      try {
-         parser = new DOMParser();
-         // are the lines below generic?
-         parser.setFeature(
-            "http://apache.org/xml/features/dom/defer-node-expansion",
-            true);
-         parser.setFeature(
-            "http://apache.org/xml/features/continue-after-fatal-error",
-            true);
-         EntityResolver resolver = new XMLEntityResolver();
-         parser.setEntityResolver(resolver);
-         filename = "file:///" + filename;
-         parser.parse(filename);
-         document = parser.getDocument();
-         this.applicationpath = applicationpath;
-         /*
-         System.out.println("*** START XML APPLICATION READER FOR : "+filename);
-         System.out.println("ExportSource="+getExportSource());
-         System.out.println("TimeStamp="+getTimeStamp());
-         System.out.println("*** END XML APPLICATION READER FOR : "+filename);
-         */
-      }
-      catch (Exception e) {
-         // argh.. no distinction between different type of error messages?
-         log.error(Logging.stackTrace(e));
-      }
+   public XMLNodeReader(String filename, String applicationpath, MMBase mmbase) {
+	   super(filename);
+	   this.applicationpath = applicationpath;
    }
 
    /**
