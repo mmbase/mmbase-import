@@ -1,17 +1,10 @@
 /*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
-
-/*
-	$Id: Images.java,v 1.6 2000-03-24 14:33:58 wwwtech Exp $
+	$Id: Images.java,v 1.7 2000-03-29 10:59:22 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/03/24 14:33:58  wwwtech
+	Rico: total recompile
+	
 	Revision 1.5  2000/03/14 12:50:16  wwwtech
 	Rico: changed gamma params from / seperator to , due to image cache problems
 	
@@ -41,7 +34,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.6 2000-03-24 14:33:58 wwwtech Exp $
+ * @version $Id: Images.java,v 1.7 2000-03-29 10:59:22 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 

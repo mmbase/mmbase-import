@@ -1,13 +1,10 @@
 /*
-$Id: LStreams.java,v 1.3 2000-02-24 14:37:31 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: LStreams.java,v 1.4 2000-03-29 10:59:23 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/02/24 14:37:31  wwwtech
+Davzev added: Server restarted debug in init() method.
+
 */
 package org.mmbase.module.builders;
 
@@ -21,7 +18,7 @@ import org.mmbase.util.*;
 /**
  * @author David V van Zeventer
  * @version 4 nov 1998
- * @Revision@ $Date: 2000-02-24 14:37:31 $
+ * @Revision@ $Date: 2000-03-29 10:59:23 $
  */
 /**
  * NOTE 29 JAN 1999: The key in the lstreams hashtable consists of nodes' channelname only, instead of

@@ -1,17 +1,10 @@
 /*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
-
-/*
-	$Id: Properties.java,v 1.3 2000-03-24 14:34:00 wwwtech Exp $
+	$Id: Properties.java,v 1.4 2000-03-29 10:59:24 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/03/24 14:34:00  wwwtech
+	Rico: total recompile
+	
 	Revision 1.2  2000/02/24 14:14:49  wwwtech
 	Rico: debug changed
 	
@@ -27,7 +20,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @version $Id: Properties.java,v 1.3 2000-03-24 14:34:00 wwwtech Exp $
+ * @version $Id: Properties.java,v 1.4 2000-03-29 10:59:24 wwwtech Exp $
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 

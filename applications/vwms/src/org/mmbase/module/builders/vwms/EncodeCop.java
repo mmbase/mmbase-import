@@ -1,13 +1,10 @@
 /*
-$Id: EncodeCop.java,v 1.5 2000-03-27 16:01:01 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: EncodeCop.java,v 1.6 2000-03-29 11:04:45 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/27 16:01:01  wwwtech
+Rico: moved lots of VPRO stuff to nl.vpro
+
 Revision 1.3  2000/03/24 14:34:04  wwwtech
 Rico: total recompile
 
@@ -27,7 +24,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.5 $ $Date: 2000-03-27 16:01:01 $
+ * @version $Revision: 1.6 $ $Date: 2000-03-29 11:04:45 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
@@ -95,7 +92,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 
 	public boolean rawaudioChanged(String number,String ctype) {
 		if( debug ) debug("rawaudioChanged("+number+","+ctype+")");
-		debug("rawaudioChanged(): sees that rawaudio "+number+" has changed type="+ctype);
+		// debug("rawaudioChanged(): sees that rawaudio "+number+" has changed type="+ctype);
 		RawAudios bul=(RawAudios)Vwms.mmb.getMMObject("rawaudios");		
 		if (bul!=null) {
 			MMObjectNode node=bul.getNode(number);
@@ -103,6 +100,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			int format=node.getIntValue("format");
 
 			if (status==RawAudioDef.STATUS_VERZOEK && format==RawAudioDef.FORMAT_G2) {
+				if( debug ) debug("rawaudioChanged("+number+","+ctype+"): adding new handler..");
 				EncoderHandlers.addElement( new EncodeHandler(this,"g2encode",node) );
 			}
 		} else {

@@ -1,17 +1,10 @@
 /*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
-
-/*
-	$Id: MultiRelations.java,v 1.8 2000-03-24 14:33:59 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.9 2000-03-29 10:59:23 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/03/24 14:33:59  wwwtech
+	Rico: total recompile
+	
 	Revision 1.7  2000/03/21 15:46:13  wwwtech
 	Removed private debug method and private field classname, using inherited instead
 	
@@ -44,7 +37,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.8 2000-03-24 14:33:59 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.9 2000-03-29 10:59:23 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	

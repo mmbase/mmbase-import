@@ -1,12 +1,9 @@
 /*
-$Id: RawAudios.java,v 1.4 2000-03-21 15:38:53 wwwtech Exp $
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
+$Id: RawAudios.java,v 1.5 2000-03-29 10:59:24 wwwtech Exp $
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/21 15:38:53  wwwtech
+- (marcel) Removed debug (globally declared in MMOBjectNode)
+
 Revision 1.3  2000/03/20 13:17:30  wwwtech
 Rico: added super.getValue for global function support
 
@@ -28,7 +25,7 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.4 $ $Date: 2000-03-21 15:38:53 $
+ * @$Revision: 1.5 $ $Date: 2000-03-29 10:59:24 $
  *
  * 17 Dec 1999 davzev Added static methods getFileName, getHostName and getProtocolName used by Audioparts $MOD GETURL.
  */
