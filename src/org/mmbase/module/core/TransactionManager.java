@@ -14,64 +14,11 @@ import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-
-/*
-    $Id: TransactionManager.java,v 1.16 2001-04-17 08:38:51 michiel Exp $
-
-    $Log: not supported by cvs2svn $
-    Revision 1.15  2001/02/23 11:19:31  install
-    Rob: fixed bug #5571 committing does not remove transaction
-    
-    Revision 1.14  2001/02/05 11:41:15  daniel
-    changed some debug, they did not seem to be errors and resulted in alot of output
-    
-    Revision 1.13  2001/01/08 13:14:17  vpro
-    Rico: fixed semantics of deleteObject
-    
-    Revision 1.12  2000/12/30 14:05:11  daniel
-    turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
-    
-    Revision 1.11  2000/12/14 10:54:52  rico
-    Rico: added John Balder's changes for exception handling
-    
-    Revision 1.10  2000/11/24 13:15:33  vpro
-    Rico: fixed removeNode
-    
-    Revision 1.9  2000/11/24 13:08:26  vpro
-    Rico: fixed removeNode
-    
-    Revision 1.8  2000/11/24 12:15:22  vpro
-    Rico: fixed exist testing
-    
-    Revision 1.7  2000/11/24 12:08:38  vpro
-    Rico: increased debug
-    
-    Revision 1.6  2000/11/24 12:07:30  vpro
-    Rico: increased debug
-    
-    Revision 1.5  2000/11/22 13:11:25  vpro
-    Rico: added deleteObject support
-    
-    Revision 1.4  2000/11/08 16:24:13  vpro
-    Rico: fixed key bussiness
-    
-    Revision 1.3  2000/10/13 11:47:26  vpro
-    Rico: made it working
-    
-    Revision 1.2  2000/10/13 11:41:34  vpro
-    Rico: made it working
-    
-    Revision 1.1  2000/08/14 19:19:05  rico
-    Rico: added the temporary node and transaction support.
-          note that this is rather untested but based on previously
-          working code.
-    
-*/
+import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.16 2001-04-17 08:38:51 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.17 2001-04-19 09:08:03 rico Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -85,7 +32,7 @@ public class TransactionManager implements TransactionManagerInterface {
     public static final int I_EXISTS_NOLONGER=2;
 
     private TemporaryNodeManagerInterface tmpNodeManager;
-    private Object usermanager;
+    private Authorization authorization=null;
     private MMBase mmbase;
     protected Hashtable transactions=new Hashtable();
     protected TransactionResolver transactionResolver;
@@ -94,9 +41,11 @@ public class TransactionManager implements TransactionManagerInterface {
         this.mmbase=mmbase;
         this.tmpNodeManager=tmpn;
         transactionResolver=new TransactionResolver(mmbase);
-        // Probably this is going to be retrieved from mmbase
-        // so findUserName can actually do something
-        usermanager=new Object();
+		try {
+			authorization=mmbase.getMMBaseCop().getAuthorization();
+		} catch (Exception e) {
+			throw new org.mmbase.security.SecurityException(e.getMessage());
+		}
     }
 
     public String create(Object user,String transactionname) 
@@ -349,6 +298,9 @@ public class TransactionManager implements TransactionManagerInterface {
                         if (!debug) {
                             // no return information
                             node.parent.removeNode(node);
+							if (user instanceof UserContext) {
+								authorization.remove((UserContext)user,node.getNumber());
+							}
                             res=true;
                         } else {
                             res=true;
@@ -386,6 +338,9 @@ public class TransactionManager implements TransactionManagerInterface {
                         if (!debug) {
                             // no return information
                             node.parent.removeNode(node);
+							if (user instanceof UserContext) {
+								authorization.remove((UserContext)user,node.getNumber());
+							}
                             res=true;
                         } else {
                             res=true;
@@ -415,6 +370,9 @@ public class TransactionManager implements TransactionManagerInterface {
                     case I_EXISTS_YES:
                         if (!debug) {
                             res=node.commit();
+							if (user instanceof UserContext) {
+								authorization.update((UserContext)user,node.getNumber());
+							}
                         } else {
                             res=true;
                         }
@@ -432,6 +390,9 @@ public class TransactionManager implements TransactionManagerInterface {
                             } else {
                                 res=node.insert(node.getStringValue("owner"))!=-1;
                             }
+							if (user instanceof UserContext) {
+								authorization.create((UserContext)user,node.getNumber());
+							}
                         } else {
                             res=true;
                         }
@@ -463,6 +424,9 @@ public class TransactionManager implements TransactionManagerInterface {
                     case I_EXISTS_YES:
                         if (!debug) {
                             res=node.commit();
+							if (user instanceof UserContext) {
+								authorization.update((UserContext)user,node.getNumber());
+							}
                         } else {
                             res=true;
                         }
@@ -480,6 +444,9 @@ public class TransactionManager implements TransactionManagerInterface {
                             } else {
                                 res=node.insert(node.getStringValue("owner"))!=-1;
                             }
+							if (user instanceof UserContext) {
+								authorization.create((UserContext)user,node.getNumber());
+							}
                         } else {
                             res=true;
                         }
