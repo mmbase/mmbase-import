@@ -16,6 +16,21 @@
 		</return> 
 	</function>
 
+	<function name="getPosting">
+		<description>Get one specific posting</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getPosting</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="postareaid" type="String" description="MMBase node number of the postarea" />
+		<param name="postthreadid" type="String" description="MMBase node number of the postthread" />
+		<param name="postingid" type="String" description="MMBase node number of the posting" />
+		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
+		<param name="imagecontext" type="String" description="The imagecontext where to find images (eg smilies)">/mmbase/thememanager/images</param>
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="getPostings">
 		<description>List the postings within a postthread</description>
 		<type>class</type>
@@ -31,6 +46,7 @@
 		<return type="NodeList"> 
 		</return> 
 	</function>
+
 
 	<function name="removePostArea">
 		<description>Remove a postarea (including postthreads and postings) from a forum</description>
