@@ -151,11 +151,39 @@ title = "Edit " + ntype + " node";
 
 </mm:node>
 <mm:notpresent referid="nodefound">
-<% 
-path1 = null;	// 1st piece of Hans & Gretchel path
-title = "Node not found";
-%>
-<%@ include file="inc_head.jsp" %>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<link rel="stylesheet" href="my_editors.css" type="text/css" />
+	<title>my_editors - Node not found</title>
+</head>
+<body bgcolor="#FFFFFF">
+<table width="100%" class="top-table" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td width="50"><a href="index.jsp"><img src="img/mmbase-edit-40.gif" alt="my_editors" width="41" height="40" border="0" hspace="4" vspace="4" /></a></td>
+    <td>
+	  <div class="top-title">Node not found</div>
+	  <div class="top-links"><a class="top-links" href="index.jsp">home</a> - 
+	  <a class="top-links" href="help.jsp">help</a> -
+	  <a class="top-links" href="config.jsp">configure</a> -
+	  logged on as:  <%= wolk.getUser().getIdentifier() %> (rank: <%= wolk.getUser().getRank() %>) - 
+	  <a href="logout.jsp">log out</a> </div>
+	</td>
+	<td align="right">
+	<form action="edit_object.jsp" method="post">
+	  <div class="top-links"><input type="text" name="nr" size="12" maxlength="255" /><br />
+	  Insert node number or alias to edit</div>
+	</form>
+	</td>
+  </tr><tr bgcolor="#CCCCCC"> 
+    <td colspan="3"><div class="top-links">
+	  <a href="index.jsp">my_editors</a> &gt; Node not found
+	</div></td>
+  </tr>
+</table>
+<div style="margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;" align="center">
 <p>&nbsp;</p>
 <p class="message">The node you were looking for <mm:present referid="nr">with number <mm:write referid="nr" /></mm:present> could not be found.</p>
 <p>&nbsp;</p>
