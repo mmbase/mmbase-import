@@ -19,7 +19,13 @@
 
 <mm:import id="layout"><mm:field name="layout"/></mm:import>
 <mm:import id="imagelayout"><mm:field name="imagelayout"/></mm:import>
+
+<mm:import externid="suppresstitle"/>
+
+<mm:notpresent referid="suppresstitle">
   <h2> <mm:field name="name"/></h2>
+</mm:notpresent>
+
   <table width="100%" border="0" class="pagetable">
   
   <mm:compare referid="layout" value="0">
