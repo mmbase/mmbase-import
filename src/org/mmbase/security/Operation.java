@@ -14,7 +14,7 @@ package org.mmbase.security;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.10 2004-03-08 17:42:30 michiel Exp $
+ * @version $Id: Operation.java,v 1.11 2004-03-08 17:46:32 michiel Exp $
  */
 public final class Operation {
     /** int value for the read Operation*/
@@ -39,7 +39,7 @@ public final class Operation {
     public final static int CHANGE_CONTEXT_INT = 6;
 
     /**
-     * @deprecated use CHANGE_CONTEXT_INTK
+     * @deprecated use CHANGE_CONTEXT_INT
      */
     public final static int CHANGECONTEXT_INT = CHANGE_CONTEXT_INT;
 
