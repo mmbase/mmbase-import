@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.114 2004-06-11 17:14:33 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.115 2004-07-29 17:14:20 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -574,19 +574,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      */
     protected NodeList getResultNodeList(Query query) {
         try {
-            Authorization auth = mmbaseCop.getAuthorization();
-            boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
-            
-            if (query instanceof BasicQuery) {
-                BasicQuery bquery = (BasicQuery) query;
-                if (bquery.isSecure()) {
-                    checked = true;
-                } else {
-                    Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
-                    bquery.setSecurityConstraint(check);
-                    checked = bquery.isSecure();
-                }
-            }
+
+            boolean checked = setSecurityConstraint(query);
         
             if (! checked) {
                 log.warn("Query could not be completely modified by security: Aggregated result might be wrong");
@@ -598,7 +587,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
                 resultList = BasicCloudContext.mmb.getDatabase().getNodes(query, resultBuilder);
                 cache.put(query, resultList);
-            }
+            }            
             query.markUsed();
             NodeManager tempNodeManager;
             if (resultList.size() > 0) {
@@ -644,70 +633,30 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     /**
-     * Based on NodeSearchQuery. Executes the query and collects the result. Security constraints
-     * are added to the query first, and if those dont' suffice, every node of the result list is checked
-     * afterwards.
-     *
-     * @since MMBase-1.7
-     */
-    /*
-    protected NodeList getSecureNodes(NodeQuery query) {
-
-        Authorization auth = mmbaseCop.getAuthorization();
-        boolean checked = false; 
-
-
-        BasicNodeQuery bquery = (BasicNodeQuery) query;
-        if (bquery.isSecure()) {
-            checked = true;
-        } else {
-            Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
-            bquery.setSecurityConstraint(check);
-            checked = bquery.isSecure();
-        }
-
-        List resultList;
-        try {
-            resultList = ((BasicNodeManager) bquery.getNodeManager()).builder.getNodes((NodeSearchQuery)bquery.getQuery()); // result with all MMObjectNodes (without security)
-            // cached in MMObjectBuilder.
-
-        } catch (SearchQueryException sqe) {
-            throw new BridgeException(sqe);
-        }
-        query.markUsed();
-
-        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
-        if (! checked) {
-            log.debug("checking read rights");
-            list.autoConvert = false;
-
-            ListIterator i = list.listIterator();
-            while (i.hasNext()) {
-                if (!check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
-                    i.remove();
-                }
-            }
-        }
-        list.setProperty("query", query);
-        list.autoConvert = true;
-        return list;
-
-    }
-    */
-
-    /**
      * @since MMBase-1.7
      */
     boolean setSecurityConstraint(Query query) {   
         Authorization auth = mmbaseCop.getAuthorization();
         if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
             BasicQuery bquery = (BasicQuery) query;
-            if (bquery.isSecure()) {
+            if (bquery.isSecure()) { // already set, and secure
                 return true;
             } else {
-                Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
-                bquery.setSecurityConstraint(check);
+                if (bquery.queryCheck == null) { // not set already, do it now.
+                    Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+                    if (log.isDebugEnabled()) {
+                        log.debug("FOUND security check " + check + " FOR " + query);
+                    }
+                    bquery.setSecurityConstraint(check);
+                }
                 return bquery.isSecure();
+            }
+        } else {
+            // should not happen
+            if (query != null) {
+                log.warn("Don't know how to set a security constraint on a " + query.getClass().getName());
+            } else {
+                log.warn("Don't know how to set a security constraint on NULL");
             }
         }
         return false;
@@ -746,8 +695,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                     mayRead = auth.check(user, nodenr, Operation.READ);
                 }
             }
-            if (!mayRead)
+            if (!mayRead) {
                 li.remove();
+            }
         }
         resultNodeList.autoConvert = true;
         
