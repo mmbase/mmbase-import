@@ -1,5 +1,22 @@
 <?xml version="1.0"?>
-<!DOCTYPE sendmail PUBLIC "//MMBase - sendmail module//" "http://www.mmbase.org/dtd/sendmail.dtd">
-<sendmail>
-	<mailhost>localhost</mailhost>
-</sendmail>
+<!-- DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd" -->
+<module>
+  <!-- <status>
+	what is the status of this module options : active or inactive
+  -->
+  <status>active</status>
+
+  <!-- <classfile>
+	main classfile that this module is defined in
+  -->
+  <classfile>org.mmbase.module.SendMail</classfile>
+
+  <!-- <properties>
+     you can define properties to be used by the classfile (if used) it uses
+     a key/value system. Its a optional tag.
+   -->
+  <properties>
+	<property name="mailhost">localhost</property>
+  </properties>
+
+</module>

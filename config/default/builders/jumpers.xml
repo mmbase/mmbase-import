@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<?xml-stylesheet href="../xslt/builderview.xsl" type="text/xsl"?>
+
+
 <builder maintainer="mmbase.org" version="0">
 
 <!-- <status>

@@ -1,97 +1,30 @@
-<?xml version="1.0"?>
-<!DOCTYPE jdbc PUBLIC "//MMBase - jdbc module//" "http://www.mmbase.org/dtd/jdbc.dtd">
-<!-- 
- jdbc.xml file, defines the variables needed to talk to the
- underlyig database. It combined with mmbaseroot.xml makes up
- the core of things you need to set to run mmbase on your machine/database.
- 
- Good luck with MMbase.
- -->
-<jdbc>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module maintainer="mmbase.org" version="0">
 
-  <!-- 
-	 <url> defines the jdbc url mmbase will use to connect to your database
-	 it can use the following vars 
- 
-	 $HOST , set by <host>
-	 $PORT , set by <port>
-	 $DBM  , set by <database>
+	<!-- <status>
+	what is the status of this module options : active or inactive
+	-->
+	<status>active</status>
 
-	 this way we can provide the url for several databases and you only need to
-	 set the above variables.
+	<!-- <classfile>
+	-->
+	<classfile>org.mmbase.module.database.JDBC</classfile>
 
-	 While using JDBC 1.x use ';' instead of '&amp;' in the url tag !!!!!!
-  -->
-  <url>jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</url>
-
-  <!--
-	<driver>, defines the classname for the used jdbc driver this can be
-	obtained from the documentation from the jdbc driver you use.
-  -->	
-  <driver>org.gjt.mm.mysql.Driver</driver>
-
-  <!--
-	<database>, most database engines allow you to store multiple databases in one
-	engine we need to select the database root we want to use within this engine. 
-	make sure you are using a 'empty' database when you start using mmbase to make 
-	sure you don't create problems for other users of the database engine you are 
-	using.
-  -->
-  <database>install</database>
-
-  <!--
-	<user>, what is the user we will use to login to the database, if set to 'url' it 
-	will use one defined with the 'url' command above this is needed for several 
-	databases including mysql.
-  -->
-  <user>url</user>
-
-
-  <!--
-	<password>, what is the password we will use to login to the database, if set 
-	to 'url' it will use one defined with the 'url' command above this is needed 
-	for several databases including mysql.
-  -->
-  <password>url</password>
-
-
-  <!--
-	<host>, what host will we connect to (that is running the database) 
-	when you run mmbase on the same machine as this mmbase node it can 
-	be set to 'localhost'
-  -->
-  <host>localhost</host>
-
-  <!--
-	<port> what port is this database engine running on ? you can find the is 
-	your database manual or ask the database admin. default ports for 
-	supported databases are :
-
-	 3306 for mysql.
-  -->
-  <port>3306</port>
-
-  <!--
-	<connections>,  mmbase does its own database connection pooling 
-	(keeping connections to the database open over several database 
-	query's, to speed up query's by not logging in and closing
-	the connection on every qeury). 'connections' allows you to set 
-	the number of connections mmbase keeps open to the database.
-  -->
-  <connections>20</connections>
-
-  <!--
-	<querys>, mmbase will replace these connections every x query's 
-	because alot of the databases drivers, jdbc drivers etc etc have 
-	memory leaks or other possible problems. with 'querys' you can set 
-	the number that will be done per connection before it gets replaced 
-	with a new connection.
-  -->
-  <querys>256</querys>
-
-  <!--
-	<supportclass>, the jdbc module will use this class to do database 
-	specific things to a connection (ie for informix it sets the lockmode)
-  -->
-  <supportclass>org.mmbase.module.database.DatabaseSupportShim</supportclass>
-</jdbc>
+	<!-- <properties>
+	you can define properties to be used by the classfile (if used) it uses
+	a key/value system. Its a optional tag.
+	-->
+	<properties>
+		<property name="password">url</property>
+		<property name="port">3306</property>
+		<property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
+		<property name="database">install</property>
+		<property name="user">url</property>
+		<property name="connections">20</property>
+		<property name="driver">org.gjt.mm.mysql.Driver</property>
+		<property name="host">localhost</property>
+		<property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
+		<property name="querys">256</property>
+	</properties>
+</module>
