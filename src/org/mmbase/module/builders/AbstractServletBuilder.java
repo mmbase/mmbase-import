@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.12 2003-03-04 14:12:22 nico Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.13 2003-03-18 13:24:34 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -63,12 +63,10 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      */
     abstract protected String getDefaultPath();
 
-
-
     private String getServletPathWithAssociation(String association, String context) {
         String result;
         List ls = MMBaseServlet.getServletMappingsByAssociation(association);
-        if (ls != null) {
+        if (ls.size()>0) {
             result = (String) ls.get(0);
             // remove mask
             int pos = result.lastIndexOf("*");
@@ -83,9 +81,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         } else {
             result = getDefaultPath();
         }
-        
-        if (result.startsWith("/")) {                     
-            // if it not starts with / then no use adding context.                    
+
+        if (result.startsWith("/")) {
+            // if it not starts with / then no use adding context.
             if (context != null) {
                 if (context.endsWith("/")) {
                     result = context + result.substring(1);
@@ -101,8 +99,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * Get a servlet path. Takes away the ? and the * which possibly
      * are present in the servlet-mappings. You can put the argument(s)
      * directly after this string.
-     *  
-     * @param context The context (empty string, or starting with /). Will be ignored if determined already. 
+     *
+     * @param context The context (empty string, or starting with /). Will be ignored if determined already.
      * @param fileName Optional fileName. Will be added to the url, but it will not influence the servlet.
      */
 
@@ -121,7 +119,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 result = servletPath;
             }
         }
-        
+
         // add '?' if it wasn't already there (only needed if not terminated with /)
         if (! result.endsWith("/")) result = result + "?";
         return result;
@@ -129,7 +127,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
 
     /**
-     * Returns the path to the  servlet. 
+     * Returns the path to the  servlet.
      * @see #getServletPath(String, String)
      */
     protected String getServletPath(String fileName) {
@@ -160,7 +158,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     /**
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
-    final public String getGUIIndicator(MMObjectNode node) {              
+    final public String getGUIIndicator(MMObjectNode node) {
         return getSGUIIndicator("", null, node);
     }
     /**
@@ -195,15 +193,15 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 return info;
             } else {
                 return info.get(args.get(0));
-            }            
-        } else if (function.equals("servletpath")) {            
+            }
+        } else if (function.equals("servletpath")) {
             if (log.isDebugEnabled()) {
                 log.debug("getting servletpath with args " +args);
             }
 
             // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
             String session = "";
-            if(args.size() > 0) {                
+            if(args.size() > 0) {
                 session = (String) args.remove(0);
             }
 
@@ -230,12 +228,12 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 servlet.append("session=" + session + "+");
             }
             return servlet.append(field).toString();
-        } else if (function.equals("servletpathof")) { 
+        } else if (function.equals("servletpathof")) {
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
             return getServletPathWithAssociation((String) args.get(0), MMBaseContext.getHtmlRootUrlPath());
-        } else if (function.equals("format")) { // don't issue a warning, builders can override this. 
+        } else if (function.equals("format")) { // don't issue a warning, builders can override this.
             // images e.g. return jpg or gif
-        } else if (function.equals("mimetype")) { // don't issue a warning, builders can override this. 
+        } else if (function.equals("mimetype")) { // don't issue a warning, builders can override this.
             // images, attachments and so on
         } else if (function.equals("gui")) {
             log.debug("GUI of servlet builder with " + args);
@@ -252,9 +250,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 if (rtn == null) return super.executeFunction(node, function, args);
                 return rtn;
             }
-        } else {                   
+        } else {
             return super.executeFunction(node, function, args);
-        }    
+        }
         return null;
     }
 
