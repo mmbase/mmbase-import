@@ -74,7 +74,7 @@
             <p />
           </mm:present>
           <mm:notpresent referid="loginfailed">
-            <mm:field name="description" />
+            <h4><mm:write referid="mlg_Welcome" /> <mm:write referid="mlg_on_the" /> <mm:field name="name" /> <mm:write referid="mlg_forum" /> !</h4>
             <p /><b><mm:write referid="mlg_login" /></b><p />
           </mm:notpresent>
           <mm:write referid="mlg_account" /> : <input size="12" name="account">
