@@ -47,7 +47,7 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.18 2004-09-24 09:17:36 mark Exp $
+ * @version $Id: AbstractDove.java,v 1.19 2004-12-03 14:45:03 pierre Exp $
  */
 
 public abstract class AbstractDove {
@@ -129,6 +129,10 @@ public abstract class AbstractDove {
     public static final String IS_TRUE = "true";
     public static final String IS_FALSE = "false";
 
+    protected final static String[] TYPE_DESCRIPTIONS = {
+        "unknown", "string", "integer", "unknown", "byte", "float", "double", "long", "xml", "node", "datetime", "boolean", "list"
+    };
+
     //logger
     private static Logger log = Logging.getLoggerInstance(Dove.class.getName());
 
@@ -146,6 +150,14 @@ public abstract class AbstractDove {
      */
     public AbstractDove(Document doc) {
         this.doc=doc;
+    }
+
+    protected String getTypeDescription(int type) {
+       if (type >= 0 && type < TYPE_DESCRIPTIONS.length) {
+            return TYPE_DESCRIPTIONS[type];
+       } else {
+            return TYPE_DESCRIPTIONS[0];
+       }
     }
 
     /**
