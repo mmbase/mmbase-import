@@ -12,14 +12,30 @@ package org.mmbase.module;
 import java.util.*;
 import org.mmbase.util.*;
 
+/**
+ * @javadoc
+ */
 
 public interface SendMailInterface {
+    /**
+     * @javadoc
+     */
     public boolean sendMail(String from, String to, String data);
+    /**
+     * @javadoc
+     */
     public boolean sendMail(String from, String to, String data, Map headers);
+    /**
+     * @javadoc
+     */
     public boolean sendMail(Mail mail);
     /**
      * checks the e-mail address
      */
     public String verify(String name);
+    /**
+     * @javadoc
+     */
     public List   expand(String name);
+
 }
