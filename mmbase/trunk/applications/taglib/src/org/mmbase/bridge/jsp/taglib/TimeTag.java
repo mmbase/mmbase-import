@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.43 2004-06-02 16:32:16 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.44 2004-06-28 21:37:56 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -131,21 +131,6 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         return  org.mmbase.util.DateFormats.getInstance(dateFormat.getString(this), timezone.getString(this), getLocale());
     }
 
-    /**
-     * 
-     * @return the current locale based on a parent locale tag if extist or else the default locale from the default cloud context
-     * @since  MMBase-1.7.1
-     */
-    protected Locale getLocale() throws JspTagException {
-        Locale locale;
-        LocaleTag localeTag = (LocaleTag) findParentTag(LocaleTag.class, null, false);
-        if (localeTag != null) {
-            locale = localeTag.getLocale();
-        } else {
-            locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
-        }
-        return locale;
-    }
 
     public void setInputformat(String inputformat) throws JspTagException {
         this.inputFormat = getAttribute(inputformat);
