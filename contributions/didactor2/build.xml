@@ -27,6 +27,10 @@
              token="$${filemanagement.data.directory}"
              value="${filemanagement.data.directory}"/>
     <replace file="${build.dir}/webapp/WEB-INF/web.xml"
+             token="$${internalUrl}"
+             value="${internalUrl}"/>
+
+    <replace file="${build.dir}/webapp/WEB-INF/web.xml"
              token="$${filemanagement.data.url}"
              value="${filemanagement.data.url}"/>
   </target>
