@@ -37,7 +37,9 @@ public class FieldInfoTag extends NodeReferrerTag {
     private static final int TYPE_NAME     = 0;
     private static final int TYPE_GUINAME  = 1;
     private static final int TYPE_VALUE    = 2;
-    private static final int TYPE_GUIVALUE    = 3;
+    private static final int TYPE_GUIVALUE  = 3;
+    private static final int TYPE_TYPE      = 4;
+    private static final int TYPE_GUITYPE   = 5;
 
     // input and useinput produces pieces of HTML
     // very handy if you're creating an editors, but well yes, not very elegant.
@@ -58,6 +60,10 @@ public class FieldInfoTag extends NodeReferrerTag {
             type = TYPE_VALUE;
         } else if ("guivalue".equals(t)) {
             type = TYPE_GUIVALUE;
+       } else if ("type".equals(t)) {
+            type = TYPE_TYPE;
+       } else if ("guitype".equals(t)) {
+            type = TYPE_GUITYPE;
         } else if ("input".equals(t)) {
             type = TYPE_INPUT;
         } else if ("useinput".equals(t)) {       
@@ -356,8 +362,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     show =  null;
                     break;
                 }
-                search = search.toUpperCase();
-                show = "( UPPER([" + fieldName + "]) LIKE '%" + search + "%')";
+                show = "( UPPER([" + fieldName + "]) LIKE '%" + search.toUpperCase() + "%')";
             }
             break;
         case Field.TYPE_INTEGER:  
@@ -393,11 +398,14 @@ public class FieldInfoTag extends NodeReferrerTag {
                     break;
                 }
             }
+            log.debug("normal integer type, falling through");
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG:
+            log.debug("treating simple types");
             {
-                String search = getContextTag().getStringFindAndRegister(prefix(fieldName));
+                log.debug("1");
+                String search = getContextTag().getStringFindAndRegister(prefix(fieldName));                
                 if (search == null) {
                     log.error("parameter " + prefix(fieldName) + " could not be found");
                     show =  null;
@@ -407,7 +415,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     show =  null;
                     break;
                 }
-                show =  "(" + fieldName + "=" + getContextTag().getStringFindAndRegister(prefix(fieldName)) + ")";
+                show =  "(" + fieldName + "=" + search + ")";
             }
             break;
         default: log.error("field: " + type );
@@ -415,6 +423,9 @@ public class FieldInfoTag extends NodeReferrerTag {
         }
         return show;
     }
+
+
+
 
     /**
     * Write the value of the fieldinfo.
@@ -499,6 +510,12 @@ public class FieldInfoTag extends NodeReferrerTag {
             break;
         case TYPE_USESEARCHINPUT:
             show = whereHtmlInput(field); 
+            break;
+        case TYPE_TYPE:
+            show = "" + field.getType();
+            break;
+        case TYPE_GUITYPE:
+            show = field.getGUIType();
             break;
         }
 
