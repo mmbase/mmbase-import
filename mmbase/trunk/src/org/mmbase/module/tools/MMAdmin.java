@@ -1560,29 +1560,30 @@ public class MMAdmin extends ProcessorModule {
 	while (res.hasMoreElements()) {
 		MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
 		StringTagger tagger=en.getTagger();
-		String type=tagger.Value("TYPE");
-		String where=tagger.Value("WHERE");
-		String dbsort=tagger.Value("DBSORT");
-		String dbdir=tagger.Value("DBDIR");
-		String fields=tagger.Value("FIELDS");
+		Vector type=tagger.Values("TYPE");
+		Vector where=tagger.Values("WHERE");
+		Vector dbsort=tagger.Values("DBSORT");
+		Vector dbdir=tagger.Values("DBDIR");
+		Vector fields=tagger.Values("FIELDS");
 		results.addElement(""+en.getKey());
 		results.addElement(""+type);
 		results.addElement(""+fields);
 		if (where!=null) {
-			results.addElement(""+where);
+			results.addElement(where.toString());
 		} else {
 			results.addElement("");
 		}
 		if (dbsort!=null) {
-			results.addElement(""+dbsort);
+			results.addElement(dbsort.toString());
 		} else {
 			results.addElement("");
 		}
 		if (dbdir!=null) {
-			results.addElement(""+dbdir);
+			results.addElement(dbdir.toString());
 		} else {
 			results.addElement("");
 		}
+		results.addElement(tagger.ValuesString("ALL"));
 	}	
 	return(results);
     }
