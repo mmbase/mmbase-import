@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -80,6 +80,32 @@ public class BasicStepField implements StepField {
             throw new IllegalArgumentException("Invalid value for "
             + FieldDefs.getDBTypeDescription(type) + " field: "
             + value + ", of type " + value.getClass().getName());
+        }
+    }
+    
+    /**
+     * Compares two field values for equality. 
+     * Numerical fields are compared based on their numerical value, as they
+     * may be of different type.
+     *
+     * @param value1 The first value, either a <code>String</code> 
+     *        or a <code>Number</code>
+     * @param value2 The second value, either a <code>String</code> 
+     *        or a <code>Number</code>
+     * @return True if both values represent the same string or numerical value.
+     */
+    // package visibility!
+    static boolean equalFieldValues(Object value1, Object value2) {
+        if (value1 instanceof Number) {
+            if (value2 instanceof Number) {
+                Number number1 = (Number) value1;
+                Number number2 = (Number) value2;
+                return number1.doubleValue() == number2.doubleValue();
+            } else {
+                return false;
+            }
+        } else {
+            return (value1 == null? value2 == null: value1.equals(value2));
         }
     }
     
