@@ -45,8 +45,9 @@ public class IntegerHandler extends AbstractTypeHandler {
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
+        String guiType = field.getGUIType();
         StringBuffer buffer = new StringBuffer();
-        if (field.getGUIType().equals("boolean")) {
+        if (guiType.equals("boolean")) {
             boolean value = false;
             if (node != null) {
                 value = node.getBooleanValue(field.getName());
@@ -59,7 +60,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             }
             buffer.append(" />\n");
             return buffer.toString();
-        } else if (field.getGUIType().equals("types")) {
+        } else if (guiType.equals("types")) {
             log.warn("Guitype 'types' is deprecated. Use 'typedef' instead.");
             buffer.append("<select name=\"");
             buffer.append(prefix(field.getName()));
@@ -100,7 +101,7 @@ public class IntegerHandler extends AbstractTypeHandler {
                 buffer.append("\" />\n");
             }
             return buffer.toString();
-        } else if (field.getGUIType().equals("reldefs")) {
+        } else if (guiType.equals("reldefs")) {
             log.warn("Guitype 'reldefs' is deprecated. Use 'reldef' instead.");
             buffer.append("<select name=\"");
             buffer.append(prefix(field.getName()));
@@ -139,12 +140,12 @@ public class IntegerHandler extends AbstractTypeHandler {
                 buffer.append("\" />\n");
             }
             return buffer.toString();
-        } else if (field.getGUIType().equals("eventtime")) {
+        } else if (guiType.equals("eventtime")) {
             return dateHandler.htmlInput(node, field, search);
-        } else if (field.getGUIType().equals("integer")) {
+        } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.htmlInput(node, field, search);
         } else {
-            EnumHandler eh = new EnumHandler(context, field.getGUIType());
+            EnumHandler eh = new EnumHandler(context, guiType);
             if (eh.isAvailable()) {
                 return eh.htmlInput(node, field, search);
             }
@@ -157,9 +158,9 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {
-
+        String guiType = field.getGUIType();
         String fieldName = field.getName();
-        if (field.getGUIType().equals("boolean")) {
+        if (guiType.equals("boolean")) {
             String fieldValue = context.getContextTag().findAndRegisterString(prefix(fieldName));
             fieldValue = context.encode(fieldValue, field);
             if (fieldValue == null) {
@@ -168,12 +169,12 @@ public class IntegerHandler extends AbstractTypeHandler {
                 node.setIntValue(fieldName, 1);
             }
             return "";
-        } else  if (field.getGUIType().equals("eventtime")) {
+        } else  if (guiType.equals("eventtime")) {
             return dateHandler.useHtmlInput(node, field);
-        } else if (field.getGUIType().equals("integer")) {
+        } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.useHtmlInput(node, field);
         } else {
-            EnumHandler eh = new EnumHandler(context, field.getGUIType());
+            EnumHandler eh = new EnumHandler(context, guiType);
             if (eh.isAvailable()) {
                 return eh.useHtmlInput(node, field);
             }
@@ -186,21 +187,21 @@ public class IntegerHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        String guitype = field.getGUIType();
+        String guiType = field.getGUIType();
         String fieldName = field.getName();
-        if (guitype.equals("eventtime")) {
+        if (guiType.equals("eventtime")) {
             return dateHandler.whereHtmlInput(field);
-        } else if ("types".equals(guitype) || "reldefs".equals(guitype)) {
+        } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
             if (context.getContextTag().findAndRegister(id, id) == null) {
                 return null;
             } else {
                 return super.whereHtmlInput(field);
             }
-        } else if (guitype.equals("integer")) {
+        } else if (guiType.equals("integer") || guiType.equals("")) {
             return super.whereHtmlInput(field);
         } else {
-            EnumHandler eh = new EnumHandler(context, field.getGUIType());
+            EnumHandler eh = new EnumHandler(context, guiType);
             if (eh.isAvailable()) {
                 return eh.whereHtmlInput(field);
             }
@@ -209,17 +210,17 @@ public class IntegerHandler extends AbstractTypeHandler {
     }
 
     private class IntegerDateHandler extends DateHandler {
-            public IntegerDateHandler(FieldInfoTag context) {
-                super(context);
+        public IntegerDateHandler(FieldInfoTag context) {
+            super(context);
+        }
+        
+        protected int checkYear(Integer year, String fieldName) throws JspTagException {
+            int y = super.checkYear(year, fieldName);
+            if (y < 1902 || y > 2037) {
+                throw new JspTagException("Year of field '" + fieldName + "' must be between 1901 and 2038 (now " + y + ")");
             }
-
-            protected int checkYear(Integer year, String fieldName) throws JspTagException {
-                int y = super.checkYear(year, fieldName);
-                if (y < 1902 || y > 2037) {
-                    throw new JspTagException("Year of field '" + fieldName + "' must be between 1901 and 2038 (now " + y + ")");
-                }
-                return y;
-            }
+            return y;
+        }
     }
 
 }
