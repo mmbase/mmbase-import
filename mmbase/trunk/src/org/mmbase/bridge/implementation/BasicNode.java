@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.58 2002-04-12 12:33:34 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.59 2002-05-13 14:06:16 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -803,7 +803,7 @@ public class BasicNode implements Node {
                 // Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.
                 // This since it is not defined when the finalize method is called
                 // To bad only that nobody will ever see this exceptions :(
-                String msg = "after modifications to the node, either the method commit or cancel must be called";
+                String msg = "After modifications to the node, either the method commit or cancel must be called\nnode #" + getNumber() + "(" + noderef + ")";
                 log.error(msg);
                 throw new BridgeException(msg);
             }
