@@ -1,6 +1,6 @@
 <%@ page isErrorPage="true" import="java.util.*" %>
 <%@ page import="org.mmbase.bridge.*"%>
-<%@ page import="java.io"%>
+<%@ page import="java.io.*"%>
 <html>
 <head>
 <title>News error</title>
