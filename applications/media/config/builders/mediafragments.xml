@@ -4,7 +4,7 @@
 
 <status>active</status>
 
-<!-- classfile>MediaFragment</classfile-->
+<classfile>org.mmbase.module.builders.media.MediaFragment</classfile>
 
 <names>
 	<!-- singles per language as defined by ISO 639 -->
@@ -165,6 +165,36 @@
 			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
+
+<!-- POS 6c : <field> 'length'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="nl">Lengte</guiname>
+			<guiname xml:lang="en">Length</guiname>
+			<guitype>string</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>-1</input>
+				<!-- position in list area of the editor -->
+				<list>-1</list>
+				<!-- position in search area of the editor -->
+				<search>-1</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>length</name>
+			<!-- MMBase datatype and demands on it -->
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
+		</db>
+	</field>
+
+
 	<!-- POS 7 : <field> 'intro'  -->
 	<field>
 		<!-- gui related -->
@@ -252,4 +282,5 @@
 </fieldlist>
 
 </builder>
+
 

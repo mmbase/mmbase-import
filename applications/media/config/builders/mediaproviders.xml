@@ -4,7 +4,7 @@
 <status>active</status>
 
 
-<classfile>Dummy</classfile>
+<classfile>org.mmbase.module.builders.media.MediaProvider</classfile>
 
 <names>
 	<singular xml:lang="en">MediaProvider</singular>
@@ -17,6 +17,21 @@
 	<description xml:lang="en">Describes the system that is providing media files.</description>
 	<description xml:lang="nl">Beschrijft het systeem dat media bestanden beschikbaar steld.</description>
 </descriptions>
+
+<!-- <properties>
+  you can define properties to be used by the classfile (if used) it uses
+  a key/value system. Its a optional tag.
+  -->
+  <properties>
+    
+    <!-- specify which protocols to use for which media formats -->
+    <property name="g2/sure">rtsp://</property>
+    <property name="ra">pnm://</property>
+    <property name="default">http://</property>
+
+    <!-- generic property for all converters -->
+    <property name="MaxConcurrentRequests">3</property>
+  </properties>
 
 <fieldlist>
 	<!-- POS 1 : <field> 'name'  -->
@@ -166,3 +181,4 @@
 
 
 </builder>
+
