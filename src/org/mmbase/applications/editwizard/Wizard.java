@@ -16,6 +16,7 @@ import javax.servlet.ServletRequest;
 import org.w3c.dom.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
+import org.mmbase.module.core.ClusterBuilder; // just for the search-constants.
 import javax.xml.transform.TransformerException;
 import org.mmbase.util.xml.URIResolver;
 
@@ -26,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.75 2003-03-04 13:27:09 nico Exp $
+ * @version $Id: Wizard.java,v 1.76 2003-04-02 16:34:14 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -861,7 +862,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param   schemanode  The schemanode from were to start searching
      * @param   recurse     Set to true if you want to let the process search in-depth through the entire tree, false if you just want it to search the first-level children
      */
-    private void resolveShortcuts(Node schemanode, boolean recurse) {
+    private void resolveShortcuts(Node schemanode, boolean recurse) throws WizardException {
         String xpath;
         if (recurse) xpath=".//field|.//list"; else xpath="field|list";
         NodeList children = Utils.selectNodeList(schemanode, xpath);
@@ -896,12 +897,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param   node    The node to resolve
      */
-    private void resolveShortcut(Node singlenode) {
+    private void resolveShortcut(Node singlenode) throws WizardException {
         // transforms <field name="firstname"/> into <field fdatapath="field[@name='firstname']" />
         String nodeName = singlenode.getNodeName();
         if (nodeName.equals("field")) {
             // field nodes
-            String name = Utils.getAttribute(singlenode, "name", null);
+            String name      = Utils.getAttribute(singlenode, "name", null);
             String fdatapath = Utils.getAttribute(singlenode, "fdatapath", null);
             if (name == null && fdatapath == null) {
                 fdatapath = "object/field[@name='number']";
@@ -924,17 +925,58 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
         } else if (nodeName.equals("list")) {
             // List nodes
-            String role = Utils.getAttribute(singlenode, "role", "insrel");
+            String role        = Utils.getAttribute(singlenode, "role", null); //"insrel");
             String destination = Utils.getAttribute(singlenode, "destination", null);
-            String fdatapath = Utils.getAttribute(singlenode, "fdatapath", null);
-            if (destination!=null && fdatapath==null) {
-                // convert shortcut in list field to full fdatapath
-                fdatapath = "relation[@role='"+role+"' and object/@type='"+destination+"']";
 
+            String searchString   = Utils.getAttribute(singlenode, "searchdir", null);
+            String fdatapath   = Utils.getAttribute(singlenode, "fdatapath", null);
+
+            if (fdatapath != null) {
+                if (searchString  != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'searchdir' attributes");
+                if (role        != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'role' attributes");
+                if (destination != null) throw new WizardException("It does not make sense to specify 'fdatapath' _and_ 'destination' attributes");
+            } else {
+                if (role ==  null)     role = "insrel";
+
+                int searchDir;
+                if (searchString == null) { 
+                    if (destination == null) throw new WizardException("Either 'fdatapath', 'destination' or 'searchdir' should be specified");
+                    searchDir = ClusterBuilder.SEARCH_BOTH;
+                } else {
+                    searchDir = ClusterBuilder.getSearchDir(searchString);
+                }
+                
+                switch(searchDir) {
+                case ClusterBuilder.SEARCH_SOURCE:
+                    if (destination != null) {
+                        fdatapath = "relation[@role='"+role+"' and @source=object/@number and object/@type='" + destination + "']";
+                    } else {
+                        fdatapath = "relation[@role='"+role+"' and @source=object/@number]";
+                    }
+                    break;
+                case ClusterBuilder.SEARCH_DESTINATION:
+                    if (destination != null) {
+                        fdatapath = "relation[@role='"+role+"' and @destination=object/@number and object/@type='" + destination + "']";
+                    } else {
+                        fdatapath = "relation[@role='"+role+"' and @destination=object/@number]";
+                    }
+                    break;
+                case ClusterBuilder.SEARCH_BOTH:
+                case ClusterBuilder.SEARCH_ALL:
+                case ClusterBuilder.SEARCH_EITHER:
+                    if (destination != null) {
+                        fdatapath = "relation[@role='"+role+"' and object/@type='"+destination+"']";
+                    } else {
+                        fdatapath = "relation[@role='"+role+"']"; // no idea if this makes sense, but it is better then 'null' for destination
+                    }
+                    break;
+                default: 
+                    throw new WizardException("Unknown searchDir?"); // should not happend (because of dtd), but well..
+                }
                 // normal list or a list inside a list?
                 String parentname = singlenode.getParentNode().getNodeName();
                 if (parentname.equals("item")) {
-                        fdatapath="object/"+fdatapath;
+                    fdatapath="object/"+fdatapath;
                 }
 
                 Utils.setAttribute(singlenode, "fdatapath", fdatapath);
