@@ -3,13 +3,15 @@
 <article>
   <articleinfo>
     <date>27 february 2003</date>
-    <title>How to package your MMBase application</title>
-    <authorgroup>
+    <title>MMBase Applications</title>
       <author>
         <firstname>Henk</firstname>
         <surname>Hangyi</surname>
       </author>
-    </authorgroup>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+      </author>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -18,8 +20,13 @@
     <revhistory>
       <revision>
         <revnumber>0.1</revnumber>
-        <date>February 27th 2003</date>
-        <revremark>Henk Hangyi, hangyi@xs4all.nl</revremark>
+        <date>27 February 2003</date>
+        <authorinitials>HH</authorinitials>
+      </revision>
+      <revision>
+        <revnumber>0.5</revnumber>
+        <date>28 February 2003</date>
+        <authorinitials>PvR</authorinitials>
       </revision>
     </revhistory>
   </articleinfo>
