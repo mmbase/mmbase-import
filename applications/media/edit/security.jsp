@@ -10,7 +10,7 @@
   <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 <head>
 
-<body  onload="setContentFrame('<mm:url page="placeholder.jsp" />"');" class="left">   
+<body  onload="setContentFrame('<mm:url page="placeholder.jsp" />');" class="left">   
   <mm:import id="current">security</mm:import>
   <%@include file="submenu.jsp" %>
    <hr />

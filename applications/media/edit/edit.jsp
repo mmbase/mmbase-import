@@ -11,7 +11,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: edit.jsp,v 1.9 2003-09-28 14:21:04 michiel Exp $
+    @version  $Id: edit.jsp,v 1.10 2003-11-12 15:17:29 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
