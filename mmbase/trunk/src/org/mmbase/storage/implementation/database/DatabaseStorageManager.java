@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.16 2003-09-08 10:32:58 mark Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.17 2003-09-08 13:55:14 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1006,6 +1006,9 @@ public class DatabaseStorageManager implements StorageManager {
             // Note that creating a rowtype is optional
             if (rowtypeScheme!=null) {
                 String query = rowtypeScheme.format(new Object[] { this, builder, createFields.toString(), parentBuilder });
+                // remove parenthesis with empty field definitions -
+                // unfortunately Schems don't take this into account
+                query = query.replaceAll("\\(\\s*\\)","");
                 Statement s = activeConnection.createStatement();
                 debug("query:"+query);
                 s.executeUpdate(query);
@@ -1021,6 +1024,9 @@ public class DatabaseStorageManager implements StorageManager {
                                                         createFieldsAndIndices.toString(),
                                                         createCompositeIndices.toString(),
                                                         parentBuilder });
+            // remove parenthesis with empty field definitions -
+            // unfortunately Schems don't take this into account
+            query = query.replaceAll("\\(\\s*\\)","");
             Statement s = activeConnection.createStatement();
             debug("query:"+query);
             s.executeUpdate(query);
