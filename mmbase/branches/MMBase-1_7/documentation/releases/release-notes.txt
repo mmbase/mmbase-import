@@ -156,8 +156,10 @@ Generic Improvement:
 ------------------
 Generic Bug Fixes:
 ------------------
-[1.7.1]
+[1.7.2]
+- #6254 searchquery Fieldaliases converted to lowercase in result of aggregating query. 
 - #6570 Multicast does not refresh reldef and oalias caches 
+[1.7.1]
 - #6566 CKeyNumberCache not invalidated on 'remote' servers. 
 - #6548 'blob converting' tool is not synchronized, can run more than once.   	
 - #6525 org.mmbase.module.SendMail: tries to send mail before it is properly initialized 
@@ -219,6 +221,8 @@ Generic Bug Fixes:
 ------------------
 Security Bug Fixes:
 ------------------
+[1.7.2]
+- #6572 CloudContextSecurity: All security caches are invalidated on logon of user.
 [1.7.1]
 - #6559 Security CCS:SecurityUser cache not started
 [1.7.0]
@@ -272,6 +276,10 @@ Database Layer Bug Fixes:
 ---------------------
 Editwizard Bug Fixes:
 ---------------------
+[1.7.2]
+- #6574 LIKE constraint in search-command does not work 
+- #6573 New XSLs ignore 'prompt' s of search command
+
 [1.7.1] 
 - #6420 List in list, subitems are not loaded on add. Also remove, readd doesn't work.
 - #6567 Could not trail path element with digit.    	
@@ -292,8 +300,9 @@ Editwizard Bug Fixes:
 -----------------
 Taglib Bug Fixes:
 -----------------
-[1.7.1]
-- #6569 Using wrong character encoding for post data 
+[1.7.2]
+- #6569 Using wrong character encoding for post data
+[1.7.1] 
 - #6241 TreeTag: No way to order or constrain steps.   	
 - #6230 Taglib documentation wider than window.  	
 - #5986 Tree-functionality is too community-specific. 
