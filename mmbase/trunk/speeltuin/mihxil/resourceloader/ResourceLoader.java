@@ -96,7 +96,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.10 2004-10-13 17:33:10 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.11 2004-10-13 21:20:56 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -539,6 +539,8 @@ public class ResourceLoader extends ClassLoader {
         return results;
     }
 
+
+    private static boolean warned23 = false;
     /**
      * Recursing for {@link javax.servlet.ServletContext#getResourcePaths}
      */
@@ -568,6 +570,15 @@ public class ResourceLoader extends ClassLoader {
                         }
                     }
                 }
+            } catch (NoSuchMethodError nsme) {
+                if (! warned23) {
+                    log.warn("Servet 2.3 feature not supported! " +  nsme.getMessage());
+                    warned23 = true;
+                }
+                // servletContext.getResourcePaths is only a servlet 2.3 feature.
+                
+                // old app-server (orion 1.5.4: java.lang.NoSuchMethodError: javax.servlet.ServletContext.getResourcePaths(Ljava/lang/String;)Ljava/util/Set;)
+                // simply ignore, running on war will not work in such app-servers
             } catch (Throwable t) { //hopefully this catches errors from app-server which dont' or badly support servlet api 2.3's getResourcePaths
                 log.error(Logging.stackTrace(t));
                 // ignore
