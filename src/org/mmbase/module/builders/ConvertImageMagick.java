@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.21 2002-01-23 20:57:32 eduard Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.22 2002-01-23 21:21:20 eduard Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -342,6 +342,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 byte[]  errorMessage = imagestream.toByteArray();
                 if(errorMessage.length > 0) {
                     log.error("from stderr with command '" + command + "' --> '" + new String(errorMessage) + "'");
+                    log.error("working dir: '" + new File("file").getParentFile().getAbsolutePath() + "'");
                 } 
                 else {
                     log.debug("no information on stderr found");
