@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.SAXParser;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.3 2002-06-18 09:19:29 pierre Exp $
+ * @version $Id: TransactionsParser.java,v 1.4 2003-01-06 18:29:36 robmaris Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -93,8 +93,10 @@ public class TransactionsParser extends DefaultHandler {
     * The XML header used for the reportfile.
     */
    public final String xmlHeader =
-   "<?xml version='1.0'  encoding='" + ENCODING
-   + "'?>\n<!DOCTYPE transactions SYSTEM \"transactions_1_0.dtd\">\n";
+   "<?xml version='1.0'  encoding='" + ENCODING + "'?>\n"
+      + "<!DOCTYPE transactions "
+      + "PUBLIC '-//MMBase/DTD transactions config 1.0//EN' " 
+      + "'http://www.mmbase.org/dtd/transactions_1_0.dtd'>\n";
 
     /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(
@@ -244,7 +246,12 @@ public class TransactionsParser extends DefaultHandler {
                   // Delete old file if present.
                   if (reportFile.exists()) {
                      reportFile.delete();
+                  } else {
+                     // Create parent directory if it does not exist already.
+                     reportFile.getParentFile().mkdirs();
                   }
+                  
+                  
 
                   appendReportFile(xmlHeader + parsedLine + "\n");
                }
