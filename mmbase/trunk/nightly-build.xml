@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.2 2002-11-10 19:11:20 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.3 2002-11-12 22:03:29 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -48,6 +48,7 @@
 
   <property name="cvsroot" value=":pserver:guest@www.mmbase.org:/usr/local/cvs" />
   <property name="checkoutcommand" value="checkout -D ${date} " />
+  <property name="updatecommand" value="update -d -P  -D ${date} " />
 
   <target name="cvs">
     <echo>Doing an anonymous CVS login</echo>
@@ -55,11 +56,10 @@
 		
     <!-- get config from cvs -->
     <mkdir dir="${nbuild.dir}/cvs"/>
-    <cvs cvsRoot="${cvsroot}"
-      command="${checkoutcommand}"
-      package="${cvs.mmbase.module}"
+    <!-- cvs cvsRoot="${cvsroot}"
+      command="${updatecommand}"
       dest="${source.dir}"
-      />              
+      /-->              
   </target>
   
 
@@ -67,7 +67,7 @@
   <target name="storesource" depends="cvs">
     <mkdir dir="${destination.dir}"/>
     <echo file="${destination.dir}/README.txt">
-This is the nightly build ${version}.
+This is the nightly build ${version}, CVS date: ${date}
 It contains the following:
 README.txt     This file
 mmbase-src.zip The source from which this build was made
@@ -114,8 +114,8 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="jar" />
 	</target>
 
-  <target name="build.war" depends="cvs">
-    <ant antfile="${buildscript}" dir="${buildscript.dir}" target="wars" />
+  <target name="build.distro" depends="cvs">
+    <ant antfile="${buildscript}" dir="${buildscript.dir}" target="bindist" />
    </target>
 
   <target name="javadocs" depends="cvs">
@@ -151,26 +151,33 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     </zip>         		
   </target>
 
-  <target name="storewar" depends="build.war">
-		<!-- the war... -->
+  <target name="storedistro" depends="build.distro">
+    <!-- the war... -->
+    <!--
     <copy file="${build.dir}/mmbase/mmbase.war"              tofile="${warpackage.file}"/>
     <copy file="${build.dir}/mmbase/minimalistic-mmbase.war" tofile="${minwarpackage.file}"/>
+    -->
+    <copy dir="${destination.dir}">
+    	<fileset dir="${build.dir}">
+	  <include name="**/*.zip"/>	  
+        </fileset>
+    </copy>
 
     <!-- mmdocs -->
     <copy todir="${destination.dir}/mmdocs">
-			<fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs" />
+	<fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs" />
     </copy>
-	</target>       
+  </target>       
   
   
   <!-- clean for a new compile -->
   <target name="clean">
-		<delete dir="${build.dir}" /> 
+      <delete dir="${build.dir}" /> 
   </target>
   
   <!-- ================================================================================
   The default target is 'full': do a nightly build.
   --> 
-  <target name="full" depends="clean,storesource,storebuild,storejavadocs,storewar">
+  <target name="full" depends="clean,storesource,storebuild,storejavadocs,storedistro">
   </target>
 </project>
