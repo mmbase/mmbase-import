@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.6 2003-03-07 08:50:36 pierre Exp $
+ * @version $Id: XmlField.java,v 1.7 2003-05-06 20:46:35 michiel Exp $
  */
 
 public class XmlField extends AbstractTransformer implements CharTransformer {
@@ -540,9 +540,8 @@ public class XmlField extends AbstractTransformer implements CharTransformer {
         }
         try {
             validate(XML_HEADER + result);
-        }
-        catch(FormatException fe) {
-            throw new RuntimeException(fe.toString() + " source: \n" + result);
+        } catch(FormatException fe) {
+            log.error(fe.toString() + " source: \n" + result);
         }
         return result;
     }
