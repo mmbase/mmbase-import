@@ -5,6 +5,7 @@
 <mm:import externid="node"               required="true" />
 <mm:import externid="node_type"          required="true" />
 <mm:import externid="role_name"          required="true" />
+<mm:import externid="direction"          required="true" />
 <mm:import externid="create_relation"    required="false" />
 
 <mm:notpresent referid="create_relation">
@@ -12,7 +13,7 @@
    <title><%=m.getString("new_relation.new")%></title>
    </head>
    <body class="basic" onLoad="document.search.elements[0].focus();">
-   <mm:import externid="to_page"><mm:url referids="role_name,node_type,node">
+   <mm:import externid="to_page"><mm:url referids="role_name,node_type,node,direction">
                                  <mm:param name="create_relation">yes</mm:param>  
                                  </mm:url></mm:import>
    <mm:import id="maylink">yes</mm:import>   
@@ -45,17 +46,29 @@
    <mm:notpresent referid="annotate_relation">
      <mm:node id="node_number" referid="node_number">
 
-     <mm:createrelation id="relation" source="node" destination="node_number" role="${role_name}" >
-       <mm:fieldlist type="edit">
-          <mm:first><mm:import id="annotate">true</mm:import></mm:first>
-       </mm:fieldlist>
-     </mm:createrelation>
-
+    <mm:compare referid="direction" value="create_parent">
+        <mm:createrelation id="relation" source="node" destination="node_number" role="${role_name}" >
+            <mm:fieldlist type="edit">
+                <mm:first><mm:import id="annotate">true</mm:import></mm:first>
+            </mm:fieldlist>
+        </mm:createrelation>
+    </mm:compare>        
+    
+    <mm:compare referid="direction" value="create_child">        
+        <!-- if role could also be the dname, this code wouldnt be nessecary -->
+        <!-- solved by replacing source with destination -->
+        <mm:createrelation id="relation" source="node_number" destination="node" role="${role_name}" >
+            <mm:fieldlist type="edit">
+                <mm:first><mm:import id="annotate">true</mm:import></mm:first>
+            </mm:fieldlist>
+        </mm:createrelation>
+    </mm:compare>
+    
 	<mm:present referid="annotate">    
         <mm:write referid="style" />
         </head>
         <body class="basic" onLoad="document.new.elements[4].focus();">
-        <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name" />' >
+        <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name,direction" />' >
         <input type="hidden" name="create_relation" value="yes" />
         <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
         <tr><th colspan="2"><%= m.getString("new_relation.new") %> (<mm:write referid="role_name" />)</th></tr>

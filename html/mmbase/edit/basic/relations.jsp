@@ -47,6 +47,9 @@
                         <mm:param name="node"><mm:field node="this_node" name="number" /></mm:param>
                         <mm:param name="node_type"><%= otherNodeType.getName()%></mm:param>
                         <mm:param name="role_name"><%= relationDefinition.getStringValue("sname") %></mm:param>
+                        <!-- WHY CANT I USE DNAME as ROLE????  -->
+                        <mm:param name="direction">create_parent</mm:param>
+                        <!-- END WHY CANT I USE DNAME as ROLE????  -->
                         </mm:url>'>
                         <img src="images/create.gif" alt="+" width="20" height="20" border="0" align="right" />
                    </a>                
@@ -144,10 +147,13 @@
                     <a href='<mm:url page="new_relation.jsp" >
                         <mm:param name="node"><mm:field node="this_node" name="number" /></mm:param>
                         <mm:param name="node_type"><%= otherNodeType.getName()%></mm:param>
-                        <mm:param name="role_name"><%= relationDefinition.getStringValue("dname") %></mm:param>
+                        <!-- WHY CANT I USE DNAME as ROLE???? -->
+                        <mm:param name="role_name"><%= relationDefinition.getStringValue("sname") %></mm:param>
+                        <mm:param name="direction">create_child</mm:param>
+                        <!-- END WHY CANT I USE DNAME as ROLE???? -->
                         </mm:url>'>
                         <img src="images/create.gif" alt="+" width="20" height="20" border="0" align="right" />
-                   </a>                
+                   </a> 
                 </td>
             </tr>
             <!-- list all nodesof this specific relation type.. -->                        
