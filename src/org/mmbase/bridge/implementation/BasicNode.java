@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.128 2004-06-11 17:14:33 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.129 2004-07-20 13:04:41 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -461,8 +461,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
             case Field.TYPE_XML:     return getXMLValue(fieldName);
             case Field.TYPE_NODE:    return getNodeValue(fieldName);
-            default:                 
-                log.error("Unknown fieldtype '" + type + "'"); 
+            default:
+                log.error("Unknown fieldtype '" + type + "'");
                 return value;
             }
         } else {
@@ -492,7 +492,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         Node result = null;
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
-            if (mmobjectNode.getBuilder() instanceof InsRel) {
+            MMObjectBuilder builder = mmobjectNode.getBuilder();
+            if (builder instanceof TypeDef) {
+                result =  new BasicNodeManager(mmobjectNode, cloud);
+            } else if (builder instanceof RelDef || builder instanceof TypeRel) {
+                result =  new BasicRelationManager(mmobjectNode, cloud);
+            } else if (builder instanceof InsRel) {
                 result =  new BasicRelation(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             } else {
                 result = new BasicNode(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
@@ -879,17 +884,17 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                     query.setConstraint(query.createConstraint(rnumber, new Integer(relDefNode.getNumber())));
                 }
             }
-            
+
             int dir = RelationStep.DIRECTIONS_BOTH;
             if (direction != null) {
                 dir = ClusterBuilder.getSearchDir(direction);
             }
-            
+
             StepField snumber = query.getStepField(insrel.getField("snumber"));
             StepField dnumber = query.getStepField(insrel.getField("dnumber"));
 
             Integer number = new Integer(getNumber());
-                                                   
+
             switch(dir) {
             case RelationStep.DIRECTIONS_DESTINATION: {
                 Queries.addConstraint(query, query.createConstraint(snumber, number));
@@ -905,7 +910,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 Constraint destinationConstraint = query.createConstraint(dnumber, number);
                 Queries.addConstraint(query, query.createConstraint(sourceConstraint, CompositeConstraint.LOGICAL_OR, destinationConstraint));
                 break;
-            }                
+            }
             }
             return Queries.count(query);
         } else {
@@ -1079,7 +1084,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     // javadoc inherited (from Node)
-    public StringList getPossibleContexts() {        
+    public StringList getPossibleContexts() {
         return new BasicStringList(getNode().getPossibleContexts(((BasicUser)cloud.getUser()).getUserContext()));
     }
 
