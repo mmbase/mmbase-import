@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.22 2003-12-21 13:27:19 michiel Exp $
+ * @version $Id: Users.java,v 1.23 2003-12-22 13:32:37 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -156,12 +156,15 @@ public class Users extends MMObjectBuilder {
                     log.info("Changing account '" + originalValue + "' to '" + value + "'");
                 }
             }
-        } else if(field.equals(FIELD_PASSWORD)) {
+        } 
+        /*
+        else if(field.equals(FIELD_PASSWORD)) {
             Object value = node.values.get(field);
             if (originalValue != null && ! originalValue.equals(value)) {
                 node.values.put(field, encode((String) value));
             }
         }
+        */
         return true;
     }
 
@@ -322,8 +325,8 @@ public class Users extends MMObjectBuilder {
             return true;
         } else {
             log.debug("hashcode's were different, comparing the number fields");
-            return mmobjectnode.getNumber() == mmobjectnode1.getNumber();
-        }
+            return mmobjectnode.getNumber() == mmobjectnode1.getNumber(); 
+       }
         */
     }
 
