@@ -50,30 +50,14 @@ public class Authentication {
      *	@param manager The class that created this instance.
      *	@param configUrl The url which contains the config information for.     
      *	    the authorization.
-     *	@return <code>true</code> When valid
-     *	    	<code>false</code When not valid
-     *	@exception org.mmbase.security.SecurityException When something strang happend     
-     */        
-    public boolean login(String application, UserContext userContext) throws org.mmbase.security.SecurityException {
-    	return login(application, userContext, null);
-    }
-
-    /** 
-     *	The method which sets the settings of this class. This method is 
-     *	shouldn't be overrided.
-     *	This class will set the member variables of this class and then
-     *	call the member function load();
-     *	@param manager The class that created this instance.
-     *	@param configUrl The url which contains the config information for.     
-     *	    the authorization.
-     *	@param parameters a list of optional parameters
-     *	@return <code>true</code> When valid
-     *	    	<code>false</code When not valid
+     *	@param parameters a list of optional parameters, may also be null
+     *	@return <code>null</code When not valid
+     *	    	a (maybe new) UserContext When valid
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */        
-    public boolean login(String application, UserContext userContext, Object[] parameters) 
+    public UserContext login(String application, UserContext userContext, Object[] parameters) 
     	throws org.mmbase.security.SecurityException 
     {
-    	return true;
+    	return userContext;
     }
 }

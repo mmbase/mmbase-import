@@ -150,21 +150,7 @@ public interface Cloud {
      */
     public Transaction getTransaction(String name);
    	
-    /**
-     * Logs on a user. This will associate the user with this cloud instance.
-     *
-     * @param authenticatorName  name of the authentication method to use
-     * @param parameters         parameters for the authentication
-     * @return                   <code>true</code> if succesfull,
-     *                           <code>false</code otherwise
-     */
-    public boolean logon(String authenticatorName, Object[] parameters);
-  	
-    /**
-     * Logs off a user. Resets the user's context to 'anonymous'.
-     */
-    // public void logoff();
-
+     
     /**
      * Returns the name of this cloud.
      *
