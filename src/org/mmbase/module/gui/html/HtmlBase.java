@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.17 2000-03-31 13:21:28 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.18 2000-04-03 09:03:38 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.17  2000/03/31 13:21:28  wwwtech
+	Wilbert: Introduction of ParseException for method getList
+	
 	Revision 1.16  2000/03/31 13:18:19  wwwtech
 	Wilbert: Introduction of ParseException for method getList
 	
@@ -80,7 +83,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.17 2000-03-31 13:21:28 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.18 2000-04-03 09:03:38 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -185,7 +188,6 @@ public class HtmlBase extends ProcessorModule {
 			node=(MMObjectNode)e.nextElement();
 			Enumeration f=tagger.Values("FIELDS").elements();
 			for (;f.hasMoreElements();) {
-				// hack hack this is way silly Strip needs to be fixed
 
 				String fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
 				result=getNodeStringValue(node,fieldname);
@@ -813,7 +815,7 @@ public class HtmlBase extends ProcessorModule {
 		Integer hash;
 		Vector results=null,nodes,wherevector=null;
 		Enumeration e,f;
-		boolean reload=getReload(sp);
+		boolean reload=getReload(sp,tagger);
 
 		Vector type=tagger.Values("TYPE");
 		if ((type==null) || (type.size()==0)) throw new MultiLevelParseException("No TYPE specified");
@@ -826,7 +828,8 @@ public class HtmlBase extends ProcessorModule {
 		if ((snodes==null) || (snodes.size()==0)) throw new MultiLevelParseException("No NODE specified. Use NODE=\"-1\" to specify no node");
 		String distinct=tagger.Value("DISTINCT");
 
-		tagger.setValue("ITEMS",""+fields.size());
+		tagger.setValue("ITEMS",""+fields.size());				
+		if (debug) debug("after taggers");
 
 		hash=calcHashMultiLevel(tagger);
 		results=(Vector)multilevel_cache.get(hash);
@@ -852,8 +855,9 @@ public class HtmlBase extends ProcessorModule {
 				dbdir=new Vector();
 				dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
 			}
-	
+			if (debug) debug("Before search");
 			nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir);
+			if (debug) debug("After search");
 			results=new Vector();
 			for (e=nodes.elements();e.hasMoreElements();) {
 				node=(MMObjectNode)e.nextElement();
@@ -934,8 +938,15 @@ public class HtmlBase extends ProcessorModule {
 		return(null);
 	}
 
-	private boolean getReload(scanpage sp) {
+	private boolean getReload(scanpage sp,StringTagger tagger) {
 		boolean rtn=false;
+		String memcache;
+		if (tagger!=null) {
+			memcache=tagger.Value("MEMCACHE");
+			if (memcache!=null && memcache.equals("NO")) {
+				rtn=true;
+			}
+		}
 		if (sessions!=null) {
 			if( sp.sname == null || sp.sname.equals("")) {
 				sp.sname = "james/1234";
