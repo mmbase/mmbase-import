@@ -58,11 +58,24 @@ public class Config extends ProcessorModule {
 		fatalList = errorHandler.getFatalList();
 
 		resultList = errorHandler.getResultList();
+		/*
 		for (int i=0; i<resultList.size();i++) {
+		    // XXX ??? What is this supposed to do???
 		    ErrorStruct err = (ErrorStruct)resultList.elementAt(i);
 		}
+		*/
 	    } catch (Exception e) {
-		System.out.println("ParseResult error: "+e.getMessage());
+		warningList = new Vector();
+		errorList = new Vector();
+
+		ErrorStruct err = new ErrorStruct("fatal error",0,0,e.getMessage());
+
+		fatalList = new Vector();
+		fatalList.addElement(err);
+		resultList = new Vector();
+		resultList.addElement(err);
+		
+		debug("ParseResult error: "+e.getMessage());
 	    }
 	}
 	
@@ -381,6 +394,15 @@ public class Config extends ProcessorModule {
 		int nextLine = err.getLineNumber();
 		StringBuffer marker;
 		res.append("<PRE>");
+		if (nextLine == 0) {
+		    res.append("<font color=red>"+err.getMessage()+"</font>\n");
+		    if (j < pr.getResultList().size()-1) {
+			err = (ErrorStruct)pr.getResultList().elementAt(j++);
+			nextLine = err.getLineNumber();
+		    } else {
+			nextLine = -1;
+		    }
+		}
 		while (reader.ready()) {
 		    lineno++;
 		    line = reader.readLine();
@@ -390,9 +412,16 @@ public class Config extends ProcessorModule {
 			    marker.append(' ');
 			}
 			marker.append("<font color=red>^</font>\n");
-			res.append(htmlEntities(line)+"\n"+marker+"<font color=red>line: "+nextLine+"  column: "+err.getColumnNumber()+"\n"+err.getMessage()+"</font>\n");
-			err = (ErrorStruct)pr.getResultList().elementAt(j++);
-			nextLine = err.getLineNumber();
+			if (err != null) {
+			    res.append(htmlEntities(line)+"\n"+marker+"<font color=red>line: "+nextLine+"  column: "+err.getColumnNumber()+"\n"+err.getMessage()+"</font>\n");
+			    if (j < pr.getResultList().size()-1) {
+				err = (ErrorStruct)pr.getResultList().elementAt(j++);
+				nextLine = err.getLineNumber();
+			    } else {
+				nextLine = -1;
+			    }
+			}
+
 		    } else {
 			res.append(htmlEntities(line));
 		    }
