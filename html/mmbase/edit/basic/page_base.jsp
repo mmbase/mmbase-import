@@ -27,7 +27,7 @@ response.setHeader("Date",  now);
   <mm:import id="page_size">20</mm:import>
   <mm:import id="hide_search">false</mm:import>
   <mm:import id="style_sheet">mmbase.css</mm:import>
-  <mm:import id="lang" externid="mmjspeditors_language">en</mm:import>
+  <mm:import id="lang" externid="mmjspeditors_language" from="cookie" >en</mm:import>
 </mm:context>
 <mm:write referid="config" session="mmeditors_config" />
 </mm:notpresent>
