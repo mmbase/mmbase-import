@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>5 december 2002</date>
-		<edition>$Id: builders.xml,v 1.2 2002-12-05 15:48:53 pierre Exp $</edition>
+		<edition>$Id: builders.xml,v 1.3 2002-12-05 16:07:35 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -32,8 +32,8 @@
 		<para>A builder file uses the following general format:
 		</para>
 		<programlisting format="linespecific"><![CDATA[
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="..." maintainer="..." version="..." extends="...">
 	<status>...</status>
 	<classfile>...</classfile>
@@ -93,7 +93,7 @@
 				</varlistentry>
 				<varlistentry>
 					<term>maintainer</term>
-					<listitem><para>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organsiation maintaining the builder. This is generally a domain name. For the core builders this value is <emphasize>mmbase.org</emphasize></para></listitem>
+					<listitem><para>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organsiation maintaining the builder. This is generally a domain name. For the core builders this value is <emphasis>mmbase.org</emphasis></para></listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>version</term>
@@ -101,7 +101,7 @@
 				</varlistentry>
 				<varlistentry>
 					<term>extends</term>
-					<listitem><simpara>The name of a builder that this builder extends. If you do not specify a builder, you should fully describe the builder (include all tags). If you do specify a parent builder, you need only describe new or changed tags or attributes. The default builder that is extended is <emphasize>object</emphasize>.</simpara></listitem>
+					<listitem><simpara>The name of a builder that this builder extends. If you do not specify a builder, you should fully describe the builder (include all tags). If you do specify a parent builder, you need only describe new or changed tags or attributes. The default builder that is extended is <emphasis>object</emphasis>.</simpara></listitem>
 				</varlistentry>
 			</variablelist>
 				<example>
@@ -125,8 +125,8 @@
 				<title>&lt;classfile&gt;</title>
 				<para>The java class used by this buidler to administarte nodes of that builder type.</para>
 				<para>Specify this tag if you have custom behavuior defined for an object type.</para>
-				<para>The default value for a builder that extends the core builder <emphasize>object</emphasize> is <classname>org.mmbase.module.builders.Dummy</classname>.</para>
-				<para>The default value for a builder that extends the core relation buidler <emphasize>insrel</emphasize> is <classname>org.mmbase.module.corebuilders.InsRel</classname>.</para>
+				<para>The default value for a builder that extends the core builder <emphasis>object</emphasis> is <classname>org.mmbase.module.builders.Dummy</classname>.</para>
+				<para>The default value for a builder that extends the core relation buidler <emphasis>insrel</emphasis> is <classname>org.mmbase.module.corebuilders.InsRel</classname>.</para>
 				<example>
 				 <programlisting ><![CDATA[
 <classfile>com.mycompany.mmbase.builders.MyPeople</classfile>
@@ -137,7 +137,7 @@
 				<title>&lt;searchage&gt;</title>
 				<para>The value given here is used be a number of generic editors, as a default value for the maximum age in days when searching for objects in MMBase.</para>
 				<para>Since this value is not available through the MMBase Bridge interface, this value is mostly used in older editors, that directly access the core system (such as SCAN).</para>
-				<para>The default value for a builder that extends the core builder <emphasize>object</emphasize> is <constant>1000</constant>.</para>
+				<para>The default value for a builder that extends the core builder <emphasis>object</emphasis> is <constant>1000</constant>.</para>
 				<example>
 				 <programlisting ><![CDATA[
 <searchage>50</searchage>
@@ -204,7 +204,7 @@
 			</section>
 			<section>
 				<title>&lt;properties&gt;</title>
-				<para>A list of nam-value pairs, used by the java class specified in the <emphasize>classfile</emphasize> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
+				<para>A list of nam-value pairs, used by the java class specified in the <emphasis>classfile</emphasis> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
 				<section>
 					<title>&lt;property&gt;</title>
 					<para>One single property name-value pair</para>
@@ -298,11 +298,11 @@
 								</varlistentry>
 								<varlistentry>
 									<term>[buildername]</term>
-									<listitem><simpara>Specify this value if the field is a NODE field (see the <emphasize>db/type</emphasize> tag). If given, the system may use this data to create a browseable list of the objects in that builder whenever you edit this field</simpara></listitem>
+									<listitem><simpara>Specify this value if the field is a NODE field (see the <emphasis>db/type</emphasis> tag). If given, the system may use this data to create a browseable list of the objects in that builder whenever you edit this field</simpara></listitem>
 								</varlistentry>
 								<varlistentry>
 									<term>mmxf or [doctype]</term>
-									<listitem><simpara>Specify this value if the field is a XML field (see the <emphasize>db/type</emphasize> tag). If given, the system may use this data to determine the XML dcoument type. The value mmxf can be used a macro and specifies a default 'richttext' xml doctype.</simpara></listitem>
+									<listitem><simpara>Specify this value if the field is a XML field (see the <emphasis>db/type</emphasis> tag). If given, the system may use this data to determine the XML dcoument type. The value mmxf can be used a macro and specifies a default 'richttext' xml doctype.</simpara></listitem>
 								</varlistentry>
 							</variablelist>
 						</section>
@@ -312,7 +312,7 @@
 	<guiname xml:lang="en">First name</guiname>
 	<guiname xml:lang="nl">Voornaam</guiname>
 	<guitype>string</guitype>
-</names>
+</gui>
 						 ]]></programlisting>
 						</example>
 					</section>
@@ -434,7 +434,7 @@
 			<guiname xml:lang="en">First name</guiname>
 			<guiname xml:lang="nl">Voornaam</guiname>
 			<guitype>string</guitype>
-		</names>
+		</gui>
 		<editor>
 			<positions>
 				<edit>4</edit>
