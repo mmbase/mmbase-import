@@ -15,6 +15,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.bridge.NodeQuery;
 
 /**
  * Parser, tries to parse a <em>SQL-search-condition</em> for a query to a
@@ -109,7 +110,7 @@ import org.mmbase.util.logging.*;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.20 2004-03-14 00:59:21 robmaris Exp $
+ * @version $Id: ConstraintParser.java,v 1.21 2004-07-09 14:03:17 michiel Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -122,6 +123,7 @@ public class ConstraintParser {
     private final static Logger fallbackLog = 
         Logging.getLoggerInstance(ConstraintParser.class.getName() + ".fallback");
 
+    private SearchQuery query = null;
     private List steps = null;
 
     /**
@@ -241,15 +243,46 @@ public class ConstraintParser {
      * @param steps The steps.
      * @return The field.
      */
+
     public static StepField getField(String token, List steps) {
+        return getField(token, steps, null);
+    }
+    /**
+     * Creates <code>StepField</code> corresponding to field indicated by
+     * token, of one of the specified steps.
+     * <p>
+     * A <em>field</em> can be one of these forms:
+     * <ul>
+     * <li><em>stepalias</em><b>.</b><em>fieldname</em>
+     * <li>[<em>stepalias</em><b>.</b><em>fieldname</em>]
+     * <li><em>fieldname</em> (only when just one step is specified, or query is an instance of NodeQuery).
+     * <li>[<em>fieldname</em>] (only when just one step is specified, or query is an instance of NodeQuery).
+     * </ul>
+     *
+     * @param token The token.
+     * @param steps The steps.
+     * @param Query The used query
+     * @return The field.
+     * @since MMBase-1.7.1
+     */
+
+    static StepField getField(String token, List steps, SearchQuery query) {
         BasicStep step = null;
         int bracketOffset = (token.startsWith("[") && token.endsWith("]")) ? 1 : 0;
         int idx = token.indexOf('.');
         if (idx == -1) {
             if (steps.size() > 1) {
-                throw new IllegalArgumentException( "Fieldname not prefixed with table alias: \"" + token + "\"");
+                if (query != null && query instanceof NodeQuery) {
+                    step = (BasicStep) ((NodeQuery) query).getNodeStep();
+                    if (step == null) {
+                        throw new IllegalArgumentException( "NodeQuery has no step; Fieldname not prefixed with table alias: \"" + token + "\"");
+                    } 
+                } else {
+                    throw new IllegalArgumentException( "Fieldname not prefixed with table alias: \"" + token + "\"");
+                }
+            } else {
+                step = (BasicStep) steps.get(0);
             }
-            step = (BasicStep) steps.get(0);
         } else {
             step = getStep(token.substring(bracketOffset, idx), steps);
         }
@@ -261,16 +294,15 @@ public class ConstraintParser {
             fieldName = token.substring(idx + 1, token.length() - bracketOffset);
         }
         
-		FieldDefs fieldDefs = builder.getField(fieldName);
+        FieldDefs fieldDefs = builder.getField(fieldName);
         if (fieldDefs == null) {
-			// maybe the fielddef was already escaped with getAllowedField
-			// otherwise it will definitly fail!
-			fieldDefs = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
-		}
-		if (fieldDefs == null) {
-            throw new IllegalArgumentException(
-            "Unknown field (of builder " + builder.getTableName()
-            + "): \"" + fieldName + "\"");
+            // maybe the fielddef was already escaped with getAllowedField
+            // otherwise it will definitly fail!
+            fieldDefs = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
+        }
+        if (fieldDefs == null) {
+            throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName()
+                                               + "): \"" + fieldName + "\"");
         }
         BasicStepField field = new BasicStepField(step, fieldDefs);
         return field;
@@ -297,12 +329,12 @@ public class ConstraintParser {
         }
 
         // Not found.
-        throw new IllegalArgumentException(
-        "Unknown table alias: \"" + alias + "\"");
+        throw new IllegalArgumentException("Unknown table alias: \"" + alias + "\"");
     }
 
     /** Creates a new instance of ConstraintParser */
     public ConstraintParser(SearchQuery query) {
+        this.query = query;
         this.steps = query.getSteps();
     }
 
@@ -354,7 +386,7 @@ public class ConstraintParser {
      */
     // package visibility!
     StepField getField(String token) {
-        return getField(token, steps);
+        return getField(token, steps, query);
     }
 
     /**
