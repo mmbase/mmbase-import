@@ -12,10 +12,12 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.2 2002-01-31 10:05:07 pierre Exp $
+ * @version $Id: ContextProvider.java,v 1.3 2003-02-24 20:41:47 kees Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider{
+    private final static String DEFAULT_CLOUD_CONTEXT="local";
+    private static String defaultCloudContext ;
     /**
      * Factory method to get an instance of a CloudContext. Depending
      * on the uri parameter given the CloudContext might be a local context
@@ -28,7 +30,7 @@ public class ContextProvider{
      *   <LI>a null parameter: will return a local context
      * </UL>
      * @return a cloud context
-     * @throws RuntimeException if anything wrong happends
+     * @throws BridgeException if the cloudcontext was not found
      */
     public static CloudContext getCloudContext(String uri) {
         if (uri == null) uri="";
@@ -38,6 +40,20 @@ public class ContextProvider{
         } else if (uri.startsWith("local")){
             return LocalContext.getCloudContext();
         }
-        return LocalContext.getCloudContext();
+	throw new BridgeException("cloudcontext with name {"+ uri +"} is not known to MMBase");
+    }
+
+    /**
+     *
+     **/
+    public static CloudContext getDefaultCloudContext(){
+	    //first choice.. set the cloud context using system properties
+	    if (defaultCloudContext == null){
+		    defaultCloudContext = System.getProperty("mmbase.defaultcloudcontext");
+	    }
+	    if (defaultCloudContext == null){
+		    defaultCloudContext = DEFAULT_CLOUD_CONTEXT;
+	    }
+	    return getCloudContext(defaultCloudContext);
     }
 }

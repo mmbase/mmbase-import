@@ -94,7 +94,7 @@
 
 <% }
 
- Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
 %>
 

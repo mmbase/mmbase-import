@@ -59,7 +59,7 @@ public class LocaleTag extends ContextReferrerTag  {
         if (language != null && (! language.equals(""))) {
             locale = new Locale(language, country);
         } else {
-            locale = org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale();
+            locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
         }
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, locale);

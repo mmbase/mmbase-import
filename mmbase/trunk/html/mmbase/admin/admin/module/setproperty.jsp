@@ -12,7 +12,7 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<% Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+<% Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
    String value=mmAdmin.getInfo("GETMODULEPROPERTY-"+module+"-"+property,request,response);
 %>
 <table summary="module property data">

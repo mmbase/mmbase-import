@@ -13,7 +13,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
-import org.mmbase.bridge.LocalContext;
+import org.mmbase.bridge.ContextProvider;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -92,7 +92,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     */
     protected CloudContext getCloudContext(){
         if (cloudContext == null){
-            cloudContext = LocalContext.getCloudContext();
+            cloudContext = ContextProvider.getDefaultCloudContext();
         } 
         return cloudContext;
     }

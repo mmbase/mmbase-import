@@ -20,7 +20,7 @@
   <th class="header">Query #</th>
 </tr>
 <%
-   Module jdbc=LocalContext.getCloudContext().getModule("jdbc");
+   Module jdbc=ContextProvider.getDefaultCloudContext().getModule("jdbc");
    java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
    NodeList connections=jdbc.getList("CONNECTIONS",params,request,response);

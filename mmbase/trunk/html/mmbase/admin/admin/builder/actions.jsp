@@ -14,7 +14,7 @@
 <body class="basic" >
 <table summary="builder actions">
 <%
-   Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
+   Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 
    String cmd = request.getParameter("cmd");
    String msg="";
@@ -127,7 +127,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <%
-    Module mmconfig=LocalContext.getCloudContext().getModule("config");
+    Module mmconfig=ContextProvider.getDefaultCloudContext().getModule("config");
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-builders-"+builder);
 %>

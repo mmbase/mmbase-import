@@ -28,7 +28,7 @@ public class FilledNodeTest extends NodeTest {
     }
 
     protected Cloud getCloud() {
-        return  LocalContext.getCloudContext().getCloud("mmbase");
+        return  ContextProvider.getDefaultCloudContext().getCloud("mmbase");
     }
 
     public void setUp() {

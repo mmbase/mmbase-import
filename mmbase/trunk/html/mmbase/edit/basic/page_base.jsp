@@ -29,7 +29,7 @@ response.setDateHeader("Date",  now);
   <mm:import id="page_size">20</mm:import>
   <%-- <mm:import id="hide_search">false</mm:import> --%>
   <mm:import id="style_sheet" externid="mmjspeditors_style" from="cookie">mmbase.css</mm:import>
-  <mm:import id="lang"        externid="mmjspeditors_language"  from="cookie" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
+  <mm:import id="lang"        externid="mmjspeditors_language"  from="cookie" ><%=ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage()%></mm:import>
   <mm:import id="method"        externid="mmjspeditors_method"  from="cookie" >loginpage</mm:import>
   <mm:import id="session"       externid="mmjspeditors_session"  from="cookie" >mmbase_editors_cloud</mm:import>
 </mm:context>
