@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.30 2004-11-05 17:04:15 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.31 2004-11-08 12:44:54 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -86,11 +86,23 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     private static Map mapToServlet = new Hashtable();
 
     /** 
+     * Boolean indicating whether MMBase has been started. Used by {@link #checkInited}, set to true {@link #by setMMBase}.
      * @since MMBase-1.7
      */
-    protected static ServletException initException = new ServletException("MMBase not yet, or not successfully initialized (check mmbase log)");
+    private boolean mmbaseInited = false;
+
+    /**
+     * If MMBase has not been started, a 503 is given, with this value for the 'Retry-After' header.
+     * {@see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4}
+     * Defaults to 60 seconds, can be configured in web.xml with the 'retry-after' propery on the servlets.
+     * @since MMBase-1.7.2
+     */
+    protected int retryAfter = 60;    
 
 
+    /**
+     * Thread starting MMBase
+     */
     private Thread initThread;
 
 
@@ -123,21 +135,53 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     }
 
 
+    /**
+     * Returns the MMBase instance.
+     * @since MMBase-1.7
+     */
     public MMBase getMMBase() {
         return mmbase;
     }
+
+    /**
+     * Sets the mmbase member. Can be overriden to implement extra initalization for the servlet which needs a running MMBase.
+     * @since MMBase-1.7
+     */
     public void setMMBase(MMBase mmb) {
         mmbase = mmb;
+        mmbaseInited = true;
     }
 
+    
+    /**
+     * Used in checkInited.
+     */
+    private static ServletException initException = null;
+
+    /**
+     * Called by MMBaseStartThread, if something went wrong during
+     * initialization of MMBase. It will be thrown by checkInited
+     * then.
+     * @since MMBase-1.7
+     */
     public void setInitException(ServletException e) {
-        initException = e;
-    }
+        initException = e;        
+    }    
+
+
     /**
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
      */
 
     public void init() throws ServletException {
+
+        String retryAfterParameter = getInitParameter("retry-after");
+        if (retryAfterParameter == null) {
+            // default: one minute
+            retryAfter = 60;
+        } else {
+            retryAfter = new Integer(retryAfterParameter).intValue();
+        }
 
         if (! MMBaseContext.isInitialized()) {
             ServletContext servletContext = getServletConfig().getServletContext();
@@ -338,6 +382,29 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         pw.close();
     }
 
+
+    /**
+     * This methods can be (and is) called in the beginning of
+     * service. It sends an UNAVAILABLE error if MMBase has not bee
+     * started, or throws an exeption if that was unsuccessful.
+     * @return A boolean. If false, then service must return immediately (because mmbase has not been inited yet).
+     * @since MMBase-1.7.2
+     */
+    protected  boolean checkInited(HttpServletResponse res) throws ServletException, IOException  {
+        if (initException != null) {
+            throw initException;            
+        }
+        
+        if (! mmbaseInited) {
+            res.setHeader("Retry-After", "" + retryAfter);
+            res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
+        } 
+        return mmbaseInited;        
+    }
+    
+
+        
+
     /**
      * The service method is extended with calls for the refCount
      * functionality (for performance related debugging).  So you can
@@ -345,8 +412,8 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * working, without having to think about it.
      */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-        if (initException != null) {
-            throw initException;
+        if (!checkInited(res)) {
+            return;            
         }
         incRefCount(req);
         try {
