@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * also use the provides jsp for a more traditional parser system.
  * 
  * @rename Servscan
-  * @version $Id: servscan.java,v 1.26 2001-12-14 09:33:57 pierre Exp $
+  * @version $Id: servscan.java,v 1.27 2002-01-29 15:58:52 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -76,7 +76,7 @@ public class servscan extends JamesServlet {
 	 */
 	private String addCharSet( String mimetype ) {
 		if (mimetype.equals(SHTML_CONTENTTYPE)) 
-			return mimetype+"; "+DEFAULT_CHARSET; 
+			return mimetype+"; charset=\""+DEFAULT_CHARSET+"\""; 
 		return mimetype;
 	}
 	
