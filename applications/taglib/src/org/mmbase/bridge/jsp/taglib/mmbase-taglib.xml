@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.171 2003-06-30 10:55:41 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.172 2003-07-07 14:50:38 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2615,6 +2615,18 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <see tag="writer" attribute="vartype" />
+    </attribute>
+    <attribute>
+      <name>escape</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <see tag="writer" attribute="escape" />
+      <info>
+        The import tag does write anything to the page, so for that the 'escape' attribute is not
+        usefull. The escape attribute from the import tag is therefore used to escape the actual
+        value of the generated taglib variable. You can for example use it to uppercase an URL
+        parameter or so (for searching).
+      </info>
     </attribute>
     <example>&lt;!-- Create a variable `hoi' from the parameter `haj',
      Generate an exception if this parameter is not present --&gt;
