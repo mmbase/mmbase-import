@@ -210,6 +210,17 @@ public class TypeDef extends MMObjectBuilder {
     }
 
     /**
+     * Returns the MMObjectBuilder which is represented by the node.
+     * @param   node The node, from which we want to know its MMObjectBuilder
+     * @return  The builder which is represented by the node, or <code>null</code>
+     *          if the builder was not loaded.
+     */
+    public MMObjectBuilder getBuilder(MMObjectNode node) {
+        String builderName = node.getStringValue("name");
+        return mmb.getMMObject(builderName);    
+    }
+
+    /**
      * @javadoc
      */
     public boolean reloadBuilder(String objectname) {
