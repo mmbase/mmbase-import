@@ -70,6 +70,12 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         return httpRequest;
     }
 
+    /*
+    private getSession() {
+        
+    }
+    */
+
     private HttpPost getPoster() {
         if (poster == null) {
             poster = new HttpPost(getHttpRequest());
@@ -191,6 +197,9 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
             result = null;
         }
         return result;
+    }
+    public String getString(String key) throws JspTagException {
+        return (String) getObject(key);
     }
 
     public byte[] getBytes(String key) throws JspTagException {

@@ -44,7 +44,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     public void setParameter(String param) throws JspTagException {  
         CloudProvider cp = findCloudProvider();
-        number = (String) cp.getObject(param);
+        number = cp.getString(param);
         if (number == null) { 
             throw new JspTagException("No parameter "  + param);            
         }
