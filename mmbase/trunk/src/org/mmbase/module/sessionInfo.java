@@ -168,6 +168,19 @@ public class sessionInfo {
 		}
 	}
 
+	/**
+	* return the Count of a set
+	*/
+	public String getSetCount(String key) {
+
+		Vector v=(Vector)setvalues.get(key);
+		if (v!=null) {
+			return(""+v.size());
+		} else {
+			return(null);
+		}
+	}
+
 
 	/**
 	* return the String of a set
