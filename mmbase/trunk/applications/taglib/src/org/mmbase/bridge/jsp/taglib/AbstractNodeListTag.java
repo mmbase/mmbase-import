@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.46 2003-08-05 18:42:55 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.47 2003-08-07 17:24:14 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -95,7 +95,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * should be called from {@link #doStartTag}, and will be used to
      * fill the return variables for every iteration.
      */
-    protected NodeIterator returnValues;
+    protected NodeIterator nodeIterator;
     protected NodeList     returnList;
 
     /**
@@ -108,7 +108,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected int timerHandle = -1;
 
-    private String previousValue = null; // static voor doInitBody
+    private String previousValue = null; // static because  doInitBody
 
     public int getIndex() {
         return currentItemIndex;
@@ -118,6 +118,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
     public Object getCurrent() {
         return getNodeVar();
+    }
+
+    public void remove() {
+        nodeIterator.remove();
     }
 
     /**
@@ -283,14 +287,14 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             f.getGenerator().add(nodes);
         }
 
-        returnValues = returnList.nodeIterator();
+        nodeIterator = returnList.nodeIterator();
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
         if (orderby!=Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
 
 
-        if (returnValues.hasNext()) {
+        if (nodeIterator.hasNext()) {
             //doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
             //return EVAL_BODY_INCLUDE;
             return EVAL_BODY_BUFFERED;
@@ -312,7 +316,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             collector.putAll(container);
             container.clear();
         }
-        if (returnValues.hasNext()){
+        if (nodeIterator.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
@@ -344,9 +348,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     public void doInitBody() throws JspTagException {
-        if (returnValues.hasNext()){
+        if (nodeIterator.hasNext()){
             currentItemIndex ++;
-            Node next = returnValues.nextNode();
+            Node next = nodeIterator.nextNode();
             // use order as stored in the nodelist (the property of the tag may not be set
             // if you use referid to get the result of a prevuious listtag)
             String listorder=(String)returnList.getProperty("orderby");
@@ -368,11 +372,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             fillVars();
         }
     }
-    /*
-    public boolean isFirst(){
-        return (currentItemIndex == 0);
-    }
-    */
 
     /**
      * If you order a list, then the 'changed' property will be
@@ -385,11 +384,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int size(){
         return returnList.size();
     }
-    /*
-    public boolean isLast(){
-        return (! returnValues.hasNext());
-    }
-    */
 
 }
 
