@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.28 2004-01-09 15:35:12 nico Exp $
+ * @version $Id: Attachments.java,v 1.29 2004-02-12 11:43:50 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -169,32 +169,34 @@ public class Attachments extends AbstractServletBuilder {
         String mimetype = node.getStringValue("mimetype");
         if (mimetype == null || mimetype.equals("")) {
             log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determin it automaticly.");
-            byte[] handle = node.getByteValue("handle");
-            node.setValue("size", handle.length); // also the size, why not.
-            log.debug("Attachment size of file = " + handle.length);
+            byte[] handle = (byte[]) node.getValue("handle");
+            if (handle != null) {
+                node.setValue("size", handle.length); // also the size, why not.
+                log.debug("Attachment size of file = " + handle.length);
             
-            String filename = node.getStringValue("filename");
-            String extension = null;
-            int dotIndex = filename.lastIndexOf("."); 
-            if (dotIndex > -1) {
-                extension = filename.substring(dotIndex + 1);
-            }
+                String filename = node.getStringValue("filename");
+                String extension = null;
+                int dotIndex = filename.lastIndexOf("."); 
+                if (dotIndex > -1) {
+                    extension = filename.substring(dotIndex + 1);
+                }
 
-            MagicFile magic = MagicFile.getInstance();
-            try {
-                String mime = null;
-                if (extension == null) {
-                    mime = magic.getMimeType(handle);
-                }
-                else {
-                    mime = magic.getMimeType(handle, extension);
-                }
-                log.service("Found mime-type: " + mime);
-                node.setValue("mimetype", mime);
-            } catch (Throwable e) {
-                log.warn("Exception in MagicFile  for " + node);
-                node.setValue("mimetype", "application/octet-stream");                    
-            }            
+                MagicFile magic = MagicFile.getInstance();
+                try {
+                    String mime = null;
+                    if (extension == null) {
+                        mime = magic.getMimeType(handle);
+                    }
+                    else {
+                        mime = magic.getMimeType(handle, extension);
+                    }
+                    log.service("Found mime-type: " + mime);
+                    node.setValue("mimetype", mime);
+                } catch (Throwable e) {
+                    log.warn("Exception in MagicFile  for " + node);
+                    node.setValue("mimetype", "application/octet-stream");                    
+                }            
+            }
         }
     }
 
