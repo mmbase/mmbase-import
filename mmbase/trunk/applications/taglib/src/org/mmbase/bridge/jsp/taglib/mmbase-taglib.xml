@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--  
+<!--
 This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
 To convert this file to a standard .tld file you need  an xslt engine like xalan:
@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.274 2004-11-30 14:09:27 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -149,36 +149,36 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
     <%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
          and then with any 'posrel' related categories related to those object etc.
     --%>
-         
+
     <%-- the categories must be order according to the 'pos' field in the posrel. --%>
-    <mm:sortorder field="posrel.pos" /> 
+    <mm:sortorder field="posrel.pos" />
 
     <%-- don't do every category, but only those with 'a' in their title --%>
-    <mm:constraint field="categories.title" operator="LIKE" value="%a%" /> 
+    <mm:constraint field="categories.title" operator="LIKE" value="%a%" />
 
     <%-- also some trivial sortorder on the 'object' steps --%>
-    <mm:sortorder  field="object.number" direction="up" />        
+    <mm:sortorder  field="object.number" direction="up" />
 
     In this tree <mm:size /> objects are presented.
 
     <mm:tree>
-       
+
       <%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
-           ul. mm:grow is iterated zero (if the previous node was _bigger or equal_) or one (if the previous 
-           node was _smaller_  times. (Because in a forward tree iteration the branch can not grow faster 
+           ul. mm:grow is iterated zero (if the previous node was _bigger or equal_) or one (if the previous
+           node was _smaller_  times. (Because in a forward tree iteration the branch can not grow faster
            than that)
-           --%>         
-      <mm:grow> 
+           --%>
+      <mm:grow>
         <ul>
         <%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
              put onto a stack until it is taken of it by the mm:shrink tag. -->
         <mm:onshrink></ul></mm:onshrink>
-      </mm:grow>     
+      </mm:grow>
 
       <%-- a tree tag provides 'real' nodes, so in the body we can show this node --%>
 
       <li><mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
-     
+
       <mm:onshrink></li></mm:onshrink>
 
       <%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
@@ -190,13 +190,13 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
       <mm:shrink />
     </mm:tree>
 
-  </mm:treecontainer>      
-</mm:node>    
+  </mm:treecontainer>
+</mm:node>
 ]]>
 </pre>
       </p>
       <p>
-        Trees wich do not need such complicated sortorders or constraints can also be used stand-alone. 
+        Trees wich do not need such complicated sortorders or constraints can also be used stand-alone.
       </p>
     </info>
   </type>
@@ -312,7 +312,7 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
           in this jsp. E.g.: <!-- example by Erik van Oosten -->
           <pre><![CDATA[
 <%!
-/** 
+/**
  * Comparator to order mmbase nodes on their field named "title".
  */
  static private final Collator DUTCH_COLLATOR = Collator.getInstance(new Locale("nl", "NL"));
@@ -330,7 +330,7 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
  }
 %>;
 <mm:listnodescontainer>
-  <!-- make sure the list is not gigantic, when sorting with 
+  <!-- make sure the list is not gigantic, when sorting with
        comparator it happens in memory, not by database! -->
   <mm:ageconstraint maxage="7" />
   <mm:listnodes comparator="DutchCaseInsensitiveCollator">
@@ -349,7 +349,7 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
       </examplevalue>
 
     </attribute>
-   
+
     <see tag="listreferrer" />
   </taginterface>
   <taginterface>
@@ -712,7 +712,7 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
     <attribute>
       <name>set</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>      
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The 'set' from which the function must be taken. These are a kind of static functions (no
         object is associated with them). These 'sets' of functions are a bit like namespaces.
@@ -721,7 +721,7 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
     <attribute>
       <name>classname</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>      
+      <rtexprvalue>true</rtexprvalue>
       <info>
         <p>
           The java class name from which the function must be taken. The function will be
@@ -1497,23 +1497,23 @@ version: $Id: mmbase-taglib.xml,v 1.273 2004-11-03 18:19:31 michiel Exp $
           If the page was called with the 'command' parameter set to 'login', the tag assumes a request is being made to log on using the parameters passed.
           The actual names of the parameter passed differs by security method chosen, which is defined by the 'authenticate' attribute.
           For instance, with authenticate method 'username/password', the following additional parameters are recognized:
-          
-          
+
+
           cloud: similar to the cloudtag's 'name' attribute
           username: similar to the  cloudtag's 'username' attribute
           password: similar to the  cloudtag's 'password' attribute
-          
+
           If login succeeds, the page continues and displays normally. If the login fails, or if no 'command=login' attribute was specified, the request is redirected to the page specified in the attribute.
           This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
           The page may also implement its own method of authentication.
-          
+
           The 'command=login' parameter has no effect when the loginpage attribute was not specified.
         </p>
         <p>
           The page should link page to the page which is supplied in the reference parameter.
           The login page itselve should have a parameter 'command' with value 'login', 'authenticate' with the authentication method which is wanted.
           Additional parameters will be passed to the underlying security implementation.
-          
+
           A simple login page could contain the following jsp-code:
           <pre>
         <![CDATA[
@@ -2090,7 +2090,7 @@ access the value of title:
     <see tag="booleanfunction" />
     <see tag="function" />
     <see tag="functioncontainer" />
-    <see tag="nodelistfunction" />    
+    <see tag="nodelistfunction" />
     <example><![CDATA[
 <mm:listnodes type="mediasources" max="10">
   <mm:function name="mimetype" />:  <mm:function name="format" />
@@ -2099,7 +2099,7 @@ access the value of title:
       <li><%= ((org.mmbase.applications.media.urlcomposers.URLComposer)uc).getURL() %></li>
     </mm:listfunction>
   </ul>
-</mm:listnodes> 
+</mm:listnodes>
 ]]></example>
     <example>
       <include base="examples.taglib" href="codesamples/listfunction.jsp" />
@@ -4689,7 +4689,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The time-zone for which the time must be shown. Defaults to the server's time-zone. 
+        The time-zone for which the time must be shown. Defaults to the server's time-zone.
       </info>
       <since>MMBase-1.7</since>
       <examplevalue>
@@ -4859,7 +4859,7 @@ The 0 is just counter, which starts at 0 on every page.
        language, taglib behaviour, content type.
       </p>
       <p>
-        The content-tag can also provide a default 'escaping' behavior for surrounded 'writer' tags. 
+        The content-tag can also provide a default 'escaping' behavior for surrounded 'writer' tags.
       </p>
     </info>
     <since>MMBase-1.7</since>
@@ -4893,7 +4893,7 @@ The 0 is just counter, which starts at 0 on every page.
           The Content-Type of this page.
         </p>
         <p>
-          Setting the content-type can also trigger a default 'escaper' and 'postprocessor'. 
+          Setting the content-type can also trigger a default 'escaper' and 'postprocessor'.
         </p>
         <document file="resources/taglibcontent.xml" mode="content" />
       </info>
@@ -4944,7 +4944,7 @@ The 0 is just counter, which starts at 0 on every page.
         </p>
         <p>
           The following postprocessors can be specified.
-        </p>        
+        </p>
         <document file="resources/taglibcontent.xml" mode="postprocessors" />
       </info>
     </attribute>
@@ -5318,6 +5318,50 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
     </attribute>
     <attribute>
+      <name>part</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Designates a part of a date field to compare.
+      </info>
+      <possiblevalue>
+        <value>CENTURY</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>YEAR</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>MONTH</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>QUARTER</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>WEEK</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAY</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAY OF YEAR</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAY OF MONTH</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DAY OF WEEK</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>HOUR</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>MINUTE</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>SECOND</value>
+      </possiblevalue>
+    </attribute>
+    <attribute>
       <name>operator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -5408,7 +5452,7 @@ The 0 is just counter, which starts at 0 on every page.
   <mm:listnodes>
     <mm:field name="username" /> <br />
   </mm:listnodes>
-</mm:listnodescontainer>]]> 
+</mm:listnodescontainer>]]>
         </example>
   </tag>
 
@@ -5884,7 +5928,7 @@ The 0 is just counter, which starts at 0 on every page.
         query of the tree.
       </p>
     </info>
-    
+
     <see type="tree" />
     <see tag="treecontainer" />
     <see tag="relatednodescontainer" />
@@ -5903,7 +5947,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>role</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>      
+      <rtexprvalue>true</rtexprvalue>
       <info>
         The path-elements will be connected by relations with this role.
       </info>
@@ -5937,7 +5981,7 @@ The 0 is just counter, which starts at 0 on every page.
         you wish to order using the fieldvalue of the relation from one level to another, prefix the
         field with the builder name or role(for example: "categories.title" or "posrel.pos"). You
         can order by more fields, by comma-separating their names.
-      </info>     
+      </info>
       <see tag="list" attribute="orderby" />
       <since>MMBase-1.7.1</since>
     </attribute>
@@ -6091,7 +6135,7 @@ The 0 is just counter, which starts at 0 on every page.
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
       The nodeinfo tag can be used inside a CloudProvider tag, to get certain information about the
-      cloud.     
+      cloud.
     </info>
     <since>MMBase-1.8</since>
     <attribute>
@@ -6119,7 +6163,7 @@ The 0 is just counter, which starts at 0 on every page.
       </mm:hasrank>
       <mm:hasrank minvalue="administrator" inverse="true">
         You are not administrator!
-      </mm:hasrank> 
+      </mm:hasrank>
         Cloud: <mm:cloudinfo type="name" />
 ]]></example>
   </tag>
@@ -6130,7 +6174,7 @@ The 0 is just counter, which starts at 0 on every page.
     <tagclass>org.mmbase.bridge.jsp.taglib.security.HasRankTag</tagclass>
     <info>
       Checks for a certain rank. You can use this to hide certain parts of your page if the rank of
-      the user is too low or too high. 
+      the user is too low or too high.
     </info>
     <see tag="cloudinfo" />
     <since>MMBase-1.8</since>
@@ -6157,7 +6201,7 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
   </tag>
 
-  <!-- 
+  <!--
   <tag>
     <name>test</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.TestTag</tagclass>
