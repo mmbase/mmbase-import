@@ -2,9 +2,6 @@
 <!DOCTYPE functionsets PUBLIC "-//MMBase//DTD functionsets config 1.0//EN" "http://www.mmbase.org/dtd/functionsets_1_0.dtd">
 <functionsets>
   <!-- 'Function Sets' could be installed like this: -->
-  <!--
-  <functionset name="thememanager" file="sets/thememanager_functionset.xml" />
   <functionset name="mmpm" file="sets/mmpm_functionset.xml" />
   <functionset name="mmpb" file="sets/mmpb_functionset.xml" />
-  -->
 </functionsets>
