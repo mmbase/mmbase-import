@@ -26,6 +26,7 @@ public class RandomThings {
 
     /**
      * Shuffle a Vector until it is a Random mess
+     * @deprecated java.util.Collections#shuffle
      */
     static public void shuffleVector(Vector v) {
         int siz;
@@ -40,6 +41,7 @@ public class RandomThings {
 
     /**
      * Return a new Shuffled vector
+     * @deprecated java.util.Collections#shuffle and clone
      */
     static public Vector shuffleCloneVector(Vector v) {
         Vector newv;
@@ -51,6 +53,7 @@ public class RandomThings {
 
     /**
      * Shuffle an integer array
+     * @deprecated use java.util.
      */
     static public void shuffleArray(int arr[]) {
         int siz;
@@ -65,6 +68,9 @@ public class RandomThings {
         }
     }
 
+    /**
+     * @deprecated use Collections.swap
+     */
     private static void swap(Vector v,int i,int j) {
         Object ob1,ob2;
         ob1=v.elementAt(i);
