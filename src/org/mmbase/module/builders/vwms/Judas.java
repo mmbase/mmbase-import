@@ -160,8 +160,41 @@ private JudasURLpusher pusher=null;
 				addURL(url);
 				url="/data/3voor12/layout/tracks/track-list.shtml?0+0+100+number+down";
 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?0+1+100+number+down";
+				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?0+2+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?0+3+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?0+0+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?0+1+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?0+2+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?0+3+100+title+up";
+ 				addURL(url);
+
+				// now the area
 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+0+100+number+down";
 				addURL(url);
+
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+1+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+2+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+3+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+0+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+1+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+2+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+3+100+title+up";
+ 				addURL(url);
+ 
+ 				// and the band page itself	
 				url="/data/3voor12/layout/bands/band.shtml?"+area+"+"+group;
 				addURL(url);
 			}
@@ -195,7 +228,18 @@ private JudasURLpusher pusher=null;
 				url="/data/3voor12/layout/nieuws/nieuws.shtml?"+area+"+"+number;
 				addURL(url);
 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+0+100+number+down";
+
 				addURL(url);
+ 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+1+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+2+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+0+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+1+100+title+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+2+100+title+up";
+ 				addURL(url);
 				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?0";
 				addURL(url);
 				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?1";
@@ -449,8 +493,41 @@ private JudasURLpusher pusher=null;
 
 				url="/data/3voor12/layout/bands/band-list.shtml?0+0+100+number+down";
 				addURL(url);
+
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+0+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+1+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+2+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+3+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+0+100+name+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+1+100+name+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+2+100+name+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?0+3+100+name+up";
+ 				addURL(url);
+ 
+ 				// area	
 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+0+100+number+down";
 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+1+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+2+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+3+100+number+down";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+0+100+name+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+1+100+name+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+2+100+name+up";
+ 				addURL(url);
+ 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+3+100+name+up";
+ 				addURL(url);
 			}
 		}
 	}
