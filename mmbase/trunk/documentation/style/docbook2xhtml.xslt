@@ -11,6 +11,7 @@
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
 
 	<xsl:param name="root">./</xsl:param>
+    <xsl:param name="filename" />
 	<xsl:param name="toc.section.depth">5</xsl:param>
 	<xsl:param name="html.stylesheet"><xsl:value-of select="$root" />style/documentation.css</xsl:param>
 
@@ -30,7 +31,9 @@
 			</xsl:for-each>
 			<hr />
 			<p><a href="http://www.mmbase.org">MMBase</a></p>
-			<p><a href="{$root}index.html">home</a></p>
+            <xsl:if test="not(($root = './') and ($filename = 'index'))"> 
+              <p><a href="{$root}index.html">home</a></p>
+            </xsl:if>
 		</div>
 	</xsl:template>
 
