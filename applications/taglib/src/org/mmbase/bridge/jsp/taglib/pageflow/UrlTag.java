@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.Vector;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.io.IOException;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
@@ -26,60 +28,66 @@ import javax.servlet.jsp.JspTagException;
 */
 public class UrlTag extends ContextReferrerTag {
            
-    private Vector keys = null;
-    private Vector extraParameters = null;
-    private String file;
-    private String jspvar;
+    private Vector  referids = null;
+    private HashMap extraParameters = null;
+    private String  page;
+    private String  jspvar;
 
-    public void setKeys(String k) {
-        keys = stringSplitter(k);
+    public void setReferids(String r) throws JspTagException {
+        referids = stringSplitter(getAttributeValue(r));
     }
 
-    public void setExtraparameters(String p) {
-        extraParameters = stringSplitter(p);
-    }
-
-    public void setFile(String f) {
-        file = f;
+    public void setPage(String p) throws JspTagException {
+        try {
+            page = getAttributeValue(p); 
+        } catch (JspTagException e) {
+            throw new JspTagException(e.toString() + " (perhaps you should escape dots)");
+        }
     }
 
     public void setJspvar(String jv) {
         jspvar = jv;
     }
+
+    void addParameter(String key, Object value) {
+        extraParameters.put(key, value);
+    }
+
+   
     
     public int doStartTag() throws JspTagException {  
+        extraParameters = new HashMap();
         return EVAL_BODY_TAG;
     }
 
     public int doAfterBody() throws JspTagException {
 
-        if (file == null) {
+        if (page == null) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            file = req.getRequestURI();
+            page = req.getRequestURI();
         }
 
-        String show = file;
+        String show = page;
         
-        if (keys == null) { // all keys not in session
-            keys = getContextTag().getKeys(ContextTag.TYPE_POSTPARAMETERS);
-        }
         String connector = (show.indexOf('?') == -1 ? "?" : "&amp;");
 
-        Iterator i = keys.iterator();
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            String value = getContextTag().getObjectAsString(key);
-            if (value != null) {
-                show += connector + key + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", getContextTag().getObjectAsString(key));
-                connector = "&amp;";
+        if (referids != null) {
+            Iterator i = referids.iterator();
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                if (getContextTag().isPresent(key)) {
+                    String value = getContextTag().getObjectAsString(key);                
+                    show += connector + key + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", getContextTag().getObjectAsString(key));
+                    connector = "&amp;";
+                }
             }
         }
         
-        if (extraParameters != null) {            
-            i = extraParameters.iterator();
+        {
+            Iterator i = extraParameters.entrySet().iterator();
             while (i.hasNext()) {
-                String keyvalue = (String) i.next();
-                show += connector + keyvalue;
+                Map.Entry map  = (Map.Entry) i.next();
+                show += connector + (String) map.getKey() + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", map.getValue().toString());
                 connector = "&amp;";
             }
         }
