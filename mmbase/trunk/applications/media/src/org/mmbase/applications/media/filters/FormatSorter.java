@@ -19,7 +19,7 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * This is a ComparatorFilter wich knows about a list of source
+ * This is a SorterFilter wich knows about a list of source
  * formats. This internal List can be filled by its constructors in
  * several ways. Sometimes e.g. the list would have only one entry and
  * therefore there are constructors with just one Format (or String)
@@ -27,25 +27,25 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: FormatComparator.java,v 1.2 2003-02-05 14:43:05 michiel Exp $
+ * @version $Id: FormatSorter.java,v 1.1 2003-02-05 16:31:37 michiel Exp $
  */
-public class FormatComparator extends  PreferenceComparator {
-    private static Logger log = Logging.getLoggerInstance(FormatComparator.class.getName());
+public class FormatSorter extends  PreferenceSorter {
+    private static Logger log = Logging.getLoggerInstance(FormatSorter.class.getName());
 
     protected List preferredFormats;
 
-    public FormatComparator() {
+    public FormatSorter() {
         preferredFormats= new ArrayList();
     }
     
-    public  FormatComparator(Format f) {
+    public  FormatSorter(Format f) {
         this();
         preferredFormats.addAll(f.getSimilar());
     }
-    public  FormatComparator(String f) {
+    public  FormatSorter(String f) {
         this(Format.get(f));
     }
-    public  FormatComparator(List s) {
+    public  FormatSorter(List s) {
         preferredFormats = s;
     }
     

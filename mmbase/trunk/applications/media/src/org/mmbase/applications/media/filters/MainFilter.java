@@ -94,7 +94,7 @@ public class MainFilter {
         XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
 
-        ChainComparator chainComp = new ChainComparator();
+        ChainSorter chainComp = new ChainSorter();
         // When chaining 'comparators' then they are combined to one comparator
         // Then only one 'sort' has to be done, which is more efficient.
 
@@ -106,12 +106,12 @@ public class MainFilter {
             try {
                 Class newclass = Class.forName(clazz);
                 Filter filter = (Filter) newclass.newInstance();
-                if (filter instanceof ComparatorFilter) {
-                    chainComp.add((ComparatorFilter) filter);
+                if (filter instanceof SorterFilter) {
+                    chainComp.add((SorterFilter) filter);
                 } else {
                     if (chainComp.size() > 0) { 
                         filters.add(chainComp);
-                        chainComp = new ChainComparator();                        
+                        chainComp = new ChainSorter();                        
                     }
                     filters.add(filter);
                 }
