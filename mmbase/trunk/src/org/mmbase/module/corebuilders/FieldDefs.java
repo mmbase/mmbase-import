@@ -1,7 +1,19 @@
 /*
-$Id: FieldDefs.java,v 1.4 2000-03-29 10:46:34 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: FieldDefs.java,v 1.5 2000-03-30 13:11:41 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/29 10:46:34  wwwtech
+Rob: Licenses changed
+
 Revision 1.3  2000/03/20 14:23:27  wwwtech
 davzev: Added constant DBSTATE_SYSTEM=3
 
@@ -20,7 +32,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.4 $ $Date: 2000-03-29 10:46:34 $
+ * @$Revision: 1.5 $ $Date: 2000-03-30 13:11:41 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;

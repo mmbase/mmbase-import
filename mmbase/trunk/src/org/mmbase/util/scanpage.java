@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.util;
 
 import java.lang.*;
@@ -16,7 +25,7 @@ import org.mmbase.module.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.6 2000-03-28 16:00:15 wwwtech Exp $
+ * @version $Id: scanpage.java,v 1.7 2000-03-30 13:11:57 wwwtech Exp $
  */
 public class scanpage {
 	public ProcessorInterface processor;

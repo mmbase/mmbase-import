@@ -1,7 +1,19 @@
 /*
-$Id: AnnotRel.java,v 1.6 2000-03-29 10:59:20 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: AnnotRel.java,v 1.7 2000-03-30 13:11:29 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/29 10:59:20  wwwtech
+Rob: Licenses changed
+
 Revision 1.5  2000/02/24 14:42:16  wwwtech
 Davzev added CVS comment again
 
@@ -26,7 +38,7 @@ import org.mmbase.util.RelativeTime;
 /**
  * @author David van Zeventer
  * @version 8 Dec 1999 
- * @$Revision: 1.6 $ $Date: 2000-03-29 10:59:20 $
+ * @$Revision: 1.7 $ $Date: 2000-03-30 13:11:29 $
  */
 public class AnnotRel extends InsRel {
 

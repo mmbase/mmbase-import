@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.module;
 
 import java.lang.*;
@@ -17,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.4 $ $Date: 2000-03-29 10:04:58 $
+ * @version $Revision: 1.5 $ $Date: 2000-03-30 13:11:26 $
  */
 public abstract class Module {
 

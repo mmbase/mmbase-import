@@ -1,8 +1,20 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 
 /* 
-	$Id: HtmlBase.java,v 1.14 2000-03-29 11:06:00 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.15 2000-03-30 13:11:27 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.14  2000/03/29 11:06:00  wwwtech
+	Wilbert Removed TSEARCH from replace
+	
 	Revision 1.13  2000/03/29 10:42:19  wwwtech
 	Rob: Licenses changed
 	
@@ -62,7 +74,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.14 2000-03-29 11:06:00 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.15 2000-03-30 13:11:27 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 

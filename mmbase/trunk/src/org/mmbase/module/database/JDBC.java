@@ -1,7 +1,19 @@
 /*
-	$Id: JDBC.java,v 1.7 2000-03-29 10:45:02 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+	$Id: JDBC.java,v 1.8 2000-03-30 13:11:44 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.7  2000/03/29 10:45:02  wwwtech
+	Rob: Licenses changed
+	
 	Revision 1.6  2000/03/06 22:47:25  wwwtech
 	Rico: fixed shim reference
 	
@@ -28,7 +40,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.7 2000-03-29 10:45:02 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.8 2000-03-30 13:11:44 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 

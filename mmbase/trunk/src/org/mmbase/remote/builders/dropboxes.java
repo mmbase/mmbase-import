@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.remote.builders;
 
 import java.net.*;
@@ -11,7 +20,7 @@ import org.mmbase.service.implementations.*;
 
 
 /**
- * @version $Revision: 1.3 $ $Date: 2000-03-29 09:48:10 $ 
+ * @version $Revision: 1.4 $ $Date: 2000-03-30 13:11:49 $ 
  * @author Daniel Ockeloen
  */
 public class dropboxes extends RemoteBuilder {

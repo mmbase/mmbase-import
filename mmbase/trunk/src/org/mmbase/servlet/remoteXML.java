@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.servlet;
  
 import java.io.*;
@@ -16,7 +25,7 @@ import org.mmbase.module.core.*;
  * XML and will respond with a 200 OK if the xml was understood by the
  * mmbase system.
  *
- * @version $Revision: 1.6 $ $Date: 2000-03-30 12:58:22 $
+ * @version $Revision: 1.7 $ $Date: 2000-03-30 13:11:52 $
  */
 public class remoteXML extends JamesServlet {
 

@@ -1,6 +1,18 @@
 /*
-$Id: RawAudios.java,v 1.6 2000-03-30 12:42:57 wwwtech Exp $
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+/*
+$Id: RawAudios.java,v 1.7 2000-03-30 13:11:33 wwwtech Exp $
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/30 12:42:57  wwwtech
+Rico: added warning to these VPRO dependent builders
+
 Revision 1.5  2000/03/29 10:59:24  wwwtech
 Rob: Licenses changed
 
@@ -34,7 +46,7 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.6 $ $Date: 2000-03-30 12:42:57 $
+ * @$Revision: 1.7 $ $Date: 2000-03-30 13:11:33 $
  *
  */
 public class RawAudios extends MMObjectBuilder {
