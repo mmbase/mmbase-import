@@ -22,7 +22,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.6 2004-01-14 21:51:15 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.7 2004-09-17 09:25:45 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -118,6 +118,13 @@ public class BasicFunctionValue implements FieldValue {
         return (Element) tree.importNode(doc.getDocumentElement(), true);
     }
 
+    /**
+     * @since MMBase-1.8
+     */
+    public Date toDate() {
+        return Casting.toDate(value);
+    }
+
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
@@ -207,6 +214,15 @@ public class BasicFunctionValue implements FieldValue {
      */
 
     public void setXML(Document value) {
+        throw CANNOTCHANGE;
+    }
+
+    /**
+     * Function values cannot be changed, and all set-functions throw an exception.
+     * @throws BridgeException
+     * @since MMBase-1.8
+     */
+    public void setDate(Date value) {
         throw CANNOTCHANGE;
     }
 

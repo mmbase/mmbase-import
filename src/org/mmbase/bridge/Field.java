@@ -17,7 +17,7 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.15 2003-11-26 17:58:27 michiel Exp $
+ * @version $Id: Field.java,v 1.16 2004-09-17 09:20:49 michiel Exp $
  */
 public interface Field {
 
@@ -35,6 +35,21 @@ public interface Field {
     public final static int TYPE_LONG    = 7;
     public final static int TYPE_XML     = 8;
     public final static int TYPE_NODE    = 9;
+    /**
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_DATETIME  = 10;   
+    /**
+     * @since MMBase-1.8
+     */
+    public final static int TYPE_BOOLEAN   = 11;
+    /**
+     * // not yet working
+     * @since MMBase-1.8
+     */
+    //public final static int TYPE_LIST      = 12;
+
+
     public final static int TYPE_UNKNOWN = -1;
 
     /**
@@ -100,7 +115,7 @@ public interface Field {
     public int getType();
 
     /**
-     * Returns this field's state identifier.
+     * Returns this field's state identifier (virtual, persistent, system).
      *
      * @return  an <code>int</code> which identifies the state of this field
      */
