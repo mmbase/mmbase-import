@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.6 2002-09-03 18:15:26 michiel Exp $
+ * @version $Id: MagicFile.java,v 1.7 2002-11-01 13:48:48 pierre Exp $
  */
 public class MagicFile  {
     private static Logger log = Logging.getLoggerInstance(MagicFile.class.getName());
@@ -46,11 +46,11 @@ public class MagicFile  {
 	}
 	return instance;
     }
-    
+
     /**
      */
     private MagicFile(DetectorProvider d) {
-	detectors = d; 
+	detectors = d;
     }
 
     private MagicFile() {
@@ -58,21 +58,21 @@ public class MagicFile  {
 	if (d == null) d = new MagicParser();
 	detectors = d;
     }
-    
+
     /**
      * Returns a list of detectors used by this MagicFile instance
      */
 
-    protected List getDetectors() {
+    public List getDetectors() {
 	return detectors.getDetectors();
     }
-    
+
 
     /*
      * @deprecated use getMimeType(File)
      */
     protected String test(String path) {
-        try { 
+        try {
             return getMimeType(new File(path));
         } catch (IOException e) {
             return "File not found " + path;
@@ -88,7 +88,7 @@ public class MagicFile  {
         FileInputStream fir = new FileInputStream(file);
         int res = fir.read(lithmus, 0, BUFSIZE);
         log.debug("read " + res + "  bytes from " + file.getAbsolutePath());
-        return test(lithmus);
+        return getMimeType(lithmus);
     }
 
 
@@ -117,11 +117,11 @@ public class MagicFile  {
                 return detector.getMimeType();
             }
         }
-        return FAILED; 
+        return FAILED;
     }
 
     /**
-     * 
+     *
      */
 
     public String extensionToMimeType(String extension) {
@@ -141,7 +141,7 @@ public class MagicFile  {
 
     public String getMimeType(byte[] data, String extension) {
 	String result;
-	result = test(data);
+	result = getMimeType(data);
 	if (result.equals(FAILED)) {
 	    result =  extensionToMimeType(extension);
 	}
@@ -154,10 +154,10 @@ public class MagicFile  {
 
     public static void main(String[] argv) {
 	MagicFile magicFile = MagicFile.getInstance();
-	
-	if (argv.length == 1) { 
+
+	if (argv.length == 1) {
             try {
-                // one argument possible: a file name. Return the mime-type 
+                // one argument possible: a file name. Return the mime-type
                 log.info(magicFile.getMimeType(new File(argv[0])));
             } catch (IOException e) {
                 log.info(argv[0] + " cannot be opened or read: " + e.toString());
