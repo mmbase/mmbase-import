@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.15 2003-11-13 16:04:34 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.16 2003-11-18 19:36:22 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -38,6 +38,8 @@ public class ContentTag extends LocaleTag  {
 
 
     private static final CharTransformer COPY = new CopyCharTransformer();
+
+    private static final long DEFAULT_EXPIRE_TIME = 1000 * 60; // one minute
 
     static final ContentTag DEFAULT = new ContentTag() {
             public CharTransformer getWriteEscaper() { return COPY; } 
@@ -160,7 +162,7 @@ public class ContentTag extends LocaleTag  {
             Element element = (Element) e.nextElement();
             String type           = element.getAttribute("type");
             String defaultEscaper = element.getAttribute("defaultescaper");
-            if (defaultEscaper != null) {
+            if (! defaultEscaper.equals("")) {
                 if (charTransformers.containsKey(defaultEscaper)) {
                     defaultEscapers.put(type, defaultEscaper);
                 } else {
@@ -168,7 +170,7 @@ public class ContentTag extends LocaleTag  {
                 }
             }
             String defaultPostprocessor = element.getAttribute("defaultpostprocessor");
-            if (defaultPostprocessor != null) {
+            if (! defaultPostprocessor.equals("")) {
                 if (charTransformers.containsKey(defaultPostprocessor)) {
                     defaultPostProcessors.put(type, defaultPostprocessor);
                 } else {
@@ -176,7 +178,7 @@ public class ContentTag extends LocaleTag  {
                 }
             }
             String defaultEncoding = element.getAttribute("defaultencoding");
-            if (defaultEncoding != null) {
+            if (! defaultEncoding.equals("")) {
                 defaultEncodings.put(type, defaultEncoding);
             }
         }
@@ -189,6 +191,7 @@ public class ContentTag extends LocaleTag  {
     private Attribute encoding       = Attribute.NULL;
     private Attribute escaper        = Attribute.NULL;
     private Attribute postprocessor  = Attribute.NULL;
+    private Attribute expires        = Attribute.NULL;
 
     public void setType(String ct) throws JspTagException {
         type = getAttribute(ct);
@@ -204,6 +207,10 @@ public class ContentTag extends LocaleTag  {
 
     public void setPostprocessor(String e) throws JspTagException {
         postprocessor = getAttribute(e);
+    }
+
+    public void setExpires(String e) throws JspTagException {
+        expires = getAttribute(e);
     }
 
 
@@ -295,7 +302,8 @@ public class ContentTag extends LocaleTag  {
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         response.setLocale(locale);
         String type = getType();
-        String enc  =getEncoding();
+        String enc  = getEncoding();
+        log.debug("Found encoding " + enc);
         if (enc.equals("")) {
             response.setContentType(getType());
         } else {
@@ -313,6 +321,25 @@ public class ContentTag extends LocaleTag  {
 
     public int doAfterBody() throws JspTagException {       
         if (bodyContent != null) {
+            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+            if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
+                long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME;
+                response.setDateHeader("Expires", later);
+                response.setHeader("Cache-Control", "public");
+            } else {
+                long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME * 1000);
+                if (exp == 0) { // means : cannot be cached!
+                    response.setHeader("Cache-Control", "no-cache");
+                    response.setHeader("Pragma","no-cache");
+                    response.setDateHeader("Expires",  System.currentTimeMillis());
+                } else {
+                    long later = System.currentTimeMillis() + exp * 1000;
+                    response.setDateHeader("Expires", later);
+                    response.setHeader("Cache-Control", "public");
+                }
+                
+            }
             CharTransformer post = getPostProcessor();
             if (post != null) {
                 if (log.isDebugEnabled()) {
