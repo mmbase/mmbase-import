@@ -16,14 +16,14 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueInConstraint.java,v 1.8 2003-03-10 11:50:55 pierre Exp $
+ * @version $Id: BasicFieldValueInConstraint.java,v 1.9 2004-01-30 12:25:49 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
-    
+
     /** The values. */
     private SortedSet values = new TreeSet();
-    
+
     /**
      * Constructor.
      *
@@ -32,7 +32,7 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
     public BasicFieldValueInConstraint(StepField field) {
         super(field);
     }
-    
+
     /**
      * Adds value.
      *
@@ -42,12 +42,12 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
      * @see org.mmbase.storage.search.FieldValueInConstraint#getValues
      */
     public BasicFieldValueInConstraint addValue(Object value) {
-        BasicStepField.testValue(value, getField());
+        value = BasicStepField.testValue(value, getField());
         if (value instanceof Number) {
             // Add value as string. This facilitates comparison of
             // numerical values of different type.
             Number numberValue = (Number) value;
-            // Represent integral value as integer, 
+            // Represent integral value as integer,
             // other values as floating point.
             if (numberValue.intValue() == numberValue.doubleValue()) {
                 values.add(Integer.toString(numberValue.intValue()));
@@ -59,12 +59,12 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
         }
         return this;
     }
-   
+
     // javadoc is inherited
     public SortedSet getValues() {
         return Collections.unmodifiableSortedSet(values);
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -83,13 +83,13 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode()
         + 89 * values.hashCode();
     }
-    
+
     // javadoc is inherited
     public String toString() {
         StringBuffer sb = new StringBuffer("FieldValueInConstraint(inverse:").
@@ -103,5 +103,5 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
         append(")");
         return sb.toString();
     }
-    
+
 }
