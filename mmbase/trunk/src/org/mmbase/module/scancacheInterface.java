@@ -21,4 +21,5 @@ public interface scancacheInterface {
 	public String put(String pool,String key,String value);
 	public String newput(String pool,HttpServletResponse res,String key,String value, String mimeType);
 	public String newput2(String pool,String key,String value, int cachetype, String mimeType);
+	public void remove(String poolName, String key);
 }
