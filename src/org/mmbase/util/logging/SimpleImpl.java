@@ -88,9 +88,13 @@ public class SimpleImpl implements Logger {
      * One can change the priority.
      *
      * @param a Level. For example org.mmbase.util.logging.Level.DEBUG.
+     *  
      *
      */
     public void setPriority(Level p) {
+        setLevel(p);
+    }
+    public void setLevel(Level p) {
         level = p.toInt();
     }
 
