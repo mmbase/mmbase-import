@@ -34,7 +34,7 @@
   </table>
   <hr />
 
-  <a href="../index.html">back</a>
+  <a href="../">back</a>
  </mm:cloud>
 </form>
 </body>
