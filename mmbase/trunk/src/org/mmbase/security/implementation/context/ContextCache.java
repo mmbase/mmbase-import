@@ -23,7 +23,11 @@ import org.mmbase.util.logging.Logging;
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());
     
-    private HashMap globalRightCache = new HashMap();    
+    private org.mmbase.cache.Cache globalRightCache = new org.mmbase.cache.Cache(50) {  
+        public String getName()        { return "ContextRight"; }
+        public String getDescription() { return "Context Security Implementation Rights Cache"; }
+        };
+
     private long    rightTries = 0;
     private long    rightSucces = 0;
     private long    rightSize = 0;    
@@ -72,7 +76,11 @@ public class ContextCache  {
 	return (Boolean)contextCache.get(user);
     }
 
-    private HashMap globalContextCache = new HashMap();
+    private org.mmbase.cache.Cache globalContextCache = new org.mmbase.cache.Cache(50) {  
+        public String getName()        { return "ContextContext"; }
+        public String getDescription() { return "Context Security Implementation Context Cache"; }
+        };
+
     private long    contextTries = 0;
     private long    contextSucces = 0;
     private long    contextSize = 0;    
@@ -99,5 +107,10 @@ public class ContextCache  {
     
     private String info(long tries, long succes, long size) {
     	return "hit of #"+succes+ " access of #"+tries+" ("+ succes/(tries/100.0)+" %) with a number of entries #"+size;	
+    }
+
+    ContextCache() {
+        globalContextCache.putCache();
+        globalRightCache.putCache();
     }
 }
