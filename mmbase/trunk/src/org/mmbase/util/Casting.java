@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.29 2004-12-03 14:38:01 pierre Exp $
+ * @version $Id: Casting.java,v 1.30 2004-12-09 14:58:34 pierre Exp $
  */
 
 import java.util.*;
@@ -177,7 +177,6 @@ public class Casting {
         if (o == null || o == MMObjectNode.VALUE_NULL || o instanceof Writer) {
             return writer;
         }
-
         if (o instanceof String) {
             writer.write((String)o);
         } else if (o instanceof byte[]) {
@@ -187,7 +186,9 @@ public class Casting {
         } else if (o instanceof Node) {
             writer.write("" + ((Node)o).getNumber());
         } else if (o instanceof Date) {
-            writer.write(ISO_8601_UTC.format((Date)o));
+            if (((Date)o).getTime() != -1) { // datetime not set
+                writer.write(ISO_8601_UTC.format((Date)o));
+            }
         } else if (o instanceof Document) {
             // doctype unknown.
             writer.write(convertXmlToString(null, (Document)o));
@@ -325,7 +326,8 @@ public class Casting {
         if (i instanceof Node) {
             res = (Node)i;
         } else if (i instanceof MMObjectNode) {
-            res = cloud.getNode(((MMObjectNode)i).getNumber());
+            org.mmbase.bridge.NodeList list = new org.mmbase.bridge.implementation.BasicNodeList(Collections.singletonList(i),cloud);
+            res = list.getNode(0);
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
             if (nodenumber != -1) {
