@@ -80,4 +80,25 @@
 		<required>true</required>
 	</attribute>
   </tag>
+  <tag>
+	<name>node</name>
+	<tagclass>org.mmbase.bridge.jsp.taglib.MMNode</tagclass>
+	<info>this tag replaces the mod-mmbase-field tag</info>
+	<attribute>
+		<name>number</name>
+		<required>true</required>
+	</attribute>
+	<attribute>
+		<name>action</name>
+		<required>false</required>
+	</attribute>
+	<attribute>
+		<name>field</name>
+		<required>false</required>
+	</attribute>
+	<attribute>
+		<name>type</name>
+		<required>false</required>
+	</attribute>
+  </tag>
 </taglib>
