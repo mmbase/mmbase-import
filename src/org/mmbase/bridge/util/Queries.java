@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.37 2004-07-09 17:24:29 michiel Exp $
+ * @version $Id: Queries.java,v 1.38 2004-07-20 16:09:58 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -642,26 +642,79 @@ abstract public  class Queries {
 
 
     /**
-     * Add startNodes as a String to the (first step) of the given query.
+     * Add startNodes to the first step with the correct type to the given query. The nodes are identified
+     * by a String, which could be prefixed with a step-alias, if you want to add the nodes to
+     * another then this found step.
+     *
+     * Furthermore may the nodes by identified by their alias, if they have one.
+     * 
+     * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery (this is essentially a 'bridge' version of the startnodes part)
      */
     public static void addStartNodes(Query query, String startNodes) {
         if (startNodes == null || "".equals(startNodes) || "-1".equals(startNodes)) {
             return;
         }
 
-        Step firstStep = (Step)query.getSteps().get(0);
+        Step firstStep = null; // the 'default' step to which nodes are added. It is the first step which corresponds with the type of the first node.
 
         Iterator nodes = StringSplitter.split(startNodes).iterator();
         while (nodes.hasNext()) {
-            String node = (String)nodes.next();
-            try {
-                if (query instanceof BasicQuery) { // not needed anymore when addNode(step, int) is in Query itself.
-                    ((BasicQuery) query).addNode(firstStep, Integer.parseInt(node));
+            String nodeAlias = (String) nodes.next(); // can be a string, prefixed with the step alias.
+            Step step;                                // the step to which the node must be added (defaults to 'firstStep').
+            String nodeNumber;                        // a node number or perhaps also a node alias.
+            {
+                int dot = nodeAlias.indexOf('.'); // this feature is not in core. It should be considered experimental
+                if (dot == -1) {
+                    step = firstStep;
+                    nodeNumber = nodeAlias;
                 } else {
-                    query.addNode(firstStep, query.getCloud().getNode(node));
+                    step = query.getStep(nodeAlias.substring(0, dot));
+                    nodeNumber = nodeAlias.substring(dot + 1);
                 }
-            } catch (NumberFormatException nfe) {
-                query.addNode(firstStep, query.getCloud().getNode(node));
+            }
+
+            if (firstStep == null) { // firstStep not yet determined, do that now. 
+                Node node;
+                try {
+                    node = query.getCloud().getNode(nodeNumber);
+                } catch (NotFoundException nfe) { // alias with dot?
+                    node = query.getCloud().getNode(nodeAlias);
+                }
+                NodeManager nodeManager = node.getNodeManager();
+                Iterator i = query.getSteps().iterator();
+                while (i.hasNext()) {
+                    Step queryStep = (Step) i.next();
+                    NodeManager queryNodeManager = query.getCloud().getNodeManager(queryStep.getTableName());
+                    if (queryNodeManager.equals(nodeManager) || queryNodeManager.getDescendants().contains(nodeManager)) { 
+                        // considering inheritance. ClusterBuilder is not doing that, but I think it is a bug.
+                        firstStep = queryStep; 
+                        break;
+                    }
+                }
+                if (firstStep == null) { 
+                    // odd..
+                    // See also org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery
+                    // specified a node which is not of the type of one of the steps.
+                    // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
+                    firstStep = (Step) query.getSteps().get(0);
+                }
+                if (step == null) {
+                    step = firstStep;
+                }
+            }
+
+            try {
+                try {
+                    if (query instanceof BasicQuery) { // not needed anymore when addNode(step, int) is in Query itself.
+                        ((BasicQuery) query).addNode(step, Integer.parseInt(nodeNumber));
+                    } else {
+                        query.addNode(step, query.getCloud().getNode(nodeNumber)); // disadvantage is that the node itself must be retrieved.
+                    }
+                } catch (NumberFormatException nfe) {
+                    query.addNode(step, query.getCloud().getNode(nodeNumber));          // node was specified by alias.
+                }
+            } catch (NotFoundException nnfe) {
+                query.addNode(step, query.getCloud().getNode(nodeAlias)); // perhas an alias containing a dot?
             }
         }
     }
