@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.16 2002-04-12 08:54:32 pierre Exp $
+ * @version $Id: Wizard.java,v 1.17 2002-04-12 11:21:25 pierre Exp $
  *
  */
 public class Wizard {
@@ -255,7 +255,7 @@ public class Wizard {
         params.put("ew_path", path);
         params.put("ew_context", context);
         // juck juck
-        params.put("ew_imgdb", context + org.mmbase.module.builders.AbstractImages.getIMGDB());
+        params.put("ew_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         Utils.transformNode(preform, wizardStylesheetFilename, out, params);
     }
 

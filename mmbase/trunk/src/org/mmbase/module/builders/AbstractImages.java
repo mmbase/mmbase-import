@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.5 2002-04-12 09:02:10 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.6 2002-04-12 11:21:25 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends MMObjectBuilder {
@@ -31,14 +31,14 @@ public abstract class AbstractImages extends MMObjectBuilder {
     /**
      * Static Image servlet path
      */
-    private static String IMGDB = null;
+    private static String imageServletPath = null;
 
     /**
-     * Static Image servlet path for access from other code (i.e. edit wizards and taglib).
-     * Not very nice but will have to do for the time being.
+     * Static Image servlet path
+     * @param rootPath the path that serves as the servlet's root
      */
-    public static String getIMGDB() {
-        if (IMGDB==null) {
+    public static String getImageServletPath(String rootPath) {
+        if (imageServletPath==null) {
             List ls=MMBaseServlet.getServletMappingsByAssociation("image-processing");
             if (ls!=null) {
                 String value=(String)ls.get(0);
@@ -47,28 +47,36 @@ public abstract class AbstractImages extends MMObjectBuilder {
                 if (pos>0) {
                     value=value.substring(0,pos);
                 }
-                pos=value.lastIndexOf("*");
+                pos=value.indexOf("*");
                 if (pos==0) {
                     value=value.substring(pos+1);
                 }
-                // add slash if it wasn't already there (always needed)
-                if (!value.startsWith("/")) value="/"+value;
+                // remove first slash
+                if (value.startsWith("/")) value=value.substring(1);
                 // add '?' if it wasn't already there (only needed if not terminated with /)
                 if (!value.endsWith("/")) value=value+"?";
-                IMGDB= value;
+                imageServletPath= value;
             } else {
-                IMGDB="/img.db?";
+                imageServletPath="img.db?";
             }
-            log.service("Images are served on: "+IMGDB);
+            log.service("Images are served on: "+imageServletPath);
         }
-        return IMGDB;
+        if (rootPath==null) {
+            return imageServletPath;
+        } else {
+            if (rootPath.endsWith("/")) {
+                return rootPath+imageServletPath;
+            } else {
+                return rootPath+"/"+imageServletPath;
+            }
+        }
     }
 
     /**
      * clear Static Image servlet path
      */
     public static void clear() {
-        IMGDB= null;
+        imageServletPath=null;
     }
 
     /**
@@ -76,7 +84,7 @@ public abstract class AbstractImages extends MMObjectBuilder {
      */
     protected String getServlet() {
         // odd, have to remove slash... bit weird?
-       return  MMBaseContext.getHtmlRootUrlPath() + getIMGDB().substring(1);
+       return  AbstractImages.getImageServletPath(MMBaseContext.getHtmlRootUrlPath());
     }
 
     /**

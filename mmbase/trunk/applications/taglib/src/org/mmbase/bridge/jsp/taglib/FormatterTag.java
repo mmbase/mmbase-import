@@ -375,7 +375,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         java.util.Map params = new java.util.HashMap();
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
-        params.put("formatter_imgdb", context + org.mmbase.module.builders.AbstractImages.getIMGDB());
+        params.put("formatter_imgdb",org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         // getting the language from the locale, this is perhaps not a very good idea,
         // but for the moment, I don't know a sensible other place to get it from.
         params.put("formatter_language", java.util.Locale.getDefault().getLanguage());
