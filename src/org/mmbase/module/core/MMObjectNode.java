@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.111 2003-09-10 18:38:03 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.112 2003-09-16 16:54:42 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -66,6 +66,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Determines whether the node is being initialized (typically when it is loaded from the database).
      * Use {@link #start())} to start initializing, use {@link #finish())} to end.
+     * @since MMBase-1.7
      */
     protected boolean initializing = false;
 
@@ -83,7 +84,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Hashtable properties;
 
     /**
-     * Vector whcih stores the key's of the fields that were changed
+     * Vector which stores the key's of the fields that were changed
      * since the last commit.
      * @scope private
      */
@@ -182,6 +183,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Start the loading of a node
+     * @since MMBase-1.7
      */
     public void start() {
         initializing = true;
@@ -189,6 +191,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Finish the loading of a node
+     * @since MMBase-1.7
      */
     public void finish() {
         initializing = false;
@@ -462,14 +465,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public boolean setValue(String fieldName, int type, String value) {
         if (type==FieldDefs.TYPE_UNKNOWN) {
             log.error("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
-           return false;
+            return false;
         }
         switch (type) {
         case FieldDefs.TYPE_XML:
             setValue(fieldName, toXML(value, fieldName));
             break;
         case FieldDefs.TYPE_STRING:
-            setValue( fieldName, value);
+            setValue(fieldName, value);
             break;
         case FieldDefs.TYPE_NODE:
         case FieldDefs.TYPE_INTEGER:
@@ -480,7 +483,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 log.error( e.toString() ); log.error(Logging.stackTrace(e));
                 return false;
             }
-            setValue( fieldName, i );
+            setValue(fieldName, i);
             break;
         case FieldDefs.TYPE_FLOAT:
             Float f;
@@ -490,7 +493,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 log.error( e.toString() ); log.error(Logging.stackTrace(e));
                 return false;
             }
-            setValue( fieldName, f );
+            setValue(fieldName, f);
             break;
         case FieldDefs.TYPE_LONG:
             Long l;
@@ -500,7 +503,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 log.error( e.toString() ); log.error(Logging.stackTrace(e));
                 return false;
             }
-            setValue( fieldName, l );
+            setValue(fieldName, l);
             break;
         case FieldDefs.TYPE_DOUBLE:
             Double d;
@@ -510,7 +513,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 log.error( e.toString() ); log.error(Logging.stackTrace(e));
                 return false;
             }
-            setValue( fieldName, d );
+            setValue(fieldName, d);
             break;
         default:
             log.error("unsupported fieldtype: "+type+" for field "+fieldName);
@@ -527,8 +530,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (!changed.contains(fieldName) && state==FieldDefs.DBSTATE_PERSISTENT) {
-            changed.addElement(fieldName);
+        if (! initializing && !changed.contains(fieldName) && state==FieldDefs.DBSTATE_PERSISTENT) {
+            changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
         if (state==0) sendFieldChangeSignal(fieldName);
@@ -1343,6 +1346,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *
      * @see getRelatedNodes(String type)
      * @since MMBase-1.6.2
+     * @deprected see ClusterBuilder#getRealNodes
      */
     private List getRealNodes(List virtuals, String type) {
 
