@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
+<%@page import="org.mmbase.bridge.*,org.mmbase.module.core.MMBase" %>
 <%@include file="../../settings.jsp" %>
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <%  String server=request.getParameter("server"); %>
@@ -19,13 +19,27 @@
 <tr>
   <td class="multidata" colspan="2">
    <p>
-      JVM memory size : <%=(Runtime.getRuntime().totalMemory()*10/1048576)/10.0%> Mb (<%=(Runtime.getRuntime().totalMemory()*10/1024)/10.0%> Kb)<br />
+      JVM memory size : <%=(Runtime.getRuntime().totalMemory()*10/1048576)/10.0%> Mb (<%=(Runtime.getRuntime().totalMemory()*10/1024)/10.0%> Kb)
+   </p>
+   <p>
       JVM free memory : <%=(Runtime.getRuntime().freeMemory()*10/1048576)/10.0%> Mb (<%=(Runtime.getRuntime().freeMemory()*10/1024)/10.0%> Kb)
+   </p>
+   <p>
+      Uptime: 
+      <%        
+      int timeDiff =  (int)((System.currentTimeMillis()/1000) - MMBase.getMMBase().startTime);
+        
+      int days = timeDiff / (60 * 60 * 24);
+      int hours =(timeDiff / (60  * 60)) % 24;
+      int minutes = (timeDiff / 60) % 60 ;
+      int seconds = timeDiff % 60;
+      out.println("" + (days > 0 ? (days +" days ") : "") + hours +":" + (minutes < 10 ? "0" : "") + minutes +":" + (seconds  < 10 ? "0" : "") + seconds);
+%>
    </p>
   </td>
 </tr>
-<tr><td><br /></td></tr>
 
+<%--
 <tr>
   <th class="header">Action</th>
   <th class="navigate">Confirm</th>
@@ -36,7 +50,7 @@
    This means that the server will only restart if you have a script running that starts the server again
    when it goes down (a simple looping script will work).<br />
    If you do not have such a script, or do not wish to use restart through this page,
-   we suggest you remove this option from the admin pages.
+   we suggest you remove this option from the admin pages (see <%=request.getRealPath(request.getServletPath()) %>)
   </td>
   <td class="linkdata">
 <form action="<mm:url page="result.jsp" />" method="POST">
@@ -47,8 +61,7 @@
   </td>
 </tr>
 
-<tr><td>&nbsp;</td></tr>
-
+--%>
 <tr class="footer">
 <td class="navigate"><a href="<mm:url page="../servers.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data">Return&nbsp;to&nbsp;Server&nbsp;Overview</td>
