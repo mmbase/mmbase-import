@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.16 2002-11-14 12:02:56 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.17 2003-02-21 20:18:03 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -180,7 +180,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
      * @TODO This function is a too complicated. The several functionalities should be spread to different functions.
      * @javadoc
      */
-    private String evaluateTime() throws JspTagException {
+    private String evaluateTime() throws JspTagException { 
         if (log.isDebugEnabled()) log.debug("time: '"+time+"' offset: '"+offset+"' format: '"+dateFormat+"' inputformat: '"+inputformat +"'");
         
         String usetime = null;
@@ -203,65 +203,65 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         } else {
             usetime = time;
         }
-        // Is the time given in second from EPOC (UTC)?
-        try {
-            long timeFromEpoc = Long.parseLong(usetime);
-            date = new Date(timeFromEpoc*1000);
-        } catch (NumberFormatException nfe) {
-            // perhaps it was a keyWord... 
-            // this will be explored hereafter.
-            // TODO Should we depend on exceptions? I think this is slow (?), and also ugly (though that is a matter of taste).
-            // indeed, using exceptions as if statements is rather low performance.
-            log.debug("Time not given in second from epoc");
-        }
-        
-        // Is a day specified, like: monday, tuesday ?
-        if(date == null && isDay(usetime)) {
-            try {
-                date = handleDay(usetime);
-            } catch (ParseException e) {  
-                String msg = "Cannot evaluate handleDay with time '" + usetime + "' (exception:" + e + ")";
-                // Why should we log this? designers dont have access to logs
-                // log.error(msg);
-                throw new JspTagException(msg);
-            }
-        }
-        // Is a month specified, like: january, february ?
-        if(date == null && isMonth(usetime)) {
-            try {
-                date = handleMonth(usetime);
-            } catch (ParseException e) {
-                String msg = "Cannot evaluate handleMonth with time '" + usetime + "' (exception:" + e + ")";
-                // Why should we log this? designers dont have access to logs
-                // log.error(msg);
-                throw new JspTagException(msg);
-            }
-        }
-        // Is a keyword used, like: yesterday, today ?
-        if(date == null && isKeyword(usetime)) {
-            try {
-                date = handleKeyword(usetime);
-            } catch (ParseException e) {
-                String msg = "Cannot evaluate handleKeyword with time '" + usetime + "' (exception:" + e + ")";
-                // Why should we log this? designers dont have access to logs
-                // log.error(msg);
-                throw new JspTagException(msg);
-            }
-        }
-        
 
-        // still not found, look if for other formats, like yyyy-MM-ss
-        if(date == null) {
-            if (inputformat == null) {  // If no input format is given try to parse it in three standard ways.                
-                date = getDate();
-            } else { // The input format is provided. We use that to parse the time attribute
+        if (inputformat == null) {
+            // Is the time given in second from EPOC (UTC)?
+            try {
+                long timeFromEpoc = Long.parseLong(usetime);
+                date = new Date(timeFromEpoc*1000);
+            } catch (NumberFormatException nfe) {
+                // perhaps it was a keyWord... 
+                // this will be explored hereafter.
+                // TODO Should we depend on exceptions? I think this is slow (?), and also ugly (though that is a matter of taste).
+                // indeed, using exceptions as if statements is rather low performance.
+                log.debug("Time not given in second from epoc");
+            }
+            
+            // Is a day specified, like: monday, tuesday ?
+            if(date == null && isDay(usetime)) {
                 try {
-                    parseFormat.applyPattern(inputformat);
-                    date = parseFormat.parse(usetime);
-                } catch (Exception e) {
-                     throw new JspTagException(e.toString());
+                    date = handleDay(usetime);
+                } catch (ParseException e) {  
+                    String msg = "Cannot evaluate handleDay with time '" + usetime + "' (exception:" + e + ")";
+                    // Why should we log this? designers dont have access to logs
+                    // log.error(msg);
+                    throw new JspTagException(msg);
                 }
             }
+            // Is a month specified, like: january, february ?
+            if(date == null && isMonth(usetime)) {
+                try {
+                    date = handleMonth(usetime);
+                } catch (ParseException e) {
+                    String msg = "Cannot evaluate handleMonth with time '" + usetime + "' (exception:" + e + ")";
+                    // Why should we log this? designers dont have access to logs
+                    // log.error(msg);
+                    throw new JspTagException(msg);
+                }
+            }
+            // Is a keyword used, like: yesterday, today ?
+            if(date == null && isKeyword(usetime)) {
+                try {
+                    date = handleKeyword(usetime);
+                } catch (ParseException e) {
+                    String msg = "Cannot evaluate handleKeyword with time '" + usetime + "' (exception:" + e + ")";
+                    // Why should we log this? designers dont have access to logs
+                    // log.error(msg);
+                    throw new JspTagException(msg);
+                }
+            }
+            if (date == null) {
+                date = getDate();  // Trry to parse it in three standard ways.
+            }
+            
+        } else { // The input format is provided. We use that to parse the time attribute
+            try {
+                parseFormat.applyPattern(inputformat);
+                date = parseFormat.parse(usetime);
+            } catch (java.text.ParseException e) {
+                throw new JspTagException(e.toString());
+            }
+
         }
 
                
