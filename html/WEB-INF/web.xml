@@ -8,9 +8,9 @@
   </context-param>
 
   <!-- Filter for jumpers
-       uncomment this code if you want to activate te jumeprs filter.
-       You need to install thr jumpers builder first
-	-->
+  Uncomment this code if you want to activate the jumpers filter.
+  You need to install the jumpers builder first
+  -->
   <!--
   <filter>
     <filter-name>Jumpers Filter</filter-name>
@@ -25,7 +25,7 @@
   </filter-mapping>
   -->
 
-  <!-- The base MMBase servlet can inform about the current MMBase version which is running. -->
+  <!-- The base MMBase servlet informs about the current MMBase version -->
   <servlet>
     <servlet-name>version</servlet-name>
     <description>To get the version of MMBase</description>
@@ -62,13 +62,13 @@
   </servlet>
 
   <!-- servdb, old servlet for downloading attachments, images, and xml files
-	     You should use the images and attachments servlets for downloading most data,
-			 and the dove servlet to retrieve a node as xml.
-			 However this info can also still be retrieved with servdb.
-       uncomment this code if you want to activate it. You also need to create
-			 mappings to use it. See example below.
-	-->
-	<!--
+  You should use the images and attachments servlets for downloading most data,
+  and the dove servlet to retrieve a node as xml.
+  However this info can also still be retrieved with servdb.
+  Uncomment this code if you want to activate it. You also need to create
+  mappings to use it. See example below.
+  -->
+  <!--
   <servlet>
     <servlet-name>servdb</servlet-name>
     <display-name>Serdb Servlet</display-name>
@@ -78,10 +78,11 @@
   </servlet>
   -->
 
-  <!-- dove, servlet for Dove protocol, which is used for communication with,
-       and passing commands to, the MMBase system using an xml format
-			 This servlet is still experimental.
-			 Uncomment this code to turn it on.  Also turn on servlet mapping below.
+  <!-- dove, servlet for Dove protocol.
+  This is used for communication with  and passing commands to the MMBase 
+  system using an xml format, akin to SOAP.
+  This servlet is still experimental.
+  Uncomment this code to turn it on.  Also turn on servlet mapping below.
   -->
   <!--
   <servlet>
@@ -97,11 +98,11 @@
   -->
 
   <!-- servscan servlet, needed for parsing scan-pages
-	     uncomment this code to activate SCAN. Also turn on servlet mapping below.
-			 Note that you will first need to make the following SCAN modules active:
-			 scanparser,mmbase,mmedit,session,info,calc
-	-->
-	<!--
+  Uncomment this code to activate SCAN. Also turn on servlet mapping below.
+  You will first need to make the following SCAN modules active:
+  scanparser,mmbase,mmedit,session,info,calc
+  -->
+  <!--
   <servlet>
     <servlet-name>servscan</servlet-name>
     <display-name>Servscan Servlet</display-name>
@@ -130,9 +131,9 @@
   </servlet-mapping>
 
   <!-- mappings for to servdb
-	     uncomment this code if you activate the servdb servlet.
-	-->
-	<!--
+  Uncomment this code if you activate the servdb servlet.
+  -->
+  <!--
   <servlet-mapping>
     <servlet-name>servdb</servlet-name>
     <url-pattern>/xml.db</url-pattern>
@@ -140,9 +141,9 @@
   -->
 
   <!-- mapping for the dove servlet
-	     uncomment this code if you activate the Dove servlet.
-	-->
-	<!--
+  Uncomment this code if you activate the Dove servlet.
+  -->
+  <!--
   <servlet-mapping>
     <servlet-name>dove</servlet-name>
     <url-pattern>/xml/dove.xml</url-pattern>
@@ -150,9 +151,9 @@
   -->
 
   <!-- mapping shtml-files to servscan
-	     uncomment this code if you activate SCAN.
-	-->
-	<!--
+       Uncomment this code if you activate SCAN.
+  -->
+  <!--
   <servlet-mapping>
     <servlet-name>servscan</servlet-name>
     <url-pattern>*.shtml</url-pattern>
