@@ -20,37 +20,35 @@ import java.net.*;
 /**
  * Provides the functionality to create URL's (or URI's) for a certain
  * fragment, source, provider combination.
+  <pre>
+ <servlet-mapping>
+    <servlet-name>mediafragment</servlet-name>
+    <url-pattern>/mediafragment.*</url-pattern>
+  </servlet-mapping>
+  </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.3 2003-02-04 17:43:33 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.4 2003-02-05 11:41:25 michiel Exp $
  * @since MMBase-1.7
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     private static Logger log = Logging.getLoggerInstance(RamURLComposer.class.getName());
     
-    protected  String          url;
+    private final static String SERVLET_MAPPING = "/mediaframent"; // todo make configurable/ read from web.xml 
+
+
     protected  Format          format;
     public RamURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
         this.format = Format.get(source.getIntValue("format"));
-        this.url = "/mediahtml.jsp";
     }
     protected StringBuffer  getURLBuffer() {
-        return new StringBuffer(url + "." + format + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&format=" + format);
+        return new StringBuffer(SERVLET_MAPPING + "." + format + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&format=" + format);
     }
     public Format  getFormat()   { 
-        if (format == Format.RM) return Format.RAM; 
+        if (format == Format.RM)  return Format.RAM; 
         if (format == Format.ASF) return Format.WMP; 
         return format;
     } 
-    public boolean equals(Object o) {
-        if (o instanceof RamURLComposer) {
-            RamURLComposer r = (RamURLComposer) o;
-            return url.equals(r.url) && 
-                (fragment == null ? r.fragment == null : fragment.getNumber() == r.fragment.getNumber()) &&
-                format.equals(r.format) &&
-                info.equals(r.info);
-        }
-        return false;
-    }
+
 }

@@ -19,7 +19,7 @@ import java.util.Hashtable;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: FragmentURLComposer.java,v 1.3 2003-02-04 17:43:33 michiel Exp $
+ * @version $Id: FragmentURLComposer.java,v 1.4 2003-02-05 11:41:25 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -39,6 +39,18 @@ abstract public class FragmentURLComposer extends URLComposer  {
             fragmentAvailable = Boolean.TRUE;
         }
         return fragmentAvailable.booleanValue() &&  super.isAvailable();
+    }
+
+    public boolean equals(Object o) {
+        if (o.getClass().equals(getClass())) {
+            RamURLComposer r = (RamURLComposer) o;
+            return 
+                (fragment == null ? r.fragment == null : fragment.getNumber() == r.fragment.getNumber()) &&
+                (source == null ? r.source == null : source.getNumber() == r.source.getNumber()) &&
+                (provider == null ? r.provider == null : provider.getNumber() == r.provider.getNumber()) &&
+                (info == null ? r.info == null : info.equals(r.info));
+        }
+        return false;
     }
 
 }

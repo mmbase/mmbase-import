@@ -17,7 +17,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.1 2003-02-03 17:50:18 michiel Exp $
+ * @version $Id: Format.java,v 1.2 2003-02-05 11:41:24 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -102,6 +102,13 @@ public final class Format {   // final class!!
             }
         }
         return Arrays.asList(new Format[]{this});
+    }
+    public boolean equals(Object o) {
+        if (o instanceof Format) {
+            Format f = (Format) o;
+            return f.number == number;
+        }
+        return false;
     }
 }
     

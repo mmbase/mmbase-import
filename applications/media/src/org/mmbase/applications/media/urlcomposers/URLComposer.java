@@ -27,7 +27,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.4 2003-02-04 17:43:33 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.5 2003-02-05 11:41:25 michiel Exp $
  */
 
 public class URLComposer  {
@@ -45,13 +45,20 @@ public class URLComposer  {
         this.provider = provider;
         this.source   = source;
         this.info     = info;
-        if (this.info == null) info = new java.util.Hashtable();
+        if (this.info == null) this.info = new java.util.Hashtable();
     }
 
 
     public MMObjectNode getSource()   { return source;  }
     public Map          getInfo()     { return info; }
-    public Format       getFormat()   { return Format.get(source.getIntValue("format")); } 
+
+    /**
+     * The format of the produced URL. This is not necessarily the format of the source.
+     * (Though it normally would be)
+     */
+    public Format       getFormat()   { 
+        return Format.get(source.getIntValue("format")); 
+    } 
 
     /**
      * Extension will normally create URL's differently. They override this function.
@@ -84,5 +91,15 @@ public class URLComposer  {
         } else {
             return "{" + className + "/" +  getFormat() + ": " + getURL() + "}";
         }
+    }
+    public boolean equals(Object o) {
+        if (o.getClass().equals(getClass())) {
+            URLComposer r = (URLComposer) o;
+            return 
+                (source == null ? r.source == null : source.getNumber() == r.source.getNumber()) &&
+                (provider == null ? r.provider == null : provider.getNumber() == r.provider.getNumber()) &&
+                (info == null ? r.info == null : info.equals(r.info));
+        }
+        return false;
     }
 }

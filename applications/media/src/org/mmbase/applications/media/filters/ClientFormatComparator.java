@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * This can sort a list with the requested formats on top for a client, so the 'URLComposer' is used.
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatComparator.java,v 1.1 2003-02-03 17:50:22 michiel Exp $
+ * @version $Id: ClientFormatComparator.java,v 1.2 2003-02-05 11:41:25 michiel Exp $
  */
 public class ClientFormatComparator extends  PreferenceComparator {
     private static Logger log = Logging.getLoggerInstance(ClientFormatComparator.class.getName());
@@ -31,6 +31,9 @@ public class ClientFormatComparator extends  PreferenceComparator {
     }
     
     protected int getPreference(URLComposer ri) {
+        log.info("ri: " + ri);
+        log.info("inof: " + ri.getInfo());
+
         Object format = ri.getInfo().get("format");        
         if (log.isDebugEnabled()) { log.debug("Client's preference " + format); }
         if (format == null) {                  
