@@ -59,7 +59,7 @@ public class ContextAuthorization extends Authorization {
     public void create(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
     	// notify, well actually we ony have to set the context to the default of the user...
 	log.info("create on node #"+nodeNumber+" by user: " +user);		
-    	String xpath = "/config/accounts/user[@name='"+user.getIdentifier()+"']";
+    	String xpath = "/contextconfig/accounts/user[@name='"+user.getIdentifier()+"']";
 	Node found;
 	try {
 	    log.debug("gonna execute the query:" + xpath + " on file : " + configFile);	
@@ -154,7 +154,7 @@ public class ContextAuthorization extends Authorization {
 	}		
 	
 	// possible contextes are dependeding of the context they're in...
-    	String xpath = "/config/contexts/context[@name='"+currentContext+"']/possible";
+    	String xpath = "/contextconfig/contexts/context[@name='"+currentContext+"']/possible";
 	log.debug("gonna execute the query:" + xpath );
 	NodeIterator found;
 	try {
@@ -205,7 +205,7 @@ public class ContextAuthorization extends Authorization {
 	    }
 	}
 	
-    	String xpath = "/config/contexts/context[@name='"+context+"']/operation[@type='"+operation+"']/contains";
+    	String xpath = "/contextconfig/contexts/context[@name='"+context+"']/operation[@type='"+operation+"']/grant";
 	NodeList found;
 	try {
     	    log.debug("gonna execute the query:" + xpath );	
@@ -223,7 +223,7 @@ public class ContextAuthorization extends Authorization {
 	    log.warn("context with name :'"+context+"' was not found in the configuration.");
 
     	    // retrieve the default context...
-	    String defaultNodeXPath = "/config/contexts[@default]";
+	    String defaultNodeXPath = "/contextconfig/contexts[@default]";
 	    Node foundDefaultNode;
 	    try {
 	    	log.debug("gonna execute the query:" + defaultNodeXPath + " on file : " + configFile);	
@@ -242,7 +242,7 @@ public class ContextAuthorization extends Authorization {
                     log.debug("context with name: " + context + " uses the default context: " + defaultContext);
                 }
                 // now do the same query with the default context...
-                xpath = "/config/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/contains";
+                xpath = "/contextconfig/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/contains";
                 try {
                     log.debug("gonna execute the query:" + xpath );	
                     found = XPathAPI.selectNodeList(document, xpath);
@@ -306,7 +306,7 @@ public class ContextAuthorization extends Authorization {
 	    log.debug("\tresearching group with name : "+groupname);
 	    
 	    // do the xpath query...
-    	    String xpath = "/config/groups/group[@name='"+groupname+"']/contains";
+    	    String xpath = "/contextconfig/groups/group[@name='"+groupname+"']/contains";
 	    log.debug("\tgonna execute the query:" + xpath );
 	    NodeIterator found;
 	    try {
