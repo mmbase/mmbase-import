@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.90 2004-02-13 15:45:15 michiel Exp $
+ * @version $Id: Images.java,v 1.91 2004-02-20 09:59:39 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -149,8 +149,9 @@ public class Images extends AbstractImages {
                 return info.get(args.get(0));
             }
         } else if ("cache".equals(function)) {
-            if (args == null || args.size() != 1)
+            if (args == null || args.size() != 1) {
                 throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
+            }
             return new Integer(cacheImage(node, (String) args.get(0)));
         } else {
             return super.executeFunction(node, function, args);
@@ -169,7 +170,7 @@ public class Images extends AbstractImages {
      */
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters args) {
         int num = node.getNumber();
-        if (num == -1 ) {   // img.db cannot handle uncommited images..
+        if (num < 0) {   // image servlet cannot handle uncommited images..
             return "...";
         }
         // NOTE that this has to be configurable instead of static like this
@@ -419,6 +420,8 @@ public class Images extends AbstractImages {
             }
             return cachedNodeNumber.intValue();
         } else {
+            log.warn("No cache number found for " + params + " returning -1");
+            log.debug(Logging.stackTrace());
             return -1;
         }
     }
@@ -556,8 +559,7 @@ public class Images extends AbstractImages {
         int objectId = convertAlias((String)params.get(0)); // arch, deprecated!
 
         if ( objectId < 0 ) {
-            // why is 0 a valid object number???
-            log.warn("getOriginalImage: Parameter is not a valid image "+objectId);
+            log.warn("getOriginalImage: Parameter is not a valid image " + objectId);
             return null;
         }
 
@@ -706,7 +708,7 @@ public class Images extends AbstractImages {
      * image node.
      * This method attempts to determine the image type of the object.
      * @param node The node to be committed
-     * @return The committed node.
+     * @return true if commit succesful
      */
     public boolean commit(MMObjectNode node) {
         Collection changed = node.getChanged();
