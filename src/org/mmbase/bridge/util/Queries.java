@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.38 2004-07-20 16:09:58 michiel Exp $
+ * @version $Id: Queries.java,v 1.39 2004-07-22 13:54:29 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -488,6 +488,27 @@ abstract public  class Queries {
     }
 
     /**
+     * Converts a String to a SortOrder constant
+     * @since MMBase-1.7.1
+     */
+    public static int getSortOrder(String dir) {
+        dir = dir.toUpperCase();
+        if (dir.equals("")) {
+            return  SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("DOWN")) {
+            return SortOrder.ORDER_DESCENDING;
+        } else if (dir.equals("UP")) {
+            return SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("ASCENDING")) {
+            return SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("DESCENDING")) {
+            return SortOrder.ORDER_DESCENDING;
+        } else {
+            throw new BridgeException("Unknown sort-order '" + dir + "'");
+        }
+    }
+
+    /**
      * Adds sort orders to the query, using two strings. Like in 'getList' of Cloud. Several tag-attributes need this.
      *
      * @todo implement for normal query.
@@ -521,11 +542,7 @@ abstract public  class Queries {
             int dir = SortOrder.ORDER_ASCENDING;
             if (directionsTokenizer.hasMoreTokens()) {
                 String direction = directionsTokenizer.nextToken().trim();
-                if (direction.equalsIgnoreCase("DOWN")) {
-                    dir = SortOrder.ORDER_DESCENDING;
-                } else {
-                    dir = SortOrder.ORDER_ASCENDING;
-                }
+                dir = getSortOrder(direction);
             }
             query.addSortOrder(sf, dir);
         }
