@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.47 2002-05-06 15:20:16 eduard Exp $
+ * @version $Id: MMAdmin.java,v 1.48 2002-05-06 15:28:22 eduard Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -551,43 +551,36 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     private boolean installApplication(String applicationname) {
-        try {
-            String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
-            XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
-            if (app!=null) {
-                if (areBuildersLoaded(app.getNeededBuilders(), path + applicationname)) {
-                    if (checkRelDefs(app.getNeededRelDefs())) {
-                        if (checkAllowedRelations(app.getAllowedRelations())) {
-                            if (installDataSources(app.getDataSources(),applicationname)) {
-                                if (installRelationSources(app.getRelationSources())) {
-                                } else {
-                                    log.warn("Application installer stopped : can't install relationsources");
-                                    return false;
-                                }
+        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
+        XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
+        if (app!=null) {
+            if (areBuildersLoaded(app.getNeededBuilders(), path + applicationname)) {
+                if (checkRelDefs(app.getNeededRelDefs())) {
+                    if (checkAllowedRelations(app.getAllowedRelations())) {
+                        if (installDataSources(app.getDataSources(),applicationname)) {
+                            if (installRelationSources(app.getRelationSources())) {
                             } else {
-                                log.warn("Application installer stopped : can't install datasources");
+                                log.warn("Application installer stopped : can't install relationsources");
                                 return false;
                             }
                         } else {
-                            log.warn("Application installer stopped : can't install allowed relations");
+                            log.warn("Application installer stopped : can't install datasources");
                             return false;
                         }
                     } else {
-                        log.warn("Application installer stopped : can't install reldefs");
+                        log.warn("Application installer stopped : can't install allowed relations");
                         return false;
                     }
                 } else {
-                    log.warn("Application installer stopped : not all needed builders present");
+                    log.warn("Application installer stopped : can't install reldefs");
                     return false;
                 }
             } else {
-                log.warn("Can't install application : "+path+applicationname+".xml");
+                log.warn("Application installer stopped : not all needed builders present");
+                return false;
             }
-        }
-        catch(RuntimeException e) {
-            // maybe an exception occured, we want to log such things
-            log.error("error in application module: " + e.toString() + "\n" + Logging.stackTrace(e));
-            throw e;
+        } else {
+            log.warn("Can't install application : "+path+applicationname+".xml");
         }
         return true;
     }
