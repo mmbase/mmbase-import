@@ -29,7 +29,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.6 2003-02-10 10:37:47 rob Exp $
+ * @version $Id: MediaFragments.java,v 1.7 2003-02-10 13:24:48 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -40,7 +40,7 @@ public class MediaFragments extends MMObjectBuilder {
 
     // let the compiler check for typo's:
     public static final String FUNCTION_URLS        = "urls";
-    public static final String FUNCTION_SORTEDURLS  = "sortedurls";
+    public static final String FUNCTION_FILTEREDURLS  = "filteredurls";
     public static final String FUNCTION_URL         = "url";
     public static final String FUNCTION_PARENT      = "parent";    
     public static final String FUNCTION_ROOT        = "root";    
@@ -93,7 +93,6 @@ public class MediaFragments extends MMObjectBuilder {
             List empty = new Vector();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
-            info.put("longurl", "(<format>) ");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really URLComposer.URLComposer's)");
             info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode of the parent or null");
             info.put(FUNCTION_SUBFRAGMENT, "() Wether this fragment is a subfragment (returns a Boolean)");
@@ -108,8 +107,8 @@ public class MediaFragments extends MMObjectBuilder {
             }            
         } else if (FUNCTION_URLS.equals(function)) {
             return getURLs(node, translateURLArguments(args, null), null);
-        } else if (FUNCTION_SORTEDURLS.equals(function)) {
-            return getSortedURLs(node, translateURLArguments(args, null));
+        } else if (FUNCTION_FILTEREDURLS.equals(function)) {
+            return getFilteredURLs(node, translateURLArguments(args, null));
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
             return new Boolean(isSubFragment(node));
         } else if (FUNCTION_PARENT.equals(function)) {
@@ -135,12 +134,6 @@ public class MediaFragments extends MMObjectBuilder {
             return getURL(node, translateURLArguments(args, null));
         } else if (FUNCTION_FORMAT.equals(function)) {
             return getFormat(node, translateURLArguments(args, null));
-        } else if (function.equals("longurl")) {
-            // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            // return getLongURL(node, new Hashtable());
-        } else if (function.equals("contenttype")) {
-            // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            //            return getContentType(node, new Hashtable());
         } else if (function.equals("showlength")) {
             return ""+calculateLength(node);
         }
@@ -173,7 +166,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param node the mediapart node
      * @return the title of the mediapart
      */
-    public String getGUIMIndicator(MMObjectNode node) {
+    public String getGUIIndicator(MMObjectNode node) {
         String url = node.getFunctionValue(FUNCTION_URL, null).toString();
         String title = node.getStringValue("title");
         if ("".equals(title)) title = "***";
@@ -213,8 +206,8 @@ public class MediaFragments extends MMObjectBuilder {
         return urls;        
     }   
 
-    protected List getSortedURLs(MMObjectNode fragment, Map info) {
-        log.debug("getsortedurls");
+    protected List getFilteredURLs(MMObjectNode fragment, Map info) {
+        log.debug("getfilteredurls");
         List urls =  getURLs(fragment, info, null);
         return MainFilter.getInstance().filter(urls);
     }
@@ -230,7 +223,7 @@ public class MediaFragments extends MMObjectBuilder {
      */
     protected  String getURL(MMObjectNode fragment, Map info)   {
         log.debug("Getting url of a fragment.");        
-        List urls = getSortedURLs(fragment, info);
+        List urls = getFilteredURLs(fragment, info);
         if (urls.size() > 0) {
             return ((URLComposer) urls.get(0)).getURL();
         } else {
@@ -240,32 +233,14 @@ public class MediaFragments extends MMObjectBuilder {
 
     protected  String getFormat(MMObjectNode fragment, Map info)   {
         log.debug("Getting format of a fragment.");        
-        List urls = getSortedURLs(fragment, info);
+        List urls = getFilteredURLs(fragment, info);
         if (urls.size() > 0) {
             return ((URLComposer) urls.get(0)).getFormat().toString();
         } else {
             return ""; //no sources 
         }
     }
-    
-    /**
-     * Find the most appropriate media source
-     * @param mediafragment a media fragment
-     * @param info additional information provider by a user
-     * @return the most appropriate media source
-     */
-    /*
-    private MMObjectNode filterMediaSource(MMObjectNode fragment, Map info) {
-        List urls = getSortedURLs(fragment, info); 
-        if(urls.size() == 0) {
-            log.error("No matching media source found by media fragment (" + fragment.getIntValue("number") + ")");
-            return null;
-        }
-        MMObjectNode mediaSource = (MMObjectNode) urls.get(0);
-        return mediaSource;
-    }   
-    */
-    
+        
     /**
      * If a mediafragment is coupled to another mediafragment instead of being directly
      * coupled to mediasources, the mediafragment is a subfragment.
