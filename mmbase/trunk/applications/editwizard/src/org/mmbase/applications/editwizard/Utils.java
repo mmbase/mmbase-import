@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.19 2002-08-09 13:59:28 michiel Exp $
+ * @version $Id: Utils.java,v 1.20 2002-08-21 16:41:31 michiel Exp $
  */
 public class Utils {
 
@@ -413,7 +413,7 @@ public class Utils {
         if (params != null) {
             setStylesheetParams(transformer, params);
         }
-        if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
+        if (log.isDebugEnabled()) log.trace("transforming: \n" + stringFormatted(node));
         transformer.transform(new DOMSource(node), result);
     }
 
@@ -485,11 +485,11 @@ public class Utils {
      * same as above, but now the result is written to the writer and you can use params.
      */
     public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
-        if (log.isDebugEnabled()) log.debug("transforming: " + node.toString() + " " + params);
+        if (log.isDebugEnabled()) log.trace("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
         java.io.StringWriter res = new java.io.StringWriter();
         transformNode(node, xslFile, uri, new javax.xml.transform.stream.StreamResult(res),  params);
-        if (log.isDebugEnabled()) log.debug("transformation result " + res.toString());
+        if (log.isDebugEnabled()) log.trace("transformation result " + res.toString());
         try {
             out.write(res.toString());
         } catch (java.io.IOException e) {
