@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.8 2002-03-18 16:48:15 pierre Exp $
+ * @version $Id: Dove.java,v 1.9 2002-03-26 13:05:49 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -735,6 +735,7 @@ public class Dove extends AbstractDove {
                     }
                 } catch (RuntimeException e) {
                     Element err=addContentElement(ERROR,"Transaction failed : "+e.getMessage(),out);
+                    log.error(Logging.stackTrace(e));
                     err.setAttribute(ELM_TYPE,IS_SERVER);
                 }
             } else {
