@@ -1,10 +1,9 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@ taglib uri="http://www.opensymphony.com/oscache" prefix="cache" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@ page language="java" contentType="text/html; charset=utf-8" session="true"
-%><%-- why is the session used ?! --%><mm:cloud>
-<%@include file="/includes/getids.jsp"%>
-<%@include file="/includes/header.jsp"%>
-<td class="white" colspan="2" valign="top">
+%><mm:cloud><%@ include file="/includes/getids.jsp" 
+%><%@ include file="/includes/alterheader.jsp"
+%>
+<div id="pagecontent">
 <mm:import externid="doc"   from="parameters">-1</mm:import>
 <mm:import externid="news"  from="parameters">-1</mm:import>
 <mm:compare referid="doc" value="-1" inverse="true">
@@ -35,19 +34,25 @@
 		path="portals,category,news,mmevents" searchdir="destination"
 		fields="category.number,category.title,news.number,news.title,mmevents.start" 
 		orderby="mmevents.start" directions="DOWN"
-		max="4">
+		max="4"><mm:import id="nonewsyet" /><mm:import id="nwspage" />
 		<mm:first>
 			<h2>News</h2>		<!-- category : <mm:field name="category.title" /> -->
-			<mm:field name="category.number" id="cat_nr" write="false" />
+			<mm:field name="category.number" id="cat" write="false" />
 			<%-- what is the newspage of this category --%>
-			<mm:list nodes="$cat_nr" path="category,pages" max="1"><mm:field name="pages.number" write="false" id="nws_page" /></mm:list>
-			<mm:import id="nonewsyet" />
+			<mm:list nodes="$cat" path="category,pages" max="1">
+			  <mm:import id="nwspage" reset="true"><mm:field name="pages.number" /></mm:import>
+			</mm:list>
 		</mm:first>
-		<p><a href="<mm:url page="index.jsp" referids="portal"><mm:present referid="nws_page"><mm:param name="page"><mm:write referid="nws_page" /></mm:param></mm:present><mm:param name="newsnr"><mm:field name="news.number" /></mm:param></mm:url>"><mm:field name="news.title" /></a><br /> 
+		<p><a href="<mm:url page="index.jsp" referids="portal">
+		  <mm:param name="page"><mm:write referid="nwspage" /></mm:param>
+		  <mm:param name="newsnr"><mm:field name="news.number" /></mm:param>
+		</mm:url>"><mm:field name="news.title" /></a><br /> 
 		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field>
 		<mm:field name="news.intro"><mm:isnotempty> - <mm:write /></mm:isnotempty></mm:field></p> 
-		<mm:last><p><a href="<mm:url page="index.jsp" referids="portal"><mm:param name="page"><mm:write referid="nws_page" /></mm:param></mm:url>">Newsarchive &raquo;&raquo;</a></p></mm:last>
-		<mm:remove referid="cat_nr" />
+		<mm:last><p><a href="<mm:url page="index.jsp" referids="portal">
+		  <mm:param name="page"><mm:write referid="nwspage" /></mm:param>
+		</mm:url>">Newsarchive &raquo;&raquo;</a></p></mm:last>
+		<mm:remove referid="cat" />
 	</mm:list>
 	
 	<mm:notpresent referid="nonewsyet">
@@ -92,20 +97,37 @@
 		</script>
 		</mm:last>
 	</mm:related>
+	
+	<div style="margin-top:12px" z-index="2">
 	<mm:related path="posrel,news" searchdir="destination"
-		orderby="posrel.pos" directions="UP" max="5">
-		<mm:first><h4>Latest websites build with MMBase</h4>
-		<table border="0" cellspacing="0"></mm:first>
-		<tr valign="top">
-		  <td>&raquo;</td>
-		  <td><a href="<mm:url page="index.jsp" referids="portal,page">
-			<mm:param name="news"><mm:field name="news.number" /></mm:param>
-		    </mm:url>"><mm:field name="news.title" /></a></td>
-		</tr>
-		<mm:last></table><p><a href="<mm:url page="index.jsp" referids="portal">
+	  orderby="posrel.pos" directions="UP" max="9">
+	  <mm:first><h4>Latest websites build with MMBase</h4>
+	  <form name="sitesform" action="" method="post">
+	  <select name="news" style="width:200;" onchange="javascript:postSiteForm();">
+	  </mm:first>
+		<option value="<mm:field name="news.number" />"><mm:field name="news.title" /></option>
+      <mm:last>
+      </select> | <a href="javascript:postSiteForm();">go</a>
+	  </form>
+	  <p><a href="<mm:url page="index.jsp" referids="portal">
 			<mm:param name="page">page_mmbasewebsites</mm:param>
-		</mm:url>">More MMBase websites &raquo;&raquo;</a></p></mm:last>
+	  </mm:url>">More MMBase websites &raquo;&raquo;</a></p>
+	  </div>
+	  <script language="JavaScript" type="text/javascript">
+	  <%= "<!--" %>
+	  function postSiteForm() {
+		  href = "index.jsp?portal=<mm:write referid="portal" />&amp;page=<mm:write referid="page" />";
+		  var news = document.sitesform.elements["news"].value;
+		  if (news != '') { 
+				  href += "&news=" + news;
+		  }
+		  document.location = href;
+	  }
+	  <%= "//-->" %>
+	  </script>
+	  </mm:last>
 	</mm:related>
+	
 <%-- ### /articles ### --%>
   </td>
   <td width="12"><img src="media/spacer.gif" alt="" border="0" width="12" height="1" /></td>
@@ -123,16 +145,16 @@
 	  </td>
 	</tr><tr>
 	  <td>
-	<mm:time time="today" id="ttoday" jspvar="ttoday" write="false" />
+	<mm:time time="today" id="ttoday" write="false" />
 	<mm:list nodes="$portal" 
 		path="portals,category,posrel,event,mmevents"
 		fields="category.number,event.number,event.title,mmevents.start" 
 		orderby="mmevents.start" directions="UP"
 		max="5" constraints="mmevents.start >= $ttoday">
-		<mm:first>
-		  <mm:field name="category.number" id="cat_nr" write="false" />
+		<mm:context><mm:first>
+		  <mm:field name="category.number" id="cat" write="false" />
 		  <%-- what is the agendapage of this category --%>
-		  <mm:list nodes="$cat_nr" path="category,pages" max="1"><mm:field name="pages.number" write="false" id="event_page" /></mm:list>
+		  <mm:list nodes="$cat" path="category,pages" max="1"><mm:field name="pages.number" write="false" id="event_page" /></mm:list>
 		  <h5>Coming soon</h5>
 		</mm:first>
 		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field><br />
@@ -146,7 +168,7 @@
 			<mm:present referid="event_page"><mm:param name="page"><mm:write referid="event_page" /></mm:param></mm:present>
 			<mm:notpresent referid="event_page"><mm:param name="page">page_agenda</mm:param></mm:notpresent>
 		  </mm:url>">Agenda &raquo;&raquo;</a></p>
-		</mm:last>
+		</mm:last></mm:context>
 	</mm:list>
 	  </td>
 	</tr><tr>
@@ -180,9 +202,8 @@
 </td>
 </tr>
 </table>
-</td>
-</tr><tr>
-<td valign="top" colspan="3">
+</div>
+
 <%-- logo's @ pagebottom --%>
 <mm:related path="posrel,organisation,posrel,images" searchdir="destination"
     fields="posrel.pos,organisation.number,organisation.name"
@@ -199,14 +220,8 @@
 	  <mm:last></div></mm:last>
 	</mm:node>
 </mm:related>
-</td>
-</tr><tr>
-<td colspan="3">
-&nbsp;
 </mm:node>
 </mm:notpresent>
-</td>
-<%@include file="/includes/footer.jsp"
-%></mm:cloud>
 
-<!-- END FILE: /mmbaseweb/templates/homepage_new.jsp -->
+<%@ include file="/includes/alterfooter.jsp"%>
+</mm:cloud>
