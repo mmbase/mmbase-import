@@ -83,8 +83,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 */
 	private String getXMLHeader() {
 		return	"<?xml version='1.0'?>\n" +
-			"<!DOCTYPE transactions SYSTEM \"file://" + MMBaseContext.getConfigPath() + 
-                        File.separator + "dtd" + File.separator + "transactions_1_0.dtd\">\n";
+			"<!DOCTYPE transactions PUBLIC \"-//MMBase//DTD transactions config 1.0//EN\" " + 
+                        "\"http://www.mmbase.org/dtd/transactions_1_0.dtd\">\n";
 	}
 	
 	/**
