@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.5 2002-04-12 08:49:49 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.6 2002-04-12 09:00:34 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -122,7 +122,6 @@ public class MMBaseServlet extends  HttpServlet {
                             List ls=(List)servletMappings.get(servName);
                             if (ls==null) ls=new Vector();
                             ls.add(pattern);
-                            log.info("map "+name+","+ls.toString());
                             servletMappings.put(name,ls);
                         }
                     }
@@ -131,7 +130,7 @@ public class MMBaseServlet extends  HttpServlet {
             } catch (Exception e) {
                 log.error(Logging.stackTrace(e));
             }
-            log.info("Loaded servlet mappings");
+            log.service("Loaded servlet mappings");
         }
 
 
@@ -151,7 +150,6 @@ public class MMBaseServlet extends  HttpServlet {
      */
     public static List getServletMappings(String servletName) {
         List ls=(List)servletMappings.get(servletName);
-        log.info("found associated "+servletName+","+ls);
         return ls;
     }
 
@@ -179,7 +177,6 @@ public class MMBaseServlet extends  HttpServlet {
      */
     public static String getServletByAssociation(String topic) {
         String servletName=(String)associatedServlets.get(topic);
-        log.info("found associated "+topic+","+servletName);
         return servletName;
     }
 
@@ -191,7 +188,6 @@ public class MMBaseServlet extends  HttpServlet {
      * @param servletname name of the servlet to associate with the topic
      */
     public static synchronized void associate(String topic, String servletName) {
-        log.info("associate "+topic+","+servletName);
         associatedServlets.put(topic,servletName);
     }
 
