@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.18 2003-12-19 12:56:39 michiel Exp $
+ * @version $Id: Queries.java,v 1.19 2004-01-07 09:38:56 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -52,14 +52,18 @@ public class Queries {
 
         {
             // the bridge test case say that you may also specifiy empty string (why?)
-            if ("".equals(startNodes))
+            if ("".equals(startNodes)) {
                 startNodes = null;
-            if ("".equals(fields))
+            }
+            if ("".equals(fields)) {
                 fields = null;
-            if ("".equals(constraints))
+            }
+            if ("".equals(constraints)) {
                 constraints = null;
-            if ("".equals(searchDir))
+            }
+            if ("".equals(searchDir)) {
                 searchDir = null;
+            }
             // check invalid search command
             Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
             // if(startNodes != null) startNodes = encoder.encode(startNodes);
