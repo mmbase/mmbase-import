@@ -18,10 +18,14 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Describing a function on a bridge Node, giving access to the underlying executeFunction of the MMObjectBuilder.
+ * Describing a function on a bridge Node, giving access to the underlying executeFunction of the
+ * MMObjectBuilder. The static methods of this class are factoring methods to create 
+ * {@link Function} instances. Instances of this class wrap 
+ * {@link org.mmbase.bridge.Node#getFunctionValue(String, List)}, which in turn wraps 
+ * {@link org.mmbase.module.core.MMObjectNode#getFunctionValue(String, List)}
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.2 2004-09-30 16:08:40 pierre Exp $
+ * @version $Id: NodeFunction.java,v 1.3 2004-11-02 18:35:32 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @since MMBase-1.7
@@ -31,16 +35,16 @@ public class NodeFunction extends Function {
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
 
     /**
-     * A cache, to avoid doing refliection on every function call on a Node.
+     * A cache, to avoid doing reflection on every function call on a Node.
      * nodemanager name -> Map, functioname-> Parameter[]
      */
     private static Map parameterConstants = new HashMap(); 
     
     /**
      * Utility function, which can be called from MMObjectBuilder implementations to implement their
-     * getParameters easily
+     * {@link org.mmbase.module.core.MMObjectBuilder#getParameterDefinition(String)} easily.
+     *
      */
-
     public static Parameter[] getParametersByReflection(Class claz, String name) {
         Map constants = (Map) parameterConstants.get(claz.getName());
         if (constants == null) {
@@ -51,6 +55,14 @@ public class NodeFunction extends Function {
 
     }
 
+
+    /**
+     * This method is called by {@link FunctionFactory}, to produce a Function for a Node. Currently
+     * it only uses {@link org.mmbase.module.core.MMObjectBuilder#getParameterDefinition(String)} to
+     * instantiate a NodeFunction object.
+     * @todo Kees requested something like MMObjectBuilder#getFunction(String), which would avoid executeFunction.
+     *       You could completely delegate the instancation of Function then.
+     */
     public static Function getFunction(Node node, String name) {
         // find the MMObjectBuilder belong to this node.
         // XXX the method should perhaps be on bridge's Node!
@@ -123,14 +135,26 @@ public class NodeFunction extends Function {
         
     }
 
+    /* ================================================================================
+       Instance methods 
+    */
+     
 
-
+    /**
+     * The node on which this function must be executed.
+     */
     private Node node;
-    public NodeFunction(String name, Parameter[] def, ReturnType returnType, Node node) {
+
+    protected NodeFunction(String name, Parameter[] def, ReturnType returnType, Node node) {
         super(name, def, returnType);
         this.node = node;
     }
 
+    /**
+     * {@inheritDoc}
+     * Simply wraps {@link org.mmbase.bridge.Node#getFunctionValue(String, List)}, which will end up in 
+     * {@link org.mmbase.module.core.MMObjectBuilder#executeFunction}.
+     */
     public Object getFunctionValue(Parameters arguments) {
         return node.getFunctionValue(name, arguments).get();
     }

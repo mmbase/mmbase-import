@@ -18,11 +18,12 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Describing a function from a global set.
+ * A SetFunction is a {@link Function} which is identified solely by two Strings: the name of the
+ * 'set' to which it belongs (see {@link FunctionSet}) and the name of the function.
  *
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
- * @version $Id: SetFunction.java,v 1.2 2004-09-20 17:52:29 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.3 2004-11-02 18:35:32 michiel Exp $
  * @since MMBase-1.8
  */
 public class SetFunction extends Function {
@@ -40,7 +41,9 @@ public class SetFunction extends Function {
 
 
     /**
-     * {@link org.mmbase.util.function.FunctionFactory#getFunction(String, String)}
+     * {@link FunctionFactory#getFunction(String, String)} 
+     * 
+     * This static factory method is delegated to {@link FunctionSets#getFunction(String, String)}.
      */
     public static Function getFunction(String set, String name) {        
 	return FunctionSets.getFunction(set, name);
@@ -61,7 +64,6 @@ public class SetFunction extends Function {
                 return null;
             }
 	}		
-
 	try {
             return functionMethod.invoke(functionInstance, arguments.toArray());			
 	} catch(Exception e) {
