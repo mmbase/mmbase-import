@@ -19,12 +19,12 @@ package org.mmbase.util;
  */
 public class StringCompare implements CompareInterface {
 
-	/** 
-	 * The compare function called by SortedVector to sort things
-	 * @see org.mmbase.util.SortedVector
-	 * @see org.mmbase.util.CompareInterface
-	 */
-	public int compare(Object thisone,Object other) {
-		return(((String)thisone).compareTo((String)other));
-	}
+    /**
+     * The compare function called by SortedVector to sort things
+     * @see org.mmbase.util.SortedVector
+     * @see org.mmbase.util.CompareInterface
+     */
+    public int compare(Object thisone,Object other) {
+        return(((String)thisone).compareTo((String)other));
+    }
 }
