@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.37.2.1 2004-08-25 14:36:58 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.37.2.2 2004-08-26 12:18:26 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -239,6 +239,18 @@ public class ImageCaches extends AbstractImages {
         super.removeNode(node);
 
     }
+
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        if (log.isDebugEnabled()) {            
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
+        }        
+        if (ctype.equals("d")) {            
+            handleCache.removeCacheNumber(Integer.parseInt(number));
+        }
+        return super.nodeLocalChanged(machine, number, builder, ctype);        
+    }
+
+
 
     /**
      * Returns the image format.
