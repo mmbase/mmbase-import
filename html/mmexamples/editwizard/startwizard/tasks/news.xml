@@ -24,13 +24,16 @@
     <list role="related" destination="people" minoccurs="0"  maxoccurs="3">
       <title>Authors</title>       
 
-      <command name="startwizard" inline="true"  wizardname="tasks/people" objectnumber="new" />	
-      <command name="startwizard" inline="false" wizardname="tasks/people" objectnumber="new" />
+      <command name="startwizard" wizardname="tasks/people" objectnumber="new" />
+      <command name="startwizard" inline="true"  wizardname="tasks/people" objectnumber="new">
+        <prompt>inline</prompt>
+      </command>
       <item>
         <fieldset>
           <field ftype="data" name="firstname" />
           <field ftype="data" name="lastname" />
-          <field ftype="startwizard" name="lastname" wizardname="tasks/people" />		
+          <field ftype="startwizard" wizardname="tasks/people" />		
+          <field ftype="startwizard" wizardname="tasks/people" inline="true"/>		
           <prompt>Name</prompt>
         </fieldset>
       </item>
