@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.37 2003-12-23 21:46:27 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.38 2003-12-29 15:33:36 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -149,6 +149,13 @@ function doSearch(el, cmd, sessionkey) {
         if (searchtype=="string") {
             constraints += fieldname+" = '%25"+searchterm+"%25'";
         } else if (searchtype=="like") {
+            var commaloc = fieldname.indexOf(','); 
+            while (commaloc > -1) {
+               var tmpfield = fieldname.substring(0, commaloc);
+               fieldname = fieldname.substring(commaloc + 1, fieldname.length);
+               constraints += "LOWER("+tmpfield+") LIKE '%25"+searchterm+"%25' OR ";
+               commaloc = fieldname.indexOf(','); 
+            }
             constraints += "LOWER("+fieldname+") LIKE '%25"+searchterm+"%25'";
         } else {
             if (searchterm=="") searchterm="0";
