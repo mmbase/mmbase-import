@@ -26,7 +26,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.14 2003-04-10 13:51:38 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.15 2003-04-11 09:22:42 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -220,10 +220,14 @@ public class BuilderWriter extends DocumentWriter  {
                 addContentElement("search",""+pos,poselm);
             }
 
-            if ((parentField==null) || (guielm!=null) || (poselm!=null)) {
+            if ((parentField==null) || (descelm!=null) || (guielm!=null) ||  (poselm!=null)) {
                 addComment("builder.field",fieldname,""+fielddef.getDBPos(),fieldlist);
                 Element field=document.createElement("field");
                 fieldlist.appendChild(field);
+                if (descelm!=null) {
+                    addComment("builder.field.descriptions",field);
+                    field.appendChild(descelm);
+                }
                 if (guielm!=null) {
                     addComment("builder.field.gui",field);
                     field.appendChild(guielm);
