@@ -50,7 +50,8 @@
 	</td></tr>
         <input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="changeforum">
-	<tr><th>&nbsp;</th><td align="middle" >
+	<tr><th>&nbsp;</th>
+<td align="middle" >
 	<input type="submit" value="<mm:write referid="mlg_Save"/>">
   	</form>
 	</td>
@@ -66,9 +67,161 @@
   	</form>
 	</td>
 	</tr>
-
 </table>
 </div>
+
+<mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="55%" align="center">
+  <tr><th colspan="3">Login instellingen</th></tr>
+  <form action="<mm:url page="index.jsp">
+        <mm:param name="forumid" value="$forumid" />
+				</mm:url>" method="post">
+        <input type="hidden" name="admincheck" value="true">
+	<input type="hidden" name="action" value="changeconfig">
+	<tr><th>Login Mode</th>
+		<td colspan="2"><select name="loginmodetype">
+		<mm:field name="loginmodetype">
+		<mm:compare value="open">
+		<option>open 
+		<option>closed
+		<option>default
+		</mm:compare>
+		<mm:compare value="closed">
+		<option>closed
+		<option>open 
+		<option>default
+		</mm:compare>
+		<mm:compare value="default">
+		<option>default
+		<option>closed
+		<option>open 
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>LogoutMode</th>
+		<td colspan="2"><select name="logoutmodetype">
+		<mm:field name="logoutmodetype">
+		<mm:compare value="open">
+		<option>open 
+		<option>closed
+		<option>default
+		</mm:compare>
+		<mm:compare value="closed">
+		<option>closed
+		<option>open 
+		<option>default
+		</mm:compare>
+		<mm:compare value="default">
+		<option>default
+		<option>closed
+		<option>open 
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>GuestReadMode</th>
+		<td colspan="2"><select name="guestreadmodetype">
+		<mm:field name="guestreadmodetype">
+		<mm:compare value="open">
+		<option>open 
+		<option>closed
+		<option>default
+		</mm:compare>
+		<mm:compare value="closed">
+		<option>closed
+		<option>open 
+		<option>default
+		</mm:compare>
+		<mm:compare value="default">
+		<option>default
+		<option>closed
+		<option>open 
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>GuestWriteMode</th>
+		<td colspan="2"><select name="guestwritemodetype">
+		<mm:field name="guestwritemodetype">
+		<mm:compare value="open">
+		<option>open 
+		<option>closed
+		<option>default
+		</mm:compare>
+		<mm:compare value="closed">
+		<option>closed
+		<option>open 
+		<option>default
+		</mm:compare>
+		<mm:compare value="default">
+		<option>default
+		<option>closed
+		<option>open 
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>AvatarUpload</th>
+		<td colspan="2"><select name="avatarsuploadenabled">
+		<mm:field name="avatarsuploadenabled">
+		<mm:compare value="true">
+		<option value="true">on
+		<option value="false">off
+		<option value="default">default
+		</mm:compare>
+		<mm:compare value="false">
+		<option value="false">off
+		<option value="true">on
+		<option value="default">default
+		</mm:compare>
+		<mm:compare value="default">
+		<option value="default">default
+		<option value="false">off
+		<option value="true">on
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+	<tr><th>AvatarGallery</th>
+		<td colspan="2"><select name="avatarsgalleryenabled">
+		<mm:field name="avatarsgalleryenabled">
+		<mm:compare value="true">
+		<option value="true">on
+		<option value="false">off
+		<option value="default">default
+		</mm:compare>
+		<mm:compare value="false">
+		<option value="false">off
+		<option value="true">on
+		<option value="default">default
+		</mm:compare>
+		<mm:compare value="default">
+		<option value="default">default
+		<option value="false">off
+		<option value="true">on
+		</mm:compare>
+		</mm:field>
+		</td>
+ 	</tr>
+  <th>&nbsp;</th>
+<td align="middle" >
+	<input type="submit" value="<mm:write referid="mlg_Save"/>">
+  	</form>
+	</td>
+  <td>
+  	<form action="<mm:url page="index.jsp">
+        <mm:param name="forumid" value="$forumid" />
+	</mm:url>"
+ 	method="post">
+	<p />
+	<center>
+	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+  </form>
+  </td>
+  </tr>
+</table>
+</mm:nodefunction>
 
 <div class="footer">
 </div>
