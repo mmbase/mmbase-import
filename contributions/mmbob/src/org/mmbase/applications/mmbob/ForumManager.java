@@ -37,12 +37,7 @@ public class ForumManager {
     private static Hashtable forumnamecache=new Hashtable();
     private static ForumMMBaseSyncer syncfast,syncslow;
     private static ForumSwapManager swapmanager;
-    private static String defaultaccount, defaultpassword;
-    private static HashMap fieldaliases=new HashMap();
-
-    private static int quotamax = 100;
-    private static int quotasoftwarning = 60;
-    private static int quotawarning = 80;
+    private static ForumsConfig config;
 
     public static final int FASTSYNC = 1;
     public static final int SLOWSYNC = 2;
@@ -258,20 +253,15 @@ public class ForumManager {
      * @return
      */
     protected static Map getNamePassword(String id) {
-        Map user = new HashMap();
-        if (id.equals("default")) {
-            user.put("username", defaultaccount);
-            user.put("password", defaultpassword);
-        }
-        return user;
+	return config.getNamePassword(id);
     }
 
     public static String getDefaultPassword() {
-	return defaultpassword;
+	return config.getDefaultPassword();
     }
 
     public static String getDefaultAccount() {
-	return defaultaccount;
+	return config.getDefaultAccount();
     }
 
     /**
@@ -297,126 +287,11 @@ public class ForumManager {
             XMLBasicReader reader = new XMLBasicReader(filename, ForumManager.class);
             if (reader != null) {
 // decode forums
-                for (Enumeration ns = reader.getChildElements("mmbobconfig", "forum"); ns.hasMoreElements();) {
+                for (Enumeration ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasMoreElements();) {
                     Element n = (Element) ns.nextElement();
-                    NamedNodeMap nm = n.getAttributes();
-                    if (nm != null) {
-                        String id = "default";
-                        String account = "admin";
-                        String password = "admin2k";
-// decode name
-                        org.w3c.dom.Node n3 = nm.getNamedItem("id");
-                        if (n3 != null) {
-                            id = n3.getNodeValue();
-                        }
-// decode account
-                        n3 = nm.getNamedItem("account");
-                        if (n3 != null) {
-                            account = n3.getNodeValue();
-                        }
-// decode password
-                        n3 = nm.getNamedItem("password");
-                        if (n3 != null) {
-                            password = n3.getNodeValue();
-                        }
-                        //log.info("ID="+id+" account="+account+" password="+password);
-                        if (id.equals("default")) {
-                            defaultaccount = account;
-                            defaultpassword = password;
-                        }
-
-                        for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
-                            Element n2 = (Element) ns2.nextElement();
-                            nm = n2.getAttributes();
-                            if (nm != null) {
-                                String role = null;
-                                String dfile = null;
-                                String tokenizer = null;
-                                n3 = nm.getNamedItem("role");
-                                if (n3 != null) {
-                                    role = n3.getNodeValue();
-                                }
-                                n3 = nm.getNamedItem("file");
-                                if (n3 != null) {
-                                    dfile = n3.getNodeValue();
-                                }
-                                n3 = nm.getNamedItem("tokenizer");
-                                if (n3 != null) {
-                                    tokenizer = n3.getNodeValue();
-                                }
-                                org.mmbase.applications.mmbob.generate.Handler.setGenerateFile(role, dfile, tokenizer);
-                            }
-                        }
-
-                        for (Enumeration ns2 = reader.getChildElements(n, "quota"); ns2.hasMoreElements();) {
-                            Element n2 = (Element) ns2.nextElement();
-                            nm = n2.getAttributes();
-                            if (nm != null) {
-                                String max = null;
-                                String softwarning = null;
-                                String warning = null;
-                                n3 = nm.getNamedItem("max");
-                                if (n3 != null) {
-                                   setQuotaMax(n3.getNodeValue());
-                                }
-                                n3 = nm.getNamedItem("softwarning");
-                                if (n3 != null) {
-                                   setQuotaSoftWarning(n3.getNodeValue());
-                                }
-                                n3 = nm.getNamedItem("warning");
-                                if (n3 != null) {
-                                    setQuotaWarning(n3.getNodeValue());
-                                }
-                            }
-                        }
-
-                        for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
-                                   	Element n2=(Element)ns2.nextElement();
-                                        	nm=n2.getAttributes();
-                                		if (nm!=null) {
-							String object=null;
-							String extern=null;
-							String field=null;
-							String externfield=null;
-							String key=null;
-							String externkey=null;
-                                        		n3=nm.getNamedItem("object");
-                                        		if (n3!=null) {
-                                                		object=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("extern");
-                                        		if (n3!=null) {
-                                                		extern=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("field");
-                                        		if (n3!=null) {
-                                                		field=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("externfield");
-                                        		if (n3!=null) {
-                                                		externfield=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("key");
-                                        		if (n3!=null) {
-                                                		key=n3.getNodeValue();
-                                        		}
-                                        		n3=nm.getNamedItem("externkey");
-                                        		if (n3!=null) {
-                                                		externkey=n3.getNodeValue();
-                                        		}
-							id="default."+object+"."+field;
-							FieldAlias fa=new FieldAlias(id);
-							fa.setObject(object);
-							fa.setExtern(extern);
-							fa.setField(field);
-							fa.setExternField(externfield);
-							fa.setKey(key);
-							fa.setExternKey(externkey);
-							fieldaliases.put(id,fa);
-						}
-					}
-
-                    }
+		    if (n != null) {
+			config =  new ForumsConfig(reader,n);
+		    }
                 }
             }
         }
@@ -439,7 +314,7 @@ public class ForumManager {
    * get aliased version of this field
    */
    public static String getAliased(org.mmbase.bridge.Node node,String key) {
-        FieldAlias fa=(FieldAlias)fieldaliases.get(key);
+        FieldAlias fa=(FieldAlias)config.getFieldaliases().get(key);
         if (fa!=null) {
                 return fa.getValue(node);
         }
@@ -447,48 +322,53 @@ public class ForumManager {
    }
 
    public static void setQuotaMax(String maxs) {
-	try {
-		quotamax=Integer.parseInt(maxs);
-		log.info("SET MAX="+quotamax);
-	} catch (Exception e) {
-		log.error("illegal (non number) value set for quota max");
-	}
+	config.setQuotaMax(maxs);
    }
 
 
    public static void setQuotaMax(int max) {
-	quotamax=max;
+	config.setQuotaMax(max);
    }
 
    public static void setQuotaSoftWarning(String sws) {
-	try {
-		quotasoftwarning=Integer.parseInt(sws);
-		log.info("SET quotasoftwarning="+quotasoftwarning);
-	} catch (Exception e) {
-		log.error("illegal (non number) value set for quota softwarning");
-	}
+	config.setQuotaSoftWarning(sws);
    }
 
 
    public static void setQuotaWarning(String ws) {
-	try {
-		quotawarning=Integer.parseInt(ws);
-		log.info("SET quotawarning="+quotawarning);
-	} catch (Exception e) {
-		log.error("illegal (non number) value set for quota warning");
-	}
+	config.setQuotaWarning(ws);
    }
 
    public static int getQuotaMax() {
-	return quotamax;
+	return config.getQuotaMax();
    }
 
    public static int getQuotaSoftWarning() {
-	return quotasoftwarning;
+	return config.getQuotaSoftWarning();
    }
 
    public static int getQuotaWarning() {
-	return quotawarning;
+	return config.getQuotaWarning();
+   }
+
+   public static ForumConfig getForumConfig(String name) {
+	return config.getForumConfig(name);
+   }
+
+   public static String getAccountCreationType() {
+       return config.getAccountCreationType();
+   }
+
+   public static String getAccountRemovalType() {
+       return config.getAccountRemovalType();
+   }
+
+   public static String getLoginModeType() {
+       return config.getLoginModeType();
+   }
+
+   public static String getLogoutModeType() {
+       return config.getLogoutModeType();
    }
 
 }

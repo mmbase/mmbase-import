@@ -57,6 +57,8 @@ public class Forum {
     private Vector onlineposters = new Vector();
     private Vector newposters = new Vector();
 
+    private ForumConfig config;
+
     /**
      * Constructor
      *
@@ -80,6 +82,10 @@ public class Forum {
         this.lastposttime = node.getIntValue("c_lastposttime");
         this.lastposternumber=node.getIntValue("lastposternumber");
         this.lastpostnumber=node.getIntValue("lastpostnumber");
+
+	// get out config node
+	config = ForumManager.getForumConfig(name);
+	log.info("MY CONFIG = "+config);
 
         // read postareas
         preCachePosters();
@@ -913,6 +919,57 @@ public class Forum {
    public String getAliased(org.mmbase.bridge.Node node,String key) {
         String value=ForumManager.getAliased(node,"default."+key);
         return value;
+   }
+
+   public PostAreaConfig getPostAreaConfig(String name) {
+	if (config != null) {
+        	return config.getPostAreaConfig(name);
+	} else {
+		return null;
+	}
+   }
+
+   public String getAccountCreationType() {
+	if (config != null) {
+		String tmp = config.getAccountCreationType();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return ForumManager.getAccountCreationType();
+   }
+
+
+   public String getAccountRemovalType() {
+	if (config != null) {
+		String tmp = config.getAccountRemovalType();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return ForumManager.getAccountRemovalType();
+   }
+
+
+   public String getLoginModeType() {
+	if (config != null) {
+		String tmp = config.getLoginModeType();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return ForumManager.getLoginModeType();
+   }
+
+
+   public String getLogoutModeType() {
+	if (config != null) {
+		String tmp = config.getLogoutModeType();
+        	if (tmp != null) {
+               	 	return tmp;
+        	}
+	}
+        return ForumManager.getLogoutModeType();
    }
 
 
