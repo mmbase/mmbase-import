@@ -46,7 +46,7 @@ public class DayMarkers extends MMObjectBuilder {
 		if (setmarker) return;
 		int max=-1;
 		int mday=-1;
-		//System.out.println("Daymarker -> DAY="+day);
+		System.out.println("Daymarker -> DAY="+day);
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -79,7 +79,7 @@ public class DayMarkers extends MMObjectBuilder {
 				e.printStackTrace();
 			}
 		} else {
-			//System.out.println("DayMarker marker already exists "+day);
+			System.out.println("DayMarker marker already exists "+day);
 		}
 		setmarker=true;
 	}

@@ -38,8 +38,6 @@ public class LStreams extends MMObjectBuilder {
 	public boolean init() {	//This method is called when the server has been restarted.
 		String methodname = "init";
 		if (super.init()) {
-			//System.out.println(buildername+": "+methodname+": Server has been restarted.");
-  	
 			MMObjectNode lstreamsnode=null;  	//Temporary lstreamsnode containing al the DB fields.
 			String channelname=null;
 			String streamsoptions=null;
