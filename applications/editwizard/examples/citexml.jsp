@@ -1,16 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<%@page language="java" contentType="text/html;charset=UTF-8" 
+<%@page language="java" contentType="text/html;charset=UTF-8"  session="false"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
+%><mm:content type="text/xml">
 <mm:import externid="page" required="true" />
-<head>
-   <title>EditWizard Examples - XML Shower - <mm:write referid="page" /></title>
-</head>
-<body>
-<pre>
-<mm:formatter format="escapexmlpretty">
-  <mm:include cite="true" page="$page" />
-</mm:formatter>
-</pre>
-</body>
-</html>
+<mm:include cite="true" page="$page" />
+</mm:content>
