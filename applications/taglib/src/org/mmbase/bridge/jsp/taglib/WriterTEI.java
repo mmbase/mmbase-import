@@ -15,15 +15,14 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 
 
 /**
-* The Export tag exports one jsp variable. Some other tags, such as
-* CloudTag and NodeProviders can also export jsp variables by
-* themselves.
-*
-* @author Michiel Meeuwissen
-*/
-public class WriteTEI extends TagExtraInfo {
+ * Writer tags can also produce a jsp variable, for use in the
+ * body. This is the TEI class which is needed for that.
+ *
+ * @author Michiel Meeuwissen 
+ **/
+public class WriterTEI extends TagExtraInfo {
     
-    public WriteTEI() { 
+    public WriterTEI() { 
         super(); 
     }
 
@@ -45,21 +44,25 @@ public class WriteTEI extends TagExtraInfo {
             String typeAttribute    = (String) data.getAttribute("type"); 
             if (typeAttribute == null) typeAttribute = defaultType();           
             String type;
-            switch (WriteTag.stringToType(typeAttribute)) {
-            case WriteTag.TYPE_OBJECT:
+            switch (WriterHelper.stringToType(typeAttribute)) {
+            case WriterHelper.TYPE_OBJECT:
                 type = "java.lang.Object"; break;
-            case WriteTag.TYPE_STRING:
+            case WriterHelper.TYPE_STRING:
                 type = "java.lang.String"; break;
-            case WriteTag.TYPE_NODE:
+            case WriterHelper.TYPE_NODE:
                 type = "org.mmbase.bridge.Node"; break;
-            case WriteTag.TYPE_INTEGER:
+            case WriterHelper.TYPE_INTEGER:
                 type = "java.lang.Integer"; break;
-            case WriteTag.TYPE_VECTOR:// deprecated
+            case WriterHelper.TYPE_VECTOR:// deprecated
                 type = "java.util.Vector"; break;
-            case WriteTag.TYPE_LIST:
+            case WriterHelper.TYPE_LIST:
                 type = "java.util.List"; break;
-            case WriteTag.TYPE_BYTES:
-                type = "bytes"; break;// not supported 
+            case WriterHelper.TYPE_BYTES:
+                type = "[B"; break; 
+                // this doesn't work like this...
+                // How it does??
+
+                //Class.forName("[B").getName(); break;
             default:
                 //type = "java.lang.Object"; 
                 throw new RuntimeException("Unknown type '" + typeAttribute + "'");
