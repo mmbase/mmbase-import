@@ -559,6 +559,7 @@ public class MMObjectNode {
      * @return the field's value as an <code>int</code>
      */
     public MMObjectNode getNodeValue(String fieldname) {
+        if (fieldname==null || fieldname.equals("number")) return this;
         MMObjectNode res=null;
         Object i=getValue(fieldname);
         if (i instanceof MMObjectNode) {
