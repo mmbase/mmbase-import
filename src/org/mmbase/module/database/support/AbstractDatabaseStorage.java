@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.1 2002-04-08 12:21:31 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.2 2002-04-09 09:47:52 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -104,11 +104,9 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         setPrimaryKeyScheme(document.getPrimaryKeyScheme());
         setNotNullScheme(document.getNotNullScheme());
         setKeyScheme(document.getKeyScheme());
-//        XXX: not yet supported: getForeignKeyScheme
-//        setForeignKeyScheme(document.getForeignKeyScheme());
+        setForeignKeyScheme(document.getForeignKeyScheme());
         setCreateScheme(document.getCreateScheme());
-//        XXX: not yet supported: setCreateExtendedScheme
-//        setCreateExtendedScheme(document.getCreateExtendedScheme());
+        setCreateExtendedScheme(document.getCreateExtendedScheme());
         setMaxDropSize(document.getMaxDropSize());
     }
 
@@ -563,12 +561,8 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
             keyType=KEY_PRIMARY;
         } else if (field.isKey()) {
             keyType=KEY_SECONDARY;
-        } else if (name.equals("otype") || name.equals("snumber") || name.equals("dnumber") ||
-                   name.equals("rnumber")) {
-            // add code to determine foreign keys.
-            // should be fixed in FielDDEfs. temporary hack
-            // is checking on known foreign keys: otype, snumber,dnumber,rnumber
-            keyType=KEY_FOREIGN;
+        // Have to find a correct way to create foreign keys
+        // best will be to add a nieuw FieldDefs type
         } else if (field.getDBNotNull()) {
             keyType=KEY_NOTNULL;
         }
