@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.2 2002-04-09 15:38:03 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.3 2002-04-10 09:34:11 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -136,7 +136,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         if (scheme==null) {
             // maybe we should throw an exception instead?
             if (supportsExtendedTables() && (parentTableName!=null)) {
-                scheme="CREATE TABLE "+tableName+" ("+fieldDefinitions+") EXTENDS ("+parentTableName+")";
+                scheme="CREATE TABLE "+tableName+" ("+fieldDefinitions+") INHERITS ("+parentTableName+")";
             } else {
                 scheme="CREATE TABLE "+tableName+" ("+fieldDefinitions+")";
             }
