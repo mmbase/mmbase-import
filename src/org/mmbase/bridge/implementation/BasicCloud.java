@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.57 2002-05-07 15:32:53 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.58 2002-05-16 14:59:59 eduard Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -123,7 +123,7 @@ public class BasicCloud implements Cloud, Cloneable {
         org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
         if (uc == null) {
             String message;
-            message = "Login invalid.";
+            message = "Login invalid (login-module: " + application + ")";
             log.error(message);
             throw new BridgeException(message);
         }
