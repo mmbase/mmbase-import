@@ -24,6 +24,7 @@ import org.w3c.dom.*;
 import org.mmbase.util.logging.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
+import org.mmbase.bridge.Node;
 
 public class Casting {
     private static Logger log = Logging.getLoggerInstance(Casting.class.getName());
@@ -43,6 +44,8 @@ public class Casting {
             } else if(o instanceof MMObjectNode) {
                 //
                 return ""+((MMObjectNode)o).getNumber();
+            } else if(o instanceof Node) {
+                return ""+((Node)o).getNumber();
             } else if (o instanceof Document) {
                 // doctype unknown.
                 return convertXmlToString(null, (Document) o );

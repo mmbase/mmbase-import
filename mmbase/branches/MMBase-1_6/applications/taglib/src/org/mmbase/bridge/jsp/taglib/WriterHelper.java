@@ -18,6 +18,8 @@ import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.util.Casting; // not used enough
+
 
 /**
  * Tags that are Writers can use the this class. It's a pitty that
@@ -142,7 +144,7 @@ public class WriterHelper  {
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         switch (vartype) { 
-            // these accept a value == null (meaning that there are empty)
+            // these accept a value == null (meaning that they are empty)
         case TYPE_LIST:
             if (v instanceof java.lang.String) {
                 if (! "".equals(value)) {
@@ -221,8 +223,8 @@ public class WriterHelper  {
             }
             break;
         case TYPE_STRING:
-            if (! (v instanceof String)) {
-                value = v.toString();
+            if (! (v instanceof String)) {                
+                value = Casting.toString(v);
                 return;
             } 
             break;
