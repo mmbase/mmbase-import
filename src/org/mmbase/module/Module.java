@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.61 2005-03-16 13:09:19 pierre Exp $
+ * @version $Id: Module.java,v 1.62 2005-03-16 19:16:28 michiel Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -392,10 +392,10 @@ public abstract class Module extends FunctionProvider {
      * @return A HashTable with <module-name> --> Module-instance
      * @scope  private (only called from getModule)
      */
-    public static synchronized Hashtable loadModulesFromDisk() {
+    private static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
         ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
-        Collection modules = rl.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
+        Collection modules = rl.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
         log.info("In " + rl + " the following module XML's were found " + modules);
         Iterator i = modules.iterator();
         while (i.hasNext()) {
