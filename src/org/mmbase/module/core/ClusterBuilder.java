@@ -19,6 +19,7 @@ import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.QueryConvertor;
 import org.mmbase.util.logging.*;
+import org.mmbase.bridge.NodeQuery; //jikes!
 
 /**
  * ClusterBuilder is a builder which creates 'virtual' nodes.
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.46 2003-09-10 11:11:20 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.47 2003-09-16 20:21:58 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -159,25 +160,26 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     public String getGUIIndicator(MMObjectNode node) {
         // Return "name"-field when available.
-        String s= node.getStringValue("name");
+        String s = node.getStringValue("name");
         if (s != null) {
             return s;
         }
 
         // Else "name"-fields of contained nodes.
-        s= "";
+        StringBuffer sb = new StringBuffer();
         for (Enumeration i= node.values.keys(); i.hasMoreElements();) {
             String key= (String)i.nextElement();
             if (key.endsWith(".name")) {
-                if (s.length() != 0)
-                    s += ", ";
-                s += node.values.get(key);
+                if (s.length() != 0) {
+                    sb.append(", ");
+                }
+                sb.append(node.values.get(key));
             }
         }
-        if (s.length() > 15) {
-            return s.substring(0, 12) + "...";
+        if (sb.length() > 15) {
+            return sb.substring(0, 12) + "...";
         } else {
-            return s;
+            return sb.toString();
         }
     }
 
@@ -529,7 +531,8 @@ public class ClusterBuilder extends VirtualBuilder {
 
 
     /**
-     * Executes query, returns results as {@link ClusterNode clusternodes}.
+     * Executes query, returns results as {@link ClusterNode clusternodes} or MMObjectNodes if the
+     * query is a Node-query.
      *
      * @param query The query.
      * @return The clusternodes.
@@ -543,7 +546,13 @@ public class ClusterBuilder extends VirtualBuilder {
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Execute query, return results.
 
-        return mmb.getDatabase().getNodes(query, this);
+        if (query instanceof NodeQuery) {
+            List results = mmb.getDatabase().getNodes(query, this);
+            processSearchResults(results);
+            return results;
+        } else {
+            return mmb.getDatabase().getNodes(query, this);
+        }
     }
 
     /**
