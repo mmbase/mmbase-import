@@ -1,5 +1,5 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list fdatapath="relation[@role='related']/object[@type='metadata']/relation[@role='posrel']/object[@type='metalangstring']/../.." role="related" minoccurs="0" maxoccurs="*">
+<list fdatapath="relation[@role='related']/object[@type='metadata']/relation[@role='posrel']/object[@type='metalangstring']/../.." fparentdatapath="../object" role="related" minoccurs="0" maxoccurs="*">
   <title>Bijbehorende Metadata (Tekenreeks)</title>
   <item>
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/../../relation[@role='related']/object[@type='metadefinition']/field[@name='name']" ftype="data">
@@ -15,17 +15,27 @@
       <prompt>Handler</prompt>
     </field>
 
-    <list extends="list/metalangstring.xml"/>
+    <list extends="list/metalangstring.xml"><action type="delete"/></list>
   </item>
  
 
-  <action type="create">
+ <action type="delete"/>
+ <!-- <action type="create">
     <relation destinationtype="metadata" role="related">
       <object type="metadata">
         <relation destinationtype="metadefinition" role="related"/>
         <relation destinationtype="metavalue" role="posrel"/>
       </object>
     </relation>
+  </action>-->
+
+  <action type="add">   
+    <relation destinationtype="metadata" role="related">
+      <object type="metadata">
+        <relation destinationtype="metadefinition" role="related"/>
+        <relation destinationtype="metavalue" role="posrel"/>
+      </object>
+     </relation>
   </action>
 
   <action type="load">
