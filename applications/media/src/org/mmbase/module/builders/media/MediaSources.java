@@ -372,7 +372,7 @@ public class MediaSources extends MMObjectBuilder {
         
         log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
         // Get the protocol and the hostinfomation of the provider.
-        String providerinfo = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl");
+        String providerinfo = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl")+ mediaProvider.getStringValue("rootpath");
         return providerinfo+mediaUrlComposer.getUrl(mediasource, info);
     }
     
@@ -403,17 +403,17 @@ public class MediaSources extends MMObjectBuilder {
      * @return the format
      */
     public static String convertNumberToFormat(int format) {
-        if (format >= formats.length || format < 0) { 
+        if (format >= formats.length+1 || format < 1) { 
             return "undefined";
         } else {
-            return formats[format];
+            return formats[format-1];
         }
     }
     
     public static int convertFormatToNumber(String format) {
         format = format.toLowerCase();
         for (int i = 0; i < formats.length; i++) {
-            if(format.equals(formats[i])) return i;
+            if(format.equals(formats[i])) return i+1;
         }
         log.error("Cannot convert format ("+format+") to number");
         return -1;
@@ -429,6 +429,7 @@ public class MediaSources extends MMObjectBuilder {
         log.error("Cannot convert codec ("+codec+") to number");
         return -1;
     }
+    
     public static String convertNumberToCodec(int codec) {
         switch(codec) {
             case VORBIS_CODEC: return "vorbis";
