@@ -16,6 +16,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18 2002-10-23 08:13:48 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.19 2002-11-27 12:41:14 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -459,6 +460,24 @@ public class ClusterBuilder extends VirtualBuilder {
         }
     }
 
+    /**
+     * Executes query, returns results as {@link ClusterNode clusternodes}.
+     *
+     * @param query The query.
+     * @return The clusternodes.
+     * @throws org.mmbase.storage.search.SearchQueryException 
+     *         When an exception occurred while retrieving the results.
+     * @since MMBase-1.7
+     * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
+     */
+    public List getClusterNodes(SearchQuery query) throws SearchQueryException {
+        
+        // TODO (later): implement maximum set by maxNodesFromQuery?
+        
+        // Execute query, return results.
+        return mmb.getDatabase().getNodes(query, this);
+    }
+    
     /**
      * Stores the tables/builder names used in the request for each field to return.
      * @param fields the list of requested fields
