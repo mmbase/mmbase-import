@@ -24,6 +24,11 @@ import javax.servlet.http.*;
  */
 public class HttpAuth {
 
+	public String 	classname = getClass().getName();
+	public boolean  debug		= false;
+	public static void debug( String msg ) { System.out.println( "org.mmbase.util.HttpAuth:"+ msg ); }
+	// public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
     public static final int SC_OK = 200;
     public static final int SC_CREATED = 201;
     public static final int SC_ACCEPTED = 202;
@@ -64,7 +69,7 @@ public class HttpAuth {
 		for (Enumeration e=accounts.keys();e.hasMoreElements();) {
 			String key=(String)e.nextElement();
 			String value=(String)accounts.get(key);
-			//System.out.println("name="+key+"=Basic "+Base64.encode(key+" "+value));
+			//debug("name="+key+"=Basic "+Base64.encode(key+" "+value));
 			results.put("Basic "+Base64.encode(key+":"+value),key);
 		}
 		return(results);
@@ -86,7 +91,7 @@ public class HttpAuth {
 
 	public static boolean checkUser(String wname,String mimeline) {
 		String name=(String)p_base64.get(mimeline);
-		//System.out.println(p_base64);
+		//debug(p_base64);
 		if (name!=null && name.equals(wname)) { 
 			return(true);
 		} else {
@@ -103,8 +108,8 @@ public class HttpAuth {
 		return(false);
 
 		// mimeline=mimeline.substring(mimeline.indexOf(' ')+1);
-		//System.out.println(mimeline);
-		//System.out.println(Base64.decode(mimeline));
+		//debug(mimeline);
+		//debug(Base64.decode(mimeline));
 		/*
 		if (name!=null && name.equals(wname)) { 
 			return(true);
@@ -123,14 +128,14 @@ public class HttpAuth {
 	 */
 	public static String getAuthorization(HttpServletRequest req,HttpServletResponse res,String server, String level) throws AuthorizationException, NotLoggedInException {
 	
-		//System.out.println("BASE="+p_base64);
+		//debug("BASE="+p_base64);
 		if (p_base64==null) {
 			p_base64=readPasswordFromDisk();
 		}
-		//System.out.println("BASE2="+p_base64);
+		//debug("BASE2="+p_base64);
 
         String passwd = ((String)req.getHeader("Authorization"));
-		//System.out.println("passwd="+passwd);
+		//debug("passwd="+passwd);
 
 		/** Is user authorized yet? **/
         if (passwd==null) {
@@ -138,7 +143,7 @@ public class HttpAuth {
 				res.setHeader("WWW-Authenticate","Basic realm=\""+server+"\"");
 				throw new NotLoggedInException("Not logged in Exception (Generate page)");
 		} else {
-			//System.out.println("passwd="+passwd);
+			//debug("passwd="+passwd);
 			/** Get name from user **/
 			String name=getLoginName(passwd);
 
@@ -170,7 +175,7 @@ public class HttpAuth {
 
 
 	static boolean checkLocal(String name, String area, String passwd, String level) {
-		System.out.println("performing a remore check at : "+checklocalurl+" for "+name);
+		debug("checkLocal("+name+","+area+", ... , "+level+"): checking remote("+checklocalurl+") for name("+name+")");
 		String passwd2=(String)LocalCache.get(name+area);
 		if(passwd2==null) { // Not in cache so retrieve
 			try {
@@ -226,7 +231,7 @@ public class HttpAuth {
 		} catch(IOException e) {
 			return(-1);
 		} //catch (Exception e) { }
-		//System.out.println("Send "+line);
+		//debug("Send "+line);
 		return(len);
 	}
 
@@ -270,14 +275,14 @@ public class HttpAuth {
 			try {
 				name=decodedline.substring(0,decodedline.indexOf(':'));
 			} catch (Exception e) {
-				System.out.println(decodedline);
+				debug("getLoginName(): Exception: while decoding("+decodedline+"): " + e);
 			}
 			newobject = new Hashtable();	
 			newobject.put("base64",mimel.substring(mimel.indexOf(' ')+1));
 			if (mimel!=null && name!=null) {
 				p_base64.put(mimel.substring(mimel.indexOf(' ')+1),name);
 			} else {
-				//System.out.println("auth.java: no mimeline for "+name+" dec="+decodeline);
+				//debug("auth.java: no mimeline for "+name+" dec="+decodeline);
 			}
 		}
 		return(name);
@@ -285,9 +290,9 @@ public class HttpAuth {
 
 	public static void setLocalCheckUrl(String url) {
 		if (checklocalurl!=null) {
-			System.out.println("HpptAuth -> SetLocalUrl ALLREADY SET !!!!");
+			debug("setLocalCheckUrl("+url+"): SetLocalUrl ALLREADY SET !!!!");
 		} else {
-			System.out.println("HpptAuth -> SetLocalUrl to "+url);
+			debug("setLocalUrl("+url+"): url is set to local");
 			checklocalurl=url;
 		}
 	}
