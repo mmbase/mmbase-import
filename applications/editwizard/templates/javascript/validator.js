@@ -3,17 +3,24 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.14 2003-05-26 14:54:35 pierre Exp $
+ * @version  $Id: validator.js,v 1.15 2003-07-15 17:37:24 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
+ * @author   Michiel Meeuwissen
  */
+
+// formValid administrates the states of all other form-entries
+// when leaving a form-entry, it is set to null, to indicate that it must be determined again
+var formValid = null;
 
 //constructor
 function Validator() {
-    //properties
-
+    //properties     
     //methods
+
 }
+
+
 
 Validator.prototype.attach = attach_validator;
 Validator.prototype.detach = detach_validator;
@@ -34,9 +41,20 @@ function detach_validator(element) {
 
 function validate_validator(event, el) {
     // called from html: when user pressed a key or leaves a field.
+
     if (!el) var el = event.srcElement || event.target;
-    validateElement_validator(el);
-    doValidateAndUpdateButtons();
+
+    if (event.type == "blur") {
+       formValid == null;
+	   doValidateAndUpdateButtons();
+    } else {
+       if (formValid == null) {
+          formValid = doValidateForm(el);
+       }
+       var valid = formValid && validateElement_validator(el);
+	   doValidateAndUpdateButtons(valid);
+    }
+
 }
 
 function getToolTipValue(el,attribname,defaultvalue,param) {
@@ -52,8 +70,9 @@ function getToolTipValue(el,attribname,defaultvalue,param) {
 //
 function makeArray()    {
     this[0] = makeArray.arguments.length;
-    for (i = 0; i<makeArray.arguments.length; i++)
+    for (i = 0; i<makeArray.arguments.length; i++) {
         this[i+1] = makeArray.arguments[i];
+    }
 }
 
 var daysofmonth   = new makeArray( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
@@ -91,6 +110,7 @@ function validateElement_validator(el, silent) {
     var v = getValue_validator(el);
     var err = "";
 
+	
     if (el.dtpattern) {
         var re = new RegExp(el.dtpattern);
         if (!v.match(re)) err += getToolTipValue(form,'message_pattern', "the value {0} does not match the required pattern", v);
@@ -101,14 +121,17 @@ function validateElement_validator(el, silent) {
 
     switch (dttype) {
         case "string":
-            minlength=el.getAttribute("dtminlength");
-            if ((minlength!=null) && (minlength!="") && (v.length < 1*minlength))
-                err += getToolTipValue(form,'message_minlength',
-                           "value must be at least {0} characters", minlength);
-            maxlength=el.getAttribute("dtmaxlength");
-            if ((maxlength!=null) && (maxlength!="") && (v.length > 1*maxlength))
-                err += getToolTipValue(form,'message_maxlength',
-                           "value must be at most {0} characters", maxlength);
+
+            minlength = el.getAttribute("dtminlength");
+            if ((minlength != null) && (minlength!="") && (v.length < minlength)) {
+                err += getToolTipValue(form,'message_minlength', "value must be at least {0} characters", minlength);
+				break;
+            }				
+            maxlength = el.getAttribute("dtmaxlength");
+            if ((maxlength != null) && (maxlength!="") && (v.length > maxlength)) {
+                err += getToolTipValue(form,'message_maxlength', "value must be at most {0} characters", maxlength);
+            }
+
             break;
         case "int":
             if (isNaN(v) || parseInt(v)==null) err += "value '" + v + "' is not a valid integer number";
@@ -224,31 +247,41 @@ function validateElement_validator(el, silent) {
             } catch(e) {}
         }
     }
-
+	
     return err.length == 0; // true == valid, false == invalid
 }
 
-function doValidateForm() {
-    var invalid=false;
+
+function doValidateForm(el) {
+    // checks if the other elements of this form are valid
+
+    //    alert("validating form " + el);
+    var invalid = false;
     form = document.forms["form"];
-
-        if (form.getAttribute("invalidlist")!="") {
-           invalid = true;
+    if (form.getAttribute("invalidlist") != "") {
+        return false;
     }
-
-    for (var i=0; i<form.elements.length; i++) {
+    for (var i=0; i < form.elements.length; i++) {
         var elem = form.elements[i];
-
+        if (elem == el) continue;
         //handle complex data types
         var dttype = elem.getAttribute("dttype");
         invalid = invalid || (!validator.validateElement(elem, true));
+        if (invalid) break;
     }
     return (!invalid);
 }
 
-function doValidateAndUpdateButtons() {
-    // check if current form is valid.
-    var valid = doValidateForm();
+
+
+function doValidateAndUpdateButtons(valid) {
+    // marks current form valid or not
+	//
+
+    if (valid == null) {
+        valid = doValidateForm(null);
+    }
+
     var curform = document.forms[0].elements['curform'].value;
     var savebut = document.getElementById("bottombutton-save");
     var stepbut = document.getElementById("step-" + curform);
@@ -274,7 +307,7 @@ function doValidateAndUpdateButtons() {
     if (allvalid) {
         savebut.className = "bottombutton";
         var usetext = getToolTipValue(savebut,"titlesave",
-                          "Stores all changes.");
+                         "Stores all changes.");
         savebut.title = usetext;
     } else {
         savebut.className = "bottombutton-disabled";
@@ -287,24 +320,18 @@ function doValidateAndUpdateButtons() {
 }
 
 function getValue_validator(el) {
-    var tagname=el.tagName;
+    var tagname = el.tagName;
     if (!tagname) tagname = el.nodeName;
-    var v;
-    switch (tagname.toLowerCase()) {
-        case "input":
-            v = el.value;
-            break;
-        case "select":
-            v = el.selectedIndex;
-            break;
-        case "textarea":
-            v = el.value;
-            break;
+    switch (tagname) {
+        case "TEXTAREA":
+            return  el.value;
+        case "INPUT":
+            return  el.value;
+        case "SELECT":
+            return  el.selectedIndex;
         default:
-            v = el.innerHTML;
-            break;
+            return  el.innerHTML;
     }
-    return v;
 }
 
 function setValue_validator(el, value) {
