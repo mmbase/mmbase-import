@@ -57,22 +57,11 @@
                        directions="${directions}" constraints="${constraints}"
                        orderby="${orderby}" max="${max}" offset="${offset}">
         <tr>
-          <mm:compare referid="fields" value="">
-            <mm:fieldlist type="list">
-              <td>
-                <mm:fieldinfo type="value"/>
-              </td>
-            </mm:fieldlist>
-          </mm:compare>
-          <mm:compare referid="fields" value="" inverse="true">
-			<mm:write vartype="String" jspvar="fields" referid="fields">
-            <% for (Enumeration e = convertToEnumeration(fields); e.hasMoreElements();) { %>
-              <td>
-                <mm:field name="<%=(String)e.nextElement()%>"/>
-              </td>
-            <% } %>
-			</mm:write>
-          </mm:compare>
+          <mm:fieldlist type="list">
+            <td>
+              <mm:fieldinfo type="value"/>
+            </td>
+          </mm:fieldlist>
         </tr>
       </mm:relatednodes>
     </mm:node>
