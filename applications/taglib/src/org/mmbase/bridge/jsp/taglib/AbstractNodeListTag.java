@@ -148,7 +148,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         }
     }
 
-    public void setOffset(int o) { // also need with integer argument for Tomcat.        
+    public void setOffset(int o) { // also need with integer argument for Tomcat.
         offset = o;
     }
 
@@ -217,6 +217,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
 
     public int doAfterBody() throws JspTagException {
+        String id = getId();
+        if (id != null && ! "".equals(id)) {
+            getContextTag().unRegister(id);
+        }
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_TAG;
