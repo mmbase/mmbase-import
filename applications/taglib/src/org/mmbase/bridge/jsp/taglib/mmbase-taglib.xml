@@ -2228,6 +2228,7 @@ transaction was commited, following should result anything:
     <name>nodeinfo</name>
     <extends>writer</extends>
     <extends>nodereferrer</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
