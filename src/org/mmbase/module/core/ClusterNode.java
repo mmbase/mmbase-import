@@ -206,6 +206,9 @@ public class ClusterNode extends VirtualNode {
             MMObjectNode n=getRealNode(buildername);
             if (n!=null) {
                 o=n.getValue(((ClusterBuilder)parent).getFieldNameFromField(fieldname));
+            } else {
+                // fall back to builder if this node doesn't contain a number to fetch te original
+                o=parent.mmb.getMMObject(buildername).getValue(this,fieldname);
             }
         }
         return o;
