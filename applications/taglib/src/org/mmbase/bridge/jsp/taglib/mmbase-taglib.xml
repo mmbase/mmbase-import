@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.240 2004-02-18 18:39:32 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.241 2004-02-18 20:33:27 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4017,6 +4017,17 @@ Of course, the default behavior of getSmartPath can still be overridden.
 			<info>
         The value of the parameter. Is this attribute is missing, then the body of the param tag is used.
       </info>
+    </attribute>
+		<attribute>
+			<name>vartype</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+        The 'vartype' of the parameter. In principle url-parameters should always be string. When
+        using this attribute, the value is first casted to this type. You could e.g. set it to
+        'integer' if you want to ensure the variable is parseable as an integer.
+      </info>
+      <since>MMBase-1.7</since>
     </attribute>
 		<example>See the example for tag 'url'.</example>
 	</tag>
