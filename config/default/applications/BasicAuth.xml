@@ -1,4 +1,4 @@
-<application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="true">
+<application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="false">
 
 	<neededbuilderlist>
 	  <builder maintainer="mmbase.org" version="2">people</builder>
@@ -15,23 +15,11 @@
 	</allowedrelationlist>
 
 	<datasourcelist>
-	  <datasource builder="people" path="BasicAuth/people.xml" /> 
-	  <datasource builder="typedef" path="BasicAuth/typedef.xml" /> 
+	  <datasource path="BasicAuth/people.xml" /> 
+	  <datasource path="BasicAuth/typedef.xml" /> 
 	</datasourcelist>
 
 	<relationsourcelist>
-	  <relationsource builder="authrel" path="BasicAuth/authrel.xml" /> 
+	  <relationsource path="BasicAuth/authrel.xml" /> 
 	</relationsourcelist>
-
-
-	<contextsourcelist>
-		<contextsource path="BasicAuth/backup.xml" type="depth" goal="backup"/>
-	</contextsourcelist>
-	<description>
-		basic authorisation demo, not working 100% in this version of MMDemo
-	</description>
-
-	<install-notice>
-		Turn authorisation on in mmbaseroot.xml and restart the server
-	</install-notice>
 </application>

@@ -1,4 +1,0 @@
-i=`pwd`
-cd /usr/local/algemeen/org/mmbase
-javadoc -author -version -d ./docs/api org.mmbase.util org.mmbase.module.core org.mmbase.servlet org.mmbase.module org.mmbase.module.database org.mmbase.module.builders org.mmbase.module.builders.vwms org.mmbase.module.gui.html org.mmbase.module.corebuilders org.mmbase.module.database.support org.mmbase.module.gui.jsp org.mmbase.hitlisted org.mmbase.remote
-cd $i

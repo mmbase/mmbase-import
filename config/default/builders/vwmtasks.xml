@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder maintainer="mmbase.org" version="0">
+<builder>
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -28,9 +26,9 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language as defined by ISO 639 -->
+	<!-- singles per language  as defined by RFC xxx -->
 	<singular xml:lang="us">VwmOpdracht</singular>
-	<!-- multiple per language as defined by ISO 639 -->
+	<!-- multiple per language  as defined by RFC xxx -->
 	<plural xml:lang="us">VwmOpdracht</plural>
 </names>
 
@@ -38,16 +36,9 @@
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language as defined by ISO 639  -->
+<!-- descriptions per language  as defined by RFC xxx -->
 	<description xml:lang="us">tasks that can be used as a event system to control vwms</description>
 </descriptions>
-
-<!-- <properties>
-you can define properties to be used by the classfile (if used) it uses
-a key/value system. Its a optional tag.
--->
-<properties>
-</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -59,8 +50,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Object</guiname>
-			<guitype>integer</guitype>
+			<name xml:lang="us">Object</name>
+			<type>integer</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -78,7 +69,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true" key="true">INTEGER</type>
+			<type state="persistent" notnull="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -86,8 +77,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Eigenaar</guiname>
-			<guitype>string</guitype>
+			<name xml:lang="us">Eigenaar</name>
+			<type>string</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -105,7 +96,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false">VARCHAR</type>
 		</db>
 	</field>
 
@@ -113,8 +104,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Machine</guiname>
-			<guitype>string</guitype>
+			<name xml:lang="us">Machine</name>
+			<type>string</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -132,7 +123,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>wantedcpu</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false">VARCHAR</type>
 		</db>
 	</field>
 
@@ -140,8 +131,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">VWM</guiname>
-			<guitype>string</guitype>
+			<name xml:lang="us">VWM</name>
+			<type>string</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -159,7 +150,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>vwm</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false">VARCHAR</type>
 		</db>
 	</field>
 
@@ -167,8 +158,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Status</guiname>
-			<guitype>integer</guitype>
+			<name xml:lang="us">Status</name>
+			<type>integer</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -186,7 +177,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>status</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -194,8 +185,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Verwerker</guiname>
-			<guitype>string</guitype>
+			<name xml:lang="us">Verwerker</name>
+			<type>string</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -213,7 +204,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>claimedcpu</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false">VARCHAR</type>
 		</db>
 	</field>
 
@@ -221,8 +212,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">StartTijd</guiname>
-			<guitype>eventtime</guitype>
+			<name xml:lang="us">StartTijd</name>
+			<type>eventtime</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -240,7 +231,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>wantedtime</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -248,8 +239,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">LaatsteAanpassing</guiname>
-			<guitype>eventtime</guitype>
+			<name xml:lang="us">LaatsteAanpassing</name>
+			<type>eventtime</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -267,7 +258,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>changedtime</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -275,8 +266,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">VerloopTijd</guiname>
-			<guitype>eventtime</guitype>
+			<name xml:lang="us">VerloopTijd</name>
+			<type>eventtime</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -294,7 +285,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>expiretime</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -302,8 +293,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Opdracht</guiname>
-			<guitype>string</guitype>
+			<name xml:lang="us">Opdracht</name>
+			<type>string</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -321,7 +312,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>task</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false">VARCHAR</type>
 		</db>
 	</field>
 
@@ -329,8 +320,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">ID</guiname>
-			<guitype>integer</guitype>
+			<name xml:lang="us">ID</name>
+			<type>integer</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -348,7 +339,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>id</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -356,8 +347,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="us">Data</guiname>
-			<guitype>field</guitype>
+			<name xml:lang="us">Data</name>
+			<type>field</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -375,7 +366,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>data</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
+			<type state="persistent" notnull="false">VARCHAR</type>
 		</db>
 	</field>
 
