@@ -32,10 +32,26 @@ public class BasicNodeType implements NodeType {
     // builder on which the type is based
     protected MMObjectBuilder builder=null;
 
+    // field types
+    protected Hashtable fieldTypes = new Hashtable();
+
+    BasicNodeType() {
+    }
 
     BasicNodeType(MMObjectBuilder builder, Cloud cloud) {
+        init(builder, cloud);
+    }
+
+    protected void init(MMObjectBuilder builder, Cloud cloud) {
         this.cloud=cloud;
         this.builder=builder;
+        if (!builder.tableName.equals("multirelations")) {
+    	    for(Iterator i=builder.getFields().iterator(); i.hasNext();){
+	            FieldDefs f=(FieldDefs)i.next();
+	            FieldType ft= new BasicFieldType(f,this);
+	            fieldTypes.put(ft.getName(),ft);
+    	    }
+        }
     }
 
     /**
@@ -110,28 +126,24 @@ public class BasicNodeType implements NodeType {
 	}
 
 	/**
-	 * Retrieve all field of this nodetype
-	 * @param the language in which you want the fields
-	 * @return a <code>List</code> of field names
+	 * Retrieve all field types of this nodetype
+	 * @return a <code>List</code> of field types
 	 */
-	public List getFields(String language) {
-	    Vector res= new Vector();
-	    for(Iterator i=builder.getFields().iterator(); i.hasNext();){
-	        FieldDefs f=(FieldDefs)i.next();
-	        String tmp=f.getGUIName(language);	
-	        res.add(tmp);
-	    }
+	public List getFieldTypes() {
+	    Vector res= new Vector(fieldTypes.values());
 	    return res;
 	}
 
-	/** 
-	 * Retrieve all fields of this nodetype (in the default language defined in mmbaseroot.xml)
-	 * @return a <code>List</code> of field names
+	/**
+	 * Retrieve the field type for a gicven field
+	 * @param fieldName name of the field to retrieve
+	 * @return the requested <code>FieldType</code>
 	 */
-	public List getFields() {
-	    return getFields(((BasicCloudContext)cloud.getCloudContext()).mmb.getLanguage());
+	public FieldType getFieldType(String fieldName) {
+	    FieldType ft= (FieldType)fieldTypes.get(fieldName);
+	    return ft;
 	}
-
+	
 	/**
      * search nodes of this type
      * @param where the contraint
@@ -141,7 +153,7 @@ public class BasicNodeType implements NodeType {
     public List search(String where, String sorted, boolean direction) {
   		Vector retval = new Vector();
 		Enumeration nodeEnum = builder.searchVector(where,sorted,direction).elements();
-        while(nodeEnum.hasMoreElements()){ 
+        while(nodeEnum.hasMoreElements()){
 			retval.addElement(new BasicNode((MMObjectNode)nodeEnum.nextElement(),this));
 		}
   		return retval;

@@ -37,7 +37,6 @@ public class BasicRelationType extends BasicNodeType implements RelationType {
     int roleID  = 0;
   	
   	BasicRelationType(MMObjectNode node, Cloud cloud) {
-  	    super(null,cloud);
   	    typeRelNode = node;
   	    snum=node.getIntValue("snumber");
   	    dnum=node.getIntValue("dnumber");
@@ -45,6 +44,7 @@ public class BasicRelationType extends BasicNodeType implements RelationType {
   	    RelDef reldef = ((BasicCloudContext)cloud.getCloudContext()).mmb.getRelDef();
   	    relDefNode= reldef.getNode(roleID);
   	    builder=reldef.getBuilder(relDefNode);
+  	    init(builder,cloud);
   	}
 
     /**

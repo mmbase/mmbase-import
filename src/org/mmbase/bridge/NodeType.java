@@ -62,17 +62,10 @@ public interface NodeType {
 	public String getDescription();
 
 	/**
-	 * Retrieve all field of this nodetype
-	 * @param language the language in which you want the fields
-	 * @return a <code>List</code> of field names as <code>String</code>
+	 * Retrieve all field types of this nodetype
+	 * @return a <code>List</code> of <code>FieldType</code> objects
 	 */
-	public List getFields(String language);
-
-	/** 
-	 * Retrieve all fields of this nodetype (in the default language defined in mmbaseroot.xml)
-	 * @return a <code>List</code> of field names as <code>String</code>
-	 */
-	public List getFields();
+	public List getFieldTypes();
 
 	/**
      * search nodes of this type
