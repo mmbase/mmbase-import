@@ -15,11 +15,10 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.1 2003-08-21 09:59:29 pierre Exp $
+ * @version $Id: Attributes.java,v 1.2 2003-08-21 12:52:54 pierre Exp $
  */
 public final class Attributes {
 
-    
     /**
      * Attribute: <code>database-data-source</code>.
      * The data source object used by the storage layer.
@@ -27,7 +26,7 @@ public final class Attributes {
      * You should not set or configure this attribute (but you can retrieve it).
      */
     public static final String DATA_SOURCE = "database-data-source";
-    
+
     /**
      * Option: <code>database-supports-inheritance</code>.
      * When true, the database supports inheritance (you can extend tables). This option influences what fields
@@ -38,6 +37,13 @@ public final class Attributes {
      * The default is <code>false</code>
      */
     public static final String SUPPORTS_INHERITANCE = "database-supports-inheritance";
+
+    /**
+     * Option: <code>database-supports-transactions</code>.
+     * When true, the database supports transactions.
+     * The default is determined form the database, but you can override it.
+     */
+    public static final String SUPPORTS_TRANSACTIONS = "database-supports-transactions";
 
     /**
      * Option: <code>database-stores-binary-as-file</code>.
@@ -53,8 +59,8 @@ public final class Attributes {
      * The default is <code>false</code>
      */
     public static final String BINARY_FILE_PATH = "database-binary-file-path";
-    
-    
+
+
     /**
      * Option: <code>database-supports-blob</code>.
      * When true, the driver/database used supports the JDBC getBlob() method.
@@ -77,29 +83,29 @@ public final class Attributes {
      * The default is determined from the database metadata.
      */
     public static final String TRANSACTION_ISOLATION_LEVEL = "database.transaction-isolation-level";
-    
+
     /**
      * Option: <code>database-supports-data-manipulation-transactions-only</code>.
      * If true, only data manipulation (INSERT, UPDATE) can be done within a transaction.
-     * This option should be used to properly close connections before a data definiton query is run.  
+     * This option should be used to properly close connections before a data definiton query is run.
      * The default is determined from the database metadata.
      * @todo: not used at the moment
      */
     public static final String SUPPORTS_DATA_MANIPULATION_TRANSACTIONS_ONLY = "database-supports-data-manipulation-transactions-only";
-    
+
     /**
      * Option: <code>database-supports-alter-table-with-add-column</code>.
      * If true, you can use a ALTER TABLE statement to add fields.
-     * This option should be used to determine wehter the create() method for fields can be run using this sql statement.  
+     * This option should be used to determine wehter the create() method for fields can be run using this sql statement.
      * The default is determined from the database metadata.
      * @todo: not used at the moment
      */
     public static final String SUPPORTS_ALTER_TABLE_WITH_ADD_COLUMN = "database-supports-alter-table-with-add-column";
-    
+
     /**
      * Option: <code>database-supports-alter-table-with-drop-column</code>.
      * If true, you can use a ALTER TABLE statement to delete fields.
-     * This option should be used to determine wehter the delete() method for fields can be run using this sql statement.  
+     * This option should be used to determine wehter the delete() method for fields can be run using this sql statement.
      * The default is determined from the database metadata.
      * @todo: not used at the moment
      */
