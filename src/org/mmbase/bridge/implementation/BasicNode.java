@@ -315,7 +315,7 @@ public class BasicNode implements Node {
                 cloud.createSecurityInfo(getNumber());
                 isnew=false;
             } else {
-                node.commit();
+                node.parent.safeCommit(node);
                 cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
