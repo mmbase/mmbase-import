@@ -60,7 +60,7 @@
 <a href="<mm:url page="showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <a href="http://java.sun.com/products/jsp/syntax/1.2/syntaxref12.html">JSP-syntax</a><br />
 <a href="<mm:url page="index.jsp" />">Taglib examples</a><br />
-<a href="<mm:url page="/mmdocs/reference/taglib/toc.html" />">Taglib documentation</a><br />
+<a href="<mm:url page="/mmdocs/frontenddevelopers/taglib/toc.html" />">Taglib documentation</a><br />
 
 </body>
 </html>
