@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.40 2004-11-15 14:06:49 michiel Exp $
+ * @version $Id: servscan.java,v 1.41 2005-01-19 09:42:51 marcel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -52,14 +52,18 @@ public class servscan extends JamesServlet {
      */
     public void init() throws ServletException {
         super.init();
-        // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(servscan.class);
-        //log.info("Init of servlet " + getServletConfig().getServletName() + ".");
+
+        // log.debug("init is called");
+        // log = Logging.getLoggerInstance(servscan.class);
     }
     
 
     public void setMMBase(MMBase mmb) {
         super.setMMBase(mmb);        
+
+        // bugfix #6648: scan.init() is not called, this will sometimes result in a crash of mmbase 
+        log = Logging.getLoggerInstance(servscan.class);
+
         try {            
             MMBaseContext.initHtmlRoot();
         } catch (Exception e){
