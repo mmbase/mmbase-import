@@ -110,7 +110,7 @@
     </td>
     <td class="navigate" colspan="1">
     <nobr style="width:100%;">
-    <mm:previousbatches max="20" indexoffset="$config.indexoffset">
+    <mm:previousbatches maxtotal="30" indexoffset="$config.indexoffset">
       <mm:first>
         <mm:index>
           <mm:compare value="$config.indexoffset" inverse="true">
@@ -128,22 +128,20 @@
      <span class="currentpage" style="font-size: 120%; font-weight: bold;">
        <mm:write value="$page" />
      </span>
-   </mm:isgreaterthan>
+     <mm:write write="false" id="maxpagenumber" vartype="integer" value="${+ ($totalsize - 1) / $config.page_size + $config.indexoffset}" />
+   </mm:isgreaterthan>   
    <mm:context>
-      <mm:nextbatches max="21" indexoffset="$config.indexoffset">
-       <mm:index offset="1">
-       <mm:compare value="21" inverse="true">
-       <a href='<mm:url referid="purl"><mm:param name="page"><mm:index /></mm:param></mm:url>' >
-          <mm:index />
-        </a>
-       </mm:compare>
-       <mm:compare value="21">
-        ...
-       </mm:compare>
+      <mm:nextbatches maxtotal="30" indexoffset="$config.indexoffset">
+         <a href='<mm:url referid="purl"><mm:param name="page"><mm:index /></mm:param></mm:url>' >
+         <mm:index />
+       </a>
        <mm:last>
-         <mm:import id="needsnext" />
+         <mm:index id="needsnext">
+           <mm:compare value="$maxpagenumber" inverse="true">
+             ...
+           </mm:compare>
+         </mm:index>
        </mm:last>
-       </mm:index>  
     </mm:nextbatches>
       </nobr>
       </td>
@@ -154,7 +152,7 @@
           <span class="next"></span><span class="alt">[next page -&gt;]</span>
         </a>
         <a href='<mm:url referid="purl">
-           <mm:param name="page" vartype="integer" value="${+ ($totalsize - 1) / $config.page_size + $config.indexoffset}" />
+           <mm:param name="page" vartype="integer" value="$maxpagenumber" />
            </mm:url>'>
            <span class="next"></span><span class="alt">[last -&gt;&gt;]</span>
          </a>
