@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <news exportsource="mmbase://127.0.0.1/test_db/mm" timestamp="20020214102415">
   <node number="6375" owner="system" alias="codings">
-	<date>1013677994</date>
 	<body>dutch: Café tweeëntwintig
 
 hebrew: דשךצ
