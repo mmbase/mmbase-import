@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.31 2003-05-08 06:09:18 kees Exp $
+ * @version $Id: MultiPool.java,v 1.32 2003-06-05 09:14:16 michiel Exp $
  */
 public class MultiPool {
     
@@ -36,21 +36,21 @@ public class MultiPool {
     private String   name;
     private String   password;
     private String   dbm;
-    private DatabaseSupport databasesupport;
+    private DatabaseSupport databaseSupport;
     
     private static final boolean DORECONNECT  = true;
     
     /**
      * @javadoc
      */
-    MultiPool(DatabaseSupport databasesupport, String url, String name, String password,int conMax) throws SQLException {
-        this(databasesupport,url,name,password,conMax,500);
+    MultiPool(DatabaseSupport databaseSupport, String url, String name, String password,int conMax) throws SQLException {
+        this(databaseSupport,url,name,password,conMax,500);
         
     }
     /**
      * Establish connection to the JDBC Pool(s)
      */
-    MultiPool(DatabaseSupport databasesupport,String url, String name, String password, int conMax,int maxQueries) throws SQLException {
+    MultiPool(DatabaseSupport databaseSupport,String url, String name, String password, int conMax,int maxQueries) throws SQLException {
         
         log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, which will be refreshed after " + maxQueries + " queries");
         this.conMax=conMax;
@@ -58,7 +58,7 @@ public class MultiPool {
         this.name=name;
         this.password=password;
         this.maxQueries=maxQueries;
-        this.databasesupport=databasesupport;
+        this.databaseSupport=databaseSupport;
         
         // put connections on the pool
         for (int i = 0; i < conMax ; i++) {
@@ -82,7 +82,7 @@ public class MultiPool {
        } else {
            con = DriverManager.getConnection(url, name, password);
        }
-       databasesupport.initConnection(con);
+       databaseSupport.initConnection(con);
        return new MultiConnection(this, con);
     }
 
