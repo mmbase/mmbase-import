@@ -17,20 +17,19 @@ import org.mmbase.cache.*;
 
 import java.util.*;
 
-
-
 /**
  * Iterates the big result of a query. The query is 'batched' to avoid reading in all nodes in
  * memory, and the batches are removed from the query-caches.
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.1 2004-04-02 09:38:16 michiel Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.2 2004-04-05 19:04:12 michiel Exp $
  * @since   MMBase-1.8
  */
 
 public class HugeNodeListIterator implements NodeIterator {
 
+    // will not work through RMMCI, because caches are accessed.
     protected static MultilevelCache multilevelCache  = MultilevelCache.getCache(); 
     protected static NodeListCache nodeListCache      = NodeListCache.getCache();
 
@@ -79,7 +78,7 @@ public class HugeNodeListIterator implements NodeIterator {
 
     
     /**
-     * Executed the given query, taking into account the fact wether it is NodeQuery or not, and
+     * Executes the given query, taking into account the fact wether it is NodeQuery or not, and
      * applying the 'batchSize'. The result is available in the 'nodeIterator' member.
      */
     protected void executeQuery(Query currentQuery) {
@@ -95,7 +94,7 @@ public class HugeNodeListIterator implements NodeIterator {
     }
 
     /** 
-     * Executed the given query, and prepares to do 'next', so setting 'nextNode' and 'previousNode'.
+     * Executes the given query, and prepares to do 'next', so setting 'nextNode' and 'previousNode'.
      */
     protected void executeNextQuery(Query q) {
         executeQuery(q);
@@ -107,7 +106,7 @@ public class HugeNodeListIterator implements NodeIterator {
         }
     }
     /** 
-     * Executed the given query, and prepares to do 'previous', so setting 'nextNode' and
+     * Executes the given query, and prepares to do 'previous', so setting 'nextNode' and
      * 'previousNode', and winds the new nodeIterator to the end.
      */
     protected void executePreviousQuery(Query q) {
@@ -167,7 +166,7 @@ public class HugeNodeListIterator implements NodeIterator {
 
 
     /**
-     * Used by nextNode and previousNode. Does a field-by-field compare of two Node object to check
+     * Used by nextNode and previousNode. Does a field-by-field compare of two Node objects to check
      * if they are equal. One would expect the equals-member function of Node to be useable for
      * this, but that seems not to be the case.
      */
@@ -289,6 +288,16 @@ public class HugeNodeListIterator implements NodeIterator {
         throw new UnsupportedOperationException("Optional operation 'set' not implemented");
     }
 
+    public static void main(String[] args) {
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        NodeQuery q = cloud.getNodeManager("object").createQuery();
+        HugeNodeListIterator nodeIterator = new HugeNodeListIterator(q);
+        while (nodeIterator.hasNext()) {
+            Node node = nodeIterator.nextNode();
+            System.out.println(node.getFunctionValue("gui", null).toString());
+        }
 
+    }
+     
 
 }
