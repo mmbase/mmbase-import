@@ -26,28 +26,29 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.27 2002-09-20 13:36:06 michiel Exp $
+ * @version $Id: JDBC.java,v 1.28 2002-10-10 18:22:59 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
     private static Logger log = Logging.getLoggerInstance(JDBC.class.getName());
     private String classname = getClass().getName();
 
-    Class  classdriver;
-    Driver driver;
-    String JDBCdriver;
-    String JDBCurl;
-    String JDBChost;
-    int JDBCport;
-    int maxConnections;
-    int maxQuerys;
-    String JDBCdatabase;
-    String databasesupportclass;
-    DatabaseSupport databasesupport;
-    MultiPoolHandler poolHandler;
-    JDBCProbe probe=null;
+    private Class  classdriver;
+    private Driver driver;
+    private String JDBCdriver;
+    private String JDBCurl;
+    private String JDBChost;
+    private int JDBCport;
+    private int maxConnections;
+    private int maxQuerys;
+    private String JDBCdatabase;
+    private String databasesupportclass;
+    private DatabaseSupport databasesupport;
+    private MultiPoolHandler poolHandler;
+    private JDBCProbe probe = null;
     private String defaultname;
     private String defaultpassword;
+    private int probeTime;
 
     public void onload() {
         getProps();
@@ -62,7 +63,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public void init() {
         // old
         getProps();
-        probe = new JDBCProbe(this);
+        probe = new JDBCProbe(this, probeTime);
         log.info("Module JDBC started (" + this + ")");
     }
 
@@ -153,6 +154,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         defaultname=getInitParameter("user");
         defaultpassword=getInitParameter("password");
         databasesupportclass=getInitParameter("supportclass");
+        
+        
+        try {
+            probeTime = Integer.parseInt(getInitParameter("probetime"));
+        } catch (NumberFormatException e) {
+            probeTime = 30;
+            log.warn("probetime was not set or a invalid integer :" + e + "(using default " + probeTime  + " s)");
+        }
 
         /*
         log.trace("JDBCdriver="+JDBCdriver +
@@ -338,36 +347,36 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public Vector listPools(StringTagger tagger) {
-        Vector results=new Vector();
-        for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
-            String name=(String)e.nextElement();
-            MultiPool pool=poolHandler.get(name);
+        Vector results = new Vector();
+        for (Iterator i = poolHandler.keySet().iterator(); i.hasNext();) {
+            String name = (String) i.next();
+            MultiPool pool = poolHandler.get(name);
             results.addElement(stripSensistive(name));
             results.addElement(""+pool.getSize());
             results.addElement(""+pool.getTotalConnectionsCreated());
         }
         tagger.setValue("ITEMS","3");
-        return(results);
+        return results;
     }
 
     /**
      * @javadoc
      */
     public Vector listConnections(StringTagger tagger) {
-        Vector results=new Vector();
-        for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
-            String name=(String)e.nextElement();
-            MultiPool pool=poolHandler.get(name);
-            for (Enumeration f=pool.busyelements();f.hasMoreElements();) {
-                MultiConnection realcon=(MultiConnection)f.nextElement();
+        Vector results = new Vector();
+        for (Iterator i = poolHandler.keySet().iterator(); i.hasNext();) {
+            String name= (String) i.next();
+            MultiPool pool = poolHandler.get(name);
+            for (Iterator f = pool.getBusyPool(); f.hasNext();) {
+                MultiConnection realcon=(MultiConnection)f.next();
                 results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());
                 results.addElement(""+realcon.getLastSQL());
                 results.addElement(""+realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }
-            for (Enumeration f=pool.elements();f.hasMoreElements();) {
-                MultiConnection realcon=(MultiConnection)f.nextElement();
+            for (Iterator f=pool.getPool();f.hasNext();) {
+                MultiConnection realcon=(MultiConnection)f.next();
                 results.addElement(stripSensistive(name.substring(name.lastIndexOf('/')+1)));
                 results.addElement(realcon.getStateString());
                 results.addElement(""+realcon.getLastSQL());
