@@ -25,11 +25,11 @@
       <descriptions>
         <description xml:lang="en">
           The format/mimetype of this source.  This is an integer
-	  corresponding to the org.mmbase.applications.media.resources.format
+       	  corresponding to the org.mmbase.applications.media.resources.format
           resource.
         </description>
         <description xml:lang="nl">
-          Formaat van deze bron.
+          Formaat van deze bron (mime-type).
         </description>
       </descriptions>
       
@@ -158,10 +158,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">
-          I'v not the faintest Idea what this is.
-        </description>
-        <description xml:lang="nl">
-          Geen idee.
+          A source stream can be in several states, indicating e.g. that it is not immediately available.
         </description>
       </descriptions>
       <gui>
@@ -184,10 +181,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">
-          I'v not the faintest Idea what this is.
-        </description>
-        <description xml:lang="nl">
-          Geen idee.
+          The size of the file which is backing the stream.
         </description>
       </descriptions>
       <gui>
