@@ -7,8 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
+/*$Id: http.java,v 1.6 2000-12-20 16:35:34 vpro Exp $
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/11/22 17:33:19  vpro
+davzev: Added getRemoteHost,getRemotePort and implemented toString() methods
+
 Revision 1.4  2000/11/22 14:14:36  vpro
 davzev: Added debug method and comments to the methods.
 
@@ -24,7 +27,7 @@ import java.io.*;
  * This is the http implementation of the ProtocolDriver interface. It can signal a 
  * specific remote builder node using HTTP GET.
  * 
- * @version $Revision: 1.5 $ $Date: 2000-11-22 17:33:19 $ 
+ * @version $Revision: 1.6 $ $Date: 2000-12-20 16:35:34 $ 
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {
@@ -93,16 +96,13 @@ public class http implements ProtocolDriver {
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
 			DataInputStream in=new DataInputStream(connect.getInputStream());
+			if (debug) debug("signalRemoteNode("+number+","+builder+","+ctype+"): Requesting "+builder+" node "+number+" in XML format from "+remoteHost+":"+remotePort+" using GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
 			out.print("GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
-			//System.out.print("GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
-			debug("signalRemoteNode("+number+","+builder+","+ctype+"): Executing GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
 			out.print("\r\n");
 			out.flush();
-
 			String line=in.readLine();
-			//System.out.println("BACK="+line);
 			debug("signalRemoteNode("+number+","+builder+","+ctype+"): GET result, in.readLine: "+line);
 			out.close();
 		} catch(Exception e) {
