@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.57.2.1 2004-07-05 17:19:57 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.2 2004-07-12 08:18:05 michiel Exp $
  * @see ContextTag
  */
 
@@ -459,6 +459,17 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
 
+    /**
+     * @since MMBase-1.7.1
+     */
+    public Locale getLocale() throws JspTagException {
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+        if (localeTag != null) {
+            return localeTag.getLocale();
+        } else {
+            return  org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
+        }
+    }
 
     // Writer Implmentation
     // Not all ContextReferrerTags are actually Writers, but no m.i. in java.
