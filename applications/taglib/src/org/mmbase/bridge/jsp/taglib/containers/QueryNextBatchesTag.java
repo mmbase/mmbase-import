@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.3 2004-02-26 23:55:32 michiel Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.4 2004-03-08 17:15:46 michiel Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
@@ -77,15 +77,12 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
 
         int maxSize;
         if (maxTotalSize > 0) {
-            maxSize = maxTotalSize / 2; // half for both, 
+            maxSize = (maxTotalSize - 1) / 2; // half for both, 1 for current
             int numberOfPreviousBatches = offset / maxNumber;
-            if (numberOfPreviousBatches < maxSize) { // previousbatches did not use all
-                maxSize += (maxSize - numberOfPreviousBatches);            
+            int availableForPrevious = maxTotalSize / 2;
+            if (numberOfPreviousBatches < availableForPrevious) { // previousbatches did not use all
+                maxSize += (availableForPrevious - numberOfPreviousBatches);            
             } 
-            if (maxSize > 0) {
-                maxSize--; // current using one too
-            }
-
 
             int max = getMaxNumber();
             if (max > 0 && maxSize > max) maxSize = max;
