@@ -15,18 +15,20 @@ import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.util.Encode;
+import org.mmbase.util.transformers.Sql;
 
 /**
- * @javadoc
+ * A TypeHandler for strings. textareas, text-input. Search values are SQL escaped.
  *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.5 2003-06-16 09:08:32 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.6 2003-07-01 10:57:47 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
 
+    
     /**
      * Constructor for StringHandler.
      */
@@ -103,7 +105,9 @@ public class StringHandler extends AbstractTypeHandler {
         if ("".equals(search)) {
             return null;
         }
-        return "( UPPER( [" + fieldName + "] ) LIKE '%" + search.toUpperCase() + "%')";
+        Sql sql = new Sql(Sql.SINGLE_QUOTES);
+        
+        return "( UPPER( [" + fieldName + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
     }
 
 }
