@@ -556,10 +556,7 @@ version=1.7.0-dev
 
   <target name="jar.uptodatecheck">
     <uptodate property="jar.uptodate" targetfile="${mmbase.jar}" >
-      <srcfiles dir="${build.dir}/classes" includes="**/*.class"/>
-      <srcfiles dir="${build.dir}/classes" includes="**/*.tld"/>
-      <srcfiles dir="${build.dir}/classes" includes="**/*.dtd"/>
-      <srcfiles dir="${build.dir}/classes" includes="**/*.resources"/>
+      <srcfiles dir="${source-src.dir}" includes="**/*"/>
     </uptodate>   
   </target>
 
@@ -569,7 +566,11 @@ version=1.7.0-dev
     
 
   <target name="jar" description="Create the MMBase jar file"
-          depends="compile,taglib.tld,community.tld,resources,jar.check" unless="jar.uptodate">
+          depends="jar.check" unless="jar.uptodate">
+    <antcall target="compile" />
+    <antcall target="taglib.tld" />
+    <antcall target="community.tld" />
+    <antcall target="resources" />
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
 
