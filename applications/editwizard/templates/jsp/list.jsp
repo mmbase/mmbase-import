@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.19 2002-07-11 07:42:11 michiel Exp $
+     * @version  $Id: list.jsp,v 1.20 2002-07-17 11:46:29 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -239,7 +239,7 @@ for (int i=0; i<pagecount && i<maxpages; i++) {
 }
 
 log.trace("Setting xsl parameters");
-java.util.Map params = new java.util.Hashtable();
+java.util.Map params = new java.util.Hashtable(listConfig.attributes);
 if (listConfig.wizard != null) params.put("wizard", listConfig.wizard);
 params.put("start",String.valueOf(start));
 params.put("referrer", ewconfig.backPage);

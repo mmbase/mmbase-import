@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.14 2002-07-15 12:34:17 pierre Exp $
+  @version $Id: list.xsl,v 1.15 2002-07-17 11:46:29 pierre Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -65,7 +65,7 @@
             <xsl:if test="$creatable='true'">
               <br />
                 <div width="100%" align="right">
-                  <a href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new" title="{$tooltip_new}"><xsl:call-template name="prompt_new" /></a>
+                  <a href="{$wizardpage}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}" title="{$tooltip_new}"><xsl:call-template name="prompt_new" /></a>
                </div>
              </xsl:if>
             </td>
@@ -170,7 +170,7 @@
            <xsl:attribute name="onMouseOver">objMouseOver(this);</xsl:attribute>
            <xsl:attribute name="onMouseDown">objClick(this);</xsl:attribute>
            <xsl:attribute name="onMouseOut">objMouseOut(this);</xsl:attribute>
-           <xsl:attribute name="href"><xsl:value-of select="$wizardpage" />&amp;wizard=<xsl:value-of select="$wizard" />&amp;objectnumber=<xsl:value-of select="@number" /></xsl:attribute>
+           <xsl:attribute name="href"><xsl:value-of select="$wizardpage" />&amp;wizard=<xsl:value-of select="$wizard" />&amp;objectnumber=<xsl:value-of select="@number" />&amp;origin=<xsl:value-of select="$origin" /></xsl:attribute>
          </xsl:if>
          <xsl:if test="@mayedit='false'">
            <xsl:attribute name="class">itemrow-disabled</xsl:attribute>
