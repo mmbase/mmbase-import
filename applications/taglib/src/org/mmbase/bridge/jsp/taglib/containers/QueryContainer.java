@@ -15,13 +15,13 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.TagIdentifier;
 
 /**
- * A NodeList Container can be used around node-list Tags. Basicly, it adminstrates a Query object.
+ * A Query container can be used around node-list Tags. Basicly, it adminstrates a Query object.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListContainer.java,v 1.5 2003-08-29 12:12:24 keesj Exp $
+ * @version $Id: QueryContainer.java,v 1.1 2003-12-18 09:05:46 michiel Exp $
  */
-public interface NodeListContainer extends TagIdentifier, NodeListContainerOrListProvider {
+public interface QueryContainer extends TagIdentifier, QueryContainerOrListProvider {
 
     /**
      * Returns the currently by the container defined query object. Subtags can use this query

@@ -20,13 +20,14 @@ import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * mm:composite makes it possible to connect constraints by 'OR'.
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListCompositeConstraintTag.java,v 1.2 2003-12-09 20:12:58 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.1 2003-12-18 09:05:46 michiel Exp $
  */
-public class NodeListCompositeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
+public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
     // private static final Logger log = Logging.getLoggerInstance(NodeListCompositeConstraintTag.class);
 
@@ -73,7 +74,7 @@ public class NodeListCompositeConstraintTag extends CloudReferrerTag implements 
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            NodeListCompositeConstraintTag cons = (NodeListCompositeConstraintTag) findParentTag(NodeListCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {
@@ -89,7 +90,7 @@ public class NodeListCompositeConstraintTag extends CloudReferrerTag implements 
     }
 
     public int doAfterBody() throws JspTagException {
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
 
         Constraint cons = addConstraint(query, getOperator(), constraints);

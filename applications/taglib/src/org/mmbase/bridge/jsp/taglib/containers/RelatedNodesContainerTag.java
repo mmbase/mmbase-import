@@ -17,17 +17,18 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
+ * Container cognate of RelatedNodesTag
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.3 2003-12-03 06:57:40 keesj Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.4 2003-12-18 09:05:48 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
-    private static final Logger log = Logging.getLoggerInstance(RelatedNodesContainerTag.class);
+    //private static final Logger log = Logging.getLoggerInstance(RelatedNodesContainerTag.class);
 
     protected Attribute role      = Attribute.NULL;
     /**

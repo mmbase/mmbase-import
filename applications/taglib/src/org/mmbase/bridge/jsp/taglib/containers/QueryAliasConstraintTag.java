@@ -23,9 +23,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAliasConstraintTag.java,v 1.2 2003-12-09 20:12:58 michiel Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.1 2003-12-18 09:05:45 michiel Exp $
  */
-public class NodeListAliasConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
+public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
     // private static final Logger log = Logging.getLoggerInstance(NodeListAliasConstraintTag.class);
 
@@ -63,7 +63,7 @@ public class NodeListAliasConstraintTag extends CloudReferrerTag implements Node
 
 
     public int doStartTag() throws JspTagException {
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
 
         Step step = query.getStep(element.getString(this));
@@ -83,7 +83,7 @@ public class NodeListAliasConstraintTag extends CloudReferrerTag implements Node
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            NodeListCompositeConstraintTag cons = (NodeListCompositeConstraintTag) findParentTag(NodeListCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {

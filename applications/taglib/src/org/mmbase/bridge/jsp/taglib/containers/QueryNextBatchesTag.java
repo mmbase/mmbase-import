@@ -17,17 +17,19 @@ import org.mmbase.storage.search.*;
 
 import java.util.*;
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.*;
+
 
 /**
+ * A way to make paging-mechanisms. Considers 'offset' and 'maxnumber' of surrounding query.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListNextBatchesTag.java,v 1.4 2003-08-27 21:33:38 michiel Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.1 2003-12-18 09:05:47 michiel Exp $
  */
-public class NodeListNextBatchesTag extends StringListTag implements NodeListContainerReferrer {
-    private static final Logger log = Logging.getLoggerInstance(NodeListNextBatchesTag.class);
+public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
+    //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
+
 
     protected Attribute container  = Attribute.NULL;
 
@@ -43,7 +45,7 @@ public class NodeListNextBatchesTag extends StringListTag implements NodeListCon
 
 
     protected List getList() throws JspTagException {
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();

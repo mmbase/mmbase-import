@@ -16,17 +16,18 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
+ * The most general 'constraint' tag. Constraints are constructed with a bunch of attributes.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.18 2003-12-09 20:12:58 michiel Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.1 2003-12-18 09:05:46 michiel Exp $
  */
-public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
+public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
   
-    private static final Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
+    //private static final Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
@@ -137,7 +138,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         // if there is a OR or an AND tag, add
         // the constraint to that tag,
         // otherwise add it direct to the query
-        NodeListCompositeConstraintTag cons = (NodeListCompositeConstraintTag) findParentTag(NodeListCompositeConstraintTag.class, (String) container.getValue(this), false);
+        QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
         if (cons!=null) {
             cons.addChildConstraint(newConstraint);
         } else {
@@ -147,7 +148,7 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
     }
 
     public int doStartTag() throws JspTagException {
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
 
         Query query = c.getQuery();
         Constraint cons = addConstraint(query);
