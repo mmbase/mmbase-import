@@ -52,4 +52,12 @@
         <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
         <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
       </taglib>
+
+      <!-- add default.jsp and index.shtml to the default index files -->
+      <welcome-file-list>
+         <welcome-file>default.jsp</welcome-file>
+         <welcome-file>index.jsp</welcome-file>
+         <welcome-file>index.shtml</welcome-file>
+         <welcome-file>index.html</welcome-file>
+      </welcome-file-list>
 </web-app>
