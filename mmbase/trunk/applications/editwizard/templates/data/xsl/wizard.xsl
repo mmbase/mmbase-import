@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.124 2004-04-05 09:49:14 pierre Exp $
+    @version $Id: wizard.xsl,v 1.125 2004-04-07 12:36:00 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -43,7 +43,7 @@
     <script type="text/javascript" src="{$javascriptdir}validator.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}&amp;language={$language}">
+    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?language={$language}&amp;referrer={$referrer_encoded}">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
