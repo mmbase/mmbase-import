@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.8 2001-04-10 17:32:05 michiel Exp $
+$Id: MMBaseContext.java,v 1.9 2001-06-23 16:13:46 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2001/04/10 17:32:05  michiel
+michiel: new logging system
+
 Revision 1.7  2000/12/24 23:26:25  daniel
 removed modules.xml warning
 
@@ -53,14 +56,16 @@ import org.mmbase.util.logging.Logging;
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.8 $ $Date: 2001-04-10 17:32:05 $
+ * @$Revision: 1.9 $ $Date: 2001-06-23 16:13:46 $
  */
 public class MMBaseContext {
 
-    private static Logger log = Logging.getLoggerInstance(MMBaseContext.class.getName()); 
+    private static Logger log;
 
     static ServletContext servletContext;
 	static String configpath;
+	static String htmlroot;
+	static String outputfile;
 
 	public static boolean setServletContext(ServletContext sx) {
 		servletContext=sx;
@@ -70,6 +75,55 @@ public class MMBaseContext {
 	public static ServletContext getServletContext() {
 		return(servletContext);
 	} 
+
+	public static boolean setOutputFile(String c) {
+		outputfile=c;
+		setLogging();
+		return(true);
+	}
+
+	public static String getOutputFile() {
+		return(outputfile);
+	}
+
+
+	public static boolean setHtmlRoot(String c) {
+		htmlroot=c;
+		return(true);
+	}
+
+	public static String getHtmlRoot() {
+		return(htmlroot);
+	}
+
+	public static void setLogging() {
+
+        // Remaining output and error can still be redirected.
+        String outputfile = getOutputFile();
+        if (outputfile != null) {
+            try {
+                PrintStream mystream=new PrintStream(new FileOutputStream(outputfile,true));
+                System.setOut(mystream);
+                System.setErr(mystream);
+                System.err.println("Setting mmbase.outputfile to "+outputfile);
+            } catch (IOException e) {
+                System.err.println("Oops, failed to set mmbase.outputfile '"+outputfile+"'");
+                e.printStackTrace();
+            }
+        } else {
+            System.err.println("mmbase.outputfile = null, no redirection of System.out to file");
+        }
+
+
+        /* Michiel:
+           This doesn't seem to be such a bad place to initialise our logging stuff.
+        */
+        System.out.println("MMBase starts now");
+        Logging.configure(MMBaseContext.getConfigPath() + File.separator + "log" + File.separator + "log.xml");
+        log = Logging.getLoggerInstance(MMBaseContext.class.getName());
+        System.out.println("Logging starts now");
+        log.info("\n====================\nStarting MMBase\n====================");
+	}
 
 	public static boolean setConfigPath(String c) {
         boolean returnValue=true;
