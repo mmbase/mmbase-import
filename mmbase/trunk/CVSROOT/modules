@@ -25,11 +25,14 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-# $Id: modules,v 1.21 2003-03-06 16:50:08 michiel Exp $
+# $Id: modules,v 1.22 2003-03-07 17:06:51 michiel Exp $
 
 
-# mmbase source only
-mmbase mmbase
+# the mmbase java sources and resources
+src src
+
+# mmbase source, not prefixed with src/org
+mmbase src/org/mmbase
 
 # html and templates to appear in distro
 html html
@@ -37,7 +40,7 @@ html html
 # default configuration
 config config
 
-# docbook documentation
+# docbook  documentation
 documentation documentation
 
 # Testing
@@ -47,9 +50,7 @@ tests tests
 speeltuin speeltuin
 
 
-# this will enable you to check out 'src'
-src -d src/org/mmbase mmbase
-
-
 # to check out everything
+# In all itself is mainly 'build.xml'.
+
 all -d mmbase all &src &config &html &documentation &tests
