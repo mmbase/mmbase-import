@@ -30,14 +30,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.4 2003-05-08 17:08:51 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.5 2003-05-09 22:31:37 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
     private static Logger log;
 
 
-    private static final Escaper COPY = new Escaper(new CopyCharTransformer(), "");
+    private static final Escaper COPY = new Escaper(CopyCharTransformer.instance, "");
 
     static final ContentTag DEFAULT = new ContentTag() {
             public Escaper getEscaper() { return COPY; } 
@@ -50,8 +50,10 @@ public class ContentTag extends LocaleTag  {
 
     static {
         try {
-            log = Logging.getLoggerInstance(ContentTag.class.getName());
-            initializeEscapersAndPostProcessors();
+            log = Logging.getLoggerInstance(ContentTag.class);
+            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", 
+                                                               "taglibcontent_1_0.dtd", ContentTag.class);
+            initialize();
         } catch (Exception e) {
             log.error(e.toString());
         }
@@ -127,14 +129,22 @@ public class ContentTag extends LocaleTag  {
     /**
      * Initialize the write-escapers for MMBase taglib.
      */
-    private static void initializeEscapersAndPostProcessors() {
+    private static void initialize() {
         log.service("Reading taglib write-escapers");
-
-        Class thisClass = ContentTag.class;
-        InputSource escapersSource = new InputSource(thisClass.getResourceAsStream("resources/taglibcontent.xml"));
-        XMLBasicReader reader  = new XMLBasicReader(escapersSource, thisClass);
+        InputSource escapersSource = new InputSource(ContentTag.class.getResourceAsStream("resources/taglibcontent.xml"));
+        XMLBasicReader reader  = new XMLBasicReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
-        Enumeration e = reader.getChildElements(root, "escaper");
+        Enumeration e = reader.getChildElements(root, "content");
+        while (e.hasMoreElements()) {
+            Element element = (Element) e.nextElement();
+            String type   = element.getAttribute("type");
+        }
+
+
+
+
+
+        e = reader.getChildElements(root, "escaper");
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
             String id   = element.getAttribute("id");
@@ -230,27 +240,25 @@ public class ContentTag extends LocaleTag  {
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         response.setLocale(locale);
         response.setContentType(getContentType() + "; charset=" + getEncoding());
-        return EVAL_BODY_BUFFERED;
+        if (getPostProcessor() == null) {
+            log.debug("no postprocessor");
+            return EVAL_BODY_INCLUDE;
+        } else {
+            return EVAL_BODY_BUFFERED; // don't really need buffering, but cant figure out to avoid
+        }
+ 
+
     }
 
-    public int doAfterBody() throws JspTagException {
+    public int doAfterBody() throws JspTagException {       
         if (bodyContent != null) {
-            try {
-                CharTransformer post = getPostProcessor();
-                if (post == null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("no postprocessor");
-                    }
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("A postprocessor was defined " + post);
-                    }
-                    post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
+            CharTransformer post = getPostProcessor();
+            if (post != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("A postprocessor was defined " + post);
                 }
-            } catch (IOException ioe){
-                throw new JspTagException(ioe.toString());
-            }        
+                post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
+            }
         }
         return SKIP_BODY;
     }
@@ -261,7 +269,7 @@ public class ContentTag extends LocaleTag  {
      */
     public static class Escaper {
         private CharTransformer charTransformer;
-        private String contentType;
+        String contentType;
 
         
         Escaper(CharTransformer c, String ct) {
