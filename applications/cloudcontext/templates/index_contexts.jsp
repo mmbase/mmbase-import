@@ -41,14 +41,15 @@
             <td><mm:fieldinfo type="guivalue" /></td>
           </mm:fieldlist>
           <td class="commands">
-            <a href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="Wijzigen" title="Wijzigen" /></a>
+            <a href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=m.getString("update")%>" title="<%=m.getString("update")%>" /></a>
             <mm:maydelete>
               <mm:field id="curcontext"  name="name" write="false" />
               <mm:listnodescontainer type="object">
                 <mm:constraint field="owner" value="$curcontext" />
                 <mm:size>
                   <mm:compare value="0">
-                    <a href="<mm:url referids="currentcontext@context,parameters,$parameters"><mm:param name="url">delete_context.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="Verwijderen" title="Verwijderen" /></a>
+                    <a onclick="return confirm('<%=m.getString("reallydeletecontexts")%>');"
+                       href="<mm:url referids="currentcontext@context,parameters,$parameters"><mm:param name="url">delete_context.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=m.getString("delete")%>" title="<%=m.getString("delete")%>" /></a>
                   </mm:compare>
                 </mm:size>
               </mm:listnodescontainer>
