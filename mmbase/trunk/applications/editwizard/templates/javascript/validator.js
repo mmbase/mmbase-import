@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.10 2002-11-06 10:26:31 michiel Exp $
+ * @version  $Id: validator.js,v 1.11 2002-11-06 10:59:18 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -113,6 +113,14 @@ function validateElement_validator(el, silent) {
                 var hours = 0;
                 var minutes = 0;
             }
+
+
+			// We don't want -1 = 2 BC, 0 = 1 BC,  -1 = 2 BC but
+			//               0 -> error, -1 = 1 BC   1 = 1 AC
+			if (year == 0) {
+			    err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
+            }
+			if (year < 0 ) year++;
 
 			var date = new Date();
 			date.setMonth(month, day);

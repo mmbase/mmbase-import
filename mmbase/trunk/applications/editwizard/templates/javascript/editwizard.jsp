@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.22 2002-11-06 10:26:31 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.23 2002-11-06 10:59:18 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -50,7 +50,9 @@ function doOnLoad_ew() {
                     if ((ftype == "datetime") || (ftype == "date")) {
                         form.elements["internal_" + id + "_day"].selectedIndex = d.getDate() - 1;
                         form.elements["internal_" + id + "_month"].selectedIndex = d.getMonth();
-                        form.elements["internal_" + id + "_year"].value = d.getFullYear();
+                        var y = d.getFullYear();
+                        if (y <= 0) y--;
+                        form.elements["internal_" + id + "_year"].value = y;
                     }
                     if ((ftype == "datetime") || (ftype == "time")) {
                         form.elements["internal_" + id + "_hours"].value = d.getHours();
