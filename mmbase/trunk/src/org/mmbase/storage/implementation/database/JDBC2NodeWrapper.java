@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.13 2004-09-07 12:55:46 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.14 2004-09-22 15:18:34 michiel Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -189,7 +189,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
             // getValue is protected, so can call it from the same package..
-            sm.setBinaryValue(stmt, i, bytes, null);
+            sm.setBinaryValue(stmt, i, bytes, null, null /* don't have a node? */);
         } catch (SQLException e) {
             log.error(e.getMessage());
             log.error(Logging.stackTrace(e));
