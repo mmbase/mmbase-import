@@ -31,13 +31,13 @@ public class SampleCronJob extends AbstractCronJob implements CronJob {
     public void run() {
         log.info("The job has been started by the cronEntry" + cronEntry);
         log.info("the entry has this configuration " + cronEntry.getConfiguration());
-		log.info("the entry has this id " + cronEntry.getId());
-		
-		//when running jobs you often need a cloud object.
-		//the best way to get it is using class security
-		Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); // testing Class Security
-		//Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "anonymous", null);
-		log.info("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank());
+        log.info("the entry has this id " + cronEntry.getId());
+        
+        //when running jobs you often need a cloud object.
+        //the best way to get it is using class security
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); // testing Class Security
+        //Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "anonymous", null);
+        log.info("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank());
         log.info("The job has stopped");
         //cronEntry;
     }

@@ -12,16 +12,37 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Defines one entry for CronDaemon.
+ * Defines one entry for CronDaemon. This class is used by the CronDaemon.
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.4 2004-05-24 13:00:50 keesj Exp $
+ * @version $Id: CronEntry.java,v 1.5 2004-09-23 17:20:36 michiel Exp $
  */
 
 public class CronEntry {
 
     private static final Logger log = Logging.getLoggerInstance(CronEntry.class);
+
+    /**
+     * A CronEntry of this type will run without the overhead of an extra thread. This does mean
+     * though that such a job will halt the cron-daemon itself.  Such jobs must therefore be
+     * extremely short-living, and used with care (only if you have a lot of those which must run
+     * very often)
+     */
+    public static final int SHORT_JOB      = 0;
+
+    /**
+     * The default job type is the 'must be one' job. Such jobs are not started if the same job is
+     * still running. They are wrapped in a seperate thread, so other jobs can be started during the
+     * execution of this one.
+     */
+    public static final int MUSTBEONE_JOB  = 1;
+
+    /**
+     * The 'can be more' type job is like a 'must be one' job, but the run() method of such jobs is even
+     * called (when scheduled) if it itself is still running.
+     */
+    public static final int CANBEMORE_JOB  = 2;
 
     private Runnable cronJob;
 
@@ -35,32 +56,53 @@ public class CronEntry {
 
     private int count = 0;
 
-    private CronEntryField second; // 0-59
-    private CronEntryField minute; // 0-59
-    private CronEntryField hour; // 0-23
-    private CronEntryField dayOfMonth; //1-31
-    private CronEntryField month; //1-12
-    private CronEntryField dayOfWeek; //0-7 (0 or 7 is sunday)
+    private CronEntryField second;     // 0-59
+    private CronEntryField minute;     // 0-59
+    private CronEntryField hour;       // 0-23
+    private CronEntryField dayOfMonth; // 1-31
+    private CronEntryField month;      // 1-12
+    private CronEntryField dayOfWeek;  // 0-7 (0 or 7 is sunday)
+
+    private int type = MUSTBEONE_JOB;
+
+    public CronEntry(String id, String cronTime, String name, String className, String configuration) throws Exception {
+        this(id, cronTime, name, className, configuration, MUSTBEONE_JOB);
+    }
+
+    public CronEntry(String id, String cronTime, String name, String className, String configuration, String type) throws Exception {
+        this(id, cronTime, name, className, configuration);
+        if (type != null) {
+            type = type.toLowerCase();
+            if ("short".equals(type)) {
+                this.type = SHORT_JOB;
+            } else if ("mustbeone".equals(type)) {
+                this.type = MUSTBEONE_JOB;
+            } else if ("canbemore".equals(type)) {
+                this.type = CANBEMORE_JOB;
+            }
+        }
+    }
 
     /**
      * @throws ClassCastException if className does not refer to a Runnable.
      */
-    public CronEntry(String id, String cronTime, String name, String className, String configuration) throws Exception {
-        this.id = id;
-        this.name = name;
-        if (this.name == null)
-            this.name = "";
-        this.className = className;
-        this.cronTime = cronTime;
+    public CronEntry(String id, String cronTime, String name, String className, String configuration, int type) throws Exception {
+        this.id            = id;
+        this.name          = name == null ? "" : name;
+        this.className     = className;
+        this.cronTime      = cronTime;
         this.configuration = configuration;
-        cronJob = (Runnable)Class.forName(className).newInstance();
+        this.type       = type;
 
-        second = new CronEntryField();
-        minute = new CronEntryField();
-        hour = new CronEntryField();
+        cronJob = (Runnable) Class.forName(className).newInstance();
+
+        second     = new CronEntryField();
+        minute     = new CronEntryField();
+        hour       = new CronEntryField();
         dayOfMonth = new CronEntryField();
-        month = new CronEntryField();
-        dayOfWeek = new CronEntryField();
+        month      = new CronEntryField();
+        dayOfWeek  = new CronEntryField();
+
         setCronTime(cronTime);
     }
 
@@ -81,15 +123,29 @@ public class CronEntry {
     }
 
     protected boolean kick() {
-        if (isAlive()) {
-            return false;
-        } else {
-            count++;
-            thread = new ExceptionLoggingThread(cronJob, "JCronJob " + toString());
+        switch(type) {
+        case SHORT_JOB: {
+            count++; 
+            try {
+                cronJob.run();
+            } catch (Throwable t) {
+                log.error("Error during cron-job " + this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
+            }
+            return true;
+        }
+        case MUSTBEONE_JOB:
+            if (isAlive()) {
+                return false;
+            } 
+            // fall through
+        case CANBEMORE_JOB:
+        default:
+            thread = new ExceptionLoggingThread(cronJob, "CronJob " + toString());
             thread.setDaemon(true);
             thread.start();
             return true;
         }
+
 
     }
 
@@ -158,7 +214,7 @@ public class CronEntry {
     }
 
     public String toString() {
-        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": " + count;
+        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count" + count + " type " + type;
     }
 
     public int hashCode() {

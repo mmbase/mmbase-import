@@ -37,28 +37,61 @@ and:
   &lt;/logger&gt;
 </pre> 
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.2 2004-09-23 13:58:59 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.3 2004-09-23 17:20:36 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseStatsJob.class);
+    private static final int MEMORY = 1;
+    private static final int CACHE  = 2;
 
-    public void run() {
+    private int type;
+    private Cache cache = null; // used if type == CACHE
+
+    private Logger statsLogger;
+    
+    protected void init() {
+        // determin what needs to be done in run().       
         String what = cronEntry.getConfiguration();
-        Logger statsLogger = Logging.getLoggerInstance("org.mmbase.STATS." + what);
+        statsLogger = Logging.getLoggerInstance("org.mmbase.STATS." + what);
         String w = what.toUpperCase();
         if (w.equals("MEMORY")) {
-            Runtime runtime = Runtime.getRuntime();
-            statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
+            type = MEMORY;
         } else if (w.startsWith("CACHE.")) {
-            String cacheName = what.substring(6);
-            Cache  cache     = Cache.getCache(cacheName);
-            if (cache != null) {
-                statsLogger.service("" +  cache.getHits() + "\t" + (cache.getHits() + cache.getMisses()));
-            } else {
-                log.error("No cache with name " + cacheName  + " found");
+            type = CACHE;
+            if (! getCache()) {
+                log.warn("No cache with name " + cronEntry.getConfiguration().substring(6)  + " found.");
             }
+
         }
 
+    }
+    /**
+     * Fills the 'cache' member. 
+     * @return Whether successful.
+     */
+    private boolean getCache() {
+        String cacheName = cronEntry.getConfiguration().substring(6);
+        cache     = Cache.getCache(cacheName);
+        return cache != null;
+
+    }
+
+    public final void run() {
+        switch(type) {
+        case CACHE: {
+            if (cache == null) getCache();
+            if (cache != null) {
+                int h = cache.getHits();
+                statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
+            }
+            break;
+        }
+        case MEMORY: {
+            Runtime runtime = Runtime.getRuntime();
+            statsLogger.service("" + runtime.freeMemory() + "\t" + runtime.totalMemory());
+            break;
+        }            
+        } 
     }
 }

@@ -33,9 +33,9 @@ public class CronDaemon implements Runnable {
      * CronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private CronDaemon() {
-        cronEntries = Collections.synchronizedSet(new HashSet());
+        cronEntries        = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
         removedCronEntries = Collections.synchronizedSet(new HashSet());
-        addedCronEntries = Collections.synchronizedSet(new HashSet());
+        addedCronEntries   = Collections.synchronizedSet(new LinkedHashSet()); // predictable order
         start();
     }
 
@@ -163,14 +163,18 @@ public class CronDaemon implements Runnable {
 
                 Date currentMinute = new Date(next);
 
-                log.debug("Checking for " + currentMinute);
+                if (log.isDebugEnabled()) {
+                    log.debug("Checking for " + currentMinute);
+                }
 
                 // remove jobs which were scheduled for removal
                 Iterator z = removedCronEntries.iterator();
                 while (z.hasNext()) {
                     CronEntry entry = (CronEntry)z.next();
                     if (entry.isAlive()) {
-                        log.debug("Job " + entry + " still running, so could not yet be removed");
+                        if (log.isDebugEnabled()) {
+                            log.debug("Job " + entry + " still running, so could not yet be removed");
+                        }
                     } else {
                         removeEntry(entry);
                         z.remove();
@@ -187,12 +191,12 @@ public class CronDaemon implements Runnable {
                     CronEntry entry = (CronEntry)z.next();
                     if (entry.mustRun(currentMinute)) {
                         if (entry.kick()) {
-                            log.debug("started " + entry);
+                            if (log.isDebugEnabled()) {
+                                log.debug("Started " + entry);
+                            }
                         } else {
                             log.warn("Job " + entry + " still running, so not restarting it again.");
                         }
-                    } else {
-                        log.trace("skipped " + entry);
                     }
                 }
             } catch (InterruptedException ie) {
