@@ -7,6 +7,9 @@
 	<creator type="java/jar" class="org.mmbase.applications.packaging.projects.creators.JavaJarCreator">
 		<description>Creates mmp files for java/jar packages</description>
 	</creator>
+	<creator type="java/src" class="org.mmbase.applications.packaging.projects.creators.JavaSrcCreator">
+		<description>Creates mmp files for java/src packages</description>
+	</creator>
 	<creator type="cloud/model" class="org.mmbase.applications.packaging.projects.creators.CloudModelCreator">
 		<description>Creates mmp files for cloud/model packages</description>
 	</creator>
