@@ -11,6 +11,7 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
+import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.Cache;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.4 2003-07-18 13:40:22 michiel Exp $
+ * @version $Id: Groups.java,v 1.5 2003-08-06 21:54:00 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
@@ -119,6 +120,15 @@ public class Groups extends MMObjectBuilder {
         }
     }
      */
+    /**
+     * Wether the given user may do operation on a node of given context.
+     * 
+     * @return a String 'yes', 'direct', 'no'
+     */    
+    protected String mayDo(MMObjectNode groupNode, String context, Operation operation) {
+        return "yes";
+    }
+
 
     public String toString(MMObjectNode n) {
         return n.getStringValue("name");
