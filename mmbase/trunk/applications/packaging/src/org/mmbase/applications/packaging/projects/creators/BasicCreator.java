@@ -932,5 +932,10 @@ public class BasicCreator implements CreatorInterface {
 	    }
   }
 
+  public String getDefaultTargetName() {
+	log.error("Creator doesn't supply a default target name, method should be overriden");
+	return "unknown";
+  }
+
 
 }

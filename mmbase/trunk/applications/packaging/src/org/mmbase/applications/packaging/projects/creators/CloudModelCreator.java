@@ -194,5 +194,9 @@ public class CloudModelCreator extends BasicCreator implements CreatorInterface 
 	return target.getBaseDir() + getItemStringValue(target, "modelfile");
     }
 
+  public String getDefaultTargetName() {
+        return "model";
+  }
+
 }
 

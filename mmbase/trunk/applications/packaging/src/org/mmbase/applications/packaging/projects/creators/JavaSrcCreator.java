@@ -193,5 +193,9 @@ public class JavaSrcCreator extends BasicCreator implements CreatorInterface {
         target.setItem("exclude", "/CVS/");
     }
 
+  public String getDefaultTargetName() {
+        return "sources";
+  }
+
 }
 

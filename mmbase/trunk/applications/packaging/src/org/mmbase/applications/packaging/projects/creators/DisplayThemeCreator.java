@@ -197,5 +197,9 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
         target.setItem("themename", target.getName());
     }
 
+  public String getDefaultTargetName() {
+        return "theme";
+  }
+
 }
 

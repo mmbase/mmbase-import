@@ -195,5 +195,9 @@ public class DisplayHtmlCreator extends BasicCreator implements CreatorInterface
         target.setItem("exclude", "/CVS/");
     }
 
+  public String getDefaultTargetName() {
+        return "html";
+  }
+
 }
 

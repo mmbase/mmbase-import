@@ -193,5 +193,8 @@ public class ConfigBasicCreator extends BasicCreator implements CreatorInterface
         target.setItem("exclude", "/CVS/");
     }
 
-}
+  public String getDefaultTargetName() {
+	return "config";
+  }
 
+}
