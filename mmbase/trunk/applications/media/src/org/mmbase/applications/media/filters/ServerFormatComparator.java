@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @todo this implementation can be merged with FormatComparator itself, i think.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatComparator.java,v 1.4 2003-02-05 14:43:05 michiel Exp $
+ * @version $Id: ServerFormatComparator.java,v 1.5 2003-02-05 15:45:06 michiel Exp $
  */
 public class ServerFormatComparator extends  FormatComparator {
     private static Logger log = Logging.getLoggerInstance(ServerFormatComparator.class.getName());
@@ -35,12 +35,12 @@ public class ServerFormatComparator extends  FormatComparator {
     public  ServerFormatComparator() {};
 
     public void configure(XMLBasicReader reader, Element el) {
-        preferredSources.clear();
+        preferredFormats.clear();
         // reading preferredSource information    
         for( Enumeration e = reader.getChildElements(reader.getElementByPath(el, CONFIG_TAG));e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
             String format = reader.getElementAttributeValue(n3, FORMAT_ATT);
-            preferredSources.add(Format.get(format));
+            preferredFormats.add(Format.get(format));
             log.service("Adding preferredSource format: '"+format +"'");
         }
   
