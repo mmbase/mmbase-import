@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 
 import org.mmbase.bridge.StringList;
 import org.mmbase.bridge.StringIterator;
+import org.mmbase.bridge.BridgeException;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -26,7 +27,7 @@ public class BasicStringList extends BasicList implements StringList {
 
 
     public String getString(int index) {
-    	return (String)getObject(index);
+    	return (String)get(index);
     }
 	
     public StringIterator stringIterator() {
@@ -34,12 +35,35 @@ public class BasicStringList extends BasicList implements StringList {
     }
 	
     public class BasicStringIterator extends BasicIterator implements StringIterator {
-    	    BasicStringIterator(BasicList list) {
-    	    	super(list);
-	    }
+        BasicStringIterator(BasicList list) {
+            super(list);
+        }
+
+        public void set(Object o) {
+            if (! (o instanceof String)) {
+                throw new BridgeException("Object must be of type String" );
+            }
+            list.set(index, o);
+        }
+
+        public void add(Object o) {
+            if (! (o instanceof String)) {
+                throw new BridgeException("Object must be of type String" );
+            }
+            list.add(index, o);
+        }
+
+        public void set(String s) {
+            list.set(index, s);
+        }
+
+        public void add(String s) {
+            list.add(index, s);
+        }
+
 	
     	public String nextString() {
-	    return (String)nextObject();
+	    return (String)next();
     	}
     }	
 }

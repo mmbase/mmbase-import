@@ -32,42 +32,63 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
     }
 
     /**
-	*
-	*/
-	public Object get(int index) {
-        Object o=getObject(index);
-        if (o instanceof NodeManager) {
-    	    return (NodeManager)o;
-        }
-    	NodeManager nm = cloud.getNodeManager((String)o);
-    	objects[index]=nm;
-    	return nm;
-	}
+    *
+    */
+    public Object convert(Object o, int index) {
+        if (o instanceof NodeManager) {        
+            return o;
+        }        
+        NodeManager nm = cloud.getNodeManager((String)o);
+        set(index, nm);
+        return nm;
+    }
 
     /**
-	*
-	*/
-	public NodeManager getNodeManager(int index) {
-	    return (NodeManager)get(index);
-	}
-	
-	/**
-	*
-	*/
-	public NodeManagerIterator nodeManagerIterator() {
-	    return new BasicNodeManagerIterator(this);
-	};
-	
-	public class BasicNodeManagerIterator extends BasicIterator implements NodeManagerIterator {
-	
-	    BasicNodeManagerIterator(BasicList list) {
-	        super(list);
-	    }
-	
-	    public NodeManager nextNodeManager() {
-	        return (NodeManager)nextObject();
-	    }
-	
-	}
-	
+    *
+    */
+    public NodeManager getNodeManager(int index) {
+        return (NodeManager) get(index);
+    }
+    
+    /**
+    *
+    */
+    public NodeManagerIterator nodeManagerIterator() {
+        return new BasicNodeManagerIterator(this);
+    };
+    
+    public class BasicNodeManagerIterator extends BasicIterator implements NodeManagerIterator {
+    
+        BasicNodeManagerIterator(BasicList list) {
+            super(list);
+        }
+        
+        public void set(Object o) {
+            if (! (o instanceof NodeManager)) {
+                throw new BridgeException("Object must be of type NodeManager" );
+            }
+            list.set(index, o);
+        }
+        public void add(Object o) {
+            if (! (o instanceof NodeManager)) {
+                throw new BridgeException("Object must be of type NodeManager" );
+            }
+            list.add(index, o);
+        }
+
+        public void set(NodeManager m) {
+            list.set(index, m);
+        }
+
+        public void add(NodeManager m) {
+            list.add(index, m);
+        }
+
+
+        public NodeManager nextNodeManager() {
+            return (NodeManager)next();
+        }
+    
+    }
+    
 }

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Iterator;
 
 /**
  * A list of nodes
