@@ -5,7 +5,7 @@
 	It is not a good idea to change things in this XML (because this might cause portability issues), but
 	you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-	version: $Id: taglibcontent.xml,v 1.18 2003-11-19 13:29:03 michiel Exp $
+	version: $Id: taglibcontent.xml,v 1.19 2003-12-09 22:56:40 michiel Exp $
 	-->
 
 	<!-- First per content-type default escapers and postprocessors are defined.
@@ -59,7 +59,8 @@
     defaultencoding=""
 		/>
 
-	<!-- These are the available escapers.  There is one 'global' escaper which is provided by the
+
+  <!-- These are the available escapers.  There is one 'global' escaper which is provided by the
 	content-tag to its writer childs. Writers also have an 'escaper' attribute.
 	-->
 
@@ -86,6 +87,13 @@
 	<escaper id="pp">
     <!-- as 'p' but leading br-tags are omitted -->
 		<class config="HTML_BLOCK"  back="true">org.mmbase.util.transformers.XmlField</class>
+	</escaper>
+	<escaper id="p-ommit-surrounding">
+    <!-- as p, but surrounding p /p tags are omitted (you must place them by hand). This can be needed for 'read-more' links -->
+		<class config="HTML_BLOCK_BR_NOSURROUNDINGP" back="true">org.mmbase.util.transformers.XmlField</class>
+	</escaper>
+	<escaper id="pp-ommit-surrounding">
+		<class config="HTML_BLOCK_NOSURROUNDINGP"  back="true">org.mmbase.util.transformers.XmlField</class>
 	</escaper>
 	<escaper id="sql">
 		<class config="ESCAPE_QUOTES">org.mmbase.util.transformers.Sql</class>
