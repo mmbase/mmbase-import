@@ -68,8 +68,11 @@ public class JCronDaemon implements Runnable{
             for (int z = 0 ; z < jCronEntries.size(); z ++){
                 JCronEntry entry = jCronEntries.getJCronEntry(z);
                 if (entry.mustRun(currentMinute)) {
-                    entry.kick();
-                    log.debug(Calendar.getInstance().getTime() + ": started " + entry);
+                    if (entry.kick()) {
+                        log.debug(Calendar.getInstance().getTime() + ": started " + entry);
+                    } else {
+                        log.warn("Job " + entry + " still running, so not restarting it again.");
+                    }
                 } else {
                     log.trace(Calendar.getInstance().getTime() + ": skipped " + entry);
                 }

@@ -14,7 +14,9 @@ public class JCronEntry {
     private String id;
     private String name;
     private String className;
-    
+
+    private int count = 0;
+
     private JCronEntryField minute    ;// 0-59
     private JCronEntryField hour      ;// 0-23
     private JCronEntryField dayOfMonth;//1-31
@@ -35,15 +37,15 @@ public class JCronEntry {
         setTimeVal(crontime);
     }
     
-    public void kick() {
-        if (thread == null) {
-            thread = new Thread(jCronJob, "JCronJob(" + toString() + ")");
-            thread.setDaemon(true);            
-        }
-        if (thread.isAlive()) {
-            log.warn("Job " + jCronJob + " still running, so not restarting it again.");
+    public boolean kick() {
+        if (thread != null && thread.isAlive()) {
+            return false;
         } else {
+            count++;
+            thread = new Thread(jCronJob, "JCronJob " + toString());
+            thread.setDaemon(true);            
             thread.start();
+            return true;
         }
 
     }
@@ -97,6 +99,6 @@ public class JCronEntry {
     }
 
     public String toString() {
-        return name + ": " + className;
+        return name + ": " + className + ":" + count;
     }
 }
