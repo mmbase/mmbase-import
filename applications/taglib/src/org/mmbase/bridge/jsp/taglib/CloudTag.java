@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.82 2003-11-16 14:07:32 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.83 2003-12-16 13:58:56 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -54,8 +54,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static final int METHOD_ANONYMOUS = 2;
     private static final int METHOD_LOGOUT    = 3;
     private static final int METHOD_LOGINPAGE = 4;
-
-    private static final int METHOD_DELEGATE  = 5;
+    // private static final int METHOD_GIVEN_OR_ANONYMOUS = 5;
+    private static final int METHOD_DELEGATE  = 6;
 
 
     /**
@@ -104,6 +104,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private Attribute pwd          = Attribute.NULL;
     private Attribute rank         = Attribute.NULL;
     private Attribute sessionName  = Attribute.NULL;
+
+    private Attribute onfail       = Attribute.NULL;
 
     private static String FAILMESSAGE = "<h1>CloudTag Error</h1>";
 
@@ -165,6 +167,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         rank = getAttribute(r);
     }
 
+
+
     /**
      * Gives the configured rank as a Rank object
      */
@@ -177,6 +181,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         return r;
     }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public void setOnfail(String of) throws JspTagException {
+        onfail = getAttribute(of);
+    }
+
+
 
     /**
      * If this cloud is 'anonymous' according to rank attribute.
@@ -228,6 +241,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return METHOD_LOGINPAGE;
         } else if ("delegate".equals(m)) {
             return METHOD_DELEGATE;
+            //} else if ("given_or_anonymous".equals(m)) {
+            //    return METHOD_GIVEN_OR_ANONYMOUS;
         } else {
             throw new JspTagException("Unknown value for 'method'  attribute (" + m + ")");
         }
@@ -651,7 +666,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             log.debug("found cloud in session m: " + method + " l: " + logon + ". Checking it");
         }
 
-        if (! cloud.getUser().isValid()) {            
+        if (cloud == null || cloud.getUser() == null || (! cloud.getUser().isValid())) {
             // Makes the cloud variable null (may not be null already) if it
             // is 'expired'. This means normally that the security
             // configuration has been changed, or MMBase restarted or
@@ -832,9 +847,18 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             String toFile = loginpage.getString(this);
 
             // find this page relative to login-page
-            String referrerpage = new File(request.getRequestURI()).getName();
+                        
+            String referrerPage = null;
 
-            if (1 == 0) {
+            
+            String requestURI = request.getRequestURI();
+            if (requestURI.endsWith("/")) {
+                referrerPage = "";
+            } else {
+                referrerPage = new File(requestURI).getName();
+            }
+
+            if (1 == 0) { // XXXXX hmm, should test this in freeze
 
                 String toDir = new File(toFile).getParent();
                 if (toDir == null)
@@ -848,18 +872,19 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 String thisFile = servletPath.getName();
 
                 if (toDir.startsWith("/")) {
-                    referrerpage = org.mmbase.util.UriParser.makeRelative(toDir, thisDir) + "/" + thisFile;
+                    referrerPage = org.mmbase.util.UriParser.makeRelative(toDir, thisDir) + "/" + thisFile;
                 } else {
-                    referrerpage = org.mmbase.util.UriParser.makeRelative(thisDir + "/" + toDir, toDir) + "/" + thisFile;
+                    referrerPage = org.mmbase.util.UriParser.makeRelative(thisDir + "/" + toDir, toDir) + "/" + thisFile;
                 }
             }
-            StringBuffer referrer = new StringBuffer(referrerpage);
+
+            StringBuffer referrer = new StringBuffer(referrerPage);
             if (request.getQueryString() != null) {
                 referrer.append("?" + request.getQueryString());
             }
             //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
             RequestDispatcher rd = request.getRequestDispatcher(toFile);
-            request.setAttribute("referrerpage", referrerpage);
+            request.setAttribute("referrerpage", referrerPage);
             request.setAttribute("referrer", referrer.toString());
             request.setAttribute("reason", reason);
             rd.forward(request, response);
@@ -873,37 +898,32 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private final int deny(int reason) throws JspTagException {
 
+        int method = getMethod();
         // did not succeed, so problably the password was wrong.
-        if (getMethod() == METHOD_HTTP) { // give a deny, people can retry the password then.
+        if (method == METHOD_HTTP) { // give a deny, people can retry the password then.
             switch (reason) {
-            case DENYREASON_FAIL :
-                return denyHTTP("<h2>This page requires authentication</h2>");
             case DENYREASON_RANKTOOLOW :
                 return denyHTTP("<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
+            case DENYREASON_FAIL :
             default :
                 return denyHTTP("<h2>This page requires authentication</h2>");
             }
-        } else if (getMethod() == METHOD_LOGINPAGE || (getMethod() == METHOD_UNSET && loginpage != Attribute.NULL)) {
+        } else if (method == METHOD_LOGINPAGE || (method == METHOD_UNSET && loginpage != Attribute.NULL)) {
             switch (reason) {
-            case DENYREASON_FAIL :
-                return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
             case DENYREASON_RANKTOOLOW :
                 return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW);
+            case DENYREASON_FAIL :
             default :
                 return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
             }
-        } else if (getMethod() == METHOD_DELEGATE) {
+        } else if (method == METHOD_DELEGATE) {
             switch (reason) {
-            case DENYREASON_FAIL: {
-                return SKIP_BODY;
-            }
-            case DENYREASON_RANKTOOLOW : {
+            case DENYREASON_RANKTOOLOW : 
                 throw new JspTagException("Rank too low");
-            }
+            case DENYREASON_FAIL: 
             default:
                 return SKIP_BODY;
             }
-
         } else { // strange, no method given, password wrong (or missing), that's really wrong.
             switch (reason) {
             case DENYREASON_FAIL: {
@@ -992,8 +1012,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
         // do the MMCI cloud logging on
         if (user != null) {
-            if (doLogin(user) == SKIP_BODY)
+            if (doLogin(user) == SKIP_BODY) {
                 return SKIP_BODY;
+            }
         } else {
             log.debug("no login given, creating anonymous cloud");
             // no logon, create an anonymous cloud.
