@@ -15,7 +15,7 @@ import javax.servlet.jsp.JspTagException;
  * MMBase specific. JDK 1.4.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TaglibException.java,v 1.1 2003-09-05 16:32:36 michiel Exp $
+ * @version $Id: TaglibException.java,v 1.2 2004-02-06 12:13:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class TaglibException extends JspTagException {
@@ -32,7 +32,7 @@ public class TaglibException extends JspTagException {
 
     //javadoc is inherited
     public TaglibException(Throwable cause) {
-        super();
+        super(cause.getMessage());
         initCause(cause);
     }
 
