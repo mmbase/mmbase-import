@@ -36,7 +36,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.33 2004-02-25 19:39:23 michiel Exp $
+ * @version $Id: Contexts.java,v 1.34 2004-02-25 21:57:53 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -866,11 +866,14 @@ public class Contexts extends MMObjectBuilder {
             NodeSearchQuery q = new NodeSearchQuery(rights);
             BasicStepField snumber = q.getField(rights.getField("snumber"));
             BasicStepField dnumber = q.getField(rights.getField("dnumber"));
+            BasicStepField op      = q.getField(rights.getField("operation"));
             BasicFieldValueConstraint c1 = new BasicFieldValueConstraint(snumber, new Integer(contextNode.getNumber()));
             BasicFieldValueConstraint c2 = new BasicFieldValueConstraint(dnumber, new Integer(groupOrUserNode.getNumber()));
+            BasicFieldValueConstraint c3 = new BasicFieldValueConstraint(op, operation.toString());
             BasicCompositeConstraint cons = new BasicCompositeConstraint(BasicCompositeConstraint.LOGICAL_AND);
             cons.addChild(c1);
             cons.addChild(c2);
+            cons.addChild(c3);
             q.setConstraint(cons);
             try {
                 List r = rights.getNodes(q);
