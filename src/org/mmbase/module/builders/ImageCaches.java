@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.25.2.1 2003-03-04 20:05:32 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.25.2.2 2003-12-12 13:05:43 vpro Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -167,7 +167,7 @@ public class ImageCaches extends AbstractImages {
 
 	if (number == -1) {
 	    // we dont have a cachednode yet, return null	    
-	    log.info("cached node not found, returning null");
+	    log.info(ckey+" was not cached.");
 	    return null;
 	}
 
