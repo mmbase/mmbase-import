@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.8 2003-07-31 15:57:13 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.9 2003-08-01 14:13:24 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -165,7 +165,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         String guiType = field.getGUIType();
         String fieldName = field.getName();
         if (guiType.equals("boolean")) {
-            String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+            String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
             fieldValue = context.encode(fieldValue, field);
             if (fieldValue == null) {
                 node.setIntValue(fieldName, 0);
@@ -197,7 +197,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.whereHtmlInput(field);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
-            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id, false) == null) {
                 return null;
             } else {
                 return super.whereHtmlInput(field);
@@ -220,7 +220,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.whereHtmlInput(field, query);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
-            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id, false) == null) {
                 return null;
             } else {
                 return super.whereHtmlInput(field, query);

@@ -24,7 +24,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.12 2003-07-31 20:30:23 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.13 2003-08-01 14:13:24 michiel Exp $
  */
 
 public class NodeHandler extends IntegerHandler {
@@ -108,6 +108,11 @@ public class NodeHandler extends IntegerHandler {
                 if(gui.getValue().equals(value)) {
                     // this is the selected one!
                     buffer.append("selected=\"selected\"");
+                } else if (search) {
+                    String searchi = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(field.getName()), false);
+                    if (gui.getValue().equals(searchi)) {
+                        buffer.append(" selected=\"selected\"");
+                    }
                 }
                 buffer.append("value=\"" + gui.getValue() + "\">");
                 buffer.append(Encode.encode("ESCAPE_XML", (String)  gui.getKey()));
@@ -116,8 +121,14 @@ public class NodeHandler extends IntegerHandler {
             buffer.append("</select>");
             if (search) {
                 buffer.append("<input type=\"checkbox\" name=\"");
-                buffer.append(prefix(field.getName() + "_search"));
-                buffer.append("\" />\n");
+                String name = prefix(field.getName() + "_search");
+                buffer.append(name);
+                String searchi = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), name, false);
+                buffer.append("\" ");
+                if (searchi != null) {
+                    buffer.append(" checked=\"checked\"");
+                }
+                buffer.append(" />\n");
             }
             return buffer.toString();
         }
@@ -131,10 +142,10 @@ public class NodeHandler extends IntegerHandler {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id, false) == null) {
                 return null;
             } else {
-                String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+                String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
                 if (search == null || "".equals(search)) {
                     return null;
                 }
@@ -148,10 +159,10 @@ public class NodeHandler extends IntegerHandler {
         String fieldName = field.getName();
         if (context.getCloud().hasNodeManager(field.getGUIType())) {
             String id = prefix(fieldName + "_search");
-            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
+            if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id, false) == null) {
                 return "";
             } else {
-                String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+                String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
                 if (search == null || "".equals(search)) {
                     return null;
                 }

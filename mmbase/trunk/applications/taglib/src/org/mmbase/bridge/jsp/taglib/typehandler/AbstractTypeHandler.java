@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.7 2003-07-31 15:57:13 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.8 2003-08-01 14:13:23 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -45,7 +45,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
         } else if (search) {
-            String searchParam = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(field.getName()));
+            String searchParam = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(field.getName()), false);
             show.append((searchParam == null ? "" : searchParam));
         }
         show.append("\" />");
@@ -57,7 +57,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
-        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
         if (fieldValue == null) {
 
         } else {
@@ -71,7 +71,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
         if (search == null || "".equals(search)) {
             return null;
         }
@@ -89,7 +89,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
 
     public String whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
         if (search == null || "".equals(search)) {
             return null;
         }
@@ -106,9 +106,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String id = context.findFieldProvider().getId();
         if (id == null) id = "";
         if (id.equals("") ) {
-            return s;
+            return "__" + s;
         } else {
-            return id + "_" + s;
+            return "__" + id + "_" + s;
         }
     }
 
