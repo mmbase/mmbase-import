@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOracle.java,v 1.5.4.1 2002-11-06 22:43:08 robmaris Exp $
+$Id: MMOracle.java,v 1.5.4.2 2002-11-07 23:33:54 robmaris Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5.4.1  2002/11/06 22:43:08  robmaris
+RvM: fixed #3661. Removed removeNode(), the superclass method is fine and there was no reason to overwrite it in the first place.
+
 Revision 1.5  2001/03/09 09:12:04  pierre
 pierre: added directionality support to databse support classes. also added logging.
 Someone please test the Informix database!
@@ -193,7 +196,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.5.4.1 $ $Date: 2002-11-06 22:43:08 $
+* @$Revision: 1.5.4.2 $ $Date: 2002-11-07 23:33:54 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -246,22 +249,24 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			fieldname=(String)allowed2disallowed.get(fieldname);
 		}
 
-		int type=node.getDBType(prefix+fieldname);
-		switch (type) {
-			case FieldDefs.TYPE_STRING:
-				String tmp=rs.getString(i);
-				if (tmp==null) {
-					// temp fix try if its a clob !!
-					tmp=getDBText(rs,i);
-					if (tmp!=null) {
-						node.setValue(prefix+fieldname,tmp);
-					} else {
-						node.setValue(prefix+fieldname,"");
-					}
-				} else {
-					node.setValue(prefix+fieldname,tmp);
-				}
-				break;
+      int type=node.getDBType(prefix+fieldname);
+      switch (type) {
+         case FieldDefs.TYPE_STRING:
+            String tmp;
+            ResultSetMetaData metaData = rs.getMetaData();
+            if (metaData.getColumnType(i) == Types.BLOB) {
+               // Retreive from BLOB.
+               tmp = getDBText(rs, i);
+            } else {
+               // Retreive from textfield.
+               tmp = rs.getString(i);
+            }
+            if (tmp == null) {
+               node.setValue(prefix + fieldname,"");
+            } else {
+               node.setValue(prefix + fieldname,tmp);
+            }
+            break;
 
 			case FieldDefs.TYPE_INTEGER:
 				//node.setValue(prefix+fieldname,(Integer)rs.getObject(i));

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.10 $ $Date: 2002-11-06 22:47:57 $
+* @$Revision: 1.11 $ $Date: 2002-11-07 23:38:21 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -84,19 +84,21 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
         switch (type) {
             case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING:
-                String tmp=rs.getString(i);
-                if (tmp==null) {
-                    // temp fix try if its a clob !!
-                    tmp=getDBText(rs,i);
-                    if (tmp!=null) {
-                        node.setValue(prefix+fieldname,tmp);
-                    } else {
-                        node.setValue(prefix+fieldname,"");
-                    }
-                } else {
-                    node.setValue(prefix+fieldname,tmp);
-                }
-                break;
+               String tmp;
+               ResultSetMetaData metaData = rs.getMetaData();
+               if (metaData.getColumnType(i) == Types.BLOB) {
+                  // Retreive from BLOB.
+                  tmp = getDBText(rs, i);
+               } else {
+                  // Retreive from textfield.
+                  tmp = rs.getString(i);
+               }
+               if (tmp == null) {
+                  node.setValue(prefix + fieldname,"");
+               } else {
+                  node.setValue(prefix + fieldname,tmp);
+               }
+               break;
 
             case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
