@@ -14,7 +14,7 @@
 <mm:node id="ok" referid="node" notfound="skip" />
 
 <mm:notpresent referid="ok">
-   The RichText application was not deployed. That is necessary for
+   The RichText application was not <a href="<mm:url page="/mmbase/admin/default.jsp?category=admin&subcategory=applications" />">deployed</a>. That is necessary for
    this page.
 </mm:notpresent>
 
