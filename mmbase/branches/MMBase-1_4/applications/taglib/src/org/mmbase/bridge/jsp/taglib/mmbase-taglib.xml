@@ -39,7 +39,7 @@ one or more examplevalue tags is you want to give some example values.
   <tlibversion>1.0</tlibversion>
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
-  <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
+  <uri>http://www.mmbase.org/mmbase-taglib-0.8</uri>
   <info>
     Tag library for MMBase. MMBase consists of a cloud of nodes (objects) wich
     can be related to each other. Relations can be seen as nodes with two arms
