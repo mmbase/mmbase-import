@@ -132,8 +132,7 @@
 
 <xsl:template match="tag|taginterface" mode="tocext">
   <xsl:param name="testlast">false</xsl:param>
-  <xsl:variable name="n"><xsl:value-of select="name" /></xsl:variable>
-  <xsl:apply-templates select="/taglib/tag/extends[.=$n]/parent::*|/taglib/taginterface/extends[.=$n]/parent::*" mode="tocext" />
+  <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" mode="tocext" />
    <xsl:if test="name()='tag'">
      <a href="#{name}">
      <xsl:value-of select="name" />  
@@ -197,9 +196,8 @@
 	<xsl:if test="name()='taginterface'">
 	<tr>
     <td>tags of this type</td><td>
-            <xsl:variable name="n" select="name" />
-            <xsl:apply-templates
-              select="/taglib/tag/extends[.=$n]/parent::*|/taglib/taginterface/extends[.=$n]/parent::*" 
+           <xsl:apply-templates
+              select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" 
               mode="tocext" >
               <xsl:with-param name="testlast">true</xsl:with-param>
               <xsl:sort select="name" />
@@ -222,22 +220,20 @@
 </xsl:template>
 
 <xsl:template match="extends">
-  <xsl:variable name="e" select="." />
   <tr>
-      <td width="100" valign="top"><xsl:if test="/taglib/taginterface/name[.=$e]"><a href="#{$e}"><font color="{$extendscolor}"><xsl:value-of select="." /></font></a></xsl:if> attributes</td>
+      <td width="100" valign="top"><xsl:if test="/taglib/taginterface/name[.=current()]"><a href="#{current()}"><font color="{$extendscolor}"><xsl:value-of select="." /></font></a></xsl:if> attributes</td>
 	  <td>
-	  <xsl:if test="/taglib/taginterface/name[.=$e]/parent::*/attribute|/taglib/tag/name[.=$e]/parent::*/attribute">
+	  <xsl:if test="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/attribute">
       <ul>   	   
-       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/attribute|/taglib/tag/name[.=$e]/parent::*/attribute"  mode="extends" />
+       <xsl:apply-templates select="/taglib/*[starts-with(name(), 'tag')]/name[.=current()]/parent::*/attribute"  mode="extends" />
       </ul>
       </xsl:if>
 	  </td>
    </tr>
-   <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/extends|/taglib/tag/name[.=$e]/parent::*/extends"  />
+   <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/extends"  />
 </xsl:template>
 
 <xsl:template match="attribute" mode="extends">
-   <xsl:variable name="e" select="." />
    <li><a href="#{parent::*/name}.{name}"><font color="{$attrcolor}"><xsl:value-of select="name" /></font></a></li>
 </xsl:template>
 
