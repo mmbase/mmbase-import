@@ -25,11 +25,21 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.1 2002-03-05 15:30:39 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.2 2002-03-25 15:56:19 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(AbstractImages.class.getName());
+
+
+    public final static String IMGDB = "imgdb?";
+    /**
+     * Returns paths to the image serlvet.
+     */
+
+    protected String getServlet() {
+       return  MMBaseContext.getHtmlRootUrlPath() + IMGDB;
+    }
 
     /**
      * An image's gui-indicator is of course some <img src>, but it depends on what kind of image
@@ -54,5 +64,7 @@ public abstract class AbstractImages extends MMObjectBuilder {
     }
     abstract public String getImageMimeType(Vector params);
     abstract public byte[] getImageBytes(Vector params);
+
+
 }
         
