@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.112 2005-03-07 15:14:42 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.113 2005-03-14 19:02:35 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -363,6 +363,12 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
     private int denyHTTP(String message) throws JspTagException {
         log.debug("sending deny");
+
+
+        if (response.isCommitted()) {
+            throw new JspTagException("Response is commited already, cannot send a deny");
+        }
+        
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         if (getRealm() == null) {
@@ -560,25 +566,26 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private final boolean checkLogoutMethod() throws JspTagException {
         if (getMethod() == AuthenticationData.METHOD_LOGOUT) {
             log.debug("Requested logout");
-            if (cloud != null) {
-                removeRealm();
-                if (session != null) {
-                    log.debug("ok. session is not null");
-                    session.removeAttribute(getSessionName()); // remove cloud itself
-                }
-                String authenticate = cloud.getUser().getAuthenticationType();            
-                // add some information for actual logout
-                // Logout is loging in with 'anonymous' with some extra info.
-                Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
-                logoutInfo.setIfDefined(Parameter.REQUEST, request);
-                logoutInfo.setIfDefined(Parameter.RESPONSE, response);
-                logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, authenticate);
-                logoutInfo.setIfDefined(AuthenticationData.PARAMETER_LOGOUT, Boolean.TRUE);
-                setAnonymousCloud(logoutInfo);
+            removeRealm();
+            if (session != null) {
+                log.debug("ok. session is not null");
+                session.removeAttribute(getSessionName()); // remove cloud itself
             }
+            // add some information for actual logout
+            // Logout is loging in with 'anonymous' with some extra info.
+            Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
+            logoutInfo.setIfDefined(Parameter.REQUEST, request);
+            logoutInfo.setIfDefined(Parameter.RESPONSE, response);
+            if (cloud != null) {
+                String authenticate = cloud.getUser().getAuthenticationType();            
+                logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, authenticate);
+            }
+            logoutInfo.setIfDefined(AuthenticationData.PARAMETER_LOGOUT, Boolean.TRUE);
+            setAnonymousCloud(logoutInfo);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -685,13 +692,25 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * cloud member variable is made null.
      */
     private final void checkCloud() throws JspTagException {
+
+        if (cloud == null) {
+            log.debug("Cloud is null, cannot check it");
+            removeCloud();
+            return;
+        }
         // we have a cloud, check if it is a desired one
         // otherwise make it null.
         if (log.isDebugEnabled()) {
             log.debug("found cloud in session m: " + method + " l: " + logon + ". Checking it");
         }
+        if (cloud.getUser() == null) {
+            log.debug("found a cloud in the session, but is has no user, throwing it away");
+            removeCloud();
+            return;
+        }
 
-        if (cloud == null || cloud.getUser() == null || (!cloud.getUser().isValid())) {
+
+        if (!cloud.getUser().isValid()) {
             // Makes the cloud variable null (may not be null already) if it
             // is 'expired'. This means normally that the security
             // configuration has been changed, or MMBase restarted or
@@ -1021,7 +1040,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         try {
             user.checkRequiredParameters();
             cloud = getDefaultCloudContext().getCloud(getName(), getAuthenticate(), user == null ? null : user.toMap());
-            log.debug("Logged in");
+            log.debug("Logged in " );
+            if (!cloud.getUser().isValid()) {
+                throw new RuntimeException("Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
+            }
             // ok, logging on work, now check rank if necessary
             if (rank != Attribute.NULL) {
                 log.debug("Checking for rank");

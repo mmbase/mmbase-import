@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.55 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: IncludeTag.java,v 1.56 2005-03-14 19:02:35 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -275,10 +275,14 @@ public class IncludeTag extends UrlTag {
             
             Reader reader = ResourceLoader.getWebRoot().getReader(resource);
             StringWriter writer = new StringWriter();
-            while (true) {
-                int c = reader.read();
-                if (c == -1) break;
-                writer.write(c);
+            if (reader == null) {
+                writer.write("No such resource " + resource);
+            } else {
+                while (true) {
+                    int c = reader.read();
+                    if (c == -1) break;
+                    writer.write(c);
+                }
             }
             helper.setValue(debugStart(resource) + writer.toString() + debugEnd(resource));
         } catch (IOException e) {

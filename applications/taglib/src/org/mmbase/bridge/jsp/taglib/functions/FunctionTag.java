@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.4 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: FunctionTag.java,v 1.5 2005-03-14 19:02:35 michiel Exp $
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 
@@ -33,7 +33,8 @@ public class FunctionTag extends AbstractFunctionTag implements Writer, Function
         return helper.doAfterBody();
     }
     public int doEndTag() throws JspTagException {
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
 
 }

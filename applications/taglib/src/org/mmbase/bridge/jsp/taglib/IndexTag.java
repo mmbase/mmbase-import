@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspException;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.18 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: IndexTag.java,v 1.19 2005-03-14 19:02:35 michiel Exp $ 
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
@@ -83,7 +83,8 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
      *
      **/
     public int doEndTag() throws JspTagException {
-        return helper.doEndTag();
+        helper.doEndTag();
+        return super.doEndTag();
     }
 
 }

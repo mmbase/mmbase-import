@@ -39,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.46 2005-02-07 09:29:41 andre Exp $ 
+ * @version $Id: FormatterTag.java,v 1.47 2005-03-14 19:02:35 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -420,7 +420,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * @return The result ot the transformation.
      */
     private String xslTransform(Document doc, Source xsl) throws JspTagException {
-        log.debug("transforming");
+        log.info("transforming in " + cwd);
 
         TemplateCache cache= TemplateCache.getCache();
         Templates cachedXslt = cache.getTemplates(xsl);
