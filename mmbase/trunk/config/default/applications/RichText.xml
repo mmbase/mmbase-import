@@ -32,7 +32,9 @@
   </contextsourcelist>
   
   <description>
-    RichText test article, with some related nodes.
+    RichText test article, with some related nodes. Depends on
+    resources application, so please install that one before
+    installing this one.
   </description>
   
   <install-notice>
