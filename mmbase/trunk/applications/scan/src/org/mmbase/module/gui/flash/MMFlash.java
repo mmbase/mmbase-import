@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Implements the parsing and generating of dynamic flash files
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.10 2001-07-16 10:08:09 jaco Exp $
+ * @version $Id: MMFlash.java,v 1.11 2001-09-17 16:01:11 daniel Exp $
  */
 public class MMFlash extends Module {
 
@@ -85,6 +85,12 @@ public class MMFlash extends Module {
 	}
 
 	public MMFlash() {
+	}
+
+	public synchronized byte[] getDebugSwt(String url,String query,HttpServletRequest req) {
+		String filename=htmlroot+url;
+		byte[] bytes=generateSwtDebug(filename);
+		return(bytes);
 	}
 
 	public synchronized byte[] getScanParsedFlash(String url,String query,HttpServletRequest req) {
@@ -451,6 +457,59 @@ public class MMFlash extends Module {
 		return(buffer);
     }
 
+
+	private byte[] generateSwtDebug(String filename) {
+
+		Process p=null;
+        String s="",tmp="";
+		DataInputStream dip= null;
+		DataInputStream diperror= null;
+		String command="";
+		PrintStream out=null;	
+		RandomAccessFile  dos=null;	
+
+
+		try {
+			command=generatorpath+generatorprogram+" -d "+filename;
+			p = (Runtime.getRuntime()).exec(command);
+		} catch (Exception e) {
+			log.error("could not execute command:'"+command+"'");					
+			s+=e.toString();
+			out.print(s);
+		}
+		log.debug("Executed command: "+command+" succesfull, now gonna parse");									
+		log.info("Executed command: "+command+" succesfull, now gonna parse");									
+		dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
+		byte[] result=new byte[32000];
+
+		// look on the input stream
+        try {
+			int len3=0;
+			int len2=0;
+
+       	    		len2=dip.read(result,0,result.length);
+			if (len2==-1) {
+				return(null);
+			}
+			while (len2!=-1 && len3!=-1) { 
+           		len3=dip.read(result,len2,result.length-len2);
+				if (len3==-1) {
+					break;
+				} else {
+					len2+=len3;
+				}
+			}
+			dip.close();
+        } catch (Exception e) {
+			log.error("could not parse output from '"+command+"'");					
+			e.printStackTrace();
+        	try {
+				dip.close();
+        	} catch (Exception f) {
+			}
+		}
+		return(result);
+	}
 
 	private void generateFlash(String scriptpath) {	
 		Process p=null;
