@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.124 2002-04-08 11:59:28 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.125 2002-04-08 12:04:37 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -117,7 +117,7 @@ public class MMObjectBuilder extends MMTable {
      * Retrieved from the TypeDef builder.
      * @scope private, use getObjectType()
      */
-    public int oType=0;
+    public int oType=-1;
 
     /**
      * Description of the builder in the currently selected language
