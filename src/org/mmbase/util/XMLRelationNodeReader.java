@@ -142,7 +142,7 @@ public class XMLRelationNodeReader  {
 								return null;
 							}
 							// figure out rnumber
-							int rnumber=reldef.getGuessedNumber(rname);
+							int rnumber=reldef.getNumberByName(rname);
 							newnode.setValue("rnumber",rnumber);
 							
 							// directionality
