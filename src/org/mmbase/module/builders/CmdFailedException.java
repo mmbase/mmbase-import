@@ -10,15 +10,42 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 /**
+ * @javadoc
+ * @deprecated-now not used by any CVS classes (probably local code)
+ *
  * @author David V van Zeventer
- * @version $Id: CmdFailedException.java,v 1.4 2003-03-10 11:50:17 pierre Exp $
+ * @version $Id: CmdFailedException.java,v 1.5 2003-08-29 09:36:52 pierre Exp $
  */
 public class CmdFailedException extends Exception {
-        public String errval;
-        public String explanation;
+    public String errval;
+    public String explanation;
 
-        public CmdFailedException(String errval,String explanation){
-                this.errval = errval;
-                this.explanation = explanation;
-        }
+    //javadoc is inherited
+    public CmdFailedException() {
+        super();
+    }
+    
+    //javadoc is inherited
+    public CmdFailedException(String message) {
+        super(message);
+    }
+
+    //javadoc is inherited
+    public CmdFailedException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public CmdFailedException(String message, Throwable cause) {
+        super(message,cause);
+    }
+
+    /**
+     * @javadoc
+     */
+    public CmdFailedException(String errval,String explanation) {
+        super(errval);
+        this.errval = errval;
+        this.explanation = explanation;
+    }
 }

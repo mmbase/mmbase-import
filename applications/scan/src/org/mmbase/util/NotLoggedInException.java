@@ -13,13 +13,30 @@ import javax.servlet.ServletException;
 
 /**
  * This exception gets thrown when the user hasn't logged in yet.
+ *
+ * @author vpro
+ * @version $Id: NotLoggedInException.java,v 1.6 2003-08-29 09:36:55 pierre Exp $
  */
 public class NotLoggedInException extends ServletException {
 
-    /**
-     * Create the exception
-      */
-    public NotLoggedInException (String s) {
-        super(s);
+    //javadoc is inherited
+    public NotLoggedInException() {
+        super();
     }
+
+    //javadoc is inherited
+    public NotLoggedInException(String message) {
+        super(message);
+    }
+
+    //javadoc is inherited
+    public NotLoggedInException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public NotLoggedInException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

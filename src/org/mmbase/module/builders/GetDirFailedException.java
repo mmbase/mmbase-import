@@ -10,16 +10,43 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 /**
- * &author David V van Zeventer
- * @version $Id: GetDirFailedException.java,v 1.4 2003-03-10 11:50:19 pierre Exp $
+ * @javadoc
+ * @deprecated-now not used by any CVS classes (probably local code)
+ *
+ * @author David V van Zeventer
+ * @version $Id: GetDirFailedException.java,v 1.5 2003-08-29 09:36:52 pierre Exp $
  */
 public class GetDirFailedException extends Exception {
-        public String errval;
-        public String explanation;
+    public String errval;
+    public String explanation;
 
-        public GetDirFailedException(String errval,String explanation){
-                this.errval = errval;
-                this.explanation = explanation;
-        }
+    //javadoc is inherited
+    public GetDirFailedException() {
+        super();
+    }
+    
+    //javadoc is inherited
+    public GetDirFailedException(String message) {
+        super(message);
+    }
+
+    //javadoc is inherited
+    public GetDirFailedException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public GetDirFailedException(String message, Throwable cause) {
+        super(message,cause);
+    }
+
+    /**
+     * @javadoc
+     */
+    public GetDirFailedException(String errval,String explanation) {
+        super(errval);
+        this.errval = errval;
+        this.explanation = explanation;
+    }
 }
 

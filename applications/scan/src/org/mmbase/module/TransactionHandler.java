@@ -23,13 +23,13 @@ import org.mmbase.util.logging.*;
 
 /**
  * TransactionHandler Module
- *
- * @author  John Balder: 3MPS 
- * @author 	Rob Vermeulen: VPRO
- *
  * This class parses the TML code and calls the appropriate methods
  * in TransactionManager TemporarayNodeManager org.mmabse.module.core
  * Furthermore it does some nameserving.
+ * @deprecated-now use org.mmbase.applications.xmlimporter.TransactionHandler
+ *
+ * @author  John Balder: 3MPS 
+ * @author 	Rob Vermeulen: VPRO
  */
 
 public class TransactionHandler extends Module implements TransactionHandlerInterface {

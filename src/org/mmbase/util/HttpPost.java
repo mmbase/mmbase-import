@@ -17,9 +17,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * WorkerPostHandler handles all the PostInformation
+ * HttpPost handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.22 2003-04-11 17:41:13 kees Exp $
+ * @version $Id: HttpPost.java,v 1.23 2003-08-29 09:36:55 pierre Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen

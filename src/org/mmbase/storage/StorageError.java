@@ -17,47 +17,26 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageError.java,v 1.2 2003-08-28 16:00:24 pierre Exp $
+ * @version $Id: StorageError.java,v 1.3 2003-08-29 09:36:54 pierre Exp $
  */
 public class StorageError extends Error {
 
-    /**
-     * Constructs a <code>StorageException</code> with <code>null</code> as its
-     * message.
-     */
+    //javadoc is inherited
     public StorageError() {
         super();
     }
 
-    /**
-     * Constructs a <code>StorageException</code> with the specified detail
-     * message.
-     *
-     * @param message a description of the error
-     */
+    //javadoc is inherited
     public StorageError(String message) {
         super(message);
     }
 
-    /**
-     * Constructs a <code>StorageException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public StorageError(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a <code>StorageException</code> with the detail
-     * message of the original exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param message a description of the error
-     * @param Throwable the cause of the error
-     */
+    //javadoc is inherited
     public StorageError(String message, Throwable cause) {
         super(message,cause);
     }
