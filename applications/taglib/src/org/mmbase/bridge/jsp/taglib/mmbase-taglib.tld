@@ -19,8 +19,8 @@
   </info>
   <tag>
     <name>list</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.MMList</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.MMList</teiclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.ListTag</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
 	The list tag provides a syntax to list objects managed by MMBase 
@@ -45,11 +45,16 @@
     </attribute>
     <attribute>
       <name>fields</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>where</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>command</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -79,7 +84,7 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>prefix</name>
+      <name>id</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -98,11 +103,11 @@
   </tag>
   <tag>
     <name>cloud</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.MMCloud</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.MMCloud</teiclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.CloudTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.CloudTag</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-	The cloud tag initializes the cloud to use
+    The cloud tag initializes the cloud to use
     </info>
 
     <attribute>
@@ -132,56 +137,86 @@
     </attribute>
   </tag>
   <tag>
-	<name>mod</name>
-	<tagclass>org.mmbase.bridge.jsp.taglib.MMMod</tagclass>
-	<info>this tag can be used to call features provided by Modules in MMBase</info>
-	<attribute>
-		<name>name</name>
-		<required>true</required>
-	</attribute>
-	<attribute>
-		<name>value</name>
-		<required>false</required>
+    <name>mod</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.MMMod</tagclass>
+    <info>this tag can be used to call features provided by Modules in MMBase</info>
+    <attribute>
+        <name>name</name>
+        <required>true</required>
+    </attribute>
+    <attribute>
+        <name>value</name>
+        <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-	</attribute>
+    </attribute>
   </tag>
   <tag>
-	<name>node</name>
-	<tagclass>org.mmbase.bridge.jsp.taglib.MMNode</tagclass>
-	<info>this tag replaces the mod-mmbase-field tag</info>
-	<attribute>
-		<name>number</name>
- 		<required>false</required>
-        	<rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-		<name>action</name>
-		<required>false</required>
-	</attribute>
-	<attribute>
-		<name>field</name>
-		<required>false</required>
+    <name>info</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.InfoTag</tagclass>
+    <info>this tag can be used to call getInfo from Module (can also
+    be done with mod)  and NodeManager</info>
+    <bodycontent>text</bodycontent>
+    <attribute>
+        <name>nodeManager</name>
+        <required>false</required>
+	<rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>modules</name>
+        <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-	</attribute>
-	<attribute>
-		<name>type</name>
-		<required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-	</attribute>
+    </attribute>
   </tag>
-
-
   <tag>
-	<name>param</name>
-	<tagclass>org.mmbase.bridge.jsp.taglib.MMParam</tagclass>
-	<info>this tag handles request parameters</info>
-	<attribute>
-		<name>number</name>
-		<required>false</required>
-	</attribute>
-	<attribute>
-		<name>name</name>
-		<required>false</required>
-	</attribute>
+    <name>node</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeTag</teiclass>
+    <info></info>
+    <attribute>
+        <name>number</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>parameter</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>    
+    <attribute>
+        <name>type</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>field</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
+    <info>Gets the field 'name' from node 'node' (can also be
+    list). 'type' can be specified as well, but you perhaps shouldn't.</info>
+    <attribute>
+        <name>node</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>name</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>type</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
   </tag>
 </taglib>
