@@ -63,11 +63,17 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
             Writer w = endWriter;
             ListIterator i = charTransformers.listIterator(charTransformers.size());
             CharTransformer ct = null;
+            boolean closeWriterAfterUse = false;
+            List threads = new ArrayList();
             while (i.hasPrevious()) {         
                 ct = (CharTransformer) i.previous();
                 if (i.hasPrevious()) { // needing a new Thread!
                     r = new PipedReader();
-                    Thread thread =  new TransformerLink(ct, r, w);
+                    Thread thread =  new TransformerLink(ct, r, w, closeWriterAfterUse);
+                    thread.setDaemon(true);
+                    if (log.isDebugEnabled()) log.debug("instantiated new tread " + thread);
+                    threads.add(thread);
+                    closeWriterAfterUse = true;
                     w = new PipedWriter((PipedReader) r);
                     thread.start();
                 } else {
@@ -77,16 +83,24 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
             // assert(r == startReader);
             if (ct != null) {
                 ct.transform(startReader, w);
-
-                w.flush();
-                startReader.close();
-                if (w instanceof PipedWriter) {
+                if (w != endWriter) {
+                    w.flush();
                     w.close();
+                }
+
+                // wait until all threads are ready, because only then this transformation is actually ready
+                Iterator ti = threads.iterator();
+                while (ti.hasNext()) {
+                    Thread t = (Thread) ti.next();
+                    t.join();
                 }
             }
         } catch (IOException e) {
             log.error(e.toString());
             log.debug(Logging.stackTrace(e));
+        } catch (InterruptedException ie) {
+            log.error(ie.toString());
+            log.debug(Logging.stackTrace(ie));
         }
         return endWriter;        
     }
@@ -99,32 +113,39 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
         CharTransformer charTransformer;
         Writer     writer;
         Reader     reader;
-        TransformerLink(CharTransformer ct, Reader r, Writer w) throws IOException {
+        boolean    closeWriter;
+        TransformerLink(CharTransformer ct, Reader r, Writer w, boolean cw) throws IOException {
             reader = r;
             writer = w;
             charTransformer = ct;
+            closeWriter = cw;
         }
 
         public void run() {
+            log.debug("starting thread");
             try {
                 charTransformer.transform(reader, writer);
-                writer.flush();
-                reader.close(); // Always a PipedReader
-                if (writer instanceof PipedWriter) {
+                if (closeWriter) {
+                    writer.flush();
                     writer.close();
                 }
+                reader.close(); // Always a PipedReader
             } catch (IOException io) {
+                log.error(io.toString());
             }
+            log.debug("thread end");
         }
 
     }
 
     public static void main(String[] args) {
-        ChainedCharTransformer t = new ChainedCharTransformer();
-        t.add(new SpaceReducer());
-        t.add(new UpperCaser());
+        ChainedCharTransformer t = new ChainedCharTransformer().add(new SpaceReducer()).add(new UpperCaser());
         System.out.println("Starting transform");
-        t.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
+        Writer w = new OutputStreamWriter(System.out);
+        t.transform(new InputStreamReader(System.in), w);
+        try {
+            w.flush();
+        } catch (IOException i) {}
         //StringWriter w = new StringWriter();
         //t.transform(new StringReader("hello      world"), w);
         //System.out.println(w.toString());
