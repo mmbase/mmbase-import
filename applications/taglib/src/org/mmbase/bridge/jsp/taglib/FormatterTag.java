@@ -39,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.45 2005-02-07 09:23:15 andre Exp $ 
+ * @version $Id: FormatterTag.java,v 1.46 2005-02-07 09:29:41 andre Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -463,7 +463,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             while (i.hasNext()) {
                 String option = (String) i.next();
                 // List   o = StringSplitter.split(option, "=");
-                List o = Arrays.asList( option.trim().split("//s*=//s*") );
+                List o = Arrays.asList( option.trim().split("\\s*=\\s*") );
                 if (o.size() != 2) {
                     throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
                     
