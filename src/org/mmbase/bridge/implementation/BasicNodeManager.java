@@ -33,7 +33,7 @@ import org.mmbase.storage.search.legacy.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.61 2003-08-08 12:08:43 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.62 2003-08-13 16:36:18 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
@@ -136,16 +136,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
         // set the owner to the owner field as indicated by the user
         node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
-
-        // if the node gets inserted like this, we do not want foreign key violations
-        FieldIterator fields = nodeManager.getFields().fieldIterator();
-        while (fields.hasNext()) {
-            Field field = fields.nextField();
-            if (field.getType() == Field.TYPE_NODE) { 
-                node.setValue(field.getName(), MMObjectNode.VALUE_NULL);
-            }
-        }
-
 
         if (getMMObjectBuilder() instanceof TypeDef) {
             return new BasicNodeManager(node, getCloud(), id);
@@ -271,6 +261,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     /**
      * Based on multi-level query. Returns however 'normal' nodes based on the last step.
      *
+     * @todo implement
      * @since MMBase-1.7
      */
     protected NodeList getLastStepList(Query query) {
@@ -279,16 +270,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         List resultList = cloud.getList(query);
 
 
-        log.debug("checking read rights");
         BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
         list.autoConvert = false;
 
-        ListIterator i = list.listIterator();
-        while (i.hasNext()) {
-            if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
-                i.remove();
-            }
-        }
         list.setProperty("query", query);
         list.autoConvert = true;
         return list;
@@ -299,7 +283,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         if (query instanceof BasicNodeQuery) {
             return getSecureList(query);
         } else {
-            return getLastStepList(query);
+            return getLastStepList(query); // not working yet
         }
 
     }
@@ -361,8 +345,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 }
             }
         }
-
-        NodeList list = getList(new BasicNodeQuery(this, query));
+        NodeQuery q = new BasicNodeQuery(this, query);
+        NodeList list = getList(q);
         list.setProperty("constraints", constraints);
         list.setProperty("orderby",     sorted);
         list.setProperty("directions",  directions);
@@ -371,14 +355,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public RelationManagerList getAllowedRelations() {
-       return getAllowedRelations((NodeManager)null,null,null);
+       return getAllowedRelations((NodeManager) null, null, null);
     }
 
     public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction) {
         if (nodeManager==null) {
-            return getAllowedRelations((NodeManager)null,role,direction);
+            return getAllowedRelations((NodeManager)null, role, direction);
         } else {
-            return getAllowedRelations(cloud.getNodeManager(nodeManager),role,direction);
+            return getAllowedRelations(cloud.getNodeManager(nodeManager), role, direction);
         }
     }
 
