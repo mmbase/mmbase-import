@@ -13,6 +13,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.jsp.taglib.Condition;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 
 /**
@@ -20,33 +21,33 @@ import org.mmbase.bridge.jsp.taglib.Condition;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.5 2003-06-06 10:03:31 pierre Exp $
+ * @version $Id: MayCreateRelationTag.java,v 1.6 2004-06-29 08:08:51 michiel Exp $
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {
-    private String role;
-    private String source;
-    private String destination;
+    private Attribute role = Attribute.NULL;
+    private Attribute source = Attribute.NULL;
+    private Attribute destination = Attribute.NULL;
 
     public void setRole(String r) throws JspTagException {
-        role = getAttributeValue(r);
+        role = getAttribute(r);
     }
 
     public void setSource(String s) throws JspTagException {
-        source = getAttributeValue(s);
+        source = getAttribute(s);
     }
 
     public void setDestination(String d) throws JspTagException {
-        destination = getAttributeValue(d);
+        destination = getAttribute(d);
     }
 
     public int doStartTag() throws JspTagException {
-        RelationManager rm   = getCloud().getRelationManager(role);
-        Node sourceNode      = getNode(source);
-        Node destinationNode = getNode(destination);
+        RelationManager rm   = getCloud().getRelationManager(role.getString(this));
+        Node sourceNode      = getNode(source.getString(this));
+        Node destinationNode = getNode(destination.getString(this));
 
         if (rm.mayCreateRelation(sourceNode, destinationNode) != getInverse()) {
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY;
         } else {
             return SKIP_BODY;
         }
