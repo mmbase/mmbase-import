@@ -12,6 +12,7 @@ package org.mmbase.util.functions;
 
 import org.mmbase.util.logging.*;
 
+import java.lang.reflect.*;
 /**
  * MMBase Function
  *
@@ -24,23 +25,21 @@ public class ReflectionFunction extends Function {
 
     private static final Logger log = Logging.getLoggerInstance(ReflectionFunction.class);
 
-    private Class  implementor;
-    private String methodName; // Method?
+    private Method method;
 
 
 
-    public ReflectionFunction(String name, Parameter[] def, ReturnType returnType, Class implementor, String methodName) {
+    public ReflectionFunction(String name, Parameter[] def, ReturnType returnType, Method method) {
         super(name, def, returnType);
-        this.implementor = implementor;
-        this.methodName  = methodName;
+        this.method  = method;
     }
 
     public Class getImplementor() {
-        return implementor;
+        return method.getDeclaringClass();
     }
 
     public String getMethodName() {
-        return methodName;
+        return method.getName();
     }
 
     public Object getFunctionValue(Parameters arguments) {
