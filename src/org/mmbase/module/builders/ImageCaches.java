@@ -23,30 +23,16 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.18 2002-05-15 18:48:14 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.19 2002-05-15 19:02:33 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
-    private class HandleCache extends org.mmbase.cache.Cache {
-
-        HandleCache(int size) {
-            super(size);
-        }
-        public String getName() {
-            return "ImageHandles";
-        }
-        public String getDescription() {
-            return "Handles of Images";
-        }
-        void putCache() {
-            putCache(this);
-        }
-
-    }
-
     private static Logger log = Logging.getLoggerInstance(ImageCaches.class.getName());
-    private HandleCache handleCache = new HandleCache(128); // a few images are in memory cache.
 
+    private org.mmbase.cache.Cache handleCache = new org.mmbase.cache.Cache(128) {  // a few images are in memory cache.
+        public String getName()        { return "ImageHandles"; }
+        public String getDescription() { return "Handles of Images"; }
+        };
 
     public ImageCaches() {
         handleCache.putCache();
