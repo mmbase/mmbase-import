@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.139 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicNode.java,v 1.140 2005-03-01 14:24:40 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -623,11 +623,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node = getNode();
             if (isnew) {
-                node.insert(((BasicUser)cloud.getUser()).getUserContext());
+                node.insert(cloud.getUser());
                 // cloud.createSecurityInfo(getNumber());
                 isnew = false;
             } else {
-                node.commit(((BasicUser)cloud.getUser()).getUserContext());
+                node.commit(cloud.getUser());
                 //cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
@@ -705,7 +705,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 }
                 MMObjectNode node = getNode();
                 //node.getBuilder().removeNode(node);
-                node.remove( ((BasicUser)cloud.getUser()).getUserContext());
+                node.remove(cloud.getUser());
                 //cloud.removeSecurityInfo(number);
             }
         }
@@ -747,7 +747,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                         ((BasicTransaction)cloud).add(currentObjectContext);
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
-                        node.remove( ((BasicUser)cloud.getUser()).getUserContext());
+                        node.remove(cloud.getUser());
                     }
                 }
             }
@@ -1120,18 +1120,18 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     // javadoc inherited (from Node)
     public void setContext(String context) {
         // set the context on the node (run after insert).
-        getNode().setContext(((BasicUser)cloud.getUser()).getUserContext(),context, temporaryNodeId == -1);
+        getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
     }
 
     // javadoc inherited (from Node)
     public String getContext() {
-        return getNode().getContext(((BasicUser)cloud.getUser()).getUserContext());
+        return getNode().getContext(cloud.getUser());
     }
 
 
     // javadoc inherited (from Node)
     public StringList getPossibleContexts() {
-        return new BasicStringList(getNode().getPossibleContexts(((BasicUser)cloud.getUser()).getUserContext()));
+        return new BasicStringList(getNode().getPossibleContexts(cloud.getUser()));
     }
 
     public boolean mayWrite() {
