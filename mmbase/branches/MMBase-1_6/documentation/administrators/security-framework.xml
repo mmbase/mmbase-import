@@ -51,7 +51,7 @@
 		<title>Introduction</title>
 		<section id="requirements">
 			<para>MMBase uses a security framework in which different security implementations can be used. This means that is possible to developer various types of security systems, adapting MMBase to the needs of the environment in which it runs. A number of default implementations are available in MMBase (such as the context security, documented elsewhere), but new ones can be developed and easily substituted using the security configuration files.</para>
-			<para>This document focuses on eth security framework. It falls in four parts.</para>
+			<para>This document focuses on the security framework. It falls in four parts.</para>
 			<para>The first part explains the general architecture, and the way security is used by MMBase. It explains what is possible in the approach we use and what isn't. It also comments on where security is used, and how it can be circumvented.</para>
 			<para>The second part explains how to configure the security framework, such as when you want to install an alternate security system.</para>
 			<para>The third part explains how to transparently use the security in scripts (the MMCI) or with the MBase taglib.</para>
@@ -63,18 +63,18 @@
 		<section>
 			<title>Overview of the MMBase Architecture</title>
 			<graphic fileref="media/architecture.png" />
-			<para>As the MMBase atchitecture image shows, the MMBase security franmework forms a layer between the MMBase core and the MMCI - the MMBase Cloud Interface which is used for external programs and applications to communicate with the system.</para>
+			<para>As the MMBase architecture image shows, the MMBase security framework forms a layer between the MMBase core and the MMCI - the MMBase Cloud Interface which is used for external programs and applications to communicate with the system.</para>
 			<para>All communication through the MMCI uses the security layer, while the 'core classes' of the system generally don't. This allows the core to handle requests quickly, while maintaining security where it matters - in communication with external sources.</para>
 			<para>When a user connects to MMBase using an external application (such as the taglibs, a jsp servlet, or the editwizards), that application creates a session to maintain the state of the user. In other words: maintaining state is left to the external application. Security itself does not offer this functionality as it is dependent on the means of communication.</para>
-			<para>The application then authenticates the user through a call to the bridge, passing authentication parameters appropriate to the authentication module in use. Various authentication modules may exist - each offering a different way of athentication, and possibly a different measure of reliability or accountability.
+			<para>The application then authenticates the user through a call to the bridge, passing authentication parameters appropriate to the authentication module in use. Various authentication modules may exist - each offering a different way of authentication, and possibly a different measure of reliability or accountability.
 			</para>
 			<para>Once authenticated, the security passes a User object back, which contains the information required by the Authorisation module. The bridge encapsulates the user object in the Cloud object, whch is passed to the calling application. The application should then take care of storing the cloud in a session.
 			</para>
-			<para>The user object is passed by to the security system every time the bridge performs a security-sensitive operation. This is done automatically - a calling applicatuion need not perform any additional actions.
+			<para>The user object is passed to the security system every time the bridge performs a security-sensitive operation. This is done automatically - a calling application need not perform any additional actions.
 			Operations are defined on the MMBase node-level. Any operation on a Node is security-sensitive: each time a node is read, created, written, deleted, or related to, the bridge checks whether the operation is allowed. Depending on context, the bridge then either causes an error or ignores the operation (for instance, when retrieving a list of nodes, the bridge will only return nodes the user may read, ignoring any nodes the user has no access to).
 			</para>
 			<para>
-			Whether rights are actually defined on node level is dependent on the system. Complex security systems may actually specify rights for infdividual users on individual nodes. Other systems may use a more general approach, i.e. allow all actions to logged on users of a certain rank, while allowing only read access to others.
+			Whether rights are really defined on node level is dependent on the system. Complex security systems may actually specify rights for individual users on individual nodes. Other systems may use a more general approach, i.e. allow all actions to logged on users of a certain rank, while allowing only read access to others.
 			</para>
 		</section>
 		<section>
