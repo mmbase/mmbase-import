@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.52 2003-09-10 10:36:18 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.53 2003-09-24 08:43:05 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -135,15 +135,27 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 } else {
                     urlKey = key;
                 }
-                String value = getString(key);
-                if (log.isDebugEnabled()) {
-                    log.debug("adding parameter (with referids) " + key + "/" + value);
+
+                boolean mayBeMissing;
+                if (key.endsWith("?")) {
+                    mayBeMissing = true;                    
+                    key = key.substring(0, key.length() - 1);
+                } else {
+                    mayBeMissing = false;
                 }
-                show.append(connector).append(urlKey).append("=");
-                if (value != null) {
-                    paramEscaper.transform(new StringReader(value), w);
+                if ((! mayBeMissing) || getContextProvider().getContextContainer().containsKey(key)) {
+                    String value = getString(key);
+                    if (log.isDebugEnabled()) {
+                        log.debug("adding parameter (with referids) " + key + "/" + value);
+                    }
+                    show.append(connector).append(urlKey).append("=");
+                    if (value != null) {
+                        paramEscaper.transform(new StringReader(value), w);
+                    }
+                    connector = amp;
+                } else {
+                    log.debug("No key '" + key + "' in context, not adding to referids");
                 }
-                connector = amp;
             }
         }
 

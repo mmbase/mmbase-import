@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.204 2003-09-23 21:10:05 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.205 2003-09-24 08:43:04 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2935,8 +2935,19 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        Specify which parameters. A comma separated list of context
-        variable id's.
+        <p>
+          Specify which parameters. A comma separated list of context
+          variable id's. 
+        </p>
+        <p>
+          Since MMBase-1.7 you can also rename the variable on the fly. Putting a variable 'a' as 'b'
+          in the url can be done with 'a@b' (generating b=&lt;value of a&gt; in stead of a=&lt;value
+          of a&gt;)
+        </p>
+        <p>
+          If a context variable does not exist, it is ignored if you postfix it with '?'. This makes
+          it possible to make more general includes, while maintaining syntax checking as much as possible.
+        </p>
       </info>
     </attribute>
     <attribute>
@@ -2960,10 +2971,10 @@ like the parameter list or the session (where ever it is available) --&gt;
     </info>
     </attribute>
     <example>
-    &lt;mm:url page="codesamples/index.jsp"&gt;
-        &lt;mm:param name="page" value="home" /&gt;
-    &lt;/mm:url&gt;
-    generates: codesamples/index.jsp?page=home
+&lt;mm:url referids="a?,name@b,c" page="codesamples/index.jsp"&gt;
+ &lt;mm:param name="page" value="home" /&gt;
+&lt;/mm:url&gt;
+    generates e.g. : codesamples/index.jsp?page=home&amp;b=jan&amp;c=5
     </example>
   </tag>
   <tag>
