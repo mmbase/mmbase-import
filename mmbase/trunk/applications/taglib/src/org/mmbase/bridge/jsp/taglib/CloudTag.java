@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.80 2003-11-10 17:14:27 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.81 2003-11-14 11:57:21 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -45,7 +45,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private static int EVAL_BODY = EVAL_BODY_BUFFERED; 
     // should be EVAL_BODY_INCLUDE. But 
-    // 1. Complete unsupported by orion 1.6.0
+    // 1. Completely unsupported by orion 1.6.0
     // 2. Buggy supported by tomcat < 4.1.19
 
     private static final int METHOD_UNSET     = -1;
@@ -414,7 +414,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (log.isDebugEnabled()) {
                 log.debug("creating an anonymous cloud for cloud '" + getName() + "' (with " + logoutInfo + ")");
             }
-            removeCloud();
+            // removeCloud(); // should not remove existing cloud from session
             cloud = getDefaultCloudContext().getCloud(getName(), "anonymous", logoutInfo);
             cloud.setLocale(locale);
             return true;
