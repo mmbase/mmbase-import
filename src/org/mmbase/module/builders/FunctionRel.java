@@ -25,23 +25,4 @@ public class FunctionRel extends InsRel {
 
 	public FunctionRel() {
 	}
-	
-	/**
-	* get GUIIndicator
-	*/
-	public String getGUIIndicator(String field,MMObjectNode node) {
-		if (field.equals("task")) {
-			int val=node.getIntValue("task");
-			switch (val) {
-			case 1: return "Uitvoerende";
-			case 2: return "Maker";
-			case 3: return "Auteur";
-			case 4: return "Recensent";
-			case 5: return "Panellid";
-			default: return "Onbekend";
-			}
-		}
-		return(null);
-	}
-
 }
