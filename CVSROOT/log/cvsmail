@@ -1,9 +1,9 @@
-#!/usr/local/bin/perl -w
+#!/usr/bin/perl -w
 
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.8 2004-10-07 11:17:09 michiel Exp $
+#  $Id: cvsmail,v 1.9 2004-11-23 10:00:04 michiel Exp $
 
 use strict;
 use FileHandle;
