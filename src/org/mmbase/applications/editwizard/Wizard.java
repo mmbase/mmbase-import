@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74.2.17 2003-08-08 08:13:39 michiel Exp $
+ * @version $Id: Wizard.java,v 1.74.2.18 2003-08-08 08:19:42 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -136,11 +136,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     * This boolean tells the jsp that the wizard was committed, and changes may have been made
     */
    private boolean committed = false;
-
-   /**
-    * This boolean tells the xsl was committed to the 'same' page, and it should instruct javascript to scroll to same position
-    */
-   private int scroll = 0;
 
 
    /**
@@ -2044,7 +2039,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                }
             }
          }
-         needsScroll = true;
+
          break;
       }
 
@@ -2099,7 +2094,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
             Node newObject = addListItem(fid, did, otherdid, true, 1);
          }
-         needsScroll = true;
+
          break;
       }
 
