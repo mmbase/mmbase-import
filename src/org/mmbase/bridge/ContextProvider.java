@@ -12,12 +12,12 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.3 2003-02-24 20:41:47 kees Exp $
+ * @version $Id: ContextProvider.java,v 1.4 2003-02-25 12:38:16 kees Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider{
     private final static String DEFAULT_CLOUD_CONTEXT="local";
-    private static String defaultCloudContext ;
+    private static String defaultCloudContextName ;
     /**
      * Factory method to get an instance of a CloudContext. Depending
      * on the uri parameter given the CloudContext might be a local context
@@ -33,7 +33,9 @@ public class ContextProvider{
      * @throws BridgeException if the cloudcontext was not found
      */
     public static CloudContext getCloudContext(String uri) {
-        if (uri == null) uri="";
+        if (uri == null || (uri != null && uri.trim().length() == 0)){
+		uri = getDefaultCloudContextName();
+	}
 
         if (uri.startsWith("rmi")){
             return RemoteContext.getCloudContext(uri);
@@ -43,17 +45,18 @@ public class ContextProvider{
 	throw new BridgeException("cloudcontext with name {"+ uri +"} is not known to MMBase");
     }
 
-    /**
-     *
-     **/
-    public static CloudContext getDefaultCloudContext(){
+     public static String getDefaultCloudContextName(){
 	    //first choice.. set the cloud context using system properties
-	    if (defaultCloudContext == null){
-		    defaultCloudContext = System.getProperty("mmbase.defaultcloudcontext");
+	    if (defaultCloudContextName == null){
+		    defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
 	    }
-	    if (defaultCloudContext == null){
-		    defaultCloudContext = DEFAULT_CLOUD_CONTEXT;
+	    if (defaultCloudContextName == null){
+		    defaultCloudContextName = DEFAULT_CLOUD_CONTEXT;
 	    }
-	    return getCloudContext(defaultCloudContext);
+	    return defaultCloudContextName;
+    }
+
+    public static CloudContext getDefaultCloudContext(){
+	    return getCloudContext(getDefaultCloudContextName());
     }
 }
