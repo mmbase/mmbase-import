@@ -67,7 +67,7 @@
     set the above variables.
     -->
     <!--
-    <property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
+    <property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
     -->
     <property name="url">jdbc:hsqldb:$DBM</property>
 
