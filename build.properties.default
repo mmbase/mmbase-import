@@ -1,12 +1,12 @@
 # -----------------------------------------------------------------------------
 # build.properties.default
 #
-# This is the default build.properties file. 
+# This is the default build.properties file.
 # It contains all required packages.
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.5 2004-07-31 07:12:58 michiel Exp $
+# $Id: build.properties.default,v 1.6 2004-10-11 11:11:33 pierre Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -104,3 +104,13 @@ xalan.loc=${mmbase.loc}/xalan/${xalan.file}
 xalan.jar=${expand.dir}/${xalan.fullversion}/bin/xalan.jar
 xerces.jar=${expand.dir}/${xalan.fullversion}/bin/xercesImpl.jar
 xml-apis.jar=${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar
+
+# ----- Jakarta file upload ----------
+fileupload.version=commons-fileupload-1.0
+fileupload.file=${fileupload.version}.tar.gz
+fileupload.dest=${download.dir}/${fileupload.file}
+fileupload.loc=http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}
+fileupload.jar=${expand.dir}/${fileupload.version}/commons-fileupload-1.0.jar
+
+
+

@@ -85,7 +85,7 @@ Applications build file
 
   <target name="editwizard" depends="dove,mmbase">
      <ant dir="editwizard" target="dependent.package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />       
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
      </ant>
   </target>
 
@@ -115,7 +115,7 @@ Applications build file
   </target>
 
   <target name="xmlimporter" depends="mmbase">
-     <ant dir="xmlimporter"  target="package" inheritAll="false">
+     <ant dir="xmlimporter"  target="dependent.package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
      </ant>
   </target>
@@ -135,13 +135,15 @@ Applications build file
     </ant>
     <ant dir="community"     target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
-    </ant>      
+    </ant>
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="xmlimporter"   target="install" inheritAll="false">
+    <!-- uncomment, as we can't do this without scan
+    <ant dir="xmlimporter"   target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+    -->
     <!-- ant dir="cloudcontext"  target="install" /-->
     <!-- ant dir="email"         target="install" /-->
     <ant dir="rmmci"         target="install" inheritAll="false">
