@@ -29,6 +29,15 @@ public class LogTag extends ContextReferrerTag {
 
     public final static String LOGTAG_CATEGORY = PAGE_CATEGORY + ".LOGTAG";  // pages themselfs log to subcategories of this.
 
+    private String jspvar;
+    /**
+     * JspVar to Create, and write to
+     */
+    public void setJspvar(String j) {
+        jspvar = j;
+    }
+
+
     public void setPageContext(PageContext pc) {
         /* Determin only once per page if it can log */
         super.setPageContext(pc);        
@@ -37,7 +46,10 @@ public class LogTag extends ContextReferrerTag {
     }
 
     public int doStartTag() throws JspTagException {
-        if (doLog) {            
+        if (doLog || jspvar != null) {
+            if (jspvar != null) {
+                pageContext.setAttribute(jspvar, log);
+            }
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
@@ -45,7 +57,7 @@ public class LogTag extends ContextReferrerTag {
     }
 
     public int doAfterBody() throws JspTagException {
-        if (doLog) log.service(counter++ + ": " + bodyContent.getString());
+        if (doLog && jspvar == null) log.service(counter++ + ": " + bodyContent.getString());
         return SKIP_BODY;
     }    
 }
