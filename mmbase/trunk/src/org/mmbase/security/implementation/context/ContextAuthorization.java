@@ -242,7 +242,7 @@ public class ContextAuthorization extends Authorization {
                     log.debug("context with name: " + context + " uses the default context: " + defaultContext);
                 }
                 // now do the same query with the default context...
-                xpath = "/contextconfig/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/contains";
+                xpath = "/contextconfig/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/grant";
                 try {
                     log.debug("gonna execute the query:" + xpath );	
                     found = XPathAPI.selectNodeList(document, xpath);
