@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.26 2002-11-08 21:18:51 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.27 2002-11-18 15:12:11 pierre Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -102,7 +102,7 @@ public class XMLBasicReader  {
         try {
             xmlFilePath = source.getSystemId();
             DocumentBuilder dbuilder = getDocumentBuilder(validating, new XMLEntityResolver(validating, resolveBase));
-            
+
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
@@ -118,7 +118,7 @@ public class XMLBasicReader  {
         try {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-            // get docuemtn builder AFTER setting the validation    
+            // get docuemtn builder AFTER setting the validation
             dfactory.setValidating(validating);
             dfactory.setNamespaceAware(true);
 
@@ -150,14 +150,14 @@ public class XMLBasicReader  {
 
 
     public static DocumentBuilder getDocumentBuilder(boolean validating) {
-        if (validating == VALIDATE) { 
+        if (validating == VALIDATE) {
             return getDocumentBuilder();
         } else {
             if (altDocumentBuilder == null) {
                 altDocumentBuilder = createDocumentBuilder(validating);
             }
             return altDocumentBuilder;
-        }       
+        }
     }
 
     public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler) {
@@ -249,8 +249,9 @@ public class XMLBasicReader  {
             StringBuffer res = new StringBuffer();
             for (int i=0;i<nl.getLength();i++) {
                 Node n = nl.item(i);
-                if (n.getNodeType() == n.TEXT_NODE) {
-                    res.append(n.getNodeValue());
+                if ((n.getNodeType() == n.TEXT_NODE) ||
+                    (n.getNodeType() == n.CDATA_SECTION_NODE)) {
+                    res.append(n.getNodeValue().trim());
                 }
             }
             return res.toString();
