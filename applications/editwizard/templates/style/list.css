@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: list.css,v 1.8 2003-05-01 17:32:49 pierre Exp $
+  @version  $Id: list.css,v 1.9 2003-05-07 12:18:01 pierre Exp $
   
 */
 
@@ -80,3 +80,5 @@ td.listcanvas table th {
 td.listcanvas table th.number {
    text-align: center;
 }
+
+.subscript {font-size:10px; color:#333333;}

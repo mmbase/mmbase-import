@@ -9,12 +9,13 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.86 2003-04-16 10:09:28 pierre Exp $
+  @version $Id: wizard.xsl,v 1.87 2003-05-07 12:18:00 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
 
   <xsl:variable name="defaultsearchage">7</xsl:variable>
+  <xsl:variable name="searchagetype">combobox</xsl:variable>
   <xsl:param name="objectnumber"></xsl:param>
 
 
@@ -173,10 +174,10 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
   <xsl:template name="mediaitembuttons">
     <xsl:if test="@displaytype='audio'">
-      <a href="{$ew_context}/rastreams.db?{field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+        <a href="{$ew_context}/rastreams.db?{field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
     </xsl:if>
     <xsl:if test="@displaytype='video'">
-      <a href="{$ew_context}/rmstreams.db?{field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+        <a href="{$ew_context}/rmstreams.db?{field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
     </xsl:if>
   </xsl:template>
 
@@ -706,9 +707,19 @@
                 <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="prompt" /></xsl:call-template><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                   <nobr><!-- the search-tools must not be seperated -->
                   <!-- alway make searching on age possible -->
-                  <select name="searchage_{../command[@name='add-item']/@cmd}" class="age">
-                    <xsl:call-template name="searchoptions" />
-                  </select>
+									<xsl:choose>
+									  <xsl:when test="$searchagetype='edit'">
+										  <xsl:call-template name="prompt_age" />
+											<input type="text" name="searchage_{../command[@name='add-item']/@cmd}" class="age" value="{@age}" />
+										</xsl:when>
+									  <xsl:when test="$searchagetype='none'">
+										</xsl:when>
+										<xsl:otherwise>
+											<select name="searchage_{../command[@name='add-item']/@cmd}" class="age">
+												<xsl:call-template name="searchoptions" />
+											</select>
+										</xsl:otherwise>
+									</xsl:choose>
                   <!-- other search-possibilities are given in the xml -->
                   <select 
                     name="searchfields_{../command[@name='add-item']/@cmd}"   class="searchpossibilities"
