@@ -251,7 +251,7 @@ public class scancache extends Module implements scancacheInterface {
 	                Integer tmp2=(Integer)timepool.get(poolName+key);
 	                int then=tmp2.intValue();
 	                log.debug("scancache -> file="+then+" now="+now
-	                        +" then-now="+(then-now)+" interval="+interval);
+	                        +" now-then="+(now-then)+" interval="+interval);
 	                if (((now-then)-interval)<0) {
 	                    return value;
 	                } else {
