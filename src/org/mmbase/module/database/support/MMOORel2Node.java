@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.2 2000-04-17 09:58:07 wwwtech Exp $
+$Id: MMOORel2Node.java,v 1.3 2000-05-15 14:47:48 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/04/17 09:58:07  wwwtech
+Removed some debug for informix install
+
 Revision 1.1  2000/04/15 20:42:43  wwwtech
 fixes for informix and split in sql92 poging 2
 
@@ -54,7 +57,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.2 $ $Date: 2000-04-17 09:58:07 $
+* @$Revision: 1.3 $ $Date: 2000-05-15 14:47:48 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -219,8 +222,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			isochars=new byte[siz];
 			input.readFully(isochars);
 			str=new String(isochars,"ISO-8859-1");
-			input.close();
-			inp.close();
+			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
 			debug("MMOORel2Node text  exception "+e);
 			e.printStackTrace();
@@ -243,8 +245,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			input=new DataInputStream(inp);
 			bytes=new byte[siz];
 			input.readFully(bytes);
-			input.close();
-			inp.close();
+			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
 			debug("MMOORel2Node byte  exception "+e);
 			e.printStackTrace();

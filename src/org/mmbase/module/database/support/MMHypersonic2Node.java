@@ -28,7 +28,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.1 $ $Date: 2000-04-15 20:42:42 $
+* @$Revision: 1.2 $ $Date: 2000-05-15 14:47:48 $
 */
 public class MMHypersonic2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -288,8 +288,7 @@ public class MMHypersonic2Node extends MMSQL92Node implements MMJdbc2NodeInterfa
 			input=new DataInputStream(inp);
 			bytes=new byte[siz];
 			input.readFully(bytes);
-			input.close();
-			inp.close();
+			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
 			System.out.println("MMObjectBuilder -> MMHypersonic byte  exception "+e);
 			e.printStackTrace();
@@ -324,8 +323,7 @@ public class MMHypersonic2Node extends MMSQL92Node implements MMJdbc2NodeInterfa
 			isochars=new byte[siz];
 			input.readFully(isochars);
 			str=new String(isochars,"ISO-8859-1");
-			input.close();
-			inp.close();
+			input.close(); // also closes the underlying stream
 		} catch (Exception e) {
 			System.out.println("MMObjectBuilder -> MMHypersonic text  exception "+e);
 			e.printStackTrace();
