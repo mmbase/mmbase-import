@@ -739,6 +739,9 @@ public class MMObjectNode {
 	}
 
 
+	/**
+	 * returns all relations of a certain type. e.g. wantedtype can be insrel. 
+	 */
 	public Enumeration getRelations(String wantedtype) {
 		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
 		if (otype!=-1) {
