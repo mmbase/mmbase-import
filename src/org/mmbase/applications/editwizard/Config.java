@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.21 2002-08-01 10:58:56 pierre Exp $
+ * @version $Id: Config.java,v 1.22 2002-08-13 06:46:32 michiel Exp $
  */
 
 public class Config {
@@ -44,10 +44,15 @@ public class Config {
     public String      templates;
     public String      language;
 
+    public Map         popups     = new HashMap(); // all popups now in use (key -> Config)
+
     static public abstract class SubConfig {
         public String wizard;
         public String page;
         public Map attributes = new HashMap();
+        public Set   popups   = new HashSet(); // all subpopups (keys)
+                                               // if some wizard is closed, then all its 'popups'
+                                               // can be invalidated, finished or not..
 
         public void setAttribute(String name, String value) {
             if (value!=null) {
