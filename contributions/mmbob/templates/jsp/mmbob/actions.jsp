@@ -11,6 +11,9 @@
 <!-- login part -->
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
+<%-- grmbl....this way this file will be include twice, but it's needed here --%>
+<%-- TODO: fix this --%>
+<%@ include file="thememanager/loadvars.jsp" %>
 
 <mm:locale language="$lang">
 <%@ include file="loadtranslations.jsp" %>
@@ -100,7 +103,7 @@
 	<mm:import externid="postingid" />
 	<mm:import externid="subject" />
 	<mm:import externid="body" />
-	<mm:booleanfunction set="mmbob" name="editPost" referids="forumid,postareaid,postthreadid,postingid,posterid,subject,body">
+	<mm:booleanfunction set="mmbob" name="editPost" referids="forumid,postareaid,postthreadid,postingid,posterid,subject,body,imagecontext">
 	</mm:booleanfunction>
 </mm:compare>
 
