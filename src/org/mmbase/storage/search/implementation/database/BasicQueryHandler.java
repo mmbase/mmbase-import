@@ -27,7 +27,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.20 2003-12-17 20:48:01 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.21 2003-12-18 20:20:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -167,6 +167,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     for (int i = 0; i < fields.length; i++) {
                         String fieldName;
                         String prefix;
+
+         
                         if (builder instanceof ClusterBuilder) {
                             fieldName = fields[i].getFieldName();
                             String alias = fields[i].getStep().getAlias();
@@ -182,8 +184,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
                             }
                             prefix = "";
                         } else {
-                            fieldName = fields[i].getFieldName();
                             prefix = "";
+                            fieldName = fields[i].getFieldName();
+                            if (node.getValue(fieldName) != null) continue;
+                            // already set (node-query must _start_ with all nodes of the node)
+                            // XXXX If getValue can give null for _set_ values, then something must be changed here.
+                            // see also BasicNodeQuery.setNodeStep
                         }
                         int fieldType = fields[i].getType();
                         // TODO: (later) use alternative to decodeDBnodeField, to
