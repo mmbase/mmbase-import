@@ -83,9 +83,76 @@
         </table>
         </mm:compare>
 
-    </mm:compare>
-    <br/>
-    
+        <mm:import id="providerurl">geen.standaard.aanbieders.url</mm:import>
+        
+        <mm:node referid="provider">
+            <mm:relatednodes type="urls">
+                <mm:first>
+                    <mm:import id="providerurl" reset="true"><mm:field name="url"/></mm:import>
+                </mm:first>
+            </mm:relatednodes>
+        </mm:node>
+        
+        <mm:relatednodes type="attachments">
+            <br/>
+            <p>
+            <mm:field name="title"/>
+            <br/>
+            <mm:field name="description"/>
+            <br/>
+            http://<mm:write referid="providerurl"/>/attachment.db?<mm:field name="number"/>
+            </p>
+        </mm:relatednodes>
+
+        <mm:relatednodes type="audiotapes">
+        <br/>
+        <p>
+        <mm:field name="title"/>
+        <br/>
+        <mm:field name="subtitle"/>
+        <br/>
+        <mm:field name="playtime"/>
+        <br/>
+        <mm:field name="intro"/>
+        <br/>
+        <mm:field name="body"/>
+        <br/>
+        <mm:field name="url" />
+        </p>
+        </mm:relatednodes>
+
+        <mm:relatednodes type="videotapes">
+        <br/>
+        <p>
+            <mm:field name="title"/>
+            <br/>
+            <mm:field name="subtitle"/>
+            <br/>
+            <mm:field name="playtime"/>
+            <br/>
+            <mm:field name="intro"/>
+            <br/>
+            <mm:field name="body"/>
+            <br/>
+            <mm:field name="url" />
+        </p>
+        </mm:relatednodes>
+
+        <mm:relatednodes type="urls">
+        <br/>
+        <p>
+            <mm:field name="name"/>
+            <br/>
+            <mm:field name="description"/>
+            <br/>
+            <mm:field name="url" />
+        </p>
+        </mm:relatednodes>
+
+        
+        </mm:compare>
+        <br/>
+
     <% if (level.intValue() < 20) { %>
     <mm:list  path="learnobjects1,posrel,learnobjects2" orderby="posrel.pos" fields="learnobjects2.number" searchdir="destination" distinct="true" constraints="learnobjects1.number = $number">
         <mm:remove referid="number"/>
