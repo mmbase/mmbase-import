@@ -40,24 +40,21 @@
     server and how to connect to it.
 
     sql92 for default SQL92 database (normally not used)
-    mysql for MySQL (www.mysql.com)
+    mysql for MySQL (www.mysql.com) 
     informix for Informix Universal Server (www.informix.com)
 
-    ** remark : more database are supported or are easy to support, check
-    www.mmbase.org's howto's on this we will complete this list
-    as soon as possble **
-
-            MyQSL:          mysql
-            PostgrSQL:      postgresql71
+            MySQL:          mysql
+            PostgreSQL:     postgresql71
             HyperSonic:     hypersonic
             HsqlDB:         hsqldb
+          
+
+    This property can also be omitted all together. Then the
+    'lookup.xml' in config/databases will be used to determin the
+    database driver, based on the jdbc connection.
+
     -->
-        <!--
-            TODO: Why is this setting not in the jdbc.xml?
-	    keesj:This setting defines what mmbase database.xml file to use
-	    so I don't think this is in the wrong place
-        -->
-    <property name="database">hsqldb</property>
+    <!-- property name="database">hsqldb</property --><!-- leave to lookup.xml on default -->
 
     <!--
     name="multicasthost" mmbase nodes in a cluster use multicast to talk to
@@ -95,7 +92,11 @@
 
     basic (use the default authorisation system, based on groups and
     relations see the install/example docs how to enable this DON'T
-    set it before creating the needed tables/objects as defined in these docs).
+    set it before creating the needed tables/objects as defined in
+    these docs).
+
+    This property is deprecated and only used for SCAN. For jsp/bridge
+    use config/security/security.xml.
     -->
     <property name="authtype">none</property>
 
@@ -103,7 +104,12 @@
     name="dtdbase" defines the homebase for the DTD's used by the objects
     (urls, cdtracks, images etc etc). Normally this is set to
     www.mmbase.org but you can aim it to your own system if you defined
-    extra objects yourself. Its not used at the moment for anything vital.
+    extra objects yourself. Its not used at the moment for anything
+    vital.
+
+    It is best to leave this unchanged.
+
+    Only used for exports (in toXML of MMObjectBuilder)
     -->
     <property name="dtdbase">http://www.mmbase.org/dtd/</property>
 
@@ -135,7 +141,7 @@
     compatibility. Perhaps this will change to UTF-8 once this is
     tested well.
     -->
-        <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get utf-8 -->
+    <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get utf-8 -->
     <property name="encoding">UTF-8</property>
 
   </properties>
