@@ -40,7 +40,7 @@
 			<a href="<mm:field name="urls.url" />"><mm:field name="urls.url" /></a></strong></p>
 			<iframe src="<mm:field name="urls.url" />" width="1" height="1"></iframe>
 			
-			<mm:present referid="email">
+			<mm:present referid="email"><mm:compare referid="email" value="" inverse="true">
 			<mm:cloud logon="site" password="przw2lsk1" method="pagelogon">
 			<mm:createnode type="email">
 			  <mm:setfield name="to">jo@mmbase.org</mm:setfield>
@@ -61,7 +61,7 @@ Your gentle download and e-mail form..
 </mm:setfield>
 			</mm:createnode>
 			</mm:cloud>
-			</mm:present>
+			</mm:compare></mm:present>
 
 			
 		</mm:related>
