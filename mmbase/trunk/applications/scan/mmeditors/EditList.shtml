@@ -1,4 +1,4 @@
-<SECURE> 
+<SECURE>
 <TITLE>Editors</TITLE>
 <BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#63DE31" VLINK="#63DE31">
 <HTML>
@@ -7,7 +7,7 @@
 </HTML>
 <IF $MOD-MMBASE-GETAUTHTYPE^==none>
 <BR>
-<LIST OBJECTS TYPE="typedef" FIELDS="dutchs(name),name" WHERE="" SORTED="MALPHA" SORTPOS="0">
+<LIST OBJECTS TYPE="typedef" FIELDS="gui(),name" WHERE="" SORTED="MALPHA" SORTPOS="0">
 <TABLE WIDTH="200" BORDER=0 CELLPADDING="2" CELLSPACING="1">
 	<TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
@@ -17,8 +17,8 @@
 </TABLE>
 </LIST>
 <ELSE>
- 
-<LIST MULTILEVEL TYPE="people,authrel,typedef" FIELDS="dutchs(typedef.name),typedef.name" NODE="-1" WHERE="people.account=E'$MOD-INFO-USER-NAME^'" SORTED="MALPHA" MEMCACHE="NO" SORTPOS="0">
+
+<LIST MULTILEVEL TYPE="people,authrel,typedef" FIELDS="typedef.gui(),typedef.name" NODE="-1" WHERE="people.account=E'$MOD-INFO-USER-NAME^'" SORTED="MALPHA" MEMCACHE="NO" SORTPOS="0">
 <TABLE WIDTH="200" BORDER=0 CELLPADDING="2" CELLSPACING="1">
 	<TR>
       <TD BGCOLOR="#C0C0C0" WIDTH="190" ALIGN="right" colspan=2>
