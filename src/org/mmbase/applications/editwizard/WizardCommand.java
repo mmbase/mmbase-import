@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 import org.mmbase.util.logging.*;
 
 /**
@@ -18,35 +21,44 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.3 2002-02-25 16:18:23 pierre Exp $
+ * @version $Id: WizardCommand.java,v 1.4 2002-02-26 14:24:32 pierre Exp $
  */
 public class WizardCommand {
+
+    public final static short UNKNOWN_COMMAND = -1;
+    public final static short ADD_ITEM = 0;
+    public final static short CANCEL = 1;
+    public final static short COMMIT = 2;
+    public final static short DELETE_ITEM = 3;
+    public final static short GOTO_FORM = 4;
+    public final static short MOVE_DOWN = 5;
+    public final static short MOVE_UP = 6;
+
+    /**
+     * Array with the command strings, as they are parsed.
+     * The accompanying command constant can be derived by using the
+     * index in the array.
+     */
+    private final static String[] COMMANDS =
+    {"add-item", "cancel", "commit", "delete-item", "goto-form", "move-down", "move-up"};
 
     // logging
     private static Logger log = Logging.getLoggerInstance(WizardCommand.class.getName());
 
+    private String commandname="unknown";
+    private int type = UNKNOWN_COMMAND;
+    private ArrayList params = null;
+
+    private String value = null;
+
     // the original command as it was passed
     private String command;
-
-    public String type;
-    public String value;
-    public String fid;
-    public String did;
-    public String otherdid;
-
-    public WizardCommand() {
-        type = "none";
-        command = "";
-        value = "";
-        fid = "";
-        did = "";
-    }
 
     /**
      * Creates  a wizard command object with the given command and value.
      * The command parsed should be of the format:
      * <code>
-     * /type/fid/did/otherdid/
+     * cmd/type/fid/did/otherdid/
      * </code>
      * 'type' is the command itself (i.e. 'add-item'), fid, did, and otherdid are possible
      * parameters to the command.
@@ -56,34 +68,85 @@ public class WizardCommand {
      * @param avalue The value of the command
      */
     public WizardCommand(String acommand, String avalue) {
-
         command = acommand.toLowerCase();
         value = avalue;
-        log.debug("command: "+command + " : "+value);
+        log.info("command: "+command + " : "+value);
 
-        // retrieve the fid and did again
-        int nr0=command.indexOf("/");
-        int nr1=command.indexOf("/", nr0+1);
-        int nr2=command.indexOf("/", nr1+1);
-        int nr3=command.indexOf("/", nr2+1);
-        int nr4=command.indexOf("/", nr3+1);
+        StringTokenizer st= new StringTokenizer(command,"/",true);
+        // skip first token ('cmd') and delimiter
+        st.nextToken();
+        st.nextToken();
 
-        if (nr4<1) {
-            return;
+        // second token is command name (aka type)
+        commandname= st.nextToken();
+        st.nextToken(); // delimiter
+
+        // attempt to determine type from the (ordered) array of known commands.
+        type = Arrays.binarySearch(COMMANDS,commandname);
+        if (type<0) type =UNKNOWN_COMMAND;
+
+        int paramcount=st.countTokens();
+        if (paramcount>0) {
+            params = new ArrayList(paramcount);
+            // get optional other parameters: fid, did, and otherdid, possible others...
+            while (st.hasMoreTokens()) {
+                String tok=st.nextToken();
+                if (!tok.equals("/")) {
+                    params.add(tok);
+                    st.nextToken();
+                }
+            }
         }
+        log.info("type: "+getType()+
+                 "fid : "+getFid()+
+                 "did : "+getDid()+
+                 "otherdid : "+getParameter(2)+
+                 "value : "+getValue());
 
-        type = command.substring(nr0+1, nr1);
-        fid = command.substring(nr1+1, nr2);
-        did = command.substring(nr2+1, nr3);
-        otherdid = command.substring(nr3+1, nr4);
     }
 
     /**
-     * This method returns true if there is need to store all values passed by the client.
-     *
-     * @returns   True if it is needed to store the values, False if not.
+     * Returns the type of the parsed command.
+     * @return one of the WizardCommand constants, or UNKNOWN_COMMAND if the type cannot be determined
      */
-    public boolean needToStoreValues() {
-        return !type.equals("cancel");
+    public int getType() {
+        return type;
     }
+
+    /**
+     * Returns the value passed to the parsed command.
+     * @return the value as a string
+     */
+    public String getValue() {
+        return value;
+    }
+   /**
+     * Returns the parameter with the indicated index of the parsed command.
+     * @return teh parameter as string, or an empty string if it doesn't exist.
+     */
+    public String getParameter(int i) {
+        if ((params==null) || (i>=params.size()))
+            return "";
+        else
+            return (String)params.get(i);
+    }
+
+    /**
+     * Returns the 'fid' (field id) parameter of the parsed command.
+     * This is always the parameter with index 0
+     * @return the fid as string, or an empty string if it doesn't exist.
+     */
+    public String getFid() {
+        return getParameter(0);
+    }
+
+    /**
+     * Returns the 'did' (data id) parameter of the parsed command.
+     * This is always the parameter with index 1
+     * @return the did as string, or an empty string if it doesn't exist.
+     */
+    public String getDid() {
+        return getParameter(1);
+    }
+
 }
