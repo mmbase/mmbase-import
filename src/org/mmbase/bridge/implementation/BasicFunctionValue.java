@@ -15,13 +15,14 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.InsRel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.util.*;
 
 /**
  * This implementation of the Field Value interface is used by getFunctionValue of Node. This
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.5 2003-03-10 11:50:10 pierre Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.6 2004-01-14 21:51:15 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -35,7 +36,15 @@ public class BasicFunctionValue implements FieldValue {
     BasicFunctionValue (Node n, MMObjectNode node, Object value) {
         this.node         = n;
         this.mmobjectnode = node;
-        this.value        = value;
+        this.value        = value; 
+        if (this.value instanceof List) { // might be a collection of MMObjectNodes
+            List list  = (List) this.value;
+            if (list.size() > 0) {
+                if (list.get(0) instanceof MMObjectNode) { // if List of MMObjectNodes, make NodeList
+                    this.value = new BasicNodeList(list, n.getCloud());
+                }
+            }
+        }
     }
 
     /**
