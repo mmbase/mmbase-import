@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.249 2004-04-22 17:27:09 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.250 2004-04-26 16:51:50 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -510,7 +510,8 @@ version: $Id: mmbase-taglib.xml,v 1.249 2004-04-22 17:27:09 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				Refer to the container with this id.
+        Refer to the container with this id. If you want to explicitily not refer to any container
+        (e.g. function-tags on node), then you can specify an non-existing id.
 			</info>
 		</attribute>
 	</taginterface>
@@ -1811,6 +1812,7 @@ access the value of title:
 		<extends>functiontag</extends>
 		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
+		<extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.functions.FunctionTag</tagclass>
 		<teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
@@ -1831,6 +1833,7 @@ access the value of title:
 		<extends>functiontag</extends>
 		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
+		<extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.functions.VoidFunctionTag</tagclass>
 		<info>
@@ -1849,6 +1852,7 @@ access the value of title:
 		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
+    <extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.functions.BooleanFunctionTag</tagclass>
 		<info>
@@ -1866,6 +1870,7 @@ access the value of title:
 		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
+		<extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.functions.ListFunctionTag</tagclass>
 		<info>
@@ -1892,6 +1897,7 @@ access the value of title:
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
 		<extends>nodeprovider</extends>
+		<extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeListFunctionTag</tagclass>
 		<info>
@@ -1931,6 +1937,7 @@ access the value of title:
 		<extends>nodereferrer</extends>
 		<extends>contextreader</extends>
 		<extends>functiontag</extends>
+		<extends>containerreferrer</extends>
 		<type>mmbase.basic</type>
 		<tagclass>org.mmbase.bridge.jsp.taglib.functions.NodeFunctionTag</tagclass>
 		<info>

@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.5 2004-02-11 20:40:13 keesj Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.6 2004-04-26 16:51:50 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
@@ -92,12 +92,12 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (module != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
             }
-            function = FunctionFactory.getFunction(getCloud().getNodeManager(nodeManager.getString(this)), functionName);
+            return  FunctionFactory.getFunction(getCloud().getNodeManager(nodeManager.getString(this)), functionName);
         } else if (module != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
             }
-            function = FunctionFactory.getFunction(getCloudContext().getModule(module.getString(this)), functionName);
+            return FunctionFactory.getFunction(getCloudContext().getModule(module.getString(this)), functionName);
         } else if (functionSet != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || module != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
@@ -108,34 +108,47 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
                 if (set.equals("THISPAGE")) {
                     Method method = MethodFunction.getFirstMethod(claz, functionName);                    
-                    function = FunctionFactory.getFunction(method, functionName);
+                    return  FunctionFactory.getFunction(method, functionName);
                 } else {
                     throw new UnsupportedOperationException("Local beans not yet supported");
                 }
             } else {
-                function = FunctionFactory.getFunction(functionSet.getString(this), functionName);
+                return FunctionFactory.getFunction(functionSet.getString(this), functionName);
             }
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
  
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
                 FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-                function = functionContainer.getFunction(functionName);
-            } else { // it is possible that a 'closer' node provider is meant
-                FunctionContainerOrNodeProvider functionOrNode = 
-                    (FunctionContainerOrNodeProvider) findParentTag(FunctionContainerOrNodeProvider.class, null, false);
-                if (functionOrNode != null) {
-                    if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use
-                        function = FunctionFactory.getFunction(getNode(), functionName);
-                    } else { // just use the functioncontainer
-                        function = ((FunctionContainerTag) functionOrNode).getFunction(functionName);
-                    }
+                if (functionContainer != null) {
+                    function = functionContainer.getFunction(functionName);
+                    return function;
                 } else {
-                    return null;
+                    // ingore.
                 }
+            } 
+            // it is possible that a 'closer' node provider is meant
+            FunctionContainerOrNodeProvider functionOrNode;
+
+            if (parentNodeId != Attribute.NULL) {
+                functionOrNode = (FunctionContainerOrNodeProvider) findNodeProvider();
+            } else {
+                functionOrNode = (FunctionContainerOrNodeProvider) findParentTag(FunctionContainerOrNodeProvider.class, null, false);
+            }
+
+            if (functionOrNode != null) {
+                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use
+                    return FunctionFactory.getFunction(getNode(), functionName);
+                } else { // just use the functioncontainer
+                    return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
+                }
+            } else {
+                return null;
             }
         }
-        return function;
+
     }
+
+    
 
 
 
@@ -160,9 +173,11 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             p.set(Parameter.USER, getCloud().getUser());
         }
     }
+
     protected final Object getFunctionValue() throws JspTagException {
-        log.debug("Getting function value");
+
         FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
+        log.debug("Getting function value. Container " + functionContainer);
 
         String functionName = name.getString(this);
 
