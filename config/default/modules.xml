@@ -22,6 +22,7 @@
 
   <mmexport>org.mmbase.module.tools.MMExport</mmexport>
   <mmimport>org.mmbase.module.tools.MMImport</mmimport>
+  <transactionhandler>org.mmbase.module.TransactionHandler</transactionhandler>
   <mmadmin>org.mmbase.module.tools.MMAdmin</mmadmin>
   <!--<mmexamples>org.mmbase.module.tools.MMExamples</mmexamples>-->
   <!-- <mmusers>org.mmbase.module.MMUsers</mmusers> -->
