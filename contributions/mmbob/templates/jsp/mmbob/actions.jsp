@@ -158,6 +158,18 @@
 	</mm:booleanfunction>
 </mm:compare>
 
+
+<mm:compare value="changeconfig" referid="action">
+	<mm:import externid="loginmodetype" />
+	<mm:import externid="logoutmodetype" />
+	<mm:import externid="guestreadmodetype" />
+	<mm:import externid="guestwritemodetype" />
+	<mm:import externid="avatarsuploadenabled" />
+	<mm:import externid="avatarsgalleryenabled" />
+	<mm:booleanfunction set="mmbob" name="changeForumConfig" referids="forumid,loginmodetype,logoutmodetype,guestreadmodetype,guestwritemodetype,avatarsuploadenabled,avatarsgalleryenabled" >
+	</mm:booleanfunction>
+</mm:compare>
+
 <mm:compare value="newmoderator" referid="action">
 	<mm:import externid="newmoderator" />
 	<mm:import externid="postareaid" />
