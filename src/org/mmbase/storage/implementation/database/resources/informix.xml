@@ -42,10 +42,10 @@
 		<type-mapping name="FLOAT" type="float" />
 		<type-mapping name="DOUBLE" type="float" />
 		<type-mapping name="STRING" min-size="1" max-size="255" type="varchar({0})" />
-		<type-mapping name="STRING" min-size="256" max-size="32776" type="char({0})" />
+		<type-mapping name="STRING" min-size="256" max-size="32776" type="char({0,number,#####})" />
 		<type-mapping name="STRING" min-size="32777" max-size="16577216" type="clob" />
 		<type-mapping name="XML" min-size="1" max-size="255" type="varchar({0})" />
-		<type-mapping name="XML" min-size="256" max-size="32776" type="char({0})" />
+		<type-mapping name="XML" min-size="256" max-size="32776" type="char({0,number,#####})" />
 		<type-mapping name="XML" min-size="32777" max-size="16577216" type="clob" />
 		<type-mapping name="BYTE" min-size="1" max-size="16777216" type="BLOB" />
 	</type-mappings>
