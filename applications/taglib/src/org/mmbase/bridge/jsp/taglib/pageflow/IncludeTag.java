@@ -177,6 +177,9 @@ public class IncludeTag extends UrlTag {
             if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
             if (relativeUrl.indexOf("..") > -1 || relativeUrl.indexOf("WEB-INF") > -1)  throw new JspTagException("Not allowed to cite " + relativeUrl); 
             java.io.File file = new java.io.File(pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length())));
+            if (file.isDirectory()) {
+                throw new JspTagException("Cannot cite a directory");
+            }
             if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
             java.io.FileReader reader = new java.io.FileReader(file);
             java.io.StringWriter string = new java.io.StringWriter();
