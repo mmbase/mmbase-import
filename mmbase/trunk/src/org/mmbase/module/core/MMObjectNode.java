@@ -349,19 +349,8 @@ public class MMObjectNode {
 		// its implemented per builder so lets give this
 		// request to our builder
 
-		if (o==null) { 
-			// well maybe its a propertie lets automap that
-			/*
-			o=getProperty(fieldname);
-			if (o!=null) {
-				System.out.println("o="+o);
-				MMObjectNode altnode=(MMObjectNode)o;
-				o=altnode.getStringValue("value");
-				return(o);
-			}
-			*/
-			return(parent.getValue(this,fieldname));
-		}
+		if (o==null) return(parent.getValue(this,fieldname));
+	
 		
 		// return the found object
 		return(o);
@@ -824,8 +813,9 @@ public class MMObjectNode {
 			} else {
 				nnode=(MMObjectNode)parent.getNode(tnode.getIntValue("snumber"));
 			}
-
-			if (nnode.getIntValue("otype")==otype) {
+			if (nnode==null) {
+				debug("getRelationCount: node "+this.getValue("number")+" has relation with non-existent node, relation node="+tnode.getIntValue("number"));
+			} else if (nnode.getIntValue("otype")==otype) {
 				result.addElement(nnode);
 			}
 		}
