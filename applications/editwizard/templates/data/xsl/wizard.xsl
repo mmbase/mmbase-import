@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: wizard.xsl,v 1.9 2002-05-07 13:32:42 michiel Exp $
+  @version $Id: wizard.xsl,v 1.10 2002-05-08 09:32:25 michiel Exp $
   --> 
 
 
@@ -205,7 +205,7 @@
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
                   <img src="{$ew_imgdb}{node:function(string(@number), concat('cache(', $imagesize, ')'))}" hspace="0" vspace="0" border="0" /><br />
-                  <a href="upload.jsp{$sessionid}?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new Image</a>
+                  <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new Image</a>
                 </div>            
               </div>
             </xsl:when>
@@ -217,7 +217,7 @@
                   <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text> (<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
                 </span>
                 <br />
-                <a href="upload.jsp{$sessionid}?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload other Image</a>
+                <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload other Image</a>
               </div>
             </xsl:when>
             <xsl:otherwise>
@@ -229,7 +229,7 @@
                   <xsl:otherwise>Uploaded: <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
                   </xsl:otherwise>
                 </xsl:choose>      
-                <xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text><a href="upload.jsp{$sessionid}?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new</a>      
+                <xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text><a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new</a>      
               </nobr>
             </xsl:otherwise>
           </xsl:choose>

@@ -6,7 +6,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.2 2002-05-07 13:30:20 michiel Exp $
+  @version $Id: base.xsl,v 1.3 2002-05-08 09:32:25 michiel Exp $
   --> 
   <xsl:output 
     method="xml"
@@ -27,6 +27,7 @@
   <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$sessionid" />?proceed=yes</xsl:variable>
   <xsl:variable name="popuppage">popupwizard.jsp<xsl:value-of select="$sessionid" />?proceed=yes</xsl:variable>
   <xsl:variable name="deletepage">deletelistitem.jsp<xsl:value-of select="$sessionid" />?proceed=yes</xsl:variable>
+  <xsl:variable name="uploadpage">upload.jsp<xsl:value-of select="$sessionid" />?popup=true</xsl:variable>
 
   <xsl:param name="debug">false</xsl:param>
 
