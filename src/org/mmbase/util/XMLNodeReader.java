@@ -30,23 +30,24 @@ public class XMLNodeReader  {
     String applicationpath;
 
 
+
     public XMLNodeReader(String filename,String applicationpath,MMBase mmbase) {
         try {
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-            //Errors errors = new Errors();
-            //parser.setErrorHandler(errors);
+            EntityResolver resolver = new XMLEntityResolver();
+            parser.setEntityResolver(resolver);
 	    filename="file:///"+filename;
             parser.parse(filename);
             document = parser.getDocument();
 	    this.applicationpath=applicationpath;
 
-		/*
+
+		/*	
 	    System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
 	    System.out.println("ExportSource="+getExportSource());	
 	    System.out.println("TimeStamp="+getTimeStamp());	
-	    System.out.println("Nodes nodes="+getNodes(mmbase));	
 	    System.out.println("*** END XML APPLICATION READER FOR : "+filename);	
 		*/
 	} catch(Exception e) {
@@ -61,6 +62,9 @@ public class XMLNodeReader  {
     public String getExportSource() {
 	Vector nodes=new Vector();
 	Node n1=document.getFirstChild();
+	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+		n1=n1.getNextSibling();
+	}
 	while (n1!=null) {
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
@@ -78,6 +82,9 @@ public class XMLNodeReader  {
     public int getTimeStamp() {
 	Vector nodes=new Vector();
 	Node n1=document.getFirstChild();
+	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+		n1=n1.getNextSibling();
+	}
 	while (n1!=null) {
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
@@ -95,6 +102,9 @@ public class XMLNodeReader  {
     public Vector getNodes(MMBase mmbase) {
 	Vector nodes=new Vector();
 	Node n1=document.getFirstChild();
+	if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) { 
+		n1=n1.getNextSibling();
+	}
 	while (n1!=null) {
 		MMObjectBuilder bul=mmbase.getMMObject(n1.getNodeName());
 		if (bul!=null) {
