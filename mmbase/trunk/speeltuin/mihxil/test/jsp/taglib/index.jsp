@@ -11,7 +11,7 @@
 <p>
   Note that it will start creating nodes in a transaction (it will
   prompt for user/password), which nodes will be used in further
-  tests.
+  tests. The MyNews application should be installed.
 </p>
 <p>
   There are a few tests which test if an RunTimeexception is really
