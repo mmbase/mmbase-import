@@ -1,6 +1,6 @@
 <%@ page isErrorPage="true" import="java.util.*" 
 %><%@ include file="page_base.jsp"
-%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
+%>
 <mm:write referid="style" />
 <title>MMBase editors - Error</title>
 </header>
@@ -16,5 +16,4 @@ Stacktrace:
 <hr />
 Please contact your system administrator about this.
 
-<%@ include file="foot.jsp"  %>
-</mm:cloud>
+<%@include file="footfoot.jsp" %>
