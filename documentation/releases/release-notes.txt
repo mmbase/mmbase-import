@@ -49,7 +49,12 @@ Taglib Bug Fixes:
 Generic Bug Fixes:
 ------------------
 [1.7.0] 
+- jaxp compliance. MMBase does not longer depend on an old version of xerces/xalan/xml-apis
+  when running under java 1.4 you can remove those files
 
+- Logging: The mmbase logger now uses a wrapper so that at startup it first caches the messages until the 
+  logger is initialized
+- added java14patch target to patch mmbase to be able to compile under java 1.4
 ------------------
 Security Bug Fixes:
 ------------------ 
@@ -110,6 +115,9 @@ Know Issues and Problems:
   files by hand: MultiConnection.java and MultiStatement.java (both in
   the <org/mmbase/modules/database>-dir). Uncomment the methods for
   J2SE 1.4, more information is provided in the javadocs in these files.
+  
+  You can also run the ant java14patch target to perform the changes using 
+  patch
 
   When using 1.4 the ant build will inform you about this.
 
