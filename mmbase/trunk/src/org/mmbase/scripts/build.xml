@@ -1430,7 +1430,7 @@ Version: MMBase build ${version}
     <java classname="org.mmbase.util.XSLTransformer"
           classpathref="compile.classpath"
           fork="yes"
-          failonerror="yes">
+          failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
