@@ -28,7 +28,7 @@
     <field>
       <gui>
         <guiname xml:lang="en">UserName</guiname>
-        <guiname xml:lang="nl">Gebruiker</guinam>
+        <guiname xml:lang="nl">Gebruiker</guiname>
         <guiname xml:lang="eo">Uzulo</guiname>
         <guitype>string</guitype>
       </gui>
