@@ -7,7 +7,7 @@
 <td>
 <table>
 <%-- List all releases --%>
-<tr><td><h2>Releases</h2></td></tr>
+<tr><td><h2><mm:node number="$page"><mm:field name="title" /></mm:node></h2></td></tr>
 <mm:node number="$page">
 	<mm:related path="releases,mmevents" fields="releases.number,mmevents.start" orderby="mmevents.start" directions="DOWN">
 <tr><td>
