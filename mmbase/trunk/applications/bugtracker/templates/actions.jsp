@@ -7,6 +7,8 @@
    <mm:param name="btemplate" value="fullview.jsp" />
 </mm:url>
 
+<mm:import id="from"><%= org.mmbase.util.xml.UtilReader.get("bugtracker.xml").getProperties().getProperty("from", "Bugtracker <bugtracker@mmbase.org>")%></mm:import>
+
  <mm:import id="works">yep</mm:import>
 
 <mm:compare value="sendaccountinfo" referid="action">
@@ -20,7 +22,7 @@
       <mm:createnode id="emailnode" type="email">
         <mm:setfield name="mailtype">1</mm:setfield>
         <mm:setfield name="to"><mm:write referid="email" /></mm:setfield>
-        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="from"><mm:write referid="from" /></mm:setfield>
         <mm:setfield name="subject">Your MMBase BugTracker account</mm:setfield>
 <mm:setfield name="body">
 Your account info for the MMBase Bugtracker :
@@ -207,7 +209,7 @@ password : <mm:write referid="password" />
       <mm:createnode id="emailnode" type="email">
         <mm:setfield name="mailtype">1</mm:setfield>
         <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
-        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="from"><mm:write referid="from" /></mm:setfield>
         <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> #<mm:node referid="bugreportnode"><mm:field name="bugid" />] <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
         <mm:setfield name="body">
            <mm:node referid="bugreportnode">
@@ -299,7 +301,7 @@ rationale  :<mm:field name="rationale"/>
       <mm:createnode id="emailnode" type="email">
         <mm:setfield name="mailtype">1</mm:setfield>
         <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
-        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="from"><mm:write referid="from" /></mm:setfield>
         <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> #<mm:node referid="bugreportnode"><mm:field name="bugid" />]NEW <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
         <mm:setfield name="body">
            <mm:node referid="bugreportnode">
@@ -440,7 +442,7 @@ rationale  :<mm:field name="rationale"/>
       <mm:createnode id="emailnode" type="email">
         <mm:setfield name="mailtype">1</mm:setfield>
         <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
-        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="from"><mm:write referid="from" /></mm:setfield>
         <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> #<mm:node referid="bugreportnode"><mm:field name="bugid" />]COMMENT <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
         <mm:setfield name="body">
            <mm:node referid="bugreportnode">
