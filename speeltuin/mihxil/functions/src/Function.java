@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @version $Id: MMFunction.java
  */
-abstract public class Function {
+public class Function {
 
     private static final Logger log = Logging.getLoggerInstance(Function.class);
 
@@ -50,7 +50,9 @@ abstract public class Function {
      * @see #getNewParameters
      */
 
-    abstract public Object getFunctionValue(Parameters arguments);
+    public Object getFunctionValue(Parameters arguments) {
+        throw new UnsupportedOperationException("This is only an abstract representation of a function with name and cannot be actually executed. Use an extension of this class if you want that.");
+    }
 
     public void setDescription(String description)   { 
         this.description = description;

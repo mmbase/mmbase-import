@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
 public class NodeFunction extends Function {
 
     private Node node;
-    public NodeFunction(String name, Parameter[] def, Class returnType, Node node) {
+    public NodeFunction(String name, Parameter[] def, ReturnType returnType, Node node) {
         super(name, def, returnType);
         this.node = node;
     }

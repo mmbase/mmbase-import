@@ -18,11 +18,21 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.1 2003-11-21 14:27:28 michiel Exp $
+ * @version $Id: Parameter.java,v 1.2 2003-11-21 20:29:52 michiel Exp $
  * @see Parameters
  */
 
 public class Parameter { 
+
+    /**
+     * Parameter which might be needed in lots of Parameter definitions. 
+     */
+    public static final Parameter LANGUAGE = new Parameter("language", String.class);
+    public static final Parameter USER     = new Parameter("user",     org.mmbase.bridge.User.class);
+    public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
+    public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
+
+
 
     // package for Parameters (direct access avoids function calls)
     String key;
@@ -58,6 +68,12 @@ public class Parameter {
     }
     public Class getType() {
         return type;
+    }
+
+    void checkType(Object value) {
+        if (! type.isInstance(value)) {
+            throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + type + " (but is " + (value == null ? value : value.getClass()) + ")");
+        }
     }
 
     
