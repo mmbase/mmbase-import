@@ -20,7 +20,7 @@ import java.util.Hashtable;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealURLComposer.java,v 1.2 2003-02-04 17:43:33 michiel Exp $
+ * @version $Id: RealURLComposer.java,v 1.3 2003-02-10 10:39:10 rob Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -108,6 +108,31 @@ public class RealURLComposer extends FragmentURLComposer  {
         
         return buf;
     }
-
+    
+    /**
+     * Removes RealPlayer incompatible characters from the string.
+     * '#' characters are replaced by space characters.
+     * Characters that are allowed are every letter or digit and ' ', '.', '-' and '_' chars.
+     * @param s the String that needs to be fixed.
+     * @return a realPlayer compatible String.
+     */
+    public static String makeRealCompatible(String s) {
+        if (s != null) {
+            char[] sArray = s.replace('#',' ').toCharArray();
+            char[] dArray = new char[sArray.length];
+            
+            int j = 0;
+            for (int i=0;i<sArray.length;i++) {
+                if (Character.isLetterOrDigit(sArray[i]) ||(sArray[i]==' ')||(sArray[i]=='.')||(sArray[i]=='-')||(sArray[i]=='_')) {
+                    dArray[j] = sArray[i];
+                    j++;
+                }
+            }
+            return (new String(dArray)).substring(0,j);
+        }
+        return "";
+        
+    }
+    
 
 }
