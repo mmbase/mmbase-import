@@ -1,0 +1,42 @@
+/**
+ * @version $Id: mmbase.css,v 1.1 2004-01-07 19:04:31 michiel Exp $
+ **/
+body {
+  background-color: #fff;
+  color:#3A5060; 
+  font-weight:normal; 
+}
+
+a {
+  color: #146395;
+  font-weight: bold;
+}
+a:hover {
+  color: #146395;
+  font-weight: bold;
+  text-decoration : none;
+}
+
+table {
+  background-color: #EEEEEE;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+td {  
+  color: #333333;
+}
+
+p { 
+  color: #333333;
+}
+
+br { 
+  color: 333333 
+}
+
+
+.link a img { 
+  border: none;
+}
