@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.16 2003-09-22 11:51:54 michiel Exp $
+ * @version $Id: Users.java,v 1.17 2003-11-17 12:46:32 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -97,18 +97,29 @@ public class Users extends MMObjectBuilder {
 
 
     public Rank getRank(MMObjectNode userNode) {
-        Rank rank = (Rank) rankCache.get(userNode);
+        Rank rank;
+        if (userNode != null) {
+            rank = (Rank) rankCache.get(userNode);
+        } else {
+            log.warn("No node given, returning Anonymous.");
+            return Rank.ANONYMOUS;
+        }
+
         if (rank == null) {
-            List ranks =  userNode.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
-            if (ranks.size() > 1) {
-                throw new SecurityException("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
-            }
-            if (ranks.size() == 0) {
-                log.debug("No ranks related to this user");
-                rank = Rank.ANONYMOUS;
-            } else {        
-                Ranks rankBuilder = Ranks.getBuilder();
-                rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
+            if (userNode instanceof Authenticate.AdminVirtualNode) {
+                rank = Rank.ADMIN;
+            } else {
+                List ranks =  userNode.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
+                if (ranks.size() > 1) {
+                    throw new SecurityException("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
+                }
+                if (ranks.size() == 0) {
+                    log.debug("No ranks related to this user");
+                    rank = Rank.ANONYMOUS;
+                } else {        
+                    Ranks rankBuilder = Ranks.getBuilder();
+                    rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
+                }
             }
             rankCache.put(userNode, rank);
         } 
@@ -207,6 +218,12 @@ public class Users extends MMObjectBuilder {
             while(enumeration.hasMoreElements()) {
                 user = (MMObjectNode) enumeration.nextElement();
             }            
+            if (user == null) {
+                User admin =  Authenticate.getLoggedInExtraAdmin(userName);
+                if (admin != null) {
+                    user = admin.getNode();
+                }
+            }
             userCache.put(userName, user);
         }
         return user;
