@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.33 2004-03-19 12:13:47 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.33.2.1 2004-07-30 17:08:12 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -137,6 +137,32 @@ public class MultiConnection implements Connection {
         setLastSQL(query);
         return con.nativeSQL(query);
     }
+
+    /**
+     * Tries to fix the this connection, if it proves to be broken. It is supposed to be broken if
+     * the query "SELECT 1" does yield an exception. 
+     * This method is meant to be called in the catch after trying to use the connection.
+     * 
+     * @return <code>true</code> if connection was broken and successfully repaired. <code>false</code> if connection was not broken.
+     * @throws SQLException If connection is broken and no new one could be obtained.
+     * 
+     * @since MMBase-1.7.1
+     */
+
+    protected boolean checkAfterException() throws SQLException {
+        try {
+            // check wether connection is still functional 
+            Statement s = createStatement();
+            s.executeQuery("SELECT 1"); // if this goes wrong too it can't be the query
+        } catch (SQLException isqe) {
+             // so, connection must be broken.
+            log.service("Found broken connection, will try to fix it.");
+            // get a temporary new one for this query
+            parent.replaceConnection(this);
+            return true;
+        }
+        return false;
+    }
     
     /**
      * If "autoCommit" is true, then all subsequent SQL statements will
@@ -147,7 +173,15 @@ public class MultiConnection implements Connection {
      * By default new connections are initialized with autoCommit "true".
      */
     public void setAutoCommit(boolean enableAutoCommit) throws SQLException {
-        con.setAutoCommit(enableAutoCommit);
+        try {
+            con.setAutoCommit(enableAutoCommit);
+        } catch (SQLException sqe) {
+            if (checkAfterException()) {
+                con.setAutoCommit(enableAutoCommit);
+            } else {
+                throw sqe;
+            }
+        }
     }
     
     

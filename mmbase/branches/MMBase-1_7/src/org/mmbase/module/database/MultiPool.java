@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.51.2.1 2004-04-23 13:41:14 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.51.2.2 2004-07-30 17:08:12 michiel Exp $
  */
 public class MultiPool {
 
@@ -151,6 +151,22 @@ public class MultiPool {
         databaseSupport.initConnection(con);
         return new MultiConnection(this, con);
     }
+
+
+    /**
+     * Tries to fix this multi-connection if it is broken (e.g. if database restarted).
+     * @since MMBase-1.7.1
+     */
+    protected void replaceConnection(MultiConnection multiCon) throws SQLException {
+        if (name.equals("url") && password.equals("url")) {
+            multiCon.con = DriverManager.getConnection(url);
+        } else {
+            multiCon.con = DriverManager.getConnection(url, name, password);
+        }
+        databaseSupport.initConnection(multiCon.con);
+        
+    }
+
 
     protected void finalize() {
         shutdown();
