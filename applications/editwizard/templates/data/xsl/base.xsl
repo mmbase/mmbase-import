@@ -6,7 +6,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.7 2002-05-27 21:34:50 michiel Exp $
+  @version $Id: base.xsl,v 1.8 2002-06-24 12:36:23 pierre Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -27,12 +27,13 @@
   <xsl:param name="username">(unknown)</xsl:param>
 
   <xsl:param name="sessionid"></xsl:param>
+  <xsl:param name="referrer"></xsl:param>
   <xsl:param name="sessionkey">editwizard</xsl:param>
   <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" /></xsl:param>
 
   <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
-  <xsl:variable name="popuppage">popupwizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
+  <xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer" /></xsl:variable>
   <xsl:variable name="deletepage">deletelistitem.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   <xsl:variable name="uploadpage">upload.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
 
