@@ -152,7 +152,6 @@ Build-compiler: ${build.compiler}
   </target>
 
   <target name="install" depends="rmmci">
-    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" file="${project.jar.dir}/mmbase-rmmci.jar"/>
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" file="${project.jar.dir}/mmbase-rmmci-server.jar"/>
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/modules" file="config/modules/rmmci.xml"/>
   </target>
