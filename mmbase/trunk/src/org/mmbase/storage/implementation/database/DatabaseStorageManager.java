@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.73 2004-09-20 12:00:26 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.74 2004-09-20 16:37:23 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1192,7 +1192,7 @@ public class DatabaseStorageManager implements StorageManager {
                 // from disk
                 for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext();) {
                     FieldDefs field = (FieldDefs)i.next();
-                    if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
+                    if (field.inStorage()) {
                         if (shorten(field)) {
                             node.setValue(field.getDBName(), "$SHORTED");
                         } else if (field.getDBType() == FieldDefs.TYPE_BYTE && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
@@ -1230,18 +1230,18 @@ public class DatabaseStorageManager implements StorageManager {
             }
             switch (dbtype) {
                 // string-type fields
-            case FieldDefs.TYPE_XML : {
-                return getXMLValue(result, index, field);
-            }
-            case FieldDefs.TYPE_STRING : {
-                return getStringValue(result, index, field);
-            }
-            case FieldDefs.TYPE_BYTE : {
-                return getBinaryValue(result, index, field);
-            }
-            default : {
-                return result.getObject(index);
-            }
+                case FieldDefs.TYPE_XML : {
+                    return getXMLValue(result, index, field);
+                }
+                case FieldDefs.TYPE_STRING : {
+                    return getStringValue(result, index, field);
+                }
+                case FieldDefs.TYPE_BYTE : {
+                    return getBinaryValue(result, index, field);
+                }
+                default : {
+                    return result.getObject(index);
+                }
             }
         } catch (SQLException se) {
             throw new StorageException(se);
