@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.19 2003-09-24 11:57:15 michiel Exp $
+ * @version  $Id: validator.js,v 1.20 2003-09-24 13:40:46 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -178,8 +178,9 @@ function validateElement_validator(el, silent) {
             }
             if (year < 0 ) year++;
 
+
             /* Validation leap-year / february / day */
-            if ((year  % 4 == 0) || (year % 100 == 0) || (year % 400 == 0)) {
+            if ((year  % 4 == 0) && !( (year % 100 == 0) && (year % 400 != 0))) {
                 leap = 1;
             } else {
                 leap = 0;
