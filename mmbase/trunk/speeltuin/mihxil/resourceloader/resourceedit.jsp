@@ -7,7 +7,12 @@
     <title><mm:write id="title" value="MMBase Resource Editor" /></title>
     <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
     <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
-    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />    
+    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+    <style>
+      td.active {
+        background-color: yellow;
+    }
+    </style>
   </head>
 <body style="margin-left: 0;">
   <%! Xml  xmlEscaper     = new Xml(Xml.ESCAPE);  %>
@@ -251,15 +256,52 @@
        Resolve-scheme.
        <table>
          <tr><th>URL</th><th>read</th><th>write</th></tr>
-         <% Iterator urls = resourceLoader.findResourceList(resource).iterator();
-            while (urls.hasNext()) {
-              URL u = (URL) urls.next();
+         <% 
+            List urls = resourceLoader.findResourceList(resource);
+            ListIterator i = urls.listIterator();
+            int read = 0;
+            int write = 0;
+            while (i.hasNext()) {
+              URL u = (URL) i.next();
+              URLConnection uc = u.openConnection();
+              if (uc.getDoInput()) {
+                break;
+              }
+              read++; write++;
+            }
+            while(i.hasPrevious()) {
+              URL u = (URL) i.previous();
+              URLConnection uc = u.openConnection();
+              if (uc.getDoOutput()) {
+                break;
+              }
+              write--;
+            }
+            i = urls.listIterator();
+            int counter = 0;
+            while (i.hasNext()) {
+              URL u = (URL) i.next();
               URLConnection uc = u.openConnection();
           %>
-          <tr><td title="<%=uc.getClass().getName()%>"><%=u.toString()%></td><td><%=uc.getDoInput()%></td><td><%=uc.getDoOutput()%></td></tr>
-          <% }
+          <tr>
+             <td title="<%=uc.getClass().getName()%>"><%=u.toString()%></td>
+             <td <%= read == counter ? "class = 'active'" : "" %> ><%=uc.getDoInput()%></td>
+             <td <%= write == counter ? "class = 'active'" : "" %> ><%=uc.getDoOutput()%></td>
+          </tr>
+          <% 
+          counter++;
+          }
+          if (read != write) {
             %>
-       </table>      
+            
+            <tr>
+              <th colspan="3">
+                Warning, current resource is not writable. Will be upgraded on save.
+              </th>
+            </tr>
+            <% } %>
+       </table>  
+       
      </td>
    </tr>
 

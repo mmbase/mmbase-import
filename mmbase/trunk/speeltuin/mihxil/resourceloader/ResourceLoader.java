@@ -96,7 +96,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.14 2004-10-28 19:52:43 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.15 2004-10-29 09:33:49 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -613,7 +613,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
      * Resource are actually InputStreams (byte arrays), but often they are quite text-oriented
-     * (like e.g. XML's), so this method may be useful.
+     * (like e.g. XML's or property-files), so this method may be useful.
      * @see #getResourceAsStream(String)
      */
     public Reader getReader(String name) throws IOException {
@@ -730,15 +730,16 @@ public class ResourceLoader extends ClassLoader {
         while (i.hasNext()) {
             PathURLStreamHandler cf = (PathURLStreamHandler) i.next();
             URLConnection con = cf.openConnection(name);
-            long lm = con.getLastModified();
-            if (lm  > 0 && lm > lastModified) {
-                log.warn("File " + con.getURL() + " is newer then " + usedUrl + " but shadowed by it");
+            if (con.getDoInput()) {
+                long lm = con.getLastModified();
+                if (lm  > 0 && lm > lastModified) {
+                    log.warn("File " + con.getURL() + " is newer then " + usedUrl + " but shadowed by it");
+                }
+                if (usedUrl == null) {
+                    usedUrl = con.getURL();
+                    lastModified = lm;
+                }
             }
-            if (usedUrl == null) {
-                usedUrl = con.getURL();
-                lastModified = lm;
-            }
-
         }
     }
 
@@ -1058,6 +1059,7 @@ public class ResourceLoader extends ClassLoader {
                         return node;
                     }
                 } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+                    log.warn(sqe);
                 }
             }
             return null;
@@ -1095,12 +1097,12 @@ public class ResourceLoader extends ClassLoader {
                     public void close() throws IOException {
                         byte[] b = bytes.toByteArray();
                         node.setValue(Resources.HANDLE_FIELD, b);
-                        String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(b));
-                        if (type == null) {
+                        String mimeType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(b));
+                        if (mimeType == null) {
                             URLConnection.guessContentTypeFromName(name);
                         }
-                        node.setValue(Resources.TYPE_FIELD, type);
-                        node.setValue("mimetype", type);
+                        node.setValue("mimetype", mimeType);
+                        node.setValue(Resources.LASTMODIFIED_FIELD, new Date());
                         node.commit();
                     }                    
                     public void write(int b) {
@@ -1111,7 +1113,7 @@ public class ResourceLoader extends ClassLoader {
         public long getLastModified() {
             getResourceNode();
             if (node != null) {
-                Date lm = node.getDateValue("lastmodified");
+                Date lm = node.getDateValue(Resources.LASTMODIFIED_FIELD);
                 if (lm != null) {                    
                     return lm.getTime();
                 }
@@ -1211,7 +1213,6 @@ public class ResourceLoader extends ClassLoader {
         public URLConnection openConnection(String name) {
             try {
                 URL u = ResourceLoader.class.getResource(root + ResourceLoader.this.context.getPath() + name);
-                log.info("openconnection classloader " + root + ResourceLoader.this.context.getPath() + name);
                 if (u == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                 return u.openConnection(); 
             } catch (IOException ioe) {
