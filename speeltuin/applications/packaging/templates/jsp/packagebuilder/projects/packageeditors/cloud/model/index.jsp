@@ -10,7 +10,7 @@
 <mm:import externid="package" id="target" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
 <tr>
-	<th colspan="3">
+	<th colspan="4">
 	 Cloud/Model Package Settings
 	</th>
 </tr>
@@ -19,9 +19,13 @@
 	<input type="hidden" name="action" value="setpackagevalue" />
 	<th width="150">Model File</ht>
 	 <mm:import id="nid" reset="true">modelfile</mm:import>
-	<td><input name="newvalue" style="width: 99%" value="<mm:function set="mmpb" name="getPackageValue" referids="project,target,nid@name" />"></td>
+	<mm:import id="modelfilename"><mm:function set="mmpb" name="getPackageValue" referids="project,target,nid@name" /></mm:import>
+	<td><input name="newvalue" style="width: 99%" value="<mm:write referid="modelfilename" />"></td>
 	<input type="hidden" name="newname" value="<mm:write referid="nid" />" />
 	<td width="50"><input type="submit" value="save"></td>
+	</form>
+	<form action="<mm:url page="projects/packageeditors/cloud/model/editcloud.jsp" referids="main,sub,name,package,mode,modelfilename" />" method="post">
+	<td width="50"><input type="submit" value="edit"></td>
 	</form>
 </tr>
 
@@ -34,6 +38,9 @@
 	<td><input name="newvalue" style="width: 99%" value="<mm:function set="mmpb" name="getPackageValue" referids="project,target,nid@name" />"></td>
 	<input type="hidden" name="newname" value="<mm:write referid="nid" />" />
 	<td width="50"><input type="submit" value="save"></td>
+	</form>
+	<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
+	<td width="50"><input type="submit" value="edit"></td>
 	</form>
 </tr>
 
