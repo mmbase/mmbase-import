@@ -17,8 +17,6 @@ import org.mmbase.bridge.*;
 
 import java.io.IOException;
 
-import java.util.*;
-
 import org.mmbase.util.StringObject;
 
 import org.mmbase.util.logging.Logger;
@@ -38,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.8 2003-02-24 20:41:58 kees Exp $
+ * @version $Id: BridgeServlet.java,v 1.9 2003-03-04 15:32:14 nico Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */

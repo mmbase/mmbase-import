@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import java.util.*;
-import java.awt.*;
-import javax.servlet.http.*;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.*;

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import java.util.*;
-import java.lang.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 

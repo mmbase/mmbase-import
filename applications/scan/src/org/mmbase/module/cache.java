@@ -9,10 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
-import java.io.*;
 
 import org.mmbase.util.LRUHashtable;
 
@@ -26,8 +23,8 @@ import org.mmbase.util.logging.Logger;
  * @javadoc
  * @move org.mmbase.cache.implementation
  * @rename Cache
- * @author  $Author: pierre $
- * @version $Revision: 1.10 $ $Date: 2002-01-03 10:41:26 $
+ * @author  $Author: nico $
+ * @version $Revision: 1.11 $ $Date: 2003-03-04 15:26:33 $
  */
 public class cache extends Module implements cacheInterface {
 

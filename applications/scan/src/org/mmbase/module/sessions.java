@@ -9,12 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
-import java.io.*;
-
-import javax.servlet.http.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -37,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @rename Sessions
   * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.23 2001-12-14 09:33:18 pierre Exp $
+ * @version $Id: sessions.java,v 1.24 2003-03-04 15:26:34 nico Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
