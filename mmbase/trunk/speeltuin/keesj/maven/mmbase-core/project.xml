@@ -4,7 +4,7 @@
   <id>mmbase-core</id>
   <name>mmbase-core</name>
   <groupId>mmbase</groupId>
-  <currentVersion>1.7-rc3</currentVersion>
+  <currentVersion>1.8.0-SNAPSHOT</currentVersion>
   <organization>
     <name>MMBase.org</name>
     <url>http://www.mmbase.org</url>
@@ -92,6 +92,11 @@
       <id>junit</id>
       <version>3.8.1</version>
     </dependency>
+    <dependency>
+      <artifactId>mmbase-core-config</artifactId>
+      <groupId>mmbase</groupId>
+      <version>1.8.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <reports>
     <report>maven-changelog-plugin</report>
@@ -153,129 +158,11 @@
 <!-- Resources that are packaged up inside the JAR file -->
     <resources>
       <resource>
-        <directory>${basedir}/src/org/mmbase/util/logging/resources</directory>
-        <targetPath>org/mmbase/util/logging/resources</targetPath>
+        <directory>${basedir}/src/java/</directory>
         <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/applications/dove/resources</directory>
-        <targetPath>org/mmbase/applications/dove/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/bridge/jsp/taglib/resources</directory>
-        <targetPath>org/mmbase/bridge/jsp/taglib/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/cache/resources</directory>
-        <targetPath>org/mmbase/cache/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/module/resources</directory>
-        <targetPath>org/mmbase/module/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/security/implementation/basic/resources</directory>
-        <targetPath>org/mmbase/security/implementation/basic/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/security/implementation/context/resources</directory>
-        <targetPath>org/mmbase/security/implementation/context/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/security/resources</directory>
-        <targetPath>org/mmbase/security/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/storage/implementation/database/resources</directory>
-        <targetPath>org/mmbase/storage/implementation/database/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/storage/search/implementation/database/vts/resources</directory>
-        <targetPath>org/mmbase/storage/search/implementation/database/vts/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/storage/util/resources</directory>
-        <targetPath>org/mmbase/storage/util/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/util/magicfile/resources</directory>
-        <targetPath>org/mmbase/util/magicfile/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/util/resources</directory>
-        <targetPath>org/mmbase/util/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/org/mmbase/util/xml/resources</directory>
-        <targetPath>org/mmbase/util/xml/resources</targetPath>
-        <includes>
-          <include>*.xml</include>
-          <include>*.dtd</include>
-          <include>*.properties</include>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.properties</include>
         </includes>
       </resource>
     </resources>
