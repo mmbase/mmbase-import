@@ -2,7 +2,7 @@
     packaging_display_html.dtd
 -->
 
-<!ELEMENT packaging_display_html (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,basedir,include,exclude,packagedepends,initiators,supporters,developers,contacts)>
+<!ELEMENT packaging_display_html (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,basedir,include,exclude,packagedepends,initiators,supporters,developers,contacts,publishprovider*)>
 
 <!ELEMENT basedir (#PCDATA)>
 <!ELEMENT lastversion (#PCDATA)>
@@ -58,3 +58,8 @@
 <!ATTLIST contact name CDATA #IMPLIED>
 <!ATTLIST contact mailto CDATA #IMPLIED>
 
+<!ELEMENT publishprovider (#PCDATA)>
+<!ATTLIST publishprovider active CDATA #IMPLIED>
+<!ATTLIST publishprovider name CDATA #IMPLIED>
+<!ATTLIST publishprovider state CDATA #IMPLIED>
+<!ATTLIST publishprovider sharepassword CDATA #IMPLIED>

@@ -2,7 +2,7 @@
     packaging_function_set.dtd
 -->
 
-<!ELEMENT packaging_function_set (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,functionsetfile,functionsetdir,packagedepends,initiators,supporters,developers,contacts)>
+<!ELEMENT packaging_function_set (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,functionsetfile,functionsetdir,packagedepends,initiators,supporters,developers,contacts,publishprovider*)>
 
 <!ELEMENT lastversion (#PCDATA)>
 <!ELEMENT lastdate (#PCDATA)>
@@ -54,3 +54,8 @@
 <!ATTLIST contact name CDATA #IMPLIED>
 <!ATTLIST contact mailto CDATA #IMPLIED>
 
+<!ELEMENT publishprovider (#PCDATA)>
+<!ATTLIST publishprovider active CDATA #IMPLIED>
+<!ATTLIST publishprovider name CDATA #IMPLIED>
+<!ATTLIST publishprovider state CDATA #IMPLIED>
+<!ATTLIST publishprovider sharepassword CDATA #IMPLIED>
