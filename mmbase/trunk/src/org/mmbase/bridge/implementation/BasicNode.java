@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.84 2003-03-21 17:41:57 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.85 2003-03-25 13:01:37 vpro Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -701,60 +701,26 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @since MMBase-1.6
      */
     public NodeList getRelatedNodes(String type, String role, String direction) {
-        int requestedRole = -1;
-        if (role!=null) {
-            requestedRole = mmb.getRelDef().getNumberByName(role);
-            if (requestedRole == -1) {
-                throw new NotFoundException("Could not get role '" + role + "'");
-            }
+        if(role==null) role = "insrel";
+
+        log.debug("type("+type+"), role("+role+"), dir("+direction+")");
+
+        NodeManager nodemanager     = cloud.getNodeManager(type);
+        int         dir             = ClusterBuilder.getSearchDir(direction);
+        Vector      mmnodes         = getNode().getRelatedNodes(type, role, dir);
+        Vector      basicnodes      = new Vector();
+
+        // convert MMObjectNodes to BasicNodes
+        Iterator i = mmnodes.iterator();
+        while(i.hasNext()) {
+            basicnodes.add(new BasicNode((MMObjectNode)i.next(), nodemanager));
         }
 
-        int otype=-1;
-        MMObjectBuilder bul = mmb.getTypeDef();
-        if (type!=null) {
-            bul=mmb.getMMObject(type);
-            if (bul == null) {
-                throw new NotFoundException("Could not get related nodes of type '" + type + "', because that is not a known NodeManager");
-            }
-            otype=bul.oType;
-        }
-
-        int dir  = ClusterBuilder.getSearchDir(direction);
-
-        Enumeration e = getRelationEnumeration(requestedRole, otype, dir!=ClusterBuilder.SEARCH_ALL);
-        List result = new Vector();
-        if (e != null) {
-            while(e.hasMoreElements()) {
-                MMObjectNode relNode = (MMObjectNode) e.nextElement();
-                int number = relNode.getIntValue("dnumber");
-                if (number == getNumber()) {
-                    if (dir == ClusterBuilder.SEARCH_DESTINATION) {
-                        continue;
-                    }
-                    number = relNode.getIntValue("snumber");
-                } else {
-                    if (dir == ClusterBuilder.SEARCH_SOURCE) {
-                        continue;
-                    }
-                }
-                MMObjectNode newNode = bul.getNode(number);
-                if (type == null || newNode.parent.equals(bul) || newNode.parent.isExtensionOf(bul)) {
-                    result.add(newNode);
-                }
-            }
-        }
+        // convert results in Vector to BasicList
         if (type != null) {
-            return new BasicNodeList(result, cloud.getNodeManager(type));
+            return new BasicNodeList(basicnodes, cloud.getNodeManager(type));
         } else {
-            return new BasicNodeList(result, cloud);
-        }
-    }
-
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
-        if (nodeManager==null) {
-            return getRelatedNodes((String)null, role, direction);
-        } else {
-            return getRelatedNodes(nodeManager.getName(), role, direction);
+            return new BasicNodeList(basicnodes, cloud);
         }
     }
 
