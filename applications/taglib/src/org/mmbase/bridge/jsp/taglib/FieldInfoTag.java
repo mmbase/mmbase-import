@@ -292,12 +292,12 @@ public class FieldInfoTag extends NodeReferrerTag {
             if (field.getGUIType().equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
                 try {
-                    Integer day    = new Integer(getContextTag().getString(prefix(fieldName + "_day")));
-                    Integer month  = new Integer(getContextTag().getString(prefix(fieldName + "_month")));
-                    Integer year   = new Integer(getContextTag().getString(prefix(fieldName + "_year")));
-                    Integer hour   = new Integer(getContextTag().getString(prefix(fieldName + "_hour")));
-                    Integer minute = new Integer(getContextTag().getString(prefix(fieldName + "_minute")));
-                    Integer second = new Integer(getContextTag().getString(prefix(fieldName + "_second")));
+                    Integer day    = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_day")));
+                    Integer month  = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_month")));
+                    Integer year   = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_year")));
+                    Integer hour   = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_hour")));
+                    Integer minute = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_minute")));
+                    Integer second = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_second")));
                     int y = year.intValue();
                     if (y < 1902 || y > 2037) {
                         throw new JspTagException("Year must be between 1901 and 2038 (now " + y + ")");
@@ -314,7 +314,7 @@ public class FieldInfoTag extends NodeReferrerTag {
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG:
-            String fieldValue = getContextTag().getString(prefix(fieldName));
+            String fieldValue = getContextTag().getStringFindAndRegister(prefix(fieldName));
             log.debug("got it");
             if (fieldValue == null) {
                 log.debug("Field " + fieldName + " is null!");
@@ -346,7 +346,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             throw new JspTagException("Don't know what to do with bytes()");
         case Field.TYPE_STRING:
             {
-                String search = getContextTag().getString(prefix(fieldName));
+                String search = getContextTag().getStringFindAndRegister(prefix(fieldName));
                 if (search == null) {
                     log.error("parameter " + prefix(fieldName) + " could not be found");
                     show =  null;
@@ -364,12 +364,12 @@ public class FieldInfoTag extends NodeReferrerTag {
             if (guitype.equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
                 try {
-                    Integer day    = new Integer(getContextTag().getString(prefix(fieldName + "_day")));
-                    Integer month  = new Integer(getContextTag().getString(prefix(fieldName + "_month")));
-                    Integer year   = new Integer(getContextTag().getString(prefix(fieldName + "_year")));
-                    Integer hour   = new Integer(getContextTag().getString(prefix(fieldName + "_hour")));
-                    Integer minute = new Integer(getContextTag().getString(prefix(fieldName + "_minute")));
-                    Integer second = new Integer(getContextTag().getString(prefix(fieldName + "_second")));
+                    Integer day    = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_day")));
+                    Integer month  = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_month")));
+                    Integer year   = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_year")));
+                    Integer hour   = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_hour")));
+                    Integer minute = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_minute")));
+                    Integer second = new Integer(getContextTag().getStringFindAndRegister(prefix(fieldName + "_second")));
                     int y = year.intValue();
                     if (y < 1902 || y > 2037) {
                         throw new JspTagException("Year must be between 1901 and 2038 (now " + y + ")");
@@ -380,7 +380,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     throw new JspTagException("Not a valid number (" + e.toString() + ")");
                 }
                 // check if changed:
-                if (! getContextTag().getString(prefix(fieldName)).equals("" + cal.getTime().getTime() /1000)) { 
+                if (! getContextTag().getStringFindAndRegister(prefix(fieldName)).equals("" + cal.getTime().getTime() /1000)) { 
                     show = "(" + fieldName + ">" + (cal.getTime().getTime() / 1000) + ")";
                 } else {
                     show = null;
@@ -388,7 +388,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                 break;
             }
             if ("types".equals(guitype) || "reldefs".equals(guitype)) {
-                if (getContextTag().getString(prefix(fieldName + "_search")) == null) {
+                if (getContextTag().getStringFindAndRegister(prefix(fieldName + "_search")) == null) {
                     show = null;
                     break;
                 }
@@ -397,7 +397,7 @@ public class FieldInfoTag extends NodeReferrerTag {
         case Field.TYPE_DOUBLE:
         case Field.TYPE_LONG:
             {
-                String search = getContextTag().getString(prefix(fieldName));
+                String search = getContextTag().getStringFindAndRegister(prefix(fieldName));
                 if (search == null) {
                     log.error("parameter " + prefix(fieldName) + " could not be found");
                     show =  null;
@@ -407,7 +407,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     show =  null;
                     break;
                 }
-                show =  "(" + fieldName + "=" + getContextTag().getString(prefix(fieldName)) + ")";
+                show =  "(" + fieldName + "=" + getContextTag().getStringFindAndRegister(prefix(fieldName)) + ")";
             }
             break;
         default: log.error("field: " + type );
