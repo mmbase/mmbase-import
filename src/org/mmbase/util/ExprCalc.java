@@ -32,13 +32,14 @@ public class ExprCalc {
     private static final int MC_NONE=0;
     private static final int MC_EOT =-1;
 
-    private static Logger log = Logging.getLoggerInstance(ExprCalc.class);
+    private static final Logger log = Logging.getLoggerInstance(ExprCalc.class);
 
     // a token is represented by an tokencode (MCode)
     // and a tokenvalue (MSym or MNum) depending on
     // the tokencode
 
     private StringTokenizer tokenizer;
+    private String          input;
 
     private int	   mCode;
     private char   mSymb;
@@ -51,12 +52,13 @@ public class ExprCalc {
      * @param input a <code>String</code> representing the expression
      */
     public ExprCalc(String input) {
-      tokenizer = new StringTokenizer(input, "+-*/()% \t", true);
-      mCode = MC_NONE;
-      result = expr();
-      if (mCode != MC_EOT) {
-          log.error("Could not evalutate expression:" + input);
-      }
+        this.input = input;
+        tokenizer = new StringTokenizer(input, "+-*/()% \t", true);
+        mCode = MC_NONE;
+        result = expr();
+        if (mCode != MC_EOT) {
+            log.error("Could not evaluate expression: '" + input + "'");
+        }
     }
 
     /**
@@ -87,12 +89,12 @@ public class ExprCalc {
                     (Character.isDigit(token.charAt(i)) ||
                      token.charAt(i)=='.');i++) { };
                 if (i!=token.length()) {
-                    log.error("Could not evaluate expression '" + token + "'");
+                    log.error("Could not evaluate expression '" + token + "' of '" + input + "'");
                 }
                 try {
                     mNum=(Double.valueOf(token)).doubleValue();
                 } catch (NumberFormatException e) {
-                    log.error("Could not evaluate expression ('" + token + "' not a number)");
+                    log.error("Could not evaluate expression ('" + token + "' not a number) of '" + input + "'");
                 }
                 mCode=MC_NUM;
             } else {          // symbol
@@ -122,7 +124,7 @@ public class ExprCalc {
             ||  mCode==MC_EOT) {
 
         } else {
-            log.error("Could not evaluate expression");            
+            log.error("expr: Could not evaluate expression '" + input + "'");            
         }
         return tmp;
     }
@@ -162,14 +164,14 @@ public class ExprCalc {
             mCode = MC_NONE;
             tmp = expr();
             if(lex() && mCode!=MC_SYMB || mSymb!=')') {
-                log.error("Could not evaluate expression");
+                log.error("fac1: Could not evaluate expression '" + input + "'");
             }
             mCode=MC_NONE;
         } else if (mCode==MC_NUM) {
             mCode=MC_NONE;
             tmp=mNum;
         } else {
-            log.error("Could not evaluate expression");
+            log.error("fac2: Could not evaluate expression '" + input + "'");
         }
         if (minus) tmp = -tmp;
         return tmp;
