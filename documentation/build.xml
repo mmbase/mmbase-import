@@ -7,51 +7,53 @@
 
   <!-- user customized properties, these override everything -->
   <property file="${user.home}/build.properties"/>
+
   <!-- project customized properties -->
   <!-- these override the onces in build.properties.default -->
   <property file="build.properties"/>
+
+
+  <!-- mmbase defaults, properties available also in ../build.xml -->
+  <property name="source.dir"   location=".." />
+  <property file="${source.dir}/build.properties"/> <!-- use the same overriding -->
+
+  <property name="build.dir"            value="${source.dir}/build" />
+  <property name="dowload.dir"          value="${build.dir}/download" />
+  <property name="expand.dir"           value="${download.dir}/expanded" />
+
+  <property name="source-config.dir"    value="${source.dir}/config"/>
+  <property name="source-html.dir"      value="${source.dir}/html"/>
+  <property name="source-src.dir"       value="${source.dir}/src"/>
+  <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
+  <property name="mmdocs.dir"           value="${webapp.dir}/mmdocs"/>
+  <property name="reference.dir"        value="${webapp.dir}/mmdocs/reference"/>
+  <property name="web.dir"              value="${webapp.dir}/WEB-INF"/>
+  <property name="release.lib.dir"      value="${web.dir}/lib"/>
+  <property name="compile.lib.dir"      value="${build.dir}/lib"/>
+  <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
+  <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
+
+
   <!-- project defaults -->  
   <property file="build.properties.default"/>
 
-  <!-- mmbase defaults-->
-  <property name="mmbase.default.dir"
-            location=".." />
-  <property name="mmbase.build.dir"  
-            location="${mmbase.default.dir}/build" /> <!-- mmbase build dir -->
-  <property name="mmbase.html.dir"  
-            location="${mmbase.default.dir}/html" />
-  <property name="mmbase.html.documentation.dir"  
-            location="${mmbase.html.dir}/mmdocs" />
-  <property name="mmbase.lib.dir"
-            location="${mmbase.build.dir}/lib"/>
-  <property name="mmbase.jar.dir"
-            location="${mmbase.build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
-  <property name="mmbase.jar"    
-            value="${mmbase.jar.dir}/mmbase.jar"/>
-  <property name="xerces.jar"    
-            value="${mmbase.lib.dir}/xerces.jar"/>
-  <property name="xalan.jar"    
-            value="${mmbase.lib.dir}/xalan.jar"/>
-  <property name="servlet.jar"    
-            value="${mmbase.lib.dir}/servlet.jar"/>
-  <property name="mmbase.config" 
-            value="${mmbase.default.dir}/config"/>
-
   <!-- documentation related settings -->
-  <property name="documentation.dest.dir" value="${build.dir}/documentation"/>
+  <property name="mmbase.html.documentation.dir" value="${source-html.dir}/mmdocs" />
+  <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
   <property name="documentation.src.dir" value="."/>
-  <property name="documentation.temp.dir" value="${build.dir}/temp"/>
   <property name="documentation.builders.language" value="en" />
+  <property name="documentation.temp.dir" value="${documentation.build.dir}/temp" />
   <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
+  <property name="docbook.stylesheet" value="xhtml/docbook.xsl" />
   <property name="documentation.docbook.html.stylesheet" 
-            value="${download.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />  
+            value="${download.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
   <property name="documentation.docbook.fo.stylesheet" 
             value="${download.dir}/${docbook-xsl.version}/fo/docbook.xsl" />  
 
 
   <!-- =============== Init  ============================================= -->
   <target name="init">
-    <mkdir dir="${build.dir}" />
+    <mkdir dir="${documentation.build.dir}" />
     <mkdir dir="${documentation.dest.dir}" />
   </target>
 
@@ -61,22 +63,22 @@
   <!-- generation will only occur when either a documentation file has     -->
   <!-- changed (or been added), or if the stylefile has changed            -->
   <target name="style.prepare">
-    <copy tofile="${build.dir}/newstyle.xslt" 
+    <copy tofile="${documentation.build.dir}/newstyle.xslt" 
           file="${documentation.src.dir}/style/docbook2xhtml.xslt" />
-    <replace file="${build.dir}/newstyle.xslt" 
+    <replace file="${documentation.build.dir}/newstyle.xslt" 
              token="[BASESTYLESHEET]" 
              value="${documentation.docbook.html.stylesheet}" />
     <condition property="stylechanged">
       <not>
-        <filesmatch file1="${build.dir}/newstyle.xslt"
-                    file2="${build.dir}/docbook2xhtml.xslt" />
+        <filesmatch file1="${documentation.build.dir}/newstyle.xslt"
+                    file2="${documentation.build.dir}/docbook2xhtml.xslt" />
       </not>
     </condition>
   </target>
 
   <target name="style.copy" if="stylechanged" depends="style.prepare">
-    <copy tofile="${build.dir}/docbook2xhtml.xslt"
-          file="${build.dir}/newstyle.xslt" />
+    <copy tofile="${documentation.build.dir}/docbook2xhtml.xslt"
+          file="${documentation.build.dir}/newstyle.xslt" />
   </target>
 
   <!-- copy all the images and resources -->
@@ -93,6 +95,11 @@
     </copy>
   </target>
 
+  <target name="mmbase.jar">
+     <ant target="jar" dir="${source.dir}" />
+  </target>
+      
+
   <!-- copy all documentation from the mmdocs dir                  -->
   <!-- this is documentation that hasn't been converted to docbook -->
   <!-- (yet)                                                       -->
@@ -103,64 +110,45 @@
     </copy>
   </target>
 
-  <!-- copy all docbook xml's to temp dir            -->
-  <!-- this is needed because XSLTransformer doesn't -->
-  <!-- have some kind of exclusion system            -->
-  <!-- this must be changed, but first, let's try    -->
-  <!-- and create a build.xml for the documentation  -->
-  <!-- and fix XSLTransformer later ;-)              -->
-  <target name="documentation.temporary.copy" depends="documentation.resources">
-    <copy todir="${documentation.temp.dir}/" >
-      <fileset dir="${documentation.src.dir}" >
-        <include name="**/*.xml"/>
-        <include name="**/*.sgm"/>
-        <exclude name="build/**"/>
-        <exclude name="build.*" />
-      </fileset>
-    </copy>
-  </target>
-
 
   <!-- ================================================================================ -->
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.temporary.copy,documentation.static.copy"
+          depends="documentation.static.copy,mmbase.jar"
           description="Create HTML documentation from the DocBook sources">
 
     <java classname="org.mmbase.util.XSLTransformer"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${mmbase.config}" />
+      <jvmarg value="-Dmmbase.config=${source-config.dir}" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-mx150m" />
-      <classpath>
+      <classpath>        
         <pathelement path="${mmbase.jar}" />
-        <pathelement path="${xerces.jar}" />
-        <pathelement path="${xalan.jar}" />
-        <pathelement path="${servlet.jar}" />
+        <fileset dir="${compile.lib.dir}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+          <exclude name="mmbase.jar"/>
+        </fileset>
       </classpath>
-      <arg value="${build.dir}/docbook2xhtml.xslt" />
-      <arg value="${documentation.temp.dir}" />
+      <arg value="${documentation.build.dir}/docbook2xhtml.xslt" />
+      <arg value="${documentation.src.dir}" />
       <arg value="${documentation.dest.dir}" />
+      <arg value="exclude=build.xml" />
+      <arg value="exclude=build" />
     </java>
   </target>
 
  
+
   <!-- ================================================================================ -->
   <!-- Perform docbook2pdf conversion                                                   -->
   <!-- ================================================================================ -->
-  <target name="documentation.pdf" 
-          depends="documentation.temporary.copy"
+  <target name="documentation.pdf"  depends="mmbase.jar"
           description="Create PDF documentation from the DocBook sources">
 
-    <!-- remove html files which may be left over from the documentation.html target -->
-    <!-- this is only needed because XSLTransformer defaults to .html                -->
-    <!-- this must be removed when the XSLTransformer has been changed               -->
-    <delete>
-      <fileset dir="${documentation.temp.dir}">
-        <include name="**/*.html"/>
-      </fileset>
-    </delete>
+    <mkdir dir="${documentation.temp.dir}" />
 
     <!-- copy the images to a temp dir, this is needed because of -->
     <!-- a strange problem with fop's basedir                     -->
@@ -181,28 +169,24 @@
     <java classname="org.mmbase.util.XSLTransformer"
           fork="yes"
           failonerror="no">
-      <jvmarg value="-Dmmbase.config=${mmbase.config}" />
+      <jvmarg value="-Dmmbase.config=${source-config.dir}" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-mx150m" />
       <classpath>
         <pathelement path="${mmbase.jar}" />
-        <pathelement path="${xerces.jar}" />
-        <pathelement path="${xalan.jar}" />
-        <pathelement path="${servlet.jar}" />
+        <fileset dir="${compile.lib.dir}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
+        </fileset>
       </classpath>
       <arg value="${documentation.docbook.fo.stylesheet}" />
+      <arg value="${documentation.src.dir}" />
       <arg value="${documentation.temp.dir}" />
-      <arg value="${documentation.temp.dir}" />
+      <arg value="extension=fo" />
+      <arg value="exclude=build" />
+      <arg value="exclude=build.xml" />
     </java>
 
-    <!-- hmmm...another thing that needs to be hacked into XSLTransformer -->
-    <!-- extensions aren't allways html                                   -->
-    <!-- change all .html into .fo                                        -->
-    <move todir="${documentation.temp.dir}">
-      <fileset dir="${documentation.temp.dir}">
-        <exclude name="**/*.fo"/>
-      </fileset>
-      <mapper type="glob" from="*.html" to="*.fo"/>
-    </move>
 
     <!-- test if jai-jars inside fop-dir are working -->
     <copy file="${jai.codec.jar}" todir="${fop.home}/lib"/>
@@ -222,7 +206,7 @@
              classname="org.apache.fop.tools.anttasks.Fop"
              classpathref="fop.classpath"/>
     
-    <!-- transform xsl-fo into pdf --> 
+    <!-- transform fo-xml into pdf --> 
     <fop format="application/pdf" outdir="${documentation.dest.dir}"
          messagelevel="error">
       <fileset dir="${documentation.temp.dir}">
@@ -230,19 +214,21 @@
         <!-- fop runs crazy on this document -->
         <!-- have to check what's causing the problem -->
         <exclude name="**/editwizard-reference.fo" />
-        <!-- fop gives an error on this document -->
+        <exclude name="**/editwizard-reference.fo" />
+        <!-- fop gives an error on these document -->
         <!-- have to check what's causing the problem -->
         <exclude name="**/taglib-tutorial.fo" />
+        <exclude name="**/mmbase4managers.fo" />
       </fileset>
     </fop>
 
     <!-- remove temp xslt-fo files and temp dir with images -->
-    <delete>
+    <!-- delete>
       <fileset dir="${documentation.temp.dir}">
         <include name="**/*.fo"/>
       </fileset>
-    </delete>
-    <delete dir="${basedir}/media/" />
+    </delete -->
+    <!-- delete dir="${basedir}/media/" /-->
   </target>
 
   <!-- ================================================================================ -->
@@ -256,8 +242,9 @@
   <!-- clean everything -->
   <target name="clean">
     <delete dir="${documentation.dest.dir}"/>
-    <delete file="${build.dir}/docbook2xhtml.xslt"/>
-    <delete file="${build.dir}/newstyle.xslt"/>
+    <delete dir="${documentation.temp.dir}"/>
+    <delete file="${documentation.build.dir}/docbook2xhtml.xslt"/>
+    <delete file="${documentation.build.dir}/newstyle.xslt"/>
   </target>
 
 
@@ -268,17 +255,21 @@
   <target name="download" depends="proxyflags" 
           description="Download binary packages" >
     <mkdir dir="${download.dir}" />
+
+    <echo message="docbook" />
     <!-- Download any sub package or tools needed. -->
     <antcall target="downloadgz">
       <param name="sourcefile" value="${docbook-xsl.loc}"/>
       <param name="destfile" value="${docbook-xsl.home}"/>
     </antcall>
 
+    <echo message="fop" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${fop.loc}"/>
       <param name="destfile" value="${fop.home}"/>
     </antcall>
     
+    <echo message="jai" />
     <antcall target="downloadbz2">
       <param name="sourcefile" value="${jai.loc}"/>
       <param name="destfile" value="${jai.home}"/>
