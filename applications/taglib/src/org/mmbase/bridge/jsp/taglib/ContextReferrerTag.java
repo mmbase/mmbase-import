@@ -63,7 +63,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         pageContextTag = (ContextTag) pageContext.getAttribute("__context");
 
         if (pageContextTag == null) { // not yet put 
-            log.debug("No pageContexTag found in pagecontext, creating..");
+            log.debug("No pageContextTag found in pagecontext, creating..");
             if (pageLog.isServiceEnabled()) {
                 thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
                 String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
