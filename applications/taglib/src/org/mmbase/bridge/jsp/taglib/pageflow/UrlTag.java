@@ -56,7 +56,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     public void haveBody() { helper.haveBody(); }
 
     private   List  referids = null;
-    protected HashMap extraParameters = null;
+    protected Map   extraParameters = null;
     protected String  page;
     private   boolean escapeAmps = true;
 
