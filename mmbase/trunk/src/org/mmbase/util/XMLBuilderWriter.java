@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated-now use org.mmbase.xml.BuilderWriter instead
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.17 2002-04-17 14:00:09 michiel Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.18 2002-04-18 06:33:52 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -84,7 +84,7 @@ public class XMLBuilderWriter  {
                 body.append("\t<singular xml:lang=\""+country+"\">"+name+"</singular>\n");
             }
         } else {
-            body.append("\t<singular xml:lang=\"en\">"+bul.getDutchSName()+"</singular>\n");
+            body.append("\t<singular xml:lang=\"en\">"+bul.getSingularName()+"</singular>\n");
         }
 
         body.append("\t<!-- multiple per language as defined by ISO 639 -->\n");
@@ -98,7 +98,7 @@ public class XMLBuilderWriter  {
                 body.append("\t<plural xml:lang=\""+country+"\">"+name+"</plural>\n");
             }
         } else {
-            body.append("\t<plural xml:lang=\"en\">"+bul.getDutchSName()+"</plural>\n");
+            body.append("\t<plural xml:lang=\"en\">"+bul.getSingularName()+"</plural>\n");
         }
         body.append("</names>\n\n");
 
