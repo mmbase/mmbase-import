@@ -10,4 +10,6 @@
 <option>double</option>
 <option>byte</option>
 <option>eventtime</option>
+<option>newfile</option>
+<option>newimage</option>
 </select>
