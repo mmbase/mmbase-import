@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version 2 jan 2001
+ * @version $Id: TypeRel.java,v 1.22 2002-01-17 08:23:36 pierre Exp $
  */
 public class TypeRel extends MMObjectBuilder {
 
