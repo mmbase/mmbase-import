@@ -74,11 +74,11 @@
       </db>
     </field>
 
-    <!-- <field> 'text'  -->
+    <!-- <field> 'body'  -->
     <field>
       <gui>
         <guiname xml:lang="nl">Tekst</guiname>
-        <guiname xml:lang="en">Text</guiname>
+        <guiname xml:lang="en">Body text</guiname>
         <guitype>field</guitype>
       </gui>
       <editor>
@@ -87,7 +87,7 @@
         </positions>
       </editor>
       <db>
-        <name>text</name>
+        <name>body</name>
         <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
       </db>
     </field>
