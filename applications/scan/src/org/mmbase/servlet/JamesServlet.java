@@ -10,10 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import java.util.*;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.mmbase.module.core.*;
 import org.mmbase.util.AuthorizationException;
 import org.mmbase.util.HttpAuth;
@@ -24,16 +28,14 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * JamesServlet is a adaptor class its used to extend the basic Servlet
- * to with the calls that where/are needed for 'James' servlets to provide
- * services not found in suns Servlet API.
+ * JamesServlet is a adaptor class.
+ * It is used to extend the basic Servlet to provide services not found in suns Servlet API.
  *
- * @deprecation-used contains commented-out code
  * @duplicate this code is aimed at the SCAN servlets, and some features (i.e. cookies) do
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.37 2002-06-26 13:54:15 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.38 2002-06-28 07:49:24 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -41,17 +43,7 @@ public class JamesServlet extends MMBaseServlet {
     protected static Logger pageLog;
 
     /**
-     * Debug method for logging.
-     * @deprecated-now use logging classes
-     */
-    protected void debug( String msg ) {
-        //	log.debug(msg + " <deprecated call>"); }
-    }
-
-    /**
      * Initializes the servlet.
-     *
-     * @param config  the servlet configuration
      */
     public void init() throws ServletException {
         super.init();
@@ -70,16 +62,6 @@ public class JamesServlet extends MMBaseServlet {
     protected final Object getModule(String name) {
         return org.mmbase.module.Module.getModule(name);
     }
-
-    /**
-     * Retrieves an initialization parameter.
-     * Note: overides the normal way to set init params in javax.
-     */
-   /*
-    public String getInitParameter(String var) {
-        return null;
-    }
-   */
 
     /**
      * Retrieves all initialization parameters.
@@ -111,13 +93,9 @@ public class JamesServlet extends MMBaseServlet {
      * @exception AuthorizationException if the authorization fails.
      * @exception NotLoggedInException if the user hasn't logged in yet.
      */
-    public String getAuthorization(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        return HttpAuth.getAuthorization(req,res,"www","Basic");
+    public String getAuthorization(HttpServletRequest req,HttpServletResponse res) throws AuthorizationException, NotLoggedInException {
+        return getAuthorization(req,res,"www","Basic");
     }
-// better:
-//    public String getAuthorization(HttpServletRequest req,HttpServletResponse res) throws AuthorizationException, NotLoggedInException {
-//            return getAuthorization(req,res);
-//    }
 
     /**
      * Authenticates a user, If the user cannot be authenticated a login-popup will appear
@@ -130,7 +108,7 @@ public class JamesServlet extends MMBaseServlet {
      * @exception NotLoggedInException if the user hasn't logged in yet.
      */
     public String getAuthorization(HttpServletRequest req,HttpServletResponse res,String server, String level) throws AuthorizationException, NotLoggedInException {
-            return HttpAuth.getAuthorization(req,res,server,level);
+        return HttpAuth.getAuthorization(req,res,server,level);
     }
 
     /**
@@ -155,50 +133,6 @@ public class JamesServlet extends MMBaseServlet {
         String FUTUREDATE = "Sunday, 09-Dec-2020 23:59:59 GMT";
         String PATH = "/";
         String domain = null;
-
-        // somehow client has a cookie but does not return it in getHeader(COOKIE)
-        // this will explain why :)
-
-/*
-        if( debug ) {
-            debug("getCookie(): header of client:");
-            debug("getCookie(): -----------------");
-
-            Enumeration e     = req.getHeaderNames();
-            String        key    = null;
-
-            while( e.hasMoreElements() ) {
-                key = (String)e.nextElement();
-                debug("getCookie(): "+key+"("+req.getHeader(key)+")");
-            }
-            debug("getCookie(): -----------------");
-            debug("getCookie():");
-
-            Cookie[] c = req.getCookies();
-            int      i = 0;
-            if( c != null ) {
-                i = c.length;
-
-                debug("getCookie():Cookies["+i+"]:");
-                debug("getCookie():-----------");
-
-                Cookie cookie = null;
-                for( int j = 0; j<i; j++ ) {
-                    cookie = c[j];
-                    if( cookie != null ) {
-                        debug("getCookie(): cookie["+j+"]: comment("+cookie.getComment()+") domain("+cookie.getDomain()+") maxage("+cookie.getMaxAge()+") name("+cookie.getName()+") path("+cookie.getPath()+") secure("+cookie.getSecure()+") value("+cookie.getValue()+") version("+cookie.getVersion()+")");
-
-                    } else {
-                        debug("getCookie(): cookie["+j+"]: "+cookie);
-                    }
-                }
-            } else {
-                debug("getCookie(): no cookies found in header!");
-            }
-            debug("getCookie():");
-            debug("getCookie():--------");
-        }
-*/
         String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
         if ((cookies!= null) && (cookies.indexOf(MMBASE_COOKIENAME) != -1)) {
@@ -261,15 +195,6 @@ public class JamesServlet extends MMBaseServlet {
                             propNode.setValue("value", mmbaseCookie.replace('=','/'));
                             propNode.commit();
                         }
-
-                        /* Skipping expiry of old cookie for now.
-                        DateFormat formatter=new SimpleDateFormat("EEEE, dd-MMM-yyyy HH:mm:ss 'GMT'", Locale.US);
-                        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
-                        Date d = new Date(System.currentTimeMillis()+24*3600*1000);
-                        String expires = formatter.format(d);
-                        debug("newGC: Found 'old' cookie: "+cookie+" setting new expiry to: "+expires);
-                        res.setHeader("Set-Cookie", (cookie+"; path="+PATH+"; expires="+expires));
-                        */
                     }
                 }
             } else {
@@ -322,16 +247,6 @@ public class JamesServlet extends MMBaseServlet {
         Vector params=buildparams(req);
         return params;
     }
-
-    /**
-     * Notifies through logging that the servlet was removed.
-     */
-    protected void finalize() {
-        System.out.println("end"); // obsolete call
-        //log.info("end of MMBase \n\n");
-    }
-
-//  ------------------------------------------------------------------------------------------------------------
 
     /**
      * @javadoc
@@ -448,6 +363,5 @@ public class JamesServlet extends MMBaseServlet {
         }
         return hn;
     }
-
 
 }

@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.servlet;
- 
+
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-  * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash 
+  * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash
   * based on a template and information from within MMBase
   * @rename Servflash
  */
@@ -31,18 +31,18 @@ public class servflash extends JamesServlet {
 
     private MMFlash gen;
     private static sessionsInterface sessions = null;
-    
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
+
+    public void init() throws ServletException {
+        super.init();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servflash.class.getName());
-        log.info("Init of servlet " + config.getServletName() + ".");
+        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
         MMBaseContext.initHtmlRoot();
         gen = (MMFlash)getModule("mmflash");
         sessions = (sessionsInterface)getModule("SESSION");
     }
 
-    /** 
+    /**
      * reload
      */
     public void reload() {
@@ -80,12 +80,12 @@ public class servflash extends JamesServlet {
                     } else {
                         res.sendError(404);
                     }
-                }    
+                }
             }
             pageLog.debug("END Parsing FLASH page");
-        }    
-        finally { 
-            decRefCount(req); 
+        }
+        finally {
+            decRefCount(req);
         }
     }
 }
