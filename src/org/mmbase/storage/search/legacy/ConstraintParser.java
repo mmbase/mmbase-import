@@ -103,7 +103,7 @@ import org.mmbase.util.logging.*;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.17 2003-12-23 15:12:52 robmaris Exp $
+ * @version $Id: ConstraintParser.java,v 1.18 2004-03-11 23:27:14 eduard Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -243,9 +243,14 @@ public class ConstraintParser {
         } else {
             fieldName = token.substring(idx + 1, token.length() - bracketOffset);
         }
-
-        FieldDefs fieldDefs = builder.getField(fieldName);
+        
+		FieldDefs fieldDefs = builder.getField(fieldName);
         if (fieldDefs == null) {
+			// maybe the fielddef was already escaped with getAllowedField
+			// otherwise it will definitly fail!
+			fieldDefs = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
+		}
+		if (fieldDefs == null) {
             throw new IllegalArgumentException(
             "Unknown field (of builder " + builder.getTableName()
             + "): \"" + fieldName + "\"");
