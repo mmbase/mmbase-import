@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.32 2002-07-05 20:38:31 michiel Exp $
+  @version $Id: wizard.xsl,v 1.33 2002-07-08 15:23:36 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -245,7 +245,7 @@
             </xsl:if>
           </div>
         </xsl:when>
-        <xsl:when test="@ftype='wizard' or @ftype='startwizard'">
+        <xsl:when test="@ftype='startwizard'">
           <nobr>
            <xsl:if test="@inline='true'">
                 <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}');">
@@ -490,7 +490,7 @@
         <table border="0" cellspacing="0" cellpadding="0" width="616">
           <xsl:for-each select="../command[@name='search' or @name='insert']">
           <xsl:choose>
-            <xsl:when test="@name='search'">             
+            <xsl:when test="@name='search'">
             <xsl:attribute name="style">display:inline; visibility:hidden; position:absolute; top:0; left:0;</xsl:attribute>
             </xsl:when>
             <xsl:otherwise>
