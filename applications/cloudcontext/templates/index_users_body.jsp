@@ -30,9 +30,11 @@
     <mm:listnodescontainer type="$nodetype">
 
       <mm:import externid="offset">0</mm:import>
+
+      <%@include file="search.jsp" %>
+
       <mm:offset value="$offset" />
       <mm:maxnumber value="10" />
-      <%@include file="search.jsp" %>
 
       <tr>
         <th>
