@@ -42,9 +42,13 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     /**
      * Release all allocated resources.
      */
-    public void release() {
+    public void release() {   
         log.info("releasing");
         super.release();
+        initPrivates();
+    }
+
+    private void initPrivates() {      
         number = null;
 	type = null ;
 	element = null;
@@ -53,6 +57,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     }
     
     public void setNumber(String number) throws JspTagException {
+        log.fatal("setting number to " + number);
         this.number = getAttributeValue(number);
     }
     
@@ -83,7 +88,9 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     public int doStartTag() throws JspTagException{            
         
+        log.debug("pvd");
         if (node == null) {
+            log.debug("node is null");
             if (number != null) { 
                 // explicity indicated which node (by number or alias)
                 node = getCloudProviderVar().getNode(number);
@@ -114,11 +121,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
 
         setNodeVar(node);        
-        //log.debug("found node " + node.getValue("gui()"));        
+        log.debug("found node " + node.getValue("gui()"));        
         return EVAL_BODY_TAG; 
     }
     
     public void doInitBody() throws JspTagException {       
+        log.debug("fillvars");
         fillVars();    
     } 
     
@@ -128,12 +136,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     * this method writes the content of the body back to the jsp page
     **/
     public int doAfterBody() throws JspTagException {
-        
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }
+        initPrivates();
         return SKIP_BODY;
     }
 }
