@@ -168,7 +168,6 @@ public class MMObjectNode {
 	* (remark someone has to look at this caching thing, i think its lagecy, daniel)
 	*/
 	public boolean setValue(String fieldname,Object fieldvalue) {
-		System.out.println("WWWWWW2="+fieldname);
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
@@ -221,7 +220,6 @@ public class MMObjectNode {
 	*  sets a key, value pair in the main values of this node where value int
 	*/
 	public boolean setValue(String fieldname,double fieldvalue) {
-		System.out.println("WWWWWW3="+fieldname);
 		// put the key/value in the value hashtable
 		values.put(fieldname,new Double(fieldvalue));
 
@@ -237,7 +235,6 @@ public class MMObjectNode {
 	*  sets a key, value pair in the main values of this node where value Integer
 	*/
 	public boolean setValue(String fieldname,Integer fieldvalue) {
-		System.out.println("WWWWWW4="+fieldname);
 
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
@@ -343,7 +340,6 @@ public class MMObjectNode {
 	*/
 	public Object getValue(String fieldname) {
 
-		System.out.println("WWWWWW1="+fieldname);
 		// get the value from the values table
 		Object o=values.get(fieldname);
 
