@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.285 2005-01-25 23:53:01 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.286 2005-02-02 20:56:58 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3189,6 +3189,26 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         writing to the session.
       </info>
     </attribute>
+    <attribute>
+      <name>request</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	With this you can set an attribute on the current request. Analogous to writing to the
+	session.
+      </info>
+      <since>MMBase-1.7.4</since>
+    </attribute>
+    <attribute>
+      <name>application</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	With this you can set an attribute on the current `application'. Analogous to writing to the
+	session.
+      </info>
+      <since>MMBase-1.7.4</since>
+    </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
     <example>&lt;!-- Create a JSP-variable `greet' from context variable `hoi', write
@@ -3339,10 +3359,16 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         </info>
       </possiblevalue>
       <possiblevalue>
-        <value>attributes</value>
+        <value>request</value>
         <info>
           There can be attributes set on a request object. These are principally importable into taglib as well.
           See  <a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/ServletRequest.html#getAttribute(java.lang.String)">JavaDoc</a>.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>application</value>
+        <info>
+          There can be attributes set on the `application'. 
         </info>
       </possiblevalue>
       <possiblevalue>
