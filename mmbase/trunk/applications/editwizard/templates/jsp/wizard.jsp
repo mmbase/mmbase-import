@@ -1,11 +1,11 @@
 <%@ include file="settings.jsp"
-%><%@ page errorPage="exception.jsp" %><mm:content postprocessor="none" type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud">
+%><mm:content postprocessor="none" type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" sessionname="$loginsessionname" jspvar="cloud">
 <mm:log jspvar="log"><%
     /**
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.24 2004-07-09 07:38:55 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.25 2004-11-17 15:17:33 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden

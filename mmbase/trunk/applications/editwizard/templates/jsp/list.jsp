@@ -1,12 +1,11 @@
-<%@ page errorPage="exception.jsp"
-%><%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
+<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.51 2004-09-15 13:04:51 jaco Exp $
+     * @version  $Id: list.jsp,v 1.52 2004-11-17 15:17:33 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -120,7 +119,7 @@ int len   = listConfig.pagelength;
 int resultsSize;
 
 //// do not list anything if search is forced and no searchvalue given
-if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
+if (listConfig.search == Config.ListConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();
     resultsSize = 0;
 } else if (listConfig.multilevel) {
@@ -292,7 +291,7 @@ if (listConfig.title == null) {
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
-params.put("ew_path", new File(request.getServletPath()).getParentFile().getParent() + "/");
+params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResource(request.getServletPath()), "."));
 
 
 log.trace("Doing the transformation for " + listConfig.template);
