@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE sendmail PUBLIC "//MMBase - sendmail module//" "http://www.mmbase.org/dtd/sendmail.dtd">
+<sendmail>
+	<mailhost>localhost</mailhost>
+</sendmail>

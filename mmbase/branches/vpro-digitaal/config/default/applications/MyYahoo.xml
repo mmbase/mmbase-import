@@ -1,0 +1,25 @@
+<application name="MyYahoo" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+	  <builder maintainer="mmbase.org" version="12">pools</builder>
+	  <builder maintainer="mmbase.org" version="11">urls</builder>
+	</neededbuilderlist>	
+
+	<neededreldeflist>
+	  <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	  <relation from="pools" to="pools" type="related" />
+	  <relation from="pools" to="urls" type="related" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+	  <datasource path="MyYahoo/pools.xml" />
+	  <datasource path="MyYahoo/urls.xml" />
+	</datasourcelist>
+
+	<relationsourcelist>
+	  <relationsource path="MyYahoo/insrel.xml" />	
+	</relationsourcelist>
+</application>

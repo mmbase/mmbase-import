@@ -1,0 +1,25 @@
+<application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+	  <builder maintainer="mmbase.org" version="2">people</builder>
+	  <builder maintainer="mmbase.org" version="2">authrel</builder>
+	  <builder maintainer="mmbase.org" version="2">typedef</builder>
+	</neededbuilderlist>	
+
+	<neededreldeflist>
+	  <reldef source="authrel" target="authrel" direction="bidirectional" guisourcename="AuthRel" guitargetname="AuthRel" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	  <relation from="people" to="typedef" type="authrel" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+	  <datasource path="BasicAuth/people.xml" /> 
+	  <datasource path="BasicAuth/typedef.xml" /> 
+	</datasourcelist>
+
+	<relationsourcelist>
+	  <relationsource path="BasicAuth/authrel.xml" /> 
+	</relationsourcelist>
+</application>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- DOCTYPE mmusers PUBLIC "//MMBase - mmusers module//" "http://www.mmbase.org/dtd/mmusers.dtd" -->
+<mmusers>
+  <from>youremail@yourcompany.nl</from>
+  <returnpath>youremail@yourcompany.nl</returnpath>
+  <subject>Login gegevens</subject>
+  <bodybegin>Hier is uw login en uw wachtwoord.</bodybegin>
+  <bodylogin>Loginnaam: </bodylogin>
+  <bodypasswd>Wachtwoord: </bodypasswd>
+  <bodyend>Veel geluk ermee en bewaar dit emailtje goed!!!</bodyend>
+</mmusers>
