@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
  [
-   <!ENTITY itemizelist  SYSTEM "relatedfragments.xml">
+   <!ENTITY items        SYSTEM "relatedfragments.xml">
    <!ENTITY base         SYSTEM "mediafragments.xml">
-   <!ENTITY publishtimes SYSTEM "parts/publishtimeslist.xml">
-   <!ENTITY fragments    "audiofragments">
+   <!ENTITY publishtimes SYSTEM "publishtimeslist.xml">
+   <!ENTITY type         "audio">
   ]
 >
 
