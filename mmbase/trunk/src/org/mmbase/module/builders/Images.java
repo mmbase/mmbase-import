@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.69 2003-03-13 13:40:29 michiel Exp $
+ * @version $Id: Images.java,v 1.70 2003-03-14 21:41:16 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -273,6 +273,7 @@ public class Images extends AbstractImages {
                 case ')': if (quoteState == NOQUOTING) bracketDepth--; break;
                 case '+': 
                     if (bracketDepth == 0 && quoteState == NOQUOTING) {
+                        removeSurroundingQuotes(buf);
                         params.add(buf.toString());
                         buf = new StringBuffer();
                         continue;
@@ -285,14 +286,20 @@ public class Images extends AbstractImages {
             if (bracketDepth != 0) log.warn("Unbalanced brackets in " + template);
             if (quoteState != NOQUOTING) log.warn("Unbalanced quotes in " + template);
 
-            // remove surrounding quotes --> "+contrast" will be changed to +contrast 
-            if ((buf.charAt(0) == '\"' || buf.charAt(0) == '\'') && buf.charAt(buf.length() - 1) == buf.charAt(0)) {
-                buf.deleteCharAt(0);
-                buf.deleteCharAt(buf.length() - 1);
-            }
+            removeSurroundingQuotes(buf);     
             if (! buf.toString().equals("")) params.add(buf.toString());
         }
         return params;
+    }
+    /**
+     * @since MMBase-1.7
+     */
+    protected void removeSurroundingQuotes(StringBuffer buf) {
+        // remove surrounding quotes --> "+contrast" will be changed to +contrast 
+        if ((buf.charAt(0) == '"' || buf.charAt(0) == '\'') && buf.charAt(buf.length() - 1) == buf.charAt(0)) {
+            buf.deleteCharAt(0);
+            buf.deleteCharAt(buf.length() - 1);
+        }
     }
 
 
