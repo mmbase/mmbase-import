@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: Images.java,v 1.3 2000-03-08 11:04:47 wwwtech Exp $
+	$Id: Images.java,v 1.4 2000-03-09 10:02:01 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/03/08 11:04:47  wwwtech
+	Rico: added synchroniztion to images calculation
+	
 	Revision 1.2  2000/02/24 14:03:27  wwwtech
 	Rico: fixed serveral debug messages plus added some
 	
@@ -32,7 +35,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.3 2000-03-08 11:04:47 wwwtech Exp $
+ * @version $Id: Images.java,v 1.4 2000-03-09 10:02:01 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -361,6 +364,7 @@ public class Images extends MMObjectBuilder {
 			debug("getAllCalc(): read oke "+cmd+" len "+len2);
 			return(res);
         } catch (Exception e) {
+			debug("getAllCalc(): converting failed ! img("+cmd+")");
 			e.printStackTrace();
         	try {
 				dip.close();
