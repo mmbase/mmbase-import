@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.54.2.2 2002-12-18 20:54:27 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.54.2.3 2003-02-13 14:01:12 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -81,6 +81,19 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public MMAdmin() {
+    }
+
+    /**
+     * Returns a virtual builder used to create node lists from the results
+     * returned by getList().
+     * The default method does not associate the builder with a cloud (mmbase module),
+     * so processormodules that need this association need to override this method.
+     * Note that different lists may return different builders.
+     * @param command the LIST command for which to retrieve the builder
+     * @param params contains the attributes for the list
+     */
+    public MMObjectBuilder getListBuilder(String command,Map params) {
+        return new VirtualBuilder(mmb);
     }
 
     /**
@@ -820,7 +833,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     boolean areBuildersLoaded(Vector neededbuilders, String applicationRoot) {
-	boolean succes = true;
+        boolean succes = true;
 
         for (Enumeration h = neededbuilders.elements();h.hasMoreElements();) {
             Hashtable bh= (Hashtable) h.nextElement();
@@ -833,7 +846,7 @@ public class MMAdmin extends ProcessorModule {
                 if(path != null) {
                     log.error("builder '" + name + "' was already on our system, but inactive. To install this application, make the builder '" + path + java.io.File.separator + name +  ".xml" + "' active");
                     succes = false;
-		    continue;
+                    continue;
                 }
                 // well we try to open the %application%/ from inside our application dir...
                 File appFile = new File(applicationRoot);
@@ -846,21 +859,21 @@ public class MMAdmin extends ProcessorModule {
                 if(!appFile.exists()) {
                     log.error("could not find builder's dir inside the application :  '" + appFile + "'(builder '" + name + "' )");
                     succes = false;
-		    continue;
+                    continue;
                 }
                 // well we will try to open the %application%/builders/%buildername%.xml from inside our application dir...
                 appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + name + ".xml");
                 if(!appFile.exists()) {
                     log.error("could not find the builderfile :  '" + appFile + "'(builder '" + name + "')");
-		    succes = false;
-		    continue;
+                    succes = false;
+                    continue;
                 }
                 // we now have the location,.....
                 MMObjectBuilder objectTypes = getMMObject("typedef");
                 if(objectTypes == null) {
                     log.error("could not find builder typedef");
                     succes = false;
-		    continue;
+                    continue;
                 }
                 // try to add a node to typedef, same as adding a builder...
                 MMObjectNode type = objectTypes.getNewNode("system");
@@ -876,13 +889,13 @@ public class MMAdmin extends ProcessorModule {
                     String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
                     log.error(msg);
                     succes = false;
-		    continue;
+                    continue;
                 }
                 catch(java.io.IOException ioe) {
                     String msg = "builder '" + name + "':\n" + ioe.toString() + "\n" + Logging.stackTrace(ioe);
                     log.error(msg);
                     succes = false;
-		    continue;
+                    continue;
                 }
                 type.setValue("config", config);
                 // insert into mmbase
