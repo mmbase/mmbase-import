@@ -19,6 +19,9 @@ import org.w3c.dom.*;
 
 /**
  * This class reads a node from an exported application
+ * @version $Id: XMLNodeReader.java,v 1.25 2003-05-23 15:44:15 michiel Exp $
+ * @author ?
+ * @author Michiel Meeuwissen
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static Logger log = Logging.getLoggerInstance(XMLNodeReader.class.getName());
@@ -134,15 +137,12 @@ public class XMLNodeReader extends XMLBasicReader {
                                             if (value == null)
                                                 value = "";
                                             newnode.setValue(key, value);
-                                        } else if (type == FieldDefs.TYPE_NODE) {
-                                            try {
-                                                newnode.setValue(key, Integer.parseInt(value));
-                                            } catch (Exception e) {
-                                                log.warn("error setting node-field " + e);
-                                                newnode.setValue(key, -1);
-                                            }
+                                        } else if (type == FieldDefs.TYPE_NODE) {                                            
+                                            // do not really set it, because we need syncnodes later for this.
+                                            newnode.values.put("__" + key, value); // yes, this is hackery, I'm sorry.
+                                            newnode.setValue(key, MMObjectNode.VALUE_NULL);
                                         } else if (type == FieldDefs.TYPE_INTEGER) {
-                                            try {
+                                           try {
                                                 newnode.setValue(key, Integer.parseInt(value));
                                             } catch (Exception e) {
                                                 log.warn("error setting integer-field " + e);
@@ -174,14 +174,8 @@ public class XMLNodeReader extends XMLBasicReader {
                                             Node n7 = nm2.getNamedItem("file");
                                             newnode.setValue(key, readBytesFile(applicationpath + n7.getNodeValue()));
                                         } else {
-                                            log.error(
-                                                "FieldDefs not found for #"
-                                                    + type
-                                                    + " was not known for field with name: '"
-                                                    + key
-                                                    + "' and with value: '"
-                                                    + value
-                                                    + "'");
+                                            log.error("FieldDefs not found for #" + type + " was not known for field with name: '"
+                                                      + key + "' and with value: '" + value + "'");
                                         }
                                     }
                                 }
