@@ -120,7 +120,7 @@
     <mm:isgreaterthan referid="page" value="0.5">
       <td class="navigate">
             <a href='<mm:url referids="node,node_type,role_name,direction,search">
-                <mm:param name="page" value="${+$page-1}" />
+                <mm:param name="page"><mm:write vartype="integer" value="${+$page-1}" /></mm:param>
                 <!--pass all search field values -->
                 <mm:context>
                   <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
@@ -138,7 +138,7 @@
     <mm:present referid="next_page">
       <td class="navigate">      
             <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage">
-                <mm:param name="page"  value="${+$page+1}" />
+                <mm:param name="page"><mm:write vartype="integer" value="${+$page+1}" /></mm:param>
                 <!--pass all search field values -->
                 <mm:context>
                   <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
