@@ -711,6 +711,36 @@ public class MMObjectBuilder extends MMTable {
 		return(results);
 	} 
 
+
+	/**
+	* read the result into a sorted vector
+	* (Called by nl.vpro.mmbase.module.search.TeaserSearcher.createShopResult)
+	*/
+	public SortedVector readSearchResults(ResultSet rs, SortedVector sv) {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();	
+			MMObjectNode node;
+			
+			while(rs.next()) {
+				node = new MMObjectNode(this);
+				for (int index = 1; index <= numberOfColumns; index++) {
+					String type=rsmd.getColumnTypeName(index);	
+					String fieldname=rsmd.getColumnName(index);
+					node=database.decodeDBnodeField(node,type,fieldname,rs,index);
+				}
+				sv.addUniqueSorted(node);
+			}	
+
+			return (sv);
+		} catch (SQLException e) {
+			// something went wrong print it to the logs
+			e.printStackTrace();	
+		}
+		return (null);
+	}
+
+
 	/**
 	* build a set command string from a set nodes ( should be moved )
 	*/
