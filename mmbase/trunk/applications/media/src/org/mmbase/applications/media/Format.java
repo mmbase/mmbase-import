@@ -18,7 +18,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.11 2003-07-06 13:23:28 michiel Exp $
+ * @version $Id: Format.java,v 1.12 2003-11-13 18:20:43 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -37,7 +37,7 @@ public final class Format {   // final class!!
     
     private Format(int n, String i) { // private constructor!!
         number = n; id = i; 
-        while (formats.size() <= number) formats.add(null);
+        while (formats.size() <= number) formats.add(UNKNOWN);
         formats.set(number, this);
     }         
     
