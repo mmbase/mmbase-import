@@ -24,7 +24,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.20 2003-08-27 21:29:44 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.21 2003-09-02 19:43:46 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -58,7 +58,7 @@ public class BasicQuery implements Query  {
         cloud = c;
     }
 
-    BasicQuery(Cloud c, BasicSearchQuery q) {
+    public BasicQuery(Cloud c, BasicSearchQuery q) { // public for org.mmbase.bridge.util
         query = q;
         cloud = c;
     }
@@ -382,6 +382,11 @@ public class BasicQuery implements Query  {
         return secureConstraint != null && secureConstraint.isChecked();
     }
 
+    /**
+     * Applies a security-constraint to this Query. Such a constraint can be remove easily (needed
+     * before cloning a query and so on).
+     * @see #removeSecurityConstraint
+     */
     void setSecurityConstraint(Authorization.QueryCheck c) {
         if (c != null && c.getConstraint() != null) {
             Constraint constraint = query.getConstraint();
@@ -396,6 +401,10 @@ public class BasicQuery implements Query  {
         secureConstraint = c;
     }
 
+    /**
+     * Remove a previously set security constraint (if set one)
+     * @see #setSecurityConstraint
+     */
     void removeSecurityConstraint() {
         if (secureConstraint != null && secureConstraint.getConstraint() != null) {
             Constraint constraint = query.getConstraint();
@@ -413,6 +422,9 @@ public class BasicQuery implements Query  {
         }
     }
 
+    public Cloud getCloud() {
+        return cloud;
+    }
 
     public boolean equals(Object obj) {
         return query.equals(obj);
