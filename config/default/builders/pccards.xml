@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder maintainer="mmbase.org" version="0">
+<builder maintainer="mmbase.org" version="0" extends="object">
+<status>inactive</status>
 
 <!-- <status>
     what is the status of this builder options : active or inactive
@@ -29,15 +30,11 @@
 >-->
 <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="fr">Pccard</singular>
-    <singular xml:lang="nl">Pccard</singular>
-    <singular xml:lang="en">Pccard</singular>
-    <singular xml:lang="us">Pccard</singular>
+    <singular xml:lang="en">PC Card</singular>
+    <singular xml:lang="nl">PC kaart</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="fr">Pccards</plural>
-    <plural xml:lang="nl">Pccards</plural>
-    <plural xml:lang="en">Pccards</plural>
-    <plural xml:lang="us">Pccards</plural>
+    <plural xml:lang="en">PC Cards</plural>
+    <plural xml:lang="nl">PC Kaarten</plural>
 </names>
 
 <!-- <descriptions>
@@ -45,18 +42,9 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="fr">The pccard object will define a pccard hardware device</description>
-    <description xml:lang="nl">The pccard object will define a pccard hardware device</description>
-    <description xml:lang="en">The pccard object will define a pccard hardware device</description>
-    <description xml:lang="us">The pccard object will define a pccard hardware device</description>
+    <description xml:lang="en">Defines a PC card hardware device</description>
+    <description xml:lang="nl">Definieert een PC kaart hardware apparaat</description>
 </descriptions>
-
-<!-- <properties>
-you can define properties to be used by the classfile (if used) it uses
-a key/value system. Its a optional tag.
--->
-<properties>
-</properties>
 
 <!-- <fieldlist>
      defines the different fields in this object, be carefull the order is important
@@ -64,74 +52,12 @@ a key/value system. Its a optional tag.
     If you use number and owner (the 2 default fields, please check the docs for this)
 -->
 <fieldlist>
-    <!-- POS 1 : <field> 'number' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="fr">Objet</guiname>
-            <guiname xml:lang="nl">Object</guiname>
-            <guiname xml:lang="en">Object</guiname>
-            <guiname xml:lang="us">Object</guiname>
-            <guitype>integer</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>10</list>
-                <!-- position in search area of the editor -->
-                <search>10</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>number</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" notnull="true" key="true">INTEGER</type>
-        </db>
-    </field>
-
-    <!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="fr">Propri!ire</guiname>
-            <guiname xml:lang="nl">Eigenaar</guiname>
-            <guiname xml:lang="en">Owner</guiname>
-            <guiname xml:lang="us">Owner</guiname>
-            <guitype>string</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>11</list>
-                <!-- position in search area of the editor -->
-                <search>11</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>owner</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="12" notnull="false" key="false">STRING</type>
-        </db>
-    </field>
-
     <!-- POS 3 : <field> 'name'  -->
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="fr">Nom</guiname>
-            <guiname xml:lang="nl">Name</guiname>
             <guiname xml:lang="en">Name</guiname>
-            <guiname xml:lang="us">Name</guiname>
+            <guiname xml:lang="nl">Name</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -158,10 +84,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="fr">Location</guiname>
-            <guiname xml:lang="nl">Locatie</guiname>
             <guiname xml:lang="en">Location</guiname>
-            <guiname xml:lang="us">Location</guiname>
+            <guiname xml:lang="nl">Lokatie</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -188,10 +112,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="fr">Directory</guiname>
-            <guiname xml:lang="nl">Directory</guiname>
             <guiname xml:lang="en">Directory</guiname>
-            <guiname xml:lang="us">Directory</guiname>
+            <guiname xml:lang="nl">Folder</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -218,10 +140,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="fr">Class</guiname>
-            <guiname xml:lang="nl">Class</guiname>
             <guiname xml:lang="en">Class</guiname>
-            <guiname xml:lang="us">Class</guiname>
+            <guiname xml:lang="nl">Klasse</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->

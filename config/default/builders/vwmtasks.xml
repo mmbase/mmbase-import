@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder maintainer="mmbase.org" version="0">
+<builder maintainer="mmbase.org" version="0" extends="object">
 
 <!-- <status>
     what is the status of this builder options : active or inactive
@@ -29,9 +29,11 @@
 >-->
 <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="us">VwmOpdracht</singular>
+    <singular xml:lang="en">Vwm Task</singular>
+    <singular xml:lang="nl">Vwm Opdracht</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="us">VwmOpdracht</plural>
+    <plural xml:lang="en">Vwm Tasks</plural>
+    <plural xml:lang="nl">Vwm Opdrachten</plural>
 </names>
 
 <!-- <descriptions>
@@ -39,15 +41,9 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="us">tasks that can be used as a event system to control vwms</description>
+    <description xml:lang="en">Scheduled tasks, an event system to control vwms</description>
+    <description xml:lang="nl">Geplande taken voor het aansturen van een vwm</description>
 </descriptions>
-
-<!-- <properties>
-you can define properties to be used by the classfile (if used) it uses
-a key/value system. Its a optional tag.
--->
-<properties>
-</properties>
 
 <!-- <fieldlist>
      defines the different fields in this object, be carefull the order is important
@@ -55,65 +51,12 @@ a key/value system. Its a optional tag.
     If you use number and owner (the 2 default fields, please check the docs for this)
 -->
 <fieldlist>
-    <!-- POS 1 : <field> 'number' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Object</guiname>
-            <guitype>integer</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>10</list>
-                <!-- position in search area of the editor -->
-                <search>10</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>number</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" notnull="true" key="true">INTEGER</type>
-        </db>
-    </field>
-
-    <!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Eigenaar</guiname>
-            <guitype>string</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>11</list>
-                <!-- position in search area of the editor -->
-                <search>11</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>owner</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="12" notnull="false" key="false">STRING</type>
-        </db>
-    </field>
-
     <!-- POS 3 : <field> 'wantedcpu'  -->
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Machine</guiname>
+            <guiname xml:lang="en">Machine</guiname>
+            <guiname xml:lang="nl">Machine</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -140,7 +83,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">VWM</guiname>
+            <guiname xml:lang="en">VWM</guiname>
+            <guiname xml:lang="nl">VWM</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -167,7 +111,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Status</guiname>
+            <guiname xml:lang="en">State</guiname>
+            <guiname xml:lang="nl">Status</guiname>
             <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -194,7 +139,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Verwerker</guiname>
+            <guiname xml:lang="en">Processor</guiname>
+            <guiname xml:lang="nl">Verwerker</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -221,7 +167,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">StartTijd</guiname>
+            <guiname xml:lang="en">Start Time</guiname>
+            <guiname xml:lang="nl">Starttijd</guiname>
             <guitype>eventtime</guitype>
         </gui>
         <!-- editor related  -->
@@ -248,7 +195,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">LaatsteAanpassing</guiname>
+            <guiname xml:lang="en">Last Changed on</guiname>
+            <guiname xml:lang="nl">Laatst Gewijzig op</guiname>
             <guitype>eventtime</guitype>
         </gui>
         <!-- editor related  -->
@@ -275,7 +223,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">VerloopTijd</guiname>
+            <guiname xml:lang="en">Experiration Time</guiname>
+            <guiname xml:lang="nl">Verlooptijd</guiname>
             <guitype>eventtime</guitype>
         </gui>
         <!-- editor related  -->
@@ -302,7 +251,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Opdracht</guiname>
+            <guiname xml:lang="en">Task</guiname>
+            <guiname xml:lang="nl">Opdracht</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -329,7 +279,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">ID</guiname>
+            <guiname xml:lang="en">ID</guiname>
+            <guiname xml:lang="nl">ID</guiname>
             <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -356,7 +307,8 @@ a key/value system. Its a optional tag.
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Data</guiname>
+            <guiname xml:lang="en">Data</guiname>
+            <guiname xml:lang="nl">Gegevens</guiname>
             <guitype>field</guitype>
         </gui>
         <!-- editor related  -->
