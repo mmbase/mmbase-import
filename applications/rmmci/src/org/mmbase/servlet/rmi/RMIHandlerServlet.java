@@ -2,17 +2,9 @@ package org.mmbase.servlet.rmi;
 
 import java.io.*;
 import java.net.*;
-import java.rmi.Naming;
-import java.rmi.server.RMIClassLoader;
-import java.rmi.RemoteException;
-import java.rmi.RMISecurityManager;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.rmi.registry.LocateRegistry;
 
-import javax.servlet.http.*;
 import javax.servlet.*;
+import javax.servlet.http.*;
 
 import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.util.logging.*;
