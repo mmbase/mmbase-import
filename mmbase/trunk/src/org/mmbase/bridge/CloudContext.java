@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 /**
  * The collection of clouds and modules within a Java Virtual Machine.
@@ -18,7 +17,7 @@ import java.util.List;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.14 2002-02-20 10:54:08 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.15 2002-07-03 17:53:51 michiel Exp $
  */
 public interface CloudContext {
 
@@ -58,7 +57,7 @@ public interface CloudContext {
      * @return                         the requested cloud
      * @throws CloudNotFoundException  if the specified cloud could not be found
      */
-    public Cloud getCloud(String name, String authenticationtype, HashMap loginInfo);
+    public Cloud getCloud(String name, String authenticationtype, Map loginInfo);
 
     /**
      * Returns the names of all the clouds known to the system
@@ -76,5 +75,6 @@ public interface CloudContext {
      *
      */
     public String getDefaultCharacterEncoding();
+    
 
  }

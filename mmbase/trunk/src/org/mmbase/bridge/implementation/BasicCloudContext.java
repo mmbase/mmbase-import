@@ -24,7 +24,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.22 2002-06-11 20:51:33 eduard Exp $
+ * @version $Id: BasicCloudContext.java,v 1.23 2002-07-03 17:53:51 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
@@ -104,7 +104,7 @@ public class BasicCloudContext implements CloudContext {
         return getCloud(cloudName, "anonymous", null);
     }
 
-    public Cloud getCloud(String name, String application, HashMap loginInfo) {
+    public Cloud getCloud(String name, String application, Map loginInfo) {
         if ( !localClouds.contains(name) ) {
              String message;
              message = "Cloud " + name + " does not exist.";
