@@ -1,3 +1,4 @@
+<%@page import="java.util.*"%>
 <mm:import externid="action" />
 <mm:present referid="action">
 <mm:cloud logon="admin" method="delegate" authenticate="class">
@@ -85,29 +86,29 @@ password : <mm:write referid="password" />
 
 	<!-- get all the vars for the history copy -->
 	<mm:node id="bugreportnode" number="$bugreport">
-		<mm:import id="oldissue"><mm:field name="issue" /></mm:import>
+		<mm:import id="oldissue"><mm:field name="issue" escape="none"/></mm:import>
 		<mm:import id="oldbpriority"><mm:field name="bpriority" /></mm:import>
 		<mm:import id="oldbtype"><mm:field name="btype" /></mm:import>
 		<mm:import id="oldversion"><mm:field name="version" /></mm:import>
 		<mm:import id="oldefixedin"><mm:field name="efixedin" /></mm:import>
 		<mm:import id="oldfixedin"><mm:field name="fixedin" /></mm:import>
 		<mm:import id="oldbstatus"><mm:field name="bstatus" /></mm:import>
-		<mm:import id="olddescription"><mm:field name="description" /></mm:import>
-		<mm:import id="oldrationale"><mm:field name="rationale" /></mm:import>
+		<mm:import id="olddescription"><mm:field name="description" escape="none"/></mm:import>
+		<mm:import id="oldrationale"><mm:field name="rationale" escape="none"/></mm:import>
 		<mm:import id="oldtime"><mm:field name="time" /></mm:import>
 	</mm:node>
 
   <!-- create en bugreportupdates node with a copy of the current node -->
 	<mm:createnode id="bugreportupdate" type="bugreportupdates">
-		<mm:setfield name="issue"><mm:write referid="oldissue" /></mm:setfield>
+		<mm:setfield name="issue"><mm:write referid="oldissue" escape="none"/></mm:setfield>
 		<mm:setfield name="bstatus"><mm:write referid="oldbstatus" /></mm:setfield>
 		<mm:setfield name="btype"><mm:write referid="oldbtype" /></mm:setfield>
 		<mm:setfield name="version"><mm:write referid="oldversion" /></mm:setfield>
 		<mm:setfield name="efixedin"><mm:write referid="oldefixedin" /></mm:setfield>
 		<mm:setfield name="fixedin"><mm:write referid="oldfixedin" /></mm:setfield>
 		<mm:setfield name="bpriority"><mm:write referid="oldbpriority" /></mm:setfield>
-		<mm:setfield name="description"><mm:write referid="olddescription" /></mm:setfield>
-		<mm:setfield name="rationale"><mm:write referid="oldrationale" /></mm:setfield>
+		<mm:setfield name="description"><mm:write referid="olddescription" escape="none"/></mm:setfield>
+		<mm:setfield name="rationale"><mm:write referid="oldrationale" escape="none"/></mm:setfield>
 		<mm:setfield name="time"><mm:write referid="oldtime" /></mm:setfield>
 	</mm:createnode>
 
@@ -132,15 +133,15 @@ password : <mm:write referid="password" />
 
   <!-- override the current bugreport with the new values -->
 	<mm:node number="$bugreport">
-		<mm:setfield name="issue"><mm:write referid="newissue" /></mm:setfield>
+		<mm:setfield name="issue"><mm:write referid="newissue" escape="none"/></mm:setfield>
 		<mm:setfield name="bstatus"><mm:write referid="newbstatus" /></mm:setfield>
 		<mm:setfield name="btype"><mm:write referid="newbtype" /></mm:setfield>
 		<mm:setfield name="version"><mm:write referid="newversion" /></mm:setfield>
 		<mm:setfield name="efixedin"><mm:write referid="newefixedin" /></mm:setfield>
 		<mm:setfield name="fixedin"><mm:write referid="newfixedin" /></mm:setfield>
 		<mm:setfield name="bpriority"><mm:write referid="newbpriority" /></mm:setfield>
-		<mm:setfield name="description"><mm:write referid="newdescription" /></mm:setfield>
-		<mm:setfield name="rationale"><mm:write referid="newrationale" /></mm:setfield>
+		<mm:setfield name="description"><mm:write referid="newdescription" escape="none"/></mm:setfield>
+		<mm:setfield name="rationale"><mm:write referid="newrationale" escape="none"/></mm:setfield>
 		<mm:setfield name="time"><%=now%></mm:setfield>
 	</mm:node>
 
@@ -179,27 +180,46 @@ password : <mm:write referid="password" />
   </mm:compare>
   <mm:import id="message">updatebug</mm:import>
 
+  <% Set users = new HashSet() ; %>
   <mm:node referid="bugreportnode">
     <mm:related path="rolerel,users"  fields="users.number" distinct="true">
-      <mm:node element="users" id="myUser"/>
+       <mm:node element="users" jspvar="luser">
+            <% users.add("" + luser.getNumber()); %>
+       </mm:node>
+     </mm:related>
+    <mm:related path="areas,users"  fields="users.number" distinct="true">
+       <mm:node element="users" jspvar="luser">
+            <% users.add("" + luser.getNumber()); %>
+       </mm:node>
+     </mm:related>
+  </mm:node>
+  <% Iterator userIterator = users.iterator(); 
+     while(userIterator.hasNext()){
+      String userNumber = (String)userIterator.next();
+  %>
+  
+     <mm:context>
+      <mm:node number="<%= userNumber %>" id="myUser"/>
       <mm:createnode id="emailnode" type="email">
         <mm:setfield name="mailtype">1</mm:setfield>
         <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
         <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
-        <mm:setfield name="subject">[BT][update #<mm:node referid="bugreportnode"><mm:field name="bugid" />] <mm:field name="issue" /></mm:node></mm:setfield>
+        <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> #<mm:node referid="bugreportnode"><mm:field name="bugid" />] <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
         <mm:setfield name="body">
            <mm:node referid="bugreportnode">
-issue      :<mm:field name="issue"/>
+issue      :<mm:field name="issue" escape="none"/>
 bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
-rationale :<mm:field name="rationale"/>
+rationale  :<mm:field name="rationale"/>
+
+http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:field name="bugid" />
            </mm:node>
         </mm:setfield>
 	    </mm:createnode>
      <mm:node referid="emailnode">
        <mm:field name="mail(oneshot)" /> 
      </mm:node>
-        </mm:related>
-  </mm:node>
+    </mm:context>
+  <% } %>
 
 </mm:compare>
 
@@ -227,13 +247,13 @@ rationale :<mm:field name="rationale"/>
 		%>
 	</mm:present>
 	<mm:createnode id="bugreportnode" type="bugreports">
-		<mm:setfield name="issue"><mm:write referid="newissue" /></mm:setfield>
+		<mm:setfield name="issue"><mm:write referid="newissue" escape="none"/></mm:setfield>
 		<mm:setfield name="bugid"><%=newid%></mm:setfield>
 		<mm:setfield name="bstatus">1</mm:setfield>
 		<mm:setfield name="btype"><mm:write referid="newbtype" /></mm:setfield>
 		<mm:setfield name="version"><mm:write referid="newversion" /></mm:setfield>
 		<mm:setfield name="bpriority"><mm:write referid="newbpriority" /></mm:setfield>
-		<mm:setfield name="description"><mm:write referid="newdescription" /></mm:setfield>
+		<mm:setfield name="description"><mm:write referid="newdescription" escape="none"/></mm:setfield>
 		<mm:setfield name="rationale"></mm:setfield>
 		<mm:setfield name="time"><%=now%></mm:setfield>
 	</mm:createnode>
@@ -250,6 +270,46 @@ rationale :<mm:field name="rationale"/>
     <% request.setAttribute("bugreport",bugreportNumber); %>
     </mm:field>
   </mm:node>
+  <% Set users = new HashSet() ; %>
+  <mm:node referid="bugreportnode">
+    <mm:related path="rolerel,users"  fields="users.number" distinct="true">
+       <mm:node element="users" jspvar="luser">
+            <% users.add("" + luser.getNumber()); %>
+       </mm:node>
+     </mm:related>
+    <mm:related path="areas,users"  fields="users.number" distinct="true">
+       <mm:node element="users" jspvar="luser">
+            <% users.add("" + luser.getNumber()); %>
+       </mm:node>
+     </mm:related>
+  </mm:node>
+  <% Iterator userIterator = users.iterator(); 
+     while(userIterator.hasNext()){
+      String userNumber = (String)userIterator.next();
+  %>
+  
+     <mm:context>
+      <mm:node number="<%= userNumber %>" id="myUser"/>
+      <mm:createnode id="emailnode" type="email">
+        <mm:setfield name="mailtype">1</mm:setfield>
+        <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
+        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> #<mm:node referid="bugreportnode"><mm:field name="bugid" />]NEW <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
+        <mm:setfield name="body">
+           <mm:node referid="bugreportnode">
+issue      :<mm:field name="issue" escape="none"/>
+bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
+rationale  :<mm:field name="rationale"/>
+
+http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:field name="bugid" />
+           </mm:node>
+        </mm:setfield>
+	    </mm:createnode>
+     <mm:node referid="emailnode">
+       <mm:field name="mail(oneshot)" /> 
+     </mm:node>
+    </mm:context>
+  <% } %>
 </mm:compare>
 
 <mm:compare value="deletebugreport" referid="action">
@@ -346,6 +406,54 @@ rationale :<mm:field name="rationale"/>
 		<mm:setfield name="role">regular</mm:setfield>
 	</mm:createrelation>
    	<mm:createrelation role="related" source="usernode" destination="commentnode" />
+  <% Set users = new HashSet() ; %>
+  <mm:node referid="bugreportnode">
+    <mm:relatednodes type="areas" max="1">
+       <mm:node id="newarea"/>
+    </mm:relatednodes>
+    <mm:related path="rolerel,users"  fields="users.number" distinct="true">
+       <mm:node element="users" jspvar="luser">
+            <% users.add("" + luser.getNumber()); %>
+       </mm:node>
+     </mm:related>
+    <mm:related path="areas,users"  fields="users.number" distinct="true">
+       <mm:node element="users" jspvar="luser">
+            <% users.add("" + luser.getNumber()); %>
+       </mm:node>
+     </mm:related>
+  </mm:node>
+  <% Iterator userIterator = users.iterator(); 
+     while(userIterator.hasNext()){
+      String userNumber = (String)userIterator.next();
+  %>
+  
+     <mm:context>
+      <mm:node number="<%= userNumber %>" id="myUser"/>
+      <mm:createnode id="emailnode" type="email">
+        <mm:setfield name="mailtype">1</mm:setfield>
+        <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
+        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="subject">[BT][<mm:node referid="newarea"><mm:field name="name"/></mm:node> #<mm:node referid="bugreportnode"><mm:field name="bugid" />]COMMENT <mm:field name="issue" escape="none"/></mm:node></mm:setfield>
+        <mm:setfield name="body">
+           <mm:node referid="bugreportnode">
+issue      :<mm:field name="issue" escape="none"/>
+bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
+rationale  :<mm:field name="rationale"/>
+
+user <mm:node referid="newuser"><mm:field name="account"/></mm:node> commented
+<mm:write referid="newtitle" escape="none"/>
+<mm:write referid="newtext" escape="none"/>
+
+
+http://www.mmbase.org<mm:url page="/development/bugtracker/"/>jump.jsp?id=<mm:field name="bugid" />
+           </mm:node>
+        </mm:setfield>
+	    </mm:createnode>
+     <mm:node referid="emailnode">
+       <mm:field name="mail(oneshot)" /> 
+     </mm:node>
+    </mm:context>
+  <% } %>
 </mm:compare>
 
 <mm:compare value="addmaintainer" referid="action">
