@@ -570,12 +570,11 @@ builddate=${builddate}
     </manifest>
 
     <mkdir dir="${release.lib.dir}" />
-    <jar jarfile="${mmbase.jar}"
-         basedir="${build.dir}/classes"
-       includes="org/mmbase/**"
-       update="false"
-       manifest="${build.dir}/manifest.mf" >
-        <metainf dir="${web.dir}" includes="taglib.tld" />
+    <jar jarfile="${mmbase.jar}"  update="false" manifest="${build.dir}/manifest.mf" >
+      <fileset dir="${build.dir}/classes"
+               includes="org/mmbase/**" />
+      <fileset dir="${source-html.dir}/WEB-INF/classes/" />
+      <metainf dir="${web.dir}" includes="taglib.tld" />
     </jar>
 
     <delete file="${build.dir}/manifest.mf" />
@@ -815,7 +814,9 @@ Build-compiler: ${build.compiler}
     <!-- copy the html -->
     <copy todir="${webapp.dir}">
       <fileset dir="${source-html.dir}"
-               defaultexcludes="yes">
+               defaultexcludes="yes"
+               excludes="WEB-INF/classes/**"
+               >
       </fileset>
     </copy>
   </target>
