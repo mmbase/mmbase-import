@@ -27,7 +27,7 @@ span.alt {
 }
 
 span.select {
-  background: center url(../images/select.gif); /* makes it work in IE */
+  background:  norepeat url(../images/select.gif); /* makes it work in IE */
   width: 20px;
 }
 
@@ -36,7 +36,7 @@ span.select:before {
 }
 
 span.create {
-  background: center url(../images/create.gif); /* makes it work in IE */
+  background: norepeat url(../images/create.gif); /* makes it work in IE */
   width: 20px;
 }
 
@@ -45,7 +45,7 @@ span.create:before {
 }
 
 span.change {
-  background: center url(../images/select.gif); /* makes it work in IE */
+  background: norepeat url(../images/select.gif); /* makes it work in IE */
   width: 20px;
 }
 
@@ -54,7 +54,7 @@ span.change:before {
 }
 
 span.delete {
-  background: center url(../images/delete.gif); /* makes it work in IE */
+  background: norepeat url(../images/delete.gif); /* makes it work in IE */
   width: 20px;
 }
 
@@ -63,7 +63,7 @@ span.delete:before {
 }
 
 span.previous {
-  background: center url(../images/previous.gif); /* makes it work in IE */
+  background: norepeat url(../images/previous.gif); /* makes it work in IE */
   width: 20px;
 }
 
@@ -72,7 +72,7 @@ span.previous:before {
 }
 
 span.next {
-  background: center url(../images/next.gif); /* makes it work in IE */
+  background: norepeat url(../images/next.gif); /* makes it work in IE */
   width: 20px;
 }
 
