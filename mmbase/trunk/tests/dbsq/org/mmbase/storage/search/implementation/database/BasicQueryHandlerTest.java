@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandlerTest.java,v 1.5 2004-09-07 12:58:29 pierre Exp $
+ * @version $Id: BasicQueryHandlerTest.java,v 1.6 2004-09-07 13:09:22 pierre Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
 
@@ -315,12 +315,16 @@ public class BasicQueryHandlerTest extends TestCase {
         query = new NodeSearchQuery(typedef);
         List typedefNodes = instance.getNodes(query, typedef);
         assertTrue(
-            "In order to run this test, more than 3 typedef nodes are required.",
-            typedefNodes.size() > 3);
+            "In order to run this test, more than 5 typedef nodes are required.",
+            typedefNodes.size() > 5);
 
         query.setOffset(2);
         List resultNodes = instance.getNodes(query, typedef);
         assertTrue(resultNodes.size() == typedefNodes.size() - 2);
+
+        query.setMaxNumber(3);
+        resultNodes = instance.getNodes(query, typedef);
+        assertTrue(resultNodes.size() == 3);
 
     }
 
