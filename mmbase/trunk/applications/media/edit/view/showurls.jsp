@@ -7,7 +7,7 @@
 <head>
    <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
    <link href="../style/streammanager.css" type="text/css" rel="stylesheet" />
-<script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
+<script src="<mm:url page="../style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 <head>
 <body>
 <mm:import externid="fragment" required="true" />
@@ -22,7 +22,7 @@
 <h1><%= m.getString("urlsto") %>: <mm:field name="title" /></h1>
 
 <mm:log jspvar="log">
-<mm:field name="filteredurls(html,ram,wmp,rm)" jspvar="urls" vartype="list">
+<mm:field name="filteredurls(smil,html,ram,wmp,rm)" jspvar="urls" vartype="list">
    <%
       Iterator i = urls.iterator();
       while(i.hasNext()) {
