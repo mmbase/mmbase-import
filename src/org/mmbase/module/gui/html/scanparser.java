@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.11 2000-05-23 17:54:02 wwwtech Exp $
+$Id: scanparser.java,v 1.12 2000-05-30 11:35:54 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/05/23 17:54:02  wwwtech
+- (marcel) changed entries printUrl(sp) to sp.getUrl() (this prints parameters in url also), debugs faulty html-pages more easily
+
 Revision 1.10  2000/03/30 13:11:28  wwwtech
 Rico: added license
 
@@ -53,7 +56,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.11 $ $Date: 2000-05-23 17:54:02 $
+ * @$Revision: 1.12 $ $Date: 2000-05-30 11:35:54 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -588,7 +591,7 @@ public class scanparser extends ProcessorModule {
 		// Test if we are going circular
 		if (sp.partlevel>4) {
 			debug("Warning more then "+sp.partlevel+" nested parts "+sp.req_line);
-			if (sp.partlevel>10) throw new CircularParseException("Too many parts, level="+sp.partlevel+" URI "+sp.req_line);
+			if (sp.partlevel>10) throw new CircularParseException("Too many parts, level="+sp.partlevel+" URI "+sp.getUrl());
 		}
 
 		// debug("do_part(): filename="+filename);
@@ -1685,7 +1688,7 @@ public class scanparser extends ProcessorModule {
 				//part=handle_line(part,req);
 				sp.body=handle_line(sp.body,null,sp);
 				if (wantCache!=null) {
-					scancache.newput2(wantCache,part2,sp.body,cachetype);
+					scancache.newput2(wantCache,part2,sp.body,cachetype, sp.mimetype);
 				}
 		
 				return(sp.body);
