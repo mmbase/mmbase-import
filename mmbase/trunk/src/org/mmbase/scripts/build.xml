@@ -56,7 +56,7 @@ NetComponents can be found at:
 ============================================================================ -->
 
 <project name="MMBase" default="usage" basedir=".">
-  
+
   <!-- =================================================================== -->
   <!-- Init                                                                -->
   <!-- =================================================================== -->
@@ -192,45 +192,45 @@ NetComponents can be found at:
       <fileset dir="${source-config.dir}/default/applications/Basics/builders">
         <exclude name="**/CVS/*"/>
       </fileset>
-    </copy>   
+    </copy>
     <!-- BasicAuth -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/BasicAuth/builders">
         <exclude name="**/CVS/*"/>
       </fileset>
-    </copy>  
+    </copy>
     <!-- BugTracker -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/BugTracker/builders">
         <exclude name="**/CVS/*"/>
       </fileset>
-    </copy>  
+    </copy>
     <!-- Community-builders -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/Community/builders">
         <exclude name="**/CVS/*"/>
       </fileset>
-    </copy>  
+    </copy>
     <!-- Community-module -->
     <!-- isn't in cvs at the moment, so don't try to copy it. Maybe I'll add it
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/modules" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/Community/modules">
         <exclude name="**/CVS/*"/>
       </fileset>
-    </copy>  
+    </copy>
     -->
     <!-- MyNews -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/MyNews/builders">
         <exclude name="**/CVS/*"/>
       </fileset>
-    </copy>  
+    </copy>
     <!-- MyYahoo -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/MyYahoo/builders">
         <exclude name="**/CVS/*"/>
       </fileset>
-    </copy>  
+    </copy>
 
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip"
@@ -250,18 +250,18 @@ NetComponents can be found at:
   <!-- =================================================================== -->
   <!-- Create the lib directories                                          -->
   <!-- =================================================================== -->
-  <target 
-    name="lib.release" 
+  <target
+    name="lib.release"
     description="Create the lib directory"
     depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jspsmartupload">
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
-    <copy file="${xerces.jar}"         todir="${release.lib.dir}" />  
+    <copy file="${xerces.jar}"         todir="${release.lib.dir}" />
     <copy file="${xml-apis.jar}"       todir="${release.lib.dir}" />
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${jspsmartupload.jar}" todir="${release.lib.dir}" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
-        
+
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
       <fileset dir="${source-src.dir}/org/mmbase/scripts/legal"/>
@@ -285,7 +285,7 @@ NetComponents can be found at:
     <copy file="${jdbc.jar}"      todir="${compile.lib.dir}" />
   </target>
 
-  
+
   <!-- =================================================================== -->
   <!-- Clean the lib directories                                             -->
   <!-- =================================================================== -->
@@ -393,7 +393,7 @@ NetComponents can be found at:
   WARNING
   MMBase doesn't compile when using J2SE 1.4, you have to change the following files by hand:
 	MultiConnection.java and MultiStatement.java (both in the &lt;org/mmbase/modules/database&gt;-dir): uncomment the methods for J2SE 1.4.
-	BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods   
+	BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods
 	More information is provided in the javadocs in these files.
 </echo>
   </target>
@@ -401,7 +401,7 @@ NetComponents can be found at:
   <target name="startcompile" />
  <!-- just to make the output of ant a  little bit clearer. Otherwise
  it look like compiling is part of 'info14' target.... -->
-  
+
   <target name="compile.local" description="Compile the source directory(exclude remote)"
           depends="init.compile">
 
@@ -423,11 +423,11 @@ NetComponents can be found at:
                classpathref="compile.classpath"
                classname="com.informix.jdbc.IfxCblob" />
 
-    <available 
-      property="naming.in.classpath" 
+    <available
+      property="naming.in.classpath"
       classpathref="compile.classpath"
       classname="javax.naming.Context" />
-    
+
     <available
       property="sqlconnection.in.classpath"
       classpathref="compile.classpath"
@@ -473,7 +473,7 @@ NetComponents can be found at:
                 classname="org.apache.log4j.Logger"/>
     <available property="junit.in.classpath"
                classname="junit.runner.BaseTestRunner"/>
-    <available property="informix.in.classpath" 
+    <available property="informix.in.classpath"
                classname="com.informix.jdbc.IfxCblob"/>
 
     <!-- javax.naming only appears in jdk 1.3 -->
@@ -523,7 +523,7 @@ NetComponents can be found at:
     <echo message="Warning: Missing optional package Xalan."/>
     <echo message="You first need to install Xalan (http://xml.apache.org/xalan/)"/>
     <echo message="and add it to your classpath, before you can use all the features of MMBase."/>
-    <echo message="MMBase will compile and run without this package,"/> 
+    <echo message="MMBase will compile and run without this package,"/>
     <echo message="if you remove the xslconvert module from your modules.xml."/>
     <echo message=""/>
   </target>
@@ -532,7 +532,7 @@ NetComponents can be found at:
           unless="jai.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package javax.jai."/>
-    <echo message="You can't use the java based Image-Converter without this package,"/> 
+    <echo message="You can't use the java based Image-Converter without this package,"/>
     <echo message="you've got to use ImageMagick."/>
 
     <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
@@ -543,9 +543,9 @@ NetComponents can be found at:
   <target name="check.optional.log4j" depends="init.compile.cust" unless="log4j.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package Log4j."/>
-    <echo message="Logging capabalities will be very limited."/> 
+    <echo message="Logging capabalities will be very limited."/>
     <echo message="Log4j can be downloaded from http://jakarta.apache.org/log4j/"/>
-    <echo message="The Log4j Implementation of MMBase will not compile,"/> 
+    <echo message="The Log4j Implementation of MMBase will not compile,"/>
     <echo message="but MMBase will run without this package though."/>
     <echo message=""/>
   </target>
@@ -554,9 +554,9 @@ NetComponents can be found at:
           unless="junit.in.classpath">
     <echo message=""/>
     <echo message="Warning: Missing optional package JUnit."/>
-    <echo message="You will not be able to run tests."/> 
+    <echo message="You will not be able to run tests."/>
     <echo message="JUnit can be downloaded from http://www.unit.org/"/>
-    <echo message="The JUnit tests for MMBase will not compile,"/> 
+    <echo message="The JUnit tests for MMBase will not compile,"/>
     <echo message="but MMBase will run without this package though."/>
     <echo message=""/>
   </target>
@@ -600,12 +600,12 @@ URL: http://www.mmbase.org
 Comment: The MMBase Content Managment System
 Version: ${distro}.${version}
 Distribution: ${distro}
-Build-by: ${ant.version} 
+Build-by: ${ant.version}
 Build-java-version: ${ant.java.version}
 Build-compiler: ${build.compiler}
 Main-Class: org.mmbase.Version
 </echo>
-    
+
     <mkdir dir="${release.lib.dir}" />
     <jar jarfile="${mmbase.jar}"
          basedir="${build.dir}/classes"
@@ -628,7 +628,7 @@ Main-Class: org.mmbase.Version
     <property name="config.build.dir" value="${build.dir}/config"/>
     <property name="minconfig.build.dir" value="${build.dir}/min/config"/>
     <property name="webroot.build.dir" value="${build.dir}/webroot"/>
-    
+
     <!-- =================================================================== -->
     <!-- Create the MMBase config build dir                                  -->
     <!-- =================================================================== -->
@@ -644,26 +644,26 @@ Main-Class: org.mmbase.Version
                 <include name="security/security.xml"/>
                 <include name="caches.xml"/>
                 <include name="magic.xml" /><!-- used if you switch on 'attachments' -->
-                
-                <!-- the applications we definitly need -->                
+
+                <!-- the applications we definitly need -->
                 <include name="applications/CloudSecurity.xml"/>
                 <include name="applications/CloudSecurity/**"/>
-                
-                <!-- the modules we definitly need -->                    
+
+                <!-- the modules we definitly need -->
                 <include name="modules/mmbaseroot.xml"/><!-- tells things about mmbase instantion -->
                 <include name="modules/jdbc.xml"/><!-- tells things about jdbc connecion -->
                 <include name="modules/mmadmin.xml"/><!-- to load applications, mmadmin isnt uses further in war -->
-                
-                
+
+
                 <!-- the builders we definitly need -->
                 <include name="builders/core/**"/>
             </fileset>
-        </copy>            
+        </copy>
     </target>
 
   <target name="war.config" depends="init.compile">
     <copy todir="${config.build.dir}">
-      <fileset dir="${source-config.dir}/default"  defaultexcludes="true">        
+      <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
         <include name="**"/>
         <exclude name="dtd/**" />
       </fileset>
@@ -683,25 +683,25 @@ URL: http://www.mmbase.org
 Comment: The MMBase Content Managment System
 Version: ${distro}.${version}
 Distribution: ${distro}
-Build-by: ${ant.version} 
+Build-by: ${ant.version}
 Build-java-version: ${ant.java.version}
 Build-compiler: ${build.compiler}
 </echo>
 
     <mkdir dir="${build.dir}/dtd" />
     <copy todir="${build.dir}/dtd" flatten="true">
-      <fileset dir="${source-src.dir}"  defaultexcludes="true">        
+      <fileset dir="${source-src.dir}"  defaultexcludes="true">
         <include name="**/*.dtd"/>
       </fileset>
     </copy>
     <jar jarfile="${build.dir}/mmbase-dtds.jar"
          basedir="${build.dir}/dtd"
-	     includes="**" 
-	     manifest="${build.dir}/manifest.mf" 
+	     includes="**"
+	     manifest="${build.dir}/manifest.mf"
       />
   </target>
 
-  
+
 
 
     <!-- =================================================================== -->
@@ -713,7 +713,7 @@ Build-compiler: ${build.compiler}
     <!-- This should depend on bindist!! -->
 
   <target name="war.webroot" depends="init.compile,documentation,javadocs">
-    
+
     <!-- copy the jsp editors to a reasonable place -->
     <copy todir="${webroot.build.dir}/mmbase/edit">
       <fileset dir="${source-html.dir}/mmeditors/jsp"/>
@@ -728,21 +728,21 @@ Build-compiler: ${build.compiler}
     <copy todir="${webroot.build.dir}/mmbase/edit/wizard">
       <fileset dir="${source-html.dir}/mmapps/editwizard"/>
     </copy>
-    
+
     <!-- docs -->
     <copy todir="${webroot.build.dir}/mmbase/documentation">
       <fileset dir="${mmdocs.dir}"/>
-    </copy>         
-    
+    </copy>
+
     <!-- examples -->
     <copy todir="${webroot.build.dir}/mmexamples">
       <fileset dir="${source-html.dir}/mmexamples"/>
-    </copy>         
-    
+    </copy>
+
     <copy todir="${webroot.build.dir}/mmbase/documentation">
       <fileset dir="${build.dir}/mmbase-src/docs"/>
     </copy>
-        
+
   </target>
 
   <target name="clean.war">
@@ -757,28 +757,28 @@ Build-compiler: ${build.compiler}
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
   <target name="wars" description="Create full-fledged and minimalistic mmbase.war" depends="war,minimalistic.war" />
-  
+
   <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,war.config,war.webroot">
-    
+
     <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
       <!-- here our config has to be.. -->
       <webinf dir="${build.dir}">
         <include name="config/**"/>
       </webinf>
-      
+
       <!-- our file's on the server -->
       <fileset dir="${build.dir}/webroot"/>
     </war>
   </target>
-  
+
   <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,minimalistic.war.config">
     <war warfile="${build.dir}/mmbase/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
       <!-- here our config has to be.. -->
       <webinf dir="${build.dir}/min">
         <include name="config/**"/>
-      </webinf>     
+      </webinf>
     </war>
   </target>
 
@@ -817,14 +817,14 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <!-- Create the web directory                                            -->
   <!-- This directory contains 'compiled' stuff, which must appear in the  -->
-  <!-- html directory of the web-server. A web server specific tag can copy--> 
+  <!-- html directory of the web-server. A web server specific tag can copy-->
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
   <target name="web" description="Make the things which must appear in the web-servers html directory"
          depends="init.compile,taglib.tld,community.tld,documentation">
   </target>
 
-  <target name="taglib.tld.check">    
+  <target name="taglib.tld.check">
     <uptodate property="taglib.tld.uptodate" targetfile="${web.dir}/mmbase-taglib.tld" >
       <srcfiles dir="${source-src.dir}" includes="${source-taglib.xml},${xml2tld}" />
     </uptodate>
@@ -832,7 +832,7 @@ Build-compiler: ${build.compiler}
 
 
   <target name="taglib.tld" description="Make the MMBase taglib  tld"
-          depends="init.compile,taglib.tld.check" unless="taglib.tld.uptodate">          
+          depends="init.compile,taglib.tld.check" unless="taglib.tld.uptodate">
     <mkdir dir="${web.dir}"/>
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
@@ -915,7 +915,7 @@ Build-compiler: ${build.compiler}
 
 
   <target name="community.doc" description="Make the MMBase community taglib documentation"
-          depends="init.compile,community.doc.check" unless="community.doc.uptodate">          
+          depends="init.compile,community.doc.check" unless="community.doc.uptodate">
     <mkdir dir="${reference.dir}/community-taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
@@ -940,7 +940,7 @@ Build-compiler: ${build.compiler}
 
 
 
- 
+
   <!-- =================================================================== -->
   <!-- Build the JUnit test environment                                    -->
   <!-- =================================================================== -->
@@ -1099,7 +1099,7 @@ Build-compiler: ${build.compiler}
                file="${download.dir}/${hsql.version}.zip"/>
     <available property="hsql.expanded"
                file="${expand.dir}/${hsql.version}"/>
-               
+
     <!-- hsqldb -->
     <property name="hsqldb.version" value="hsqldb_1_7_0_RC6a"/>
     <property name="hsqldb.url" value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/${hsqldb.version}.zip"/>
@@ -1108,9 +1108,9 @@ Build-compiler: ${build.compiler}
                file="${download.dir}/${hsqldb.version}.zip"/>
     <available property="hsqldb.expanded"
                file="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
-               
+
     <!-- Xalan and Xerces -->
-    <!-- 
+    <!--
     <property name="xalan.version" value="xalan-j_2_4_0"/>
     <property name="xalan.fullversion" value="xalan-j_2_4_0"/>
     <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}-bin.tar.gz"/>
@@ -1160,10 +1160,10 @@ Build-compiler: ${build.compiler}
     <available property="javaactivation.expanded" file="${expand.dir}/${javaactivation.version}"/>
 
     <!-- Log4j -->
-    <property name="log4j.version" value="1.2.7" /> 
+    <property name="log4j.version" value="1.2.7" />
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
     <property name="log4j.url"         value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
-    <property name="log4j.jarpath" value="dist/lib/log4j-${log4j.version}.jar" /> 
+    <property name="log4j.jarpath" value="dist/lib/log4j-${log4j.version}.jar" />
     <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/${log4j.jarpath}" />
     <available property="log4j.present"
                file="${download.dir}/${log4j.fullversion}.tgz"/>
@@ -1195,7 +1195,7 @@ Build-compiler: ${build.compiler}
 
     <!-- JDBC jar -->
     <property  name="jdbc.url" value="http://java.sun.com/Download3?protocol=HTTP%20download&amp;referer=http://java.sun.com/products/jdbc/download.html&amp;download-name=jdbc2_0-stdext.jar&amp;config-file=jdbc2_0-stdext-bin.config&amp;platform=jar&amp;domain-checked=&amp;" />
- 
+
     <property name="jdbc.jar" value="${download.dir}/jdbc.jar" />
     <available property="jdbc.present" file="${jdbc.jar}" />
 
@@ -1217,7 +1217,7 @@ Build-compiler: ${build.compiler}
   <target name="get.servlet" depends="init.get" unless="servlet.present">
 <get src="${servlet.url}"
          dest="${download.dir}/${servlet.version}.tar.gz"
-         verbose="on"/>    
+         verbose="on"/>
   </target>
 
   <target name="expand.servlet" depends="get.servlet" unless="servlet.expanded">
@@ -1239,7 +1239,7 @@ Build-compiler: ${build.compiler}
   <target name="expand.hsqldb" depends="get.hsqldb" unless="hsqldb.expanded">
     <!-- <mkdir dir="${expand.dir}/${hsqldb.version}"/> -->
     <!-- <unzip src="${download.dir}/${hsqldb.version}.zip" dest="${expand.dir}/${hsqldb.version}"/> -->
-    <unzip src="${download.dir}/${hsqldb.version}.zip" dest="${expand.dir}"/>    
+    <unzip src="${download.dir}/${hsqldb.version}.zip" dest="${expand.dir}"/>
   </target>
 
   <target name="get.xalan" depends="init.get" unless="xalan.present">
@@ -1323,7 +1323,7 @@ Build-compiler: ${build.compiler}
   <!-- Jsp Smartupload is necessary for the editwizards -->
   <target name="get.jspsmartupload" depends="init.get" unless="jspsmartupload.present">
     <get src="${jspsmartupload.url}"
-         dest="${download.dir}/${jspsmartupload.file}.tar.gz" 
+         dest="${download.dir}/${jspsmartupload.file}.tar.gz"
          verbose="on" />
   </target>
 
@@ -1346,7 +1346,7 @@ Version: MMBase build ${version}
 
   <target name="get.docbook-xsl" depends="init,init.get" unless="docbook-xsl.present">
     <get src="${docbook-xsl.url}"
-         dest="${download.dir}/${docbook-xsl.file}" 
+         dest="${download.dir}/${docbook-xsl.file}"
          verbose="on"
       />
   </target>
@@ -1357,7 +1357,7 @@ Version: MMBase build ${version}
     <delete file="${expand.dir}/${docbook-xsl.version}.tar"/>
   </target>
 
-  
+
 
 
   <!-- =================================================================== -->
@@ -1486,7 +1486,7 @@ Version: MMBase build ${version}
  <!-- Perform docbook2html conversion in the documentation module                      -->
  <!-- ================================================================================ -->
 
-  <target name="docbookumentation" 
+  <target name="docbookumentation"
     depends="expand.docbook-xsl,init,init.compile"
     description="Make the MMBase documentation from docbook-sources">
 
@@ -1501,10 +1501,10 @@ Version: MMBase build ${version}
       </fileset>
     </copy>
 
-    <!-- 
-    <style 
-    basedir="${source-documentation.dir}" 
-    destdir="${mmdocs.dir}"      
+    <!--
+    <style
+    basedir="${source-documentation.dir}"
+    destdir="${mmdocs.dir}"
       style="${build.dir}/docbook2xhtml.xslt"
       processor="xalan"
       >
@@ -1534,10 +1534,10 @@ Version: MMBase build ${version}
       <arg value="${source-documentation.dir}" />
       <arg value="${mmdocs.dir}" />
     </java>
-    
+
   </target>
 
-  <target name="documentation" 
+  <target name="documentation"
           depends="taglib.doc,community.doc,docbookumentation,documentation.builders">
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-html.dir}/mmdocs" />
@@ -1547,22 +1547,22 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <!--  Create the Builder documentation                                   -->
   <!-- =================================================================== -->
-  <target name="documentation.builders" 
+  <target name="documentation.builders"
           depends="docbookumentation"
           description="Generate builder-documentation from the builder config files">
     <mkdir dir="${mmdocs.dir}/templaters/builders"/>
 
-    <copy todir="${mmdocs.dir}/templaters/builders" 
+    <copy todir="${mmdocs.dir}/templaters/builders"
           file="${source-documentation.dir}/style/docbook2xhtml.xslt"
           />
 
     <!-- not used at the moment
-    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt" 
-             token="[BASESTYLESHEET]" 
+    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+             token="[BASESTYLESHEET]"
              value="${expand.dir}/${docbook-xsl.version}/xhtml/chunk.xsl" />
     -->
-    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt" 
-             token="[BASESTYLESHEET]" 
+    <replace file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
+             token="[BASESTYLESHEET]"
              value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
 
     <!-- compile class for listing of builders -->
@@ -1574,7 +1574,7 @@ Version: MMBase build ${version}
            deprecation="${deprecation}">
            <include name="org/mmbase/util/BuilderLister.java" />
     </javac>
-    
+
     <!-- call class, this will give an xml file with a listing of all the builders -->
     <java classname="org.mmbase.util.BuilderLister"
           classpathref="compile.classpath"
@@ -1588,42 +1588,96 @@ Version: MMBase build ${version}
       </classpath>
       <arg value="${source.dir}/config/default/builders" />
     </java>
-  
+
     <!-- put all builders in one big file -->
-    <style      
+    <!-- <style
       style="${source-config.dir}/default/xslt/allbuilders.xsl"
       extension=".xml"
       in="${mmdocs.dir}/templaters/builders/allbuilders.xml"
       out="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"
       >
         <param name="language" expression="${documentation.builders.language}"/>
-    </style>
+    </style> -->
 
     <!-- convert this file into docbook -->
-    <style      
+    <!-- <style
       style="${source-config.dir}/default/xslt/builder2docbook.xsl"
       extension=".xml"
       in="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"
       out="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"
       >
         <param name="language" expression="${documentation.builders.language}"/>
-    </style>
+    </style> -->
 
 
     <!-- generate xhtml -->
-    <style      
+    <!-- <style
       style="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"
       extension=".html"
       in="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"
       out="${mmdocs.dir}/templaters/builders/index.html"
       >
         <param name="root" expression="../../"/>
-    </style>
-    
+    </style> -->
+
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile.classpath"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/util/XSLTransformer.java" />
+    </javac>
+
+    <java classname="org.mmbase.util.XSLTransformer"
+          classpathref="compile.classpath"
+					fork="yes"
+          failonerror="no">
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${source-config.dir}/default/xslt/allbuilders.xsl" />
+      <arg value="${mmdocs.dir}/templaters/builders/allbuilders.xml" />
+      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-total.xml" />
+      <arg value="language=${documentation.builders.language}" />
+    </java>
+
+    <java classname="org.mmbase.util.XSLTransformer"
+          classpathref="compile.classpath"
+					fork="yes"
+          failonerror="no">
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${source-config.dir}/default/xslt/builder2docbook.xsl" />
+      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-total.xml" />
+      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml" />
+      <arg value="language=${documentation.builders.language}" />
+    </java>
+
+    <java classname="org.mmbase.util.XSLTransformer"
+          classpathref="compile.classpath"
+					fork="yes"
+          failonerror="no">
+      <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt" />
+      <arg value="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml" />
+      <arg value="${mmdocs.dir}/templaters/builders/index.html" />
+      <arg value="root=../../" />
+    </java>
+
     <!-- remove temp files -->
-    <delete file="${mmdocs.dir}/templaters/builders/allbuilders.xml"/>
-    <delete file="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"/>
-    <delete file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"/>
+    <!-- delete file="${mmdocs.dir}/templaters/builders/allbuilders-total.xml"/>
+    <delete file="${mmdocs.dir}/templaters/builders/allbuilders-docbook.xml"/>
+    <delete file="${mmdocs.dir}/templaters/builders/docbook2xhtml.xslt"/ -->
   </target>
 
   <!-- =================================================================== -->
@@ -1637,16 +1691,16 @@ Version: MMBase build ${version}
   <!-- Clean                                                               -->
   <!-- =================================================================== -->
   <target
-    name="clean.build" 
+    name="clean.build"
     depends="clean.compile,clean.remote,clean.junit,clean.apptool,clean.lib"
     description="Clean all classes and generated java, safe for every recompilation"
     >
     <!-- junit,apptool? -->
   </target>
 
-  <target 
+  <target
     name="clean"
-    depends="clean.build,clean.documentation,clean.expand,clean.srcdist,clean.bindist,clean.war" 
+    depends="clean.build,clean.documentation,clean.expand,clean.srcdist,clean.bindist,clean.war"
     description="Clean everything (except for downloading)" />
 
 </project>
