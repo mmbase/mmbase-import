@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.20 2003-10-30 14:05:08 pierre Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.21 2003-11-25 21:05:27 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -37,13 +37,22 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     }
 
 
+    protected StringBuffer addExtraAttributes(StringBuffer buf) throws JspTagException {
+        String options = tag.getOptions();
+        if (options != null && options.startsWith("extra:")) {
+            buf.append(" " + options.substring(6) + " ");
+        }
+        return buf;
+    }
 
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         // default implementation.
-        StringBuffer show =  new StringBuffer("<input type =\"text\" class=\"small\" size=\"80\" name=\"").append(prefix(field.getName())).append("\" ").append("value=\"");
+        StringBuffer show =  new StringBuffer("<input type =\"text\" class=\"small\" size=\"80\" ");
+        addExtraAttributes(show);
+        show.append("name=\"").append(prefix(field.getName())).append("\" ").append("value=\"");
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
         } else if (search) {
