@@ -20,11 +20,14 @@
 
     <!-- example -->
     <builder maintainer="mediaproject.mmbase.org" version="1">myurlcomposers</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">templates</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
     <reldef source="parent"  target="parent"  direction="bidirectional" guisourcename="Parent"  guitargetname="Child" builder="insrel" />
+    <reldef source="previous" target="previous"    direction="bidirectional" guisourcename="Next"  guitargetname="Previous" builder="insrel" /><!-- relation is a little strange, but this is because of editwizard limitation -->
     <reldef source="posrel"  target="posrel"  direction="bidirectional" guisourcename="Posrel"  guitargetname="Posrel" builder="posrel" />
   </neededreldeflist>
 
@@ -38,13 +41,14 @@
     <relation from="videofragments"  to="publishtimes"    type="related" />
     <relation from="audiofragments"  to="publishtimes"    type="related" />
 
+    <relation from="videofragments"  to="videofragments"  type="previous" />
+    <relation from="audiofragments"  to="audiofragments"  type="previous" />
 
     <relation from="pools"           to="pools"           type="parent"  />
  
 
     <relation from="audiofragments"  to="audiosources"    type="related" />
     <relation from="videofragments"  to="videosources"    type="related" />
-   
 
     <relation from="audiosources"    to="mediaproviders"  type="related" />
     <relation from="videosources"    to="mediaproviders"  type="related" />
@@ -54,6 +58,9 @@
     <relation from="pools"           to="videofragments"  type="related" />
     <relation from="pools"           to="audiofragments"  type="related" />
 
+    <relation from="audiofragments"  to="templates"    type="related" />
+    <relation from="videofragments"  to="templates"    type="related" />
+   
 
     <!-- needed to let relatenodes types="mediaframents" work -->
     <relation from="pools"           to="mediafragments"  type="related" />
@@ -79,6 +86,8 @@
 
     <!-- example -->
 		<datasource builder="myurlcomposers"     path="Media/myurlcomposers.xml" />
+
+		<datasource builder="templates"          path="Media/templates.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>

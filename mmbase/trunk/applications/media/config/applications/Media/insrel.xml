@@ -69,4 +69,26 @@
 	<node number="4022" owner="default" snumber="99" dnumber="6001" rtype="related" dir="bidirectional">
 	</node>
 
+
+ <!-- intro -->
+	<node number="4023" owner="default" snumber="6002" dnumber="5002" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="4024" owner="default" snumber="6002" dnumber="5003" rtype="related" dir="bidirectional">
+	</node>
+    
+	<node number="4025" owner="default" snumber="5002" dnumber="3001" rtype="related" dir="bidirectional">
+	</node>
+	<node number="4025" owner="default" snumber="5003" dnumber="3002" rtype="related" dir="bidirectional">
+	</node>
+
+
+	<node number="4026" owner="default" snumber="8000" dnumber="6002" rtype="related" dir="bidirectional">
+	</node> <!-- pool -->
+
+	<node number="4027" owner="default" snumber="96" dnumber="8000" rtype="parent" dir="bidirectional">
+	</node><!-- pool -> pool -->
+
+
+
 </insrel>
