@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.34 2003-05-27 12:47:12 pierre Exp $
+ * @version $Id: Config.java,v 1.35 2003-06-02 13:21:27 pierre Exp $
  */
 
 public class Config {
@@ -151,6 +151,7 @@ public class Config {
         public String searchDir;
 
         public String searchFields;
+        public String realSearchField;
         public String searchValue="";
         public String searchType="like";
         public String baseConstraints;
@@ -229,26 +230,28 @@ public class Config {
                 throw new WizardException("The parameter 'fields' is required but not given."); 
             }
             
-            age         = configurator.getParam("age", new Integer(age)).intValue();
+            age = configurator.getParam("age", new Integer(age)).intValue();
             if (age>=99999) age=-1;
             
-            start       = configurator.getParam("start", new Integer(start)).intValue();
+            start = configurator.getParam("start", new Integer(start)).intValue();
             searchType=configurator.getParam("searchtype", searchType);
             searchFields=configurator.getParam("searchfields", searchFields);
             searchValue=configurator.getParam("searchvalue", searchValue);
             searchDir=configurator.getParam("searchdir",searchDir);
             baseConstraints=configurator.getParam("constraints", baseConstraints);
             forceSearch=configurator.getParam("forcesearch", forceSearch);
+            realSearchField=configurator.getParam("realsearchfield", realSearchField);
             
             if (searchFields==null) {
                 constraints = baseConstraints;
             } else {
                 // search type: default
                 String sType=searchType;
-                // get the actual field to serach on.
+                // get the actual field to search on.
                 // this can be 'owner' or 'number' instead of the original list of searchfields,
-                // in which case serachtype may change 
-                String sFields=configurator.getParam("realsearchfield", searchFields);
+                // in which case searchtype may change 
+                String sFields=realSearchField;
+                if (sFields==null) sFields=searchFields;
                 if (sFields.equals("owner") || sFields.endsWith(".owner")) {
                     sType="string";
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
@@ -377,6 +380,7 @@ public class Config {
             // search attributes
             if (searchType!=null) attributeMap.put("searchtype", searchType);
             if (searchFields!=null) attributeMap.put("searchfields", searchFields);
+            if (realSearchField!=null) attributeMap.put("realsearchfield", realSearchField);            
             if (searchValue!=null) attributeMap.put("searchvalue", searchValue);
             
             return attributeMap;   
