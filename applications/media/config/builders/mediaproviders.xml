@@ -18,6 +18,7 @@
 	<description xml:lang="nl">Beschrijft het systeem dat media bestanden beschikbaar steld.</description>
 </descriptions>
 
+<fieldlist>
 	<!-- POS 1 : <field> 'name'  -->
 	<field>
 		<!-- gui related -->
@@ -75,7 +76,7 @@
 	</field>
 
 
-<fieldlist>
+
 	<!-- POS 3 : <field> 'status'  -->
 	<field>
 		<!-- gui related -->
@@ -133,7 +134,7 @@
 	</field>
 
 
-	<!-- POS 3 : <field> 'info'  -->
+	<!-- POS 5 : <field> 'info'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
