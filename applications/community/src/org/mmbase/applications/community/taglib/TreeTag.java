@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.14 2004-01-15 10:28:24 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.15 2004-07-10 12:16:47 nico Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
@@ -118,7 +118,7 @@ public class TreeTag extends AbstractNodeListTag {
         // if you don't supply Vector but the ArrayList, then it goes terrible wrong (without clear message).
 
         try {
-            Cloud cloud = getCloud();
+            Cloud cloud = getProviderCloudVar();
             params.put("CLOUD", cloud);
         } catch (JspTagException e) {
             log.debug(e.toString());

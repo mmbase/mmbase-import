@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * This tag posts a message. The body of the tag is the message text.
  *
  * @author Pierre van Rooden
- * @version $Id: PostTag.java,v 1.10 2003-08-11 17:06:24 michiel Exp $
+ * @version $Id: PostTag.java,v 1.11 2004-07-10 12:16:47 nico Exp $
  */
  
 public class PostTag extends AbstractNodeProviderTag implements BodyTag {
@@ -44,7 +44,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
     public int doStartTag() throws JspTagException{
         community=getCloudContext().getModule("communityprc");
         // create a temporary message node that holds the new data
-        Node node = getCloud().getNodeManager("message").createNode();
+        Node node = getProviderCloudVar().getNodeManager("message").createNode();
         setNodeVar(node);
         return EVAL_BODY_BUFFERED;
     }
@@ -78,7 +78,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         }
         Hashtable params=new Hashtable();
         try {
-            Cloud cloud=getCloud();
+            Cloud cloud=getProviderCloudVar();
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
         params.put("MESSAGE-BODY",body);
