@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.30 2003-07-11 20:36:27 pierre Exp $
+ * @version $Id: WriterHelper.java,v 1.31 2003-07-14 08:29:38 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -97,7 +97,7 @@ public class WriterHelper extends BodyTagSupport {
     private   String  jspvar           = null;
     private   Attribute write          = Attribute.NULL;
     private   Attribute escape         = Attribute.NULL;
-    private   Boolean overridewrite    = null;
+    private   Boolean overrideWrite    = null;
     private   int     vartype          = TYPE_UNSET;
 
     private   ContextReferrerTag thisTag  = null;
@@ -157,7 +157,7 @@ public class WriterHelper extends BodyTagSupport {
      * if you want to override this, then call this function.
      */
     public void overrideWrite(boolean w) {
-        overridewrite = w ? Boolean.TRUE : Boolean.FALSE;
+        overrideWrite = w ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**
@@ -172,9 +172,9 @@ public class WriterHelper extends BodyTagSupport {
     public boolean  isWrite() throws JspTagException {
         if (write == Attribute.NULL) {
             if (log.isDebugEnabled()) {
-                log.debug("write is unset, using default " + overridewrite + " with body == '" + getString() + "' and hasBody (which is determined by childs) = " + hasBody);
+                log.debug("write is unset, using default " + overrideWrite + " with body == '" + getString() + "' and hasBody (which is determined by childs) = " + hasBody);
             }
-            if (overridewrite != null) return overridewrite.booleanValue();
+            if (overrideWrite != null) return overrideWrite.booleanValue();
             return "".equals(getString()) && (! hasBody);
         } else {
             if (log.isDebugEnabled()) {
@@ -453,13 +453,13 @@ public class WriterHelper extends BodyTagSupport {
     }
 
     public void release() {
-        overridewrite = null; // for use next time
+        overrideWrite = null; // for use next time
         hasBody       = false;
         bodyContent   = null;
         pageContext   = null;
         jspvar        = null;
         value         = null;
-        vartype       = null;
+        vartype       = TYPE_UNSET;
         write         = Attribute.NULL;
     }
 
