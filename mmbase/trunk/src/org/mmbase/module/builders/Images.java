@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.11 2000-05-27 14:19:07 wwwtech Exp $
+	$Id: Images.java,v 1.12 2000-05-27 16:48:29 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.11  2000/05/27 14:19:07  wwwtech
+	Wilbert: Fixed getImagesBytes5 to return the correct image when title used as alias for img.db?title. Now returns exact match if found instead of last match of fuzzy search
+	
 	Revision 1.10  2000/04/05 11:52:16  wwwtech
 	Rico: added debug, so you can see you need to load icaches as well
 	
@@ -55,7 +58,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.11 2000-05-27 14:19:07 wwwtech Exp $
+ * @version $Id: Images.java,v 1.12 2000-05-27 16:48:29 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -92,6 +95,26 @@ public class Images extends MMObjectBuilder {
 	public byte[] getImageBytes5(Vector params) {
 		return getImageBytes5(null,params);
 	}
+	
+	public String convertAlias(String num) {
+	// check if its a number if not check for name and even oalias
+		try {
+				int numint=Integer.parseInt(num);
+			} 
+		catch(Exception e) {
+			String title = num;
+			if ((title!=null) && !title.equals("")) {
+				Enumeration g=search("MMNODE images.title==*"+num+"*");
+				while (g.hasMoreElements()) {
+					MMObjectNode imgnode=(MMObjectNode)g.nextElement();
+					num=""+imgnode.getIntValue("number");
+					if (title.equalsIgnoreCase(imgnode.getStringValue("title")))
+						break;
+				}//while
+			}//if
+		}//catch
+		return num;
+	}
 
 	public synchronized byte[] getImageBytes5(scanpage sp,Vector params) {
 		int pos,pos2;
@@ -110,27 +133,7 @@ public class Images extends MMObjectBuilder {
 				return(node.getByteValue("handle"));
 			}
 			String num=(String)params.elementAt(0);
-			
-			// check if its a number if not check for name and even oalias
-			try {
-				int numint=Integer.parseInt(num);
-			} catch(Exception e) {
-				Enumeration g=search("MMNODE images.title==*"+num+"*");
-				String title = num;
-				if ((title!=null) && !title.equals("")) {
-					while (g.hasMoreElements()) {
-						MMObjectNode imgnode=(MMObjectNode)g.nextElement();
-						num=""+imgnode.getIntValue("number");
-						if (title.equalsIgnoreCase(imgnode.getStringValue("title")))
-							break;
-					}//while
-				}//if
-			}//catch	
-	
-			// is it a alias ? check in database and unmap
-			if (params.size()>1 && ((String)params.elementAt(1)).indexOf('(')==-1) {
-			} else if (params.size()==1) {
-			}
+			num = convertAlias(num);
 	
 			ckey=num;
 			for (Enumeration t=params.elements();t.hasMoreElements();) {
