@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.3 2003-07-18 12:09:05 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.4 2003-07-18 15:00:17 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -53,6 +53,7 @@ public interface StorageManagerFactory {
      * The attributes are the configuration parameters for the factory. 
      * The actual content the factory expects is dependent on the implementation.
      * The attributes are added to any attributes already knwon to the factory.
+     * @param attributes the map of attributes to add
      */
     public void setAttributes(Map attributes);
 
@@ -60,6 +61,7 @@ public interface StorageManagerFactory {
      * Obtain an attribute from this factory.
      * Attributes are the configuration parameters for the storagefactory. 
      * @return the attribute value, or null if it is unknown
+     * @param key the key of the attribute
      */
     public Object getAttribute(Object key);
 
@@ -68,7 +70,32 @@ public interface StorageManagerFactory {
      * Attributes are the configuration parameters for the factory. 
      * The actual content the factory expects is dependent on the implementation.
      * To invalidate an attribute, you can pass the <code>null</code> value.
+     * @param key the key of the attribute
+     * @param value the value of the attribute 
      */
     public void setAttribute(Object key, Object value);
 
+    /**
+     * Check whether an option was set.
+     * Options are attributes that return a boolean value. 
+     * @param key the key of the option
+     * @return <code>true</code> if the option was set
+     */
+	public boolean hasOption(Object key);
+
+    /**
+     * Set an option to true or false.
+     * @param key the key of the option
+     * @param value the value of the option (true or false) 
+     */
+	public void setOption(Object key, boolean value);
+
+    /**
+     * Returns the version of this factory implementation.
+     * The factory uses this number to verify whether it can handle storage configuration files
+     * that list version requirements.
+     * @return the version as an integer
+     */
+	public double getVersion();
 }
+

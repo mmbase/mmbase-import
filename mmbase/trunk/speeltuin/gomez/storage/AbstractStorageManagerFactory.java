@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.2 2003-07-18 12:09:05 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.3 2003-07-18 15:00:16 pierre Exp $
  */
 public class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -56,5 +56,16 @@ public class AbstractStorageManagerFactory implements StorageManagerFactory {
 	public void setAttribute(Object key, Object value) {
         attributes.set(key,value);
     }
+    
+	public boolean hasOption(Object key) {
+        Object o = getAttribute(key);
+        return (o instanceof Boolean) && o.booleanValue();
+    }
+	
+	public void setOption(Object key, boolean value) {
+        setAttribute(key,new Boolean(value));
+    }
+    
+	abstract public int getVersion();
 
 }
