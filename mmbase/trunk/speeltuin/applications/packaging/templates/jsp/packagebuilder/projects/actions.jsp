@@ -52,6 +52,15 @@
 </mm:compare>
 
 
+<mm:compare value="changeprojectsettings" referid="action">
+	<mm:import id="project" externid="name" />
+	<mm:import id="newname" externid="newname" />
+	<mm:import id="newpath" externid="newpath" />
+	 <mm:booleanfunction set="mmpb" name="changeProjectSettings" referids="project,newname,newpath">
+	</mm:booleanfunction>
+</mm:compare>
+
+
 <mm:compare value="setpackagemaintainer" referid="action">
 	<mm:import id="project" externid="name" />
 	<mm:import id="target" externid="bundle" />

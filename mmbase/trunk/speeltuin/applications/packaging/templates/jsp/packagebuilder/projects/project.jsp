@@ -162,17 +162,35 @@
 	Project Name and Path
 	</th>
 </tr>
-	<form action="<mm:url page="index.jsp" referids="main,sub,name" />" method="post">
-	<input type="hidden" name="action" value="changeprojectvalues" />
-<tr>
+	<form action="<mm:url page="index.jsp" referids="main" />" method="post">
+	<mm:nodefunction set="mmpb" name="getProjectInfo" referids="name">
+	<input type="hidden" name="action" value="changeprojectsettings" />
+	<input type="hidden" name="name" value="<mm:write referid="name" />" />
+	<tr>
 	<th width="100">Name</ht>
-	<td><input name="newname" style="width: 28%" value="bla"></td>
-</tr>
-<tr>
+	<td><input name="newname" style="width: 28%" value="<mm:field name="name" />"></td>
+	</tr>
+	<tr>
 	<th width="100">Path</ht>
-	<td><input name="newpath" style="width: 98%" value="bla"></td>
-</tr>
-	</form>
+	<td><input name="newpath" style="width: 98%" value="<mm:field name="path" />"></td>
+	</tr>
+	</mm:nodefunction>
+	<tr>
+		<td height="30" colspan="3" align="middle">
+		<table width="50%">
+		<tr><td align="middle">
+		<input type="submit" value="Save">
+		</form>
+		</td>
+		<form action="<mm:url page="index.jsp" referids="main,sub,name" />" method="post">
+		<td align="middle">
+		<input type="submit" value="Cancel">
+		</form>
+		</td>
+		</tr>
+		</table>
+		</td>
+	</tr>
 </table>
 </mm:compare>
 <mm:compare referid="mode" value="deleteview">
