@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.62 2002-05-03 15:09:27 eduard Exp $
+ * @version $Id: MMBase.java,v 1.63 2002-05-23 14:33:28 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -268,17 +268,6 @@ public class MMBase extends ProcessorModule  {
      */
     public MMBase() {
         log.debug("MMBase constructed");
-        // first thing to do is load our security system....
-        try {
-            mmbaseCop = new
-                MMBaseCop(MMBaseContext.getConfigPath() +
-                          File.separator + "security" + File.separator + "security.xml");
-        } catch(Exception e) {
-            log.fatal("error loading the mmbase cop: " + e.toString());
-            log.error(Logging.stackTrace(e));
-            log.error("MMBase will continue without security.");
-            log.error("All future security invocations will fail.");
-        }
     }
 
     /**
@@ -402,6 +391,19 @@ public class MMBase extends ProcessorModule  {
                 }
             }
         }
+        
+        // try to load security...
+        try {
+            mmbaseCop = new
+                MMBaseCop(MMBaseContext.getConfigPath() +
+                          File.separator + "security" + File.separator + "security.xml");
+        } catch(Exception e) {
+            log.fatal("error loading the mmbase cop: " + e.toString());
+            log.error(Logging.stackTrace(e));
+            log.error("MMBase will continue without security.");
+            log.error("All future security invocations will fail.");
+        }
+        
         // signal that MMBase is up and running
         mmbasestate=STATE_UP;
         log.info("MMBase is up and running");
