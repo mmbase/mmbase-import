@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.9 2000-05-01 09:04:17 wwwtech Exp $
+ * @version $Id: servscan.java,v 1.10 2000-05-25 15:59:08 wwwtech Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -109,14 +109,6 @@ public class servscan extends JamesServlet {
 	 */
 	public void service(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException {
 		incRefCount(req);
-
-		String page = null;
-		if( req != null ) {
-			page = req.getRequestURI();
-			if( req.getQueryString()!=null )
-			page += "?" + req.getQueryString();
-		}
-
 		try {
 			scanpage sp=new scanpage();
 			sp.req_line=req.getRequestURI();
@@ -145,17 +137,7 @@ public class servscan extends JamesServlet {
 			// Generate page
 			PrintWriter out=res.getWriter();
 
-			int counter = 0;
 			do {
-					// see if this loop is trigger more than 10 times..
-					// if so, huge output in logfile
-
-					if( debug ) {
-						counter++;
-						if((counter>50) && ((counter % 50)==0))
-							debug("service("+page+"): this is called "+counter+" times now!");
-					}
-
 				sp.rstatus=0;
 				sp.body=parser.getfile(sp.req_line);
 				doSecure(sp,res); // name=doSecure(sp,res); but name not used here
@@ -203,7 +185,7 @@ public class servscan extends JamesServlet {
 	
 				if (stime!=-1) {
 					stime=System.currentTimeMillis()-stime;
-					debug("service("+page+"): STIME "+stime+"ms "+(stime/1000)+"sec");
+					debug("service("+getRequestURL(req)+"): STIME "+stime+"ms "+(stime/1000)+"sec");
 				}
 			} while (sp.rstatus==2);	
 			// End of page parser
@@ -211,10 +193,10 @@ public class servscan extends JamesServlet {
 			out.flush();
 			out.close();
 		} catch(NotLoggedInException e) {
-			debug( "service(): page("+page+"): NotLoggedInException: " + e );
+				debug( "service(): page("+getRequestURL(req)+"): NotLoggedInException: " + e );
 		} catch(Exception a) {
-			debug( "service(): page("+page+"): Exception on page: " + req.getRequestURI() );
-			a.printStackTrace();
+				debug( "service(): exception on page: "+getRequestURL(req));
+				a.printStackTrace();
 		} finally { decRefCount(req); }
 	}// service
 
