@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.274 2004-11-30 14:09:27 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.275 2004-12-10 15:50:02 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2897,6 +2897,10 @@ transaction was commited, following should result anything:
       <possiblevalue>
         <value>number</value>
         <info>The node number</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>context</value>
+        <info>The (security) conetxt of the node</info>
       </possiblevalue>
     </attribute>
     <attribute>
