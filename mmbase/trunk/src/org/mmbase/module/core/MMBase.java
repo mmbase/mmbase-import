@@ -67,6 +67,7 @@ public class MMBase extends ProcessorModule  {
 	public static String multicasthost=null;
 	public static int multicastport=-1;
 	private String language="us";
+	private boolean mmbasestate=false;
 	String cookieDomain=null;
 
 
@@ -171,6 +172,9 @@ public class MMBase extends ProcessorModule  {
 				}
 			}
 		}
+		// signal that MMBase is up and running
+		mmbasestate=true;
+		System.out.println("MMBase is up and running");
 	}
 
 	public void onload() {
@@ -627,5 +631,9 @@ public class MMBase extends ProcessorModule  {
 	
 	public String getLanguage() {
 		return(language);
+	}
+	
+	public boolean getState() {
+		return(mmbasestate);
 	}
 }
