@@ -27,7 +27,7 @@ import test.*;
  * TransactionHandler Module
  *
  * @author  $Author: vpro $ 
- * @version $Revision: 1.1 $ $Date: 2000-10-13 09:39:25 $
+ * @version $Revision: 1.2 $ $Date: 2000-10-13 11:41:35 $
  */
  
 public class TransactionHandler 
@@ -79,8 +79,8 @@ public class TransactionHandler
 	public void init(){
 		System.out.println(">> init TransactionHandler Module ");
 		mmbase=(MMBase)getModule("MMBASEROOT");
-		transactionManager = new MyTransactionManager(mmbase);
-		tmpObjectManager = new MyTemporaryNodeManager(mmbase);
+		transactionManager = new TransactionManager(mmbase);
+		tmpObjectManager = new TemporaryNodeManager(mmbase);
 	}
 	
 	public void onload(){
@@ -151,10 +151,13 @@ public class TransactionHandler
 				currentTransactionArgumentNode = nm.getNamedItem("commitOnClose");
 				if (currentTransactionArgumentNode != null)
 					commit = currentTransactionArgumentNode.getNodeValue();
+				if (commit==null) commit="true";
 				//timeOut
 				currentTransactionArgumentNode = nm.getNamedItem("timeOut");
 				if (currentTransactionArgumentNode != null)
 					time = currentTransactionArgumentNode.getNodeValue();
+				if (time==null) time="6";
+				
 			}
 			initTransactionContext(tName, id, commit, time);
 			
@@ -360,6 +363,10 @@ public class TransactionHandler
 	private void exitTransactionContext(String tName, String id, String commit, String time) 
 		throws TransactionHandlerException {
 			
+		if (tName.equals("deleteTransaction")) {
+			return;
+		} // end deleteTransaction
+
 		// we're supposed to have a 'currentTransactionContext', so check
 		if (currentTransactionContext == null) throw 
 				new TransactionHandlerException(tName + " no current transaction for " + id);
@@ -374,9 +381,6 @@ public class TransactionHandler
 				transactionManager.commit(user, currentTransactionContext);
 		} // end commitTransaction
 		
-		if (tName.equals("deleteTransaction")) {
-				transactionManager.cancel(user, currentTransactionContext);
-		} // end deleteTransaction
 		
 		//out of context now
 		debug(" <- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")");
@@ -417,7 +421,7 @@ public class TransactionHandler
 		if (currentObjectContext == null) throw
 				new TransactionHandlerException(oId + " set field " + fieldName + " to " + fieldValue);
 		
-		tmpObjectManager.setObjectField(oId, fieldName, fieldValue);
+		tmpObjectManager.setObjectField(currentObjectContext, fieldName, fieldValue);
 	}
 	
 	private String uniqueId() {
