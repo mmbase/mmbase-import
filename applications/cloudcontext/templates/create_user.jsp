@@ -10,13 +10,13 @@
  <%@include file="you.div.jsp" %>
 
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_user.jsp</mm:param></mm:url>" method="post">
-   <table>
-    <mm:createnode id="newnode" type="mmbaseusers" makeuniques="true">
-    <mm:fieldlist type="edit">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
-    </mm:fieldlist>
+ <table>
+   <mm:createnode id="newnode" type="mmbaseusers">
+      <mm:fieldlist type="edit">
+        <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+      </mm:fieldlist>    
     </mm:createnode>
-    <tr>
+   <tr>
      <td>Groups</td>
      <td>
       <select name="_groups" size="4" multiple="multiple">
@@ -38,7 +38,7 @@
     </tr>
     <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
     <mm:node referid="newnode">
-    <input type="hidden" name="user" value="<mm:field name="number" />" />
+      <input type="hidden" name="user" value="<mm:field name="number" />" />
     </mm:node>
    </table>
    </form>
