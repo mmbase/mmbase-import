@@ -37,7 +37,7 @@ boolean firstprobe=true;
 		task=node.getStringValue("task");
 		if (task.equals("mediacheck")) {
 			try {
-				MediaCheck(node);
+				doMediaCheck(node);
 				rtn=true;
 			} catch (Exception e) {
 				System.out.println("MediaCheck exception"+e);
@@ -86,7 +86,7 @@ boolean firstprobe=true;
 		}
 	}
 
-	private boolean MediaCheck(MMObjectNode node) {
+	private boolean doMediaCheck(MMObjectNode node) {
 		MediaInputs bul=(MediaInputs)Vwms.mmb.getMMObject("mediain");
 		bul.maintainTable();
 		return(true);
