@@ -15,7 +15,7 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Arguments for functions, a way to make variable arguments in Java. In fact this class does
+ * Parameters for functions, a way to make variable arguments in Java. In fact this class does
  * nothing more then providing a convenient way to create a List, by the use of 'named
  * parameters'. This List is therefore backed by a HashMap, but it behaves as a list. So if you set
  * a parameter with a certain name, it always appears in the same location of the List.
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.5 2003-11-24 16:08:40 michiel Exp $
+ * @version $Id: Parameters.java,v 1.6 2003-11-28 15:11:23 michiel Exp $
  * @see Parameter
  */
 
@@ -42,7 +42,7 @@ public class Parameters extends AbstractList implements List  {
         Parameters a;
         if (args instanceof Parameters) {
             a = (Parameters) args;
-            if ( ! Arrays.equals(a.definition, def))  throw new IllegalArgumentException("Given arguments '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
+            if ( ! Arrays.equals(a.definition, def))  throw new IllegalArgumentException("Given parameters '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
         } else {
             a = new Parameters(def, args);
         }
@@ -73,7 +73,7 @@ public class Parameters extends AbstractList implements List  {
 
     public Parameters(Parameter [] def) {
         definition = (Parameter []) define(def, new ArrayList()).toArray(new Parameter[0]);
-        // fill with nulls, and check for non-unique keys.
+        // fill with default values, and check for non-unique keys.
         for (int i = 0; i < definition.length; i++) {
             if (backing.put(definition[i].key, definition[i].defaultValue) != null) {
                 throw new IllegalArgumentException("Parameter keys not unique");
@@ -82,7 +82,7 @@ public class Parameters extends AbstractList implements List  {
         }
     }
     /**
-     * If you happen to have a List of arguments, then you can wrap it into an Parameters with this constructor
+     * If you happen to have a List of parameters, then you can wrap it into an Parameters with this constructor
      * @throws NullPointerException if definition is null
      */
     public Parameters(Parameter [] def, List values) {
@@ -184,7 +184,7 @@ public class Parameters extends AbstractList implements List  {
                 return this;
             }
         }
-        throw new IllegalArgumentException("The argument '" + arg + "' is not defined");
+        throw new IllegalArgumentException("The parameter '" + arg + "' is not defined");
     }
 
     public Parameters set(Parameter arg, Object value) {
