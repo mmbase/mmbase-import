@@ -1,15 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><html>
-<head>
-   <title>Contexts</title>
-   <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
 <body>
 <%@ include file="menu.jsp"%>
-<h1>Contexts</h1>
-<p>
-  A `context' is a scope for taglib variables.
-</p>
+<h1>context</h1>
 <p>
 To use a context, you can use a context tag. But often you don't have
 to, because there is one implicit (unnamed) context. These pages are
@@ -21,47 +14,55 @@ the 'import' tag, which gets objects from the outside world (like
 parameters), and makes `taglib' variables of them. We now will put
 into the variable 'hoi' the value of the parameter 'haj'.
 </p>
-<table>
-<tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/context.jsp.1" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/context.jsp.1" %></td>
-</tr>
-</table>
+<mm:import id="hoi" externid="haj" from="parameters" required="true" jspvar="groet" />
 <p>
 There are several ways to write something from the context to the
 page. Here are a few examples with the 'write' tag. The write tag uses
 the 'referid' attribute. Such an attribute expects the <em>name</em>
 of the variable:
 </p>
-<table>
-<tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/context.jsp.2" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/context.jsp.2" %></td>
-</tr>
-</table>
+<p>
+<mm:write referid="hoi" />, 
+<mm:write referid="hoi" jspvar="greet"><%= greet %></mm:write>
+</p>
 <p>
 We have also made a jsp variable of it, which can be used as well:
 <%= groet.toUpperCase() %>
 </p>
 <p>
 Contextes can be nested. Lets make the contextes A, B and C.
-</p>
-<table>
-<tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/context.jsp.3" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/context.jsp.3" %></td>
-</tr>
-</table>
-<p>
+<mm:context id="A">  
+  <mm:import id="hoi">hola!</mm:import>
+  In context A we also create the variable 'hoi'. This time its value
+ is 'hola!' </p><p>
+  <mm:context id="B">
+    Within a 'child' context of A (we named it B), you can write easily the variable
+    from the parent context:
+	<mm:write referid="hoi" /></p><p>
+    Imagine that also in this context B we create a variable 'hoi', so
+    that now we already have three variable named 'hoi'.
+	<mm:import id="hoi">foobar</mm:import>
+    <mm:context id="C">
+     Then we could also demonstrate the use of the attribute
+	'context'. It is not really necessary but exist for symmetry
+	reasons. With it you can indicate in which of the parent contexes
+	the write tag must be evaluated: <mm:write context="A"
+	referid="hoi" />, <mm:write referid="A.hoi" />, <mm:write
+	context="B" referid="hoi" />, <mm:write referid="A.B.hoi" />,
+	<mm:write referid="hoi" /> </p>
+    <p>The most upper value of the
+	variable 'hoi' in this page (the one which was gotten with 'haj')
+	is not accessible here in context C, because the implicit page
+	context is unnamed and the 'hoi' variables of contextes A and B
+	are shielding it.
+    </mm:context>
+  </mm:context>
+</mm:context>
+</p><p>
 If you are not in a context, you can still access the variables of it,
 but you have to indicate the full name.
+<mm:write referid="A.B.hoi" />, <mm:write referid="A.hoi" />, <mm:write referid="hoi" />
 </p>
-<table>
-<tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/context.jsp.4" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/context.jsp.4" %></td>
-</tr>
-</table>
 <p>
 Sometimes you also want to use the <em>value</em> of a variable in an attribute. In
 that case a construction with a dollar sign ($) must be used. Imagine

@@ -23,17 +23,22 @@ This page should work after building Tomcat or Orion from the build file.
 </p>
 
 <p>
-  Here's a simple list of typedefs to see if the MMBase taglib is
-  working. It is a rather complicated example. On the left, you see
-  the source code, and on the right which it evaluates.
+Here's a simple list of typedefs to see if the MMBase taglib is working:
 </p>
 
-<table>
-<tr valign="top">
-  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/index.jsp.1" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/index.jsp.1" %></td>
-</tr>
-</table>
+<mm:listnodes type="typedef">
+ <mm:first><ul></mm:first>
+ <li>
+   <mm:field name="name"/> is: <mm:field name="description"/>
+   <mm:first>(first)</mm:first>
+   <mm:last>(last)</mm:last>
+   <mm:odd>(odd)</mm:odd>
+   <mm:even>(even)</mm:even>
+   <mm:changed>(changed)</mm:changed>
+ </li>
+ <mm:last></ul></mm:last>
+</mm:listnodes>
+
 </body>
 
 </html>

@@ -5,7 +5,6 @@
 <mm:cloud name="mmbase">
 
 <mm:import externid="number"    />
-<mm:import externid="nodes"     />
 <mm:import externid="path" />
 <mm:import externid="fields" />
 <mm:import externid="constraints" />
@@ -37,8 +36,7 @@
 <table>
 
 <tr><td colspan="6">&lt;node number=&quot;<input type="text" size="20" name="number" value="<mm:write referid="number"/>">&quot;&gt;</td></tr>
-<tr><td></td><td>&lt;related</td><td>nodes=</td><td>&quot;</td><td><input type="text" size="20" name="nodes" value="<mm:write referid="nodes"/>"></td><td>&quot;</td></tr>
-<tr><td></td><td></td><td>path=</td><td>&quot;</td><td><input type="text" size="20" name="path" value="<mm:write referid="path"/>"></td><td>&quot;</td></tr>
+<tr><td></td><td>&lt;related</td><td>path=</td><td>&quot;</td><td><input type="text" size="20" name="path" value="<mm:write referid="path"/>"></td><td>&quot;</td></tr>
 <tr><td></td><td></td><td>fields=</td><td>&quot;</td><td><input type="text" size="20" name="fields" value="<mm:write referid="fields"/>"></td><td>&quot;</td></tr>
 <tr><td></td><td></td><td>constraints=</td><td>&quot;</td><td><input type="text" size="20" name="constraints" value="<mm:write referid="constraints"/>"></td><td>&quot;</td></tr>
 <tr><td></td><td></td><td>orderby=</td><td>&quot;</td><td><input type="text" size="20" name="orderby" value="<mm:write referid="orderby"/>"></td><td>&quot;</td></tr>
@@ -61,7 +59,7 @@
 <mm:present referid="path">
   <table border="1">
     <mm:node number="${number}">
-      <mm:related nodes="${nodes}" path="${path}" fields="${fields}"
+      <mm:related path="${path}" fields="${fields}"
                   constraints="${constraints}" orderby="${orderby}"
                   directions="${directions}" distinct="${distinct}"
                   max="${max}" offset="${offset}"
