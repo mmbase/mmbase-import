@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.70 2003-12-17 20:51:43 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.71 2003-12-21 13:23:28 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -282,7 +282,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             if (! checked) {
                 cloud.checkNodes(resultNodeList, query);
             }
-
+            
             return resultNodeList;
         } catch (SearchQueryException sqe) {
             throw new BridgeException(sqe);
@@ -310,7 +310,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         NodeQuery query = createQuery();
         Queries.addConstraints(query, constraints);
         Queries.addSortOrders(query, sorted, directions);
-        NodeList list = cloud.getList(query);
+        NodeList list = getList(query);
         list.setProperty("constraints", constraints);
         list.setProperty("orderby",     sorted);
         list.setProperty("directions",  directions);
