@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.234 2003-06-26 09:13:58 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.235 2003-07-08 08:17:58 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3520,27 +3520,28 @@ public class MMObjectBuilder extends MMTable {
      * This routine does not take into account invalid charaters (such as &ft;, &lt;, &amp;) in a datafield.
      * @param node the node to convert
      * @return the XML <code>String</code>
+     * @todo   This generates ad-hoc system id's and public id's.  Don't know what, why or how this is used.
      */
     public String toXML(MMObjectNode node) {
-        String body="<?xml version=\""+version+"\"?>\n";
-        body+="<!DOCTYPE mmnode."+tableName+" SYSTEM \""+mmb.getDTDBase()+"/mmnode/"+tableName+".dtd\">\n";
-        body+="<"+tableName+">\n";
-        body+="<number>"+node.getNumber()+"</number>\n";
-        for (Enumeration e=sortedDBLayout.elements();e.hasMoreElements();) {
-            String key=(String)e.nextElement();
-            int type=node.getDBType(key);
-            if ((type==FieldDefs.TYPE_INTEGER)|| (type==FieldDefs.TYPE_NODE)) {
-                body+="<"+key+">"+node.getIntValue(key)+"</"+key+">\n";
-            } else if (type==FieldDefs.TYPE_STRING) {
-                body+="<"+key+">"+node.getStringValue(key)+"</"+key+">\n";
+        StringBuffer body = new StringBuffer("<?xml version=\"" + version + "\"?>\n");
+        body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(mmb.getDTDBase()).append("/mmnode/").append(tableName).append(".dtd\">\n");
+        body.append("<" + tableName + ">\n");
+        body.append("<number>" + node.getNumber() + "</number>\n");
+        for (Enumeration e = sortedDBLayout.elements(); e.hasMoreElements();) {
+            String key = (String)e.nextElement();
+            int type = node.getDBType(key);
+            body.append('<').append(key).append('>');
+            if ((type == FieldDefs.TYPE_INTEGER)|| (type == FieldDefs.TYPE_NODE)) {
+                body.append(node.getIntValue(key));
             } else if (type==FieldDefs.TYPE_BYTE) {
-                body+="<"+key+">"+node.getByteValue(key)+"</"+key+">\n";
+                body.append(node.getByteValue(key));
             } else {
-                body+="<"+key+">"+node.getStringValue(key)+"</"+key+">\n";
+                body.append(node.getStringValue(key));
             }
+            body.append("</").append(key).append(">\n");
         }
-        body+="</"+tableName+">\n";
-        return body;
+        body.append("</").append(tableName).append(">\n");
+        return body.toString();
     }
 
     /**
@@ -3634,7 +3635,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getNumberFromName(String name) {
         String number = null;
-        Enumeration e=search("name=='"+name+"'");
+        Enumeration e = search("name=='"+name+"'");
         if (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
             number=""+node.getNumber();
@@ -3847,7 +3848,7 @@ public class MMObjectBuilder extends MMTable {
      * @param properties the properties to set
      */
     void setInitParameters(Hashtable properties) {
-        this.properties=properties;
+        this.properties = properties;
     }
 
     /**
@@ -3865,7 +3866,7 @@ public class MMObjectBuilder extends MMTable {
      * @param value value of the property
      */
     public void setInitParameter(String name, String value) {
-        if (properties==null) properties=new Hashtable();
+        if (properties == null) properties = new Hashtable();
         properties.put(name,value);
     }
 
