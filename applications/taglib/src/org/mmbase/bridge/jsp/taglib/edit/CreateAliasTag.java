@@ -27,6 +27,10 @@ public class CreateAliasTag extends NodeReferrerTag {
         alias = getAttributeValue(n);
     }
 
+    protected void doJob(Node n, String alias) {
+        n.createAlias(alias);
+    }
+
     /**
     * Add the alias.
     **/
@@ -41,7 +45,7 @@ public class CreateAliasTag extends NodeReferrerTag {
 
         if (alias != null) {
             if (! "".equals(alias)) {
-                node.createAlias(alias);
+                doJob(node, alias);
             }
         }
         return SKIP_BODY;
