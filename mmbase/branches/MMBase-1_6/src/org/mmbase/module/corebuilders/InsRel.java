@@ -536,6 +536,10 @@ public class InsRel extends MMObjectBuilder {
         }
         return results;
     }
+    public String getGUIIndicator(MMObjectNode node) {
+        return node.getStringValue("snumber") + "->" + node.getStringValue("dnumber");
+    }
+
 
     /**
     * Get the display string for a given field of this node.
