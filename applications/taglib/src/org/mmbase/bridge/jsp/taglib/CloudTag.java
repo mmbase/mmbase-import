@@ -100,8 +100,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private String cloudURI  = null;
     private Cloud  cloud;
 
-    private static HashMap anonymousClouds = new HashMap();
-
     private String authenticate = DEFAULT_AUTHENTICATION;
 
     private String loginpage =  null;
@@ -334,32 +332,27 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } catch (IOException ioe) {
             throw new JspTagException(ioe.toString());
         }
-        setAnonymousCloud(); // there must also be _some_ cloud, to avoid exception on u
+        setAnonymousCloud(); // there must also be _some_ cloud, to avoid exception on 
         evalBody(); //  register var
         return SKIP_BODY;
     }
 
     /**
-     * Sets the cloud member variable to an anonymous cloud.
+     * Sets the cloud member variable to an anonymous cloud. 
+     * @return true on success (cloud is set), false on failure (cloud is set to null)
      */
 
-    private void setAnonymousCloud() {
-        log.debug("using an anonymous cloud");
-        String key = cloudName + (cloudURI != null ? "@" +  cloudURI : "") + (locale != null ? "/" + locale.getLanguage() + "_" + locale.getCountry() : "");
-        cloud = (Cloud) anonymousClouds.get(key);
-        if (cloud == null) {
-            log.debug("couldn't find one");
+    private boolean setAnonymousCloud() {
+        try {
+            log.debug("using an anonymous cloud");
             cloud = getDefaultCloudContext().getCloud(cloudName);
             cloud.setLocale(locale);
-            anonymousClouds.put(key, cloud);
             log.debug("put in hashMap");
-        }
-        // check if cloud was expired:
-        if (! cloud.getUser().isValid()) {
-            log.debug("anonymous cloud was expired, creating a new one");
-            cloud = getDefaultCloudContext().getCloud(cloudName);
-            cloud.setLocale(locale);
-            anonymousClouds.put(key, cloud);
+            return true;
+        } catch (org.mmbase.security.SecurityException e) {
+            log.debug("Could not create anonymous cloud because " + e.toString());
+            cloud = null;
+            return false;
         }
     }
 
@@ -380,19 +373,23 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     /**
      * If the 'cloud' member is set, and everything is ok, then this function is called in doStartTag()
-     * @return EVAL_BODY_BUFFERED
+     * @return EVAL_BODY_BUFFERED or SKIP_BODY if cloud is null (which normally means that no anonymous is present)
      */
 
     private int evalBody() throws JspTagException {
 
-        if (locale != null) cloud.setLocale(locale);
+        if (getId() != null) { // write to context.
+            getContextTag().register(getId(), cloud);
+        }
+
+        if (cloud  == null) return SKIP_BODY;
 
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, cloud);
         }
-        if (getId() != null) { // write to context.
-            getContextTag().register(getId(), cloud);
-        }
+
+        if (locale != null) cloud.setLocale(locale);
+
         // the surround context tag sometimes also want so server information from the cloud context.
         getContextTag().setCloudContext(cloud.getCloudContext());
 
@@ -818,7 +815,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         
         if (cloud == null) { // stil null, give it up then...
             log.debug("Could not create Cloud.");
-            throw new JspTagException("Could not create cloud.");
+            // throw new JspTagException("Could not create cloud (even not anonymous)");
+            return SKIP_BODY;
         } else {
             if (session != null) {
                 session.setAttribute(getSessionName(), cloud);
@@ -863,9 +861,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             return SKIP_BODY;
         }
-        if (checkLogoutMethod()) {
-            return evalBody();
-        }        
+        if (checkLogoutMethod()) return evalBody();
         if (cloud != null) checkValid();
         if (cloud != null) checkCloud();
         if (cloud == null) { 
