@@ -19,7 +19,7 @@
 
 <head>
   <title>Taglib examples</title>
-  <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 
 <body>

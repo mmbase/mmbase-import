@@ -3,7 +3,7 @@
 <html>
 <head>
 <title>Http authentication</title>
-<link href="../../css/mmbase.css" rel="stylesheet" type="text/css" media="screen"  />
+<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
 </head>
 <body>
 <%@ include file="menu.jsp"%>

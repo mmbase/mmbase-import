@@ -2,7 +2,7 @@
 %><html>
 <head>
   <title>context 2</title>
-  <link href="../../css/mmbase.css" rel="stylesheet" type="text/css" media="screen"  />
+  <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
 </head>
 <body>
 <h1>context 2</h1>

@@ -2,7 +2,7 @@
 %><%@ page session="false" %><html>
 <head>
 <title>Log out</title>
-<link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
+<link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <table>

@@ -3,7 +3,7 @@
 <html>
 <head>
   <title>Queries with MMBase taglib (1.7)</title>
-  <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
 <%@ include file="menu.jsp"%>
