@@ -15,13 +15,13 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.16 2003-09-18 14:40:11 michiel Exp $
+ * @version $Id: XmlField.java,v 1.17 2003-11-19 13:26:24 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(XmlField.class);
+    private static final Logger log = Logging.getLoggerInstance(XmlField.class);
 
     // can be decoded:
     public final static int RICH     = 1;
@@ -32,8 +32,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int RICHBODY = 6;
 
     // cannot yet be encoded even..
-    public final static int HTML_INLINE = 7;
-    public final static int HTML_BLOCK  = 8;
+    public final static int HTML_INLINE    = 7;
+    public final static int HTML_BLOCK     = 8;
+    public final static int HTML_BLOCK_BR  = 9;
     
 
     // cannot be decoded:
@@ -239,9 +240,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     /**
      * Make <p> </p> tags.
+     * @param leaveExtraNewLines (defaults to false) if false, 2 or more newlines starts a new p. If true, every 2 newlines starts new p, and every extra new line simply stays (inside the p).
      * @param surroundingP (defaults to true) wether the surrounding &lt;p&gt; should be included too.
      */
-    private static void handleParagraphs(StringObject obj, boolean surroundingP) {
+    private static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines, boolean surroundingP) {
         // handle paragraphs:
         boolean inParagraph = true;
         while (obj.length() > 0 && obj.charAt(0) == '\n') {
@@ -252,8 +254,17 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
         int pos = obj.indexOf("\n\n", 3); // one or more empty lines.
         while (pos != -1) {
-            while (obj.length() > pos && obj.charAt(pos) == '\n') {
-                obj.delete(pos, 1); // delete the new lines.
+            // delete the 2 new lines of the p.
+            obj.delete(pos, 2);
+            
+            if (leaveExtraNewLines) {
+                while (obj.length() > pos && obj.charAt(pos) == '\n') {
+                    pos++;
+                }
+            } else {
+                while (obj.length() > pos && obj.charAt(pos) == '\n') {
+                    obj.delete(pos, 1); // delete the extra new lines too
+                }
             }
 
             if (inParagraph) { // close the previous paragraph.
@@ -280,8 +291,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
     }
 
-    private static void handleParagraphs(StringObject obj) {
-        handleParagraphs(obj, true);
+    private static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines) {
+        handleParagraphs(obj, leaveExtraNewLines, true);
     }
 
     /**
@@ -323,11 +334,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
     
 
-    private static void handleRich(StringObject obj, boolean sections) {
+    private static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines) {
         // the order _is_ important!
         handleList(obj);
-        handleParagraphs(obj);
-        if (sections) handleHeaders(obj);
+        handleParagraphs(obj, leaveExtraNewLines);
+        if (sections) { 
+            handleHeaders(obj);
+        }
         handleEmph(obj);
     }
 
@@ -365,7 +378,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String richToXML(String data, boolean format) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true);
+        handleRich(obj, true, true);
         handleNewlines(obj);
         handleFormat(obj, format);
         return obj.toString();
@@ -380,7 +393,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String poorToXML(String data, boolean format) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true);
+        handleRich(obj, true, false);
         handleFormat(obj, format);
         return obj.toString();
     }
@@ -395,12 +408,17 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @since MMBase-1.7
      */
 
-    public static String richToHTMLBlock(String data) {
+    public static String richToHTMLBlock(String data, boolean multipibleBrs) {
         StringObject obj = prepareData(data);
-        handleRich(obj, false);   // no <section> tags
+        handleRich(obj, false, multipibleBrs);   // no <section> tags, leave newlines if multipble br's requested
         handleNewlines(obj);
         handleFormat(obj, false); 
         return obj.toString();
+    }
+
+
+    public static String richToHTMLBlock(String data) {
+        return richToHTMLBlock(data, false);
     }
 
     /**
@@ -556,7 +574,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         h.put("MMXF_BODY_RICH", new Config(XmlField.class, RICHBODY, "Like MMXF_RICH, but returns decodes without mmxf tags"));
         h.put("MMXF_BODY_POOR", new Config(XmlField.class, POORBODY, "Like MMXF_POOR, but returns decoded without mmxf tags"));
         h.put("MMXF_HTML_INLINE", new Config(XmlField.class, HTML_INLINE, "Decodes only escaping and with <em>"));
-        h.put("MMXF_HTML_BLOCK", new Config(XmlField.class,  HTML_BLOCK, "Decodes only escaping and with <em>, <p>, <br /> and <ul>"));
+        h.put("MMXF_HTML_BLOCK", new Config(XmlField.class,  HTML_BLOCK, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>"));
+        h.put("MMXF_HTML_BLOCK_BR", new Config(XmlField.class,  HTML_BLOCK_BR, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>"));
         h.put("MMXF_XHTML", new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
         h.put("MMXF_MMXF",  new Config(XmlField.class, XML,   "Only validates the XML with the DTD (when decoding)"));
         return h;
@@ -615,6 +634,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 break;
             case HTML_BLOCK:
                 result = richToHTMLBlock(r);
+                break;
+            case HTML_BLOCK_BR:
+                result = richToHTMLBlock(r, true);
                 break;
             case HTML_INLINE:
                 result = poorToHTMLInline(r);
