@@ -6,6 +6,7 @@
 <html>
   <head>
      <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase-devnews.css" />" />
+     <link rel="stylesheet" type="text/css" href="<mm:url page="/css/navi.css" />" />
 <mm:node number="$portal"><mm:related path="posrel,templates">
      <link rel="stylesheet" type="text/css" href="<mm:field name="templates.url"/>" />
 </mm:related></mm:node>
@@ -16,6 +17,7 @@
         </mm:node> - <mm:node number="$page" notfound="skipbody"><mm:field name="title" /></mm:node><% if(userFullName != null) { %> - Welcome <%= userFullName %> <% } %>
       </title>
      <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/launchcenter.js" />"><!-- help IE --></script> 
+     <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/navi.js" />"><!-- help IE --></script> 
      <meta http-equiv="imagetoolbar" content="no" />
     <%-- assuming this page is only included from index.jsp, and this site only deployed on www.mmbase.org --%>
      <%-- base href="http://www.mmbase.org/index.jsp" --%>
