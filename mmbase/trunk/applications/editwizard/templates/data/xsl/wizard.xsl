@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.59 2002-07-24 09:22:54 michiel Exp $
+  @version $Id: wizard.xsl,v 1.60 2002-07-26 17:16:08 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -174,7 +174,7 @@
   <xsl:template name="javascript">
     <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
-    <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}&amp;language={$language}"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript">
       <xsl:text disable-output-escaping="yes">

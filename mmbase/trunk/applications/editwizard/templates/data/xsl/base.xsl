@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.13 2002-07-19 18:12:14 michiel Exp $
+  @version $Id: base.xsl,v 1.14 2002-07-26 17:16:08 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -26,6 +26,8 @@
   <xsl:variable name="rootew_path"><xsl:value-of select="$ew_context" /><xsl:value-of select="$ew_path" /></xsl:variable>
   
   <xsl:param name="username">(unknown)</xsl:param>
+
+  <xsl:param name="language">en</xsl:param>
     
   <xsl:param name="sessionid"></xsl:param>
 
@@ -44,7 +46,7 @@
 
   <xsl:param name="sessionkey">editwizard</xsl:param>
   <xsl:param name="cloudkey">cloud_mmbase</xsl:param><!-- name of variable in session in which is the cloud -->
-  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" /></xsl:param>
+  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" /></xsl:param>
   
   <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
