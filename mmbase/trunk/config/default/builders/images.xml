@@ -56,7 +56,18 @@ you can define properties to be used by the classfile (if used) it uses
 a key/value system. Its a optional tag.
 -->
 <properties>
-	<property name="ImageConvert.ConverterCommand">bin/convert</property>	<property name="ImageConvert.ConverterRoot">/usr/local/</property>	<property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>	<property name="MaxConcurrentRequests">3</property></properties>
+   <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html 
+        NOTE: not all features provided by ImageMagic are implemented in the JAI converter -->
+   <!-- <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> -->
+
+   <!-- convert using ImageMagick -->
+   <property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+   <property name="ImageConvert.ConverterCommand">bin/convert</property>
+   <property name="ImageConvert.ConverterRoot">/usr/local/</property>
+
+   <!-- generic property for all converters -->
+   <property name="MaxConcurrentRequests">3</property>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
