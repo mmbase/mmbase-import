@@ -1,13 +1,12 @@
 <%@ page errorPage="exception.jsp" 
-%><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@ page import="org.mmbase.bridge.*"
+%><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@ page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
-
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.1 2002-04-19 19:52:07 michiel Exp $
+     * @version  $Id: list.jsp,v 1.2 2002-04-22 14:37:34 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -19,12 +18,12 @@ if ("true".equals(request.getParameter("popup"))) {
     log.trace("This is a popup list viewer. Don't  push on Stack.");
     listConfig = configurator.createList();
 } else {
-    if (config.subObjects.size() > 0) {
-        listConfig = (Config.ListConfig) config.subObjects.peek();
+    if (ewconfig.subObjects.size() > 0) {
+        listConfig = (Config.ListConfig) ewconfig.subObjects.peek();
     } else {
         listConfig = configurator.createList();
         log.trace("List, push on Stack.");
-        config.subObjects.push(listConfig);
+        ewconfig.subObjects.push(listConfig);
     }
 }
 
@@ -123,11 +122,11 @@ String deletedescription = "";
 String deleteprompt = "";
 String title = "editwizard list";
 
-if (config.wizard != null) {
+if (ewconfig.wizard != null) {
 
     log.trace("Create wizard object so that delete/create actions are correctly loaded. No need to store. We'll create another wizard automatically if a button in the list is pressed.");
     Wizard wiz = null;
-    wiz = new Wizard(request.getContextPath(), config.uriResolver, config.wizard, null, cloud);
+    wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, ewconfig.wizard, null, cloud);
     deletable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='delete']")!=null);
     creatable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='create']")!=null);
     deletedescription = Utils.selectSingleNodeText(wiz.schema, "/*/action[@type='delete']/description", null);
@@ -155,8 +154,8 @@ if (multilevel) {
 log.trace("Got " + results.size() + " results");
 
 int start = listConfig.start;
-int len        = config.list_pagelength;
-int maxpages   = config.list_maxpagecount;
+int len        = ewconfig.list_pagelength;
+int maxpages   = ewconfig.list_maxpagecount;
 
 if (start>results.size()-1) start = results.size()-1;
 if (start<0) start=0;
@@ -226,21 +225,21 @@ for (int i=0; i<pagecount && i<maxpages; i++) {
     Utils.setAttribute(pagenode, "next",  (i==currentpage+1)+"");
     pages.appendChild(pagenode);
 }
-String url = response.encodeURL("list.jsp?instanceName=" + config.sessionKey);
+String url = response.encodeURL("list.jsp?instanceName=" + ewconfig.sessionKey);
 
 log.trace("Setting xsl parameters");
 java.util.Map params = new java.util.Hashtable();
-if (config.wizard != null) params.put("wizard", config.wizard);
+if (ewconfig.wizard != null) params.put("wizard", ewconfig.wizard);
 params.put("start",String.valueOf(start));
 params.put("len",String.valueOf(len));
 params.put("url", url);
-params.put("sessionid", config.sessionId);
+params.put("sessionid", ewconfig.sessionId);
 params.put("deletable", deletable+"");
 params.put("creatable", creatable+"");
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
-//if (settings_config.get("type") != null) params.put("type", settings_config.get("type"));
+//if (settings_ewconfig.get("type") != null) params.put("type", settings_ewconfig.get("type"));
 //XXX: new param1
 if (title != null) params.put("wizardtitle", title);
 
@@ -248,7 +247,7 @@ params.put("ew_context", request.getContextPath());
 params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(request.getContextPath()));
 
 log.trace("Doing the transformation for " + listConfig.template);
-Utils.transformNode(doc, listConfig.template, config.uriResolver, out, params);
+Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params);
 
 log.trace("ready");
 
