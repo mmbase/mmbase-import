@@ -239,6 +239,7 @@
 <xsl:template match="tag|taginterface" mode="tocext">
   <xsl:param name="testlast" select="false()" />
   <xsl:param name="file" select="false()" />
+  <xsl:param name="type" select="''" />
   <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" mode="tocext">
     <xsl:with-param name="file" select="$file" />
   </xsl:apply-templates>
@@ -246,7 +247,9 @@
      <a>
        <xsl:attribute name="href">
          <xsl:call-template name="tagref">
-           <xsl:with-param name="file" select="$file" /><xsl:with-param name="tag"  select="name"  />
+           <xsl:with-param name="file" select="$file" />
+            <xsl:with-param name="type"  select="$type"  />
+           <xsl:with-param name="tag"  select="name"  />
          </xsl:call-template>
        </xsl:attribute>
        <xsl:value-of select="name" />  
