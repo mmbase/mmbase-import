@@ -38,6 +38,7 @@ public class hitlisted extends MMObjectBuilder {
 	 * Converts a result set into a Vector containing MMObjectNodes for the 
 	 * different items in the JDBC Result Set
 	 */
+	/*
 	public Vector convertResultSet(ResultSet rs) {
 		try {
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -63,11 +64,13 @@ public class hitlisted extends MMObjectBuilder {
 		
 		return (null);		 
 	}
+	*/
 
 	/**
 	 * Converts a result set into a Vector containing MMObjectNodes for the 
 	 * different items in the JDBC Result Set
 	 */
+	/*
 	public Hashtable convertResultSet(ResultSet rs, String columnName) {
 		try {
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -94,7 +97,9 @@ public class hitlisted extends MMObjectBuilder {
 		
 		return (null);		 
 	}
+	*/
 
+	/*
 	public SortedVector convertResultSet(ResultSet rs, SortedVector sv) {
 		try {
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -120,5 +125,6 @@ public class hitlisted extends MMObjectBuilder {
 		
 		return (null);
 	}
+	*/
 
 }
