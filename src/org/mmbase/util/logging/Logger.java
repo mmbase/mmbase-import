@@ -49,84 +49,91 @@ package org.mmbase.util.logging;
 
 public interface Logger {
 
-	// these static methods should also be implemented:
-	// public static void configure(String s);  // well, this one is optional
-	// public static Logger getLoggerInstance(String name);
+    // these static methods should also be implemented:
+    // public static void configure(String s);  // well, this one is optional
+    // public static Logger getLoggerInstance(String name);
+    
+    /**
+     * Logs the message m with trace priority. For detailled debugging. 
+     * @see #debug
+     */
+    public void trace   (Object m);
+    
+    /**
+     * Logs the message m with debug priority. Everything a
+     * non-developer never wants to see, but you do, to * keep track
+     * of what is happening. There can be a lot of them in the code,
+     * so it is important that you well protect them with
+     * `isDebugEnabled's, to minimize overhead.  
+     */
+    public void debug   (Object m);
 
-	/**
-	 * Logs the message m with trace priority. For detailled debugging. 
-	 * @see #debug
-	 */
-	public void trace   (Object m);
-
-	/**
-	 * Logs the message m with debug priority. Everything a
-	 * non-developer never wants to see, but you do, to * keep track
-	 * of what is happening. There can be a lot of them in the code,
-	 * so it is important that you well protect them with
-	 * `isDebugEnabled's, to minimize overhead.  
-	 */
-	public void debug   (Object m);
-
-	/**
-	 * Logs the message m with service priority. An interested system
+    /**
+     * Logs the message m with service priority. An interested system
      * administrator might want to see these things. For examples all
      * queries to the database could be logged with `service'
      * priority. Or if a image is calculated, that could be logged as
      * a `service'. One would get a fairly good idea what MMBase is
      * doing if `service' is switched on.  
 	 */
-	public void service (Object m);
+    public void service (Object m);
 
-	/**
-	 * Logs the message m with info priority. As `service', but
+    /**
+     * Logs the message m with info priority. As `service', but
      * focussed on things system administrators are ussually most
      * interesed in, like authorisation issues. For example changes on
      * the database could be logged, such that one can see in the logs
      * what happened.
-	 */
-	public void info    (Object m);
+     */
+    public void info    (Object m);
 
-	/**
-	 * Logs the message m with warn priority. Something strange
-	 * happened, but it is not necessarily an error.  
-	 */
-	public void warn    (Object m);
+    /**
+     * Logs the message m with warn priority. Something strange
+     * happened, but it is not necessarily an error.  
+     */
+    public void warn    (Object m);
 
-	/**
-	 * Logs the message m with error priority. Something is definitely
-	 * wrong. An inconsistency was detected. It might be unpredictable
-	 * what will happen.
-	 */
-	public void error   (Object m);
+    /**
+     * Logs the message m with error priority. Something is definitely
+     * wrong. An inconsistency was detected. It might be unpredictable
+     * what will happen.
+     */
+    public void error   (Object m);
 
-	/**
-	 * Logs the message m with fatal priority. The progam could not
-	 * function any more. Normally, you would throw an exception,
-	 * which then will be logged with fatal priority. I've made an
-	 * arangement in `Logger' that logs uncatched exceptions with
-	 * fatal priority, but nevertheless it's better to always catch
-	 * all exceptions in a more regulated way. 
-	 */
-	public void fatal   (Object m);
+    /**
+     * Logs the message m with fatal priority. The progam could not
+     * function any more. Normally, you would throw an exception,
+     * which then will be logged with fatal priority. I've made an
+     * arangement in `Logger' that logs uncatched exceptions with
+     * fatal priority, but nevertheless it's better to always catch
+     * all exceptions in a more regulated way. 
+     */
+    public void fatal   (Object m);
 
-	/**
-	 * Returns true if for this category (Logger), a call to debug (or
-	 * trace) would do something.  
-	 */
-	public boolean isDebugEnabled();
-	// public boolean isInfoEnabled();
+    /**
+     * Returns true if for this category (Logger), a call to debug (or
+     * trace) would do something.  
+     */
+    public boolean isDebugEnabled();
+    // public boolean isInfoEnabled();
 
-	/**
-	 * If you want to override the priority in the configuration file
-	 * fixed for this category, you can do it with this method. This
-	 * could be usefull for example to switch on all debug logging
-	 * when something has gone wrong.
-	 * @param p The level of the priority. One of the constants
-	 * Level.TRACE, Level.DEBUG, Level.SERVICE, Level.INFO,
-	 * Level.WARN, Level.ERROR or Level.FATAL.  
-	 */
+    /**
+     * Returns true if for this category (Logger), a call to service
+     * (debug or trace) would do something.  
+     */
+    public boolean isServiceEnabled();
+       
 
-	public void setPriority(Level p);
+    /**
+     * If you want to override the priority in the configuration file
+     * fixed for this category, you can do it with this method. This
+     * could be usefull for example to switch on all debug logging
+     * when something has gone wrong.
+     * @param p The level of the priority. One of the constants
+     * Level.TRACE, Level.DEBUG, Level.SERVICE, Level.INFO,
+     * Level.WARN, Level.ERROR or Level.FATAL.  
+     */
+
+    public void setPriority(Level p);
 		
 }
