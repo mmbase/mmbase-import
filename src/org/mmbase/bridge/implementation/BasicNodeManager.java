@@ -39,11 +39,13 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.84 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.85 2004-12-20 17:54:44 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static final  Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
+
+    private long internalVersion = -1;
 
     // builder on which the type is based
     protected MMObjectBuilder builder;
@@ -135,22 +137,38 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 return;
             }
         }
-        // clear the list of fields..
-        // why is this needed?
-        List fields = builder.getFields();
-        if (fields != null) { // when is it null?
-            fieldTypes.clear();
-            for(Iterator i = fields.iterator(); i.hasNext();){
-                FieldDefs f = (FieldDefs) i.next();
-                Field ft = new BasicField(f, this);
-                if (f.getDBPos() > 0) {
-                    fieldTypes.put(ft.getName(),ft);
+        sync();
+    }
+
+    /**
+     * Syncs the nodemanger with the builder.
+     * Loads the fieldlist from the associated builder if needed.
+     */
+    synchronized private void sync() {
+        long builderVersion = builder.getInternalVersion();
+        if (internalVersion < builderVersion) {
+            internalVersion = builderVersion;
+            List fields = builder.getFields();
+            if (fields != null) { // when is it null?
+                fieldTypes.clear();
+                for(Iterator i = fields.iterator(); i.hasNext();){
+                    FieldDefs f = (FieldDefs) i.next();
+                    Field ft = new BasicField(f, this);
+                    if (f.getDBPos() > 0) {
+                        fieldTypes.put(ft.getName(),ft);
+                    }
                 }
             }
         }
-
     }
 
+    /**
+     * Returns the fieldlist of this nodemanager afetr making sure the manager is synced with the builder.
+     */
+    protected Map getFieldTypes() {
+        sync();
+        return fieldTypes;
+    }
 
     public Node createNode() {
         // create object as a temporary node
@@ -249,24 +267,25 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public FieldList getFields() {
-        return new BasicFieldList(fieldTypes.values(), this);
+        return getFields(NodeManager.ORDER_NONE);
     }
 
     public FieldList getFields(int order) {
         if (builder != null) {
             return new BasicFieldList(builder.getFields(order), this);
+        } else {
+            return new BasicFieldList(getFieldTypes().values(), this);
         }
-        return getFields();
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f = (Field) fieldTypes.get(fieldName);
+        Field f = (Field) getFieldTypes().get(fieldName);
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.");
         return f;
     }
 
     public boolean hasField(String fieldName) {
-        return fieldTypes.get(fieldName) != null;
+        return getFieldTypes().get(fieldName) != null;
     }
 
 
