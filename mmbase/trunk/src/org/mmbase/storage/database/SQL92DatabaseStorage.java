@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.1 2002-09-16 15:07:37 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.2 2002-09-18 14:52:34 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -166,6 +166,16 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             }
         }
         return applyCreateScheme(tableName, fields, parentTableName)+";";
+    }
+
+    /**
+     * Returns the SQL command to use for dropping a specified table
+     * Overide this method to add a database-specific syntax or optimalization
+     * @param tableName the name of the table to drop
+     * @return the sql query
+     */
+    protected String dropSQL(String tableName) {
+        return "DROP TABLE "+tableName+";";
     }
 
     /**
@@ -857,7 +867,19 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return true if succesful
      */
     public boolean drop(MMObjectBuilder builder) {
-        throw new UnsupportedOperationException();
+        boolean success=false;
+        DatabaseTransaction trans=null;
+        try {
+            trans=createDatabaseTransaction(false);
+            String sqlselect=dropSQL(builder.getFullTableName());
+            trans.executeQuery(sqlselect);
+            trans.commit();
+            success=true;
+        } catch (StorageException e) {
+            if (trans!=null) trans.rollback();
+            log.debug(e.getMessage());
+        }
+        return success;
     }
 
     /**
