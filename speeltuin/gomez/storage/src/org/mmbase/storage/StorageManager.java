@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.10 2003-08-01 08:08:39 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.11 2003-08-01 08:09:53 pierre Exp $
  */
 public interface StorageManager {
 
@@ -80,7 +80,7 @@ public interface StorageManager {
      * @return the retrieved text
      * @throws StorageException if an error occurred while retrieving the text value
      */
-    public String getTextValue(MMObjectNode node, FieldDefs field) throws StorageException;
+    public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException;
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
