@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.12 2002-05-30 12:56:07 pierre Exp $
+ * @version $Id: Dove.java,v 1.13 2002-06-03 12:49:13 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -128,7 +128,7 @@ public class Dove extends AbstractDove {
     public void getDataNode(Element in, Element out, org.mmbase.bridge.Node nd) {
         NodeManager nm=nd.getNodeManager();
         out.setAttribute(ELM_TYPE,nm.getName());
-
+        // load fields
         Element field=getFirstElement(in,FIELD);
         if (field==null) {
             for (FieldIterator i=nm.getFields().fieldIterator(); i.hasNext(); ) {
@@ -145,22 +145,26 @@ public class Dove extends AbstractDove {
             }
         } else {
             while (field!=null) { // select all child tags, should be 'field'
-                if (field.getTagName().equals(FIELD)) {
-                    String fname=(String)field.getAttribute(ELM_NAME);
-                    if ((fname==null) || (fname.equals(""))) {
-                        Element err=addContentElement(ERROR,"name required for field",out);
-                        err.setAttribute(ELM_TYPE,IS_PARSER);
-                    } else if (isDataField(nd,fname)) {
-                        String val="";
-                        if (nm.getField(fname).getType()!=Field.TYPE_BYTE) {
-                            val=nd.getStringValue(fname);
-                        }
-                        Element fel=addContentElement(FIELD,val,out);
-                        fel.setAttribute(ELM_NAME,fname);
+                String fname=(String)field.getAttribute(ELM_NAME);
+                if ((fname==null) || (fname.equals(""))) {
+                    Element err=addContentElement(ERROR,"name required for field",out);
+                    err.setAttribute(ELM_TYPE,IS_PARSER);
+                } else if (isDataField(nd,fname)) {
+                    String val="";
+                    if (nm.getField(fname).getType()!=Field.TYPE_BYTE) {
+                        val=nd.getStringValue(fname);
                     }
+                    Element fel=addContentElement(FIELD,val,out);
+                    fel.setAttribute(ELM_NAME,fname);
                 }
                 field=getNextElement(field,FIELD);
             }
+        }
+        // load relations
+        Element relation=getFirstElement(in,RELATION);
+        while (relation!=null) { // select all child tags, should be 'relation'
+            addRelationNodes(relation,out,nd);
+            relation=getNextElement(relation,RELATION);
         }
     }
 
@@ -196,6 +200,64 @@ public class Dove extends AbstractDove {
     }
 
     /**
+     * Retrives the relations of a node and adds its content to a DOM element.
+     * This method accepts a DOM element (describing a relation), which may contain as it
+     * child nodes elements describing the fields as well as the related object to retrieve.
+     *
+     * @param relation the element that described the relation
+     *           The childnodes (if present) should describe the fields to retrieve, and possibly
+     *           a description of the related object.
+     * @param out the element that describes the source node.
+     *           Retrieved relations should be added as childs to this element.
+     * @param nd the MMBase node that shoudl eb sued to query the relations
+     */
+    protected void addRelationNodes(Element relation, Element out, org.mmbase.bridge.Node nd) {
+        int thisNumber=nd.getNumber();
+        String role=(String)relation.getAttribute(ELM_ROLE);
+        if ("".equals(role)) role=null;
+        String destinationType=(String)relation.getAttribute(ELM_DESTINATIONTYPE);
+        if (("".equals(destinationType)) || (destinationType==null)) {
+            destinationType=(String)relation.getAttribute(ELM_DESTINATION);
+        }
+        if ("".equals(destinationType)) destinationType=null;
+
+        // determines whether to load the object (and possible restrictions)
+        Element objectDef=getFirstElement(relation,OBJECT);
+        try {
+            for (RelationIterator i=nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
+                Relation nrel=i.nextRelation();
+                Element data=doc.createElement(RELATION);
+                if (role!=null) {
+                    data.setAttribute(ELM_ROLE, role);
+                } else {
+                    data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
+                }
+                int othernumber=nrel.getIntValue("dnumber");
+                if (thisNumber==nrel.getIntValue("snumber")) {
+                    data.setAttribute(ELM_SOURCE, ""+nrel.getValue("snumber"));
+                    data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("dnumber"));
+                } else {
+                    data.setAttribute(ELM_SOURCE, ""+nrel.getValue("dnumber"));
+                    data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("snumber"));
+                    othernumber=nrel.getIntValue("snumber");
+                }
+                data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
+                out.appendChild(data);
+                getDataNode(relation,data,nrel);
+                if (objectDef!=null) {
+                    Element nodeData=doc.createElement(OBJECT);
+                    nodeData.setAttribute(ELM_NUMBER, ""+othernumber);
+                    data.appendChild(nodeData);
+                    getDataNode(objectDef,nodeData,nd.getCloud().getNode(othernumber));
+                }
+            }
+        } catch (RuntimeException e) {
+            Element err=addContentElement(ERROR,"role or nodetype for relation invalid ("+e.getMessage()+")",out);
+            err.setAttribute(ELM_TYPE,IS_CLIENT);
+        }
+    }
+
+    /**
      * Handles a node by retrieving its relations and storing its content in a
      * DOM element.
      * This method accepts a DOM element (describing a node), which may contain as it
@@ -217,8 +279,8 @@ public class Dove extends AbstractDove {
             out.setAttribute(ELM_TYPE,nm.getName());
 
             Element relation=getFirstElement(in,RELATION);
-            int thisNumber=nd.getNumber();
             if (relation==null) {
+                int thisNumber=nd.getNumber();
                 for (RelationIterator i=nd.getRelations().relationIterator(); i.hasNext(); ) {
                     Relation nrel=i.nextRelation();
                     Element data=doc.createElement(RELATION);
@@ -236,50 +298,7 @@ public class Dove extends AbstractDove {
                 }
             } else {
                 while (relation!=null) { // select all child tags, should be 'relation'
-                    if (relation.getTagName().equals(RELATION)) {
-                        String role=(String)relation.getAttribute(ELM_ROLE);
-                        if ("".equals(role)) role=null;
-                        String destinationType=(String)relation.getAttribute(ELM_DESTINATIONTYPE);
-                        if (("".equals(destinationType)) || (destinationType==null)) {
-                            destinationType=(String)relation.getAttribute(ELM_DESTINATION);
-                        }
-                        if ("".equals(destinationType)) destinationType=null;
-
-                        // determines whether to load the object (and possible restrictions)
-                        Element objectDef=getFirstElement(relation,OBJECT);
-                        try {
-                            for (RelationIterator i=nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
-                                Relation nrel=i.nextRelation();
-                                Element data=doc.createElement(RELATION);
-                                if (role!=null) {
-                                    data.setAttribute(ELM_ROLE, role);
-                                } else {
-                                    data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
-                                }
-                                int othernumber=nrel.getIntValue("dnumber");
-                                if (thisNumber==nrel.getIntValue("snumber")) {
-                                    data.setAttribute(ELM_SOURCE, ""+nrel.getValue("snumber"));
-                                    data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("dnumber"));
-                                } else {
-                                    data.setAttribute(ELM_SOURCE, ""+nrel.getValue("dnumber"));
-                                    data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("snumber"));
-                                    othernumber=nrel.getIntValue("snumber");
-                                }
-                                data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
-                                out.appendChild(data);
-                                getDataNode(relation,data,nrel);
-                                if (objectDef!=null) {
-                                    Element nodeData=doc.createElement(OBJECT);
-                                    nodeData.setAttribute(ELM_NUMBER, ""+othernumber);
-                                    data.appendChild(nodeData);
-                                    getDataNode(objectDef,nodeData,cloud.getNode(othernumber));
-                                }
-                            }
-                        } catch (RuntimeException e) {
-                            Element err=addContentElement(ERROR,"role or nodetype for relation invalid ("+e.getMessage()+")",out);
-                            err.setAttribute(ELM_TYPE,IS_CLIENT);
-                        }
-                    }
+                    addRelationNodes(relation,out,nd);
                     relation=getNextElement(relation,RELATION);
                }
             }
