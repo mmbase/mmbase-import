@@ -32,7 +32,7 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
 
     private static final Map utilReaders = new HashMap();     // class -> utilreader
 
-    protected static Map regexps = new LinkedHashMap();
+    protected static final Map regexps = new LinkedHashMap();
 
     protected static abstract class PatternWatcher extends ResourceWatcher {
         protected Map patterns;
@@ -76,9 +76,9 @@ public class RegexpReplacer extends ReaderTransformer implements CharTransformer
 
         patterns.clear();
         
-        Map regexps = (Map) utilReader.getProperties().get("regexps");
-        if (regexps != null) {
-            Iterator i = regexps.entrySet().iterator();
+        Map regs = (Map) utilReader.getProperties().get("regexps");
+        if (regs != null) {
+            Iterator i = regs.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry) i.next();
                 Pattern p       = Pattern.compile((String) entry.getKey());

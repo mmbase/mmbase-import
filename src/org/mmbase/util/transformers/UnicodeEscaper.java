@@ -18,8 +18,8 @@ import org.mmbase.util.logging.*;
  * To escape from and to 'java' like unicode escaping. That is \\u<4 hex digits>.
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
- * @version $Id: UnicodeEscaper.java,v 1.1 2004-10-15 18:45:41 michiel Exp $
+ * @since MMBase-1.7.2
+ * @version $Id: UnicodeEscaper.java,v 1.2 2005-03-16 19:01:38 michiel Exp $
  */
 
 public class UnicodeEscaper extends ReaderTransformer implements CharTransformer {
