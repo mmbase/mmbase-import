@@ -26,6 +26,7 @@
           <select name="mmjspeditors_style">
             <option value="base.css" <mm:compare referid="config.style_sheet" value="base.css">selected="selected"</mm:compare>>basic</option>
             <option value="mmbase.css" <mm:compare referid="config.style_sheet" value="mmbase.css">selected="selected"</mm:compare>>default</option>
+            <option value="mmbase-1.6.css" <mm:compare referid="config.style_sheet" value="mmbase-1.6.css">selected="selected"</mm:compare>>mmbase 1.6</option>
             <option value="classic.css" <mm:compare referid="config.style_sheet" value="classic.css">selected="selected"</mm:compare>>classic</option>
             <option value="red.css" <mm:compare referid="config.style_sheet" value="red.css">selected="selected"</mm:compare>>red</option>
             <option value="blue.css" <mm:compare referid="config.style_sheet" value="blue.css">selected="selected"</mm:compare>>blue</option>
