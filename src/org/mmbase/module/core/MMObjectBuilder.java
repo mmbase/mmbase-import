@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.286 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.287 2004-12-17 15:32:32 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2748,7 +2748,8 @@ public class MMObjectBuilder extends MMTable {
                 if (log.isDebugEnabled()) {
                     log.debug("function = '" + function + "', fieldname = '" + name + "'");
                 }
-                List a = new ArrayList(); a.add(name);
+                List a = new ArrayList(); 
+                a.add(name);
                 rtn = getFunctionValue(node, function, a);
 
             }
@@ -2968,7 +2969,7 @@ public class MMObjectBuilder extends MMTable {
         }
 
         String field = "";
-        if (arguments != null && arguments.size() == 0) {
+        if (arguments != null && arguments.size() > 0) {
             Object o = arguments.get(0);
             if (o instanceof String) {
                 field = (String) o;
@@ -3021,7 +3022,7 @@ public class MMObjectBuilder extends MMTable {
             String val=node.getStringValue(field);
             return getWAP(val);
         } else if (function.equals("html")) {
-            String val=node.getStringValue(field);
+            String val = node.getStringValue(field);
             return getHTML(val);
         } else if (function.equals("shorted")) {
             String val=node.getStringValue(field);
