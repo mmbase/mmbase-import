@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.39 2002-10-04 14:47:14 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.40 2002-10-09 09:13:21 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -38,7 +38,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     protected MMObjectBuilder builder;
 
     // field types
-    protected Hashtable fieldTypes = new Hashtable();
+    protected Map fieldTypes = new Hashtable();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -114,7 +114,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
 
         if (getMMObjectBuilder() instanceof TypeDef) {
-            return new BasicRelation(node, this, id);
+            // returing a node for the moment...
+            // Having a not-yet commited NodeManager does not seem wise...
+            return new BasicNode(node, this, id);
         } else if (getMMObjectBuilder() instanceof InsRel) {
             return new BasicRelation(node, this, id);
         } else {
@@ -179,7 +181,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public NodeList getList(String constraints, String orderby, String directions) {
-        MMObjectBuilder builder=getMMObjectBuilder();
+        MMObjectBuilder builder = getMMObjectBuilder();
 
         // begin of check invalid search command
         org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
