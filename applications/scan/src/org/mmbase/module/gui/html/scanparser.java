@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.29 2000-11-06 13:32:37 vpro Exp $
+$Id: scanparser.java,v 1.30 2000-11-19 00:17:51 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.29  2000/11/06 13:32:37  vpro
+Rico: Added code from david to support relative parts
+
 Revision 1.28  2000/11/02 11:15:52  install
 Changed evaluation sequence, TRANSACTION will be evaluated before GOTO
 
@@ -110,7 +113,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.29 $ $Date: 2000-11-06 13:32:37 $
+ * @$Revision: 1.30 $ $Date: 2000-11-19 00:17:51 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -141,18 +144,19 @@ public class scanparser extends ProcessorModule {
 	public scanparser() {
 		documentRoot=System.getProperty("mmbase.htmlroot");
 		if (documentRoot==null) {
-			debug("ERROR: could not retrieve document root, use property (-D)mmbase.htmlroot=/my/html/root/dir !");
+			String dtmp=System.getProperty("mmbase.mode");
+			if (dtmp!=null && dtmp.equals("demo")) {
+				String curdir=System.getProperty("user.dir");
+				htmlroot=curdir+"/default-web-app/";
+			} else {
+				debug("ERROR: could not retrieve document root, use property (-D)mmbase.htmlroot=/my/html/root/dir !");
+			}
 		} else {
 			if (documentRoot.endsWith(File.separator)) {
 				documentRoot=documentRoot.substring(0,documentRoot.length()-1);
 			}
 			htmlroot=documentRoot+File.separatorChar;
 			debug("Using documentRoot : "+documentRoot);
-			String dtmp=System.getProperty("mmbase.mode");
-			if (dtmp!=null && dtmp.equals("demo")) {
-				String curdir=System.getProperty("user.dir");
-				htmlroot=curdir+"/default-web-app/";
-			}
 		}
 	}
 
