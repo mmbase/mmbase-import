@@ -122,7 +122,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     private   Generator xmlGenerator  = null;  
 
     /**
-     * A handle necessary when using the Time Tag;
+     * A handle necessary when using the Timer Tag;
      */
     protected int timerHandle;
 
@@ -346,7 +346,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         return FactoryCache.getCache().getFactory(cwd);
     }
 
-    /*
+    /**
      * Base function for XSL conversions, which this Tag does.
      *
      * It returns a String, even if it goes wrong, in which case the string contains the error
@@ -364,7 +364,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 cachedXslt = getFactory().newTemplates(xsl);
                 cache.put(xsl, cachedXslt);
             } catch (javax.xml.transform.TransformerConfigurationException e) {
-                throw new JspTagException(e.toString());
+                // throw new JspTagException(e.toString());
+                return e.toString();
             }
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
@@ -386,14 +387,11 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
      * @see #xslTransform
      * @param A name of an XSLT file.
      */
-    private String xslTransform(String xsl) {
+    private String xslTransform(String xsl) throws JspTagException {
         try {
-            return xslTransform(getFactory().getURIResolver().resolve(xsl, null));
-         } catch (Exception e) {
-            String msg =  "XSL transformation did not succeed: " + e.toString();
-            log.service(msg); // don't log this as warning or error, because web site builders can generate their own XSLT, which can contain errors.
-            log.error(Logging.stackTrace(e));
-            return msg + "\n";
-        }
+            return xslTransform(getFactory().getURIResolver().resolve(xsl, null));        
+         } catch (javax.xml.transform.TransformerException e) {
+             throw new JspTagException(e.toString() + ": " + Logging.stackTrace(e)); // probably the file could not be found.
+         }
     }
 }
