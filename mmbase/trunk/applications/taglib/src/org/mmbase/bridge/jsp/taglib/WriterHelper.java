@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.61 2005-03-15 10:35:42 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.62 2005-03-15 12:56:38 michiel Exp $
  */
 
 public class WriterHelper {
@@ -500,6 +500,7 @@ public class WriterHelper {
         try {
             String body = getString();
             BodyContent bodyContent = thisTag.getBodyContent();
+
             if (isWrite()) {
                 log.debug("Must write to page");
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
