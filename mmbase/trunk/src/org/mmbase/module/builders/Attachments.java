@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.31 2004-05-26 09:03:13 michiel Exp $
+ * @version $Id: Attachments.java,v 1.32 2004-05-27 13:07:38 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -188,8 +188,7 @@ public class Attachments extends AbstractServletBuilder {
                     String mime = null;
                     if (extension == null) {
                         mime = magic.getMimeType(handle);
-                    }
-                    else {
+                    } else {
                         mime = magic.getMimeType(handle, extension);
                     }
                     log.service("Found mime-type: " + mime);
@@ -207,7 +206,14 @@ public class Attachments extends AbstractServletBuilder {
         return super.insert(owner, node);
     }
     public boolean commit(MMObjectNode node) {
-        checkHandle(node);
+        Collection changed = node.getChanged();
+        if (changed.contains("handle")) {
+            node.setValue("mimetype", "");
+            checkHandle(node);
+        }
+        if (changed.contains("mimetype") && "".equals(node.getStringValue("mimetype"))) {
+            checkHandle(node);
+        }
         return super.commit(node);
     }
 
