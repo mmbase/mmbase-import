@@ -24,11 +24,10 @@ import org.mmbase.util.logging.*;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.3 $ $Date: 2001-04-18 10:01:49 $
+ * @version $Revision: 1.4 $ $Date: 2001-07-10 11:04:08 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
-
     private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
 
     public void warning(SAXParseException ex) {
@@ -40,8 +39,8 @@ public class XMLErrorHandler implements ErrorHandler {
     }
 
     public void fatalError(SAXParseException ex) throws SAXException {
-        log.error("[Fatal Error] "+ getLocationString(ex)+": "+ ex.getMessage());
-		throw ex;
+        log.fatal(getLocationString(ex)+": "+ ex.getMessage());
+	throw ex;
     }
 
     /**
@@ -57,9 +56,9 @@ public class XMLErrorHandler implements ErrorHandler {
 	        systemId = systemId.substring(index + 1);
 	    str.append(systemId);
 	}
-	str.append(':');
+	str.append(" line:");
 	str.append(ex.getLineNumber());
-	str.append(':');
+	str.append(" column:");
 	str.append(ex.getColumnNumber());
 
 	return str.toString();
