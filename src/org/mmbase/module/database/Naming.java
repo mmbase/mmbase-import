@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * this is a J2EE concept, this class provides support for usage of this.
  *
  * @author Eduard
- * @version $Id: Naming.java,v 1.2 2002-10-08 13:59:22 eduard Exp $
+ * @version $Id: Naming.java,v 1.3 2002-10-09 14:07:12 michiel Exp $
  */
 public class Naming extends ProcessorModule implements JDBCInterface {
     private static Logger log = Logging.getLoggerInstance(Naming.class.getName());
@@ -142,8 +142,7 @@ public class Naming extends ProcessorModule implements JDBCInterface {
 	    // closing a connection is very important!
 	    con.close();
 
-	}
-	catch(javax.naming.NamingException ne) {
+	} catch(javax.naming.NamingException ne) {
 	    String msg = "The following error occured while trying to initalise the datasource for context:'" + context + "' datasource:'" + source + "' :\n" + Logging.stackTrace(ne);
 	    log.error(msg);
 	    throw new RuntimeException(msg);
@@ -166,7 +165,12 @@ public class Naming extends ProcessorModule implements JDBCInterface {
      * retrieves an connection to the database, depending on the class which is used as datasource
      * @return Connection A connection to the database
      */
-    private Connection getConnection() throws java.sql.SQLException {
+    private Connection getConnection() throws java.sql.SQLException {     
+        if (datasource == null) {
+            log.error("Getting connection before init of jdbc module. Trying to reinitalize the database layer.");
+            init();            
+        }
+
 	if(datasource instanceof ConnectionPoolDataSource) {
 	    ConnectionPoolDataSource ds = (ConnectionPoolDataSource) datasource;
 	    PooledConnection pc = ds.getPooledConnection();
@@ -177,7 +181,7 @@ public class Naming extends ProcessorModule implements JDBCInterface {
 	    return ds.getConnection();
 	}
 	else {
-	    String msg = "Dont know how to retrieve a connection from datasource:" + datasource.getClass().getName();
+	    String msg = "Dont know how to retrieve a connection from datasource:" + (datasource != null ? datasource : datasource.getClass().getName());
 	    log.error(msg);
 	    throw new RuntimeException(msg);
 	}
