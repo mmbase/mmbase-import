@@ -1,22 +1,6 @@
 <%@ page isErrorPage="true" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@ page import="org.mmbase.applications.editwizard.*"
 %><%@ page import="org.w3c.dom.Document"
-%><%!
-    class Configurator extends Config.Configurator {
-
-        Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
-            super(req, res, c);
-        }
-
-        // which parameters to use to configure a list page
-        public void config(Config.ListConfig c) {
-        }
-
-        // which parameter to use to configure a wizard page
-        public void config(Config.WizardConfig c) {
-        };
-   }
-
 %><%
      try { 
         if(exception == null) exception = new javax.servlet.jsp.JspException("dummy-exception, to test the errorpage-page");
@@ -33,7 +17,7 @@
             params.put("backpage", ewConfig.backPage);
         } else {
             ewConfig = new Config();
-            Configurator configurator = new Configurator(request, response, ewConfig);
+            Config.Configurator configurator = new Config.Configurator(pageContext, ewConfig);
         }
         
         java.io.File template = ewConfig.uriResolver.resolveToFile("xsl/exception.xsl");
@@ -60,7 +44,7 @@
     
         Utils.transformNode(doc, template, ewConfig.uriResolver, out, params);
    } catch (Exception e) {
-        out.println("The following error occurred: "+exception);
+        out.println("The following error occurred: "+exception);  
    }
 %>
 
