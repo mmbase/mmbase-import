@@ -34,9 +34,10 @@
 <table width="100%" border="1" celpadding="1">
 <tr><th>Key</th><th>Value</th></tr>
 <%
-    Enumeration e = cache.getOrderedElements();
-    while (e.hasMoreElements()) {
-        out.println("<tr><td></td><td>" + e.nextElement() + "</td></tr>");
+    Iterator i = cache.getOrderedEntries(50).iterator();
+    while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+        out.println("<tr><td>" + entry.getKey() + "</td><td>" + entry.getValue() + "</td></tr>");
     }
 }
 %>
