@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * The collection of clouds, and modules within a Java Virtual Machine.
@@ -23,7 +23,7 @@ public interface CloudContext {
 	 * Retrieves all the modules available in this context
 	 * @return all available modules
 	 */
-	public Iterator getModules();
+	public List getModules();
 	
 	/**
 	 * Retrieves a Module
@@ -36,7 +36,7 @@ public interface CloudContext {
 	 * Retrieves all clouds within this context
 	 * @return all Clouds within this context
 	 */
-	public Iterator getClouds();
+	public List getClouds();
 
 	/**
 	 * Retrieves a Cloud
