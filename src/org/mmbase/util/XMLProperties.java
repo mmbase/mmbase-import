@@ -9,23 +9,24 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
+import javax.xml.parsers.*;
+
+import org.xml.sax.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
 * This is a flexible Properties version, it can handle saving of Properties with
 * the comments that will stay in your file.   
 * @author Jan van Oosterom
-* @version $Id: XMLProperties.java,v 1.4 2003-07-04 13:05:53 keesj Exp $
+* @version $Id: XMLProperties.java,v 1.5 2003-07-07 13:35:21 keesj Exp $
 */
 public class XMLProperties extends Properties implements ContentHandler {
-
+    private static Logger log = Logging.getLoggerInstance(XMLProperties.class);
     private StringBuffer characterData = null;
     private String rootElementName = null;
     private String startElementName = null;
@@ -154,4 +155,29 @@ public class XMLProperties extends Properties implements ContentHandler {
      * Receive notification of a skipped entity.
      */
     public void skippedEntity(String name) {}
+
+    /**
+     * Read an XML file in which key/value pairs are represented as tag and content
+     *
+     * @param path Full path to XML file
+     *
+     * @return Hashtable with the key/value pairs or an empty Hashtable if something went wrong.
+     */
+    public static XMLProperties getPropertiesFromXML(String file) {
+        XMLProperties xmlProperties = new XMLProperties();
+
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+        saxParserFactory.setValidating(false);
+
+        try {
+            SAXParser saxParser = saxParserFactory.newSAXParser();
+            XMLReader reader = saxParser.getXMLReader();
+            reader.setContentHandler(xmlProperties);
+            reader.parse(new InputSource(new FileInputStream(new File(file))));
+            //reader.parse(new InputSource(new FileInputStream(new File(configpath + File.separator + path))));
+        } catch (Exception e) {
+            log.error("Error reading xml properties file " +file + ". Returning empty hashtable.");
+        }
+        return xmlProperties;
+    }
 }
