@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.42 2002-06-28 07:49:24 pierre Exp $
+ * @version $Id: servdb.java,v 1.43 2002-06-28 21:01:57 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -70,7 +70,6 @@ public class servdb extends JamesServlet {
         super.init();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servdb.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
         playlists = (PlaylistsInterface) getModule("PLAYLISTS");
         cache = (cacheInterface) getModule("cache");
         if (cache == null) {
@@ -103,12 +102,14 @@ public class servdb extends JamesServlet {
      * @vpro
      * @javadoc
      */
+
+    // perhaps this method can simply be doGet
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         Date lastmod;
         String templine,templine2;
         int filesize;
 
-        incRefCount(req);
+        incRefCount(req); // this is already done in service of MMBaseServlet, 
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
@@ -745,6 +746,7 @@ public class servdb extends JamesServlet {
      * cjr@dds.nl, July 27th 2000
      *
      * @return Byte array with contents of 'handle' field of attachment builder
+     * @deprecated moved to AttachmentServlet
      */
     public String getAttachmentFileName(Vector params) {
         log.debug("getAttachment(): param="+params);
@@ -773,6 +775,7 @@ public class servdb extends JamesServlet {
      * cjr@dds.nl, July 27th 2000
      *
      * @return Byte array with contents of 'handle' field of attachment builder
+     * @deprecated moved to AttachmentServlet
      */
     public byte[] getAttachment(Vector params) {
         log.debug("getAttachment(): param="+params);
@@ -804,6 +807,7 @@ public class servdb extends JamesServlet {
      * cjr@dds.nl, July 27th 2000
      *
      * @return Mimetype of attachment
+     * @deprecated moved to AttachmentServlet
      */
     public String getAttachmentMimeType(Vector params) {
         if (params.size()==1) {
