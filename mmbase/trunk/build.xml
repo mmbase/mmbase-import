@@ -69,7 +69,7 @@ several MMBase-checkouts.
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="on"/>
-  <property name="deprecation" value="on"/>
+  <property name="deprecation" value="off"/>
   <property name="javadoc.cleaning" value="true"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge,org.mmbase.storage.search"/>
@@ -101,6 +101,7 @@ several MMBase-checkouts.
   <property name="compile.lib.dir"      value="${build.dir}/lib"/>
   <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
   <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
+  <property name="jar.download"           value="http://www.mmbase.org/download/jars"/>
 
   <target name="init" depends="check.dir.all">
     <condition property="do.documentation">
@@ -954,7 +955,7 @@ Build-compiler: ${build.compiler}
 
 
     <property name="servlet.version" value="jakarta-servletapi-4"/>
-    <property name="servlet.url" value="http://archive.apache.org/dist/jakarta/tomcat-4/archive/v4.0/${servlet.version}.tar.gz"/>
+    <property name="servlet.url" value="${jar.download}/jakarta-servletapi/${servlet.version}.tar.gz"/>
     <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
     <available property="servlet.present"
                file="${download.dir}/${servlet.version}.tar.gz"/>
@@ -990,7 +991,7 @@ Build-compiler: ${build.compiler}
     -->
     <property name="xalan.version" value="xalan-j_2_2"/>
     <property name="xalan.fullversion" value="xalan-j_2_2_0"/>
-    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/old/${xalan.version}-bin.tar.gz"/>
+    <property name="xalan.url" value="${jar.download}/xalan/${xalan.version}-bin.tar.gz"/>
     <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xerces.jar"/>
 
     <property name="xalan.jar" value="${expand.dir}/${xalan.fullversion}/bin/xalan.jar"/>
@@ -1001,10 +1002,9 @@ Build-compiler: ${build.compiler}
     <available property="xalan.expanded"
                file="${expand.dir}/${xalan.fullversion}"/>
 
-    <property name="sun.download" value="http://java.sun.com/Download5?protocol=HTTP%20download&amp;platform=zip&amp;domain-checked=&amp;document=download&amp;mirror=http&amp;referer=" />
     <!-- JAI -->
     <property name="jai.version" value="jai1_0_2-lib-solaris"/>
-    <property name="jai.url" value="${sun.download}http://java.sun.com/products/java-media/jai/downloads/download-1_0_2.html&amp;download-name=jai1_0_2-lib-solaris.tar.gz&amp;config-file=jai1_0_2.config"/>
+    <property name="jai.url" value="${jar.download}/jai/${jai.version}.tar.gz"/>
     <property name="jai_codec.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_codec.jar"/>
     <property name="jai_core.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_core.jar"/>
     <available property="jai.present"
@@ -1015,7 +1015,7 @@ Build-compiler: ${build.compiler}
     <!-- mail.jar -->
     <property name="javamail_version" value="javamail-1_3"/>
     <property name="javamail.version" value="javamail-1.3"/>
-    <property name="javamail.url" value="${sun.download}http://java.sun.com/products/javamail/&amp;download-name=${javamail_version}.zip&amp;config-file=${javamail_version}.config"/>
+    <property name="javamail.url" value="${jar.download}/javamail/${javamail_version}.zip"/>
     <property name="javamail.jar" value="${expand.dir}/${javamail.version}/mail.jar" />
 
     <available property="javamail.present"  file="${download.dir}/${javamail_version}.zip"/>
@@ -1025,7 +1025,7 @@ Build-compiler: ${build.compiler}
     <!-- activation.jar -->
     <property name="javaactivation_version" value="jaf-1_0_2"/>
     <property name="javaactivation.version" value="jaf-1.0.2"/>
-   <property name="javaactivation.url" value="${sun.download}http://java.sun.com/products/javabeans/glasgow/jaf.html&amp;download-name=${javaactivation_version}.zip&amp;config-file=${javaactivation_version}.config"/>
+   <property name="javaactivation.url" value="${jar.download}/jaf/${javaactivation_version}.zip"/>
     <property name="javaactivation.jar" value="${expand.dir}/${javaactivation.version}/activation.jar" />
 
     <available property="javaactivation.present"  file="${download.dir}/${javaactivation_version}.zip"/>
@@ -1034,7 +1034,7 @@ Build-compiler: ${build.compiler}
     <!-- Log4j -->
     <property name="log4j.version" value="1.2.8" />
     <property name="log4j.fullversion" value="jakarta-log4j-${log4j.version}"/>
-    <property name="log4j.url"         value="http://jakarta.apache.org/log4j/${log4j.fullversion}.tar.gz"/>
+    <property name="log4j.url"         value="${jar.download}/jakarta-log4j/${log4j.fullversion}.tgz"/>
     <property name="log4j.jarpath" value="dist/lib/log4j-${log4j.version}.jar" />
     <property name="log4j.jar" value="${expand.dir}/${log4j.fullversion}/${log4j.jarpath}" />
     <available property="log4j.present"
@@ -1051,7 +1051,7 @@ Build-compiler: ${build.compiler}
 
 
     <!-- JDBC jar -->
-    <property  name="jdbc.url" value="http://java.sun.com/Download3?protocol=HTTP%20download&amp;referer=http://java.sun.com/products/jdbc/download.html&amp;download-name=jdbc2_0-stdext.jar&amp;config-file=jdbc2_0-stdext-bin.config&amp;platform=jar&amp;domain-checked=&amp;" />
+    <property  name="jdbc.url" value="${jar.download}/jdbc/jdbc.jar" />
 
     <property name="jdbc.jar" value="${download.dir}/jdbc.jar" />
     <available property="jdbc.present" file="${jdbc.jar}" />
