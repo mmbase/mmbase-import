@@ -25,7 +25,7 @@ import javax.servlet.http.*;
  *
  * INFO:
  * The classification stuff is added for backwards compatibility for the VPRO. This is
- * already depricated and will be removed in new versions.
+ * already deprecated and will be removed in new versions.
  *
  * Caching will be handled in caching package, and will be implemented in the end.
  *
@@ -45,95 +45,80 @@ public class MediaFragments extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
     
     // This filter is able to find the best mediasource by a mediafragment.
-    private MediaSourceFilter mediaSourceFilter  = null;
+    private MediaSourceFilter mediaSourceFilter;
     
     // The media source builder
-    private MediaSources      mediaSourceBuilder = null;
+    private MediaSources      mediaSourceBuilder;
     
-    // Is the mediafragment builders already init ?
+    // Is the mediafragment builders already inited ?
+    // this class is used for several builders (mediafragments and descendants)
+
     private boolean           initDone           = false;
     
-    // deprecated, for downwards compatability
-    private Map               classification     = null;
-    
-    public MediaFragments() {
-    }
-    
+  
     public boolean init() {
         if(initDone) return super.init();
-
         log.service("Init of media-fragments");
-        
-        initDone = true;
-        
+       
+        initDone = true;       
         boolean result = super.init();
-               
+              
         // Retrieve a reference to the MediaSource builder
         mediaSourceBuilder = (MediaSources) mmb.getMMObject("mediasources");
-        if(mediaSourceBuilder==null) {
+
+        
+        if(mediaSourceBuilder == null) {
             log.error("Builder mediasources is not loaded.");
         } else {
             log.debug("The builder mediasources is retrieved.");
         }
         
-        mediaSourceFilter = new MediaSourceFilter(this, mediaSourceBuilder);
-        
-        // depricated for downwards compatibility
-        //retrieveClassificationInfo();
-        
+        mediaSourceFilter = new MediaSourceFilter(this, mediaSourceBuilder);        
+
+        // deprecated:
+        retrieveClassificationInfo();
+
         return result;
     }
-    
-    /**
-     * For downloads compatibility reasons, the first version of the mediafragment builder
-     * will contain the classification field. This field will contain numbers that are 
-     * resolved using the lookup builder. This construction, using classification in 
-     * mediafragment, was used for speeding up listings. 
-     * @deprecated
-     */
-    private void retrieveClassificationInfo() {
         
-        MMObjectBuilder lookup = (MMObjectBuilder) mmb.getMMObject("lookup");
-        if(lookup == null) {
-            log.debug("Downwards compatible classification code not used.");
-            return;
-        }
-        log.debug("Using downwards compatible classification code.");
-        classification =  new Hashtable();
-        MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
-        Vector nodes = fn.getRelatedNodes("lookup");
-        for (Enumeration e = nodes.elements();e.hasMoreElements();) {
-            MMObjectNode node = (MMObjectNode)e.nextElement();
-            String index = node.getStringValue("index");
-            String value = node.getStringValue("value");
-            log.debug("classification uses: " + index + " -> " + value);
-            classification.put(index,value);
-        }
-        return;
-    }
-    
     /**
-     * Create some virtual extra fields.
-     * @param node the mediapart
-     * @param field the virtual field
-     * @return the information of the virtual field
+     * 
      */
-    public Object getValue(MMObjectNode node, String field) {
-        if (field.equals("showurl")) {
-            // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getURL(node, new Hashtable());
-        } else if (field.equals("showurl")) {
-            // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getLongURL(node, new Hashtable());
-        } else if (field.equals("contenttype")) {
-            // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getContentType(node, new Hashtable());
-        } else if (field.equals("showlength")) {
-            return ""+calculateLength(node);
-        } else {
-            return super.getValue( node, field );
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
+        if (log.isDebugEnabled()) { 
+            log.debug("executeFunction  " + function + "(" + args + ") on" + node);
         }
+        if (function.equals("info")) {
+            List empty = new Vector();
+            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            info.put("showurl", "(<format>) ");
+            info.put("longurl", "(<format>) ");
+            info.put("urlresult", "(<??>) ");
+            info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
+
+            if (args == null || args.size() == 0) {
+                return info;
+            } else {
+                return info.get(args.get(0));
+            }            
+        } else if (args != null && args.size() > 0) {
+            if (function.equals("showurl")) {
+            // hashtable can be filled with speed/channel/ or other info to evalute the url.
+                return getURL(node, new Hashtable());
+            } else if (function.equals("longurl")) {
+                // hashtable can be filled with speed/channel/ or other info to evalute the url.
+                return getLongURL(node, new Hashtable());
+            } else if (function.equals("contenttype")) {
+                // hashtable can be filled with speed/channel/ or other info to evalute the url.
+                return getContentType(node, new Hashtable());
+            } else if (function.equals("showlength")) {
+                return ""+calculateLength(node);
+            }
+        }
+        log.debug("Function not matched in mediafragments");
+        return super.executeFunction(node, function, args);
     }
+
     
     /**
      * calculate the length of a mediafragment
@@ -147,7 +132,7 @@ public class MediaFragments extends MMObjectBuilder {
         
         if(stop != 0) {
             return stop - start;
-        } else if(length != 0) {
+        } else if (length != 0) {
             return length - start;
         }
         log.debug("length cannot be evaluated, no stoptime and no length");
@@ -210,8 +195,10 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info additional information provider by a user
      * @return the most appropriate media source
      */
-    private MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {        
-        log.debug("mediasourcefilter " + mediaSourceFilter + " info " + info);
+    private MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {
+        if (log.isDebugEnabled()) {
+            log.debug("mediasourcefilter " + mediaSourceFilter + " info " + info);
+        }
         MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, info);
         if(mediaSource == null) {
             log.error("No matching media source found by media fragment (" + mediaFragment.getIntValue("number") + ")");
@@ -241,9 +228,8 @@ public class MediaFragments extends MMObjectBuilder {
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    public boolean isSubFragment(MMObjectNode mediafragment) {
-        int mediacount = mediafragment.getRelationCount("mediasources");
-        
+    protected boolean isSubFragment(MMObjectNode mediafragment) {
+        int mediacount = mediafragment.getRelationCount("mediasources");        
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
     
@@ -252,7 +238,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param mediafragment sub media fragment
      * @return the parent media fragment
      */
-    public MMObjectNode getParentFragment(MMObjectNode mediafragment) {
+    protected MMObjectNode getParentFragment(MMObjectNode mediafragment) {
         Enumeration e = mediafragment.getRelatedNodes("mediafragments").elements();
         
         if(!e.hasMoreElements()) {
@@ -264,11 +250,11 @@ public class MediaFragments extends MMObjectBuilder {
     }
     
     /**
-     * get all mediasources belonging to this mediafragment
+     * Get all mediasources belonging to this mediafragment
      * @param mediafragment the mediafragment
      * @return All mediasources related to given mediafragment
      */
-    public Vector getMediaSources(MMObjectNode mediafragment) {
+    protected List getMediaSources(MMObjectNode mediafragment) {
         if (log.isDebugEnabled()) log.debug("Get mediasources mediafragment "+mediafragment.getNumber());
         while(isSubFragment(mediafragment)) {
             if (log.isDebugEnabled()) log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
@@ -280,119 +266,58 @@ public class MediaFragments extends MMObjectBuilder {
         return mediasources;
     }
     
-    /**
-     * used by the editors
-     */
-    public String getGUIIndicator(String field,MMObjectNode node) {
-        return node.getStringValue(field);
-    }
     
     /**
-     * Removes related media sources.
-     * @param number objectnumber of the media fragment.
+     * Removes related media sources. This can be used by automatic recording VWMS's.
+     * 
+     * @param mediaFragment The MMObjectNode
      */
-    public void removeMediaSources(MMObjectNode mediafragment) {
-        Vector ms = getMediaSources(mediafragment);
-        for (Iterator mediaSources = ms.iterator();mediaSources.hasNext();) {
-            MMObjectNode mediaSourceNode = (MMObjectNode)mediaSources.next();
+    public  void removeMediaSources(MMObjectNode mediafragment) {
+        List ms = getMediaSources(mediafragment);
+        for (Iterator mediaSources = ms.iterator() ;mediaSources.hasNext();) {
+            MMObjectNode mediaSourceNode = (MMObjectNode) mediaSources.next();
             mediaSourceBuilder.removeRelations(mediaSourceNode);
             mediaSourceBuilder.removeNode(mediaSourceNode);
         }
     }
-    
-    /**
-     * Replace all for frontend code
-     * Replace commands available are GETURL (gets mediafile url for an objectnumber),
-     * from cache or not depending on builder property.
-     * @param sp the scanpage
-     * @param sp the stringtokenizer reference with the replace command.
-     * @return the result value of the replace command or null.
-     */
-    public String replace(scanpage sp,StringTokenizer command) {
-        /*
-        if (command.hasMoreTokens()) {
-            String token=command.nextToken();
-            // debug("replace: The nextToken = "+token);
-            if (token.equals("GETURL")) {
-                int number=0;
-                int userSpeed=getMinSpeed();
-                int userChannels=getMinChannels();
-                if (command.hasMoreTokens()) number=getNumberParam(command.nextToken());
-                if (command.hasMoreTokens()) userSpeed=getSpeedParam(command.nextToken());
-                if (command.hasMoreTokens()) userChannels=getChannelsParam(command.nextToken());
-                if (number!=-1) {
-                    String url = null;
-                    if (urlCaching)
-                        url = getUrlFromCache(sp,number,userSpeed,userChannels);
-                    else
-                        url = getUrl(sp,number,userSpeed,userChannels);
-                    if (log.isDebugEnabled()) {
-                        log.debug("replace: GETURL returns: " + url);
-                    }
-                    return url;
-                } else {
-                    log.error("getUrl: No objectnumber defined.");
-                    return null;
-                }
-            } else if (token.equals("GETURLNOCACHE")) {
-                if (log.isDebugEnabled()) {
-                    log.debug("replace: Command is GETURLNOCACHE getting url directly.");
-                }
-                int number=0;
-                int userSpeed=getMinSpeed();
-                int userChannels=getMinChannels();
-                if (command.hasMoreTokens()) number=getNumberParam(command.nextToken());
-                if (command.hasMoreTokens()) userSpeed=getSpeedParam(command.nextToken());
-                if (command.hasMoreTokens()) userChannels=getChannelsParam(command.nextToken());
-                if (number!=-1) {
-                    String url = null;
-                    url = getUrl(sp,number,userSpeed,userChannels);
-                    if(log.isDebugEnabled()) {
-                        log.debug("replace: GETURLNOCACHE returns: " + url);
-                    }
-                    return url;
-                } else {
-                    log.error("getUrl: No objectnumber defined.");
-                    return null;
-                }
-            } else {
-                log.error("replace: Unknown command: "+token);
-                return "ERROR: Unknown command: "+token;
-            }
-        }
-        log.info("replace: No command defined.");
-         */
-        return "No command defined";
-    }
-    /**
-     * Called when a node was changed on a local server.
-     * @param machine Name of the node that was changed.
-     * @param number the object number of the node that was changed.
-     * @param builder the buildername of the object that was changed
-     * @param ctype the node changed type
-     * @return true, always
-     */
-    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        super.nodeLocalChanged(machine,number,builder,ctype);
-        if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
-        }
-        return true;
-    }
-    
-    /**
-     * Called when a node was changed by a remote server.
-     * @param machine Name of the node that was changed.
-     * @param number the object number of the node that was changed.
-     * @param builder the buildername of the object that was changed
-     * @param ctype the node changed type
-     * @return true, always
-     */
-    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-        super.nodeRemoteChanged(machine,number,builder,ctype);
-        if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);
-        }
-        return true;
-    }
+
+
+    // --------------------------------------------------------------------------------
+    // 
+
+        
+    // deprecated, for downwards compatability
+    private Map               classification     = null;
+
+     /**
+      * For backwards compatibility reasons, the first version of the mediafragment builder
+      * will contain the classification field. This field will contain numbers that are 
+      * resolved using the lookup builder. This construction, using classification in 
+      * mediafragment, was used for speeding up listings. 
+      * @deprecated
+      */
+     private void retrieveClassificationInfo() {
+
+         MMObjectBuilder lookup = (MMObjectBuilder) mmb.getMMObject("lookup");
+         if(lookup == null) {
+             log.debug("Downwards compatible classification code not used.");
+             return;
+         }
+         log.debug("Using downwards compatible classification code.");
+         classification =  new Hashtable();
+         MMObjectNode fn = getNode(mmb.getTypeDef().getIntValue("mediafragments"));
+         Vector nodes = fn.getRelatedNodes("lookup");
+         for (Enumeration e = nodes.elements();e.hasMoreElements();) {
+             MMObjectNode node = (MMObjectNode)e.nextElement();
+             String index = node.getStringValue("index");
+             String value = node.getStringValue("value");
+             log.debug("classification uses: " + index + " -> " + value);
+             classification.put(index,value);
+         }
+         return;
+     }
+     
+
+
+
 }
