@@ -18,7 +18,7 @@
 
 		<date>[date, format: YYYY-MM-DD ]</date>
 
-		<edition>$Id: installation.xml,v 1.1 2004-02-05 09:34:45 pierre Exp $</edition>
+		<edition>$Id: installation.xml,v 1.2 2004-02-05 14:05:23 pierre Exp $</edition>
 
 		<authorgroup>
 			<!-- one or more authors -->
@@ -89,9 +89,9 @@
 
 	<section id="filelist">
 		<title>Files and Resources [if applicable]</title>
-		<para>[List here all files included in this application. Remove this paragraph.]</para>
+		<para>[List here, for eacht 'set' of files, all files included in this application. Remove this paragraph.]</para>
 		<itemizedlist>
-			<title>[file set, i.e. Jars, Templates, Application, Configuration]:</title>
+			<title><link linkend="install_[fileset]">[file set, i.e. Jars, Templates, Application, Configuration]:</link></title>
 			<listitem>
 				<formalpara><title>[File or resource name, including pathinfo if applicable. can contain wildcards]</title></formalpara>
 				<para>[Basic description of the file or fileset]</para>
@@ -99,7 +99,7 @@
 		</itemizedlist>
 	</section>
 
-	<section id="install_[filename]">
+	<section id="install_[fileset]">
 		<title>Installing [file set, i.e. Jars, Templates, Application files]</title>
 		<para>[Place here a text describing where the files go. Use a list if the files go different places, or to giove suggestiosn for files whose location can be configured.]</para>
 		<itemizedlist>
