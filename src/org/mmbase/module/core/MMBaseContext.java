@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.34 2003-03-07 09:31:07 pierre Exp $
+ * @version $Id: MMBaseContext.java,v 1.35 2003-05-05 15:06:13 michiel Exp $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -313,6 +313,7 @@ public class MMBaseContext {
                     }
                     htmlRootInitialized = true;
                     log.info("mmbase.htmlroot   : " + htmlRoot);
+                    log.info("context           : " + getHtmlRootUrlPath());
                 }
             }
         }
