@@ -28,27 +28,32 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.9 2003-07-08 17:42:45 michiel Exp $
+ * @version $Id: Users.java,v 1.10 2003-07-14 21:17:20 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
 
-    private static final Logger log = Logging.getLoggerInstance(Users.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Users.class);
 
 
     public final static String FIELD_STATUS    = "status";
-    public final static String STATES_RESOURCE = "org.mmbase.security.states";
+    public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
     protected static Cache rankCache = new Cache(20) {
-            public String getName()        { return "RankCache"; }
+            public String getName()        { return "SecurityRankCache"; }
             public String getDescription() { return "Caches the rank of users"; }
         };
 
+    protected static Cache userCache = new Cache(20) {
+            public String getName()        { return "SecurityUserCache"; }
+            public String getDescription() { return "Caches the users"; }
+        };
 
     // javadoc inherited
     public boolean init() {
         rankCache.putCache();
         CacheInvalidator.getInstance().addCache(rankCache);
+        CacheInvalidator.getInstance().addCache(userCache);
         mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
 
@@ -190,10 +195,13 @@ public class Users extends MMObjectBuilder {
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
      */
     protected  MMObjectNode getUser(String userName)   {
-        MMObjectNode user = null;
-        Enumeration enumeration = searchWithWhere(" username = '" + userName + "'"); 
-        while(enumeration.hasMoreElements()) {
-            user = (MMObjectNode) enumeration.nextElement();
+        MMObjectNode user = (MMObjectNode) userCache.get(userName);
+        if (user == null) {
+            Enumeration enumeration = searchWithWhere(" username = '" + userName + "'"); 
+            while(enumeration.hasMoreElements()) {
+                user = (MMObjectNode) enumeration.nextElement();
+            }            
+            userCache.put(userName, user);
         }
         return user;
     }
@@ -212,6 +220,7 @@ public class Users extends MMObjectBuilder {
             removeNode(node);
             throw new SecurityException("Cannot insert user '" + userName + "', because there is already is a user with that name");
         }
+        userCache.clear();
         return res;
     }
 
@@ -271,7 +280,7 @@ public class Users extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
-            info.put("gui", "(state..) Gui representation of this object.");            
+            info.put("gui", "(status..) Gui representation of this object.");            
             if (args == null || args.size() == 0) {
                 return info;
             } else {
@@ -287,9 +296,9 @@ public class Users extends MMObjectBuilder {
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
                     if (args.size() > 1) {
-                        bundle = ResourceBundle.getBundle(STATES_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
+                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
                     } else {
-                        bundle = ResourceBundle.getBundle(STATES_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
+                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
                     }
                     try {
                         return bundle.getString(val);

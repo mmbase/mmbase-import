@@ -23,15 +23,17 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.2 2003-05-23 12:05:13 michiel Exp $
+ * @version $Id: Groups.java,v 1.3 2003-07-14 21:17:20 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(Groups.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Groups.class);
+
 
     // javadoc inherited
     public boolean init() {
-        mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
+        
+        mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
         return super.init();
     }
