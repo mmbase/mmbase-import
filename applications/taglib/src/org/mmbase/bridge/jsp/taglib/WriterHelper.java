@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.42 2004-01-19 13:32:11 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.43 2004-02-18 16:06:15 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -316,6 +316,13 @@ public class WriterHelper extends BodyTagSupport {
         case TYPE_FLOAT:
             if (! (v instanceof Float)) {
                 value =  new Float(v.toString());
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_DECIMAL:
+            if (! (v instanceof java.math.BigDecimal)) {
+                value =  new java.math.BigDecimal(v.toString());
                 setJspvar();
                 return;
             }
