@@ -19,29 +19,44 @@ import org.mmbase.util.logging.*;
 
 /**
  * Virtual WebMasterS (VWMS) are agents within MMBase.
- * To be able to start a VWMS the following things have to be done:
- * - Create a VWMS that does the work
- * - Start the VWMS in the VWMS-Builder.
- * - Make a relation from the Vwm object to a MMserver.
- * - start the VWMS-Builder if it isn't already running.
+ * To be able to start a VWMS the following things have to be done:<br />
+ * - Create a VWMS that does the work<br />
+ * - Start the VWMS in the VWMS-Builder.<br />
+ * - Make a relation from the Vwm object to a MMserver.       <br />
+ * - start the VWMS-Builder if it isn't already running.<br />
+ *<br />
+ * In the Vwms builder you have to insert the following information:<br />
+ * Name: name of the Vwm<br />
+ * Machine: machine on which the VwmM is running (wanted_cpu)<br />
+ * Maintenance_Time: This is the interval time in which the Vwm is invoked<br />
+ * State: inactive means Vwm is off. active means Vwm is on.<br />
+ * Description: just a description<br />
+ * ClassName: the classname of the actual VWM that is performing the task.<br />
  *
- * In the Vwms builder you have to insert the following information:
- * Name: name of the Vwm
- * Machine: machine on which the VwmM is running (wanted_cpu)
- * Maintenance_Time: This is the interval time in which the Vwm is invoked
- * State: inactive means Vwm is off. active means Vwm is on.
- * Description: just a description
- * ClassName: the classname of the actual VWM that is performing the task.
- *
- * (extracted from the VWMS documentation at www.MMBase.org)
+ * Note that currently, vwms are only started during startup.
  *
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
+ * @version 5-Apr-2001
  */
 
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
+ 	/**
+ 	* Status value for a VWM that it is inactive
+ 	*/
+ 	public static final int STATUS_INACTIVE = 1;
+ 	/**
+ 	* Status value for a VWM that it is active
+ 	*/
+ 	public static final int STATUS_ACTIVE = 2;
+ 	/**
+ 	* Status value for a VWM that it is being refreshed (?)
+ 	*/
+ 	public static final int STATUS_REFRESH = 3;
+	
+ 	// Logger
 	private static Logger log = Logging.getLoggerInstance(Vwms.class.getName());
 	
 	Hashtable vwm_cache = new Hashtable ();
@@ -71,11 +86,11 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 	public String getGUIIndicator (String field, MMObjectNode node) {
 		if (field.equals ("status")) {
 			int val = node.getIntValue ("status");
-			if (val==1) { 
+			if (val==STATUS_INACTIVE) {
 				return "inactive";
-			} else if (val==2) {
+			} else if (val==STATUS_ACTIVE) {
 				return "active";
-			} else if (val==3) {
+			} else if (val==STATUS_REFRESH) {
 				return "refresh";
 			} else {
 				return "unknown";
@@ -95,7 +110,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 	public void startVwmsByField() {
 		Class newclass;
 		log.debug("Vwms:startVwmsByField -> Vwms on machine "+getMachineName());
-		for (Enumeration f=search("WHERE (wantedcpu='"+getMachineName()+"' OR wantedcpu='*') AND status=2"); f.hasMoreElements();) {
+		for (Enumeration f=search("WHERE (wantedcpu='"+getMachineName()+"' OR wantedcpu='*') AND status="+STATUS_ACTIVE); f.hasMoreElements();) {
 			MMObjectNode node=(MMObjectNode)f.nextElement();
 			log.service("Vwms:startVwmsByField -> VWM="+node);
 			String name = node.getStringValue("name");
