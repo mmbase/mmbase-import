@@ -36,6 +36,7 @@ public class XMLRelationNodeReader  {
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             //Errors errors = new Errors();
             //parser.setErrorHandler(errors);
+	    filename="file:///"+filename;
             parser.parse(filename);
             document = parser.getDocument();
 
