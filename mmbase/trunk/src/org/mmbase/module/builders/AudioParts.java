@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.11 2000-05-22 13:21:21 wwwtech Exp $
+$Id: AudioParts.java,v 1.12 2000-05-26 12:09:28 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/05/22 13:21:21  wwwtech
+Rico: removed cdtrack references
+
 Revision 1.10  2000/05/19 11:15:42  wwwtech
 Rico: fixed package name
 
@@ -63,7 +66,7 @@ import nl.vpro.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.11 2000-05-22 13:21:21 wwwtech Exp $
+ * @version $Id: AudioParts.java,v 1.12 2000-05-26 12:09:28 wwwtech Exp $
  * 
  */
 public class AudioParts extends MMObjectBuilder {
@@ -314,7 +317,7 @@ public class AudioParts extends MMObjectBuilder {
 			String token=command.nextToken();
 			// debug("doGetUrl: The nextToken = "+token);
 
-			debug("doGetUrl: Session name = "+sp.sname);
+			// debug("doGetUrl: Session name = "+sp.sname);
 			try {
 				apNumber = Integer.parseInt(token);
 			} catch(Exception e) {
@@ -336,8 +339,11 @@ public class AudioParts extends MMObjectBuilder {
 						String hostName = RawAudios.getHostName(raNode.getStringValue("url"));
 						// Since a surestream controls the speed & channels himself, the other 2 args I give value 0.
 						String fileName = RawAudios.getFileName(format,0,0);
-						debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
-						return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+getSongInfo(apNumber)+getStartStopTimes(apNumber));
+						// debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
+						String songInfo = getSongInfo(apNumber);
+						String startstopTimes = getStartStopTimes(apNumber);
+						debug("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
+						return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
 					} else {
 						debug("doGetUrl: This rawaudio isn't ready yet status="+status);
 						return ("");
@@ -359,8 +365,11 @@ public class AudioParts extends MMObjectBuilder {
 					String protName = RawAudios.getProtocolName(RawAudios.RA_FORMAT);
 					String hostName = RawAudios.getHostName(bestNode.getStringValue("url"));
 					String fileName = RawAudios.getFileName(RawAudios.RA_FORMAT,speed,channels);
-					debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
-					return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+getSongInfo(apNumber)+getStartStopTimes(apNumber));
+					// debug("doGetUrl: protName = "+protName+" , hostName = "+hostName+" , fileName = "+fileName);
+					String songInfo = getSongInfo(apNumber);
+					String startstopTimes = getStartStopTimes(apNumber);
+					debug ("doGetUrl:Returns: "+protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
+					return (protName+"://"+hostName+"/"+apNumber+"/"+fileName+songInfo+startstopTimes);
 				} else {
 					debug("doGetUrl: There isn't any rawaudio available at this moment.");
 					return ("");
@@ -396,13 +405,13 @@ public class AudioParts extends MMObjectBuilder {
 		try {
 			// Retrieve speed & channels from either command args or users' SESSION VAR
 			if (command.hasMoreTokens()) {
-				debug("getBestRaNode: Gettings speed & channels settings from the command args.");
+				// debug("getBestRaNode: Gettings speed & channels settings from the command args.");
 				String token = command.nextToken();
 				userSpeed    = Integer.parseInt(token);
 				token = command.nextToken();
 				userChannels = Integer.parseInt(token);
 			} else {
-				debug("getBestRaNode: Gettings speed & channels settings from users' SESSION");
+				// debug("getBestRaNode: Gettings speed & channels settings from users' SESSION");
 				// Get the session module using "mmb" classfield from MMObjectBuilder from which AudioParts is extended.
 				sessionsInterface sessions = (sessionsInterface) mmb.getModule("SESSION");
 				sessionInfo session = sessions.getSession(sp,sp.sname);
@@ -415,7 +424,7 @@ public class AudioParts extends MMObjectBuilder {
 			// Since the userspeed & channels aren't set they are still 0 , so the closest to 0 will be used.
 		}
 
-		debug("getBestRaNode: userSpeed = "+userSpeed+" , userChannels = "+userChannels);
+		// debug("getBestRaNode: userSpeed = "+userSpeed+" , userChannels = "+userChannels);
 
 		//Calculate speed offset to speed in availableRaNodes vector.
 		Enumeration e = availableRaNodes.elements();
@@ -510,7 +519,7 @@ public class AudioParts extends MMObjectBuilder {
 		// NOTE: No "&" characters are allowed inside a title or author field.
 		String songinfo = "?title="+title+"&author="+author;
 
-		debug("getSongInfo: Returning String: "+"\""+songinfo+"\"");
+		// debug("getSongInfo: Returning String: "+"\""+songinfo+"\"");
 		return songinfo;
 	}
 
@@ -548,7 +557,8 @@ public class AudioParts extends MMObjectBuilder {
 		if (starttime != null) startstoptimes += "&start="+starttime;
 		if (stoptime  != null) startstoptimes += "&end="+stoptime;
 
-		debug("getStartStopTimes: Returning String: "+"\""+startstoptimes+"\"");
+		if ( (starttime != null) || (stoptime != null) )
+			debug("getStartStopTimes: Returning String: "+"\""+startstoptimes+"\"");
 		return startstoptimes;
 	}
 
