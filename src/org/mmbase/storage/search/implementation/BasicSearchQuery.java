@@ -14,15 +14,17 @@ import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.13 2003-09-02 21:33:58 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.14 2003-09-03 18:23:44 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
+    private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
     
     /** Distinct property. */
     private boolean distinct = false;
@@ -155,6 +157,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
                 }
             }
         }
+        //log.info("copied steps " + q.getSteps() + " became " + steps);
 
     }
     protected void copyFields(SearchQuery q) {        
@@ -166,19 +169,31 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             Step step = field.getStep();
             MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
             int j = q.getSteps().indexOf(step);
+            if (j == -1) {
+                throw new  RuntimeException("Step " + step + " could not be found in " + q.getSteps());
+            }
             Step newStep = (Step) steps.get(j);
             BasicStepField newField = addField(newStep, bul.getField(field.getFieldName()));
             newField.setAlias(field.getAlias());                                        
         }
+        //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
         sortOrders = new ArrayList();
+        MMBase mmb = MMBase.getMMBase();
         Iterator i = q.getSortOrders().iterator();
         while (i.hasNext()) {
             SortOrder sortOrder = (SortOrder) i.next();
             StepField field = sortOrder.getField();
             int j = q.getFields().indexOf(field);
-            StepField newField = (StepField) fields.get(j);
+            StepField newField;
+            if (j == -1) { // not sorting on field of field list.
+                Step step = field.getStep();
+                MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
+                newField = new BasicStepField(field.getStep(), bul.getField(field.getFieldName()));
+            } else {
+                newField = (StepField) fields.get(j);
+            }
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
         }
