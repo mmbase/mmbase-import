@@ -128,7 +128,6 @@ public class XMLNodeReader  {
 											newnode.setValue(key,-1);
 										}
 									} else if (type==FieldDefs.TYPE_BYTE) {
-										System.out.println("WOW i want to read a BIN !");
 										NamedNodeMap nm2=n5.getAttributes();
 										Node n7=nm2.getNamedItem("file");
 										newnode.setValue(key,readBytesFile(applicationpath+n7.getNodeValue()));
