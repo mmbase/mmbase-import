@@ -35,11 +35,14 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 * @author Kees Jongenburger
 **/
-abstract public class AbstractNodeProviderTag extends CloudReferrerTag implements NodeProvider{
+abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
+
+    // a node provider is a nodereferrer as well...
+    // this is especially useful for some extended classes (like 'relatednodes').
     
     private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class.getName());
     
-    protected Node   node;        
+    private   Node   node;        
     protected String fields = "";
     private   String jspvar = null;
     private   boolean  modified = false;
@@ -83,6 +86,11 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
     
     abstract public void doInitBody() throws JspTagException;
     
+    /**
+     * Fill the jsp vars.
+     *
+     */
+
     protected void fillVars() throws JspTagException {    
         Enumeration returnFieldEnum = stringSplitter(fields, ",").elements();
         int j=1;
@@ -96,12 +104,8 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
             //pageContext.setAttribute(getPrefix() + "item"+(j++) ,
             //                         "" + node.getValue(field));
         }
-        String id = getId();
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, node);
-        }
-        if (id != null && ! "".equals(id)) {
-            getContextTag().registerNode(id, node);
         }
     }
                
