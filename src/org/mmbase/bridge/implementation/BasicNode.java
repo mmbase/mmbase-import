@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.115 2003-12-30 09:14:17 nico Exp $
+ * @version $Id: BasicNode.java,v 1.116 2003-12-30 15:37:13 nico Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -920,11 +920,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         NodeQuery q = oalias.createQuery();
         Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
         q.setConstraint(c);
-        NodeList aliases = cloud.getList(q);
+        NodeList aliases = oalias.getList(q);
         StringList result = new BasicStringList();
         NodeIterator i = aliases.nodeIterator();
         while (i.hasNext()) {
-            result.add(i.nextNode().getStringValue("name"));
+            Node alias = i.nextNode();
+            result.add(alias.getStringValue("name"));
         }
         return result;
     }
