@@ -96,7 +96,7 @@ Change directory to ${build.dir}/orion and run:
   <property name="build.dir" value="${source.dir}/build"/>
   <property name="download.dir" value="${build.dir}/download"/>
   <property name="expand.dir" value="${download.dir}/expanded"/>
-  <property name="build.compiler" value="jikes"/>
+  <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="off"/>
   <property name="deprecation" value="off"/>
@@ -178,7 +178,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Clean the source distribution                                       -->
   <!-- =================================================================== -->
   <target name="clean.srcdist" description="Clean the source distribution">
-    <delete dir="${build.dir}/mmbase"/>
+    <delete dir="${build.dir}/mmbase-src"/>
   </target>
 
 
@@ -231,7 +231,7 @@ Change directory to ${build.dir}/orion and run:
   <target name="clean.bindist" description="Clean the binary distribution"
           depends="clean.compile">
     <delete dir="${build.dir}/mmbase"/>
-  </target>
+  </target> 
 
 
   <!-- =================================================================== -->
