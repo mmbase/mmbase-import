@@ -10,7 +10,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicStepTest extends TestCase {
     
@@ -170,6 +170,11 @@ public class BasicStepTest extends TestCase {
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ")"));
      }
+    
+    /** Test of getBuilder method, of class org.mmbase.storage.search.implementation.BasicStep. */
+    public void testGetBuilder() {
+        assertTrue(instance.getBuilder() == builder);
+    }
     
     public static Test suite() {
         TestSuite suite = new TestSuite(BasicStepTest.class);

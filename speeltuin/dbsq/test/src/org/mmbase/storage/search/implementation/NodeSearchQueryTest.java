@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -58,6 +58,18 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Test of constructor. */
     public void testConstructor() {
+        try {
+            // Null builder, should throw IllegalArgumentException.
+            new NodeSearchQuery(null);
+            fail("Null builder, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+            
+        try {
+            // Virtual builder, should throw IllegalArgumentException.
+            new NodeSearchQuery(new ClusterBuilder(mmbase));
+            fail("Virtual builder, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+            
         List fields = images.getFields();
         List stepFields = instance.getFields();
         Iterator iStepFields = stepFields.iterator();
@@ -69,7 +81,7 @@ public class NodeSearchQueryTest extends TestCase {
             assertTrue(field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
                     || field.getDBState() == FieldDefs.DBSTATE_SYSTEM);
         }
-        // Test all persistent fields from images are query.
+        // Test all persistent fields from images are in query.
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();

@@ -11,7 +11,7 @@ import org.mmbase.module.corebuilders.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicFieldValueInConstraintTest extends TestCase {
     
@@ -48,6 +48,7 @@ public class BasicFieldValueInConstraintTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**

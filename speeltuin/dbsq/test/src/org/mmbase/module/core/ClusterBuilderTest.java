@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ClusterBuilderTest extends TestCase {
     
@@ -37,8 +37,14 @@ public class ClusterBuilderTest extends TestCase {
     /** MMBase query. */
     private MMBase mmbase = null;
     
+    /** Insrel builder. */
+    private InsRel insrel = null;
+    
     /** Pools builder, used as builder example. */
     private MMObjectBuilder pools = null;
+    
+    /** Images builder, used as builder example. */
+    private MMObjectBuilder images = null;
     
     /** Insrel builder, used as relation builder example. */
     /** Test nodes, created in setUp, deleted in tearDown. */
@@ -59,7 +65,9 @@ public class ClusterBuilderTest extends TestCase {
     public void setUp() throws Exception {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
+        insrel = mmbase.getInsRel();
         pools = mmbase.getBuilder("pools");
+        images = mmbase.getBuilder("images");
         
         instance = mmbase.getClusterBuilder();
         
@@ -90,7 +98,6 @@ public class ClusterBuilderTest extends TestCase {
             builder.removeNode(testNode);
         }
     }
-    
     
     public static Test suite() {
         TestSuite suite = new TestSuite(ClusterBuilderTest.class);
@@ -193,6 +200,12 @@ public class ClusterBuilderTest extends TestCase {
             }
         }
         assertTrue(tableAliases.contains("test"));
+        
+        // Alias containing white space.
+        alias = instance.getUniqueTableAlias(
+            "white space", tableAliases, originalAliases);
+        assertTrue(alias, alias.equals("white space"));
+        assertTrue(tableAliases.contains("white space"));
     }
     
     /** Test of getBuilder() method, of class org.mmbase.module.core.ClusterBuilder. */
@@ -391,35 +404,6 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(number.intValue() == related);
     }
 
-    public void testGetSelectString() {
-        System.out.println("testGetSelectString()");
-        Vector tables 
-            = new Vector(
-                Arrays.asList(new String[] {"pools","insrel","images"}));
-
-        Vector fields = new Vector();
-        System.out.println(instance.getSelectString(tables, fields));
-
-        fields.add("f3(pools.number)");
-        System.out.println(instance.getSelectString(tables, fields));
-
-        fields.add("f2(f3(pools.number), pools.number, insrel.number)");
-        System.out.println(instance.getSelectString(tables, fields));
-
-        fields.add("f1(f2(f3(pools.number), pools.number, insrel.number), "
-                    + "pools.number,insrel.number, images.number)");
-        System.out.println(instance.getSelectString(tables, fields));
-
-        fields.add("pools.number");
-        System.out.println(instance.getSelectString(tables, fields));
-
-        fields.add("insrel.number");
-        System.out.println(instance.getSelectString(tables, fields));
-
-        fields.add("images.number");
-        System.out.println(instance.getSelectString(tables, fields));
-    }
-    
     public void testAddFields() {
         BasicSearchQuery query = new BasicSearchQuery();
         Map roles = new HashMap();
@@ -435,6 +419,7 @@ public class ClusterBuilderTest extends TestCase {
         StepField stepField = getField(query, "pools", "name");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools.name")));
+        assertTrue(stepField.getAlias().equals("pools.name"));
         assertTrue(query.getFields().size() == 5);
         assertTrue(fieldsByName.size() == 5);
 
@@ -442,6 +427,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "related", "number");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("related.number")));
+        assertTrue(stepField.getAlias().equals("related.number"));
         // Not added twice.
         assertTrue(query.getFields().size() == 5);
         assertTrue(fieldsByName.size() == 5);
@@ -450,6 +436,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "images", "title");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("images.title")));
+        assertTrue(stepField.getAlias().equals("images.title"));
         assertTrue(query.getFields().size() == 6);
         assertTrue(fieldsByName.size() == 6);
 
@@ -457,6 +444,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "pools1", "name");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools1.name")));
+        assertTrue(stepField.getAlias().equals("pools1.name"));
         assertTrue(query.getFields().size() == 7);
         assertTrue(fieldsByName.size() == 7);
         
@@ -494,6 +482,7 @@ public class ClusterBuilderTest extends TestCase {
         stepField = getField(query, "pools", "description");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools.description")));
+        assertTrue(stepField.getAlias().equals("pools.description"));
         stepField = getField(query, "pools1", "description");
         assertTrue(stepField != null);
         assertTrue(stepField.equals(fieldsByName.get("pools1.description")));
@@ -501,8 +490,246 @@ public class ClusterBuilderTest extends TestCase {
         assertTrue(fieldsByName.size() == 9);
     }
     
+    /** Test of addRelationDirections() method, of class org.mmbase.module.core.ClusterBuilder. */
+    public void testAddRelationDirections() {
+        // --- requires role "related" to be defined: ---
+        int related = mmbase.getRelDef().getNumberByName("related");
+        assertTrue("Role 'related' must be defined to run this test.", 
+            related != -1);
+        // --- requires typerel to be defined for 
+        //     source, role, destination = "pools", "related", "images": ---
+        assertTrue("This (bidirectional) relation-type must be defined to run "
+            + "this test: source, role, destination = "
+            + "'pools', 'related', 'images'",
+            mmbase.getTypeRel().reldefCorrect(
+                mmbase.getTypeDef().getIntValue("pools"), 
+                mmbase.getTypeDef().getIntValue("images"), related));
+        // --- requires relations to define a 'dir' field --
+        assertTrue("Relations must define a 'dir' field to run this test.",
+            insrel.usesdir);
+
+        BasicSearchQuery query = new BasicSearchQuery();
+        Map roles = new HashMap();
+        Map fieldsByName = new HashMap();
+        List tables = Arrays.asList(
+            new Object[] {"pools", "related", "images", "insrel", "pools0"});
+        Map stepsByAlias 
+            = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(query, ClusterBuilder.SEARCH_ALL, roles);
+        RelationStep relation1 = (RelationStep) stepsByAlias.get("related");
+        assertTrue(relation1.getDirectionality() 
+            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(!relation1.getCheckedDirectionality());
+        RelationStep relation2 = (RelationStep) stepsByAlias.get("insrel");
+        assertTrue(relation2.getDirectionality()
+            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(!relation2.getCheckedDirectionality());
+        
+        query = new BasicSearchQuery();
+        stepsByAlias 
+            = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(
+            query, ClusterBuilder.SEARCH_BOTH, roles);
+        relation1 = (RelationStep) stepsByAlias.get("related");
+        assertTrue(relation1.getDirectionality() 
+            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getCheckedDirectionality());
+        relation2 = (RelationStep) stepsByAlias.get("insrel");
+        assertTrue(relation2.getDirectionality()
+            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation2.getCheckedDirectionality());
+        
+        query = new BasicSearchQuery();
+        stepsByAlias 
+            = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(
+            query, ClusterBuilder.SEARCH_EITHER, roles);
+        relation1 = (RelationStep) stepsByAlias.get("related");
+        assertTrue(relation1.getDirectionality() 
+            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getCheckedDirectionality());
+        relation2 = (RelationStep) stepsByAlias.get("insrel");
+        assertTrue(relation2.getDirectionality()
+            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation2.getCheckedDirectionality());
+        
+        query = new BasicSearchQuery();
+        stepsByAlias 
+            = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(
+            query, ClusterBuilder.SEARCH_DESTINATION, roles);
+        relation1 = (RelationStep) stepsByAlias.get("related");
+        assertTrue(relation1.getDirectionality() 
+            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getCheckedDirectionality());
+        relation2 = (RelationStep) stepsByAlias.get("insrel");
+        assertTrue(relation2.getDirectionality()
+            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation2.getCheckedDirectionality());
+        
+        query = new BasicSearchQuery();
+        stepsByAlias 
+            = instance.addSteps(query, tables, roles, true, fieldsByName);
+        instance.addRelationDirections(
+            query, ClusterBuilder.SEARCH_SOURCE, roles);
+        relation1 = (RelationStep) stepsByAlias.get("related");
+        assertTrue(relation1.getDirectionality() 
+            == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(relation1.getCheckedDirectionality());
+        relation2 = (RelationStep) stepsByAlias.get("insrel");
+        assertTrue(relation2.getDirectionality()
+            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue(relation2.getCheckedDirectionality());
+    }
+    
     public void testAddSortOrders() {
-        fail("n.i.y");
+        BasicSearchQuery query = new BasicSearchQuery();
+        Map roles = new HashMap();
+        Map fieldsByName = new HashMap();
+        List tables = Arrays.asList(
+            new Object[] {"pools", "related", "images", "pools1"});
+        Map stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        Vector fieldNames = new Vector(Arrays.asList(
+            new Object[] {"pools.number"}));
+        Vector directions = new Vector();
+        instance.addSortOrders(query, fieldNames, directions, fieldsByName);
+        List sortOrders = query.getSortOrders();
+        assertTrue(sortOrders.size() == 1);
+        SortOrder sortOrder0 = (SortOrder) sortOrders.get(0);
+        assertTrue(sortOrder0.getField() 
+            == (StepField) fieldsByName.get("pools.number"));
+        assertTrue(sortOrder0.getDirection() == SortOrder.ORDER_ASCENDING);
+        
+        query = new BasicSearchQuery();
+        stepsByAlias = instance.addSteps(query, tables, roles, true, fieldsByName);
+        fieldNames = new Vector(Arrays.asList(
+            new Object[] {"pools.number", "related.number", "images.title"}));
+        directions = new Vector(Arrays.asList(
+            new Object[] {"DOWN", "UP"}));
+        instance.addSortOrders(query, fieldNames, directions, fieldsByName);
+        sortOrders = query.getSortOrders();
+        assertTrue(sortOrders.size() == 3);
+        sortOrder0 = (SortOrder) sortOrders.get(0);
+        assertTrue(sortOrder0.getField() 
+            == (StepField) fieldsByName.get("pools.number"));
+        assertTrue(sortOrder0.getDirection() == SortOrder.ORDER_DESCENDING);
+        SortOrder sortOrder1 = (SortOrder) sortOrders.get(1);
+        assertTrue(sortOrder1.getField() 
+            == (StepField) fieldsByName.get("related.number"));
+        assertTrue(sortOrder1.getDirection() == SortOrder.ORDER_ASCENDING);
+        
+        // sorOrder2 is on a field that has not been added.
+        SortOrder sortOrder2 = (SortOrder) sortOrders.get(2);
+        StepField sortField2 = sortOrder2.getField();
+        assertTrue(sortField2.getAlias().equals("images.title"));
+        assertTrue(sortOrder2.getDirection() == SortOrder.ORDER_DESCENDING);
+    }
+    
+    public void testGetNodesStep() throws Exception {
+        // Get number of a pools node.
+        List poolsNodes = pools.getNodes(new NodeSearchQuery(pools));
+        MMObjectNode poolsNode = (MMObjectNode) poolsNodes.get(0);
+        int nodeNumber = poolsNode.getNumber();
+        
+        BasicSearchQuery query = new BasicSearchQuery();
+        BasicStep objectStep = query.addStep(mmbase.getBuilder("object"));
+        
+        assertTrue(
+            instance.getNodesStep(query.getSteps(), -1) == null);
+        
+        // Find step for parentbuilder.
+        assertTrue(
+            instance.getNodesStep(query.getSteps(), nodeNumber) == objectStep);
+
+        BasicStep insrelStep = query.addStep(mmbase.getInsRel());
+        BasicStep poolsStep = query.addStep(mmbase.getBuilder("pools"));
+        
+        // Find step for builder.
+        assertTrue(
+            instance.getNodesStep(query.getSteps(), nodeNumber) == poolsStep);
+    }
+    
+    public void testGetMultiLevelSearchQuery() {
+        
+        List snodes = new ArrayList();
+        Iterator iTestNodes = testNodes.iterator();
+        while (iTestNodes.hasNext()) {
+            MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+            snodes.add(testNode.getIntegerValue("number").toString());
+        }
+        List fields = Arrays.asList(
+            new String[] {"pools.name", "images.number"});
+        String pdistinct = "YES";
+        List tables = Arrays.asList(
+            new String[] {"images", "insrel", "pools"});
+        String where = "where lower(images.title) like '%test%'";
+        List order = Arrays.asList(
+            new String[] {"images.number", "pools.name"});
+        List directions = Arrays.asList(
+            new String[] {"DOWN", "UP"});
+        int searchDir = ClusterBuilder.SEARCH_BOTH;
+            
+        SearchQuery query = instance.getMultiLevelSearchQuery(
+            snodes, fields, pdistinct, tables, where, order, 
+            directions, searchDir);
+        
+        // Test steps.
+        List steps = query.getSteps();
+        assertTrue(steps.size() == 3);
+        Step step0 = (Step) steps.get(0);
+        assertTrue(step0.getTableName().equals("images"));
+        RelationStep step1 = (RelationStep) steps.get(1);
+        assertTrue(step1.getTableName().equals("insrel"));
+        assertTrue(step1.getRole() == null);
+        assertTrue(step1.getCheckedDirectionality());
+        Step step2 = (Step) steps.get(2);
+        assertTrue(step2.getTableName().equals("pools"));
+        
+        // Test nodes.
+        assertTrue(snodes.size() > 0); // For test to succeed.
+        assertTrue(step0.getNodes().size() == 0);
+        assertTrue(step1.getNodes().size() == 0);
+        assertTrue(step2.getNodes().size() == snodes.size());
+        Iterator iSNodes = snodes.iterator();
+        Iterator iNodes = step2.getNodes().iterator();
+        while (iNodes.hasNext()) {
+            Integer node = (Integer) iNodes.next();
+            String snode = (String) iSNodes.next();
+            assertTrue(node.toString() + " " + snode, node.toString().equals(snode));
+        }
+        
+        // Test distinct
+        assertTrue(query.isDistinct());
+        
+        // Test fields.
+        List stepFields = query.getFields();
+        assertTrue(stepFields.size() == 2);
+        StepField field0 = (StepField) stepFields.get(0);
+        assertTrue(field0.getStep().getTableName().equals("pools"));
+        assertTrue(field0.getFieldName().equals("name"));
+        StepField field1 = (StepField) stepFields.get(1);
+        assertTrue(field1.getStep().getTableName().equals("images"));
+        assertTrue(field1.getFieldName().equals("number"));
+        
+        // Test sortorders.
+        List sortOrders = query.getSortOrders();
+        assertTrue(sortOrders.size() == 2);
+        SortOrder sortOrder0 = (SortOrder) sortOrders.get(0);
+        assertTrue(sortOrder0.getField() == field1);
+        assertTrue(sortOrder0.getDirection() == SortOrder.ORDER_DESCENDING);
+        SortOrder sortOrder1 = (SortOrder) sortOrders.get(1);
+        assertTrue(sortOrder1.getField() == field0);
+        assertTrue(sortOrder1.getDirection() == SortOrder.ORDER_ASCENDING);
+        
+        // Test constraint.
+        FieldValueConstraint constraint 
+            = (FieldValueConstraint) query.getConstraint();
+        assertTrue(constraint.getField().getStep() == step0);
+        assertTrue(constraint.getField().getFieldName().equals("title"));
+        assertTrue(constraint.getOperator() == FieldCompareConstraint.LIKE);
+        assertTrue(!constraint.isCaseSensitive());
+        assertTrue(constraint.getValue().equals("%test%"));
+        assertTrue(!constraint.isInverse());
     }
     
     /**

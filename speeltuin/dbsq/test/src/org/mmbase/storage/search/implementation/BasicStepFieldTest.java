@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -42,6 +42,7 @@ public class BasicStepFieldTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**
@@ -222,6 +223,22 @@ public class BasicStepFieldTest extends TestCase {
             fail("Double value for STRING field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         BasicStepField.testValue("123", instance);
+    }
+    
+    /** Test of equalFieldValues method, of class org.mmbase.storage.search.implementation.BasicStepField. */
+    public void testEqualFieldValues() {
+        assertTrue(BasicStepField.equalFieldValues(null, null));
+        assertTrue(!BasicStepField.equalFieldValues("abc def", null));
+        assertTrue(!BasicStepField.equalFieldValues(null, "abc def"));
+        assertTrue(BasicStepField.equalFieldValues("abc def", "abc def"));
+        assertTrue(!BasicStepField.equalFieldValues(new Integer(123), "abc def"));
+        assertTrue(!BasicStepField.equalFieldValues("abc def", new Integer(123)));
+        assertTrue(BasicStepField.equalFieldValues(new Integer(123), new Integer(123)));
+        assertTrue(BasicStepField.equalFieldValues(new Double(123), new Integer(123)));
+        assertTrue(BasicStepField.equalFieldValues(new Integer(123), new Double(123)));
+        assertTrue(BasicStepField.equalFieldValues(new Double(123), new Double(123)));
+        assertTrue(!BasicStepField.equalFieldValues(null, new Double(123)));
+        assertTrue(!BasicStepField.equalFieldValues(new Double(123), null));
     }
     
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicStepField. */
