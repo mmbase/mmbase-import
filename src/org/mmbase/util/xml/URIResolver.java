@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.7 2002-09-23 11:06:46 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.8 2002-10-08 13:37:37 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {
@@ -197,6 +197,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
      * @param base
      * @return A File
      * @see #resolveToFile
+     * @throws I
      */
     public File resolveToFile(String href, String base) {       
         if (log.isDebugEnabled()) {
@@ -243,6 +244,12 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
             }
         }
         if (log.isDebugEnabled()) log.debug("using " + path.toString());
+        if (! path.isFile()) {
+            throw new IllegalArgumentException("Could not resolve '" + href + "'\n with path " + this);
+        }
+        if (! path.canRead()) {
+            throw new IllegalArgumentException("Resolved to non-readable file ('" + path + "')\n with path " + this);
+        }
         return path;
     }
 
@@ -281,6 +288,9 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
 
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
         return sizeof.sizeof(extraDirs);
+    }
+    public String toString() {
+        return getPrefixPath().toString();
     }
 
     /**
