@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.7 2001-01-11 13:33:29 vpro Exp $
+$Id: cdplayers.java,v 1.8 2001-02-15 13:37:34 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2001/01/11 13:33:29  vpro
+Davzev: Changed systemouts to debugs in method getValue and added more method comments
+
 Revision 1.6  2000/11/27 14:18:25  vpro
 davzev: Added method comments and debug
 
@@ -43,14 +46,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.7 $ $Date: 2001-01-11 13:33:29 $ 
+ * @version $Revision: 1.8 $ $Date: 2001-02-15 13:37:34 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
 	private boolean debug=true;
-
-	public cdplayers() {
-	}
 
 	/**
 	 * Calls its super method and than calls nodeChanged. 
@@ -60,7 +60,7 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	 * @return result value of nodeChanged call.
 	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Call super");
+		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Calling super.");
 		super.nodeRemoteChanged(number,builder,ctype);
 		return(nodeChanged(number,builder,ctype));
 	}
@@ -73,7 +73,7 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	 * @return result value of nodeChanged call.
 	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Call super");
+		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Calling super.");
 		super.nodeLocalChanged(number,builder,ctype);
 		return(nodeChanged(number,builder,ctype));
 	}
@@ -86,8 +86,9 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 	 * @return true, always.
 	 */
 	public boolean nodeChanged(String number,String builder,String ctype) {
-		if (debug) debug("nodeChanged("+number+","+builder+","+ctype+"): Do nothing and return");
-		return(true);
+		MMObjectNode node=getNode(number);
+		if (debug) debug("nodeChanged("+number+","+builder+","+ctype+"): Printing state="+node.getStringValue("state")+" and info="+node.getStringValue("info")+" , returning.");
+		return true;
 	}
 
 
@@ -112,12 +113,15 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 				waitUntilNodeChanged(node);
 				newnode=getNode(node.getIntValue("number"));
 				String state=newnode.getStringValue("state");
-				if (state.equals("waiting")) changed=true;
+				if (state.equals("waiting"))
+					changed=true;
+				else 
+					if (debug) debug("getValue: Retrieved node "+newnode.getStringValue("name")+" ("+newnode.getIntValue("number")+"), state is "+state+"!=waiting, entering waitUntilNodeChanged again");
 			}
 			String val=newnode.getStringValue("info");
-			if (debug) debug("getValue: "+newnode.getStringValue("name")+" getdir returned: "+val);
+			if (debug) debug("getValue: "+newnode.getStringValue("name")+"("+newnode.getIntValue("number")+") State is waiting again, returning: "+val);
 			return(val);
-		} else return super.getValue( node, field );
+		} else return super.getValue(node, field);
 	}
 
 	/**
@@ -133,7 +137,7 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 			String cmd=tok.nextToken();	
 			if (cmd.equals("getdir")) return(getHTMLDir(tagger,tok));
 		}
-		return(null);
+		return null;
 	}
 
 	/**
@@ -164,7 +168,7 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 		}
 		tagger.setValue("ITEMS","3");
 		debug("getHTMLDir: returning result: "+result);
-		return(result);
+		return result;
 	}
 
 	/**
@@ -179,8 +183,8 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 			String cmd=tok.nextToken();
 			if (debug) debug("replace: Token is "+cmd);
 			if (cmd.equals("claim")) {
-				if (debug) debug("replace: Command is 'claim', calling doClaim()");
-				doClaim(tok);
+				if (debug) debug("replace: Command is 'claim', calling doClaim(sp,tok)");
+				doClaim(sp,tok);
 			}
 		}
 		return("");
