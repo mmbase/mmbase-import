@@ -48,7 +48,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
 
     protected Object getCompare2() throws JspTagException {
         if (referid2 == null) {
-            throw new JspTagException("Attribute 'value' of 'referid2' must be indicated");
+            throw new JspTagException("Attribute 'value' or 'referid2' must be indicated");
         }
         return getObject(referid2);
 
