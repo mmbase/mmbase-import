@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.9 2002-06-24 12:36:23 pierre Exp $
+     * @version  $Id: wizard.jsp,v 1.10 2002-07-09 14:12:53 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -75,7 +75,7 @@ if (wizardConfig.wiz.startWizard()) {
     response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey="+ewconfig.sessionKey+"&proceed=true&remove=true"));
 } else {
     log.trace("Send html back");
-    wizardConfig.wiz.writeHtmlForm(out, ewconfig.wizard);
+    wizardConfig.wiz.writeHtmlForm(out, wizardConfig.wizard);
 }
 %>
 </mm:log></mm:cloud>

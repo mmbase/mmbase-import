@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.15 2002-06-28 21:25:16 michiel Exp $
+     * @version  $Id: list.jsp,v 1.16 2002-07-09 14:12:53 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -136,11 +136,12 @@ String deletedescription = "";
 String deleteprompt = "";
 String title = "editwizard list";
 
-if (ewconfig.wizard != null) {
+if (listConfig.wizard != null) {
 
-    log.trace("Create wizard object so that delete/create actions are correctly loaded. No need to store. We'll create another wizard automatically if a button in the list is pressed.");
+    log.info("Create wizard: "+listConfig.wizard+".");
     Wizard wiz = null;
-    wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, ewconfig.wizard, null, cloud);
+
+    wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, listConfig.wizard, null, cloud);
     deletable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']")!=null);
     creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null);
@@ -241,7 +242,7 @@ for (int i=0; i<pagecount && i<maxpages; i++) {
 
 log.trace("Setting xsl parameters");
 java.util.Map params = new java.util.Hashtable();
-if (ewconfig.wizard != null) params.put("wizard", ewconfig.wizard);
+if (listConfig.wizard != null) params.put("wizard", listConfig.wizard);
 params.put("start",String.valueOf(start));
 params.put("len",String.valueOf(len));
 params.put("sessionkey", ewconfig.sessionKey);

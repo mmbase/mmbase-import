@@ -3,7 +3,7 @@
      * upload.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: upload.jsp,v 1.5 2002-05-28 14:15:15 pierre Exp $
+     * @version  $Id: upload.jsp,v 1.6 2002-07-09 14:12:53 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -37,8 +37,15 @@ if (did==null) {
     }
 </script>
 <body>
+<%
+    String wizard="";
+    Object con=ewconfig.subObjects.peek();
+    if (con instanceof Config.SubConfig) {
+        wizard=((Config.SubConfig)con).wizard;
+    }
+%>
 <div id="form">
-    <form action="processuploads.jsp?proceed=true&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=ewconfig.wizard%>&maxsize=<%=ewconfig.maxupload%>" enctype="multipart/form-data" method="POST" >
+    <form action="processuploads.jsp?proceed=true&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=ewconfig.maxupload%>" enctype="multipart/form-data" method="POST" >
         <input type="file" name="<%=did%>" onchange="upload();"></input><br />
         <input type="button" onclick="upload();" value="upload"></input><br />
     </form>
