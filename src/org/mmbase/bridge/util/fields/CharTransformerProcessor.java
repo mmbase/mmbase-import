@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.fields;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.util.transformers.CharTransformer;
 
 /**
@@ -17,7 +17,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * string transformations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessor.java,v 1.3 2003-12-21 17:39:49 michiel Exp $
+ * @version $Id: CharTransformerProcessor.java,v 1.4 2003-12-23 19:58:18 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.util.transformers.CharTransformer
  */
@@ -30,7 +30,7 @@ public class CharTransformerProcessor implements Processor {
         charTransformer = ct;
     }
 
-    public final Object process(Node node, Object value) {
+    public final Object process(Node node, Field field, Object value) {
         return charTransformer.transform((String) value);
     }        
 
