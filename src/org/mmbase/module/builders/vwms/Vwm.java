@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.vwms;
 
 import java.util.*;
+import java.util.Properties;
 import java.io.*;
 
 import org.mmbase.util.logging.*;
@@ -27,16 +28,18 @@ import org.mmbase.module.builders.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwm.java,v 1.14 2003-05-08 06:01:23 kees Exp $
+ * @version $Id: Vwm.java,v 1.15 2003-11-10 13:33:05 keesj Exp $
  */
 
-public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
+public class Vwm implements VwmInterface, VwmProbeInterface, Runnable {
 
     // Logger class
-    private static Logger log = Logging.getLoggerInstance(Vwm.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Vwm.class);
 
     // temporary debug method... has to change later on!
-    protected void debug(String msg) { log.debug(msg); }
+    protected void debug(String msg) {
+        log.debug(msg);
+    }
 
     /**
     * Scheduler of tasks depending on VWMtask nodes associated with this Vwm.
@@ -59,7 +62,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * Name of the VWM.
     * Retrieved from the node from the VWMs builder, but can also be set manually by the VWM's overriding class.
     */
-    protected String name="Unknown";
+    protected String name = "Unknown";
 
     /**
     * The VWMs builder that holds the VWM's node.
@@ -74,7 +77,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * Setting kicker to null (either from outside the thread or within) will cause the VWM
     * to terminate it's {@link #run} method.
     */
-    Thread kicker=null;
+    Thread kicker = null;
 
     /**
     * What clients are using this VWM.
@@ -90,10 +93,10 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @param Vwms The VWMs builder. It is not really necessary as this is the same as the <code>parent</code> attribute of <code>vwmnode</code>.
     */
     public void init(MMObjectNode vwmnode, Vwms Vwms) {
-        this.wvmnode=vwmnode;
-        this.name=vwmnode.getStringValue("name");
-        this.sleeptime=wvmnode.getIntValue("maintime");
-        this.Vwms=Vwms;
+        this.wvmnode = vwmnode;
+        this.name = vwmnode.getStringValue("name");
+        this.sleeptime = wvmnode.getIntValue("maintime");
+        this.Vwms = Vwms;
         /* or :
             this.Vwms = (Vwms)vwmnode.parent;
         */
@@ -101,14 +104,13 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
         this.start();
     }
 
-
     /**
      * Starts the thread for the Vwm.
      */
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this,"Vwm : "+name);
+            kicker = new Thread(this, "Vwm : " + name);
             kicker.setDaemon(true);
             kicker.start();
         }
@@ -129,14 +131,19 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
      * Calls the {@link #probeCall} method, after which the thread sleeps for a number of seconds as set in {@link #sleeptime}.
      */
     public void run() {
-        while (kicker!=null) {
+        while (kicker != null) {
             try {
                 probeCall();
-            } catch(Exception e) {
-                log.error("Vwm : Got a Exception in my probeCall : "+e.getMessage());
+            } catch (Exception e) {
+                log.error("Vwm : Got a Exception in my probeCall : " + e.getMessage());
                 log.error(Logging.stackTrace(e));
             }
-            try {Thread.sleep(sleeptime*1000);} catch (InterruptedException e){}
+            try {
+                Thread.sleep(sleeptime * 1000);
+            } catch (InterruptedException e) {
+                //interrupted so exit 
+                return;
+            }
         }
     }
 
@@ -147,7 +154,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     */
     public boolean addClient(VwmCallBackInterface client) {
         if (clients.contains(client)) {
-            log.warn("Vwm : "+name+" allready has the client : "+client+".");
+            log.warn("Vwm : " + name + " allready has the client : " + client + ".");
             return false;
         } else {
             clients.addElement(client);
@@ -165,7 +172,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
             clients.removeElement(client);
             return true;
         } else {
-            log.warn("Vwm : "+name+" got a release call from : "+client+" but have no idea who he is.");
+            log.warn("Vwm : " + name + " got a release call from : " + client + " but have no idea who he is.");
             return false;
         }
     }
@@ -177,7 +184,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @return <code>true</code> if maintenance was performed, <code>false</code> otherwise
     */
     public boolean probeCall() {
-        log.info("Vwm probe call : "+name);
+        log.info("Vwm probe call : " + name);
         return false;
     }
 
@@ -207,11 +214,11 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @return <code>true</code> if maintenance was performed, <code>false</code> if it failed
     */
     public boolean performTask(MMObjectNode node) {
-        log.error("Vwm : performTask not implemented in : "+name);
-        node.setValue("status",Vwmtasks.STATUS_ERROR);
+        log.error("Vwm : performTask not implemented in : " + name);
+        node.setValue("status", Vwmtasks.STATUS_ERROR);
         node.commit();
 
-        Vwms.sendMail(name,"performTask not implemented","");
+        Vwms.sendMail(name, "performTask not implemented", "");
         return false;
     }
 
@@ -223,8 +230,8 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @return <code>true</code> if teh task's state was cahnged, <code>false</code> if it fails.
     */
     protected boolean claim(MMObjectNode node) {
-        node.setValue("status",Vwmtasks.STATUS_CLAIMED);
-        node.setValue("claimedcpu",Vwms.getMachineName());
+        node.setValue("status", Vwmtasks.STATUS_CLAIMED);
+        node.setValue("claimedcpu", Vwms.getMachineName());
         return node.commit();
     }
 
@@ -236,7 +243,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @return <code>true</code> if teh task's state was cahnged, <code>false</code> if it fails.
     */
     protected boolean rollback(MMObjectNode node) {
-        node.setValue("status",Vwmtasks.STATUS_REQUEST);
+        node.setValue("status", Vwmtasks.STATUS_REQUEST);
         return node.commit();
     }
 
@@ -248,7 +255,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @return <code>true</code> if the task's state was cahnged, <code>false</code> if it fails.
     */
     protected boolean failed(MMObjectNode node) {
-        node.setValue("status",Vwmtasks.STATUS_ERROR);
+        node.setValue("status", Vwmtasks.STATUS_ERROR);
         return node.commit();
     }
 
@@ -260,7 +267,7 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @return <code>true</code> if teh task's state was cahnged, <code>false</code> if it fails.
     */
     protected boolean performed(MMObjectNode node) {
-        node.setValue("status",Vwmtasks.STATUS_DONE);
+        node.setValue("status", Vwmtasks.STATUS_DONE);
         return node.commit();
     }
 
@@ -273,10 +280,15 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
     * @return a <code>hashtable</code> with the property name=value pairs.
     */
     protected Hashtable parseProperties(String props) {
-        java.util.Properties p;
-        StringBufferInputStream b=new  StringBufferInputStream(props);
-        p=new java.util.Properties();
-        try {p.load(b);} catch(IOException e) {}
+        //assume properties are in default encoding
+        //it might also be possible to props.getBytes("utf-8");
+        byte[] bytes = props.getBytes();
+        Properties p = new Properties();
+        try {
+            p.load(new ByteArrayInputStream(bytes));
+        } catch (IOException e) {
+            log.error("failed to load the String ["+props +"] into the properties object due to IOException (this might be an encoding problem) stacktrace" + Logging.stackTrace(e));
+        }
         return p;
     }
 
@@ -289,25 +301,25 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 
     /**
     * Called when a local node is changed.
-	* @param machine Name of the machine that changed the node.
+    * @param machine Name of the machine that changed the node.
     * @param number Number of the changed node as a <code>String</code>
     * @param builder type of the changed node
     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
     */
-    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
         return false;
     }
 
     /**
     * Called when a remote node is changed.
-	* @param machine Name of the machine that changed the node.
+    * @param machine Name of the machine that changed the node.
     * @param number Number of the changed node as a <code>String</code>
     * @param builder type of the changed node
     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
     * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
     */
-    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
         return false;
     }
 }
