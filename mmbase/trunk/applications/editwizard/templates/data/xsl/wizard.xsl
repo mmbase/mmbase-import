@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.51 2002-07-19 09:06:18 pierre Exp $
+  @version $Id: wizard.xsl,v 1.52 2002-07-19 13:16:08 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -41,18 +41,25 @@
   </xsl:template>
 
   <!-- The first row of the the body's table -->
-  <xsl:template name="superhead">
+  <xsl:template name="title">
     <tr>
-      <td colspan="2" align="center" valign="bottom">
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
-          <tr>
-            <td class="head"><nobr><xsl:value-of select="title" /></nobr></td>
-            <td class="superhead" align="right">
-              <nobr><xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if><xsl:value-of select="form[@id=/wizard/curform]/title" /></nobr>
-            </td>
-          </tr>
-        </table>
-      </td>
+      <th colspan="2">        
+        <span class="title"><nobr><xsl:value-of select="title" /></nobr></span>
+        <span class="form">
+          <nobr>
+            <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if><xsl:value-of select="form[@id=/wizard/curform]/title" />
+          </nobr>
+        </span>
+      </th>
+    </tr>   
+  </xsl:template>
+
+  <!-- The second row of the the body's table -->
+  <xsl:template name="subtitle">
+    <tr class="subtitle">
+      <th colspan="2">        
+        <xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+      </th>
     </tr>   
   </xsl:template>
 
@@ -72,14 +79,10 @@
        -->
   <xsl:template name="formcontent">
     <table class="body">
-      <xsl:call-template name="superhead" />
-        <tr>
-          <th colspan="2" class="divider">
-            <xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-          </th>
-        </tr>        
-        <xsl:apply-templates select="form[@id=/wizard/curform]" /><!-- produces <tr />'s -->
-        <xsl:apply-templates select="/*/steps-validator" />       <!-- produces <tr />'s -->
+      <xsl:call-template name="title" />
+      <xsl:call-template name="subtitle" />
+      <xsl:apply-templates select="form[@id=/wizard/curform]" /><!-- produces <tr />'s -->
+      <xsl:apply-templates select="/*/steps-validator" />       <!-- produces <tr />'s -->
     </table>
   </xsl:template>
 
@@ -121,18 +124,18 @@
   <xsl:template name="steps">
     <tr>
       <td colspan="2" align="center">
-        <hr color="#005A4A" size="1" noshade="true" />
+         <hr color="#005A4A" size="1" noshade="true" />
       </td>
     </tr>
     <tr>
-      <td>
-      </td>
-      <td>
+      <td colspan="2" class="steps">
         <!-- all steps -->
+        <p class="step">        
         <xsl:for-each select="step">
-          <xsl:call-template name="stepbutton" />
-          <br />
+           <xsl:call-template name="step" />
+           <br />
         </xsl:for-each>
+        </p>
       </td>
     </tr>
   </xsl:template>
@@ -764,38 +767,49 @@
   </xsl:template>
 
   <xsl:template name="previousbutton">
-          <xsl:choose>
-            <xsl:when test="/wizard/form[@id=/wizard/prevform]">
-              <a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/prevform}')" title="{$tooltip_previous} '{/wizard/form[@id=/wizard/prevform]/title}'"><xsl:call-template name="prompt_previous" /></a>
-            </xsl:when>
-            <xsl:otherwise>
-              <span class="step-disabled" align="left" width="100%" title="{$tooltip_no_previous}"><xsl:call-template name="prompt_previous" /></span>
-            </xsl:otherwise>
-          </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="/wizard/form[@id=/wizard/prevform]">
+        <a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/prevform}')" title="{$tooltip_previous} '{/wizard/form[@id=/wizard/prevform]/title}'"><xsl:call-template name="prompt_previous" /></a>
+      </xsl:when>
+      <xsl:otherwise>
+        <span class="step-disabled" align="left" width="100%" title="{$tooltip_no_previous}"><xsl:call-template name="prompt_previous" /></span>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
-
+  
   <xsl:template name="nextbutton">
-          <xsl:choose>
-            <xsl:when test="/wizard/form[@id=/wizard/nextform]">
-              <a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/nextform}')" title="{$tooltip_next} '{/wizard/form[@id=/wizard/nextform]/title}'"><xsl:call-template name="prompt_next" /></a>
-            </xsl:when>
-            <xsl:otherwise>
-              <span class="step-disabled" align="left" width="100%" title="{$tooltip_no_next}"><xsl:call-template name="prompt_next" /></span>
-            </xsl:otherwise>
-          </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="/wizard/form[@id=/wizard/nextform]">
+        <a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/nextform}')" title="{$tooltip_next} '{/wizard/form[@id=/wizard/nextform]/title}'"><xsl:call-template name="prompt_next" /></a>
+      </xsl:when>
+      <xsl:otherwise>
+        <span class="step-disabled" align="left" width="100%" title="{$tooltip_no_next}"><xsl:call-template name="prompt_next" /></span>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 
-  <xsl:template name="stepbutton">
-    <span class="step-info">
+  <xsl:template name="step">
     <xsl:variable name="schemaid" select="@form-schema" />      
+    <span>
+      <xsl:attribute name="class">
+        <xsl:choose>         
+          <xsl:when test="@form-schema=/wizard/curform">current</xsl:when>
+          <xsl:otherwise>other</xsl:otherwise>
+       </xsl:choose>
+     </xsl:attribute>
+     <span>
+       <xsl:attribute name="class">
+         <xsl:if test="@valid='true'">valid</xsl:if>
+         <xsl:if test="@valid='false'">notvalid</xsl:if>
+       </xsl:attribute>
       <a href="javascript:doGotoForm('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon"
         titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"> 
-      <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
-      <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=$schemaid]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
+      <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=current()/@form-schema]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
       <xsl:call-template name="prompt_step" />
       </a>
       <xsl:value-of select="/*/form[@id=$schemaid]/title" />
+      </span>
     </span>
   </xsl:template>
 
