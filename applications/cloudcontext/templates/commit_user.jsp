@@ -23,7 +23,7 @@
     <mm:fieldlist type="edit">
     <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="useinput" /></td></tr>
     </mm:fieldlist>
-    <mm:import externid="groups" vartype="list" jspvar="groups" /> 
+    <mm:import externid="_groups" vartype="list" jspvar="groups" /> 
     <tr>
      <td>Groups</td>
      <td>
@@ -40,16 +40,30 @@
      </mm:listrelations>
      <mm:unrelatednodes id="unrelated" type="mmbasegroups" />   
      <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
-     <mm:aliaslist referid="groups">              
+     <mm:stringlist referid="_groups">              
        <mm:node id="group" number="$_" jspvar="group">
          <% if (unrelated.contains(group)) { %>
               <mm:createrelation source="group" destination="user" role="contains" />
          <% } %>
         </mm:node>
-     </mm:aliaslist>
+     </mm:stringlist>
      </mm:write>
      </td>
     </tr>
+    <tr>
+     <td>Rank</td>
+     <td>
+     <mm:import externid="_rank" />
+     <mm:isnotempty referid="_rank">      
+       <mm:listrelations type="mmbaseranks" role="rank">
+          <mm:deletenode />
+       </mm:listrelations>
+       <mm:node id="ranknode" number="$_rank" />
+       <mm:createrelation source="user" destination="ranknode" role="rank" />
+ 
+     </mm:isnotempty>
+
+
    </table>
    </form>
   </body>

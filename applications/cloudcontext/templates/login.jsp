@@ -9,6 +9,11 @@
 </head>
 <body class="basic">
     <h2>Login</h2>
+     <mm:import externid="logout" />
+     <mm:present referid="logout">
+      <mm:cloud method="logout" />
+     </mm:present>
+
      <mm:import externid="reason">please</mm:import>
      <mm:import externid="referrer">index.jsp</mm:import>
       <mm:compare referid="reason" value="failed">

@@ -5,19 +5,49 @@ body {
   color:      black;
 }
 
+
+img { 
+  border: none;
+}
 div#you { 
   position: absolute;
-  top: 0;
-  right: 0;
+  right: 0px;
+  top: 0px;
+  height: 3ex;
+  width: 25em;
   background: gray;
   color: white;
   padding: 1ex;
+  text-align: right;
+ 
 }
 
 div#you p { 
   display: inline;
   margin: 0;
   margin-right: 3ex;
+}
+
+div#you a { 
+  color: white;
+}
+
+div#navigate { 
+  margin: 0 0 0 0;
+  position: absolute;
+  right: 0px;
+  top: 5ex;
+  text-align: right;
+
+}
+div#navigate p { 
+  display: inline;
+  margin: 0;
+  margin-right: 3ex;
+}
+
+p.current { 
+  background-color: #ffb;
 }
 
 table {
@@ -31,4 +61,11 @@ td {
 
 tr.even td { 
   background-color: #eee;
+}
+
+table.rights  { 
+}
+
+table.rights td.yes { 
+  background-color: #ffb;
 }
