@@ -87,7 +87,7 @@ public class MMObjectBuilder extends MMTable {
 		database=mmb.getDatabase();
 
 		if (!created()) {
-			debug("init(): Create "+tableName);
+			if (debug) debug("init(): Create "+tableName);
 			create();
 		}
 		if (!tableName.equals("object") && mmb.TypeDef!=null) {
