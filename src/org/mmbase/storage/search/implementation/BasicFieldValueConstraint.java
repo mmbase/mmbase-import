@@ -16,18 +16,18 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueConstraint.java,v 1.8 2003-09-16 08:55:11 nico Exp $
+ * @version $Id: BasicFieldValueConstraint.java,v 1.9 2004-01-30 12:25:49 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
 implements FieldValueConstraint {
-    
+
     /** The value. */
     private Object value = null;
-    
+
     /**
      * Constructor.
-     * Depending on the field type, the value must be of type 
+     * Depending on the field type, the value must be of type
      * <code>String</code> or <code>Number</code>.
      *
      * @param field The associated field.
@@ -38,10 +38,10 @@ implements FieldValueConstraint {
         super(field);
         setValue(value);
     }
-    
+
     /**
-     * Sets value property. 
-     * Depending on the field type, the value must be of type 
+     * Sets value property.
+     * Depending on the field type, the value must be of type
      * <code>String</code> or <code>Number</code>.
      *
      * @param value The non-null property value.
@@ -49,21 +49,21 @@ implements FieldValueConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueConstraint setValue(Object value) {
-        BasicStepField.testValue(value, getField());
+        value = BasicStepField.testValue(value, getField());
         this.value = value;
         return this;
     }
-    
+
     // javadoc is inherited
     public Object getValue() {
         return value;
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         // Must be same class (subclasses should override this)!
         if (obj != null && obj.getClass() == getClass()) {
-            BasicFieldValueConstraint constraint 
+            BasicFieldValueConstraint constraint
                 = (BasicFieldValueConstraint) obj;
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
@@ -76,7 +76,7 @@ implements FieldValueConstraint {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return super.hashCode()
