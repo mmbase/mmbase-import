@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.104 2003-08-27 21:31:27 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.105 2003-09-02 20:12:38 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -818,16 +818,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public StringList getAliases() {
         NodeManager oalias = cloud.getNodeManager("oalias");
-        Query q = cloud.createQuery();
-        Step s = q.addStep(oalias);
-        StepField sf = q.addField(s, oalias.getField("name"));
-        Constraint c = q.createConstraint(q.createStepField(s, "destination"), new Integer(getNumber()));
+        NodeQuery q = oalias.createQuery();
+        Constraint c = q.createConstraint(q.getStepField(oalias.getField("destination")), new Integer(getNumber()));
         q.setConstraint(c);        
         NodeList aliases = cloud.getList(q);
         StringList result = new BasicStringList();
         NodeIterator i = aliases.nodeIterator();
         while (i.hasNext()) {
-            result.add(i.nextNode().getStringValue("oalias.name"));
+            result.add(i.nextNode().getStringValue("name"));
         }
         return result;
     }
@@ -848,9 +846,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             if (!getNode().getBuilder().createAlias(getNumber(), aliasName)) {
                 Node otherNode = cloud.getNode(aliasName);
                 if (otherNode != null) {
-                    throw new BridgeException(
-                        "Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName()
-                            + " node " + otherNode.getNumber() + " already");
+                    throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
                 } else {
                     throw new BridgeException("Alias " + aliasName + " could not be created.");
                 }
