@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.2 - Release Notes
+                     MMBase 1.7.3 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.7.2, relative to the previous release of MMBase (1.6).
+release of MMBase 1.7.3, relative to the previous release of MMBase (1.6).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -22,6 +22,8 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+[1.7.3]
+- Cache tool in the adminpages has been made a bit better
 [1.7.2]
 - A unicast implementation for broadcasting changes in the cloud has
   been added. One can choose between the unicast en the multicast
@@ -167,6 +169,9 @@ Generic Improvement:
 ------------------
 Generic Bug Fixes:
 ------------------
+[1.7.3]
+- #6641 Builders: It is impossible to delete builders
+- #6640 Jumpers which have the same name as a directory aren't working with Tomcat 5.0.x
 [1.7.2]
 - #6254 searchquery Fieldaliases converted to lowercase in result of aggregating query. 
 - #6612 searchquery NodeManager.getList(String, String, String) broken
@@ -266,6 +271,8 @@ Security Bug Fixes:
 ---------------
 Core Bug Fixes:
 ---------------
+[1.7.3]
+- #6637 Query-caches are not invalidated correctly if queried on relation-object directly. 
 [1.7.2]
 - #6633 RelatedNodesCache performes suboptimal 
 - #6616 MMBase shoudl not give response code 500 but 503 on start-up
