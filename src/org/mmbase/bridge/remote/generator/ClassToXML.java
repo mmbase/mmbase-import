@@ -124,7 +124,7 @@ public class ClassToXML {
                 String first = name.substring(0,1);
                 retval.setAttribute("classname","java.lang." + first.toUpperCase() + name.substring(1));
             }
-        } else if (c.getName().startsWith("java.") || c.getName().startsWith("javax.")) {
+        } else if (c.getName().startsWith("java.") || c.getName().startsWith("javax.") || c.getName().startsWith("org.w3")) {
             if (isinarray) {
                 retval=document.createElement("array");
             } else {
