@@ -18,18 +18,11 @@ Display list of xml files in configuration category
   <td><b>database</b></td>
   <td><b>status</b></td>
   <td><b>check</b></td>
+  <td><b>source</b></td>
 </tr>
 <LIST SHOW category="databases">
 <tr>
-<LIF $ITEM2=Etrue>
-  <td><a href="configdetail.shtml?show+databases+$ITEM1">$ITEM1</a></td>
-</IF>
-<LIF $ITEM2=Enodtd>
-  <td><a href="configdetail.shtml?show+databases+$ITEM1">$ITEM1</a></td>
-</IF>
-<LIF $ITEM2=Efalse>
-  <td><a href="configdetail.shtml?annotate+databases+$ITEM1">$ITEM1</a></td>
-</IF>
+  <td><a href="xslconvert.shtml?$PARAM1/$ITEM1+dbview">$ITEM1</a></td>
 <LIF $ITEM3=Etrue>
   <td bgcolor="#63DE31"><font color="#63DE31">#</font></td>
 <ELSE>
@@ -44,7 +37,15 @@ Display list of xml files in configuration category
 <LIF $ITEM2=Efalse>
   <td>xml error!</td>
 </IF>
-  <td></td>
+<LIF $ITEM2=Etrue>
+  <td><a href="configdetail.shtml?show+databases+$ITEM1">xml</a></td>
+</IF>
+<LIF $ITEM2=Enodtd>
+  <td><a href="configdetail.shtml?show+databases+$ITEM1">xml</a></td>
+</IF>
+<LIF $ITEM2=Efalse>
+  <td><a href="configdetail.shtml?annotate+databases+$ITEM1">annotated xml</a></td>
+</IF>
 </tr>
 </LIST>
 </table>
