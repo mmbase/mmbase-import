@@ -42,8 +42,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Title of the topic</description>
+          <description xml:lang="nl">Titel van het onderwerp</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -75,8 +75,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Description of the topic</description>
+          <description xml:lang="nl">Beschrijving of toelichting bij het onderwerp</description>
         </descriptions>
         <!-- gui related -->
         <gui>
