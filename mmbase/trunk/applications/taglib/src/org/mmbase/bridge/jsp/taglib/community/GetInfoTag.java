@@ -26,7 +26,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  */
 public class GetInfoTag extends NodeReferrerTag implements Writer {
 
-    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(GetInfoTag.class.getName());
 
     protected WriterHelper helper = new WriterHelper();
 

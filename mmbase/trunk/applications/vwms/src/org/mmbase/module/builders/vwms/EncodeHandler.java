@@ -42,10 +42,10 @@ import org.mmbase.util.logging.*;
  * is still busy or just finished.
  *
  * @author Rico Jansen?, Daniel?, David van Zeventer
- * @version $Revision: 1.25 $ $Date: 2002-01-22 11:37:28 $
+ * @version $Revision: 1.26 $ $Date: 2002-03-28 09:33:49 $
  */
 public class EncodeHandler implements Runnable {
-	private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
+	private static Logger log = Logging.getLoggerInstance(EncodeHandler.class.getName());
 	
 	Thread kicker = null;
 	EncodeCop parent;

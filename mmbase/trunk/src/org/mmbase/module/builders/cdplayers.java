@@ -25,11 +25,11 @@ import org.mmbase.util.logging.Logging;
 /**
  * @rename Cdplayers
   * @author Daniel Ockeloen
- * @version $Revision: 1.13 $ $Date: 2001-12-14 09:33:18 $ 
+ * @version $Revision: 1.14 $ $Date: 2002-03-28 09:33:49 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
-	private static Logger log = Logging.getLoggerInstance(Users.class.getName()); 
+	private static Logger log = Logging.getLoggerInstance(cdplayers.class.getName()); 
 
 	/**
 	 * Calls super.

@@ -31,7 +31,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  */
 public class PostTag extends AbstractNodeProviderTag implements BodyTag {
 
-    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(PostTag.class.getName());
 
     private Module community=null;
     private String jspvar=null;
