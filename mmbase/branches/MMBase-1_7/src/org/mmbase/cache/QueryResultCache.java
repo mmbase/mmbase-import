@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.5.2.4 2004-12-14 13:58:43 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.5.2.5 2004-12-14 14:01:13 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -167,8 +167,6 @@ abstract public class QueryResultCache extends Cache {
          */
         private Set cacheKeys = new HashSet(); // using java default for initial size. Someone tried 50.
 
-        String type = null;
-        
         /**
          * Creates a multilevel cache observer for the speficied type
          * @param type Name of the builder which is to be observed.
@@ -187,8 +185,6 @@ abstract public class QueryResultCache extends Cache {
             }
             mmb.addLocalObserver (type, this);
             mmb.addRemoteObserver(type, this);
-
-            this.type = type;
         }
 
 
