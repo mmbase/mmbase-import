@@ -25,21 +25,21 @@ import org.mmbase.util.logging.*;
  *
  * Nodes of this type can be used as an argument to function which do return 'real' nodes (so not clusternodes).
  *
- * @todo: perhaps it would be nice to have the possibllity to query also two complete steps (also one of the neigbouring 'relation' steps).
+ * @todo perhaps it would be nice to have the possibllity to query also two complete steps (also one of the neigbouring 'relation' steps).
  *         this would give nice efficient implementations of things like <mm:relatednode (of mm:listrelations)
  *
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.8 2003-08-29 12:12:29 keesj Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.9 2003-09-01 13:29:42 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
 public class BasicNodeQuery extends BasicQuery implements NodeQuery {
-    
+
 
     private static final Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
-    
+
     protected Step step = null;
 
 
@@ -90,7 +90,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         return stepField;
     }
 
-    public StepField getStepField(Field field) {        
+    public StepField getStepField(Field field) {
         if (query instanceof NodeSearchQuery) {
             BasicStepField stepField = ((NodeSearchQuery) query).getField(((BasicField) field).field);
             return stepField;
@@ -103,8 +103,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
                         return stepField;
                     }
                 }
-                
-            }            
+
+            }
         }
         return null; // hmm.
     }

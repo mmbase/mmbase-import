@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.16 2003-08-07 14:33:38 michiel Exp $
+ * @version $Id: Query.java,v 1.17 2003-09-01 13:29:42 pierre Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -27,7 +27,7 @@ public interface Query extends SearchQuery, Cloneable {
      * @todo Should this not appear in SearchQuery itself? Or should there be an AggregatingQuery interface?
      * It is now used in BasicCloud.getList.
      */
-    boolean isAggregating(); 
+    boolean isAggregating();
 
     /**
      * Adds a NodeManager to this Query. This can normally be done only once. After that you need
@@ -39,8 +39,8 @@ public interface Query extends SearchQuery, Cloneable {
      * @see #addRelationStep
      */
     Step addStep(NodeManager nodeManager);
-    
-    
+
+
     /**
      * Adds new Relation step to the query.  Adds the next step as well, it can be retrieved by
      * calling <code> {@link org.mmbase.storage.search.RelationStep#getNext getNext()} </code> on
@@ -65,7 +65,7 @@ public interface Query extends SearchQuery, Cloneable {
     StepField addField(Step step, Field field);
 
     /**
-     * Creates a StepField object withouth adding it (e.g. needed for aggregated queries).
+     * Creates a StepField object withouth adding it (needed for aggregated queries).
      */
     StepField createStepField(Step step, Field field);
 
@@ -83,7 +83,7 @@ public interface Query extends SearchQuery, Cloneable {
      * Add an aggregated field to a step
      */
     AggregatedField addAggregatedField(Step step, Field field, int aggregationType);
-    
+
 
     /**
      * Specifies wether the query result must contain only 'distinct' results.
@@ -113,8 +113,8 @@ public interface Query extends SearchQuery, Cloneable {
     /**
      * Create a contraint (for use with this Query object). The argument is a string, as also can be
      * used as an argument of the 'non-query' getList. This should be considered legacy.
-     * @see  Cloud.getList(String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct)
-     * @see  NodeManager.getList(String constraints, String orderby, String directions);    
+     * @see  Cloud#getList(String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct)
+     * @see  NodeManager#getList(String constraints, String orderby, String directions)
      */
     LegacyConstraint           createConstraint(String s);
 
@@ -150,14 +150,14 @@ public interface Query extends SearchQuery, Cloneable {
 
     /**
      * Create a contraint (for use with this Query object). The given field value must be contained
-     * by the given set of values. 
+     * by the given set of values.
      */
     FieldValueInConstraint      createConstraint(StepField f, SortedSet v);
 
     /**
      * Changes the given constraint's 'case sensitivity' (if applicable). Default it is true.
      */
-    FieldConstraint             setCaseSensitive(FieldConstraint constraint, boolean sensitive);  
+    FieldConstraint             setCaseSensitive(FieldConstraint constraint, boolean sensitive);
 
     /**
      * Changes the given constraint's 'inverse' (if applicable). Default it is (of course) false.
@@ -187,7 +187,7 @@ public interface Query extends SearchQuery, Cloneable {
     SortOrder addSortOrder(StepField f, int direction);
 
 
-    /** 
+    /**
      * Adds a node to a step.
      */
     void      addNode(Step s, Node node);

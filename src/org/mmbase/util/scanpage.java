@@ -24,7 +24,6 @@ import org.mmbase.module.sessionsInterface;
 import org.mmbase.servlet.JamesServlet;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
 /**
  * The scanpage is a container class.
  * It holds all information that is needed to identify a user, including
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.23 2003-07-16 10:22:24 pierre Exp $
+ * @version $Id: scanpage.java,v 1.24 2003-09-01 13:29:47 pierre Exp $
  */
 public class scanpage {
     // logger
@@ -297,7 +296,7 @@ public class scanpage {
     // -------
 
     /**
-     * Extract hostname from scanpage, get address and determine the proxies between it.<br />
+     * Extract hostname from scanpage, get address and determine the proxies between it.
      * Needed to determine if user comes from internal or external host, because
      * we use two streaming servers, one for external users and one for internal users.
      * <br />
@@ -321,11 +320,11 @@ public class scanpage {
             addr = req.getHeader("X-Forwarded-For");
         }
         if (addr != null) {
-            // get hostnames for this user 
+            // get hostnames for this user
             result = getHostNames( addr );
-            
+
             // extend the path with a proxy (?) server
-            // vpro specific server, so should be made generic 
+            // vpro specific server, so should be made generic
             // (no idea how, maybe make configurable?)
             if( fromProxy ) {
                 result = "zen.vpro.nl->" + result;

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
-* @version $Id: StringTagger.java,v 1.13 2003-06-18 13:13:57 michiel Exp $
+* @version $Id: StringTagger.java,v 1.14 2003-09-01 13:29:46 pierre Exp $
 * @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
 */
 public class StringTagger implements Map {
@@ -119,7 +119,7 @@ public class StringTagger implements Map {
 
     /**
      * Parses the given line, and stores all value-pairs found in the
-     * {@link #tokens} and {@link #multitokens} fields.
+     * tokens and multitokens fields.
      * @param line : to be tagged line (why is this a parameter when it can eb retrieved from startline?)
      */
     protected void createTagger(String line) {
@@ -189,7 +189,7 @@ public class StringTagger implements Map {
 
     /**
      * Handles and splits a tag in its component parts, and store the elemements in
-     * the {@link #tokens} and {@link #multitokens} fields.
+     * the tokens and multitokens fields.
      * @param tag the string containing the tag
      */
     protected void splitTag(String tag) {
@@ -399,7 +399,6 @@ public class StringTagger implements Map {
      * Use {@link #get} to get the list of values as a <code>String</code><br />
      * Use {@link #Value} to get the first value as a String
      * @param token the key of the value to retrieve
-     * @name
      */
     public Vector Values(String token) {
         Vector tmp = (Vector) multitokens.get(token);

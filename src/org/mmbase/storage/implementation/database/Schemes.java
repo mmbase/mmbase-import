@@ -15,12 +15,12 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.6 2003-09-01 12:36:13 pierre Exp $
+ * @version $Id: Schemes.java,v 1.7 2003-09-01 13:29:46 pierre Exp $
  */
 public final class Schemes {
 
     /**
-     *  Name of the scheme for creating a row type (i.e.. for an OO-database such as Informix).
+     *  Name of the scheme for creating a row type.
      *  The parameters accepted are:
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
@@ -65,7 +65,7 @@ public final class Schemes {
     public static final String CREATE_TABLE_DEFAULT = "CREATE TABLE {1} ({4} {5})";
 
     /**
-     *  Name of the scheme for creating a row type (i.e.. for an OO-database such as Informix).
+     *  Name of the scheme for creating a row type.
      *  The parameters accepted are:
      *  <lu>
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>

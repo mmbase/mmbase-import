@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.8 2003-09-01 12:36:12 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.9 2003-09-01 13:29:46 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -59,7 +59,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * The transaction issolation level to use when starting a transaction.
-     * This value is retrieved from the factory's {@link Attributes.TRANSACTION_ISOLATION_LEVEL} attribute, which is commonly set
+     * This value is retrieved from the factory's {@link Attributes#TRANSACTION_ISOLATION_LEVEL} attribute, which is commonly set
      * to the highest (most secure) transaction isolation level available.
      */
     protected int transactionIsolation = Connection.TRANSACTION_NONE;
@@ -256,7 +256,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Retrieve a text for a specified object field.
-     * The default method uses {@link ResultSet#getString()} to obtain text.
+     * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
 
@@ -291,10 +291,10 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Determine whether a filed (i.e. large text or a blob) should be shortened or not.
+     * Determine whether a field (such as a large text or a blob) should be shortened or not.
      * A 'shortened' field contains a placeholder text ('$SHORTED') to indicate that the field is expected to be of large size
-     * and should be retrieved by an explicit call to {@link #getStringValue(MMObjectNode, FieldDefs) or.
-     * {@link #getBinaryValue(MMObjectNode, FieldDefs).
+     * and should be retrieved by an explicit call to {@link #getStringValue(MMObjectNode, FieldDefs)} or.
+     * {@link #getBinaryValue(MMObjectNode, FieldDefs)}.
      * The default implementation returns <code>true</code> for binaries, and <code>false</code> for other
      * types.
      * Override this method if you want to be able to change the placeholder strategy.
@@ -332,7 +332,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
-     * The default method uses {@link ResultSet#getBytes()} to obtain text.
+     * The default method uses {@link ResultSet#getBytes(int)} to obtain text.
      * Override this method if you want to optimize retrieving large objects,
      * i.e by using clobs or streams.
      * @param result the resultset to retrieve the text from
@@ -687,7 +687,7 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Store binary data of a field in a prepared statement
+     * Store binary data of a field in a prepared statement.
      * This basic implementation uses a binary stream to set the data.
      * Null values are stored as NULL if possible, otherwise they are stored as an empty byte-array.
      * Override this method if you use another way to store binaries (i.e. Blobs).
@@ -717,11 +717,11 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Store the text value of a field in a prepared statement
+     * Store the text value of a field in a prepared statement.
      * Null values are stored as NULL if possible, otherwise they are stored as an empty string.
      * If the FORCE_ENCODE_TEXT option is set, text is encoded (using the MMBase encoding) to a byte array
      * and stored as a binary stream.
-     * Otherwise it uses {@link PreparedStatement#setString()} to set the data.
+     * Otherwise it uses {@link PreparedStatement#setString(int, String)} to set the data.
      * Override this method if you use another way to store large texts (i.e. Clobs).
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement

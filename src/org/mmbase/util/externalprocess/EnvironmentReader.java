@@ -15,13 +15,13 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-/** Reader for importing the OS Environment properties into java. 
+/** Reader for importing the OS Environment properties into java.
  * java.lang.System.getProperties() has only some environment info
- * 
- * @TODO more OS support
+ *
+ * @todo more OS support
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: EnvironmentReader.java,v 1.3 2003-05-12 13:10:47 kees Exp $
+ * @version $Id: EnvironmentReader.java,v 1.4 2003-09-01 13:29:47 pierre Exp $
  * @since MMBase-1.6
  */
 public class EnvironmentReader {
@@ -97,7 +97,7 @@ public class EnvironmentReader {
     /**
      * Get value of environment property
      * @param key property name
-     * @return String value of environment property 
+     * @return String value of environment property
      */
     public static String getEnvVar(String key) {
         Properties p = getEnvVars();
