@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.111 2005-03-07 10:28:49 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.112 2005-03-07 15:14:42 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -559,21 +559,23 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      */
     private final boolean checkLogoutMethod() throws JspTagException {
         if (getMethod() == AuthenticationData.METHOD_LOGOUT) {
+            log.debug("Requested logout");
             if (cloud != null) {
                 removeRealm();
                 if (session != null) {
                     log.debug("ok. session is not null");
                     session.removeAttribute(getSessionName()); // remove cloud itself
                 }
+                String authenticate = cloud.getUser().getAuthenticationType();            
+                // add some information for actual logout
+                // Logout is loging in with 'anonymous' with some extra info.
+                Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
+                logoutInfo.setIfDefined(Parameter.REQUEST, request);
+                logoutInfo.setIfDefined(Parameter.RESPONSE, response);
+                logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, authenticate);
+                logoutInfo.setIfDefined(AuthenticationData.PARAMETER_LOGOUT, Boolean.TRUE);
+                setAnonymousCloud(logoutInfo);
             }
-            // add some information for actual logout
-            // Logout is loging in with 'anonymous' with some extra info.
-            Parameters logoutInfo = cloudContext.getAuthentication().createParameters("anonymous");
-            logoutInfo.setIfDefined(Parameter.REQUEST, request);
-            logoutInfo.setIfDefined(Parameter.RESPONSE, response);
-            logoutInfo.setIfDefined(AuthenticationData.PARAMETER_AUTHENTICATE, getAuthenticate());
-            logoutInfo.setIfDefined(AuthenticationData.PARAMETER_LOGOUT, Boolean.TRUE);
-            setAnonymousCloud(logoutInfo);
             return true;
         }
         return false;
@@ -846,6 +848,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (cloudNamePassed != null) {
                 setName(cloudNamePassed); // THIS SEEM DANGEROUS
             }
+            user.setAutoCasting(true);
             Enumeration enumeration = request.getParameterNames();
             while (enumeration.hasMoreElements()) {
                 String key = (String) enumeration.nextElement();
@@ -945,6 +948,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 request.setAttribute("referrer", referrer);
                 request.setAttribute("reason", reason);
                 request.setAttribute("exactreason", exactReason);
+                request.setAttribute("usernames", logon);
                 rd.forward(request, response);
             }
             return SKIP_BODY;
@@ -1052,14 +1056,14 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private final int makeCloud() throws JspTagException {
         Parameters user = null;
         int meth = getMethodOrDefault();
-        log.debug("logging on the cloud with method " + method);
+        log.debug("Creating the cloud with method " + meth);
 
         // check how to log on:
         switch(meth) {
 
         case AuthenticationData.METHOD_SESSIONDELEGATE:
         case AuthenticationData.METHOD_DELEGATE:
-
+            log.debug("delegate for " + getAuthenticate());
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             user.setIfDefined(Parameter.REQUEST, request);
             user.setIfDefined(Parameter.RESPONSE, response);
@@ -1072,6 +1076,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             sessionCloud = meth == AuthenticationData.METHOD_SESSIONDELEGATE;
             break;
         case AuthenticationData.METHOD_HTTP:
+            log.debug("http");
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             sessionCloud = true;
             if (doHTTPAuthentication(user) == SKIP_BODY) {
@@ -1079,6 +1084,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             break;
         case AuthenticationData.METHOD_LOGINPAGE:
+            log.debug("loginpage for " + getAuthenticate());
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             sessionCloud = true;
             if (doLoginPage(user) == SKIP_BODY) {
@@ -1086,6 +1092,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             break;
         default:
+            log.debug("default");
             if (logon != null && pwd != Attribute.NULL) {
                 user = cloudContext.getAuthentication().createParameters(getAuthenticate());
                 user.set(AuthenticationData.PARAMETER_USERNAME, logon.get(0));
@@ -1201,7 +1208,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (checkLogoutMethod()) { 
             return evalBody();
         }
-
+        
         if (cloud != null) {
             checkCloud();
         }
