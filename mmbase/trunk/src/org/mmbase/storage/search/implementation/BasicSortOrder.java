@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSortOrder.java,v 1.4 2003-03-10 11:50:56 pierre Exp $
+ * @version $Id: BasicSortOrder.java,v 1.5 2003-07-14 20:47:11 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSortOrder implements SortOrder {
@@ -84,14 +84,15 @@ public class BasicSortOrder implements SortOrder {
     
     // javadoc is inherited
     public int hashCode() {
-        return 61 * field.getFieldName().hashCode()
-        + 67 * field.getStep().getAlias().hashCode() + 103 * direction;
+        String alias = field.getStep().getAlias();
+        return 
+            61 * field.getFieldName().hashCode() 
+            + 67 * (alias != null ? alias.hashCode() : 1) + 103 * direction;
     }
 
     // javadoc is inherited
     public String toString() {
-        return "SortOrder(field:" + getField().getAlias()
-        + ", dir:" + getDirection() + ")";
+        return "SortOrder(field:" + getField().getAlias() + ", dir:" + getDirection() + ")";
     }
     
 }
