@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.3 2002-06-14 19:34:45 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.4 2002-06-24 14:05:37 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -26,9 +26,11 @@
   </xsl:template>
 
   <!-- how to present a news node -->
-  <xsl:template match="object[@type=$newstype and not(field/@notfilled)]">
+  <xsl:template match="object[@type=$newstype and not(unfilledField)]">
 	<xsl:apply-templates select="field[@name='title']"  />
-	<h2><font color="green"><xsl:apply-templates select="field[@name='subtitle']" /></font></h2>
+      <xsl:if test="not(field[@name='subtitle'] = '')">
+        <h2><font color="green"><xsl:apply-templates select="field[@name='subtitle']" /></font></h2>
+      </xsl:if>
 	<xsl:apply-templates select="field[@name='body']" />
 	<p>
       <xsl:call-template name="date">     
