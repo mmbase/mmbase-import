@@ -28,7 +28,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.17 2003-11-24 12:37:40 vpro Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.18 2003-11-26 15:21:50 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -157,7 +157,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     if (builder instanceof ClusterBuilder) {
                         // Cluster nodes.
                         if (query instanceof NodeQuery) { // hmm
-                            node = new MMObjectNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()));                            
+                            node = new MMObjectNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()));
                         } else {
                             node = new ClusterNode(builder, steps.size());
                         }
@@ -179,14 +179,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
                                 // no prefix if node.getBuilder() is not a clusterbuilder
                                 prefix = "";
                             } else {
-                                prefix = fields[i].getStep().getAlias();
-                                // if steps happens to lack an alias, make sure that it still might work:
-                                // (will for example go ok for 'node' clusterresults (containing only fields of one step))
-                                if (! multipleSteps || prefix == null) {
-                                    prefix = fields[i].getStep().getTableName() + '.';
-                                } else {
-                                    prefix += '.';
+                                String alias = fields[i].getStep().getAlias();
+                                if (alias == null) {
+                                    // Use tablename as alias when no alias is specified.
+                                    alias = fields[i].getStep().getTableName();
                                 }
+                                prefix = alias +  '.';
                             }
                         } else if (builder instanceof ResultBuilder) {
                             fieldName = fields[i].getAlias();
@@ -205,7 +203,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
                     }
                     // Finished initializing clusternode.
-                    node.finish();    
+                    node.finish();
                     results.add(node);
                 }
             } finally {
@@ -219,7 +217,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         } finally {
             mmbase.closeConnection(con, stmt);
         }
-        
+
         return results;
     }
 
