@@ -31,7 +31,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="deprecation" value="on" />
 
   <property name="project.source.dir" location="." />
-  <property name="project.build.dir"  location="./build" />
+  <property name="project.build.postfix" value="" />
+  <property name="project.build.dir"  location="./build${project.build.postfix}" />
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
@@ -41,7 +42,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="build.dir"    value="${source.dir}/build" /><!-- mmbase build dir -->
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
-  <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
+  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
   <property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
   <property name="documentation.home" value="../../documentation" />
 
