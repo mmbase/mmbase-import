@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"
 %><mm:import externid="username" from="parameters" />
-<mm:content language="$config.lang" postprocessor="reducespace">
+<mm:content language="$config.lang" type="text/html" expires="0">
 <mm:cloud method="$config.method" loginpage="login.jsp" logon="$username" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
