@@ -6,30 +6,30 @@
   <body>
     <h1>Cloud without attributes</h1>
     <p>
-      <mm:cloud jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud >
+        You are logged in as: <mm:cloudinfo type="user" />
         (must be anonymous)
       </mm:cloud>
     </p>
     <h1>Cloud method='asis' attribute</h1>
     <p>
-      <mm:cloud method="asis" jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud method="asis" >
+        You are logged in as: <mm:cloudinfo type="user" />
         (must not be anonymous)
       </mm:cloud>
     </p>
     <h1>Cloud method='anonymous' attribute</h1>
     <p>
-      <mm:cloud method="anonymous" jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud method="anonymous" >
+        You are logged in as: <mm:cloudinfo type="user" />
         (must be anonymous)
       </mm:cloud>
     </p>
     <h1>Cloud method='asis' attribute (again)</h1>
     <p>
       Anonymous cloud will not replace the one in the session.
-      <mm:cloud method="asis" jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud method="asis" >
+        You are logged in as: <mm:cloudinfo type="user" />
         (must not be anonymous)
       </mm:cloud>
     </p>
@@ -56,8 +56,8 @@
     </p>
     <h1>'asis' again</h1>
     <p>
-      <mm:cloud method="asis" jspvar="cloud">
-        You are logged in as: <%=cloud.getUser().getIdentifier() %>
+      <mm:cloud method="asis" >
+        You are logged in as: <mm:cloudinfo type="user" />
         (must be 'foo')
       </mm:cloud>
     </p>
