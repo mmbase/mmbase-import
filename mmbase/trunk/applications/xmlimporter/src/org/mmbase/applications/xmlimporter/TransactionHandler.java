@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.5 2003-01-06 18:29:36 robmaris Exp $
+ * @version $Id: TransactionHandler.java,v 1.6 2003-01-09 14:44:28 robmaris Exp $
  */
 
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
@@ -214,12 +214,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
       log.service("TransactionHandler processing TCP");
       if (log.isDebugEnabled()) {
          try{
+            StringBuffer sb = new StringBuffer();
             String s;
-            String template = "";
             BufferedReader in = new BufferedReader(input);
             while((s=in.readLine()) != null) {
-               template +=s;
+               sb.append(s);
             }
+            String template = sb.toString();
             log.debug("Received template is:");
             log.debug(template);
             input = new StringReader(template);
