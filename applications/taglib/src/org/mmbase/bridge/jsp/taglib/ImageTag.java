@@ -66,7 +66,10 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
             // the cached image
             number = node.getIntValue("cache("+ template + ")");
         }
-        String page = req.getContextPath() + "/img.db?" + number;
+
+        // how about remote clouds!!!
+
+        String page = req.getContextPath() + org.mmbase.module.builders.AbstractImages.IMGDB + number;
 
         helper.setValue(page);
         helper.setJspvar(pageContext);  
