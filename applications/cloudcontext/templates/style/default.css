@@ -46,6 +46,10 @@ div#navigate p {
   margin-right: 3ex;
 }
 
+p.action { 
+  margin-top: 5ex;
+}
+
 p.current { 
   background-color: #ffb;
 }
