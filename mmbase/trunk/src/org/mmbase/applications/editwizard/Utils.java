@@ -33,15 +33,11 @@ import org.mmbase.util.logging.*;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.6 2002-02-27 12:11:11 pierre Exp $
+ * @version $Id: Utils.java,v 1.7 2002-02-27 16:54:22 pierre Exp $
  */
 public class Utils {
 
     private static Logger log = Logging.getLoggerInstance(Utils.class.getName());
-    /**
-     * XML Utils
-     */
-
     /**
      * This method returns a new instance of a DocumentBuilder.
      *

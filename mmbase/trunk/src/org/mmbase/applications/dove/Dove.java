@@ -48,7 +48,8 @@ import org.mmbase.bridge.*;
  * out, as we can then assumes a correct model. This will optimize processing.
  *
  * @author Pierre van Rooden
- * @version $Id: Dove.java,v 1.3 2002-02-27 12:17:56 pierre Exp $
+ * @since MMBase-1.5
+ * @version $Id: Dove.java,v 1.4 2002-02-27 16:54:21 pierre Exp $
  */
 
 public class Dove extends AbstractDove {

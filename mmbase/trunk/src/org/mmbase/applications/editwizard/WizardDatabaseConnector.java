@@ -30,8 +30,9 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @author Michiel Meeuwissen
- * @since   MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.5 2002-02-27 12:15:31 pierre Exp $
+ * @author Pierre van Rooden
+ * @since MMBase-1.6
+ * @version $Id: WizardDatabaseConnector.java,v 1.6 2002-02-27 16:54:23 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {

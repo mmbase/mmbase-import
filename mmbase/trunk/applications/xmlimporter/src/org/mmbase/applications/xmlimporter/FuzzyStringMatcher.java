@@ -16,10 +16,11 @@ package org.mmbase.applications.xmlimporter;
 /**
  * Utility class, providing methods for a fuzzy comparison between strings.
  * @author Rob van Maris (Finalist IT Group)
- * @version 1.0
+ * @since MMBase-1.5
+ * @version $Id: FuzzyStringMatcher.java,v 1.2 2002-02-27 16:54:25 pierre Exp $
  */
 public class FuzzyStringMatcher {
-    
+
     /** Replacements for diacritical characters. */
     private final static String[] NORMALIZE_REPLACEMENTS = {
         "a", "a", "a", "a", "a", "a", "ae", "c", //c0-c7
@@ -31,26 +32,26 @@ public class FuzzyStringMatcher {
         "o", "n", "o", "o", "o", "o", "o", " ", //f0-f7
         "o", "u", "u", "u", "u", "y", "b", "y" //f8-ff
     };
-    
+
     /* Strings to be matched, converted to char arrays. */
     private char[] chars1, chars2;
-    
+
     /* Length of the strings. */
     private int length1, length2;
 
-    /* Cache of getMismatch() results, 
+    /* Cache of getMismatch() results,
      * i.e. resultsCache[i1, 12] caches the result of calculateMismatch(i1, i2).
      */
     private Integer[][] resultsCache;
-    
+
     /* Result of the matching, this is the minimum number of typo's
      * necessary to account for the differences between the two strings,
      * if they were meant to be identical.
      */
     private int mismatch;
-    
+
     /**
-     * Calculates the mismatch between two strings. 
+     * Calculates the mismatch between two strings.
      * @param string1 first string
      * @param string2 second string
      * @return The number of mismatches,this is the minimum number of typo's
@@ -63,8 +64,8 @@ public class FuzzyStringMatcher {
 
     /**
      * Calculates the match rate, a value between 0 and 1, proportional
-     * to the rate the two strings match (1 is exact match). 
-     * This is calculated as 
+     * to the rate the two strings match (1 is exact match).
+     * This is calculated as
      * 1 - (mismatch/max(string1.length(), string2.length())).
      * @param string1 first string
      * @param string2 second string
@@ -75,10 +76,10 @@ public class FuzzyStringMatcher {
     }
 
     /**
-     * Creates normalized title, e.g. all non-alphanumeric 
+     * Creates normalized title, e.g. all non-alphanumeric
      * characters replaced by white space, all characters converted
      * to lowercase non-diacritical characters, and all white space
-     * sequences contracted to a single white space character. 
+     * sequences contracted to a single white space character.
      * This is a convenience method, provided to make string comparison
      * easier by removing (more or less) arbitrary differences.
      *
@@ -89,7 +90,7 @@ public class FuzzyStringMatcher {
         StringBuffer sb = new StringBuffer();
         char[] chars = str.toCharArray();
         boolean whiteSpace = false;
-        
+
         for (int i = 0; i < chars.length; i++) {
             char ch = chars[i];
             if (ch == '&') {    // Ampersand
@@ -135,37 +136,37 @@ public class FuzzyStringMatcher {
         }
         return sb.toString();
     }
-    
-    /** 
+
+    /**
      * Creates new FuzzyStringMatcher and executes the matching routine.
      * @param string1 first string
      * @param string2 second string
      */
     private FuzzyStringMatcher(String string1, String string2) {
-        
+
         // Convert strings to char arrays in order to speed up access
-        // to the individual characters. 
+        // to the individual characters.
         // Tests confirm a slight performance gain over using plain
         // String objects.
         chars1 = string1.toCharArray();
         chars2 = string2.toCharArray();
-        
+
         // Store the string lengths, instead calling length() repeatedly.
         length1 = string1.length();
         length2 = string2.length();
-       
+
         // Initialize the cache. It is dimensioned to match the range
         // of input parameters of the calculateMismatch method.
         resultsCache = new Integer[length1 + 1][length2 + 1];
-       
+
         // Execute the matching routine.
         mismatch = calculateMismatch(0, 0);
-        
+
         // Make the resultsCache eligible for garbage collection.
         resultsCache = null;
     }
-    
-    
+
+
     /**
      * Get the result of the matching. This is calculated on creation of
      * this instance, so it is not calculated again when this method
@@ -177,20 +178,20 @@ public class FuzzyStringMatcher {
     private int getMismatch() {
         return mismatch;
     }
-    
+
     /**
      * Get the match rate, a value between 0 and 1, proportional
-     * to the rate the two strings match. 
-     * This is calculated as 
+     * to the rate the two strings match.
+     * This is calculated as
      * 1 - (mismatch/max(string1.length(), string2.length())).
      * @return the match rate.
      */
     private float getMatchRate() {
         return 1 - (mismatch / (float) Math.max(length1, length2));
     }
-    
+
     /**
-     * Calculate the mismatch between a substring of string1 
+     * Calculate the mismatch between a substring of string1
      * and a substring of string2. This method calls itself
      * recursively.
      * @param i1Start start index in substring of string1
@@ -198,44 +199,44 @@ public class FuzzyStringMatcher {
      * @return the mismatch between the substrings.
      */
     private int calculateMismatch(int i1Start, int i2Start) {
-        
+
         // Retreive the result from the cache if possible.
         if (resultsCache[i1Start][i2Start] != null) {
             return resultsCache[i1Start][i2Start].intValue();
         }
-        
+
         int mismatch = 0;
 
         int i1 = i1Start;
         int i2 = i2Start;
         while (i1 < length1 && i2 < length2) {
             if (chars1[i1] == chars2[i2]) {
-                
+
                 // Characters at current position match,
                 // so proceed to next position.
                 i1++;
                 i2++;
             } else {
-                
+
                 // Characters at current position don't match.
                 mismatch++;
-                
+
                 // Calculate the mismatch in the remaining substrings,
                 // based on 3 different assumptions on how the mismatch
                 // at the current position was produced:
                 // 1) Assume  a character was ommitted in string1.
                 // (Or, equivalently: a character was added in string2.)
                 int m1 = calculateMismatch(i1, i2 + 1);
-               
-                // 2) Assume a wrong character was substituted 
+
+                // 2) Assume a wrong character was substituted
                 // in one of the strings.
                 int m2 = calculateMismatch(i1 + 1, i2);
-               
+
                 // 3) Assume a character was ommitted in string2.
                 // (Or, equivalently: a character was added in string1.)
                 int m3 = calculateMismatch(i1 + 1, i2 + 1);
-                
-                // Of these three, adopt the one that produces the 
+
+                // Of these three, adopt the one that produces the
                 // smallest mismatch; adjust the mismatch accordingly.
                 if (m1 < m2) {
                     if (m1 < m3) {
@@ -250,32 +251,32 @@ public class FuzzyStringMatcher {
                         mismatch += m3;
                     }
                 }
-                
+
                 // Store the result in the cache and return it.
                 resultsCache[i1Start][i2Start] = new Integer(mismatch);
                 return mismatch;
             }
         }
-        
+
         // The end of one of the strings has been reached.
         // Each remaining character in the other string is a mismatch.
         if (length1 == i1) {
-            
+
             // The end of string1 is reached, add the remaining
             // number of characters in string2 to the mismatch.
             mismatch += (length2 - i2);
         } else {
-            
+
             // The end of string2 is reached, add the remaining
             // number of characters in string1 to the mismatch.
             mismatch += (length1 - i1);
         }
-        
+
         // Store the result in the cacht and return it.
         resultsCache[i1Start][i2Start] = new Integer(mismatch);
         return mismatch;
     }
-    
+
 //    // for testing only
 //    private static void test(String s1, String s2) {
 //        float result = 0;
@@ -285,13 +286,13 @@ public class FuzzyStringMatcher {
 //            result = getMismatch(s1, s2);
 //        }
 //        long timeNeeded = System.currentTimeMillis() - startTime;
-//        System.out.println("mismatch: " + result 
+//        System.out.println("mismatch: " + result
 //            + ", in " + timeNeeded/10000f + "ms.");
 //    }
-//    
+//
 //    // for testing only
 //    public static void main(String[] args) {
 //        test(args[0], args[1]);
 //    }
-    
+
 }

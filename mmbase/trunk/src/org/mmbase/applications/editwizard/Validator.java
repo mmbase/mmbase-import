@@ -17,8 +17,9 @@ import org.w3c.dom.*;
  *
  * @javadoc
  * @author Kars Veling
- * @since   MMBase-1.6
- * @version $Id: Validator.java,v 1.2 2002-02-25 11:53:58 pierre Exp $
+ * @author Pierre van Rooden
+ * @since MMBase-1.6
+ * @version $Id: Validator.java,v 1.3 2002-02-27 16:54:22 pierre Exp $
  */
 
 public class Validator {
@@ -29,9 +30,9 @@ public class Validator {
     /**
      * Validates the given prehtml-xml. Returns true if everything is valid, false if errors are found.
      * Detailed information about the errors are placed as subnodes of the invalid fields.
-     * @param        Document prehtml       This is the prehtml which should be validated.
-     * @param        Document schema        And of course the wizardschema which is needed to validate at all.
-     * @returns     True is the form is valid, false if it is invalid.
+     * @param Document prehtml the prehtml which should be validated
+     * @param Document schema the wizardschema which is needed to validate at all
+     * @return True is the form is valid, false if it is invalid
      */
     public static boolean validate(Document prehtml, Document schema) {
         int errorcount = 0;
@@ -54,8 +55,8 @@ public class Validator {
     /**
      * This method can validate one form. It returns the number of invalid fields in the form.
      *
-     * @param       form    The form to be validated.
-     * @returns     The number of invalid fields found.
+     * @param form The form to be validated.
+     * @return The number of invalid fields found.
      */
     public static int validateForm(Node form) {
         int errorcount=0;
@@ -69,8 +70,8 @@ public class Validator {
     /**
      * This method validates one field.
      *
-     * @param       field   the field which should be validated.
-     * @returns     true is the field is valid, false if it is invalid.
+     * @param field the field which should be validated.
+     * @return true is the field is valid, false if it is invalid.
      */
     public static boolean validateField(Node field) {
         String ftype = Utils.getAttribute(field,"ftype","");
@@ -88,7 +89,6 @@ public class Validator {
         val = field.getOwnerDocument().createElement("validator");
         field.appendChild(val);
         Utils.setAttribute(val,"valid", "true");
-
         if (dttype.equals("string") || ftype.equals("html")) {
             // string or html
             int dtminlength = 0;
@@ -110,13 +110,12 @@ public class Validator {
                 addValidationError(val, 1, "Entered text is too long or too short.");
             }
         }
-
         if (dttype.equals("int")) {
             // int
             int nr=0;
             boolean isint=false;
             try {
-                    nr = Integer.parseInt(value);
+                nr = Integer.parseInt(value);
                 isint=true;
             } catch (Exception e) {
                 addValidationError(val, 1, "Entered value is not a valid integer number.");
@@ -131,18 +130,14 @@ public class Validator {
                 }
             }
         }
-
         if (dttype.equals("date")) {
             // date
-                // TODO
+            // TODO
         }
-
         if (dttype.equals("enum")) {
             // enum
-                // TODO
+            // TODO
         }
-
-
         return Utils.getAttribute(val,"valid").equals("true");
     }
 
@@ -165,15 +160,16 @@ public class Validator {
      * Also, information about valid and non-valid form-schema's are placed in the steps-overview.
      *
      * The node looks like this:
-     * <steps-validator valid="false" allowsave="false" allowcancel="true">
-     *      <step form-schema="schema-id" valid="true" />
-     *      <step form-schema="schema-id" valid="false" />
-     * </steps-validator>
-     *
+     * <pre>
+     * &lt;steps-validator valid="false" allowsave="false" allowcancel="true"&gt;
+     *      &lt;step form-schema="schema-id" valid="true" /&gt;
+     *      &lt;step form-schema="schema-id" valid="false" /&gt;
+     * &lt;/steps-validator&gt;
+     * </pre>
      * THis method creates a steps-overview which can be used by the html to show what forms are valid and what are not.
      *
-     * @param       prehtml         the prehtml data node
-     * @param       schema          The original wizardschema
+     * @param prehtml the prehtml data node
+     * @param schema the original wizardschema
      */
     public static void createStepsOverview(Document prehtml, Document schema) {
 
@@ -182,7 +178,7 @@ public class Validator {
         if (overview!=null) prehtml.getDocumentElement().removeChild(overview);
 
         // create new overview node
-            overview = prehtml.createElement("steps-validator");
+        overview = prehtml.createElement("steps-validator");
         Utils.setAttribute(overview, "allowcancel", "true");
 
         int invalidforms = 0;
@@ -205,7 +201,7 @@ public class Validator {
                     Utils.setAttribute(newstep, "valid", valid+"");
                     if (!valid) invalidforms++;
                 }
-                }
+            }
         }
 
         // store global information about validationresults
