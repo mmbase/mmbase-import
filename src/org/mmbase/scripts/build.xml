@@ -105,6 +105,7 @@ Change directory to ${build.dir}/orion and run:
   <property name="database.user" value="mmuser"/>
   <property name="mmbase-taglib" value="mmbase-taglib.xml"/>
   <property name="database.password" value="mmpassword"/>
+  <property name="manifest"      value="manifest.mf"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="mmbase.jar" value="${build.dir}/mmbase/lib/mmbase.jar"/>
   <property name="source-config.dir" location="${source.dir}/config"/>
@@ -566,7 +567,8 @@ Change directory to ${build.dir}/orion and run:
           tofile="${web.dir}/taglib.tld" />
     <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
          basedir="${build.dir}/classes"
-	 includes="org/mmbase/**">
+	     includes="org/mmbase/**"
+	     manifest="${manifest}" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
     </jar>
   </target>
