@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE languageguiset PUBLIC "//MMBase - languageguiset //" "http://www.mmbase.org/dtd/languageguiset_1_0.dtd">
+<languageguiset>
+	<keyword name="Members">
+		<translation language="nl" value="Leden" />
+		<translation language="df" value="Members" />
+	</keyword>
+	<keyword name="Messages">
+		<translation language="nl" value="Berichten" />
+		<translation language="df" value="Messages" />
+	</keyword>
+	<keyword name="Topics">
+		<translation language="nl" value="Onderwerpen" />
+		<translation language="df" value="Topics" />
+	</keyword>
+	<keyword name="on_the">
+		<translation language="nl" value="op het" />
+		<translation language="df" value="on the" />
+	</keyword>
+	<keyword name="forum">
+		<translation language="nl" value="forum" />
+		<translation language="df" value="forum" />
+	</keyword>
+	<keyword name="member_since">
+		<translation language="nl" value="Lid geworden op" />
+		<translation language="df" value="Member since" />
+	</keyword>
+	<keyword name="Views">
+		<translation language="nl" value="Bekeken" />
+		<translation language="df" value="Views" />
+	</keyword>
+	<keyword name="number_of_messages">
+		<translation language="nl" value="Aantal berichten" />
+		<translation language="df" value="Number of messages" />
+	</keyword>
+	<keyword name="Areas">
+		<translation language="nl" value="Gebieden" />
+		<translation language="df" value="Areas" />
+	</keyword>
+	<keyword name="Welcome">
+		<translation language="nl" value="Welkom" />
+		<translation language="df" value="Welcome" />
+	</keyword>
+	<keyword name="last_time_logged_in">
+		<translation language="nl" value="Laatste keer hier geweest" />
+		<translation language="df" value="Last time logged in" />
+	</keyword>
+</languageguiset>
