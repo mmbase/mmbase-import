@@ -24,4 +24,5 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 mmbase /home/wwwtech/bin/cvslog %s -f $CVSROOT/CVSROOT/commitlog -s -m cvs@mmbase.org
+html /home/wwwtech/bin/cvslog %s -f $CVSROOT/CVSROOT/commitlog -s -m cvs@mmbase.org
 DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
