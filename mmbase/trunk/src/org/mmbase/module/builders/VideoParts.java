@@ -7,9 +7,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 */
 /*
-$Id: VideoParts.java,v 1.13 2000-12-14 15:52:04 vpro Exp $
+$Id: VideoParts.java,v 1.14 2000-12-14 16:22:16 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/12/14 15:52:04  vpro
+davzev: Added methods getMinSpeed,getMinChannels and doGetUrl.
+
 Revision 1.12  2000/11/23 14:42:46  vpro
 Wilbert: Added cvs log and id, removed unused fields diskid and playtime, unnesc overrides of getGuiIndicator, constructor and getNewNode
 
@@ -32,11 +35,12 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: VideoParts.java,v 1.13 2000-12-14 15:52:04 vpro Exp $
+ * @version $Id: VideoParts.java,v 1.14 2000-12-14 16:22:16 vpro Exp $
  */
 public class VideoParts extends MediaParts {
 	private String classname = getClass().getName();
 	private boolean debug = false;
+
 
 	public int insertDone(EditState ed,MMObjectNode node) {
 		String sourcepath=ed.getHtmlValue("sourcepath");

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.18 2000-12-14 15:53:39 vpro Exp $
+$Id: AudioParts.java,v 1.19 2000-12-14 16:22:15 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2000/12/14 15:53:39  vpro
+davzev: Removed replace() and related GETURL methods, now available in mediaparts, and added methods getMinSpeed,getMinChannels and doGetUrl.
+
 Revision 1.17  2000/11/10 10:31:32  vpro
 davzev: Added method makeRealCompatible that checks for Realplayer incompatible chars in title and author field plus url rtsp-pnm check uses charAt(0) instead of startsWith.
 
@@ -85,10 +88,11 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.18 2000-12-14 15:53:39 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.19 2000-12-14 16:22:15 vpro Exp $
  * 
  */
 public class AudioParts extends MediaParts {
+
 
 	public final static int AUDIOSOURCE_DEFAULT=0;
 	public final static int AUDIOSOURCE_DROPBOX=4;
