@@ -9,7 +9,7 @@
   <property name="project.target.templates.dir" value="../" /><!-- scan stuff _must_ be in root -->
   <property name="project.templates.dir" value="${project.source.dir}" />
   <property name="project.templates.include" value="mmeditors/**/*" />
-  <property name="project.extra.path" location="../vwms/build/mmbase-vwms.jar" />
+  <property name="project.jars.includes" value="vwms/build/mmbase-vwms.jar" />
   &base;
 
   <target name="vwms">
