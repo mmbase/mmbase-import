@@ -5,7 +5,7 @@
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>2002-12-05</date>
-		<edition>$Id: documentation.xml,v 1.14 2003-07-27 21:45:04 henk Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.15 2004-02-27 12:42:23 gerard Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -29,9 +29,8 @@
 		</para>
 		<graphic fileref="general/media/documentation.png"></graphic>
 		<para>
-			There are several sources of documentation and information available. There are a few
-			web-sites of the MMBase project (www.mmbase.org, foundation.mmbase.org, design.mmbase.org),
-			which do supply knowledge and examples. The examples and HTML documentation which are shipped
+			There are several sources of documentation and information available. First there is the MMBase website (www.mmbase.org),
+			which does supply knowledge and examples. The examples and HTML documentation which are shipped
 			with an MMBase distro are available in the MMBase CVS source repository. The examples pages
 			are in the html/mmexamples module, so new examples must be added there.
 		</para>
