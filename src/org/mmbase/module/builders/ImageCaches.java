@@ -101,7 +101,37 @@ public class ImageCaches extends MMObjectBuilder {
 			b.append(Integer.toString((int)chb[i],16)+",");
 		}
 		return(b.toString());
-	}
+	}	
+
+    /**
+     * Invalidate the Image Cache for a specific Node
+     * method only accessable on package level, since only Images should call it..
+     * @param node The image node, which is the original of the cached modifications
+     */
+    void invalidate(MMObjectNode node) {
+    	log.debug("gonna invalidate the node, where the original node # " + node.getNumber());
+    	// first get all the nodes, which are currently invalid....
+	// this means all nodes from icache where the field 'ID' == node it's number
+    	Enumeration invalidNodes = search("WHERE id=" + node.getNumber());
+	while(invalidNodes.hasMoreElements()) {
+    	    // delete the icache node
+	    MMObjectNode invalidNode = (MMObjectNode) invalidNodes.nextElement();
+	    removeNode(invalidNode);
+    	    log.debug("deleted node with id#" + node.getNumber());	    
+	}		
+    }
+    
+    /**
+     * Override the MMObjectBuilder removeNode, to invalidate the LRU ImageCache, when a node gets deleted.
+     * Remove a node from the cloud.
+     * @param node The node to remove.
+     */
+    public void removeNode(MMObjectNode node) {
+    	String ckey = node.getStringValue("ckey");
+        super.removeNode(node);
+	// also delete from LRU Cache
+    	handlecache.remove(ckey);
+    }        
 }
 
 class ByteArray {
