@@ -22,11 +22,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * New Email builder, 
- *
- * rewrite of the email system that became too complex to handle
- * focus on the new one is different. code is now split per mail
- * type to allow for easer debug and better control over the 'simple'
+ * Email builder.
+ * Rewrite of the email system, that became too complex to handle.
+ * The focus on the new one is different.
+ * The code is now split per mail type to allow for easer debug and better control over the 'simple'
  * mail action. The delayed and repeat mail will be handled with
  * the upcomming crontab builder
  *
@@ -86,9 +85,9 @@ public class EmailBuilder extends MMObjectBuilder {
 
         // get the sendmail module
         sendmail = (SendMailInterface) mmb.getModule("sendmail");
-        
+
         // start the email nodes expire handler, deletes
-        // oneshot email nodes after the defined expiretime 
+        // oneshot email nodes after the defined expiretime
         // check every defined sleeptime
         expirehandler = new EmailExpireHandler(this, 60, 30 * 60);
 
@@ -111,7 +110,7 @@ public class EmailBuilder extends MMObjectBuilder {
         return org.mmbase.util.functions.NodeFunction.getParametersByReflection(EmailBuilder.class, function);
     }
 
- 
+
     /**
      * {@inheritDoc}
      *
@@ -127,12 +126,12 @@ public class EmailBuilder extends MMObjectBuilder {
         if (function.equals("setType") || function.equals("settype") ) {
             setType(node, arguments);
             return null;
-        } else  if (function.equals("mail")) {  // function mail(type) called            
+        } else  if (function.equals("mail")) {  // function mail(type) called
             // check if we have arguments ifso call setType()
             if (arguments.size() > 0) {
                 setType(node, arguments);
             }
-            
+
             // get the mailtype so we can call the correct handler/method
             int mailType = node.getIntValue("mailtype");
             switch(mailType) {
@@ -141,28 +140,28 @@ public class EmailBuilder extends MMObjectBuilder {
             case TYPE_ONESHOTKEEP :
                 EmailHandler.sendMailNode(node);
                 break;
-            case TYPE_REPEATMAIL : 
+            case TYPE_REPEATMAIL :
             default:
                 log.warn("Trying to mail a node with unsupported type " + mailType);
             }
             return null;
         } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
-            
+
             // check if we have arguments ifso call setType()
             if (arguments.size() > 0) {
                 setType(node, arguments);
             }
-            
+
             // get the mailtype so we can call the correct handler/method
             int mailType = node.getIntValue("mailtype");
             switch(mailType) {
             case TYPE_ONESHOT :
                 // deleting the node happens in EmailExpireHandler
-            case TYPE_ONESHOTKEEP : 
+            case TYPE_ONESHOTKEEP :
                 new EmailBackgroundHandler(node);
                 break;
-            case TYPE_REPEATMAIL : 
-            default: 
+            case TYPE_REPEATMAIL :
+            default:
                 log.warn("Trying to start a mail of a node with unsupported type " + mailType);
             }
             return null;
@@ -170,15 +169,15 @@ public class EmailBuilder extends MMObjectBuilder {
             return super.executeFunction(node, function, arguments);
         }
     }
-    
-    
+
+
     /**
      * return the sendmail module
      */
     static SendMailInterface getSendMail() {
         return sendmail;
     }
-    
+
     /**
      * set the mailtype based on the first argument in the list
      */
@@ -192,8 +191,8 @@ public class EmailBuilder extends MMObjectBuilder {
             node.setValue("mailtype", TYPE_ONESHOT);
         }
     }
-    
-    
+
+
     /**
      * Returns all the one-shot delivered mail nodes older than a specified time.
      * This is used by {@link EmailExpireHandler} to remove expired emails.

@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.37 2004-07-30 17:10:36 michiel Exp $
+ * @version $Id: Contexts.java,v 1.38 2004-09-17 09:23:15 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -160,7 +160,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation.
-     * @see Verify#check(user, nodeId, sourceNodeI, destinationNodeI, operation)
+     * @see Verify#check(UserContext, int, int, int, Operation)
      */
 
     public boolean mayDo(User user, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) throws SecurityException {
@@ -178,7 +178,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation
-     * @see Verify#check(user, nodeId, operation)
+     * @see Verify#check(UserContext, int, Operation)
      */
     public boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
 
@@ -346,7 +346,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
-        
+
         Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
 
         if (checkOwnRights) {
@@ -430,7 +430,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation
-     * @see Verify#check(user, query, operation)
+     * @see Verify#check(UserContext, Query, Operation)
      */
 
     public Authorization.QueryCheck check(User userContext, Query query, Operation operation) {
@@ -559,24 +559,24 @@ public class Contexts extends MMObjectBuilder {
 
 
     /**
-     * 
+     *
      * @return A Collection of groups or users which are allowed for the given operation (not recursively)
      */
 
     protected Collection getGroupsOrUsers(MMObjectNode contextNode, Operation operation, MMObjectBuilder groupsOrUsers) {
         InsRel rights = RightsRel.getBuilder();
-        
+
         BasicSearchQuery query = new BasicSearchQuery();
         Step step = query.addStep(this);
         BasicStepField numberStepField = new BasicStepField(step, getField("number"));
         BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(contextNode.getNumber()));
-        
+
         BasicRelationStep relationStep = query.addRelationStep(rights, groupsOrUsers);
         relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-        
+
         BasicStepField  operationStepField = new BasicStepField(relationStep, rights.getField("operation"));
         BasicFieldValueConstraint operationConstraint =  new BasicFieldValueConstraint(operationStepField, operation.toString());
-        
+
         BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
         constraint.addChild(numberConstraint);
         constraint.addChild(operationConstraint);
@@ -594,7 +594,7 @@ public class Contexts extends MMObjectBuilder {
             return new ArrayList();
         }
 
-     
+
     }
 
     /**

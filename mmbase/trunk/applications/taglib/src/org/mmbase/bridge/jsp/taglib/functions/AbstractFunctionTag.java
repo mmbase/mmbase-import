@@ -24,8 +24,9 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * The function tags can be used as a child of a 'NodeProvider' tag (but not on clusternodes?), but
- * it can also be used stand alone, when using the attributes to specify on which object the
+ * The function tags can be used as a child of a 'NodeProvider' tag (though posisbly
+ * not on clusternodes).
+ * It can also be used stand alone, when using the attributes to specify on which object the
  * function must be called (besides nodes, it can be called on node-manager, modules, sets).
  *
  * This is the absctract implementation, providing only the result of the function. The several
@@ -34,9 +35,9 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.9 2004-07-26 20:18:03 nico Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.10 2004-09-17 09:23:48 pierre Exp $
  */
-abstract public class AbstractFunctionTag extends NodeReferrerTag { 
+abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractFunctionTag.class);
 
@@ -47,9 +48,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     protected Attribute module      = Attribute.NULL;
     protected Attribute nodeManager = Attribute.NULL;
 
-    protected Attribute functionSet = Attribute.NULL; 
+    protected Attribute functionSet = Attribute.NULL;
 
-    protected Attribute referids    = Attribute.NULL; 
+    protected Attribute referids    = Attribute.NULL;
 
 
     public void setName(String n) throws JspTagException {
@@ -57,7 +58,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     }
 
     public void setContainer(String c) throws JspTagException {
-        container = getAttribute(c); 
+        container = getAttribute(c);
     }
 
     public void setParameters(String p)  throws JspTagException {
@@ -87,7 +88,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     protected final Function getFunction(String functionName) throws JspTagException {
         Function function;
-        // now determin on what the object the function must be done.        
+        // now determin on what the object the function must be done.
         if (nodeManager != Attribute.NULL) {
             if (module != Attribute.NULL || functionSet != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new JspTagException("You can only use one of 'nodemanager', 'module', 'set'  or 'node' on a function tag");
@@ -107,7 +108,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 Class claz = pageContext.getPage().getClass();
 
                 if (set.equals("THISPAGE")) {
-                    Method method = MethodFunction.getFirstMethod(claz, functionName);                    
+                    Method method = MethodFunction.getFirstMethod(claz, functionName);
                     return  FunctionFactory.getFunction(method, functionName);
                 } else {
                     throw new UnsupportedOperationException("Local beans not yet supported");
@@ -116,7 +117,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 return FunctionFactory.getFunction(functionSet.getString(this), functionName);
             }
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
- 
+
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
                 FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
                 if (functionContainer != null) {
@@ -125,7 +126,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 } else {
                     // ingore.
                 }
-            } 
+            }
             // it is possible that a 'closer' node provider is meant
             FunctionContainerOrNodeProvider functionOrNode;
 
@@ -148,7 +149,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     }
 
-    
+
 
 
 
@@ -191,7 +192,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             // name given, try self:
             function = getFunction(functionName);
         }
-        
+
         if (function == null) {
             throw new JspTagException("Could not determin the name of the function to be executed");
         }
@@ -209,7 +210,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             while (i.hasNext()) {
                 FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
                 params.set(entry.getKey(), entry.getValue());
-            }        
+            }
         }
         if (referids != Attribute.NULL) {
             params.setAll(Referids.getReferids(referids, this));
