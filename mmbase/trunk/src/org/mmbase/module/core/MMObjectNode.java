@@ -164,7 +164,6 @@ public class MMObjectNode {
 	* (remark someone has to look at this caching thing, i think its lagecy, daniel)
 	*/
 	public boolean setValue(String fieldname,Object fieldvalue) {
-
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
@@ -180,7 +179,7 @@ public class MMObjectNode {
 	
 		// is it a memory only field ? then send a fieldchange
 		// a small test begin for transient fields
-		if (state==0) sendFieldChangeSignal(fieldname);
+		//sendFieldChangeSignal(fieldname);
 
 		return(true);
 	}
@@ -198,6 +197,7 @@ public class MMObjectNode {
 		// obtain the type of field this is 
 		int state=getDBState(fieldname);
 
+
 		// add it to the changed vector so we know that we have to update it
 		// on the next commit
 		if (!changed.contains(fieldname) && state==2) {
@@ -205,7 +205,7 @@ public class MMObjectNode {
 		}
 
 		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		//sendFieldChangeSignal(fieldname);
 		return(true);
 	}
 
@@ -215,6 +215,8 @@ public class MMObjectNode {
 	public boolean setValue(String fieldname,int fieldvalue) {
 		// put the key/value in the value hashtable
 		values.put(fieldname,new Integer(fieldvalue));
+
+		if (parent!=null) parent.setValue(this,fieldname);
 
 		// obtain the type of field this is 
 		int state=getDBState(fieldname);
@@ -226,7 +228,7 @@ public class MMObjectNode {
 		}
 
 		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		//sendFieldChangeSignal(fieldname);
 		return(true);
 	}
 
@@ -248,7 +250,7 @@ public class MMObjectNode {
 		}
 
 		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		//sendFieldChangeSignal(fieldname);
 		return(true);
 	}
 
