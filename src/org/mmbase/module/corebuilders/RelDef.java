@@ -123,7 +123,12 @@ public class RelDef extends MMObjectBuilder {
   	    if (bulname==null) {
   	        return mmb.getInsRel();
   	    } else {
-  	        return mmb.getMMObject(bulname);
+  	        MMObjectBuilder bul=mmb.getMMObject(bulname);
+  	        if (bul==null) {
+  	            return mmb.getInsRel();
+  	        } else {
+  	            return bul;
+  	        }
   	    }
     }
 
