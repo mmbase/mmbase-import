@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.283 2004-11-11 17:47:54 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.284 2004-11-12 22:34:00 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3187,7 +3187,11 @@ public class MMObjectBuilder extends MMTable {
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
         for (Iterator i = remoteObservers.iterator(); i.hasNext();) {
             MMBaseObserver o = (MMBaseObserver) i.next();
-            o.nodeRemoteChanged(machine, number, builder, ctype);
+            if (o != this) {
+                o.nodeRemoteChanged(machine, number, builder, ctype);
+            } else {
+                log.warn(getClass().getName()  + " " + toString() + " observes itself");
+            }
         }
 
         MMObjectBuilder bul = mmb.getBuilder(builder);
@@ -3238,7 +3242,11 @@ public class MMObjectBuilder extends MMTable {
         synchronized(localObservers) {
             for (Iterator i = localObservers.iterator(); i.hasNext();) {
                 MMBaseObserver o = (MMBaseObserver)i.next();
-                o.nodeLocalChanged(machine, number, builder, ctype);
+                if (o != this) {
+                    o.nodeLocalChanged(machine, number, builder, ctype);
+                } else {
+                    log.warn(getClass().getName()  + " " + toString() + " observes itself");
+                }
             }
         }
 
