@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.32 2000-11-07 10:48:19 vpro Exp $
+	$Id: HtmlBase.java,v 1.33 2000-11-07 12:37:56 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.32  2000/11/07 10:48:19  vpro
+	Rico: added seperate cachedebug switch
+	
 	Revision 1.31  2000/11/06 12:47:01  vpro
 	Rico: fixed speling error
 	
@@ -125,7 +128,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.32 2000-11-07 10:48:19 vpro Exp $
+ * @version $Id: HtmlBase.java,v 1.33 2000-11-07 12:37:56 vpro Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -166,6 +169,7 @@ public class HtmlBase extends ProcessorModule {
 
 	public void init() {
 		scancache tmp=(scancache)getModule("SCANCACHE");		
+		
 		if (tmp!=null && tmp.getStatus()) scancache=true;
 
 		mmb=(MMBase)getModule("MMBASEROOT");		
@@ -871,7 +875,7 @@ public class HtmlBase extends ProcessorModule {
 		Enumeration e,f;
 		boolean reload=true;
 
-		if (scancache) getReload(sp,tagger);
+		if (scancache) reload=getReload(sp,tagger);
 
 		Vector type=tagger.Values("TYPE");
 		if ((type==null) || (type.size()==0)) throw new MultiLevelParseException("No TYPE specified");
@@ -1001,15 +1005,9 @@ public class HtmlBase extends ProcessorModule {
 			}
 		}
 		if (sessions!=null) {
-			if( sp.sname == null || sp.sname.equals("")) {
-				sp.sname = "james/1234";
-			}
 			sessionInfo session=sessions.getSession(sp,sp.sname);
 			if (session!=null) {
-				String reloadtype=session.getValue("RELOAD");
-				if (reloadtype!=null && reloadtype.equals("R")) {
-					rtn=true;
-				}
+				rtn=sp.reload;
 			}
 			// When pagemaster calls set the reload on true
 			if (sp.wantCache!=null && sp.wantCache.equals("PAGE")) {
