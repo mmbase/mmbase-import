@@ -22,6 +22,7 @@
 		<relation from="news" to="mmevents" type="related" />
 		<relation from="news" to="people" type="related" />
 		<relation from="mags" to="jumpers" type="related" />
+		<relation from="people" to="images" type="related" />
 	</allowedrelationlist>
 
 	<datasourcelist>
