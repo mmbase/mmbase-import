@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.38 2001-01-04 16:02:35 vpro Exp $
+$Id: scanparser.java,v 1.39 2001-02-02 22:37:58 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.38  2001/01/04 16:02:35  vpro
+Wilbert: Added ( to start and ) to stop skipping arguments for tree and leafpart
+
 Revision 1.37  2000/12/18 14:42:05  pierre
 pierre: Fixed bug with GOTO withing PART ort TREEPART
 
@@ -134,7 +137,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.38 $ $Date: 2001-01-04 16:02:35 $
+ * @$Revision: 1.39 $ $Date: 2001-02-02 22:37:58 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -2041,7 +2044,7 @@ public class scanparser extends ProcessorModule {
 
 	public synchronized String calcPage(String part2,scanpage sp,int cachetype) {
 
-		debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+")");
+		if (debug) debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+")");
 
 		try {
 			String filename,paramline=null;
@@ -2055,17 +2058,19 @@ public class scanparser extends ProcessorModule {
 				//((worker)req).setParamLine(paramline);
 				sp.setParamsLine(paramline);
 				if (sp.req_line==null) sp.req_line=filename;
-				debug("calcPage(): setting paramline="+paramline);
+				if (debug) debug("calcPage(): setting paramline="+paramline);
 			} else {
 				filename=part2;
 			}
 			if ((sp.mimetype==null) || sp.mimetype.equals("")) {
 				sp.mimetype=getMimeTypeFile(filename);
 			}
-	
-			debug("calcPage(): filename="+filename);
-			debug("calcPage(): paramline="+paramline);
-			debug("calcPage(): mimetype="+sp.mimetype);
+			
+			if (debug) {	
+				debug("calcPage(): filename="+filename);
+				debug("calcPage(): paramline="+paramline);
+				debug("calcPage(): mimetype="+sp.mimetype);
+			}
 			sp.body=getfile(filename);
 	
 			if (sp.body!=null) {
