@@ -27,6 +27,7 @@ readme - <a href="/mmdocs/readme.txt" target="_ext">/mmdocs/readme.txt</a><br />
 website - <a href="http://www.mmbase.org" target="_ext">http://www.mmbase.org</a><br />
 mailing lists - <a href="http://www.mmbase.org/communication" target="_ext">http://www.mmbase.org/communication</a><br />
 irc channel - #mmbase on <a href="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" target="_ext">ircnet</a> (for example irc.xs4all.nl)<br />
+bugreporting - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a><br />
 </p>
 <p>	
 		The MMBase Release Team.
@@ -34,7 +35,7 @@ irc channel - #mmbase on <a href="http://www.irchelp.org/irchelp/networks/server
 
   <p>About Hsqldb :</p><p>
 hsqldb is a relational database engine written in Java, with a JDBC driver, supporting a subset of ANSI-92 SQL. It offers a small (about 100k), fast database engine which offers both in memory and disk based tables.<br />
-	More information on Hsqldb can be found at <a href="http://www.hsqlbd.org">http://www.hsqldb.org</a>.
+	More information on Hsqldb can be found at <a href="http://www.hsqldb.org">http://www.hsqldb.org</a>.
   </p>
   &nbsp;
   </td>
