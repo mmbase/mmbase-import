@@ -22,6 +22,7 @@
   <mm:import externid="selectavatar"/>
   <mm:import externid="selectedavatarnumber"/>
   <mm:import externid="avatarsets" />
+  <mm:import externid="deleteavatarnumber" />
 </mm:present>
 
 <mm:import externid="forumid"/>
@@ -123,6 +124,26 @@
     </mm:transaction>
   </mm:present>
 
+  <mm:present referid="deleteavatarnumber">
+      <mm:node id="posternode" number="$posterid">
+        <mm:relatednodes type="avatarsets">
+          <mm:first><mm:import id="userset"><mm:field name="number"/></mm:import></mm:first>
+        </mm:relatednodes>
+      </mm:node>
+                                                                                                                          
+      <mm:node id="avatarnode" referid="deleteavatarnumber"/>
+      <mm:present referid="userset">
+        <mm:import id="constraint">images.number = <mm:node referid="avatarnode"><mm:field name="number"/></mm:node></mm:import>
+        <mm:node referid="userset">
+          <mm:related path="posrel,images" fields="images.number" constraints="$constraint" >
+            <mm:node element="posrel">
+              <mm:deletenode/>
+            </mm:node> 
+          </mm:related>
+        </mm:node>
+      </mm:present>
+  </mm:present>
+
 <mm:present referid="addavatar">
   <%@ include file="includes/profile_updated.jsp" %>
 </mm:present>
@@ -130,6 +151,8 @@
 <mm:present referid="selectedavatarnumber">
   <%@ include file="includes/profile_updated.jsp" %>
 </mm:present>
+
+
 
 <mm:notpresent referid="selectedavatarnumber">
 <mm:notpresent referid="addavatar">
@@ -269,6 +292,7 @@
       <mm:present referid="avatarsets">
         <mm:node referid="avatarsets">
           <mm:relatednodes type="images">
+            <div class="avatarimage">
             <a href="<mm:url page="actions_avatar.jsp">
         <mm:param name="forumid" value="$forumid" />
         <mm:param name="postareaid" value="$postareaid" />
@@ -282,6 +306,7 @@
         <mm:param name="profile" value="$profile" />
         </mm:url>">
             <img src="<mm:image template="s(80x80)" />" width="80" border="0"></a>
+            </div>
           </mm:relatednodes>
         </mm:node>
       </mm:present>
@@ -293,16 +318,31 @@
     <div id="profile">
      
       <div class="row">
+
       <mm:node number="$profileid">
         <mm:related path="avatarsets,images" fields="images.number">
+        <mm:field id="avatarnumber" name="images.number" write="false"/>
+ 
+        <div class="avatarimage"> 
+          <div class="deleteavatar">
+            <a href="<mm:url page="actions_avatar.jsp">
+            <mm:param name="forumid" value="$forumid" />
+            <mm:param name="postareaid" value="$postareaid" />
+            <mm:param name="posterid" value="$posterid" />
+            <mm:param name="avatarset" value="ownset" />
+            <mm:param name="deleteavatarnumber" value="$avatarnumber" />
+            <mm:param name="selectedavatar" value="true" />
+            <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
+            <mm:param name="profile" value="$profile" />
+            </mm:url>"><img height="6" width="6" src="images/delete.gif" /></a>
+         </div>
+
           <a href="<mm:url page="actions_avatar.jsp">
         <mm:param name="forumid" value="$forumid" />
         <mm:param name="postareaid" value="$postareaid" />
         <mm:param name="posterid" value="$posterid" />
         <mm:param name="avatarsets" value="$avatarsets" />
-        <mm:field id="avatarnumber" name="images.number"/>
         <mm:param name="selectedavatarnumber" value="$avatarnumber" />
-       
         <mm:param name="selectedavatar" value="true" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="$profile" />
@@ -311,13 +351,12 @@
             <img src="<mm:image template="s(80x80)" />" width="80" border="0">
 </mm:node>
 </a>
+          </div> 
           </mm:related>
         </mm:node>
-     
 
       </div>
       </mm:compare>
-
 
     <div class="spacer">&nbsp;</div>
 
