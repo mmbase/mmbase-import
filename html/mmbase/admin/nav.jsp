@@ -1,41 +1,10 @@
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-
-<%!
-    String menu ="";
-    String submenu="";
-
-    String mainmenu(String value, String category, String subcategory) {
-
-    String result="&nbsp;&nbsp;";
-    result += "<a href=\"default.jsp?menu="+value+"&submenu=1&category="+category+"&subcategory="+subcategory+"\" target=\"_top\">";
-    if (value.equals(menu)) {
-        result+="<span class=\"currentmenuitem\">";
-    } else {
-        result+="<span class=\"menuitem\">";
-    }
-    result+="<strong>"+category.toUpperCase()+"</strong></span></a>";
-    return result;
-}
-
-    String submenu(String value, String subvalue, String category, String subcategory) {
-
-    String result="&nbsp;&nbsp;";
-    result += "<a href=\"default.jsp?menu="+value+"&submenu="+subvalue+"&category="+category+"&subcategory="+subcategory+"\" target=\"_top\">";
-    if (value.equals(menu) && subvalue.equals(submenu)) {
-        result+="<span class=\"currentmenuitem\">";
-    } else {
-        result+="<span class=\"menuitem\">";
-    }
-    result+="<strong>"+subcategory.toUpperCase()+"</strong></span></a>";
-    return result;
-}
-%>
-
 <html>
 <head>
 <%
-    menu=request.getParameter("menu");
-    submenu=request.getParameter("submenu");
+    String category=request.getParameter("category");
+    String subcategory=request.getParameter("subcategory");
 %>
 <link rel="stylesheet" href="css/mmbase.css" type="text/css">
 <title>Navigation Bar</title>
@@ -47,28 +16,59 @@
 <img src="images/logo.gif" border="0" alt="MMBase">
 </td>
 <td width="850" border="0">
-    <%=mainmenu("1","about","about")%>
-    <%=mainmenu("7","demos",null)%>
-    <%=mainmenu("2","editors","basic")%>
-    <%=mainmenu("3","admin","servers")%>
-    <%=mainmenu("4","tools","cache")%>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top"
+    ><span class="<%=("about".equals(category)) ? "current" : ""%>menuitem">ABOUT</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=examples" />" target="_top"
+    ><span class="<%=("examples".equals(category)) ? "current" : ""%>menuitem">EXAMPLES</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=editors&subcategory=basic" />" target="_top"
+    ><span class="<%=("editors".equals(category)) ? "current" : ""%>menuitem">EDITORS</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
+    ><span class="<%=("admin".equals(category)) ? "current" : ""%>menuitem">ADMIN</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
+    ><span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
 	<hr />
-	
-	<% if("1".equals(menu)) { %>
-        <%=submenu("1","1","about", "about")%>
-        <%=submenu("1","2","about", "license")%>
-	<% } else if("2".equals(menu)) { %>
-        <%=submenu("2","1","editors", "basic")%>
-	<% } else if("3".equals(menu)) { %>
-        <%=submenu("3","1","admin", "servers")%>
-        <%=submenu("3","2","admin", "builders")%>
-        <%=submenu("3","3","admin", "applications")%>
-        <%=submenu("3","4","admin", "modules")%>
-        <%=submenu("3","5","admin", "databases")%>
-        <%=submenu("3","6","admin", "documentation")%>
-	<% } else if("4".equals(menu)) { %>
-        <%=submenu("4","1","tools", "cache")%>
-        <%=submenu("4","2","tools", "email")%>
+	<% if("about".equals(category)) { %>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top"
+    ><span class="<%=("about".equals(subcategory)) ? "current" : ""%>menuitem">ABOUT</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=about&subcategory=license" />" target="_top"
+    ><span class="<%=("license".equals(subcategory)) ? "current" : ""%>menuitem">LICENSE</span></a>
+	<% } else if("editors".equals(category)) { %>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=editors&subcategory=basic" />" target="_top"
+    ><span class="currentmenuitem">BASIC</span></a>
+	<% } else if("admin".equals(category)) { %>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
+    ><span class="<%=("servers".equals(subcategory)) ? "current" : ""%>menuitem">SERVERS</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=builders" />" target="_top"
+    ><span class="<%=("builders".equals(subcategory)) ? "current" : ""%>menuitem">BUILDERS</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=applications" />" target="_top"
+    ><span class="<%=("applications".equals(subcategory)) ? "current" : ""%>menuitem">APPLICATIONS</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=modules" />" target="_top"
+    ><span class="<%=("modules".equals(subcategory)) ? "current" : ""%>menuitem">MODULES</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=databases" />" target="_top"
+    ><span class="<%=("databases".equals(subcategory)) ? "current" : ""%>menuitem">DATABASES</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=documentation" />" target="_top"
+    ><span class="<%=("documentation".equals(subcategory)) ? "current" : ""%>menuitem">DOCUMENTATION</span></a>
+	<% } else if("tools".equals(category)) { %>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
+    ><span class="<%=("cache".equals(subcategory)) ? "current" : ""%>menuitem">CACHE</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top"
+    ><span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">:EMAIL</span></a>
 	<% } %>
 </td>
 </tr>
