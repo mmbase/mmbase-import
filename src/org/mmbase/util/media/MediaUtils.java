@@ -311,6 +311,20 @@ public class MediaUtils
 		return result;
 	}
 
+	/** 
+	 * Replaces all plus characters to procent 20
+	 * @param s String in which chars will be replaced.
+	 * @return replaced String
+	 */
+	public static String plusToProcent20(String s) { 
+		String result = "";
+		for(int i=0; i<s.length(); i++)
+			if (s.charAt(i) != '+')
+				result += s.charAt(i);
+			else
+				result += "%20";
+		return result;
+	}
 
 	public static void main( String args[] )
 	{
