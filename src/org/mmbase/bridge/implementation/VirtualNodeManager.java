@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.12 2002-10-15 15:28:30 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.13 2002-11-18 12:24:18 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
@@ -96,10 +96,7 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and creating nodes is not allowed.
      */
     public Node createNode() {
-        String message;
-        message = "Cannot create a node from a virtual node type.";
-        log.error(message);
-        throw new BridgeException(message);
+        throw new BridgeException("Cannot create a node from a virtual node type.");
     }
 
     /**
@@ -107,9 +104,6 @@ public class VirtualNodeManager extends BasicNodeManager {
      * Throws an exception since this type is virtual, and searching is not allowed.
      */
     public NodeList getList(String where, String sorted, boolean direction) {
-        String message;
-        message = "Cannot perform search on a virtual node type.";
-        log.error(message);
-        throw new BridgeException(message);
+        throw new BridgeException("Cannot perform search on a virtual node type.");
     }
 }
