@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Wizard.java,v 1.8 2002-02-26 14:24:32 pierre Exp $
+ * @version $Id: Wizard.java,v 1.9 2002-02-27 12:15:31 pierre Exp $
  *
  */
 public class Wizard {
@@ -554,10 +554,6 @@ public class Wizard {
         }
     }
 
-    // ----------------- private methods
-
-    // Loading
-
     /**
      * This method loads the schema using the properties of the wizard. It loads the wizard using #wizardSchemaFilename,
      * resolves the includes, and 'tags' all datanodes. (Places temp. ids in the schema).
@@ -744,7 +740,7 @@ public class Wizard {
     /**
      * 	Creates a form item (each of which may consist of several single form fields)
      *      for each given datanode.
-    */
+     */
     private void createFormList(Node form, Node fieldlist, NodeList datalist, Node parentdatanode) throws WizardException {
         // copy all attributes from fielddefinition to new pre-html field definition
         Node newlist = fieldlist.cloneNode(false);
@@ -856,8 +852,6 @@ public class Wizard {
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * This method generates a form field node in the pre-html.
      *
@@ -943,21 +937,11 @@ public class Wizard {
     }
 
     /**
-     * Below are specific util-like functions for data manipulation.
-     * specific stuff which is used to make sure communication between client and server is consistent
-     */
-
-    // dataformat functions.
-    //
-    //
-
-    /**
      * Returns the proper form-name (for <input name="xx" />).
      *
      * @param       preHtmlFormField        This is the prehtml node where the field data should be
      * @return     A string with the proper html field-name.
      */
-
     private String calculateFormName(Node preHtmlFormField) {
         try {
             String fid = Utils.getAttribute(preHtmlFormField, "fid");
@@ -992,16 +976,16 @@ public class Wizard {
     }
 
     /**
-        Puts the given value in the right datanode (given by did), depending on the type
-        of the form field. If the operation fails... System.out is notified.
-
-        - text,line: the value is stored as text in the datanode.
-        - relation: the value is assumed to be the destination number (dnumber) of the relation.
-
-        @param  did     The data id where the value should be stored
-        @param  fid     The wizarddefinition field id what applies to this data
-        @param  value   The (String) value what should be stored in the data.
-    */
+     * Puts the given value in the right datanode (given by did), depending on the type
+     * of the form field. If the operation fails... System.out is notified.
+     *
+     * - text,line: the value is stored as text in the datanode.
+     * - relation: the value is assumed to be the destination number (dnumber) of the relation.
+     *
+     * @param  did     The data id where the value should be stored
+     * @param  fid     The wizarddefinition field id what applies to this data
+     * @param  value   The (String) value what should be stored in the data.
+     */
     private void storeValue(String did, String fid, String value) {
         if (log.isDebugEnabled())
             log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
@@ -1188,7 +1172,7 @@ public class Wizard {
             case WizardCommand.COMMIT : {
                 // This command takes no parameters.
                 try {
-                    Element results = dbconn.firePutCommand(originaldata, data, uploads);
+                    Element results = dbconn.put(originaldata, data, uploads);
                     NodeList errors = Utils.selectNodeList(results,".//error");
                     if (errors.getLength() > 0){
                         String errorMessage = "Errors received from MMBase :";
@@ -1197,7 +1181,7 @@ public class Wizard {
                         }
                         throw new WizardException(errorMessage);
                     }
-                    // find the (new) objectnumber and store it. Just take the firstone found.
+                    // find the (new) objectnumber and store it. Just take the first one found.
                     String newnumber=Utils.selectSingleNodeText(results,".//object/@number",null);
                     if (newnumber!=null) objectnumber=newnumber;
                     mayBeClosed = true;
@@ -1287,6 +1271,7 @@ public class Wizard {
     public byte[] getUpload(String did) {
         return (byte[])uploads.get(did);
     }
+
     /**
      * With this method you can retrieve the uploadname of a placed binary.
      *
@@ -1306,6 +1291,7 @@ public class Wizard {
     public String getUploadPath(String did) {
         return (String)uploadpaths.get(did);
     }
+
     /**
      * This method stores upload data in the data, so that the information can be used by the html.
      * This method is called from the form creating code.
@@ -1441,6 +1427,11 @@ public class Wizard {
         if (dtrequired!=null) Utils.setAttribute(fielddef, "dtrequired", dtrequired);
     }
 
+    /**
+     * This method gets the MMBase constraints.
+     *
+     * @param       objecttype      The name of the object, eg. images, jumpers, urls, news
+     */
     public Node getConstraints(String objecttype) {
         return getConstraints(objecttype, null);
     }
@@ -1451,7 +1442,6 @@ public class Wizard {
      * @param       objecttype      The name of the object, eg. images, jumpers, urls, news
      * @param       fieldname       The name of the field, eg. title, body, start
      */
-
     public Node getConstraints(String objecttype, String fieldname) {
         // check if constraints are in repository, if so, return thatone,
         // otherwise, retrieve+store+and return the contraints received from the Dove.

@@ -31,18 +31,15 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.4 2002-02-25 12:47:06 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.5 2002-02-27 12:15:31 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
+
+    // logging
     private static Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class.getName());
 
-    Vector commandlist;
     int didcounter=1;
-    private String username = null;
-    private String password = null;
-    private String logonmethodname = "name/password";
-    private String cloudname = "mmbase";
     private Cloud userCloud = null;
 
     public final static String RELATIONFIELDS_XPATH = "field[not(@name='dnumber') and not(@name='rnumber') and not(@name='snumber')]";
@@ -51,7 +48,6 @@ public class WizardDatabaseConnector {
      * Constructor: Creates the connector. Call #init also.
      */
     public WizardDatabaseConnector(){
-        commandlist = new Vector();
     }
 
     /**
@@ -61,40 +57,6 @@ public class WizardDatabaseConnector {
      */
     public void setUserInfo(Cloud cloud) {
         userCloud=cloud;
-    }
-
-    /**
-     * This method sets the user (security) info and the cloudname.
-     *
-     * @param       user            the username
-     * @param       password        the password
-     * @param       cloud           The cloudname
-     */
-    public void setUserInfo(String user, String pass, String logonmethod, String cloud) {
-        username = user;
-        password = pass;
-        if (logonmethod!=null) logonmethodname = logonmethod;
-        if (cloud!=null) cloudname = cloud;
-    }
-
-    /**
-     * This method sets the user (security) info.
-     *
-     * @param       user            the username
-     * @param       password        the password
-     */
-    public void setUser(String user, String pass) {
-        setUserInfo(user,pass,null,null);
-    }
-
-    /**
-     * Retrieves the current username.
-     *
-     * @return     The username
-     */
-    public String getUserName() {
-        if (userCloud!=null) return userCloud.getUser().getIdentifier();
-        return username;
     }
 
     /**
@@ -231,401 +193,374 @@ public class WizardDatabaseConnector {
         }
     }
 
-  /**
-   * This method retrieves data (objectdata) from mmbase.
-   *
-   * @param     targetNode      Results are appended to this targetNode.
-   * @param     objectnumber    The number of the object to load.
-   * @return   The resulting node with the objectdata.
-   */
-  public Node getData(Node targetNode, String objectnumber) throws Exception {
-    return getData(targetNode, objectnumber, null);
-  }
-
-  /**
-   * This method retrieves data (objectdata) from mmbase.
-   *
-   * @param     targetNode      Results are appended to this targetNode.
-   * @param     objectnumber    The number of the object to load.
-   * @param     restrictions    These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
-   * @return   The resulting node with the objectdata.
-
-   */
-  public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws Exception {
-    // fires getData command and places result in targetNode
-    ConnectorCommandGetData cmd = new ConnectorCommandGetData(objectnumber, restrictions);
-    fireCommand(cmd);
-
-    if (!cmd.hasError()) {
-      // place object in targetNode
-      Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/object[@number='" + objectnumber + "']").cloneNode(true),true);
-      tagDataNode(objectnode);
-      targetNode.appendChild(objectnode);
-      return objectnode;
-    } else {
-      throw new Exception("Could not fire getData command for object " + objectnumber);
+    /**
+     * This method retrieves data (objectdata) from mmbase.
+     *
+     * @param     targetNode      Results are appended to this targetNode.
+     * @param     objectnumber    The number of the object to load.
+     * @return   The resulting node with the objectdata.
+     */
+    public Node getData(Node targetNode, String objectnumber) throws Exception {
+        return getData(targetNode, objectnumber, null);
     }
-  }
 
-public void getRelations(Node targetNode, String objectnumber) throws Exception {
-    getRelations(targetNode, objectnumber, null);
-}
+    /**
+     * This method retrieves data (objectdata) from mmbase.
+     *
+     * @param     targetNode      Results are appended to this targetNode.
+     * @param     objectnumber    The number of the object to load.
+     * @param     restrictions    These restrictions will restrict the load action. So that not too large or too many fields are retrieved.
+     * @return   The resulting node with the objectdata.
+     */
+    public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws Exception {
+        // fires getData command and places result in targetNode
+        ConnectorCommandGetData cmd = new ConnectorCommandGetData(objectnumber, restrictions);
+        fireCommand(cmd);
 
-/**
- * This method gets relation information from mmbase.
- *
- * @param       targetNode      The targetnode where the results should be appended.
- * @param       objectnumber    The objectnumber of the parent object from where the relations originate.
- * @param       loadaction      The loadaction data as defined in the schema. These are used as 'restrictions'.
- *
- */
-public void getRelations(Node targetNode, String objectnumber, NodeList loadaction) throws Exception {
-    // fires getRelations command and places results targetNode
-    ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, loadaction);
-    fireCommand(cmd);
+        if (!cmd.hasError()) {
+            // place object in targetNode
+            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/object[@number='" + objectnumber + "']").cloneNode(true),true);
+            tagDataNode(objectnode);
+            targetNode.appendChild(objectnode);
+            return objectnode;
+        } else {
+            throw new Exception("Could not fire getData command for object " + objectnumber);
+        }
+    }
 
-    if (!cmd.hasError()) {
+    public void getRelations(Node targetNode, String objectnumber) throws Exception {
+        getRelations(targetNode, objectnumber, null);
+    }
+
+    /**
+     * This method gets relation information from mmbase.
+     *
+     * @param       targetNode      The targetnode where the results should be appended.
+     * @param       objectnumber    The objectnumber of the parent object from where the relations originate.
+     * @param       loadaction      The loadaction data as defined in the schema. These are used as 'restrictions'.
+     *
+     */
+    public void getRelations(Node targetNode, String objectnumber, NodeList loadaction) throws Exception {
+        // fires getRelations command and places results targetNode
+        ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, loadaction);
+        fireCommand(cmd);
+
+        if (!cmd.hasError()) {
             NodeList relations = Utils.selectNodeList(cmd.responsexml, "/*/object/relation");
             for (int i=0; i<relations.getLength(); i++) {
                 tagDataNode(relations.item(i));
-            processIncomingRelation(relations.item(i), objectnumber);
-        }
-
-        Utils.appendNodeList(relations, targetNode);
-    } else {
-        throw new Exception("Could NOT fire getData command for object " + objectnumber);
-    }
-}
-
-/**
- * This method gets a new temporarily object of the given type.
- *
- * @param       targetNode      The place where the results should be appended.
- * @param       objecttype      The objecttype which should be created.
- * @return     The resulting object node.
- */
-  public Node getNew(Node targetNode, String objecttype) throws Exception {
-    // fires getNew command and places result in targetNode
-    ConnectorCommandGetNew cmd = new ConnectorCommandGetNew(objecttype);
-    fireCommand(cmd);
-
-    if (!cmd.hasError()) {
-      Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/object[@type='"+objecttype+"']").cloneNode(true), true);
-      tagDataNode(objectnode);
-      targetNode.appendChild(objectnode);
-      return objectnode;
-    } else {
-      throw new Exception("getNew command returned an error. Objecttype="+objecttype);
-    }
-  }
-
-  /**
-   * This method creates a new temporarily relation.
-   *
-   * For now, Dove does not have a getNewRelation method. A dummy temporarily relation is created locally. Thus: NO communition is made with MMBase.
-   *
-   * @param     targetNode      The place where the results should be appended.
-   * @param     role            The name of the role the new relation should have.
-   * @param     sourceobjectnumber      the number of the sourceobject
-   * @param     destinationobjectnumber the number of the destination object
-   * @return   The resulting relation node.
-   */
-  public Node getNewRelation(Node targetNode, String role, String sourceobjectnumber, String destinationobjectnumber) throws Exception {
-    // fires getNewRelation command and places result in targetNode
-    ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceobjectnumber, destinationobjectnumber);
-    fireCommand(cmd);
-
-    if (!cmd.hasError()) {
-      Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/relation").cloneNode(true), true);
-      tagDataNode(objectnode);
-      processIncomingRelation(objectnode, sourceobjectnumber);
-      targetNode.appendChild(objectnode);
-      return objectnode;
-    } else {
-      throw new Exception("getNewRelation command returned an error. role="+role + ", source="+sourceobjectnumber+", dest="+destinationobjectnumber);
-    }
-  }
-  ///////////////////////////////////// create Logic methods
-  /**
-   * This method can create a object (or a tree of objects and relations)
-   *
-   * this method should be called from the wizard if it needs to create a new
-   * combination of fields, objects and relations.
-   * see further documentation or the samples for the definition of the action
-   *
-   * in global: the Action node looks like this: (Note: this function expects the <object/> node,
-   * not the action node.
-   *
-   * <action type="create">
-   *   <object type="authors">
-   *     <field name="name">Enter name here</field>
-   *     <relation role="related" [destination="234" *]>
-   *       <object type="locations">
-   *         <field name="street">Enter street</field>
-   *       </object>
-   *     </relation>
-   *   </object>
-   * </action>
-   *
-   * *) if dnumber is supplied, no new object is created (shouldn't be included in the relation node either),
-   *  but the relation will be created and directly linked to an object with number "dnumber".
-   *
-   * @param     targetParentNode        The place where the results should be appended.
-   * @param     objectDef               The objectdefinition.
-   * @param     params                  The params to use when creating the objects and relations.
-   * @return   The resulting object(tree) node.
-   */
-  public Node createObject(Document data, Node targetParentNode, Node objectDef, Hashtable params) throws WizardException {
-    String objecttype = Utils.getAttribute(objectDef, "type");
-    String nodename = objectDef.getNodeName();
-
-    // no relations to add here..
-    NodeList relations = null;
-    Node objectnode = null;
-
-    // check if we maybe should create multiple objects or relations
-    if (nodename.equals("action")) {
-        NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
-        Node firstobject=null;
-        //for (int i=objectdefs.getLength()-1; i>=0; i--) {
-        for (int i=0; i<objectdefs.getLength(); i++) {
-            firstobject=createObject(data,targetParentNode, objectdefs.item(i), params);
-        }
-        return firstobject;
-    }
-
-    if (nodename.equals("relation")) {
-       // objectnode equals targetParentNode
-       objectnode = targetParentNode;
-       relations = Utils.selectNodeList(objectDef, ".");
-    }
-
-    if (nodename.equals("object")) {
-      try {
-        // create a new object of the given type
-        objectnode = getNew(targetParentNode, objecttype);
-      } catch (Exception e) {
-        log.error("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
-        throw new WizardException("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
-      }
-
-      // fill-in (or place) defined fields and their values.
-      NodeList fields = Utils.selectNodeList(objectDef, "field");
-      for (int i=0; i<fields.getLength(); i++) {
-        Node field = fields.item(i);
-        String fieldname = Utils.getAttribute(field, "name");
-        // does this field already exist?
-        Node datafield = Utils.selectSingleNode(objectnode, "field[@name='"+fieldname+"']");
-        if (datafield!=null) {
-          // yep. fill-in
-          String value=Utils.getText(field);
-          if ((value!=null) && value.startsWith("{")) {
-            Node parent=data.getDocumentElement();
-
-            log.info(parent.toString());
-            log.info(value.substring(1,value.length()-1));
-
-            value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"X");
-          }
-          Utils.storeText(datafield, value, params); // place param values inside if needed
+                processIncomingRelation(relations.item(i), objectnumber);
+            }
+            Utils.appendNodeList(relations, targetNode);
         } else {
-          // nope. create. (Or, actually, clone and import node from def and place it in data
-          Node newfield = targetParentNode.getOwnerDocument().importNode(field.cloneNode(true), true);
-          objectnode.appendChild(newfield);
-          Utils.storeText(newfield, Utils.getText(newfield), params); // process innerText: check for params
+            throw new Exception("Could NOT fire getData command for object " + objectnumber);
         }
-      }
-
-      relations = Utils.selectNodeList(objectDef, "relation");
     }
 
-    // Let's see if we need to create new relations (maybe even with new objects inside...
-    Node lastCreatedRelation = null;
+    /**
+     * This method gets a new temporarily object of the given type.
+     *
+     * @param       targetNode      The place where the results should be appended.
+     * @param       objecttype      The objecttype which should be created.
+     * @return     The resulting object node.
+     */
+    public Node getNew(Node targetNode, String objecttype) throws Exception {
+        // fires getNew command and places result in targetNode
+        ConnectorCommandGetNew cmd = new ConnectorCommandGetNew(objecttype);
+        fireCommand(cmd);
 
-    for (int i=0; i<relations.getLength(); i++) {
-        Node relation = relations.item(i);
-        String dnumber = Utils.getAttribute(relation, "destination", null);
-        dnumber=Utils.transformAttribute(targetParentNode, dnumber, false, params);
-        Node inside_object = null;
-        Document tempobjectholder=null;
-        if (dnumber==null) {
-            // no dnumber given! let's just create the object definition inside first.
-            Node inside_objectdef = Utils.selectSingleNode(relation, "object");
-            if (inside_objectdef==null) {
-                // no destination is given AND no object to-be-created-new is placed.
-                // so, no destination should be added...
-                tempobjectholder = Utils.parseXML("<object number=\"\" type=\"" + Utils.getAttribute(relation, "destinationtype", "") + "\" disposable=\"true\"/>");
-                inside_object = tempobjectholder.getDocumentElement();
-            } else {
-                tempobjectholder = Utils.parseXML("<tmpdata/>");
-                inside_object = createObject(data,tempobjectholder.getDocumentElement(), inside_objectdef, params);
-                dnumber = Utils.getAttribute(inside_object, "number");
+        if (!cmd.hasError()) {
+            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/object[@type='"+objecttype+"']").cloneNode(true), true);
+            tagDataNode(objectnode);
+            targetNode.appendChild(objectnode);
+            return objectnode;
+        } else {
+            throw new Exception("getNew command returned an error. Objecttype="+objecttype);
+        }
+    }
+
+    /**
+     * This method creates a new temporarily relation.
+     *
+     * For now, Dove does not have a getNewRelation method. A dummy temporarily relation is created locally. Thus: NO communition is made with MMBase.
+     *
+     * @param     targetNode      The place where the results should be appended.
+     * @param     role            The name of the role the new relation should have.
+     * @param     sourceobjectnumber      the number of the sourceobject
+     * @param     destinationobjectnumber the number of the destination object
+     * @return   The resulting relation node.
+     */
+    public Node getNewRelation(Node targetNode, String role, String sourceobjectnumber, String destinationobjectnumber) throws Exception {
+        // fires getNewRelation command and places result in targetNode
+        ConnectorCommandGetNewRelation cmd = new ConnectorCommandGetNewRelation(role, sourceobjectnumber, destinationobjectnumber);
+        fireCommand(cmd);
+
+        if (!cmd.hasError()) {
+            Node objectnode = targetNode.getOwnerDocument().importNode(Utils.selectSingleNode(cmd.responsexml, "/*/relation").cloneNode(true), true);
+            tagDataNode(objectnode);
+            processIncomingRelation(objectnode, sourceobjectnumber);
+            targetNode.appendChild(objectnode);
+            return objectnode;
+        } else {
+            throw new Exception("getNewRelation command returned an error. role="+role + ", source="+sourceobjectnumber+", dest="+destinationobjectnumber);
+        }
+    }
+
+    /**
+     * This method can create a object (or a tree of objects and relations)
+     *
+     * this method should be called from the wizard if it needs to create a new
+     * combination of fields, objects and relations.
+     * See further documentation or the samples for the definition of the action
+     *
+     * in global: the Action node looks like this: (Note: this function expects the $lt;object/> node,
+     * not the action node.
+     * <pre>
+     * $lt;action type="create"$gt;
+     *   $lt;object type="authors"$gt;
+     *     $lt;field name="name"$gt;Enter name here$lt;/field$gt;
+     *     $lt;relation role="related" [destination="234" *]$gt;
+     *       $lt;object type="locations"$gt;
+     *         $lt;field name="street"$gt;Enter street$lt;/field$gt;
+     *       $lt;/object$gt;
+     *     $lt;/relation$gt;
+     *   $lt;/object$gt;
+     * $lt;/action$gt;
+     * </pre>
+     * *) if dnumber is supplied, no new object is created (shouldn't be included in the relation node either),
+     *  but the relation will be created and directly linked to an object with number "dnumber".
+     *
+     * @param     targetParentNode        The place where the results should be appended.
+     * @param     objectDef               The objectdefinition.
+     * @param     params                  The params to use when creating the objects and relations.
+     * @return   The resulting object(tree) node.
+     */
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Hashtable params) throws WizardException {
+        String objecttype = Utils.getAttribute(objectDef, "type");
+        String nodename = objectDef.getNodeName();
+
+        // no relations to add here..
+        NodeList relations = null;
+        Node objectnode = null;
+
+        // check if we maybe should create multiple objects or relations
+        if (nodename.equals("action")) {
+            NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
+            Node firstobject=null;
+            //for (int i=objectdefs.getLength()-1; i>=0; i--) {
+                for (int i=0; i<objectdefs.getLength(); i++) {
+                    firstobject=createObject(data,targetParentNode, objectdefs.item(i), params);
+                }
+                return firstobject;
+        }
+
+        if (nodename.equals("relation")) {
+            // objectnode equals targetParentNode
+            objectnode = targetParentNode;
+            relations = Utils.selectNodeList(objectDef, ".");
+        }
+
+        if (nodename.equals("object")) {
+            try {
+                // create a new object of the given type
+                objectnode = getNew(targetParentNode, objecttype);
+            } catch (Exception e) {
+                log.error("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
+                throw new WizardException("Could NOT createObject with type:"+objecttype+". Message: "+ e.getMessage());
+            }
+
+            // fill-in (or place) defined fields and their values.
+            NodeList fields = Utils.selectNodeList(objectDef, "field");
+            for (int i=0; i<fields.getLength(); i++) {
+                Node field = fields.item(i);
+                String fieldname = Utils.getAttribute(field, "name");
+                // does this field already exist?
+                Node datafield = Utils.selectSingleNode(objectnode, "field[@name='"+fieldname+"']");
+                if (datafield!=null) {
+                    // yep. fill-in
+                    String value=Utils.getText(field);
+                    if ((value!=null) && value.startsWith("{")) {
+                            Node parent=data.getDocumentElement();
+
+                            log.info(parent.toString());
+                            log.info(value.substring(1,value.length()-1));
+
+                            value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"X");
+                    }
+                    Utils.storeText(datafield, value, params); // place param values inside if needed
+                } else {
+                    // nope. create. (Or, actually, clone and import node from def and place it in data
+                    Node newfield = targetParentNode.getOwnerDocument().importNode(field.cloneNode(true), true);
+                    objectnode.appendChild(newfield);
+                    Utils.storeText(newfield, Utils.getText(newfield), params); // process innerText: check for params
+                }
+            }
+            relations = Utils.selectNodeList(objectDef, "relation");
+        }
+
+        // Let's see if we need to create new relations (maybe even with new objects inside...
+        Node lastCreatedRelation = null;
+
+        for (int i=0; i<relations.getLength(); i++) {
+            Node relation = relations.item(i);
+            String dnumber = Utils.getAttribute(relation, "destination", null);
+            dnumber=Utils.transformAttribute(targetParentNode, dnumber, false, params);
+            Node inside_object = null;
+            Document tempobjectholder=null;
+            if (dnumber==null) {
+                // no dnumber given! let's just create the object definition inside first.
+                Node inside_objectdef = Utils.selectSingleNode(relation, "object");
+                if (inside_objectdef==null) {
+                    // no destination is given AND no object to-be-created-new is placed.
+                    // so, no destination should be added...
+                    tempobjectholder = Utils.parseXML("<object number=\"\" type=\"" + Utils.getAttribute(relation, "destinationtype", "") + "\" disposable=\"true\"/>");
+                    inside_object = tempobjectholder.getDocumentElement();
+                } else {
+                    tempobjectholder = Utils.parseXML("<tmpdata/>");
+                    inside_object = createObject(data,tempobjectholder.getDocumentElement(), inside_objectdef, params);
+                    dnumber = Utils.getAttribute(inside_object, "number");
+                }
+            }
+
+            String role="related";
+            String snumber="";
+            Node relationnode = null;
+
+            try {
+                // create the relation now we can get all needed params
+                role = Utils.getAttribute(relation, "role", "related");
+                snumber = Utils.getAttribute(objectnode, "number");
+                relationnode = getNewRelation(objectnode, role, snumber, dnumber);
+
+                // place pre-defined fields in relation node (eg. pos-fields in posrel relation)
+                NodeList flds = Utils.selectNodeList(relation, "field");
+                Utils.appendNodeList(flds, relationnode);
+
+                // check if some params should be replaced.
+                flds = Utils.selectNodeList(relationnode, "field");
+                for (int j=0; j<flds.getLength(); j++) {
+                    Utils.storeText(flds.item(j), Utils.getText(flds.item(j)), params);
+                }
+                tagDataNode(relationnode);
+                lastCreatedRelation = relationnode;
+            } catch (Exception e) {
+                log.error("Could NOT create relation in createObject. Role="+role+", snumber="+snumber+", destination="+dnumber);
+                return null;
+            }
+
+            try {
+                // now check if we need to load the inside object...
+                if (inside_object==null) {
+                    // yep. we don't have it yet. Let's load it
+                    inside_object = getData(relationnode, dnumber);
+                    // but annotate that thisone is loaded from mmbase. Not a new one
+                    Utils.setAttribute(inside_object, "already-exists", "true");
+                } else {
+                    // we already have it. Let's copy/clone and place it.
+                    inside_object = relationnode.getOwnerDocument().importNode(inside_object.cloneNode(true), true);
+                    relationnode.appendChild(inside_object);
+                }
+            } catch (Exception e) {
+                log.error("Could NOT place inside object in createObject. Message: "+e.getMessage());
+                return null;
             }
         }
+        if (nodename.equals("relation")) {
+            return lastCreatedRelation;
+        } else {
+            return objectnode;
+        }
+    }
 
-        String role="related";
-        String snumber="";
-        Node relationnode = null;
-
+    /**
+     * Sends an Element containing the xml-representation of a command to a Dove
+     * class, and retuirns the result as an Element.
+     * @param cmd the command Element to execute
+     * @param uploads a HashMap containing files (binaries) uploaded in the wizard
+     */
+    private Element sendCommand(Element cmd, HashMap uploads) throws WizardException {
+        Element results=null;
         try {
-            // create the relation now we can get all needed params
-            role = Utils.getAttribute(relation, "role", "related");
-            snumber = Utils.getAttribute(objectnode, "number");
-            relationnode = getNewRelation(objectnode, role, snumber, dnumber);
-
-            // place pre-defined fields in relation node (eg. pos-fields in posrel relation)
-            NodeList flds = Utils.selectNodeList(relation, "field");
-            Utils.appendNodeList(flds, relationnode);
-
-            // check if some params should be replaced.
-            flds = Utils.selectNodeList(relationnode, "field");
-            for (int j=0; j<flds.getLength(); j++) {
-                Utils.storeText(flds.item(j), Utils.getText(flds.item(j)), params);
-            }
-            tagDataNode(relationnode);
-            lastCreatedRelation = relationnode;
+            Document tmp = Utils.EmptyDocument();
+            Dove dove = new Dove(tmp);
+            results = dove.executeRequest(cmd,userCloud,uploads);
         } catch (Exception e) {
-            log.error("Could NOT create relation in createObject. Role="+role+", snumber="+snumber+", destination="+dnumber);
-            return null;
+            log.error("Error while communicating with Dove servlet."+e.getMessage());
+            throw new WizardException("Error while communicating with Dove servlet. Message:"+e.getMessage());
+        }
+        return results;
+    }
+
+    /**
+     * This is an internal method which is used to fire a command to connect to mmbase via Dove.
+     */
+    private Document fireCommand(ConnectorCommand command) throws SecurityException,WizardException {
+        Vector tmp = new Vector();
+        tmp.add(command);
+        return fireCommandList(tmp);
+    }
+
+    /**
+     * This is an internal method which is used to fire commands to connect to mmbase via Dove.
+     */
+    private Document fireCommandList(Vector commands) throws SecurityException,WizardException {
+        // send commands away from here... away!
+        // first create request xml
+        Document req = Utils.parseXML("<request/>");
+        Element docel = req.getDocumentElement();
+
+        Enumeration enum = commands.elements();
+        while (enum.hasMoreElements()) {
+            ConnectorCommand cmd = (ConnectorCommand)enum.nextElement();
+            docel.appendChild(req.importNode(cmd.getCommandXML().getDocumentElement().cloneNode(true), true));
         }
 
-        try {
-            // now check if we need to load the inside object...
-            if (inside_object==null) {
-                // yep. we don't have it yet. Let's load it
-                inside_object = getData(relationnode, dnumber);
-                // but annotate that thisone is loaded from mmbase. Not a new one
-                Utils.setAttribute(inside_object, "already-exists", "true");
+        String res="";
+
+        Element results=sendCommand(docel,null);
+
+        Document response = Utils.EmptyDocument();
+        response.appendChild(response.importNode(results,true));
+
+        // map response back to each command.
+        enum = commands.elements();
+        while (enum.hasMoreElements()) {
+            ConnectorCommand cmd = (ConnectorCommand)enum.nextElement();
+
+            // find response for this command
+            Node resp = Utils.selectSingleNode(response, "/*/"+cmd.name +"[@id]");
+            if (resp!=null) {
+                // yes we found a response
+                cmd.setResponseXML(resp);
             } else {
-                // we already have it. Let's copy/clone and place it.
-                inside_object = relationnode.getOwnerDocument().importNode(inside_object.cloneNode(true), true);
-                relationnode.appendChild(inside_object);
+                log.error("Could NOT store response "+cmd.id+" in a ConnectorCommand");
+                log.error(cmd.responsexml);
             }
-        } catch (Exception e) {
-            log.error("Could NOT place inside object in createObject. Message: "+e.getMessage());
-            return null;
         }
-    }
-    if (nodename.equals("relation")) {
-        return lastCreatedRelation;
-    } else {
-        return objectnode;
-    }
-}
-
-  ///////////////////////////////////// fireCommand methods
-
-  /**
-   * This is an internal method which is used to fire a command to connect to mmbase via Dove.
-   */
-  public Document fireCommand(ConnectorCommand command) throws SecurityException,WizardException {
-    Vector tmp = new Vector();
-    tmp.add(command);
-    return fireCommands(tmp);
-  }
-
-  /**
-   * This is an internal method which is used to fire commands to connect to mmbase via Dove.
-   */
-  public Document fireCommands(Vector commands) throws SecurityException,WizardException {
-    // send commands away from here... away!
-
-    // first create request xml
-    Document req = Utils.parseXML("<request/>");
-    Node docel = req.getDocumentElement();
-
-    // Add security tag if necessary.
-    if (username != null && !username.equals("anonymous")){
-        Element secure = req.createElement("security");
-        secure.setAttribute("name",this.username);
-        secure.setAttribute("password",this.password);
-        secure.setAttribute("method",this.logonmethodname);
-        secure.setAttribute("cloud",this.cloudname);
-        docel.appendChild(secure);
+        return response;
     }
 
-    Enumeration enum = commands.elements();
-    while (enum.hasMoreElements()) {
-      ConnectorCommand cmd = (ConnectorCommand)enum.nextElement();
-      docel.appendChild(req.importNode(cmd.getCommandXML().getDocumentElement().cloneNode(true), true));
+    /**
+     * This method can fire a Put command to Dove. It uses #getPutData to construct the transaction.
+     *
+     * @param     originalData            The original data object tree.
+     * @param     newData                 The new and manipulated data. According to differences between the original and the new data, the transaction is constructed.
+     * @param     uploads                 A hashmap with the uploaded binaries.
+     * @return   The element containing the results of the put transaction.
+     */
+    public Element put(Document originalData, Document newData, HashMap uploads) throws WizardException {
+        Node putcmd =getPutData(originalData, newData);
+        return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), uploads);
     }
 
-    String res="";
-    Element results=null;
-    try {
-        Document tmp = Utils.EmptyDocument();
-        Dove dove = new Dove(tmp);
-        if (userCloud!=null) {
-            results = dove.executeRequest(req.getDocumentElement(),userCloud,null);
-        } else {
-            results = dove.executeRequest(req.getDocumentElement(),null,null);
-        }
-    } catch (Exception e) {
-        throw new WizardException("Error while communicating with Dove servlet. "+e.getMessage());
-    }
-    Document response = Utils.EmptyDocument();
-    response.appendChild(response.importNode(results,true));
-
-    Node securityError = Utils.selectSingleNode(response,"/response/security/error");
-    if (securityError != null){
-        throw new SecurityException("Login incorrect for user '" + this.username + "'.");
-    }
-
-    // map response back to each command.
-    enum = commands.elements();
-    while (enum.hasMoreElements()) {
-      ConnectorCommand cmd = (ConnectorCommand)enum.nextElement();
-
-      // find response for this command
-      Node resp = Utils.selectSingleNode(response, "/*/"+cmd.name +"[@id]");
-      if (resp!=null) {
-        // yes we found a response
-        cmd.setResponseXML(resp);
-      } else {
-        log.error("Could NOT store response "+cmd.id+" in a ConnectorCommand");
-        log.error(cmd.responsexml);
-      }
-    }
-
-    return response;
-  }
-
-  /**
-   * This method can fire a Put command to Dove. It uses #putData to construct the transaction.
-   *
-   * @param     originalData            The original data object tree.
-   * @param     newData                 The new and manipulated data. According to differences between the original and the new data, the transaction is constructed.
-   * @param     uploads                 A hashmap with the uploaded binaries.
-   * @return   The element containing the results of the put transaction.
-   */
-  public Element firePutCommand(Document originalData, Document newData, HashMap uploads) throws WizardException {
-    Node putcmd =putData(originalData, newData);
-    Element results=null;
-    try {
-        Document tmp = Utils.EmptyDocument();
-        Dove dove = new Dove(tmp);
-        if (userCloud!=null) {
-            results = dove.executeRequest(putcmd.getOwnerDocument().getDocumentElement(),userCloud,uploads);
-        } else {
-            results = dove.executeRequest(putcmd.getOwnerDocument().getDocumentElement(),null,uploads);
-        }
-    } catch (Exception e) {
-        log.error("Error while communicating with Dove servlet."+e.getMessage());
-        throw new WizardException("Error while communicating with Dove servlet. Message:"+e.getMessage());
-    }
-    return results;
-  }
-
-  /**
-   * This method constructs a update transaction ready for mmbase.
-   * The differences between the original and the new data define the transaction.
-   *
-   * @param     originalData    The original data.
-   * @param     newData         The new data.
-   */
-  public Node putData(Document originalData, Document newData) throws WizardException {
-        Document d = Utils.parseXML("<response/>");
-
+    /**
+     * This method constructs a update transaction ready for mmbase.
+     * The differences between the original and the new data define the transaction.
+     *
+     * @param     originalData    The original data.
+     * @param     newData         The new data.
+     */
+    public Node getPutData(Document originalData, Document newData) throws WizardException {
         Document workDoc = Utils.EmptyDocument();
         workDoc.appendChild(workDoc.importNode(newData.getDocumentElement().cloneNode(true), true));
 
@@ -633,16 +568,6 @@ public void getRelations(Node targetNode, String objectnumber, NodeList loadacti
 
         // initialize request xml
         Document req = Utils.parseXML("<request><put id=\"put\"><original/><new/></put></request>");
-
-        // Add security tag if necessary.
-        if (username != null && !username.equals("anonymous")){
-            Element secure = req.createElement("security");
-            secure.setAttribute("name",this.username);
-            secure.setAttribute("password",this.password);
-            secure.setAttribute("method",this.logonmethodname);
-            secure.setAttribute("cloud",this.cloudname);
-            req.getDocumentElement().insertBefore(secure, req.getDocumentElement().getFirstChild());
-        }
 
         Node reqorig = Utils.selectSingleNode(req, "/request/put/original");
         Node reqnew = Utils.selectSingleNode(req, "/request/put/new");
@@ -681,7 +606,7 @@ public void getRelations(Node targetNode, String objectnumber, NodeList loadacti
                         Utils.setAttribute(node, "status", "changed");
                         // store original destination also. easier to process later on
                         Utils.setAttribute(node, "olddestination", olddestination);
-                        } else {
+                    } else {
                         // it's the same (or at least: the destination is the same)
                         // now se check if some inside-fields are changed.
                         boolean valueschanged = checkRelationFieldsChanged(orignode, node);
@@ -710,33 +635,32 @@ public void getRelations(Node targetNode, String objectnumber, NodeList loadacti
                         // check if fields are different?
                         NodeList fields=Utils.selectNodeList(node,"field");
                         for (int j=0; j<fields.getLength(); j++) {
-                        Node origfield = Utils.selectSingleNode(orignode, "field[@name='"+Utils.getAttribute(fields.item(j), "name")+"']");
-                        if (origfield!=null) {
-                            if (!isDifferent(fields.item(j), origfield)) {
-                                // the same. let's remove this field also
-                                fields.item(j).getParentNode().removeChild(fields.item(j));
-                                origfield.getParentNode().removeChild(origfield);
+                            Node origfield = Utils.selectSingleNode(orignode, "field[@name='"+Utils.getAttribute(fields.item(j), "name")+"']");
+                            if (origfield!=null) {
+                                if (!isDifferent(fields.item(j), origfield)) {
+                                    // the same. let's remove this field also
+                                    fields.item(j).getParentNode().removeChild(fields.item(j));
+                                    origfield.getParentNode().removeChild(origfield);
+                                }
                             }
                         }
                     }
                 }
-            }
-        } else {
-            // this is a new relation or object. Remember that
-
-            // but, check first if the may-be-new object has a  "already-exists" attribute. If so,
-            // we don't have a new object, no no, this is a later-loaded object which is not added to the
-            // original datanode (should be better in later versions, eg. by using a repository).
-            String already_exists = Utils.getAttribute(node, "already-exists", "false");
-            if (!already_exists.equals("true")) {
-                // go ahead. this seems to be a really new one...
-                Utils.setAttribute(node, "status", "new");
             } else {
-                // remove it from the list.
-                node.getParentNode().removeChild(node);
+                // this is a new relation or object. Remember that
+                // but, check first if the may-be-new object has a  "already-exists" attribute. If so,
+                // we don't have a new object, no no, this is a later-loaded object which is not added to the
+                // original datanode (should be better in later versions, eg. by using a repository).
+                String already_exists = Utils.getAttribute(node, "already-exists", "false");
+                if (!already_exists.equals("true")) {
+                    // go ahead. this seems to be a really new one...
+                    Utils.setAttribute(node, "status", "new");
+                } else {
+                    // remove it from the list.
+                    node.getParentNode().removeChild(node);
+                }
             }
         }
-    }
 
         // find all deleted relations and objects
         NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation|.//object");
@@ -800,167 +724,160 @@ public void getRelations(Node targetNode, String objectnumber, NodeList loadacti
                 convertRelationIntoObject(rel);
             }
         }
-
         return req.getDocumentElement();
-  }
+    }
 
-  // Utils
-
-  /**
-   * This method returns the objectnumber of the related object, given the 'other' related object.
-   *
-   * @param     relationnode    The relation which to use.
-   * @param     objectnumber    The objectnumber we don't want to get. So, we want to get the OTHER related object.
-   * @return   The number of other related object.
-   */
-  public String getOtherRelatedObject(Node relationnode, String objectnumber) {
-    String dnumber="";
-    String snumber="";
-
-    try {
-        dnumber = Utils.selectSingleNode(relationnode, "field[@name='dnumber']/text()").getNodeValue();
-        snumber = Utils.selectSingleNode(relationnode, "field[@name='snumber']/text()").getNodeValue();
-    } catch (Exception e) {
+    /**
+     * This method returns the objectnumber of the related object, given the 'other' related object.
+     *
+     * @param     relationnode    The relation which to use.
+     * @param     objectnumber    The objectnumber we don't want to get. So, we want to get the OTHER related object.
+     * @return   The number of other related object.\
+     */
+    public String getOtherRelatedObject(Node relationnode, String objectnumber) {
+        String dnumber="";
+        String snumber="";
         try {
-            // sometimes a destination="objnr" is given, sometimes dnumber/snumber is used. This is a workaround.
-            return Utils.getAttribute(relationnode, "destination", "");
-        } catch (RuntimeException e2) {
+            dnumber = Utils.selectSingleNode(relationnode, "field[@name='dnumber']/text()").getNodeValue();
+            snumber = Utils.selectSingleNode(relationnode, "field[@name='snumber']/text()").getNodeValue();
+        } catch (Exception e) {
+            try {
+                // sometimes a destination="objnr" is given, sometimes dnumber/snumber is used.
+                // This is a workaround.
+                return Utils.getAttribute(relationnode, "destination", "");
+            } catch (RuntimeException e2) {
                 log.error("getOtherRelationObject err:"+e.getMessage());
                 return "";
+            }
+        }
+        if (dnumber.equals(objectnumber)) return snumber;
+        return dnumber;
+    }
+
+    /**
+     * If a new relation is made, it will be processed here. Attributes are set so that all other code can easily use the relations.
+     *
+     * @param     relationnode    the newly created or loaded relationnode.
+     * @param     objectnumber    the already known objectnumber.
+     */
+    public void processIncomingRelation(Node relationnode, String objectnumber) {
+        // calculate right destination objectnumber and place it in the relationnode
+        String othernumber = getOtherRelatedObject(relationnode, objectnumber);
+        if (othernumber.equals("")) return;
+
+        Utils.setAttribute(relationnode, "source", objectnumber);
+        Utils.setAttribute(relationnode, "destination", othernumber);
+    }
+
+    /**
+     * This method makes the object data tree flat, so that Dove can construct a transaction from it.
+     *
+     * @param     sourcenode              The sourcenode from which should be flattened.
+     * @param     targetParentNode        The targetParentNode where the results should be appended.
+     * @param     allowChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
+     */
+    public void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
+        NodeList list = Utils.selectNodeList(sourcenode, xpath);
+        for (int i=0; i<list.getLength(); i++) {
+            Node item = list.item(i);
+            Node newnode = targetParentNode.getOwnerDocument().importNode(item, false);
+            targetParentNode.appendChild(newnode);
+            cloneOneDeep(item, newnode, allowedChildrenXpath);
         }
     }
-    if (dnumber.equals(objectnumber)) return snumber;
-        return dnumber;
-  }
 
-  /**
-   * If a new relation is made, it will be processed here. Attributes are set so that all other code can easily use the relations.
-   *
-   * @param     relationnode    the newly created or loaded relationnode.
-   * @param     objectnumber    the already known objectnumber.
-   */
-  public void processIncomingRelation(Node relationnode, String objectnumber) {
-    // calculate right destination objectnumber and place it in the relationnode
-    String othernumber = getOtherRelatedObject(relationnode, objectnumber);
-    if (othernumber.equals("")) return;
-
-    Utils.setAttribute(relationnode, "source", objectnumber);
-    Utils.setAttribute(relationnode, "destination", othernumber);
-  }
-
-  /**
-   * This method makes the object data tree flat, so that Dove can construct a transaction from it.
-   *
-   * @param     sourcenode              The sourcenode from which should be flattened.
-   * @param     targetParentNode        The targetParentNode where the results should be appended.
-   * @param     allowChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
-   */
-  public void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
-    NodeList list = Utils.selectNodeList(sourcenode, xpath);
-    for (int i=0; i<list.getLength(); i++) {
-        Node item = list.item(i);
-        Node newnode = targetParentNode.getOwnerDocument().importNode(item, false);
-        targetParentNode.appendChild(newnode);
-        cloneOneDeep(item, newnode, allowedChildrenXpath);
+    /**
+     * This method can clone an object node one deep. So, only the first level children will be copied.
+     *
+     * @param     sourcenode              The sourcenode from where the flattening should start.
+     * @param     targetParentNode        The parent on which the results should be appended.
+     * @param     allowedChildrenXpath    The xpath describing what children may be copied.
+     */
+    public void cloneOneDeep(Node sourcenode, Node targetParentNode, String allowedChildrenXpath) {
+        NodeList list = Utils.selectNodeList(sourcenode, allowedChildrenXpath);
+        Utils.appendNodeList(list, targetParentNode);
     }
-  }
 
-  /**
-   * This method can clone an object node one deep. So, only the first level children will be copied.
-   *
-   * @param     sourcenode              The sourcenode from where the flattening should start.
-   * @param     targetParentNode        The parent on which the results should be appended.
-   * @param     allowedChildrenXpath    The xpath describing what children may be copied.
-   */
-  public void cloneOneDeep(Node sourcenode, Node targetParentNode, String allowedChildrenXpath) {
-    NodeList list = Utils.selectNodeList(sourcenode, allowedChildrenXpath);
-    Utils.appendNodeList(list, targetParentNode);
-  }
-
-  /**
-   * This method compares two xml nodes and checks them for identity.
-   *
-   * @param     node1   The first node to check
-   * @param     node2   Compare with thisone.
-   * @return   True if they are different, False if they are similar.
-   */
-  public boolean isDifferent(Node node1, Node node2) {
+    /**
+     * This method compares two xml nodes and checks them for identity.
+     *
+     * @param     node1   The first node to check
+     * @param     node2   Compare with thisone.
+     * @return   True if they are different, False if they are similar.
+     */
+    public boolean isDifferent(Node node1, Node node2) {
         // only checks textnodes and childnumbers
-    boolean res = false;
-    if (node1.getChildNodes().getLength()!=node2.getChildNodes().getLength()) {
-        // ander aantal kindjes!
-        return true;
-    }
-
-    // andere getnodetype?
-    if (node1.getNodeType()!=node2.getNodeType()) {
+        boolean res = false;
+        if (node1.getChildNodes().getLength()!=node2.getChildNodes().getLength()) {
+            // ander aantal kindjes!
             return true;
-    }
-
-    if (node1.getNodeType()==Node.TEXT_NODE) {
+        }
+        // andere getnodetype?
+        if (node1.getNodeType()!=node2.getNodeType()) {
+            return true;
+        }
+        if (node1.getNodeType()==Node.TEXT_NODE) {
             String s1 = node1.getNodeValue();
-        String s2 = node2.getNodeValue();
-        if (!s1.equals(s2)) return true;
-    }
+            String s2 = node2.getNodeValue();
+            if (!s1.equals(s2)) return true;
+        }
+        // check kids
+        NodeList kids = node1.getChildNodes();
+        NodeList kids2 = node2.getChildNodes();
 
-
-    // check kids
-    NodeList kids = node1.getChildNodes();
-    NodeList kids2 = node2.getChildNodes();
-
-    for (int i=0; i<kids.getLength(); i++) {
+        for (int i=0; i<kids.getLength(); i++) {
             if (isDifferent(kids.item(i), kids2.item(i))) {
                 return true;
+            }
         }
+        return false;
     }
-    return false;
-  }
 
-/**
- * This method checks if relationfields are changed. It does NOT check the source-destination numbers, only the other fields,
- * like the pos field in a posrel relation.
- *
- * @param       origrel         The original relation
- * @param       rel             The new relation
- * @return     True if the relations are different, false if they are the same.
- */
-  private boolean checkRelationFieldsChanged(Node origrel, Node rel) {
-    NodeList origflds = Utils.selectNodeList(origrel, RELATIONFIELDS_XPATH);
-    NodeList newflds = Utils.selectNodeList(rel, RELATIONFIELDS_XPATH);
-    Document tmp = Utils.parseXML("<tmp><n1><r/></n1><n2><r/></n2></tmp>");
+    /**
+     * This method checks if relationfields are changed. It does NOT check the source-destination numbers, only the other fields,
+     * like the pos field in a posrel relation.
+     *
+     * @param       origrel         The original relation
+     * @param       rel             The new relation
+     * @return     True if the relations are different, false if they are the same.
+     */
+    private boolean checkRelationFieldsChanged(Node origrel, Node rel) {
+        NodeList origflds = Utils.selectNodeList(origrel, RELATIONFIELDS_XPATH);
+        NodeList newflds = Utils.selectNodeList(rel, RELATIONFIELDS_XPATH);
+        Document tmp = Utils.parseXML("<tmp><n1><r/></n1><n2><r/></n2></tmp>");
 
-    Node n1 = Utils.selectSingleNode(tmp, "/tmp/n1/r");
-    Node n2 = Utils.selectSingleNode(tmp, "/tmp/n2/r");
+        Node n1 = Utils.selectSingleNode(tmp, "/tmp/n1/r");
+        Node n2 = Utils.selectSingleNode(tmp, "/tmp/n2/r");
 
-    Utils.appendNodeList(origflds,n1);
-    Utils.appendNodeList(newflds,n2);
+        Utils.appendNodeList(origflds,n1);
+        Utils.appendNodeList(newflds,n2);
 
-    return isDifferent(n1,n2);
-  }
+        return isDifferent(n1,n2);
+    }
 
-  /**
-   * this method converts a <relation /> node into an <object /> node.
-   * source/destination attributes are removed, and rnumber, snumber, dnumber fields also.
-   * It is mainly used by the putData commands to store extra relation fields values.
-   * @param     rel     The relation which should be converted.
-    */
-  private void convertRelationIntoObject(Node rel) {
+    /**
+     * this method converts a <relation /> node into an <object /> node.
+     * source/destination attributes are removed, and rnumber, snumber, dnumber fields also.
+     * It is mainly used by the putData commands to store extra relation fields values.
+     * @param     rel     The relation which should be converted.
+     */
+    private void convertRelationIntoObject(Node rel) {
 
-    Node obj = rel.getOwnerDocument().createElement("object");
+        Node obj = rel.getOwnerDocument().createElement("object");
 
-    // copy attributes, except...
-    Vector except = new Vector();
-    except.add("destination");
-    except.add("source");
-    except.add("role");
-    except.add("status"); // we don't need status anymore also!
-    Utils.copyAllAttributes(rel, obj, except);
+        // copy attributes, except...
+        Vector except = new Vector();
+        except.add("destination");
+        except.add("source");
+        except.add("role");
+        except.add("status"); // we don't need status anymore also!
+        Utils.copyAllAttributes(rel, obj, except);
 
-    // copy fields, except... (uses RELATIONFIELDS_XPATH)
-    NodeList flds = Utils.selectNodeList(rel, RELATIONFIELDS_XPATH);
-    Utils.appendNodeList(flds, obj);
+        // copy fields, except... (uses RELATIONFIELDS_XPATH)
+        NodeList flds = Utils.selectNodeList(rel, RELATIONFIELDS_XPATH);
+        Utils.appendNodeList(flds, obj);
 
-    // remove rel, place obj instead
-    rel.getParentNode().replaceChild(obj, rel);
-  }
+        // remove rel, place obj instead
+        rel.getParentNode().replaceChild(obj, rel);
+    }
 }
