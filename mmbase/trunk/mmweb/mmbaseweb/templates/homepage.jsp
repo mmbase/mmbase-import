@@ -1,5 +1,6 @@
+<!-- START FILE: /mmbaseweb/templates/homepage.jsp -->
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@ page language="java" contentType="text/html; charset=utf-8" session="false"
+%><%@ page language="java" contentType="text/html; charset=utf-8" session="true"
 %><mm:cloud>
 <mm:log>sjit</mm:log>
 <%@include file="/includes/getids.jsp"%>
@@ -12,7 +13,7 @@
 <mm:compare referid="doc" value="-1" inverse="true">
 <mm:log>x</mm:log>
    <mm:node number="$doc">
-       <%@include file="/includes/backbutton.jsp"%>
+       <%--@include file="/includes/backbutton.jsp"--%>
        <%@include file="/includes/article.jsp" %>
   </mm:node>
    <mm:import id="pageshown" />
@@ -21,7 +22,7 @@
 <mm:log>a</mm:log>
   <mm:compare referid="news" value="-1" inverse="true">
      <mm:node number="$news" >
-	<%@include file="/includes/backbutton.jsp" %>
+	<%--@include file="/includes/backbutton.jsp" --%>
         <%@include file="/includes/article.jsp" %>
      </mm:node>
     <mm:import id="pageshown" />
@@ -34,62 +35,7 @@
 <tr><td>
 <table class="layout">
 	<tr>
-	<td valign="top" width="258">
-		<%-- ### articles ### --%>
-		<mm:related path="articles" max="1"><h2><mm:field name="articles.title"/></h2>
-			<mm:field name="articles.intro"	/>
-		</mm:related>
-		<mm:related path="posrel,documentation" orderby="posrel.pos" directions="UP">
-			<mm:first>
-			<div z-index="2">
-			<form name="infoform" action="" method="post">
-			<select name="doc" style="width:200;">
-			</mm:first><option value="<mm:field name="documentation.number" />"><mm:field name="documentation.title" /></option>
-			<mm:last></select> | <a href="javascript:postInfoForm();">go</a>
-			</form>
-			</div>
-			<script language="JavaScript" type="text/javascript">
-			<%= "<!--" %>
-			function postInfoForm() {
-				href = "index.jsp?portal=<mm:write referid="portal" />&amp;page=<mm:write referid="page" />";
-				var doc = document.infoform.elements["doc"].value;
-				if (doc != '') { 
-						href += "&doc=" + doc; 
-				}
-				document.location = href;
-			}
-			<%= "//-->" %>
-			</script>
-			</mm:last>
-		</mm:related>
-		<mm:related path="posrel,news" orderby="posrel.pos" directions="UP">
-		 	<mm:first
-				><h4>Latest websites build with MMBase</h4>
-				<form name="portofolioform" action="" method="post">
-					<select name="news" style="width:200;">
-			</mm:first
-					><option value="<mm:field name="news.number" />"><mm:field name="news.title" /></option>
-			<mm:last
-					></select> | <a href="javascript:postPortofolioForm();">go</a>
-				</form>
-				<script language="JavaScript" type="text/javascript">
-				<%= "<!--" %>
-				function postPortofolioForm() {
-					href = "index.jsp?portal=<mm:write referid="portal" />&amp;page=<mm:write referid="page" />";
-					var news = document.portofolioform.elements["news"].value;
-					if (news != '') { 
-							href += "&news=" + news; 
-					}
-					document.location = href;
-				}
-				<%= "//-->" %>
-				</script>
-			</mm:last
-		></mm:related>
-
-     </td>
-
-	<td width="17"><img src="media/spacer.gif" alt="" border="0" width="17" height="1" /></td>
+<%-- START COLUMN 3 --%>
 	<td valign="top" width="163">
 <%-- ### news ### --%>
 <mm:list nodes="$portal" 
@@ -128,7 +74,68 @@
 </mm:notpresent>
 <%-- ### /news ### --%>
 	 </td>
+<%-- END COLUMN 3 --%>
+
+<%-- START COLUMN 2 --%>
+	<td width="17"><img src="media/spacer.gif" alt="" border="0" width="17" height="1" /></td>
+<%-- END COLUMN 2 --%>
+	<td valign="top" width="258"> <%-- START COLUMN 1 --%>
+		<%-- ### articles ### --%>
+		<mm:related path="articles" max="1"><h2><mm:field name="articles.title"/></h2>
+			<mm:field name="articles.intro"	/>
+		</mm:related>
+		<mm:related path="posrel,documentation" orderby="posrel.pos" directions="UP">
+			<mm:first>
+			<div z-index="2">
+			<form name="infoform" action="" method="post">
+			<select name="doc" style="width:200;" onchange="javascript:postInfoForm();">
+			</mm:first><option value="<mm:field name="documentation.number" />"><mm:field name="documentation.title" /></option>
+			<mm:last></select> | <a href="javascript:postInfoForm();">go</a>
+			</form>
+			</div>
+			<script language="JavaScript" type="text/javascript">
+			<%= "<!--" %>
+			function postInfoForm() {
+				href = "index.jsp?portal=<mm:write referid="portal" />&amp;page=<mm:write referid="page" />";
+				var doc = document.infoform.elements["doc"].value;
+				if (doc != '') { 
+						href += "&doc=" + doc; 
+				}
+				document.location = href;
+			}
+			<%= "//-->" %>
+			</script>
+			</mm:last>
+		</mm:related>
+		<mm:related path="posrel,news" orderby="posrel.pos" directions="UP">
+		 	<mm:first
+				><h4>Latest websites build with MMBase</h4>
+				<form name="portofolioform" action="" method="post">
+			        <select name="news" style="width:200;" onchange="javascript:postInfoForm();">
+			</mm:first
+					><option value="<mm:field name="news.number" />"><mm:field name="news.title" /></option>
+			<mm:last
+					></select> | <a href="javascript:postPortofolioForm();">go</a>
+				</form>
+				<script language="JavaScript" type="text/javascript">
+				<%= "<!--" %>
+				function postPortofolioForm() {
+					href = "index.jsp?portal=<mm:write referid="portal" />&amp;page=<mm:write referid="page" />";
+					var news = document.portofolioform.elements["news"].value;
+					if (news != '') { 
+							href += "&news=" + news; 
+					}
+					document.location = href;
+				}
+				<%= "//-->" %>
+				</script>
+			</mm:last
+		></mm:related>
+
+     </td> <%-- END COLUMN 1 --%>
+<%-- START COLUMN 4 --%>
      <td width="17"><img src="media/spacer.gif" alt="" border="0" width="17" height="1" /></td>
+<%-- END COLUMN 4 --%>
  </tr>
 </table>
 </td>
@@ -148,7 +155,7 @@
 	<mm:list nodes="$portal" 
 		path="portals,category,posrel,event,mmevents"
 		fields="category.number,event.number,event.title,mmevents.start" 
-		orderby="mmevents.start" directions="DOWN"
+		orderby="mmevents.start" directions="UP"
 		max="5" constraints="mmevents.start >= $ttoday">
 		<mm:first>
 		  <mm:field name="category.number" id="cat_nr" write="false" />
@@ -229,5 +236,4 @@
 <%@include file="/includes/footer.jsp"
 %></mm:cloud>
 
-
-
+<!-- END FILE: /mmbaseweb/templates/homepage.jsp -->
