@@ -25,7 +25,11 @@
   The cloud-tag is a rather complex thing, it has some attributes
   which can influence each other.
   Start <a href="<mm:url page="cloud.jsp" />">here for cloud tag
-  tests</a>. It will start with a login-popup (don't try with mmbase 1.5).
+  tests</a>. It will start with a login-popup (don't try with mmbase
+  1.5). Run the sequence also with cookies disabled please, or perhaps
+  even better in that case start <a href="cloud.html">here</a> (with
+  cookies disabled, and url not encoded, cloud-tag will detect that
+  from 1.6 on).
 </p>
 
 <hr />
