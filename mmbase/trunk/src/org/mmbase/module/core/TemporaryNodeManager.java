@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.34 2004-01-06 13:05:10 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.35 2004-09-17 10:06:40 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -121,7 +121,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         if (node==null) {
             log.debug("getNode tmp not node found " + key);
             node=bul.getNode(key);
-            if(node==null) throw new java.lang.RuntimeException("Node not found !! (key = '" + key + "')");
+            if(node==null) throw new RuntimeException("Node not found !! (key = '" + key + "')");
         }
         return node;
     }
