@@ -88,6 +88,11 @@
 <h1><%=m.getString("redirect")%></h1>
 <a href="<mm:url page="$redirectTo" />">
 <%= m.getString("commit_node.redirect")%></a>
+
+<mm:write referid="redirectTo" jspvar="redirect" vartype="string">
+<jsp:forward page="<%=redirect%>" />
+</mm:write>
+
 </mm:context>
 <%@ include file="foot.jsp"  %>
 </mm:cloud>
