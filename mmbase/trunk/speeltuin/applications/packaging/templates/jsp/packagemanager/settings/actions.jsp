@@ -6,13 +6,10 @@
 <mm:import externid="provider" />
 
 <mm:compare value="changesettings" referid="action">
-	<mm:function set="mmpm" name="changeSettings">
-		<mm:import externid="providername" />
-		<mm:import externid="callbackurl" />
-  		<mm:setparam name="providername" value="$providername" />
-  		<mm:setparam name="callbackurl" value="$callbackurl" />
-		<mm:resultnode />
-	</mm:function>
+	<mm:import externid="providername" />
+	<mm:import externid="callbackurl" />
+         <mm:booleanfunction set="mmpm" name="changeSettings" referids="providername,callbackurl">
+        </mm:booleanfunction>
 </mm:compare>
 
 </mm:cloud>
