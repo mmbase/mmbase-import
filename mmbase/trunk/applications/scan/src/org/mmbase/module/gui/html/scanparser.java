@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.59 $ $Date: 2003-01-13 22:26:14 $
+ * @$Revision: 1.60 $ $Date: 2003-01-14 16:05:44 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1163,35 +1163,48 @@ public class scanparser extends ProcessorModule {
      * @return null and sp.rstatus unchanged if hosts match or in case of an unspecified host
      *         returns url and sp.rstatus 1, if redir to wantedhost requested
      */
-    private final String do_host(scanpage sp, String wantedHost)
+    private final String do_host(scanpage sp, String hosts)
     {
-        if (wantedHost==null) return null;
-        wantedHost = wantedHost.trim();
-        String backendHost = "";
-        int i = wantedHost.indexOf(',');
-        if (i>=0) {
-            if (i<wantedHost.length()-1) backendHost = wantedHost.substring( i+1 ).trim();
-            wantedHost = wantedHost.substring(0, i).trim();
-        }
-        if (wantedHost.length() < 1) return null;
+    	String hostDelimiters = ",";
+    	if (hosts==null) return null;
 
-        if (sp.req==null) return null;
-        String requestHost = sp.req.getHeader("Host");
-        if (requestHost==null) return null; // No such header
-        requestHost = requestHost.trim();
-        if (requestHost.length() < 1) return null;
-        // remove port
-        i = requestHost.indexOf(':');
-        if (i==0) return null; // First char :, no host only port....
-        if (i>0) requestHost = requestHost.substring(0, i);
+		//Get the requested host from the request
+    	if (sp.req==null) return null;
+    	String requestHost = sp.req.getHeader("Host");
+    	if (requestHost==null) return null; // No such header
+    	requestHost = requestHost.trim();
+    	if (requestHost.length() < 1) return null;
 
-        if (log.isDebugEnabled()) log.debug("Request host: " + requestHost + ", wanted host: " + wantedHost + " backend host: " + backendHost);
-		if (requestHost.equalsIgnoreCase(wantedHost) || requestHost.equalsIgnoreCase(backendHost))
-            return null; // The page runs on the requested host or on the backend host
+    	// remove port
+    	int i = requestHost.indexOf(':');
+    	if (i==0) return null; // First char :, no host only port....
+    	if (i>0) requestHost = requestHost.substring(0, i);
 
-        // Rederict the request to the wanted host
+		//try to match requested host with allowed host
+    	StringTokenizer allowedHosts = new StringTokenizer(hosts.trim(),hostDelimiters);
+
+		//allowed to use this server? Take the first if no
+		while (allowedHosts.hasMoreTokens()) {
+			String aHost = allowedHosts.nextToken().trim();			
+			if (aHost.equalsIgnoreCase(requestHost)) {
+				log.debug("requested host " + requestHost + " found in allowed host list"); 
+				return null;
+			}
+		}
+		String firstHost = null;
+    	int delimitIndex = hosts.indexOf(hostDelimiters);
+		if (delimitIndex > -1) {
+			firstHost = hosts.substring(0,delimitIndex).trim();
+		}
+		else {
+			firstHost = hosts.trim();
+		}
+
+        if (log.isDebugEnabled()) log.debug("Request host: " + requestHost + "not found, first host: " + firstHost);
+
+        // Redirect the request to the wanted host
         sp.rstatus = 1;
-        String url = "http://" + wantedHost + sp.getUrl();
+        String url = "http://" + firstHost + sp.getUrl();
         if (log.isDebugEnabled()) log.debug("Redirecting to "+url);
         return url;
     }
@@ -2146,4 +2159,3 @@ public class scanparser extends ProcessorModule {
         return((int)crc.getValue());
     }
 }
-
