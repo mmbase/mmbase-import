@@ -17,7 +17,7 @@ import org.mmbase.security.MMBaseCop;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.4 2002-01-31 10:05:12 pierre Exp $
+ * @version $Id: BasicUser.java,v 1.5 2003-08-18 09:16:42 michiel Exp $
  */
 public class BasicUser implements User {
     private MMBaseCop securityManager;
@@ -45,5 +45,10 @@ public class BasicUser implements User {
 
     public boolean isValid() {
         return securityManager.getAuthentication().isValid(usercontext);
+    }
+
+
+    public String getOwnerField() {
+        return usercontext.getOwnerField();
     }
 }
