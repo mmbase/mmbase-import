@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.184 2003-08-07 17:26:01 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.185 2003-08-08 16:03:48 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -172,7 +172,7 @@ See mmexamples/taglib for more elaborated examples.
     <p>
       These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
       in you pages. An overview of all MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
-    </p>
+   </p>
   </info>
   </type>
   <type name="mmbase">
@@ -216,8 +216,8 @@ See mmexamples/taglib for more elaborated examples.
   <description>list related tags</description>
   <info>
     <p>
-      These are the MMBase tags which do relate to lists (lists and
-      sub-tags of lists).
+      These are the MMBase tags which do relate to lists (lists,
+      sub-tags of lists, and constainers of list).
     </p>
   </info>
   </type>
@@ -594,6 +594,32 @@ See mmexamples/taglib for more elaborated examples.
       </info>
     </attribute>
   </taginterface>
+  <taginterface>
+    <name>nodelistcontainer</name>
+    <extends>container</extends>
+    <info>
+      A 'NodeList' container is a container for one of the 'node list' tags (listproviders that are nodeprovider too). A Node
+    </info>
+    <see tag="list" />
+    <see tag="listnodes" />
+    <since>MMBase-1.7</since>
+  </taginterface>
+  <taginterface>
+    <name>nodelistcontainerreferrer</name>
+    <extends>containerreferrer</extends>
+    <info>
+      
+    </info>
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>container</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Refer to the container with this id.
+      </info>
+    </attribute>
+  </taginterface>
   <tag>
     <name>list</name>
     <extends>clusternodeprovider</extends>
@@ -619,6 +645,8 @@ See mmexamples/taglib for more elaborated examples.
       want to refer to them.
     </info>
     <see tag="listnodes" />
+    <see tag="listcontainer" />
+    <see tag="nodelistcontainerreferrer" />
     <see tag="node" attribute="element"/>
     <attribute>
       <name>nodes</name>
@@ -806,13 +834,15 @@ See mmexamples/taglib for more elaborated examples.
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The maximum number of records to return.</info>
+      <info>The maximum number of records to return. Can do it also with the maxnumber tag in the container.</info>
+      <see tag="maxnumber" />
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The first number of records to skip.</info>
+      <info>The first number of records to skip. Can do it also with the 'offset' tag in the container</info>
+      <see tag="offset" />
     </attribute>
     <attribute>
       <name>searchdir</name>
@@ -828,6 +858,14 @@ See mmexamples/taglib for more elaborated examples.
         "all". Any other value for this attribute will follow
         relations the way they are defined (either source to destination,
         destination to source or both).
+      </info>
+    </attribute>
+    <attribute>
+      <name>comparator</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Applies a java-comparator to sort the list. 
       </info>
     </attribute>
     <example>&lt;mm:list nodes="123" path="mags,news"
@@ -937,6 +975,12 @@ See mmexamples/taglib for more elaborated examples.
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="searchdir" />
     </attribute>
+    <attribute>
+      <name>comparator</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="comparator" />
+    </attribute>
     <example>&lt;mm:node number="123"&gt;
   &lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
     &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
@@ -969,6 +1013,8 @@ See mmexamples/taglib for more elaborated examples.
     </info>
     <see tag="list" />
     <see tag="relatednodes" />
+    <see tag="listnodescontainer" />
+    <see tag="nodelistcontainerreferrer" />
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -1008,12 +1054,20 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="max" />
+      <see tag="maxnumber" />
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="offset" />
+      <see tag="offset" />
+    </attribute>
+    <attribute>
+      <name>comparator</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="searchdir" />
     </attribute>
     <example>&lt;mm:listnodes type="mags"  &gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
@@ -1040,6 +1094,7 @@ See mmexamples/taglib for more elaborated examples.
     <see tag="list" />
     <see tag="listnodes" />
     <see tag="related" />
+    <see tag="unrelatednodes" />
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -2219,6 +2274,12 @@ transaction was commited, following should result anything:
           Return all fields.
         </info>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>comparator</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="searchdir" />
     </attribute>
     <example>See the example for tag 'nodeinfo'.</example>
   </tag>
@@ -4132,6 +4193,8 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>listnodescontainer</name>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainer</extends>
     <see tag="listnodes" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
     <info>
@@ -4157,13 +4220,14 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>listcontainer</name>
-    <extends>container</extends>
-    <extends>containerreferrer</extends>
-    <see tag="list" />
+    <type>mmbase.list</type>
+    <extends>nodelistcontainer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListContainerTag</tagclass>
     <info>
       Surrounds a list tag and  provides a query object.
     </info>
+    <see tag="list" />
+    <see tag="nodelistcontainerreferrer" />
     <since>MMBase-1.7</since>
     <attribute>
       <name>path</name>
@@ -4184,7 +4248,8 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>constraint</name>
-    <extends>containerreferrer</extends>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag</tagclass>
@@ -4217,7 +4282,8 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>ageconstraint</name>
-    <extends>containerreferrer</extends>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListAgeConstraintTag</tagclass>
@@ -4252,7 +4318,8 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>maxnumber</name>
-    <extends>containerreferrer</extends>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListMaxNumberTag</tagclass>
@@ -4272,7 +4339,8 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>offset</name>
-    <extends>containerreferrer</extends>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListOffsetTag</tagclass>
@@ -4293,6 +4361,7 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>unrelatednodes</name>
+    <type>mmbase.list</type>
     <extends>listnodes</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.UnRelatedNodesTag</tagclass>
     <info>
@@ -4305,7 +4374,7 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>stringlist</name>
-    <type>mmbase.list</type>
+    <type>list</type>
     <extends>nodereferrer</extends>
     <extends>writer</extends>
     <extends>listprovider</extends>
@@ -4323,6 +4392,12 @@ The 0 is just counter, which starts at 0 on every page.
 
       </info>
     </attribute>
+    <attribute>
+      <name>comparator</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="searchdir" />
+    </attribute>
   </tag>
 
 
@@ -4334,11 +4409,12 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>writer</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
-    <extends>containerreferrer</extends>
+    <extends>nodelistcontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListPreviousBatchesTag</tagclass>
     <info>
       
     </info>
+     <see tag="nextbatches" />
     <since>MMBase-1.7</since>
     <attribute>
       <name>max</name>
@@ -4359,11 +4435,12 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>writer</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
-    <extends>containerreferrer</extends>
+    <extends>nodelistcontainerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListNextBatchesTag</tagclass>
     <info>
-      
+      This tag has to be used inside a 'nodelistcontainer'. 
     </info>
+     <see tag="nextbatches" />
     <since>MMBase-1.7</since>
     <attribute>
       <name>max</name>
@@ -4381,7 +4458,6 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>listreferrer</extends>
     <extends>contextreader</extends>
-
     <tagclass>org.mmbase.bridge.jsp.taglib.RemoveItemTag</tagclass>
     <info>
       Remove the current item from the surrounding list. Of course this has only effect when the list is 'reused' (with referid).
