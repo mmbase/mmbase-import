@@ -15,24 +15,28 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Builds a MultiCast Thread to receive  and send 
- * changes from other MMBase Servers.
+ * changes from other MMBase Servers. (no it doesn't)
  *
  * @author Daniel Ockeloen
+ * @author Pierre van Rooden
  */
 public class MMBaseChangeDummy implements MMBaseChangeInterface {
 
-	MMBase parent; 
+	// debug routines
+	private static Logger log = Logging.getLoggerInstance(MMBaseChangeDummy.class.getName());
+	
+	MMBase parent;
 
 	public MMBaseChangeDummy(MMBase parent) {
 		this.parent=parent;
 	}
 
-
 	public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
-		System.out.println("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
+		log.debug("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
 
 		MMObjectBuilder bul=parent.getMMObject(tb);
 		if (bul==null) {
@@ -45,6 +49,10 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
 	}
 
 	public boolean changedNode(int nodenr,String tableName,String type) {
+	    MMObjectBuilder bul=parent.getMMObject(tableName);
+		if (bul!=null) {
+		    bul.nodeLocalChanged(""+nodenr,tableName,type);
+		}
 		return(true);
 	}
 
