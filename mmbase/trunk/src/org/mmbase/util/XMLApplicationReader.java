@@ -280,7 +280,7 @@ public class XMLApplicationReader  {
 
 
     /**
-    * datasources attached to this application
+    * relationsources attached to this application
     */
     public Vector getRelationSources() {
 	Vector results=new Vector();
@@ -297,6 +297,41 @@ public class XMLApplicationReader  {
 						if (nm!=null) {
 							Node n4=nm.getNamedItem("path");
 							if (n4!=null) bset.put("path",n4.getNodeValue());
+						}
+						results.addElement(bset);
+					}
+					n3=n3.getNextSibling();
+				}
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(results);
+    }
+
+
+    /**
+    * contextsources attached to this application
+    */
+    public Vector getContextSources() {
+	Vector results=new Vector();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("contextsourcelist")) {
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					if (n3.getNodeName().equals("contextsource")) {
+						Hashtable bset=new Hashtable();	
+						NamedNodeMap nm=n3.getAttributes();
+						if (nm!=null) {
+							Node n4=nm.getNamedItem("path");
+							if (n4!=null) bset.put("path",n4.getNodeValue());
+							n4=nm.getNamedItem("type");
+							if (n4!=null) bset.put("type",n4.getNodeValue());
+							n4=nm.getNamedItem("goal");
+							if (n4!=null) bset.put("goal",n4.getNodeValue());
 						}
 						results.addElement(bset);
 					}
