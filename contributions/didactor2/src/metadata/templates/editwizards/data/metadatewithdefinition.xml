@@ -23,7 +23,7 @@
   <form-schema id="step1">
     <title>Metadata Invoeren</title>
 
-    <list extends="list/metadefinition-inmetavalues.xml"/>
+    <list extends="list/metadefinition-inmetadate.xml"/>
 
     <field fdatapath="relation[@role='posrel']/object[@type='metadate']/field[@name='value']" ftype="datetime">
       <prompt>Waarde</prompt>
