@@ -24,11 +24,11 @@ import java.util.*;
  * Gives an xml-representation of a dir structure with builders
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.1 2002-11-12 10:50:19 pierre Exp $
+ * @version $Id: BuilderList.java,v 1.2 2002-11-12 11:37:00 pierre Exp $
  */
 public class BuilderList {
     // logger not used at the moment
-    //private static Logger log = Logging.getLoggerInstance(BuilderLister.class.getName());
+    //private static Logger log = Logging.getLoggerInstance(BuilderList.class.getName());
 
     /**
      * Empty constructor
@@ -111,7 +111,7 @@ public class BuilderList {
             byte[] bytes= s.getBytes("utf-8");
             System.out.write(bytes,0,bytes.length);
         } else {
-            System.out.println("usage: java BuilderLister <basedirwithbuilderconfig>");
+            System.out.println("usage: java BuilderList <basedirwithbuilderconfig>");
         }
     }
 }
