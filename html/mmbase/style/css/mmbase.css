@@ -1,7 +1,7 @@
 /*
  CSS for MMBase
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.4 2004-01-09 20:04:47 michiel Exp $;
+ @version $Id: mmbase.css,v 1.5 2004-01-09 20:58:47 michiel Exp $;
 */
 
 
@@ -14,17 +14,34 @@ body {
   padding-right: 0pt;
 }
 
-
-table {
-  font-size: 9pt;
+table { 
   width: 100%;
+  font-size: 9pt;
   border-bottom: none;
   border-top: none;
   border-left: solid thin white;
   border-right: none;
   border-collapse:separate;
   border-spacing: 1pt;
+
+
 }
+
+/* a basic body is a page not using a table */
+body.basic h1 { 
+  padding-left: 3%;
+  background-color: #ddd;
+}
+body.basic p, table { 
+  margin-left: 3%;
+  width: 94%;
+}
+
+
+.intro { 
+  font-style: italic;
+}
+
 td {
   padding: 3pt;
 }
