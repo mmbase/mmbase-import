@@ -25,15 +25,15 @@ import org.mmbase.module.gui.html.*;
  * Requests for scheduling is done in the netfile builder.
  * This VWM handles those netfile requests whose service is 'pages'. Available subservices are 'main' and 'mirror'.
  * Requests for file copy are checked periodically.
- * The result in one or more request for a 'mirror' service,
- * which then results in a file copy request, which is handled in a separate thread.
+ * This results in one or more requests for a 'mirror' service,
+ * which then result in a file copy request, which is handled in a separate thread.
  * This VWM also has methods for recalculating pages and handling page changes (which in turn result in
  * a request for file copy.)
  * Entry point for these requests are the FileChange methods from the {@link VwmServiceInterface}.
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 5 Apr 2001
+ * @version 9 Apr 2001
  */
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -47,7 +47,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
     Object syncobj=new Object();  // used in commented code
 
     /**
-    * Queu comtaining the file-copy tasks that need to eb performed by {@link #filecopier}
+    * Queue containing the file-copy tasks that need to be performed by {@link #filecopier}
     */
     Queue files2copy=new Queue(128);
     /**
@@ -96,7 +96,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
                     i++;
                 }
             } catch(Exception e) {
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
             }
             // handle up to 50 pages/mirror fileservice requests
             try {
@@ -110,7 +110,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
                     i++;
                 }
             } catch(Exception e) {
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
             }
         }
         return true;
@@ -300,7 +300,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
     /**
      * Handles a main subservice on a page.
      * The page is scheduled to be sent to all appropriate mirrorsites for this service,
-     * by setting teh request status in the associated mirror nodes.
+     * by setting the request status in the associated mirror nodes.
      * If no mirror nodes are associated with this page, nothing happens.
      * @param filenode the netfiles node with the original (main) request
      */
@@ -323,7 +323,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
     /**
      * Schedules a netfile object to be send to its mirror sites.
      * The routine searches the appropriate netfile node, and sets its status to 'request'.
-     * If a ndoe does not exits, a new node is created. In the latter case, the system also creates mirrornodes
+     * If a node does not exits, a new node is created. In the latter case, the system also creates mirrornodes
      * for each mirrorsite associated with this service.
      * @param service the service to be performed
      * @param subservice the subservice to be performed
@@ -366,7 +366,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
     /**
      * Retrieves a named property of a server.
      * @param machine name of the server
-     * @param key name of teh proeprty to retrieve
+     * @param key name of the property to retrieve
      * @return the property value
      */
     public String getProperty(String machine,String key) {
