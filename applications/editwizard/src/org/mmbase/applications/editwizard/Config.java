@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.17 2002-07-19 17:21:07 michiel Exp $
+ * @version $Id: Config.java,v 1.18 2002-07-19 20:14:48 michiel Exp $
  */
 
 public class Config {
@@ -41,6 +41,7 @@ public class Config {
     public Stack       subObjects = new Stack(); // stores the Lists and Wizards.
     public String      sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String      backPage;
+    public String      templates;
 
     static public abstract class SubConfig {
         public String wizard;
@@ -148,19 +149,19 @@ public class Config {
                 /* Optionally, you can indicate with a 'templates' option where the xml's and 
                    xsl must be searched (if they cannot be found in the referring dir).
                 */
-                String templates = request.getParameter("templates");
+                config.templates = request.getParameter("templates");
 
-                if(templates != null) {
-                    File templateDir = new File(request.getRealPath(templates));
+                if (config.templates != null) {
+                    File templatesDir = new File(request.getRealPath(config.templates));
                     try {
-                        templateDir = templateDir.getCanonicalFile();
+                        templatesDir = templatesDir.getCanonicalFile();
                     } catch (java.io.IOException e) {
                         throw new WizardException(e.toString());
                     }
-                    if(! templateDir.isDirectory()) {
-                        throw new WizardException("Template directory not found : " + templateDir);
+                    if(! templatesDir.isDirectory()) {
+                        throw new WizardException("Template directory not found : " + templatesDir);
                     }
-                    extraDirs.add("templates:", templateDir);
+                    extraDirs.add("templates:", templatesDir);
                 }
 
                 /**
@@ -220,6 +221,7 @@ public class Config {
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);
+            wizard.wiz.setTemplatesDir(config.templates);
             return wizard;
         }
         public abstract void config(Config.ListConfig c);

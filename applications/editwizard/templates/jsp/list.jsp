@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.20 2002-07-17 11:46:29 pierre Exp $
+     * @version  $Id: list.jsp,v 1.21 2002-07-19 20:16:58 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -241,13 +241,14 @@ for (int i=0; i<pagecount && i<maxpages; i++) {
 log.trace("Setting xsl parameters");
 java.util.Map params = new java.util.Hashtable(listConfig.attributes);
 if (listConfig.wizard != null) params.put("wizard", listConfig.wizard);
-params.put("start",String.valueOf(start));
-params.put("referrer", ewconfig.backPage);
-params.put("len",String.valueOf(len));
+params.put("start",      String.valueOf(start));
+params.put("referrer",   ewconfig.backPage);
+if (ewconfig.templates != null) params.put("templatedir",  ewconfig.templates);
+params.put("len",        String.valueOf(len));
 params.put("sessionkey", ewconfig.sessionKey);
-params.put("sessionid", ewconfig.sessionId);
-params.put("deletable", deletable+"");
-params.put("creatable", creatable+"");
+params.put("sessionid",  ewconfig.sessionId);
+params.put("deletable",  deletable+"");
+params.put("creatable",  creatable+"");
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);

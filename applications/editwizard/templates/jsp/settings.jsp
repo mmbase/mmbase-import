@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.21 2002-07-19 14:35:41 eduard Exp $
+     * @version  $Id: settings.jsp,v 1.22 2002-07-19 20:16:58 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -19,10 +19,12 @@
      */
     class Configurator extends Config.Configurator {
 
-        Configurator(HttpServletRequest req, HttpServletResponse res, Config c) {
+        Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
             super(req, res, c);
             c.maxupload = getParam("maxsize", new Integer(4 * 1024 * 1024)).intValue(); // 1 MByte max uploadsize
         }
+
+
 
         // which parameters to use to configure a list page
         public void config(Config.ListConfig c) {
@@ -33,9 +35,11 @@
             c.pagelength   = getParam("pagelength", new Integer(c.pagelength)).intValue();
             c.maxpagecount   = getParam("maxpagecount", new Integer(c.maxpagecount)).intValue();
             c.wizard      = getParam("wizard", c.wizard);
+            if (c.wizard != null && c.wizard.startsWith("/")) {
+                c.wizard = "file://" + getRequest().getRealPath(c.wizard);
+            }
 
             c.setAttribute("origin",getParam("origin"));
-
             c.startNodes  = getParam("startnodes", c.startNodes);
             c.nodePath    = getParam("nodepath", c.nodePath);
             c.fields      = getParam("fields", c.fields);
@@ -92,6 +96,10 @@
         // which parameter to use to configure a wizard page
         public void config(Config.WizardConfig c) {
             c.wizard      = getParam("wizard", c.wizard);
+            if (c.wizard != null && c.wizard.startsWith("/")) {
+                c.wizard = "file://" + getRequest().getRealPath(c.wizard);
+            }
+
             c.setAttribute("origin",getParam("origin"));
             c.objectNumber = getParam("objectnumber");
         }
