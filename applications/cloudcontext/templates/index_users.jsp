@@ -99,14 +99,14 @@
           <mm:maywrite>
             <a href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
           </mm:maywrite>
-          <mm:field name="rank" >
+          <mm:function name="rank" >
             <mm:compare value="<%="" + org.mmbase.security.Rank.ADMIN.getInt()%>" inverse="true">
               <mm:maydelete>
                 <a onclick="return confirm('<%=getPrompt(m,"reallydeleteusers")%>');"
                 href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>
               </mm:maydelete>
             </mm:compare>
-          </mm:field>
+          </mm:function>
         </td>
       </tr>
       </mm:listnodes>
