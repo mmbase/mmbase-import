@@ -22,20 +22,25 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * Module , the wrapper for the modules.
+ * An MMBase Module is an extension of this class, which is configured by an XML in the &lt;mmbase
+ * config dir &gt;/modules directory. All XML's (which are defined 'active') in this directory are
+ * automaticly loaded, and all found 'Module's are then initialized.
+ *
+ * There are several Modules which are more or less compulsary in MMBase, like the 'mmbaseroot'
+ * module, the actual core of MMBase implemented by {@see org.mmbase.module.core.MMBase}, and the
+ * 'jdbc' module.
  *
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.51 2004-03-26 12:32:18 michiel Exp $
+ * @version $Id: Module.java,v 1.52 2004-03-26 14:59:20 michiel Exp $
  */
 public abstract class Module {
 
     private static final Logger log = Logging.getLoggerInstance(Module.class);
     
     static Map modules;
-    static String mmbaseconfig;
     static ModuleProbe mprobe;
     
     String moduleName = null;
@@ -49,7 +54,7 @@ public abstract class Module {
     private boolean started = false;
     
     public Module() {
-        String startedAt=(new Date(System.currentTimeMillis())).toString();
+        String startedAt = (new Date(System.currentTimeMillis())).toString();
         state.put("Start Time", startedAt);        
     }
     
@@ -125,7 +130,7 @@ public abstract class Module {
      * Sets an init-parameter key-value pair
      */
     public void setInitParameter(String key,String value) {
-        if (properties!=null) {
+        if (properties != null) {
             properties.put(key,value);
         }
     }
@@ -134,11 +139,11 @@ public abstract class Module {
      * Gets an init-parameter  key-value pair
      */
     public String getInitParameter(String key) {
-        if (properties!=null) {
+        if (properties != null) {
             String value=(String)properties.get(key);
-            if (value==null) {
-                key=key.toLowerCase();
-                value=(String)properties.get(key);
+            if (value == null) {
+                key = key.toLowerCase();
+                value = (String)properties.get(key);
             }
             return value;
         } else {
@@ -365,20 +370,19 @@ public abstract class Module {
     
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
-        mmbaseconfig = MMBaseContext.getConfigPath();
-        String dirName=(mmbaseconfig + "/modules/");
-        File dir = new File(dirName);
+        File dir = new File(MMBaseContext.getConfigPath(), "modules");
         if (dir.isDirectory()) {
-            String files[] = dir.list();
+            File[] files = dir.listFiles();
             for (int i = 0; i < files.length; i++) {
-                String fileName = files[i];
-                if (fileName.endsWith(".xml")) {
+                File file = files[i];
+                String fileName = file.getName();
+                if (file.canRead() && file.isFile() && fileName.endsWith(".xml")) {
                     fileName = fileName.substring(0, fileName.length() - 4);
-                    XMLModuleReader parser = null;
+                    XMLModuleReader parser;
                     try {
-                        parser = new XMLModuleReader(dirName + fileName + ".xml");
+                        parser = new XMLModuleReader(file.getAbsolutePath());
                     } catch (Throwable t) {
-                        log.error("Could not load module with xml '" + dirName + fileName + ".xml': " + t.getMessage());
+                        log.error("Could not load module with xml '" + file + "': " + t.getMessage());
                         continue;
                     }
                     if (parser.getStatus().equals("active")) {
@@ -386,35 +390,33 @@ public abstract class Module {
                         // try starting the module and give it its properties
                         try {
                             log.service("Loading module " + fileName + " with class " + className);
-                            Hashtable modprops = parser.getProperties();
-                            Object mod;
+                            Module mod;
                             if (parser.getURLString() != null){
                                 log.service("loading module from jar " + parser.getURLString());
                                 URL url = new URL(parser.getURLString());
                                 URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
                                 Class newClass = c.loadClass(className);
-                                mod = newClass.newInstance();
+                                mod = (Module) newClass.newInstance();
                             } else {
                                 Class newClass = Class.forName(className);
-                                mod = newClass.newInstance();
+                                mod = (Module) newClass.newInstance();
                             }
-                            if (mod != null) {
-                                results.put(fileName, mod);
-                                
-                                if (modprops != null) {
-                                    ((Module)mod).properties = modprops;
-                                }
-                                // set the module name property using the module's filename
-                                // maybe we need a parser.getModuleName() function to improve on this
-                                ((Module)mod).setName(fileName);
-                                ((Module)mod).setMaintainer(parser.getModuleMaintainer());
-                                ((Module)mod).setVersion(parser.getModuleVersion());
-                            }
-                        } catch (java.lang.ClassNotFoundException cnfe) {
+                         
+                            results.put(fileName, mod);
+                            
+                            mod.properties =  parser.getProperties();
+
+                            // set the module name property using the module's filename
+                            // maybe we need a parser.getModuleName() function to improve on this
+                            mod.setName(fileName);
+
+                            mod.setMaintainer(parser.getModuleMaintainer());
+                            mod.setVersion(parser.getModuleVersion());
+                        } catch (ClassNotFoundException cnfe) {
                             log.error("Could not load class with name '" + className + "', " +
-                                      "which was specified in the module:'" + dirName + fileName + ".xml'(" + cnfe + ")" );
+                                      "which was specified in the module:'" + file + ".xml'(" + cnfe + ")" );
                         } catch (Exception e) {
-                                log.error("Error while loading module class" + Logging.stackTrace(e));
+                            log.error("Error while loading module class" + Logging.stackTrace(e));
                         }
                     }
                 }
