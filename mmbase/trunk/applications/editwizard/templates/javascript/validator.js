@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.18 2003-09-24 11:52:41 michiel Exp $
+ * @version  $Id: validator.js,v 1.19 2003-09-24 11:57:15 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -202,7 +202,7 @@ function validateElement_validator(el, silent) {
                 err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (month has 31 days)");
             }
 
-            if ((day > 30) && ((month == 1) || (month == 3) || (month == 5) || (month == 8) || (month == 10) )) {
+            if ((day > 30) && ((month == 3) || (month == 5) || (month == 8) || (month == 10) )) {
                 err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (month has 30 days)");
             }
 
