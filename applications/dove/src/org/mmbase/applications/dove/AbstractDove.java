@@ -58,7 +58,7 @@ import org.mmbase.security.MMBaseCop;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.1.2.1 2002-03-08 14:08:02 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.1.2.2 2002-03-11 11:05:47 pierre Exp $
  */
 
 public abstract class AbstractDove {
@@ -102,10 +102,6 @@ public abstract class AbstractDove {
     public static final String GUITYPE = "guitype";
     public static final String MAXLENGTH = "maxlength";
     public static final String REQUIRED = "required";
-    public static final String VALUES = "values";
-    public static final String VALUE = "value";
-    public static final String CONSTRAINTS = "constraints";
-    public static final String CONSTRAINT = "constraint";
 
     // keywords used for attributes
     public static final String ELM_ID = "id";
@@ -119,6 +115,7 @@ public abstract class AbstractDove {
     public static final String ELM_DESTINATIONTYPE = "destinationtype";
     public static final String ELM_LANG = "xml:lang";
     public static final String ELM_XPATH = "xpath";
+    public static final String ELM_WHERE = "where";
     public static final String ELM_SOURCE = "source";
     public static final String ELM_HREF = "href";
 

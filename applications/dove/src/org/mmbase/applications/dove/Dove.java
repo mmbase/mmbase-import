@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.1.2.1 2002-03-08 14:08:02 pierre Exp $
+ * @version $Id: Dove.java,v 1.1.2.2 2002-03-11 11:05:47 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -582,13 +582,16 @@ public class Dove extends AbstractDove {
         while (query!=null) { // select all child tags, should be 'query'
             if (query.getTagName().equals(QUERY)) {
                 String xpath = query.getAttribute(ELM_XPATH); // check id;
-                String where = query.getAttribute("where"); // check id;
+                String where = query.getAttribute(ELM_WHERE); // check id;
                 if (xpath.equals("")) {
                     Element err=addContentElement(ERROR,"xpath required for query",out);
                     err.setAttribute(ELM_TYPE,IS_PARSER);
                 } else {
                     Element querydata=doc.createElement(QUERY);
                     querydata.setAttribute(ELM_XPATH, xpath);
+                    if (!where .equals("")) {
+                        querydata.setAttribute(ELM_WHERE, where);
+                    }
                     out.appendChild(querydata);
                     // get node template
                     Element node=getFirstElement(query);
