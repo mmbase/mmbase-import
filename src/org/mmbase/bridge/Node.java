@@ -131,11 +131,29 @@ public interface Node {
 
     /**
      * Returns the value of the specified field as a <code>Node</code>.
-     * If the value is not a Node, or is not specified, this method returns
-     * <code>null</code>.
+     * If the value is not itself a Node, this call attempts to convert the
+     * original field value to a Node, by trying to retrieve a Node using
+     * the field value as a Node number or alias.<br />
+     * For instance, getNodeValue("destination"), when run on a OAlias object,
+     * returns the referenced destination node (instead of teh number, which is
+     * what it normally holds).<br />
+     * Mosty, this call is used in cluster nodes (nodes retrived by using the
+     * Cloud.getList method. A cluster node returns one of its compound nodes
+     * when an appropriate nodemanager name (name from the nodepath) is specified.
+     * I.e. getNodeValue("people") will return the people-node in the cluster.
+     * If this fails, the method returns <code>null</code>.
+     * <br />
+     * Notes: the behavior of getNodeValue when called on a field that is not
+     * intended to be a node reference is currently undefined and is not
+     * encouraged.
+     * <br />
+     * Calling this method with field "number" or <code>null</code> lets the
+     * Node return a reference to itself, regardless of the actual value of the
+     * number field or status of the Node.
      *
      * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
+     * @see Cloud.getList
      */
     public Node getNodeValue(String fieldname);
 
@@ -222,7 +240,7 @@ public interface Node {
      * Converts the node to a string
      */
     public String toString();
-    
+
     /**
      * Checks whether this node has any relations.
      *
@@ -389,7 +407,7 @@ public interface Node {
      */
 
     public boolean mayDelete();
-    
+
     /**
      * Check link rights on this node.
      *
