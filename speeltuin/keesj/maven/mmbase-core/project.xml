@@ -92,6 +92,22 @@
       <id>junit</id>
       <version>3.8.1</version>
     </dependency>
+    <!-- I don't believe it mmbase is still depenend on that borring 
+         xalan,xerces and xml apis 
+    -->
+    <dependency>
+      <id>xalan</id>
+      <version>2.6.0</version>
+    </dependency>
+    <dependency>
+      <id>xerces</id>
+      <version>2.4.0</version>
+    </dependency>
+    <dependency>
+      <id>xml-apis</id>
+      <version>2.0.2</version>
+    </dependency>
+
     <dependency>
       <artifactId>mmbase-core-config</artifactId>
       <groupId>mmbase</groupId>
