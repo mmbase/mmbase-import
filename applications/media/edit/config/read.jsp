@@ -25,7 +25,7 @@
 %>
 <mm:write referid="config.lang" jspvar="lang" vartype="string"><%
   locale  =  new java.util.Locale(lang, "");
-  m = java.util.ResourceBundle.getBundle("org.mmbase.util.media.resources.mediaedit", locale);
+  m = java.util.ResourceBundle.getBundle("org.mmbase.applications.media.resources.mediaedit", locale);
 %>
 </mm:write>
 
