@@ -15,21 +15,23 @@
   <%@include file="you.div.jsp" %>
 
    <table>
-    <mm:fieldlist type="edit">
+   <mm:maywrite>
+    <mm:fieldlist type="edit" fields="owner">
     <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="useinput" /></td></tr>
     </mm:fieldlist>
+   </mm:maywrite>
    <mm:import id="operations" vartype="list">create,read,write,delete</mm:import>
-   <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Groups.GRANT_ARGUMENTS">
-     <mm:param name="context"><mm:field name="name" /></mm:param>
+   <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
      <mm:listnodes id="thisgroup"  type="mmbasegroups">  
+       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
        <mm:stringlist referid="operations">
          <mm:param name="operation"><mm:write /></mm:param>
          <mm:import id="right" externid="$_:$thisgroup" />
          <mm:compare referid="right" value="on">
-            <mm:function name="grant" />
+            <mm:function node="context" name="grant" />
          </mm:compare>
          <mm:compare referid="right" value="on" inverse="true">
-             <mm:function name="revoke" />
+             <mm:function node="context" name="revoke" />
          </mm:compare>
        </mm:stringlist>
    <tr><td></td></tr>

@@ -25,7 +25,12 @@
  </div>
  
   <p class="action">
-    <a href="<mm:url page="create_group.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" tooltip="create group"  /></a>
+    <mm:maycreate type="mmbasegroups">
+      <a href="<mm:url page="create_group.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" tooltip="create group"  /></a>
+    </mm:maycreate>
+    <mm:maycreate type="mmbasegroups" inverse="true">
+      You are not allowed to create new groups.
+    </mm:maycreate>
   </p>
  
    <mm:notpresent referid="group">

@@ -18,7 +18,7 @@
   
   <form action="commit_user.jsp" method="post">
    <table>
-    <mm:fieldlist type="edit">
+    <mm:fieldlist type="edit" fields="owner">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
     </mm:fieldlist>
     <mm:field name="username">
@@ -27,10 +27,10 @@
      <td>Groups</td>
      <td>
       <select name="_groups"  size="15" multiple="multiple">
-        <mm:relatednodes id="ingroups" type="mmbasegroups">
+        <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>       
         </mm:relatednodes>
-        <mm:unrelatednodes type="mmbasegroups">
+        <mm:unrelatednodes type="mmbasegroups" searchdir="source" role="contains">
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
@@ -54,9 +54,9 @@
     </tr>
     </mm:compare>
     </mm:field>
-    <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
     <input type="hidden" name="user" value="<mm:field name="number" />" />
    </table>
+   <%@include file="groupOrUserRights.table.jsp" %>
    </form>
 
    </mm:node>

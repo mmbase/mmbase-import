@@ -18,9 +18,15 @@
    <form method="post" action="commit_group.jsp">    
    <input type="hidden" name="group" value="<mm:field name="number" />" />
    <table>
-      <mm:fieldlist type="edit">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
-    </mm:fieldlist>
+    <mm:fieldlist type="edit">
+      <mm:maywrite>
+       <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
+      </mm:maywrite>
+      <mm:maywrite inverse="true">
+       <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="value" /></td></tr>
+      </mm:maywrite>
+      </mm:fieldlist>
+
     <tr>
      <td>Parent groups</td>
      <td>
@@ -28,7 +34,7 @@
         <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>       
         </mm:relatednodes>
-        <mm:unrelatednodes type="mmbasegroups">
+        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true">
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
@@ -44,7 +50,7 @@
         <mm:relatednodes id="fromgroups" type="mmbasegroups" searchdir="destination">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>       
         </mm:relatednodes>
-        <mm:unrelatednodes type="mmbasegroups">
+        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true">
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
@@ -56,36 +62,7 @@
      </td>
      </tr>
    </table>
-   <table class="rights">
-    <tr><th>Contexts</th><th>Create</th><th>Read</th><th>Write</th><th>Delete</th></tr>
-    <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Groups.GRANT_ARGUMENTS">
-    <mm:listnodes id="thiscontext" type="mmbasecontexts">
-      <mm:param name="context"><mm:field name="name" /></mm:param>
-      <tr><td><a href="<mm:url referids="thiscontext@context" page="index_contexts.jsp" />"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
-        <mm:import id="operations" vartype="list">create,read,write,delete</mm:import>
-        <mm:stringlist referid="operations">
-        <mm:param name="operation"><mm:write /></mm:param>
-        <td <mm:booleanfunction node="currentgroup" name="parentsallow">
-               class="parent"
-           </mm:booleanfunction>
-          >
-          <mm:booleanfunction node="currentgroup" name="maygrant">
-          <input type="checkbox" name="<mm:write />:<mm:field name="number" />"
-             <mm:booleanfunction node="currentgroup" name="allows">
-               checked="checked"
-             </mm:booleanfunction>
-          />
-          </mm:booleanfunction>
-          <mm:booleanfunction node="currentgroup" name="maygrant" inverse="true">
-            X
-          </mm:booleanfunction>
-        </td>
-        </mm:stringlist>
-      </tr>
-    </mm:listnodes>
-    </mm:functioncontainer> 
-    <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
-   </table>
+   <%@include file="groupOrUserRights.table.jsp" %>
    </form>
 </div>
 

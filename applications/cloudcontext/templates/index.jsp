@@ -29,7 +29,12 @@
  
 
    <p class="action">
+    <mm:maycreate type="mmbaseusers">
      <a href="<mm:url page="create_user.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" title="create user"  /></a>
+    </mm:maycreate>
+    <mm:maycreate type="mmbaseusers" inverse="true">
+      You are not allowed to create new users.
+    </mm:maycreate>
    </p>
 
    <%@include file="search.form.jsp" %>
