@@ -14,6 +14,10 @@ import java.lang.*;
 
 public class Queue {
 
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug(String msg) { if (debug) System.out.println(classname +":"+ msg);}
+
 	QueueElement head,tail;
 	int flip=0;int len=0;
 
@@ -130,6 +134,7 @@ public class Queue {
 	 *
 	 * @param item The item to be appended to the queue */
 	public synchronized void append(Object item) {
+		if (debug) debug("Queue:put(): Appending item:"+item);
 		// put a object in the vector and wait on it
 		// it should be able to block if full
 		QueueElement p=new QueueElement();
@@ -161,6 +166,7 @@ public class Queue {
 	 */
 
 	public synchronized Object get() {
+		if (debug) debug("Queue:get(): Pulling item off of queue");
 		try {
 			while(head==null) {
 				wait();
