@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.47.2.3 2005-03-15 10:44:42 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.47.2.4 2005-03-16 23:34:40 michiel Exp $
  */
 
 public class WriterHelper {
@@ -175,6 +175,11 @@ public class WriterHelper {
         overrideWrite = w ? Boolean.TRUE : Boolean.FALSE;
     }
 
+    private boolean overrideNoImplicitList = false;
+    public void overrideNoImplicitList() {
+        overrideNoImplicitList = true;
+    }
+
     /**
      * Some writer tags produce very specific content, and take care
      * of escaping themselves (UrlTag). They turn off escaping (on default).
@@ -212,6 +217,18 @@ public class WriterHelper {
 
     public String getJspvar() {
         return jspvar;
+    }
+
+
+    /**
+     * @deprecated body-content is requested from thisTag
+     */
+    public void setBodyContent(BodyContent bc) {
+    }
+    /**
+     * @deprecated page-context is requested from thisTag
+     */
+    public void setPageContext(PageContext pc) {
     }
 
     /**
@@ -273,13 +290,14 @@ public class WriterHelper {
             return;
         }
 
-        if (noImplicitList) {
+        if (noImplicitList && ! overrideNoImplicitList) {
             // Take last of list if vartype defined not to be a list:
             if (v instanceof List) {
                 if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
                     List l = (List) v;
                     if (l.size() > 0) {
-                        v = l.get(l.size() - 1);
+                        v = l.get(l.size() - 1); // last element
+                        // v = l.get(0);               // first element, allows for 'overriding'.
                     } else {
                         v = null;
                     }
@@ -481,6 +499,7 @@ public class WriterHelper {
 
     public void release() {
         overrideWrite = null; // for use next time
+        overrideNoImplicitList = false;
         hasBody       = false;
         value         = null;
     }
