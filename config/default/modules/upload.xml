@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd" -->
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
 <module>
 
   <!-- <status>
@@ -18,7 +18,7 @@
      a key/value system. Its a optional tag.
    -->
   <properties>
-  	<property name="fileUploadDirectory">/tmp/</property>
+      <property name="fileUploadDirectory">/tmp/</property>
   </properties>
 
 </module>
