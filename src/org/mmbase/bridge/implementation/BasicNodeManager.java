@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.72 2004-01-06 18:46:43 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.73 2004-02-02 12:17:39 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -130,7 +130,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 FieldDefs f = (FieldDefs) i.next();
                 Field ft = new BasicField(f,this);
                 fieldTypes.put(ft.getName(),ft);
-                if (f.getDBType() != FieldDefs.TYPE_BYTE && ( f.getDBState() == FieldDefs.DBSTATE_PERSISTENT || f.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
+                if (f.getDBType() != FieldDefs.TYPE_BYTE && f.getDBPos()>0) {
+                    // ( f.getDBState() == FieldDefs.DBSTATE_PERSISTENT || f.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
                     queryFields.add(new BasicField(f, this));
                 }
             }
@@ -269,32 +270,32 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return new BasicNodeQuery(this);
     }
 
-    
+
     public NodeList getList(NodeQuery query) {
         try {
             boolean checked = cloud.setSecurityConstraint(query);
 
 
-            
-            
+
+
             List resultList = (List) nodeListCache.get(query);
 
             if (resultList == null) {
-                resultList = mmb.getDatabase().getNodes(query, builder);                        
+                resultList = mmb.getDatabase().getNodes(query, builder);
                 builder.processSearchResults(resultList);
                 nodeListCache.put(query, resultList);
             }
 
 
-            
+
             BasicNodeList resultNodeList = new BasicNodeList(resultList, cloud);
-            
-            resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);       
-            
+
+            resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
+
             if (! checked) {
                 cloud.checkNodes(resultNodeList, query);
             }
-            
+
             return resultNodeList;
         } catch (SearchQueryException sqe) {
             throw new BridgeException(sqe);
