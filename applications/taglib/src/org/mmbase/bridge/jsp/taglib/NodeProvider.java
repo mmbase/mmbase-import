@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * to access a node defined in a tag
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeProvider.java,v 1.7 2004-09-14 19:24:00 andre Exp $ 
+ * @version $Id: NodeProvider.java,v 1.8 2004-09-15 07:53:46 michiel Exp $ 
  * @todo EXPERIMENTAL
  */
 
@@ -30,9 +30,17 @@ public interface NodeProvider extends TagIdentifier, FunctionContainerOrNodeProv
      *
      * Experimental: getGeneratingQuery()
      **/
-    public Node getNodeVar() throws JspTagException;	
-    public void setModified();
-    public void setJspvar(String jv);
-    
-    public Query getGeneratingQuery() throws JspTagException;		// experimental
+    Node getNodeVar() throws JspTagException;	
+    void setModified();
+    void setJspvar(String jv);
+
+
+    /**
+     * Returns a query which (a.o) results this Node.
+     * @todo  EXPERIMENTAL
+     * @since MMBase-1.8
+     */
+    Query getGeneratingQuery() throws JspTagException; 
+
+
 }
