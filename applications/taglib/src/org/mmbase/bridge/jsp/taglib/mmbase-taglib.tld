@@ -155,7 +155,7 @@
     <tagclass>org.mmbase.bridge.jsp.taglib.InfoTag</tagclass>
     <info>this tag can be used to call getInfo from Module (can also
     be done with mod)  and NodeManager</info>
-    <bodycontent>text</bodycontent>
+    <bodycontent>JSP</bodycontent>
     <attribute>
         <name>nodeManager</name>
         <required>false</required>
@@ -163,6 +163,11 @@
     </attribute>
     <attribute>
         <name>modules</name>
+        <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>id</name>
         <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -217,6 +222,21 @@
         <name>type</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>listCondition</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ListConditionTag</tagclass>
+    <info></info>
+    <attribute>
+        <name>value</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
     </attribute>
   </tag>
 </taglib>
