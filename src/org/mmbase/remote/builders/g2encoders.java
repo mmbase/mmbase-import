@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.9 2001-02-19 10:10:11 vpro Exp $
+$Id: g2encoders.java,v 1.10 2001-02-20 17:45:17 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2001/02/19 10:10:11  vpro
+Davzev: Changed wrong debug in doMakeDir.
+
 Revision 1.8  2001/02/15 15:27:29  vpro
 Davzev: Added, changed debug and moved the mkdir from local to remote side.
 
@@ -28,7 +31,7 @@ import org.mmbase.service.interfaces.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.9 $ $Date: 2001-02-19 10:10:11 $
+ * @version $Revision: 1.10 $ $Date: 2001-02-20 17:45:17 $
  */
 public class g2encoders extends RemoteBuilder {
 	private boolean debug = true;
@@ -38,13 +41,20 @@ public class g2encoders extends RemoteBuilder {
 	// Has to move to props file but at least the mkdir is done on the remote side.
 	public final static String DST_PATH = "/data/audio/ra/";
 
+	/**
+	 * Initializes itself, then gets the g2encoder config and resets its' when it isn't 'waiting'.
+	 * @param con protocoldriver
+	 * @param servicefile the servicefile that contains the config. 
+	 */
 	public void init(MMProtocolDriver con,String servicefile) {
+		if (debug) debug("init: Initializing, getting config."); 
 		super.init(con,servicefile);
 		// the node was loaded allready so check what the state was
 		// and put us in ready/waiting state
 		String state=getStringValue("state");
 		getConfig();
 		if (!state.equals("waiting")) {
+			debug("init: WARNING: State: "+state+"!=waiting, resetting it to waiting!"); 
 			// maybe add 'what' happened code ? but for now
 			// just put the service on waiting state
 			setValue("state","waiting");
@@ -52,33 +62,54 @@ public class g2encoders extends RemoteBuilder {
 		}
 	}
 
-	public void nodeRemoteChanged(String nodenr,String buildername,String ctype) {		
-		nodeChanged(nodenr,buildername,ctype);
+	/**
+	 * Called when the service node state was changed on another server, in turn this method calls
+	 * nodeChanged to check and react to the new state.
+	 * @param serviceRef a String with a reference to the service node who's state has been changed.
+	 * @param builderName a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 */
+	public void nodeRemoteChanged(String serviceRef,String buildername,String ctype) {		
+		if (debug) debug("nodeRemoteChanged: Calling nodeChanged");
+		nodeChanged(serviceRef,buildername,ctype);
 	}
 
-	public void nodeLocalChanged(String nodenr,String buildername,String ctype) {		
-		nodeChanged(nodenr,buildername,ctype);
+	/**
+	 * Called when node was changed on the local side, in turn this routine calls nodeChanged
+	 * to check out and react to the new state.
+	 * @param serviceRef a String with a reference to the service node who's state has been changed.
+	 * @param builderName a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 */
+	public void nodeLocalChanged(String serviceRef,String buildername,String ctype) {		
+		if (debug) debug("nodeLocalChanged: Calling nodeChanged");
+		nodeChanged(serviceRef,buildername,ctype);
 	}
 
 	/**
 	 * Gets node from mmbase and checks the node state reacts to state value.
 	 * State value 'version' gets the version info, 'encode' starts encoding process. 
-	 * @param nodenr a String with servicenode objectnr
+	 * @param serviceRef a String with a reference to the service node who's state has been changed.
 	 * @param buildername the name of the service
 	 * @param ctype the node changetype.
 	 */
-	public void nodeChanged(String nodenr,String buildername,String ctype) {		
-		// All encoded files are filed under objectnr subdirectory.
-		doMakeDir(); 
+	public void nodeChanged(String serviceRef,String buildername,String ctype) {		
+		if (debug) debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): Getting node from mmbase.");
 		// Gets the node by requesting it from the mmbase space through remotexml.
 		getNode(); 
 				
 		String state=getStringValue("state");
-		debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): state("+state+")");
+		debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): state("+state+")");
 		if (state.equals("version")) {
 			doVersion();
 		} else if (state.equals("encode")) {
+			// All encoded files are filed under objectnr subdirectory.
+			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): state:"+state+", first make subdir");
+			doMakeDir(); 
+			// Start the encoding process.
 			doEncode();
+		} else {
+			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): ERROR, Unknown state:"+state);
 		}
 	}
 
@@ -107,7 +138,11 @@ public class g2encoders extends RemoteBuilder {
 		}
 	}
 
+	/**
+	 * Gets the version information from the g2encoder.
+	 */
 	private void doVersion() {
+		if (debug) debug("doVersion: Setting state to busy and get the version info.");
 		setValue("state","busy");
 		commit();
 	
@@ -115,13 +150,14 @@ public class g2encoders extends RemoteBuilder {
 		if (impl!=null) {
 			setValue("info",impl.getVersion());	
 		} else {
+			debug("doVersion: ERROR, implementation reference is null, filling info with error info.");
 			setValue("info","result=err reason=nocode");	
 		}
 
 		// signal that we are done
+		if (debug) debug("doVersion: Setting state to waiting and return.");
 		setValue("state","waiting");
 		commit();
-		debug("doVersion(): commit done");
 	}
 
 	/**
@@ -130,6 +166,7 @@ public class g2encoders extends RemoteBuilder {
 	 * Encoding result information is saved in the nodes info field.
 	 */
 	private void doEncode() {
+		if (debug) debug("doEncode: Setting state to busy and start encoding.");
 		setValue("state","busy");
 		commit();
 	
@@ -137,14 +174,15 @@ public class g2encoders extends RemoteBuilder {
 
 		if (impl!=null) {
 			String cmds=getStringValue("info");
-			if( debug ) debug("doEncode(): starting impl.doEncode("+cmds+")");
+			if (debug) debug("doEncode(): starting impl.doEncode("+cmds+")");
 		    setValue("info",impl.doEncode(cmds));	
 		} else {
-			debug("doEncode(): ERROR: cannot encode! No implementation!");
+			debug("doEncode: ERROR, implementation reference is null, filling info with error info.");
 			setValue("info","result=err reason=nocode");	
 		}
 
 		// signal that we are done
+		if (debug) debug("doEncode: Setting state to waiting and return.");
 		setValue("state","waiting");
 		commit();
 	}
@@ -154,7 +192,7 @@ public class g2encoders extends RemoteBuilder {
 	 */
 	void getConfig() {
 		String implClassName=(String)props.get("implementation");
-		if( debug ) debug("getConfig(): loading("+implClassName+")");
+		if (debug) debug("getConfig(): loading("+implClassName+")");
 		try {
 			Class newclass=Class.forName(implClassName);
 			impl = (g2encoderInterface)newclass.newInstance();
