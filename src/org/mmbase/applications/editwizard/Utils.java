@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.26.2.4 2003-06-12 09:44:22 vpro Exp $
+ * @version $Id: Utils.java,v 1.26.2.5 2003-06-13 13:28:19 vpro Exp $
  */
 public class Utils {
 
@@ -486,15 +486,16 @@ public class Utils {
             } else {
                 doc = node.getOwnerDocument();
             }
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
 
-            format.setIndenting(true);
-            format.setPreserveSpace(false);
-            //  format.setOmitXMLDeclaration(true);
-            //  format.setOmitDocumentType(true);
+            Source domSource = new DOMSource(doc);
             StringWriter result = new StringWriter();
-            org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(doc);
+            StreamResult streamResult = new StreamResult(result);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer serializer = tf.newTransformer();
+            serializer.setOutputProperty(OutputKeys.INDENT,"yes"); 
+            // Indenting not very nice int all xslt-engines, but well, its better then depending 
+            // on a real xslt or lots of code.
+            serializer.transform(domSource, streamResult); 
             return result.toString();
         } catch (Exception e) {
             return e.toString();
@@ -705,6 +706,8 @@ public class Utils {
         c.setDoOutput(true);
         PrintWriter out = new PrintWriter(c.getOutputStream());
         // Here's whether the parameter is set.
+        // TODO: replace in 1.4 with:
+        //        out.println("xml=" + URLEncoder.encode(inputString,"UTF-8"));
         out.println("xml=" + URLEncoder.encode(inputString));
         out.close();
 
