@@ -82,7 +82,8 @@ With 'integer' <br />
 
 
 <hr />
-<a href="<mm:url page="present.jsp" />">present.jsp</a>
+This link should result an exception: <a href="<mm:url page="present.jsp" />">present.jsp</a><br />
+<a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <hr />
 </body>
 </html>

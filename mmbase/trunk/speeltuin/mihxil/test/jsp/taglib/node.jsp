@@ -38,22 +38,24 @@
   subtitel: <mm:field name="subtitle" /><br />
 </mm:node>
 
+<%--
 <h3>editing the node from session (from current anonymous) cloud</h3>
  <% try { %>
 <mm:node referid="nodenumber">
   <mm:setfield name="subtitle"><mm:field name="subtitle" />edited</mm:setfield>
 </mm:node>
  WRONG!! Should have thrown a securityexception!
-<%} catch (org.mmbase.security.SecurityException e ) { %>
+<%} catch (org.mmbase.security.SecurityException e ) {} %>
+<% { %>
  Ok, this throw an exception <br />
 Btw, catching exceptions doesn't seem to work so nice in Orion. Test this page with Tomcat.
  
 <% } %>
+--%>
 </mm:cloud>
 </mm:present>
 <hr />
-<a href="<mm:url page="present.jsp"><mm:param name="a_param">a_param</mm:param></mm:url>">present.jsp</a>
-<% out.println("hoi"); %>
-<hr />
+<a href="<mm:url page="present.jsp"><mm:param name="a_param">a_param</mm:param></mm:url>">present.jsp</a><br />
+<a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 </body>
 </html>
