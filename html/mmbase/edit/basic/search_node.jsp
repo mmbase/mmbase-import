@@ -3,7 +3,7 @@
 <mm:locale language="$config.lang">
 <mm:cloud method="$config.method" loginpage="login.jsp" logon="$username" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" />
-<mm:timer name="search_node">
+<!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
 </head>
 <mm:context id="edit">
@@ -24,7 +24,7 @@
     	</tr>
     	<tr valign="top">
     	    <td><!-- node manager overview -->
-             <mm:timer name="node_managers">
+             <!-- mm:timer name="node_managers"-->
                     <!-- quick search by number/alias: -->
     	    	    <form method="post" action="<mm:url page="change_node.jsp"/>">
     	    	<table summary="node managers" width="100%" cellspacing="1" cellpadding="3" border="0">
@@ -62,7 +62,7 @@
 			</tr>
     	    	</table>
     	    	 </form>
-            </mm:timer>
+            <!-- /mm:timer-->
     	    </td>
     	    <td><!-- right collum, present search result (if clicked on node manager)-->  
     	    	<mm:present referid="node_type">		   
@@ -97,6 +97,6 @@
     </table>
 </mm:context>
 <%@ include file="foot.jsp"  %>
-</mm:timer>
+<!-- mm:timer -->
 </mm:cloud>
 </mm:locale>
