@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.142 2002-06-15 16:03:50 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.143 2002-06-17 13:12:00 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2666,9 +2666,19 @@ public class MMObjectBuilder extends MMTable {
         }
 
         // should be TYPE_NODE ???
-        FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
-        def.setParent(this);
-        fields.put("otype",def);
+        if (fields.get("otype")==null) {
+            FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
+            // here, we should set the DBPos to 2 and adapt those of the others fields
+            def.setDBPos(2);
+            enum = xmlfields.elements();
+            while (enum.hasMoreElements()) {
+                FieldDefs field=(FieldDefs)enum.nextElement();
+                int pos=field.getDBPos();
+                if (pos>1) field.setDBPos(pos+1);
+            }
+            def.setParent(this);
+            fields.put("otype",def);
+        }
         setDBLayout_xml(fields);
     }
 
