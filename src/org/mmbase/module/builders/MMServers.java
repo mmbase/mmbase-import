@@ -19,8 +19,8 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @author  $Author: pierre $
- * @version $Revision: 1.15 $ $Date: 2002-01-16 09:28:08 $
+ * @author  $Author: vpro $
+ * @version $Revision: 1.16 $ $Date: 2002-01-28 16:08:12 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -269,7 +269,11 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
                         host=tmp.substring(0,pos);
                         try {
                             port=Integer.parseInt(tmp.substring(pos+1));
-                        } catch(Exception f) {}
+                        } catch(NumberFormatException nfe) {
+							log.error("Can't parse portnr since value isnt integer but "+tmp.substring(pos+1));
+							log.error(nfe.getMessage());
+							log.error(Logging.stackTrace(nfe));
+						}
                     }
 
                     try {
@@ -278,9 +282,11 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
                         pd.init(host,port);
                         url2driver.put(url,pd);
                         name2driver.put(name,pd);
-                        log.debug("startProtocolDrivers(): started driver("+pd+")");
+                        log.info("Started driver("+pd+")");
                     } catch (Exception f) {
-                        log.error("startProtocolDrivers(): ERROR: Can't load protocolclass("+protocol+")");
+						log.error("Can't load protocolclass("+protocol+")");
+						log.error(f.getMessage());
+						log.error(Logging.stackTrace(f));
                     }
                 }
             }
@@ -310,6 +316,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
         if (e.hasMoreElements()) {
             return (MMObjectNode)e.nextElement();
         } else {
+			log.info("Can't find any mmserver node with name="+name);
             return null;
         }
     }
