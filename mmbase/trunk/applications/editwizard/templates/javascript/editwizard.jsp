@@ -2,14 +2,6 @@
 var form = null;
 var validator = new Validator();
 
-function loadXML_ew(xmlFile) {
-    var xml = new ActiveXObject("Microsoft.XMLDOM");
-    xml.async = false;
-    xml.validateOnParse = true;
-    xml.load(xmlFile);
-    return xml;
-}
-
 function doOnLoad_ew() {
     //signal the form hasn't been submitted yet
     document.forms[0].hasBeenSubmitted = false;
@@ -85,7 +77,6 @@ function doOnSubmit(form) {
         form.hasBeenSubmitted = true;
         return true;
     } else {
-        alert("You have already submitted this form.\n\nPlease do not double click buttons. That can be dangerous.");
         return false;
     }
 }
@@ -93,30 +84,14 @@ function doOnSubmit(form) {
 function doOnUnLoad_ew() {
     writeCookie_general("scrollTop", document.body.scrollTop);
     writeCookie_general("prevForm", document.forms[0].id);
-//alert(readCookie_general("scrollTop") + ", " + document.body.scrollTop);
+
+    // debug code - uncomment for tracking
+    // alert(readCookie_general("scrollTop") + ", " + document.body.scrollTop);
 }
 
-/////////////////////////////////////////////////
-//	Search gedoe en iframe en zo
-//
+document.writeln('<div id="searchframe" style="position:absolute; top:0; left:0; z-index:3000; visibility:hidden; padding-bottom:20;"><iframe onblur="removeModalIFrame();" src="searching.html" id="modaliframe" class="modaliframe" width="400" height="300" scrolling="no"></iframe></div>');
 
-document.writeln('<div id="searchframe" style="position:absolute; top:0; left:0; z-index:3000; visibility:hidden; padding-bottom:20;"><iframe onblur="removemodaliframe();" src="searching.html" id="modaliframe" class="modaliframe" width="400" height="300" scrolling="no"></iframe></div>');
-
-function doclickbutton(el) {
-    if (!document.forms[0].hasBeenSubmitted) {
-        document.forms[0].hasBeenSubmitted = true;
-        document.forms[0].submit();
-        return true;
-    } else {
-        alert("You have already submitted this form.\n\nPlease do not double click buttons. That can be dangerous.");
-        return false;
-    }
-}
-
-function dochange_searchfields(selectId){
-}
-
-function doclicksearch(el, cmd, sessionkey) {
+function doSearch(el, cmd, sessionkey) {
     var searchfields = document.forms[0].elements["searchfields_" + cmd].value;
     var searchage = new Number(document.forms[0].elements["searchage_" + cmd].value);
     var searchterm = document.forms[0].elements["searchterm_" + cmd].value+"";
@@ -157,9 +132,6 @@ function doclicksearch(el, cmd, sessionkey) {
     constraints += ")";
 
     // build url
-    //
-    //  NEED TO ADD sessionkey!!!
-    //
     var url="<%= response.encodeURL("list.jsp")%>?popup=true&proceed=true&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&len=10";
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);
@@ -172,10 +144,9 @@ function doclicksearch(el, cmd, sessionkey) {
     url += "&cmd="+cmd;
 
 
-        try {
+    try {
         window.status = "...searching...";
-        }
-        catch(e) {}
+    } catch(e) {}
 
     var mif = document.getElementById("modaliframe");
     if (!window.frames[0] || !window.frames[0].document || (window.frames[0].document.location.href.indexOf(url) == -1)) {
@@ -189,14 +160,7 @@ function doclicksearch(el, cmd, sessionkey) {
         else mif.src = url;
     }
 
-//	var mif = document.getElementById("modaliframe");
-//	if (mif.src.indexOf(url) == -1) {
-//		if (window.frames[0] && window.frames[0].document) window.frames[0].document.location.replace(url);
-//		else mif.src = url;
-//	}
-
     var stel = document.forms[0].elements["searchterm_" + cmd];
-//	var stel = document.forms[0].elements["searchfields_" + cmd];
     var sf = document.getElementById("searchframe");
     var windowinfo = getWindowInfo();
 
@@ -233,7 +197,7 @@ function doclicksearch(el, cmd, sessionkey) {
     sf.style.visibility = "visible";
 }
 
-function removemodaliframe() {
+function removeModalIFrame() {
         try {
         window.status = "";
         }
@@ -251,12 +215,11 @@ function removemodaliframe() {
     }
 }
 
-function doadd(s, cmd) {
-    removemodaliframe();
+function doAdd(s, cmd) {
+    removeModalIFrame();
     if (!s || (s == "")) return;
     doSendCommand(cmd, s);
 }
-
 
 function doGotoForm(formid) {
     doCheckWysiwyg();
@@ -265,6 +228,7 @@ function doGotoForm(formid) {
     fld.value = "";
     document.forms[0].submit();
 }
+
 function doSendCommand(cmd, value) {
     doCheckWysiwyg();
 
@@ -275,9 +239,6 @@ function doSendCommand(cmd, value) {
     document.forms[0].submit();
 }
 
-function doSearch(el, cmd) {
-    doclicksearch(el, cmd);
-}
 function getRect(el, obj) {
     if (!obj) {
         obj = new Object();
@@ -291,6 +252,7 @@ function getRect(el, obj) {
     }
     return obj;
 }
+
 function getWindowInfo() {
     var obj = new Object();
     obj.scrollTop = document.body.scrollTop;
@@ -307,6 +269,7 @@ function getWindowInfo() {
     return obj;
 }
 
+// debug method
 function showAllProperties(el, values) {
     var s = "";
     for (e in el) {
@@ -320,29 +283,30 @@ function showAllProperties(el, values) {
 function doCancel(el) {
     if (el.className.indexOf("disabled")==-1) doSendCommand("cmd/cancel////");
 }
+
 function doSave() {
     var allvalid = doValidateAndUpdateButtons();
     if (allvalid) {
         doSendCommand("cmd/commit////");
     }
 }
-function doGotoStep(formid) {
-    doGotoForm(formid);
-}
 
 function setParam(name, value) {
     if (value!="" && value!=null) return "&"+name+"="+value;
     return "";
 }
+
 function doStartUpload(el) {
     var href = el.getAttribute("href");
     window.open(href,null,"width=300,height=300,status=yes,toolbar=no,titlebar=no,scrollbars=no,resizable=no,menubar=no,top=100,left=100");
 
     return false;
 }
+
 function doRefresh() {
     doSendCommand("","");
 }
+
 function doCheckWysiwyg() {
     try {
         if (wysiwyg) wysiwyg.blur();
