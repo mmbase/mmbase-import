@@ -5,12 +5,9 @@
    <TITLE>MMADMIN tools</TITLE>
 <INCLUDE /javascript/beeldvergroting/beeldvergroting.txt>
 </HEAD>
-
-<BODY BACKGROUND="beeld/bg1.jpg" TEXT="#FFFFFF" BGCOLOR="#fffffe" LINK="#000000" ALINK="#ffffff" VLINK="#333333"><CENTER>
-<BR>
-<BR>
-<BR>
-<PART /mmadmin/nav.shtml>
+<BODY BACKGROUND="beeld/bgmmbaselogo.jpg" TEXT="#FFFFFF" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="beeld/mmbaselogosmall.gif" ALIGN="right">
+<PART /mmadmin/nav.shtml?1>
 <BR>
 <TABLE width=90% cellspacing=0 cellpadding=3 border=1>
 <TR>
@@ -41,22 +38,22 @@
 </TR>
 <LIST OBJECTS TYPE="mmservers" FIELDS="name,showstate,showatime,host,os,jdk" WHERE="">
 <TR>
-	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	<TD BGCOLOR="#444477">
 	$ITEM1
 	</TD>
-	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	<TD BGCOLOR="#444477">
 	$ITEM2
 	</TD>
-	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	<TD BGCOLOR="#444477">
 	$ITEM3
 	</TD>
-	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	<TD BGCOLOR="#444477">
 	$ITEM4
 	</TD>
-	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	<TD BGCOLOR="#444477">
 	$ITEM5
 	</TD>
-	<TD BGCOLOR="#444444" BACKGROUND="beeld/bg2.jpg">
+	<TD BGCOLOR="#444477">
 	$ITEM6
 	</TD>
 </TR>

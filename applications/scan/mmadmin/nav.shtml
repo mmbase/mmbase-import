@@ -1,24 +1,52 @@
-<TABLE width=90% cellspacing=0 cellpadding=3 border=1>
+<TABLE width=90% cellspacing=0 cellpadding=3 border=2>
 <TR>
-	<TD BGCOLOR="FFFFFF">
+	<IF $PARAM1==1>
+	<TD BGCOLOR="#DDDDFF">
+	<ELSE>
+	<TD BGCOLOR="#FFFFFF">
+	</IF>
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/index.shtml"><B>Overview</B></A>
+	<CENTER><A HREF="/mmadmin/index.shtml"><B>Servers</B></A>
 	</TD>
-	<TD BGCOLOR="FFFFFF">
+	<IF $PARAM1==2>
+	<TD BGCOLOR="#DDDDFF">
+	<ELSE>
+	<TD BGCOLOR="#FFFFFF">
+	</IF>
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/builders.shtml"><B>Builders</B></A>
+	<CENTER><A HREF="/mmadmin/builders.shtml"><B>Builders</B></A>
 	</TD>
-	<TD BGCOLOR="FFFFFF">
+	<IF $PARAM1==3>
+	<TD BGCOLOR="#DDDDFF">
+	<ELSE>
+	<TD BGCOLOR="#FFFFFF">
+	</IF>
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/examples.shtml"><B>examples</B></A>
+	<CENTER><A HREF="/mmadmin/wizards.shtml"><B>Wizards</B></A>
 	</TD>
-	<TD BGCOLOR="FFFFFF">
+	<IF $PARAM1==4>
+	<TD BGCOLOR="#DDDDFF">
+	<ELSE>
+	<TD BGCOLOR="#FFFFFF">
+	</IF>
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/export.shtml"><B>export</B></A>
+	<CENTER><A HREF="/mmadmin/examples.shtml"><B>Install examples</B></A>
 	</TD>
-	<TD BGCOLOR="FFFFFF">
+	<IF $PARAM1==5>
+	<TD BGCOLOR="#DDDDFF">
+	<ELSE>
+	<TD BGCOLOR="#FFFFFF">
+	</IF>
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/import.shtml"><B>import</B></A>
+	<CENTER><A HREF="/mmadmin/export.shtml"><B>Export</B></A>
+	</TD>
+	<IF $PARAM1==6>
+	<TD BGCOLOR="#DDDDFF">
+	<ELSE>
+	<TD BGCOLOR="#FFFFFF">
+	</IF>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<CENTER><A HREF="/mmadmin/import.shtml"><B>Import</B></A>
 	</TD>
 </TR>
 </TABLE>
