@@ -28,20 +28,18 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.49 2004-02-19 17:34:27 michiel Exp $
+ * @version $Id: Module.java,v 1.50 2004-02-24 17:40:06 michiel Exp $
  */
 public abstract class Module {
-    
-    // logging
-    static private Logger log = null;
+
+    private static final Logger log = Logging.getLoggerInstance(Module.class);
     
     static Map modules;
     static String mmbaseconfig;
     static ModuleProbe mprobe;
     
-    Object SecurityObj;
-    String moduleName=null;
-    Hashtable state=new Hashtable();
+    String moduleName = null;
+    Hashtable state = new Hashtable();
     Hashtable mimetypes;
     Hashtable properties;
     String maintainer;
@@ -50,22 +48,14 @@ public abstract class Module {
     // startup call.
     private boolean started = false;
     
-    /**
-     * variable to synchronize SecurityObj
-     */
-    private Object synobj=new Object();
-    
     public Module() {
-        String StartedAt=(new Date(System.currentTimeMillis())).toString();
-        //String StartedAt=(new Date()).toString();
-        state.put("Start Time",StartedAt);
-        // org.mmbase mimetypes=Environment.getProperties(this,"mimetypes");
-        
+        String startedAt=(new Date(System.currentTimeMillis())).toString();
+        state.put("Start Time", startedAt);        
     }
     
     public final void setName(String name) {
-        if (moduleName==null) {
-            moduleName=name;
+        if (moduleName == null) {
+            moduleName = name;
         }
     }
     
@@ -79,8 +69,10 @@ public abstract class Module {
      */
     public final void startModule() {
         if (started) return;
-        started = true;
-        init();
+        synchronized(Module.class) {
+            init();
+            started = true;
+        }
     }
     
     /**
@@ -254,7 +246,6 @@ public abstract class Module {
     
     public static synchronized final void startModules() {
         // call the onload to get properties
-        if (log == null) log = Logging.getLoggerInstance(Module.class);
         log.service("Starting modules " + modules.keySet());
         for (Iterator i = modules.values().iterator(); i.hasNext();) {
             Module mod = (Module)i.next();
@@ -317,27 +308,31 @@ public abstract class Module {
     public static Object getModule(String name, boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
         if (modules == null) {
-            if (log == null) log = Logging.getLoggerInstance(Module.class);
-            log.service("Loading MMBase modules...");
-            modules = loadModulesFromDisk();
-            if (log.isDebugEnabled()) {
-                log.debug("getModule(" + name + "): Modules not loaded, loading them..");
+            synchronized(Module.class) {
+                if (modules == null) { // still null after obtaining lock
+                    log.service("Loading MMBase modules...");
+                    modules = loadModulesFromDisk();
+                    if (log.isDebugEnabled()) {
+                        log.debug("getModule(" + name + "): Modules not loaded, loading them..");
+                    }
+                    startModules();
+                    // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
+                    mprobe = new ModuleProbe(modules);
+                }
             }
-            startModules();
-            // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
-            mprobe = new ModuleProbe(modules);
         }
-        String orgname = name;
-        name = name.toLowerCase();
-        
         // try to obtain the ref to the wanted module
-        Object obj=modules.get(name);
-        if (obj==null) obj=modules.get(orgname);
+        Object obj = modules.get(name.toLowerCase());
+        if (obj == null) { // try case sensitivily as well?
+            obj = modules.get(name);
+        }
         
         if (obj != null) {
             // make sure the module is started, as this method could
             // have been called from the init() of another Module
-            if (startOnLoad) ((Module)obj).startModule();
+            if (startOnLoad) { 
+                ((Module) obj).startModule();
+            }
             return obj;
         } else {
             return null;
@@ -361,7 +356,7 @@ public abstract class Module {
     }
     
     public static synchronized Hashtable loadModulesFromDisk() {
-        Hashtable results=new Hashtable();
+        Hashtable results = new Hashtable();
         mmbaseconfig = MMBaseContext.getConfigPath();
         String dirname=(mmbaseconfig+"/modules/");
         File bdir = new File(dirname);
