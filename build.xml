@@ -73,7 +73,7 @@ NetComponents can be found at:
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
-  <property name="distro"      value="MMBase 1.6.0"/>
+  <property name="distro"      value="MMBase 1.7.0"/>
   <property name="documentation.builders.language" value="en" />
   <property name="source-config.dir"         location="${source.dir}/config/default"/>
   <!-- Don't change the following properties unless you know what you're doing -->
