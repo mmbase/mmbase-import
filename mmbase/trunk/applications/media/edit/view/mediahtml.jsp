@@ -1,11 +1,13 @@
 <%--
-  Map this jsp to /rams (in web.xml):
-  <servlet>
-		<servlet-name>mediahtml</servlet-name>
-		<description>HTML pieces</description>
-		<jsp-file>/mediaedit/view/mediahtml.jsp</jsp-file>
-		<load-on-startup>11</load-on-startup>
-	</servlet>
+  This servlet produces pieces of html, and is meant to use in an
+  object or perhaps an mm:include or so.
+
+
+  Map this jsp to /mediahtml* (in web.xml):
+  <servlet-mapping>
+    <servlet-name>mediahtml</servlet-name>
+    <url-pattern>/mediahtml*</url-pattern>
+  </servlet-mapping>
 
 --%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@ include file="../config/read.jsp" 
@@ -13,6 +15,7 @@
 <mm:import externid="fragment" required="true"  />
 <mm:cloud>
 <mm:node  number="$fragment">
+url: <mm:field name="urls()" />
 <mm:write referid="type">
   <mm:compare value="link">
     <a href="<mm:field name="url()" />"><mm:field name="title" /></a>

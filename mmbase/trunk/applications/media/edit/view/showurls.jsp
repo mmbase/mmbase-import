@@ -22,7 +22,7 @@
       while(i.hasNext()) {
          ResponseInfo ri = (ResponseInfo) i.next();
          String url = ri.getURL();
-         if (url.indexOf("://") == -1 ) url = thisServer(request)  + ri.getURL();
+         if (url.indexOf("://") == -1 ) url = thisServer(request, ri.getURL());
          out.println("<tr><td>" + ri.getFormat() + "</td><td><a  href='" + url + "'>" + url + "</a></td></tr>"); 
 
       }
