@@ -19,7 +19,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @version $Id: Properties.java,v 1.8 2001-03-26 09:34:37 install Exp $
+ * @version $Id: Properties.java,v 1.9 2001-05-04 13:54:56 vpro Exp $
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
@@ -34,14 +34,14 @@ public class Properties extends MMObjectBuilder implements MMBaseObserver {
 		}
 	}
 	
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		super.nodeRemoteChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
 	
@@ -62,9 +62,9 @@ public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
 	*/
 
-	public boolean nodeChanged(String number, String builder, String ctype) {
+	public boolean nodeChanged(String machine,String number, String builder, String ctype) {
 		if (builder.equals(tableName)) {
-			log.debug("nodeChanged(): Property change ! "+number+","+builder+","+ctype);
+			log.debug("nodeChanged(): Property change ! "+machine+","+number+","+builder+","+ctype);
 			if (ctype.equals("d")) {
 				// Should zap node prop cache parent, but node already gone...
 			}

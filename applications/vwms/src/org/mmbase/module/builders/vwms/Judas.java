@@ -238,16 +238,16 @@ public class Judas extends Vwm implements MMBaseObserver {
     }
 
 
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-        return(nodeChanged(number,builder,ctype));
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        return(nodeChanged(machine,number,builder,ctype));
     }
 
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        return(nodeChanged(number,builder,ctype));
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        return(nodeChanged(machine,number,builder,ctype));
     }
 
-    public boolean nodeChanged(String number,String builder, String ctype) {
-        log.debug("Judas -> sees that a "+builder+" "+number+" has changed type="+ctype);
+    public boolean nodeChanged(String machine,String number,String builder, String ctype) {
+        log.debug("Judas -> sees that a "+builder+" "+number+" has changed type="+ctype+" by machine:"+machine);
 
         // check if its a valid track in the cache
         int inumber=-1;

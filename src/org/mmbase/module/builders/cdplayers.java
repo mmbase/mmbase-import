@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.10 $ $Date: 2001-05-03 10:06:07 $ 
+ * @version $Revision: 1.11 $ $Date: 2001-05-04 13:54:56 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
@@ -32,24 +32,26 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
 	/**
 	 * Calls super.
+	 * @param machine Name of the machine that changed the node.
 	 * @param number object number of node who's state has been changed remotely.
 	 * @param builder a String with the buildername of the node that was changed remotely.
 	 * @param ctype a String with the node change type.
 	 * @return result value of suer which is either true or false.
 	 */
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		return super.nodeRemoteChanged(number,builder,ctype);
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		return super.nodeRemoteChanged(machine,number,builder,ctype);
 	}
 
 	/**
 	 * Calls super.
+	 * @param machine Name of the machine that changed the node.
 	 * @param number object number of node who's state has been changed.
 	 * @param builder a String with the buildername of the node that was changed.
 	 * @param ctype a String with the node change type.
 	 * @return result value of suer which is either true or false.
 	 */
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		return super.nodeLocalChanged(number,builder,ctype);
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		return super.nodeLocalChanged(machine,number,builder,ctype);
 	}
 
 	/**

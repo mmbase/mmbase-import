@@ -121,36 +121,39 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
     /**
      * Called when a remote node is changed.
+	 * @param machine Name of the machine that changed the node. 
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return <code>true</code>
      */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-        return(nodeChanged(number,builder,ctype));
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        return(nodeChanged(machine,number,builder,ctype));
     }
 
     /**
      * Called when a local node is changed.
+	 * @param machine Name of the machine that changed the node. 
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return <code>true</code>
      */
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        return nodeChanged(number,builder,ctype);
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        return nodeChanged(machine,number,builder,ctype);
     }
 
     /**
      * Called when a local or remote node is changed.
      * Does not take any action.
+	 * @param machine Name of the machine that changed the node. 
      * @param number Number of the changed node as a <code>String</code>
      * @param builder type of the changed node
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return <code>true</code>
      */
-    public boolean nodeChanged(String number,String builder, String ctype) {
-        log.debug("sees that : "+number+" has changed type="+ctype);
+    public boolean nodeChanged(String machine,String number,String builder, String ctype) {
+        log.debug("sees that : "+number+" has changed type="+ctype+" of type:"+builder+" by machine:"+machine);
         return true;
     }
 

@@ -22,8 +22,8 @@ import org.mmbase.module.builders.protocoldrivers.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @author  $Author: install $
- * @version $Revision: 1.12 $ $Date: 2001-03-26 09:34:37 $
+ * @author  $Author: vpro $
+ * @version $Revision: 1.13 $ $Date: 2001-05-04 13:54:56 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -172,17 +172,17 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 	}
 
 
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		super.nodeRemoteChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
-	public boolean nodeChanged(String number,String builder,String ctype) {
+	public boolean nodeChanged(String machine,String number,String builder,String ctype) {
 		return(true);
 	}
 
