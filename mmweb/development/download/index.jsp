@@ -20,7 +20,9 @@
           <mm:first><ul></mm:first>
           <li>
           <mm:node element="urls">
-              <a href="<mm:field name="url"/>"><mm:field name="description"/></a>
+	    <mm:field name="url">
+              <a href="<mm:url page="$_"/>"><mm:field name="description"/></a>
+	    </mm:field>
           </mm:node>
           </li>
 	 <mm:last></ul></mm:last>
@@ -34,7 +36,7 @@
 <ul>
 <% while (j.hasNext()) { 
   BuildInfo info = (BuildInfo) j.next(); %>
- <li><%= info.dateString %> <%= info.remarks %> <a href="<%= info.link %>">view</a></li>
+ <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
 <% } %>
 </ul>
 
@@ -43,7 +45,7 @@
 <ul>
 <% while (k.hasNext()) {
   BuildInfo info = (BuildInfo) k.next(); %>
- <li><%= info.dateString %> <%= info.remarks %> <a href="<%= info.link %>">view</a></li>
+ <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
 <% } %>
 </ul>
 
@@ -52,7 +54,7 @@
 <ul>
 <% while (i.hasNext()) {
  BuildInfo info = (BuildInfo) i.next(); %>
-  <li>	<%= info.dateString %> <%= info.remarks %> <a href="<%= info.link %>">view</a>  </li>
+  <li>	<%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a>  </li>
 <% } %>
 </ul>
 
