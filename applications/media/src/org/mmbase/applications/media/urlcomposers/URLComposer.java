@@ -27,7 +27,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.6 2003-02-05 15:05:27 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.7 2003-02-07 14:19:20 rob Exp $
  */
 
 public class URLComposer  {
@@ -50,6 +50,7 @@ public class URLComposer  {
 
 
     public MMObjectNode getSource()   { return source;  }
+    public MMObjectNode getProvider() { return provider;}
     public Map          getInfo()     { return info; }
 
     /**
