@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -27,33 +28,36 @@ import org.mmbase.util.logging.Logging;
 public class TreeIncludeTag extends IncludeTag {
     
     private static Logger log = Logging.getLoggerInstance(TreeIncludeTag.class.getName());
-    protected String objectlist;
+    protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
     
     public int doStartTag() throws JspTagException {        
-        if (objectlist == null) {
+        if (objectList == Attribute.NULL) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
         return super.doStartTag();
     }
 
+    protected String getPage() throws JspTagException {        
+        String orgPage = super.getPage();
+        String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieving page '" + treePage + "'");
+        }
+        if (treePage == null) throw new JspTagException("Could not find page " + orgPage);
+        return treePage;
+    }
+
     public void doAfterBodySetValue() throws JspTagException {
         // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-        TreeFileTag treefilehelper = new TreeFileTag();        
-                
         th.setCloud(getCloud());
-        
-        String orgpage = page;
-        page = th.findTreeFile(orgpage, objectlist, pageContext.getSession());
-        
-        log.debug("Retrieving page '" + page + "'");
-        if (page == null) throw new JspTagException("Could not find page " + orgpage);
+    
         // Let IncludeTag do the rest of the work
         includePage();
     }
     
     public void setObjectlist(String p) throws JspTagException {
-        objectlist = getAttributeValue(p);
+        objectList = getAttribute(p);
     }
 
         

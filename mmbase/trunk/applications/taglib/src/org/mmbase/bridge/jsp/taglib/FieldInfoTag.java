@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -36,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.54 2003-03-04 13:44:33 nico Exp $
+ * @version $Id: FieldInfoTag.java,v 1.55 2003-03-25 09:59:28 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -89,7 +91,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
     }
 
-    private int type = TYPE_UNSET;
+    private Attribute type = Attribute.NULL;
 
     private String sessionName = "cloud_mmbase";
 
@@ -98,29 +100,35 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
 
     public void setType(String t) throws JspTagException {
-        t = getAttributeValue(t).toLowerCase();
-        if ("name".equals(t)) {
-            type = TYPE_NAME;
+        type = getAttribute(t);
+    }
+
+    public int getType() throws JspTagException {
+        String t = type.getString(this);
+        if ("".equals(t)) {
+            return TYPE_UNSET;
+        } else if ("name".equals(t)) {
+            return TYPE_NAME;
         } else if ("guiname".equals(t)) {
-            type = TYPE_GUINAME;
+            return TYPE_GUINAME;
         } else if ("value".equals(t)) {
-            type = TYPE_VALUE;
+            return TYPE_VALUE;
         } else if ("guivalue".equals(t)) {
-            type = TYPE_GUIVALUE;
+            return TYPE_GUIVALUE;
        } else if ("type".equals(t)) {
-            type = TYPE_TYPE;
+            return TYPE_TYPE;
        } else if ("guitype".equals(t)) {
-            type = TYPE_GUITYPE;
+            return TYPE_GUITYPE;
        } else if ("description".equals(t)) {
-            type = TYPE_DESCRIPTION;
+            return TYPE_DESCRIPTION;
         } else if ("input".equals(t)) {
-            type = TYPE_INPUT;
+            return TYPE_INPUT;
         } else if ("useinput".equals(t)) {
-            type = TYPE_USEINPUT;
+            return TYPE_USEINPUT;
         } else if ("searchinput".equals(t)) {
-            type = TYPE_SEARCHINPUT;
+            return TYPE_SEARCHINPUT;
         } else if ("usesearchinput".equals(t)) {
-            type = TYPE_USESEARCHINPUT;
+            return TYPE_USESEARCHINPUT;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -177,14 +185,14 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
             String typeString = element.getAttribute("id");            
-            int type =   org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(typeString);
+            int fieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(typeString);
             String claz = reader.getElementValue(reader.getElementByPath(element, "fieldtype.class"));
             try {
-                log.debug("Adding field handler " + claz + " for type " + type);
-                handlers[type] = Class.forName(claz);
+                log.debug("Adding field handler " + claz + " for type " + fieldType);
+                handlers[fieldType] = Class.forName(claz);
             } catch (java.lang.ClassNotFoundException ex) {
-                log.error("Class " + claz + " could not be found for type " + type);
-                handlers[type] = defaultHandler;
+                log.error("Class " + claz + " could not be found for type " + fieldType);
+                handlers[fieldType] = defaultHandler;
             }
         }
     }
@@ -207,7 +215,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
          * EXPERIMENTAL
          */
         CloudTag ct = null;
-        ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
+        ct = (CloudTag) findParentTag(CloudTag.class.getName(), null, false);
         if (ct != null) {
             sessionName = ct.getSessionName();            
         }
@@ -215,8 +223,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         // found the field now. Now we can decide what must be shown:
         String show = null;
 
+        int infoType = getType();
+
         // set node if necessary:
-        switch(type) {
+        switch(infoType) {
         case TYPE_INPUT:
             if (node == null) { // try to find nodeProvider
                 node = fieldProvider.getNodeVar();
@@ -237,7 +247,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         default:
         }
 
-        switch(type) {
+        switch(infoType) {
         case TYPE_NAME:
             show = field.getName();
             break;

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.util.logging.Logger;
@@ -26,26 +27,31 @@ import org.mmbase.util.logging.Logging;
 public class TreeFileTag extends UrlTag {
     
     private static Logger log = Logging.getLoggerInstance(TreeFileTag.class.getName());
-    protected String objectlist;
-    TreeHelper th = new TreeHelper();
+    protected Attribute objectList = Attribute.NULL;
+    protected TreeHelper th = new TreeHelper();
     
     public int doStartTag() throws JspTagException {
-        if (page == null) {
+        if (page == Attribute.NULL) {
             throw new JspTagException("Attribute 'page' was not specified");
         }
-        if (objectlist == null) {
+        if (objectList == Attribute.NULL) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }        
         return super.doStartTag();
     }
 
+    protected String getPage() throws JspTagException {        
+        String orgPage = super.getPage();
+        String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieving page '" + page + "'");
+        }
+        if (treePage == null) throw new JspTagException("Could not find page " + orgPage);
+        return treePage;
+    }
+
     public int doEndTag() throws JspTagException {
         th.setCloud(getCloud());
-        
-        String orgpage = page;
-        page = th.findTreeFile(orgpage, objectlist, pageContext.getSession());
-        log.debug("Retrieving page '" + page + "'");
-        if (page == null) throw new JspTagException("Could not find page " + orgpage);
         // Let UrlTag do the rest
         return super.doEndTag();
     }
@@ -56,6 +62,6 @@ public class TreeFileTag extends UrlTag {
      */
     
     public void setObjectlist(String p) throws JspTagException {
-        objectlist = getAttributeValue(p);
+        objectList = getAttribute(p);
     }
 }
