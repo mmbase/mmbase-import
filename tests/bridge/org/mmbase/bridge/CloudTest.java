@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-
+import org.mmbase.bridge.search.*;
+import org.mmbase.bridge.implementation.*;
+import org.mmbase.bridge.search.implementation.*;
 /**
  * Test class <code>Cloud</code> from the bridge package.
  *
@@ -77,7 +79,7 @@ public class CloudTest extends org.mmbase.tests.BridgeTest {
 
     public void testGetList() {
         NodeList nodeList;
-        nodeList = cloud.getList("" + aaNode1.getNumber(), "aa,bb", "bytefield",
+        nodeList = cloud.getList("" + aaNode1.getNumber(), "aa,bb", "aa.bytefield",
                                  "", "", "", "", false);
         assertTrue(nodeList.size() == nrOfBBNodes);
     }
@@ -100,14 +102,14 @@ public class CloudTest extends org.mmbase.tests.BridgeTest {
 
     public void testGetListWithNullParameterStartNodes() {
         NodeList nodeList;
-        nodeList = cloud.getList(null, "aa,bb", "bytefield", "", "", "", "",
+        nodeList = cloud.getList(null, "aa,bb", "aa.bytefield", "", "", "", "",
                                  false);
         assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
 
     public void testGetListWithEmptyParameterStartNodes() {
         NodeList nodeList;
-        nodeList = cloud.getList("", "aa,bb", "bytefield", "", "", "", "",
+        nodeList = cloud.getList("", "aa,bb", "aa.bytefield", "", "", "", "",
                                  false);
         assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
@@ -116,7 +118,7 @@ public class CloudTest extends org.mmbase.tests.BridgeTest {
         try {
             NodeList nodeList;
             nodeList = cloud.getList("" + bbNode.getNumber(), "aa,bb",
-                                     "bytefield", "", "", "", "", false);
+                                     "aa.bytefield", "", "", "", "", false);
             fail("Should raise a BridgeException");
         } catch(BridgeException e) {
         }
@@ -179,6 +181,24 @@ public class CloudTest extends org.mmbase.tests.BridgeTest {
         } catch(BridgeException e) {
         }
     }
+
+
+    /*
+    public void testGetListWithQuery() {
+
+        org.mmbase.cache.Cache cache = org.mmbase.cache.MultilevelCache.getCache();
+        NodeList nodeList;
+        Query query = new BasicSearchQuery();
+        NodeManager a = cloud.getNodeManager("aa");
+        Step stepa = query.addStep(a);
+        RelationManager relationManager = cloud.getRelationManager("aa", "bb", "related");
+        query.addRelationStep(relationManager, cloud.getNodeManager("bb"));
+        query.addField(stepa, a.getField("stringfield"));
+        nodeList = cloud.getList(query);
+        assertTrue(cache.size() == 1);
+        
+    }
+    */
 
     // Add some more list test.
 
