@@ -6,7 +6,8 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.29 2004-04-17 15:29:06 nico Exp $
+    @author Martijn Houtman
+    @version $Id: base.xsl,v 1.30 2004-05-02 15:02:01 nico Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -39,6 +40,13 @@
   <xsl:param name="sessionkey">editwizard</xsl:param>
   <!-- name of variable in session in which is the cloud -->
   <xsl:param name="cloudkey">cloud_mmbase</xsl:param>
+
+  <!-- timezone, empty is server timezone -->
+<!-- example
+  <xsl:param name="timezone">GMT</xsl:param>
+-->
+  <xsl:param name="timezone" />
+  <xsl:variable name="date-pattern">dd MMMM yyyy HH:mm</xsl:variable>
 
   <!-- Maximum length for fields (approximation) -->
   <xsl:variable name="MAX_LENGTH" select="30" />

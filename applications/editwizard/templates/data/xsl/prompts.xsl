@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.20 2004-01-20 17:59:31 michiel Exp $
+    @version $Id: prompts.xsl,v 1.21 2004-05-02 15:02:01 nico Exp $
     
     prompts used in this editwizard. 
     Override these prompts to change the view in your own versions.
@@ -48,21 +48,19 @@
     </img>
   </xsl:template>
 
-  <!-- prompts for datefields -->
-  <xsl:template name="optionlist_months">
-    <option value="1">january</option>
-    <option value="2">february</option>
-    <option value="3">march</option>
-    <option value="4">april</option>
-    <option value="5">may</option>
-    <option value="6">june</option>
-    <option value="7">july</option>
-    <option value="8">august</option>
-    <option value="9">september</option>
-    <option value="10">october</option>
-    <option value="11">november</option>
-    <option value="12">december</option>
-  </xsl:template>
+	<xsl:variable name="date_january">january</xsl:variable>
+	<xsl:variable name="date_february">february</xsl:variable>
+	<xsl:variable name="date_march">march</xsl:variable>
+	<xsl:variable name="date_april">april</xsl:variable>
+	<xsl:variable name="date_may">may</xsl:variable>
+	<xsl:variable name="date_june">june</xsl:variable>
+	<xsl:variable name="date_july">july</xsl:variable>
+	<xsl:variable name="date_august">august</xsl:variable>
+	<xsl:variable name="date_september">september</xsl:variable>
+	<xsl:variable name="date_october">october</xsl:variable>
+	<xsl:variable name="date_november">november</xsl:variable>
+	<xsl:variable name="date_december">december</xsl:variable>
+
   <xsl:variable name="time_daymonth" />
   <!-- Between day and month. Sadly, order cannot yet be adjusted -->
   <xsl:variable name="time_at">at</xsl:variable>

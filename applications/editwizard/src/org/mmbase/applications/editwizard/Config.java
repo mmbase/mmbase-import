@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.50 2004-04-20 13:08:27 michiel Exp $
+ * @version $Id: Config.java,v 1.51 2004-05-02 15:02:00 nico Exp $
  */
 
 public class Config {
@@ -47,6 +47,7 @@ public class Config {
     public String backPage;
     public String templates;
     public String language;
+    public String timezone;
 
 
     /**
@@ -527,6 +528,11 @@ public class Config {
             if (config.language == null) {
                 config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
             }
+            
+            if (config.timezone == null) {
+                config.timezone = getParam("timezone", "");
+            }
+
             /*
               // contained in config.attributes now
             if (config.context == null) {
@@ -732,6 +738,7 @@ public class Config {
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);
             wizard.wiz.setTemplatesDir(config.templates);
+            wizard.wiz.setTimezone(config.timezone);
             return wizard;
         }
 

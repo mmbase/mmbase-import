@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.11 2004-01-20 17:59:32 michiel Exp $
+  @version $Id: prompts.xsl,v 1.12 2004-05-02 15:02:03 nico Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -17,20 +17,19 @@
 <xsl:variable name="tooltip_edit_wizard">Wijzigen...</xsl:variable>
 <xsl:variable name="tooltip_add_wizard">Nieuw</xsl:variable>
 <!-- prompts for datefields -->
-<xsl:template name="optionlist_months">
-  <option value="1">januari</option>
-  <option value="2">februari</option>
-  <option value="3">maart</option>
-  <option value="4">april</option>
-  <option value="5">mei</option>
-  <option value="6">juni</option>
-  <option value="7">juli</option>
-  <option value="8">augustus</option>
-  <option value="9">september</option>
-  <option value="10">oktober</option>
-  <option value="11">november</option>
-  <option value="12">december</option>
-</xsl:template>
+<xsl:variable name="date_january">januari</xsl:variable>
+<xsl:variable name="date_february">februari</xsl:variable>
+<xsl:variable name="date_march">maart</xsl:variable>
+<xsl:variable name="date_april">april</xsl:variable>
+<xsl:variable name="date_may">mei</xsl:variable>
+<xsl:variable name="date_june">juni</xsl:variable>
+<xsl:variable name="date_july">juli</xsl:variable>
+<xsl:variable name="date_august">augustus</xsl:variable>
+<xsl:variable name="date_september">september</xsl:variable>
+<xsl:variable name="date_october">oktober</xsl:variable>
+<xsl:variable name="date_november">november</xsl:variable>
+<xsl:variable name="date_december">december</xsl:variable>
+
 <xsl:variable name="time_at">om</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
 <xsl:template name="prompt_file_upload">Bestand sturen</xsl:template>

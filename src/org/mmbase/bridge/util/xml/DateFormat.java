@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.xpath.XPathAPI;
 import org.mmbase.bridge.BridgeException;
@@ -34,13 +36,25 @@ import org.mmbase.util.logging.Logging;
  * </pre>
  *
  * @author Nico Klasens
- * @version $Id: DateFormat.java,v 1.4 2004-01-21 12:50:42 michiel Exp $
+ * @author Martijn Houtman
+ * @version $Id: DateFormat.java,v 1.5 2004-05-02 15:01:59 nico Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
 
     private static final Logger log = Logging.getLoggerInstance(DateFormat.class);
 
+    /**
+     * imeZone null or blank means server timezone. If timeZone is not
+     * recognized it will fall back to GMT.
+     */
+    private static TimeZone getTimeZone(String timeZone) {
+        if (timeZone == null || "".equals(timeZone.trim())) {
+            return TimeZone.getDefault();
+        } else {
+            return TimeZone.getTimeZone(timeZone);
+        }
+    }
 
     /**
      * Formats a node's field value with the date pattern
@@ -50,10 +64,22 @@ public class DateFormat {
      * @return the formatted string
      */
     public static String format(String node, String fieldName, String pattern) {
+        return formatTimeZone(node, fieldName, pattern, "");
+    }
+
+    /**
+     * Formats a node's field value with the date pattern
+     * @param node the number or alias of the node containing the field
+     * @param fieldName the name of the field to format
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @param timeZone  timezone
+     * @return the formatted string
+     */
+    public static String formatTimeZone(String node, String fieldName, String pattern, String timeZone) {
         if (log.isDebugEnabled()) {
             log.debug("calling with string '" + node + "' fieldname: " + fieldName + "' pattern: " + pattern);
         }
-        return format("mmbase", node, fieldName, pattern);
+        return formatTimeZone("mmbase", node, fieldName, pattern, timeZone);
     }
 
     /**
@@ -65,10 +91,23 @@ public class DateFormat {
      * @return the formatted string
      */
     public static String format(String cloudName, String number, String fieldName, String pattern) {
+        return formatTimeZone(cloudName, number, fieldName, pattern, "");
+    }
+
+    /**
+     * Formats a node's field value with the date pattern
+     * @param cloudName the name of the cloud in which to find the node
+     * @param number the number or alias of the node containing the field
+     * @param fieldName the name of the field to format
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @param timeZone  timezone
+     * @return the formatted string
+     */
+    public static String formatTimeZone(String cloudName, String number, String fieldName, String pattern, String timeZone) {
         log.debug("calling base");
         try {
             Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);
-            return format(cloud, number, fieldName, pattern);
+            return formatTimeZone(cloud, number, fieldName, pattern, timeZone);
         } catch (BridgeException e) {
             return "could not find '" + fieldName + "' on node '" + number + "' (" + e.toString() + ")";
         }
@@ -83,11 +122,24 @@ public class DateFormat {
      * @return the formatted string
      */
     public static String format(Cloud cloud, String number, String fieldName, String pattern) {
+        return formatTimeZone(cloud, number, fieldName, pattern, "");
+    }
+
+    /**
+     * Formats a node's field value with the date pattern
+     * @param cloudName the cloud in which to find the node
+     * @param number the number or alias of the node containing the field
+     * @param fieldName the name of the field to format
+     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @param timeZone  timezone
+     * @return the formatted string
+     */
+    public static String formatTimeZone(Cloud cloud, String number, String fieldName, String pattern, String timeZone) {
         log.debug("calling base");
         try {
             Node node = cloud.getNode(number);
             String fieldValue = node.getStringValue(fieldName);
-            return format(fieldValue, pattern);
+            return formatTimeZone(fieldValue, pattern, timeZone);
         } catch (BridgeException e) {
             if (log.isDebugEnabled()) {
                 log.debug("could not find '" + fieldName + "' on node '" + number + "'");
@@ -97,23 +149,52 @@ public class DateFormat {
         }
     }
 
-    
+    /** Formats the fieldvalue to a date pattern
+     *
+     * @param fieldvalue  time-stamp in seconds
+     * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
+     * @return the formatted string
+     */
     public static String format(String fieldValue, String pattern) {
-        return format(fieldValue, pattern, 1000);
+        return formatTimeZone(fieldValue, pattern, "");
     }
 
     /** Formats the fieldvalue to a date pattern
      * 
+     * @param fieldvalue  time-stamp in seconds
+     * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
+     * @param timeZone  timezone
+     * @return the formatted string
+     */
+    public static String formatTimeZone(String fieldValue, String pattern, String timeZone) {
+        return formatTimeZone(fieldValue, pattern, 1000, timeZone);
+    }
+
+    /** Formats the fieldvalue to a date pattern
+     *
      * @param fieldvalue  time-stamp
      * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @return the formatted string
      */
     public static String format(String fieldValue, String pattern, int factor) {
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        return formatTimeZone(fieldValue, pattern, factor, "");
+    }
+
+    /** Formats the fieldvalue to a date pattern
+     *
+     * @param fieldvalue  time-stamp
+     * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
+     * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
+     * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
+     * @return the formatted string
+     */
+    public static String formatTimeZone(String fieldValue, String pattern, int factor, String timeZone) {
         if (fieldValue == null || "".equals(fieldValue)) {
            return "";
         }
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        sdf.setTimeZone(getTimeZone(timeZone));
         long seconds = Long.valueOf(fieldValue).longValue();
         return sdf.format(new Date(seconds * factor));
     }
@@ -137,4 +218,141 @@ public class DateFormat {
         return format(cloud, number, fieldName, pattern);
     }
 
+    /** Returns the year part of the date
+     * 
+     * @param fieldvalue  time-stamp
+     * @return year part
+     */
+    public static int getYear(String fieldValue) {
+        return getDatePart(fieldValue, 1000, Calendar.YEAR, "");
+    }
+
+    /** Returns the month part of the date
+     * 
+     * @param fieldvalue  time-stamp
+     * @return month part
+     */
+    public static int getMonth(String fieldValue) {
+        return getDatePart(fieldValue, 1000, Calendar.MONTH, "") + 1;
+    }
+    /** Returns the day of the month part of the date
+     * 
+     * @param fieldvalue  time-stamp
+     * @return day of the month part
+     */
+    public static int getDay(String fieldValue) {
+        return getDatePart(fieldValue, 1000, Calendar.DAY_OF_MONTH, "");
+    }
+    /** Returns the hours part of the date
+     * 
+     * @param fieldvalue  time-stamp
+     * @return hours part
+     */
+    public static int getHours(String fieldValue) {
+        return getDatePart(fieldValue, 1000, Calendar.HOUR_OF_DAY, "");
+    }
+    /** Returns the minutes part of the date
+     * 
+     * @param fieldvalue  time-stamp
+     * @return minutes part
+     */
+    public static int getMinutes(String fieldValue) {
+        return getDatePart(fieldValue, 1000, Calendar.MINUTE, "");
+    }
+    /** Returns the seconds part of the date
+     * 
+     * @param fieldvalue  time-stamp
+     * @return seconds part
+     */
+    public static int getSeconds(String fieldValue) {
+        return getDatePart(fieldValue, 1000, Calendar.SECOND, "");
+    }
+
+    /** Returns the year part of the date
+     *
+     * @param fieldvalue  time-stamp
+     * @param timeZone  timezone
+     * @return year part
+     */
+    public static int getYear(String fieldValue, String timeZone) {
+        return getDatePart(fieldValue, 1000, Calendar.YEAR, timeZone);
+    }
+
+    /** Returns the month part of the date
+     *
+     * @param fieldvalue  time-stamp
+     * @param timeZone  timezone
+     * @return month part
+     */
+    public static int getMonth(String fieldValue, String timeZone) {
+        return getDatePart(fieldValue, 1000, Calendar.MONTH, timeZone) + 1;
+    }
+    /** Returns the day of the month part of the date
+     *
+     * @param fieldvalue  time-stamp
+     * @param timeZone  timezone
+     * @return day of the month part
+     */
+    public static int getDay(String fieldValue, String timeZone) {
+        return getDatePart(fieldValue, 1000, Calendar.DAY_OF_MONTH, timeZone);
+    }
+    /** Returns the hours part of the date
+     *
+     * @param fieldvalue  time-stamp
+     * @param timeZone  timezone
+     * @return hours part
+     */
+    public static int getHours(String fieldValue, String timeZone) {
+        return getDatePart(fieldValue, 1000, Calendar.HOUR_OF_DAY, timeZone);
+    }
+    /** Returns the minutes part of the date
+     *
+     * @param fieldvalue  time-stamp
+     * @param timeZone  timezone
+     * @return minutes part
+     */
+    public static int getMinutes(String fieldValue, String timeZone) {
+        return getDatePart(fieldValue, 1000, Calendar.MINUTE, timeZone);
+    }
+    /** Returns the seconds part of the date
+     *
+     * @param fieldvalue  time-stamp
+     * @param timeZone  timezone
+     * @return seconds part
+     */
+    public static int getSeconds(String fieldValue, String timeZone) {
+        return getDatePart(fieldValue, 1000, Calendar.SECOND, timeZone);
+    }
+
+    /** Returns the a part of the date
+     * 
+     * @param fieldvalue  time-stamp
+     * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
+     * @param datePart  which part of the date should be returned. These are Calendar constants
+     * @return a part
+     */
+    public static int getDatePart(String fieldValue, int factor, int datePart) {
+        return getDatePart(fieldValue, factor, datePart, "");
+    }
+
+    /** Returns the a part of the date
+     *
+     * @param fieldvalue  time-stamp
+     * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
+     * @param datePart  which part of the date should be returned. These are Calendar constants
+     * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
+     * @return a part
+     */
+    public static int getDatePart(String fieldValue, int factor, int datePart, String timeZone) {
+        if (fieldValue != null && !"".equals(fieldValue.trim())) {
+            Calendar cal = Calendar.getInstance(getTimeZone(timeZone));
+            long seconds = Long.valueOf(fieldValue).longValue();
+            cal.setTimeInMillis(seconds * factor);
+            return cal.get(datePart);
+        }
+        else {
+            return -1;
+        }
+    }
+    
 }
