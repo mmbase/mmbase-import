@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.92 2004-03-19 23:16:17 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.93 2004-03-24 10:51:24 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -367,7 +367,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         if (getRealm() == null) {
-            if (!setRealm("MMBase" + request.getContextPath() + "@" + request.getServerName())) {
+            String contextPath = request.getContextPath();
+            if (!setRealm("MMBase" + contextPath + "@" + request.getServerName())) {
                 return SKIP_BODY;
             }
         }
@@ -451,18 +452,28 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             getContextProvider().getContextContainer().register(getId(), cloud);
         }
 
-        if (cloud == null)
+        if (cloud == null) {
             return SKIP_BODY;
+        }
 
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, cloud);
         }
 
-        if (locale != null)
+        if (locale != null) {
             cloud.setLocale(locale);
+        }
 
         // the surround context tag sometimes also want so server information from the cloud context.
         getContextTag().setCloudContext(cloud.getCloudContext());
+
+        ContentTag tag = (ContentTag) findParentTag(ContentTag.class, null, false);
+        if (tag != null) {
+            User user = cloud.getUser();
+            if (! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
+                tag.setUser(cloud.getUser());
+            }
+        }
 
         return EVAL_BODY;
     }
