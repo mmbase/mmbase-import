@@ -10,27 +10,32 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard;
 
 /**
+ * This exception is thrown when an error occurs in the EditWizards
  *
- * EditWizard
- * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: WizardException.java,v 1.2 2002-02-25 11:53:58 pierre Exp $
+ * @version $Id: WizardException.java,v 1.3 2003-08-29 09:34:39 pierre Exp $
  */
 public class WizardException extends java.lang.Exception {
-    /**
-     * Creates new <code>WizardException</code> without detail message.
-     */
+
+    //javadoc is inherited
     public WizardException() {
+        super();
     }
 
+    //javadoc is inherited
+    public WizardException(String message) {
+        super(message);
+    }
 
-    /**
-     * Constructs an <code>WizardException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public WizardException(String msg) {
-        super(msg);
+    //javadoc is inherited
+    public WizardException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public WizardException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
 
