@@ -19,13 +19,13 @@ import org.mmbase.storage.search.*;
 import java.util.*;
 
 /**
- * Alias as constraint.
+ * Type as constraint.
  *
  * @author Michiel Meeuwissen
- * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.4 2004-07-19 15:20:15 michiel Exp $
+ * @since  MMBase-1.8
+ * @version $Id: QueryTypeConstraintTag.java,v 1.1 2004-07-19 15:20:15 michiel Exp $
  */
-public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
+public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
     // private static final Logger log = Logging.getLoggerInstance(NodeListAliasConstraintTag.class);
 
@@ -54,17 +54,17 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
     }
 
 
-    protected Integer getAlias(String name) throws JspTagException {
+    protected Integer getOType(String name) throws JspTagException {
         Cloud cloud = getProviderCloudVar();
-        Node node = cloud.getNode(name);
+        Node node = cloud.getNodeManager(name);
         return new Integer(node.getNumber());
     }
 
-    protected List getAliases(List names) throws JspTagException {
+    protected SortedSet getOTypes(List names) throws JspTagException {
         SortedSet set = new TreeSet();
         Iterator i = names.iterator();
         while (i.hasNext()) {
-            set.add(getAlias((String) i.next()));
+            set.add(getOType((String) i.next()));
         }
         return set;
     }
@@ -80,20 +80,18 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
             if (query instanceof NodeQuery) {
                 step = ((NodeQuery) query).getNodeStep();
             } else {
-                throw new JspTagException("Don't know on what path element the alias constraint must be applied. Use the 'element' attribute");
+                throw new JspTagException("Don't know on what path element the type constraint must be applied. Use the 'element' attribute");
             }
         } else {
             step = query.getStep(elementString);
         }
-
         if (step == null) {
             throw new JspTagException("No element '" + element.getString(this) + "' in path '" + query.getSteps() + "'");
         }
-        StepField stepField = query.createStepField(step, "number");
+        StepField stepField = query.createStepField(step, "otype");
 
         Constraint newConstraint = null;
-        
-        newConstraint = query.createConstraint(stepField, getAliases(name.getList(this)));
+        newConstraint = query.createConstraint(stepField, getOTypes(name.getList(this)));
 
         if (newConstraint != null) {
             if (inverse.getBoolean(this, false)) {
