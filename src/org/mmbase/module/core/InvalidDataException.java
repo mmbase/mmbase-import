@@ -13,17 +13,20 @@ import java.lang.Exception;
 
 /**
  * This exception gets thrown when a node contains invalid data.
+ *
+ * @author Pierre van Rooden
+ * @version $Id: InvalidDataException.java,v 1.5 2003-09-04 11:05:33 pierre Exp $
  */
 public class InvalidDataException extends Exception {
 
     // Name of the field that caused the exception
     private String invalidField=null;
-	
+
     //javadoc is inherited
-	public InvalidDataException () {
-		super();
-	}
-	
+    public InvalidDataException () {
+        super();
+    }
+
     //javadoc is inherited
     public InvalidDataException(String message) {
         super(message);
@@ -39,33 +42,33 @@ public class InvalidDataException extends Exception {
         super(message,cause);
     }
 
-	/**
-	 * Create the exception.
-	 * @param message a description of the exception
-	 * @param fieldMame the name of the field that caused the exception
- 	 */
-	public InvalidDataException (String message, String fieldName) {
-		super(message);
-		invalidField=fieldName;
-	}
-	
-	/**
-	 * Create the exception.
+    /**
+     * Create the exception.
+     * @param message a description of the exception
+     * @param fieldMame the name of the field that caused the exception
+     */
+    public InvalidDataException (String message, String fieldName) {
+        super(message);
+        invalidField=fieldName;
+    }
+
+    /**
+     * Create the exception.
      * The cause can be retrieved with getCause().
      *
      * @param Throwable the cause of the exception
-	 * @param fieldMame the name of the field that caused the exception
- 	 */
-	public InvalidDataException (Throwable cause, String fieldName) {
-		super(cause);
-		invalidField=fieldName;
-	}
-	
-	/**
- 	 * Retrieved the name of the field that caused the exception
-	 * @return the field name as a String
-	 */
-	public String getInvalidFieldName() {
-	    return invalidField;
-	}
+     * @param fieldMame the name of the field that caused the exception
+     */
+    public InvalidDataException (Throwable cause, String fieldName) {
+        super(cause);
+        invalidField=fieldName;
+    }
+
+    /**
+     * Retrieved the name of the field that caused the exception
+     * @return the field name as a String
+     */
+    public String getInvalidFieldName() {
+        return invalidField;
+    }
 }
