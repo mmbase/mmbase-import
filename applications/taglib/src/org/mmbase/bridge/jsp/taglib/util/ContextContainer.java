@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.30 2005-02-02 20:56:58 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.31 2005-03-15 20:33:25 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -313,11 +313,20 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return get(key);
     }
 
+    protected abstract boolean checkJspVar(String jspvar, String newId);
+
     /**
      * @since MMBase-1.7 (here)
      */
     public void register(String newId, Object n, boolean check) throws JspTagException {
         register(newId, n, check, true);
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public void register(String newId, WriterHelper helper, boolean check) throws JspTagException {        
+        register(newId, helper.getValue(), check && checkJspVar(helper.getJspvar(), newId), true);
     }
 
     /**
