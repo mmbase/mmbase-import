@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.1 2002-04-19 20:11:54 michiel Exp $
+ * @version $Id: Config.java,v 1.2 2002-04-21 08:11:06 michiel Exp $
  */
 
 public class Config {   
@@ -86,13 +86,11 @@ public class Config {
                 log.trace("creating uriresolver (backpage = " + config.backPage + ")");
                 URIResolver.EntryList extraDirs = new URIResolver.EntryList();
                 File refFile;
-                if (config.backPage.startsWith("http:")) { // given absolutely
-                    try {
+                if (config.backPage.startsWith("http:")) { // given absolutely               
+                    String path =  config.backPage.substring(config.backPage.indexOf('/', config.backPage.indexOf('.') + 1));
+                    // Using URL.getPath() would be nicer, but is not availeble in java 1.2
                     // suppose it is from the same server, we can find back the directory then:
-                        refFile = new File(request.getRealPath(new java.net.URL(config.backPage).getPath().substring(request.getContextPath().length()))).getParentFile();
-                    } catch (java.net.MalformedURLException e) { // would be rather odd
-                        refFile = null;
-                    }
+                        refFile = new File(request.getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
                 } else {
                     refFile = new File(request.getRealPath(config.backPage)).getParentFile();
                 }
