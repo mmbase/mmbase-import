@@ -8,13 +8,13 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.applications.editwizard;
-
+import org.mmbase.applications.dove.Dove;
 /**
  * EditWizard
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNewRelation.java,v 1.6 2003-03-04 13:27:10 nico Exp $
+ * @version $Id: ConnectorCommandGetNewRelation.java,v 1.7 2003-03-31 10:53:16 michiel Exp $
  */
 
 public class ConnectorCommandGetNewRelation extends ConnectorCommand {
@@ -29,13 +29,14 @@ public class ConnectorCommandGetNewRelation extends ConnectorCommand {
      * @param destinationType         the type of the destination object
      */
      public ConnectorCommandGetNewRelation(String role, String sourceObjectNumber, String sourceType,
-                                           String destinationObjectNumber, String destinationType) throws WizardException {
-         super("getnewrelation");
-         addCommandAttr("role", role);
-         addCommandAttr("source", sourceObjectNumber);
-         addCommandAttr("sourcetype", sourceType);
-         addCommandAttr("destination", destinationObjectNumber);
-         addCommandAttr("destinationtype", destinationType);
+                                           String destinationObjectNumber, String destinationType, String createDir) throws WizardException {
+         super(Dove.GETNEWRELATION);
+         addCommandAttr(Dove.ELM_ROLE,            role);
+         addCommandAttr(Dove.ELM_SOURCE,          sourceObjectNumber);
+         addCommandAttr(Dove.ELM_SOURCETYPE,      sourceType);
+         addCommandAttr(Dove.ELM_DESTINATION,     destinationObjectNumber);
+         addCommandAttr(Dove.ELM_DESTINATIONTYPE, destinationType);
+         addCommandAttr(Dove.ELM_CREATEDIR,       createDir);
      }
 
 }
