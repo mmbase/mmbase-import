@@ -22,7 +22,7 @@ import java.util.jar.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.18 2003-05-06 22:46:19 kees Exp $
+ * @version $Id: Version.java,v 1.19 2003-10-15 10:19:57 keesj Exp $
  */
 public class Version {
    
@@ -93,6 +93,7 @@ public class Version {
      * @javadoc
      */
     public static void showHelp() {
+		System.out.println("MMBase version: " + get());
         System.out.println("usage   : [command] [param1] [param2] [...]\n");
         System.out.println("format  : check localjar remote-manifest");
         System.out.println("info    : compare mmbase.jar version against a manifest file");
