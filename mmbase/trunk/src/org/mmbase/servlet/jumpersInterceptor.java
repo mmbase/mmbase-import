@@ -40,7 +40,6 @@ public class jumpersInterceptor extends BaseInterceptor {
 
                
     public jumpersInterceptor() {
-        mmbase=(MMBase)getModule("MMBASEROOT");
     }
  
     public void setContextManager( ContextManager cm ) {
