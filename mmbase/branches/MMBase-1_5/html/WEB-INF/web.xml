@@ -52,7 +52,7 @@
        adds the Dove protocol, which is used for communication with,
        and passing commands to, the MMBase system using an xml format 
     </description>
-    <servlet-class>org.mmbase.servlet.DoveServlet</servlet-class>
+    <servlet-class>org.mmbase.applications.servlet.DoveServlet</servlet-class>
     <load-on-startup>5</load-on-startup>
   </servlet>
 
