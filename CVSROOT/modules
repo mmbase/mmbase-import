@@ -30,4 +30,4 @@
 src -d src/org/mmbase mmbase
 
 # to check out everything
-all -d .  &src &config &html &documentation
+all  &src &config &html &documentation
