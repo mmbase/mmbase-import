@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.22 2004-03-09 12:45:47 rob Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.23 2004-03-09 12:56:05 rob Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -134,7 +134,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
             try {
                 // Skip results to provide weak support for offset.
                 if (mustSkipResults) {
-                    log.error("skip results");
+                    log.debug("Skip data before the index.");
                     for (int i = 0; i < query.getOffset(); i++) {
                         rs.next();
                     }
