@@ -4,13 +4,14 @@
 
   MMXF itself is besides the mmxf tag itself a subset of XHTML2.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.4 2004-03-02 16:48:54 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.5 2004-03-02 17:09:40 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
   version = "1.0"
   xmlns:xsl = "http://www.w3.org/1999/XSL/Transform"
-
+  xmlns:mmxf="http://www.mmbase.org/mmxf"
+  exclude-result-prefixes="mmxf" 
 >
   <xsl:output
     method="xml"
