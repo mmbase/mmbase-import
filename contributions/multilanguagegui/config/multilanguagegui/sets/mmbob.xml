@@ -331,6 +331,34 @@
 		<translation language="nl" value="wachtwoord" />
 		<translation language="df" value="password" />
 	</keyword>
+	<keyword name="Password_notequal">
+		<translation language="nl" value="wachtwoord en bevestigwachtwoord zijn niet gelijk" />
+		<translation language="df" value="password and confirumpassword are not equal" />
+	</keyword>
+	<keyword name="ConfirmPassword">
+		<translation language="nl" value="bevestig wachtwoord" />
+		<translation language="df" value="confirm password" />
+	</keyword>
+	<keyword name="PasswordChanged">
+		<translation language="nl" value="wachtwoord gewijzigd" />
+		<translation language="df" value="password changed" />
+	</keyword>
+	<keyword name="NewPassword">
+		<translation language="nl" value="nieuw wachtwoord" />
+		<translation language="df" value="new password" />
+	</keyword>
+	<keyword name="NewConfirmPassword">
+		<translation language="nl" value="nieuw bevestig wachtwoord" />
+		<translation language="df" value="new confirm password" />
+	</keyword>
+	<keyword name="ProfileUpdated">
+		<translation language="nl" value="profiel gewijzigd" />
+		<translation language="df" value="profile updated" />
+	</keyword>
+	<keyword name="ProfileUpdateFailed">
+		<translation language="nl" value="profiel update mislukt" />
+		<translation language="df" value="profile update failed" />
+	</keyword>
 	<keyword name="new">
 		<translation language="nl" value="nieuw" />
 		<translation language="df" value="new" />
