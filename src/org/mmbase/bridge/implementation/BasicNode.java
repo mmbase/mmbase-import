@@ -11,18 +11,18 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
-import org.mmbase.security.*;
+
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.fields.*;
-import org.mmbase.storage.search.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.util.fields.ValueIntercepter;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.security.Operation;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
+import org.mmbase.util.logging.*;
+import org.w3c.dom.*;
 
 /**
  * Basic implementation of Node. Wraps MMObjectNodes, adds security.
@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.124 2004-04-13 13:30:03 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.125 2004-05-03 14:55:15 keesj Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
