@@ -59,11 +59,11 @@ about the Ant build tool.
    
     <!-- check directory structure -->
     <available property="dir.src.present"
-               file="./src" />
+               file="../src" />
     <available property="dir.org.present"
-               file="./src/org" />
+               file="../src/org" />
     <available property="dir.mmbase.present"
-               file="./src/org/mmbase" />
+               file="../src/org/mmbase" />
   </target>
 
   <!-- =================================================================== -->
