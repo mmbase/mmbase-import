@@ -19,7 +19,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.apache.tomcat.core.*;
-
+import org.mmbase.util.logging.*;
 
 /**
  * jumpersInterceptor is a Tomcat Interceptor based on the servjumpers-servlet.
@@ -32,7 +32,7 @@ import org.apache.tomcat.core.*;
 
 public class jumpersInterceptor extends BaseInterceptor { 
 
-
+    private static Logger log = Logging.getLoggerInstance(jumperInterceptor.class.getName());
     static MMBase mmbase = null;
     
     ContextManager cm; 
@@ -87,7 +87,7 @@ public class jumpersInterceptor extends BaseInterceptor {
             }
 			if (url!=null) return(url);
 		} else {
-			System.out.println("servjumpers -> can't access mmbase/jumpers");
+			log.error("servjumpers -> can't access nodeManager jumpers (check jumpers.xml)");
 		}
 		return(null);
 	}
