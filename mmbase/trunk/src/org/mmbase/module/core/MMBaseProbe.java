@@ -21,6 +21,7 @@ import java.io.*;
  * builders probeCalls this is done my a callback in MMbase.
  *
  * @author Daniel Ockeloen
+ * @version $Id: MMBaseProbe.java,v 1.4 2000-10-05 11:35:43 vpro Exp $
  */
 public class MMBaseProbe implements Runnable {
 
@@ -67,6 +68,9 @@ public class MMBaseProbe implements Runnable {
 	 */
 	public void run() {
 		parent.doProbeRun();
+		try {
+			Thread.sleep(10*60*1000);
+		} catch (InterruptedException e) {}
 		parent.probe=null;
 	}
 }
