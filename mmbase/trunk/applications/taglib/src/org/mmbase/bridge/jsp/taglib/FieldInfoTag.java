@@ -227,6 +227,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
         case Field.TYPE_XML:
+            if(search) {
+                show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"\" />";
+                break;
+            }
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
             if (node != null) {
@@ -475,7 +479,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 }
                 break;
             }
-        case Field.TYPE_XML:
+        case Field.TYPE_XML: 
         case Field.TYPE_STRING: {
             // do the xml decoding thing...
             String fieldValue = getContextTag().findAndRegisterString(prefix(fieldName));
@@ -598,9 +602,6 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         return show;
     }
-
-
-
 
     /**
      * Write the value of the fieldinfo.
