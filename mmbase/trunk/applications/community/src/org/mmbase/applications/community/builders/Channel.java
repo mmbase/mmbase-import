@@ -141,13 +141,13 @@ public class Channel extends MMObjectBuilder {
     public boolean init() {
         boolean result = super.init();
         // for recorders: find out basic logpath
-        baseRecordPath=getInitParameter("baseRecordPath");
+        baseRecordPath=getInitParameter("baserecordpath");
         if ((baseRecordPath!=null) && (baseRecordPath.length()!=0)) {
             if (baseRecordPath.charAt(baseRecordPath.length()-1)!=File.separatorChar) {
                 baseRecordPath+=File.separator;
             }
         }
-        defaultUserType=getInitParameter("defaultUserType");
+        defaultUserType=getInitParameter("defaultusertype");
         if ((defaultUserType==null) || (defaultUserType.length()==0)){
             defaultUserType="chatter";
         }
@@ -333,14 +333,13 @@ public class Channel extends MMObjectBuilder {
      * @return the Writer that will record the messages
      */
     public Writer startRecorder(int channel, Writer recorder) {
-        Writer writer=(Writer)recorders.get(new Integer(channel));
+        Writer writer=getRecorder(channel);
         if (writer!=null) {
             return writer;
         }
         recorders.put(new Integer(channel), recorder);
         Date now= new Date();
         try {
-            log.info("Start recorder for channel "+channel+" at "+now);
             recorder.write("Start recorder for channel "+channel+" at "+now+"\n");
             recorder.flush();
         } catch (IOException e) {
