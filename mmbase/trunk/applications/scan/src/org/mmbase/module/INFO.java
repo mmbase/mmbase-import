@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.20 $ $Date: 2000-06-05 13:08:03 $
+ * @$Revision: 1.21 $ $Date: 2000-06-19 08:14:05 $
  */
 public class INFO extends ProcessorModule {
 
@@ -100,6 +100,7 @@ public class INFO extends ProcessorModule {
 			if (cmd.equals("ENCODE")) return(doParamEncode(sp,tok));
 			if (cmd.equals("DECODE")) return(doParamDecode(sp,tok));
 			if (cmd.equals("ESCAPE")) return(doEscape(sp,tok));
+			if (cmd.equals("MOVE"))	  return(doMove(sp,tok));
 			if (cmd.equals("EXISTS")) return(doExists(sp,tok));
 			if (cmd.equals("RELTIME")) return(doRelTime(tok));
 			if (cmd.equals("MEMORY")) return(doMemory(tok));
@@ -444,12 +445,24 @@ public class INFO extends ProcessorModule {
 				rtn="";
 				int year,month,months;
 				Calendar cal=null;
+				String tk;
+				int w=0;
 
 				if (whichname!=INFO.Not) {
 					int imonth;
 					if (tok.hasMoreTokens()) {
+						tk=tok.nextToken();
+						if (tk.equals("YEAR")) {
+							tk=tok.nextToken();
+							w=1;
+						} else if (tk.equals("MONTH")) {
+							tk=tok.nextToken();
+							w=2;
+						} else {
+							w=3;
+						}
 						try {
-							imonth=Integer.parseInt(tok.nextToken());
+							imonth=Integer.parseInt(tk);
 						} catch (NumberFormatException nfe) {
 							imonth=0;
 						}
@@ -466,12 +479,40 @@ public class INFO extends ProcessorModule {
 						rtn=""+months;
 						break;
 					case INFO.English:
-						month=cal.get(Calendar.MONTH);
-						rtn=DateStrings.longmonths[month];
+						switch(w) {
+							case 1:
+								month=cal.get(Calendar.YEAR);
+								rtn=""+month;
+								break;
+							case 2:
+								month=cal.get(Calendar.MONTH);
+								rtn=DateStrings.longmonths[month];
+								break;
+							case 3:
+								month=cal.get(Calendar.MONTH);
+								rtn=DateStrings.longmonths[month];
+								break;
+							default:
+							break;
+						}
 						break;
 					case INFO.Dutch:
-						month=cal.get(Calendar.MONTH);
-						rtn=DateStrings.Dutch_longmonths[month];
+						switch(w) {
+							case 1:
+								month=cal.get(Calendar.YEAR);
+								rtn=""+month;
+								break;
+							case 2:
+								month=cal.get(Calendar.MONTH);
+								rtn=DateStrings.Dutch_longmonths[month];
+								break;
+							case 3:
+								month=cal.get(Calendar.MONTH);
+								rtn=DateStrings.Dutch_longmonths[month];
+								break;
+							default:
+							break;
+						}
 						break;
 					default:
 						rtn="";
@@ -1091,6 +1132,59 @@ public class INFO extends ProcessorModule {
 		GregorianCalendar cal=new GregorianCalendar();
 		cal.set(year+1970,month,1,0,0,0);
 		return(cal);
+	}
+
+
+
+	private String doMove( scanpage sp, StringTokenizer tok ) {
+		String result = null;
+
+		if( tok.hasMoreTokens() ) {
+
+			String from = tok.nextToken();
+			if( tok.hasMoreTokens() ) {
+				String toDir = tok.nextToken();
+					moveFile( from, toDir );
+			} else
+				debug("doMove(): ERROR: page("+sp.getUrl()+"): no destination specified in $MOD-INFO-MOVE-"+from+" !");
+		} else 
+			debug("doMove(): ERROR: page("+sp.getUrl()+"): no source directory given in $MOD-INFO-MOVE-.. !");
+		return result;
+	}
+
+
+	// check if this will work with moveFile("/a/b/file.txt", "../c")
+	//
+	// moves file from '/../directory/filename' to '/../otherdirectory/'
+
+	private boolean moveFile( String pathslashfile , String otherdirectory ) { 
+		boolean result = false;
+		if( fileExists(pathslashfile) ) {
+			File f1 = new File( pathslashfile );
+
+			String 	name 	= f1.getName();
+			String 	path 	= f1.getAbsolutePath(); 						// filename included
+					path	= path.substring( 0, path.lastIndexOf("/") ); 	// remove filename
+			String 	parent	= path.substring( 0, path.lastIndexOf("/") ); 	// remove last directory
+
+			String oparent	= parent + f1.separator + otherdirectory;
+			File	f2 		= new File( oparent );
+
+			if( f2.isDirectory() ) {
+				if( f2.canWrite() ) { 
+					f2 = new File( oparent , name );
+					if( f1.renameTo( f2 ) ) { 
+						result = true;
+					} else
+						debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: move file("+pathslashfile+") -> file("+oparent+","+name+") did not succeed!");
+				} else 
+					debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: directory("+oparent+") has no write-permission set!");
+			} else 
+				debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: directory("+oparent+") is not a valid directory!");
+		} else 
+			debug("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: first parameter is not a valid file!");
+
+		return result;
 	}
 
     private void debug( String msg )
