@@ -35,7 +35,7 @@ public abstract class ListReferrerTag extends ContextReferrerTag  {
 
     protected ListProvider getList() throws JspTagException {
         // find the parent list:
-        return (ListProvider) findParentTag(ListProvider.class.getName(), (String) parentListId.getValue(this));
+        return (ListProvider) findParentTag(ListProvider.class, (String) parentListId.getValue(this));
     }
 
 }

@@ -53,6 +53,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         super.setPageContext(pc);
         // the 'page' Context
     }
+
   
     public void setPageContext(PageContext pc) {
         if (log.isDebugEnabled()) {
@@ -60,6 +61,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         }
         setPageContextOnly(pc); // make pageContext availabe
         pageContextTag = (ContextTag) pageContext.getAttribute("__context");
+
 
         if (pageContextTag == null) { // not yet put 
             log.debug("No pageContextTag found in pagecontext, creating..");
@@ -132,7 +134,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @since MMBase-1.6.2
      */
     public Writer findWriter(boolean th) throws JspTagException {
-        Writer w = (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid, th);
+        Writer w = (Writer) findParentTag(Writer.class, writerid, th);
         w.haveBody();
         return w;
     }
@@ -249,13 +251,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     /**
-     * Finds a parent tag by class and id. This is a base function for
-     * 'getContext', but it is handy in itself, so also available for
-     * extended classes.
-     *
-     * @param classname the classname of the Tag to find.
-     * @param id        the id of the Tag to find.
-     * @param exception if it has to throw an exception if the parent can not be found (default: yes).  */
+     * @see findParentTag(class, string, boolean)
+     * @deprecated
+     */
 
     final protected TagSupport findParentTag(String classname, String id, boolean exception) throws JspTagException {
         Class clazz ;
@@ -264,13 +262,29 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         } catch (java.lang.ClassNotFoundException e) {
             throw new JspTagException ("Could not find " + classname + " class");
         }
+        return findParentTag(clazz, id, exception);
+    }
 
-        TagSupport cTag = (TagSupport) findAncestorWithClass((Tag)this, clazz);
+    /**
+     * Finds a parent tag by class and id. This is a base function for
+     * 'getContext', but it is handy in itself, so also available for
+     * extended classes.
+     *
+     * @param clazz     the class of the Tag to find.
+     * @param id        the id of the Tag to find.
+     * @param exception if it has to throw an exception if the parent can not be found (default: yes).  
+     * @since MMBase-1.7
+     */
+
+    final protected TagSupport findParentTag(Class clazz, String id, boolean exception) throws JspTagException {
+        TagSupport cTag = (TagSupport) findAncestorWithClass((Tag) this, clazz);
         if (cTag == null) {
             if (exception) {
-                throw new JspTagException ("Could not find parent of type " + classname);
+                throw new JspTagException ("Could not find parent of type " + clazz.getName());
             } else {
-                log.debug("Could not find parent of type " + classname);
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not find parent of type " + clazz.getName());
+                }
                 return null;
             }
         }
@@ -283,7 +297,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
-                        throw new JspTagException ("Could not find parent Tag of type " + classname + " with id " + id);
+                        throw new JspTagException ("Could not find parent Tag of type " + clazz.getName() + " with id " + id);
                     } else {
                         return null;
                     }
@@ -293,8 +307,17 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return cTag;
 
     }
+    /**
+     * @deprecated
+     */
     final protected TagSupport findParentTag(String classname, String id) throws JspTagException {
         return findParentTag(classname, id, true);
+    }
+    /**
+     * @since MMBase-1.7
+     */
+    final protected TagSupport findParentTag(Class clazz, String id) throws JspTagException {
+        return findParentTag(clazz, id, true);
     }
 
     /**
@@ -315,7 +338,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if(log.isDebugEnabled()) {
             log.debug("Searching context " + contextid);
         }
-        ContextTag contextTag = (ContextTag) findParentTag(ContextTag.class.getName(), contextid, false);
+        ContextTag contextTag = (ContextTag) findParentTag(ContextTag.class, contextid, false);
         if (contextTag == null) {
             log.debug("Didn't find one, take the pageContextTag");
             contextTag = pageContextTag;

@@ -60,7 +60,7 @@ public class ImageTag extends FieldTag {
         if(! getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
             sessionName = "cloud_mmbase";
             CloudTag ct = null;
-            ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
+            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }

@@ -110,7 +110,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         case TYPE_GUI: {
             String sessionName = "";
             CloudTag ct = null;
-            ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
+            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }

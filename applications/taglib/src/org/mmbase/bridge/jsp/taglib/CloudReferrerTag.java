@@ -56,7 +56,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     */
 	
     protected CloudProvider findCloudProvider() throws JspTagException {
-        return (CloudProvider) findParentTag(CloudProvider.class.getName(), (String) cloudId.getValue(this));
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
     */	
     public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {        
-        return (CloudProvider) findParentTag(CloudProvider.class.getName(), (String) cloudId.getValue(this), throwexception);
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
     }
 
     

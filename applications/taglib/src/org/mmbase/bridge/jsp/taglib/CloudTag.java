@@ -531,7 +531,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private final void checkLocale() throws JspTagException {
         locale = null;
-        LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
+        LocaleTag localeTag = (LocaleTag) findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             locale = localeTag.getLocale();
         }

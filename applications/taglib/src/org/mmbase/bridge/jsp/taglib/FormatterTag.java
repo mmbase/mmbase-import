@@ -249,7 +249,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         if (log.isDebugEnabled()) log.debug("startag of formatter tag " + counter);
 
         // serve parent timer tag:
-        TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
+        TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
         if (t != null) {
             timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
         } else {
@@ -402,7 +402,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
 
         if (timerHandle != -1) {
-            ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false)).haltTimer(timerHandle);
+            ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
         }
         return helper.doEndTag();
     } // doEndTag
@@ -449,7 +449,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
         // params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context)); // use node function
-        LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
+        LocaleTag localeTag = (LocaleTag) findParentTag(org.mmbase.bridge.jsp.taglib.LocaleTag.class, null, false);
         Locale locale;
         if (localeTag != null) {
             locale = localeTag.getLocale();
