@@ -140,7 +140,6 @@ public class URLCache extends Cache {
         
         /**
          * remove all entries form the cache that are invalidated by the change of the object.
-         * @param object the object that changes
          */
         private void remove(String nodeNumber) {
             if(objectNumber2Keys.containsKey(nodeNumber)) {
@@ -155,6 +154,9 @@ public class URLCache extends Cache {
     }
     
     /**
+     * this observer will listen to all builders that are used while creating cache entries.
+     * if an object changes (that is used during the creation of the cache entrie) that specific
+     * cache entrie will be flushed.
      */
     private class Observer implements MMBaseObserver  {
         private Set observingBuilders = new HashSet(); // the builders in which 'this' was registered already.
@@ -162,17 +164,21 @@ public class URLCache extends Cache {
         Observer() {
         }
         
-        private void addToObservingBuilder(MMObjectBuilder bul) {
-            log.debug("Adding observer for builder = "+bul.getTableName());
-            bul.addLocalObserver(this);
-            bul.addRemoteObserver(this);
-            observingBuilders.add(bul.getTableName());
+        /**
+         * start listning to node changes of this builder
+         */
+        private void addToObservingBuilder(MMObjectBuilder builder) {
+            log.debug("Adding observer for builder = "+builder.getTableName());
+            builder.addLocalObserver(this);
+            builder.addRemoteObserver(this);
+            observingBuilders.add(builder.getTableName());
         }
         
         /**
+         * makes sure that the observer will listen to the builder of this node
          */
-        synchronized void put(MMObjectNode object) {
-            MMObjectBuilder bul = object.parent;
+        synchronized void put(MMObjectNode node) {
+            MMObjectBuilder bul = node.parent;
             if (!observingBuilders.contains(bul.getTableName())) {
                 addToObservingBuilder(bul);
             }
