@@ -54,6 +54,8 @@ public class WriteTEI extends TagExtraInfo {
                 type = "org.mmbase.bridge.Node";
             } else if ("Integer".equalsIgnoreCase(typeAttribute)) {
                 type = "java.lang.Integer";
+            } else if ("Vector".equalsIgnoreCase(typeAttribute)) {
+                type = "java.util.Vector";
             } else {
                 //type = "java.lang.Object"; 
                 throw new RuntimeException("Unknown type '" + typeAttribute + "'");

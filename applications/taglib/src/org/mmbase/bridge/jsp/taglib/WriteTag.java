@@ -44,6 +44,15 @@ public class WriteTag extends ContextReferrerTag {
     }
 
 
+    /**
+     * Release all allocated resources.
+     */
+    public void release() {   
+        log.debug("releasing" );
+        super.release();       
+    }
+    
+
     public int doStartTag() throws JspTagException {
 
         if (log.isDebugEnabled()) {
@@ -52,19 +61,34 @@ public class WriteTag extends ContextReferrerTag {
         Object value = getContextTag().getObject(getReferid());
 
         extraBodyContent = null;
-        if (value != null) {
-            if (jspvar != null) {                
-                pageContext.setAttribute(jspvar, value);
-            } else {
-                if (type != null) {
-                    throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute");
+        if (jspvar != null) {
+            if ("Vector".equalsIgnoreCase(type)) {
+                if (value == null) {
+                    // if a vector is requested, but the value is not present,
+                    // make a vector of size 0.
+                    value = new java.util.Vector();
                 }
-                extraBodyContent = value.toString();
+                if (! (value instanceof java.util.Vector)) {
+                    // if a vector is requested, but the value is not a vector,
+                    // make a vector of size 1.
+                    java.util.Vector v = new java.util.Vector();
+                    v.add(value);
+                    value = v;
+                }             
+            
+            } 
+            pageContext.setAttribute(jspvar, value);
+            
+        } else {
+            if (type != null) {
+                throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute");
             }
+            extraBodyContent = value.toString();
         }
+    
         return EVAL_BODY_TAG;
-
-    }
+    }    
+    
     public int doAfterBody() throws JspTagException {
         try {
             if (extraBodyContent != null) {
