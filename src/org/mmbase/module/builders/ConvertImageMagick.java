@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.20 2002-01-17 07:47:34 pierre Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.21 2002-01-23 20:57:32 eduard Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -304,41 +304,59 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @javadoc
      */
     private byte[] ConvertImage(byte[] pict,String cmd, String format) {
-        InputStream in;
-        Runtime runtime=Runtime.getRuntime();
-        String command="";
-        Process p;
-        ByteArrayOutputStream imagestream;
-        byte[] inputbuffer=new byte[2048],image=null;
-        int size;
-        ProcessWriter pw;
-
-        log.debug("ConvertImage(): converting img("+cmd+")");
-
-        try {
-            command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
-            log.debug("Starting convert");
-            p=runtime.exec(command);
-            in=p.getInputStream();
-            pw=new ProcessWriter(new ByteArrayInputStream(pict),p.getOutputStream());
-            log.debug("Starting writer");
+        String command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
+        log.debug("command:"+command);
+        try {            
+            log.debug("starting program");
+            Process p = Runtime.getRuntime().exec(command);
+            // in grabs the stuff coming from stdout from program...
+            InputStream in = p.getInputStream();
+            // err grabs the stuff coming from stderr from program...            
+            InputStream err = p.getErrorStream();
+            
+            ProcessWriter pw = new ProcessWriter(new ByteArrayInputStream(pict),p.getOutputStream());
+            log.debug("starting process writer");
             pw.start();
-
-            imagestream=new ByteArrayOutputStream();
-            size=0;
-            log.debug("Reading image");
+            log.debug("done with process writer");            
+            ByteArrayOutputStream imagestream=new ByteArrayOutputStream();
+            int size=0;
+            byte[] inputbuffer=new byte[2048];
             while((size=in.read(inputbuffer))>0) {
-                log.debug("Reading data size "+size);
+                log.debug("copying "+size+" bytes from stream ");
                 imagestream.write(inputbuffer,0,size);
             }
-            log.debug("Done converting");
-            image=imagestream.toByteArray();
-            log.debug("Returning Image");
-            log.service("converted image(#"+pict.length+" bytes) with options '"+cmd+"' to '"+format+"'-image(#"+image.length+" bytes)('"+command+"')");
-        } catch (Exception e) {
-            log.error("Failure converting image "+cmd+" "+format);
-            log.error("Message : "+e.getMessage());
+            log.debug("retrieved all information");
+            byte[] image=imagestream.toByteArray();            
+            
+            // no bytes in the image thingie
+            if(image.length < 1) {
+                log.debug("result was 0 bytes, gonna look for an message on stderr");
+                // we a image of 0 bytes is not a real image to me... i will leave the code here intact, but maybe nicer to return null....
+                // checkout what our error? was...
+                imagestream=new ByteArrayOutputStream();
+                size=0;
+                while((size=err.read(inputbuffer))>0) {
+                    log.debug("copying "+size+" bytes from ERROR-stream ");
+                    imagestream.write(inputbuffer,0,size);
+                }
+                byte[]  errorMessage = imagestream.toByteArray();
+                if(errorMessage.length > 0) {
+                    log.error("from stderr with command '" + command + "' --> '" + new String(errorMessage) + "'");
+                } 
+                else {
+                    log.debug("no information on stderr found");
+                }
+                log.warn("should it return null here?, it wasnt this way, so i didnt change it...");
+            }
+            
+            // print some info and return....            
+            log.service("converted image(#"+pict.length+" bytes) with options '"+cmd+"' to '"+format+"'-image(#"+image.length+" bytes)('"+command+"')");            
+            return image;
+        } 
+        catch (IOException e) {
+            log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'");
+            log.error(Logging.stackTrace(e));
         }
-        return image;
+        return null;
     }
 }
