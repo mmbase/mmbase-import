@@ -38,7 +38,7 @@ CompareInterface stringcmp=new StringCompare();
 
 	/**
 	 * Create a SortedVector, specifying which compare function to use.
-	 * @see org.mmabse.util.CompareInterface;
+	 * @see org.mmbase.util.CompareInterface
 	 */
 	public SortedVector(CompareInterface cmp) {
 		super();
