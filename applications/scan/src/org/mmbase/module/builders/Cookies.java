@@ -59,11 +59,11 @@ public class Cookies extends MMObjectBuilder {
 		if (i!=null) {
                         // we have it in the cache so return that
 			if (i.intValue()!=-1) {
-				log.debug("cookie positive cache");
+				log.debug("cookie positive cache "+key);
 				return(i.intValue());
 			} else {
 				// this branch is only needed for the debug
-				log.debug("cookie negative cache");
+				log.debug("cookie negative cache "+key);
 				return(-1);
 			}
 		}
@@ -80,13 +80,13 @@ public class Cookies extends MMObjectBuilder {
 			cache.put(key,new Integer(number));
 			cache2.put(new Integer(number),key);
 
-			log.debug("cookie positive");
+			log.debug("cookie positive "+key);
 			return(number);
 		} else {
 			// not in the cloud but put it cache 
 			// to make sure it doesn't keep asking
 			// the database and return -1
-			log.debug("cookie negative");
+			log.debug("cookie negative "+key);
 			cache.put(key,new Integer(-1));
 			cache2.put(new Integer(-1),key);
 			return(-1);
