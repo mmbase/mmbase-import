@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>The Storage Layer</title>
+
+    <date>2003-07-16</date>
+
+    <edition>$Id: storage.xml,v 1.1 2003-07-21 09:31:59 pierre Exp $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section id="introduction">
+    <title>Introduction</title>
+		<para>The Storage layer is a set of classes that provide a transaparent interface for MMBase to store and retrieve data.</para>
+		<para>The interface was created after the old model (the MMJDBC2NodeInterface) proved unsatisfactory. The storage interface is set up to discourage direct reference of database-specific code.</para>
+		<para>The layer is ment to be device independent. A storage will most often refer to a database.	Seperate classes in the layer will facilitate configuration of databases, allowing more ease of implementation. However, the outer interface is set up in such a way that it will be possible to provide alternate 'storages', such as storing data in files (i.e. xml), in memory, or across servers.</para>
+		<para>Aside from transparency, the storage layer allows for the use of transactions. While not every storage implementation will actually implement transactions, the setup for the storage layer allows for it.</para>
+		<para>The first (beta) version of the storage layer was released in the 1.6 release of MMBase, and contained of a <interfacename>Storage</interfacename> and a <interfacename>Transaction</interfacename> interface. The <interfacename>Storage</interfacename> interface allowed for the implementation of storage-specific elements (such as specifc methods for handling of Blobs, database access, etc). The <interfacename>Transaction</interfacename> interface was intended for transaction tracking, commiting and rollback. Evenually, this approach did not turn out as useful as we hoped, as the implementatations of these interfaces were too dependent of each other. In addition, backward compatibility was rather hard to achieve.</para>
+		<para>The current setup, to be released in 1.7 (we hope), differs considerably from that first version. We now have a <interfacename>StorageManager</interfacename>, which grants access to the storage for one user, and a <interfacename>StorageManagerFactory</interfacename> interface, which provides a StorageManager instance for each user that requires access, and also gives access to the global storage configuration. There is also a <interfacename>Schemes</interfacename> interface, which holds comfigurale schemes (in general only useful for databases that allow variant SQL statements, i.e. for adding options during table generation).</para>
+		<note><para>StorageManager and StorageManagerFactory are at the moment suggestions for interface names. Possible other names for StorageManager are Connection, StorageSession, Transaction, or Access.  Possible other names for StorageManagerFactory are StorageContext, StorageFactory, StorageProvider, StorageConfiguration, or plain Storage. If these names change, some methods (mentioned later) in the interface may also change.</para></note>
+		<note><para>We briefly looked at JDO to see if this would be a suitbale interface, but found it far too complex and probably very hard to implement for MMBase. It is posisble, however, that future implementations may include a wrapper for using JDO-driven storages.</para></note>
+		
+		<section id="using">
+			<title>Using the Storage Layer</title>
+			<para>In order to get access to a storage (for querying, updating objects, or obtaining configuration data), you first obtain the  factory. Each MMBase instance only has one factory, which it obtains at startup by requesting it from a static method in the Storage class (a final class in the org.mmbase.storage package), by passing itself as a reference. In the MMBase class, this will look like:</para>
+			<programlisting format="linespecific">StorageManagerFactory storageFactory = Storage.getStorageManagerFactory(this);</programlisting>
+			<para> The MMBase class then stores the reference to the factory, which allows other code to access it by requesting it from the module:</para>
+			<programlisting format="linespecific">StorageManagerFactory storageFactory = mmbase.getStorageManagerFactory();</programlisting>
+			<para>The code can then obtain or change configuration data, or obtain access to the storage by requesting a StorageManager object:</para>
+			<programlisting format="linespecific">StorageManager storage = storageFactory.getStorageManager();</programlisting>
+			<para>The StorageManager now grants access to the actual storage. You can call methods on the instance that query data, add, update, or remove methods, or which change storage collections (nodemanagers or builders). You may also start a Transaction allowing you to rollback changes when errors occur (provided the implemenatation allows for it). The actual methods available to you will be detailed in the next chapters.</para>
+			<para>The StorageManager instance should be treated as granting access for one session only - do not keep it as a static or otherwise longterm member of a class. An instance that starts a transaction may get invalidated if the transaction takes too long.</para>
+			<note><para>Most code will use the <methodname>getStorageManager()</methodname> utility method in the MMBase module, to make access a bit easier.</para></note>
+			<para>The StorageManagerFactory also allows you to retrieve (or change) options and properties of a layer. Possible options include database schemes (which allow you to tweak SQL statements for performance), setting prohibited fieldnames, turning storage-altering commands on or off, or specifying directories for storing data such as binary files.</para>
+			<para>These options may be specific for certain implementations and not available in all cases.</para>
+		</section>
+
+  </section>
+	
+  <section id="interfaces">
+    <title>Interfaces</title>
+		<para>...</para>
+		
+		<section id="StorageManagerFactory">
+			<title>StorageManagerFactory Interface</title>
+			<para>TODO: explain interface</para>
+
+			<programlisting format="linespecific"><![CDATA[
+public interface StorageManagerFactory {
+
+	public init(MMBase mmbase);
+
+	public StorageManager getStorageManager();
+	
+	public Map getAttributes();
+	
+	public void setAttributes(Map attributes);
+	
+	public Object getAttribute(Object key);
+	
+	public void setAttribute(Object key, Object value);
+
+	public boolean hasOption(Object key);
+	
+	public void setOption(Object key, boolean value);
+	
+	public int getVersion();
+	
+}]]></programlisting>
+			<itemizedlist>
+				<title>StorageManagerFactory Methods:</title>
+				<listitem>
+				  <formalpara><title>StorageManager getStorageManager();</title><para /></formalpara>
+					<para>Creates an instance of the <classname>StorageManager</classname> class, suitable for use with the storage device configured in this factory.</para>
+				</listitem>
+			</itemizedlist>
+		</section>
+  </section>
+		
+  <section id="classes">
+    <title>Classes</title>
+		<para>...</para>
+		
+		<section id="Storage">
+			<title>Storage Class</title>
+			<para>The Storage class is used to obtain a StorageManagerFactory.</para>
+			<para>It is a final class, with only two static methods.</para>
+			<para>To retrieve a factory the Storage needs an MMBase instance to retrieve data for that factory. Data retrieved include the factory classname (which you can specify in mmbaseroot in the 'storagemanagerfactory' propery), and possible other configuration data used at startup of the factory itself, such as the storage subtype (the 'database' property), or the datasource uri ('datasource' property).</para>
+			<para>Currently, each JVM has only one MMBase instance running, so you generally do not need to supply the MMBase instance yourself. However the Storage class offers the ability to do so, anyway.</para>
+			<programlisting format="linespecific"><![CDATA[
+public final class Storage {
+
+    static public StorageManagerFactory getStorageManagerFactory(MMBase mmbase);
+
+    static public StorageManagerFactory getStorageManagerFactory();
+
+}]]></programlisting>
+			<itemizedlist>
+				<title>StorageManagerFactory Methods:</title>
+				<listitem>
+				  <formalpara><title>StorageManagerFactory getStorageManagerFactory(MMBase mmbase);</title><para /></formalpara>
+					<para>Creates an instance of the <classname>StorageManagerFactory</classname> class, using the passed MMBase instance to determine the class to load. The MMBase instance is also passed to the StorageManagerFactory's <methodname>init</methodname> method, allowing it to take more configuration data if needed.</para>
+				</listitem>
+				<listitem>
+				  <formalpara><title>StorageManagerFactory getStorageManagerFactory();</title><para /></formalpara>
+					<para>Creates an instance of the <classname>StorageManagerFactory</classname> class. The method first determines the default MMBase module.</para>
+				</listitem>
+			</itemizedlist>
+		</section>
+
+		<section id="DatabaseStorageManagerFactory">
+			<title>DatabaseStorageManagerFactory Class</title>
+			<para>TODO: explain class</para>
+
+			<programlisting format="linespecific"><![CDATA[
+public class DatabaseStorageManagerFactory extends StorageManagerFactory {
+
+	public File getBinaryFilePath();
+	public void setBinaryFilePath(File path);
+
+	public Map getTypeMap();
+	public void setTypeMap(Map typeMap);
+
+	public Map getFieldNameMap();
+	public void setFieldNameMap(Map fieldNameMap);
+
+	public Schemes getSchemes();
+}]]></programlisting>
+			<itemizedlist>
+				<title>StorageManagerFactory Methods:</title>
+				<listitem>
+				  <formalpara><title>StorageManager getStorageManager();</title><para /></formalpara>
+					<para>Creates an instance of the StorageManager class, suitable for use with the storage device configured in this factory.</para>
+				</listitem>
+			</itemizedlist>
+		</section>
+	</section>
+
+</article>
