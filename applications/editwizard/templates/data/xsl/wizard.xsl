@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.47 2002-07-18 11:37:40 michiel Exp $
+  @version $Id: wizard.xsl,v 1.48 2002-07-18 12:24:12 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -151,7 +151,7 @@
         ]]> 
       </xsl:text>
     </script>
-    <xsl:if test="*[@ftype='html']"><!-- hope this works -->
+    <xsl:if test="//*[@ftype='html']"><!-- no need to add the wysiwyg button bar if there are not fields of this type -->
       <script language="javascript">
         <xsl:text disable-output-escaping="yes">
           <![CDATA[<!--
