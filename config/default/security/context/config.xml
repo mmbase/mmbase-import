@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig.dtd">
 <!-- the configuration for the user->group*->context->object security -->
-<config>
-    
+<contextconfig>    
     <!--login modules are used for authentication of the users,
     	the name is the method which is used during the login      
     -->
@@ -56,22 +56,22 @@
     	    	<!-- for every operation, groups can be granted the rights -->
         	<operation type="create">
     	    	    <!-- this may be one or more groups -->
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>	
         	<operation type="read">
-        	    <contains group="everyone" />
+        	    <grant group="everyone" />
         	</operation>
         	<operation type="write">
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>	
         	<operation type="link">
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>
         	<operation type="delete">
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>				
         	<operation type="change context">
-        	    <contains group="administrators" />
+        	    <grant group="administrators" />
         	</operation>
     	    	<!-- when the rights change of the object of this context,
 		    it can get the following rights.. 
@@ -81,25 +81,24 @@
         </context>
         <context name="default">
         	<operation type="create">
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>	
         	<operation type="read">
-        	    <contains group="everyone" />
+        	    <grant group="everyone" />
         	</operation>
         	<operation type="write">
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>	
         	<operation type="link">
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>
         	<operation type="delete">
-        	    <contains group="users" />
+        	    <grant group="users" />
         	</operation>				
         	<operation type="change context">
-        	    <contains group="administrators" />
+        	    <grant group="administrators" />
         	</operation>
 		<possible context="admin"  />
         </context>
-    </contexts>
-    
-</config>
+    </contexts>  
+</contextconfig>
