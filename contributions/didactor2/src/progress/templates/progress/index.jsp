@@ -67,7 +67,7 @@
       <mm:compare referid="nodetype" value="tests">
         <mm:field name="name" jspvar="name" vartype="String">
             <% name = name.replaceAll("\\s+"," "); %>
-         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,10,'<%= name %>')+rotate(90)</mm:import>
+         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,10,'<%= name.replaceAll("'","") %>')+rotate(90)</mm:import>
          </mm:field>
          <mm:node number="progresstextbackground">
          <th><img src="<mm:image template="$template"/>"></th>
