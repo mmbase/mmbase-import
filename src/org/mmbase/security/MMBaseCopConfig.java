@@ -14,9 +14,6 @@ import org.mmbase.util.logging.Logging;
 public class MMBaseCopConfig {
     private static Logger log=Logging.getLoggerInstance(MMBaseCopConfig.class.getName());
 
-    /** the configuration used by our system */
-    private MMBaseCopConfig config;
-    
     /** the file from which the config is loaded..*/
     private File configFile;
  
@@ -233,7 +230,7 @@ public class MMBaseCopConfig {
      * @return the shared Secret
      */
     public String getSharedSecret() {
-    	return config.sharedSecret;
+    	return sharedSecret;
     }
       
     private Authentication getAuthentication(String className, String configUrl) throws SecurityException {
