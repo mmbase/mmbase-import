@@ -31,14 +31,13 @@ Applications build file
     <mkdir dir="${applications.build.dir}" />
   </target>
 
-  <target name="all16" depends="init,media,cloudcontext,bugtracker" />
+  <target name="all16" depends="init,media,cloudcontext,bugtracker,email" />
 
   <target name="all" depends="init,all16,editwizard,community,rmmci" />
 
 
   <target name="mmbase">
     <ant dir="${source.dir}" target="jar" />
-    <ant dir="${source.dir}" target="lib.compile" />
     <ant dir="${source.dir}" target="expand.hsqldb" />
   </target>
 
@@ -48,6 +47,10 @@ Applications build file
 
   <target name="bugtracker">
      <ant dir="bugtracker"      target="package" />
+  </target>
+
+  <target name="email">
+     <ant dir="email"      target="package" />
   </target>
 
   <target name="rmmci" depends="mmbase">
