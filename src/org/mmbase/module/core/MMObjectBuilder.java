@@ -682,7 +682,7 @@ public class MMObjectBuilder extends MMTable {
 		MMObjectNode node=null;
 		node=(MMObjectNode)TemporaryNodes.get(key);
 		if (node==null) {
-			debug("getTmpNode(): node not found "+key);
+			if (debug) debug("getTmpNode(): node not found "+key);
 		}
 		return node;
 	}
@@ -1067,6 +1067,32 @@ public class MMObjectBuilder extends MMTable {
     public FieldDefs getField(String fieldName) {
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         return node;
+    }
+
+
+    /**
+    * add a field to this builder
+    */
+    public void addField(FieldDefs def) {
+	fields.put(def.getDBName(),def);
+        sortedEditFields = null;
+        sortedListFields = null;
+        sortedFields = null;
+        sortedDBLayout=new Vector();
+    	setDBLayout_xml(fields);
+    }
+
+
+    /**
+    * remove a field to this builder
+    */
+    public void removeField(String fieldname) {
+	fields.remove(fieldname);
+        sortedEditFields = null;
+        sortedListFields = null;
+        sortedFields = null;
+        sortedDBLayout=new Vector();
+    	setDBLayout_xml(fields);
     }
 
 
