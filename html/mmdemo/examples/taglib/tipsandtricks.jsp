@@ -33,17 +33,18 @@
 </pre>
    You need the 'write' attribute because it is false on default if the tag has a body.
   </li>
-  <li><em>I get exception if I use the 'id' attribute in a tag in the body of a
-     list</em><br /><p>This can be solved in two ways.</p><p> The
-     first solution is to make sure that the tag with the id attribute
-     is evaluated only once. Then it is clear which value excactly
-     must be written to the context, and you will not see an
-     exception.</p> <p>The second way is to add an 'anonymous'
-     (without 'id' attribute) mm:context text inside your list. In
-     that way every evalution of the list-body has its own context,
-     and variables cannot interfer. The drawback is of course that
-     these variables cannot be accessed outside the list, because they
-     are in an anonymous context. This is only logical.</p>
+  <li><em>I get an exception if I use the 'id' attribute in a tag in
+     the body of a list.</em><br /><p>This can be solved in two
+     ways.</p><p> The first solution is to make sure that the tag with
+     the id attribute is evaluated only once (e.g. by using an
+     mm:first tag). Then it is clear which value exactly must be
+     written to the context, and you will not see an exception.</p>
+     <p>The second way is to add an 'anonymous' (without 'id'
+     attribute) mm:context text inside your list. In that way every
+     evaluation of the list-body has its own context, and variables
+     cannot interfere. The drawback is of course that these variables
+     cannot be accessed outside the list, because they are in an
+     anonymous context. This is only logical.</p>
 </ul>
 
 </body>
