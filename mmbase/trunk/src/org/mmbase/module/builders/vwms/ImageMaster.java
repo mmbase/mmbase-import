@@ -7,6 +7,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+
+/*
+$Id: ImageMaster.java,v 1.11 2000-06-05 10:56:56 wwwtech Exp $
+$Log: not supported by cvs2svn $
+*/
+
 package org.mmbase.module.builders.vwms;
 
 import java.util.*;
