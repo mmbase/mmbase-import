@@ -16,7 +16,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
@@ -30,16 +29,14 @@ import org.mmbase.util.logging.Logging;
  * <br />
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
  * which is in turn based on the relations that exist between nodes.<br>
- * The builder supplies a method to retrieve these virtual nodes: {@link 
- * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int) 
- * searchMultiLevelVector()}.
+ * The builder supplies a method to retrieve these virtual nodes, {@link #searchMultiLevelVector}.
  * Other public methods in this builder function to handle the requests for data obtained from this particular node.
  * Individual nodes in a 'cluster' node can be retrieved by calling the getNodeValue() method, with the builder name
  * of the needed node as parameter value.
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.22 2002-12-06 12:25:52 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18 2002-10-23 08:13:48 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -306,14 +303,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
-     * @param searchDir Specifies in which direction relations are to be 
-     *      followed, this must be one of the values defined by this class.
      * @return a <code>Vector</code> containing all matching nodes
      */
-    public Vector searchMultiLevelVector(
-            Vector snodes,Vector fields,String pdistinct,
-            Vector tables,String where, Vector orderVec,Vector direction,
-            int searchdir) {
+    public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction,
+                                         int searchdir) {
         String stables,relstring,select,order,basenodestring,distinct;
         Vector alltables,selectTypes;
         MMObjectNode basenode;
@@ -448,7 +441,7 @@ public class ClusterBuilder extends VirtualBuilder {
                     for (int i=1;i<=rd.getColumnCount();i++) {
                         prefix=selectTypes.elementAt(i-1)+".";
                         fieldname=rd.getColumnName(i);
-                        mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i,prefix);
+                        database.decodeDBnodeField(node,fieldname,rs,i,prefix);
                     }
                     node.initializing=false;
                     results.addElement(node);
@@ -466,24 +459,6 @@ public class ClusterBuilder extends VirtualBuilder {
         }
     }
 
-    /**
-     * Executes query, returns results as {@link ClusterNode clusternodes}.
-     *
-     * @param query The query.
-     * @return The clusternodes.
-     * @throws org.mmbase.storage.search.SearchQueryException 
-     *         When an exception occurred while retrieving the results.
-     * @since MMBase-1.7
-     * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
-     */
-    public List getClusterNodes(SearchQuery query) throws SearchQueryException {
-        
-        // TODO (later): implement maximum set by maxNodesFromQuery?
-        
-        // Execute query, return results.
-        return mmb.getDatabase().getNodes(query, this);
-    }
-    
     /**
      * Stores the tables/builder names used in the request for each field to return.
      * @param fields the list of requested fields
@@ -507,10 +482,6 @@ public class ClusterBuilder extends VirtualBuilder {
      * This includes adding relation tables when not specified, and converting table names by
      * removing numeric extensions (such as people1,people2).
      * @param tables the original chain of tables
-     * @param roles Map of tablenames mapped to <code>Integer</code> values,
-     *        representing the nodenumber of a corresponing RelDef node.
-     *        This method adds entries for tablenames that specify a role,
-     *        e.g. "related" or "related2".
      * @return an expanded list of tablesnames
      */
     private Vector getAllTables(Vector tables, HashMap roles) {
@@ -605,14 +576,14 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Determines the SQL-query version of a table alias.
+     * Determines the SQL-query version of a tablename.
      * This is done by searching for the appropriate tablename in a known list, and
      * calculating a name based on the index in that list.
      * @param alltables the tablenames known (used to determine the SQL tablename)
      * @param table the table name to convert
-     * @return the SQL table alias as a <code>String</code>
+     * @return the SQL table name as a <code>String</code>
      */
-    private String getSQLTableAlias(Vector alltables,String table) {
+    private String getSQLTableName(Vector alltables,String table) {
         int idx=alltables.indexOf(table);
         if (idx>=0) {
             return idx2char(idx);
@@ -620,13 +591,11 @@ public class ClusterBuilder extends VirtualBuilder {
             return null;
         }
     }
-    
+
     /**
-     * Determines the SQL-query version of a prefixed field name.
-     * This means: replacing the table name prefix in the specified field name 
-     * by the table alias created for the query, and replacing the fieldname by
-     * a so-called 'allowed' fieldname.
-     *
+     * Determines the SQL-query version of a field name.
+     * Basically, this means replacing the table name specified in the user's field name by the one created
+     * for the query,
      * @param alltables the tablenames known (used to determine the SQL tablename)
      * @param fieldname the field name to convert
      * @return the SQL field name as a <code>String</code>
@@ -635,7 +604,7 @@ public class ClusterBuilder extends VirtualBuilder {
         int pos=fieldName.indexOf('.'); // check if a tablename precedes the fieldname
         if (pos!=-1) {
             String table=fieldName.substring(0,pos); // the table
-            String idxn=getSQLTableAlias(alltables,table);
+            String idxn=getSQLTableName(alltables,table);
             if (idxn==null) {
                 log.error("getSQLFieldName(): The field '"+fieldName+"' has an invalid type specified");
             } else {
@@ -651,11 +620,8 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Retrieves fieldnames from an ezpression, and adds these to a set of
-     * fieldnames.
-     * The expression may be either a fieldname or a a functionname with a 
-     * parameterlist between parenthesis.
-     *
+     * Retrieves fieldnames from a value (possibly a function name), and adds
+     * these to a set of fieldnames.
      * @param alltables List of tablenames, used for deriving a SQL table name
      * @param val the value to retrieve the fieldname from
      * @param realfields the set to add the fieldnames to
@@ -664,6 +630,7 @@ public class ClusterBuilder extends VirtualBuilder {
         // strip the function(s)
         int pos=val.indexOf('(');
         if (pos!=-1) {
+            String result="";
             val=val.substring(pos+1);
             pos=val.lastIndexOf(')');
             if (pos!=-1) {
@@ -716,12 +683,11 @@ public class ClusterBuilder extends VirtualBuilder {
             val=(String)r.nextElement();
             obtainSelectField(alltables,val,realfields);
         }
-        
-        // optionally add "number" fields for all originally specified tables
+        // add numbers for all originally specified tables
         if (includeAllReferences) {
             for (Enumeration r=originaltables.elements();r.hasMoreElements();) {
                 val=(String)r.nextElement();
-                realfields.add(numberOf(getSQLTableAlias(alltables,val)));
+                realfields.add(numberOf(getSQLTableName(alltables,val)));
             }
         }
         for (Iterator r=realfields.iterator();r.hasNext();) {
@@ -797,7 +763,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
         for (Enumeration e=tables.elements();e.hasMoreElements();) {
             atable=(String)e.nextElement();
-            table = getSQLTableAlias(alltables,atable);
+            table = getSQLTableName(alltables,atable);
 
             // This translates the long tablename to the short one
             // i.e. people.account to a.account.

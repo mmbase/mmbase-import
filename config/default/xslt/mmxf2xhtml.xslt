@@ -2,7 +2,7 @@
   This translates a mmbase XML field to XHTML. So if you have MMXF
   fields in your datbase, this describes how they are presented as XHTML.
 
-  @version $Id: mmxf2xhtml.xslt,v 1.7 2002-11-22 10:43:11 pierre Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.6.2.1 2002-11-22 10:53:43 pierre Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet

@@ -58,12 +58,9 @@ import org.mmbase.module.core.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.15 2002-12-03 21:24:26 michiel Exp $
+ * @version $Id: Config.java,v 1.14.6.1 2002-12-03 21:22:31 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
- * Revision 1.14.6.1  2002/12/03 21:22:31  michiel
- * fixes for bugs #4249, #3713 and #4393 plus a little cleaning in the process. All related to DTD resolving / XML validation
- *
  * Revision 1.14  2001/07/16 10:08:07  jaco
  * jaco: Moved all configuration stuff to MMBaseContext.
  * If needed params not found or incorrect a ServletException with a description isthrown.

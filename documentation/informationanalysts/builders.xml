@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>5 december 2002</date>
-		<edition>$Id: builders.xml,v 1.4 2002-12-06 13:03:17 pierre Exp $</edition>
+		<edition>$Id: builders.xml,v 1.1.2.3 2002-12-06 13:00:53 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>

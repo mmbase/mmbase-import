@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.11 2002-11-18 12:24:18 pierre Exp $
+ * @version $Id: BasicTransaction.java,v 1.10.4.1 2002-11-18 12:28:30 pierre Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
     private static Logger log = Logging.getLoggerInstance(BasicTransaction.class.getName());

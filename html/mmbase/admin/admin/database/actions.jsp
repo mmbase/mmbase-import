@@ -11,11 +11,11 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="database actions">
+<table summary="database actions" width="93%" cellspacing="1" cellpadding="3">
 <%
    Module mmAdmin=LocalContext.getCloudContext().getModule("mmadmin");
 %>
-<tr>
+<tr align="left">
  <th class="header" colspan="5"><!-- Description --><%=database%> database</th>
 </tr>
 <!-- tr>
@@ -32,10 +32,10 @@
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-databases-"+database);
 %>
-<tr>
+<tr align="left">
 <th class="header">Action</th>
   <th class="header" colspan="3">Status</th>
-  <th class="navigate" >View</th>
+  <th class="header" >View</th>
 </tr>
 <tr>
  <td class="data">XML-check</td>
@@ -49,7 +49,7 @@
 <%  } %>
     <input type="hidden" name="config" value="databases" />
     <input type="hidden" name="target" value="<%=database%>" />
-    <input type="image" src="../../images/search.gif" alt="view" border="0"  />
+    <input type="submit" value="YES" />
   </form>
  </td>
 </tr>
@@ -58,8 +58,8 @@
 
 <% } %>
 
-<tr class="footer">
-<td class="navigate"><a href="<mm:url page="../databases.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<tr>
+<td class="navigate"><a href="<mm:url page="../databases.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Database Overview</td>
 </tr>
 </table>

@@ -17,8 +17,6 @@ import org.mmbase.module.database.support.dTypeInfos;
 import org.mmbase.module.database.support.dTypeInfo;
 
 import org.mmbase.storage.*;
-import org.mmbase.storage.search.*;
-
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.InsRel;
@@ -36,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.6 2002-12-05 15:28:56 robmaris Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.4 2002-11-12 16:57:51 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -114,9 +112,6 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         setCreateScheme(document.getCreateScheme());
         setCreateExtendedScheme(document.getCreateExtendedScheme());
         setMaxDropSize(document.getMaxDropSize());
-        
-        // Instantiate and initialize sql handler.
-        super.init(getFieldNameMap(), document);
     }
 
     /**
@@ -1102,4 +1097,5 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @return true if succesful
      */
     abstract public boolean updateStorage(MMObjectBuilder builder);
+
 }
