@@ -85,7 +85,7 @@ public class RelDef extends MMObjectBuilder {
 	    // add relation definiation names
 	    for (Enumeration e=search(null);e.hasMoreElements();) {
 	        MMObjectNode n= (MMObjectNode)e.nextElement();
-	        relCache.put(n.getStringValue("sname"),new Integer(n.getIntValue("number")));
+	        relCache.put(n.getStringValue("sname"),new Integer(n.getNumber()));
 	     }
 	    return true;
     }
@@ -207,7 +207,7 @@ public class RelDef extends MMObjectBuilder {
         boolean success = super.commit(node);
         if (success) {
             String newname=node.getStringValue("sname");
-            relCache.put(newname,new Integer(node.getIntValue("number")));
+            relCache.put(newname,new Integer(node.getNumber()));
         }
         return success;
    }
@@ -351,7 +351,7 @@ public class RelDef extends MMObjectBuilder {
         Enumeration e=search("WHERE (sname='"+name+"') OR (dname='"+name+"')");
         if (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
-            return node.getIntValue("number");
+            return node.getNumber();
         } else {
             return -1;
         }
@@ -374,7 +374,7 @@ public class RelDef extends MMObjectBuilder {
 	
         if (e.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode)e.nextElement();
-            return node.getIntValue("number");
+            return node.getNumber();
         }
         return -1;
     }

@@ -64,7 +64,7 @@ public class TypeRel extends MMObjectBuilder {
 	*  @return An <code>Enumeration</code> of nodes containing the typerel relation data
 	*/
 	public Enumeration getAllowedRelations(MMObjectNode mmnode) {
-		int number=mmnode.getIntValue("otype");
+		int number=mmnode.getOType();
 	    return getAllowedRelations(number);
 	}
 
@@ -186,8 +186,8 @@ public class TypeRel extends MMObjectBuilder {
 	*  @return An <code>Enumeration</code> of nodes containing the typerel relation data
 	*/
 	public Enumeration getAllowedRelations(MMObjectNode n1,MMObjectNode n2) {
-		int snum=n1.getIntValue("otype");
-		int dnum=n2.getIntValue("otype");
+		int snum=n1.getOType();
+		int dnum=n2.getOType();
 		return getAllowedRelations(snum,dnum);
 	}
 
@@ -227,7 +227,7 @@ public class TypeRel extends MMObjectBuilder {
                     tmp=tagger.Value("NODE");
                     int number2=Integer.parseInt(tmp);
                     MMObjectNode node=getNode(number2);
-                    return getAllowedRelationsNames(number1,node.getIntValue("otype"));
+                    return getAllowedRelationsNames(number1,node.getOType());
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
