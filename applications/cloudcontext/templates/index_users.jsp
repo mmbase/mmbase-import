@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
 %><%@page language="java" contentType="text/html; charset=UTF-8"
-%><mm:content postprocessor="reducespace">
-<%@include file="import.jsp" %><%@include file="settings.jsp" %>
+%><%@include file="import.jsp" %><%@include file="settings.jsp" %>
+<mm:content language="$language" postprocessor="reducespace">
 <mm:import id="url">index_users</mm:import>
 
 <mm:import externid="orderby">username</mm:import>
@@ -38,7 +38,7 @@
 
      <tr>
        <th> </th>
-       <th>Rang</th>
+       <th><%=m.getString("rank")%></th>
        <mm:fieldlist nodetype="$nodetype"  fields="$fields">
          <th>
            <a title="order" href='<mm:url referids="search,parameters,$parameters" ><mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
@@ -65,15 +65,10 @@
     <mm:sortorder field="$orderby" direction="$directions" />
      <mm:listnodes id="user">
       <tr <mm:even>class="even"</mm:even> >
-
        <td>
-  <%--
-         <mm:field name="username">
-           <mm:listnodes type="people" constraints="[account]='$_'" max="1">
-             <mm:field name="gui()" />
-           </mm:listnodes>
-         </mm:field>
-   --%>
+         <mm:present referid="extrauserlink">
+          <mm:include referids="user" page="$extrauserlink" />
+         </mm:present>
        </td>
       <td>
         <mm:relatednodes type="mmbaseranks" role="rank">

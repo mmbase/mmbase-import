@@ -6,7 +6,7 @@
     <mm:field name="username">
     <mm:compare value="<%=cloud.getUser().getIdentifier()%>" inverse="true">
     <tr>
-     <td>Groups</td>
+     <td><%=m.getString("groups")%></td>
      <td>
       <select name="_groups"  size="15" multiple="multiple">
         <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
@@ -16,13 +16,14 @@
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
-      <a href="<mm:url page="index_groups.jsp">
+      <a href="<mm:url referids="parameters,$parameters">
+       <mm:param name="url">index_groups.jsp</mm:param>
       <mm:relatednodes referid="ingroups">
         <mm:param name="group"><mm:field name="number" /></mm:param>
        </mm:relatednodes>
-      </mm:url>">View groups</a>
+      </mm:url>"><%=m.getString("view_groups")%></a>
      </td>
-     <td>Rank</td>
+     <td><%=m.getString("rank")%></td>
      <td>
       <select name="_rank" size="15">
         <mm:relatednodes type="mmbaseranks">

@@ -2,7 +2,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
 %><%@page language="java" contentType="text/html;charset=utf-8"
 %><%@include file="settings.jsp" %><html>
-
 <head>
 <title>Login</title>
     <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />

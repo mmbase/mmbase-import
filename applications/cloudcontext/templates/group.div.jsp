@@ -1,7 +1,7 @@
 <div class="group">
 <div class="environment">
  <p class="current">
-    Current group: <mm:nodeinfo type="gui" />
+   <%=m.getString("current_group")%>: <mm:nodeinfo type="gui" />
  </p>
 </div>
 
@@ -28,7 +28,7 @@
       </mm:fieldlist>
 
     <tr>
-     <td>Parent groups</td>
+     <td><%=m.getString("parent_groups")%></td>
      <td>
       <select name="_parentgroups"  size="15" multiple="multiple">
         <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
@@ -42,9 +42,9 @@
       <mm:relatednodes referid="ingroups">
         <mm:param name="group"><mm:field name="number" /></mm:param>
        </mm:relatednodes>
-      </mm:url>">View groups</a>
+      </mm:url>"><%=m.getString("view_groups")%></a>
      </td>
-     <td>Child groups</td>
+     <td><%=m.getString("child_groups")%></td>
      <td>
       <select name="_childgroups"  size="15" multiple="multiple">
         <mm:relatednodes id="fromgroups" type="mmbasegroups" searchdir="destination">
@@ -58,7 +58,7 @@
       <mm:relatednodes referid="fromgroups">
         <mm:param name="group"><mm:field name="number" /></mm:param>
        </mm:relatednodes>
-      </mm:url>">View groups</a>
+      </mm:url>"><%=m.getString("view_groups")%></a>
      </td>
      </tr>
    </table>
