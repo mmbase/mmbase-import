@@ -48,7 +48,7 @@ import org.mmbase.util.*;
  *
  *    Example: $MOD-CONFIG-SHOW-builders-people  
  *
- * @version $Id: Config.java,v 1.9 2000-08-20 10:38:27 case Exp $
+ * @version $Id: Config.java,v 1.10 2000-08-27 22:30:02 daniel Exp $
  *
  * $Log: not supported by cvs2svn $
  * Revision 1.8  2000/08/10 21:06:46  case
@@ -151,12 +151,7 @@ public class Config extends ProcessorModule {
 
     public boolean builderIsActive(String path) {
         XMLBuilderReader reader = new XMLBuilderReader(path);
-        try {
-            return reader.getStatus().equalsIgnoreCase("active");
-        } catch (Exception e) {
-            // Something is badly wrong, so surely this thing isn't active
-            return false;
-        }
+        return reader.getStatus().equalsIgnoreCase("active");
     }
 
     public boolean databaseIsActive(String path) {
@@ -195,13 +190,35 @@ public class Config extends ProcessorModule {
 
 
 
-
         String curdb = (String)mods.get("DATABASE");
         return path.indexOf(curdb) > 0;
     }
 
+    /**
+     * Implement a FilenameFilter for xml files
+     */
+    public class XMLFilenameFilter implements FilenameFilter {
+        public boolean accept(File directory, String name) {
+            if (name.endsWith(".xml")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     public void init() {
-        configpath = System.getProperty("mmbase.config");
+                String dtmp=System.getProperty("mmbase.mode");
+                if (dtmp!=null && dtmp.equals("demo")) {
+                        String curdir=System.getProperty("user.dir");
+                        if (curdir.endsWith("orion")) {
+                                curdir=curdir.substring(0,curdir.length()-6);
+                        }
+                        configpath=curdir+"/config";
+                } else {
+                        configpath=System.getProperty("mmbase.config");
+                }
+        //configpath = System.getProperty("mmbase.config");
         if (configpath.endsWith(File.separator)) {
             configpath = configpath.substring(0,configpath.length()-1);
         }
@@ -212,14 +229,11 @@ public class Config extends ProcessorModule {
 
 
 
-
     public void onload() {}
 
 
 
-
     public void unload() {}
-
 
 
 
@@ -269,7 +283,6 @@ public class Config extends ProcessorModule {
                             } else if (category.equalsIgnoreCase("applications")) {
                                 // bla
                             }
-
 
 
                         }
