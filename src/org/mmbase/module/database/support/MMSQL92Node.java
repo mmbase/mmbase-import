@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.32 2000-07-24 16:09:58 install Exp $
+$Id: MMSQL92Node.java,v 1.33 2000-07-25 20:47:53 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.32  2000/07/24 16:09:58  install
+Daniel.. fixed virtual fields
+
 Revision 1.31  2000/07/18 12:27:49  install
 Rob:turned debug off
 
@@ -137,7 +140,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.32 $ $Date: 2000-07-24 16:09:58 $
+* @$Revision: 1.33 $ $Date: 2000-07-25 20:47:53 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -463,7 +466,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		PreparedStatement stmt=null;
 		try {
             // Prepare the statement using the amount of fields found.
-            debug("Insert: Preparing statement "+mmb.baseName+"_"+bul.tableName+" using fieldamount String: "+fieldAmounts);
+            if (debug) debug("Insert: Preparing statement "+mmb.baseName+"_"+bul.tableName+" using fieldamount String: "+fieldAmounts);
 			con=bul.mmb.getConnection();
 			stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+fieldAmounts+")");
 		} catch(Exception t) {
@@ -480,11 +483,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				int DBState = node.getDBState(key);
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 				  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-					debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
+					if (debug) debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
 					setValuePreparedStatement( stmt, node, key, j );
 					j++;
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-					debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
+					if (debug) debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
 				    if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 						setValuePreparedStatement( stmt, node, key, j );
@@ -561,6 +564,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 		node.setValue("number",number);
+		node.clearChanged();
 		//System.out.println("INSERTED="+node);
 		return(number);	
 	}
