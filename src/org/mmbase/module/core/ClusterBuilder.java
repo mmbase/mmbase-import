@@ -37,7 +37,7 @@ import org.mmbase.bridge.NodeQuery; //jikes!
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.49 2003-11-10 18:03:38 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.50 2003-11-11 10:41:15 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1635,6 +1635,7 @@ public class ClusterBuilder extends VirtualBuilder {
     void addRelationDirections(BasicSearchQuery query, int searchDir, Map roles) {
 
         Iterator iSteps = query.getSteps().iterator();
+        if (! iSteps.hasNext()) return; // nothing to be done.
         BasicStep sourceStep = (BasicStep)iSteps.next();
         BasicStep destinationStep = null;
         while (iSteps.hasNext()) {
