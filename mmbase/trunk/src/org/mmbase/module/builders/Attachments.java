@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.32 2004-05-27 13:07:38 michiel Exp $
+ * @version $Id: Attachments.java,v 1.33 2004-09-30 14:54:56 pierre Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -167,7 +167,7 @@ public class Attachments extends AbstractServletBuilder {
     protected void checkHandle(MMObjectNode node) {
         String mimetype = node.getStringValue("mimetype");
         if (mimetype == null || mimetype.equals("")) {
-            log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determin it automaticly.");
+            log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determine it automaticly.");
             Object h = node.getValue("handle");
             if (h != null && (h instanceof byte[])) { // if unfilled h can be $SHORTED, sigh, sigh (at least when using editwizard)
 
