@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.125 2002-04-08 12:04:37 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.126 2002-04-10 15:04:26 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1850,10 +1850,15 @@ public class MMObjectBuilder extends MMTable {
             if (field.equals("")) {
                 val=getGUIIndicator(node);
             } else {
-                val=getGUIIndicator(field,node);
-            }
-            if (val==null) {
-                val=node.getStringValue(field);
+                val = getGUIIndicator(field,node);                
+                if (val == null) {
+                    FieldDefs fdef = getField(field);
+                    if ("eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
+                        val = new java.text.SimpleDateFormat().format(new java.util.Date((long) node.getIntValue(field) * 1000));
+                    } else {
+                        val = node.getStringValue(field);
+                    }
+                }
             }
             rtn=val;
         } else if (function.equals("smartpath")) {
