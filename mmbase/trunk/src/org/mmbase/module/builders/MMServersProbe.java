@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMServersProbe.java,v 1.4 2000-03-30 13:11:32 wwwtech Exp $
+$Id: MMServersProbe.java,v 1.5 2000-07-22 10:47:46 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/30 13:11:32  wwwtech
+Rico: added license
+
 Revision 1.3  2000/03/29 10:59:23  wwwtech
 Rob: Licenses changed
 
@@ -32,7 +35,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.4 $ $Date: 2000-03-30 13:11:32 $ 
+ * @version0 $Revision: 1.5 $ $Date: 2000-07-22 10:47:46 $ 
  */
 public class MMServersProbe implements Runnable {
 
@@ -99,7 +102,14 @@ public class MMServersProbe implements Runnable {
 		boolean needbreak=false;
 		int id;
 
-		try {Thread.sleep(30*1000);} catch (InterruptedException e){}
+		// ugly pre up polling
+		while (parent.mmb.getState()==false) {
+			try {
+				Thread.sleep(2*1000);
+			} catch (InterruptedException e){
+			}
+		}
+
 		while (kicker!=null) {
 			parent.probeCall();
 			try {Thread.sleep(60*1000);} catch (InterruptedException e){}
