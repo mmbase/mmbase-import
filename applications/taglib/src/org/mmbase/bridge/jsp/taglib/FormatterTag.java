@@ -39,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.48 2005-03-16 14:52:20 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.49 2005-03-29 16:31:24 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -85,6 +85,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     private static final int FORMAT_DATE            = 1002;
     private static final int FORMAT_LOWERCASE       = 1003;
     private static final int FORMAT_UPPERCASE       = 1004;
+    private static final int FORMAT_NONE            = 2000; // can be useful for only the escape= functionality.
 
 
     private static final int FORMAT_UNSET           = -1;
@@ -137,9 +138,12 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     }
 
     protected int getFormat() throws JspTagException {
-        if (format == Attribute.NULL) return FORMAT_UNSET;
         String fs = format.getString(this).toLowerCase();
-        if ("xhtml".equals(fs)) {
+        if ("".equals(fs)) {
+            return FORMAT_NONE;
+        } else if ("none".equals(fs)) {
+            return FORMAT_NONE;
+        } else if ("xhtml".equals(fs)) {
             return FORMAT_XHTML;
         } else if ("presentxml".equals(fs)) {
             return  FORMAT_PRESENTXML;
@@ -319,6 +323,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 throw new JspTagException("Cannot use  'xslt' subtag and the 'format' attribute");
             }
             switch(getFormat()) {
+            case FORMAT_NONE:
+                helper.useEscaper(true); 
+                helper.setValue(body);
+                break;
             case FORMAT_XHTML:
                 helper.useEscaper(false); // fieldinfo typicaly produces xhtml
                 helper.setValue(xslTransform(doc, "xslt/2xhtml.xslt"));
