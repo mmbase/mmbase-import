@@ -47,15 +47,12 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.139 2002-05-08 14:24:25 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.140 2002-05-15 17:27:53 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
     // Max size of the object type cache
     public final static int OBJ2TYPE_MAX_SIZE=20000;
-
-    // Max size of the node cache
-    public final static int NODE_MAX_SIZE=1024*4;
 
     // Default size of the temporary node cache
     public final static int TEMPNODE_DEFAULT_SIZE=1024;
@@ -74,9 +71,8 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * The cache that contains the X last requested nodes
-     * X is currently set to 4096
      */
-    public static LRUHashtable nodeCache = new LRUHashtable(NODE_MAX_SIZE);
+    public static org.mmbase.cache.NodeCache nodeCache = org.mmbase.cache.NodeCache.getCache();
 
     /**
      * Collection for temporary nodes,
