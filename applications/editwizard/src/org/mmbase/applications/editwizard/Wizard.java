@@ -17,14 +17,15 @@ import org.mmbase.cache.Cache;
 
 import org.mmbase.applications.dove.*;
 
-import org.mmbase.util.FileWatcher;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.XMLEntityResolver;
 
 import org.w3c.dom.*;
 
-import java.io.File;
+import java.net.URL;
 import java.io.Writer;
 
 import java.util.*;
@@ -42,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.128 2004-09-30 09:16:22 michiel Exp $
+ * @version $Id: Wizard.java,v 1.129 2004-11-11 17:44:45 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -96,7 +97,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private String currentFormId;
 
     // filename of the stylesheet which should be used to make the html form.
-    private File wizardStylesheetFile;
+    private URL wizardStylesheetFile;
     private String sessionId;
     private String sessionKey = "editwizard";
     private String referrer = "";
@@ -380,9 +381,24 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         dataId = wizardConfig.objectNumber;
         debug = wizardConfig.debug;
 
-        File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
-        wizardStylesheetFile = uriResolver.resolveToFile("xsl/wizard.xsl");
+        URL wizardSchemaFile;
+        try {
+            wizardSchemaFile     = uriResolver.resolveToURL(wizardName + ".xml", null);
+        } catch (Exception e) {
+            throw new WizardException(e);
+        }
+        if (wizardSchemaFile == null) {
+            throw new WizardException("Could not resolve wizard " + wizardName + ".xml  with "  + uriResolver);
+        }
+        try {
+            wizardStylesheetFile = uriResolver.resolveToURL("xsl/wizard.xsl", null);
+        } catch (Exception e) {
+            throw new WizardException(e);
+        }
 
+        if (wizardStylesheetFile == null) {
+            throw new WizardException("Could not resolve XSL " + wizardStylesheetFile + "  with "  + uriResolver);
+        }
         // store variables so that these can be used in the wizard schema
         storeConfigurationAttributes(wizardConfig);
 
@@ -1055,16 +1071,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * resolves the includes, and 'tags' all datanodes. (Places temp. ids in the schema).
      *
      */
-    private void loadSchema(File wizardSchemaFile) throws WizardException {
+    private void loadSchema(URL  wizardSchemaFile) throws WizardException {
         schema = wizardSchemaCache.getDocument(wizardSchemaFile);
 
         if (schema == null) {
             schema = Utils.loadXMLFile(wizardSchemaFile);
 
-            List files = resolveIncludes(schema.getDocumentElement());
+            List dependencies = resolveIncludes(schema.getDocumentElement());
             resolveShortcuts(schema.getDocumentElement(), true);
 
-            wizardSchemaCache.put(wizardSchemaFile, schema, files);
+            wizardSchemaCache.put(wizardSchemaFile, schema, dependencies);
 
             log.debug("Schema loaded (and resolved): " + wizardSchemaFile);
         } else {
@@ -1121,7 +1137,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                                                           1);
                     }
 
-                    File file = uriResolver.resolveToFile(url);
+                    URL file;
+                    try {
+                        file = uriResolver.resolveToURL(url, null);
+                    } catch (Exception e) {
+                        throw new WizardException(e);
+                    }
                     result.add(file);
 
                     // Load the external file.
@@ -2736,7 +2757,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * Caches File to  Editwizard schema Document.
      * @since MMBase-1.6.4
      */
-    static class WizardSchemaCache extends Cache {
+    private static class WizardSchemaCache extends Cache {
         WizardSchemaCache() {
             super(100);
         }
@@ -2749,7 +2770,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return "File -> Editwizard schema Document (resolved includes/shortcuts)";
         }
 
-        synchronized public Object put(File f, Document doc, List dependencies) {
+        synchronized public Object put(URL f, Document doc, List dependencies) {
             Object retval = super.get(f);
 
             if (retval != null) {
@@ -2760,7 +2781,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         synchronized public Object remove(Object key) {
-            File file = (File) key;
+            URL file = (URL) key;
             Entry entry = (Entry) get(file);
 
             if ((entry != null) && (entry.fileWatcher != null)) {
@@ -2772,7 +2793,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return super.remove(key);
         }
 
-        synchronized public Document getDocument(File key) {
+        synchronized public Document getDocument(URL key) {
             Entry entry = (Entry) super.get(key);
           
             if (entry == null) {
@@ -2782,23 +2803,22 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return entry.doc;
         }
 
-        class Entry {
+        private class Entry {
             Document doc; // the document.
-            File file; // the file belonging to this document (key of cache)
+            URL file; //the file belonging to this document (key of cache)
 
             /**
              * Cache entries must be invalidated if (one of the) file(s) changes.
              */
-            FileWatcher fileWatcher = new FileWatcher(true) {
-                    protected void onChange(File f) {
+            ResourceWatcher fileWatcher = new ResourceWatcher(ResourceLoader.getWebRoot()) {
+                    public void onChange(String u) {
                         // invalidate this cache entry
                         WizardSchemaCache.this.remove(Entry.this.file);
-                     
                         // stop watching files
                     }
                 };
           
-            Entry(File f, Document doc, List dependencies) {
+            Entry(URL f, Document doc, List dependencies) {
                 this.file = f;
                 this.doc = doc;
                 fileWatcher.add(f);
@@ -2806,7 +2826,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Iterator i = dependencies.iterator();
               
                 while (i.hasNext()) {
-                    File ff = (File) i.next();
+                    String ff = (String) i.next();
                     fileWatcher.add(ff);
                 }
 
