@@ -103,6 +103,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
                 sessionName = ct.getSessionName();
             }
             Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
+            args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
             args.set("language", getCloud().getLocale().getLanguage());
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
