@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.24 2002-04-08 12:13:19 pierre Exp $
+ * @version $Id: JDBC.java,v 1.25 2002-04-19 11:48:10 eduard Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -102,10 +102,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             // to be registered; should have no affect on other drivers
             Class.forName(JDBCdriver).newInstance();
 
-            log.info("getDriver(): Loaded JDBC driver: "+JDBCdriver);
+            log.info("Loaded JDBC driver: "+JDBCdriver);
 
         } catch (Exception e) {
-            log.fatal("getDriver(): JDBC driver not found: "+JDBCdriver+": " + e);
+            log.fatal("JDBC driver not found: "+JDBCdriver+"\n" + Logging.stackTrace(e));
         }
 
     log.debug("makeUrl(): " + makeUrl());
@@ -135,9 +135,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             cl=Class.forName(databasesupportclass);
             databasesupport=(DatabaseSupport)cl.newInstance();
             databasesupport.init();
-            log.debug("loadsupport(): Loaded load class : "+databasesupportclass);
+            log.debug("Loaded load class : "+databasesupportclass);
         } catch (Exception e) {
-            log.error("loadsupport(): Can't load class : "+databasesupportclass+" : "+e);
+            log.error("Can't load class : "+databasesupportclass+"\n"+Logging.stackTrace(e));
         }
     }
 
@@ -164,28 +164,34 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
 
         if (defaultname==null) {
             defaultname="wwwtech";
+            log.warn("name was not set, using default: '" + defaultname +"'");
         }
         if (defaultpassword==null) {
             defaultpassword="xxxxxx";
+            log.warn("name was not set, using default: '" + defaultpassword +"'");
         }
         try {
             JDBCport=Integer.parseInt(getInitParameter("port"));
         } catch (NumberFormatException e) {
             JDBCport=0;
+            log.warn("portnumber was not set or a invalid integer :" + e + "(using default " + JDBCport + ")");
         }
         try {
             maxConnections=Integer.parseInt(getInitParameter("connections"));
         } catch (Exception e) {
-            maxConnections=8;
+            maxConnections = 8;
+            log.warn("connections was not set or a invalid integer :" + e + "(using default " + maxConnections + ")");
         }
         try {
             maxQuerys=Integer.parseInt(getInitParameter("querys"));
         } catch (Exception e) {
-            maxQuerys=500;
+            maxQuerys = 500;
+            log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQuerys + ")");
         }
         JDBCdatabase=getInitParameter("database");
         if (databasesupportclass==null || databasesupportclass.length()==0) {
             databasesupportclass="org.mmbase.module.database.DatabaseSupportShim";
+            log.warn("database supportclass was not known, using default: " + databasesupportclass);
         }
     }
 
@@ -291,7 +297,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         try {
             if (poolHandler!=null) poolHandler.checkTime();
         } catch(Exception e) {
-            log.error("checkTime(): Exception");
+            log.error("could not check the time: " + e);
+            // Logging.stackTrace(e)
             //e.printStackTrace();
         }
     }
@@ -305,10 +312,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-            if (cmd.equals("POOLS")) return(listPools(tagger));
-            if (cmd.equals("CONNECTIONS")) return(listConnections(tagger));
+            if (cmd.equals("POOLS")) return listPools(tagger);
+            if (cmd.equals("CONNECTIONS")) return listConnections(tagger);
         }
-        return(null);
+        return null;
     }
 
     // Strips senssitive info (such as password and username) from the
@@ -391,4 +398,12 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public String getDatabaseName() {
         return(getInitParameter("database"));
     }
+
+    /**
+     * Give some info about the jdbc connection
+     * @return a <code>String</code> whith some information about the connection
+     */
+     public String toString() {
+        return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "' driver: '" + driver.getClass().getName() + "'";
+     }
 }
