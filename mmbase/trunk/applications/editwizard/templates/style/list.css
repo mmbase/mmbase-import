@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: list.css,v 1.7 2002-08-20 12:18:53 pierre Exp $
+  @version  $Id: list.css,v 1.8 2003-05-01 17:32:49 pierre Exp $
   
 */
 
@@ -30,7 +30,7 @@ td.left {
   width: 20%;
 }
 
-td.listcanvas { 
+td.searchcanvas, td.listcanvas { 
    border-style:solid; 
    border-width:3; 
    border-color:#CCC; 

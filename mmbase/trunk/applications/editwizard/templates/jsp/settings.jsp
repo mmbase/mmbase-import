@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.29 2003-01-15 16:12:34 kees Exp $
+     * @version  $Id: settings.jsp,v 1.30 2003-05-01 17:32:49 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -21,7 +21,7 @@
 
         Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
             super(req, res, c);
-            c.maxupload = getParam("maxsize", new Integer(4 * 1024 * 1024)).intValue(); // 4 MByte max uploadsize
+            c.maxupload = getParam("maxsize", new Integer(4 * 1024 * 1024)).intValue(); // 1 MByte max uploadsize
         }
 
 
@@ -42,36 +42,39 @@
             c.fields      = getParam("fields", c.fields);
             c.age         = getParam("age", new Integer(c.age)).intValue();
             c.start       = getParam("start", new Integer(c.start)).intValue();
-            String searchfields=getParam("searchfields");
-            if (searchfields==null) {
-                c.constraints = getParam("constraints", c.constraints);
+            c.searchType=getParam("searchtype", c.searchType);
+            c.searchFields=getParam("searchfields", c.searchFields);
+            c.searchValue=getParam("searchvalue", c.searchValue);
+            c.searchDir=getParam("searchdir",c.searchDir);
+            c.baseConstraints=getParam("constraints", c.baseConstraints);
+            
+            if (c.searchFields==null) {
+                c.constraints = c.baseConstraints;
             } else {
+                String search=c.searchValue;
                 c.constraints=null;
-                String baseconstraints = getParam("constraints");
-                String searchtype=getParam("searchtype","like");
-                String search=getParam("searchvalue","");
-                if (searchtype.equals("like")) {
+                if (c.searchType.equals("like")) {
                     // actually we should unquote search...
                     search=" like '%"+search+"%'";
-                } else if (searchtype.equals("string")) {
+                } else if (c.searchType.equals("string")) {
                     search=" = '"+search+"'";
                 } else {
                     if (search.equals("")) {
                         search="0";
                     }
-                    if (searchtype.equals("greaterthan")) {
+                    if (c.searchType.equals("greaterthan")) {
                         search=" > "+search;
-                    } else if (searchtype.equals("lessthan")) {
+                    } else if (c.searchType.equals("lessthan")) {
                         search=" < "+search;
-                    } else if (searchtype.equals("notgreaterthan")) {
+                    } else if (c.searchType.equals("notgreaterthan")) {
                         search=" <= "+search;
-                    } else if (searchtype.equals("notlessthan")) {
+                    } else if (c.searchType.equals("notlessthan")) {
                         search=" >= "+search;
                     } else {
                         search=" = "+search;
                     }
                 }
-                StringTokenizer searchtokens= new StringTokenizer(searchfields,",");
+                StringTokenizer searchtokens= new StringTokenizer(c.searchFields,",");
                 while (searchtokens.hasMoreTokens()) {
                     String tok=searchtokens.nextToken();
                     if (c.constraints!=null) {
@@ -81,10 +84,11 @@
                     }
                     c.constraints+=tok+search;
                 }
-                if (baseconstraints!=null) {
-                    c.constraints="("+baseconstraints+") and ("+c.constraints+")";
+                if (c.baseConstraints!=null) {
+                    c.constraints="("+c.baseConstraints+") and ("+c.constraints+")";
                 }
             }
+            c.searchDir  = getParam("searchdir", c.searchDir);
             c.directions  = getParam("directions", c.directions);
             c.orderBy     = getParam("orderby", c.orderBy);
             c.distinct    = getParam("distinct", new Boolean(true)).booleanValue();
