@@ -26,8 +26,13 @@ public class MMBaseUser extends IrcUser {
     Node usersNode;
     // The rolerel relation with the chatservers node
     RelationManager rolerelRelationManager;
+    String usersNodeManagerName;
+    String usersAccountFieldName;
 
-    protected MMBaseUser(IrcUser ircUser, Cloud cloud, RelationManager rolerelRelationManager, Node chatserversNode, Node usersNode) {
+    protected MMBaseUser(IrcUser ircUser, Cloud cloud,
+            RelationManager rolerelRelationManager, Node chatserversNode,
+            Node usersNode, String usersNodeManagerName,
+            String usersAccountFieldName) {
         this.pass = ircUser.getPass();
         this.hostname = ircUser.getHostname();
         this.nick= ircUser.getNick();
@@ -38,6 +43,8 @@ public class MMBaseUser extends IrcUser {
         this.rolerelRelationManager = rolerelRelationManager;
         this.chatserversNode = chatserversNode;
         this.usersNode = usersNode;
+        this.usersNodeManagerName = usersNodeManagerName;
+        this.usersAccountFieldName = usersAccountFieldName;
     }
 
     protected Node getUsersNode() {
@@ -45,7 +52,7 @@ public class MMBaseUser extends IrcUser {
     }
     
     protected int registerAsOperator(String username, String password) {
-        if (username.equals(usersNode.getStringValue("account"))) {
+        if (username.equals(usersNode.getStringValue(usersAccountFieldName))) {
             // Use getNode to prevent getting back an old value.
             Node node;
             try {
@@ -81,7 +88,7 @@ public class MMBaseUser extends IrcUser {
         Node rolerelRelation = null;
         NodeList nodeList;
         nodeList = cloud.getList(usersNode.getStringValue("number"),
-                                 "users,rolerel," + node.getNodeManager().getName(),
+                                 usersNodeManagerName + ",rolerel," + node.getNodeManager().getName(),
                                  "rolerel.number",
                                  node.getNodeManager().getName() + ".number = " + node.getStringValue("number"),
                                  null, null, null, false);

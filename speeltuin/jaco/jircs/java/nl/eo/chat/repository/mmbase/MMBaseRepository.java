@@ -12,6 +12,7 @@ package nl.eo.chat.repository.mmbase;
 import java.net.Socket;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
@@ -44,7 +45,10 @@ public class MMBaseRepository extends IrcRepository {
     private String chatserversNodeNumber;
     private Node userGroupNode;
     private Node chatserversNode;
-    
+    private String usersNodeManagerName;
+    private String usersAccountFieldName;
+    private String usersSessionFieldName;
+
     public MMBaseRepository() {
     }
 
@@ -61,6 +65,29 @@ public class MMBaseRepository extends IrcRepository {
         if (chatserversNodeNumber == null) {
             throw new InitializationException("Could not find property ChatServerNode.");
         }
+        usersNodeManagerName = properties.getProperty("UsersNodeManagerName");
+        if (usersNodeManagerName == null) {
+            throw new InitializationException("Could not find property UsersNodeManagerName.");
+        }
+        usersAccountFieldName = properties.getProperty("UsersAccountFieldName");
+        if (usersAccountFieldName == null) {
+            throw new InitializationException("Could not find property UsersAccountFieldName.");
+        }
+        usersSessionFieldName = properties.getProperty("UsersSessionFieldName");
+        if (usersSessionFieldName == null) {
+            throw new InitializationException("Could not find property UsersSessionFieldName.");
+        }
+        String mmbaseUsername = properties.getProperty("mmbase.username");
+        if (mmbaseUsername == null) {
+            throw new InitializationException("Could not find property mmbase.username.");
+        }
+        String mmbasePassword = properties.getProperty("mmbase.password");
+        if (mmbasePassword == null) {
+            throw new InitializationException("Could not find property mmbase.password.");
+        }
+        Map loginInfo = new HashMap();
+        loginInfo.put("username", mmbaseUsername);
+        loginInfo.put("password", mmbasePassword);
         if (mmbaseCloudContextUri.equals("local")) {
             String mmbaseConfig = properties.getProperty("mmbase.config");
             if (mmbaseConfig != null) {
@@ -96,10 +123,10 @@ public class MMBaseRepository extends IrcRepository {
                                                   + e.getMessage());
             }
             // Get a cloud object using LocalContext.
-            cloud = LocalContext.getCloudContext().getCloud("mmbase");
+            cloud = LocalContext.getCloudContext().getCloud("mmbase", "name/password", loginInfo);
         } else {
             // Get a cloud object using ContextProvider.
-            cloud = ContextProvider.getCloudContext(mmbaseCloudContextUri).getCloud("mmbase");
+            cloud = ContextProvider.getCloudContext(mmbaseCloudContextUri).getCloud("mmbase", "name/password", loginInfo);
         }
         // Get the needed node managers.
         try {
@@ -108,9 +135,9 @@ public class MMBaseRepository extends IrcRepository {
             throw new InitializationException("Builder chatservers not found.");
         }
         try {
-            usersNodeManager = cloud.getNodeManager("users");
+            NodeManager usersNodeManager = cloud.getNodeManager(usersNodeManagerName);
         } catch(BridgeException e) {
-            throw new InitializationException("Builder users not found.");
+            throw new InitializationException("Builder " + usersNodeManagerName + " not found.");
         }
         try {
             chatchannelsNodeManager = cloud.getNodeManager("chatchannels");
@@ -143,7 +170,7 @@ public class MMBaseRepository extends IrcRepository {
         }
         ChatEngine.log.debug("Usergroup node: " + userGroupNode.getNumber() + ".");
         ChatEngine.log.debug("Chatservers node: " + chatserversNode.getNumber() + ".");
-        userRepository = new MMBaseUserRepository(cloud, usersNodeManager, rolerelRelationManager, userGroupNode, chatserversNode);
+        userRepository = new MMBaseUserRepository(cloud, usersNodeManager, rolerelRelationManager, userGroupNode, chatserversNode, usersNodeManagerName, usersAccountFieldName, usersSessionFieldName);
         userRepository.setOperatorUsername((String)properties.get("operator.username"));
         userRepository.setOperatorPassword((String)properties.get("operator.password"));
         userRepository.setAdministratorUsername((String)properties.get("administrator.username"));
