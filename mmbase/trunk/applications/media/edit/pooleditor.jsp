@@ -49,7 +49,7 @@
         <mm:fieldlist fields="name,description,owner">
           <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
-        <mm:field name="owner" id="owner" />
+        <mm:field name="owner" id="owner" write="false" />
         <%-- make sure all relations are of the same owner --%>
         <mm:listrelations role="parent" searchdir="destination">
           <mm:maychangecontext>
