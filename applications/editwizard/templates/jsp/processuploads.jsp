@@ -13,25 +13,37 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.8 2002-10-31 09:07:50 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.9 2002-11-27 14:56:22 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
 
 Config.WizardConfig wizardConfig = null;
-if (ewconfig.subObjects.size() > 0) {
-    if (ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
-        log.debug("checking configuration");
-        wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();
+
+if (! ewconfig.subObjects.empty()) {
+    Config.SubConfig top  = (Config.SubConfig) ewconfig.subObjects.peek();
+    if (! popup) {
+        if (top instanceof Config.WizardConfig) {
+            log.info("no popup");
+            wizardConfig = (Config.WizardConfig) top;
+        }
+    } else {
+        Stack stack = (Stack) top.popups.get(popupId);
+        if (stack != null) {
+            log.info("popup");
+           wizardConfig = (Config.WizardConfig) stack.peek();
+        }
+    }
+    if (wizardConfig!=null) {
         Config.WizardConfig checkConfig = new Config.WizardConfig();
         log.trace("checkConfig" + configurator);
         configurator.config(checkConfig);
         if (checkConfig.objectNumber != null && (!checkConfig.objectNumber.equals(wizardConfig.objectNumber))) {
-            log.debug("found wizard is for other other object (" + checkConfig.objectNumber + "!= " + wizardConfig.objectNumber + ")");
+            log.info("found wizard is for other other object (" + checkConfig.objectNumber + "!= " + wizardConfig.objectNumber + ")");
             wizardConfig = null;
         } else {
-            log.debug("processing request");
+            log.info("processing request");
             wizardConfig.wiz.processRequest(request);
         }
     }
