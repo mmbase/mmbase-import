@@ -1,0 +1,16 @@
+<!ELEMENT template (component*|container*)>
+<!ATTLIST template 
+	name CDATA #REQUIRED 
+	layout CDATA #IMPLIED>
+
+<!ELEMENT property (#PCDATA)>
+<!ATTLIST property name CDATA #REQUIRED>
+
+<!ELEMENT container (component* | container* | property*)>
+<!ATTLIST container 
+	name CDATA #REQUIRED
+	layout CDATA #IMPLIED>
+<!ELEMENT component (property*)>
+<!ATTLIST component 
+	name CDATA #REQUIRED
+	layout CDATA #IMPLIED>
