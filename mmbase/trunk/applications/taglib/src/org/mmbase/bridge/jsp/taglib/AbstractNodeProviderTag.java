@@ -91,10 +91,10 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
         }
         String id = getId();
         if (jspvar != null) {
-            findCloudProvider().registerNode(jspvar, node);
+            pageContext.setAttribute(jspvar, node);
         }
         if (id != null && ! "".equals(id)) {
-            pageContext.setAttribute(id, node);
+            findCloudProvider().registerNode(id, node);
         }
     }
     
