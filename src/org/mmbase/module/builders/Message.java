@@ -800,7 +800,7 @@ public class Message extends MMObjectBuilder {
         log.service("removeNode(): node=" + node.getNumber());
 
         // Make sure we got a Message node, else abort the remove operation.
-        if (node.parent instanceof Message) {
+        if (!(node.parent instanceof Message)) {
             log.error(node.getNumber() + " is of type "+node.getName()+" instead of Message");
             return;
         }
