@@ -48,9 +48,12 @@ import org.mmbase.util.*;
  *
  *    Example: $MOD-CONFIG-SHOW-builders-people  
  *
- * @version $Id: Config.java,v 1.8 2000-08-10 21:06:46 case Exp $
+ * @version $Id: Config.java,v 1.9 2000-08-20 10:38:27 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2000/08/10 21:06:46  case
+ * cjr: Added some badly needed comments
+ *
  * Revision 1.7  2000/08/06 14:56:18  case
  * cjr: Now tells if no dtd is defined - in this case no validation takes place and previously it was presented as if validation had been done successfully.
  *
@@ -148,7 +151,12 @@ public class Config extends ProcessorModule {
 
     public boolean builderIsActive(String path) {
         XMLBuilderReader reader = new XMLBuilderReader(path);
-        return reader.getStatus().equalsIgnoreCase("active");
+        try {
+            return reader.getStatus().equalsIgnoreCase("active");
+        } catch (Exception e) {
+            // Something is badly wrong, so surely this thing isn't active
+            return false;
+        }
     }
 
     public boolean databaseIsActive(String path) {
@@ -187,21 +195,9 @@ public class Config extends ProcessorModule {
 
 
 
+
         String curdb = (String)mods.get("DATABASE");
         return path.indexOf(curdb) > 0;
-    }
-
-    /**
-     * Implement a FilenameFilter for xml files
-     */
-    public class XMLFilenameFilter implements FilenameFilter {
-        public boolean accept(File directory, String name) {
-            if (name.endsWith(".xml")) {
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 
     public void init() {
@@ -216,11 +212,14 @@ public class Config extends ProcessorModule {
 
 
 
+
     public void onload() {}
 
 
 
+
     public void unload() {}
+
 
 
 
@@ -270,6 +269,7 @@ public class Config extends ProcessorModule {
                             } else if (category.equalsIgnoreCase("applications")) {
                                 // bla
                             }
+
 
 
                         }
