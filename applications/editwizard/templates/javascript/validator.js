@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.12 2003-04-01 12:16:22 mark Exp $
+ * @version  $Id: validator.js,v 1.13 2003-04-23 09:46:28 kees Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
