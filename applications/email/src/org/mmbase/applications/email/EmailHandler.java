@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @verson $Id: EmailHandler.java,v 1.10 2004-04-14 18:53:01 michiel Exp $
+ * @verson $Id: EmailHandler.java,v 1.11 2004-04-14 20:23:24 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -76,6 +76,11 @@ public class EmailHandler {
                 // get the next user we need to email
                 NodeRecipient to = (NodeRecipient) i.next();
                 sendMail(node, from, to, body, headers);
+
+                // make sure that CC and BCC are only on first mail, otherwise those poor people get a lot of mail.
+                headers.put("CC", null);
+                headers.put("BCC", null);
+                
             } 
         } else {            
             // one simple mail
