@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.21 2003-12-08 12:16:24 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.21.2.1 2004-06-18 12:54:18 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -115,8 +115,9 @@ if (wizardConfig.wiz.startWizard()) {
     String redirectTo = response.encodeURL("wizard.jsp?fid=" + parentFid +
                                  "&did=" + parentDid +
                                  "&proceed=true&wizard=" + wizardname +
+                                 "&origin=" + origin +
                                  "&sessionkey=" + ewconfig.sessionKey +
-                                 "&objectnumber=" + objectnumber + 
+                                 "&objectnumber=" + objectnumber +
                                  "&popupid=" + popupId );
     log.debug("Redirecting to " + redirectTo);
     response.sendRedirect(redirectTo);
