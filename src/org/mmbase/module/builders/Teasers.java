@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: Teasers.java,v 1.14 2000-06-08 18:03:21 wwwtech Exp $
+$Id: Teasers.java,v 1.15 2000-11-24 10:30:58 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2000/06/08 18:03:21  wwwtech
+Rico: switched of debug
+
 Revision 1.13  2000/04/18 13:06:42  wwwtech
 Wilbert: restricted scope of some methods and made fillTeaserSearchCache synchronized
 
@@ -63,7 +66,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.14 $ $Date: 2000-06-08 18:03:21 $ 
+ * @version $Revision: 1.15 $ $Date: 2000-11-24 10:30:58 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -308,11 +311,15 @@ public class Teasers extends MMObjectBuilder {
 	private boolean addTeaserSearchElementInformix(int number,int ttarget,int ttype, int value, int image,String title,String tbody,String body) {
 		byte[] isochars=null;
 		PreparedStatement statement;
-		System.out.println("Teasers -> Adding teaser search element "+number+" -> "+ttarget);
+		debug("Teasers -> Adding teaser search element "+number+" -> "+ttarget);
 
 			if (body!=null && body.length()>29000) {
 				body=body.substring(0,28999);
 			}
+
+			// got some issues with this routine.
+			// seems users are able to trigger a 'java.sql.SQLException: Unique constraint' each second
+			// print out what teaser its doing it
 
 			try {
 				MultiConnection con=mmb.getConnection();
@@ -329,7 +336,8 @@ public class Teasers extends MMObjectBuilder {
 				statement.close();
 				con.close();
 			} catch (SQLException e) {
-				System.out.println("SQL processing error");
+				debug("addTeaserSearchElementInformix("+number+","+ttarget+","+ttype+","+value+","+image+","+title+"): Exception: ");
+				debug("addTeaserSearchElementInformix(): ERROR: SQL processing error: " + e);
 				e.printStackTrace();
 			}
 		return(true);
@@ -572,7 +580,7 @@ public class Teasers extends MMObjectBuilder {
 				oke=true;
 				} catch (SQLException f) {
 					f.printStackTrace();
-					System.out.println("Teasers -> DATABASE ERROR DOING A WAIT");
+					debug("Teasers -> DATABASE ERROR DOING A WAIT");
 					try {Thread.sleep(1000);} catch (InterruptedException e){}
 					//return(false);
 				}
@@ -646,7 +654,7 @@ public class Teasers extends MMObjectBuilder {
 			int tid=tnode.insert("system");
 			if (tid!=-1) {
 				try {
-					System.out.println("Teasers -> Adding relation between "+id+"  and "+tid);
+					debug("Teasers -> Adding relation between "+id+"  and "+tid);
 					int oit=Integer.parseInt(id);
 					mmb.getInsRel().insert("system",oit,tid,14);
 				} catch(Exception e) {}
@@ -654,7 +662,7 @@ public class Teasers extends MMObjectBuilder {
 			createTeaser(""+tid);
 			return(tid);
 		} else {
-			System.out.println("Teasers -> Can't autogenerate teaser, unknown builder on "+id);
+			debug("Teasers -> Can't autogenerate teaser, unknown builder on "+id);
 		}
 		return(-1);
 	}
