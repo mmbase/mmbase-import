@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.17 2003-02-21 13:39:50 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.18 2003-02-25 09:54:37 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.SizeMeasurable {{
 
@@ -1707,7 +1707,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                     // builder not known in typedef?
                     // skip this builder and process to next one..
                     // TODO: research: add incorrect node to node's cache?
-                    log.error("Could not find typdef node #"+otype);
+                    log.error("Could not find typedef node #"+otype);
                     continue;
                 }
                 MMObjectBuilder builder = mmb.getBuilder(typedefNode.getStringValue("name"));
