@@ -1036,7 +1036,7 @@ Distribution: ${distro}
     <!-- activation.jar -->
     <property name="javaactivation_version" value="jaf-1_0_2"/>
     <property name="javaactivation.version" value="jaf-1.0.2"/>
-    <property name="javaactivation.url" value="${sun.download}http://java.sun.com/products/javabeans/glasgow/jaf.html&amp;download-name=${javaactivation_version}.zip&amp;config-file=${javaactivation_version}.config"/>
+   <property name="javaactivation.url" value="${sun.download}http://java.sun.com/products/javabeans/glasgow/jaf.html&amp;download-name=${javaactivation_version}.zip&amp;config-file=${javaactivation_version}.config"/>
     <property name="javaactivation.jar" value="${expand.dir}/${javaactivation.version}/activation.jar" />
 
     <available property="javaactivation.present"  file="${download.dir}/${javaactivation_version}.zip"/>
@@ -1341,21 +1341,13 @@ Version: MMBase build ${version}
  <!-- Perform docbook2html conversion in the documentation module                      -->
  <!-- ================================================================================ -->
 
+  <target name="docbookumentation" 
+    depends="expand.docbook-xsl"
+    description="Make the MMBase documentation from docbook-sources">
 
-  <target name="docbook.xslt.check">
-    <uptodate property="docbook.xslt.uptodate" targetfile="${build.dir}/docbook2xhtml.xslt" >
-      <srcfiles dir="${source-documentation.dir}" includes="style/docbook2xhtml.xslt" />
-    </uptodate>
-  </target>
-
-  <target name="docbook.xslt" depends="expand.docbook-xsl" unless="docbook.xslt.uptodate">
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
     <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/html/docbook.xsl" />
-  </target>
 
-  <target name="docbookumentation" description="Make the MMBase documentation from docbook-sources"
-          depends="docbook.xslt,lib.compile">
-    <mkdir dir="${mmdocs.dir}" />
     <!-- copy also the images and resources -->
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-documentation.dir}" >
