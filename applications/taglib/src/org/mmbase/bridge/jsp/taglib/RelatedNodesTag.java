@@ -61,7 +61,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (typeString == null) {
                 throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
             } 
-            NodeManager manager = getCloudProviderVar().getNodeManager(typeString);
+            NodeManager manager = getCloud().getNodeManager(typeString);
             NodeList    initialnodes = node.getRelatedNodes(typeString);
             
             String where = null;

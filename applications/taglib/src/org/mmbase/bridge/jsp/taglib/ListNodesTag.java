@@ -48,7 +48,7 @@ public class ListNodesTag extends AbstractNodeListTag {
             throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given)");
         }
 
-        NodeManager manager=getCloudProviderVar().getNodeManager(typeString);
+        NodeManager manager=getCloud().getNodeManager(typeString);
         NodeList nodes = manager.getList(whereString,sortedString,directionString);
         return setReturnValues(nodes,true);
     }

@@ -47,7 +47,7 @@ public class CreateRelationTag extends NodeTag {
     }
        
     public int doStartTag() throws JspTagException{            
-        RelationManager rm = getCloudProviderVar().getRelationManager(role);
+        RelationManager rm = getCloud().getRelationManager(role);
         Node sourceNode      = getNode(source);
         Node destinationNode = getNode(destination);        
 

@@ -43,7 +43,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
     public int doStartTag() throws JspTagException{
         community=getCloudContext().getModule("communityprc");
         // create a temporary message node that holds the new data
-        Node node = new MessageNode(getCloudProviderVar());
+        Node node = new MessageNode(getCloud());
         setNodeVar(node);
         return EVAL_BODY_TAG;
     }
@@ -70,7 +70,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         }
         Hashtable params=new Hashtable();
         try {
-            Cloud cloud=getCloudProviderVar();
+            Cloud cloud=getCloud();
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
         params.put("MESSAGE-BODY",body);

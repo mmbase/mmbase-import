@@ -182,7 +182,7 @@ public class FieldInfoTag extends FieldReferrerTag {
                     value = node.getIntValue(field.getName());
                 }
                 // list all node managers.   
-                org.mmbase.bridge.Cloud cloud = getCloudProviderVar();
+                org.mmbase.bridge.Cloud cloud = getCloud();
                 org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
                 org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
                 //java.util.Collections.sort(l);
@@ -215,7 +215,7 @@ public class FieldInfoTag extends FieldReferrerTag {
                     value = node.getIntValue(field.getName());
                 }
                 // list all roles
-                org.mmbase.bridge.Cloud cloud = getCloudProviderVar();
+                org.mmbase.bridge.Cloud cloud = getCloud();
                 org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("reldef");
                 org.mmbase.bridge.NodeIterator i = typedef.getList(null, "sguiname,dguiname", null).nodeIterator();
                 

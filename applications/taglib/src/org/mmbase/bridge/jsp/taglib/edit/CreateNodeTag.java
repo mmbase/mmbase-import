@@ -44,7 +44,7 @@ public class CreateNodeTag extends NodeTag implements BodyTag {
     public int doStartTag() throws JspTagException{
         Node node;
         NodeManager nm;
-        nm = getCloudProviderVar().getNodeManager(nodemanager);
+        nm = getCloud().getNodeManager(nodemanager);
         if (nm == null) {
             throw new JspTagException("Could not find nodemanager " + nodemanager);
         }
