@@ -135,9 +135,9 @@ Change directory to ${build.dir}/orion and run:
 
 
   <!-- =================================================================== -->
-  <!-- Create the source distribution                                     -->
+  <!-- Create the source distribution                                      -->
   <!-- =================================================================== -->
- <target name="srcdist" description="Create the source distribution"
+  <target name="srcdist" description="Create the source distribution"
           depends="init">
     <!-- copy the java-sources -->
     <mkdir dir="${build.dir}/mmbase-src/src"/>
@@ -513,7 +513,7 @@ Change directory to ${build.dir}/orion and run:
       <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
       <exclude name="**/logging/log4j/**" unless="log4j.in.classpath"/>
       <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
-      <exclude name="**/bridgetest/**" unless="junit.in.classpath"/>
+      <exclude name="**/test/bridge/**" unless="junit.in.classpath"/>
     </javac>
   </target>
 
@@ -908,14 +908,13 @@ Change directory to ${build.dir}/orion and run:
   <!-- Run the bridgetest classes.                                         -->
   <!-- =================================================================== -->
   <target name="junit.run" depends="junit">
-    <!-- java classname="org.mmbase.bridgetest.AllTests" -->
     <java classname="junit.swingui.TestRunner" fork="true">
       <classpath>
         <fileset dir="${build.dir}/junit/lib">
           <include name="**/*.jar"/>
         </fileset>
       </classpath>
-      <arg value="org.mmbase.bridgetest.AllTests"/>
+      <arg value="org.mmbase.test.bridge.AllTests"/>
       <sysproperty key="mmbase.config" file="${build.dir}/junit/config"/>
     </java>
   </target>
