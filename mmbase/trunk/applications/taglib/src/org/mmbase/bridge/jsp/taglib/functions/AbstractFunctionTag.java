@@ -20,6 +20,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.functions.Functions;
 import org.mmbase.util.logging.*;
 
 /**
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.14 2004-12-14 15:15:53 pierre Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.15 2005-01-03 22:39:36 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
