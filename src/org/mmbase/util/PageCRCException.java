@@ -13,13 +13,15 @@ import javax.servlet.*;
 import java.lang.Exception;
 
 /**
+ * This exception gets thrown when a Cyclic Redundancy Check
+ * fails.
  */
 public class PageCRCException extends ServletException {
 
-	/**
-	 * Create the exception
- 	 */
-	public PageCRCException (String s) {
-		super(s);
-	}
+    /**
+     * Create the exception
+     */
+    public PageCRCException (String s) {
+        super(s);
+    }
 }
