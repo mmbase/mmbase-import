@@ -1,4 +1,4 @@
-/*
+ /*
  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.28 2003-03-26 10:15:20 kees Exp $
+ * @version $Id: MultiPool.java,v 1.29 2003-05-01 17:10:33 michiel Exp $
  */
 public class MultiPool {
     
@@ -64,20 +64,30 @@ public class MultiPool {
         
         // put connections on the pool
         for (int i = 0; i < conMax ; i++) {
-            Connection con;
-            if (name.equals("url") && password.equals("url")) {
-                con = DriverManager.getConnection(url);
-            } else {
-                con = DriverManager.getConnection(url,name,password);
-            }
-            initConnection(con);
-            pool.add(new MultiConnection(this,con));
+            pool.add(getMultiConnection());
         }
         
         semaphore = new DijkstraSemaphore(pool.size());
         
         dbm = getDBMfromURL(url);
     }
+
+    /**
+     * Request a new 'real' Connection and wraps it in a new 'MultiConnection' object.
+     *
+     * @since MMBase-1.7
+     */
+    protected MultiConnection getMultiConnection() throws java.sql.SQLException {
+       Connection con;
+       if (name.equals("url") && password.equals("url")) {
+           con = DriverManager.getConnection(url);
+       } else {
+           con = DriverManager.getConnection(url, name, password);
+       }
+       databasesupport.initConnection(con);
+       return new MultiConnection(this, con);
+    }
+
     protected void finalize() {
         shutdown();
     }
@@ -167,14 +177,12 @@ public class MultiPool {
                     MultiConnection newcon = null;
                     log.warn("KILLED SQL " + con.lastSql + " time " + diff + " because it took too long");
                     try {
-                        Connection realcon = DriverManager.getConnection(url,name,password);
-                        initConnection(realcon);
-                        newcon = new MultiConnection(this,realcon);
+                        newcon = getMultiConnection();
                         if (log.isDebugEnabled()) {
                             log.debug("WOW added JDBC connection now ("+pool.size()+")");
                         }
-                    } catch(Exception re) {
-                        log.error("ERROR Can't add connection to pool");
+                    } catch(SQLException e) {
+                        log.error("ERROR Can't add connection to pool " + e.toString());
                     }
                     if (newcon != null) {
                         pool.add(newcon);
@@ -262,22 +270,14 @@ public class MultiPool {
                 }
                 try {
                     oldcon.realclose();
-                } catch(Exception re) {
+                } catch(SQLException re) {
                     log.error("Can't close a connection !!!");
                 }
                 
                 try {
-                    if (name.equals("url") && password.equals("url")) {
-                        Connection realcon = DriverManager.getConnection(url);
-                        initConnection(realcon);
-                        con = new MultiConnection(this,realcon);
-                    } else {
-                        Connection realcon = DriverManager.getConnection(url,name,password);
-                        initConnection(realcon);
-                        con = new MultiConnection(this,realcon);
-                    }
-                } catch(Exception re) {
-                    log.error("Can't add connection to pool");
+                    con = getMultiConnection();
+                } catch(SQLException re) {
+                    log.error("Can't add connection to pool " + re.toString());
                 }
             }
             pool.add(con);
@@ -348,13 +348,6 @@ public class MultiPool {
             log.error(Logging.stackTrace(e));
         }
         return(rtn);
-    }
-    
-    /**
-     * @javadoc
-     */
-    protected void initConnection(Connection conn) {
-        databasesupport.initConnection(conn);
     }
     
     
