@@ -3,30 +3,17 @@
   xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction" 
 >
-  <xsl:output 
-    method="xml"
-    version="1.0"
-    encoding="utf-8"
-    omit-xml-declaration="no"
-    standalone="no"
-    doctype-public="-//W3C//DTD HTML 4.0 Transitional//"	  
-    indent="no"
-    />
+  <!-- 
+  searchlist.xls
 
-  <xsl:param name="ew_path"></xsl:param>
-  <xsl:param name="ew_context">/img.db?</xsl:param>
-  <xsl:param name="ew_imgdb"><xsl:value-of select="ew_context" />/img.db?</xsl:param>
+  @since  MMBase-1.6
+  @author Kars Veling
+  @author Michiel Meeuwissen
+  @version $Id: searchlist.xsl,v 1.4 2002-04-19 20:03:09 michiel Exp $
+  --> 
 
-  <xsl:variable name="imagesize">+s(128x128)</xsl:variable>
 
-  <xsl:param name="ew_path"></xsl:param>
-  <xsl:param name="ew_imgdb">/img.db?</xsl:param>
-  <xsl:param name="imagesize">+s(128x128)</xsl:param>
-
-  <xsl:param name="wizard"></xsl:param>
-  <xsl:param name="start">1</xsl:param>
-  <xsl:param name="len">15</xsl:param>
-  <xsl:param name="url">list.jsp</xsl:param>
+  <xsl:import href="baselist.xsl" />
 
   <xsl:template match="pages">
     <span class="pagenav">
@@ -68,7 +55,7 @@
         <title>Search Results</title>
       </head>
       <body bgcolor="#FFFFFF" onload="window.focus(); preselect(selected);">
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="../style.css" />
         
         <script language="javascript">
           <xsl:text disable-output-escaping="yes">
@@ -183,11 +170,11 @@
                         <span style="font-size:12;"><xsl:value-of select="field[2]" /></span><br />
                       </xsl:when>
                       <xsl:when test="@type='audioparts'">
-                        <a href="{$ew_context}/rastreams.db?{@number}"><img src="media/audio.gif" align="right" width="20" height="20" hspace="3" vspace="0" border="0" alt="Click here to hear the audio clip" /></a>
+                        <a href="{$ew_context}/rastreams.db?{@number}"><img src="{$mediadir}audio.gif" align="right" width="20" height="20" hspace="3" vspace="0" border="0" alt="Click here to hear the audio clip" /></a>
                         <label for="cb_{@number}" style="cursor:hand;"><span><xsl:apply-templates select="field" /></span></label>
                       </xsl:when>
                       <xsl:when test="@type='videoparts'">
-                        <a href="{$ew_context}/rmstreams.db?{@number}"><img src="media/video.gif" align="right" width="20" height="20" hspace="3" vspace="0" border="0" alt="Click here to view the video clip" /></a>
+                        <a href="{$ew_context}/rmstreams.db?{@number}"><img src="{$mediadir}video.gif" align="right" width="20" height="20" hspace="3" vspace="0" border="0" alt="Click here to view the video clip" /></a>
                         <label for="cb_{@number}" style="cursor:hand;"><span><xsl:apply-templates select="field" /></span></label>
                       </xsl:when>
                       <xsl:otherwise>

@@ -3,25 +3,19 @@
   xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction" 
 >
-
-<xsl:output 
-    method="xml"
-    version="1.0"
-    encoding="utf-8"
-    omit-xml-declaration="yes"
-    standalone="no"
-    doctype-public="-//W3C//DTD HTML 4.0 Transitional//"
-    indent="yes"
-    />
-
-  <xsl:param name="ew_path"></xsl:param>
-  <xsl:param name="ew_context">/img.db?</xsl:param>
-  <xsl:param name="ew_imgdb"><xsl:value-of select="ew_context" />/img.db?</xsl:param>
-
-  <xsl:variable name="imagesize">+s(128x128)</xsl:variable>
-  <xsl:variable name="defaultsearchage">7</xsl:variable>
-  <xsl:param name="debug">false</xsl:param>
+  <!-- 
+  wizard.xls
   
+  @since  MMBase-1.6
+  @author Kars Veling
+  @author Michiel Meeuwissen
+  @version $Id: wizard.xsl,v 1.8 2002-04-19 20:03:09 michiel Exp $
+  --> 
+
+
+  <xsl:import href="base.xsl" />
+  
+  <xsl:variable name="defaultsearchage">7</xsl:variable>
   <xsl:template match="@*">
     <xsl:copy><xsl:value-of select="." /></xsl:copy>
   </xsl:template>
@@ -36,7 +30,7 @@
     <html>
       <head>
         <title><xsl:value-of select="title" /></title>
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="../style.css" />
       </head>
       <body leftmargin="0" 
         topmargin="0" 
@@ -44,12 +38,12 @@
         marginheight="0" 
         onload="doOnLoad_ew();" onunload="doOnUnLoad_ew();">
         
-        <script language="javascript" src="tools.js"><xsl:comment>help IE</xsl:comment></script>
-        <script language="javascript" src="validator.js"><xsl:comment>help IE</xsl:comment></script>
-        <script language="javascript" src="editwizard.js"><xsl:comment>help IE</xsl:comment></script>
+        <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
+        <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
+        <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
         
         
-        <form name="form" method="post" action="#" id="{/wizard/curform}">
+        <form name="form" method="post" action="" id="{/wizard/curform}">
           <input type="hidden" name="curform" value="{/wizard/curform}" />
           <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
           
@@ -60,7 +54,7 @@
                   <tr>
                     <td class="head"><nobr><xsl:value-of select="title" /></nobr></td>
                     <td class="superhead" align="right">
-                      <nobr><xsl:if test="$debug='true'"><a href="debug.jsp" target="_blank">[debug]</a><br /></xsl:if><xsl:value-of select="form[@id=/wizard/curform]/title" /></nobr>
+                      <nobr><xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if><xsl:value-of select="form[@id=/wizard/curform]/title" /></nobr>
                     </td>
                   </tr>
                 </table>
@@ -89,7 +83,7 @@
         <xsl:apply-templates select="." />
       </tr>
       <xsl:if test="@minoccurs or @maxoccurs">
-        <tr><td><img src="media/nix.gif" width="1" height="1" hspace="0" vspace="0" border="0" alt="" /></td></tr>
+        <tr><td><img src="{$mediadir}nix.gif" width="1" height="1" hspace="0" vspace="0" border="0" alt="" /></td></tr>
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
@@ -100,7 +94,7 @@
       <xsl:if test="../../item[count(field) &gt; 1]">
         <xsl:attribute name="style">border-width:0 0 0 1; border-style:solid; border-color:#000000; padding-left:3;</xsl:attribute>
       </xsl:if>
-      <img src="media/nix.gif" width="150" height="1" hspace="0" vspace="0" border="0" alt="" /><br />
+      <img src="{$mediadir}nix.gif" width="150" height="1" hspace="0" vspace="0" border="0" alt="" /><br />
       <span id="prompt_{@fieldname}" class="valid" prompt="{prompt}">
         <xsl:choose>
           <xsl:when test="description">
@@ -193,8 +187,8 @@
               <tr>
                 <td align="right" valign="top" class="search" width="100%">
                   <nobr>
-                    <a href="wizard.jsp?wizard={@wizardname}|{@did}&amp;objectnumber={@objectnumber}&amp;popup=true"><img src="media/new.gif" border="0" /></a>
-                    <img src="media/nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
+                    <a href="wizard.jsp{$sessionid}?wizard={@wizardname}|{@did}&amp;objectnumber={@objectnumber}&amp;popup=true"><img src="{$mediadir}new.gif" border="0" /></a>
+                    <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
                   </nobr>
                 </td>
               </tr>
@@ -202,7 +196,7 @@
           </div>
         </xsl:when>
         <xsl:when test="@ftype='startwizard'">
-          <nobr><a href="popupwizard.jsp?wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank">(start new wizard)</a>
+          <nobr><a href="popupwizard.jsp{$sessionid}?wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank">(start new wizard)</a>
           </nobr>
         </xsl:when>
         <xsl:when test="@ftype='upload'">
@@ -210,8 +204,8 @@
             <xsl:when test="@dttype='image' and not(upload)">
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
-                  <img src="{$ew_imgdb}{node:function(string(@number), concat('cache(',$imagesize,')'))}" hspace="0" vspace="0" border="0" /><br />
-                  <a href="upload.jsp?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new Image</a>
+                  <img src="{$ew_imgdb}{node:function(string(@number), concat('cache(', $imagesize, ')'))}" hspace="0" vspace="0" border="0" /><br />
+                  <a href="upload.jsp{$sessionid}?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new Image</a>
                 </div>            
               </div>
             </xsl:when>
@@ -223,7 +217,7 @@
                   <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text> (<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
                 </span>
                 <br />
-                <a href="upload.jsp?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload other Image</a>
+                <a href="upload.jsp{$sessionid}?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload other Image</a>
               </div>
             </xsl:when>
             <xsl:otherwise>
@@ -235,7 +229,7 @@
                   <xsl:otherwise>Uploaded: <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
                   </xsl:otherwise>
                 </xsl:choose>      
-                <xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text><a href="upload.jsp?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new</a>      
+                <xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text><a href="upload.jsp{$sessionid}?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new</a>      
               </nobr>
             </xsl:otherwise>
           </xsl:choose>
@@ -260,7 +254,7 @@
       <!-- here we figure out how to draw this repeated item. It depends on the displaytype -->
       <xsl:choose>
         <xsl:when test="@displaytype='link'">
-          <span style="width:600;"><a href="wizard.jsp?wizard={@wizardname}&amp;objectnumber={field[@name='number']/value}">- <xsl:value-of select="field[@name='title']/value" /></a></span>
+          <span style="width:600;"><a href="wizard.jsp{$sessionid}?wizard={@wizardname}&amp;objectnumber={field[@name='number']/value}">- <xsl:value-of select="field[@name='title']/value" /></a></span>
         </xsl:when>
         <xsl:when test="@displaytype='image'">
           <span style="width:128; height:168;" >
@@ -269,7 +263,7 @@
                 <td>
                   <xsl:if test="command[@name='delete-item']">
                     <span class="imagebutton" xstyle="position:absolute; top:-10; left:88;" onclick="doSendCommand('{command[@name='delete-item']/@cmd}');">
-                      <img src="media/remove.gif" width="20" height="20" />
+                      <img src="{$mediadir}remove.gif" width="20" height="20" />
                     </span>
                   </xsl:if>
                 </td>
@@ -280,7 +274,7 @@
                     <img src="{$ew_imgdb}{node:function(string(@destination), concat('cache(',$imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
                   </span>
                 </td>
-                <td width="20"><img src="media/nix.gif" width="20" height="1" /></td>
+                <td width="20"><img src="{$mediadir}nix.gif" width="20" height="1" /></td>
                 <xsl:if test="field[not(@ftype='data')]">
                   <!-- another field, not just data, eg. a position editor -->
                   <td colspan="10" valign="top">
@@ -303,10 +297,10 @@
               
 
               <xsl:if test="command[@name='move-up']">
-                <span  onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="media/up.gif" width="20" height="20" /></span>
+                <span  onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="{$mediadir}up.gif" width="20" height="20" /></span>
               </xsl:if>
               <xsl:if test="command[@name='move-down']">
-                <span  onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><img src="media/down.gif" width="20" height="20" /></span>
+                <span  onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><img src="{$mediadir}down.gif" width="20" height="20" /></span>
               </xsl:if>
               
             </table>
@@ -325,14 +319,14 @@
               <td align="right" valign="top">
                 <nobr>
                   <xsl:if test="@displaytype='audio'">
-                    <a href="{$ew_context}/rastreams.db?{@destination}"><img src="media/audio.gif" xstyle="position:relative; top:3; left:0;" width="20" height="20" hspace="3" vspace="0" border="0" alt="" /></a>
+                    <a href="{$ew_context}/rastreams.db?{@destination}"><img src="{$mediadir}audio.gif" xstyle="position:relative; top:3; left:0;" width="20" height="20" hspace="3" vspace="0" border="0" alt="" /></a>
                   </xsl:if>
                   <xsl:if test="@displaytype='video'">
-                    <a href="{$ew_context}/rmstreams.db?{@destination}"><img src="media/video.gif" xstyle="position:relative; top:3; left:0;" width="20" height="20" hspace="3" vspace="0" border="0" alt="" /></a>
+                    <a href="{$ew_context}/rmstreams.db?{@destination}"><img src="{$mediadir}video.gif" xstyle="position:relative; top:3; left:0;" width="20" height="20" hspace="3" vspace="0" border="0" alt="" /></a>
                   </xsl:if>
                   <xsl:if test="command[@name='delete-item']">
                     <span class="imagebutton" onclick="doSendCommand('{command[@name='delete-item']/@cmd}');">
-                      <img src="media/remove.gif" width="20" height="20" />
+                      <img src="{$mediadir}remove.gif" width="20" height="20" />
                     </span>
                   </xsl:if>
                 </nobr>
@@ -345,35 +339,35 @@
             <tr>
               <td align="right" valign="top" xstyle="position:relative; top:0; left:0;">
                 <xsl:if test="@displaytype='audio'">
-                  <a href="{$ew_context}/rastreams.db?{@destination}"><img src="media/audio.gif" width="20" height="20" hspace="0" vspace="0" border="0" alt="" /></a>
+                  <a href="{$ew_context}/rastreams.db?{@destination}"><img src="{$mediadir}audio.gif" width="20" height="20" hspace="0" vspace="0" border="0" alt="" /></a>
                 </xsl:if>
                 <xsl:if test="@displaytype='video'">
-                  <a href="{$ew_context}/rmstreams.db?{@destination}"><img src="media/video.gif" width="20" height="20" hspace="0" vspace="0" border="0" alt="" /></a>
+                  <a href="{$ew_context}/rmstreams.db?{@destination}"><img src="{$mediadir}video.gif" width="20" height="20" hspace="0" vspace="0" border="0" alt="" /></a>
                 </xsl:if>
                 <xsl:if test="command[@name='delete-item']">
                   <span class="imagebutton" onclick="doSendCommand('{command[@name='delete-item']/@cmd}');">
-                    <img src="media/remove.gif" width="20" height="20" hspace="0" vspace="0" border="0"/>
+                    <img src="{$mediadir}remove.gif" width="20" height="20" hspace="0" vspace="0" border="0"/>
                   </span>
                 </xsl:if>
 
                 <xsl:if test="command[@name='move-up']">
-                  <span onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="media/up.gif" width="20" height="20" /></span>
+                  <span onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="{$mediadir}up.gif" width="20" height="20" /></span>
                 </xsl:if>
                 <xsl:if test="command[@name='move-down']">
-                  <span  onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><img src="media/down.gif" width="20" height="20" /></span>
+                  <span  onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><img src="{$mediadir}down.gif" width="20" height="20" /></span>
                 </xsl:if>
 
               </td>
             </tr>
 
             <!-- draw all fields, if there are any for this item -->
-            <tr><td colspan="2" style="border-width:1 1 0 1; border-style:solid; border-color:#000000;"><img src="media/nix.gif" width="1" height="3" hspace="0" vspace="0" border="0" alt="" /></td></tr>
+            <tr><td colspan="2" style="border-width:1 1 0 1; border-style:solid; border-color:#000000;"><img src="{$mediadir}nix.gif" width="1" height="3" hspace="0" vspace="0" border="0" alt="" /></td></tr>
             <xsl:for-each select="field">
               <tr>
                 <xsl:apply-templates select="." />
               </tr>
             </xsl:for-each>
-            <tr><td colspan="2" style="border-width:0 1 1 1; border-style:solid; border-color:#000000;"><img src="media/nix.gif" width="1" height="3" hspace="0" vspace="0" border="0" alt="" /></td></tr>
+            <tr><td colspan="2" style="border-width:0 1 1 1; border-style:solid; border-color:#000000;"><img src="{$mediadir}nix.gif" width="1" height="3" hspace="0" vspace="0" border="0" alt="" /></td></tr>
           </table>
         </xsl:otherwise>
       </xsl:choose>
@@ -432,14 +426,14 @@
                     </xsl:choose>
                     <option value="owner">Owner is</option>
                   </select>
-                  <img src="media/nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
+                  <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
                   <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="" style="width:175;" />
-                  <img src="media/nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
+                  <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
                   <span class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}');"  >
                     <xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
-                    <img src="media/search.gif" width="20" height="20"/>
+                    <img src="{$mediadir}search.gif" width="20" height="20"/>
                   </span>
-                  <img src="media/nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
+                  <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
                 </nobr>
               </td>
             </tr>
@@ -460,8 +454,8 @@
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
-                <span class="imagebutton" onclick="doSendCommand('{@cmd}');"><img src="media/new.gif" width="20" height="20" /></span>
-                <img src="media/nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
+                <span class="imagebutton" onclick="doSendCommand('{@cmd}');"><img src="{$mediadir}new.gif" width="20" height="20" /></span>
+                <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
               </nobr>
             </td>
           </tr>
@@ -472,8 +466,8 @@
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
-                <a href="popupwizard.jsp?wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="media/new.gif" border="0" /></a>
-                <img src="media/nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
+                <a href="popupwizard.jsp{$sessionid}?wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
+                <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
               </nobr>
             </td>
           </tr>
