@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.19 2003-07-11 13:57:00 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.20 2003-07-15 12:26:35 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -215,7 +215,7 @@ public class MediaFragments extends MMObjectBuilder {
      *
      * @author mm
      */
-    protected List getURLs(MMObjectNode fragment, Map info, List urls, List cacheExpireObjects) {
+    protected List getURLs(MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
 
         Iterator i = getSources(fragment).iterator();
@@ -227,7 +227,7 @@ public class MediaFragments extends MMObjectBuilder {
         return urls;        
     }   
 
-    protected List getFilteredURLs(MMObjectNode fragment, Map info, List cacheExpireObjects) {
+    protected List getFilteredURLs(MMObjectNode fragment, Map info, Set cacheExpireObjects) {
         log.debug("getfilteredurls");
         List urls =  getURLs(fragment, info, null,cacheExpireObjects);
         return MainFilter.getInstance().filter(urls);
@@ -252,7 +252,7 @@ public class MediaFragments extends MMObjectBuilder {
 		log.debug("No cache hit, key = "+key);
 	}
 
-	List cacheExpireObjects = new Vector();
+	Set cacheExpireObjects = new HashSet();
         List urls = getFilteredURLs(fragment, info,cacheExpireObjects);
 	String result = "";
         if (urls.size() > 0) {

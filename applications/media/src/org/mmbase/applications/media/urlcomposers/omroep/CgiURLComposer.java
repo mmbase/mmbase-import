@@ -13,7 +13,7 @@ import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.RamURLComposer;
 import org.mmbase.applications.media.urlcomposers.RealURLComposer;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
+
 import java.util.*;
 import java.net.*;
 import java.text.*;
@@ -23,16 +23,11 @@ import java.text.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.4 2003-07-11 13:57:02 vpro Exp $
+ * @version $Id: CgiURLComposer.java,v 1.5 2003-07-15 12:26:37 vpro Exp $
  * @since MMBase-1.7
  */
 public class CgiURLComposer extends RamURLComposer {
-    
-    private static Logger log = Logging.getLoggerInstance(CgiURLComposer.class.getName());
-
-    public CgiURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
-        super(provider, source, fragment, info, cacheExpireObjects);
-    }
+      
     public Format getFormat() {
         Format format = super.getFormat();
         if (format == Format.RM)  return Format.RAM;
