@@ -6,7 +6,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.98 2003-10-02 11:58:25 pierre Exp $
+  @version $Id: wizard.xsl,v 1.99 2003-10-21 07:51:55 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -319,7 +319,7 @@
       <xsl:call-template name="prompt"/>
     </td>
     <td class="field" colspan="{$colspan}">
-      <table style="width: 100%;">
+      <table>
         <tr>
           <xsl:for-each select="field">
             <td>
