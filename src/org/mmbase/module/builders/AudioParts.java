@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioParts.java,v 1.26 2002-01-25 15:46:39 pierre Exp $
+ * @version $Id: AudioParts.java,v 1.27 2002-01-28 13:26:20 pierre Exp $
  */
 public class AudioParts extends MediaParts {
     private static Logger log = Logging.getLoggerInstance(AudioParts.class.getName());
@@ -48,6 +48,7 @@ public class AudioParts extends MediaParts {
      * only when a node was changed (commit) we update the start
      * and stoptimes.
      * (start & stoptimes of newly inserted nodes are inserted by insertDone).
+     * @dependency EditState (SCAN code)
      * @param ed the editstate
      * @param node the audiopart node that has just been inserted.
      * @return -1
@@ -79,6 +80,7 @@ public class AudioParts extends MediaParts {
     /**
      * We save start and stoptime values in property objects where the
      * keys are 'starttime' and 'stoptime' and values the start & stoptimes.
+     * @dependency EditState (SCAN code)
      * @param ed the editstate
      * @param node the audiopart node that has just been inserted.
      */
@@ -302,7 +304,7 @@ public class AudioParts extends MediaParts {
                     }
                 }
                 catch( NumberFormatException e ) {
-                    System.out.println("calcTime("+time+"): ERROR: Cannot convert pos("+(total-i)+") to a number("+tt+")!" + e.toString());
+                    log.error("calcTime("+time+"): Cannot convert pos("+(total-i)+") to a number("+tt+")!" + e.toString());
                 }
             }
 
@@ -324,7 +326,7 @@ public class AudioParts extends MediaParts {
 
                     r += (t1*100) + t2;
                 } catch( NumberFormatException e ) {
-                    System.out.println("calctime("+time+"): ERROR: Cannot convert s1("+s1+") or s2("+s2+")!");
+                    log.error("calctime("+time+"): Cannot convert s1("+s1+") or s2("+s2+")!");
                 }
             }
             result = r;
@@ -335,7 +337,7 @@ public class AudioParts extends MediaParts {
                 r = Integer.parseInt( time );
                 result = r * 100;
             } catch( NumberFormatException e ) {
-                System.out.println("calctime("+time+"): ERROR: Cannot convert time("+time+")!");
+                log.error("calctime("+time+"): Cannot convert time("+time+")!");
             }
         }
 
@@ -461,6 +463,7 @@ public class AudioParts extends MediaParts {
 
     /**
      * Calls the get url method for audioparts.
+     * @dependency scanpage (SCAN)
      * @param sp the scanpage
      * @param number the audiopart object number
      * @param speed the user speed value
@@ -473,6 +476,7 @@ public class AudioParts extends MediaParts {
 
     /**
      * Gets the url for a audiopart using the mediautil classes.
+     * @dependency scanpage (SCAN)
      * @param mmbase mmbase reference
      * @param sp the scanpage
      * @param number the audiopart object number
