@@ -4,9 +4,9 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
-public class BaseSuite extends TestCase {
+public class BaseSuite extends org.mmbase.tests.MMBaseTest {
     
     public BaseSuite(java.lang.String testName) {
         super(testName);
@@ -32,6 +32,10 @@ public class BaseSuite extends TestCase {
     public void tearDown() throws Exception {}
     
     public static Test suite() {
+        try {
+            startMMBase();
+        } catch (Exception e) {
+        }
         TestSuite suite = new TestSuite("BaseSuite");
         suite.addTest(org.mmbase.module.core.CoreSuite.suite());
         suite.addTest(org.mmbase.storage.search.implementation.ImplementationSuite.suite());
