@@ -25,9 +25,9 @@ import java.util.*;
  * between two values (configured in mediasourcefilter.xml).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.4 2003-01-08 14:52:38 michiel Exp $
+ * @version $Id: RealComparator.java,v 1.5 2003-01-08 22:20:25 michiel Exp $
  */
-public class RealComparator extends  GroupComparator {
+public class RealComparator extends  ChainComparator {
     private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
 
 
@@ -43,6 +43,9 @@ public class RealComparator extends  GroupComparator {
         }
     }
 
+    /**
+     * Sort with speed
+     */
 
     class SpeedComparator extends PreferenceComparator {
 
@@ -95,6 +98,10 @@ public class RealComparator extends  GroupComparator {
         }
     }
 
+    /**
+     * Sort with channels 
+     */
+
     class ChannelsComparator extends PreferenceComparator {
         private int minChannels     = -1;
         private int maxChannels     = -1;
@@ -146,7 +153,7 @@ public class RealComparator extends  GroupComparator {
 
     
     public  RealComparator() {
-        add(new RealFormatComparator());
+        add(new RealFormatComparator()); // Prefer real?
         add(new SpeedComparator());
         add(new ChannelsComparator());
     }
