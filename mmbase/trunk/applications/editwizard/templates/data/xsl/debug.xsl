@@ -11,6 +11,8 @@
                 media-type="mimetype"
         />
 
+  <xsl:param name="session_byte_size">(undetermined)</xsl:param>
+
 <xsl:template match="*">
 <div style="padding-left:16px;">
     <span class="nodename">&lt;<xsl:value-of select="name()" /></span> <xsl:apply-templates select="@*" />
@@ -38,6 +40,7 @@
 <xsl:template match="/debugdata">
     <html>
     <head>
+      <title>Editwizard session inspector (debugging)</title>
         <style type="text/css">
             .tab { cursor:hand; color:green; }
             .tab_hot { cursor:hand; color:green; font-weight:bold; }
@@ -112,7 +115,7 @@
     </xsl:for-each>
 
     </span>
-
+    Size of session: <xsl:value-of select="$session_byte_size" /> bytes (approximately)<br />
     </body>
     </html>
 </xsl:template>

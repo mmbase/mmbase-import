@@ -9,7 +9,7 @@
      * debug.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: debug.jsp,v 1.5 2002-07-09 14:12:53 pierre Exp $
+     * @version  $Id: debug.jsp,v 1.6 2002-08-19 16:18:58 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -26,7 +26,9 @@
         add(doc, wizardConfig. wiz.getPreform(),wizard);
     }
     File template = ewconfig.uriResolver.resolveToFile("xsl/debug.xsl");
-    Utils.transformNode(doc, template, ewconfig.uriResolver, out,  null);
+    Map map = new HashMap();  
+    map.put("session_byte_size", "" + org.mmbase.util.SizeOf.getByteSize(ewconfig));
+    Utils.transformNode(doc, template, ewconfig.uriResolver, out,  map);
 %>
 <%!
     public void add(Document dest, Document src, String name) {
