@@ -30,7 +30,7 @@ import org.mmbase.util.xml.BuilderReader;
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.33 2004-09-17 09:59:09 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.34 2004-10-18 20:17:26 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -373,7 +373,6 @@ public class ObjectTypes extends TypeDef {
             log.info("could not load builder from xml, is in inactive?(name: '" + node.getStringValue("name") + "' path: '" + path + "')");
             return null;
         }
-        mmb.initBuilder(builder);
         return builder;
     }
 
