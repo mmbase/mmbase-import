@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMMysql42Node.java,v 1.7 2000-03-31 15:15:27 wwwtech Exp $
+$Id: MMMysql42Node.java,v 1.8 2000-03-31 16:01:49 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/31 15:15:27  wwwtech
+Davzev: Changend insert() debug code for DBState checking
+
 Revision 1.6  2000/03/30 13:11:43  wwwtech
 Rico: added license
 
@@ -40,7 +43,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.7 $ $Date: 2000-03-31 15:15:27 $
+* @$Revision: 1.8 $ $Date: 2000-03-31 16:01:49 $
 */
 public class MMMysql42Node implements MMJdbc2NodeInterface {
 
@@ -364,18 +367,6 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 
 		if (number == 0) return(insertRootNode(bul));
 
-		/* $Id: MMMysql42Node.java,v 1.7 2000-03-31 15:15:27 wwwtech Exp $
-		// Original code, not deleted for savety reasons (will be deleted soon),davzev
-		String tmp="";
-		for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
-			if (tmp.equals("")) {
-				tmp+="?";
-			} else {
-				tmp+=",?";
-			}
-		}
-		*/
-
 		// Create a String that represents the amount of DB fields to be used in the insert.
 		// First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
 		String fieldAmounts="?";
@@ -391,44 +382,15 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 			} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 				// debug("Insert: DBState = "+DBState+", skipping key: "+key);
 			} else {
-				debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
+
+               	if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
+					fieldAmounts+=",?";
+				} else {
+					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
+               	}
 			}
 		}
 
-		/* $Id: MMMysql42Node.java,v 1.7 2000-03-31 15:15:27 wwwtech Exp $
-		// Original code, not deleted for savety reasons (will be deleted soon),davzev
-		MultiConnection con=null;
-		PreparedStatement stmt=null;
-		try {
-			con=bul.mmb.getConnection();
-			stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");
-		} catch(Exception t) {
-			t.printStackTrace();
-		}
-		try {
-			stmt.setEscapeProcessing(false);
-			stmt.setInt(1,number);
-			int i=2;
-			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
-				String key = (String)e.nextElement();	
-				setValuePreparedStatement( stmt, node, key, i );
-				i++;
-			}
-
-			stmt.executeUpdate();
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			System.out.println("Error on : "+number+" "+owner+" fake");
-			try {
-			stmt.close();
-			con.close();
-			} catch(Exception t2) {}
-			e.printStackTrace();
-			return(-1);
-		}
-		*/		
-	
 		MultiConnection con=null;
 		PreparedStatement stmt=null;
 		try {
@@ -457,7 +419,12 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+				    if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
+						setValuePreparedStatement( stmt, node, key, j );
+						j++;
+				    } else {
+						debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+				    }
 				}
 			}
 
