@@ -16,17 +16,18 @@ import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 
 /**
- * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @author Daniel Ockeloen,Rico Jansen
+ * @version $Id: DayMarkers.java,v 1.6 2000-05-30 07:37:44 wwwtech Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
 	public int day=0;
 	Hashtable daycache=new Hashtable();
-	boolean setmarker=false;
+	DayMarkersProbe probe;
 
 	public DayMarkers() {
 		day=daycount();
+		probe=new DayMarkersProbe(this);
 	}
 
 	public int daycount() {
@@ -43,7 +44,6 @@ public class DayMarkers extends MMObjectBuilder {
 
 
 	public void createMarker() {
-		if (setmarker) return;
 		int max=-1;
 		int mday=-1;
 		System.out.println("Daymarker -> DAY="+day);
@@ -81,7 +81,18 @@ public class DayMarkers extends MMObjectBuilder {
 		} else {
 			System.out.println("DayMarker marker already exists "+day);
 		}
-		setmarker=true;
+	}
+
+	/**
+	 * This gets called every hour to see if the day has past.
+	*/
+	protected void probeCall() {
+		int newday;
+		newday=daycount();
+		if (newday>day) {
+			day=newday;
+			createMarker();
+		}
 	}
 
 	public int getAge(MMObjectNode node) {
