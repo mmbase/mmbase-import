@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.119 2004-02-04 15:28:06 pierre Exp $
+    @version $Id: wizard.xsl,v 1.120 2004-02-10 15:34:07 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1033,7 +1033,7 @@
     </xsl:if>
     <xsl:if test="@maywrite=&apos;false&apos;">
       <span class="readonly">
-        <xsl:apply-templates select="value" mode="value"/>
+        <xsl:apply-templates select="value" mode="line"/>
       </span>
     </xsl:if>
   </xsl:template>
@@ -1066,10 +1066,8 @@
 
   <!-- On default.  All attributes must be copied -->
   <xsl:template match="@*">
-    <!-- THIS GOES WRONG IN RESIN -->
-    <xsl:copy>
-      <xsl:value-of select="."/>
-    </xsl:copy>
+    <xsl:variable name="attributeName" select="name(.)"/>
+    <xsl:attribute name="{$attributeName}"><xsl:value-of select="."/></xsl:attribute>
   </xsl:template>
 
   <!-- but not the name-attribute? -->
