@@ -238,11 +238,13 @@ public class Posting {
 
         int forumid = parent.getParent().getParent().getId();
         String themeid = ThemeManager.getAssign("MMBob."+forumid);
+
         if (themeid == null) {
-            themeid = "MMBob";
+            themeid = ThemeManager.getAssign("MMBob");
         } 
+
 	//String imagecontext = "/mmbase/thememanager/images";
         body = smilies.transform(body, themeid, imagecontext);
-	 return body;
+	return body;
     }
 }
