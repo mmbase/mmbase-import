@@ -224,6 +224,12 @@ public class IncludeTag extends UrlTag {
             if (file.isDirectory()) {
                 throw new JspTagException("Cannot cite a directory");
             }
+
+            if (! file.toURL().getProtocol().equals("file")) {
+                throw new JspTagException("Cannot only cite local files");
+            }
+
+
             if (log.isDebugEnabled()) log.debug("Citing " + file.toString());
             java.io.FileReader reader = new java.io.FileReader(file);
             java.io.StringWriter string = new java.io.StringWriter();
@@ -345,8 +351,12 @@ public class IncludeTag extends UrlTag {
                 request.setAttribute("includeTagLevel",new Integer(includeLevel));
                 request.setAttribute("includeTagURI",previncludeURI);
             } else { // really absolute
-                external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
-                                                               // also no need to encode the URL.
+                if (cite) {
+                    cite(bodyContent, gotUrl, request); 
+                } else {
+                    external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
+                                                                   // also no need to encode the URL.
+                }
             }
           
         } catch (java.io.IOException e) {
