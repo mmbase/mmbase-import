@@ -16,8 +16,9 @@
 
   <property name="hsqldb.jar" value="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
 
-  <property name="tests.source.dir"   value="." />
+  <property name="tests.source.dir"   location="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
+  <property name="tests.work.dir"    value="${tests.source.dir}/work" />
 
   <property name="tests.lib"       value="${tests.build.dir}/lib" />
   <property name="mmbasetest.jar"  value="${tests.lib}/mmbasetest.jar" />
@@ -25,6 +26,7 @@
 
 
   <target name="init" depends="mmbase,expand.junit">
+    <mkdir dir="${tests.work.dir}"/>
     <copy file="${junit.jar}" todir="${tests.lib}" />
     <copy file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" todir="${tests.lib}" />
     <copy todir="${tests.lib}">
@@ -123,6 +125,7 @@
   <!-- =================================================================== -->
   <target name="clean" description="Clean the test environment">
     <delete dir="${tests.build.dir}"/>
+    <delete dir="${tests.work.dir}"/>
   </target>
 
 
@@ -191,7 +194,7 @@
 
   <target name="jar.uptodatecheck">
     <uptodate property="jar.uptodate" targetfile="${mmbasetest.jar}" >
-      <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build" />
+      <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build/**,work/**" />
     </uptodate>   
   </target>
 
@@ -232,6 +235,7 @@ Build-compiler: ${build.compiler}
       >
       <arg value="org.mmbase.module.corebuilders.TypeRelTest" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
   </target>
 
@@ -242,6 +246,8 @@ Build-compiler: ${build.compiler}
       classpathref="run.classpath"      
       >
       <arg value="org.mmbase.bridge.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
     </java>
   </target>
 
@@ -274,8 +280,8 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <!-- Run the tests -->
   <!-- =================================================================== -->
-  <target name="run.junit" description="Run all tests"
-          depends="run.typerel,run.bridge,run.convertimage">
+  <target name="run.all" description="Run all tests"
+          depends="run.dbsq,run.typerel,run.bridge,run.convertimage">
 
   </target>
 

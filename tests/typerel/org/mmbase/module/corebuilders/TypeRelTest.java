@@ -1,16 +1,16 @@
 package org.mmbase.module.corebuilders;
 
-import junit.framework.*;
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
 import java.util.*;
 
 /**
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.1 2003-03-06 13:52:19 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.2 2003-03-12 19:18:12 michiel Exp $
  */
-public class TypeRelTest extends TestCase {
+public class TypeRelTest extends BridgeTest {
 
     static protected String  UNIDIR_ROLE = "unidirectionalrelation";
     static protected String  BIDIR_ROLE  = "bidirectionalrelation";
@@ -347,12 +347,9 @@ public class TypeRelTest extends TestCase {
      * Sets up before each test.
      */
     public void setUp() throws Exception {
-        if (cloud == null) {
-            CloudContext cloudContext= ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext");
-            HashMap user = new HashMap();
-            user.put("username", "admin");
-            user.put("password", "admin5k");
-            cloud = cloudContext.getCloud("mmbase","name/password",user);
+        if (cloud == null) {            
+            startMMBase();
+            cloud = getRemoteCloud();
             
             // needed builders for this test.
             try {
@@ -366,7 +363,7 @@ public class TypeRelTest extends TestCase {
                 throw new Exception("Test cases cannot be performed because " + e.getMessage() + " Please arrange this in your cloud before running this TestCase.");
              }
 
-            createdNodes = cloudContext.createNodeList();
+            createdNodes = cloud.getCloudContext().createNodeList();
             assertNotNull("Could not create remotely a nodelist" , createdNodes);
 
             news = newsManager.createNode();

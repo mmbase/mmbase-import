@@ -29,23 +29,8 @@ public class AllTests {
     }
 
     public static Test suite() {
-        // Init MMBase
-        try{
-            MMBaseContext.init();
-        } catch(Exception e) {
-            System.err.println("Could not initialize MMBase: "
-                               + e.getMessage());
-        }
-        // Startup MMBase
-        MMBase mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
-        Versions versions = (Versions)mmb.getMMObject("versions");
-        while (versions.getInstalledVersion("BridgeTest", "application") != 1) {
-            try{
-                // Wait a second for MMBase application BridgeTest to start.
-                Thread.currentThread().sleep(1000);
-            } catch (Exception e) {
-            }
-        }
+        startMMBase();
+
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");
         suite.addTestSuite(CloudContextTest.class);
