@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.22 2002-10-25 13:10:54 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.23 2002-10-28 17:42:47 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -105,6 +105,8 @@ public class XMLBasicReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get docuemtn builder AFTER setting the validation    
             dfactory.setValidating(validating);
+            dfactory.setNamespaceAware(true);
+
             db = dfactory.newDocumentBuilder();
 
             db.setErrorHandler(handler);
