@@ -15,15 +15,16 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
  */
 public class ImageCaches extends MMObjectBuilder {
-	private LRUHashtable handlecache=new LRUHashtable(128);
 
-	
+    private static Logger log = Logging.getLoggerInstance(ImageCaches.class.getName());
+	private LRUHashtable handlecache=new LRUHashtable(128);
 
 	public String getGUIIndicator(MMObjectNode node) {
 		int num=node.getIntValue("id");
@@ -40,7 +41,6 @@ public class ImageCaches extends MMObjectBuilder {
 		}
 		*/
 	}
-
 
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("handle")) {
@@ -78,13 +78,15 @@ public class ImageCaches extends MMObjectBuilder {
 				stmt2.close();
 				con.close();
 			} catch (Exception e) {
-				System.out.println("getCkeyNode error "+ckey+":"+toHexString(ckey));
+				log.error("getCkeyNode error "+ckey+":"+toHexString(ckey));
 				e.printStackTrace();
 			}
 		} else {
 			rtn=b.getBytes();
 		}
-		if (debug && rtn==null) debug("getCkeyNode: empty array returned for ckey "+ckey);
+		if (debug && rtn==null) {
+			log.debug("getCkeyNode: empty array returned for ckey "+ckey);
+		}
 		return(rtn);
 	}
 
