@@ -58,6 +58,12 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
         node = getCloud().getNode(number);
         setNodeVar(node);
+        // if direct parent is a Formatter Tag, then communicate
+        FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
+        if (f!= null && f.wantXML() && node != null) {
+            f.getGenerator().add(node);
+        }
+        
         fillVars();
         return EVAL_BODY_BUFFERED;
     }
