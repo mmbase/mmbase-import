@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.17 2003-12-03 17:14:04 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.18 2003-12-04 12:39:03 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -39,7 +39,7 @@ public class ContentTag extends LocaleTag  {
 
     private static final CharTransformer COPY = new CopyCharTransformer();
 
-    private static final long DEFAULT_EXPIRE_TIME = 1000 * 60; // one minute
+    private static final long DEFAULT_EXPIRE_TIME = 60; // one minute
 
     static final ContentTag DEFAULT = new ContentTag() {
             public CharTransformer getWriteEscaper() { return COPY; } 
@@ -328,12 +328,12 @@ public class ContentTag extends LocaleTag  {
                 HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
                 HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
                 if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
-                    long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME;
+                    long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME * 1000;
                     response.setDateHeader("Expires", later);
                     response.setHeader("Cache-Control", "public");
                 } else {
                     // perhaps default cache behaviour should be no-cache if there is a session?
-                    long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME * 1000);
+                    long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
                     if (exp == 0) { // means : cannot be cached!
                         response.setHeader("Cache-Control", "no-cache");
                         response.setHeader("Pragma","no-cache");
