@@ -8,6 +8,7 @@
 		<intro></intro>
 	</node>
 
+<!--
 	<node number="696" owner="admin">
 		<body></body>
 		<subtitle></subtitle>
@@ -15,5 +16,6 @@
 		<kind>chatbox</kind>
 		<intro></intro>
 	</node>
+-->
 
 </community>
