@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.*;
-import java.io.StringWriter;
-import java.io.StringReader;
+import java.io.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
@@ -30,14 +29,14 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.56 2003-12-09 10:20:06 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.57 2003-12-16 13:53:17 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(UrlTag.class);
 
-    private static CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
+    private static final CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
     private   Attribute referids = Attribute.NULL;
     protected List extraParameters = null;
@@ -112,7 +111,16 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         show.append(getPage());
         if (show.toString().equals("")) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-            show.append(new java.io.File(req.getRequestURI()).getName());
+
+            String thisPage = null;
+            String requestURI = req.getRequestURI();
+            if (requestURI.endsWith("/")) {
+                thisPage = ".";
+            } else {
+                thisPage = new File(requestURI).getName();
+            }
+
+            show.append(thisPage);
         }
 
         makeRelative(show);
