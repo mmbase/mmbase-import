@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.101 2004-01-07 15:06:07 pierre Exp $
+ * @version $Id: MMBase.java,v 1.102 2004-01-13 19:28:07 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -63,12 +63,12 @@ public class MMBase extends ProcessorModule {
     private static final int STATE_UP = 2;
 
     // logging
-    private static Logger log = Logging.getLoggerInstance(MMBase.class);
+    private static final Logger log = Logging.getLoggerInstance(MMBase.class);
 
     /**
      * Reference to the MMBase singleton. Used for quick reference by getMMBase();
      */
-    private static MMBase mmbaseroot=null;
+    private static MMBase mmbaseroot = null;
 
     /**
      * Defines what 'channel' we are talking to when using multicast.
@@ -999,18 +999,22 @@ public class MMBase extends ProcessorModule {
      */
     boolean initBuilders() {
 
-        // first load the builders
+        // first load the core builders
+        // remarks:
+        //  - If nodescaches inactive, in init of typerel reldef nodes are created wich uses InsRel.oType, so typerel must be started after insrel and reldef. (bug #6237)
+        
         TypeDef = (TypeDef)loadCoreBuilder("typedef");
         TypeDef.init();
 
         RelDef = (RelDef)loadCoreBuilder("reldef");
         RelDef.init();
 
+        InsRel = (InsRel)loadCoreBuilder("insrel");
+        InsRel.init();
+
         TypeRel = (TypeRel)loadCoreBuilder("typerel");
         TypeRel.init();
 
-        InsRel = (InsRel)loadCoreBuilder("insrel");
-        InsRel.init();
 
         try {
             OAlias = (OAlias)loadBuilder("oalias");
