@@ -12,8 +12,7 @@ package org.mmbase.module.builders;
 import java.util.Map;
 import java.util.List;
 
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
 
 import org.mmbase.util.Queue;
 
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Each one contains a Queue of Image request jobs it has to do, which is constantly watched for new jobs.
  *
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.15 2004-02-06 14:26:04 pierre Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.16 2004-02-23 19:05:00 pierre Exp $
  * @see ImageRequest
  */
 public class ImageRequestProcessor implements Runnable {
@@ -81,12 +80,12 @@ public class ImageRequestProcessor implements Runnable {
      * @param req The ImageRequest wich must be executed.
      */
     private void processRequest(ImageRequest req) {
-
         byte[] picture = null;
-        byte [] inputpicture = req.getInput();
+        byte[] inputpicture = req.getInput();
         List params = req.getParams();
         String ckey = req.getKey();
-        int      id = req.getId();
+        int id = req.getId();
+        MMObjectNode node = null;
 
         try {
             if (inputpicture == null || inputpicture.length == 0) {
@@ -95,14 +94,15 @@ public class ImageRequestProcessor implements Runnable {
                 if (log.isDebugEnabled()) log.debug("processRequest : Converting : " + id);
                 picture = convert.convertImage(inputpicture, params);
                 if (picture != null) {
-                    MMObjectNode newNode = icaches.getNewNode("imagesmodule");
-                    newNode.setValue("ckey", ckey);
-                    newNode.setValue("id", id);
-                    newNode.setValue("handle", picture);
-                    newNode.setValue("filesize", picture.length);
-                    int i = newNode.insert("imagesmodule");
-                    if (i < 0) {
+                    node = icaches.getNewNode("imagesmodule");
+                    node.setValue("ckey", ckey);
+                    node.setValue("id", id);
+                    node.setValue("handle", picture);
+                    node.setValue("filesize", picture.length);
+                    int icachenumber = node.insert("imagesmodule");
+                    if (icachenumber < 0) {
                         log.warn("processRequest: Can't insert cache entry id=" + id + " key=" + ckey);
+                        node = null;
                     }
                 } else {
                     log.warn("processRequest(): Convert problem params : " + params);
@@ -114,7 +114,7 @@ public class ImageRequestProcessor implements Runnable {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting output " + id + " (" + req.count() + " times requested now)");
                 }
-                req.setOutput(picture);
+                req.setContainer(new ByteFieldContainer(node.getNumber(), picture));
                 if (log.isDebugEnabled()) log.debug("Removing key " + id);
                 table.remove(ckey);
             }

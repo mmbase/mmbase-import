@@ -31,12 +31,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.91 2004-02-20 09:59:39 michiel Exp $
+ * @version $Id: Images.java,v 1.92 2004-02-23 19:05:00 pierre Exp $
  */
 public class Images extends AbstractImages {
 
     private static final Logger log = Logging.getLoggerInstance(Images.class);
-
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
@@ -102,7 +101,7 @@ public class Images extends AbstractImages {
             }
             catch (NumberFormatException e) {
                 itmp = 2;
-            } 
+            }
             maxConcurrentRequests = itmp;
         }
 
@@ -399,26 +398,20 @@ public class Images extends AbstractImages {
             log.debug("Caching image " + params);
         }
 
-
-        if (getImageBytes(params) != null) {
+        ByteFieldContainer data = getImageContainer(params);
+        if (data != null) {
             // this will also calculate ckey, so it is not optimally efficient now.
             // but at least it will make sure that the image is cached.
-
             String ckey = flattenParameters(params);
-
             // Using the cache which is also used for templates (this
             // avoids the SQL statement in getCachedNodeNumber)
             // Templates and ckeys are not excactly the same, but
             // well, this function is only used in servdb.
-
             Integer cachedNodeNumber = (Integer) templateCacheNumberCache.get(ckey);
             if (cachedNodeNumber == null ) {
-                // get a connection to the cache module
-                ImageCaches imageCacheBuilder = (ImageCaches) mmb.getMMObject("icaches");
-                cachedNodeNumber = new Integer(imageCacheBuilder.getCachedNodeNumber(ckey));
-                templateCacheNumberCache.put(ckey, cachedNodeNumber);
+                templateCacheNumberCache.put(ckey, new Integer(data.number));
             }
-            return cachedNodeNumber.intValue();
+            return data.number;
         } else {
             log.warn("No cache number found for " + params + " returning -1");
             log.debug(Logging.stackTrace());
@@ -427,34 +420,45 @@ public class Images extends AbstractImages {
     }
 
     /**
-     * @deprecated Use getImageBytes(params);
+     * @deprecated Use getImageNode(params);
      */
     public byte[] getImageBytes5(scanpage sp, List params) {
         return getImageBytes(params);
     }
 
     /**
-     * @deprecated Use getImageBytes(params);
+     * @deprecated Use getImageNode(params);
      */
     public byte[] getImageBytes(scanpage sp, List params) {
         return getImageBytes(params);
     }
 
     /**
+     * Returns an MMObjectNode object holding the picture wich belongs to the given param line.
+     *
+     * @deprecated Use getImageNode(params);
+     * @param params The name/id of the picture, followed by operations, which can be performed on the picture..
+     * @return null if something goes wrong, otherwise an MMObjectNode object
+     */
+    public byte[] getImageBytes(List params) {
+        ByteFieldContainer data = getImageContainer(params);
+        return (data == null) ? null : data.value;
+    }
+
+    /**
      * Returns a picture wich belongs to the given param line, with caching.
      *
      * @param params The name/id of the picture, followed by operations, which can be performed on the picture..
-     * @return null if something goes wrong, otherwise the picture in a byte[]
+     * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer}
      */
-    public byte[] getImageBytes(List params) {
-
-        byte[] picture = getCachedImage(params);
-        if(picture != null && picture.length > 0) {
+    public ByteFieldContainer getImageContainer(List params) {
+        ByteFieldContainer data = getCachedImageContainer(params);
+        if(data != null) {
             if (log.isDebugEnabled()) log.debug("Image was cached already");
-            return picture;
+            return data;
         } else {
-            if (log.isDebugEnabled()) log.debug("Image was not cached, caching now (from getCachedImage: " + picture + ")");
-            return getOriginalImage(params);
+            if (log.isDebugEnabled()) log.debug("Image was not cached, caching now");
+            return createCachedImageContainer(params);
         }
     }
 
@@ -498,13 +502,13 @@ public class Images extends AbstractImages {
     }
 
     /**
-     * Determins the ckey, and asks the bytes from icaches.  Will
-     * return null when not in cache, and otherwise a byte []
+     * Determines the ckey, and asks the bytes from icaches.  Will
+     * return null when not in cache, and otherwise a @link{ ByteFieldContainer}
      * representing the picture..
      * @param params a <code>List</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
-     * @return null if something goes wrong, otherwise the picture in a byte[]
+     * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer} object
      */
-    protected byte[] getCachedImage(List params) {
+    protected ByteFieldContainer getCachedImageContainer(List params) {
         // get a connection to the cache module
         ImageCaches imageCacheBuilder = (ImageCaches) mmb.getMMObject("icaches");
         if(imageCacheBuilder == null) {
@@ -531,15 +535,15 @@ public class Images extends AbstractImages {
      * This function should be called when an image/template does not
      * have a cached version yet.
      *
-     * Will return null when something goes wrong otherwise, a byte[]
+     * Will return null when something goes wrong otherwise, a @link{ ByteFieldContainer} object
      * which represents the picture.
      *
      * @param params a <code>List</code> of <code>String</code>s,
      *                containing the name/id of the picture, followed by operations,
      *                which can be performed on the picture..
-     * @return null if something goes wrong, otherwise the picture in a byte[]
+     * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer} object
      */
-    protected byte[] getOriginalImage(List params) {
+    protected ByteFieldContainer createCachedImageContainer(List params) {
         if (log.isServiceEnabled()) {
             log.service("getting image bytes of " + params + " (" + params.size() + ")");
         }
@@ -591,7 +595,8 @@ public class Images extends AbstractImages {
                 imageRequestQueue.append(req);
             }
         }
-        return req.getOutput();
+
+        return req.getContainer();
     }
 
     /**
@@ -771,5 +776,6 @@ public class Images extends AbstractImages {
     void invalidateTemplateCacheNumberCache(String ckey) {
         templateCacheNumberCache.remove(ckey);
     }
+
 }
 

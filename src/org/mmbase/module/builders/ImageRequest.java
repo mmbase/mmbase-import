@@ -10,21 +10,22 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.List;
+import org.mmbase.module.core.ByteFieldContainer;
 
 /**
- * Defines one Image convert request. 
+ * Defines one Image convert request.
  *
  * @author Rico Jansen
- * @version $Id: ImageRequest.java,v 1.4 2004-01-20 20:51:51 michiel Exp $
+ * @version $Id: ImageRequest.java,v 1.5 2004-02-23 19:05:00 pierre Exp $
  */
 public class ImageRequest {
 
     private String ckey;
     private List params;
     private byte[] in;
-    private byte[] out;
     private int id;
     private int count = 0;
+    private ByteFieldContainer container = null;
 
     private boolean outputSet = false;
 
@@ -35,7 +36,7 @@ public class ImageRequest {
         this.id=id;
         this.ckey=ckey;
         this.in=in;
-        this.out=null;
+        this.container=null;
         this.params=params;
         count=0;
     }
@@ -71,7 +72,7 @@ public class ImageRequest {
     /**
      * @javadoc
      */
-    public synchronized byte[] getOutput() {
+    private synchronized byte[] getOutput() {
         if (! outputSet) { // the request is in progress, wait until it is ready.
             count++;
             try {
@@ -79,16 +80,30 @@ public class ImageRequest {
             } catch (InterruptedException e) {
             }
         }
-        return out;
+        return container.value;
     }
 
     /**
      * @javadoc
      */
-    public synchronized void setOutput(byte[] output) {
-        out = output;
+    public synchronized ByteFieldContainer getContainer() {
+        if (! outputSet) { // the request is in progress, wait until it is ready.
+            count++;
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+        }
+        return container;
+    }
+
+    /**
+     * @javadoc
+     */
+    public synchronized void setContainer(ByteFieldContainer container) {
         outputSet = true;
         count = 0;
+        this.container = container;
         notifyAll();
     }
 

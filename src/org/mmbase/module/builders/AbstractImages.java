@@ -19,14 +19,14 @@ import org.mmbase.util.functions.Parameters;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.23 2004-02-13 15:32:02 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.24 2004-02-23 19:05:00 pierre Exp $
  * @since   MMBase-1.6
  */
-public abstract class AbstractImages extends AbstractServletBuilder {   
+public abstract class AbstractImages extends AbstractServletBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractImages.class);
 
-    /** 
+    /**
      * Cache with 'ckey' keys.
      * @since MMBase-1.6.2
      */
@@ -47,16 +47,16 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             while (keys.hasNext()) {
                 String key = (String) keys.next();
                 log.debug("checking " + key);
-                if (key.startsWith(prefix)) { 
-                    // check is obviously to crude, e.g. if node number happens to be 4, 
-                    // about one in 10 cache entries will be removed which need not be removed, 
+                if (key.startsWith(prefix)) {
+                    // check is obviously to crude, e.g. if node number happens to be 4,
+                    // about one in 10 cache entries will be removed which need not be removed,
                     // but well, it's only a cache, it's only bad luck...
                     // 4 would be a _very_ odd number for an Image, btw..
                     log.debug("removing " + key + " " + get(key));
                     removed.add(key);
                     // cannot use keys.remove(), becaus then cache.remove is not called.
                 }
-                
+
             }
             keys = removed.iterator();
             while (keys.hasNext()) {
@@ -110,8 +110,8 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
     /**
      * Returns an image which belongs to the given parameter set.  The
-     * parameters exist of a list of string values, staring with the
-     * proginal image object alias or number, followed by operations
+     * parameters exist of a list of string values, starting with the
+     * orginal image object alias or number, followed by operations
      * (format and transformation instructions)
      *
      * This function is not used by ImageServlet. Perhaps it should be deprecated.
