@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.47 2005-01-03 18:02:03 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.48 2005-01-06 20:23:39 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -125,7 +125,7 @@ public class ImportTag extends ContextReferrerTag {
                 if (fromString.equals("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                     throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in session, because there is no session");
                 }
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : fromString));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : ("in " + fromString)));
             }
             if (found) {
                 value = getObject(useId);
