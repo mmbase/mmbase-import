@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: JDBC.java,v 1.9 2000-03-31 13:33:18 wwwtech Exp $
+	$Id: JDBC.java,v 1.10 2000-04-25 21:30:47 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.9  2000/03/31 13:33:18  wwwtech
+	Wilbert: Introduction of ParseException for method getList
+	
 	Revision 1.8  2000/03/30 13:11:44  wwwtech
 	Rico: added license
 	
@@ -43,7 +46,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.9 2000-03-31 13:33:18 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.10 2000-04-25 21:30:47 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -243,7 +246,6 @@ private String defaultpassword;
 			post=end.substring(pos+5);
 			end=pre+port+post;
 		}
-
 		//System.out.println("JDBC URL=\""+end+"\"");
 		return(end);
 	}
