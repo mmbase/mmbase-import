@@ -9,19 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import javax.servlet.jsp.JspTagException;
 
-import java.util.*;
-
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.StringSplitter;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  * ListNodesTag, provides functionality for listing single nodes in MMBase
@@ -29,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.14 2003-09-16 17:46:34 michiel Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.15 2003-10-13 08:34:22 keesj Exp $ 
  */
 
 public class ListNodesTag extends AbstractNodeListTag {

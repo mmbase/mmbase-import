@@ -9,24 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
-
-
 import org.mmbase.bridge.jsp.taglib.NodeTag;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.logging.*;
 
 /**
  * A NodeProvider which creates a new node, which will be commited after the body. So, you
  * can use `setField's in the body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateNodeTag.java,v 1.17 2003-09-22 11:50:15 michiel Exp $
+ * @version $Id: CreateNodeTag.java,v 1.18 2003-10-13 08:34:25 keesj Exp $
  */
 
 public class CreateNodeTag extends NodeTag {

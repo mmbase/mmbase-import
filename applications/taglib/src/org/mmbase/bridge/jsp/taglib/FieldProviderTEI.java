@@ -9,19 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import javax.servlet.jsp.tagext.VariableInfo;
-import javax.servlet.jsp.tagext.TagData;
-import javax.servlet.jsp.tagext.TagExtraInfo;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 
 /**
  * The TEI class for Field (type) Providers. in fact a simplified version of WriterTEI (can only provide Field an FieldValue)
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldProviderTEI.java,v 1.1 2003-09-02 17:26:22 michiel Exp $ 
+ * @version $Id: FieldProviderTEI.java,v 1.2 2003-10-13 08:34:23 keesj Exp $ 
  * @since MMBase-1.7
  */
 
