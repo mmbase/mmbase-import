@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.12 2003-03-04 13:44:42 nico Exp $
+ * @version $Id: Field.java,v 1.13 2003-08-27 10:21:42 pierre Exp $
  */
 public interface Field {
 
@@ -99,14 +99,27 @@ public interface Field {
     public boolean isRequired();
 
     /**
-     * Returns whether this field is unique (should have content that occurs only once).
-     * Note that MMBase lets the database layer handle this. If your database or configuration does
+     * Returns whether this field is part of a unique key (a set of fields whose combined content should 
+     * occur only once).
+     * Note that MMBase lets the storage layer handle this. If your storage implementation or configuration does
      * not support this the uniqueness may not be enforced.
      *
-     * @return  <code>true</code> if the field is unique
+     * @return  <code>true</code> if the field is part of a unique key
      * @since  MMBase-1.6
      */
     public boolean isUnique();
+
+    /**
+     * Returns whether this field is a key field, meaning that the storage layer should define an index for it, allowing
+     * optimization with search and sort actions.
+     * Note that MMBase lets the storage layer decide whether an index is actually defined.
+     * Some implementations or configurations may not do this.
+     * Note: Currently, this method only returns true if the field is the primary key (number field) or a Node field.
+     *
+     * @return  <code>true</code> if the field has a key defined
+     * @since  MMBase-1.7
+     */
+    public boolean hasIndex();
 
     /**
      * Returns the maximum length of data this field can contain.
