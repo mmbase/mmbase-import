@@ -66,6 +66,39 @@ public class Community extends MMObjectBuilder {
      *
      * @param community The community node of which to open all the channels.
      */
+    public void openAllCommunities() {
+        //ensure the communitybuilder is initialized.
+        init();
+        if (channelBuilder == null) {
+            log.error("No channel builder");
+            return;
+        }
+        ClusterBuilder cluster=mmb.getClusterBuilder();
+
+        Vector builders = new Vector();
+        builders.add("community");
+        builders.add("channel");
+
+        Vector fields = new Vector();
+        fields.add("community.number");
+        fields.add("channel.number");
+        Vector allchannels=cluster.searchMultiLevelVector(null,fields,"YES",builders,
+               "WHERE channel.open = "+channelBuilder.OPEN+" OR channel.open = "+channelBuilder.WANT_OPEN,
+               null,null,ClusterBuilder.SEARCH_EITHER);
+        if (allchannels!=null) {
+            for (Iterator channels=allchannels.iterator(); channels.hasNext(); ) {
+                MMObjectNode channel = (MMObjectNode)channels.next();
+                log.info("open channel"+channel);
+                channelBuilder.open(channel.getNodeValue("channel"),channel.getNodeValue("community"));
+            }
+        }
+    }
+
+    /**
+     * Opens all the channels that are connected to this community
+     *
+     * @param community The community node of which to open all the channels.
+     */
     public void openAllChannels(MMObjectNode community) {
         if (channelBuilder == null) {
             log.error("No channel builder");
