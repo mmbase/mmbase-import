@@ -30,13 +30,13 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.39 2004-02-04 14:53:10 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.40 2004-02-04 17:39:19 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
 
     // logging
-    private static Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class);
 
     int didcounter=1;
     private Cloud userCloud = null;
@@ -354,7 +354,8 @@ public class WizardDatabaseConnector {
             Node datafield = Utils.selectSingleNode(objectNode, "field[@name='"+fieldname+"']");
             if (datafield==null) {
                 // None-existing field (getNew/getNewRelationa always return all fields)
-                throw new WizardException("field "+fieldname+" does not exist!");
+                String type = Utils.getAttribute(objectDef, "type");
+                throw new WizardException("field " + fieldname + " does not exist in '" + type + "'");
             }
             String value=Utils.getText(field);
             // if you add a list of items, the order of the list may be of import.
