@@ -19,6 +19,9 @@ public abstract class ConfigurationXMLWriter{
                 String content = ConfigurationXMLWriter.createNodeManagerConfiguration(nodeManagerConfiguration);
                 File file = new File(builderDir,nodeManagerConfiguration.getName() + ".xml");
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+		bw.write("<?xml version=\"1.0\"?>\n");
+		bw.write("<!DOCTYPE builder PUBLIC \"-//MMBase/DTD builder config 1.1//EN\" \"http://www.mmbase.org/dtd/builder_1_1.dtd\">\n");
+
                 bw.write(content);
                 bw.flush();
                 bw.close();
@@ -28,6 +31,8 @@ public abstract class ConfigurationXMLWriter{
             String content = createApplicationConfiguration(appconfig);
             File appFile = new File(appconfig.getName() + ".xml");
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(appFile)));
+	    bw.write("<?xml version=\"1.0\" ?>\n");
+            bw.write("<!DOCTYPE application PUBLIC \"//MMBase - application//\" \"http://www.mmbase.org/dtd/application_1_0.dtd\">\n");
             bw.write(content);
             bw.flush();
             bw.close();
@@ -263,6 +268,7 @@ public abstract class ConfigurationXMLWriter{
             XMLElement type = new XMLElement();
             type.setTagName("type");
             type.addProperty("state","persistent");
+            type.addProperty("notnull","false");
             if (fieldConfiguration.getSize() != null){
                 type.addProperty("size",fieldConfiguration.getSize());
             }
