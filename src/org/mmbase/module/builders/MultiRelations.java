@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @sql should be dropped when the core moves to use of SearchQuery
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.40 2004-10-06 12:24:31 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.41 2004-10-12 10:50:59 michiel Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -369,22 +369,21 @@ public class MultiRelations extends MMObjectBuilder {
                 //                str = Strip.DoubleQuote((String)snodes.elementAt(i),Strip.BOTH);
                 str = (String)snodes.elementAt(i);
                 try {
-                    snode=Integer.parseInt(str);
-                }
-                catch(NumberFormatException e) {
+                    snode = Integer.parseInt(str);
+                } catch(NumberFormatException e) {
                     // maybe it was not an integer, hmm lets look in OAlias table then
-                    snode = mmb.OAlias.getNumber(str);
+                    snode = mmb.getOAlias().getNumber(str);
                     // protect against invalid aliases
-                    if (snode<0) snode=0;
+                    if (snode < 0) snode = 0;
                 }
-                snodes.setElementAt(""+snode, i);
+                snodes.setElementAt("" + snode, i);
             }
 
             int sidx;
-            StringBuffer bb=new StringBuffer();
+            StringBuffer bb = new StringBuffer();
 
-            if (snode>0) {
-                basenode=getNode(""+snode);
+            if (snode > 0) {
+                basenode = getNode("" + snode);
                 // not very neat... but it works
                 if (basenode!=null) {
                     sidx=alltables.indexOf(basenode.parent.tableName);
