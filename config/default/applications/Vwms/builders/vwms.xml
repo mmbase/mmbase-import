@@ -41,8 +41,8 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="en">Virtual web masters</description>
-    <description xml:lang="nl">Virtuele web masters</description>
+<description xml:lang="en">A Virtual web masters, is a piece of functionality in MMBase</description>
+    <description xml:lang="nl">Een Virtuele web masters, voert een bepaalde taak uit in MMBase</description>
 </descriptions>
 
 <!-- <properties>
@@ -66,8 +66,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Name of the VWM</description>
+          <description xml:lang="nl">Naam van de VWM</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -99,8 +99,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Name of the MMBase server that runs the VWM</description>
+	  <description xml:lang="nl">Naam van de MMBase machine die de VWM draait</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -132,8 +132,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">The time interval in which the VWM becomes active</description>
+          <description xml:lang="nl">The tijdsinterval waarin de VWM actief wordt.</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -165,8 +165,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Describes the state of the VWM</description>
+	  <description xml:lang="nl">Beschrijft de status van de VWM</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -198,8 +198,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Describes the functionality of the VWM</description>
+	  <description xml:lang="nl">Beschrijft de functionaliteit van de VWM</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -231,8 +231,8 @@ a key/value system. Its a optional tag.
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">The java class file that implementes the VWM functionality</description>
+	  <description xml:lang="nl">De java classfile die de functionaliteit van de VWM implementeerd.</description>
         </descriptions>
         <!-- gui related -->
         <gui>
