@@ -28,14 +28,33 @@ public class TypeRel extends MMObjectBuilder {
 	/**
 	 * Cache, holds the last 128 verified type-relation nodes
 	 */
-	LRUHashtable artCache=new LRUHashtable(128);
+	private LRUHashtable artCache=new LRUHashtable(128);
 
+	/** Cache table that holds yes/no if a relation direction
+	 * question was correct or not.
+	 * This is needed to make sure that a relation is correctly inserted.
+	 */
+	private Hashtable relDefCorrectCache=new Hashtable(10);
+	
 	/**
 	* Constructor for the TypeRel builder
 	*/
 	public TypeRel() {
 	}
 
+    /**
+    * Remove a node from the cloud.
+    * @param node The node to remove.
+    */
+    public void removeNode(MMObjectNode node) {
+        int snumber=node.getIntValue("snumber");
+        int dnumber=node.getIntValue("dnumber");
+        int rnumber=node.getIntValue("rnumber");
+        super.removeNode(node);
+        relDefCorrectCache.remove(""+snumber+" "+dnumber+" "+rnumber);
+        artCache.remove(""+snumber+" "+dnumber);
+    }
+	
 	/**
 	*  Retrieves all relations which are 'allowed' for a specified node, that is,
 	*  where the node is either allowed to be the source, or to be the destination (but where the
@@ -50,17 +69,45 @@ public class TypeRel extends MMObjectBuilder {
 	}
 
 	/**
+	* Removes all invalid relation type nodes from a list.
+	* This removes all relation types where the requesting node is actually the destination, and where
+	* the directionality is unidirectional.
+	* @param e the original list of relation types
+	* @param number the numbe rof the requesting node
+	* @return a 'clean' enumeration of relation types
+	*/
+	private Enumeration clearDirectedRelations(Enumeration e, int number) {
+	    // only check when directionality field exist?
+	    // -> makes sure older code works the same, maybe remove later
+	    if (!InsRel.usesdir) return e;
+	
+	    Vector result= new Vector();
+    	while (e.hasMoreElements()) {
+	        MMObjectNode node=(MMObjectNode)e.nextElement();
+            if (number==node.getIntValue("snumber")) { // requesting node is the source, add
+    	        result.add(node);
+             } else {
+                int reldefnr=node.getIntValue("rnumber");
+                MMObjectNode reldefnode = getNode(reldefnr); // obtain reldefnode
+                if ((reldefnode!=null) && (reldefnode.getIntValue("dir")!=1)) {  // relation is bidirectional, add
+    		        result.add(node);
+    		   }
+    	    }
+    	}
+	    return(result.elements());
+	}
+	
+	/**
 	*  Retrieves all relations which are 'allowed' for a specified node, that is,
 	*  where the node is either allowed to be the source, or to be the destination (but where the
-	*  corresponing relation definition is bi-directional). The allowed relations are determined by
+	*  corresponding relation definition is bi-directional). The allowed relations are determined by
 	*  the type of the node
 	*  @param number The number of the node to retrieve the allowed relations of.
 	*  @return An <code>Enumeration</code> of nodes containing the typerel relation data
 	*/
 	public Enumeration getAllowedRelations(int number) {
-	    // XXX add directionality (and caching ?)
-	    // note: adding dir means we cannot use search!
-	    return search("WHERE snumber="+number+" OR dnumber="+number);
+	    Enumeration e = search("WHERE snumber="+number+" OR dnumber="+number);
+	    return clearDirectedRelations(e, number);
 	}
 
     /**
@@ -70,9 +117,8 @@ public class TypeRel extends MMObjectBuilder {
     *  @return An <code>Enumeration</code> of nodes containing the typerel relation data
     */
     public Enumeration getAllowedRelations(int snum, int dnum) {
-	    // XXX add directionality (and caching ?)
-	    // note: adding dir means we cannot use search!
-        return search("WHERE (snumber="+snum+" AND dnumber="+dnum+") OR (dnumber="+snum+" AND snumber="+dnum+")");
+	    Enumeration e = search("WHERE (snumber="+snum+" AND dnumber="+dnum+") OR (dnumber="+snum+" AND snumber="+dnum+")");
+	    return clearDirectedRelations(e, snum);
     }
 
     /**
@@ -98,7 +144,6 @@ public class TypeRel extends MMObjectBuilder {
         }
         return -1;
     }
-
 	
 	/**
 	*  Retrieves all reldef node numbers for relations which are 'allowed' between two specified nodes.
@@ -118,7 +163,7 @@ public class TypeRel extends MMObjectBuilder {
 
 	/**
 	*  For use with MultiRelations
-	*  Retrieves all reldef node numbers for relations which are 'allowed' between two specified nodes.
+	*  Retrieves all reldef nodes for relations which are 'allowed' between two specified nodes.
 	*  @param n1 The number of the first objectnode (the source)
 	*  @param n2 The number of the second objectnode (the destination)
 	*  @return A <code>Vector</code> of Integers containing the reldef object node numbers
@@ -128,7 +173,7 @@ public class TypeRel extends MMObjectBuilder {
 		for(Enumeration e=getAllowedRelations(snum,dnum); e.hasMoreElements();) {
 		    MMObjectNode node=(MMObjectNode)e.nextElement();
 		    int rnumber=node.getIntValue("rnumber");
-			MMObjectNode snode=mmb.getRelDef().getNode(rnumber);
+			MMObjectNode snode=getNode(rnumber);
 			result.addElement(snode);
 		}
 		return(result);
@@ -192,6 +237,38 @@ public class TypeRel extends MMObjectBuilder {
     }
 
     /**
+    * Checks whether a specific relation exists.
+    * Maintains a cache containing the last checked relations
+    *
+    * Note that this routine returns false both when a snumber/dnumber are swapped, and when a typecombo
+    * does not exist -  it is not possible to derive whether one or the other has occurred.
+    *
+    * @param n1 Number of the source node
+    * @param n2 Number of the destination node
+    * @param r  Number of the relation definition
+    * @return A <code>boolean</code> indicating success when the relation exists, failure if it does not.
+    */
+	public boolean reldefCorrect(int n1,int n2, int r) {
+		// do the query on the database
+		Boolean b=(Boolean)relDefCorrectCache.get(""+n1+" "+n2+" "+r);
+		if (b!=null) {
+			return b.booleanValue();
+		} else {
+			Vector v=searchNumbers("WHERE snumber="+n1+" AND dnumber="+n2+" AND rnumber="+r);
+			if (v.size()>0) {
+			    relDefCorrectCache.put(""+n1+" "+n2+" "+r,new Boolean(true));
+				return true;
+			} else {
+			    v=searchNumbers("WHERE dnumber="+n1+" AND snumber="+n2+" AND rnumber="+r);
+			    if (v.size()>0) {
+			        relDefCorrectCache.put(""+n1+" "+n2+" "+r,new Boolean(false));
+			    }
+			}
+			return false;
+		}
+	}
+	
+	/**
     *  Retrieves all relations which are 'allowed' between two specified nodes.
     *  @param snum The first objectnode type (the source)
     *  @param dnum The second objectnode type (the destination)
