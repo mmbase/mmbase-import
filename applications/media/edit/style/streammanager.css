@@ -69,11 +69,11 @@ span.realpositionitem  {
 }
 
 span.realpositionitem input.input {
-   width: 150px;
+   width: 15ex;
 }
 
 span.realpositionitem input.check {
-  margin-left: 3ex;
+  margin-left: 1ex;
 }
 
 nobr input.input {

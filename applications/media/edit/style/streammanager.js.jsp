@@ -57,15 +57,25 @@ function setPosition(pos) {
   if (getPlayer() == "real") {
      parent.frames['left'].document.embeddedplayer.setPosition(pos);
   } else if (getPlayer() == "qt") {
-   return parent.frames['left'].document.embeddedplayer.SetTime(pos);
+     return parent.frames['left'].document.embeddedplayer.SetTime(pos);
   } else {
      parent.frames['left'].document.embeddedplayer.CurrentPosition = pos / 1000;
   }
 }
 
+
 function getLength() {
-   return parent.frames['left'].document.embeddedplayer.getLength();
+  if (getPlayer() == "real") {
+     return parent.frames['left'].document.embeddedplayer.getLength();
+  } else if (getPlayer() == "qt") {
+     return parent.frames['left'].document.embeddedplayer.GetEndTime();
+  } else {
+   return parent.frames['left'].document.embeddedplayer.Duration * 1000;
+  }
 }
+
+// Following are for the extra (currenlty unused) javascript buttons.
+
 function doPlay() {
   if (getPlayer() == "real") {
      parent.frames['left'].document.embeddedplayer.DoPlay();
@@ -87,6 +97,9 @@ if (getPlayer() == "real") {
   parent.frames['left'].document.embeddedplayer.Pause();
 }
 }
+
+
+// other javascript
 
 function getLeftURL(form) {
     if (form == "search") {
