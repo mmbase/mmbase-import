@@ -1,3 +1,13 @@
+/* -*- tab-width: 4; -*-
+ 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+ 
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ 
+*/
+
 package org.mmbase.module.community;
 
 import java.util.*;
@@ -6,6 +16,9 @@ import java.awt.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.TemporaryNodeManager;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Dirk-Jan Hoekstra
@@ -17,16 +30,14 @@ import org.mmbase.module.core.TemporaryNodeManager;
 
 public class RelationBreaker extends Thread
 {
-	private String classname = getClass().getName();
+
+    private static Logger log = Logging.getLoggerInstance(RelationBreaker.class.getName()); 
 	private Vector relations = new Vector();
 	private long checkInterval = 10 * 60 * 1000;
 	private MMBase mmb;
 	private boolean shouldRun = false;
 	private TemporaryNodeManager tmpNodeManager;
 
-	private void debug(String msg)
-	{	System.out.println (classname + "-> " + msg);
-	}
 
 	public RelationBreaker(MMBase mmb, long checkInterval, TemporaryNodeManager tmpNodeManager)
 	{	this.mmb = mmb;
@@ -36,7 +47,7 @@ public class RelationBreaker extends Thread
 
 	public synchronized void add(String id, long expireTime)
 	{	relations.add(new RelationHolder(id, expireTime));
-		debug("add");
+		log.debug("add");
 		if (!shouldRun)
 		{	shouldRun = true;
 			start();
@@ -62,7 +73,7 @@ public class RelationBreaker extends Thread
 
 	public synchronized void remove(RelationHolder relationHolder, int i)
 	{	//relations.remove(i);
-		debug(relationHolder.id);
+		log.debug(relationHolder.id);
 		String owner = relationHolder.id.substring(0, relationHolder.id.indexOf("_"));
 		String key = relationHolder.id.substring(relationHolder.id.indexOf("_") + 1);					
 		tmpNodeManager.deleteTmpNode(owner, key);
@@ -79,14 +90,15 @@ public class RelationBreaker extends Thread
 			{	sleep(checkInterval);
 			}
 			catch(Exception e)
-			{	debug("run(): can't sleep.");
+			{	
+                log.error("run(): can't sleep.");
 				shouldRun = false;
 				return;
 			}
 
 			currentTime = System.currentTimeMillis();
 
-			debug("search for expired");
+			log.debug("search for expired");
 			int i = 0;
 			while (i < relations.size())
 			{	RelationHolder relationHolder = (RelationHolder)relations.elementAt(i);

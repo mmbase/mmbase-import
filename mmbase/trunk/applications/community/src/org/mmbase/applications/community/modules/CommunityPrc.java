@@ -1,3 +1,13 @@
+/* -*- tab-width: 4; -*-
+ 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+ 
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ 
+*/
+
 package org.mmbase.module.community;
 
 import java.lang.*;
@@ -18,6 +28,9 @@ import org.mmbase.module.builders.Message;
 import org.mmbase.module.builders.Channel;
 import org.mmbase.module.builders.Community;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Dirk-Jan Hoekstra
  * @version 31 Jan 2001
@@ -25,20 +38,18 @@ import org.mmbase.module.builders.Community;
 
 public class CommunityPrc extends ProcessorModule {
 
-	public final String classname = getClass().getName();
+    private static Logger log = Logging.getLoggerInstance(CommunityPrc.class.getName()); 
+    
 	private Message messageBuilder;
 	private Channel channelBuilder;
 	private Community communityBuilder;
-	private MMBase mmb;
-	private final boolean debug = true;
+	private MMBase mmb;   
 
-	private void debug(String msg)
-	{	System.out.println (classname + "-> " + msg);
-	}
-
+    /*
 	private String error(String msg)
-	{	return classname + " error-> " + msg;
+	{	return this.getClass().getName() + " error-> " + msg;
 	}
+    */
 
 	public CommunityPrc()
 	{
@@ -171,7 +182,8 @@ public class CommunityPrc extends ProcessorModule {
 		else
 			node = (MMObjectNode)mmb.getMMObject("message").TemporaryNodes.get(number);		
 		if (number == null)
-		{	debug("getListTemporaryRelations(): Can't find node: " + number);
+		{	
+            log.warn("getListTemporaryRelations(): Can't find node: " + number);
 			return result;
 		}
 		Enumeration relatedNodes = (((Message)mmb.getMMObject("message")).getTemporaryRelated(node, tagger.Value("TYPE"))).elements();

@@ -1,19 +1,27 @@
+/* -*- tab-width: 4; -*-
+ 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+ 
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ 
+*/
+
 package org.mmbase.module.community;
 
 import java.util.Date;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class TimeStamp extends Date
 {
-	private String classname = getClass().getName();
+
+    private static Logger log = Logging.getLoggerInstance(TimeStamp.class.getName()); 
+
 	private int low = 0;
 	private int high = 0;
-
-	protected void debug(String msg)
-	{ /* PRE:  A meaningfull debugmessage.
-	   * POST: Writes the name of the class generating the message and the debug message to System.out.
-	   */
-		System.out.println(classname + ":" + msg);
-	}
 
 	public TimeStamp()
 	{ /* POST: Creates a TimeStamp with the current time.
@@ -26,9 +34,9 @@ public class TimeStamp extends Date
 		setTime(time);
 		low  = (int)(time & 0xFFFFFFFFL); 
 		high = (int)(time >>> 32);
-		//debug("TimeStamp(long): time=" + Long.toString(time,2));
-		//debug("TimeStamp(long):  low=" + Long.toString(low,2));
-		//debug("TimeStamp(long): high=" + Long.toString(high,2));
+		//log.debug("TimeStamp(long): time=" + Long.toString(time,2));
+		//log.debug("TimeStamp(long):  low=" + Long.toString(low,2));
+		//log.debug("TimeStamp(long): high=" + Long.toString(high,2));
 	}
 
 	public TimeStamp(Integer low, Integer high)
@@ -43,25 +51,25 @@ public class TimeStamp extends Date
 	   * POST: Take the two int values together and merge them into a long value.
 	   */
 
-		//debug("TimeStamp(int low, int high): high=" + high+" "+Integer.toString(high,2));
-		//debug("TimeStamp(int low, int high):  low=" + low+" "+Integer.toString(low,2));
+		//log.debug("TimeStamp(int low, int high): high=" + high+" "+Integer.toString(high,2));
+		//log.debug("TimeStamp(int low, int high):  low=" + low+" "+Integer.toString(low,2));
 
 		long highlong = high;
 		highlong <<= 32;
-		//debug("highlong: "+Long.toString(highlong,2));
+		//log.debug("highlong: "+Long.toString(highlong,2));
 		long time;
 		if (low<0) { // sign bit is up
 			long lowlong = low;
 			lowlong &= 0xFFFFFFFFL;
-			//debug("low<0, lowlong after AND: "+Long.toString(lowlong,2));
+			//log.debug("low<0, lowlong after AND: "+Long.toString(lowlong,2));
 			time = highlong + lowlong;
 		}
 		else {
-			//debug("low > 0");
+			//log.debug("low > 0");
 			time = highlong + low;
 		}
 				
-		//debug("TimeStamp(int low, int high): time=" + Long.toString(time,2));
+		//log.debug("TimeStamp(int low, int high): time=" + Long.toString(time,2));
 
 		setTime(time);
 	}
