@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.43 2002-01-25 09:53:00 pierre Exp $
+ * @version $Id: INFO.java,v 1.44 2002-02-22 13:13:05 michiel Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -304,7 +304,7 @@ public class INFO extends ProcessorModule {
                 result+="-"+tmp;
             }
         }
-        return Escape.singlequote(result);
+        return Encode.encode("ESCAPE_SINGLE_QUOTES", result);
     }
 
 
