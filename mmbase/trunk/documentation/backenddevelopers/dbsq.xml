@@ -1,15 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article>
-  <title>SearchQuery introduction</title>
-
   <articleinfo>
     <title>SearchQuery introduction</title>
 
     <date>December 5, 2002</date>
 
-    <edition>$Id: dbsq.xml,v 1.6 2003-02-27 19:45:51 robmaris Exp $</edition>
+    <edition>$Id: dbsq.xml,v 1.7 2003-02-27 23:30:01 robmaris Exp $</edition>
 
     <authorgroup>
       <author>
@@ -35,7 +33,8 @@
   <section>
     <title>Background</title>
 
-    <para>The database search queries project addresses the following needs:</para>
+    <para>The database search queries project was started to adress the
+    following needs:</para>
 
     <itemizedlist>
       <listitem>
@@ -49,29 +48,38 @@
       </listitem>
     </itemizedlist>
 
-    <para>The plan of action for the project defines three stages:</para>
+    <para>The plan of action for the project defined these three stages, that
+    have now been completed:</para>
 
     <orderedlist>
       <listitem>
-        <para>Create a <classname>SearchQuery</classname> object to represent
-        all possible search queries supported by standard relational
-        databases.</para>
+        <para>Introduction a <classname>SearchQuery</classname> object,
+        capable of representing all kind of search queries supported by
+        standard relational databases.</para>
       </listitem>
 
       <listitem>
-        <para>Create an extension mechanism to enable use of additional,
-        vendor specific, database functionality.</para>
+        <para>Introduction of an extension mechanism to enable use of
+        additional, vendor specific, database functionality.</para>
       </listitem>
 
       <listitem>
-        <para>Integrate of the <classname>SearchQuery</classname> into
+        <para>Integration of the <classname>SearchQuery</classname> into
         existing MMBase code.</para>
       </listitem>
     </orderedlist>
 
-    <para>The current state of the project is that stages 1 and 2 have been
-    completed. This article introduces the resulting <classname>SearchQuery</classname>
-    design and implementation.</para>
+    <para>This article introduces design and implementation of the resulting
+    <classname>SearchQuery</classname> API&#39;s.</para>
+
+    <para>If you&#39;re looking for the shortest path to code-level
+    understanding, try skipping the next sections for the moment, and jump
+    straight to the &#34;<link linkend="query_codesamples">code samples</link>&#34;
+    sections right away. </para>
+
+    <para>Either way, once you understand the relevant code samples, the
+    javadoc documentation provides the API details you&#39;ll need to go from
+    there.</para>
   </section>
 
   <section>
@@ -84,8 +92,8 @@
       </listitem>
 
       <listitem>
-        <para>UML diagrams including javadoc are available from the project
-        website at mmbase.org.</para>
+        <para>Sourcecode of the code samples is available from \dbsq\src in
+        CVS module speeltuin.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -96,31 +104,33 @@
     <section>
       <title><classname>org.mmbase.storage.search</classname></title>
 
-      <para>Defines interfaces for query objects, query handlers and dependent
-      objects. Query objects represent search requests, query handlers process
-      requests represented by query objects.</para>
+      <para>Interfaces for query objects, query handlers and dependent
+      objects. </para>
 
-      <para>The purpose of the query interfaces is to specify the exact
-      interfaces exposed by query handlers, in order for query handlers to
-      retrieve the query data. This will enable query handlers to be
-      implemented independent from query implementations.</para>
+      <para>Query objects represent search requests, query handlers process
+      requests represented by query objects. (More on this further on.)</para>
 
-      <para>Note that these interfaces don&#39;t specify how query objects are
+      <para>The query interfaces specify the interfaces exposed by query
+      objects, in order for query handlers to retrieve the query data. This
+      will enable query handlers to be implemented independent from query
+      implementations.</para>
+
+      <para>Note that these interfaces do not specify how query objects are
       constructed, see next section.</para>
     </section>
 
     <section>
       <title><classname>org.mmbase.storage.search.implementation</classname></title>
 
-      <para>Contains classes implementing the query interfaces described in
-      the previous section. These also provide methods to construct queries.</para>
+      <para>Classes implementing the query interfaces described in the
+      previous section. These also provide methods to construct queries.</para>
     </section>
 
     <section>
       <title><classname>org.mmbase.storage.search.implementation.database</classname></title>
 
-      <para>Contains implementation classes that rely on a database providing
-      the storage. This includes the basic query handler implementation.</para>
+      <para>Implementation classes that rely on a database providing the
+      storage. This includes the basic query handler implementation.</para>
 
       <para>The basic query handler delegates generation of SQL statements to
       a dedicated handler, the SQL handler.</para>
@@ -202,19 +212,25 @@
       objects. See next section for examples.</para>
 
       <para>It may seem that the interfaces have been provided in anticipation
-      of a number of different implementation. This is in fact not the case,
-      and I can&#39;t think of a reason why one implementation should not
-      suffice. On the other hand, a number of different query handlers seems
-      likely. The interfaces are provided as a stable and clearcut
+      of a number of different implementations. This is in fact not the case,
+      as I can&#39;t think of a reason why one (basic) implementation should
+      not suffice. On the other hand, a number of different query handlers
+      seems likely. The interfaces are provided as a stable and clearcut
       specification of the interaction between query and query handler,
-      allowing future enhancements to the query implementation without
-      breaking the query handler implementation.</para>
+      allowing future enhancements to the query implementation to evolve,
+      without breaking the query handler implementation.</para>
     </section>
 
     <section>
-      <title>Code samples</title>
+      <title id="query_codesamples">Code samples</title>
 
-      <para>In the examples below, the represented queries are shown in SQL92
+      <para>These code samples concentrate on how query objects represent
+      search query requests analogous to SQL92 SELECT statements. To see how
+      to retrieve actual nodes using query objects, refer to the <link
+      linkend="query_handlers_codesamples">code samples</link> in the &#34;<link
+      linkend="query_handlers">Query handlers</link>&#34; sections.</para>
+
+      <para>In these examples, the represented queries are shown in SQL92
       form, ignoring vendor specific issues like reserved words and deviating
       syntax. (Actual query handlers will take these into account as well.)</para>
 
@@ -351,13 +367,13 @@
         GROUP BY title
 </screen>
 
-      <para>The complete listing of the sample program can be found at the end
-      of this article.</para>
+      <para>The complete <link linkend="query_codelisting">listing</link> of
+      the sample program can be found at the end of this article.</para>
     </section>
   </section>
 
   <section>
-    <title>Query handlers</title>
+    <title id="query_handlers">Query handlers</title>
 
     <section>
       <title>SearchQueryHandler interface</title>
@@ -384,7 +400,7 @@ public interface SearchQueryHandler {
       or resultnodes (<classname>ResultNode</classname> instances). More on
       this in the next section.</para>
 
-      <para>In addition, a method is provided to test wether the underlying
+      <para>In addition, a method is provided to test if the underlying
       storage supports a certain type of constraint:</para>
 
       <programlisting>    public int getSupportLevel(Constraint constraint, SearchQuery query)
@@ -430,9 +446,9 @@ public interface SearchQueryHandler {
           all persistent fields of the nodetype that is retrieved.</para>
 
           <para>Generally, this functionality is not meant to be accessed
-          directly, but instead through one of the search methods of
-          <classname>MMObjectBuilder</classname>, that wrap direct calls to
-          this method.</para>
+          directly, but instead through the MMObjectBuilder method
+          <methodname>getNodes(query)</methodname>, which takes care of things
+          like nodecache and inheritance issues as well.</para>
         </listitem>
 
         <listitem>
@@ -444,9 +460,8 @@ public interface SearchQueryHandler {
           queries. (TODO: elaborate)</para>
 
           <para>Generally, this functionality is not meant to be accessed
-          directly, but instead through one of the search methods of
-          <classname>ClusterBuilder</classname>, that wrap direct calls to
-          this method.</para>
+          directly, but instead through the ClusterBuilder method
+          <methodname>getClusterNodes(query)</methodname>.</para>
         </listitem>
 
         <listitem>
@@ -482,14 +497,14 @@ public interface SearchQueryHandler {
 
       <para>The <classname>SqlHandler</classname> interface isolates the
       functionality concerned with translating query objects to actual,
-      possibly vendor-specific SQL statements. The actual implementation class
-      used will depend on the underlying database, and can be extended with
-      additional functionality using additional handlers. See the API javadoc
-      notes for more info.</para>
+      possibly vendor-specific, SQL statements. The actual implementation
+      class used will depend on the underlying database, and can be extended
+      with additional functionality using additional handlers. See the API
+      javadoc for more info.</para>
     </section>
 
     <section>
-      <title>Code samples</title>
+      <title id="query_handlers_codesamples">Code samples</title>
 
       <example>
         <title>Retrieving real nodes</title>
@@ -506,6 +521,9 @@ public interface SearchQueryHandler {
         NodeSearchQuery query1 = new NodeSearchQuery(pools);
 </programlisting>
 
+        <para>Note the use of <classname>NodeSearchQuery</classname> to
+        produce a query that retrieves real nodes.</para>
+
         <para>This will creates a query equivalent to:</para>
 
         <screen>        SELECT * FROM &#60;basename&#62;_pools pools
@@ -515,7 +533,7 @@ public interface SearchQueryHandler {
         with these fields: number, otype, owner, name, description.</para>
 
         <programlisting>        // Execute, get result as real nodes.
-        List nodes1 = handler.getNodes(query1, pools);
+        List nodes1 = pools.getNodes(query1);
         Iterator iNodes1 = nodes1.iterator();
         while (iNodes1.hasNext()) {
             MMObjectNode node = (MMObjectNode) iNodes1.next();
@@ -561,7 +579,8 @@ public interface SearchQueryHandler {
         images.number.</para>
 
         <programlisting>        // Execute, result as clusternodes.
-        List nodes2 = handler.getNodes(query2, new ClusterBuilder(mmbase));
+        ClusterBuilder clusterBuilder = mmbase.getClusterBuilder();
+        List nodes2 = clusterBuilder.getClusterNodes(query2);
         Iterator iNodes2 = nodes2.iterator();
         while (iNodes2.hasNext()) {
             ClusterNode node = (ClusterNode) iNodes2.next();
@@ -605,7 +624,7 @@ public interface SearchQueryHandler {
         pools0.number, insrel.number, images3.number.</para>
 
         <programlisting>        // Execute, result as clusternodes.
-        List nodes3 = handler.getNodes(query3, new ClusterBuilder(mmbase));
+        List nodes3 = clusterBuilder.getClusterNodes(query3);
         Iterator iNodes3 = nodes3.iterator();
         while (iNodes3.hasNext()) {
             ClusterNode node = (ClusterNode) iNodes3.next();
@@ -697,7 +716,7 @@ public interface SearchQueryHandler {
     <title>Sample program listings</title>
 
     <section>
-      <title><classname>QuerySampleCode</classname></title>
+      <title id="query_codelisting"><classname>QuerySampleCode</classname></title>
 
       <programlisting>/*
 
@@ -724,7 +743,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {
@@ -904,7 +923,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
