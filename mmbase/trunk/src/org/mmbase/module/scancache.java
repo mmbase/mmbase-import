@@ -85,7 +85,7 @@ public class scancache extends Module implements scancacheInterface {
 		return(null);
 	}
 
-	private static int defaultExpireTime = 21600;
+	private static int defaultExpireTime = 21600; // in sec 6 uur
 	
 	public String get(String poolName, String key, String line) {
 		// get the interval time
@@ -97,8 +97,7 @@ public class scancache extends Module implements scancacheInterface {
 		else try {
 				 interval = Integer.parseInt(tmp);
 			 }
-			 catch (NumberFormatException n)
-			 {
+			 catch (NumberFormatException n) {
 				 debug("CACHE "+poolName+": Number format exception for expiration time");
 				 interval = defaultExpireTime;
 			 }
@@ -142,7 +141,6 @@ public class scancache extends Module implements scancacheInterface {
 		}
 		return(null);
 	}
-
 
 	public String getPage(String poolName, String key,String line) {
 		fileInfo fileinfo=loadFile(poolName,key);
@@ -217,7 +215,6 @@ public class scancache extends Module implements scancacheInterface {
 		debug("newPut("+poolName+",HttpServletRequest,"+key+","+value+"): ERROR: poolname("+poolName+") is not a valid cache name!");
 		return(null);
 	}
-
 
 	// temp hack for asis
 	public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
@@ -336,7 +333,6 @@ public class scancache extends Module implements scancacheInterface {
 		return("this module provides cache function scan requests");	
 	}
 
-
 	public boolean saveFile(String pool,String filename,String value) {
 		if( debug ) debug("saveFile("+pool+","+filename+",length("+value.length()+" bytes): saving!");
 		File sfile = new File(cachepath+pool+filename);
@@ -367,7 +363,6 @@ public class scancache extends Module implements scancacheInterface {
 		}
 		return(true);
 	}
-
 
 	public fileInfo loadFile(String pool,String filename) {
 		fileInfo fileinfo=new fileInfo();
@@ -416,5 +411,15 @@ public class scancache extends Module implements scancacheInterface {
 		body+="Pragma: no-cache\n";
 		body+="Last-Modified: Fri, 15 Oct 1999 12:44:47 GMT\n\n";
 		return(body);
+	}
+	
+	/**
+	 * Removes an entry from the cache.
+	 * @param pool name of cache, "HENK" or "PAGE"
+	 * @param key url of page 
+	 * @return nothing
+	 */
+	public void removeCacheEntry(String pool, String key) {
+			timepool.remove( pool+key );
 	}
 }
