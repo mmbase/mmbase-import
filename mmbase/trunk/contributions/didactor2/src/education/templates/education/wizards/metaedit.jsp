@@ -16,9 +16,6 @@
    <body style="padding-left:10px">
 
       <%
-         System.out.println("---------------");
-         System.out.println(request.getQueryString());
-
          String sNode = request.getParameter("number");
          String EMPTY_VALUE = "...";
 
