@@ -1,6 +1,7 @@
 <%@ include file="page_base.jsp"
-%><% urlStack.clear();
-   urlStack.push(request.getServletPath() + "?" + request.getQueryString());
+%>
+<% urlStack.clear();
+   push(urlStack, "home", request);
  %><mm:import externid="username" from="parameters" />
 <mm:content language="$config.lang" type="text/html" expires="0">
 <mm:cloud method="$config.method" loginpage="login.jsp" logon="$username" sessionname="$config.session" jspvar="cloud">

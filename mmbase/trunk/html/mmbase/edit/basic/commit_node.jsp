@@ -13,7 +13,7 @@
 <mm:import externid="ok" />
 <mm:import externid="node_number" />
 
-<mm:import id="redirectTo"><mm:url escapeamps="false"  page="<%=(String)urlStack.peek()%>"><mm:param name="nopush" value="url" /></mm:url></mm:import>
+<mm:import id="redirectTo"><mm:url escapeamps="false"  page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url></mm:import>
 
 <mm:present referid="cancel">
     <!-- do nothing,... will be redirected -->
@@ -35,9 +35,8 @@
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
     </mm:createnode>	
-    <mm:node id="new_node2" referid="new_node">
+    <mm:node id="new_node2" referid="new_node" jspvar="node">
       
-      <!-- give an id,  because orion 1.5.2 doesn't set it to null... -->  
       <mm:remove referid="redirectTo" /> 
 
       <mm:import externid="node" />
@@ -53,6 +52,7 @@
       <mm:notpresent referid="node">
         <mm:import id="redirectTo"><mm:url escapeamps="false" page="change_node.jsp" >
           <mm:param name="node_number"><mm:field name="number" /></mm:param>
+          <mm:param name="push"><mm:field name="number" /></mm:param>
         </mm:url></mm:import>
       </mm:notpresent>
         
@@ -81,7 +81,7 @@
       </mm:maywrite>       
     </mm:node>
     <mm:remove referid="redirectTo" />
-    <mm:import id="redirectTo"><mm:url escapeamps="false" page="<%=(String)urlStack.peek()%>"><mm:param name="nopush" value="url" /></mm:url></mm:import>
+    <mm:import id="redirectTo"><mm:url escapeamps="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url></mm:import>
 </mm:present>
 </mm:notpresent>
 
