@@ -208,7 +208,7 @@
                 <!-- name of the field in the database -->
                 <name>builder</name>
                 <!-- MMBase datatype and demands on it -->
-                <type state="persistent" notnull="true" key="false">INTEGER</type>
+                <type state="persistent" notnull="true" key="false">NODE</type>
             </db>
     </field>
     </fieldlist>
