@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.109 2005-03-01 15:15:27 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.110 2005-03-01 16:43:21 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -210,10 +210,23 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     protected int getMethod() throws JspTagException {
         String m = method.getString(this).toLowerCase();
-        if ("".equals(m)) {
-           return  cloudContext.getAuthentication().getDefaultMethod(request.getProtocol());
+        return cloudContext.getAuthentication().getMethod(m);
+    }
+
+    /**
+     * @returns The login-method, or METHOD_LOGINPAGE if loginpage was specified, or the default method of the authentication implemnetation if also that was not specified.
+     * @since MMBase-1.8
+     */
+    protected int getMethodOrDefault() throws JspTagException {
+        int m = getMethod();
+        if (m == AuthenticationData.METHOD_UNSET) {
+            if (! "".equals(loginpage.getString(this))) {
+                return AuthenticationData.METHOD_LOGINPAGE;
+            } else {
+                return  cloudContext.getAuthentication().getDefaultMethod(request.getProtocol());
+            }
         } else {
-            return cloudContext.getAuthentication().getMethod(m);
+            return m;
         }
     }
 
@@ -688,7 +701,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
 
         int meth = getMethod();
-        if (logon == null && rank == Attribute.NULL && meth != AuthenticationData.METHOD_UNSET && meth != AuthenticationData.METHOD_ASIS) {
+        if (logon == null && rank == Attribute.NULL && meth != AuthenticationData.METHOD_UNSET  && meth != AuthenticationData.METHOD_ASIS) {
             // authorisation was requested, but not indicated for whom
             if (log.isDebugEnabled()) {
                 log.debug("Implicitily requested non-anonymous (by method) cloud. Current user: " + cloud.getUser().getIdentifier());
@@ -840,8 +853,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 if (log.isDebugEnabled()) {
                     log.debug("security info --> key:" + key + " value:" + value);
                 }
-                user.set(key, value);
+                user.setIfDefined(key, value);
             }
+            user.setIfDefined(Parameter.REQUEST, request);
+            user.setIfDefined(Parameter.RESPONSE, response);
             return EVAL_BODY;
         } else {
             // no command give, send redirect to specified login page
@@ -939,10 +954,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     private final int deny(int reason, String exactReason) throws JspTagException {
-
-        int method = getMethod();
+        int meth = getMethodOrDefault();
         // did not succeed, so problably the password was wrong.
-        if (method == AuthenticationData.METHOD_HTTP) { // give a deny, people can retry the password then.
+        switch(meth){
+        case AuthenticationData.METHOD_HTTP:  // give a deny, people can retry the password then.
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
                 return denyHTTP("<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
@@ -950,7 +965,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             default :
                 return denyHTTP("<h2>This page requires authentication</h2>");
             }
-        } else if (method == AuthenticationData.METHOD_LOGINPAGE || (method == AuthenticationData.METHOD_UNSET && loginpage != Attribute.NULL)) {
+        case AuthenticationData.METHOD_LOGINPAGE: 
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
                 return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW, exactReason);
@@ -958,7 +973,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             default :
                 return denyLoginPage(LOGINPAGE_DENYREASON_FAIL, exactReason);
             }
-        } else if (method == AuthenticationData.METHOD_DELEGATE || method == AuthenticationData.METHOD_SESSIONDELEGATE) {
+        case AuthenticationData.METHOD_DELEGATE: 
+        case AuthenticationData.METHOD_SESSIONDELEGATE:
             switch (reason) {
             case DENYREASON_RANKTOOLOW :
                 // throw new JspTagException("Rank too low");
@@ -966,7 +982,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             default :
                 return SKIP_BODY;
             }
-        } else { // strange, no method given, password wrong (or missing), that's really wrong.
+        default:
+            // strange, no method given, password wrong (or missing), that's really wrong.
             switch (reason) {
             case DENYREASON_FAIL : {
                 if ("name/password".equals(getAuthenticate())) {
@@ -1032,11 +1049,15 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private final int makeCloud() throws JspTagException {
         Parameters user = null;
-        int method = getMethod();
+        int meth = getMethodOrDefault();
         log.debug("logging on the cloud with method " + method);
 
         // check how to log on:
-        if (method == AuthenticationData.METHOD_DELEGATE || method == AuthenticationData.METHOD_SESSIONDELEGATE) {
+        switch(meth) {
+
+        case AuthenticationData.METHOD_SESSIONDELEGATE:
+        case AuthenticationData.METHOD_DELEGATE:
+
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             user.setIfDefined(Parameter.REQUEST, request);
             user.setIfDefined(Parameter.RESPONSE, response);
@@ -1046,33 +1067,38 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (rank != Attribute.NULL) {
                 user.setIfDefined(AuthenticationData.PARAMETER_RANK, getRank());
             }
-            sessionCloud = method == AuthenticationData.METHOD_SESSIONDELEGATE;
-        } else if (method == AuthenticationData.METHOD_HTTP) {
+            sessionCloud = meth == AuthenticationData.METHOD_SESSIONDELEGATE;
+            break;
+        case AuthenticationData.METHOD_HTTP:
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             sessionCloud = true;
             if (doHTTPAuthentication(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
-        } else if (loginpage != Attribute.NULL && (method == AuthenticationData.METHOD_LOGINPAGE || method == AuthenticationData.METHOD_UNSET)) {
+            break;
+        case AuthenticationData.METHOD_LOGINPAGE:
             user = cloudContext.getAuthentication().createParameters(getAuthenticate());
             sessionCloud = true;
             if (doLoginPage(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
-        } else if (logon != null && pwd != Attribute.NULL) {
-            user = cloudContext.getAuthentication().createParameters(getAuthenticate());
-            user.set(AuthenticationData.PARAMETER_USERNAME, logon.get(0));
-            user.set(AuthenticationData.PARAMETER_PASSWORD, pwd.getString(this));
-            if (method == AuthenticationData.METHOD_PAGELOGON) {
-                sessionCloud = false;
-            } else {
-                if (method != AuthenticationData.METHOD_SESSIONLOGON) {
-                    log.warn("Using logon/pwd (or username/password) attributes on page '" + request.getRequestURI() + "' without specifying method='[pagelogon|sessionlogon]', defaulting to 'sessionlogon'. Be aware that users of this page now are authenticated in their session!");
+            break;
+        default:
+            if (logon != null && pwd != Attribute.NULL) {
+                user = cloudContext.getAuthentication().createParameters(getAuthenticate());
+                user.set(AuthenticationData.PARAMETER_USERNAME, logon.get(0));
+                user.set(AuthenticationData.PARAMETER_PASSWORD, pwd.getString(this));
+                if (meth == AuthenticationData.METHOD_PAGELOGON) {
+                    sessionCloud = false;
+                } else {
+                    if (meth != AuthenticationData.METHOD_SESSIONLOGON) {
+                        log.warn("Using logon/pwd (or username/password) attributes on page '" + request.getRequestURI() + "' without specifying method='[pagelogon|sessionlogon]', defaulting to 'sessionlogon'. Be aware that users of this page now are authenticated in their session!");
+                    }
+                    sessionCloud = true;
                 }
-                sessionCloud = true;
+            } else {
+                sessionCloud = false;
             }
-        } else {
-            sessionCloud = false;
         }
 
         // do the MMCI cloud logging on
