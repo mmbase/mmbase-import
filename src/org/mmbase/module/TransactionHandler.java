@@ -19,6 +19,9 @@ import java.lang.*;
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.*;
 import org.xml.sax.*;
+import org.apache.xerces.parsers.*;
+import org.w3c.dom.traversal.*;
+import org.xml.sax.helpers.DefaultHandler;
 
 import org.mmbase.util.logging.*;
 
@@ -87,8 +90,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	/**
 	 * xmlHeader
 	 */
-	private final String xmlHeader =
-	"<?xml version='1.0'?> <!DOCTYPE TRANSACTION SYSTEM \"Transactions.dtd\">";
+	private String getXMLHeader() {
+		return	"<?xml version='1.0'?>\n"+
+			 "<!DOCTYPE transactions SYSTEM \"/usr/local/install/mmbase/config/default/dtd/transactions.dtd\">\n";
+	}
 	
 	/**
 	 * handleTransaction can be called externally and will execute the TCP commands.
@@ -97,11 +102,12 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 * @param sp the scanpage 
 	 */
 	public void handleTransaction(String template, sessionInfo session, scanpage sp) {
-		
+
+		template = getXMLHeader() + template;	
 		log.service("TransactionHandler processing TCP"); 
 		log.debug("Received template is:");
 		log.debug(template);
-		
+	
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(template));
 		// get the 'name' of the user.
@@ -148,8 +154,16 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		Element docRootElement;
 		NodeList transactionContextList = null;
 		String exceptionPage = "exception.shtml";
+		XMLCheckErrorHandler XEH = null;
 		
 		DOMParser parser = new DOMParser();
+		try {
+ 			parser.setFeature("http://xml.org/sax/features/validation", true);
+			XEH = new XMLCheckErrorHandler();
+            parser.setErrorHandler(XEH);
+		} catch (Exception parsException) {
+			log.error("No DTD validation supported");
+		}
 		
 		try {
 			if (xFile !=  null) {
@@ -162,6 +176,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} else {
 		   			log.error("No xFile and no iSource file received!");
 				}
+			}
+			Enumeration e = XEH.getResultList().elements();
+			while (e.hasMoreElements()) {
+				log.error(""+e.nextElement());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -188,16 +206,18 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				
 				if ((key == null) || (!key.equals(getInitParameter("keycode"))) ) {
 					if (securityMode.equals("signal")) {
-						log.error("ACCESS VIOLATION key: >" + key + "<");
-				  } else if (securityMode.equals("secure")) {
-						log.error("ACCESS VIOLATION key: >" + key + "<");
-			  	TransactionHandlerException te =
-			  		new TransactionHandlerException(
-			  			"ACCESS VIOLATION by: >" + key + "<");
-					te.exceptionPage=exceptionPage;
-					throw te;
-			 	  }
-			 }
+						log.info("Transaction (TCP) key is incorrect."+
+ 								 " TCP key='"+key+"' Server TCP key='"+getInitParameter("keycode")+"'");
+					} 
+					if (securityMode.equals("secure")) {
+						log.error("Transaction (TCP) key is incorrect."+
+ 								 " TCP key='"+key+"' Server TCP key='"+getInitParameter("keycode")+"'");
+			  			TransactionHandlerException te = new TransactionHandlerException("Transaction (TCP) key is incorrect."+
+ 								 " TCP key='"+key+"' Server TCP key='"+getInitParameter("keycode")+"'");
+						te.exceptionPage=exceptionPage;
+						throw te;
+					}
+			 	}
 			}
 			
 			// do for all transaction contexts (create-, open-, commit- and deleteTransaction)
