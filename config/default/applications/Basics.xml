@@ -1,0 +1,20 @@
+<application name="Basics" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+	<neededbuilderlist>
+	  <builder maintainer="mmbase.org" version="2">jumpers</builder>
+	</neededbuilderlist>	
+
+	<neededreldeflist>
+	  <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	</allowedrelationlist>
+
+	<datasourcelist>
+	  <datasource path="Basics/jumpers.xml" />
+	</datasourcelist>
+
+	<relationsourcelist>
+	</relationsourcelist>
+</application>
