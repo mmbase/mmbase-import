@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.10 2000-03-20 10:40:59 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.11 2000-03-21 15:42:55 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2000/03/20 10:40:59  wwwtech
+	Rico: added GETVALUE replace command
+	
 	Revision 1.9  2000/03/17 12:19:45  wwwtech
 	Rico: added better support for functions in getValue
 	
@@ -59,7 +62,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.10 2000-03-20 10:40:59 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.11 2000-03-21 15:42:55 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -280,7 +283,7 @@ public class HtmlBase extends ProcessorModule {
 
 
 	public String doGetRelationValue(scanpage sp, StringTokenizer tok) {
-		Teasers Teasers=(Teasers)mmb.getMMObject("teasers");
+		MMObjectBuilder bul = mmb.getMMObject("typedef");
 
 		// reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
 		// number, 23 the target number and title the key of the relation
@@ -317,7 +320,7 @@ public class HtmlBase extends ProcessorModule {
 		if (tok.hasMoreTokens()) {
 			String fieldname=tok.nextToken();
 			debug("S="+snumber+" D="+dnumber+" F="+fieldname);
-			MMObjectNode snode=Teasers.getNode(""+snumber);
+			MMObjectNode snode=bul.getNode(""+snumber);
 			if (snode!=null) {
 				for (Enumeration e=snode.getRelations();e.hasMoreElements();) {
 					MMObjectNode inode=(MMObjectNode)e.nextElement();
@@ -327,7 +330,7 @@ public class HtmlBase extends ProcessorModule {
 					if (d==dnumber || s==dnumber) {
 						String result="";
 						int n=inode.getIntValue("number");
-						MMObjectNode dnode=(MMObjectNode)Teasers.getNode(""+n);
+						MMObjectNode dnode=(MMObjectNode)bul.getNode(""+n);
 						if (dnode!=null) {
 							result=getNodeStringValue(dnode,fieldname);
 							if (result!=null && !result.equals("null")) {
@@ -352,7 +355,7 @@ public class HtmlBase extends ProcessorModule {
 
 	public String doGetRelationCount(scanpage sp, StringTokenizer tok) {
 
-		Teasers Teasers=(Teasers)mmb.getMMObject("teasers");
+		MMObjectBuilder bul=mmb.getMMObject("typedef");
 		// reads $MOD-MMBASE-GETRELATIONCOUNT-12-images where 12 is the nodenumber
 		// and images is optional (if not it will return the total number of
 		// relations it has.
@@ -380,7 +383,7 @@ public class HtmlBase extends ProcessorModule {
 			bulname=tok.nextToken();	
 		}
 
-		MMObjectNode snode=Teasers.getNode(""+snumber);
+		MMObjectNode snode=bul.getNode(""+snumber);
 		if (snode!=null) {
 			if (bulname==null) {
 				return(""+snode.getRelationCount());
@@ -395,7 +398,7 @@ public class HtmlBase extends ProcessorModule {
 
 	public String doSetRelationValue(scanpage sp, StringTokenizer tok) {
 
-		Teasers Teasers=(Teasers)mmb.getMMObject("teasers");
+		MMObjectBuilder bul=mmb.getMMObject("typedef");
 		// reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
 		// number, 23 the target number and title the key of the relation
 		// value you want.
@@ -431,7 +434,7 @@ public class HtmlBase extends ProcessorModule {
 		if (tok.hasMoreTokens()) {
 			String fieldname=tok.nextToken();
 			debug("S="+snumber+" D="+dnumber+" F="+fieldname);
-			MMObjectNode snode=Teasers.getNode(""+snumber);
+			MMObjectNode snode=bul.getNode(""+snumber);
 			if (snode!=null) {
 				for (Enumeration e=snode.getRelations();e.hasMoreElements();) {
 					MMObjectNode inode=(MMObjectNode)e.nextElement();
@@ -441,7 +444,7 @@ public class HtmlBase extends ProcessorModule {
 					if (d==dnumber || s==dnumber) {
 						String result="";
 						int n=inode.getIntValue("number");
-						MMObjectNode dnode=(MMObjectNode)Teasers.getNode(""+n);
+						MMObjectNode dnode=(MMObjectNode)bul.getNode(""+n);
 						if (dnode!=null) {
 							result=getNodeStringValue(dnode,fieldname);
 							if (result!=null && !result.equals("null")) {
