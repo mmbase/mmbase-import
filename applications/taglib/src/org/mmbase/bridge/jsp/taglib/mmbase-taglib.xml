@@ -149,7 +149,7 @@ one or more examplevalue tags is you want to give some example values.
       <value>person.name = 'admin'</value>
     </examplevalue>
     <examplevalue>
-      <value>person.email IS NULL"</value>
+      <value>person.email IS NULL</value>
       <info>indicating the email field should be empty</info>
     </examplevalue>
     <examplevalue>
@@ -166,7 +166,7 @@ one or more examplevalue tags is you want to give some example values.
       <value>NOT (url.number = 100)</value>
     </examplevalue>
     <examplevalue>
-      <value>person.email IS NOT NULL"</value>
+      <value>person.email IS NOT NULL</value>
       <info>indicating the email field should not be empty</info>
     </examplevalue>
     <examplevalue>
@@ -911,6 +911,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <name>name</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
 	<info>
 	  The name of the field to get.
 	</info>
@@ -919,6 +920,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <name>head</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+		<refercontext>true</refercontext>
 	<info>
 	  Like `name', but does not return the value of the field, but
 	  the GUI-name of the field.
@@ -1041,7 +1043,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <p>
       With the import tag you can explicitily put things from outside
       this context into this context, e.g. from the parameter list or
-      from a parent context.
+      from a parent context. It is also possible to put new string in
+      the context with the import tag.
       </p>
       <p>
       There are several ways to refer to objects in the context.
@@ -1058,10 +1061,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       `referid' is used.
       </p>
       <p>
-      If some attribute wants to refer to the value of an object in
+      If some attribute wants to use the value of an object in
       the context, and it is an attribute which can refer to the
-      context, then you can make the attribute's value
-      &lt;context-id;&gt;.&lt;object-id&gt;.
+      context, then you can use something like
+      ${&lt;context-id;&gt;.&lt;object-id&gt;}. The value of a context
+      variable can be written to the page with the `write' tag.
       </p>
       <p>
       And finally there are some attributes which can only refer. For
@@ -1515,6 +1519,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
 	<info>
 	 </info>
     </attribute>
@@ -1529,6 +1534,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
 	<info>
 	 </info>
     </attribute>
@@ -1554,6 +1560,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+		<refercontext>true</refercontext>
 	<info>
 	The key of the variable to get.
 	</info>
@@ -1585,6 +1592,9 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         </possiblevalue>
 	<possiblevalue>
           <value>Integer</value>
+        </possiblevalue>
+	<possiblevalue>
+          <value>Vector</value>
         </possiblevalue>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
@@ -1710,6 +1720,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+		<refercontext>true</refercontext>
 	<info>
 	</info>
     </attribute>
@@ -1725,7 +1736,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <name>referids</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
+    	<refercontext>true</refercontext>
 	<info>
 	Specify which parameters. A comma seperated list of context
 	variable id's.
@@ -1778,6 +1789,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+		<refercontext>true</refercontext>
 	<info>
 	The context variable to compare to.
 	 </info>
