@@ -23,33 +23,33 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* A tag lib to create relations.
+* A tag lib to create relations. 
 *
 * @author Michiel Meeuwissen
 */
 public class CreateRelationTag extends NodeTag {
-
+    
     private static Logger log = Logging.getLoggerInstance(CreateRelationTag.class.getName());
-
+    
     private String role;
     private String source;
     private String destination;
-
+    
     public void setRole(String r) throws JspTagException {
         role = getAttributeValue(r);
     }
-
+    
     public void setSource(String s)  {
         source = s;
     }
     public void setDestination(String d)  {
-        destination = d;
+        destination = d;        
     }
-
-    public int doStartTag() throws JspTagException{
+       
+    public int doStartTag() throws JspTagException{            
         RelationManager rm = getCloud().getRelationManager(role);
         Node sourceNode      = getNode(source);
-        Node destinationNode = getNode(destination);
+        Node destinationNode = getNode(destination);        
 
         if (log.isDebugEnabled()) {
             log.debug("cloud from relationmanager " + rm.getCloud().getName());
@@ -61,7 +61,7 @@ public class CreateRelationTag extends NodeTag {
         r.commit();
 
         setNodeVar(r);
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG; 
     }
-
+    
 }

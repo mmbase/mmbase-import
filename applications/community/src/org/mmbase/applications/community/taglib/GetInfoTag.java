@@ -26,11 +26,11 @@ import org.mmbase.bridge.jsp.taglib.*;
  */
 public class GetInfoTag extends NodeReferrerTag implements Writer {
 
-    private static Logger log = Logging.getLoggerInstance(GetInfoTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
 
     protected WriterHelper helper = new WriterHelper();
 
-    public void setVartype(String t) throws JspTagException {
+    public void setVartype(String t) throws JspTagException { 
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -42,7 +42,6 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
-    public void haveBody() { helper.haveBody(); }
 
     private String key=null;
     public void setKey(String k) throws JspTagException {
@@ -57,13 +56,13 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
         // found the node now. Now we can decide what must be shown:
         if (key == null) key = "name";
         String value=node.getStringValue("getinfovalue("+key+")");
-        if (value == null) value="";
+        if (value == null) value="";            
         helper.setValue(value);
-        helper.setJspvar(pageContext);
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
 

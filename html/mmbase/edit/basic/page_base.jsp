@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd"> 
-<% response.setContentType("text/html; charset=utf-8"); 
+<% response.setHeader("Content-Type", "text/html; charset=utf-8"); 
 // as many browsers as possible should not cache:
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma","no-cache");
-String now = org.mmbase.util.RFC1123.makeDate(new java.util.Date());
-response.setHeader("Expires",  now); 
-response.setHeader("Last-Modified",  now); 
-response.setHeader("Date",  now); 
-%><%@ page language="java" contentType="text/html; charset=utf-8"
-%><html>
+response.setHeader("Expires",  "0"); 
+%><%@ page errorPage="error.jsp" %>
+<html>
 <head> 
 <%@ page import="org.mmbase.bridge.*"    
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm" 
@@ -27,21 +24,9 @@ response.setHeader("Date",  now);
   <mm:import id="page_size">20</mm:import>
   <mm:import id="hide_search">false</mm:import>
   <mm:import id="style_sheet">mmbase.css</mm:import>
-  <mm:import id="lang" externid="mmjspeditors_language" from="cookie" >en</mm:import>
 </mm:context>
 <mm:write referid="config" session="mmeditors_config" />
 </mm:notpresent>
-
-<% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place%>
-<% java.util.Locale locale = null; %>
-<mm:write referid="config.lang" jspvar="lang" vartype="string">
-<%
-  locale  =  new java.util.Locale(lang, "");
-  m =
-  java.util.ResourceBundle.getBundle("org.mmbase.applications.jsp.editors.editors", 
-  locale);
-%>
-</mm:write>
 
 <mm:import id="style"><link href="css/<mm:write referid="config.style_sheet" />" rel="stylesheet" type="text/css" media="screen"  /></mm:import>
 <mm:import id="SESSION">mmbase_editors_cloud</mm:import>

@@ -12,8 +12,8 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Map;
 
+import org.mmbase.util.Escape;
 
 /**
  * Encodings related to Sql. It can escape quotes, by replacing them by double quotes, as is 
@@ -23,40 +23,16 @@ import java.util.Map;
  */
 
 public class Sql extends AbstractTransformer implements CharTransformer {
-    private final static String ENCODING     = "ESCAPE_SINGLE_QUOTE";
+    
     private final static int ESCAPE_QUOTES    = 1;     
-
-    /**
-     * Escapes single quotes in a string.
-     * Escaping is done by doubling any quotes encountered.
-     * Strings that are rendered in such way can more easily be included
-     * in a SQL query.
-     * @param str the string to escape
-     * @return the escaped string
-     */
-    static public String singlequote(String str) {
-        String line=null,obj;
-        int idx;
-        if (str!=null) {
-            /* Single ' protection */
-            line=new String("");
-            obj=new String(str);
-            while((idx=obj.indexOf('\''))!=-1) {
-                line += obj.substring(0,idx)+"''";
-                obj=obj.substring(idx+1);
-            }
-            line=line+obj;
-        }
-        return line;
-    }
 
     /**
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
+    public HashMap transformers() {
         HashMap h = new HashMap();
-        h.put(ENCODING, new Config(Sql.class, ESCAPE_QUOTES, "Escape single quotes for SQL statements"));
+        h.put("escape_single_quote".toUpperCase(), new Config(Sql.class, ESCAPE_QUOTES, "Escape single quotes for SQL statements"));
         return h;
     }
 
@@ -69,7 +45,7 @@ public class Sql extends AbstractTransformer implements CharTransformer {
 
     public String transform(String r) {
         switch(to){
-        case ESCAPE_QUOTES:           return singlequote(r);
+        case ESCAPE_QUOTES:           return Escape.singlequote(r);
         default: throw new UnsupportedOperationException("Cannot transform");
         }
     }
@@ -80,7 +56,4 @@ public class Sql extends AbstractTransformer implements CharTransformer {
         }
     } 
 
-    public String getEncoding() {
-        return ENCODING;
-    }
 }

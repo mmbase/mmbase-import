@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
 <application name="Community" maintainer="mmbase.org" version="1" auto-deploy="false">
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="null">insrel</builder>
@@ -9,6 +9,7 @@
 		<builder maintainer="mmbase.org" version="null">chatter</builder>
 		<builder maintainer="mmbase.org" version="null">people</builder>
 		<builder maintainer="mmbase.org" version="null">pools</builder>
+		<builder maintainer="mmbase.org" version="1">jumpers</builder>
 	</neededbuilderlist>
 
 	<neededreldeflist>
@@ -35,6 +36,7 @@
 		<datasource builder="chatter" path="Community/chatter.xml" />
 		<datasource builder="people" path="Community/people.xml" />
 		<datasource builder="pools" path="Community/pools.xml" />
+		<datasource builder="jumpers" path="Bugtracker/jumpers.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
@@ -46,9 +48,14 @@
 	</contextsourcelist>
 
 	<description>
-	    Forum and Chat
+	    Forum and Chat, please copy the builders in the Community/builders dir into your 
+        config/builders dir. Also copy communityprc.xml from Community/modules into your 
+        config/modules dir. You could also switch these builders on by setting their state 
+        into active (in your config dir).
 	</description>
 
 	<install-notice>
+    You have succesfully installed the community example
+    application. The pages for this examples can be found under /mmexamples.
 	</install-notice>
 </application>

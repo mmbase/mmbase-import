@@ -19,7 +19,7 @@
 
 <mm:import id="thiswhere">snumber=<mm:write referid="thisnumber" /> or dnumber=<mm:write referid="thisnumber" /></mm:import>
 <table class="edit" summary="relation overview" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr><th colspan="3"><%=m.getString("relations.to")%></th></tr>
+<tr><th colspan="3">Relations to this node</th></tr>
 <mm:listnodes type="typerel" constraints="${thiswhere}" jspvar="l_node">
  <mm:context>
    <tr><!-- row for every type relations -->
@@ -87,7 +87,7 @@
   </tr>
   <tr><!-- a row with three columns -->
   <td class="data">&nbsp;</td> <!-- empty -->
-  <td class="data"><%= m.getString("new_relation.new")%></td>
+  <td class="data">new relation</td>
   <td class="navigate"> <!-- + -->
   <a href='<mm:url page="new_relation.jsp" >
            <mm:param name="node"><mm:field node="this_node" name="number" /></mm:param>

@@ -19,16 +19,16 @@ import org.mmbase.util.logging.Logging;
  * The size of a list.
  *
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  *
  */
 
 public class SizeTag extends ListReferrerTag implements Writer {
-
+    
     private static Logger log = Logging.getLoggerInstance(SizeTag.class.getName());
     // Writer implementation:
     protected WriterHelper helper = new WriterHelper();
-    public void setVartype(String t) throws JspTagException {
+    public void setVartype(String t) throws JspTagException { 
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -40,20 +40,19 @@ public class SizeTag extends ListReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
-    public void haveBody() { helper.haveBody(); }
-
-
+    
+    
     public int doStartTag() throws JspTagException{
         helper.setValue(new Integer(getList().size()));
-        helper.setJspvar(pageContext);
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
-
+    
     /**
-     *
+     * 
      **/
     public int doAfterBody() throws JspTagException {
         helper.setBodyContent(bodyContent);

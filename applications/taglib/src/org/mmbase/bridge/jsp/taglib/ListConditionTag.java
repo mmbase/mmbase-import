@@ -24,33 +24,33 @@ import org.mmbase.util.logging.Logging;
  * evaluated depending on the value of the index of the list.
  *
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  **/
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
-
-    private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName());
-
+    
+    private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName()); 
+    
     private String  value;
     private String  parentListId;
     private boolean inverse = false;
-
+    
     public void setValue(String v) throws JspTagException {
         value = getAttributeValue(v);
     }
-
+    
     public void setInverse(Boolean b) {
         inverse = b.booleanValue();
     }
-
+    
     public int doStartTag() throws JspTagException{
         // find the parent list:
         ListProvider list = getList();
 
         boolean result;
-        if        ("first".equalsIgnoreCase(value)) {
+        if        ("first".equalsIgnoreCase(value)) {  
             result = (list.getIndex() == 0 ) != inverse;
-        } else if ("last".equalsIgnoreCase(value))  {
+        } else if ("last".equalsIgnoreCase(value))  {  
             result = (list.getIndex() == list.size()-1 )  != inverse;
         } else if ("even".equalsIgnoreCase(value)) {
             result = ((list.getIndex() + 1) % 2 == 0) != inverse;
@@ -59,15 +59,15 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
         } else if ("changed".equalsIgnoreCase(value)) {
             result = list.isChanged() != inverse;
         } else {
-            throw new JspTagException ("Don't know what do (" + value +")");
+            throw new JspTagException ("Don't know what do (" + value +")");  
         }
-
-        return result ? EVAL_BODY_BUFFERED : SKIP_BODY;
-
+        
+        return result ? EVAL_BODY_TAG : SKIP_BODY;
+    
     }
-
+    
     /**
-    *
+    * 
     **/
     public int doAfterBody() throws JspTagException {
         try{

@@ -325,7 +325,7 @@ public class scancache extends Module implements scancacheInterface {
     }
 
     /**
-     * Store a file in the indicated pool's cache (both on file system and in the memory cache).
+     * Store a file in the indicated pool's cache (both on file and in teh memory cache).
      * Returns the old value if available.
      * When using the "HENK" pool, this method performs a check on expiration using
      * the default expiration time (6 hours).
@@ -493,8 +493,8 @@ public class scancache extends Module implements scancacheInterface {
 
     /**
      * Saves a file to disk.
-     * The file is stored under the cache cache root directory, followed by the poolname
-     * (HENK or PAGE), followed by the 'original' file name.
+     * The file is stored under the cache root directory, with a unique name,
+     * composed of the pool name and the 'original' file name.
      * @param pool The name of the pool
      * @param filename the name of the file
      * @param value the value to store in the file
@@ -532,9 +532,9 @@ public class scancache extends Module implements scancacheInterface {
     }
 
     /**
-     * loads a file from the disk.
-     * The file retrieved is stored in the cache root directory, followed by the poolname 
-     * (HENK or PAGE), followed by the 'original' file name.
+     * loads a file to disk.
+     * The file retrieved should be stored under the cache root directory, with a unique name,
+     * composed of the pool name and the 'original' file name.
      * @param pool The name of the pool
      * @param filename the name of the file
      * @return the content of the file in a {@link fileInfo} object.

@@ -26,7 +26,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.Node;
 
 //import org.mmbase.util.HttpPost;
@@ -41,9 +40,9 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * <p>
- * A ContextTag is like parentheses, and as such can act as
- * a 'namespace' (if it has an id) or as 'scope' (if it doesn't).
- * </p>
+ * A ContextTag is like parentheses, and as such can act as 
+ * a 'namespace' (if it has an id) or as 'scope' (if it doesn't). 
+ * </p> 
  * <p>
  * The context can be seen as a container for variables and their values.
  * </p><p>
@@ -62,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * Writing out the value of a variable can be done with the `Write' Tag.
  * </p>
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  * @see    ImportTag
  * @see    WriteTag
  */
@@ -114,7 +113,7 @@ public class ContextTag extends ContextReferrerTag {
     }
 
 
-    private ContextContainer container = null;
+    private ContextContainer container = null; 
 
     private ContextTag parent = null;
     private boolean    searchedParent = false;
@@ -125,7 +124,7 @@ public class ContextTag extends ContextReferrerTag {
     private HttpServletRequest   httpRequest      = null;
     private HttpSession          httpSession      = null;
 
-    public void release() {
+    public void release() {  
         // release is not called in Orion 1.5.2!!
         log.debug("releasing");
         //myHashMap = null;
@@ -134,31 +133,15 @@ public class ContextTag extends ContextReferrerTag {
         super.release();
     }
 
-
-    private CloudContext cloudContext;
-    /**
-     * This context can also serve as a 'cloudcontext'.
-     * That means that the cloud context commmunicates its cloudcontext to the context.
-     */
-    public void setCloudContext(CloudContext cc) {
-        cloudContext = cc;
-    }
-
-    String getDefaultCharacterEncoding() {
-        if(cloudContext == null) return "UTF-8";
-        return cloudContext.getDefaultCharacterEncoding();
-    }
-
-    /**
+    /** 
      * Fills the private member variables for general use. They are
      * gotten from the pageContexTag if this does exist already.
-     *
+     * 
      */
 
     void fillVars() {
         ContextTag page = (ContextTag) pageContext.getAttribute("__context");
-        if (page == null) { // first time on page.., will be only true for the 'page' context.
-            log.debug("First time on page, checking for Multipartness");
+        if (page == null) { // first time on page..
             // we want to be sure that these are refilled:
             httpSession = null;
 
@@ -166,18 +149,15 @@ public class ContextTag extends ContextReferrerTag {
             multipartChecked = false;
             // and also the multipart request must be filled if appropriate:
             if (isMultipart()) {
-                log.debug("multipart");
                 getMultipartRequest();
             } else {
-                log.debug("not multipart");
                 multipartRequest = null;
                 multipartChecked = true;
-
+                
             }
-            //
-            getSession();
+			// 
+            getSession();        
         } else {
-            log.debug("already a page Context available");
             multipartRequest = page.multipartRequest;
             multipartChecked = true;
             httpRequest      = page.httpRequest;
@@ -186,7 +166,7 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     public void setPageContext(PageContext pc) {
-        super.setPageContext(pc); // This will call fillVars for the 'page' Context.
+        super.setPageContext(pc);
         log.debug("setting page context");
         fillVars();
     }
@@ -196,7 +176,7 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     ContextContainer getContainer() {
-        return container;
+        return container;        
     }
 
     public int doStartTag() throws JspTagException {
@@ -211,7 +191,6 @@ public class ContextTag extends ContextReferrerTag {
         parent = null;
         searchedParent = false;
         createContainer(getContextTag().getContainer());
-        setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
             if (log.isDebugEnabled()) {
                 log.debug("registering container " + getId() + " with context " + getContextTag().getId());
@@ -219,7 +198,7 @@ public class ContextTag extends ContextReferrerTag {
             getContextTag().register(getId(), container);
         }
         log.debug("out");
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
     // avoid casting
@@ -257,8 +236,7 @@ public class ContextTag extends ContextReferrerTag {
             return multipartRequest;
         } else {
             log.debug("Creating new MultipartRequest");
-            multipartRequest = new MMultipartRequest(getHttpRequest(), getDefaultCharacterEncoding());
-            log.debug("have it");
+            multipartRequest = new MMultipartRequest(getHttpRequest());         
             multipartChecked = true;
 
             if (log.isDebugEnabled()) {
@@ -273,7 +251,7 @@ public class ContextTag extends ContextReferrerTag {
                     log.debug("not a multipart request");
                 }
             }
-            return multipartRequest;
+            return multipartRequest;          
         }
 
     }
@@ -343,7 +321,7 @@ public class ContextTag extends ContextReferrerTag {
             }
             result = getSession().getAttribute(referid);
             break;
-        case LOCATION_MULTIPART:
+        case LOCATION_MULTIPART: 
             if (isMultipart()) {
                 if (log.isDebugEnabled()) {
                     log.debug("searching " + referid + " in multipart post");
@@ -357,31 +335,16 @@ public class ContextTag extends ContextReferrerTag {
             if (log.isDebugEnabled()) {
                 log.debug("searching parameter " + referid);
             }
-            String[] resultvec = getHttpRequest().getParameterValues(referid);
+            Object[] resultvec = getHttpRequest().getParameterValues(referid);
             if (resultvec != null) {
                 if (resultvec.length > 1) {
                     Vector rresult = new Vector(resultvec.length);
                     for (int i=0; i < resultvec.length; i++) {
-                        rresult.add(resultvec[i]);
+                        rresult.add(resultvec[i]);         
                     }
                     result  = rresult;
                 } else {
-                    // The norms say that Strings in posts are encoding according to ISO-8859-1.
-                    // But of course, this does not need to be true, so we repair it if necessary
-                    try {
-                        String formEncoding = getHttpRequest().getCharacterEncoding();
-                        if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
-                        if (formEncoding == null) {
-                            // The form encoding was not known, so probably the local was used or ISO-8859-1
-                            // lets make sure it is right:
-                            result = new String(resultvec[0].getBytes(),
-                                                getDefaultCharacterEncoding());
-                        } else { // the request encoding was knows, so, I think we can suppose that the Parameter value was interpreted correctly.
-                            result = resultvec[0];
-                        }
-                    } catch (java.io.UnsupportedEncodingException e) {
-                        throw new JspTagException("Unsupported Encoding: " + e.toString());
-                    }
+                    result = (String) resultvec[0];
                 }
             }
         }
@@ -413,7 +376,7 @@ public class ContextTag extends ContextReferrerTag {
      * Searches a key in request, postparameters, session, parent
      * context and registers it in this one.
      *
-     *  Returns null if it could not be found.
+     * Returns null if it could not be found.  
      */
 
     public Object findAndRegister(String externid, String newid) throws JspTagException {
@@ -427,7 +390,7 @@ public class ContextTag extends ContextReferrerTag {
         }
         // if (findAndRegister(LOCATION_PAGE, referid, id)) return true;
         log.debug("searching in parent");
-        Object result;
+        Object result; 
         result = findAndRegister(LOCATION_PARENT, externid, newid, false); // don't check, we have checked already.
         if (result != null) return result;
         log.debug("searching in parameters");
@@ -449,7 +412,7 @@ public class ContextTag extends ContextReferrerTag {
         return Character.isLetter(c) || Character.isDigit(c) || c == '_';
     }
     public static boolean isContextIdentifierChar(char c) {
-        return isContextVarNameChar(c) || c == '.' || c =='/'; // / for forward compatibility?
+        return isContextVarNameChar(c) || c == '.' || c =='/'; // / for forward compatibility? 
     }
 
     /**
@@ -457,10 +420,10 @@ public class ContextTag extends ContextReferrerTag {
      * a session context, then it will be put in the session, otherwise in the hashmap.
      */
 
-    public void register(String newid, Object n, boolean check) throws JspTagException {
+    protected void register(String newid, Object n, boolean check) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + getId());
-        }
+        }        
         // Check if the id is a valid identifier
         // A valid id must begin with a letter or underscore, followed
         // by letters, underscores and digits.
@@ -480,11 +443,11 @@ public class ContextTag extends ContextReferrerTag {
                 valid = false;
             }
         }
-
+        
         if (! valid) throw new JspTagException ("'" + newid + "' is not a valid Context identifier");
 
         //pageContext.setAttribute(id, n);
-        if (check && isRegistered(newid)) {
+        if (check && isRegistered(newid)) { 
             String mes = "Object with id " + newid + " was already registered in Context '" + getId() + "'";
             log.error(mes);
             throw new JspTagException(mes);
@@ -497,22 +460,12 @@ public class ContextTag extends ContextReferrerTag {
     public void register(String newid, Object n) throws JspTagException {
         register(newid, n, true);
     }
-
+    
 
     public void unRegister(String key) throws JspTagException {
         //pageContext.removeAttribute(key);
         log.debug("removing object " + key + " from Context " + getId());
         container.remove(key);
-    }
-
-    /**
-     * Registers an variable again. This can be used to change the type of a variable, e.g.
-     *
-     * @since MMBase-1.6
-     */
-    public void reregister(String id, Object n) throws JspTagException {
-        unRegister(id);
-        register(id, n);
     }
 
 
@@ -528,7 +481,7 @@ public class ContextTag extends ContextReferrerTag {
         //}
         return (container.get(key) != null);
     }
-
+    
 
     private boolean isRegistered(String key) throws JspTagException {
         return (container.containsKey(key, false)); // don't check parent.
@@ -536,7 +489,7 @@ public class ContextTag extends ContextReferrerTag {
     private boolean isRegisteredSomewhere(String key) throws JspTagException {
         return (container.containsKey(key, true)); // do check parent.
     }
-
+    
     public Object findAndRegister(String id) throws JspTagException {
         return findAndRegister(id, id);
     }
@@ -554,7 +507,7 @@ public class ContextTag extends ContextReferrerTag {
     /**
      * hmm.. This kind of stuf must move to ImportTag, I think.
      */
-
+    
     public byte[] getBytes(String key) throws JspTagException {
         return getMultipartRequest().getBytes(key);
 
@@ -575,7 +528,7 @@ public class ContextTag extends ContextReferrerTag {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-
+        
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
             return SKIP_BODY;
@@ -600,7 +553,7 @@ class MMultipartRequest {
         try {
             o = new MultipartRequest(req, System.getProperty("java.io.tmpdir"));
         } catch (IOException e) {
-            log.warn("" + e);
+            log.warn("" + e);    
         }
     };
 
@@ -609,32 +562,32 @@ class MMultipartRequest {
             File f = o.getFile(param);
             FileInputStream fs = new FileInputStream(f);
 
-            // read the file to a byte[].
-            // little cumbersome, but well...
-            // perhaps it would be littler so if we use MultipartParser
-            // but this is simpler, because oreilly..MultipartRequest is like a request.
+			// read the file to a byte[]. 
+			// little cumbersome, but well...
+			// perhaps it would be littler so if we use MultipartParser
+			// but this is simpler, because oreilly..MultipartRequest is like a request.
 
             byte[] buf = new byte[1000];
             Vector bufs = new Vector();
             int size = 0;
-            int grow;
-            while ((grow = fs.read(buf)) > 0) {
-            size += grow;
-            bufs.add(buf);
-            buf = new byte[1000];
-            }
-            log.debug("size of image " + size);
+			int grow;
+			while ((grow = fs.read(buf)) > 0) {
+                size += grow;
+                bufs.add(buf);
+                buf = new byte[1000];
+            }    
+			log.debug("size of image " + size);
             byte[] bytes = new byte[size];
-            // copy the damn thing...
-            Iterator i = bufs.iterator();
-            int curpos = 0;
-            while (i.hasNext()) {
-                byte[] tmp = (byte []) i.next();
-                System.arraycopy(tmp, 0, bytes, curpos, tmp.length);
-                curpos += tmp.length;
-            }
-            log.debug("size of image " + curpos);
-            return bytes;
+            // copy the damn thing... 
+			Iterator i = bufs.iterator();
+			int curpos = 0;
+			while (i.hasNext()) {
+				byte[] tmp = (byte []) i.next();
+				System.arraycopy(tmp, 0, bytes, curpos, tmp.length);
+				curpos += tmp.length;
+			}
+			log.debug("size of image " + curpos);
+            return bytes;                 
         }
         catch (FileNotFoundException e) {
             throw new JspTagException(e.toString());
@@ -654,7 +607,7 @@ class MMultipartRequest {
             if (resultvec.length > 1) {
                 Vector rresult = new Vector(resultvec.length);
                 for (int i=0; i < resultvec.length; i++) {
-                    rresult.add(resultvec[i]);
+                    rresult.add(resultvec[i]);         
                 }
                 result  = rresult;
             } else {
@@ -675,17 +628,13 @@ class MMultipartRequest {
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
     private org.mmbase.util.HttpPost o;
-    private String coding;
 
-    MMultipartRequest(HttpServletRequest req, String c) {
-        log.debug("Creating HttpPost instance");
+    MMultipartRequest(HttpServletRequest req) {
+		log.debug("Creating HttpPost instance");
         o = new org.mmbase.util.HttpPost(req);
-        coding = c;
-        log.debug("created");
     };
 
     public byte[] getBytes(String param) throws JspTagException {
-        log.debug("Getting bytes for " + param);
         try {
             return o.getPostParameterBytes(param);
         } catch (org.mmbase.util.PostValueToLargeException e) {
@@ -695,14 +644,10 @@ class MMultipartRequest {
     public Object getParameterValues(String param) {
         Object result = null;
         if (o.checkPostMultiParameter(param)) {
-            log.debug("This is a multiparameter!");
+            log.info("This is a multiparameter!");
             result = o.getPostMultiParameter(param);
-        } else {
-            try {
-                result = new String( o.getPostParameterBytes(param), coding);
-            } catch (Exception e) {
-                log.debug(e.toString());
-            }
+        } else {                
+            result = (String) o.getPostParameter(param);
             log.debug("found " + result);
         }
         return result;

@@ -25,7 +25,7 @@ import org.mmbase.util.*;
 *
 * @since MMBase-1.5
 * @author Gerard van Enk
-* @version $Id: MMHsqldb2Node.java,v 1.2 2002-03-26 22:59:17 gerard Exp $
+* @version $Id: MMHsqldb2Node.java,v 1.1.2.1 2002-03-26 22:47:22 gerard Exp $
 *  
 */
 public class MMHsqldb2Node extends MMSQL92Node {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
 <application name="BridgeTest" maintainer="mmbase.org" version="1" auto-deploy="false">
 
   <neededbuilderlist>
@@ -10,12 +10,11 @@
 
   <neededreldeflist>
     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
-    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel(Parent)" guitargetname="PosRel(Child)" />
   </neededreldeflist>
 
   <allowedrelationlist>
     <relation from="aa" to="bb" type="related" />
-    <relation from="bb" to="cc" type="posrel" />
+    <relation from="bb" to="cc" type="related" />
   </allowedrelationlist>
 
   <datasourcelist>
@@ -26,7 +25,6 @@
 
   <relationsourcelist>
     <relationsource builder="insrel" path="BridgeTest/insrel.xml" />
-    <relationsource builder="posrel" path="BridgeTest/posrel.xml" />
   </relationsourcelist>
 
   <contextsourcelist>

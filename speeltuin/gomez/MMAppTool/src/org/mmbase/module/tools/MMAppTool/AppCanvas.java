@@ -139,7 +139,6 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
 			Hashtable bset=(Hashtable)e.nextElement();
 			String from=(String)bset.get("from");
 			String to=(String)bset.get("to");
-			String type=(String)bset.get("type");
 
 			BuilderOval fb=getBuilderOval(from);
 			if (fb==null) System.out.println("missing datasource : "+from);
@@ -147,19 +146,8 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
 			if (tb==null) System.out.println("missing datasource : "+to);
 
 			if (fb!=null && tb!=null) {
-				// Check for an already existing RelationLine.
-				boolean exists = false;
-				for (int i = 0; i < relations.size(); i++) {
-					RelationLine relationLine = (RelationLine)relations.elementAt(i);
-					if (relationLine.between(fb, tb)) {
-						exists = true;
-						relationLine.addType(type);
-					}
-				}
-				if (!exists) {
-					RelationLine rel=new RelationLine(this,fb,tb,type);
-					relations.add(rel);
-				}
+				 RelationLine rel=new RelationLine(this,fb,tb);
+				relations.add(rel);
 			}
 		}
 

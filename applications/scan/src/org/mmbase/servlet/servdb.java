@@ -9,18 +9,25 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
+import java.lang.*;
+import java.net.*;
 import java.util.*;
-import java.text.DateFormat;
 import java.io.*;
 
 import javax.servlet.http.*;
 import javax.servlet.*;
 
 import org.mmbase.module.*;
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.builders.vwms.*;
 import org.mmbase.util.*;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,16 +37,15 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servdb
  * @deprecation-used
- * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.41 2002-04-19 12:38:43 pierre Exp $
+ * @version 23 Oct 1997, current: $Id: servdb.java,v 1.37 2002-01-07 08:53:41 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
     private static Logger log;
-    /**
-     * when set to true you can use yourhost/xml.db?objectnumber to get the XML representation of that object
-     */
-    private boolean provideXML = false;
+	/**
+	 * when set to true you can use yourhost/xml.db?objectnumber to get the XML representation of that object
+	 */
+	private boolean provideXML = false;
     private		cacheInterface 		cache;
     private		filebuffer 			buffer;
     private		Hashtable 			Roots 		= new Hashtable();
@@ -49,6 +55,7 @@ public class servdb extends JamesServlet {
     private 	sessionsInterface 	sessions;
     // org.mmbase private 	StatisticsInterface stats;
     private		static boolean 		flipper		=false;
+
 
     int 	minSpeed	= 16000;	// 16 is min for speed
     int		maxSpeed	= 80000;	// 80 is max for speed
@@ -63,9 +70,14 @@ public class servdb extends JamesServlet {
         super();
     }
 
-    /**
-     * @javadoc
-     */
+    public void onload() {}
+
+
+    public void unload() {}
+
+
+    public void shutdown() {}
+
     public void init(ServletConfig config) throws ServletException {
 
         super.init(config);
@@ -85,34 +97,19 @@ public class servdb extends JamesServlet {
         if (sessions == null) {
             log.debug("Could not find session module, proceeding without sessions");
         }
-        // clear the status of images
-        // maybe this should be called elsewhere,
-        // and servlet-data depending classes should register?
-        AbstractImages.clear();
     }
 
-
-    // utility method for converting strings to bytes
-    private byte[] stringToBytes(String value) {
-        try {
-            return value.getBytes(mmbase.getEncoding());
-        } catch (UnsupportedEncodingException e) {
-            return value.getBytes();
-        }
-    }
-    /**
-     * @vpro
-     * @javadoc
-     */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-        Date lastmod;
-        String templine,templine2;
-        int filesize;
+		Date lastmod;
+		String templine,templine2;
+		int filesize;
 
         incRefCount(req);
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
+
+
 
             boolean cacheReq=true;
 
@@ -128,6 +125,7 @@ public class servdb extends JamesServlet {
             cacheline cline=null;
             long nowdate=0;
             int cmd;
+            String fileroot;
             // org.mmbase String mimetype=getContentType();
             String mimetype="image/jpeg";
 
@@ -164,6 +162,14 @@ public class servdb extends JamesServlet {
                 // org.mmbase if (stats!=null) stats.countSimpleEvent("Linked="+ref);
             }
 
+
+
+            // org.mmbase fileroot=(String)Roots.get(req.getAcceptor());
+            // org.mmbase if (fileroot==null) fileroot=(String)Roots.get("www");
+
+
+            fileroot="/usr/local/orion/default-site/html/";
+
             if (req_line.indexOf('#')!=-1) {
                 req_line=req_line.substring(0,req_line.indexOf('#')-1);
             }
@@ -182,14 +188,14 @@ public class servdb extends JamesServlet {
                 if (templine!=null) templine+=";"; // added for a netscape bug ?
                 if (templine2==null) templine2=" ";
                 try {
-                    nowdate=DateFormat.getInstance().parse(templine.substring(0,templine.indexOf(';'))).getTime();
+                    nowdate=new Date(templine.substring(0,templine.indexOf(';'))).getTime();
                 } catch(Exception e) {
                     nowdate=(new Date(0)).getTime();
                 }
                 if (1==2 && templine!=null  && templine2.indexOf("no-cache")==-1 && !(lastmod.getTime()>nowdate)) {
 
                     // logAccess(304,""+cline.filesize);
-                    res.setStatus(res.SC_NOT_MODIFIED); // 304, "Not Modified"
+                    res.setStatus(304,"Not Modified");
                     res.setContentType(mimetype);
                     res.setContentLength(cline.filesize);
                     res.setHeader("Date",RFC1123.makeDate(new Date()));
@@ -227,6 +233,7 @@ public class servdb extends JamesServlet {
                 }
 
                 if (done==false) {
+
                     lastmod = new Date();
                     cline = new cacheline(0);
                     cline.lastmod=lastmod;
@@ -235,227 +242,226 @@ public class servdb extends JamesServlet {
                     // try {
                     // hack for db  len=scan.read(cline.buffer,0,filesize);
 
+                    // ---
+                    // img
+                    // ---
+
                     if (req.getRequestURI().indexOf("img")!=-1) {
-                        // ---
-                        // img
-                        // ---
-
-                        Vector params = getParamVector(req);
-                        if (params.size() > 1) {
-                            // template was included on URL
-                            log.debug("Using a template, precaching this image");
-                            // this is an image number + template, cache the image, and go ahead
-                            // with the number of the cached image.
-                            Images bul = (Images) mmbase.getMMObject("images");
-                            int imageNumber = bul.cacheImage(params);
-                            if (imageNumber > 0) {
-                                params.clear();
-                                params.add(new Integer(imageNumber));
-                            }
-                            if (log.isDebugEnabled()) log.debug("found image " + imageNumber);
-                        }
-
-                        ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
-                        cline.buffer   = icaches.getImageBytes(params);
-                        cline.mimetype = icaches.getImageMimeType(params);
+                        Images bul=(Images)mmbase.getMMObject("images");
+                        cline.buffer=bul.getImageBytes5(sp, getParamVector(req));
+                        cline.mimetype=bul.getImageMimeType(getParamVector(req));
                         mimetype=cline.mimetype;
                         // System.out.println("servdb::service(img): The contenttype for this image is: "+mimetype);
 
                         // check point, plugin needed for mirror system
                         checkImgMirror(sp);
-                    } else if (req.getRequestURI().indexOf("xml")!=-1) {
+                    } else
+
                         // ---
                         // xml
                         // ---
-                        cline.buffer=getXML(getParamVector(req));
-                        cline.mimetype="text/plain";
-                        mimetype=cline.mimetype;
-                    } else if (req.getRequestURI().indexOf("dtd")!=-1) {
-                        // ---
-                        // dtd
-                        // ---
-                        cline.buffer=getDTD(getParamVector(req));
-                        cline.mimetype="text/html";
-                        mimetype=cline.mimetype;
-                    } else if (req.getRequestURI().indexOf("rastream")!=-1) {
-                        // --------
-                        // rastream
-                        // --------
-                        cacheReq = false;
-                        log.debug("service(rastream)");
-
-                        boolean other = (req.getRequestURI().indexOf("rastream2")!=-1);
-
-                        // is it a audiopart or an episode ?
-                        // ---------------------------------
-
-                        Vector vec = getParamVector(req);
-
-                        if (vec.contains("a(session)")) {
-                            vec=addRAMSpeed(sp,vec,res);
-                        }
-
-                        if ( getParamValue("ea", vec)  != null ) {
-                            log.debug("service(rastream): episode found");
-
-                            if( playlists != null )
-                                cline.buffer = playlists.getRAMfile(vec);
-                            else
-                                log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
-
-                        } else {
-                            log.debug("service(rastream): rastream found");
-                            long time = System.currentTimeMillis();
-                            cline.buffer = getRAStream(vec,sp,res);
-                            log.info("service(): getRAStreams(): took "+(System.currentTimeMillis()-time)+" ms.");
-                        }
-
-                        if (cline.buffer!=null) {
-                            //debug("Buffer not null, returning stream");
-                            cline.mimetype ="audio/x-pn-realaudio";
+                        if (req.getRequestURI().indexOf("xml")!=-1) {
+                            cline.buffer=getXML(getParamVector(req));
+                            cline.mimetype="text/plain";
                             mimetype=cline.mimetype;
-                        } else {
-                            String ur=getParamValue("url",getParamVector(req));
-                            String n=getParamValue("n",getParamVector(req));
-                            //debug("Buffer is null!!! Returning url("+ur+") and params("+n+").");
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
-                            res.setContentType("text/html");
-                            res.setHeader("Location",ur+"?"+n);
-                            return;
-                        }
-                    } else if (req.getRequestURI().indexOf("rmstream")!=-1) {
-                        // --------
-                        // rmstream
-                        // --------
+                        } else
 
-                        cacheReq = false;
-                        log.debug("service(rastream)");
+                            // ---
+                            // dtd
+                            // ---
+                            if (req.getRequestURI().indexOf("dtd")!=-1) {
+                                cline.buffer=getDTD(getParamVector(req));
+                                cline.mimetype="text/html";
+                                mimetype=cline.mimetype;
+                            } else
 
-                        // is it a audiopart or an episode ?
-                        // ---------------------------------
+                                // --------
+                                // rastream
+                                // --------
+                                if (req.getRequestURI().indexOf("rastream")!=-1) {
+                                    cacheReq = false;
+                                    log.debug("service(rastream)");
 
-                        Vector vec = getParamVector(req);
+                                    boolean other = (req.getRequestURI().indexOf("rastream2")!=-1);
 
-                        if (vec.contains("a(session)")) {
-                            vec=addRAMSpeed(sp,vec,res);
-                        }
+                                    // is it a audiopart or an episode ?
+                                    // ---------------------------------
 
-                        if ( getParamValue("ea", vec)  != null ) {
-                            log.debug("service(rastream): episode found");
-                            if( playlists != null )
-                                cline.buffer = playlists.getRAMfile(vec);
-                            else
-                                log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
-                        } else {
-                            log.debug("service(rastream): rastream found");
-                            cline.buffer=getRMStream(vec,sp,res);
-                        }
+                                    Vector vec = getParamVector(req);
 
-                        if (cline.buffer!=null) {
-                            //debug("Buffer not null, returning stream");
-                            cline.mimetype="audio/x-pn-realaudio";
-                            mimetype=cline.mimetype;
-                        } else {
-                            String ur=getParamValue("url",getParamVector(req));
-                            String n=getParamValue("n",getParamVector(req));
-                            log.info("service(): --> Buffer is null!!! Returning url("+ur+") and params("+n+") <--");
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
-                            res.setContentType("text/html");
-                            res.setHeader("Location",ur+"?"+n);
-                            return;
-                        }
-                        // ---
+                                    if (vec.contains("a(session)")) {
+                                        vec=addRAMSpeed(sp,vec,res);
+                                    }
 
-                    } else if (req.getRequestURI().indexOf("playlist")!=-1) {
-                        // --------
-                        // playlist
-                        // --------
+                                    if ( getParamValue("ea", vec)  != null ) {
+                                        log.debug("service(rastream): episode found");
 
-                        // added to do enable Referer logging
-                        ref=req.getHeader("Referer");
-                        if (ref!=null && ref.indexOf("vpro.nl")==-1 && ref.indexOf("vpro.omroep.nl")==-1 && ref.indexOf(".58.169.")==-1) {
-                            // second layer to make sure its valid/clean
-                            int pos=ref.indexOf("?");
-                            if (pos!=-1) {
-                                // probably a search engine remove the keywords need to be
-                                // counted in the future
-                                ref=ref.substring(0,pos);
-                            }
-                            log.debug("servdb2 R="+ref);
-                            if (ref.length()>70) ref=ref.substring(0,70);
-                            // org.mmbase if (stats!=null) stats.countSimpleEvent("Desktop="+ref);
-                        }
-                        //debug("Playlist="+playlists);
+                                        if( playlists != null )
+                                            cline.buffer = playlists.getRAMfile(vec);
+                                        else
+                                            log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
+
+                                    } else {
+                                        log.debug("service(rastream): rastream found");
+                                        long time = System.currentTimeMillis();
+                                        cline.buffer = getRAStream(vec,sp,res);
+                                        log.info("service(): getRAStreams(): took "+(System.currentTimeMillis()-time)+" ms.");
+                                    }
+
+                                    if (cline.buffer!=null) {
+                                        //debug("Buffer not null, returning stream");
+                                        cline.mimetype ="audio/x-pn-realaudio";
+                                        mimetype=cline.mimetype;
+                                    } else {
+                                        String ur=getParamValue("url",getParamVector(req));
+                                        String n=getParamValue("n",getParamVector(req));
+                                        //debug("Buffer is null!!! Returning url("+ur+") and params("+n+").");
+                                        res.setStatus(302,"OK");
+                                        res.setContentType("text/html");
+                                        res.setHeader("Location",ur+"?"+n);
+                                        return;
+                                    }
+                                } else
+
+                                    // --------
+                                    // rmstream
+                                    // --------
+                                    if (req.getRequestURI().indexOf("rmstream")!=-1) {
+                                        cacheReq = false;
+                                        log.debug("service(rastream)");
+
+                                        // is it a audiopart or an episode ?
+                                        // ---------------------------------
+
+                                        Vector vec = getParamVector(req);
+
+                                        if (vec.contains("a(session)")) {
+                                            vec=addRAMSpeed(sp,vec,res);
+                                        }
+
+                                        if ( getParamValue("ea", vec)  != null ) {
+                                            log.debug("service(rastream): episode found");
+                                            if( playlists != null )
+                                                cline.buffer = playlists.getRAMfile(vec);
+                                            else
+                                                log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
+                                        } else {
+                                            log.debug("service(rastream): rastream found");
+                                            cline.buffer=getRMStream(vec,sp,res);
+                                        }
+
+                                        if (cline.buffer!=null) {
+                                            //debug("Buffer not null, returning stream");
+                                            cline.mimetype="audio/x-pn-realaudio";
+                                            mimetype=cline.mimetype;
+                                        } else {
+                                            String ur=getParamValue("url",getParamVector(req));
+                                            String n=getParamValue("n",getParamVector(req));
+                                            log.info("service(): --> Buffer is null!!! Returning url("+ur+") and params("+n+") <--");
+                                            res.setStatus(302,"OK");
+                                            res.setContentType("text/html");
+                                            res.setHeader("Location",ur+"?"+n);
+                                            return;
+                                        }
+                                        // ---
+
+                                        // --------
+                                        // playlist
+                                        // --------
+
+                                    }
+                                    else if (req.getRequestURI().indexOf("playlist")!=-1) {
+                                        // added to do enable Referer logging
+                                        ref=req.getHeader("Referer");
+                                        if (ref!=null && ref.indexOf("vpro.nl")==-1 && ref.indexOf("vpro.omroep.nl")==-1 && ref.indexOf(".58.169.")==-1) {
+                                            // second layer to make sure its valid/clean
+                                            int pos=ref.indexOf("?");
+                                            if (pos!=-1) {
+                                                // probably a search engine remove the keywords need to be
+                                                // counted in the future
+                                                ref=ref.substring(0,pos);
+                                            }
+                                            log.debug("servdb2 R="+ref);
+                                            if (ref.length()>70) ref=ref.substring(0,70);
+                                            // org.mmbase if (stats!=null) stats.countSimpleEvent("Desktop="+ref);
+                                        }
+                                        //debug("Playlist="+playlists);
 
 
-                        if (playlists!=null) {
-                            Vector vec=getParamVector(req);
-                            vec=checkPostPlaylist(poster,sp,vec);
-                            if (vec.contains("a(session)")) {
-                                vec=addRAMSpeed(sp,vec,res);
-                            }
-                            // filter and replace the mods found if needed
-                            vec=filterSessionMods(sp,vec,res);
-                            vec=checkSessionJingle(sp,vec,res);
-                            // call the playlist module for the playlist wanted
-                            cline.buffer=playlists.getRAMfile(vec);
-                            cline.mimetype="audio/x-pn-realaudio";
-                            mimetype=cline.mimetype;
-                            cacheReq=false;
-                        } else {
-                            log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
-                        }
-                        // ----
-                        // jump
-                        // ----
+                                        if (playlists!=null) {
+                                            Vector vec=getParamVector(req);
+                                            vec=checkPostPlaylist(poster,sp,vec);
+                                            if (vec.contains("a(session)")) {
+                                                vec=addRAMSpeed(sp,vec,res);
+                                            }
+                                            // filter and replace the mods found if needed
+                                            vec=filterSessionMods(sp,vec,res);
+                                            vec=checkSessionJingle(sp,vec,res);
+                                            // call the playlist module for the playlist wanted
+                                            cline.buffer=playlists.getRAMfile(vec);
+                                            cline.mimetype="audio/x-pn-realaudio";
+                                            mimetype=cline.mimetype;
+                                            cacheReq=false;
+                                        } else {
+                                            log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
+					}
+                                        // ----
+                                        // jump
+                                        // ----
 
-                    } else if (req.getRequestURI().indexOf("jump")!=-1) {
-                        // do jumper
-                        long begin=(long)System.currentTimeMillis();
-                        Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
-                        String key=(String)(getParamVector(req)).elementAt(0);
-                        String url = (String)bul.getJump(key);
-                        log.debug("jump.db Url="+url);
-                        if (url!=null) {
-                            // jhash.put(key,url);
-                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
-                            res.setContentType("text/html");
-                            res.setHeader("Location",url);
-                            Date d=new Date(0);
-                            String dt=RFC1123.makeDate(d);
-                            res.setHeader("Expires",dt);
-                            res.setHeader("Last-Modified",dt);
-                            res.setHeader("Date",dt);
-                        }
-                        long end=(long)System.currentTimeMillis();
-                        //debug("getUrl="+(end-begin)+" ms");
+                                    }
+                                    else if (req.getRequestURI().indexOf("jump")!=-1) {
+                                        // do jumper
+                                        long begin=(long)System.currentTimeMillis();
+                                        Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
+                                        String key=(String)(getParamVector(req)).elementAt(0);
+                                        String url = (String)bul.getJump(key);
+                                        log.debug("jump.db Url="+url);
+                                        if (url!=null) {
+                                            // jhash.put(key,url);
+                                            res.setStatus(302,"OK");
+                                            res.setContentType("text/html");
+                                            res.setHeader("Location",url);
+                                            Date d=new Date(0);
+                                            String dt=RFC1123.makeDate(d);
+                                            res.setHeader("Expires",dt);
+                                            res.setHeader("Last-Modified",dt);
+                                            res.setHeader("Date",dt);
+                                        }
+                                        long end=(long)System.currentTimeMillis();
+                                        //debug("getUrl="+(end-begin)+" ms");
 
-                    } else if (req.getRequestURI().indexOf("attachment")!=-1) {
+                                    }
+                                    else
+                                        // ---
+                                        // downloading attachment
+                                        //   cjr@dds.nl, July 27th 2000
+                                        // ---
+                                        if (req.getRequestURI().indexOf("attachment")!=-1) {
+                                            cline.buffer=getAttachment(getParamVector(req));
+											cline.mimetype=getAttachmentMimeType(getParamVector(req));
+                                            //cline.mimetype="application/x-binary";
+                                            mimetype=cline.mimetype;
+                                            String savefilename=getAttachmentFileName(getParamVector(req));
+                                            if (savefilename!=null) {
+	                                            res.setHeader("Content-Disposition","attachment; filename=\""+savefilename+"\"");
+					    }
+                                        }
+									else
+										// flash
+										if (req.getRequestURI().indexOf("flash")!=-1) {
+                                            cline.buffer=getFlash(getParamVector(req));
+											cline.mimetype="application/x-shockwave-flash";
+                                            mimetype=cline.mimetype;
+                                        }
 
-                        // ---
-                        // downloading attachment
-                        //   cjr@dds.nl, July 27th 2000
-                        // ---
-                        cline.buffer=getAttachment(getParamVector(req));
-                        cline.mimetype=getAttachmentMimeType(getParamVector(req));
-                        mimetype=cline.mimetype;
-                        String savefilename=getAttachmentFileName(getParamVector(req));
-                        if (savefilename!=null) {
-                            res.setHeader("Content-Disposition","attachment; filename=\""+savefilename+"\"");
-                        }
-                    } else  if (req.getRequestURI().indexOf("flash")!=-1) {
-                        // flash
-                        cline.buffer=getFlash(getParamVector(req));
-                        cline.mimetype="application/x-shockwave-flash";
-                        mimetype=cline.mimetype;
-                    }
 
                     if (cline.buffer!=null) {
                         len=cline.buffer.length;
                         filesize=len;
                     } else {
                         len=0;
-                        filesize=0;
+						filesize=0;
                     }
 
                     if (len!=-1)  {
@@ -473,8 +479,7 @@ public class servdb extends JamesServlet {
                             if(len>0 && cacheReq && (cache!=null))
                                 cache.put("www"+req.getRequestURI()+req.getQueryString(),cline);
                         } catch(Exception e) {
-                            log.error("Servfile : Error writing to socket:");
-                            log.error(Logging.stackTrace(e));
+                            log.error("Servfile : Error writing to socket");
                             len=-1;
                         }
                     }
@@ -486,9 +491,6 @@ public class servdb extends JamesServlet {
         }
     }
 
-    /**
-     * @javadoc
-     */
     boolean Show_Directory(String pathname,File dirfile, PrintWriter out) {
         String body,bfiles,bdirs,header,line;
         int i;
@@ -536,16 +538,23 @@ public class servdb extends JamesServlet {
         return true;
     }
 
-    /**
-     * @javadoc
-     */
+    /*
+    public void stop(){
+    	if (scan!=null) {
+    		try {
+    			scan.close();
+    		} catch (IOException e) {
+    		}
+    	}
+    	// Should be here not directly above
+    	super.stop();
+}
+    */
+
     public String getServletInfo()  {
-        return "ServFile handles normal file requests, Daniel Ockeloen";
+        return("ServFile handles normal file requests, Daniel Ockeloen");
     }
 
-    /**
-     * @javadoc
-     */
     Hashtable getRoots() {
         int pos;
         String tmp,tmp2;
@@ -560,12 +569,9 @@ public class servdb extends JamesServlet {
                 result.put(tmp.substring(5),tmp2);
             }
         }
-        return result;
+        return(result);
     }
 
-    /**
-     * @javadoc
-     */
     private sessionInfo getSession(scanpage sp) {
         if (sessions==null)
             return null;
@@ -573,10 +579,8 @@ public class servdb extends JamesServlet {
             return sessions.getSession(sp,sp.sname);
     }
 
-    /**
-     * @javadoc
-     */
     public Vector filterSessionMods(scanpage sp,Vector params,HttpServletResponse res) {
+        // debug("filterSessionMods("+sp+","+params+","+res+"): start");
         sessionInfo session=getSession(sp);
         if (session!=null) {
             int pos1;
@@ -587,8 +591,11 @@ public class servdb extends JamesServlet {
                 log.debug("filterSessionMods(): line("+line+")");
                 pos1=line.indexOf("(SESSION-");
 
+                // debug("filterSessionMods(): pos1("+pos1+")");
+
                 if (pos1!=-1) {
                     int pos2=line.indexOf(")");
+                    // debug("filterSessionMods(): pos2("+pos2+")");
                     String part1=line.substring(0,pos1);
                     String part2=line.substring(pos1+9,pos2);
                     log.debug("servdb -> REPLACE="+part1+" "+part2);
@@ -607,12 +614,12 @@ public class servdb extends JamesServlet {
         } else
             log.error("filterSessionMods(): ERROR: session is null!");
 
-        return params;
+        return(params);
     }
 
     /**
-     * @javadoc
-     */
+    *
+    */
     public Vector checkSessionJingle(scanpage sp,Vector params,HttpServletResponse res) {
         sessionInfo session=getSession(sp);
         boolean havesession=false,havesbj=false;
@@ -647,7 +654,7 @@ public class servdb extends JamesServlet {
                     if (t>0) havesession=true;
                 }
             }
-            // is index in param list
+            // i is index in param list
             if (havesession) {
                 str=(String)v.elementAt(1);
             } else {
@@ -657,12 +664,12 @@ public class servdb extends JamesServlet {
             params.setElementAt("bj("+str+")",i);
             log.debug("checkSessionJingle(): "+params.elementAt(i));
         }
-        return params;
+        return(params);
     }
 
     /**
-     * @javadoc
-     */
+    *
+    */
     public Vector addRAMSpeed(scanpage sp, Vector params,HttpServletResponse res) {
         String wspeed=null,wchannels=null;
         int ispeed=16000;
@@ -671,13 +678,16 @@ public class servdb extends JamesServlet {
         sessionInfo session=getSession(sp);
         if (session!=null) {
             wspeed=sessions.getValue(session,"SETTING_RASPEED");
+            // debug("w="+wspeed);
             if (wspeed!=null) {
                 wchannels=sessions.getValue(session,"SETTING_RACHANNELS");
+                // debug("w="+wchannels);
             }
             else {
                 params.addElement("s(16000)");
                 params.addElement("c(1)");
                 // so no speed set then return to signal a goto
+                //return(null); // removed for mtus
             }
 
 
@@ -690,19 +700,21 @@ public class servdb extends JamesServlet {
             }
             params.addElement("s("+ispeed+")");
             params.addElement("c("+ichannels+")");
+            //debug("ADDED="+ispeed+" "+ichannels);
         }
 
-        return params;
+
+        return(params);
     }
 
     /**
-     * @javadoc
-     */
+    *
+    */
     public byte[] getXML(Vector params) {
         log.debug("getXML(): param="+params);
         String result="";
-        if (params.size()==0) return null;
-        MMObjectBuilder bul=mmbase.getTypeDef();
+        if (params.size()==0) return(null);
+        MMObjectBuilder bul=mmbase.getMMObject("insrel");
         if (params.size()==1) {
             MMObjectNode node=null;
             try {
@@ -734,12 +746,15 @@ public class servdb extends JamesServlet {
                 result="Sorry no valid mmnode so no xml can be given";
             }
         }
-        if(!provideXML) {
-            result="Turn provideXML to true in servdb.java";
-            log.warn("warning: provideXML in servdb.java is turned off");
-        }
-        return stringToBytes(result);
+		if(!provideXML) {
+			result="Turn provideXML to true in servdb.java";
+			log.warn("warning: provideXML in servdb.java is turned off");
+		}
+        byte[] data=new byte[result.length()];
+        result.getBytes(0,result.length(),data,0);
+        return(data);
     }
+
 
     /**
      * Downloading Attachment
@@ -748,26 +763,27 @@ public class servdb extends JamesServlet {
      * @return Byte array with contents of 'handle' field of attachment builder
      */
     public String getAttachmentFileName(Vector params) {
-        log.debug("getAttachment(): param="+params);
+	    log.debug("getAttachment(): param="+params);
         String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
             try {
                 node=bul.getNode((String)params.elementAt(0));
-                if (node!=null) {
-                    String filename=node.getStringValue("filename");
-                    if (filename!=null && !filename.equals("")) {
-                        return filename;
-                    }
-                }
+		if (node!=null) {
+			String filename=node.getStringValue("filename");
+			if (filename!=null && !filename.equals("")) {
+				return(filename);
+			}
+		}
             } catch(Exception e) {
                 log.error("Failed to get attachment node for objectnumber "+(String)params.elementAt(0));
                 return null;
             }
-        }
-        return null;
-    }
+	}
+	return(null);
+     }
+
 
     /**
      * Downloading Attachment
@@ -776,7 +792,7 @@ public class servdb extends JamesServlet {
      * @return Byte array with contents of 'handle' field of attachment builder
      */
     public byte[] getAttachment(Vector params) {
-        log.debug("getAttachment(): param="+params);
+	    log.debug("getAttachment(): param="+params);
         String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
@@ -792,7 +808,11 @@ public class servdb extends JamesServlet {
                 byte[] data = node.getByteValue("handle");
                 return data;
             } else {
-                return stringToBytes("Sorry, no valid mmnode, so no attachment can be given");
+                result="Sorry no valid mmnode so no attachment can be given";
+                byte[] data=new byte[result.length()];
+                result.getBytes(0,result.length(),data,0);
+
+                return(data);
             }
         } else {
             log.debug("getAttachment called with "+params.size()+" arguments, instead of exactly 1");
@@ -818,13 +838,13 @@ public class servdb extends JamesServlet {
             }
 
             if (node!=null && !node.getStringValue("mimetype").equals("")) {
-                log.debug("servdb mimetype = "+node.getStringValue("mimetype"));
+				log.debug("servdb mimetype = "+node.getStringValue("mimetype"));
                 return node.getStringValue("mimetype");
             } else {
-                //result="Sorry no valid mmnode so no attachment can be given";
-                log.debug("servdb mimetype = application/x-binary");
-                return "application/x-binary";
-            }
+           		//result="Sorry no valid mmnode so no attachment can be given";
+				log.debug("servdb mimetype = application/x-binary");
+				return "application/x-binary";
+			}
         } else {
             log.debug("getAttachmentMimeType called with "+params.size()+" arguments, instead of exactly 1");
             return null;
@@ -832,43 +852,46 @@ public class servdb extends JamesServlet {
     }
 
 
-    /**
+	/**
      * Return Flash movie
      * @return Byte array with Flash movie
      */
     public byte[] getFlash(Vector params) {
-        if (log.isDebugEnabled()) log.debug("getFlash: param="+params);
-        if (params.size()!=1) {
-            if (log.isDebugEnabled()) log.debug("getFlash called with "+params.size()+" arguments, instead of exactly 1");
+		debug("getFlash: param="+params);
+		if (params.size()!=1) {
+			debug("getFlash called with "+params.size()+" arguments, instead of exactly 1");
             return null;
-        }
-        MMObjectBuilder bul=mmbase.getMMObject("flash");
+		}
+		MMObjectBuilder bul=mmbase.getMMObject("flash");
         MMObjectNode node=null;
         try {
-            node=bul.getNode((String)params.elementAt(0));
-        } catch(Exception e) {};
+			node=bul.getNode((String)params.elementAt(0));
+		} catch(Exception e) {};
         if (node!=null) {
-            byte[] data = node.getByteValue("handle");
-            return data;
+			byte[] data = node.getByteValue("handle");
+			return data;
         }
 
-        if (log.isDebugEnabled()) log.debug("Failed to get node number "+(String)params.elementAt(0));
-        return null;
+		debug("Failed to get node number "+(String)params.elementAt(0));
+		return null;
     }
 
     /**
-     * @javadoc
-     */
+    *
+    */
     public byte[] getDTD(Vector params) {
-        return stringToBytes("Test DTD");
+        String result="Test DTD";
+        byte[] data=new byte[result.length()];
+        result.getBytes(0,result.length(),data,0);
+        return(data);
     }
 
     /**
-     * try to obtain a decoded param string from the input Vector
-     * format in : s(11212)
-     * format out 11212
-     * on a get with 's'
-     */
+    * try to obtain a decoded param string from the input Vector
+    * format in : s(11212)
+    * format out 11212
+    * on a get with 's'
+    */
     public String getParamValue(String wanted,Vector params) {
         String val=null;
         int pos=-1;
@@ -879,15 +902,16 @@ public class servdb extends JamesServlet {
             if (pos!=-1) {
                 pos=val.indexOf('(');
                 int pos2=val.indexOf(')');
-                return val.substring(pos+1,pos2);
+                return(val.substring(pos+1,pos2));
             }
         }
-        return null;
+        return(null);
     }
 
+
     /**
-     * @javadoc
-     */
+    *
+    */
     Vector checkPostPlaylist(HttpPost poster,scanpage sp, Vector vec) {
         if (sp.req.getMethod().equals("POST")) {
             if (poster.checkPostMultiParameter("only")) {
@@ -903,13 +927,12 @@ public class servdb extends JamesServlet {
                 vec.addElement("o("+line+")");
             }
         }
-        return vec;
+        return(vec);
     }
 
     /**
-     * @vpro
-     * @javadoc
-     */
+    *
+    */
     private void checkImgMirror(scanpage sp) {
         String host=sp.getAddress();
         if (host!=null && (host.equals("sneezy.omroep.nl") || host.equals("images.vpro.nl")) && mmbase!=null) {
@@ -932,25 +955,34 @@ public class servdb extends JamesServlet {
     public int writeline(HttpServletResponse res,String line) {
         int len=0;
         len=line.length();
-        byte templine[]=stringToBytes(line);
+        byte templine[]=new byte[len];
+        line.getBytes(0,len,templine,0);
         try {
-            res.getOutputStream().write(templine);
+            res.getOutputStream().write(templine,0,len);
             // added a flush why is this not done  ??? daniel 15 Okt, 1998
             res.getOutputStream().flush();
         } catch(Exception e) {
-            return -1;
+            return(-1);
         }
-        return 0;
+        return(0);
+        /*
+        try {
+        	(new PrintStream(clientsocket.getOutputStream(),true)).print(line);
+    } catch (IOException e) {
+        	log.error("worker -> Write error in worker");
+    }
+        return(0);
+        */
     }
 
     /// -----------------------------------------------------------------------------------------------------
 
     /**
-     * @javadoc
-     */
+    *
+    */
     public byte[] getRAStream(Vector params,scanpage sp,HttpServletResponse resp) {
 
-        if (log.isDebugEnabled()) log.debug("getRAStream("+params+","+sp+","+resp+")");
+		debug("getRAStream("+params+","+sp+","+resp+")");
 
         byte[]	result		= null;
 
@@ -999,6 +1031,9 @@ public class servdb extends JamesServlet {
             log.debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
             //  -------------------------------------------------------------------------------------------------------------
 
+            //String url = AudioUtils.getAudioUrl( mmbase, sp, number, speed, channels);
+            //String url = ((AudioParts)mmbase.getMMObject("audioparts")).getAudiopartUrl( mmbase, sp, number, speed, channels);
+
             String url = null;
 
             AudioParts audioPartsBuilder = (AudioParts)mmbase.getMMObject("audioparts");
@@ -1011,23 +1046,26 @@ public class servdb extends JamesServlet {
                     log.debug("getRAStream(): node("+number+"), speed("+speed+"), channels("+channels+"): found audiopart");
                     url = audioPartsBuilder.getAudiopartUrl( mmbase, sp, number, speed, channels);
                 } else {
-                    log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not audiopart!");
-                }
+					log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not audiopart!");
+				}
             } else {
-                log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: Node not found!");
-            }
+				 log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: Node not found!");
+			}
 
             log.debug("getRAStream(): result: I have url("+url+") as result ");
             if( url != null ) {
-                result=stringToBytes(url);
+                result = new byte[url.length()];
+                url.getBytes(0,url.length(),result,0);
             }
         }
         return result;
     }
 
+    // -----------------------------------------------------------------------------------------------------
+
     /**
-     * @javadoc
-     */
+    *
+    */
     public byte[] getRMStream(Vector params,scanpage sp,HttpServletResponse resp) {
         byte[]	result		= null;
 
@@ -1041,6 +1079,7 @@ public class servdb extends JamesServlet {
 
         // number
         // ------
+
         number = getnumber( "getRMStream", "parameter number", getParamValue("n",params));
         if( number == -1 ) {
             number = getnumber("getRMStream", "parameter number", (String)params.elementAt(0));
@@ -1049,24 +1088,65 @@ public class servdb extends JamesServlet {
         }
 
         if( number != -1 ) {
-            // Following two lines replace the original commented out code
-            // to relieve the pressure on the monstorious properties table
-            // when selecting speed is an issue and the props table is fixed
-            // it can be enabled again
-            speed = 16000;
-            channels = 1;
+			// Following two lines replace the original commented out code
+			// to relieve the pressure on the monstorious properties table
+			// when selecting speed is an issue and the props table is fixed
+			// it can be enabled again
+			speed = 16000;
+			channels = 1;
+			/* Original code ending at: End of...
+            sessionInfo session=getSession(sp);
+            String	auto = getParamValue("a",params);
+            if ( auto!=null && auto.equals("session") ) {
+                // get properties RASPEED and RACHANNELS from user
+                // -----------------------------------------------
+                if (session!=null) {
+                    speed		= getSessionSpeed( session );
+                    channels	= getSessionChannels( session );
+                }
+
+            } else {
+                if( params.size() > 1 )
+                    speed = getnumber("getRMStream()", "speed", (String)params.elementAt(1));
+                if( speed == -1 ) {
+                    speed = getSessionSpeed( session );
+                    if( speed == -1 ) {
+                        log.error("getRMStream(): ERROR: no speed found!");
+                        speed = 16000;
+                    }
+                }
+                if( params.size() > 2 )
+                    channels = getnumber("getRMStream()", "channels", (String)params.elementAt(2));
+
+                if( channels == -1 ) {
+                    channels = getSessionChannels( session );
+                    if( channels == -1 ) {
+                        log.error("getRMStream(): ERROR: no channels found!");
+                        channels = 1;
+                    }
+                }
+            }
+
+            //  -------------------------------------------------------------------------------------------------------------
+            log.debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
+            //  -------------------------------------------------------------------------------------------------------------
+
+			End of original code
+			*/
+
             String url = ((VideoParts)mmbase.getMMObject("videoparts")).getVideopartUrl( mmbase, sp, number, speed, channels);
             log.debug("getRMStream(): result: I have url("+url+") as result ");
             if( url != null ) {
-                result=stringToBytes(url);
+                result = new byte[url.length()];
+                url.getBytes(0,url.length(),result,0);
             }
         }
         return result;
     }
 
     /**
-     * @javadoc
-     */
+    *
+    */
     private int	getSessionSpeed( sessionInfo session ) {
         int		result 	= -1;
         String	sSpeed	= null;
@@ -1098,16 +1178,16 @@ public class servdb extends JamesServlet {
     }
 
     /**
-     * @javadoc
-     */
+    *
+    */
     private void setSessionSpeed( sessionInfo session, int speed ) {
         sessions.setValue( session,  "SETTING_RASPEED", "" + speed );
     }
 
 
     /**
-     * @javadoc
-     */
+    *
+    */
     private int	getSessionChannels( sessionInfo session ) {
         int		result 		= -1;
         String	sChannels	=  null;
@@ -1140,15 +1220,16 @@ public class servdb extends JamesServlet {
     }
 
     /**
-     * @javadoc
-     */
+    *
+    */
     private void setSessionChannels( sessionInfo session, int channels ) {
         sessions.setValue( session,  "SETTING_RASPEED", "" + channels );
     }
 
+
     /**
-     * @javadoc
-     */
+    *
+    */
     private int getnumber( String method, String var, String number) {
         int result = -1;
 

@@ -7,6 +7,65 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
  */
+/*
+$Id: JDBC.java,v 1.23 2001-10-18 14:52:52 pierre Exp $
+
+$Log: not supported by cvs2svn $
+Revision 1.22  2001/10/04 08:25:07  pierre
+pierre: connection information is not an error
+
+Revision 1.21  2001/10/02 14:13:33  vpro
+marcel: added extra line for proper registration of McKoi's database
+
+Revision 1.20  2001/07/02 15:09:48  pierre
+pierre: fixed javadoc @link/@see references
+
+Revision 1.19  2001/06/05 13:55:53  pierre
+pierre: changed JDBC admin routines so username/password info is stripped from a database poolname
+
+Revision 1.18  2001/06/03 22:22:30  daniel
+reinstalled support for jdbc admin tool as it was in james
+
+Revision 1.17  2001/03/27 11:13:30  vpro
+Implemented log4j
+
+Revision 1.15  2000/12/30 14:00:59  daniel
+added switch for debug
+
+Revision 1.14  2000/12/28 11:37:54  pierre
+pierre: added some debug code
+
+Revision 1.13  2000/07/22 10:52:59  daniel
+Removed some debug
+
+Revision 1.12  2000/06/25 13:09:15  wwwtech
+Daniel.. changed/added method for getConnection per database driver
+
+Revision 1.11  2000/04/30 15:31:48  wwwtech
+Rico: robustified the JDBC.makeUrl code
+
+Revision 1.10  2000/04/25 21:30:47  wwwtech
+daniel: fixed a bug that forgot to return sets with 1 value
+
+Revision 1.9  2000/03/31 13:33:18  wwwtech
+Wilbert: Introduction of ParseException for method getList
+
+Revision 1.8  2000/03/30 13:11:44  wwwtech
+Rico: added license
+
+Revision 1.7  2000/03/29 10:45:02  wwwtech
+Rob: Licenses changed
+
+Revision 1.6  2000/03/06 22:47:25  wwwtech
+Rico: fixed shim reference
+
+Revision 1.5  2000/03/01 16:28:46  wwwtech
+Rico: fixed bug forgetting to init databasesupport
+
+Revision 1.4  2000/02/25 14:06:37  wwwtech
+Rico: added database specific connection init support
+
+ */
 package org.mmbase.module.database;
 
 import java.util.*;
@@ -21,12 +80,10 @@ import org.mmbase.module.*;
 import org.mmbase.util.logging.*;
 
 /**
- * JDBC Module.
- * The module that provides you access to the loaded JDBC interfaces.
- * We use this as the base to get multiplexes/pooled JDBC connects.
+ * JDBC Module the module that provides you access to the loaded JDBC interfaces
+ * we use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @author vpro
- * @version $Id: JDBC.java,v 1.26 2002-04-26 14:44:43 eduard Exp $
+ * @version $Id: JDBC.java,v 1.23 2001-10-18 14:52:52 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -102,13 +159,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             // to be registered; should have no affect on other drivers
             Class.forName(JDBCdriver).newInstance();
 
-            log.info("Loaded JDBC driver: "+JDBCdriver);
+            log.info("getDriver(): Loaded JDBC driver: "+JDBCdriver);
 
         } catch (Exception e) {
-            log.fatal("JDBC driver not found: "+JDBCdriver+"\n" + Logging.stackTrace(e));
+            log.fatal("getDriver(): JDBC driver not found: "+JDBCdriver+": " + e);
         }
-
-    log.debug("makeUrl(): " + makeUrl());
+	
+	log.debug("makeUrl(): " + makeUrl());
 
         /* Also get the instance to unload it later */
         for (Enumeration e=DriverManager.getDrivers();e.hasMoreElements();) {
@@ -120,7 +177,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
         if (driver==null) {
-
+		
             log.fatal("getDriver(): Can't get JDBC driver from DriverManager");
         }
     }
@@ -135,9 +192,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             cl=Class.forName(databasesupportclass);
             databasesupport=(DatabaseSupport)cl.newInstance();
             databasesupport.init();
-            log.debug("Loaded load class : "+databasesupportclass);
+            log.debug("loadsupport(): Loaded load class : "+databasesupportclass);
         } catch (Exception e) {
-            log.error("Can't load class : "+databasesupportclass+"\n"+Logging.stackTrace(e));
+            log.error("loadsupport(): Can't load class : "+databasesupportclass+" : "+e);
         }
     }
 
@@ -164,34 +221,28 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
 
         if (defaultname==null) {
             defaultname="wwwtech";
-            log.warn("name was not set, using default: '" + defaultname +"'");
         }
         if (defaultpassword==null) {
             defaultpassword="xxxxxx";
-            log.warn("name was not set, using default: '" + defaultpassword +"'");
         }
         try {
             JDBCport=Integer.parseInt(getInitParameter("port"));
         } catch (NumberFormatException e) {
             JDBCport=0;
-            log.warn("portnumber was not set or a invalid integer :" + e + "(using default " + JDBCport + ")");
         }
         try {
             maxConnections=Integer.parseInt(getInitParameter("connections"));
         } catch (Exception e) {
-            maxConnections = 8;
-            log.warn("connections was not set or a invalid integer :" + e + "(using default " + maxConnections + ")");
+            maxConnections=8;
         }
         try {
             maxQuerys=Integer.parseInt(getInitParameter("querys"));
         } catch (Exception e) {
-            maxQuerys = 500;
-            log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQuerys + ")");
+            maxQuerys=500;
         }
         JDBCdatabase=getInitParameter("database");
         if (databasesupportclass==null || databasesupportclass.length()==0) {
             databasesupportclass="org.mmbase.module.database.DatabaseSupportShim";
-            log.warn("database supportclass was not known, using default: " + databasesupportclass);
         }
     }
 
@@ -260,62 +311,46 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         return(end);
     }
 
-    /**
-     * @javadoc
-     */
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
         return(poolHandler.getConnection(url,name,password));
     }
 
-    /**
-     * @javadoc
-     */
     public MultiConnection getConnection(String url) throws SQLException {
         return(poolHandler.getConnection(url,defaultname,defaultpassword));
     }
 
-    /**
-     * @javadoc
-     */
     public Connection getDirectConnection(String url,String name,String password) throws SQLException {
 
         return(DriverManager.getConnection(url,name,password));
     }
 
-    /**
-     * @javadoc
-     */
     public Connection getDirectConnection(String url) throws SQLException {
 
         return(DriverManager.getConnection(url,defaultname,defaultpassword));
     }
 
-    /**
-     * @javadoc
-     */
     public synchronized void checkTime() {
         try {
             if (poolHandler!=null) poolHandler.checkTime();
         } catch(Exception e) {
-            log.error("could not check the time: " + e);
-            // Logging.stackTrace(e)
+            log.error("checkTime(): Exception");
             //e.printStackTrace();
         }
     }
 
-    /**
+    /*
      * User interface stuff
-     * @javadoc
      */
+
     public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-            if (cmd.equals("POOLS")) return listPools(tagger);
-            if (cmd.equals("CONNECTIONS")) return listConnections(tagger);
+            if (cmd.equals("POOLS")) return(listPools(tagger));
+            if (cmd.equals("CONNECTIONS")) return(listConnections(tagger));
         }
-        return null;
+        return(null);
     }
 
     // Strips senssitive info (such as password and username) from the
@@ -333,9 +368,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         }
     }
 
-    /**
-     * @javadoc
-     */
     public Vector listPools(StringTagger tagger) {
         Vector results=new Vector();
         for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
@@ -349,9 +381,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         return(results);
     }
 
-    /**
-     * @javadoc
-     */
+
     public Vector listConnections(StringTagger tagger) {
         Vector results=new Vector();
         for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
@@ -378,33 +408,15 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         return(results);
     }
 
-    /**
-     * @javadoc
-     */
     public String getUser() {
         return(defaultname);
     }
 
-    /**
-     * @javadoc
-     */
     public String getPassword() {
         return(defaultpassword);
     }
 
-    /**
-     * @javadoc
-     */
     public String getDatabaseName() {
         return(getInitParameter("database"));
     }
-
-    /**
-     * Give some info about the jdbc connection
-     * @return a <code>String</code> whith some information about the connection
-     */
-     public String toString() {
-            if(driver==null) return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "'";
-            return "host: '" + JDBChost + "' port: '"  + JDBCport + "' database: '" + JDBCdatabase + "' user: '" + defaultname + "' driver: '" + driver.getClass().getName() + "'";
-     }
 }

@@ -15,6 +15,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
+
 /**
  * One of the core objects, Defines one field of a object type / builder, has its
  * own builder called FieldDef (hitlisted)
@@ -22,9 +23,9 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.28 2002-04-17 13:17:44 pierre Exp $
+ * @$Revision: 1.19 $ $Date: 2002-01-11 12:27:49 $
  */
-public class FieldDefs implements Comparable {
+public class FieldDefs  {
     public final static int DBSTATE_MINVALUE = 0;
     public final static int DBSTATE_VIRTUAL = 0;
     public final static int DBSTATE_PERSISTENT = 2;
@@ -39,15 +40,8 @@ public class FieldDefs implements Comparable {
     public final static int TYPE_FLOAT = 5;
     public final static int TYPE_DOUBLE = 6;
     public final static int TYPE_LONG = 7;
-    public final static int TYPE_XML = 8;
-    public final static int TYPE_NODE = 9;
-    public final static int TYPE_MAXVALUE = 9;
+    public final static int TYPE_MAXVALUE = 7;
     public final static int TYPE_UNKNOWN = -1;
-
-    public final static int ORDER_CREATE = 0;
-    public final static int ORDER_EDIT = 1;
-    public final static int ORDER_LIST = 2;
-    public final static int ORDER_SEARCH = 3;
 
     // logger
     private static Logger log = Logging.getLoggerInstance(FieldDefs.class.getName());
@@ -56,25 +50,25 @@ public class FieldDefs implements Comparable {
         { "UNKNOWN", "VIRTUAL", "UNKNOWN", "PERSISTENT", "SYSTEM" };
 
     private final static String[] DBTYPES =
-        { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML", "NODE" };
+        { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG" };
 
     /**
      * @scope private
      */
-    private Hashtable GUINames = new Hashtable();
-    private String GUIType;
-    private int GUISearch;
-    private int GUIList;
-    private String DBName;
-    private int DBType = TYPE_UNKNOWN;
-    private int GUIPos;
-    private int DBState = DBSTATE_UNKNOWN;
-    private boolean DBNotNull=false;
-    private String DBDocType = null;
-    private boolean isKey=false;
-    private int DBPos;
-    private int DBSize=-1;
-    private MMObjectBuilder parent = null;
+    public String GUIName;
+    public Hashtable GUINames = new Hashtable();
+    public String GUIType;
+    public int GUISearch;
+    public int GUIList;
+    public String DBName;
+    public int DBType = TYPE_UNKNOWN;
+    public int GUIPos;
+    public int DBState = DBSTATE_UNKNOWN;
+    public boolean DBNotNull=false;
+    public boolean isKey=false;
+    public int DBPos;
+    public int DBSize=-1;
+    public MMObjectBuilder parent = null;
 
     /**
      * Constructor for default FieldDef.
@@ -93,7 +87,14 @@ public class FieldDefs implements Comparable {
      */
     public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName,
                      int DBType) {
-        this(GUIName, GUIType, GUISearch, GUIList, DBName, DBType, 2, DBSTATE_PERSISTENT);
+        this.GUIName=GUIName;
+        this.GUIType=GUIType;
+        this.GUISearch=GUISearch;
+        this.GUIList=GUIList;
+        this.DBName=DBName;
+        this.DBType=DBType;
+        this.GUIPos=2;
+        this.DBState=DBSTATE_PERSISTENT;
     }
 
     /**
@@ -109,14 +110,14 @@ public class FieldDefs implements Comparable {
      */
     public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName,
                      int DBType, int GUIPos, int DBState) {
-        setDBName(DBName);
-        setDBState(DBState);
-        setDBType(DBType);
-        setGUIType(GUIType);
-        setGUIName("en",GUIName);
-        setGUISearch(GUISearch);
-        setGUIList(GUIList);
-        setGUIPos(GUIPos);
+        this.GUIName=GUIName;
+        this.GUIType=GUIType;
+        this.GUISearch=GUISearch;
+        this.GUIList=GUIList;
+        this.DBName=DBName;
+        this.DBType=DBType;
+        this.GUIPos=GUIPos;
+        this.DBState=DBState;
     }
 
     /**
@@ -153,30 +154,26 @@ public class FieldDefs implements Comparable {
     public static int getDBTypeId(String type) {
         if (type == null) return DBSTATE_UNKNOWN;
         // XXX: deprecated VARCHAR
-        type=type.toUpperCase();
         if (type.equals("VARCHAR")) return TYPE_STRING;
-        if (type.equals("STRING"))  return TYPE_STRING;
-        if (type.equals("XML"))     return TYPE_XML;
+        if (type.equals("STRING")) return TYPE_STRING;
         if (type.equals("INTEGER")) return TYPE_INTEGER;
-        if (type.equals("BYTE"))    return TYPE_BYTE;
-        if (type.equals("FLOAT"))   return TYPE_FLOAT;
-        if (type.equals("DOUBLE"))  return TYPE_DOUBLE;
-        if (type.equals("LONG"))    return TYPE_LONG;
-        if (type.equals("NODE"))    return TYPE_NODE;
+        if (type.equals("BYTE")) return TYPE_BYTE;
+        if (type.equals("FLOAT")) return TYPE_FLOAT;
+        if (type.equals("DOUBLE")) return TYPE_DOUBLE;
+        if (type.equals("LONG")) return TYPE_LONG;
         return TYPE_UNKNOWN;
     }
 
     /**
-     * Provide an id for the specified mmbase state description.
+     * Provide an id for the specified mmbase state description
      * @param type the state description to get the id of
      * @return the id of the state.
      */
     public static int getDBStateId(String state) {
         if (state == null) return DBSTATE_UNKNOWN;
-        state=state.toUpperCase();
-        if (state.equals("PERSISTENT"))  return DBSTATE_PERSISTENT;
-        if (state.equals("VIRTUAL")) return DBSTATE_VIRTUAL;
-        if (state.equals("SYSTEM")) return DBSTATE_SYSTEM;
+        if (state.equals("persistent"))  return DBSTATE_PERSISTENT;
+        if (state.equals("virtual")) return DBSTATE_VIRTUAL;
+        if (state.equals("system")) return DBSTATE_SYSTEM;
         return DBSTATE_UNKNOWN;
     }
 
@@ -198,8 +195,8 @@ public class FieldDefs implements Comparable {
 
     /**
      * Retrieve the GUI name of the field depending on specified langauge.
-     * If the language is not available, the "en" value is returned instead.
-     * If that one is unavailable the internal fieldname is returned.
+     * If the language is not available, the "us" value is returned instead.
+     * If that one is unavailable a 'default' is returned.
      * @param lang the language to return the name in
      * @return the GUI Name
      */
@@ -214,18 +211,15 @@ public class FieldDefs implements Comparable {
 
     /**
      * Retrieve the GUI name of the field.
-     * If possible, the "en" value is returned.
-     * If that one is unavailable the internal fieldname is returned.
+     * If possible, the "us" value is returned.
+     * If that one is unavailable a 'default' is returned.
      * @param lang the language to return the name in
      * @return the GUI Name
      */
     public String getGUIName() {
-        String value=(String) GUINames.get("en");
-        if (value!=null) {
-            return value;
-        } else {
-            return DBName;
-        }
+        String tmp=(String)GUINames.get("us");
+        if (tmp!=null) return tmp;
+        return GUIName;
     }
 
     /**
@@ -270,13 +264,6 @@ public class FieldDefs implements Comparable {
      */
     public boolean getDBNotNull() {
         return DBNotNull;
-    }
-
-    /**
-     * Retrieve the doctype
-     */
-    public String getDBDocType() {
-        return DBDocType;
     }
 
     /**
@@ -330,11 +317,7 @@ public class FieldDefs implements Comparable {
      * @param value the value to set
      */
     public void setGUIName(String country,String value) {
-        if ((value==null) || value.equals("")) {
-            GUINames.remove(country);
-        } else {
-            GUINames.put(country,value);
-        }
+        GUINames.put(country,value);
     }
 
     /**
@@ -445,14 +428,6 @@ public class FieldDefs implements Comparable {
     }
 
     /**
-     * Set whether the field has an doctype to validate
-     * @param doctype the doctype, which has to be used for the field
-     */
-    public void setDBDocType(String doctype) {
-        DBDocType=doctype;
-    }
-
-    /**
      * Retrieves the parent builder for this field
      */
     public MMObjectBuilder getParent() {
@@ -477,103 +452,6 @@ public class FieldDefs implements Comparable {
                " DBType="+getDBTypeDescription()+
                " DBSTATE="+getDBTypeDescription()+
                " DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+
-               " isKey="+isKey+" DBDocType="+DBDocType);
+               " isKey="+isKey);
     }
-
-    /**
-     * Compare this object to the supplied one (should be a FieldDefs)
-     * @param the object to compare to
-     * @return -1,1, or 0 accordingto whetehr this object is smaller, greater, or equals
-     *         to the supplied one.
-     */
-    public int compareTo(Object o) {
-        int pos1 = getDBPos();
-        int pos2 = ((FieldDefs)o).getDBPos();
-        if (pos1<pos2) {
-            return -1;
-        } else if (pos1>pos2) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Sorts a list with FieldDefs objects, using the default order (ORDER_CREATE)
-     * @param fielddefs the list to sort
-     */
-    public static void sort(List fielddefs) {
-        Collections.sort(fielddefs);
-    }
-
-    /**
-     * Sorts a list with FieldDefs objects, using the specified order
-     * @param fielddefs the list to sort
-     * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
-     */
-    public static void sort(List fielddefs, int order) {
-        Collections.sort(fielddefs,new FieldDefsComparator(order));
-    }
-
-    /**
-     * Comparator to sort Fielddefs bij creation order, or bij position
-     * specified in one of the GUIPos fields.
-     */
-    private static class FieldDefsComparator implements Comparator {
-
-        private int order = ORDER_CREATE;
-
-        /**
-         * Constrcuts a comparator to sort fields on teh specifie dorder
-         * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
-         */
-        FieldDefsComparator (int order) {
-            this.order=order;
-        }
-
-        /**
-         * retrieve the postion fo a FieldDefs object
-         * according to the order to sort on
-         */
-        private int getPos(FieldDefs o) {
-            switch (order) {
-                case ORDER_EDIT: {
-                    return o.getGUIPos();
-                }
-                case ORDER_LIST: {
-                    return o.getGUIList();
-                }
-                case ORDER_SEARCH: {
-                    return o.getGUISearch();
-                }
-                default : {
-                    return o.getDBPos();
-                }
-            }
-        }
-
-        /**
-         * Compare two objects (should be FieldDefs)
-         */
-        public int compare(Object o1, Object o2) {
-            int pos1=getPos((FieldDefs)o1);
-            int pos2=getPos((FieldDefs)o2);
-
-            if (pos1<pos2) {
-                return -1;
-            } else if (pos1>pos2) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        /**
-         * Tests whether two Comparators are the same
-         */
-        public boolean equals(Object o) {
-            return (o==this);
-        }
-    }
-
 }

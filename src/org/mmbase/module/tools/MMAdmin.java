@@ -13,8 +13,6 @@ import java.util.*;
 import java.io.File;
 
 import org.mmbase.util.*;
-import org.mmbase.util.xml.BuilderWriter;
-import org.mmbase.util.xml.ModuleWriter;
 import org.mmbase.module.*;
 import org.mmbase.cache.MultilevelCacheHandler;
 import org.mmbase.cache.MultilevelCacheEntry;
@@ -33,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.45 2002-04-17 13:17:50 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.40 2002-01-24 10:59:50 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -243,18 +241,9 @@ public class MMAdmin extends ProcessorModule {
                     String savepath=(String)vars.get("PATH");
                     Module mod=(Module)getModule(modulename);
                     if (mod!=null) {
-                        try {
-                            ModuleWriter moduleOut=new ModuleWriter(mod);
-                            moduleOut.setIncludeComments(true);
-                            moduleOut.writeToFile(savepath);
-                        } catch (Exception e) {
-                            log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
-                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
-                            return false;
-                        }
-                        lastmsg="Writing finished, no problems.<br /><br />\n"+
-                                "A clean copy of "+modulename+".xml can be found at : "+savepath+"<br /><br />\n";
+                        XMLModuleWriter.writeXMLFile(savepath,mod);
+                        lastmsg="Writing finished, no problems.<BR><BR>\n";
+                        lastmsg+="A clean copy of "+modulename+".xml can be found at : "+savepath+"<BR><BR>\n";
                     }
                 }
             } else if (token.equals("BUILDERSAVE")) {
@@ -265,19 +254,9 @@ public class MMAdmin extends ProcessorModule {
                     String savepath=(String)vars.get("PATH");
                     MMObjectBuilder bul=getMMObject(buildername);
                     if (bul!=null) {
-                        try {
-                            BuilderWriter builderOut=new BuilderWriter(bul);
-                            builderOut.setIncludeComments(true);
-                            builderOut.setExpandBuilder(true);
-                            builderOut.writeToFile(savepath);
-                        } catch (Exception e) {
-                            log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
-                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
-                            return false;
-                        }
-                        lastmsg="Writing finished, no problems.<br /><br />\n"+
-                                "A clean copy of "+buildername+".xml can be found at : "+savepath+"<br /><br />\n";
+                        XMLBuilderWriter.writeXMLFile(savepath,bul);
+                        lastmsg="Writing finished, no problems.<BR><BR>\n";
+                        lastmsg+="A clean copy of "+buildername+".xml can be found at : "+savepath+"<BR><BR>\n";
                     }
                 }
             }
@@ -318,32 +297,32 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("MODULECLASSFILE")) {
                 return ""+getModuleClass(tok.nextToken());
             } else if (cmd.equals("MULTILEVELCACHEHITS")) {
-                return(""+MultilevelCacheHandler.getCache().getHits());
+                return(""+MultilevelCacheHandler.getCache("basic").getHits());
             } else if (cmd.equals("MULTILEVELCACHEMISSES")) {
-                return(""+MultilevelCacheHandler.getCache().getMisses());
+                return(""+MultilevelCacheHandler.getCache("basic").getMisses());
             } else if (cmd.equals("MULTILEVELCACHEREQUESTS")) {
-                return(""+(MultilevelCacheHandler.getCache().getHits()+MultilevelCacheHandler.getCache().getMisses()));
+                return(""+(MultilevelCacheHandler.getCache("basic").getHits()+MultilevelCacheHandler.getCache("basic").getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
-                return(""+(MultilevelCacheHandler.getCache().getRatio()*100));
+                return(""+(MultilevelCacheHandler.getCache("basic").getRatio()*100));
             } else if (cmd.equals("MULTILEVELCACHESTATE")) {
                 if (tok.hasMoreTokens()) {
                     String state=tok.nextToken();
                     if (state.equalsIgnoreCase("On")) {
-                        MultilevelCacheHandler.getCache().setActive(true);
+                        MultilevelCacheHandler.setState(true);
                         log.info("turned multilevelcache on");
                     } else if (state.equalsIgnoreCase("Off")) {
-                        MultilevelCacheHandler.getCache().setActive(false);
+                        MultilevelCacheHandler.setState(false);
                         log.info("turned multilevelcache off");
                     }
                 } else {
-                    if (MultilevelCacheHandler.getCache().isActive()) {
+                    if (MultilevelCacheHandler.isActive()) {
                         return "On";
                     } else {
                         return "Off";
                     }
                 }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                return(""+(MultilevelCacheHandler.getCache().getSize()));
+                return(""+(MultilevelCacheHandler.getCache("basic").getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return(""+MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -387,7 +366,7 @@ public class MMAdmin extends ProcessorModule {
      */
     int getBuilderVersion(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml",mmb);
+        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
         if (app!=null) {
             return app.getBuilderVersion();
         }
@@ -399,7 +378,7 @@ public class MMAdmin extends ProcessorModule {
      */
     String getBuilderClass(String bulname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader bul=new XMLBuilderReader(path+bulname+".xml",mmb);
+        XMLBuilderReader bul=new XMLBuilderReader(path+bulname+".xml");
         if (bul!=null) {
             return bul.getClassFile();
         }
@@ -479,12 +458,12 @@ public class MMAdmin extends ProcessorModule {
      */
     String getBuilderDescription(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml",mmb);
+        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
         if (app!=null) {
             Hashtable desc=app.getDescriptions();
-            String english = (String)desc.get("en");
-            if (english != null) {
-                return english;
+            String us=(String)desc.get("us");
+            if (us!=null) {
+                return us;
             }
         }
         return "";
@@ -500,7 +479,7 @@ public class MMAdmin extends ProcessorModule {
         XMLModuleReader app=new XMLModuleReader(path+modulename+".xml");
         if (app!=null) {
             Hashtable desc=app.getDescriptions();
-            String us=(String)desc.get("en");
+            String us=(String)desc.get("us");
             if (us!=null) {
                 return us;
             }
@@ -1129,7 +1108,7 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name=aname;
                     String sname=name.substring(0,name.length()-4);
-                    XMLBuilderReader app=new XMLBuilderReader(configpath+subpath+aname,mmb);
+                    XMLBuilderReader app=new XMLBuilderReader(configpath+subpath+aname);
                     results.addElement(subpath+sname);
                     results.addElement(""+app.getBuilderVersion());
                     int installedversion=ver.getInstalledVersion(sname,"builder");
@@ -1173,14 +1152,34 @@ public class MMAdmin extends ProcessorModule {
     Vector getFields(String buildername) {
         Vector results=new Vector();
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader bul=new XMLBuilderReader(path+buildername+".xml",mmb);
+        XMLBuilderReader bul=new XMLBuilderReader(path+buildername+".xml");
         if (bul!=null) {
             Vector defs=bul.getFieldDefs();
             for (Enumeration h = defs.elements();h.hasMoreElements();) {
                 FieldDefs def=(FieldDefs)h.nextElement();
                 results.addElement(""+def.getDBPos());
                 results.addElement(""+def.getDBName());
-                results.addElement(def.getDBTypeDescription());
+                int type=def.getDBType();
+                switch (type) {
+                    case FieldDefs.TYPE_STRING:
+                        results.addElement("STRING");
+                    break;
+                    case FieldDefs.TYPE_INTEGER:
+                        results.addElement("INTEGER");
+                        break;
+                    case FieldDefs.TYPE_LONG:
+                        results.addElement("LONG");
+                        break;
+                    case FieldDefs.TYPE_FLOAT:
+                        results.addElement("FLOAT");
+                        break;
+                    case FieldDefs.TYPE_DOUBLE:
+                        results.addElement("DOUBLE");
+                        break;
+                    case FieldDefs.TYPE_BYTE:
+                        results.addElement("BYTE");
+                        break;
+                }
                 int size=def.getDBSize();
                 if (size==-1) {
                     results.addElement("fixed");
@@ -1249,7 +1248,7 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name=aname;
                     String sname=name.substring(0,name.length()-4);
-                    XMLBuilderReader app=new XMLBuilderReader(path+aname,mmb);
+                    XMLBuilderReader app=new XMLBuilderReader(path+aname);
                     results.addElement(sname);
 
                     results.addElement("0");
@@ -1302,9 +1301,24 @@ public class MMAdmin extends ProcessorModule {
                     return "fixed";
                 }
             } else if (key.equals("dbstate")) {
-                return def.getDBStateDescription();
+                int state=def.getDBState();
+                switch (state) {
+                    case FieldDefs.DBSTATE_VIRTUAL: return "virtual";
+                    case FieldDefs.DBSTATE_PERSISTENT: return "persistent";
+                    case FieldDefs.DBSTATE_SYSTEM: return "system";
+                    case FieldDefs.DBSTATE_UNKNOWN: return "unknown";
+                }
             } else if (key.equals("dbmmbasetype")) {
-                return def.getDBTypeDescription();
+                int type=def.getDBType();
+                switch (type) {
+                    case FieldDefs.TYPE_STRING: return "STRING";
+                    case FieldDefs.TYPE_INTEGER: return "INTEGER";
+                    case FieldDefs.TYPE_BYTE: return "BYTE";
+                    case FieldDefs.TYPE_FLOAT: return "FLOAT";
+                    case FieldDefs.TYPE_DOUBLE: return "DOUBLE";
+                    case FieldDefs.TYPE_LONG: return "LONG";
+                    case FieldDefs.TYPE_UNKNOWN: return "UNKNOWN";
+                }
             } else if (key.equals("editorinput")) {
                 int pos=def.getGUIPos();
                 if (pos==-1) {
@@ -1557,7 +1571,19 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
-            def.setDBType(value);
+            if (value.equals("STRING")) {
+                def.setDBType(FieldDefs.TYPE_STRING);
+            } else if (value.equals("INTEGER")) {
+                def.setDBType(FieldDefs.TYPE_INTEGER);
+            } else if (value.equals("BYTE")) {
+                def.setDBType(FieldDefs.TYPE_BYTE);
+            } else if (value.equals("FLOAT")) {
+                def.setDBType(FieldDefs.TYPE_FLOAT);
+            } else if (value.equals("DOUBLE")) {
+                def.setDBType(FieldDefs.TYPE_DOUBLE);
+            } else if (value.equals("LONG")) {
+                def.setDBType(FieldDefs.TYPE_LONG);
+            }
         }
         if (mmb.getDatabase().changeField(bul,fieldname)) {
             syncBuilderXML(bul,builder);
@@ -1579,7 +1605,13 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul=getMMObject(builder);
         FieldDefs def=bul.getField(fieldname);
         if (def!=null) {
-            def.setDBState(value);
+            if (value.equals("virtual")) {
+                def.setDBState(FieldDefs.DBSTATE_VIRTUAL);
+            } else if (value.equals("persistent")) {
+                def.setDBState(FieldDefs.DBSTATE_PERSISTENT);
+            } else if (value.equals("system")) {
+                def.setDBState(FieldDefs.DBSTATE_SYSTEM);
+            }
         }
         if (mmb.getDatabase().changeField(bul,fieldname)) {
             syncBuilderXML(bul,builder);
@@ -1665,19 +1697,46 @@ public class MMAdmin extends ProcessorModule {
 
             String value=(String)vars.get("dbname");
             def.setDBName(value);
-            def.setGUIName("en",value);
+            def.setGUIName("us",value);
 
             value=(String)vars.get("mmbasetype");
-            def.setDBType(value);
+            if (value.equals("STRING")) {
+                def.setDBType(FieldDefs.TYPE_STRING);
+            } else if (value.equals("INTEGER")) {
+                def.setDBType(FieldDefs.TYPE_INTEGER);
+            } else if (value.equals("BYTE")) {
+                def.setDBType(FieldDefs.TYPE_BYTE);
+            } else if (value.equals("FLOAT")) {
+                def.setDBType(FieldDefs.TYPE_FLOAT);
+            } else if (value.equals("DOUBLE")) {
+                def.setDBType(FieldDefs.TYPE_DOUBLE);
+            } else if (value.equals("LONG")) {
+                def.setDBType(FieldDefs.TYPE_LONG);
+            }
+
 
             value=(String)vars.get("dbstate");
-            def.setDBState(value);
+            if (value.equals("virtual")) {
+                def.setDBState(FieldDefs.DBSTATE_VIRTUAL);
+            } else if (value.equals("persistent")) {
+                def.setDBState(FieldDefs.DBSTATE_PERSISTENT);
+            } else if (value.equals("system")) {
+                def.setDBState(FieldDefs.DBSTATE_SYSTEM);
+            }
 
             value=(String)vars.get("dbnotnull");
-            def.setDBNotNull(value.equals("true"));
+            if (value.equals("true")) {
+                def.setDBNotNull(true);
+            } else {
+                def.setDBNotNull(false);
+            }
 
             value=(String)vars.get("dbkey");
-            def.setDBKey(value.equals("true"));
+            if (value.equals("true")) {
+                def.setDBKey(true);
+            } else {
+                def.setDBKey(false);
+            }
 
             value=(String)vars.get("dbsize");
             try {
@@ -1725,14 +1784,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public void syncBuilderXML(MMObjectBuilder bul,String builder) {
         String savepath=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator+builder+".xml";
-        try {
-            BuilderWriter builderOut=new BuilderWriter(bul);
-            builderOut.setIncludeComments(false);
-            builderOut.setExpandBuilder(false);
-            builderOut.writeToFile(savepath);
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
+        XMLBuilderWriter.writeXMLFile(savepath,bul);
     }
 
     /**
@@ -1740,13 +1792,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public void syncModuleXML(Module mod,String modname) {
         String savepath=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator+modname+".xml";
-        try {
-            ModuleWriter moduleOut=new ModuleWriter(mod);
-            moduleOut.setIncludeComments(false);
-            moduleOut.writeToFile(savepath);
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-        }
+        XMLModuleWriter.writeXMLFile(savepath,mod);
     }
 
     /**
@@ -1754,7 +1800,7 @@ public class MMAdmin extends ProcessorModule {
      */
     public Vector  getMultilevelCacheEntries() {
         Vector results=new Vector();
-        Enumeration res=MultilevelCacheHandler.getCache().getOrderedElements();
+        Enumeration res=MultilevelCacheHandler.getCache("basic").getOrderedElements();
         while (res.hasMoreElements()) {
             MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
             StringTagger tagger=en.getTagger();
@@ -1782,7 +1828,7 @@ public class MMAdmin extends ProcessorModule {
                 results.addElement("");
             }
             results.addElement(tagger.ValuesString("ALL"));
-            results.addElement(""+MultilevelCacheHandler.getCache().getCount(en.getKey()));
+            results.addElement(""+MultilevelCacheHandler.getCache("basic").getCount(en.getKey()));
         }
         return results;
     }

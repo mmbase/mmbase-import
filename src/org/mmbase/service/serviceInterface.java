@@ -10,17 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.service;
 
 /**
- * @javadoc
  * @rename ServiceInterface
- * @author Daniel Ockeloen
+  * @author Daniel Ockeloen
  */
 public interface serviceInterface {
-    /**
-     * @javadoc
-     */
-    public void startUp();
-    /**
-     * @javadoc
-     */
-    public void shutDown();
+	public void startUp();
+	public void shutDown();
 }

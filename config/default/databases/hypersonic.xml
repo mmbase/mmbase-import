@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE database PUBLIC "//MMBase - database//" "http://www.mmbase.org/dtd/database_1_0.dtd">
+<!DOCTYPE database PUBLIC "//MMBase - database//" "http://www.mmbase.org/dtd/database.dtd">
 <database>
 
 	<!-- <name>
@@ -38,7 +38,6 @@
      	  <type-mapping mmbase-type="FLOAT">FLOAT</type-mapping>
      	  <type-mapping mmbase-type="INTEGER">INTEGER</type-mapping>
        	  <type-mapping mmbase-type="STRING" min-size="1" max-size="16777216">VARCHAR(size)</type-mapping>
-       	  <type-mapping mmbase-type="XML" min-size="1" max-size="16777216">VARCHAR(size)</type-mapping>
        	  <type-mapping mmbase-type="BYTE" min-size="1" max-size="16777216">BINARY</type-mapping>
 	</mapping>
 	

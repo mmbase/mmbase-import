@@ -18,48 +18,42 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * MediaParts is the main class for mediaobjects. All media type builders (eg. AudioParts)
- * extend from it.
- * MediaParts implements the replace command GETURL to get the url to a media file.
+ * MediaParts is the main class for mediaobjects. All media type builders (eg. AudioParts) builders
+ * extend from this one. MediaParts implements the replace command GETURL to get the url to a mediafile.
  * <br />
- * MediaParts also implements an cache which is sueful when querying lots of audioparts at once.
- * This takes time since urls aren't stored directly in a mediapart, but through rawaudios and rawvideos.
- * To use the cache you have to set the XML builder property 'UrlCaching' to 'true'. Default is false.
+ * MediaParts also implements an urlCache which comes in handy when queries lots of audioparts at once.
+ * (This takes time since urls aren't stored directly in a mediapart but through rawaudios/videos etc..)
+ * To use the urlCache you have to set the XML builder property 'UrlCaching' to 'true'. default is false.
  * <br />
  * For each object whos url is requested two types of cache entries will me made. One is for requests coming
  * from the internal www server, and one for requests coming from outside.
  * i.e., VPRO uses this to send request from employees who visit the site to a local RealServer instead of the
  * main RealServer.
  * <br />
- * If an audiopart or videopart node changes locally or remotely, the related cache entries will be removed
+ * If an audiopart or videopart node changes locally or remotely, the related UrlCache entries will be removed
  * immediately.
  *
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.9 2002-04-19 09:20:42 pierre Exp $
+ * @version $Id: MediaParts.java,v 1.7 2002-01-25 15:13:16 pierre Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
 
-    // logging
     private static Logger log = Logging.getLoggerInstance(MediaParts.class.getName());
 
     /**
-     * Define LRU Cache for media urls.
-     * @bad-literal the maximum size of the cache should be a named constant, or configurable
-     * @scope private, non static, so different builders can have their own cache
+     * Define LRU Cache for video urls.
+     * @scope private, non static
      */
     public static LRUHashtable urlCache = new LRUHashtable(1024);
 
     /**
-     * Use caching or not, determined by builder property 'CacheUrls'
+     * Use caching of not, determined by builder property 'CacheUrls'
      */
     private boolean urlCaching=false;
 
     /**
      * Initializes and gets builder properties.
-     * @todo evaluate how configuration of builder-specific caches can be made
-     *       more generic, i.e. use the same property name for turning on
-     *       caching or setting the maximum cache size.
-     * @return always true
+     * @return true always
      */
     public boolean init() {
         super.init();
@@ -166,7 +160,7 @@ public abstract class MediaParts extends MMObjectBuilder {
         while (e.hasMoreElements()) {
             rawNode = (MMObjectNode)e.nextElement();
             if (log.isDebugEnabled()) {
-                log.debug("removeRaws: Removing rawobject " + rawNode.getIntValue("number"));
+                debug("removeRaws: Removing rawobject " + rawNode.getIntValue("number"));
             }
             builder.removeNode(rawNode);
         }
@@ -179,7 +173,7 @@ public abstract class MediaParts extends MMObjectBuilder {
      * from cache or not depending on builder property.
      * @param sp the scanpage
      * @param sp the stringtokenizer reference with the replace command.
-     * @return the result value of the replace command or null.
+     * @return a String the result value of the replace command or null.
      */
     public String replace(scanpage sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
@@ -229,11 +223,11 @@ public abstract class MediaParts extends MMObjectBuilder {
                 }
             } else {
                 log.error("replace: Unknown command: "+token);
-                return "ERROR: Unknown command: "+token;
+                return("ERROR: Unknown command: "+token);
             }
         }
         log.info("replace: No command defined.");
-        return "No command defined";
+        return("No command defined, says the VideoParts builder.");
     }
 
     /**
@@ -246,9 +240,8 @@ public abstract class MediaParts extends MMObjectBuilder {
      * @return a String with the Url to the file or null.
      */
     String getUrlFromCache(scanpage sp,int number,int userSpeed,int userChannels) {
-        if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 ) {
-            log.debug("getUrlFromCache: "+urlCache.getStats());
-        }
+        if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 )
+            debug("getUrlFromCache: "+urlCache.getStats());
         String url = null;
         int key = number;
         url = (String) urlCache.get(new Integer(key));
@@ -260,21 +253,21 @@ public abstract class MediaParts extends MMObjectBuilder {
                 log.debug("getUrlFromCache: doGetUrl returns null, no cache put returning null");
                 return null;
             } else if (url.charAt(0)=='r') {
-                urlCache.put(new Integer(key),url);
-                if (log.isDebugEnabled()) {
-                    log.debug("getUrlFromCache: Cached VALUE: " + url + ", KEY:" + key);
-                }
-                return url;
+                    urlCache.put(new Integer(key),url);
+                    if (log.isDebugEnabled()) {
+                        log.debug("getUrlFromCache: Cached VALUE: " + url + ", KEY:" + key);
+                    }
+                    return url;
             } else if (url.charAt(0)=='p') {
-                int pos = 0;
-                StringBuffer urlsb = new StringBuffer(url);
-                pos = url.indexOf(".ra");
-                String cachedUrl = ""+urlsb.replace((pos-4),pos,"%%_%");
-                urlCache.put(new Integer(key),cachedUrl);
-                if (log.isDebugEnabled()) {
-                    log.debug("getUrlFromCache: Cached VALUE: " + cachedUrl + ", KEY:" + key);
-                }
-                return url; //Return original result url from method doGetUrl.
+                    int pos = 0;
+                    StringBuffer urlsb = new StringBuffer(url);
+                    pos = url.indexOf(".ra");
+                    String cachedUrl = ""+urlsb.replace((pos-4),pos,"%%_%");
+                    urlCache.put(new Integer(key),cachedUrl);
+                    if (log.isDebugEnabled()) {
+                        log.debug("getUrlFromCache: Cached VALUE: " + cachedUrl + ", KEY:" + key);
+                    }
+                    return url; //Return original result url from method doGetUrl.
             } else {
                 log.info("getUrlFromCache: Invalid Url string: " + url + " , returning null");
                 return null;

@@ -20,15 +20,15 @@ import org.mmbase.bridge.*;
  * @deprecated
  */
 public class InfoTag extends  CloudReferrerTag implements Writer {
-
+    
     private String nodeManager = null;
     private String module      = null;
     private String command     = null;
-
-    protected WriterHelper helper = new WriterHelper();
+    
+    protected WriterHelper helper = new WriterHelper(); 
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
-    public void setVartype(String t) throws JspTagException {
+    public void setVartype(String t) throws JspTagException { 
         helper.setVartype(t);
     }
     public void setJspvar(String j) {
@@ -40,7 +40,6 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
-    public void haveBody() { helper.haveBody(); }
 
     public void setNodemanager(String nm) throws JspTagException {
         nodeManager = getAttributeValue(nm);
@@ -52,7 +51,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
         command = getAttributeValue(c);
     }
 
-
+    
     public int doStartTag() throws JspTagException {
         String result;
         if (nodeManager != null) {
@@ -69,15 +68,15 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
         } else {
             throw new JspTagException("Must give module or nodemanager");
         }
-
+        
         helper.setValue(result);
-        helper.setJspvar(pageContext);
+        helper.setJspvar(pageContext);  
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
-
+    
     /**
     *
     **/

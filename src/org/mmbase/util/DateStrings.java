@@ -34,19 +34,19 @@ public class DateStrings {
     /**
      *  Dutch short week day names
      */
-    public static String Dutch_days[]={ "zon","maa","din","woe","don","vry","zat","zon" };
+    public static String Dutch_days[]={ "Zon","Maa","Din","Woe","Don","Vry","Zat","Zon" };
     /**
      *  Dutch long week day names
      */
-    public static String Dutch_longdays[]={ "zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag","zondag" };
+    public static String Dutch_longdays[]={ "Zondag","Maandag","Dinsdag","Woensdag","Donderdag","Vrijdag","Zaterdag","Zondag" };
     /**
      *  Dutch short month names
      */
-    public static String Dutch_months[]={ "jan","feb","maa","apr","mei","jun","jul","aug","sep","okt","nov","dec" };
+    public static String Dutch_months[]={ "Jan","Feb","Maa","Apr","Mei","Jun","Jul","Aug","Sep","Okt","Nov","Dec" };
     /**
      *  Dutch long month names
      */
-    public static String Dutch_longmonths[]={ "januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december" };
+    public static String Dutch_longmonths[]={ "Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December" };
 
     /**
      *  Short week day names (value deoends on chosen language)

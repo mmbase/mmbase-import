@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.7 2002-04-17 13:17:39 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.4.2.1 2002-03-18 14:24:59 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -183,8 +183,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * TYPE_BYTE,
      * TYPE_FLOAT,
      * TYPE_DOUBLE,
-     * TYPE_LONG,
-     * TYPE_NODE or
+     * TYPE_LONG, or
      * TYPE_UNKNOWN (returned if the original builder of the field cannot be determined)
      * @param the requested field's name
      * @return the field's type.

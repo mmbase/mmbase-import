@@ -33,11 +33,11 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
     private Transaction transaction;
-    private boolean commit = true;
+    private boolean commit = true;    
     private String name = null;
     private String jspvar = null;
 
-    public void setCommitonclose(String c) throws JspTagException {
+    public void setCommitonclose(String c) throws JspTagException { 
         commit = getAttributeBoolean(c).booleanValue();
     }
 
@@ -79,7 +79,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, transaction);
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
 

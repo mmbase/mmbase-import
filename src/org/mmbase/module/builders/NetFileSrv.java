@@ -20,12 +20,12 @@ import org.mmbase.util.*;
 
 /**
  * The NetFileServ builder contains information on services available to NetFile objects.
- * It contains a list of possible service/subservice tasks. These tasks are then attached
- * to entries in the VWMs builder, so it is possible to search for a VWM to handle a
+ * It contains a list os possible service/subservice tasks. These tasks are then attached
+ * to entries in the VWMs builder, so it is possible to serach for a VWM to handle a
  * service/subservice request.
  * The fields of NetFileServ are:<br>
  * <ul>
- * <li><code>service</code> : the main 'service' to be performed.
+ * <li>code>service</code> : the main 'service' to be performed.
  *             Together with subservice, this determines the VWM that handles the transfer,
  *             i.e. 'pages/main' is handled by the {@link PageMaster} VWM.</li>
  * <li><code>subservice</code> : the subservice to perform. i.e. in PageMaster, 'main' determines mirror sites and
@@ -41,7 +41,7 @@ import org.mmbase.util.*;
 public class NetFileSrv extends MMObjectBuilder {
 
     // Logger class
-    private static Logger log = Logging.getLoggerInstance(NetFileSrv.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Netfiles.class.getName());
 
     /**
     * Cache of VWMS as they are related to a service.
@@ -136,7 +136,7 @@ public class NetFileSrv extends MMObjectBuilder {
      * Retrieve a vwm (a 'bot') for the service/subservice combination.
      * This is achieved by following the relations of NetFileServ entries to entries in the VWMs builder.
      * Note that while, theoretically, more vwms could be related, only one (the first) is returned.
-     * @param service the service to search for
+     * @param service the service to search fro
      * @param subservice the subservice to search for
      * @return an object that implements VWMInterface if successful, a dummy object otherwise.
      *         This system is a bit odd as getAttachedBot would ideally have VwmServiceInterface as
@@ -163,4 +163,5 @@ public class NetFileSrv extends MMObjectBuilder {
         }
         return new Object(); // needed to fill a Dummy in the cache.
     }
+
 }

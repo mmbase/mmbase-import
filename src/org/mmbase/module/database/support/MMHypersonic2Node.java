@@ -8,15 +8,9 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHypersonic2Node.java,v 1.7 2002-04-18 14:42:59 pierre Exp $
+$Id: MMHypersonic2Node.java,v 1.4.6.1 2002-03-26 22:42:36 gerard Exp $
 
 $Log: not supported by cvs2svn $
-Revision 1.6  2002/03/26 22:57:10  gerard
-gerard: made this class deprecated. Hypersonic development has been stopped, but it continues as Hsqldb
-
-Revision 1.4.6.1  2002/03/26 22:42:36  gerard
-gerard: made this class deprecated. Hypersonic development has been stopped, but it continues as Hsqldb.
-
 Revision 1.4  2000/07/15 15:33:38  daniel
 removed more to MMSQL92.node
 
@@ -119,21 +113,21 @@ import org.xml.sax.*;
 *
 * @deprecated use {@link MMHsqldb2Node}
 * @author Daniel Ockeloen
-* @$Revision: 1.7 $ $Date: 2002-04-18 14:42:59 $
+* @$Revision: 1.4.6.1 $ $Date: 2002-03-26 22:42:36 $
 */
 public class MMHypersonic2Node extends MMSQL92Node {
 
 
-    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
-        fieldname=fieldname.toLowerCase();
-        return(super.decodeDBnodeField(node,fieldname,rs,i,prefix));
-    }
+	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
+		fieldname=fieldname.toLowerCase();
+		return(super.decodeDBnodeField(node,fieldname,rs,i,prefix));
+	}
 
 
-    public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
-        MultiConnection con=jdbc.getConnection("jdbc:HypersonicSQL:"+jdbc.getDatabaseName(),jdbc.getUser(),jdbc.getPassword());
+	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
+		MultiConnection con=jdbc.getConnection("jdbc:HypersonicSQL:"+jdbc.getDatabaseName(),jdbc.getUser(),jdbc.getPassword());
 
-        return(con);
-    }
+		return(con);
+	}
 
 }

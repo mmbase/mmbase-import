@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
 <application name="MyYahoo" maintainer="mmbase.org" version="1" auto-deploy="false">
 
 	<neededbuilderlist>
@@ -37,6 +37,8 @@
 		MyYahoo is a small application to show you how easy it is to create 
 		a program something like the topic/url/search kind of interface first
 		shown on yahoo.
+        Before deploying this make sure all the builders from the MyYahoo/builders dir 
+        are also in your config/builders dir and the state of these builders is active.
 	</description>
 
 	<install-notice>

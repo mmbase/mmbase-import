@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase;
 
 import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
+import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 
@@ -23,43 +22,9 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.10 2002-03-14 18:19:53 michiel Exp $
+ * @version $Id
  */
 public class Version {
-   
-    /**
-     * Returns the 'name' part of the MMBase version. This will normall be 'MMBase'.
-     * @since MMBase-1.6
-     */
-    public static String  getName()   { return "MMBase"; }
-
-    /**
-     * Returns the major version number of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static int     getMajor()  { return 1; }
-    /**
-     * Returns the minor version number of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static int     getMinor()  { return 6; }    
-    /**
-     * Returns the version number of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static String  getNumber() { return getMajor() +  "." + getMinor(); }    
-
-    /**
-     * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
-     * @since MMBase-1.6
-     */
-    public static boolean isRelease() { return false; };    
-
-    /**
-     * Returns the version of this MMBase.
-     * @since MMBase-1.6
-     */
-    public static String  get()       { return getName() + " " + getNumber() + (isRelease() ? "" : "-dev"); }
 
     /**
      * @javadoc
@@ -130,7 +95,7 @@ public class Version {
         body+="Created-By: "+maintainer+"\n";
         body+="Implementation-Vendor: mmbase organisation\n";
         body+="Implementation-Version: "+major+"."+minor+"."+(build+1)+"\n";
-        body+="Implementation-Date: "+DateFormat.getDateTimeInstance().format(new Date())+"\n\n";
+        body+="Implementation-Date: "+new Date().toGMTString()+"\n\n";
         String newbody="maintainer="+maintainer+"\n";
         newbody+="major="+major+"\n";
         newbody+="minor="+minor+"\n";

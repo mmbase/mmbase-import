@@ -43,7 +43,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     public int doStartTag() throws JspTagException{
         Node node = null;
-
+        
         // get the parent ListRelationsTag
         ListRelationsTag lr = (ListRelationsTag) findParentTag("org.mmbase.bridge.jsp.taglib.ListRelationsTag", listRelationsId);
         Node otherNode    = lr.getRelatedfromNode();
@@ -56,9 +56,9 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         } else {
             number = relationNode.getIntValue("dnumber");
         }
-        node = getCloud().getNode(number);
+        node = getCloud().getNode(number);       
         setNodeVar(node);
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
     public void doInitBody() throws JspTagException {

@@ -48,6 +48,6 @@ public class ChannelTag extends NodeTag {
         Module community=getCloudContext().getModule("communityprc");
         Node node=getNodeVar();
         community.getInfo("CHANNEL-"+node.getNumber()+"-"+action,pageContext.getRequest(),pageContext.getResponse());
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 }

@@ -32,7 +32,7 @@ public class Users extends MMObjectBuilder {
     LRUHashtable cache = new LRUHashtable(100);
 
     // rico's funkie password generator
-    protected PasswordGeneratorInterface pwgen = new PasswordGenerator ();
+    private PasswordGeneratorInterface pwgen = new PasswordGenerator ();
     
     /**
     * replace call, when called in format MMBASE-BUILDER-users-xxxxx
@@ -69,9 +69,8 @@ public class Users extends MMObjectBuilder {
         }        
 
     /**
-    * get the number of the user object connected to this cookie.
-    * @param key The value of the browser cookie.
-	* @return the object number of the user object.
+    * get the object number of this user based on the
+    * current cookie as defined by the key
     */
     public int getNumber(String key) {
 
@@ -86,7 +85,7 @@ public class Users extends MMObjectBuilder {
             return(n.intValue());
         }
 
-        // it is not in the cache so lets check since the current
+        // its not in cache so lets check since the current
         // way is only by cookies ask the cookies builder
         // in the future more ways can be added here
         Cookies bul=(Cookies)mmb.getMMObject("cookies");
@@ -97,7 +96,7 @@ public class Users extends MMObjectBuilder {
 
             if (i!=-1) {
                 // lets find a related user, since
-                // the logic is that an user has a relation
+                // the logic is that a user has a relation
                 // to a cookie object
                 MMObjectNode node=getNode(i);
                 Enumeration e=node.getRelatedNodes("users").elements();
@@ -122,11 +121,9 @@ public class Users extends MMObjectBuilder {
 
 
     /**
-    * get account name of user (indicated by its cookie).
-	* @param key the value of the browser cookie.
-	* @return the account name. 
+    * get acount name of active (cookie defined) user
     */
-    protected String getAccount(String key) {
+    private String getAccount(String key) {
         int number=getNumber(key);
         if (number!=-1) {
             MMObjectNode node=getNode(number);
@@ -138,11 +135,9 @@ public class Users extends MMObjectBuilder {
 
 
     /**
-    * get email address of user (indicated by its cookie).
-	* @param key the value of the browser cookie.
-	* @return the email address.
+    * get email of active (cookie defined) user
     */
-    protected String getEmail(String key) {
+    private String getEmail(String key) {
         int number=getNumber(key);
         if (number!=-1) {
             MMObjectNode node=getNode(number);
@@ -154,11 +149,9 @@ public class Users extends MMObjectBuilder {
 
 
     /**
-    * get password of user (indicated by its cookie).
-	* @param key the value of the browser cookie.
-	* @return the password.
+    * get password of active (cookie defined) user
     */
-    protected String getPassword(String key) {
+    private String getPassword(String key) {
         int number=getNumber(key);
         if (number!=-1) {
             MMObjectNode node=getNode(number);
@@ -171,7 +164,6 @@ public class Users extends MMObjectBuilder {
     /**
     * flush caches of the (cookie defined) user
     * also signals the session module
-	* @param key the value of the browser cookie. 
     */
     public void flushCache(String key) {
         // remove from cache

@@ -18,13 +18,13 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.ExprCalc;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -39,16 +39,16 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
-
     public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      // the category for info about the page (stop / start)
     private static Logger pageLog = Logging.getLoggerInstance(PAGE_CATEGORY);
+ 
 
     protected ContextTag pageContextTag = null;
 
     protected String     contextId = null; // context to which this tag is referring to.
     protected String     referid = null;
+    private   String     thisPage = null;
 
-    private String       thisPage = null;
 
     void setPageContextOnly(PageContext pc) {
         super.setPageContext(pc);
@@ -64,7 +64,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
         if (pageContextTag == null) { // not yet put 
             log.debug("No pageContexTag found in pagecontext, creating..");
-            thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
+            thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();            
             pageLog.service("Parsing JSP page: " + thisPage);
 
             pageContextTag = new ContextTag();
@@ -75,8 +75,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             // so don't change this!
 
             pageContextTag.setPageContextOnly(pageContext);
-
-            // set the pageContextTag, before fillVars otherwise the page is not set in the fillVars
+            //pageContextTag.pageContextTag = pageContextTag;
             pageContextTag.fillVars();
             // register also the tag itself under __context.
             // _must_ set __context before calling setPageContext otherwise in infinite loop. 
@@ -106,43 +105,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         return referid;
     }
 
-    /*
-     * The writerreferrer functionality is here, though not every conterreferrer is a writerreferrer.
-     * So contextreferrer does not implement Writerreferrer. It is enough tough to 'implement WriterReferrer' 
-     * for every ContextReferrer to become a real WriterReferrer;
-     */
-    /**
-     * Which writer to use. 
-     */
-    protected String writerid = null;
-    
-    /**
-     * Find the parent writer tag.
-     */
-    public Writer findWriter() throws JspTagException {
-        Writer w;        
-        w = (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
-        w.haveBody();
-        return w;
-    }
-    /**
-     * Sets the writer attribute.
-     */
-    public void setWriter(String w) throws JspTagException {
-        writerid = getAttributeValue(w);
-        
-    }
-
-    
-
     /**
      * Release all allocated resources.
      */
     public void release() {        
         super.release();
-        if (log.isDebugEnabled()) {
-            log.debug("releasing context-referrer " + this.getClass().getName());
-        }
+        log.debug("releasing context-referrer " + this.getClass().getName());
         if (thisPage != null) {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
@@ -183,8 +151,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      */
 
-    public String getAttributeValue(String attribute) throws JspTagException {        
-        if (attribute == null) return null;
+    public String getAttributeValue(String attribute) throws JspTagException {
         StringBuffer result = new StringBuffer();
 
         // search all occurences of $
@@ -217,10 +184,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                     }
                 }
                 String varName = getAttributeValue(attribute.substring(foundpos, pos - 1)); // even variable names can be in a variable, why not...
-                if (varName.length() < 1) throw new JspTagException("Expression too short in " + attribute);
-                if (varName.equals("_")) {
-                    result.append(findWriter().getWriterValue());
-                } else if (varName.charAt(0) == '+') { // make simple aritmetic possible
+                if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
+                if (varName.charAt(0) == '+') { // make simple aritmetic possible
                     ExprCalc cl = new ExprCalc(varName.substring(1));
                     result.append(cl.getResult());
                 } else {
@@ -239,13 +204,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                         if (pos >= attribute.length()) break; // end of string
                         c = attribute.charAt(pos);
                     }
-                    // hmm a little bit of code repitition. Should think of something...
-                    if (varName.length() < 1) throw new JspTagException("Expression too short in " + attribute);
-                    if (varName.toString().equals("_")) {
-                        result.append(findWriter().getWriterValue());
-                    } else {
-                        result.append(getString(varName.toString()));
-                    }
+                    if (varName.length() < 1) throw new JspTagException("Expression to short in " + attribute);
+                    result.append(getString(varName.toString()));
                 }
             }
             // ready with this $, search next occasion;

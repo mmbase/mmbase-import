@@ -12,14 +12,10 @@ package org.mmbase.util;
 import org.mmbase.util.transformers.*;
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 import java.util.Iterator;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 /**
  *
  * Class to convert from/to a string (byte[]) from/to a encoded string (byte[])
@@ -54,8 +50,6 @@ import org.mmbase.util.logging.Logging;
  **/
 public class Encode {  
 
-    private static Logger log = Logging.getLoggerInstance(Encode.class.getName()); 
-
     private Transformer trans; // the instance of the object doing the actual work.
 
     private  static HashMap encodings;                   // string -> Config, all encoding are registered in this.
@@ -66,7 +60,6 @@ public class Encode {
         
         // a few Encoding are avaible by default:
         try {
-            register("org.mmbase.util.transformers.MD5");
             register("org.mmbase.util.transformers.Base64");
             register("org.mmbase.util.transformers.Xml");
             register("org.mmbase.util.transformers.Url");
@@ -112,7 +105,6 @@ public class Encode {
 
     public static void register(String clazz) {
         if (! registered.contains(clazz)) { // if already registered, do nothing.
-            log.info("registering encode class " + clazz);
             try {
                 Class atrans = Class.forName(clazz);
                 Class trans  = Class.forName("org.mmbase.util.transformers.Transformer");
@@ -122,7 +114,7 @@ public class Encode {
                     // In this way we find out what this class can do.
                     Object transformer = atrans.newInstance();
                     java.lang.reflect.Method transformers = atrans.getMethod("transformers", new Class [] {});
-                    Map newencodings = (Map) transformers.invoke(transformer, new Object[] {});
+                    HashMap newencodings = (HashMap) transformers.invoke(transformer, new Object[] {});
                     encodings.putAll(newencodings); // add them all to our encodings.
 
                     // TODO, perhaps there should be a check here, to make sure that no two classes use the
@@ -257,14 +249,7 @@ public class Encode {
     public boolean isByteToCharEncoder() {
         return trans instanceof org.mmbase.util.transformers.ByteToCharTransformer;
     }
-    /**
-     * Returns the encoding
-     *
-     * @return An String representing the coding that is currently used.
-     */
-    public String getEncoding() {
-        return trans.getEncoding();
-    }
+
     /**
      * Invocation of the class from the commandline for testing.
      *

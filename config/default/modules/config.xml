@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
 <!--
     The Config module contains procedures, callable from jsp or SCAN, which can be
     used to provide color-coding and validation of other xml configuration files.<br />

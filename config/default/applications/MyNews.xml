@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
 <application name="MyNews" maintainer="mmbase.org" version="1" auto-deploy="false">
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="1">mags</builder>
@@ -44,6 +44,8 @@
 
 	<description>
 		The MyNews magazine is an example of a magazine with news articles.
+        Before deploying this make sure all the builders from the MyNews/builders dir 
+        are also in your config/builders dir and the state of these builders is active.
 	</description>
 
 	<install-notice>

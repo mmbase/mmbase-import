@@ -10,41 +10,16 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.irc.communication;
 
-/**
- * @javadoc
- * @author vpro
- * @version $Id: CommunicationInterface.java,v 1.3 2002-03-04 14:07:46 pierre Exp $
- */
-public interface CommunicationInterface{
-    /**
-     * @javadoc
-     */
-    public boolean	connect( String host, String name, String group, String password );
-    /**
-     * @javadoc
-     */
-    public boolean	isconnected();
-    /**
-     * @javadoc
-     */
-    public boolean	isaccepted();
+public interface CommunicationInterface
+{
+	public boolean	connect( String host, String name, String group, String password );
+	public boolean	isconnected();
+	public boolean	isaccepted();
+	
+	public boolean	reconnect();
 
-    /**
-     * @javadoc
-     */
-    public boolean	reconnect();
+	public void		sendPublic( String msg );
+	public void		sendPrivate( String who, String msg );
 
-    /**
-     * @javadoc
-     */
-    public void		sendPublic( String msg );
-    /**
-     * @javadoc
-     */
-    public void		sendPrivate( String who, String msg );
-
-    /**
-     * @javadoc
-     */
-    public void 	stopit();
+	public void 	stopit();
 }

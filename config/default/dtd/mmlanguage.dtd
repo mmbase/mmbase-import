@@ -4,7 +4,7 @@
 -->
 <!ELEMENT MMLANGUAGE (language+)>
 <!ELEMENT language (other_editors,search,ok,new,fields,relations,remove,display,to,of_total,back,yes,no,remove_object,change_field,go_to,save_changes,do_not_save_changes,create_relation,remove_relation,do_not_create_relation,age,none,results_found)>
-<!ATTLIST language xml:lang NMTOKEN "en">
+<!ATTLIST language xml:lang NMTOKEN "us">
 <!ELEMENT other_editors (#PCDATA)>
 <!ELEMENT search (#PCDATA)>
 <!ELEMENT ok (#PCDATA)>

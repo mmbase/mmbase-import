@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig_1_0.dtd">
+<!DOCTYPE contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig.dtd">
 <!-- the configuration for the user->group*->context->object security -->
 <contextconfig>    
   <!--
@@ -31,6 +31,10 @@
     <user name="foo" context="default" >
       <identify type="name/password" rank="basic user">bar</identify>
     </user>    
+    <!-- forum user is needed by some of the community examples -->
+    <user name="forum" context="forum" >
+      <identify type="name/password" rank="basic user">forum</identify>
+    </user>    
   </accounts>
   
   <!-- our groups -->
@@ -43,11 +47,16 @@
     </group>
     <group name="users">
       <contains type="user" named="foo" />
+      <contains type="group"  named="forum" />
       <contains type="group" named="administrators" />
     </group>
     <group name="administrators">
       <contains type="user" named="admin" />
-    </group>    
+    </group>        
+    <group name="forum">
+      <contains type="user" named="forum" />
+      <contains type="group" named="administrators" />
+    </group>
   </groups>
   
   <!-- the contexts of our system, the default is the context which is used in case the context name wasnt found. -->    	
@@ -98,5 +107,6 @@
       <possible context="admin"  />
       <possible context="imagesmodule"  />
     </context>
+    <context name="forum" />
   </contexts>  
 </contextconfig>

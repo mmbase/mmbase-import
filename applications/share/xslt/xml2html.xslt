@@ -290,10 +290,10 @@
 </xsl:template>
 
 <xsl:template match="info">
-  <xsl:apply-templates select="p|text()|em|a" />  
+  <xsl:apply-templates select="p|text()|em" />  
 </xsl:template>
 
-<xsl:template match="p|text()|a">
+<xsl:template match="p|text()">
   <xsl:copy-of select="." />
 </xsl:template>
 

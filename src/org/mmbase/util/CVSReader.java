@@ -85,6 +85,7 @@ public class CVSReader {
             String prebar=",";
             while (tok.hasMoreTokens()) {
                 String bar=tok.nextToken();
+                //log.debug("BAR="+bar);
                 if (bar.equals("\"")) {
                     String part=tok.nextToken();
                     String part2="";
@@ -92,6 +93,7 @@ public class CVSReader {
                         part2+=part;
                         part=tok.nextToken();
                     }
+                    //log.debug("P="+part2+" "+(u++));
                     results2.addElement(part2);
                 } else {
                     if (bar.equals(",")) {
@@ -101,7 +103,11 @@ public class CVSReader {
                         if (!tok.hasMoreTokens()) {
                             results2.addElement("");
                         }
+                    //    String part=tok.nextToken();
+                    //    log.debug("P2="+part);
+                    //    results.addElement(part);
                     } else {
+                        //log.debug("P="+bar+" "+(u++));
                         results2.addElement(bar);
                     }
                 }
@@ -144,9 +150,8 @@ public class CVSReader {
             byte[] buffer=new byte[filesize];
             int len=scan.read(buffer,0,filesize);
             if (len!=-1) {
-                // XXX: ideally, we should use the preferred encoding,
-                // but this class cannot access MMBase
-                return new String(buffer);
+                String value=new String(buffer,0);
+                return value;
             }
             scan.close();
         } catch(Exception e) {

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.10 2002-04-17 13:17:36 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.9 2002-01-31 10:05:13 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
@@ -47,9 +47,6 @@ public class VirtualNodeManager extends BasicNodeManager {
             String fieldName=(String)e.nextElement();
             Object value = node.values.get(fieldName);
             int fieldType = Field.TYPE_UNKNOWN;
-            if (value instanceof MMObjectNode) {
-                fieldType = Field.TYPE_NODE;
-            }
             if (value instanceof String) {
                 fieldType = Field.TYPE_STRING;
             }

@@ -30,12 +30,12 @@
 <names>
 	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="fr">Regroupement</singular>
-	<singular xml:lang="nl">Rubriek</singular>
+	<singular xml:lang="nl">Poel</singular>
 	<singular xml:lang="en">Pool</singular>
 	<singular xml:lang="us">Pool</singular>
 	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="fr">Regroupements</plural>
-	<plural xml:lang="nl">Rubrieken</plural>
+	<plural xml:lang="nl">Poels</plural>
 	<plural xml:lang="en">Pools</plural>
 	<plural xml:lang="us">Pools</plural>
 </names>
@@ -115,10 +115,6 @@ a key/value system. Its a optional tag.
 				<search>11</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">12</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -144,15 +140,11 @@ a key/value system. Its a optional tag.
 				<!-- position in the input area of the editor -->
 				<input>1</input>
 				<!-- position in list area of the editor -->
-				<list>1</list>
+				<list>2</list>
 				<!-- position in search area of the editor -->
 				<search>1</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">255</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
@@ -178,89 +170,17 @@ a key/value system. Its a optional tag.
 				<!-- position in the input area of the editor -->
 				<input>2</input>
 				<!-- position in list area of the editor -->
-				<list>2</list>
+				<list>1</list>
 				<!-- position in search area of the editor -->
 				<search>2</search>
 			</positions>
 		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">2048</constraint>
-		</constraints>
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
 			<name>description</name>
 			<!-- MMBase datatype and demands on it -->
 			<type state="persistent" size="2048" notnull="false" key="false">STRING</type>
-		</db>
-	</field>
-
-	<!-- POS 5 : <field> 'language'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="fr">Language</guiname>
-			<guiname xml:lang="nl">Taal</guiname>
-			<guiname xml:lang="en">Language</guiname>
-			<guiname xml:lang="us">Language</guiname>
-			<guitype>string</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>1</input>
-				<!-- position in list area of the editor -->
-				<list>2</list>
-				<!-- position in search area of the editor -->
-				<search>1</search>
-			</positions>
-		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">255</constraint>
-		</constraints>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>language</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
-		</db>
-	</field>
-
-	<!-- POS 6 : <field> 'view'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="fr">View</guiname>
-			<guiname xml:lang="nl">Indeling</guiname>
-			<guiname xml:lang="en">View</guiname>
-			<guiname xml:lang="us">View</guiname>
-			<guitype>string</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>3</input>
-				<!-- position in list area of the editor -->
-				<list>3</list>
-				<!-- position in search area of the editor -->
-				<search>3</search>
-			</positions>
-		</editor>
-		<!-- constraints related -->
-		<constraints>
-			<constraint type="maxLength">30</constraint>
-		</constraints>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>view</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="30" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 

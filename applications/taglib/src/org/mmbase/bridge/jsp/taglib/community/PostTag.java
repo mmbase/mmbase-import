@@ -31,7 +31,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  */
 public class PostTag extends AbstractNodeProviderTag implements BodyTag {
 
-    private static Logger log = Logging.getLoggerInstance(PostTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName());
 
     private Module community=null;
     private String jspvar=null;
@@ -45,7 +45,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         // create a temporary message node that holds the new data
         Node node = new MessageNode(getCloud());
         setNodeVar(node);
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
     public void doInitBody() throws JspTagException {

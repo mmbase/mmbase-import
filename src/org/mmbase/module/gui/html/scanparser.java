@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.55 $ $Date: 2002-04-22 14:27:30 $
+ * @$Revision: 1.54 $ $Date: 2002-01-07 13:27:20 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1105,18 +1105,6 @@ public class scanparser extends ProcessorModule {
 				}
 				return sp.getParam(sp.params.size()-1);
 			}
-            if (part2.equals("Y")) {
-				// Eval $PARAMY: Returns value of the tail-1 parameter.
-				if (sp.params==null) {
-					sp.getParam(0); // Force build of params
-					if (sp.params==null) // No params
-						return "";
-				}
-                if (sp.params.size()<2)
-                    return "";
-				return sp.getParam(sp.params.size()-2);
-			}
-
 		}
 
 		// Handle $PARAMn
@@ -2128,14 +2116,9 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.55 2002-04-22 14:27:30 vpro Exp $
+$Id: scanparser.java,v 1.54 2002-01-07 13:27:20 vpro Exp $
 
 $Log: not supported by cvs2svn $
-Revision 1.54  2002/01/07 13:27:20  vpro
-davzev: Fixed part caching using cache henk, method handlePartCache,
-Now everything before and after the cache henk will be parsed and returned.
-The bug was that only everything after the cache henk tag was parsed and returned.
-
 Revision 1.53  2001/12/21 15:26:40  vpro
 davzev: Fixed bug in method handlePartCache, that handles the caching of a part.
 

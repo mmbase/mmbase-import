@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<jumpers exportsource="mmbase://www.mmbase.org/mmexamples/bugtracker" timestamp="20000602143030">
+	<node number="1085123" owner="admin">
+		<url>/mmexamples/scan/bugtracker/index.shtml</url>
+		<id>null</id>
+		<name>bugtracker</name>
+	</node>
+
+</jumpers>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
 <builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
@@ -51,11 +51,6 @@ you can define properties to be used by the classfile (if used) it uses
 a key/value system. Its a optional tag.
 -->
 <properties>
-    <!-- Enable the automatic notification of when mmevents start or stop -->
-    <!-- you can listen to these notifications with the nodeChanged method -->
-    <property name="EnableNotify">true</property>
-    <!-- Size of the window to look for mmevents that start/stop in seconds -->
-    <property name="NotifyWindow">3600</property>
 </properties>
 
 <!-- <fieldlist>

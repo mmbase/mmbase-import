@@ -16,7 +16,7 @@ import java.util.List;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.5 2002-03-20 13:16:46 eduard Exp $
+ * @version $Id: NodeList.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
  */
 public interface NodeList extends List {
 
@@ -37,5 +37,4 @@ public interface NodeList extends List {
      * @param toIndex the position in the current list where the sublist ends (exclusive)
      */
     public NodeList subNodeList(int fromIndex, int toIndex);
-    
 }

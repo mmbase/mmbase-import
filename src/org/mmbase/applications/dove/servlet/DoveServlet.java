@@ -30,8 +30,7 @@ import org.mmbase.servlet.*;
  * the 'Dove' object.
  *
  * @author Pierre van Rooden
- * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.3 2002-02-27 16:54:21 pierre Exp $
+ * @version 10 May 2001
  */
 public class DoveServlet extends JamesServlet {
 

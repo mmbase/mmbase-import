@@ -47,7 +47,7 @@ package org.mmbase.util;
  * @see     String
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.5 2002-03-01 14:00:43 pierre Exp $
+ * @version $Id: StringObject.java,v 1.4.4.1 2002-03-01 14:02:38 pierre Exp $
  */
 
 public final class StringObject {

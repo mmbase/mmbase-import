@@ -1,5 +1,0 @@
-!
-. .. RCSLOG tags TAGS RCS SCCS .make.state .nse_depinfo #* .#*
-cvslog.* ,* CVS CVS.adm .del-* *.a *.olb *.o *.obj *.so *.Z *~ *.old
-*.elc *.ln *.bak *.BAK *.orig *.rej *.exe _$* *$
-*.zip *.tar *.gz *.jar .class

@@ -14,7 +14,7 @@
 <input type="hidden" name="backpage_cancel" value="<mm:url page="search_node.jsp" referids="node_type" />" />
 <input type="hidden" name="backpage_ok" value="<mm:url page="change_node.jsp" referids="" />" />
 <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
-<tr><th colspan="2"><%=m.getString("create_node.new")%> <mm:write referid="node_type" /></th></tr>
+<tr><th colspan="2">New node of type <mm:write referid="node_type" /></th></tr>
     <mm:fieldlist id="my_form" type="edit" nodetype="${node_type}" >
        <tr>
          <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
@@ -22,13 +22,13 @@
        </tr>
     </mm:fieldlist>
         <tr>
-	 <td class="data"><em><%= m.getString("alias")%></em></td>
+	 <td class="data"><em>alias</em></td>
 	 <td class="listdata"><input type="text" name="alias_name" /></td>
         </tr>
 <tr>
 <td colspan="2" class="buttons">
-<input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
-<input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="cancel" value="cancel" />
+<input class="submit"   type ="submit" name="ok" value="ok" />
 </td>
 </tr>
 </table>

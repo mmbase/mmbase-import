@@ -9,17 +9,15 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
+import org.mmbase.module.core.*;
 import java.util.List;
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
-
 
 /**
  * Describes an object in the cloud.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.30 2002-04-05 11:47:04 eduard Exp $
+ * @version $Id: Node.java,v 1.24 2002-01-31 10:05:07 pierre Exp $
  */
 public interface Node {
 
@@ -35,11 +33,8 @@ public interface Node {
 
     /**
      * Returns the unique number for this node. Every node has a unique number
-     * which can be used to refer to it. In addition to this number a node can
+     * wich can be used to refer to it. In addition to this number a node can
      * have one or more aliases.
-     * A value of -1 indicates an invalid number.
-     * Other negative values may be used for temporary ids (but not true node numbers).
-     * This may differ by implementation.
      *
      * @return the unique number for this node
      * @see    #createAlias(String alias)
@@ -53,87 +48,87 @@ public interface Node {
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
-     * @param fieldName  the name of the field to be updated
+     * @param fieldname  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    public void setValue(String fieldName, Object value);
+    public void setValue(String fieldname, Object value);
 
     /**
      * Sets the value of the specified field using an <code>int</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
-     * @param fieldName  the name of the field to be updated
+     * @param fieldname  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    public void setIntValue(String fieldName, int value);
+    public void setIntValue(String fieldname, int value);
 
     /**
      * Sets the value of the specified field using a <code>float</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
-     * @param fieldName  the name of the field to be updated
+     * @param fieldname  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    public void setFloatValue(String fieldName, float value);
+    public void setFloatValue(String fieldname, float value);
 
     /**
      * Sets the value of the specified field using a <code>double</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
-     * @param fieldName  the name of the field to be updated
+     * @param fieldname  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    public void setDoubleValue(String fieldName, double value);
+    public void setDoubleValue(String fieldname, double value);
 
     /**
      * Sets the value of the specified field using a <code>byte array</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
-     * @param fieldName  the name of the field to be updated
+     * @param fieldname  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    public void setByteValue(String fieldName, byte[] value);
+    public void setByteValue(String fieldname, byte[] value);
 
     /**
      * Sets the value of the specified field using a <code>long</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
-     * @param fieldName  the name of the field to be updated
+     * @param fieldname  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    public void setLongValue(String fieldName, long value);
+    public void setLongValue(String fieldname, long value);
 
     /**
      * Sets the value of the specified field using a <code>String</code>.
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
-     * @param fieldName  the name of the field to be updated
+     * @param fieldname  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    public void setStringValue(String fieldName, String value);
+    public void setStringValue(String fieldname, String value);
 
     /**
      * Returns the value of the specified field as an object. For example a
      * field of type <code>int</code> is returned as an <code>Integer</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public Object getValue(String fieldName);
+    public Object getValue(String fieldname);
 
     /**
      * Returns the value of the specified field as a <code>boolean</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public boolean getBooleanValue(String fieldName);
+    public boolean getBooleanValue(String fieldname);
 
     /**
      * Returns the value of the specified field as a <code>Node</code>.
@@ -157,59 +152,59 @@ public interface Node {
      * Node return a reference to itself, regardless of the actual value of the
      * number field or status of the Node.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      * @see Cloud#getList
      */
-    public Node getNodeValue(String fieldName);
+    public Node getNodeValue(String fieldname);
 
     /**
      * Returns the value of the specified field as an <code>int</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public int getIntValue(String fieldName);
+    public int getIntValue(String fieldname);
 
     /**
      * Returns the value of the specified field as a <code>float</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public float getFloatValue(String fieldName);
+    public float getFloatValue(String fieldname);
 
     /**
      * Returns the value of the specified field as a <code>long</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public long getLongValue(String fieldName);
+    public long getLongValue(String fieldname);
 
     /**
      * Returns the value of the specified field as a <code>double</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public double getDoubleValue(String fieldName);
+    public double getDoubleValue(String fieldname);
 
     /**
      * Returns the value of the specified field as a <code>byte array</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public byte[] getByteValue(String fieldName);
+    public byte[] getByteValue(String fieldname);
 
     /**
      * Returns the value of the specified field as a <code>String</code>.
      *
-     * @param fieldName  the name of the field to be returned
+     * @param fieldname  the name of the field to be returned
      * @return           the value of the specified field
      */
-    public String getStringValue(String fieldName);
+    public String getStringValue(String fieldname);
 
     /**
     * Commit the node to the database.
@@ -246,36 +241,6 @@ public interface Node {
      * Converts the node to a string
      */
     public String toString();
-
-    /**
-     * Returns the value of the specified field as a <code>dom.Document</code>
-     *
-     * @param fieldName  the name of the field to be returned
-     * @return           the value of the specified field as a DOM Element or <code>null</code>
-     * @since MMBase-1.6
-     */
-    public Document getXMLValue(String fieldName);
-    
-    /**
-     * Returns the value of the specified field as a <code>dom.Element</code>
-     *
-     * @param fieldName  the name of the field to be returned
-     * @param tree       the DOM Document to which it must be added
-     * @return           the value of the specified field as a DOM Element or <code>null</code>
-     * @since MMBase-1.6
-     */
-
-    public Element getXMLValue(String fieldName, Document tree);    
-
-    /**
-     * Set's the value of the specified field as a <code>dom.Element</code>
-     *
-     * @param fieldName  the name of the field to be returned
-     * @param value      the DOM Document to has to be set, if not correct doc-type, 
-     *                   system will try to convert it to the wanted type.
-     * @since MMBase-1.6
-     */
-    public void setXMLValue(String fieldName, Document value);
 
     /**
      * Checks whether this node has any relations.

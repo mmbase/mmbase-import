@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+//import java.sql.*;
 import org.mmbase.module.core.*;
+//import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -51,7 +53,7 @@ public class Jumpers extends MMObjectBuilder {
      * (better to initialize in init, as it will allow for customizing
      * cache size, see example code)
      */
-    protected LRUHashtable jumpCache = new LRUHashtable(JUMP_CACHE_SIZE);
+    LRUHashtable jumpCache = new LRUHashtable(JUMP_CACHE_SIZE);
 
     /**
      * Default redirect if no jumper can be found.
@@ -63,7 +65,7 @@ public class Jumpers extends MMObjectBuilder {
      * The value fo this field is set using the <code>JumperNotFoundURL</code>
      * property in the builder configuration file.
      */
-    protected static String jumperNotFoundURL;
+    private static String jumperNotFoundURL;
 
     /**
      * Initializes the builder.

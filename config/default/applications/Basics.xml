@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
 <application name="Basics" maintainer="mmbase.org" version="1" auto-deploy="true">
 
 	<neededbuilderlist>
@@ -24,7 +24,8 @@
     </contextsourcelist>
 
 	<description>
-		Install the basic things like /admin and /edit
+		Install the basic things like /admin and /edit, you need the jumpers-builder to be 
+        active before using this application. 
 	</description>
 
 	<install-notice>

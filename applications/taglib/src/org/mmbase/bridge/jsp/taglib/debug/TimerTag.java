@@ -26,7 +26,7 @@ class LongContainer {
     long value;
     LongContainer() {
         value = 0;
-    }
+    }    
 }
 
 /**
@@ -42,8 +42,8 @@ class LongContainer {
 public class TimerTag extends ContextReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(TimerTag.class.getName());
-
-    private Vector timers;
+    
+    private Vector timers; 
     private Vector timerIds;
     private HashMap totalTimes;
 
@@ -55,14 +55,14 @@ public class TimerTag extends ContextReferrerTag {
     }
 
     /**
-     * Starts a timer.
+     * Starts a timer. 
      *
      * @param id  An id which optionally can be null. Can e.g. be getId().
      * @param id2 Another id which cannot be null. Something descriptive.
      * @return an integer handle, which you need to remember to halt the timer.
      */
 
-
+    
     public int startTimer(String id, String id2) {
         if (id == null) {
             return startTimer(id2);
@@ -104,33 +104,33 @@ public class TimerTag extends ContextReferrerTag {
     /**
      * Initialize timer.
      */
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspTagException {        
         log.info("Starting timer " + name );
         timers     = new Vector(1);
         timerIds   = new Vector(1);
         totalTimes = new HashMap();
         lastTimer = 0;
         startTimer(getId(), getClass().getName());
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_TAG;
     }
 
     /**
-     *
+     * 
      */
-
+    
     public int doAfterBody() throws JspTagException {
         haltTimer(0);
         String result = "Timer " + name + " totals:\n";
         Iterator i = totalTimes.keySet().iterator();
-
+        
         while (i.hasNext()) {
             String key = (String)i.next();
             result += "   " + key + ": " +  (double)(((LongContainer) totalTimes.get(key)).value) + " ms\n";
         }
-        log.info(result);
-
+        log.info(result);        
+        
         try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());            
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());

@@ -34,20 +34,20 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.15 2002-04-17 13:17:51 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.14 2002-02-05 14:35:31 eduard Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
 
     /** for the document builder of javax.xml. */
     private static DocumentBuilder documentBuilder = null;
-
+    
     /** set this one to true, and parser will be loaded...  */
 
     // who has the guts to change this one to true ???
     // it should be done in the near future, but gives a lot of error messages...
     private static boolean useJavaxXML = true;
-
+    
     /** set this one to true, when all document pars */
     private static boolean validateJavaxXML = true;
 
@@ -86,22 +86,22 @@ public class XMLBasicReader  {
         try {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
+	    	    
             // turn validating on, or not
-            XMLEntityResolver resolver = new XMLEntityResolver(); // strange to ask the resolver is mmbase is initilized
-            boolean validate = validateJavaxXML && resolver.canResolve();
-
+            XMLEntityResolver resolver = new XMLEntityResolver(); // strange to ask the resolver is mmbase is initilized	    
+	    boolean validate = validateJavaxXML && resolver.canResolve();;
+	    
             // get docuemtn builder AFTER setting the validation
-            dfactory.setValidating(validate);
+	    dfactory.setValidating(validate);
             documentBuilder = dfactory.newDocumentBuilder();
 
-            // set the error handler... which outputs the error's
+    	    // set the error handler... which outputs the error's
             ErrorHandler handler = new XMLErrorHandler();
             documentBuilder.setErrorHandler(handler);
 
-            // set the entity resolver... which tell us where to find the dtd's
+    	    // set the entity resolver... which tell us where to find the dtd's
             documentBuilder.setEntityResolver(resolver);
-
+            
         } catch(ParserConfigurationException pce) {
             log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
             log.error(Logging.stackTrace(pce));

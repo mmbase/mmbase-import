@@ -31,7 +31,7 @@ import org.mmbase.servlet.JamesServlet;
  *
  * @rename Scanpage
   * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.18 2001-12-19 17:37:56 vpro Exp $
+ * @version $Id: scanpage.java,v 1.18.2.1 2002-04-26 21:15:55 gerard Exp $
  */
 public class scanpage {
     // logger
@@ -309,6 +309,8 @@ public class scanpage {
         String  result      = null;
         boolean fromProxy   = false;
         String  addr        = req.getRemoteHost();
+        // fix for bug in Apache mod_jk
+        if(addr==null) addr = "";
 
         if( addr != null && !addr.equals("") ) {
             // from proxy ?

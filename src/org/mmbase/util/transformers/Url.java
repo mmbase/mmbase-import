@@ -12,7 +12,6 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.mmbase.util.URLEscape;
 import org.mmbase.util.URLParamEscape;
@@ -34,7 +33,7 @@ public class Url extends AbstractTransformer implements CharTransformer {
      * Used when registering this class as a possible Transformer
      */
 
-    public Map transformers() {
+    public HashMap transformers() {
         HashMap h = new HashMap();
         h.put("escape_url".toUpperCase(), new Config(Url.class, ESCAPE));
         h.put("escape_url_param".toUpperCase(), new Config(Url.class, PARAM_ESCAPE));
@@ -62,11 +61,5 @@ public class Url extends AbstractTransformer implements CharTransformer {
         default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
-    public String getEncoding() {
-        switch(to){
-        case ESCAPE:        return "ESCAPE_URL";
-        case PARAM_ESCAPE:  return "ESCAPE_URL_PARAM";
-        default: throw new UnsupportedOperationException("unknown encoding");
-        }
-    }
+
 }
