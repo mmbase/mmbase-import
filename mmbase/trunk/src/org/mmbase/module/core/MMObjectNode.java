@@ -39,16 +39,20 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.101 2003-05-01 07:23:32 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.102 2003-05-01 08:09:37 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(MMObjectNode.class.getName());
+    
     /**
      * Holds the name - value pairs of this node (the node's fields).
      * Most nodes will have a 'number' and an 'otype' field, and fields which will differ by builder.
      * This collection should not be directly queried or changed -
      * use the SetValue and getXXXValue methods instead.
+     * @todo As suggested by keesj, should be changed to HashMap, which will allow for <code>null</code> values. 
+     * It should then be made private, and methods that change the map (storeValue) be made synchronized. 
+     * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
      * @scope private
      */
     public Hashtable values=new Hashtable();
@@ -256,6 +260,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Stores a value in the values hashtable.
+     * @todo This should become a synchronized method, once values becomes a private HashMap instead of a 
+     * public Hashtable.
      *
      * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
