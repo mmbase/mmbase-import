@@ -37,14 +37,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.13 2003-05-23 16:08:32 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.14 2003-06-23 17:17:35 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
     /**
      * Logging instance
      */
-    private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class.getName());
+    private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class);
 
     // map with tables that are known to exist
     private Set existingTables = null;
@@ -256,10 +256,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         return true; //buildername.equals("object") || buildername.equals("insrel");
     }
 
-    /**
-     * Set a prepared statement field i with value of key from the given node.
-     * @throws SQLException if an error occurred while filling in the fields
-     */
+    // javadoc inherited
     public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String fieldName, int i) throws SQLException {
         switch (node.getDBType(fieldName)) {
             // string-type fields, use mmbase encoding
@@ -298,7 +295,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         case FieldDefs.TYPE_BYTE:
             if (getStoreBinaryAsFile()) {
                 String stype = node.getBuilder().getTableName();
-                File file = new File(getBinaryFilePath() + stype);
+                File file = new File(getBinaryFilePath(), stype);
                 try {
                     file.mkdirs();
                 } catch(Exception e) {
@@ -306,8 +303,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                     return false;
                 }
                 byte[] value = node.getByteValue(fieldName);
-                writeBytesToFile(getBinaryFilePath() + stype + File.separator + node.getNumber() + "." + fieldName,
-                                 value);
+                writeBytesToFile(file.toString() +  File.separator + node.getNumber() + "." + fieldName, value);
                 return false;
             } else {
                 log.debug("Setting byte field");
@@ -417,7 +413,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             node.setValue("number", number);
         }
 
-        if (insertIntoTable(builder, node, (DatabaseTransaction )trans) != -1) {
+        if (insertIntoTable(builder, node, (DatabaseTransaction ) trans) != -1) {
             ((DatabaseTransaction)trans).registerChanged(node,"n");
         };
 
@@ -525,14 +521,14 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                 log.fatal("trying to change the '"+key+"' field");
                 throw new RuntimeException("trying to change the '"+key+"' field");
             }
-            FieldDefs field=builder.getField(key);
-            if ((field!=null) &&
-                ((field.getDBState()==FieldDefs.DBSTATE_PERSISTENT) ||
-                 (field.getDBState()==FieldDefs.DBSTATE_SYSTEM))) {
+            FieldDefs field = builder.getField(key);
+            if ((field != null) &&
+                ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT) ||
+                 (field.getDBState() == FieldDefs.DBSTATE_SYSTEM))) {
                 // handle this field - store it in fields
                 fields.add(field);
                 // skip bytevalues that are written to file
-                if (getStoreBinaryAsFile() && (field.getDBType()==FieldDefs.TYPE_BYTE)) continue;
+                if (getStoreBinaryAsFile() && (field.getDBType() == FieldDefs.TYPE_BYTE)) continue;
                 // store the fieldname and the value parameter
                 String fieldName= mapToTableFieldName(field.getDBName());
                 if (setFields == null) {
@@ -542,8 +538,8 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                 }
             }
         }
-        if (fields.size()>0) {
-            String sqlupdate=
+        if (fields.size() > 0) {
+            String sqlupdate =
                 updateSQL(getFullTableName(builder), setFields.toString(), node.getNumber());
             return trans.executeUpdate(sqlupdate, fields, node);
         }
