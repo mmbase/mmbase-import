@@ -20,15 +20,14 @@ import org.mmbase.util.logging.*;
  * eventually be phased out.</em>
  *
  * @author  Rob van Maris
- * @version $Id: BasicLegacyConstraint.java,v 1.4 2003-03-10 11:50:55 pierre Exp $
+ * @version $Id: BasicLegacyConstraint.java,v 1.5 2003-08-27 20:45:09 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicLegacyConstraint extends BasicConstraint 
 implements LegacyConstraint {
     
     /** Logger instance. */
-    private static Logger log 
-        = Logging.getLoggerInstance(BasicLegacyConstraint.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(BasicLegacyConstraint.class);
 
     /** The constraint. */
     private String constraint = null;
@@ -48,7 +47,7 @@ implements LegacyConstraint {
      * Sets the constraint.
      *
      * @param constraint The non-null constraint as it appears in 
-     *        the where-clause.
+     *                   the where-clause (may also not be empty string)
      * @return This <code>BasicLegacyConstraint</code> instance.
      * @throws IllegalArgumentException When an invalid argument is supplied.
      */
@@ -56,10 +55,9 @@ implements LegacyConstraint {
         if (log.isDebugEnabled()) {
             log.debug("Legacy constraint: " + constraint);
         }
-        // Test constraint is not null.
-        if (constraint == null) {
-            throw new IllegalArgumentException(
-            "Invalid constraint value: " + constraint);
+        // Test constraint is not null or empty (empty goes wrong in composite constraints)
+        if (constraint == null || constraint.equals("")) {
+            throw new IllegalArgumentException("Invalid constraint value: " + constraint);
         }
         
         this.constraint = constraint;
