@@ -6,12 +6,12 @@
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp" %>
 
-<link rel="stylesheet" href="/mmbase/my_editors/my_editors.css" type="text/css" />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/mmbase/my_editors/my_editors.css" type="text/css" />
 
 <td>
 <div style="margin-left: 50px; margin-right: 50px; margin-top: 50px; margin-bottom: 50px;" align="center">
 <mm:import externid="username" from="parameters" />
-<mm:import externid="referrer">/dochangeaccount.jsp</mm:import>
+<mm:import externid="referrer"><%= request.getContextPath() %>/dochangeaccount.jsp</mm:import>
 <% if(request.getParameter("reason") != null) { %>
 	<p class="message"> <%= request.getParameter("reason") %> </p>
 	<p>&nbsp;</p>
