@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.55 $ $Date: 2002-04-22 14:27:30 $
+ * @$Revision: 1.56 $ $Date: 2002-05-10 10:59:40 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -353,7 +353,7 @@ public class scanparser extends ProcessorModule {
 		}
 
 		// <NORELOAD>, make it possible to jump pages
-		part=finddocmd(body,"<NORELOAD ",'>',12,session,sp);
+		part=finddocmd(body,"<NORELOAD ",'>',13,session,sp);
 		body=part;
 
 
@@ -363,11 +363,11 @@ public class scanparser extends ProcessorModule {
 
 
 		// <SAVE, make it possible to save
-		part=finddocmd(body,"<SAVE ",'>',18,session,sp);
+		part=finddocmd(body,"<SAVE ",'>',19,session,sp);
 		body=part;
 
 		// <CRC HREF=", make it possible to save
-		part=finddocmd(body,"<CRC HREF=",'>',23,session,sp);
+		part=finddocmd(body,"<CRC HREF=",'>',24,session,sp);
 		body=part;
 
 		// <TRANSACTION text1> text2 </TRANSACTION>
@@ -402,30 +402,33 @@ public class scanparser extends ProcessorModule {
 		part=finddocmd(body,"<GOTO ",'>',10,session,sp);
 		body=part;
 
+		// <HOST, demand a host for this page
+		part=finddocmd(body,"<HOST ",'>',11,session,sp);
+		body=part;
 
 		// <NEWPAGE, make it possible to  'jump' by loading new pages
-		part=finddocmd(body,"<NEWPAGE ",'>',11,session,sp);
+		part=finddocmd(body,"<NEWPAGE ",'>',12,session,sp);
 		body=part;
 
 
 		// <GRAB, make it possible to get information of other html-pages
-		part=finddocmd(body,"<GRAB ",'>',13,session,sp);
+		part=finddocmd(body,"<GRAB ",'>',14,session,sp);
 		body=part;
 
 		// <PART, make it possible to include other parsed ! and cached pages
-		part=finddocmd(body,"<PART ",'>',19,session,sp);
+		part=finddocmd(body,"<PART ",'>',20,session,sp);
 		body=part;
 
 		// Counter tag
-		part=finddocmd(body,"<COUNTER",'>',20,session,sp);
+		part=finddocmd(body,"<COUNTER",'>',21,session,sp);
 		body=part;
 
 		// <TREEPART, TREEFILE
-		part=finddocmd(body,"<TREE",'>',21,session,sp);
+		part=finddocmd(body,"<TREE",'>',22,session,sp);
 		body=part;
 
 		// <LEAFPART, LEAFFILE
-		part=finddocmd(body,"<LEAF",'>',22,session,sp);
+		part=finddocmd(body,"<LEAF",'>',23,session,sp);
 		body=part;
 
 		// Last one always
@@ -521,50 +524,55 @@ public class scanparser extends ProcessorModule {
 //							newbody.append(do_goto(sp,body.substring(prepostcmd,postcmd)));
 							return do_goto(sp,body.substring(prepostcmd,postcmd));
 //						break;
-					case 11: // '<NEWPAGE'
+					case 11: // '<HOST'
+                           String url = do_host(sp, body.substring(prepostcmd,postcmd));
+                           if (sp.rstatus==1) // if redir return url else eat the tag
+                              return url;
+                           break;
+					case 12: // '<NEWPAGE'
 							newbody=new StringBuffer();
 							newbody.append(do_newpage(sp,body.substring(prepostcmd,postcmd)));
 						break;
-					case 12: // '<RELOAD'
+					case 13: // '<RELOAD'
 							// org.mmbase newbody.append(do_reload(body.substring(prepostcmd,postcmd)));
 						break;
-					case 13: // '<GRAB'
+					case 14: // '<GRAB'
 							// org.mmbase newbody.append(do_grab(body.substring(prepostcmd,postcmd)));
 						break;
-					case 14: // '$PAGE-'
+					case 15: // '$PAGE-'
 						//	newbody.append(do_page(body.substring(prepostcmd,postcmd)));
 						break;
-					case 15: // '$AREA-'
+					case 16: // '$AREA-'
 						newbody.append(body.substring(prepostcmd,postcmd));
 						break;
-					case 16: // '$SESSION-'
+					case 17: // '$SESSION-'
 						newbody.append(do_session(body.substring(prepostcmd,postcmd),session));
 						break;
-					case 17: // '$LASTLIST'
+					case 18: // '$LASTLIST'
 						// org.mmbase newbody.append(""+lastlistitem);
 						break;
-					case 18: // '<SAVE'
+					case 19: // '<SAVE'
 							newbody.append(do_save(session,body.substring(prepostcmd,postcmd)));
 						break;
-					case 19: // '<PART '
+					case 20: // '<PART '
 						partbody=do_part(body.substring(prepostcmd,postcmd),session,sp,0);
 						if ((sp.rstatus==1) || (sp.rstatus==2)) {
 							return partbody;
 						};
 						newbody.append(partbody);
 						break;
-					case 20: // '<COUNTER'
+					case 21: // '<COUNTER'
 						newbody.append(do_counter(body.substring(prepostcmd,postcmd),session,sp));
 						break;
-					case 21: // '<TREEPART, TREEFILE'
-					case 22: // '<LEAFPART, LEAFFILE'
-						partbody=do_smart(body.substring(prepostcmd,postcmd),session,sp, docmd==22);
+					case 22: // '<TREEPART, TREEFILE'
+					case 23: // '<LEAFPART, LEAFFILE'
+						partbody=do_smart(body.substring(prepostcmd,postcmd),session,sp, docmd==23);
 						if ((sp.rstatus==1) || (sp.rstatus==2)) {
 							return partbody;
 						};
 						newbody.append(partbody);
 						break;
-					case 23: // '<CRC CHECK'
+					case 24: // '<CRC CHECK'
 						newbody.append(do_crc(session,body.substring(prepostcmd,postcmd)));
 						break;
 					default:
@@ -599,10 +607,12 @@ public class scanparser extends ProcessorModule {
 		// Scan & Parse all $ attributes used in the tag.
 		String parsedPart = dodollar(part,session,sp);
 
-		if( log.isDebugEnabled() ) log.debug("do_counter("+parsedPart+"): inserting tag in page.");
+		if(log.isDebugEnabled())
+			log.debug("do_counter("+parsedPart+"): inserting tag in page.");
 		long time = System.currentTimeMillis();
 		result = counter.getTag(parsedPart, session, sp);
-		log.debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
+		if(log.isDebugEnabled())
+			log.debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
 
 		return result;
 	}
@@ -719,7 +729,8 @@ public class scanparser extends ProcessorModule {
 		if (!sp.reload) {
 			result = scancache.get("HENK", filename, part.substring(start,end+1),sp);
 			if (result != null)	{
-				//if (debug) debug("handlePartCache(): got " + filename + "out of cache HENK.");
+				if(log.isDebugEnabled())
+					log.debug("Got " + filename + "out of cache HENK.");
 				return result;
 			}
 		}
@@ -740,10 +751,10 @@ public class scanparser extends ProcessorModule {
 			errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
 			part = errorMsg;
 			log.error("handlePartCache(): "+errorMsg);
-			e.printStackTrace();
+			log.error(e.getMessage());
+		   	log.error(Logging.stackTrace(e));
 		}
 		scancache.put("HENK", filename, result);
-
 		return result;
 	}
 
@@ -1011,19 +1022,19 @@ public class scanparser extends ProcessorModule {
 		part=finddocmd(newbody,"$ID-","^\n\r\"=<> ,",3,session,sp);
 		newbody=part;
 
-		part=finddocmd(newbody,"$LASTLIST","^\n\r\"=<> ,",17,session,sp);
+		part=finddocmd(newbody,"$LASTLIST","^\n\r\"=<> ,",18,session,sp);
 		newbody=part;
 
 		// OBJects new VERSION
-		part=finddocmd(newbody,"$AREA-","^\n\r\"=<> ,",15,session,sp);
+		part=finddocmd(newbody,"$AREA-","^\n\r\"=<> ,",16,session,sp);
 		newbody=part;
 
 		// find pages
-		part=finddocmd(newbody,"$PAGE-","^\n\r\"=<> ,",14,session,sp);
+		part=finddocmd(newbody,"$PAGE-","^\n\r\"=<> ,",15,session,sp);
 		newbody=part;
 
 		// find sessions
-		part=finddocmd(newbody,"$SESSION-","^\n\r\"=<> ,",16,session,sp);
+		part=finddocmd(newbody,"$SESSION-","^\n\r\"=<> ,",17,session,sp);
 		newbody=part;
 
 		// OBJects
@@ -1175,6 +1186,44 @@ public class scanparser extends ProcessorModule {
     {
         sp.rstatus=1;
         return(part);
+    }
+    
+    /**
+     * Check request host against wanted host and optional backend host
+     * Handles <HOST [host[,backendhost]]> tag
+     * @return null and sp.rstatus unchanged if hosts match or in case of an unspecified host
+     *         returns url and sp.rstatus 1, if redir to wantedhost requested
+     */
+    private final String do_host(scanpage sp, String wantedHost)
+    {
+        if (wantedHost==null) return null;
+        wantedHost = wantedHost.trim();
+        String backendHost = "";
+        int i = wantedHost.indexOf(',');
+        if (i>=0) {
+            if (i<wantedHost.length()-1) backendHost = wantedHost.substring( i+1 ).trim();
+            wantedHost = wantedHost.substring(0, i).trim();
+        }
+        if (wantedHost.length() < 1) return null; 
+        
+        String requestHost = sp.req.getHeader("Host");
+        if (requestHost==null) return null; // No such header
+        requestHost = requestHost.trim();
+        if (requestHost.length() < 1) return null;
+        // remove port
+        i = requestHost.indexOf(':');
+        if (i==0) return null; // First char :, no host only port....
+        if (i>0) requestHost = requestHost.substring(0, i);
+        
+        if (log.isDebugEnabled()) log.debug("Request host: " + requestHost + ", wanted host: " + wantedHost + " backend host: " + backendHost);
+		if (requestHost.equalsIgnoreCase(wantedHost) || requestHost.equalsIgnoreCase(backendHost))
+            return null; // The page runs on the requested host or on the backend host
+        
+        // Rederict the request to the wanted host
+        sp.rstatus = 1;
+        String url = "http://" + wantedHost + sp.getUrl();
+        if (log.isDebugEnabled()) log.debug("Redirecting to "+url);
+        return url;
     }
 
     /**
@@ -2128,9 +2177,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.55 2002-04-22 14:27:30 vpro Exp $
+$Id: scanparser.java,v 1.56 2002-05-10 10:59:40 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.55  2002/04/22 14:27:30  vpro
+Wilbert: added PARAMY returning for last param
+
 Revision 1.54  2002/01/07 13:27:20  vpro
 davzev: Fixed part caching using cache henk, method handlePartCache,
 Now everything before and after the cache henk will be parsed and returned.
