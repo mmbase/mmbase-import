@@ -15,6 +15,7 @@ import java.sql.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.gui.html.*;
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -65,9 +66,12 @@ public class MMObjectNode {
 	// Vector  with the related nodes to this node
 	Vector relations=null; // possibly filled with insRels
 	
-	private String classname = getClass().getName();
-	private boolean debug=false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	/**
+	* Logger routine
+	*/
+	private static Logger log = Logging.getLoggerInstance(MMObjectNode.class.getName());
+	
+	// alias name
 	private String alias;
 
 	// object to sync access to properties
@@ -371,13 +375,13 @@ public class MMObjectNode {
 		if (tmp.indexOf("$SHORTED")==0) {
 //		if (tmp!=null && tmp.indexOf("$SHORTED")==0) {
 
-			if (debug) debug("getStringValue(): node="+this+" -- fieldname "+fieldname);
+			log.debug("getStringValue(): node="+this+" -- fieldname "+fieldname);
 			// obtain the database type so we can check if what
 			// kind of object it is. this have be changed for
 			// multiple database support.
 			int type=getDBType(fieldname);
 
-			if (debug) debug("getStringValue(): fieldname "+fieldname+" has type "+type);
+			log.debug("getStringValue(): fieldname "+fieldname+" has type "+type);
 			// check if for known mapped types
 			if (type==FieldDefs.TYPE_STRING) {
 				MMObjectBuilder bul;
@@ -394,7 +398,7 @@ public class MMObjectNode {
 					}
 //					number=getIntValue("number");
 					bul=parent.mmb.getMMObject(tmptable);
-					if (debug) debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldname);
+					log.debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldname);
 				} else {
 					bul=parent;
 				}
@@ -886,8 +890,7 @@ public class MMObjectNode {
 			    }
 		    }
 		} else {
-			// Logging type = warning
-			debug ("getRelationCount is requested with an invalid Builder name (otype "+wantedtype+" does not exist)");
+			log.warn("getRelationCount is requested with an invalid Builder name (otype "+wantedtype+" does not exist)");
 		}
 		return count;
 	}
@@ -967,7 +970,7 @@ public class MMObjectNode {
     public Vector getRelatedNodes(String type) {
         MMObjectBuilder bul=parent.mmb.getMMObject(type);
         if (bul == null) {
-            debug("getRelatedNodes: "+type+" is not a valid builder");
+            log.error("getRelatedNodes: "+type+" is not a valid builder");
             return null;
         }
         Vector allNodes = getRelatedNodes();
