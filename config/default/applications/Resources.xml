@@ -3,8 +3,8 @@
 <application name="Resources" maintainer="mmbase.org" version="1" auto-deploy="false">
 
   <neededbuilderlist>
-    <builder maintainer="mmbase.org" version="0">images</builder>
     <builder maintainer="mmbase.org" version="0">icaches</builder>
+    <builder maintainer="mmbase.org" version="0">images</builder>
     <builder maintainer="mmbase.org" version="0">urls</builder>
     <builder maintainer="mmbase.org" version="0">attachments</builder>
   </neededbuilderlist>
