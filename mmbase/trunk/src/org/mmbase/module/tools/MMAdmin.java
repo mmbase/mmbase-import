@@ -35,8 +35,14 @@ public class MMAdmin extends ProcessorModule {
 	MMAdminProbe probe=null;
 	String lastmsg="";
 	private boolean restartwanted=false;
+	private boolean kioskmode=false;
 
 	public void init() {
+        	String dtmp=System.getProperty("mmbase.kiosk");
+        	if (dtmp!=null && dtmp.equals("yes")) {
+			kioskmode=true;
+			System.out.println("*** Server started in kiosk mode ***"); 
+		}
 		mmb=(MMBase)getModule("MMBASEROOT");		
 		probe = new MMAdminProbe(this);
 	}
@@ -225,6 +231,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	public void setModuleProperty(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused module property set , im in kiosk mode");
+			return;
+		}
 		String modname=(String)vars.get("MODULE");
 		String key=(String)vars.get("PROPERTYNAME");
 		String value=(String)vars.get("VALUE");
@@ -1082,6 +1092,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	public void setBuilderGuiName(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused gui name set , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String country=(String)vars.get("COUNTRY");
@@ -1097,6 +1111,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderGuiType(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused gui type set , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1111,6 +1129,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderEditorInput(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused editor input set , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1128,6 +1150,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderEditorList(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused editor list set , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1145,6 +1171,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderEditorSearch(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused editor pos set , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1162,6 +1192,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderDBSize(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> Refused set DBSize field , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1181,6 +1215,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderDBMMBaseType(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> Refused set setDBMMBaseType field , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1209,6 +1247,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderDBState(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> Refused set DBState field , im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1230,6 +1272,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	public void setBuilderDBKey(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> Refused set dbkey field, im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1254,6 +1300,10 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void setBuilderDBNotNull(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> Refused set NotNull field, im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("VALUE");
@@ -1273,6 +1323,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	public void addBuilderField(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> Refused add builder field, im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		MMObjectBuilder bul=mmb.getMMObject(builder);
 		if (bul!=null) {
@@ -1345,6 +1399,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	public void removeBuilderField(Hashtable vars) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> Refused remove builder field, im in kiosk mode");
+			return;
+		}
 		String builder=(String)vars.get("BUILDER");
 		String fieldname=(String)vars.get("FIELDNAME");
 		String value=(String)vars.get("SURE");
