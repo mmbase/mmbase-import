@@ -28,12 +28,11 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.1 2003-08-21 09:59:30 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.2 2003-08-27 17:45:31 michiel Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(JDBC2NodeWrapper.class);
+    private static final Logger log = Logging.getLoggerInstance(JDBC2NodeWrapper.class);
     
     private StorageManagerFactory factory;
     
@@ -55,18 +54,18 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         // ignore this call
     }
 
-    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldname, ResultSet rs, int i) {
-        return decodeDBnodeField(node, fieldname, rs, i, "");
+    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldName, ResultSet rs, int i) {
+        return decodeDBnodeField(node, fieldName, rs, i, "");
     }
 
-    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldname, ResultSet rs, int i, String prefix) {
+    public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldName, ResultSet rs, int i, String prefix) {
         try {
-            String mmfieldname = prefix+getDisallowedField(fieldname);
-            FieldDefs field = node.getBuilder().getField(mmfieldname);
+            String mmfieldName = prefix + getDisallowedField(fieldName);
+            FieldDefs field = node.getBuilder().getField(mmfieldName);
             DatabaseStorageManager sm = (DatabaseStorageManager)factory.getStorageManager();
             // getValue is protected, so can call it from the same package..
             Object value = sm.getValue(rs, i, field);
-            node.setValue(mmfieldname, value);
+            node.setValue(mmfieldName, value);
         } catch (StorageException se) {
             log.error(se.getMessage());
         }
