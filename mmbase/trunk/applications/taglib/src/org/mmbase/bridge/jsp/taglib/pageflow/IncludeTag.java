@@ -45,7 +45,7 @@ public class IncludeTag extends UrlTag {
 
     private static  Set invalidIncludingAppServerRequestClasses = new HashSet();
 
-    {
+    static {
         invalidIncludingAppServerRequestClasses.add("com.evermind.server.http.EvermindHttpServletRequest");  // Orion
     }
     
