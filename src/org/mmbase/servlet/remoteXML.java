@@ -31,7 +31,7 @@ import org.mmbase.security.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.17 $ $Date: 2001-04-04 11:51:16 $
+ * @version $Revision: 1.18 $ $Date: 2001-04-13 08:55:44 $
  */
 public class remoteXML extends JamesServlet {
 	private boolean debug = true;
@@ -284,11 +284,11 @@ public class remoteXML extends JamesServlet {
 			String value=(String)values.get(key);
 
 			// setting node , skipping system fields.
-			int dbtype=node.getDBType(key);
 			if (!key.equals("number") 
 				&& !key.equals("otype") 
 				&& !key.equals("buildername") 
 				&& !key.equals("owner")) {
+					int dbtype=node.getDBType(key);
 					node.setValue( key, dbtype, value );
 			}
 		}
