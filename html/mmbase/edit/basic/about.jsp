@@ -12,40 +12,40 @@ These are the <a href="http://www.mmbase.org/" target="_blank">MMBase</a> generi
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+3747+projects" target="_blank">
 MMCI</a> (version 1.0) with usage of 
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+6176+projects" target="_blank">
-Taglibs</a> (version 1.0), created by 
+MMBase Taglib</a> (version 1.0), created by 
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+547+427+organization" target="_blank">NOS Internet</a> under the 
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+541+3649+documentation" target="_blank">Mozilla License 1.0</a>
 </p>
 <p>
-  version of the editors: 2002-03-28
+  version of the editors: 2002-08-29
 </p>
 <p>
-  These editors were tested with application servers orion 1.5.2 and tomcat 4.0.
+  These editors were tested with application servers orion 1.6.0 and tomcat 4.0.
 </p>
 <p>
-  The tested browsers are Mozilla 0.9, Netscape 4.7, Opera 5 (all ok)
+  The tested browsers are Mozilla 1.0, Netscape 4.7, Opera 5 (all ok)
   and lynx 2.8.4 (not ok because of HttpPost), in Linux. Internet
-  Explorer 5.5 was tested on a Windows 98 computer. You are using <%=
+  Explorer 5.5 was tested on a Windows NT computer. You are using <%=
   request.getHeader("user-agent") %> 
 </p>
 <p>
   Features:
 </p>
   <ul>
-    <li>Generic editing of MMBase content, using MMBase taglib and little JSP.</li>
+  <li>Generic editing of MMBase content, using MMBase taglib and little JSP.</li>
 	<li>Relations (with directionality).</li>
 	<li>Image upload.</li>
 	<li>Aliases.</li>
-	<li>Searching with search fields and on alias.</li>
-	<li>Configurable.</li>
+	<li>Searching with search fields, on alias and on age.</li>
+	<li>Configurable (a.o. language and the aspect).</li>
   </ul>
 <p>
   Known bugs:
 </p>
   <ul>
-    <li>Uni-directional relations are not very well presented.</li>
 	<li>Bugs in HttpPost hinder good working in lynx (and in combination Opera/Tomcat?)</li>
-	<li>Cannot search on age like in scan-editors (but is this necessary?)</li>
+	<li>Source code is a little too chaotic</li>
+	<li>Heavy use of CSS to define the looks hinder functionallity in some buggy browsers</li>
   </ul>
 </td></tr>
 </table>
