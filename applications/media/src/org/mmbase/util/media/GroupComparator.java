@@ -12,11 +12,13 @@ package org.mmbase.util.media;
 
 import org.mmbase.module.builders.media.ResponseInfo;
 import java.util.*;
+import org.mmbase.util.XMLBasicReader;
+import org.w3c.dom.Element;
 
 /**
  * Groups some comparators
  * @author  Michiel Meeuwissen
- * @version $Id: GroupComparator.java,v 1.2 2003-01-08 08:50:18 michiel Exp $
+ * @version $Id: GroupComparator.java,v 1.3 2003-01-08 14:48:40 michiel Exp $
  */
 public class GroupComparator extends  ResponseInfoComparator {
 
@@ -29,6 +31,14 @@ public class GroupComparator extends  ResponseInfoComparator {
     }
     public void add(ResponseInfoComparator ri) {
         comparators.add(ri);
+    }
+    
+    protected void configure(XMLBasicReader reader, Element e) {
+        Iterator i = comparators.iterator();
+        while (i.hasNext()) {
+            ResponseInfoComparator ri = (ResponseInfoComparator) i.next();
+            ri.configure(reader, e);
+        }
     }
 
     public int compareResponseInfo(ResponseInfo o1, ResponseInfo o2) {
