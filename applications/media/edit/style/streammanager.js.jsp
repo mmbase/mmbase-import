@@ -12,8 +12,10 @@ function ExplorerFix()  {
 if(document.all) document.onmousedown = ExplorerFix;
 
 
-function getPlayerURL(form) {
-    if (form == "entrance") {
+function getLeftURL(form) {
+    if (form == "search") {
+        return '<mm:write value="search.jsp?language=$language" />';
+    } else if (form == "poolselector") {
         return '<mm:write value="poolselector.jsp?language=$language" />';
     } else if (form == "itemize") {    
         return '<mm:write value="${dir}player.jsp?fragment=$fragment" />';  
@@ -30,13 +32,13 @@ function getTime(formattedtime) {
     return 123;
 }
 
-function setPlayerFrame(form) {
-    var current = parent.frames["player"].location.href;
+function setLeftFrame(form) {
+    var current = parent.frames["left"].location.href;
     if (form != "basics") {
-        var player  = getPlayerURL(form); 
+        var player  = getLeftURL(form); 
         if (current.indexOf(player) == -1) {
             //alert("Setting player to '" + player + "' current = '" + current + "'");
-            parent.frames["player"].location.replace(player);
+            parent.frames["left"].location.replace(player);
         }
     }
 }
@@ -54,6 +56,11 @@ function detach() {
 }
 
 
+// init page on the right side
 function init(form) {
-    setPlayerFrame(form);
+    setLeftFrame(form);
+}
+
+// init page on the left side
+function initLeft(form) {
 }

@@ -5,7 +5,7 @@
     <title></title>
     <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
   </head>
-  <body background="images/bckplaceholder.gif">
+  <body class="left">
     <p>
      <!-- <img src="images/logo_po_ver.gif" /> --> <!-- mmbase.png" alt="mmbase" /-->
     </p>
