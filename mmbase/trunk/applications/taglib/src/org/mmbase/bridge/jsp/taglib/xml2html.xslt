@@ -145,6 +145,9 @@
           </td>
           <td></td>
         </tr>
+        <xsl:if test="not($type='all')">
+          <tr><td /><td><a href="toc.html">complete table of contents</a></td></tr>
+        </xsl:if>
         <tr>
           <td></td>
           <td>
