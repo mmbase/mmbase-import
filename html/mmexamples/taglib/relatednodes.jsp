@@ -27,7 +27,7 @@
 
 <table cellpadding="5">
   <tr>
-    <td valign="top" bgcolor="EEEEEE">
+    <td valign="top">
 
 <form method="POST">
 

@@ -25,7 +25,7 @@
 <h1>Using the listnodes tag</h1>
 
 <form method="POST">
-  <table bgcolor="EEEEEE">
+  <table >
     <tr>
       <td>type</td>
       <td><input type="text" size="60" name="type" value="<mm:write referid="type"/>"></td>

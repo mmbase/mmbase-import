@@ -29,7 +29,7 @@
 <h1>Using the list tag</h1>
 
 <form method="POST">
-  <table bgcolor="EEEEEE">
+  <table>
     <tr>
       <td>nodes</td>
       <td><input type="text" size="60" name="nodes" value="<mm:write referid="nodes"/>"></td>
