@@ -63,9 +63,20 @@
     <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
     <% } %>
-    
-
-
+    <p><em>With jsp:include (utf-8 page):</em></p>
+    <% try { %>
+    <jsp:include page="included.jsp" />
+    <% } catch (Exception e) { %> 
+      <p>Did not work (<%=e.toString()%>)</p>
+    <% } %>
+    <p><em>With jsp:include (iso-8859-1 page):</em></p>
+    <% try { %>
+    <jsp:include page="included1.jsp" />
+    <% } catch (Exception e) { %> 
+      <p>Did not work (<%=e.toString()%>)</p>
+    <% } %>   
+    <p><em>With &lt;%@:include:</em></p>
+    <%@include file="atincluded.jsp" %>
 
           <hr />
           used node: <mm:write referid="node" /> (<mm:field name="number" />)<br />
