@@ -2,8 +2,9 @@
       database.dtd
         - DTD for MMBase database mapping definition
 -->
-<!ELEMENT database (name,scheme,mapping,disallowed)>
+<!ELEMENT database (name,mmbasedriver,scheme,mapping,disallowed)>
 <!ELEMENT name (#PCDATA)>
+<!ELEMENT mmbasedriver (#PCDATA)>
 <!ELEMENT scheme (create,not-null,null,primary-key)>
 <!ELEMENT create (#PCDATA)>
 <!ELEMENT not-null (#PCDATA)>
