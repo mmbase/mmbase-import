@@ -85,6 +85,14 @@ public class FieldInfoTag extends NodeReferrerTag {
         return EVAL_BODY_TAG;
     }
 
+    protected String decode (String value) throws JspTagException {
+        return value;
+    }
+
+    protected String encode(String value) throws JspTagException {
+        return value;
+    }
+
     /**
      * Puts a prefix before a name. This is used in htmlInput and
      * useHtmlInput, they need it to get a reasonably unique value for
@@ -123,7 +131,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                     // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                     show = "<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
                     if (node != null) {
-                        show += node.getStringValue(field.getName());
+                        show += decode(node.getStringValue(field.getName()));
                     }                    
                     show += "</textarea>";                
                     break;                    
@@ -131,11 +139,17 @@ public class FieldInfoTag extends NodeReferrerTag {
                 if(field.getMaxLength() > 255 )  {                
                     show = "<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
                     if (node != null) {
-                        show += node.getStringValue(field.getName());
+                        show += decode(node.getStringValue(field.getName()));
                     }                    
                     show += "</textarea>";
                     break;
                 }
+                show = "<input type =\"text\" class=\"small\" size=\"80\" name=\"" + prefix(field.getName()) + "\" value=\"";
+    	    	if (node != null) {
+		    show += decode(node.getStringValue(field.getName()));
+		}
+		show += "\" />";
+    	    	break;
             }
         case Field.TYPE_INTEGER:  
             if (field.getGUIType().equals("types")) {
@@ -324,10 +338,24 @@ public class FieldInfoTag extends NodeReferrerTag {
                 }
                 break;
             }
-        case Field.TYPE_STRING:
+        case Field.TYPE_STRING: {
+            // do the xml decoding thing...
+            String fieldValue = getContextTag().getStringFindAndRegister(prefix(fieldName));
+	    fieldValue = encode(fieldValue);
+            log.debug("got it");
+            if (fieldValue == null) {
+                log.debug("Field " + fieldName + " is null!");
+            } else {
+                log.debug("Field " + fieldName + " -> " + fieldValue);
+                node.setValue(fieldName,  fieldValue);
+                log.debug("set it");
+            }
+            
+            break;	    	 
+        }   	                
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
-        case Field.TYPE_LONG:
+        case Field.TYPE_LONG: {
             String fieldValue = getContextTag().getStringFindAndRegister(prefix(fieldName));
             log.debug("got it");
             if (fieldValue == null) {
@@ -339,6 +367,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             }
             
             break;
+        }
         default: log.error("field: " + type );
         }  
         return "";
@@ -444,6 +473,7 @@ public class FieldInfoTag extends NodeReferrerTag {
         Field field;
         Node node = null;
         FieldListTag fieldListTag = null;
+        NodeProvider np = null;
 
         if (whichField == null) { // must be in FieldList then
             // firstly, search the field:
@@ -466,8 +496,9 @@ public class FieldInfoTag extends NodeReferrerTag {
 
 
             field = fieldListTag.getField();
-        } else { // not in List, get it from a parent Node
-            node = findNodeProvider().getNodeVar();
+        } else { // not in List, get it from a parent Node            
+            np = findNodeProvider();
+            node = np.getNodeVar();
             field = node.getNodeManager().getField(whichField);
             if (field == null) {
                 throw new JspTagException("Unknown field '" + whichField + "' for nodemanager " + node.getNodeManager().getName());
@@ -487,7 +518,11 @@ public class FieldInfoTag extends NodeReferrerTag {
             }
             break;
         case TYPE_USEINPUT:
-            if (node == null) node = findNodeProvider().getNodeVar();
+            if (node == null) { 
+                np = findNodeProvider();
+                node = np.getNodeVar();
+            }
+            np.setModified();
             break;
         default:            
         }
