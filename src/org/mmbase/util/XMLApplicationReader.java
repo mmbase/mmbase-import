@@ -266,6 +266,8 @@ public class XMLApplicationReader  {
 						if (nm!=null) {
 							Node n4=nm.getNamedItem("path");
 							if (n4!=null) bset.put("path",n4.getNodeValue());
+							n4=nm.getNamedItem("builder");
+							if (n4!=null) bset.put("builder",n4.getNodeValue());
 						}
 						results.addElement(bset);
 					}
@@ -297,6 +299,8 @@ public class XMLApplicationReader  {
 						if (nm!=null) {
 							Node n4=nm.getNamedItem("path");
 							if (n4!=null) bset.put("path",n4.getNodeValue());
+							n4=nm.getNamedItem("builder");
+							if (n4!=null) bset.put("builder",n4.getNodeValue());
 						}
 						results.addElement(bset);
 					}
