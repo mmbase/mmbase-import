@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="MyCompany" maintainer="mmbase.org" version="1" auto-deploy="false">
-  
+
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">people</builder>
     <builder maintainer="mmbase.org" version="0">companies</builder>
@@ -36,14 +36,10 @@
 
   <contextsourcelist/>
 
-  <description>Installs builders and relations for an example company
-  structure. It doesn't have a taglib-example or data, but these will
-  be added in future MMBase-releases. This application uses the
-  Resource-application, so please install that one before installing
-  this one.
-  </description>
+  <description><![CDATA[Installs builders and relations for an example company structure. It doesn't have a taglib-example or data, but these will be added in future MMBase-releases.
+  This application uses the Resource-application, so please install that one before installing this one.
+  ]]></description>
 
-  <install-notice>
-    Company structure installed
-  </install-notice>
+  <install-notice><![CDATA[Company structure installed.
+  ]]></install-notice>
 </application>

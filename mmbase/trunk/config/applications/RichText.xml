@@ -7,38 +7,34 @@
     <builder maintainer="mmbase.org" version="1">urls</builder>
     <builder maintainer="mmbase.org" version="1">idrel</builder>
   </neededbuilderlist>
-  
+
   <neededreldeflist>
     <reldef source="idrel" target="idrel" direction="bidirectional" guisourcename="Idrel" guitargetname="Idrel" builder="idrel" />
   </neededreldeflist>
-  
+
   <allowedrelationlist>
     <relation from="xmlnews"  to="images" type="idrel" />
     <relation from="xmlnews"  to="urls"   type="idrel" />
   </allowedrelationlist>
-  
-  <datasourcelist>	
+
+  <datasourcelist>
     <datasource builder="xmlnews" path="RichText/xmlnews.xml" />
     <datasource builder="images"  path="RichText/images.xml" />
     <datasource builder="urls"    path="RichText/urls.xml" />
   </datasourcelist>
-  
+
   <relationsourcelist>
     <relationsource builder="idrel" path="RichText/idrel.xml" />
   </relationsourcelist>
-  
+
   <contextsourcelist>
     <contextsource path="RichText/backup.xml" type="depth" goal="backup"/>
   </contextsourcelist>
-  
-  <description>
-    RichText test article, with some related nodes. Depends on
-    resources application, so please install that one before
-    installing this one.
-  </description>
-  
-  <install-notice>
-    The formatter example of the taglib example will work now and demonstrate how 'XML' fields can
-    be used.
-  </install-notice>
+
+  <description><![CDATA[RichText test article, with some related nodes.
+Depends on Resources application, so please install that one before installing this one.
+  ]]></description>
+
+  <install-notice><![CDATA[The formatter example of the taglib example will work now and demonstrate how 'XML' fields can be used.
+  ]]></install-notice>
 </application>

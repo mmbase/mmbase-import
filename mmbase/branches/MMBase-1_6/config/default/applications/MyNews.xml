@@ -48,10 +48,11 @@
    </contextsourcelist>
 
   <description>
-	 <![CDATA[MyNews is an example of a magazine with news articles.<br />
-It depends on the <strong>resources</strong> application, please install that one before installing this one.]]></description>
+   <![CDATA[MyNews is an example of a magazine with news articles.
+It depends on the Resources application, please install that one before installing this one.
+    ]]></description>
 
    <install-notice>
-	 <![CDATA[The MyNews application is installed. Look at the <a href="/mmexamples">MMBase demo page</a> for the magazine.]]>
-   </install-notice>
+   <![CDATA[The MyNews application is installed. Look at the <a href="/mmexamples">MMBase demo page</a> for the magazine.
+   ]]></install-notice>
 </application>

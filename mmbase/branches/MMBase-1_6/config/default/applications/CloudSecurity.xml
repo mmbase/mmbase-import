@@ -2,31 +2,29 @@
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="CloudSecurity" maintainer="cloud.security.mmbase.omroep.nl" version="1" auto-deploy="false">
   <neededbuilderlist>
-	<builder maintainer="mmbase.org" version="1">mmbaseusers</builder>
+  <builder maintainer="mmbase.org" version="1">mmbaseusers</builder>
   </neededbuilderlist>
-  
+
   <neededreldeflist>
   </neededreldeflist>
-  
+
   <allowedrelationlist>
   </allowedrelationlist>
-  
+
   <datasourcelist>
-	<datasource builder="mmbaseusers" path="CloudSecurity/mmbaseusers.xml" />
+  <datasource builder="mmbaseusers" path="CloudSecurity/mmbaseusers.xml" />
   </datasourcelist>
-  
+
   <relationsourcelist>
   </relationsourcelist>
-  
+
   <contextsourcelist>
   </contextsourcelist>
-  
-  <description>
-    Installs the admin account for using mmbaseusers security, see
-    &lt;mmdocs/security&gt; for more information.
-  </description>
-  
-  <install-notice>
-    You have installed the admin account.
-  </install-notice>
+
+  <description><![CDATA[Installs the admin account for using mmbaseusers security
+See /mmdocs/administrators/security-framework.html for more information.
+  ]]></description>
+
+  <install-notice><![CDATA[You have installed the admin account.
+  ]]></install-notice>
 </application>
