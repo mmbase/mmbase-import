@@ -138,6 +138,20 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     }
 
     /**
+     * Retrieve the getcount of the key object
+     * @key the key of the element
+     * @return the times the key has been requested
+     */
+    public int getCount(Object key) {
+        work=(LRUentry)entries.get(key);
+	if (work!=null) {
+		return(work.getcount);	
+	} else {
+		return(-1);
+	}
+    }
+
+    /**
      * Retrieve an element from the table.
      * @key the key of the element
      * @return the value of the element, or <code>null</code> if it could not be found
@@ -146,6 +160,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         work=(LRUentry)entries.get(key);
         if (work!=null) {
             hit++;
+	    work.getcount++;
             rtn=work.value;
             removeEntry(work);
             appendEntry(work);
@@ -366,13 +381,13 @@ public class LRUHashtable extends Hashtable implements Cloneable {
 	if (maxnumber!=-1) {
 		int i=0;
         	while (current!=null && current!=dangling && i<maxnumber) {
-			results.addElement(current.value);	
+			results.insertElementAt(current.value,0);	
 			current=current.next;
 			i+=1;
 		}
 	} else {
         	while (current!=null && current!=dangling) {
-			results.addElement(current.value);	
+			results.insertElementAt(current.value,0);	
 			current=current.next;
 		}
 	}
@@ -423,6 +438,11 @@ class LRUentry {
      * The element key
      */
     protected Object key;
+    /**
+    * the number of times this
+    * entry has been requested
+    */
+    protected int getcount=0;
 
     LRUentry(Object key,Object val) {
         this(key,val,null,null);
