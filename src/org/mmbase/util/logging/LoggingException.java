@@ -20,10 +20,12 @@ package org.mmbase.util.logging;
  */
 
 public class LoggingException extends RuntimeException {
-    public LoggingException(String message) {
+    private Level level;
+    public LoggingException(String message, Level l) {
         super(message);
+        level = l;
     }
-    public String toString() {
-        return getMessage();
+    public Level getLevel() {
+        return level;
     }
 }

@@ -68,13 +68,15 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
         }
     }
 
-    protected final void log (String s, int l) {
-        if (l >= level) {
-            LocationInfo info = new LocationInfo(new Throwable(), AbstractSimpleImpl.class.getName());
+    protected final void log (String s, Level l) {
+        if (l.toInt() >= level) {
+            Throwable t = new Throwable();
+            LocationInfo info = new LocationInfo(t, AbstractSimpleImpl.class.getName());
             System.out.println(info.getFileName() + ":" + info.getMethodName() + "." + info.getLineNumber() + ": " + s);
+            System.out.println(Logging.stackTrace(t));
         }
-        if (l >= exceptionLevel) {
-            throw new LoggingException(cat + ":" + s);
+        if (l.toInt() >= exceptionLevel) {
+            throw new LoggingException(cat + ":" + s, l);
         }
     }
 
