@@ -72,8 +72,7 @@ public class RelatedTag extends ListTag {
         }
         String nodeType=node.getNodeManager().getName();
         // adapt the path to include the (needed) starting nodemanager name
-        // The nodemanager will be referrable as nodemanager0
-        pathString= nodeType+"0,"+relatedPathString;
+        pathString= nodeType + "," + relatedPathString;
         log.debug("pathString " + pathString);
         return super.doStartTag();
     }
