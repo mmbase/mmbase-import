@@ -14,6 +14,8 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
@@ -30,7 +32,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.17 2003-11-17 12:46:32 michiel Exp $
+ * @version $Id: Users.java,v 1.18 2003-11-19 16:41:00 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -214,10 +216,22 @@ public class Users extends MMObjectBuilder {
     protected  MMObjectNode getUser(String userName)   {
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
-            Enumeration enumeration = searchWithWhere(" username = '" + userName + "'"); 
-            while(enumeration.hasMoreElements()) {
-                user = (MMObjectNode) enumeration.nextElement();
-            }            
+            NodeSearchQuery nsq = new NodeSearchQuery(this);
+            StepField sf        = nsq.getField(getField("username"));
+            Constraint cons = new BasicFieldValueConstraint(sf, userName);
+            nsq.setConstraint(cons);
+            try { 
+                Iterator i = getNodes(nsq).iterator();
+                if(i.hasNext()) {
+                    user = (MMObjectNode) i.next();
+                }
+                
+                if(i.hasNext()) {
+                    log.warn("Found more users with username '" + userName + "'");
+                }
+            } catch (SearchQueryException sqe) {
+                log.error(sqe + Logging.stackTrace(sqe));
+            }
             if (user == null) {
                 User admin =  Authenticate.getLoggedInExtraAdmin(userName);
                 if (admin != null) {
@@ -235,13 +249,20 @@ public class Users extends MMObjectBuilder {
     public int insert(String owner, MMObjectNode node) {
         int res = super.insert(owner, node);
         String userName = node.getStringValue("username");
-
-        Enumeration e = searchWithWhere(" username = '" + userName + "'");
-        while (e.hasMoreElements()) {
-            MMObjectNode n = (MMObjectNode) e.nextElement();
-            if (n.getNumber() == node.getNumber()) continue;
-            removeNode(node);
-            throw new SecurityException("Cannot insert user '" + userName + "', because there is already is a user with that name");
+        NodeSearchQuery nsq = new NodeSearchQuery(this);
+        StepField sf        = nsq.getField(getField("username"));
+        Constraint cons = new BasicFieldValueConstraint(sf, userName);
+        nsq.setConstraint(cons);
+        try { 
+            Iterator i = getNodes(nsq).iterator();
+            while(i.hasNext()) {
+                MMObjectNode n = (MMObjectNode) i.next();
+                if (n.getNumber() == node.getNumber()) continue;
+                removeNode(node);
+                throw new SecurityException("Cannot insert user '" + userName + "', because there is already is a user with that name");
+            }
+        } catch (SearchQueryException sqe) {
+            throw new SecurityException("Cannot insert user '" + userName + "', because check-query failed:" + sqe.getMessage() ,sqe );            
         }
         userCache.clear();
         return res;
