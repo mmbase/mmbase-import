@@ -12,6 +12,8 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.StringWriter;
+import java.io.StringReader;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
@@ -19,6 +21,10 @@ import org.mmbase.bridge.jsp.taglib.Writer;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
+
+
+import org.mmbase.util.transformers.Url;
+import org.mmbase.util.transformers.CharTransformer;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -33,6 +39,8 @@ import org.mmbase.util.logging.Logging;
 public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
 
     private static Logger log = Logging.getLoggerInstance(UrlTag.class.getName()); 
+
+    private static CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
     private   Attribute referids = Attribute.NULL;
     protected Map extraParameters = null;
@@ -60,10 +68,11 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
 
 
 
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() throws JspTagException {        
         log.debug("starttag");
         extraParameters = new HashMap();
         helper.setTag(this);
+        helper.useEscaper(false);
         return EVAL_BODY_BUFFERED;
     }
 
@@ -76,7 +85,9 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
-        StringBuffer show = new StringBuffer(getPage());
+        StringWriter w = new StringWriter();
+        StringBuffer show = w.getBuffer();
+        show.append(getPage());
         if (show.toString().equals("")) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
             show.append(new java.io.File(req.getRequestURI()).getName());
@@ -101,7 +112,10 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
                 if (log.isDebugEnabled()) {
                     log.debug("adding parameter (with referids) " + key + "/" + value);
                 }
-                show.append(connector).append(key).append("=").append((value == null ? "" : org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value)));
+                show.append(connector).append(key).append("=");
+                if (value != null) {
+                    paramEscaper.transform(new StringReader(value), w);
+                }
                 connector = amp;
             }
         }
@@ -110,7 +124,8 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
             Iterator i = extraParameters.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry map  = (Map.Entry) i.next();
-                show.append(connector).append(map.getKey()).append("=").append(org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", map.getValue().toString()));
+                show.append(connector).append(map.getKey()).append("=");
+                paramEscaper.transform(new StringReader(map.getValue().toString()), w);
                 connector = amp;
             }
         }
