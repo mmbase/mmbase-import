@@ -11,6 +11,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 import java.sql.*;
+import java.text.DateFormat;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.24 2002-07-19 09:41:41 eduard Exp $
+ * @version $Id: DayMarkers.java,v 1.25 2002-10-10 19:55:23 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -463,9 +464,9 @@ public class DayMarkers extends MMObjectBuilder {
      *  @param node The node of which the gui information is wanted
      *  @return a <code>String</code> in which the current date is shown
      */
-    public String getGUIIndicator(MMObjectNode node) {    
-        java.text.DateFormat format = java.text.DateFormat.getDateInstance(java.text.DateFormat.DEFAULT, java.util.Locale.getDefault());
-        return format.format(getDate(node));
+    public String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
+        return DateFormat.getDateInstance(DateFormat.LONG, locale).format(getDate(node));
+
     }
     
 }
