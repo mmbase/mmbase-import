@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.9 2003-07-29 17:04:03 michiel Exp $
+ * @version $Id: Query.java,v 1.10 2003-08-01 16:31:35 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -125,6 +125,15 @@ public interface Query extends SearchQuery, Cloneable {
 
 
     // Constraints and so on..
+
+
+    /**
+     * Create a contraint (for use with this Query object). The argument is a string, as also can be
+     * used as an argument of the 'non-query' getList. This should be considered legacy.
+     * @see  Cloud.getList(String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct)
+     * @see  NodeManager.getList(String constraints, String orderby, String directions);    
+     */
+    LegacyConstraint           createConstraint(String s);
 
 
     /**
