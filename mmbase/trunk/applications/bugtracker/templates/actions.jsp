@@ -5,18 +5,18 @@
  <mm:import id="works">yep</mm:import>
 
 <mm:compare value="sendaccountinfo" referid="action">
-    <mm:import externid="email" />
-    <mm:listnodescontainer type="users">
-        <mm:constraint field="email" referid="email"/>
-        <mm:maxnumber value="1"/>
-      <mm:listnodes>
+  <mm:import externid="email" />
+  <mm:listnodescontainer type="users">
+    <mm:constraint field="email" referid="email"/>
+    <mm:maxnumber value="1"/>
+    <mm:listnodes>
       <mm:field id="account" name="account" write="false"/>
       <mm:field id="password" name="password" write="false" />
-        <mm:createnode id="emailnode" type="email">
-		    <mm:setfield name="mailtype">1</mm:setfield>
-		    <mm:setfield name="to"><mm:write referid="email" /></mm:setfield>
-		    <mm:setfield name="from">bugtracker@mmbase.org</mm:setfield>
-		     <mm:setfield name="subject">Your MMBase BugTracker account</mm:setfield>
+      <mm:createnode id="emailnode" type="email">
+        <mm:setfield name="mailtype">1</mm:setfield>
+        <mm:setfield name="to"><mm:write referid="email" /></mm:setfield>
+        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="subject">Your MMBase BugTracker account</mm:setfield>
 <mm:setfield name="body">
 Your account info for the MMBase Bugtracker :
 
@@ -24,9 +24,12 @@ url: http://www.mmbase.org/bug
 account : <mm:write referid="account" />
 password : <mm:write referid="password" />
 </mm:setfield>
-	</mm:createnode>
+	    </mm:createnode>
+     <mm:node referid="emailnode">
+       <mm:field name="mail(oneshot)" /> 
+     </mm:node>
     </mm:listnodes> 
- </mm:listnodescontainer>
+  </mm:listnodescontainer>
 
     <mm:present referid="emailnode">
 	<mm:import id="message">email</mm:import>
@@ -62,21 +65,21 @@ password : <mm:write referid="password" />
 </mm:compare>
 
 <mm:compare value="updatebug" referid="action">
-<mm:import externid="updater" required="true"/>
-<mm:import externid="bugreport" required="true"/>
-<mm:import externid="newissue" required="true"/>
-<mm:import externid="newbtype" required="true"/>
-<mm:import externid="newbstatus" required="true"/>
-<mm:import externid="newversion" required="true"/>
-<mm:import externid="newefixedin" required="true"/>
-<mm:import externid="newfixedin" required="true"/>
-<mm:import externid="newbpriority" required="true"/>
-<mm:import externid="newdescription" required="true"/>
-<mm:import externid="newrationale" required="true"/>
-<mm:import externid="newarea" required="true"/>
-<mm:import externid="oldarea" required="true"/>
-<mm:import externid="oldarearel" required="true"/>
-<% int now=(int)(System.currentTimeMillis()/1000); %>
+  <mm:import externid="updater" required="true"/>
+  <mm:import externid="bugreport" required="true"/>
+  <mm:import externid="newissue" required="true"/>
+  <mm:import externid="newbtype" required="true"/>
+  <mm:import externid="newbstatus" required="true"/>
+  <mm:import externid="newversion" required="true"/>
+  <mm:import externid="newefixedin" required="true"/>
+  <mm:import externid="newfixedin" required="true"/>
+  <mm:import externid="newbpriority" required="true"/>
+  <mm:import externid="newdescription" required="true"/>
+  <mm:import externid="newrationale" required="true"/>
+  <mm:import externid="newarea" required="true"/>
+  <mm:import externid="oldarea" required="true"/>
+  <mm:import externid="oldarearel" required="true"/>
+  <% int now=(int)(System.currentTimeMillis()/1000); %>
 
 	<mm:node id="usernode" number="$updater" />
 
@@ -94,7 +97,8 @@ password : <mm:write referid="password" />
 		<mm:import id="oldtime"><mm:field name="time" /></mm:import>
 	</mm:node>
 
-	<mm:createnode id="updatenode" type="bugreportupdates">
+  <!-- create en bugreportupdates node with a copy of the current node -->
+	<mm:createnode id="bugreportupdate" type="bugreportupdates">
 		<mm:setfield name="issue"><mm:write referid="oldissue" /></mm:setfield>
 		<mm:setfield name="bstatus"><mm:write referid="oldbstatus" /></mm:setfield>
 		<mm:setfield name="btype"><mm:write referid="oldbtype" /></mm:setfield>
@@ -107,21 +111,26 @@ password : <mm:write referid="password" />
 		<mm:setfield name="time"><mm:write referid="oldtime" /></mm:setfield>
 	</mm:createnode>
 
+  <!-- get the id of the submitter and submitterrel -->
 	<mm:node number="$bugreport">
 		<mm:related path="rolerel,users" constraints="rolerel.role='submitter'" max="1">
 			<mm:import id="submitter"><mm:field name="users.number" /></mm:import>
 			<mm:import id="submitterrel"><mm:field name="rolerel.number" /></mm:import>
 		</mm:related>
 	</mm:node>
+
+  <!-- get the id of the lastupdateuser and lastupdateuserrel -->
 	<mm:node number="$bugreport">
 		<mm:related path="rolerel,users" constraints="rolerel.role='updater'" max="1">
-			<mm:import id="oldupdater"><mm:field name="users.number" /></mm:import>
-			<mm:import id="oldupdaterrel"><mm:field name="rolerel.number" /></mm:import>
+			<mm:import id="lastupdateuser"><mm:field name="users.number" /></mm:import>
+			<mm:import id="lastupdateuserrel"><mm:field name="rolerel.number" /></mm:import>
 		</mm:related>
 	</mm:node>
 
-    	<mm:createrelation role="related" source="bugreportnode" destination="updatenode" />
+  <!-- create a relation between the bugreport and the bugreportupdates node -->
+  <mm:createrelation role="related" source="bugreportnode" destination="bugreportupdate" />
 
+  <!-- override the current bugreport with the new values -->
 	<mm:node number="$bugreport">
 		<mm:setfield name="issue"><mm:write referid="newissue" /></mm:setfield>
 		<mm:setfield name="bstatus"><mm:write referid="newbstatus" /></mm:setfield>
@@ -135,34 +144,63 @@ password : <mm:write referid="password" />
 		<mm:setfield name="time"><%=now%></mm:setfield>
 	</mm:node>
 
-    <mm:present referid="oldupdater" inverse="true">
+  <!-- if the bug report never was updated -->
+  <mm:present referid="lastupdateuser" inverse="true">
+    <!-- and the bug has a submitter, create a new relation between the submitter and the bugreportupdate -->
     <mm:present referid="submitter">
-	<mm:node id="oldsubmitternode" number="$submitter" />
-    	<mm:createrelation role="rolerel" source="updatenode" destination="oldsubmitternode">
-		<mm:setfield name="role">submitter</mm:setfield>
-    	</mm:createrelation>
+	    <mm:node id="oldsubmitternode" number="$submitter" />
+    	<mm:createrelation role="rolerel" source="bugreportupdate" destination="oldsubmitternode">
+		    <mm:setfield name="role">submitter</mm:setfield>
+      </mm:createrelation>
     </mm:present>
-    </mm:present>
+  </mm:present>
 
-    <mm:present referid="oldupdater">
-	<mm:node id="oldupdaternode" number="$oldupdater" />
-    	<mm:createrelation role="rolerel" source="updatenode" destination="oldupdaternode">
-		<mm:setfield name="role">updater</mm:setfield>
-    	</mm:createrelation>
-	<mm:deletenode number="$oldupdaterrel" />
-    </mm:present>
-
-    <mm:createrelation role="rolerel" source="bugreportnode" destination="usernode">
-		<mm:setfield name="role">updater</mm:setfield>
+  <!-- if the bug report was updated before -->
+  <mm:present referid="lastupdateuser">
+    <!-- create a relation between the bugreportupdate and the lastupdater -->
+    <mm:node id="lastupdateusernode" number="$lastupdateuser" />
+    <mm:createrelation role="rolerel" source="bugreportupdate" destination="lastupdateusernode">
+      <mm:setfield name="role">updater</mm:setfield>
     </mm:createrelation>
+    <!-- also remove the lastupdater from the bugreport node -->
+	  <mm:deletenode number="$lastupdateuserrel" />
+  </mm:present>
 
-    <!-- replace the link to a different area node if needed -->
-    <mm:compare referid="oldarea" referid2="newarea" inverse="true">
-	<mm:deletenode referid="oldarearel" />
-	<mm:node id="newareanode" referid="newarea" />
-    	<mm:createrelation role="related" source="bugreportnode" destination="newareanode" />
-    </mm:compare>
-    <mm:import id="message">updatebug</mm:import>
+  <!-- create a relation between the current updater and the bugreport -->
+  <mm:createrelation role="rolerel" source="bugreportnode" destination="usernode">
+    <mm:setfield name="role">updater</mm:setfield>
+  </mm:createrelation>
+
+  <!-- replace the link to a different area node if needed -->
+  <mm:compare referid="oldarea" referid2="newarea" inverse="true">
+	  <mm:deletenode referid="oldarearel" />
+	  <mm:node id="newareanode" referid="newarea" />
+    <mm:createrelation role="related" source="bugreportnode" destination="newareanode" />
+  </mm:compare>
+  <mm:import id="message">updatebug</mm:import>
+
+  <mm:node referid="bugreportnode">
+    <mm:related path="rolerel,users"  fields="users.number" distinct="true">
+      <mm:node element="users" id="myUser"/>
+      <mm:createnode id="emailnode" type="email">
+        <mm:setfield name="mailtype">1</mm:setfield>
+        <mm:setfield name="to"><mm:node referid="myUser"><mm:field name="email" /></mm:node></mm:setfield>
+        <mm:setfield name="from">bugtracker@www.mmbase.org</mm:setfield>
+        <mm:setfield name="subject">[BT][update #<mm:node referid="bugreportnode"><mm:field name="bugid" />] <mm:field name="issue" /></mm:node></mm:setfield>
+        <mm:setfield name="body">
+           <mm:node referid="bugreportnode">
+issue      :<mm:field name="issue"/>
+bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
+rationale :<mm:field name="rationale"/>
+           </mm:node>
+        </mm:setfield>
+	    </mm:createnode>
+     <mm:node referid="emailnode">
+       <mm:field name="mail(oneshot)" /> 
+     </mm:node>
+        </mm:related>
+  </mm:node>
+
 </mm:compare>
 
 <mm:compare value="newbug" referid="action">
