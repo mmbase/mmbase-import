@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.12 2004-03-10 18:20:35 michiel Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.13 2004-09-07 12:55:46 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -46,7 +46,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         this.factory = factory;
         mmbase = factory.getMMBase();
         disallowedFields = factory.getDisallowedFields();
-        allowedFields = new HashMap();
+        allowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
             Map.Entry e = (Map.Entry)i.next();
             String val = (String) e.getValue();
@@ -233,8 +233,6 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     }
 
     public String getDisallowedField(String allowedfield) {
-        // to lowercase, temporary hack
-        allowedfield = allowedfield.toLowerCase();
         String disallowedfield = (String)allowedFields.get(allowedfield);
         if (disallowedfield != null) {
             return disallowedfield;
