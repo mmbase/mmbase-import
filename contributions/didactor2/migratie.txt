@@ -1,5 +1,14 @@
 Migratie issues
 
+2004-02-13
+
+For the metadata editors the builder metadefinition has been extended with two additional
+fields. For the metadata and the metadata editors to run correctly the following changes
+should be carried out on the didactor databases.
+
+ALTER TABLE mmb_metadefinition ADD minvalues INT;
+ALTER TABLE mmb_metadefinition ADD required INT(1);
+
 2004-02-10
  ** Interne opmerking **
  De build targets zijn iets aangepast, en een aantal config opties toegevoegd:
