@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.57 2004-02-23 19:01:02 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.58 2004-03-05 15:19:46 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -1464,7 +1464,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
             BasicStep step = (BasicStep)stepsByAlias.get(stepAlias);
             if (step == null) {
-                throw new IllegalArgumentException("Invalid step alias: \"" + stepAlias + "\"");
+                throw new IllegalArgumentException("Invalid step alias: \"" + stepAlias + "\" in fields list");
             }
             addField(query, step, fieldName, fieldsByAlias);
         }
