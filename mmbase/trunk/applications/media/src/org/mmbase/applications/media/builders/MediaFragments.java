@@ -19,8 +19,10 @@ import java.net.URL;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  * The MediaFragment builder describes a piece of media. This can be audio, or video.
@@ -32,13 +34,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.31 2004-02-03 15:17:46 pierre Exp $
+ * @version $Id: MediaFragments.java,v 1.32 2004-05-08 10:35:40 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
 
-    // logging
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class);
 
     // let the compiler check for typo's:
@@ -53,6 +54,20 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_AVAILABLE   = "available";
     public static final String FUNCTION_FORMAT      = "format";
     public static final String FUNCTION_DURATION    = "duration";
+
+    // parameter definitions (making use of reflection utitility for functions)
+    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class) };
+    public final static Parameter[] FILTEREDURLS_PARAMETERS  = URLS_PARAMETERS;
+    public final static Parameter[] URL_PARAMETERS           = URLS_PARAMETERS;
+    public final static Parameter[] NUDEURL_PARAMETERS       = URLS_PARAMETERS;
+    public final static Parameter[] PARENTS_PARAMETERS       = {};
+    public final static Parameter[] ROOT_PARAMETERS          = {};
+    public final static Parameter[] ISSUBFRAGMENT_PARAMETERS = {};
+    public final static Parameter[] SUBFRAGMENT_SPARAMETERS  = {};
+    public final static Parameter[] AVAILABLE_PARAMETERS     = {};
+    public final static Parameter[] FORMAT_PARAMETERS        = URLS_PARAMETERS;
+    public final static Parameter[] DURATION_PARAMETERS      = {};
+
 
 
     // This filter is able to find the best mediasource by a mediafragment.
@@ -91,6 +106,13 @@ public class MediaFragments extends MMObjectBuilder {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaSources.class, function);
+    }
+    /**
+     * {@inheritDoc}
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
@@ -418,8 +440,8 @@ public class MediaFragments extends MMObjectBuilder {
     public String replace(scanpage sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
             String token=command.nextToken();
-
-        log.debug("scan - "+token);
+            
+            log.debug("scan - "+token);
             if (token.equals("GETURL")) {
                 Integer number=null, userSpeed=null, userChannels=null;
                 if (command.hasMoreTokens()) number=new Integer(command.nextToken());
@@ -444,8 +466,8 @@ public class MediaFragments extends MMObjectBuilder {
                     return null;
                 }
             }
-        log.error("only command GETURL is supported");
-        return "only command GETURL is supported";
+            log.error("only command GETURL is supported");
+            return "only command GETURL is supported";
         }
         log.error("No commands defined.");
         return "No commands defined.";
