@@ -13,7 +13,6 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.mmbase.module.ParseException;
 import org.mmbase.module.ProcessorInterface;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @application SCAN
 * @author Jan van Oosterom
-* @version $Id: HTMLElement.java,v 1.8 2004-09-29 14:29:24 pierre Exp $
+* @version $Id: HTMLElement.java,v 1.9 2004-10-11 11:17:43 pierre Exp $
 *
 */
 public abstract class HTMLElement {
@@ -300,7 +299,7 @@ public abstract class HTMLElement {
             // what is this, should tagger be empty ?
             try {
               valuesList = processor.getList(sp,new StringTagger(""),values);
-            } catch (ParseException pe) {}
+            } catch (RuntimeException pe) {}
             if (valuesList == null) {
                 //moreValues = false;
                 //values = "";
@@ -317,7 +316,7 @@ public abstract class HTMLElement {
             try {
                 // what is this, should tagger be empty ?
                 valuesList = processor.getList(sp,new StringTagger(""),values);
-            } catch (ParseException pe) {}
+            } catch (RuntimeException pe) {}
             if (valuesList == null) {
                 log.error("HTMLElement.parse: The processor returned null !!");
                 return false;
