@@ -1,4 +1,5 @@
 /*
+$Id: LStreams.java,v 1.3 2000-02-24 14:37:31 wwwtech Exp $
 
 VPRO (C)
 
@@ -6,6 +7,7 @@ This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders;
 
@@ -19,6 +21,7 @@ import org.mmbase.util.*;
 /**
  * @author David V van Zeventer
  * @version 4 nov 1998
+ * @Revision@ $Date: 2000-02-24 14:37:31 $
  */
 /**
  * NOTE 29 JAN 1999: The key in the lstreams hashtable consists of nodes' channelname only, instead of
@@ -38,6 +41,8 @@ public class LStreams extends MMObjectBuilder {
 	public boolean init() {	//This method is called when the server has been restarted.
 		String methodname = "init";
 		if (super.init()) {
+			System.out.println(buildername+": "+methodname+": Server has been restarted.");	
+
 			MMObjectNode lstreamsnode=null;  	//Temporary lstreamsnode containing al the DB fields.
 			String channelname=null;
 			String streamsoptions=null;
