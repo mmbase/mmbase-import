@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.crontab;
 
 /**
- * A straight-forward abstract implementation of JCronJob. If you exend it, you only need to
+ * A straight-forward abstract implementation of CronJob. If you exend it, you only need to
  * implement run(), and the 'cronEntry' protected member var is available. 
  * 
  * @author Michiel Meeuwissen
@@ -20,15 +20,18 @@ public abstract class AbstractCronJob implements CronJob {
 
     /**
      * {@inheritDoc}
-     * Only stores the JCronEntry in protected member jCronEntry
+     *
+     * Stores the CronEntry in protected member cronEntry. So extensions should override 
+     * {@link #init()} instead (in which they can use the cronEntry member).
      */
-    public void init(CronEntry cronEntry) {
+    public final void init(CronEntry cronEntry) {
         this.cronEntry = cronEntry;
         init();
     }
 
     /**
-     * You can init by overriding this too (no need to call super.init)
+     * You can init by overriding this (no need to call super.init)
+     * This is called by {@link #init(CronEntry)}
      */
     protected void init() {}
 

@@ -9,11 +9,11 @@ package org.mmbase.applications.crontab;
 
 /**
  * CronJobs are simply 'Runnable' but also have a init-method, which is called by CronDaemon. It
- * is wrapped in JCronEntries first.
+ * is wrapped a CronEntry first.
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronJob.java,v 1.2 2004-05-04 09:32:49 keesj Exp $
+ * @version $Id: CronJob.java,v 1.3 2004-09-23 17:20:36 michiel Exp $
  */
 
 
