@@ -8,11 +8,13 @@ See http://www.MMBase.org/license
  
  */
 
-package speeltuin.media.org.mmbase.util.media;
+package org.mmbase.util.media;
 
+import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import javax.servlet.http.HttpServletRequest;
 
 import java.util.Enumeration;
 
@@ -31,11 +33,17 @@ import java.util.Enumeration;
 public class MediaSourceFilter {
     
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
+    
+    private MediaFragment mediafragmentbuilder = null;
+    
     private static final int MINSPEED        = 16000;
     private static final int MAXSPEED        = 96000;
     private static final int MINCHANNELS     = 1;
     private static final int MAXCHANNELS     = 2;
-    
+        
+    public MediaSourceFilter (MediaFragment mf) {
+        mediafragmentbuilder = mf;
+    }
     
     /**
      * find the most appropriate MediaSource
@@ -44,7 +52,7 @@ public class MediaSourceFilter {
      *   - if a g2 file is found which is encoded (status=done), set this as preffered
      *   - else find r5 file with best match with respect to wanted speed/channels
      */
-    public MediaSource filterMediaSource(MediaFragment mediafragment, int wantedspeed, int wantedchannels) {
+    public MMObjectNode filterMediaSource(MMObjectNode mediafragment, HttpServletRequest request, int wantedspeed, int wantedchannels) {
         
         if( wantedspeed < MINSPEED ) {
             log.error("wantedspeed("+wantedspeed+") less than minspeed("+MINSPEED+")");
@@ -63,23 +71,23 @@ public class MediaSourceFilter {
             wantedchannels = MAXCHANNELS;
         }
         
-        Enumeration mediasources = mediafragment.getMediaSources();
+        Enumeration mediasources = mediafragmentbuilder.getMediaSources(mediafragment).elements();
         if( mediasources == null ) {
-            log.warn("mediafragment "+mediaframent.getStringValue("title")+" does not have media sources");
+            log.warn("mediafragment "+mediafragment.getStringValue("title")+" does not have media sources");
         }
         
-        MediaSource bestR5 = null;
+        MMObjectNode bestR5 = null;
         while(mediasources.hasMoreElements()) {
-            mediasource = (MediaSource) mediasources.nextElement();
+            MMObjectNode mediasource = (MMObjectNode) mediasources.nextElement();
             
             // Is the MediaSource ready for use ?
             if( mediasource.getIntValue("status") == MediaSource.DONE ) {
                 
                 // If G2 is available return it.
-                if( mediasource.getIntValue("format") == MediaSource.G2 ) {
+                if( mediasource.getIntValue("format") == MediaSource.SURESTREAM_FORMAT ) {
                     return mediasource;
                     // Take the best R5 stream.
-                } else if( mediasource.getIntValue("format") == MediaSource.R5 ) {
+                } else if( mediasource.getIntValue("format") == MediaSource.RA_FORMAT ) {
                     if(mediasource.getSpeed() <= wantedspeed && mediasource.getChannels() <= wantedchannels) {
                         if(bestR5==null) {
                             bestR5 = mediasource;

@@ -7,13 +7,15 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
  */
-package speeltuin.media.org.mmbase.module.builders;
+package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.media.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -43,7 +45,7 @@ import org.mmbase.util.logging.Logging;
  * Please if you have more comments add them here.
  */
 
-public class MediaFragment1 extends MMObjectBuilder {
+public class MediaFragment extends MMObjectBuilder {
     
     // logging
     private static Logger log = Logging.getLoggerInstance(MediaFragment.class.getName());
@@ -62,6 +64,21 @@ public class MediaFragment1 extends MMObjectBuilder {
     private final static int STORAGE_MONO=3;
     private final static int STORAGE_MONO_NOBACKUP=4;
     
+    // This filter is able to find the best mediasource by a mediafragment.
+    private MediaSourceFilter mediasourcefilter = new MediaSourceFilter(this);
+    
+    // The media source builder
+    private MediaSource mediasourcebuilder = null;
+    
+    public MediaFragment() {
+        // Retrieve a reference to the MediaSource builder
+        mediasourcebuilder = (MediaSource) mmb.getMMObject("mediasources");
+        if(mediasourcebuilder==null) {
+            log.error("Builder mediasources is not loaded.");
+        } else {
+            log.debug("The builder mediasources is retrieved.");
+        }
+    }
     
     /**
      * create some virtual extra fields.
@@ -106,8 +123,20 @@ public class MediaFragment1 extends MMObjectBuilder {
         return ""; //getAudiopartUrl(mmb,sp,number,userSpeed,userChannels);
     }
     
-    private String getUrl(int starttime, int stoptime) {
-        return "";
+    /**
+     * get an url for the requested media.
+     *
+     * @param mediafragment the number of the media fragment wanted
+     * @param request the HttpRequest of the user
+     * @param wantedspeed the requested speed of the user
+     * @param wantedchannels the request channels of the user
+     * @return the Url for the requested media
+     */
+    private String getUrl(int mediafragmentnr, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+        // Which MediaSource is the best one to use ?
+        MMObjectNode mediafragment = getNode(mediafragmentnr);
+        MMObjectNode mediasource = mediasourcefilter.filterMediaSource(mediafragment, request, wantedspeed, wantedchannels);
+        return mediasourcebuilder.getUrl(mediafragment, mediasource, request, wantedspeed, wantedchannels);
     }
     
     /**
@@ -122,18 +151,36 @@ public class MediaFragment1 extends MMObjectBuilder {
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    private boolean isSubFragment(int nodenr) {
-        MMObjectNode node = getNode(nodenr);
+    private boolean isSubFragment(MMObjectNode mediafragment) {
+        return (mediafragment.getRelationCount("mediasources")==0 && mediafragment.getRelationCount("mediafragments")>0);
+    }
+    
+    /**
+     * find the mediafragment of which the given mediafragment is a part.
+     * @param mediafragment sub media fragment
+     * @return the parent media fragment
+     */
+    private MMObjectNode getParentFragment(MMObjectNode mediafragment) {
+        Enumeration e = mediafragment.getRelatedNodes("mediafragments").elements();
         
-        return (node.getRelationCount("mediasources")==0 && node.getRelationCount("mediafragments")>0);
+        if(!e.hasMoreElements()) {
+            log.error("Cannot find parent media fragment");
+        } else {
+            return (MMObjectNode)e.nextElement();
+        }
+        return null;
     }
     
     /**
      * get all mediasources belonging to this mediafragment
+     * @param mediafragment the mediafragment
+     * @return All mediasources related to given mediafragment
      */
-    private Enumeration getMediaSources(int nodenr) {
-        MMObjectNode node = getNode(nodenr);
-        return node.getRelations("mediasources");
+    public Vector getMediaSources(MMObjectNode mediafragment) {
+        if(isSubFragment(mediafragment)) {
+            mediafragment = getParentFragment(mediafragment);
+        }
+        return mediafragment.getRelatedNodes("mediasources");
     }
     
     /**
@@ -229,7 +276,7 @@ public class MediaFragment1 extends MMObjectBuilder {
         node.setValue("channels",channels);
         bul.insert("system",node);
     }
-    */
+     */
     
     /**
      * setDefaults for a node
