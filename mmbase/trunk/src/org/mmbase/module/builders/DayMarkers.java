@@ -15,36 +15,57 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.13 2000-10-04 13:55:45 vpro Exp $
+ * @version $Id: DayMarkers.java,v 1.14 2001-03-08 18:28:38 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
-	public int day=0;
-	Hashtable daycache=new Hashtable();
+	private static Logger log = Logging.getLoggerInstance(DayMarkers.class.getName()); 
 
-	public DayMarkers() {
-		day=daycount();
+	private int day = 0; // current day number/count
+	//private Hashtable daycache = new Hashtable(); 	// day -> mark
+	private TreeMap daycache = new TreeMap();           // day -> mark, but ordered
+
+	/**
+	 * Put in cache. This function essentially does the casting to
+	 * Integer and wrapping in 'synchronized' for you. 
+	 */
+	private void cachePut(int day, int mark) {
+		synchronized(daycache) {
+			daycache.put(new Integer(day),new Integer(mark)); 
+		}
 	}
 
-	public int daycount() {
-		int time=(int)(DateSupport.currentTimeMillis()/1000);
-		return(time/(3600*24));
+	public DayMarkers() {
+		day = currentDay();
+	}
+
+	/**
+	 * The current time in days
+	 */
+
+	private int currentDay() {
+		return (int)(DateSupport.currentTimeMillis()/(1000*60*60*24));
 	}
 
 	
+	// if it only calls super, it does not have to be overrided, does it?
+	//public boolean commit(MMObjectNode node) {
+	//	boolean res=super.commit(node);
+	//	return(res);
+	//}
 
-	public boolean commit(MMObjectNode node) {
-		boolean res=super.commit(node);
-		return(res);
-	}
+	/**
+	 * Creates a mark in the database, if necessary.
+	 */
 
-
-	public void createMarker() {
-		int max=-1;
-		int mday=-1;
-		System.out.println("Daymarker -> DAY="+day);
+	private void createMarker() {
+		int max  = -1;
+		int mday = -1;
+		log.info("Daymarker -> DAY="+day);
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -55,15 +76,15 @@ public class DayMarkers extends MMObjectBuilder {
 			stmt.close();
 			con.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 		}
 
-		if (mday<0) {
-			System.out.println("DayMarker inserting new marker "+day);
+		if (mday<0) { // it was not in the database
+			log.info("DayMarker inserting new marker " + day);
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
-				ResultSet rs=stmt.executeQuery("select max(number) from "+mmb.baseName+"_object");
+				ResultSet rs = stmt.executeQuery("select max(number) from "+mmb.baseName+"_object");
 				if (rs.next()) {
 					max=rs.getInt(1);
 				}
@@ -77,7 +98,7 @@ public class DayMarkers extends MMObjectBuilder {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("DayMarker marker already exists "+day);
+			log.info("DayMarker marker already exists " + day);
 		}
 	}
 
@@ -86,65 +107,147 @@ public class DayMarkers extends MMObjectBuilder {
 	*/
 	public void probe() {
 		int newday;
-		newday=daycount();
+		newday=currentDay();
 		//debug("Days "+newday+" current "+day);
 		if (newday>day) {
-			day=newday;
+			day = newday;
 			createMarker();
 		}
 	}
 
+	/** 
+	 * Returns the age, in days, of a node. So, this does the inverse of most methods in this 
+	 * class. It converts a node number (which is like a mark) to a day.
+	 */
+
 	public int getAge(MMObjectNode node) {
-		/*
-		return(node.getAge());
-		*/
-		// still has to be implemented with a cache !!!
+			
+		int nodeNumber = node.getIntValue("number");
+		// first, check if it accidentily can be found with the cache:
+		Set days = daycache.entrySet(); 
+		Iterator i = days.iterator();
+		if (i.hasNext()) {   // cache not empty
+			Map.Entry current = (Map.Entry)i.next();
+			Map.Entry previous = null;
+			while (i.hasNext() && ((Integer)current.getValue()).intValue() < nodeNumber) { // search until current > nodeNumber
+				previous = current;
+				current = (Map.Entry)i.next();
+			}			
+			if ((previous != null) && ((Integer)current.getValue()).intValue() >= nodeNumber) { // found in cache
+				// if we found a lower and a higher mark on two consecutive days, return the lower.
+				if (((Integer)current.getKey()).intValue() - ((Integer)previous.getKey()).intValue() == 1) {  
+					return day - ((Integer)previous.getKey()).intValue();
+				}
+			}
+			
+		}
+		log.debug("Could not find with daycache " + nodeNumber + ", searching in database now");
 
-		return(-1);
+		MultiConnection con=mmb.getConnection();
+		if (con==null) { log.error("Could not get connection to database"); return(-1);} 
+		try {
+			Statement stmt=con.createStatement();
+			String query = "select mark, daycount from " + mmb.baseName + "_daymarks where mark < "+ nodeNumber + " order by -daycount";
+			// mark < in stead of mark = will of course only be used in database with are not on line always, such 
+			// that some days do not have a mark.
+			log.debug(query);
+			ResultSet rs=stmt.executeQuery(query);
+			// search the first daycount of which' mark is lower.
+			// that must be the day which we were searching (at least a good estimate)
+			if (rs.next()) {
+				int mark = rs.getInt(1);
+				int daycount = rs.getInt(2);			   
+				cachePut(daycount, mark);   // found one, could as well cache it
+				getDayCount(daycount + 1);  // next time, this can be count with the cache as well
+				stmt.close();
+				con.close();
+				return(day - daycount);
+			} else {
+				// hmm, strange, perhaps we have to seek the oldest daycount, but for the moment:
+				log.error("daycount could not be found");
+				return 0; // very old.						   
+			}
+
+		} catch(java.sql.SQLException e) {
+			log.error(Logging.stackTrace(e));
+			return(-1);
+		}
+		
 	}
 
+	/**
+	 * The current day count, that is, the time in days, of today.
+	 **/
 	public int getDayCount() {
-		return(day);
+		return (day);
 	}
+
+	/**
+	 * Given an age, this function returns a mark, _not a day count_.
+	 * @param daysold a time in days ago.
+	 **/
 
 	public int getDayCountAge(int daysold) {
-		int wday=day-daysold;
+		int wday = day - daysold;
 		return(getDayCount(wday));
 	}
 
-	public int getDayCount(int wday) {
-		Integer result=(Integer)daycache.get(new Integer(wday));
-		if (result!=null) {
+
+	/**
+	 * This function has nothing to do with getDayCount(). 
+	 *
+	 * @param day A time in days
+	 * @return    The mark on that day
+	 */
+	private int getDayCount(int wday) {
+
+		log.debug("finding mark of day " + wday);
+		Integer result = (Integer)daycache.get(new Integer(wday)); 
+		if (result!=null) { // already in cache
 			return(result.intValue());
 		}
+		log.debug("could not be found in cache");
 		if (mmb==null) return(-1);
 		if (wday<=day) {
 			try {
 				MultiConnection con=mmb.getConnection();
 				if (con==null) return(-1);
 				Statement stmt=con.createStatement();
-				ResultSet rs=stmt.executeQuery("select mark from "+mmb.baseName+"_daymarks where daycount="+(wday));
+				ResultSet rs=stmt.executeQuery("select mark, daycount from "+mmb.baseName+"_daymarks where daycount >= " + wday + " order by daycount");
 				if (rs.next()) {
+					log.debug("found in db, will be inserted in cache");
 					int tmp=rs.getInt(1);
-					daycache.put(new Integer(wday),new Integer(tmp));
+					int founddaycount = rs.getInt(2);
+					if (founddaycount != wday) { 
+						log.error("Could not find day " + wday + ", surrogated with " + founddaycount);
+					}
+					cachePut(wday, tmp);
 					stmt.close();
-					con.close();
+					con.close();					
 					return(tmp);
+				} else {
+					log.error("Could not find mark of day " + wday);
+					stmt.close();
+					con.close();					
+					return -1; // but it must be relativily new.
 				}
-				stmt.close();
-				con.close();
 			} catch(Exception e) {
-				daycache.put(new Integer(wday),new Integer(0));
+				log.error("Could not find mark of day " + wday);
+				// cachePut(wday, 0);
 				return(0);
 			}
 		} else {
 			return(Integer.MAX_VALUE);
 		}
-		daycache.put(new Integer(wday),new Integer(0));
-		return(0);
+		//cachePut(wday, 0);
+		//return(0);
 	}
 
-
+	/**
+	 * Scan. Knows the tokens, COUNT, COUNTAGE, COUNTMONTH, COUNTPREVMONTH, COUNTNEXTMONTH
+	 * etc.
+	 *
+	 **/
     public String replace(scanpage sp, StringTokenizer command) {
 		String rtn="";
 		int ival;
