@@ -22,11 +22,13 @@ import org.mmbase.util.logging.Logging;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: MMContainerCompare.java,v 1.4 2003-03-10 11:50:31 pierre Exp $
+ * @version $Id: MMContainerCompare.java,v 1.5 2004-05-03 11:10:42 michiel Exp $
+ * @todo   Should implement java.util.Comparator. Perhaps should be named MMObjectNodeComparator. Btw, this class is not used.
+ * 
  */
 public class MMContainerCompare implements CompareInterface {
 
-    private static Logger log = Logging.getLoggerInstance(MMContainerCompare.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMContainerCompare.class);
 
     public final static boolean ASC=true;
     public final static boolean DESC=false;
