@@ -19,27 +19,28 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
+ * @deprecated-now does not add functionality
  * @rename Dropboxes
-  * @author Daniel Ockeloen
+ * @author Daniel Ockeloen
  */
 public class dropboxes extends ServiceBuilder implements MMBaseObserver {
 
-	public dropboxes() {
-	}
+    public dropboxes() {
+    }
 
-	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-		super.nodeRemoteChanged(machine,number,builder,ctype);
-		return(nodeChanged(machine,number,builder,ctype));
-	}
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine,number,builder,ctype);
+        return(nodeChanged(machine,number,builder,ctype));
+    }
 
-	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-		super.nodeLocalChanged(machine,number,builder,ctype);
-		return(nodeChanged(machine,number,builder,ctype));
-	}
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine,number,builder,ctype);
+        return(nodeChanged(machine,number,builder,ctype));
+    }
 
-	public boolean nodeChanged(String machine,String number,String builder,String ctype) {
-		return(true);
-	}
+    public boolean nodeChanged(String machine,String number,String builder,String ctype) {
+        return(true);
+    }
 
-     	
+
 }

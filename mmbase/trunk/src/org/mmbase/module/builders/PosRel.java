@@ -19,11 +19,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
+ * @deprecated Does not add functionality (maybe it should?)
  * @author Rico Jansen
  */
 public class PosRel extends InsRel {
 
-	public PosRel() {
-	}
+    public PosRel() {
+    }
 
 }
