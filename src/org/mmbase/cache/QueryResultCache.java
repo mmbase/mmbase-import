@@ -1,5 +1,4 @@
 /*
-
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -17,14 +16,19 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 
 /**
- * This cache handles query results from the bridge.  A SearchQuery object serves as key, so
- * ideally, this cache could simply work for <em>all</em> select queries done by MMBase (because the
- * should all be performed via a SearchQuery object).
+ * This cache provides a base implementation to cache the result of SearchQuery's. Such a cache
+ * links a SearchQuery object to a list of MMObjectNodes.
  *
- * @author Daniel Ockeloen
- * @author Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.1 2003-07-14 20:58:41 michiel Exp $
- * @since MMBase-1.7
+ * A cache entry is automaticly invalidated if arbitrary node of one of the types present in the
+ * SearchQuery is changed (,created or deleted). This mechanism is not very subtle but it is
+ * garanteed to be correct. It means though that your cache can be considerably less effective for
+ * queries containing node types from which often node are edited.
+ *
+ * @author  Daniel Ockeloen
+ * @author  Michiel Meeuwissen
+ * @version $Id: QueryResultCache.java,v 1.2 2003-07-17 17:01:17 michiel Exp $
+ * @since   MMBase-1.7
+ * @see org.mmbase.storage.search.SearchQuery
  */
 
 
@@ -34,6 +38,8 @@ abstract public class QueryResultCache extends Cache {
 
 
     // Keep a map of the existing Observers, for each nodemanager one.
+    // @todo I think it can be done with one Observer instance too, (in which case we can as well
+    // let QueryResultCache implement MMBaseObserver itself)
     private Map observers = new HashMap();
 
 
@@ -41,6 +47,11 @@ abstract public class QueryResultCache extends Cache {
         super(size);
     }
 
+
+    /**
+     *
+     * @throws ClassCastException if key not a SearchQuery or value not a List.
+     */
     public synchronized Object put(Object key, Object value) {
         return put((SearchQuery) key, (List) value);
     }
@@ -60,7 +71,7 @@ abstract public class QueryResultCache extends Cache {
     }
     
     /**
-     * Remove an object from the cache. It also remove the watch from
+     * Removes an object from the cache. It alsos remove the watch from
      * the observers which are watching this entry.
      * 
      * @param key A SearchQuery object.
