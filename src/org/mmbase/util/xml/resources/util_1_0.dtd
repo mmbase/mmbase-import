@@ -6,5 +6,11 @@
 
 <!ELEMENT properties ( property* ) >
 
-<!ELEMENT property ( #PCDATA ) >
+<!ELEMENT property ( #PCDATA | entry )* >
 <!ATTLIST property name NMTOKEN #REQUIRED >
+<!ATTLIST property type NMTOKEN "string" >
+
+
+<!ELEMENT entry ( key, value ) >
+<!ELEMENT key  ( #PCDATA ) >
+<!ELEMENT value  ( #PCDATA ) >
