@@ -7,6 +7,12 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+
+/*
+	$Id: MultiRelations.java,v 1.2 2000-02-24 14:33:49 wwwtech Exp $
+
+	$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -19,18 +25,19 @@ import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 
 /**
- * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @author Rico Jansen
+ * @version $Id: MultiRelations.java,v 1.2 2000-02-24 14:33:49 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
 	final static boolean debug=true;
+	private String classname = getClass().getName();
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	public MultiRelations(MMBase m) {
 		this.mmb=m;
 		this.tableName="multirelations";
 		this.description="";
-		//init();
 		m.mmobjs.put(tableName,this);
 	}
 
@@ -312,7 +319,7 @@ public class MultiRelations extends MMObjectBuilder {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			String query="select "+distinct+" "+select+" from "+stables+" where "+basenodestring+" "+relstring +" "+where+" "+order;
-			if (debug) System.out.println("MultiLevel "+query);
+			if (debug) debug("Query "+query);
 
 			ResultSet rs=stmt.executeQuery(query);
 			MMObjectNode node;
@@ -329,7 +336,7 @@ public class MultiRelations extends MMObjectBuilder {
 					fieldname=rd.getColumnName(i);	
 					fieldtype=rd.getColumnTypeName(i);	
 					node=database.decodeDBnodeField(node,fieldtype,fieldname,rs,i,prefix);
-					//if (debug) System.out.println("Node="+node);
+					//if (debug) debug("Node="+node);
 				}
 				// clear the changed signal
 				//node.clearChanged(); // huh ?
@@ -343,6 +350,7 @@ public class MultiRelations extends MMObjectBuilder {
 			return(results);
 		} catch (SQLException ee) {
 			// something went wrong print it to the logs
+			debug("searchMultiLevelVector(): ERROR: ");
 			ee.printStackTrace();
 			return(null);
 		}
@@ -362,7 +370,7 @@ public class MultiRelations extends MMObjectBuilder {
 			if (lastrel) {
 				if (isRel) {
 					// rel, rel
-					System.out.println("MultiRelations error , two reltables "+curtable);
+					debug("Error , two reltables "+curtable);
 					lastrel=true;
 				} else {
 					// rel, nonrel
@@ -467,7 +475,7 @@ public class MultiRelations extends MMObjectBuilder {
 				}
 			}	
 		}
-//		System.out.println("getSelectString="+result);
+//		debug("getSelectString="+result);
 		return(result);
 	}
 
@@ -634,7 +642,7 @@ public class MultiRelations extends MMObjectBuilder {
 			
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			// System.out.println("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where number="+number);
+			// debug("getShortedText(): SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where number="+number);
 			ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where number="+number);
 			if (rs.next()) {
 				result=getDBText(rs,1);
@@ -643,7 +651,7 @@ public class MultiRelations extends MMObjectBuilder {
 			con.close();
 			return(result);
 		} catch (Exception e) {
-			System.out.println("MultiRelations : trying to load text");
+			debug("getShortedText(): Error while trying to load text");
 			e.printStackTrace();
 		}
 		return(null);
@@ -674,7 +682,7 @@ public class MultiRelations extends MMObjectBuilder {
 			con.close();
 			return(result);
 		} catch (Exception e) {
-			System.out.println("MultiRelations : trying to load bytes");
+			debug("getShortedByte(): Error while trying to load bytes");
 			e.printStackTrace();
 		}
 		return(null);
