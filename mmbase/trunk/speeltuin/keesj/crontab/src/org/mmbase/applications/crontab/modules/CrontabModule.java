@@ -1,9 +1,16 @@
+/*
+ This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ */
 package org.mmbase.applications.crontab.modules;
 
-import org.mmbase.module.*;
-import org.mmbase.applications.crontab.*;
 import java.util.*;
 
+import org.mmbase.applications.crontab.*;
+import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.*;
 
 
@@ -12,9 +19,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  */
-public class JCrontabModule extends WatchedReloadableModule {
-    private static final Logger log = Logging.getLoggerInstance(JCrontabModule.class);
-    protected JCronDaemon jCronDaemon = null;
+public class CrontabModule extends WatchedReloadableModule {
+    private static final Logger log = Logging.getLoggerInstance(CrontabModule.class);
+    protected CronDaemon cronDaemon = null;
     
     /** 
      * Need to remember which crontab entries where 'mine', to known which must be removed if
@@ -22,8 +29,8 @@ public class JCrontabModule extends WatchedReloadableModule {
      */
     private Set myEntries = new HashSet();
 
-    public JCrontabModule() {
-        jCronDaemon = JCronDaemon.getInstance();
+    public CrontabModule() {
+        cronDaemon = CronDaemon.getInstance();
     }
 
     /**
@@ -72,10 +79,10 @@ public class JCrontabModule extends WatchedReloadableModule {
             }
 
             try {
-                JCronEntry job = new JCronEntry((String) entry.getKey(), times, description, className);
+                CronEntry job = new CronEntry((String) entry.getKey(), times, description, className);
                 job.setConfiguration(configString);
                 myEntries.add(job);
-                jCronDaemon.add(job);
+                cronDaemon.add(job);
             } catch (Exception e) {
                 log.error("Could not add to JCronDaemon " + entry.getKey() + "|" + times + "|" + description + "|" + className + " " + e.getClass().getName() + ": " + e.getMessage());
             }
@@ -90,7 +97,7 @@ public class JCrontabModule extends WatchedReloadableModule {
         log.info("Reloading crontab");
         Iterator i = myEntries.iterator();
         while (i.hasNext()) {
-            jCronDaemon.remove((JCronEntry) i.next());
+            cronDaemon.remove((CronEntry) i.next());
         }
         myEntries.clear();
         init();

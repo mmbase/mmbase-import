@@ -1,3 +1,10 @@
+/*
+ This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ */
 package org.mmbase.applications.crontab;
 
 
@@ -7,18 +14,18 @@ import java.util.*;
  * One the fields of the 'crontab' syntax, which is something like '*' or '* /5' or 5-23. See 'man 5 crontab'
  *
  * @author Kees Jongenburger
- * @version $Id: JCronEntryField.java,v 1.3 2004-04-01 22:16:47 michiel Exp $
+ * @version $Id: CronEntryField.java,v 1.1 2004-05-04 09:00:04 keesj Exp $
  */
 
-public class JCronEntryField {
+public class CronEntryField {
     private String content;
     
     boolean[] valid = new boolean[60];
     
-    public JCronEntryField() {
+    public CronEntryField() {
     }
     
-    public JCronEntryField(String content) {
+    public CronEntryField(String content) {
         setTimeVal(content);
     }
     
@@ -81,10 +88,10 @@ public class JCronEntryField {
     }
 
     public boolean equals(Object o) {
-        if (! (o instanceof JCronEntryField)) {
+        if (! (o instanceof CronEntryField)) {
             return false;
         }
-        JCronEntryField f = (JCronEntryField) o;
+        CronEntryField f = (CronEntryField) o;
         return content.equals(f.content);
     }
 }

@@ -1,7 +1,14 @@
+/*
+ This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ */
 package org.mmbase.applications.crontab;
 
-
 import java.util.*;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -9,16 +16,17 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: JCronEntry.java,v 1.11 2004-05-03 09:11:49 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.1 2004-05-04 09:00:03 keesj Exp $
  */
 
-public class JCronEntry {
+public class CronEntry {
+
+    private static final Logger log = Logging.getLoggerInstance(CronEntry.class);
     
-    private static final Logger log = Logging.getLoggerInstance(JCronEntry.class);
     private Runnable jCronJob;
 
     private Thread thread;
-    
+
     private String id;
     private String name;
     private String className;
@@ -27,74 +35,69 @@ public class JCronEntry {
 
     private int count = 0;
 
-    private JCronEntryField second    ;// 0-59
-    private JCronEntryField minute    ;// 0-59
-    private JCronEntryField hour      ;// 0-23
-    private JCronEntryField dayOfMonth;//1-31
-    private JCronEntryField month     ;//1-12
-    private JCronEntryField dayOfWeek ;//0-7 (0 or 7 is sunday)
-   
+    private CronEntryField second; // 0-59
+    private CronEntryField minute; // 0-59
+    private CronEntryField hour; // 0-23
+    private CronEntryField dayOfMonth; //1-31
+    private CronEntryField month; //1-12
+    private CronEntryField dayOfWeek; //0-7 (0 or 7 is sunday)
 
     /**
      * @throws ClassCastException if className does not refer to a Runnable.
-     */ 
-    public JCronEntry(String id, String cronTime, String name, String className) throws Exception {
+     */
+    public CronEntry(String id, String cronTime, String name, String className) throws Exception {
         this.id = id;
         this.name = name;
-        if (this.name == null) this.name = "";
+        if (this.name == null)
+            this.name = "";
         this.className = className;
         this.cronTime = cronTime;
-        jCronJob = (Runnable) Class.forName(className).newInstance();
+        jCronJob = (Runnable)Class.forName(className).newInstance();
 
-        second     = new JCronEntryField();
-        minute     = new JCronEntryField();
-        hour       = new JCronEntryField();
-        dayOfMonth = new JCronEntryField();
-        month      = new JCronEntryField();
-        dayOfWeek  = new JCronEntryField();
+        second = new CronEntryField();
+        minute = new CronEntryField();
+        hour = new CronEntryField();
+        dayOfMonth = new CronEntryField();
+        month = new CronEntryField();
+        dayOfWeek = new CronEntryField();
         setCronTime(cronTime);
     }
 
     public void init() {
-        if (jCronJob instanceof JCronJob) {
-            ((JCronJob) jCronJob).init(this);
+        if (jCronJob instanceof CronJob) {
+            ((CronJob)jCronJob).init(this);
         }
     }
+    
     public void stop() {
-        if (jCronJob instanceof JCronJob) {
-            ((JCronJob) jCronJob).stop();
+        if (jCronJob instanceof CronJob) {
+            ((CronJob)jCronJob).stop();
         }
     }
 
     protected boolean isAlive() {
         return thread != null && thread.isAlive();
     }
-    
+
     protected boolean kick() {
         if (isAlive()) {
             return false;
         } else {
             count++;
-            thread = new CronThread(jCronJob, "JCronJob " + toString());
-            thread.setDaemon(true);            
+            thread = new ExceptionLoggingThread(jCronJob, "JCronJob " + toString());
+            thread.setDaemon(true);
             thread.start();
             return true;
         }
 
     }
-    
-    protected void setCronTime(String cronTime){
-        StringTokenizer st = new StringTokenizer(cronTime," ");
+
+    protected void setCronTime(String cronTime) {
+        StringTokenizer st = new StringTokenizer(cronTime, " ");
         if (st.countTokens() > 5) {
             throw new RuntimeException("Too many (" + st.countTokens() + "> 6)  tokens in " + cronTime);
         }
-        /* not implemented
-        if (st.countTokens() == 6) {
-            second.setTimeVal(st.nextToken());
-        } else {
-            second.setTimeVal("0");
-        }
-        */
+ 
         minute.setTimeVal(st.nextToken());
         hour.setTimeVal(st.nextToken());
         dayOfMonth.setTimeVal(st.nextToken());
@@ -105,11 +108,11 @@ public class JCronEntry {
     public String getCronTime() {
         return cronTime;
     }
-    
-    public String getId(){
+
+    public String getId() {
         return id;
     }
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -119,60 +122,57 @@ public class JCronEntry {
     public String getConfiguration() {
         return configuration;
     }
-    
-    boolean mustRun(Date date){
+
+    boolean mustRun(Date date) {
         Calendar cal = Calendar.getInstance();
-        if (
-        minute.valid(cal.get(cal.MINUTE)) &&
-        hour.valid(cal.get(cal.HOUR_OF_DAY)) &&
-        dayOfMonth.valid(cal.get(cal.DAY_OF_MONTH)) &&
-        month.valid(cal.get(cal.MONTH) + 1) &&
-        dayOfWeek.valid(cal.get(cal.DAY_OF_WEEK) -1)){
+        if (minute.valid(cal.get(Calendar.MINUTE))
+            && hour.valid(cal.get(Calendar.HOUR_OF_DAY))
+            && dayOfMonth.valid(cal.get(Calendar.DAY_OF_MONTH))
+            && month.valid(cal.get(Calendar.MONTH) + 1)
+            && dayOfWeek.valid(cal.get(Calendar.DAY_OF_WEEK) - 1)) {
             return true;
         }
         return false;
     }
-    
-    public JCronEntryField getMinuteEntry(){
+
+    public CronEntryField getMinuteEntry() {
         return minute;
     }
-    public JCronEntryField getHourEntry(){
+
+    public CronEntryField getHourEntry() {
         return hour;
     }
-    
-    public JCronEntryField getDayOfMonthEntry(){
+
+    public CronEntryField getDayOfMonthEntry() {
         return dayOfMonth;
     }
-    
-    public JCronEntryField getMonthEntry(){
+
+    public CronEntryField getMonthEntry() {
         return month;
     }
-    
-    public JCronEntryField getDayOfWeekEntry(){
+
+    public CronEntryField getDayOfWeekEntry() {
         return dayOfWeek;
     }
 
     public String toString() {
-        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": " +  count;
+        return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": " + count;
     }
-
 
     public int hashCode() {
         return id.hashCode() + name.hashCode() + className.hashCode() + cronTime.hashCode();
     }
-    
 
     public boolean equals(Object o) {
-        if (! (o instanceof JCronEntry)) {
+        if (!(o instanceof CronEntry)) {
             return false;
         }
-        JCronEntry other = (JCronEntry) o;
+        CronEntry other = (CronEntry)o;
         return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime);
-        
     }
 
-    private class CronThread extends Thread {
-        CronThread(Runnable run, String name) {
+    private class ExceptionLoggingThread extends Thread {
+        ExceptionLoggingThread(Runnable run, String name) {
             super(run, name);
         }
 
@@ -183,10 +183,8 @@ public class JCronEntry {
             try {
                 super.run();
             } catch (Throwable t) {
-                log.error("Error during cron-job " + JCronEntry.this + " : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
+                log.error("Error during cron-job " + CronEntry.this +" : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
             }
         }
-
     }
-
 }
