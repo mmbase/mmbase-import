@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.12 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: TreeList.java,v 1.13 2005-03-16 19:03:20 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -71,6 +71,8 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
 
     /**
+     * Checks if the size of the List needs to be (re)determined, and if not, does so. After growing
+     * a List the size needs recalculation.
      * @since MMBase-1.7.1
      */
     protected void sizeCheck() {
@@ -99,7 +101,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
      * relationStep longer than the longest one until now.
      * This new relationStep is returned, which can be used to create new constraints.
      *
-     * @return null if no relationstep is added because that would not increase the number of results.
+     * @return <code>null</code> if no relationstep is added because that would not increase the number of results.
      */
 
     public RelationStep grow(NodeManager nodeManager, String role, String searchDir) {
