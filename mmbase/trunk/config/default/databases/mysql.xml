@@ -20,6 +20,7 @@
 	 	<not-null>not null</not-null>
 	 	<null>null</null>
 		<primary-key>primary key</primary-key>
+        <key>unique</key>
 	</scheme>
 
 	<!-- <mapping>
