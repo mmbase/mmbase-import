@@ -27,15 +27,17 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.49 2002-03-05 15:27:24 michiel Exp $
+ * @version $Id: Images.java,v 1.50 2002-03-18 12:19:27 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
 
+    // This cache connects templates (or ckeys, if that occurs), with node numbers,
+    // to avoid querying icaches.
     private LRUHashtable templateCacheNumberCache = new LRUHashtable(500); 
 
     ImageConvertInterface imageconvert=null;
-    Hashtable ImageConvertParams=new Hashtable();
+    Hashtable ImageConvertParams = new Hashtable();
 
     // Currenctly only ImageMagick works / this gets parameterized soon
     protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick"; 
@@ -288,7 +290,7 @@ public class Images extends AbstractImages {
             if (log.isDebugEnabled()) log.debug("Image was cached already");
             return picture;
         } else {
-            if (log.isDebugEnabled()) log.debug("Image was not cached, caching now");
+            if (log.isDebugEnabled()) log.debug("Image was not cached, caching now (from getCachedImage: " + picture + ")");
             return getOriginalImage(params);
         }
     }
@@ -323,7 +325,7 @@ public class Images extends AbstractImages {
         // a database layer. So we must have something which works always.
         // Some texts, however will lead to the same ckey now.
 
-        if(log.isDebugEnabled()) log.debug("using ckey" + ckey);
+        if(log.isDebugEnabled()) log.debug("using ckey " + ckey);
         if(ckey.length() > 0) {
             return ckey;
         } else {
@@ -333,7 +335,9 @@ public class Images extends AbstractImages {
     }
     
     /**    
-     * Will return null when not in cache, and otherwise a byte [] representing the picture..    
+     * Determins the ckey, and asks the bytes from icaches.  Will
+     * return null when not in cache, and otherwise a byte []
+     * representing the picture..
      * @param params a <code>Vector</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a byte[]
      */
@@ -361,12 +365,19 @@ public class Images extends AbstractImages {
     
 
     /**    
-     * Will return null when something goes wrong otherwise, a byte[] which represents the picture.
+     * This function should be called when an image/template does not
+     * have a cached version yet. 
      *
-     * @param params a <code>Vector</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
+     * Will return null when something goes wrong otherwise, a byte[]
+     * which represents the picture.
+     *
+     * @param params a <code>Vector</code> of <code>String</code>s,
+     *                containing the name/id of the picture, followed by operations,
+     *                which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a byte[]
      */
     protected byte[] getOriginalImage(Vector params) {
+        log.service("getting image bytes of " + params);
         if (params==null || params.size() == 0) {
             log.debug("getOriginalImage: no parameters");
             return null;

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.28 2002-03-12 12:41:09 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.29 2002-03-18 12:19:27 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -211,8 +211,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
         if (a.equals("highcontrast")) return "contrast"; 
         if (a.equals("flipx"))        return "flop";
         if (a.equals("flipy"))        return "flip";
-		// I don't think that this makes any sense, I dia is not dianegative, 
-		// can be diapositive as well... But well, be are backwards compatible.
+        // I don't think that this makes any sense, I dia is not dianegative, 
+        // can be diapositive as well... But well, we are backwards compatible.
         if (a.equals("dia"))          return "negate"; 
         return a;
             
@@ -246,10 +246,10 @@ public class ConvertImageMagick implements ImageConvertInterface {
                   Following code translates some MMBase specific things to imagemagick's convert arguments.
                  */
                 type = getAlias(type);
-				// Following code will only be used when ModulateScaleBase builder property is defined.
-				if (type.equals("modulate") && (modulateScaleBase!=Integer.MAX_VALUE)) {
-					cmd = calculateModulateCmd(cmd,modulateScaleBase);
-				} else if (type.equals("colorizehex")) {
+                // Following code will only be used when ModulateScaleBase builder property is defined.
+                if (type.equals("modulate") && (modulateScaleBase!=Integer.MAX_VALUE)) {
+                    cmd = calculateModulateCmd(cmd,modulateScaleBase);
+                } else if (type.equals("colorizehex")) {
                     // Incoming hex number rrggbb is converted to
                     // decimal values rr,gg,bb which are inverted on a scale from 0 to 100.
                     if (log.isDebugEnabled()) log.debug("colorizehex, cmd: "+cmd);
@@ -353,31 +353,31 @@ public class ConvertImageMagick implements ImageConvertInterface {
         return cmds; 
     }
 
-	/**
-	 * Calculates the modulate parameter values (brightness,saturation,hue) using a scale base.
-	 * ImageMagick's convert command changed its modulate scale somewhere between version v4.2.9 and v5.3.8.<br />
-	 * In version 4.2.9 the scale ranges from -100 to 100.<br />
-	 * (relative, eg. 20% higher, value is 20, 10% lower, value is -10).<br />
-	 * In version 5.3.8 the scale ranges from 0 to 100.<br />
-	 * (absolute, eg. 20% higher, value is 120, 10% lower, value is 90).<br />
-	 * Now, for different convert versions the scale range can be corrected with the scalebase. <br />
-	 * The internal scale range that's used will be from -100 to 100. (eg. modulate 20,-10,0). 
-	 * With the base you can change this, so for v4.2.9 scalebase=0 and for v5.3.9 scalebase=100.
-	 * @param cmd modulate command string
-	 * @param scaleBase the scale base value
-	 * @return the transposed modulate command string.
-	 */
-	private String calculateModulateCmd(String cmd, int scaleBase) {
-		log.debug("Calculating modulate cmd using scale base "+scaleBase+" for modulate cmd: "+cmd);
-		String modCmd = "";
-		StringTokenizer st = new StringTokenizer(cmd, ",/");
-		while (st.hasMoreTokens())
-			modCmd+=scaleBase+Integer.parseInt(st.nextToken())+",";
+    /**
+     * Calculates the modulate parameter values (brightness,saturation,hue) using a scale base.
+     * ImageMagick's convert command changed its modulate scale somewhere between version v4.2.9 and v5.3.8.<br />
+     * In version 4.2.9 the scale ranges from -100 to 100.<br />
+     * (relative, eg. 20% higher, value is 20, 10% lower, value is -10).<br />
+     * In version 5.3.8 the scale ranges from 0 to 100.<br />
+     * (absolute, eg. 20% higher, value is 120, 10% lower, value is 90).<br />
+     * Now, for different convert versions the scale range can be corrected with the scalebase. <br />
+     * The internal scale range that's used will be from -100 to 100. (eg. modulate 20,-10,0). 
+     * With the base you can change this, so for v4.2.9 scalebase=0 and for v5.3.9 scalebase=100.
+     * @param cmd modulate command string
+     * @param scaleBase the scale base value
+     * @return the transposed modulate command string.
+     */
+    private String calculateModulateCmd(String cmd, int scaleBase) {
+        log.debug("Calculating modulate cmd using scale base "+scaleBase+" for modulate cmd: "+cmd);
+        String modCmd = "";
+        StringTokenizer st = new StringTokenizer(cmd, ",/");
+        while (st.hasMoreTokens())
+            modCmd+=scaleBase+Integer.parseInt(st.nextToken())+",";
         if (!modCmd.equals(""))
-                modCmd = modCmd.substring(0,modCmd.length()-1); // remove last ',' char.
-		log.debug("Modulate cmd after calculation: "+modCmd);
-		return modCmd;
-	}
+            modCmd = modCmd.substring(0,modCmd.length()-1); // remove last ',' char.
+        log.debug("Modulate cmd after calculation: "+modCmd);
+        return modCmd;
+    }
 	
     /**
      * Does the actual conversion.
@@ -447,7 +447,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             
                      
             // print some info and return....            
-            log.service("converted image(#" + pict.length + " bytes) with options '" + cmd + "' to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");            
+            log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");            
             return image;
         } 
         catch (IOException e) {
