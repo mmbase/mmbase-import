@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.1 2000-10-28 23:16:56 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.1.2.1 2001-02-23 01:19:04 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -14,7 +14,7 @@
 #
 
 # change this to your MMBase-dir
-MMBASE_HOME=../..
+MMBASE_HOME=/usr/local/java/mmbase
 # change this to your Tomcat directory
 TOMCAT_HOME=/usr/local/java/apache/jakarta-tomcat
 # change this to your mmbase-config dir
