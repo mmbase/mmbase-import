@@ -106,8 +106,13 @@ public class TypeRel extends MMObjectBuilder {
 			MMObjectNode node;
 			Vector results=new Vector();
 			if (rs.next()) {
-				int j=rs.getInt(1);
-				artCache.put(""+snum+" "+dnum,new Integer(j));
+		                int j=rs.getInt(1);
+               			if (rs.next()) {
+                    			artCache.put(""+snum+" "+dnum,new Integer(-1));
+                    			j=-1;
+                		} else {
+                    			artCache.put(""+snum+" "+dnum,new Integer(j));
+                		}
 				stmt.close();
 				con.close();
 				return(j);
@@ -165,6 +170,27 @@ public class TypeRel extends MMObjectBuilder {
 		} catch (Exception e) {}
 		return(null);
 	}
+
+
+    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+         if (tok.hasMoreTokens()) {
+              String cmd=tok.nextToken();   //Retrieving command.
+              if (cmd.equals("ALLOWEDRELATIONSNAMES")) {
+                try {
+                    String tmp=tagger.Value("TYPE");
+                    int number1=mmb.getTypeDef().getIntValue(tmp);
+                    tmp=tagger.Value("NODE");
+                    int number2=Integer.parseInt(tmp);
+                    MMObjectNode node=getNode(number2);
+                    return(getAllowedRelationsNames(number1,node.getIntValue("otype")));
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+              }
+         }
+        return(null);
+    }
+
 
     public Vector getAllowedRelationsNames(int number1,int number2) {
         try {
