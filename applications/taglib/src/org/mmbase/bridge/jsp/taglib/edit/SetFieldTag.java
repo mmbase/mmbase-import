@@ -40,7 +40,6 @@ public class SetFieldTag extends NodeReferrerTag {
     }
 
     public void doInitBody() throws JspTagException {
-        NodeProvider np;
         if (fieldname == null) {
             // Get node and fieldname from the fieldlist tag.
             Class fieldClass;
@@ -53,15 +52,13 @@ public class SetFieldTag extends NodeReferrerTag {
             if (fieldTag == null) {
                 throw new JspTagException ("Could not find parent FieldListTag");  
             }
-            np = fieldTag.findNodeProvider();
-            node = np.getNodeVar();
+            node = getNode();
             fieldname = fieldTag.getField().getName();
         } else {
             // Find the node.
-            np = findNodeProvider();
-            node = np.getNodeVar();
+            node = getNode();
         }
-        np.setModified();
+        findNodeProvider().setModified();
         pageContext.setAttribute("fieldname", fieldname);
     }
     

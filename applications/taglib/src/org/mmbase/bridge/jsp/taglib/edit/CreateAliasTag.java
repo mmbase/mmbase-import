@@ -36,7 +36,7 @@ public class CreateAliasTag extends NodeReferrerTag {
     **/
     public int doAfterBody() throws JspTagException {        
         // search the node:
-        Node node = findNodeProvider().getNodeVar();
+        Node node = getNode();
         
         // alias name is in the body if no attribute name is given
         if (alias == null) {

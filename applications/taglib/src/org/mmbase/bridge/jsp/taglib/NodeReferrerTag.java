@@ -14,6 +14,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.mmbase.bridge.Node;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -64,6 +66,8 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
         return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
     }
 
-    
+    protected Node getNode() throws JspTagException {
+        return findNodeProvider().getNodeVar();
+    }
 
 }

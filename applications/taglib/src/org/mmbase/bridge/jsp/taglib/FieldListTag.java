@@ -86,8 +86,7 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
         if (nodeManagerString != null) {
             return null;
         }
-        nodeProvider = findNodeProvider();
-        return nodeProvider.getNodeVar();
+        return getNode();
     }
 
 
