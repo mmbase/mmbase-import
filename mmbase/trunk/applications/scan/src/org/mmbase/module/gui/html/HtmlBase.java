@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.36 2000-11-29 12:05:22 vpro Exp $
+	$Id: HtmlBase.java,v 1.37 2000-12-10 16:00:55 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.36  2000/11/29 12:05:22  vpro
+	Rico: Probably fixed getReload problem
+	
 	Revision 1.35  2000/11/19 00:24:48  daniel
 	turned cachedebug off
 	
@@ -137,7 +140,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.36 2000-11-29 12:05:22 vpro Exp $
+ * @version $Id: HtmlBase.java,v 1.37 2000-12-10 16:00:55 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -1025,7 +1028,7 @@ public class HtmlBase extends ProcessorModule {
 				rtn=true;
 			}
 		} else {
-			debug("getReload no session module loaded ? ");
+			if (debug) debug("getReload no session module loaded ? ");
 		}
 		return rtn;
 	}
