@@ -29,7 +29,7 @@
 
 <mm:listnodes type="community" id="community"><mm:context>
 <tr align="left">
-  <th class="header" colspan="2"><mm:field name="title" /></th>
+  <th class="header" colspan="2"><mm:field name="name" /></th>
   <th class="linkdata"><a href="<mm:url page="community.jsp?action=open" referids="community" />">Open all channels</a></th>
   <th class="linkdata"><a href="<mm:url page="community.jsp?action=close" referids="community" />">Close all channels</a></th>
 </tr>
@@ -41,14 +41,14 @@
       <mm:field node="community" name="kind">
       <mm:compare value="FORUM">
         <mmcommunity:testchannel condition="open">
-            <a href="<mm:url page="forum/forum.jsp" referids="channel" />"><strong><mm:field name="html(title)" /></strong></a> is open<br />
+            <a href="<mm:url page="forum/forum.jsp" referids="channel" />"><strong><mm:field name="html(name)" /></strong></a> is open<br />
             Security : <mm:field name="gui(state)" /><br />
             Maximum users : <mm:field name="gui(maxusers)" /><br />
             <a href="<mm:url page="community.jsp?action=close" referids="channel" />">Close channel</a><br />
             <a href="<mm:url page="community.jsp?action=readonly" referids="channel" />">Make channel read only</a><br />
         </mmcommunity:testchannel>
         <mmcommunity:testchannel condition="readonly">
-            <a href="<mm:url page="forum/forum.jsp" referids="channel" />"><strong><mm:field name="html(title)" /></strong></a> is open for reading only<br />
+            <a href="<mm:url page="forum/forum.jsp" referids="channel" />"><strong><mm:field name="html(name)" /></strong></a> is open for reading only<br />
             Security : <mm:field name="gui(state)" /><br />
             Maximum users : <mm:field name="gui(maxusers)" /><br />
             <a href="<mm:url page="community.jsp?action=close" referids="channel" />">Close channel</a><br />
@@ -62,9 +62,9 @@
             <a href="<mm:url page="community.jsp?action=readonly" referids="channel" />">Make channel read only</a><br />
         </mmcommunity:testchannel>
       </mm:compare>
-      <mm:compare value="CHATBOX">
+      <mm:compare value="chatbox">
         <mmcommunity:testchannel condition="open">
-            <a href="<mm:url page="chats/chats.jsp" referids="channel" />"><strong><mm:field name="html(title)" /></strong></a> is open<br />
+            <a href="<mm:url page="chats/chats.jsp" referids="channel" />"><strong><mm:field name="html(name)" /></strong></a> is open<br />
             Security : <mm:field name="gui(state)" /><br />
             Maximum users : <mm:field name="gui(maxusers)" /><br />
             <a href="<mm:url page="community.jsp?action=close" referids="channel" />">Close channel</a><br />
@@ -89,3 +89,6 @@
 </table>
 </body></html>
 </mm:cloud>
+
+
+
