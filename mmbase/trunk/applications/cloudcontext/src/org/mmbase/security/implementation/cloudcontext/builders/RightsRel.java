@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.10 2004-02-25 22:06:27 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.11 2004-03-08 17:43:56 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -88,7 +88,7 @@ public class RightsRel extends InsRel {
             getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CREATE).insert(owner);
             getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CHANGE_RELATION).insert(owner);
             getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.DELETE).insert(owner);
-            getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CHANGECONTEXT).insert(owner);
+            getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CHANGE_CONTEXT).insert(owner);
         }
         return super.insert(owner, node);
     }
@@ -109,11 +109,11 @@ public class RightsRel extends InsRel {
         if (value.equals(Operation.CREATE.toString())) return true;
         if (value.equals(Operation.CHANGE_RELATION.toString())) return true;
         if (value.equals(Operation.DELETE.toString())) return true;
-        if (value.equals(Operation.CHANGECONTEXT.toString())) return true;
+        if (value.equals(Operation.CHANGE_CONTEXT.toString())) return true;
         String msg = 
             "field with name operation must contain a valid operation (value was: '" + value + "')\n" +
             "valid operations are: all, " + Operation.READ + ", " + Operation.WRITE + ", " + Operation.CREATE +
-            ", " + Operation.CHANGE_RELATION + ", " + Operation.DELETE + ", " + Operation.CHANGECONTEXT;
+            ", " + Operation.CHANGE_RELATION + ", " + Operation.DELETE + ", " + Operation.CHANGE_CONTEXT;
         throw new RuntimeException(msg);
     }
 }

@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.122 2004-02-26 22:06:02 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.123 2004-03-08 17:45:50 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -1049,7 +1049,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (isNew()) {
             return true;
         } else {
-            return cloud.check(Operation.CHANGECONTEXT, getNode().getNumber());
+            return cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
         }
     }
 
