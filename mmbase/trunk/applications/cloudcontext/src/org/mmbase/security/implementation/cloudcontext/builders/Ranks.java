@@ -24,9 +24,9 @@ import org.mmbase.util.logging.Logging;
  * This MMObjectBuilder implementation belongs to the object type
  * 'mmbaseusers' It contains functionality to MD5 encode passwords,
  * and so on.
- * 
+ *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.9 2003-11-19 16:41:00 michiel Exp $
+ * @version $Id: Ranks.java,v 1.10 2004-02-23 18:59:34 pierre Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -34,7 +34,7 @@ public class Ranks extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Ranks.class);
 
     public Ranks() {
-        super();        
+        super();
     }
 
     /**
@@ -50,17 +50,17 @@ public class Ranks extends MMObjectBuilder {
         mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
         try {
-            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();        
+            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();
             while (i.hasNext()) {
                 MMObjectNode rank = (MMObjectNode) i.next();
                 String name = rank.getStringValue("name");
                 Rank r = Rank.getRank(name);
-                if (r == null) {                  
+                if (r == null) {
                     Rank.createRank(rank.getIntValue("rank"), name);
                 }
             }
         } catch (SearchQueryException sqe) {
-            log.error(sqe + Logging.stackTrace(sqe));            
+            log.error(sqe + Logging.stackTrace(sqe));
         }
          return res;
     }
@@ -72,28 +72,28 @@ public class Ranks extends MMObjectBuilder {
         int rank = node.getIntValue("rank");
         String name  = node.getStringValue("name");
         try {
-            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();        
+            Iterator i = getNodes(new NodeSearchQuery(this)).iterator();
             while (i.hasNext()) {
                 MMObjectNode otherNode = (MMObjectNode) i.next();
                 if (node.getNumber() == otherNode.getNumber()) continue;
                 Rank r = getRank(otherNode);
                 if(r.getInt() == rank) {
                     // there is a unique key on rank so insert will have failed.
-                    // this tells us why.                
+                    // this tells us why.
                     throw new SecurityException("Cannot insert rank '" + name + "', because there is already is a rank with rank weight " + rank + " (" + r + ")");
                 }
                 if(r.toString().equals(name)) {
                     // there is a unique key on name so insert will have failed.
-                    // this tells us why.                           
+                    // this tells us why.
                     throw new SecurityException("Cannot insert rank '" + name + "', because there is already a rank with that name");
                 }
-                
-                // TODO, fix core!  peculiar checks, only because core give unclear messages!! 
+
+                // TODO, fix core!  peculiar checks, only because core give unclear messages!!
             }
         } catch (SearchQueryException sqe) {
             log.error(sqe + Logging.stackTrace(sqe));
         }
-        Rank.createRank(rank, name);      
+        Rank.createRank(rank, name);
         return res;
     }
 
@@ -103,17 +103,17 @@ public class Ranks extends MMObjectBuilder {
      *
      */
     public void removeNode(MMObjectNode node) {
-        List users =  node.getRelatedNodes("mmbaseusers", ClusterBuilder.SEARCH_SOURCE);
+        List users =  node.getRelatedNodes("mmbaseusers", RelationStep.DIRECTIONS_SOURCE);
         if (users.size() > 1) {
             // cannot happen?
             throw new SecurityException("Rank " + node + " cannot be removed because there are users with this rank: " + users);
         }
         String name = node.getStringValue("name");
-        Rank.deleteRank(name);                  
+        Rank.deleteRank(name);
         super.removeNode(node);
     }
 
-    
+
 
     /**
      * Converts this MMObjectNode to a real rank.
@@ -139,14 +139,14 @@ public class Ranks extends MMObjectBuilder {
                 throw new SecurityException("Cannot change " + field + " field of rank objects");
             }
         }
-        return true; 
+        return true;
     }
 
     //javadoc inherited
     public void setDefaults(MMObjectNode node) {
         // does not work because setValue disallowes changing
         //setUniqueValue(node, "name", "rank");
-        //setUniqueValue(node, "rank", 200);        
+        //setUniqueValue(node, "rank", 200);
     }
 
 

@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.120 2004-02-20 07:33:55 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.121 2004-02-23 19:01:01 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -807,11 +807,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
         RelationList  relations = getRelations(role, nodeManager);
 
-        int dir = ClusterBuilder.SEARCH_BOTH;
+        int dir = RelationStep.DIRECTIONS_BOTH;
         if (searchDir != null) {
             dir = ClusterBuilder.getSearchDir(searchDir);
         }
-        if (dir == ClusterBuilder.SEARCH_BOTH) return relations;
+        if (dir == RelationStep.DIRECTIONS_BOTH) return relations;
 
         RelationIterator it = relations.relationIterator();
 
@@ -820,12 +820,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         while (it.hasNext()) {
             Relation relation = it.nextRelation();
             switch(dir) {
-            case ClusterBuilder.SEARCH_DESTINATION:
+            case RelationStep.DIRECTIONS_DESTINATION:
                 if(relation.getSource().getNumber() == getNumber()) {
                     result.add(relation);
                 }
                 break;
-            case ClusterBuilder.SEARCH_SOURCE:
+            case RelationStep.DIRECTIONS_SOURCE:
                 if(relation.getDestination().getNumber() == getNumber()) {
                     result.add(relation);
                 }
@@ -886,7 +886,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // SEARCH_EITHER is intended for SCAN - unfortunately, since SCAN does not provide directionality,
         // the Clusterbuidler has to assume SEARCH_EITHER as a default.
         // therefor we have to set SEARCH_BOTH manually
-        int dir = ClusterBuilder.SEARCH_BOTH;
+        int dir = RelationStep.DIRECTIONS_BOTH;
         if (searchDir != null) {
             dir = ClusterBuilder.getSearchDir(searchDir);
         }

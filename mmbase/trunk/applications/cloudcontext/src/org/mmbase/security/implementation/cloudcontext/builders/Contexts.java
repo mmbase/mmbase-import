@@ -36,7 +36,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.31 2004-02-09 18:15:38 michiel Exp $
+ * @version $Id: Contexts.java,v 1.32 2004-02-23 18:59:34 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -108,11 +108,11 @@ public class Contexts extends MMObjectBuilder {
     protected static OperationsCache operationsCache = new OperationsCache();
 
 
-    
-    /* 
+
+    /*
      * Things which must be cleared when some security objects change, can all be collected in this map
      */
-     
+
     protected static Map  invalidableObjects = new HashMap();
 
     private boolean readAll = false;
@@ -205,7 +205,7 @@ public class Contexts extends MMObjectBuilder {
 
                     AggregatedResultCache cache = AggregatedResultCache.getCache();
                     List resultList = (List) cache.get(query);
-                    if (resultList == null) {            
+                    if (resultList == null) {
                         ResultBuilder resultBuilder = new ResultBuilder(mmb, query);
                         resultList = mmb.getDatabase().getNodes(query, resultBuilder);
                         cache.put(query, resultList);
@@ -222,7 +222,7 @@ public class Contexts extends MMObjectBuilder {
                     // leave to rest of impl.
                 }
             }
-            
+
         }
 
         // admin bypasses security system
@@ -395,7 +395,7 @@ public class Contexts extends MMObjectBuilder {
     protected SortedSet getDisallowingContexts(User user, Operation operation) {
         if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
         SortedSet set = new TreeSet();
-        if (!readAll) { 
+        if (!readAll) {
             Iterator i = getAllContexts().iterator();
             while (i.hasNext()) {
                 String context = (String) i.next();
@@ -403,7 +403,7 @@ public class Contexts extends MMObjectBuilder {
                 if (! mayDo(user, contextNode, operation)) {
                     set.add(context);
                 }
-            }            
+            }
         }
 
         return Collections.unmodifiableSortedSet(set);
@@ -412,7 +412,7 @@ public class Contexts extends MMObjectBuilder {
     protected SortedSet getAllowingContexts(User user, Operation operation) {
         if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
         if (readAll) { return getAllContexts(); }
- 
+
         SortedSet set = new TreeSet(getAllContexts());
         set.removeAll(getDisallowingContexts(user, operation));
 
@@ -700,8 +700,8 @@ public class Contexts extends MMObjectBuilder {
 
         if (allContextsPossible) {
             return getAllowingContexts(user, Operation.READ);
-        } else {            
-            List possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", ClusterBuilder.SEARCH_DESTINATION);
+        } else {
+            List possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", RelationStep.DIRECTIONS_DESTINATION);
             SortedSet set = new TreeSet();
             Iterator i = possibleContexts.iterator();
             while (i.hasNext()) {
@@ -898,7 +898,7 @@ public class Contexts extends MMObjectBuilder {
         Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Contexts.class, function);
         if (params == null) return super.getParameterDefinition(function);
         return params;
-        
+
     }
 
 
@@ -983,10 +983,10 @@ public class Contexts extends MMObjectBuilder {
                 if ((! mayDo(checkingUser, getContextNode(userToCheck), Operation.READ, true))) {
                     throw new SecurityException("You " + checkingUser + " / " + Users.getBuilder().getRank(checkingUser) + " are not allowed to check user '" + userToCheck + "' of context '" + getContextNode(userToCheck) + "' (you have no read rights on that context)");
                 }
-                
+
             }
             MMObjectNode contextNode = getContextNode(node);
-            
+
             if (mayDo(userToCheck, contextNode, Operation.getOperation(a.getString(PARAMETER_OPERATION)), true)) {
                 return Boolean.TRUE;
             } else {

@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.24 2004-01-05 10:21:25 michiel Exp $
+ * @version $Id: Users.java,v 1.25 2004-02-23 18:59:34 pierre Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -117,7 +117,7 @@ public class Users extends MMObjectBuilder {
             if (userNode instanceof Authenticate.AdminVirtualNode) {
                 rank = Rank.ADMIN;
             } else {
-                List ranks =  userNode.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
+                List ranks =  userNode.getRelatedNodes("mmbaseranks", RelationStep.DIRECTIONS_DESTINATION);
                 if (ranks.size() > 1) {
                     throw new SecurityException("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
                 }
@@ -157,7 +157,7 @@ public class Users extends MMObjectBuilder {
                     log.info("Changing account '" + originalValue + "' to '" + value + "'");
                 }
             }
-        } 
+        }
         /*
         else if(field.equals(FIELD_PASSWORD)) {
             Object value = node.values.get(field);
@@ -326,7 +326,7 @@ public class Users extends MMObjectBuilder {
             return true;
         } else {
             log.debug("hashcode's were different, comparing the number fields");
-            return mmobjectnode.getNumber() == mmobjectnode1.getNumber(); 
+            return mmobjectnode.getNumber() == mmobjectnode1.getNumber();
        }
         */
     }
@@ -351,7 +351,7 @@ public class Users extends MMObjectBuilder {
         Parameter[] params = org.mmbase.util.functions.NodeFunction.getParametersByReflection(Users.class, function);
         if (params == null) return super.getParameterDefinition(function);
         return params;
-        
+
     }
 
     /**

@@ -19,26 +19,26 @@ import org.mmbase.storage.search.*;
  * The directionality property defaults to DIRECTIONS_BOTH.
  *
  * @author Rob van Maris
- * @version $Id: BasicRelationStep.java,v 1.7 2003-06-05 12:16:10 michiel Exp $
+ * @version $Id: BasicRelationStep.java,v 1.8 2004-02-23 19:01:03 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
-    
+
     /** Checked directionality property. */
     private boolean checkedDirectionality = false;
-    
+
     /** Directionality property. */
     private int directionality = RelationStep.DIRECTIONS_BOTH;
-    
+
     /** Role property. */
     private Integer role = null;
-    
+
     /** Previous step. */
     private Step previous = null;
-    
+
     /** Next step. */
     private Step next = null;
-    
+
     /**
      * Creator.
      *
@@ -48,7 +48,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     // package visibility!
-    BasicRelationStep(InsRel builder, 
+    BasicRelationStep(InsRel builder,
         Step previous, Step next) {
         super(builder);
         if (previous == null) {
@@ -62,10 +62,10 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         }
         this.next = next;
     }
-    
+
     /**
      * Sets checkedDirectionality property.
-     * 
+     *
      * @param checkedDirectionality The checkedDirectionality property.
      * @return This <code>BasicRelationStep</code> instance.
      * @see #getCheckedDirectionality
@@ -75,10 +75,10 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         this.checkedDirectionality = checkedDirectionality;
         return this;
     }
-    
+
     /**
      * Sets directionality property.
-     * 
+     *
      * @param directionality The directionality.
      * Must be one of the values defined in <code>
      * {@link org.mmbase.storage.search.RelationStep RelationStep}.</code>
@@ -87,15 +87,17 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      */
     public BasicRelationStep setDirectionality(int directionality) {
         if (directionality != RelationStep.DIRECTIONS_SOURCE
-        && directionality != RelationStep.DIRECTIONS_DESTINATION
-        && directionality != RelationStep.DIRECTIONS_BOTH) {
+            && directionality != RelationStep.DIRECTIONS_DESTINATION
+            && directionality != RelationStep.DIRECTIONS_BOTH
+            && directionality != RelationStep.DIRECTIONS_ALL
+            && directionality != RelationStep.DIRECTIONS_EITHER) {
             throw new IllegalArgumentException(
             "Invalid directionality value: " + directionality);
         }
         this.directionality = directionality;
         return this;
     }
-    
+
     /**
      * Sets role property.
      *
@@ -106,12 +108,12 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         this.role = role;
         return this;
     }
-    
+
     // javadoc is inherited
     public boolean getCheckedDirectionality() {
         return checkedDirectionality;
     }
-    
+
     // javadoc is inherited
     public int getDirectionality() {
         return directionality;
@@ -121,7 +123,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
     public Integer getRole() {
         return role;
     }
-    
+
     // javadoc is inherited
     public Step getPrevious() {
         return previous;
@@ -148,7 +150,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
             return false;
         }
     }
-    
+
  // javadoc is inherited
     public int hashCode() {
         String alias = getAlias();
@@ -158,7 +160,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
                                       + 113 * (directionality
                                                + 31 * (role != null ? role.intValue() : 0)))));
 }
-    
+
     // javadoc is inherited
     public String toString() {
         StringBuffer sb = new StringBuffer("RelationStep(tablename:");
@@ -174,5 +176,5 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
         append(")");
         return sb.toString();
     }
-    
+
 }

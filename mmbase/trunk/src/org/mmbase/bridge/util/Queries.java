@@ -25,12 +25,35 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.29 2004-02-20 19:43:43 michiel Exp $
+ * @version $Id: Queries.java,v 1.30 2004-02-23 19:01:02 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
 public class Queries {
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
+
+    /**
+     * Translates a string to a search direction constant.
+     */
+    public static int getRelationStepDirection(String search) {
+        if (search == null) {
+            return RelationStep.DIRECTIONS_BOTH;
+        }
+        search = search.toUpperCase();
+        if ("DESTINATION".equals(search)) {
+            return RelationStep.DIRECTIONS_DESTINATION;
+        } else if ("SOURCE".equals(search)) {
+            return RelationStep.DIRECTIONS_SOURCE;
+        } else if ("BOTH".equals(search)) {
+            return RelationStep.DIRECTIONS_BOTH;
+        } else if ("ALL".equals(search)) {
+            return RelationStep.DIRECTIONS_ALL;
+        } else if ("EITHER".equals(search)) {
+            return RelationStep.DIRECTIONS_EITHER;
+        } else {
+            throw new BridgeException("'" + search + "' cannot be converted to a relation-step direction constant");
+        }
+    }
 
     /**
      * Creates a Query object using arguments for {@link Cloud#getList} (this function is of course
@@ -679,7 +702,7 @@ public class Queries {
                         resultName = sf.getFieldName();
                     }
                 }
-                if (resultName == null) {                   
+                if (resultName == null) {
                     throw new UnsupportedOperationException("Cannot count distinct queries with more than one field if 'number' field is missing. Current fields: " + fields);
                 }
                 count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
@@ -687,12 +710,12 @@ public class Queries {
                 // simply take this one field
                 StepField sf = (StepField) fields.get(0);
                 Step step = sf.getStep();
-                resultName = sf.getFieldName();                
+                resultName = sf.getFieldName();
                 count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
             }
         }
         Node result = (Node) cloud.getList(count).get(0);
-        return result.getIntValue(resultName); 
+        return result.getIntValue(resultName);
     }
 
     /**

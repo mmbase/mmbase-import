@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.module.gui.html;
@@ -17,6 +17,7 @@ import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.Jumpers;
 import org.mmbase.module.builders.MultiRelations;
+import org.mmbase.storage.search.RelationStep;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -28,40 +29,40 @@ import org.mmbase.util.logging.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.48 2003-07-07 13:34:22 keesj Exp $
+ * @version $Id: HtmlBase.java,v 1.49 2004-02-23 19:01:01 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(HtmlBase.class.getName());
-    
+
     sessionsInterface sessions;
     boolean scancache=false;
     MMBase mmb=null;
-    
+
     // should use org.mmbase.cache!
     private int multilevel_cachesize=300;
     private MultilevelCacheHandler multilevel_cache;
-    
+
     public void init() {
         scancache tmp=(scancache)getModule("SCANCACHE");
-        
+
         if (tmp!=null && tmp.getStatus()) scancache=true;
-        
+
         mmb=(MMBase)getModule("MMBASEROOT");
         sessions=(sessionsInterface)getModule("SESSION");
-        
+
         // get size from properties
         multilevel_cache=new MultilevelCacheHandler(mmb,multilevel_cachesize);
     }
-    
-    
+
+
     /**
      */
     public HtmlBase() {
     }
-    
+
     /**
      * Generate a list of values from a command to the processor
      */
@@ -78,7 +79,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return null;
     }
-    
+
     /**
      * show Objects
      */
@@ -107,15 +108,15 @@ public class HtmlBase extends ProcessorModule {
                 }
             }
         }
-        
+
         for (;e.hasMoreElements();) {
             node=(MMObjectNode)e.nextElement();
             Enumeration f=tagger.Values("FIELDS").elements();
             for (;f.hasMoreElements();) {
-                
+
                 String fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
                 result=node.getStringValue(fieldname);
-                
+
                 if (result!=null && !result.equals("null")) {
                     results.addElement(result);
                 } else {
@@ -128,7 +129,7 @@ public class HtmlBase extends ProcessorModule {
         log.debug("doObjects("+type+")="+(end-begin)+" ms");
         return results;
     }
-    
+
     /**
      * show Relations
      */
@@ -143,13 +144,13 @@ public class HtmlBase extends ProcessorModule {
         Vector wherevector=null;
         String type=tagger.Value("TYPE");
         String where=tagger.Value("WHERE");
-        
+
         try {
             String tm=tagger.Value("NODE");
             MMObjectNode srcnode = mmb.getTypeDef().getNode(tm);
             snode = srcnode.getIntValue("number");
             bul=srcnode.parent;
-            
+
             if (type!=null) {
                 bul=mmb.getMMObject(type);
                 if (bul==null) {
@@ -189,17 +190,17 @@ public class HtmlBase extends ProcessorModule {
         }
         return results;
     }
-    
-    
+
+
     public String doGetRelationValue(scanpage sp, StringTokenizer tok) {
         MMObjectBuilder bul = mmb.getMMObject("typedef");
-        
+
         // reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
         // number, 23 the target number and title the key of the relation
         // value you want.
         int snumber=-1;
         int dnumber=-1;
-        
+
         //obtain source number
         if (tok.hasMoreTokens()) {
             try {
@@ -210,8 +211,8 @@ public class HtmlBase extends ProcessorModule {
         } else {
             return "missing source node";
         }
-        
-        
+
+
         //obtain destination number
         if (tok.hasMoreTokens()) {
             try {
@@ -222,7 +223,7 @@ public class HtmlBase extends ProcessorModule {
         } else {
             return "missing destination node";
         }
-        
+
         //obtain field name
         if (tok.hasMoreTokens()) {
             String fieldname=tok.nextToken();
@@ -254,17 +255,17 @@ public class HtmlBase extends ProcessorModule {
         }
         return "";
     }
-    
+
     public String doGetRelationCount(scanpage sp, StringTokenizer tok) {
         MMObjectBuilder bul=mmb.getMMObject("typedef");
         // reads $MOD-MMBASE-GETRELATIONCOUNT-12-images where 12 is the nodenumber
         // and images is optional (if not it will return the total number of
         // relations it has.
-        
+
         int snumber=-1;
         int dnumber=-1;
         String bulname=null;
-        
+
         //obtain source number
         if (tok.hasMoreTokens()) {
             try {
@@ -275,12 +276,12 @@ public class HtmlBase extends ProcessorModule {
         } else {
             return "missing source node";
         }
-        
+
         // obtain possible builder if not defined it will return the total count
         if (tok.hasMoreTokens()) {
             bulname=tok.nextToken();
         }
-        
+
         MMObjectNode snode=bul.getNode(""+snumber);
         if (snode!=null) {
             if (bulname==null) {
@@ -292,7 +293,7 @@ public class HtmlBase extends ProcessorModule {
             return "0";
         }
     }
-    
+
     public String doSetRelationValue(scanpage sp, StringTokenizer tok) {
         MMObjectBuilder bul=mmb.getMMObject("typedef");
         // reads $MOD-MMBASE-GETRELATIONVALUE-12-23-title where 12 is the source
@@ -300,7 +301,7 @@ public class HtmlBase extends ProcessorModule {
         // value you want.
         int snumber=-1;
         int dnumber=-1;
-        
+
         //obtain source number
         if (tok.hasMoreTokens()) {
             try {
@@ -311,7 +312,7 @@ public class HtmlBase extends ProcessorModule {
         } else {
             return "missing source node";
         }
-        
+
         //obtain destination number
         if (tok.hasMoreTokens()) {
             try {
@@ -322,7 +323,7 @@ public class HtmlBase extends ProcessorModule {
         } else {
             return "missing destination node";
         }
-        
+
         //obtain field name
         if (tok.hasMoreTokens()) {
             String fieldname=tok.nextToken();
@@ -354,7 +355,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "";
     }
-    
+
     /**
      * show Relations
      */
@@ -370,10 +371,10 @@ public class HtmlBase extends ProcessorModule {
             String type=tok.nextToken();
             bul=mmb.getMMObject(type);
             otype=bul.oType;
-            
+
             snode=Integer.parseInt(tok.nextToken());
             MMObjectNode node2=bul.getNode(snode);
-            
+
             Iterator i=null;
             if (type==null) {
                 i=node2.getRelatedNodes().iterator();
@@ -399,13 +400,13 @@ public class HtmlBase extends ProcessorModule {
             return null;
         }
     }
-    
+
     /**
      * Execute the commands provided in the form values
      */
     public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
         String cmdline,token;
-        
+
         for (Enumeration h = cmds.keys();h.hasMoreElements();) {
             cmdline=(String)h.nextElement();
             StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
@@ -414,12 +415,12 @@ public class HtmlBase extends ProcessorModule {
                 log.debug("process(): DELETE ON CACHES");
                 //                InsRel.deleteNodeCache();
                 //                InsRel.deleteRelationCache();
-                
+
             }
         }
         return false;
     }
-    
+
     /**
      *	Handle a $MOD command
      */
@@ -484,7 +485,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "No command defined";
     }
-    
+
     String doCache(scanpage sp, StringTokenizer tok) {
         String result="";
         String cmd=tok.nextToken();
@@ -500,7 +501,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return result;
     }
-    
+
     String getObjectType(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
@@ -509,7 +510,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "unknown";
     }
-    
+
     String getObjectTypeName(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
@@ -518,7 +519,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "unknown";
     }
-    
+
     String getGuiIndicator(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
@@ -527,7 +528,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "unknown";
     }
-    
+
     String getBuilderValue(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String number=tok.nextToken();
@@ -538,7 +539,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "";
     }
-    
+
     String getObjectField(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String nodeNr=tok.nextToken();
@@ -567,7 +568,7 @@ public class HtmlBase extends ProcessorModule {
         } else log.error("getObjectField(): no token nodenr found, url("+sp.getUrl()+")");
         return "no command defined";
     }
-    
+
     String getObjectProperty(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String nodeNr=tok.nextToken();
@@ -587,10 +588,10 @@ public class HtmlBase extends ProcessorModule {
         }
         return "no command defined";
     }
-    
+
     public void maintainance() {
     }
-    
+
     public Hashtable getSearchHash(Vector se,String mapper) {
         Hashtable results=new Hashtable();
         Enumeration t = se.elements();
@@ -601,7 +602,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return results;
     }
-    
+
     public String getWhereList(Vector se,String mapper) {
         if (se==null) return null;
         StringBuffer inlist = new StringBuffer();
@@ -616,7 +617,7 @@ public class HtmlBase extends ProcessorModule {
         inlist.append( ") ");
         return inlist.toString();
     }
-    
+
     private String getFile(String file) {
         String results=null;
         byte[] buffer=getFileBytes(file);
@@ -625,13 +626,13 @@ public class HtmlBase extends ProcessorModule {
         }
         return results;
     }
-    
+
     private byte[] getFileBytes(String file) {
         File scanfile;
         int filesize,len=0;
         byte[] buffer;
         FileInputStream scan;
-        
+
         scanfile = new File(file);
         filesize = (int)scanfile.length();
         buffer=new byte[filesize];
@@ -647,7 +648,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return null;
     }
-    
+
     public Vector doMultiLevel(scanpage sp, StringTagger tagger) throws MultiLevelParseException {
         String result=null,fieldname;
         Object tmp;
@@ -657,9 +658,9 @@ public class HtmlBase extends ProcessorModule {
         Vector results=null,nodes,wherevector=null;
         Enumeration e,f;
         boolean reload=true;
-        
+
         if (scancache) reload=getReload(sp,tagger);
-        
+
         Vector type=tagger.Values("TYPE");
         if ((type==null) || (type.size()==0)) throw new MultiLevelParseException("No TYPE specified");
         Vector dbsort=tagger.Values("DBSORT");
@@ -671,32 +672,32 @@ public class HtmlBase extends ProcessorModule {
         if ((snodes==null) || (snodes.size()==0)) throw new MultiLevelParseException("No NODE specified. Use NODE=\"-1\" to specify no node");
         String distinct=tagger.Value("DISTINCT");
         String searchdirs=tagger.Value("SEARCH");
-        int searchdir = ClusterBuilder.SEARCH_EITHER;
+        int searchdir = RelationStep.DIRECTIONS_EITHER;
         if (searchdirs!=null) {
             searchdirs = searchdirs.toUpperCase();
             if ("DESTINATION".equals(searchdirs)) {
                 log.debug("DESTINATION");
-                searchdir = ClusterBuilder.SEARCH_DESTINATION;
+                searchdir = RelationStep.DIRECTIONS_DESTINATION;
             } else if ("SOURCE".equals(searchdirs)) {
                 log.debug("SOURCE");
-                searchdir = ClusterBuilder.SEARCH_SOURCE;
+                searchdir = RelationStep.DIRECTIONS_SOURCE;
             } else if ("BOTH".equals(searchdirs)) {
                 log.debug("BOTH");
-                searchdir = ClusterBuilder.SEARCH_BOTH;
+                searchdir = RelationStep.DIRECTIONS_BOTH;
             } else if ("ALL".equals(searchdirs)) {
                 log.debug("ALL");
-                searchdir =ClusterBuilder.SEARCH_ALL;
+                searchdir = RelationStep.DIRECTIONS_ALL;
             }
         }
-        
+
         tagger.setValue("ITEMS",""+fields.size());
-        
+
         hash=calcHashMultiLevel(tagger);
         results=(Vector)multilevel_cache.get(hash);
-        
+
         //if (results==null || reload) {
         if (results==null) {
-            
+
             if (reload) {
                 log.debug("doMultiLevel cache RELOAD "+hash);
             } else {
@@ -704,12 +705,12 @@ public class HtmlBase extends ProcessorModule {
             }
             MultiRelations bul=(MultiRelations)mmb.getMMObject("multirelations");
             long begin=(long)System.currentTimeMillis(),len;
-            
+
             // strip the fields of their function codes so we can query the needed
             // fields (teasers.number,shorted(episodes.title)
             Vector cleanfields=removeFunctions(fields);
             // now we have (teasers.number,episodes.title);
-            
+
             if (dbdir==null) {
                 dbdir=new Vector();
                 dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
@@ -736,7 +737,7 @@ public class HtmlBase extends ProcessorModule {
                     }
                 }
             }
-            
+
             multilevel_cache.put(hash,results,type,tagger);
             long end=(long)System.currentTimeMillis();
             len=(end-begin);
@@ -748,14 +749,14 @@ public class HtmlBase extends ProcessorModule {
         }
         return results;
     }
-    
+
     /**
      * Belongs to doMultiLevel
      */
     private Integer calcHashMultiLevel(StringTagger tagger) {
         int hash=1;
         Object obj;
-        
+
         obj=tagger.Values("TYPE");
         hash = 31*hash + (obj==null ? 0 : obj.hashCode());
         obj=tagger.Values("DBSORT");
@@ -772,10 +773,10 @@ public class HtmlBase extends ProcessorModule {
         hash = 31*hash + (obj==null ? 0 : obj.hashCode());
         obj=tagger.Value("SEARCH");
         hash = 31*hash + (obj==null ? 0 : obj.hashCode());
-        
+
         return new Integer(hash);
     }
-    
+
     public String doBuilderReplace(scanpage sp,StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String type=tok.nextToken();
@@ -786,7 +787,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return null;
     }
-    
+
     /**
      * Returns whether a builder is active.
      * @param tok tokenized command, should contain the builder name
@@ -802,7 +803,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "FALSE";
     }
-    
+
     public Vector doBuilder(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
         if (tok.hasMoreTokens()) {
             String type=tok.nextToken();
@@ -813,7 +814,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return null;
     }
-    
+
     private boolean getReload(scanpage sp,StringTagger tagger) {
         boolean rtn=false;
         boolean done=false;
@@ -839,7 +840,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return rtn;
     }
-    
+
     /**
      * @vpro refers to 'James'
      * @deprecated always returns null, do not use.
@@ -859,9 +860,9 @@ public class HtmlBase extends ProcessorModule {
         }
         return null;
     }
-    
+
     public void stop() {}
-    
+
     String getObjectField(StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String result=null;
@@ -880,7 +881,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return "no command defined";
     }
-    
+
     public String doObjects(StringTagger tagger) {
         Object tmp;
         String result=null;
@@ -907,7 +908,7 @@ public class HtmlBase extends ProcessorModule {
                 }
             }
         }
-        
+
         for (;e.hasMoreElements();) {
             node=(MMObjectNode)e.nextElement();
             Enumeration f=tagger.Values("FIELDS").elements();
@@ -927,7 +928,7 @@ public class HtmlBase extends ProcessorModule {
         //log.debug("MMbase -> doObject ("+type+")="+(end-begin)+" ms");
         return results;
     }
-    
+
     private Vector removeFunctions(Vector fields) {
         Vector results=new Vector();
         String fieldname,prefix;
@@ -963,7 +964,7 @@ public class HtmlBase extends ProcessorModule {
         }
         return results;
     }
-    
+
     public String getSearchAge(StringTokenizer tok) {
         String builder=tok.nextToken();
         log.debug("getSearchAge(): BUILDER="+builder);
@@ -974,9 +975,9 @@ public class HtmlBase extends ProcessorModule {
             return "30"; // ???
         }
     }
-    
+
     public MultilevelCacheHandler getMultilevelCacheHandler() {
         return multilevel_cache;
     }
-    
+
 }

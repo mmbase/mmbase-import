@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.35 2003-11-27 16:15:14 robmaris Exp $
+ * @version $Id: MultiRelations.java,v 1.36 2004-02-23 19:01:00 pierre Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -42,40 +42,40 @@ public class MultiRelations extends MMObjectBuilder {
      * When searching relations, return both relations from source to deastination and from destination to source,
      * provided directionality allows
      *
-     * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder#SEARCH_BOTH}
+     * @deprecated Use {@link RelationStep.DIRECTIONS_BOTH}
      * instead.
      */
-    public static final int SEARCH_BOTH = ClusterBuilder.SEARCH_BOTH;
+    public static final int SEARCH_BOTH = RelationStep.DIRECTIONS_BOTH;
 
     /**
      * Search for destinations,
      * When searching relations, return only relations from source to deastination.
      *
      * @deprecated Use
-     * {@link org.mmbase.module.core.ClusterBuilder#SEARCH_DESTINATION}
+     * {@link RelationStep.DIRECTIONS_DESTINATION}
      * instead.
      */
     public static final int SEARCH_DESTINATION
-        = ClusterBuilder.SEARCH_DESTINATION;
+        = RelationStep.DIRECTIONS_DESTINATION;
 
     /**
      * Seach for sources.
      * When searching a multilevel, return only relations from destination to source, provided directionality allows
      *
-     * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder#SEARCH_SOURCE}
+     * @deprecated Use {@link RelationStep.DIRECTIONS_SOURCE}
      * instead.
      */
-    public static final int SEARCH_SOURCE = ClusterBuilder.SEARCH_SOURCE;
+    public static final int SEARCH_SOURCE = RelationStep.DIRECTIONS_SOURCE;
 
     /**
      * Search for all relations.
      * When searching a multilevel, return both relations from source to deastination and from destination to source.
      * Directionality is not checked - ALL relations are used.
      *
-     * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder#SEARCH_ALL}
+     * @deprecated Use {@link RelationStep.DIRECTIONS_ALL}
      * instead.
      */
-    public static final int SEARCH_ALL = ClusterBuilder.SEARCH_ALL;
+    public static final int SEARCH_ALL = RelationStep.DIRECTIONS_ALL;
 
     /**
      * Search for either destination or source.
@@ -84,16 +84,16 @@ public class MultiRelations extends MMObjectBuilder {
      * system onyl returns source to destination relations.
      * This is the default value (for compatibility purposes).
      *
-     * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder#SEARCH_EITHER}
+     * @deprecated Use {@link RelationStep.DIRECTIONS_EITHER}
      * instead.
      */
-    public static final int SEARCH_EITHER = ClusterBuilder.SEARCH_EITHER;
+    public static final int SEARCH_EITHER = RelationStep.DIRECTIONS_EITHER;
 
     // logging variable
     private static Logger log = Logging.getLoggerInstance(MultiRelations.class.getName());
 
     /** Logger instance dedicated to logging fallback to legacy code. */
-    private final static Logger fallbackLog = 
+    private final static Logger fallbackLog =
         Logging.getLoggerInstance(MultiRelations.class.getName() + ".fallback");
 
     /**
@@ -247,7 +247,7 @@ public class MultiRelations extends MMObjectBuilder {
     public Vector searchMultiLevelVector(int snode,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
         Vector v=new Vector();
         v.addElement(""+snode);
-        return searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
+        return searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction, RelationStep.DIRECTIONS_EITHER);
     }
 
     /**
@@ -272,7 +272,7 @@ public class MultiRelations extends MMObjectBuilder {
      * @return a <code>Vector</code> containing all matching nodes
      */
     public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
-        return searchMultiLevelVector(snodes,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
+        return searchMultiLevelVector(snodes,fields,pdistinct,tables,where,orderVec,direction, RelationStep.DIRECTIONS_EITHER);
     }
 
     /**
@@ -808,7 +808,7 @@ public class MultiRelations extends MMObjectBuilder {
      * @return a condition as a <code>String</code>
      */
     protected String getRelationString(Vector alltables) {
-        return getRelationString(alltables, SEARCH_EITHER);
+        return getRelationString(alltables, RelationStep.DIRECTIONS_EITHER);
     }
 
     /**
@@ -852,26 +852,26 @@ public class MultiRelations extends MMObjectBuilder {
             // check if  a definite rnumber was requested...
             if (rnum>-1) {
                 result.append(idx2char(i+1)+".rnumber="+rnum+" AND ");
-                srctodest=(searchdir!=SEARCH_SOURCE) && typerel.reldefCorrect(so,ro,rnum);
-                desttosrc=(searchdir!=SEARCH_DESTINATION) && typerel.reldefCorrect(ro,so,rnum);
+                srctodest=(searchdir != RelationStep.DIRECTIONS_SOURCE) && typerel.reldefCorrect(so,ro,rnum);
+                desttosrc=(searchdir != RelationStep.DIRECTIONS_DESTINATION) && typerel.reldefCorrect(ro,so,rnum);
             } else {
                 MMObjectNode typenode;
                 for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
                     // get the allowed relation definitions
                     typenode = (MMObjectNode)e.nextElement();
-                    desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("snumber")==ro);
-                    srctodest= (searchdir!=SEARCH_SOURCE) && (srctodest || typenode.getIntValue("snumber")==so);
+                    desttosrc= (searchdir != RelationStep.DIRECTIONS_DESTINATION) && (desttosrc || typenode.getIntValue("snumber")==ro);
+                    srctodest= (searchdir != RelationStep.DIRECTIONS_SOURCE) && (srctodest || typenode.getIntValue("snumber")==so);
                     if (desttosrc && srctodest) break;
                 }
             }
 
             // check for directionality if supported
             String dirstring="";
-            if (InsRel.usesdir && (searchdir!=SEARCH_ALL)) {
+            if (InsRel.usesdir && (searchdir != RelationStep.DIRECTIONS_ALL)) {
                 dirstring=" AND "+idx2char(i+1)+".dir<>1";
             }
 
-            if (desttosrc && srctodest && (searchdir==SEARCH_EITHER)) { // support old
+            if (desttosrc && srctodest && (searchdir == RelationStep.DIRECTIONS_EITHER)) { // support old
                 desttosrc=false;
             }
             if (desttosrc) {

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  * The builder for {@link ClusterNode clusternodes}.
  * <p>
- * Provides these methods to retrieve clusternodes: 
+ * Provides these methods to retrieve clusternodes:
  * <ul>
  *      <li>{@link #getClusterNodes(SearchQuery) getClusterNodes(SearchQuery)}
  *          to retrieve clusternodes using a <code>SearchQuery</code> (recommended).
@@ -34,14 +34,14 @@ import org.mmbase.util.logging.*;
  *          searchMultiLevelVector()} to retrieve clusternodes using a constraint string.
  * </ul>
  * <p>
- * Individual nodes in a 'cluster' node can be retrieved by calling the node's 
- * {@link MMObjectNode#getNodeValue(String) getNodeValue()} method, using 
+ * Individual nodes in a 'cluster' node can be retrieved by calling the node's
+ * {@link MMObjectNode#getNodeValue(String) getNodeValue()} method, using
  * the builder name (or step alias) as argument.
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.56 2004-01-14 13:24:39 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.57 2004-02-23 19:01:02 pierre Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -50,43 +50,49 @@ public class ClusterBuilder extends VirtualBuilder {
      * Search for all valid relations.
      * When searching relations, return both relations from source to deastination and from destination to source,
      * provided there is an allowed relation in that directon.
+     * @deprecated use {@link RelationStep.DIRECTIONS_BOTH}
+     *             In future versions of MMBase (1.8 and up) this will be the default value
      */
-    public static final int SEARCH_BOTH = 0;
+    public static final int SEARCH_BOTH = RelationStep.DIRECTIONS_BOTH;
 
     /**
      * Search for destinations,
      * When searching relations, return only relations from source to deastination.
+     * @deprecated use {@link RelationStep.DIRECTIONS_DESTINATION}
      */
-
-    public static final int SEARCH_DESTINATION = 1;
+    public static final int SEARCH_DESTINATION = RelationStep.DIRECTIONS_DESTINATION;
 
     /**
      * Seach for sources.
      * When searching a multilevel, return only relations from destination to source, provided directionality allows
+     * @deprecated use {@link RelationStep.DIRECTIONS_SOURCE}
      */
-    public static final int SEARCH_SOURCE = 2;
+    public static final int SEARCH_SOURCE = RelationStep.DIRECTIONS_SOURCE;
 
     /**
      * Search for all relations.  When searching a multilevel, return both relations from source to
      * deastination and from destination to source.  Allowed relations are not checked - ALL
      * relations are used. This makes more inefficient queries, but it is not really wrong.
+     * @deprecated use {@link RelationStep.DIRECTIONS_ALL}
      */
-    public static final int SEARCH_ALL = 3;
+    public static final int SEARCH_ALL = RelationStep.DIRECTIONS_ALL;
 
     /**
      * Search for either destination or source.
      * When searching a multilevel, return either relations from source to destination OR from destination to source.
-     * The returned set is decided through the typerel tabel. However, if both directiosn ARE somehow supported, the
-     * system onyl returns source to destination relations.
+     * The returned set is decided through the typerel tabel. However, if both directions ARE somehow supported, the
+     * system only returns source to destination relations.
      * This is the default value (for compatibility purposes).
+     * @deprecated use {@link RelationStep.DIRECTIONS_EITHER}.
+     *             In future versions of MMBase (1.8 and up) the default value will be {@link RelationStep.DIRECTIONS_BOTH}
      */
-    public static final int SEARCH_EITHER= 4;
+    public static final int SEARCH_EITHER = RelationStep.DIRECTIONS_EITHER;
 
     // logging variable
     private static final Logger log= Logging.getLoggerInstance(ClusterBuilder.class);
 
     /** Logger instance dedicated to logging fallback to legacy code. */
-    private final static Logger fallbackLog = 
+    private final static Logger fallbackLog =
         Logging.getLoggerInstance(ClusterBuilder.class.getName() + ".fallback");
 
     /**
@@ -107,23 +113,9 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     public static int getSearchDir(String search) {
         if (search == null) {
-            return SEARCH_EITHER;
+            return RelationStep.DIRECTIONS_EITHER;
         }
-        search = search.toUpperCase();
-        if ("DESTINATION".equals(search)) {
-            return SEARCH_DESTINATION;
-        } else if ("SOURCE".equals(search)) {
-            return SEARCH_SOURCE;
-        } else if ("BOTH".equals(search)) {
-            return SEARCH_BOTH;
-        } else if ("ALL".equals(search)) {
-            return SEARCH_ALL;
-        } else if ("EITHER".equals(search)) {
-            return SEARCH_EITHER;
-        } else {
-            throw new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
-        }
-
+        return org.mmbase.bridge.util.Queries.getRelationStepDirection(search);
     }
 
     /**
@@ -132,13 +124,13 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.6
      */
     public static String getSearchDirString(int search) {
-        if (search == SEARCH_DESTINATION) {
+        if (search == RelationStep.DIRECTIONS_DESTINATION) {
             return "DESTINATION";
-        } else if (search == SEARCH_SOURCE) {
+        } else if (search == RelationStep.DIRECTIONS_SOURCE) {
             return "SOURCE";
-        } else if (search == SEARCH_BOTH) {
+        } else if (search == RelationStep.DIRECTIONS_BOTH) {
             return "BOTH";
-        } else if (search == SEARCH_ALL) {
+        } else if (search == RelationStep.DIRECTIONS_ALL) {
             return "ALL";
         } else {
             return "EITHER";
@@ -265,7 +257,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Same as {@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
-     * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER)},
+     * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER)},
      * where <code>snodes</code> contains just the number specified by <code>snode</code>.
      *
      * @see #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
@@ -280,12 +272,12 @@ public class ClusterBuilder extends VirtualBuilder {
         Vector direction) {
         Vector v= new Vector();
         v.addElement("" + snode);
-        return searchMultiLevelVector(v, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER);
+        return searchMultiLevelVector(v, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER);
     }
 
     /**
      * Same as {@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
-     * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER)}.
+     * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER)}.
      *
      * @see #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
      */
@@ -297,13 +289,13 @@ public class ClusterBuilder extends VirtualBuilder {
         String where,
         Vector orderVec,
         Vector direction) {
-        return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER);
+        return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, RelationStep.DIRECTIONS_EITHER);
     }
 
     /**
      * Return all the objects that match the searchkeys.
-     * The constraint must be in one of the formats specified by {@link 
-     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     * The constraint must be in one of the formats specified by {@link
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
@@ -316,8 +308,8 @@ public class ClusterBuilder extends VirtualBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The constraint, must be in one of the formats specified by {@link 
-     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     * @param where The constraint, must be in one of the formats specified by {@link
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param orderVec the fieldnames on which you want to sort.
@@ -539,9 +531,9 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // TODO (later): implement maximum set by maxNodesFromQuery?
         // Execute query, return results.
-        
+
         return mmb.getDatabase().getNodes(query, this);
-            
+
     }
 
     /**
@@ -945,7 +937,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return a condition as a <code>String</code>
      */
     protected String getRelationString(Vector alltables) {
-        return getRelationString(alltables, SEARCH_EITHER, new HashMap());
+        return getRelationString(alltables, RelationStep.DIRECTIONS_EITHER, new HashMap());
     }
 
     /**
@@ -1011,14 +1003,14 @@ public class ClusterBuilder extends VirtualBuilder {
                     rnumber= rnum.intValue();
                 }
                 srctodest=
-                    (searchdir != SEARCH_SOURCE)
+                    (searchdir != RelationStep.DIRECTIONS_SOURCE)
                         && typerel.contains(s, d, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
                 desttosrc=
-                    (searchdir != SEARCH_DESTINATION)
+                    (searchdir != RelationStep.DIRECTIONS_DESTINATION)
                         && typerel.contains(d, s, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
             }
 
-            if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
+            if (desttosrc && srctodest && (searchdir == RelationStep.DIRECTIONS_EITHER)) { // support old
                 desttosrc= false;
             }
 
@@ -1027,7 +1019,7 @@ public class ClusterBuilder extends VirtualBuilder {
             if (desttosrc) {
                 // check for directionality if supported
                 String dirstring;
-                if (InsRel.usesdir && (searchdir != SEARCH_ALL)) {
+                if (InsRel.usesdir && (searchdir != RelationStep.DIRECTIONS_ALL)) {
                     dirstring= " AND " + relChar + ".dir <> 1";
                 } else {
                     dirstring= "";
@@ -1135,14 +1127,14 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Creates search query that selects all the objects that match the
      * searchkeys.
-     * The constraint must be in one of the formats specified by {@link 
-     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     * The constraint must be in one of the formats specified by {@link
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      * QueryConvertor#setConstraint()}.
      *
-     * @param snodes <code>null</code> or a list of numbers 
+     * @param snodes <code>null</code> or a list of numbers
      *        of nodes to start the search with.
      *        These have to be present in the first table listed in the
-     *        tables parameter. 
+     *        tables parameter.
      * @param fields List of fieldnames to return.
      *        These should be formatted as <em>stepalias.field</em>,
      *        e.g. 'people.lastname'
@@ -1155,8 +1147,8 @@ public class ClusterBuilder extends VirtualBuilder {
      *        It is possible to explicitly supply a relation builder by
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
-     * @param where The constraint, must be in one of the formats specified by {@link 
-     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     * @param where The constraint, must be in one of the formats specified by {@link
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String)
      *        QueryConvertor#setConstraint()}.
      *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param sortFields <code>null</code> or a list of  fieldnames on which you want to sort.
@@ -1243,8 +1235,8 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         addRelationDirections(query, searchdir, roles);
-        
-        // Add constraints. 
+
+        // Add constraints.
         // QueryConverter supports the old formats for backward compatibility.
         QueryConvertor.setConstraint(query, where);
 
@@ -1648,7 +1640,7 @@ public class ClusterBuilder extends VirtualBuilder {
             }
 
             if (!mmb.getTypeRel().optimizeRelationStep(relationStep, sourceType, destinationType, roleInt, searchDir)) {
-                if (searchDir != SEARCH_SOURCE && searchDir != SEARCH_DESTINATION) {
+                if (searchDir != RelationStep.DIRECTIONS_SOURCE && searchDir != RelationStep.DIRECTIONS_DESTINATION) {
                     log.warn("No relation defined between " + sourceStep.getTableName() + " and " + destinationStep.getTableName() + " using " + relationStep + " with direction(s) " + getSearchDirString(searchDir) + ". Searching in 'destination' direction now, but perhaps the query should be fixed, because this should always result nothing.");
                 } else {
                     log.warn("No relation defined between " + sourceStep.getTableName() + " and " + destinationStep.getTableName() + " using " + relationStep + " with direction(s) " + getSearchDirString(searchDir) + ". Trying anyway, but perhaps the query should be fixed, because this should always result nothing.");
