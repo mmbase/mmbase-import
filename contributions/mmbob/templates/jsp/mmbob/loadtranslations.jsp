@@ -238,3 +238,7 @@
 <mm:import id="keyword" reset="true">To</mm:import><mm:import id="mlg_To"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">guest</mm:import><mm:import id="mlg_guest"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">not_registered</mm:import><mm:import id="mlg_not_registered"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Disable</mm:import><mm:import id="mlg_Disable"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Disabled</mm:import><mm:import id="mlg_Disabled"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Enable</mm:import><mm:import id="mlg_Enable"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
