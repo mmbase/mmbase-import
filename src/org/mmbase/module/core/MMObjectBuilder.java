@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.136 2002-04-19 09:32:14 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.137 2002-05-03 15:09:27 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -292,9 +292,19 @@ public class MMObjectBuilder extends MMTable {
      * Creates a new builder table in the current database.
      */
     public boolean create() {
+        log.info(tableName);
         return database.create(this);
     }
-
+    
+    /**
+     * Drops the builder table from the current database
+     */
+    public boolean drop() {
+        log.info("trying to drop table of builder: '"+tableName+"' with database class: '"+database.getClass().getName()+"'");
+        if(size() > 0) throw new RuntimeException("cannot drop a builder, that still contains nodes");
+        return database.drop(this);
+    }
+    
     /**
      * Tests whether the data in a node is valid (throws an exception if this is not the case).
      * @param node The node whose data to check
