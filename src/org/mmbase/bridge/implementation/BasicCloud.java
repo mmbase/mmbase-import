@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.54 2002-03-15 09:44:15 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.55 2002-03-29 21:30:16 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -101,7 +101,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // start multilevel cache
         MultilevelCacheHandler.setMMBase(this.cloudContext.mmb);
-        multilevel_cache=MultilevelCacheHandler.getCache("basic");
+        multilevel_cache = MultilevelCacheHandler.getCache();
     }
 
     /**
@@ -145,7 +145,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // start multilevel cache
         MultilevelCacheHandler.setMMBase(mmb);
-        multilevel_cache=MultilevelCacheHandler.getCache("basic");
+        multilevel_cache = MultilevelCacheHandler.getCache();
     }
 
     // Makes a node otr Relation object based on an MMObjectNode
