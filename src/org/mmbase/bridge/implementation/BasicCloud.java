@@ -422,11 +422,15 @@ public class BasicCloud implements Cloud, Cloneable {
         if (startNodes!=null) {
             pars+=" NODES='"+startNodes+"'";
         }
-        if (nodePath!=null) {
+        if (nodePath != null && (!nodePath.trim().equals(""))) {
             pars+=" TYPES='"+nodePath+"'";
+        } else {
+            throw new BridgeException("No nodePath specified.");
         }
-        if (fields!=null) {
+        if (fields!=null && (!fields.trim().equals(""))) {
             pars+=" FIELDS='"+fields+"'";
+        } else {
+            throw new BridgeException("No fields specified.");
         }
         if (orderby!=null) {
             pars+=" SORTED='"+orderby+"'";
@@ -461,7 +465,6 @@ public class BasicCloud implements Cloud, Cloneable {
             sdirection.addElement("UP"); // UP == ASC , DOWN =DESC
         }
         MultiRelations multirel = (MultiRelations)cloudContext.mmb.getMMObject("multirelations");
-        int nrfields = sfields.size();
         if (constraints!=null) {
             if (constraints.trim().equals("")) {
                 constraints = null;
