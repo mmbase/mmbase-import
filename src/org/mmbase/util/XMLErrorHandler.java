@@ -18,33 +18,30 @@ import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.2 $ $Date: 2000-07-04 10:20:27 $
+ * @version $Revision: 1.3 $ $Date: 2001-04-18 10:01:49 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
 
-    private String classname  = getClass().getName();
-
-    private void debug(String msg) {
-	System.out.println(classname + ": " + msg);
-    }
+    private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
 
     public void warning(SAXParseException ex) {
-        debug("[Warning] "+ getLocationString(ex)+": "+ ex.getMessage());
+        log.warn(getLocationString(ex)+": "+ ex.getMessage());
     }
 
     public void error(SAXParseException ex) {
-        debug("[Error] "+ getLocationString(ex)+": "+ ex.getMessage());
+        log.error(getLocationString(ex)+": "+ ex.getMessage());
     }
 
     public void fatalError(SAXParseException ex) throws SAXException {
-        debug("[Fatal Error] "+ getLocationString(ex)+": "+ ex.getMessage());
-	throw ex;
+        log.error("[Fatal Error] "+ getLocationString(ex)+": "+ ex.getMessage());
+		throw ex;
     }
 
     /**
