@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.68 2002-09-30 15:53:55 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.69 2002-09-30 16:29:28 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -449,8 +449,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         String fieldAmounts="?";
 
         // Append the DB elements to the fieldAmounts String.
-        for (Enumeration e=bul.getFields().elements();e.hasMoreElements();) {
-            String key = (String)e.nextElement();
+        for (Enumeration e= ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();e.hasMoreElements();) {
+            String key = ((FieldDefs) e.nextElement()).getDBName();
             int DBState = node.getDBState(key);
             if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
                  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
@@ -490,8 +490,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.setInt(1,number);
 
             int j=2;
-            for (Enumeration e=bul.getFields().elements();e.hasMoreElements();) {
-                String key = (String)e.nextElement();
+            for (Enumeration e=((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();e.hasMoreElements();) {
+                String key = ((FieldDefs)e.nextElement()).getDBName();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
                      || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
@@ -1089,11 +1089,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         // valid create SQL string
         String result=null;
 
-        Vector sfields=bul.getFields();
+        Vector sfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
 
         if (sfields!=null) {
             for (Enumeration e=sfields.elements();e.hasMoreElements();) {
-                String name=(String)e.nextElement();
+                String name=((FieldDefs)e.nextElement()).getDBName();
                 FieldDefs def=bul.getField(name);
                 if (def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                     if (!bdm || def.getDBType()!=FieldDefs.TYPE_BYTE) {
@@ -1700,7 +1700,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             int colcount=rsmd.getColumnCount();
             String fieldAmounts="?";
 
-            Vector newfields=bul.getFields();
+            Vector newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
             for (int i=1;i<newfields.size();i++) {
                 fieldAmounts+=",?";
             }
@@ -1716,12 +1716,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     colname=colname.toLowerCase();
                     oldvalues.put(colname,o);
                 }
-                newfields=bul.getFields();
+                newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
 
                 Object o=oldvalues.get(getAllowedField("number"));
                 stmt2.setInt(1,((Integer)o).intValue());
                 for (Enumeration e=newfields.elements();e.hasMoreElements();) {
-                    FieldDefs def=(FieldDefs)e.nextElement();
+                    FieldDefs def=(FieldDefs) e.nextElement();
                     String newname=def.getDBName();
                     int dbpos=def.getDBPos();
 
