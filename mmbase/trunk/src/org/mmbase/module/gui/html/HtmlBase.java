@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.29 2000-08-07 22:25:14 daniel Exp $
+	$Id: HtmlBase.java,v 1.30 2000-08-29 15:04:37 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.29  2000/08/07 22:25:14  daniel
+	changed LIST RELATIONS to support aliases
+	
 	Revision 1.28  2000/07/22 10:48:45  daniel
 	Removed some debug
 	
@@ -116,7 +119,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.29 2000-08-07 22:25:14 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.30 2000-08-29 15:04:37 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -607,6 +610,8 @@ public class HtmlBase extends ProcessorModule {
 				return(getObjectProperty(sp,tok));
 			} else if (cmd.equals("OTYPE")) { 
 				return(getObjectType(sp,tok));
+ 			} else if (cmd.equals("TYPENAME")) {
+                return(getObjectTypeName(sp,tok));
 			} else if (cmd.equals("GUIINDICATOR")) { 
 				return(getGuiIndicator(sp,tok));
 			} else if (cmd.equals("RELATION")) {
@@ -676,6 +681,14 @@ public class HtmlBase extends ProcessorModule {
 		return("unknown");
 	}
 
+	String getObjectTypeName(scanpage sp, StringTokenizer tok) {
+        if (tok.hasMoreTokens()) {
+            String number=tok.nextToken();
+            MMObjectNode node=mmb.getTypeDef().getNode(number);
+            return(node.getName());
+        }
+        return("unknown");
+    }
 
 	String getGuiIndicator(scanpage sp, StringTokenizer tok) {
 		if (tok.hasMoreTokens()) {
