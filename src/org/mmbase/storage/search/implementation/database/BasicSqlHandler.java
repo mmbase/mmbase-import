@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -826,8 +826,16 @@ public class BasicSqlHandler implements SqlHandler {
         Iterator iChilds = childs.iterator();
         while (iChilds.hasNext()) {
             Constraint child = (Constraint) iChilds.next();
-            firstInChain.appendConstraintToSql(
-            sb, child, query, overallInverse, hasMultipleChilds);
+            if (child instanceof CompositeConstraint) {
+                // Child is composite constraint.
+                appendCompositeConstraintToSql(
+                    sb, (CompositeConstraint) child, query, 
+                    overallInverse, hasMultipleChilds, firstInChain);
+            } else {
+                // Child is non-composite constraint.
+                firstInChain.appendConstraintToSql(
+                    sb, child, query, overallInverse, hasMultipleChilds);
+            }
             if (iChilds.hasNext()) {
                 sb.append(strOperator);
             }
