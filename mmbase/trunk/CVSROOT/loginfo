@@ -30,7 +30,7 @@ speeltuin /home/michiel/cvsmail  /home/michiel/speeltuin.log $USER %{sVv}
 
 tests /home/michiel/cvsmail  /home/michiel/tests.log $USER %{sVv}
 
-mmbase /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+src /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
 html /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
