@@ -26,6 +26,7 @@ public interface CloudProvider extends TagIdentifier {
     public Cloud getCloudVar() throws JspTagException;	
     public void  registerNode(String id, Node n); 
     public void  register(String id, Object n); 
+    public void  unRegister(String id); 
     public Node  getNode(String id) throws JspTagException; 
     public Object getObject(String id) throws JspTagException; 
     public byte[] getBytes(String id) throws JspTagException;
