@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.29 2003-07-23 19:12:28 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.30 2003-09-24 14:38:39 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -27,10 +27,7 @@ var daysofmonth   = new makeArray( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 3
 var daysofmonthLY = new makeArray( 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 function LeapYear(year) {
-    if ((year/4)   != Math.floor(year/4))   return false;
-    if ((year/100) != Math.floor(year/100)) return true;
-    if ((year/400) != Math.floor(year/400)) return false;
-    return true;
+    return ((year  % 4 == 0) && !( (year % 100 == 0) && (year % 400 != 0)));
 }
 
 function NthDay(nth,weekday,month,year) {
