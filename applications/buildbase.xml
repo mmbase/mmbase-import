@@ -55,7 +55,7 @@ Create a build.xml with a DOCTYPE like this:
 
 
   <property name="project.jars.dir"      location=".." />
-  <property name="project.jars.includes" value="${project.extra.path}${project.extra.path2}" />
+  <property name="project.jars.includes" value="NOTHING" />
 
   <property name="project.package"      value="org/mmbase" />
   <property name="project.main.class"   value="org/mmbase/Version" />
@@ -300,7 +300,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
       </fileset>
     </copy>
 
-    <echo message="compiling ${project.jars.includes}" />
+    <echo message="compiling.." />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
@@ -310,7 +310,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            excludes="${compile.excludes}"
       >
       <classpath id="compile.classpath">
-        <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
+        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
@@ -320,7 +320,6 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${project.extra.path}" />
         <pathelement path="${project.extra.path2}" />
-
       </classpath>
       <include name="**/*.java"/>
     </javac>
