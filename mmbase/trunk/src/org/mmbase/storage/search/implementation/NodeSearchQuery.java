@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -81,8 +81,8 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      * @throws IllegalArgumentException When the field is not a
      *         persistent field of the associated nodetype.
      */
-    public StepField getField(FieldDefs field) {
-        StepField stepField = (StepField) stepFields.get(field);
+    public BasicStepField getField(FieldDefs field) {
+        BasicStepField stepField = (BasicStepField) stepFields.get(field);
         if (stepField == null) {
             // Not found.
             throw new IllegalArgumentException(
