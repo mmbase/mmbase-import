@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.91 2003-04-08 14:35:41 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.92 2003-04-29 20:11:02 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -726,7 +726,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
         if (log.isDebugEnabled()) {
-            log.debug("type(" + nodeManager.getName() + "), role("+role+"), dir("+searchDir+")");
+            log.debug("type(" + nodeManager.getName() + "), role(" + role+"), dir(" + searchDir + ")");
         }
 
         // default directionalty to query for the bridge is SEARCH_BOTH;
@@ -738,7 +738,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             dir = ClusterBuilder.getSearchDir(searchDir);
         }
         // call list: note: role can be null
-        List   mmnodes      = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
+        List mmnodes = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
 
         // remove the elements which may not be read:
         ListIterator li = mmnodes.listIterator();
@@ -761,10 +761,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public StringList getAliases() {
-        Vector aliasvector=new Vector();
-        OAlias alias=mmb.OAlias;
-        if (alias!=null) {
-            for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNumber()); e.hasMoreElements();) {
+        List aliasvector = new ArrayList();
+        OAlias alias = mmb.OAlias;
+        if (alias != null) {
+            for(Enumeration e=alias.search("WHERE destination=" + getNumber()); e.hasMoreElements();) {
                 MMObjectNode node=(MMObjectNode)e.nextElement();
                 aliasvector.add(node.getStringValue("name"));
             }
