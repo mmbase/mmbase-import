@@ -16,7 +16,7 @@
 <table width="1000" height="90%" align="CENTER" cellspacing="0" cellpadding="0" border="0">
    <tr>
       <td height="90%" valign="MIDDLE">
-         <iframe width="970px" height="28" frameborder="1" marginheight="0" marginwidth="0" scrolling="0" src="<mm:treefile write="true" page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />"/>
+         <iframe width="970px" height="28" frameborder="1" marginheight="0" marginwidth="0" scrolling="0" src="<mm:treefile write="true" page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />"></iframe>
          <br/>
          <iframe src="<mm:treefile write="true" page="/education/wizards/menu.jsp" objectlist="$includePath" />" id="menu" name="menu" width="240" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
          <iframe name="text" id="text" width="730" height="90%" marginwidth="0" marginheight="0" border="1"></iframe>
