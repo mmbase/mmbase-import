@@ -47,7 +47,7 @@
 	www.mmbase.org's howto's on this we will complete this list
 	as soon as possble **
 
-	-->
+	-->        
 	<property name="database">mysql</property>
 
 	<!--
@@ -121,8 +121,8 @@
 	compatibility. Perhaps this will change to UTF-8 once this is
 	tested well.  
 	-->
-
-	<property name="encoding">ISO-8859-1</property>
+        <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get urf-8 -->
+	<property name="encoding">UTF-8</property>
 	
   </properties>
 </module>
