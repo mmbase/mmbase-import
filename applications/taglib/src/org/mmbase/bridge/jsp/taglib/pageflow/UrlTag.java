@@ -27,11 +27,16 @@ import javax.servlet.jsp.JspTagException;
 public class UrlTag extends ContextReferrerTag {
            
     private Vector keys = null;
+    private Vector extraParameters = null;
     private String file;
     private String jspvar;
 
     public void setKeys(String k) {
         keys = stringSplitter(k);
+    }
+
+    public void setExtraparameters(String p) {
+        extraParameters = stringSplitter(p);
     }
 
     public void setFile(String f) {
@@ -48,21 +53,35 @@ public class UrlTag extends ContextReferrerTag {
 
     public int doAfterBody() throws JspTagException {
 
+        if (file == null) {
+            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+            file = req.getRequestURI();
+        }
+
         String show = file;
         
         if (keys == null) { // all keys not in session
             keys = getContextTag().getKeys(ContextTag.TYPE_POSTPARAMETERS);
         }
-        
+        String connector = "?";
+
         Iterator i = keys.iterator();
-        if (i.hasNext()) {
-            String key = (String)i.next();
-            show += "?" + key + "=" + getContextTag().getObjectAsString(key);
-        }
-        
         while (i.hasNext()) {
             String key = (String)i.next();
-            show += "&" + key + "=" + getContextTag().getObjectAsString(key);
+            String value = getContextTag().getObjectAsString(key);
+            if (value != null) {
+                show += connector + key + "=" + getContextTag().getObjectAsString(key);
+                connector = "&";
+            }
+        }
+        
+        if (extraParameters != null) {            
+            i = extraParameters.iterator();
+            while (i.hasNext()) {
+                String keyvalue = (String) i.next();
+                show += connector + keyvalue;
+                connector = "&";
+            }
         }
         
         {
@@ -72,7 +91,6 @@ public class UrlTag extends ContextReferrerTag {
     
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, show);
-            return EVAL_BODY_TAG;
         } else {
             try {                
                 bodyContent.print(show);
@@ -81,8 +99,8 @@ public class UrlTag extends ContextReferrerTag {
                 throw new JspTagException (e.toString());            
             }
             
-            return SKIP_BODY;    
         }
+        return SKIP_BODY;
     }
 
 }
