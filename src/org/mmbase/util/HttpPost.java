@@ -13,13 +13,14 @@ import java.io.*;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
+import org.mmbase.util.xml.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * HttpPost handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.25 2003-11-10 13:29:52 keesj Exp $
+ * @version $Id: HttpPost.java,v 1.26 2003-12-03 12:29:46 keesj Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -31,14 +32,25 @@ public class HttpPost {
     private static Logger log = Logging.getLoggerInstance(HttpPost.class);
 
     public static final String CONFIG_FILE = "httppost.xml";
-    public static final String MAX_PROPERTY = "maxfilesize";
 
-    private static final int maxLoop = 2048;
+    public static final String MAX_REQUEST_SIZE_PROPERTY = "maxrequestsize";
+    public static final String MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY = "maxinmemoryparametersize";
+    public static final String MAX_PARAMETER_SIZE_PROPERTY = "maxparametersize";
+    public static final String UPLOAD_DIR_PROPERTY = "uploaddir";
+
+    public static final int DEFAULT_MAX_REQUEST_SIZE = 4 * 1024 * 1024; // 4 MB
+    public static final int DEFAULT_MAX_PARAMETER_SIZE = 4 * 1024 * 1024;//4 MB
+    public static final int DEFAULT_MAX_IN_MEMORY_PARAMETER_SIZE =4 * 1024 * 1024; // 2 MB
+
+    private int maxRequestSize = DEFAULT_MAX_REQUEST_SIZE;
+    private int maxParameterSize = DEFAULT_MAX_PARAMETER_SIZE;
+    private int maxInMemoryParameterSize = DEFAULT_MAX_IN_MEMORY_PARAMETER_SIZE;
+    private String uploadDir = "/tmp/";
 
     /**
-     * are the postparameters decoded yet?
+     * HttpPost only starts reading the request once a parameter is asked
      */
-    private boolean postDecoded;
+    private boolean isRequestDecoded = false;
 
     /**
      * if post Parameters are decoded to disk they have this postid
@@ -46,45 +58,33 @@ public class HttpPost {
     private long postid;
 
     /**
-     * Maximum postparametersize to decode the the parameters into memory
-     */
-    private static final int maximumPostbufferSize = 1 * 1024 * 1024; // 1024 switch to disk needs to be param
-
-    /**
     * post buffer, holds the values ones decoded
     */
     private Hashtable postValues = new Hashtable();
 
     /**
-     * maxFileSize for a property
-     */
-    private int maxFileSize = 4 * 1024 * 1024; // 4 Mb
-
-    /**
      * Some postparameters are decoded to disk
      */
-    private boolean postToDisk = false;
+    private boolean isPostedToDisk = false;
 
-    /**
-     */
     private HttpServletRequest req = null;
 
-    private static Map properties = null;
+    private static UtilReader utilReader = new UtilReader(CONFIG_FILE);
+
+    int maxLoop = 20000;
 
     /**
      * Initialise WorkerPostHandler
      */
     public HttpPost(HttpServletRequest req) {
-        if (properties == null) {
-            org.mmbase.util.xml.UtilReader reader = new org.mmbase.util.xml.UtilReader(CONFIG_FILE);
-            properties = reader.getProperties();
-        }
-        if (properties.containsKey(MAX_PROPERTY)) {
-            maxFileSize = Integer.parseInt("" + properties.get(MAX_PROPERTY));
-            log.debug("Setting maxfilesize to " + maxFileSize);
-        }
-        postid = System.currentTimeMillis();
         this.req = req;
+
+        Map properties = utilReader.getProperties();
+        setProperties(properties);
+        postid = System.currentTimeMillis();
+        if (log.isDebugEnabled()) {
+            log.debug("initialized HttpPost (maxRequestSize,maxParameterSize,maxInMemoryParameterSize)=(" + maxRequestSize + "," + maxParameterSize + "," + maxInMemoryParameterSize + ")");
+        }
     }
 
     /**
@@ -99,27 +99,18 @@ public class HttpPost {
      */
     public void reset() {
         /* removing postValueFiles */
-        if (postToDisk) {
-            File f = new File("/tmp/");
-            String[] files = f.list();
+        if (isPostedToDisk) {
+            File f = new File(uploadDir);
+            File[] files = f.listFiles();
             for (int i = 0; i < files.length; i++) {
-                if (files[i].indexOf("form_" + postid) == 0) {
-                    File postValueFile = new File("/tmp/" + files[i]);
-                    postValueFile.delete();
+                if (files[i].getName().indexOf("form_" + postid) == 0) {
+                    files[i].delete();
                 }
             }
         }
         postid = 0; // reset postid value
-        postToDisk = false; // default, write postValues to memory
+        isPostedToDisk = false; // default, write postValues to memory
     }
-
-    //    /**
-    //     * @return the maximumsize of the postparametervalues to decode into memory
-    //     */
-    //
-    //    public int getMaximumPostbufferSize() {
-    //        return MaximumPostbufferSize;
-    //    }
 
     /**
     * This method checks if the parameter is a multivalued one
@@ -129,16 +120,13 @@ public class HttpPost {
     * @see #getPostMultiParameter
     * @see #getPostParameter
     */
-    public boolean checkPostMultiParameter(String name) {
-        if (!postDecoded) {
+    public boolean checkPostMultiParameter(String name) throws PostValueToLargeException {
+        if (!isRequestDecoded) {
             decodePost(req);
         }
 
         Object obj = postValues.get(name);
-        if (obj == null) {
-            return false;
-        }
-        if (obj instanceof Vector) {
+        if (obj != null && obj instanceof Vector) {
             return true;
         }
         return false;
@@ -152,9 +140,10 @@ public class HttpPost {
     * @see #getPostParameter
     * @see #checkPostMultiParameter
     */
-    public Hashtable getPostParameters() {
-        if (!postDecoded)
+    public Hashtable getPostParameters() throws PostValueToLargeException {
+        if (!isRequestDecoded) {
             decodePost(req);
+        }
         return postValues;
     }
 
@@ -168,8 +157,9 @@ public class HttpPost {
     */
     public byte[] getPostParameterBytes(String name) throws PostValueToLargeException {
         // decode when not done yet..
-        if (!postDecoded)
+        if (!isRequestDecoded) {
             decodePost(req);
+        }
 
         // when the parameter was not found, return null
         Object obj = postValues.get(name);
@@ -196,10 +186,10 @@ public class HttpPost {
     * This method returns the value of the postparameter as a Vector.
     * In case of a parameter with one value, it returns it as a Vector
     * with one element.
-    * it laso converts the byte[] into strings
+    * it also converts the byte[] into strings
     * @see #checkPostMultiParameter
     */
-    public Vector getPostMultiParameter(String name) {
+    public Vector getPostMultiParameter(String name) throws PostValueToLargeException {
         return getPostMultiParameter(name, null);
     }
 
@@ -207,13 +197,13 @@ public class HttpPost {
     * This method returns the value of the postparameter as a Vector.
     * In case of a parameter with one value, it returns it as a Vector
     * with one element.
-    * it laso converts the byte[] into strings
+    * it also converts the byte[] into strings
     * @see #checkPostMultiParameter
     */
-    public Vector getPostMultiParameter(String name, String encoding) {
+    public Vector getPostMultiParameter(String name, String encoding) throws PostValueToLargeException {
 
         // decode when not done yet..
-        if (!postDecoded) {
+        if (!isRequestDecoded) {
             decodePost(req);
         }
 
@@ -229,16 +219,15 @@ public class HttpPost {
             Enumeration e = v.elements();
             while (e.hasMoreElements()) {
                 Object o = e.nextElement();
-                if (o.getClass().isArray() ) {
+                if (o.getClass().isArray()) {
                     byte[] data = (byte[])o;
                     results.addElement(getString(data, encoding));
                 } else {
-                	if (!  (o instanceof String)){
-                		log.warn("unknown data type "+ o.getClass().getName()+" for parameter " + name  );
-                	}
+                    if (!(o instanceof String)) {
+                        log.warn("unknown data type " + o.getClass().getName() + " for parameter " + name);
+                    }
                     results.addElement(o);
                 }
-
             }
         } else {
             // we assume that obj will be byte[]
@@ -261,10 +250,10 @@ public class HttpPost {
     }
 
     /**
-     * @return true is the post was posted to a file (not in memory)
+     * @return true if the post was posted to a file (not in memory)
      **/
     public boolean isPostedToFile() {
-        return postToDisk;
+        return isPostedToDisk;
     }
 
     /**
@@ -273,20 +262,21 @@ public class HttpPost {
     * @see #getPostMultiParameter
     * @see #checkPostMultiParameter
     */
-    public String getPostParameterFile(String name) {
+    public String getPostParameterFile(String name) throws PostValueToLargeException {
         Object obj = null;
         Vector v;
 
-        if (!postDecoded)
+        if (!isRequestDecoded) {
             decodePost(req);
+        }
         if ((obj = postValues.get(name)) != null) {
             // convert byte[] into filename
             if (!(obj instanceof String)) {
-                postToDisk = true;
-                String filename = "/tmp/form_" + postid + "_" + name;
+                isPostedToDisk = true;
+                File file = new File(new File(uploadDir), "form_" + postid + "_" + name);
                 RandomAccessFile raf = null;
                 try {
-                    raf = new RandomAccessFile(filename, "rw");
+                    raf = new RandomAccessFile(file, "rw");
                     if (obj instanceof Vector) {
                         v = (Vector)obj;
                         raf.write((byte[])v.elementAt(0));
@@ -297,7 +287,7 @@ public class HttpPost {
                 } catch (Exception e) {
                     log.error("getPostParameterFile(" + name + "): " + e);
                 }
-                return filename;
+                return file.getPath();
             }
 
             if (obj instanceof Vector) {
@@ -317,21 +307,25 @@ public class HttpPost {
     * @see #getPostMultiParameter
     * @see #checkPostMultiParameter
     */
-    public String getPostParameter(String name) {
+    public String getPostParameter(String name) throws PostValueToLargeException {
         Object obj = null;
         Vector v;
 
-        if (!postDecoded)
+        if (!isRequestDecoded) {
             decodePost(req);
+        }
+
         if ((obj = postValues.get(name)) != null) {
             try {
-                if (obj instanceof String)
+                if (obj instanceof String) {
                     throw new PostValueToLargeException("Use getPostParameterFile");
+                }
                 // Catch the exception right here, it should be thrown but
                 // that's against the Servlet-API Interface
             } catch (Exception e) {
                 log.error("getPostParameter(" + name + "): " + e);
             }
+
             if (obj instanceof Vector) {
                 v = (Vector)obj;
                 Object elem = v.elementAt(0);
@@ -348,23 +342,25 @@ public class HttpPost {
         }
     }
 
-    private void decodePost(HttpServletRequest req) {
-        postDecoded = true;
+    private void decodePost(HttpServletRequest req) throws PostValueToLargeException {
+        isRequestDecoded = true;
         byte[] postbuffer = null;
 
         if (req.getHeader("Content-length") != null || req.getHeader("Content-Length") != null) {
             postbuffer = readContentLength(req);
             String line = (String)req.getHeader("Content-type");
-            if (line == null)
+            if (line == null) {
                 line = (String)req.getHeader("Content-Type");
+            }
+
             if (line != null) {
                 if (line.indexOf("application/x-www-form-urlencoded") != -1) {
                     readPostUrlEncoded(postbuffer, postValues);
                 } else if (line.indexOf("multipart/form-data") != -1) {
-                    if (!postToDisk) {
+                    if (!isPostedToDisk) {
                         readPostFormData(postbuffer, postValues, line);
                     } else {
-                        readPostFormData("/tmp/form_" + postid, postValues, line);
+                        readPostFormData( new File(uploadDir,"form_" + postid).getPath(), postValues, line);
                     }
                 } else {
                     log.error("decodePost(): found no 'post' tag in post.");
@@ -383,7 +379,7 @@ public class HttpPost {
     * @param table the hashtable that is used as the source for the mapping process
     * @return byte[] buffer of length defined in the content-length mimeheader
     */
-    public byte[] readContentLength(HttpServletRequest req) {
+    public byte[] readContentLength(HttpServletRequest req) throws PostValueToLargeException {
         int len, len2, len3;
         byte buffer[] = null;
         DataInputStream connect_in = null;
@@ -398,7 +394,7 @@ public class HttpPost {
 
         len = req.getContentLength();
         // Maximum postsize
-        if (len < maximumPostbufferSize) {
+        if (len < maxInMemoryParameterSize) {
             log.debug("readContentLength(): writing to memory.");
             try {
                 buffer = new byte[len];
@@ -425,11 +421,11 @@ public class HttpPost {
                 // Mozilla 0.9.7 (and 0.9.6?) had a bug here. Now they are only slow, but work, if you don't supply a file...
 
             }
-        } else if (len < maxFileSize) {
+        } else if (len < maxParameterSize) {
             log.debug("readContentLength(): writing to disk");
             try {
-                postToDisk = true;
-                RandomAccessFile raf = new RandomAccessFile("/tmp/form_" + postid, "rw");
+                isPostedToDisk = true;
+                RandomAccessFile raf = new RandomAccessFile(new File(uploadDir,"form_" + postid), "rw");
                 int bufferlength = 64000;
                 buffer = new byte[bufferlength];
                 int index1 = 0, totallength = 0;
@@ -460,6 +456,7 @@ public class HttpPost {
             }
         } else {
             log.error("readContentLength(): post too large: " + len + " size");
+            throw new PostValueToLargeException("post size to large (actual,allowed)" + len + "," + maxRequestSize + ")");
         }
         return buffer;
     }
@@ -714,8 +711,9 @@ public class HttpPost {
 
                 if (end2 == -1) {
                     log.info("readPostFormData(): writing to postValue: ");
-                    raf = new RandomAccessFile("/tmp/form_" + postid + "_" + r, "rw");
-                    addpostinfo(post_header, r, "/tmp/form_" + postid + "_" + r);
+                    File f = new File(uploadDir,"form_" + postid + "_" + r);
+                    raf = new RandomAccessFile(f, "rw");
+                    addpostinfo(post_header, r, f.getPath());
                     try {
                         raf.write(postbuffer, i2 + 4, len - (i2 + 4));
                     } catch (Exception e) {
@@ -876,4 +874,44 @@ public class HttpPost {
         return -1;
     }
 
+    private void setProperties(Map properties) {
+        //keesj:sorry for this long code... 
+        if (properties.containsKey(MAX_PARAMETER_SIZE_PROPERTY)) {
+            try {
+                maxParameterSize = Integer.parseInt(properties.get(MAX_PARAMETER_SIZE_PROPERTY).toString());
+            } catch (NumberFormatException e) {
+                log.warn("The value{" + properties.get(MAX_PARAMETER_SIZE_PROPERTY) + "} of property {" + MAX_PARAMETER_SIZE_PROPERTY + "} in file " + CONFIG_FILE + " is not a integer");
+            }
+        }
+
+        if (properties.containsKey(MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY)) {
+            try {
+                maxInMemoryParameterSize = Integer.parseInt(properties.get(MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY).toString());
+            } catch (NumberFormatException e) {
+                log.warn("The value{" + properties.get(MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY) + "} of property {" + MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY + "} in file " + CONFIG_FILE + " is not a integer");
+            }
+        }
+
+        if (properties.containsKey(MAX_REQUEST_SIZE_PROPERTY)) {
+            try {
+                maxRequestSize = Integer.parseInt(properties.get(MAX_REQUEST_SIZE_PROPERTY).toString());
+            } catch (NumberFormatException e) {
+                log.warn("The value{" + properties.get(MAX_REQUEST_SIZE_PROPERTY) + "} of property {" + MAX_REQUEST_SIZE_PROPERTY + "} in file " + CONFIG_FILE + " is not a integer");
+            }
+        }
+        if (properties.containsKey(UPLOAD_DIR_PROPERTY)) {
+            String tmpDir = properties.get(UPLOAD_DIR_PROPERTY).toString();
+            File file = new File(tmpDir);
+            if (file.exists() && file.isDirectory()) {
+                uploadDir = tmpDir;
+            } else {
+                log.warn("The value {" + properties.get(UPLOAD_DIR_PROPERTY) + "} of property {" + UPLOAD_DIR_PROPERTY + "} in file " + CONFIG_FILE + " is not a directory {" + file.getPath() + "}");
+            }
+            file = null;
+        }
+        // do some basic checks
+        if (maxInMemoryParameterSize > maxRequestSize){
+        	log.warn(MAX_IN_MEMORY_PARAMETER_SIZE_PROPERTY + " is bigger then " + MAX_REQUEST_SIZE_PROPERTY);
+        }
+    }
 }
