@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
 *
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
-* @version $Id: MMSQL92Node.java,v 1.53.2.1 2002-02-25 13:55:23 kees Exp $
+* @version $Id: MMSQL92Node.java,v 1.53.2.2 2002-07-03 20:06:34 michiel Exp $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -888,21 +888,25 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      */
     public synchronized int getDBKeyOld() {
         int number=-1;
-        try {
-            MultiConnection con=mmb.getConnection();
-            Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("select max("+getNumberString()+") from "+mmb.getBaseName()+"_object");
-            if (rs.next()) {
-                number=rs.getInt(1);
-                number++;
-            } else {
-                number=1;
+        if(created(mmb.getBaseName() + "_object")) {
+            try {
+                MultiConnection con=mmb.getConnection();
+                Statement stmt=con.createStatement();
+                ResultSet rs=stmt.executeQuery("select max("+getNumberString()+") from "+mmb.getBaseName()+"_object");
+                if (rs.next()) {
+                    number=rs.getInt(1);
+                    number++;
+                } else {
+                    number=1;
+                }
+                stmt.close();
+                con.close();
+            } catch (SQLException e) {
+                log.error("MMBase -> Error getting a new key number");
+                return 1;
             }
-            stmt.close();
-            con.close();
-        } catch (SQLException e) {
-            log.error("MMBase -> Error getting a new key number");
-            return 1;
+        } else {
+            number = 1;
         }
         return number;
     }
