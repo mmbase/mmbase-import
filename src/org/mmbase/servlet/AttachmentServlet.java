@@ -28,7 +28,7 @@ import java.util.Date;
 
 /**
  *
- * @version $Id: AttachmentServlet.java,v 1.3 2002-06-27 15:59:11 michiel Exp $
+ * @version $Id: AttachmentServlet.java,v 1.4 2002-06-28 21:05:49 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -70,28 +70,14 @@ public class AttachmentServlet extends BridgeServlet {
      *
      */
 
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {        
-        String query = req.getQueryString();
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {    
+        Node node = getNode(req, res);
 
-        if (query == null) { // also possible to use /attachments/<number>
-            query = new java.io.File(req.getRequestURI()).getName();
-        }
-                
-        Node node;
-
-        try {
-            node = cloud.getNode(query);
-        } catch (org.mmbase.bridge.NotFoundException e) {
-            res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist");
-            return;
-        } catch (Exception e) {
-            res.sendError(res.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
-            return;
-        }
+        if (node == null) return;
 
         byte[] bytes = node.getByteValue("handle"); 
         if (bytes == null) {
-            res.sendError(res.SC_NOT_FOUND, "No handle found in node " + query);
+            res.sendError(res.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
             return;
         }
         int    fileSize = bytes.length;
@@ -122,7 +108,6 @@ public class AttachmentServlet extends BridgeServlet {
         } catch (java.io.IOException e) {
             log.error(Logging.stackTrace(e));
         }
-
 
         out.write(bytes, 0, fileSize);
         out.flush();
