@@ -13,6 +13,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.cache.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.util.StringTagger;
@@ -91,7 +92,7 @@ public class BasicCloud implements Cloud, Cloneable {
         userContext = cloud.userContext;
         account= cloud.account;
 
-        // start multilevel cache	
+        // start multilevel cache
         MultilevelCacheHandler.setMMBase(this.cloudContext.mmb);
         multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
@@ -135,23 +136,36 @@ public class BasicCloud implements Cloud, Cloneable {
         // generate an unique id for this instance...
         account="U"+uniqueId();
 
-        // start multilevel cache	
+        // start multilevel cache
         MultilevelCacheHandler.setMMBase(mmb);
         multilevel_cache=MultilevelCacheHandler.getCache("basic");
     }
 
-    public Node getNode(int nodenumber) {
+    // Makes a node otr Relation object based on an MMObjectNode
+    Node makeNode(MMObjectNode node, String nodenumber) {
+        NodeManager nm = getNodeManager(node.parent.getTableName());
+        int nodenr=node.getNumber();
+        if (nodenr==-1) {
+            int nodeid = Integer.parseInt(nodenumber);
+            if (node.parent instanceof InsRel) {
+                return new BasicRelation(node, nm, nodeid);
+            } else {
+                return new BasicNode(node, nm, nodeid);
+            }
+        } else {
+            assert(Operation.READ,nodenr);
+            if (node.parent instanceof InsRel) {
+                return new BasicRelation(node, nm);
+            } else {
+                return new BasicNode(node, nm);
+            }
+        }
+    }
+
+    public Node getNode(String nodenumber) {
         MMObjectNode node;
         try {
-            node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
-        // Catch the exception in case of a negative nodenumber.
-        } catch (StringIndexOutOfBoundsException e) {
-            String message;
-            message = "Node with number " + nodenumber + " does not exist.";
-            log.error(message);
-            throw new BridgeException(message);
-        // Catch the exception in case of a positive nodenumber wich is not
-        // found.
+            node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
             String message;
             message = "Node with number " + nodenumber + " does not exist.";
@@ -164,44 +178,16 @@ public class BasicCloud implements Cloud, Cloneable {
             log.error(message);
             throw new BridgeException(message);
         } else {
-            if (node.getIntValue("number")==-1) {
-                return new BasicNode(node, getNodeManager(node.parent.getTableName()), nodenumber);
-            } else {
-                assert(Operation.READ,nodenumber);
-                return new BasicNode(node, getNodeManager(node.parent.getTableName()));
-            }
+            return makeNode(node,nodenumber);
         }
     }
 
-    public Node getNode(String nodenumber) {
-        MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
-        if (node==null) {
-            String message;
-            message = "Node with number " + nodenumber + " does not exist.";
-            log.error(message);
-            throw new BridgeException(message);
-        } else {
-            if (node.getIntValue("number")==-1) {
-                return new BasicNode(node, getNodeManager(node.parent.getTableName()), Integer.parseInt(nodenumber));
-            } else {
-                // only assert for committed nodes...
-                assert(Operation.READ,node.getNumber());
-                return new BasicNode(node, getNodeManager(node.parent.getTableName()));
-            }
-        }
+    public Node getNode(int nodenumber) {
+        return getNode(""+nodenumber);
     }
 
     public Node getNodeByAlias(String aliasname) {
-        MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,aliasname);
-        if ((node==null) || (node.getNumber()==-1)) {
-            String message;
-            message = "Node with alias " + aliasname + " does not exist.";
-            log.error(message);
-            throw new BridgeException(message);
-        } else {
-            assert(Operation.READ,node.getNumber());
-            return new BasicNode(node, getNodeManager(node.parent.getTableName()));
-        }
+        return getNode(aliasname);
     }
 
     public NodeManagerList getNodeManagers() {
@@ -596,7 +582,7 @@ public class BasicCloud implements Cloud, Cloneable {
             } else {
                 constraints=convertClauseToDBS(constraints);
             }
-        } 
+        }
 
         Integer hash=null; // result hash for cache
         Vector resultlist=null; // result vector
@@ -645,21 +631,21 @@ public class BasicCloud implements Cloud, Cloneable {
      * set the Context of the current Node
      */
     void setContext(int nodeNumber, String context) {
-    	mmbaseCop.getAuthorization().setContext(userContext.getUserContext(), nodeNumber, context);
+        mmbaseCop.getAuthorization().setContext(userContext.getUserContext(), nodeNumber, context);
     }
 
     /**
      * get the Context of the current Node
      */
     String getContext(int nodeNumber) {
-    	return mmbaseCop.getAuthorization().getContext(userContext.getUserContext(), nodeNumber);
+        return mmbaseCop.getAuthorization().getContext(userContext.getUserContext(), nodeNumber);
     }
 
     /**
      * get the Contextes which can be set to this specific node
      */
     StringList getPossibleContexts(int nodeNumber) {
-    	return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
+        return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
     }
-   
+
 }

@@ -79,7 +79,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
 
         //node.setValue("owner","bridge");
         if (builder instanceof InsRel) {
-            return new BasicRelation(node, (RelationManager)this, id);
+            return new BasicRelation(node, this, id);
         } else {
             return new BasicNode(node, this, id);
         }
