@@ -7,7 +7,7 @@
 
     <date>2003-07-16</date>
 
-    <edition>$Id: storage.xml,v 1.4 2003-07-24 10:11:03 pierre Exp $</edition>
+    <edition>$Id: storage.xml,v 1.5 2003-08-04 10:16:03 pierre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -53,6 +53,23 @@
 
   </section>
 
+  <section id="object_model_overview">
+    <title>Object Model Overview</title>
+		<para>Place here a description of the object model. If your project does not include an objectcloud, remove this section.</para>
+	</section>
+	
+  <section id="class_model_overview">
+    <title>Class Model Overview</title>
+		<para>Place here a description of the class model. If your project does not include java classes, remove this section.</para>
+		<section id="interfaces">
+		
+	</section>
+	
+  <section id="introduction">
+    <title>Introduction</title>
+		<para></para>
+	</section>
+	
   <section id="interfaces">
     <title>Interfaces</title>
 		<para>...</para>

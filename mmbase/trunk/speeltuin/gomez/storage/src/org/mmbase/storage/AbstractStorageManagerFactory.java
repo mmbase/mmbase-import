@@ -12,17 +12,19 @@ package org.mmbase.storage;
 import java.io.InputStream;
 import java.util.*;
 import org.xml.sax.InputSource;
+
+import org.mmbase.storage.search.SearchQueryHandler;
+import org.mmbase.storage.util.*;
+
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
-
-import org.mmbase.storage.util.*;
 
 /**
  * An abstract implementation of the StorageManagerFactory implements ways for setting and retrieving attributes.
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.14 2003-08-01 14:16:11 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.15 2003-08-04 10:16:04 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -57,6 +59,20 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     protected Map disallowedFields;
 
     /**
+     * The query handler to use with this factory.
+     * Note: the current handler makes use of the JDBC2NodeInterface and is not optimized for storage: using it means
+     * you call getNodeManager() TWICE.
+     * Have to look into how this should work together.
+     */
+    protected SearchQueryHandler queryHandler;
+
+    /**
+     * The query handler class.
+     * Assign a value to this class if you want to set a default query handler.
+     */
+    protected Class queryHandlerClass;
+    
+    /**
      * Stores the MMBase reference, and initializes the attribute map.
      * Opens and reads the StorageReader for this factory.
      * @see load()
@@ -86,8 +102,31 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      */
     protected void load() throws StorageException {
         StorageReader reader = getDocumentReader();
+        
         // get the storage manager class
-        storageManagerClass = reader.getStorageManagerClass();
+        Class configuredClass = reader.getStorageManagerClass();
+        if (configuredClass != null) {
+            storageManagerClass = configuredClass;
+        } else if (storageManagerClass == null) {
+            throw new StorageConfigurationException("No StorageManager class specified, and no default available.");
+        }
+        
+        // get the queryhandler class
+        configuredClass = reader.getSearchQueryHandlerClass();
+        if (configuredClass != null) {
+            queryHandlerClass = configuredClass;
+        } else if (queryHandlerClass == null) {
+            throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
+        }
+        // intantiate handler
+        try {
+            queryHandler = (SearchQueryHandler)queryHandlerClass.newInstance();
+        } catch (IllegalAccessException iae) {
+            throw new StorageConfigurationException(iae);
+        } catch (InstantiationException ie) {
+            throw new StorageConfigurationException(ie);
+        }
+
         // get attributes
         setAttributes(reader.getAttributes());
         // get disallowed fields
@@ -97,12 +136,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         Collections.sort(typeMappings);
     }
 
-    /**
-     * Obtains a StorageManager that grants access to the storage.
-     * The instance represents a temporary connection to the storage -
-     * do not store the result of this call as a static or long-term member of a class.
-     * @return a StorageManager instance
-     */
+    // javadoc inherited
     public StorageManager getStorageManager() throws StorageException {
         try {
             StorageManager storageManager = (StorageManager)storageManagerClass.newInstance();
@@ -115,6 +149,15 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         }
     }
 
+    // javadoc inherited
+    public SearchQueryHandler getSearchQueryHandler() throws StorageException {
+        if (queryHandler==null) {
+            throw new StorageException("Cannot obtain a query handler.");
+        } else {
+            return queryHandler;
+        }
+    }
+    
     /**
      * Locates and opens the storage configuration document.
      * The configuration document to open can be set in mmbasereoot (using the storage property).
