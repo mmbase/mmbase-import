@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: cookies.xml,v 1.5 2002-06-20 07:12:28 pierre Exp $ -->
+<!-- @version $Id: cookies.xml,v 1.6 2002-06-20 09:18:39 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
-<status>inactive</status>
+<status>active</status>
 
 <!-- <classfile>
     This is a optional tag, it names the classfile that allows you to add

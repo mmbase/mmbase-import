@@ -4,7 +4,7 @@
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
-<status>inactive</status>
+<status>active</status>
 
 <names>
     <!-- singles per language as defined by ISO 639 -->
