@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.14 2004-11-23 10:19:22 michiel Exp $
+#  $Id: cvsmail,v 1.15 2004-11-23 10:25:13 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -79,12 +79,11 @@ if ($child = fork()) {
     # do the mailing
     if (1) {
 	my $mail = new FileHandle("|mutt -s \"$subject\" $toaddress -e 'my_hdr From: $user <$cvsuser\@mmbase.org>'");
-	# for mutt: 
-	
+	# for mutt: 	
 	print $mail $message."\n";
 	
 	unless ($files =~ /New directory/) {
-	    #chdir($basedir.$dir); # why is this necessary?
+	    chdir($basedir.$dir); # why is this necessary?
 	    for my $file (@files) {
 		my ($fil, $oldversion, $newversion) = split(",", $file);
 		print $mail "\n\n";
