@@ -1,4 +1,4 @@
-b===================================================================
+===================================================================
                      MMBase 1.7.0 - Installation
 ===================================================================  
   
@@ -29,10 +29,10 @@ MMBase running, you must do the following:
 7. Check if mmbase is running using the following url:
    <http://localhost:port/mmbase-webapp/version> 
 
-8. If this is running, goto <http://localhost:port> to see an infopage
-   about MMBase and links to editors, admin, examples, etc. Use
-   admin/admin2k when you're asked to login (see notes below how to
-   change this).
+8. If this is running, goto <http://localhost:port/mmbase-webapp/> to
+   see an infopage about MMBase and links to editors, admin, examples,
+   etc. Use admin/admin2k when you're asked to login (see notes below
+   how to change this).
 
 9. Edit jdbc.xml and mmbaseroot.xml (both are in
    <mmbase-webapp/WEB-INF/config/modules>) for using a different
@@ -42,7 +42,7 @@ MMBase running, you must do the following:
    <mmbase-webapp/WEB-INF/config/security/context/config.xml> (users,
    groups, and contextes), and in
    <mmbase-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration
-   and so on) 
+   and so on).
 
 10. For more information about installation en configuration see:
     <http://localhost:8080/mmbase-webapp/mmdocs/administrators/install-tomcat.html>
