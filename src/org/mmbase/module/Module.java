@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.5 $ $Date: 2000-03-30 13:11:26 $
+ * @version $Revision: 1.6 $ $Date: 2000-03-31 15:17:27 $
  */
 public abstract class Module {
 
@@ -320,7 +320,7 @@ public abstract class Module {
 			try {
 				mod.onload();		
 			} catch (Exception f) {
-				debug("startModules(): ERROR: modules("+mod+") not found to 'onload'!");
+				debug("startModules(): Warning: modules("+mod+") not found to 'onload'!");
 				f.printStackTrace();
 			}
 		}
@@ -354,7 +354,7 @@ public abstract class Module {
 		if (obj!=null) {
 			return(obj);
 		} else {
-			debug("getModule("+name+"): ERROR: No module loaded with this name!");
+			debug("getModule("+name+"): Warning: No module loaded with this name!");
 			return(null);
 		}
 	}	
