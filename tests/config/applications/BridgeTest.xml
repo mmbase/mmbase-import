@@ -17,6 +17,7 @@
 
   <allowedrelationlist>
     <relation from="aa" to="bb" type="related" />
+    <relation from="bb" to="aa" type="related" />
     <relation from="bb" to="cc" type="posrel" />
   </allowedrelationlist>
 
