@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <head>
   <title>JSTL and Variables</title>
   <link href="style.css" rel="stylesheet" type="text/css"/>
@@ -64,6 +64,15 @@
   <tr valign="top">
     <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.el.jsp" escape="text/xml" /></pre></td>
     <td width="50%"><%@include file="codesamples/jstl.el.jsp" %></td>
+  </tr>
+  <tr><th colspan="2">
+  <p>
+    The mm:locale (and mm:content) tag, also influence the fmt: standard tags.
+  </p>
+  </th></tr>
+  <tr valign="top">
+    <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.fmt.jsp" escape="text/xml" /></pre></td>
+    <td width="50%"><%@include file="codesamples/jstl.fmt.jsp" %></td>
   </tr>
 
 
