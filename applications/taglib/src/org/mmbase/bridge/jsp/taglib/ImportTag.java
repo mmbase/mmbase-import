@@ -27,7 +27,7 @@ public class ImportTag extends WriteTag {
     private static Logger log = Logging.getLoggerInstance(ImportTag.class.getName()); 
 
     protected boolean required     = false;
-    protected String  defaultValue = null;
+    //protected String  defaultValue = null;
     protected int     from         = ContextTag.TYPE_NOTSET;
 
     protected String externid      = null;
@@ -39,23 +39,39 @@ public class ImportTag extends WriteTag {
      * Release all allocated resources.
      */
     public void release() {   
+        log.debug("releasing" );
         super.release();       
         externid = null;
         value = null;
         id = null;
     }
 
-    public void setExternid(String e) {
-        externid = e;
+    /**
+     * The extern id it the identifier in some external source.
+     */
+
+    public void setExternid(String e) throws JspTagException {
+        externid = getAttributeValue(e);
     }
 
+    /**
+     * If 'required' then the variable must be available in the
+     * external source, otherwise exception.
+     * 
+     */
     public void setRequired(boolean b) {
         required = b;
     }
 
+    /*
     public void setDefault(String d) {
         defaultValue = d;
     }
+    */
+
+    /**
+     * From which external source
+     */
 
     public void setFrom(String s) throws JspTagException {
         if ("parent".equalsIgnoreCase(s)) {
@@ -66,18 +82,24 @@ public class ImportTag extends WriteTag {
             from = ContextTag.TYPE_SESSION;
         } else if ("parameters".equalsIgnoreCase(s)) {
             from = ContextTag.TYPE_PARAMETERS;
-        } else if ("postparameters".equalsIgnoreCase(s)) {
-            from = ContextTag.TYPE_POSTPARAMETERS;
+        } else if ("postparameters".equalsIgnoreCase(s)) { // backward compatible
+            from = ContextTag.TYPE_MULTIPART;
+        } else if ("multipart".equalsIgnoreCase(s)) {
+            from = ContextTag.TYPE_MULTIPART;
         } else {
             throw new JspTagException("Unknown context-type " + s);
         }
     }
 
     public int doStartTag() throws JspTagException {
-
+        
         return EVAL_BODY_TAG;
-
     }
+
+    /**
+     * The body of the import tag can contain a (default) value for the context variable to be created.
+     *
+     */
 
     private Object getFromBodyContent() throws JspTagException {
         Object res;
@@ -90,6 +112,11 @@ public class ImportTag extends WriteTag {
         } else if ("Integer".equalsIgnoreCase(type)) {
             log.debug("integer");
             res = new Integer(bodyContent.getString());
+        } else if ("Vector".equalsIgnoreCase(type)) {
+            String bod = bodyContent.getString();
+            if (! "".equals(bod)) {
+                res = stringSplitter(bod);
+            } else { res = ""; }
         } else {
             throw new JspTagException("Unknown type '" + type + "'");
         }
@@ -100,12 +127,12 @@ public class ImportTag extends WriteTag {
         value = null;
         
         if (externid != null) {
-            log.debug("Externid was given " + externid);
+            log.trace("Externid was given " + externid);
             if (id == null) {
-                log.debug("No id was given, using externid ");
+                log.trace("No id was given, using externid ");
                 id = externid;                    
             } else {
-                log.debug("An id was given (" + id + ")");
+                log.trace("An id was given (" + id + ")");
             }
                     
             boolean found;
