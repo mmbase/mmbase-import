@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.12 2003-09-04 12:16:38 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.13 2003-09-04 13:59:00 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1056,8 +1056,6 @@ public class DatabaseStorageManager implements StorageManager {
             String fieldDef = factory.getStorageIdentifier(field)+" "+((TypeMapping)typeMappings.get(found)).getType(size);
             if (field.getDBNotNull()) {
                 fieldDef += " NOT NULL";
-            } else {
-                fieldDef += " NULL";
             }
             return fieldDef;
         } else {
