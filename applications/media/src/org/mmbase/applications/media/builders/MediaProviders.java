@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.builders;
 
+import org.mmbase.applications.media.cache.URLCache;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -24,7 +26,7 @@ import java.lang.reflect.Method;
  * be online/offline. 
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.7 2003-02-10 13:24:48 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.8 2003-07-11 13:57:01 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -58,8 +60,8 @@ public class MediaProviders extends MMObjectBuilder {
      * @returns A List of URLComposer's
      */
 
-    protected List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
-        return urlComposerFactory.createURLComposers(provider, source, fragment, info, urls);
+    protected List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls, List cacheExpireObjects) {
+        return urlComposerFactory.createURLComposers(provider, source, fragment, info, urls, cacheExpireObjects);
     }
        
     protected Object executeFunction(MMObjectNode node, String function, List args) {

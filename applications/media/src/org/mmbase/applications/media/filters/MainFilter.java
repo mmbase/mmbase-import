@@ -156,8 +156,12 @@ public class MainFilter {
                 log.debug("Using filter " + filter);
                 log.debug("before: " + urls);
             }
-            
-            urls = filter.filter(urls);
+  
+            try {         
+                urls = filter.filter(urls);
+            } catch (Exception filterException) {
+		log.error("Check filter "+filter+" "+filterException);
+            }
             if (log.isDebugEnabled()) {
                 log.debug("after: " + urls);
             }

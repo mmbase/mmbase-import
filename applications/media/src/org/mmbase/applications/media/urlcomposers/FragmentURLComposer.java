@@ -11,8 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers;
 import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.module.core.MMObjectNode;
-import java.util.Map;
-import java.util.Hashtable;
+import java.util.*;
 
 /**
   * A Fragment URLComposer is an URLComposer which can also use
@@ -22,14 +21,13 @@ import java.util.Hashtable;
   *
   *
   * @author Michiel Meeuwissen
-  * @version $Id: FragmentURLComposer.java,v 1.7 2003-02-18 17:08:58 michiel Exp $
+  * @author Rob Vermeulen (VPRO)
   */
-
 abstract public class FragmentURLComposer extends URLComposer  {
     protected MMObjectNode fragment;
 
-    public FragmentURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, info);
+    public FragmentURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, info, cacheExpireObjects);
         this.fragment = fragment;
     }
 

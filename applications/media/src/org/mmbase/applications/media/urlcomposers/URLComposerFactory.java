@@ -31,7 +31,7 @@ import java.lang.reflect.*;
  * format/protocol combination to a URLComposer class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.14 2003-06-05 09:38:41 michiel Exp $
+ * @author Rob Vermeulen (VPRO)
  */
 
 public class URLComposerFactory  {
@@ -48,7 +48,6 @@ public class URLComposerFactory  {
     public static final  String CONFIG_FILE = "media" + File.separator + "urlcomposers.xml";
 
     private static final Class defaultComposerClass = URLComposer.class;
-
  
     private static URLComposerFactory instance = new URLComposerFactory();
 
@@ -57,10 +56,9 @@ public class URLComposerFactory  {
      * format/protocol/URLComposer-class combination. The factory
      * maintains a List of these.
      */
-
     private static class ComposerConfig {
         private static Class[] constructorArgs = new Class[] {
-            MMObjectNode.class, MMObjectNode.class, MMObjectNode.class, Map.class
+            MMObjectNode.class, MMObjectNode.class, MMObjectNode.class, Map.class, List.class
         };
         private Format format;
         private String protocol;
@@ -77,10 +75,10 @@ public class URLComposerFactory  {
 
         Class   getComposerClass() { return klass; };
 
-        URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) { 
+        URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) { 
             try {
                 Constructor c = klass.getConstructor(constructorArgs);
-                return (URLComposer) c.newInstance(new Object[] {provider, source, fragment, info});            
+                return (URLComposer) c.newInstance(new Object[] {provider, source, fragment, info, cacheExpireObjects});            
             } catch (java.lang.NoSuchMethodException e) { 
                 log.error("URLComposer implementation does not contain right constructor " + e.toString());
             } catch (java.lang.SecurityException f) {
@@ -188,12 +186,18 @@ public class URLComposerFactory  {
      */
 
     protected List getTemplates(MMObjectNode fragment) {
+	log.error("init");
         List templates = new ArrayList();
 
         if (fragment != null) {
+		log.error("not null");
+        log.error("fragment "+fragment);
             MediaFragments bul = (MediaFragments) fragment.parent;
+		log.error("1");
             Stack stack = bul.getParentFragments(fragment);
+		log.error("2");
             Iterator i = stack.iterator();
+		log.error("3");
             while (i.hasNext()) {
                 MMObjectNode f = (MMObjectNode) i.next();
                 templates.addAll(f.getRelatedNodes("templates"));        
@@ -242,7 +246,7 @@ public class URLComposerFactory  {
      * @return The (new) list with urlcomposers.
      */
 
-    public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
+    public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls, List cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
         Format format   = Format.get(source.getIntValue("format"));
         String protocol = provider.getStringValue("protocol");
@@ -265,12 +269,12 @@ public class URLComposerFactory  {
                         MMObjectNode template = (MMObjectNode) ti.next();
                         Map templateInfo = new HashMap(info);
                         templateInfo.put("template", template);
-                        URLComposer uc = cc.getInstance(provider, source, fragment, templateInfo);
+                        URLComposer uc = cc.getInstance(provider, source, fragment, templateInfo, cacheExpireObjects);
                         addURLComposer(uc, urls);                        
                     }
                 } else {
                     // normal urlcomposers are one per fragment of course
-                    URLComposer uc = cc.getInstance(provider, source, fragment, info);
+                    URLComposer uc = cc.getInstance(provider, source, fragment, info, cacheExpireObjects);
                     addURLComposer(uc, urls);
                 }
                 found = true;
@@ -279,7 +283,7 @@ public class URLComposerFactory  {
             }
         }
         if (! found) { // use default            
-            URLComposer uc = defaultUrlComposer.getInstance(provider, source, fragment, info);
+            URLComposer uc = defaultUrlComposer.getInstance(provider, source, fragment, info, cacheExpireObjects);
             if (uc != null && ! urls.contains(uc)) { // avoid duplicates
                 log.debug("No urlcomposer found, adding the default");
                 urls.add(uc);
