@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.107 2003-09-19 12:41:08 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.108 2003-11-10 16:47:14 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -106,7 +106,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     /**
      */
-    BasicCloud(String name, String application, Map loginInfo, CloudContext cloudContext) {
+    BasicCloud(String name, String authenticationType, Map loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
         this.cloudContext = (BasicCloudContext)cloudContext;
         MMBase mmb = BasicCloudContext.mmb;
@@ -119,11 +119,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             log.error(message);
             throw new BridgeException(message);
         }
-        org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
+        org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
         if (uc == null) {
-            throw new BridgeException("Login invalid (login-module: " + application + ")");
+            throw new BridgeException("Login invalid (login-module: " + authenticationType + ")");
         }
-        userContext = new BasicUser(mmbaseCop, uc);
+        userContext = new BasicUser(mmbaseCop, uc, authenticationType);
         // end authentication...
 
         // other settings of the cloud...
