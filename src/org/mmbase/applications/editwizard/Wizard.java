@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.19 2002-05-07 14:39:09 michiel Exp $
+ * @version $Id: Wizard.java,v 1.20 2002-05-16 12:01:55 pierre Exp $
  *
  */
 public class Wizard {
@@ -101,7 +101,7 @@ public class Wizard {
 
     /**
      * This list stores all errors and warnings occured
-     *     
+     *
      */
     private List errors;
 
@@ -198,7 +198,7 @@ public class Wizard {
     protected void loadWizard(String wizardname, String di) throws WizardException, SecurityException {
 
         if (wizardname == null) throw new WizardException("Wizardname may not be null");
-        // if (di         == null) throw new WizardException("Objectnumber may not be null");       
+        // if (di         == null) throw new WizardException("Objectnumber may not be null");
         wizardName = wizardname;
         dataId = di;
         File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
@@ -292,7 +292,7 @@ public class Wizard {
         // Build the preHtml version of the form.
         preform = createPreHtml(schema.getDocumentElement(), currentformid, datastart, instancename);
         Validator.validate(preform, schema);
-        Map params = new HashMap();    
+        Map params = new HashMap();
         params.put("ew_context", context);
         params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         params.put("sessionid", sessionId);
@@ -614,7 +614,7 @@ public class Wizard {
      */
     private void loadSchema(File wizardSchemaFile) throws WizardException {
         schema = Utils.loadXMLFile(wizardSchemaFile);
-        
+
         resolveIncludes(schema.getDocumentElement());
         resolveShortcuts(schema.getDocumentElement(), true);
 
@@ -811,38 +811,46 @@ public class Wizard {
         String defaultdisplaymode = Utils.getAttribute(newlist,"defaultdisplaymode","edit");
 
         String orderby = Utils.getAttribute(fieldlist, "orderby", null);
+        if ((orderby!=null) && (orderby.indexOf("@")==-1)) {
+            orderby="object/field[@name='"+orderby+"']";
+        }
+        String ordertype = Utils.getAttribute(fieldlist, "ordertype", "string");
 
-        // we need to order datalist using orderby!
-
-        SortedMap sorteddatalist = new TreeMap(String.CASE_INSENSITIVE_ORDER);
-        for (int dataindex=0; dataindex<datalist.getLength(); dataindex++) {
-            String orderbyvalue = "";
-            Node datacontext = datalist.item(dataindex);
+        // set the orderby attribute for all the nodes
+        List tempstorage=new ArrayList(datalist.getLength());
+        for (int dataIndex=0; dataIndex<datalist.getLength(); dataIndex++) {
+            Element datacontext = (Element)datalist.item(dataIndex);
             if (orderby!=null) {
-                try {
-                    // Determine the orderby value and store it.
-                    orderbyvalue = Utils.selectSingleNodeText(datacontext, orderby, "");
-                } catch (RuntimeException e) {
-                    log.error(Logging.stackTrace(e));
+                String orderByValue = Utils.selectSingleNodeText(datacontext, orderby, "");
+                // make sure of type
+                if (ordertype.equals("number")) {
+                    double orderDbl;
+                    try {
+                        orderDbl=Double.parseDouble(orderByValue);
+                    } catch (Exception e) {
+                        log.error("fieldvalue "+orderByValue+" is not numeric");
+                        orderDbl=-1;
+                    }
+                    orderByValue=""+orderDbl;
                 }
-                Utils.setAttribute(datacontext, "orderby", orderbyvalue);
+                // sets orderby
+                datacontext.setAttribute("orderby",orderByValue);
             }
-            sorteddatalist.put(orderbyvalue+"."+dataindex,datacontext);
+            // clears firstitem
+            datacontext.setAttribute("firstitem","false");
+            // clears lastitem
+            datacontext.setAttribute("lastitem","false");
+            tempstorage.add(datacontext);
+        }
+        // sort list
+        if (orderby!=null) {
+            Collections.sort(tempstorage,new OrderByComparator(ordertype));
         }
 
-        // Create an item node for each datanode in the datalist.
-
-        Map.Entry[] entrylist = new Map.Entry[sorteddatalist.size()];
-        sorteddatalist.entrySet().toArray(entrylist);
-
-        for (int dataindex=0; dataindex<entrylist.length; dataindex++) {
-
-            Map.Entry en=entrylist[dataindex];
-            Node datacontext = (Node)en.getValue();
-            if (orderby!=null) {
-                String orderbyvalue=(String)en.getKey();
-                Utils.setAttribute(datacontext, "orderby", orderbyvalue);
-            }
+        // and make form
+        int listsize=tempstorage.size();
+        for (int dataindex=0; dataindex<listsize; dataindex++) {
+            Element datacontext = (Element)tempstorage.get(dataindex);
 
             // Determine the display mode of the current datanode.
             String displaymode = Utils.getAttribute(datacontext,"displaymode",defaultdisplaymode);
@@ -870,12 +878,18 @@ public class Wizard {
             if (orderby!=null) {
                 if (dataindex > 0 && hiddenCommands.indexOf("|move-up|") == -1){
                     addSingleCommand(newitem,"move-up", datacontext,
-                                                   (Node)entrylist[dataindex-1].getValue());
+                                                   (Node)tempstorage.get(dataindex-1));
                 }
-                if ((dataindex+1) < entrylist.length && hiddenCommands.indexOf("|move-down|") == -1){
+                if ((dataindex+1) < listsize && hiddenCommands.indexOf("|move-down|") == -1){
                     addSingleCommand(newitem,"move-down", datacontext,
-                                                       (Node)entrylist[dataindex+1].getValue());
+                                                       (Node)tempstorage.get(dataindex+1));
                 }
+            }
+            if (dataindex==0) {
+                datacontext.setAttribute("firstitem","true");
+            }
+            if (dataindex==tempstorage.size()-1) {
+                datacontext.setAttribute("lastitem","true");
             }
         }
 
@@ -1163,6 +1177,11 @@ public class Wizard {
             // and swap the values.
             // when the list is sorted again the order of the nodes will be changed
             if (orderby != null) {
+                // if orderby is only a field name, create an xpath
+                if (orderby.indexOf('@')==-1) {
+                    orderby="object/field[@name='"+orderby+"']";
+                }
+
                 log.debug("swap "+did+" and "+otherdid+" on "+orderby);
                 Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']/"+orderby);
                 if (datanode != null) {
@@ -1520,4 +1539,39 @@ public class Wizard {
         return fieldcon;
     }
 
+    class OrderByComparator implements Comparator {
+
+        boolean compareByNumber=false;
+
+        OrderByComparator(String ordertype) {
+            compareByNumber=ordertype.equals("number");
+        }
+
+        public int compare(Object o1, Object o2) {
+            Element n1=(Element)o1;
+            Element n2=(Element)o2;
+            // Determine the orderby values and compare
+            // store it??
+            String order1 = n1.getAttribute("orderby");
+            String order2= n2.getAttribute("orderby");
+            if (compareByNumber) {
+                    try {
+                    double orderdbl1=Double.parseDouble(order1);
+                    double orderdbl2=Double.parseDouble(order2);
+                    if (orderdbl1==orderdbl2) {
+                        return 0;
+                    } else if (orderdbl1>orderdbl2) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                } catch (Exception e) {
+                    log.error("Invalid field values ("+order1+"/"+order2+"):"+e);
+                    return 0;
+                }
+            } else {
+                return order1.compareTo(order2);
+            }
+        }
+    }
 }

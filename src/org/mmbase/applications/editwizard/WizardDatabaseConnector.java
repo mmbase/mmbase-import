@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.12 2002-05-15 12:02:56 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.13 2002-05-16 12:01:56 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -322,7 +322,7 @@ public class WizardDatabaseConnector {
                 Node parent=data.getDocumentElement();
                 log.debug(parent.toString());
                 log.debug(value.substring(1,value.length()-1));
-                value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"X");
+                value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"");
             }
             if (datafield!=null) {
                 // yep. fill-in
