@@ -20,30 +20,37 @@ import org.mmbase.util.logging.*;
  * Take the systemId and converts it into a local file, using the MMBase config path
  *
  * @author Gerard van Enk
- * @version $Revision: 1.13 $ $Date: 2002-08-14 14:25:27 $
+ * @author Michiel Meeuwissen
+ * @version $ Id: $
  */
 public class XMLEntityResolver implements EntityResolver {
 
     private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class.getName());
 
+    private static final String MMRESOURCES = "/org/mmbase/resources/";
+
     private String dtdpath;
     private boolean hasDTD; // tells whether or not a DTD is set - if not, no validition can take place
 
-    private boolean validate;  
+    private boolean  validate;  
+    private Class    resolveBase;
 
     /**
      * empty constructor
      */
     public XMLEntityResolver() {
-        hasDTD = false;
-        dtdpath = null;
-        validate = true;
+        this(true);
     }
 
     public XMLEntityResolver(boolean v) {
-        hasDTD = false;
-        dtdpath = null;
-        validate = v;
+        this(v, null);
+    }
+
+    public XMLEntityResolver(boolean v, Class base) {
+        hasDTD      = false;
+        dtdpath     = null;
+        validate    = v;
+        resolveBase = base;
     }
 
     /**
@@ -59,32 +66,55 @@ public class XMLEntityResolver implements EntityResolver {
             // it's a systemId we can't do anything with,
             // so let the parser decide what to do
             return null;
-        } else if (!canResolve()) {
-            // cannot determine the dtd - create an empty dtd stream instead
-            return new InputSource(new StringReader(""));
         } else {
             hasDTD = true ;
             int i = systemId.indexOf("/dtd/");
-            String dtdName = systemId.substring(i+5);
-            String configpath = MMBaseContext.getConfigPath();
-            if (configpath==null) return null;
-            String dtdLocation = configpath+File.separator+"dtd"+File.separator+dtdName;
-            log.debug("dtdLocation = "+dtdLocation);
-            InputStreamReader dtdInputStreamReader =
-                new InputStreamReader(new FileInputStream(dtdLocation));
+            String dtdName = systemId.substring(i + 5);
+            InputStream dtdStream = null;          
+
+            // first, try MMBase config directory (if initialized)
+
+            if (MMBaseContext.isInitialized()) {
+                String configpath = MMBaseContext.getConfigPath();
+                if (configpath != null) {                    
+                    File  dtdFile = new File(configpath + File.separator + "dtd" + File.separator + dtdName);
+                    if (dtdFile.canRead()) {
+                        if (log.isDebugEnabled()) log.debug("dtdLocation = " + dtdFile);
+                        dtdStream = new FileInputStream(dtdFile);
+                        dtdpath = dtdFile.toString();
+                    }
+                }
+            }
+            
+            if (dtdStream == null) {
+                Class base = resolveBase;
+                if (base != null) {
+                    String resource = "resources/" + dtdName;
+                    if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource + " of " + resolveBase.getClass().getName());
+                    dtdStream = resolveBase.getResourceAsStream(resource);
+                    if (dtdStream == null) {
+                        log.warn("Could not find " + resource + " in " + resolveBase.getClass().getName() + ", falling back to " + MMRESOURCES);
+                        base = null; // try it in org.mmbase.resources too.
+                    }
+                }
+               
+                if (base == null) {
+                    String resource = MMRESOURCES + "dtd/" + dtdName;
+                    if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource);
+                    dtdStream = getClass().getResourceAsStream(resource);
+                } 
+            }
+            if (dtdStream == null) {
+                log.error("Could not find dtd '" + dtdName + "'");
+                return null;
+            }
+
+
+            InputStreamReader dtdInputStreamReader = new InputStreamReader(dtdStream);
             InputSource dtdInputSource = new InputSource();
-            dtdInputSource.setCharacterStream(dtdInputStreamReader);
-            dtdpath = dtdLocation;
+            dtdInputSource.setCharacterStream(dtdInputStreamReader);      
             return dtdInputSource;
         }
-    }
-
-    /**
-     * Returns whether the resolver has enough environmental information to resolve the DTD.
-     * @return whether the resolver can resolve DTDs
-     */
-    public boolean canResolve() {
-        return MMBaseContext.isInitialized();
     }
 
     /**
