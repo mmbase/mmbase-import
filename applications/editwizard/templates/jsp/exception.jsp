@@ -43,7 +43,8 @@
         docel.appendChild(excnode);
     
         org.w3c.dom.Node sttnode = docel.getOwnerDocument().createElement("stacktrace");
-        Utils.storeText(sttnode,org.mmbase.util.logging.Logging.stackTrace(exception));
+        
+        Utils.storeText(sttnode, org.mmbase.util.logging.Logging.stackTrace(exception));
         docel.appendChild(sttnode);
     
         Utils.transformNode(doc, template, ewConfig.uriResolver, out, params);
