@@ -23,7 +23,7 @@
     	    		
     <!ELEMENT contexts ( context+ ) >
     <!ATTLIST contexts default NMTOKEN #REQUIRED >			
-    	<!ELEMENT context ( operation*, possible+ ) >
+    	<!ELEMENT context ( operation*, possible* ) >
     	<!ATTLIST context name NMTOKEN #REQUIRED > 
     	    <!ELEMENT operation ( grant* ) >
     	    <!ATTLIST operation type CDATA #REQUIRED > 
