@@ -9,6 +9,12 @@
           </available>
 
   </target>
+
+  <target name="jar.uptodatecheck">
+    <uptodate property="jar.uptodate" targetfile="build/mmbase-rmmci-server.jar" >
+      <srcfiles dir="build/classes" includes="**/*"/>
+    </uptodate>
+  </target>
   <!-- =================================================================== -->
   <!-- (Step 1 for remote) Compile the remote generator classes            -->
   <!-- =================================================================== -->
@@ -92,7 +98,7 @@
   <!-- =================================================================== -->
   <!-- Create mmbase-rmmci.jar                                             -->
   <!-- =================================================================== -->
-  <target name="rmmci" depends="compile.remote">
+  <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
     <unjar src="../../build/lib/servlet.jar" dest="build/rmmcitmp" />
     <unjar src="../../build/lib/xml-apis.jar" dest="build/rmmcitmp" />
