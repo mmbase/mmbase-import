@@ -19,10 +19,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
+ * @version $Id: UpperCaser.java,v 1.4 2003-05-12 11:15:35 michiel Exp $
  */
 
 public class UpperCaser extends ReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(UpperCaser.class.getName());
+    private static Logger log = Logging.getLoggerInstance(UpperCaser.class);
 
     public Writer transform(Reader r, Writer w) {
         try {

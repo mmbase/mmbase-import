@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.10 2003-05-10 22:23:50 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.11 2003-05-12 11:15:35 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -42,7 +42,11 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
      * Adds a CharTranformer to the chain of CharTransformers.
      */
     public ChainedCharTransformer add(CharTransformer ct) {
-        charTransformers.add(ct);
+        if (ct instanceof ChainedCharTransformer) {
+            addAll(((ChainedCharTransformer)ct).charTransformers);
+        } else {
+            charTransformers.add(ct);
+        }
         return this;
     }
 

@@ -24,9 +24,10 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
+ * @version $Id: Latin3Surrogator.java,v 1.3 2003-05-12 11:15:35 michiel Exp $
  */
 public class Latin3Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
-    private static Logger log = Logging.getLoggerInstance(Latin3Surrogator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Latin3Surrogator.class);
 
     // esperanto 
     public static final int XMETODO   = 1;  // faru iksojn
@@ -39,7 +40,7 @@ public class Latin3Surrogator extends ConfigurableReaderTransformer implements C
         super(c);
     }
       
-    public Writer iksoj(Reader r, Writer w) {
+    protected Writer iksoj(Reader r, Writer w) {
         try {
             while (true) {
                 int c = r.read();
@@ -66,7 +67,7 @@ public class Latin3Surrogator extends ConfigurableReaderTransformer implements C
         return w;
     }
 
-    public Writer hoj(Reader r, Writer w) {
+    protected Writer hoj(Reader r, Writer w) {
         try {
             while (true) {
                 int c = r.read();

@@ -15,18 +15,18 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.10 2003-05-10 22:23:52 michiel Exp $
+ * @version $Id: XmlField.java,v 1.11 2003-05-12 11:15:35 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(XmlField.class.getName());
+    private static Logger log = Logging.getLoggerInstance(XmlField.class);
 
     // can be decoded:
     public final static int RICH = 1;
     public final static int POOR = 2;
     public final static int BODY = 3;
-    public final static int XML = 4;
+    public final static int XML  = 4;
 
     // cannot be decoded:
     public final static int ASCII = 10;
@@ -36,9 +36,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     // for validation only.
     private final static String XML_HEADER =
-        "<?xml version=\"1.0\" encoding=\""
-            + CODING
-            + "\"?>\n<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
+        "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>" 
+        + " \n<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
     private final static String XML_TAGSTART = "<mmxf>";
     private final static String XML_TAGEND = "</mmxf>";
 
