@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.31 2003-08-18 12:44:06 michiel Exp $ 
+ * @version $Id: ListTag.java,v 1.32 2003-08-27 21:33:34 michiel Exp $ 
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
-    private static Logger log = Logging.getLoggerInstance(ListTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ListTag.class);
 
     protected Attribute nodes    = Attribute.NULL;
     protected Attribute path     = Attribute.NULL;

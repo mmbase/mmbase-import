@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.5 2003-06-06 10:03:27 pierre Exp $
+ * @version $Id: TreeHelper.java,v 1.6 2003-08-27 21:33:41 michiel Exp $
  */
 
 public class TreeHelper {
@@ -50,7 +50,7 @@ public class TreeHelper {
      */
     
     private Cloud cloud;
-    private static Logger log = Logging.getLoggerInstance(TreeHelper.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TreeHelper.class.getName());
     private static String htmlroot = MMBaseContext.getHtmlRoot();
     
     public void setCloud(Cloud cl) {

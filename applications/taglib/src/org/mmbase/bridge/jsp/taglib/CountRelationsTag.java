@@ -22,12 +22,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.17 2003-08-11 15:27:16 michiel Exp $ 
+ * @version $Id: CountRelationsTag.java,v 1.18 2003-08-27 21:33:31 michiel Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
-    private static Logger log   = Logging.getLoggerInstance(CountRelationsTag.class);
+    private static final Logger log   = Logging.getLoggerInstance(CountRelationsTag.class);
     private Attribute type      = Attribute.NULL;
     private Attribute searchDir = Attribute.NULL;
     private Attribute role      = Attribute.NULL;

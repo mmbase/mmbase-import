@@ -24,12 +24,12 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.13 2003-08-12 15:26:19 michiel Exp $
+ * @version $Id: Attribute.java,v 1.14 2003-08-27 21:33:42 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public class Attribute {
-    private static Logger log = Logging.getLoggerInstance(Attribute.class);
+    private static final Logger log = Logging.getLoggerInstance(Attribute.class);
     private static AttributeCache cache = new AttributeCache();
 
     public final static Attribute NULL = new NullAttribute();
@@ -342,7 +342,7 @@ public class Attribute {
  */
 
 class AttributeCache extends Cache {
-    private static Logger log = Logging.getLoggerInstance(AttributeCache.class);
+    private static final Logger log = Logging.getLoggerInstance(AttributeCache.class);
     AttributeCache() {
         super(1000);
     }

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.75 2003-08-11 15:27:14 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.76 2003-08-27 21:33:30 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -72,7 +72,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static final int DENYREASON_FAIL = 1;
     private static final int DENYREASON_RANKTOOLOW = 2;
 
-    private static Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
 
     private static String DEFAULT_CLOUD_NAME = "mmbase";
     private static String DEFAULT_AUTHENTICATION = "name/password";

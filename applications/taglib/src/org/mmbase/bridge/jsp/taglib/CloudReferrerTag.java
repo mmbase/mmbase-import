@@ -26,12 +26,12 @@ import org.mmbase.util.logging.Logging;
  * class. 
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.20 2003-06-06 10:03:06 pierre Exp $ 
+ * @version $Id: CloudReferrerTag.java,v 1.21 2003-08-27 21:33:29 michiel Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
 	
-    private static Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
+    private static final Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
 
     private static CloudContext cloudContext;
 

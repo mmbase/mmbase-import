@@ -16,11 +16,11 @@ import org.mmbase.util.logging.*;
  * The TEI class for SetFieldTag to export the fieldname.
  *
  * @author Jaco de Groot
- * @version $Id: SetFieldTEI.java,v 1.3 2003-06-06 10:03:21 pierre Exp $ 
+ * @version $Id: SetFieldTEI.java,v 1.4 2003-08-27 21:33:40 michiel Exp $ 
  */
 
 public class SetFieldTEI extends TagExtraInfo {
-    private static Logger log = Logging.getLoggerInstance(SetFieldTEI.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SetFieldTEI.class.getName());
 
     public VariableInfo[] getVariableInfo(TagData data){
         VariableInfo[] variableInfo = new VariableInfo[1];

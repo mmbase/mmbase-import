@@ -26,11 +26,11 @@ import java.io.IOException;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.1 2003-08-11 15:26:35 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.2 2003-08-27 21:33:34 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(ListFunctionTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ListFunctionTag.class);
 
     protected  List    returnList;
     protected Iterator iterator;

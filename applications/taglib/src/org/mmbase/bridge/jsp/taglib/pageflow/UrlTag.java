@@ -30,12 +30,12 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.47 2003-08-11 15:27:28 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.48 2003-08-27 21:33:41 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
-    private static Logger log = Logging.getLoggerInstance(UrlTag.class); 
+    private static final Logger log = Logging.getLoggerInstance(UrlTag.class); 
 
     private static CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 

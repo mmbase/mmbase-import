@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logging;
  * A tag lib to create relations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateRelationTag.java,v 1.15 2003-06-06 10:03:20 pierre Exp $
+ * @version $Id: CreateRelationTag.java,v 1.16 2003-08-27 21:33:40 michiel Exp $
  */
 
 public class CreateRelationTag extends NodeTag {
 
-    private static Logger log = Logging.getLoggerInstance(CreateRelationTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CreateRelationTag.class.getName());
 
     private Attribute role = Attribute.NULL;
     private Attribute source = Attribute.NULL;

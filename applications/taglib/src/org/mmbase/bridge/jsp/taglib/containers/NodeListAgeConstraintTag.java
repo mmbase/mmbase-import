@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAgeConstraintTag.java,v 1.3 2003-08-01 14:11:11 michiel Exp $
+ * @version $Id: NodeListAgeConstraintTag.java,v 1.4 2003-08-27 21:33:38 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
-    private static Logger log = Logging.getLoggerInstance(NodeListAgeConstraintTag.class);
+    private static final Logger log = Logging.getLoggerInstance(NodeListAgeConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
@@ -59,7 +59,8 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
 
     protected Integer getDayMark(int age) throws JspTagException {
         log.debug("finding day mark for " + age + " days ago");
-        NodeManager dayMarks = getCloud().getNodeManager("daymarks");
+        Cloud cloud = getCloud();
+        NodeManager dayMarks = cloud.getNodeManager("daymarks");
         NodeQuery query = dayMarks.createQuery();
         StepField step = query.createStepField("daycount");
         int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
@@ -69,7 +70,7 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
         query.addSortOrder(query.createStepField("daycount"), SortOrder.ORDER_DESCENDING);
         query.setMaxNumber(1);
         
-        NodeList result = dayMarks.getList(query);
+        NodeList result = cloud.getList(query);
         if (result.size() == 0) {
             return new Integer(-1);
         } else {

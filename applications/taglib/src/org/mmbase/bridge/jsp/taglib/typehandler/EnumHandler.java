@@ -25,12 +25,12 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.13 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.14 2003-08-27 21:33:42 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
-    private static Logger log = Logging.getLoggerInstance(EnumHandler.class);
+    private static final Logger log = Logging.getLoggerInstance(EnumHandler.class);
     private ResourceBundle bundle;
     private boolean available;
     /**

@@ -40,11 +40,11 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.33 2003-08-11 15:27:17 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.34 2003-08-27 21:33:32 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
-    private static Logger log = Logging.getLoggerInstance(FormatterTag.class);
+    private static final Logger log = Logging.getLoggerInstance(FormatterTag.class);
 
     protected Attribute xslt    = Attribute.NULL;
     protected Attribute format  = Attribute.NULL; 

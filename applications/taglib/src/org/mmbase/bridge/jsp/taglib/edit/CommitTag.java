@@ -23,13 +23,13 @@ import org.mmbase.util.logging.Logging;
  * serves as a baseclass for e.g. CancelTag
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CommitTag.java,v 1.15 2003-08-11 15:27:26 michiel Exp $
+ * @version $Id: CommitTag.java,v 1.16 2003-08-27 21:33:39 michiel Exp $
  */
 
 public class CommitTag extends CloudReferrerTag { 
     // perhaps it would be nicer to extend CloudReferrer to TransactionReferrer first.
 
-    private static Logger log = Logging.getLoggerInstance(CommitTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CommitTag.class.getName());
 
     private Attribute transaction = Attribute.NULL;
     public void setTransaction(String t) throws JspTagException {
