@@ -9,55 +9,15 @@
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/wizard.xsl"/>
 
-  <xsl:template name="fieldintern">
-    <xsl:apply-templates select="prefix" />
-
+  <xsl:template name="ftype-unknown">
     <xsl:choose>
       <xsl:when test="@ftype=&apos;my_ftype&apos;">
       	<xsl:call-template name="ftype-my-ftype"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;function&apos;">
-      	<xsl:call-template name="ftype-function"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;data&apos;">
-      	<xsl:call-template name="ftype-data"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;line&apos;">
-      	<xsl:call-template name="ftype-line"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;text&apos;">
-      	<xsl:call-template name="ftype-text"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;html&apos;">
-      	<xsl:call-template name="ftype-html"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;relation&apos;">
-      	<xsl:call-template name="ftype-relation"/>      	
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;enum&apos;">
-      	<xsl:call-template name="ftype-enum"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;enumdata&apos;">
-      	<xsl:call-template name="ftype-enumdata"/>
-      </xsl:when>
-      <xsl:when test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;date&apos;) or (@ftype=&apos;time&apos;)">
-      	<xsl:call-template name="ftype-datetime"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;image&apos;">
-      	<xsl:call-template name="ftype-image"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;file&apos;">
-      	<xsl:call-template name="ftype-file"/>
-      </xsl:when>
-      <xsl:when test="@ftype=&apos;realposition&apos;">
-      	<xsl:call-template name="ftype-realposition"/>
       </xsl:when>
       <xsl:otherwise>
       	<xsl:call-template name="ftype-other"/>
       </xsl:otherwise>
     </xsl:choose>
-    
-    <xsl:apply-templates select="postfix" />
   </xsl:template>
 
   <xsl:template name="ftype-my-ftype">
