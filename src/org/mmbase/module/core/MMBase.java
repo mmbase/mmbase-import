@@ -213,7 +213,8 @@ public class MMBase extends ProcessorModule  {
         } catch(Exception e) {
             log.fatal("error loading the mmbase cop: " + e.toString());
             log.error(Logging.stackTrace(e));
-            System.exit(0);
+            log.error("MMBase will continue without security.");
+            log.error("All future security invocations will fail.");
         }
     }
 
