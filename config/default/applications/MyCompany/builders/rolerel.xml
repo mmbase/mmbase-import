@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="rolerel" maintainer="mmbase.org" version="1" extends="insrel">
   <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -20,8 +21,8 @@
   <!-- <names>
 	names defines the different names used in user visible parts, singular for
 	for talking about 1 object (Url,Person) and plurar for talking about multiple
-	<Urls, people).
->-->
+	(Urls, people).
+-->
   <names>
     <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="en">Role Relation</singular>

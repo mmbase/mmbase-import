@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="attachments" maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: attachments.xml,v 1.1 2002-11-16 23:03:51 gerard Exp $ -->
+<!-- @version $Id: attachments.xml,v 1.2 2002-11-25 14:32:47 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -55,8 +55,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Title of the attachment</description>
+          <description xml:lang="nl">Titel van de bijlage</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -88,8 +88,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Description of the attachment</description>
+          <description xml:lang="nl">Omschrijving van de bijlage</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -121,8 +121,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Mimetype of the attachment, default: application/binary</description>
+          <description xml:lang="nl">Mimetype van de bijlage, standaard: application/binary</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -154,8 +154,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Original filename of attachment if it was an uploaded file</description>
+          <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-uplaod bestand betreft</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -187,8 +187,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Size of the attachment in bytes</description>
+          <description xml:lang="nl">Grootte van de bijlage in bytes</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -220,8 +220,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">The attachment (which you can upload as a file)</description>
+          <description xml:lang="nl">De bijlage, up te loaden als een bestand</description>
         </descriptions>
         <!-- gui related -->
         <gui>
