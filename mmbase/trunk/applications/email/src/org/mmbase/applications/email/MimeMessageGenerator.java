@@ -32,19 +32,18 @@ import org.mmbase.util.logging.Logger;
  */
 public class MimeMessageGenerator {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(MimeMessageGenerator.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MimeMessageGenerator.class);
 
 
 
     public static MimeMultipart getMimeMultipart(String text) {
-        Hashtable nodes=new Hashtable();
-        Vector rootnodes=new Vector();
+        Hashtable nodes = new Hashtable();
+        Vector rootnodes = new Vector();
 
 
 	Enumeration tags=MimeBodyTagger.getMimeBodyParts(text);
 	while (tags.hasMoreElements()) {
-		try {
+            try {
 		MimeBodyTag tag=(MimeBodyTag)tags.nextElement();
 
 		// get all the needed fields
@@ -58,57 +57,57 @@ public class MimeMessageGenerator {
 
 		// is it a root node ?
 		if (alt==null && related==null) {
-			rootnodes.addElement(tag);
+                    rootnodes.addElement(tag);
 		} else if (alt!=null) {
-			MimeBodyTag oldpart=(MimeBodyTag)nodes.get(alt);
-			if (oldpart!=null) {
-				oldpart.addAlt(tag);
-			}
+                    MimeBodyTag oldpart=(MimeBodyTag)nodes.get(alt);
+                    if (oldpart!=null) {
+                        oldpart.addAlt(tag);
+                    }
 		} else if (related!=null) {
-			MimeBodyTag oldpart=(MimeBodyTag)nodes.get(related);
-			if (oldpart!=null) {
-				oldpart.addRelated(tag);
-			}
+                    MimeBodyTag oldpart=(MimeBodyTag)nodes.get(related);
+                    if (oldpart!=null) {
+                        oldpart.addRelated(tag);
+                    }
 		}	
 
-	   } catch(Exception e) {
+            } catch(Exception e) {
 		log.error("Mime mail error");
-	   }
+            }
 	}
 
 	if (rootnodes.size()==1) {
-		MimeBodyTag t=(MimeBodyTag)rootnodes.elementAt(0);
-		MimeMultipart mmp=t.getMimeMultipart();
-		if (mmp!=null) {
-			return(mmp);
-		}
+            MimeBodyTag t=(MimeBodyTag)rootnodes.elementAt(0);
+            MimeMultipart mmp=t.getMimeMultipart();
+            if (mmp!=null) {
+                return(mmp);
+            }
 	} else if (rootnodes.size()>1) {
-		try {
+            try {
 		MimeMultipart root = new MimeMultipart();
 		root.setSubType("mixed");
 		Enumeration l=rootnodes.elements();
 		while (l.hasMoreElements()) {
-			MimeBodyTag t=(MimeBodyTag)l.nextElement();
-			MimeMultipart mmp=t.getMimeMultipart();
-			if (mmp!=null) {
-				log.info("setting parent info : "+t.getId());
-				MimeBodyPart wrapper=new MimeBodyPart();
-				wrapper.setContent(mmp);
-				root.addBodyPart(wrapper);
-			} else {
-				log.info("adding info : "+t.getId());
-				root.addBodyPart(t.getMimeBodyPart());
-			}
+                    MimeBodyTag t=(MimeBodyTag)l.nextElement();
+                    MimeMultipart mmp=t.getMimeMultipart();
+                    if (mmp!=null) {
+                        log.info("setting parent info : "+t.getId());
+                        MimeBodyPart wrapper=new MimeBodyPart();
+                        wrapper.setContent(mmp);
+                        root.addBodyPart(wrapper);
+                    } else {
+                        log.info("adding info : "+t.getId());
+                        root.addBodyPart(t.getMimeBodyPart());
+                    }
 		}
 		return root;
-		} catch(Exception e) {
-			log.error("Root generation error");
-			e.printStackTrace();
-		}
+            } catch(Exception e) {
+                log.error("Root generation error");
+                e.printStackTrace();
+            }
 	} else {
-		log.error("Don't have a root node");
+            log.error("Don't have a root node");
 	}
-	return(null);
+	return null;
     }
 
 }

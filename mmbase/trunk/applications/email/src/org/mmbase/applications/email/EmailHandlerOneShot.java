@@ -22,30 +22,30 @@ import org.mmbase.util.logging.Logging;
  * handler for email one shot
 
  * @author Daniel Ockeloen
+ * @todo   This is an <em>excact</em> copy of EmailHanderOneShotKeep!!
  */
 public class EmailHandlerOneShot extends EmailHandler {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(EmailHandlerOneShot.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(EmailHandlerOneShot.class);
 
     /**
-    * mail, direct mail action wanted
-    * mail the node out and wait until its
-    * finished.
-    */
+     * mail, direct mail action wanted
+     * mail the node out and wait until its
+     * finished.
+     */
     public static void mail(MMObjectNode node) {
 	log.debug("email handler oneshot mail() called");
 	sendMailNode(node);
     }
 
     /**
-    * startmail, create a background handler
-    * that starts mailing the node. Return
-    * directly (while mailing is still going on).
-    */
+     * startmail, create a background handler
+     * that starts mailing the node. Return
+     * directly (while mailing is still going on).
+     */
     public static void startmail(MMObjectNode node) {
 	log.debug("email handler oneshot startmail() called");
 	// start backgroundhandler with the email node
-	EmailBackgroundHandler mailer=new EmailBackgroundHandler(node);
+	EmailBackgroundHandler mailer = new EmailBackgroundHandler(node);
     }
 }

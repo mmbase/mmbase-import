@@ -23,8 +23,8 @@ import org.mmbase.util.logging.*;
  */
 public class EmailExpireHandler implements Runnable {
 
-    // logger
-    static private Logger log = Logging.getLoggerInstance(EmailExpireHandler.class);
+
+    static private final Logger log = Logging.getLoggerInstance(EmailExpireHandler.class);
 
     // sleeptime between expire runs in seconds
     int sleeptime;
