@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.67 2002-08-05 16:48:23 michiel Exp $
+ * @version $Id: MMBase.java,v 1.68 2002-08-21 06:35:06 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1191,13 +1191,13 @@ public class MMBase extends ProcessorModule  {
     public MMJdbc2NodeInterface getDatabase() {
         if (database==null) {
             try {
-                String databasename=getInitParameter("DATABASE");
-                String path=MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator + databasename+".xml";
-                XMLDatabaseReader dbdriver=new XMLDatabaseReader(path);
-                Class newclass=Class.forName(dbdriver.getMMBaseDatabaseDriver());
-                log.info("Loaded load class : "+newclass);
-                database=(MMJdbc2NodeInterface)newclass.newInstance();
-                database.init(this,dbdriver);
+                String databasename = getInitParameter("DATABASE");
+                String path = MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator + databasename + ".xml";
+                XMLDatabaseReader dbdriver = new XMLDatabaseReader(path);
+                Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
+                log.info("Loaded database support class: " + newclass.getName());
+                database = (MMJdbc2NodeInterface) newclass.newInstance();
+                database.init(this, dbdriver);
             } catch(Exception e) {
                 log.error(Logging.stackTrace(e));
             }
