@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.18 2003-12-02 21:34:41 michiel Exp $
+ * @version $Id: XmlField.java,v 1.19 2003-12-09 22:55:29 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -35,11 +35,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int HTML_INLINE    = 7;
     public final static int HTML_BLOCK     = 8;
     public final static int HTML_BLOCK_BR  = 9;
+    public final static int HTML_BLOCK_NOSURROUNDINGP     = 10;
+    public final static int HTML_BLOCK_BR_NOSURROUNDINGP  = 11;
     
 
     // cannot be decoded:
-    public final static int ASCII = 10;
-    public final static int XHTML = 11;
+    public final static int ASCII = 51;
+    public final static int XHTML = 52;
 
     private final static String CODING = "UTF-8"; // This class only support UTF-8 now.
 
@@ -334,10 +336,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
     
 
-    private static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines) {
+    private static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
         // the order _is_ important!
         handleList(obj);
-        handleParagraphs(obj, leaveExtraNewLines);
+        handleParagraphs(obj, leaveExtraNewLines, surroundingP);
         if (sections) { 
             handleHeaders(obj);
         }
@@ -378,7 +380,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String richToXML(String data, boolean format) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true, true);
+        handleRich(obj, true, true, true);
         handleNewlines(obj);
         handleFormat(obj, format);
         return obj.toString();
@@ -393,7 +395,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String poorToXML(String data, boolean format) {
         StringObject obj = prepareData(data);
-        handleRich(obj, true, false);
+        handleRich(obj, true, false, true);
         handleFormat(obj, format);
         return obj.toString();
     }
@@ -408,9 +410,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @since MMBase-1.7
      */
 
-    public static String richToHTMLBlock(String data, boolean multipibleBrs) {
+    public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, false, multipibleBrs);   // no <section> tags, leave newlines if multipble br's requested
+        handleRich(obj, false, multipibleBrs, surroundingP);   // no <section> tags, leave newlines if multipble br's requested
         handleNewlines(obj);
         handleFormat(obj, false); 
         return obj.toString();
@@ -418,7 +420,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
 
     public static String richToHTMLBlock(String data) {
-        return richToHTMLBlock(data, false);
+        return richToHTMLBlock(data, false, true);
     }
 
     /**
@@ -576,6 +578,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         h.put("MMXF_HTML_INLINE", new Config(XmlField.class, HTML_INLINE, "Decodes only escaping and with <em>"));
         h.put("MMXF_HTML_BLOCK", new Config(XmlField.class,  HTML_BLOCK, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>"));
         h.put("MMXF_HTML_BLOCK_BR", new Config(XmlField.class,  HTML_BLOCK_BR, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>"));
+        h.put("MMXF_HTML_BLOCK_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (only one) and <ul>"));
+        h.put("MMXF_HTML_BLOCK_BR_NOSURROUNDINGP", new Config(XmlField.class,  HTML_BLOCK_BR_NOSURROUNDINGP, "Decodes only escaping and with <em>, <p>, <br /> (also multiples) and <ul>"));
+
         h.put("MMXF_XHTML", new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
         h.put("MMXF_MMXF",  new Config(XmlField.class, XML,   "Only validates the XML with the DTD (when decoding)"));
         return h;
@@ -637,7 +642,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 result = richToHTMLBlock(r);
                 break;
             case HTML_BLOCK_BR:
-                result = richToHTMLBlock(r, true);
+                result = richToHTMLBlock(r, true, true);
+                break;
+            case HTML_BLOCK_NOSURROUNDINGP:
+                result = richToHTMLBlock(r, false, false);
+                break;
+            case HTML_BLOCK_BR_NOSURROUNDINGP:
+                result = richToHTMLBlock(r, true, false);
                 break;
             case HTML_INLINE:
                 result = poorToHTMLInline(r);
@@ -668,6 +679,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             return "MMXF_HTML_BLOCK";
         case HTML_BLOCK_BR :
             return "MMXF_HTML_BLOCK_BR";
+        case HTML_BLOCK_NOSURROUNDINGP :
+            return "MMXF_HTML_BLOCK_NOSURROUNDINGP";
+        case HTML_BLOCK_BR_NOSURROUNDINGP :
+            return "MMXF_HTML_BLOCK_BR_NOSURROUNDINGP";
         case HTML_INLINE :
             return "MMXF_HTML_INLINE";
         case ASCII :
