@@ -1221,10 +1221,11 @@ public class MMObjectNode {
      */
     public Vector getRelatedNodesFast(int type) { 
         Vector result = new Vector();
-        try { 
-            String query1 = "select i.dnumber number from vpro4_object o, vpro4_insrel i where i.snumber="+getNumber()+" and o.number = i.dnumber and o.otype="+type+";";
-            String query2 = "select i.snumber number from vpro4_object o, vpro4_insrel i where i.dnumber="+getNumber()+" and o.number = i.snumber and o.otype="+type+";";
 
+        String query1 = "select i.dnumber number from vpro4_object o, vpro4_insrel i where i.snumber="+getNumber()+" and o.number = i.dnumber and o.otype="+type+";";
+        String query2 = "select i.snumber number from vpro4_object o, vpro4_insrel i where i.dnumber="+getNumber()+" and o.number = i.snumber and o.otype="+type+";";
+
+        try { 
             MultiConnection con=parent.mmb.getConnection();
 
             Statement stmt1 = con.createStatement();
