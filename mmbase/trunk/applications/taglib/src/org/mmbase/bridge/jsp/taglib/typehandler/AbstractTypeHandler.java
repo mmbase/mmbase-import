@@ -23,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.ParamHandler;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.10 2003-08-05 09:07:00 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.11 2003-08-05 22:11:32 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -76,7 +76,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        return "( [" + field.getName() + "] =" + findString(field) + ")";
+        return "( [" + field.getName() + "] =" + getSearchValue(findString(field)) + ")";
     }
 
     /**
@@ -101,7 +101,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (search == null || "".equals(search)) {
             return null;
         }
-        return getSearchValue(search);
+        return search;
     }
 
 
@@ -118,7 +118,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public void whereHtmlInput(Field field, Query query) throws JspTagException {
         String value = findString(field);
         if (value != null) {
-            NodeListConstraintTag.addConstraint(query, field.getName(), getOperator(), findString(field));
+            NodeListConstraintTag.addConstraint(query, field.getName(), getOperator(), getSearchValue(findString(field)));
         }
     }
 
