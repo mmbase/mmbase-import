@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE scripts SYSTEM "dtd/servers_1_0.dtd">
+<!DOCTYPE mediaproviderfilter SYSTEM "http://www.mmbase.org/dtd/mediaproviderfilter_1_0.dtd">
 
 <mediaproviderfilter>
 
