@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  **/
 
-public class AliasListTag extends NodeReferrerTag implements ListItemInfo, Writer {
+public class AliasListTag extends NodeReferrerTag implements ListProvider, Writer {
     private static Logger log = Logging.getLoggerInstance(AliasListTag.class.getName());
 
     protected WriterHelper helper = new WriterHelper(); 

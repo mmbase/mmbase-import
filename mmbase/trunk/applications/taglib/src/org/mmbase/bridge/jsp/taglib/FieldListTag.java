@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  *
  */
-public class FieldListTag extends FieldReferrerTag implements ListItemInfo, FieldProvider {
+public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
     private static final int NO_TYPE = -100;
 
