@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.26.2.2 2004-06-17 11:21:08 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.26.2.3 2005-01-26 14:57:10 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -118,13 +118,15 @@ public class BasicQueryHandler implements SearchQueryHandler {
             } finally {
                 rs.close();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            // Something went wrong, log exception
+            // and rethrow as SearchQueryException.
             // Something went wrong, log exception
             // and rethrow as SearchQueryException.
             if (log.isDebugEnabled()) {
                 log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
             }
-            throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getMessage(), e);
+            throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
         } finally {
             mmbase.closeConnection(con, stmt);
         }
@@ -239,23 +241,38 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results= new ArrayList();
         MMJdbc2NodeInterface database = mmbase.getDatabase();
 
+        if (! rs.next()) return results;
+        
         // Truncate results to provide weak support for maxnumber.
-        while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
-            MMObjectNode node = new MMObjectNode(builder);
-            node.start();
-            Step nodeStep = fields[0].getStep();
-            for (int i = 0; i < fields.length; i++) {
-                if (fields[i].getStep() != nodeStep) continue;
-                String fieldName =  fields[i].getFieldName();
-                // if (node.retrieveValue(fieldName) != null) continue;
-                // already set (node-query must _start_ with all nodes of the node)
-                // XXXX If getValue can give null for _set_ values, then something must be changed here.
-                // see also BasicNodeQuery.setNodeStep
-                database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
-            }
-            node.finish();
-            results.add(node);
-        }
+        while (maxNumber > results.size() || maxNumber==-1) {
+            try {                
+                MMObjectNode node = new MMObjectNode(builder);
+                node.start();
+                Step nodeStep = fields[0].getStep();
+                for (int i = 0; i < fields.length; i++) {                    
+                    if (fields[i].getStep() != nodeStep) continue;
+                    String fieldName =  fields[i].getFieldName();
+                    // if (node.retrieveValue(fieldName) != null) continue;
+                    // already set (node-query must _start_ with all nodes of the node)
+                    // XXXX If getValue can give null for _set_ values, then something must be changed here.
+                    // see also BasicNodeQuery.setNodeStep
+                    database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
+                }
+                node.finish();
+                results.add(node);
+            } catch (Throwable t) { // this arrangement should perhaps also be ported to the two other readNodes in this class
+                log.error(t);
+                //break;
+            }         
+            try {                
+                if (! rs.next()) break;            
+            } catch (SQLException sqe) {
+                    // there are results already, don't mess up those.
+                log.error(sqe);
+                break;                
+            }   
+   
+        }    
         return results;
     }
 
