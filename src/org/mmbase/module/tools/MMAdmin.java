@@ -99,6 +99,8 @@ public class MMAdmin extends ProcessorModule {
             if (cmd.equals("MODULES")) return getModulesList();
             if (cmd.equals("DATABASES")) return getDatabasesList();
             if (cmd.equals("MULTILEVELCACHEENTRIES")) return getMultilevelCacheEntries();
+            if (cmd.equals("NODECACHEENTRIES")) return getNodeCacheEntries();
+
         }
         return null;
     }
@@ -234,6 +236,14 @@ public class MMAdmin extends ProcessorModule {
                 return(""+(htmlbase.getMultilevelCacheHandler().getHits()+htmlbase.getMultilevelCacheHandler().getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
                 return(""+(htmlbase.getMultilevelCacheHandler().getRatio()*100));
+            } else if (cmd.equals("NODECACHEHITS")) {
+                return(""+MMObjectBuilder.nodeCache.getHits());
+            } else if (cmd.equals("NODECACHEMISSES")) {
+                return(""+MMObjectBuilder.nodeCache.getMisses());
+            } else if (cmd.equals("NODECACHEREQUESTS")) {
+                return(""+(MMObjectBuilder.nodeCache.getHits()+MMObjectBuilder.nodeCache.getMisses()));
+            } else if (cmd.equals("NODECACHEPERFORMANCE")) {
+                return(""+(MMObjectBuilder.nodeCache.getRatio()*100));
             }
         }
         return "No command defined";
@@ -1584,6 +1594,19 @@ public class MMAdmin extends ProcessorModule {
 			results.addElement("");
 		}
 		results.addElement(tagger.ValuesString("ALL"));
+	}	
+	return(results);
+    }
+
+
+    public Vector  getNodeCacheEntries() {
+	Vector results=new Vector();
+	Enumeration res=MMObjectBuilder.nodeCache.getOrderedElements();
+	while (res.hasMoreElements()) {
+		 MMObjectNode node=(MMObjectNode)res.nextElement();
+		results.addElement(""+node.getIntValue("number"));
+		results.addElement(node.getStringValue("owner"));
+		results.addElement(mmb.getTypeDef().getValue(node.getIntValue("otype")));
 	}	
 	return(results);
     }
