@@ -13,6 +13,7 @@ import java.lang.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+import java.sql.*;
 
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
@@ -20,6 +21,8 @@ import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
 import org.mmbase.util.*;
+import org.mmbase.config.*;
+
 
 /**
  * @author cjr@dds.nl
@@ -48,9 +51,16 @@ import org.mmbase.util.*;
  *
  *    Example: $MOD-CONFIG-SHOW-builders-people  
  *
- * @version $Id: Config.java,v 1.10 2000-08-27 22:30:02 daniel Exp $
+ * Additional REPLACE function is: REPORT
+ *    which has no arguments.
+ *
+ *
+ * @version $Id: Config.java,v 1.11 2000-09-11 20:19:21 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2000/08/27 22:30:02  daniel
+ * small change for mmdemo
+ *
  * Revision 1.8  2000/08/10 21:06:46  case
  * cjr: Added some badly needed comments
  *
@@ -67,7 +77,6 @@ import org.mmbase.util.*;
  * - Add code for fault oriented results, rather than directory oriented results
  */
 public class Config extends ProcessorModule {
-
     private String classname = getClass().getName();
     private String configpath;
 
@@ -154,6 +163,12 @@ public class Config extends ProcessorModule {
         return reader.getStatus().equalsIgnoreCase("active");
     }
 
+    /**
+     * @param path Relative path to database mapping file
+     *
+     * @return Whether a database mapping file is for the active DBMS
+     *
+     */
     public boolean databaseIsActive(String path) {
         XMLProperties xmlReader = new XMLProperties();
         SAXParser parser = new SAXParser();
@@ -167,7 +182,7 @@ public class Config extends ProcessorModule {
             ex.printStackTrace();
         }
         catch (SAXNotRecognizedException ex) {
-            debug("Config::databaseIsActive(): failed because parser didn't recognized feature");
+            debug("Config::databaseIsActive(): failed because parser didn't recognize feature");
             ex.printStackTrace();
         }
         // create new ContentHandler and let the parser use it
@@ -178,16 +193,14 @@ public class Config extends ProcessorModule {
         Hashtable mods = null;
 
         // load the
-        String filename=mmbaseconfig+"/modules/mmbaseroot.xml";
-        // filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
-        // filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
-
+        String filename=mmbaseconfig+File.separator+"modules"+File.separator+"mmbaseroot.xml";
+        // filename=filename.replace('/',File.separator)
+        // filename=filename.replace('\\',File.separator)
         // check if there's a xml-configuration file
         try {
             parser.parse(new InputSource(filename));
             mods = xmlReader.getProperties();
         } catch (Exception e) {}
-
 
 
         String curdb = (String)mods.get("DATABASE");
@@ -208,16 +221,16 @@ public class Config extends ProcessorModule {
     }
 
     public void init() {
-                String dtmp=System.getProperty("mmbase.mode");
-                if (dtmp!=null && dtmp.equals("demo")) {
-                        String curdir=System.getProperty("user.dir");
-                        if (curdir.endsWith("orion")) {
-                                curdir=curdir.substring(0,curdir.length()-6);
-                        }
-                        configpath=curdir+"/config";
-                } else {
-                        configpath=System.getProperty("mmbase.config");
-                }
+        String dtmp=System.getProperty("mmbase.mode");
+        if (dtmp!=null && dtmp.equals("demo")) {
+            String curdir=System.getProperty("user.dir");
+            if (curdir.endsWith("orion")) {
+                curdir=curdir.substring(0,curdir.length()-6);
+            }
+            configpath=curdir+File.separator+"config";
+        } else {
+            configpath=System.getProperty("mmbase.config");
+        }
         //configpath = System.getProperty("mmbase.config");
         if (configpath.endsWith(File.separator)) {
             configpath = configpath.substring(0,configpath.length()-1);
@@ -229,11 +242,14 @@ public class Config extends ProcessorModule {
 
 
 
+
     public void onload() {}
 
 
 
+
     public void unload() {}
+
 
 
 
@@ -283,6 +299,7 @@ public class Config extends ProcessorModule {
                             } else if (category.equalsIgnoreCase("applications")) {
                                 // bla
                             }
+
 
 
                         }
@@ -377,6 +394,64 @@ public class Config extends ProcessorModule {
 
 
     /**
+     * Temporary overall wrapper for report information
+     */
+    public String report(String eol) {
+        String res = "";
+
+        String[] reportKeys = new String[]{
+                                  "java",
+                                  "database",
+                                  "builders",
+                                  "languages"
+                              };
+        Hashtable reportClasses = new Hashtable();
+        reportClasses.put("java","org.mmbase.config.JavaReport");
+        reportClasses.put("database","org.mmbase.config.DatabaseReport");
+        reportClasses.put("builders","org.mmbase.config.BuilderReport");
+        reportClasses.put("languages","org.mmbase.config.LanguagesReport");
+
+
+
+        for (int i=0;i<reportKeys.length;i++) {
+            try {
+                Class c = Class.forName((String)reportClasses.get(reportKeys[i]));
+                ReportInterface r = (ReportInterface)c.newInstance();
+                r.init("error","html");
+                res = res + "=== " + r.label() + " ===" + eol + r.report() + eol;
+            } catch (Exception ignore) {
+                res = res + "ERROR: failed to load " + reportClasses.get(reportKeys[i]) + ": " + ignore.getMessage() + eol;
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * @return String of newline separated active builders
+     */
+    public String reportBuilders(String eol) {
+        String res = "";
+        Vector builderList;
+        try {
+            builderList = listDirectory(configpath+File.separator+"builders");
+        } catch (IOException e) {
+            debug("Error reading builder directory: "+e.getMessage());
+            builderList = new Vector();
+        }
+        String buildername, path;
+        for (int i=0;i<builderList.size();i++) {
+            buildername = (String)builderList.elementAt(i);
+            path = configpath+File.separator+"builders"+File.separator+buildername+".xml";
+            if (builderIsActive(path)) {
+                res = res + buildername + eol;
+            }
+        }
+        return res;
+    }
+
+
+    /**
      *	Handle a $MOD command
      */
     public String replace(scanpage sp, String cmds) {
@@ -390,7 +465,9 @@ public class Config extends ProcessorModule {
             argv[i] = tok.nextToken();
         }
 
-        if (argv.length != 3) {
+        if (argv.length == 1 && argv[0].equalsIgnoreCase("REPORT")) {
+            return report("<br>\n");
+        } else if (argv.length != 3) {
             return "$MOD-CONFIG should have three arguments, e.g. $MOD-CONFIG-show-builders-people";
         } else {
             String dir = argv[1];
