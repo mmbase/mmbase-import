@@ -9,7 +9,7 @@
 <!ATTLIST getprocessor  type  NMTOKEN  #IMPLIED > 
 
 <!ELEMENT specialization (setprocessor*, getprocessor*) >
-<!ATTLIST specizalization  id  NMTOKEN  #REQUIRED > 
+<!ATTLIST specialization  id  NMTOKEN  #REQUIRED > 
 
 
 <!ELEMENT class      (#PCDATA) >
