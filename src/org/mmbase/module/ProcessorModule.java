@@ -27,6 +27,10 @@ import org.mmbase.util.*;
  */
 public class ProcessorModule extends Module implements ProcessorInterface {
 
+	private String  classname   = getClass().getName();
+	private boolean debug       = true;
+	private void    debug( String msg ) { System.out.println( classname +":"+ msg ); } 
+
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
