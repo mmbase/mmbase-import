@@ -299,6 +299,15 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} else {
 
 				if (tName.equals("commit")) { 
+					if(anonymousTransaction == true) {
+						throw new TransactionHandlerException("commit tag needs id attribure");
+					}
+					if (userTransactionInfo.knownTransactionContexts.get(id) == null) {
+						throw new TransactionHandlerException("Transaction '"+id+"' is probably already committed, check attribute commit=false");
+					}
+					// actually open transaction
+					transactionInfo = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
+					currentTransactionContext = transactionInfo.transactionContext;
 					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 					// destroy transaction information
 					transactionInfo.stop();	
@@ -340,11 +349,15 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 						}
 					}
 				} 
+				/**
+					This is already done by TransactionInfo.stop()
+					and this code in never reached.
 				if (tName.equals("delete") || tName.equals("commit")) {
 						if (!anonymousTransaction) {
 							userTransactionInfo.knownTransactionContexts.remove(id);
 						}
 				} 
+				*/
 				log.debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")");
 				// End execution of XML
 			} catch (Exception e) {
