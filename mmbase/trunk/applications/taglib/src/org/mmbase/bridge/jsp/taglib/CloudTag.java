@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.73 2003-07-09 18:58:08 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.74 2003-07-10 11:04:53 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -48,11 +48,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     // 1. Complete unsupported by orion 1.6.0
     // 2. Buggy supported by tomcat < 4.1.19
 
-    private static final int METHOD_UNSET = -1;
-    private static final int METHOD_HTTP = 0;
-    private static final int METHOD_ASIS = 1;
+    private static final int METHOD_UNSET     = -1;
+    private static final int METHOD_HTTP      = 0;
+    private static final int METHOD_ASIS      = 1;
     private static final int METHOD_ANONYMOUS = 2;
-    private static final int METHOD_LOGOUT = 3;
+    private static final int METHOD_LOGOUT    = 3;
     private static final int METHOD_LOGINPAGE = 4;
 
     /**
@@ -125,18 +125,36 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     protected String getName() throws JspTagException {
-        if (cloudName == Attribute.NULL)
+        if (cloudName == Attribute.NULL) {       
             return DEFAULT_CLOUD_NAME;
+        }
         return cloudName.getString(this);
     }
 
     public void setLogon(String l) throws JspTagException {
         logonatt = getAttribute(l);
-        if ("".equals(l)) {
-            logonatt = Attribute.NULL; // that also means to ignore the logon name
-        }
-
     }
+    public void setPwd(String pwd) throws JspTagException {
+        this.pwd = getAttribute(pwd);
+    }
+
+
+    /**
+     * Synonym for setLogon. Don't mix.
+     */
+    public void setUsername(String l) throws JspTagException {
+        logonatt = getAttribute(l);
+    }
+
+    /**
+     * Synonym for setPwd. Don't mix.
+     */
+    public void setPassword(String pwd) throws JspTagException {
+        this.pwd = getAttribute(pwd);
+    }
+
+
+
     public void setRank(String r) throws JspTagException {
         rank = getAttribute(r);
     }
@@ -162,11 +180,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (rank == Attribute.NULL) return true;
         String rankString = rank.getString(this);
         return rankString.equals("") || rankString.equals(Rank.ANONYMOUS.toString());
-    }
-
-
-    public void setPwd(String pwd) throws JspTagException {
-        this.pwd = getAttribute(pwd);
     }
 
     public void setJspvar(String jv) {
