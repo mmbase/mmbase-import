@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.25 2003-04-23 09:46:28 kees Exp $
+ * @version  $Id: editwizard.jsp,v 1.26 2003-05-09 07:47:05 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -149,11 +149,16 @@ function doOnUnLoad_ew() {
 document.writeln('<div id="searchframe" class="searchframe"><iframe onblur="removeModalIFrame();" src="searching.html" id="modaliframe" class="searchframe" scrolling="no"></iframe></div>');
 
 function doSearch(el, cmd, sessionkey) {
+    
+    // most of this is probably better to just pass to list.jsp...
+
     var searchfields = document.forms[0].elements["searchfields_" + cmd].value;
+    var searchtype = document.forms[0].elements["searchtype_" + cmd].value;
+    if (searchtype=="") searchtype="like";
     var searchage = new Number(document.forms[0].elements["searchage_" + cmd].value);
     var searchterm = document.forms[0].elements["searchterm_" + cmd].value+"";
 
-    searchterm = searchterm.toLowerCase();
+    if (searchtype=="like") searchterm = searchterm.toLowerCase();
 
     var filterrequired = el.getAttribute("filterrequired");
     if (filterrequired=="true" && searchterm=="") {
@@ -164,10 +169,9 @@ function doSearch(el, cmd, sessionkey) {
         }
         alert(errmsg);
         return;
-    }
+    } // 11948878
 
     // recalculate age
-    var oneday = 24 * 60 * 60;
     if (searchage == -1){
         searchage = 99999;
     }
@@ -180,10 +184,19 @@ function doSearch(el, cmd, sessionkey) {
     var directions = el.getAttribute("directions");
     var distinct   = el.getAttribute("distinct");
 
+    // lastobject is generally the last builder in the nodepath.
+    // however, if the first field is a "<buildername>.number" field, that buildername is used
+    
     var tmp=nodepath.split(",");
     var lastobject="";
-    if (tmp.length>1) lastobject=tmp[tmp.length-1];
-
+    if (tmp.length>1) {
+        lastobject=tmp[tmp.length-1];
+        tmp=fields.split(",");
+        if (tmp.length>1 && tmp[0].indexOf(".number") != -1) {
+            lastobject=tmp[0].split(".")[0];            
+        }
+    }
+    
     // check constraints
     var cs = searchfields.split("|");
     if (constraints!="" && constraints) var constraints = "("+constraints+") AND (";
@@ -192,8 +205,27 @@ function doSearch(el, cmd, sessionkey) {
         if (i>0) constraints += " OR ";
         var fieldname=cs[i];
         if (fieldname.indexOf(".")==-1 && lastobject!="") fieldname = lastobject+"."+fieldname;
-        constraints += "LOWER("+fieldname+") LIKE '%25"+searchterm+"%25'";
-
+        
+        if (searchtype=="string") {
+            constraints += fieldname+" = '%25"+searchterm+"%25'";
+        } else if (searchtype=="like") {
+            constraints += "LOWER("+fieldname+") LIKE '%25"+searchterm+"%25'";
+        } else {
+            if (searchterm=="") searchterm="0";
+            if (searchtype=="greaterthan") {
+                constraints += fieldname+" > "+searchterm;
+            } else if (searchtype=="lessthan") {
+                constraints += fieldname+" < "+searchterm;
+            } else if (searchtype=="notgreaterthan") {
+                constraints += fieldname+" <= "+searchterm;
+            } else if (searchtype=="notlessthan") {
+                constraints += fieldname+" >= "+searchterm;
+            } else if (searchtype=="notequals") {
+                constraints += fieldname+" != "+searchterm;
+            } else { // equals
+                constraints += fieldname+" = "+searchterm;
+            }
+        }
         // make sure these fields are added to the fields-param
         if (fields.indexOf(fieldname)==-1) fields += ","+fieldname;
     }

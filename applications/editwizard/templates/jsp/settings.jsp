@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.32 2003-05-07 12:18:01 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.33 2003-05-09 07:47:06 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -81,7 +81,9 @@
                         search=" <= "+search;
                     } else if (sType.equals("notlessthan")) {
                         search=" >= "+search;
-                    } else {
+                    } else if (sType.equals("notequals")) {
+                        search=" != "+search;
+                    } else { // equals
                         search=" = "+search;
                     }
                 }
