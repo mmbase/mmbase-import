@@ -41,7 +41,6 @@ public class BasicCreator implements CreatorInterface {
     private ArrayList packagesteps;
     private packageStep projectstep;
 
-
     public BasicCreator() {
     }
 
@@ -510,7 +509,6 @@ public class BasicCreator implements CreatorInterface {
   	body+=getRelatedPeopleXML("supporters","supporter",target);
   	body+=getRelatedPeopleXML("developers","developer",target);
   	body+=getRelatedPeopleXML("contacts","contact",target);
-
 	body+="</package>\n";
 	try {
        		JarEntry entry = new JarEntry("package.xml");
@@ -738,6 +736,7 @@ public class BasicCreator implements CreatorInterface {
   	decodeRelatedPeople(target,"developers","developer");
   	decodeRelatedPeople(target,"contacts","contact");
   	decodePackageDepends(target,"packagedepends");
+  	decodePublishProvider(target);
 	return true;
   }
 
@@ -854,6 +853,35 @@ public class BasicCreator implements CreatorInterface {
 	}
 	return path;
    }
+
+
+
+  public boolean decodePublishProvider(Target target) {
+	XMLBasicReader reader=target.getReader();
+	ArrayList list=new ArrayList();
+        org.w3c.dom.Node n=reader.getElementByPath(prefix+".publishprovider");
+	if (n!=null) {
+        	NamedNodeMap nm=n.getAttributes();
+        	if (nm!=null) {
+                	org.w3c.dom.Node n2=nm.getNamedItem("name");
+                	if (n2!=null) {
+                       		target.setPublishProvider(n2.getNodeValue());
+			}
+                	n2=nm.getNamedItem("state");
+                	if (n2!=null) {
+                       		if (n2.getNodeValue().equals("active")) {
+					target.setPublishState(true);			
+				}
+			}
+                	n2=nm.getNamedItem("sharepassword");
+                	if (n2!=null) {
+                       		target.setPublishSharePassword(n2.getNodeValue());
+			}
+                }
+
+	}
+	return true;
+  }
 
 
 }

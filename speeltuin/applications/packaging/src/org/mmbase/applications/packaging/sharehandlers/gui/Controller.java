@@ -950,7 +950,6 @@ public class Controller {
      * @return     The shareGroupsReverse value
      */
     public List getShareGroupsReverse(String id, String wv) {
-        log.info("WAAAAA=" + id + " " + wv);
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
@@ -1109,5 +1108,5 @@ public class Controller {
         return list;
     }
 
-}
 
+}

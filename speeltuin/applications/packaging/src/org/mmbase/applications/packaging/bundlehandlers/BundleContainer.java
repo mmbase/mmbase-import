@@ -180,6 +180,7 @@ public class BundleContainer implements BundleInterface {
 
     public BundleInterface getBundleByScore(String version) {
         BundleVersionContainer bvc=(BundleVersionContainer)versions.get(version);
+	log.info("bvc="+bvc);
         if (bvc!=null) {
             return bvc.getBundleByScore();
         }
