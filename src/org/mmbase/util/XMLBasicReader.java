@@ -21,8 +21,8 @@ import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
+import org.mmbase.util.xml.DocumentReader;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -43,176 +43,85 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.36 2003-07-18 14:57:50 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.37 2003-08-18 16:50:52 pierre Exp $
  */
-public class XMLBasicReader  {
+public class XMLBasicReader extends DocumentReader {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
 
-    /** for the document builder of javax.xml. */
-    private static DocumentBuilder documentBuilder = null;
-    private static DocumentBuilder altDocumentBuilder = null;
-
-    protected static final String FILENOTFOUND = "FILENOTFOUND://";
-
-    /** Public ID of the Error DTD version 1.0 */
-    public static final String PUBLIC_ID_ERROR_1_0 = "-//MMBase//DTD error 1.0//EN";
-    /** DTD resource filename of the Error DTD version 1.0 */
-    public static final String DTD_ERROR_1_0 = "error_1_0.dtd";
-
-    /** Public ID of the most recent Error DTD */
-    public static final String PUBLIC_ID_ERROR = PUBLIC_ID_ERROR_1_0;
-    /** DTD respource filename of the most recent Error DTD */
-    public static final String DTD_ERROR = DTD_ERROR_1_0;
-
-    /**
-     * Register the Public Ids for DTDs used by XMLBasicReader
-     * This method is called by XMLEntityResolver.
-     */
-    public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_ERROR_1_0, DTD_ERROR_1_0, XMLBasicReader.class);
-    }
-
-    /** set this one to true, and parser will be loaded...  */
-
-    /** set this one to true, when all document pars */
-    private static final boolean VALIDATE = true;
-
-    protected Document document;
-
-    private String xmlFilePath;
-
-    private static InputSource getInputSource(String path) {
-        try {
-            // remove file protocol if present to avoid errors in accessing file
-            if (path.startsWith("file://")) path= path.substring(7);
-            InputSource is = new InputSource(new FileInputStream(path));
-            is.setSystemId("file://" + path);
-            return is;
-        } catch (java.io.FileNotFoundException e) {
-            log.error("Error reading " + path + ": " + e.toString());
-            log.service("Using empty source");
-            // try to handle more or less gracefully
-            InputSource is = new InputSource();
-            is.setSystemId(FILENOTFOUND + path);
-            is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
-                                                   "<!DOCTYPE error PUBLIC \"" + PUBLIC_ID_ERROR + "\"" +
-                                                   " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
-                                                   "<error>" + e.toString() + "</error>"));
-            return is;
-        }
-    }
-
     public XMLBasicReader(String path) {
-        this(getInputSource(path), VALIDATE);
-    }
-    public XMLBasicReader(InputSource source, Class resolveBase) {
-        this(source, VALIDATE, resolveBase);
-    }
-    public XMLBasicReader(String path, Class resolveBase) {
-        this(getInputSource(path), VALIDATE, resolveBase);
-    }
-
-    public XMLBasicReader(InputSource source) {
-        this(source, VALIDATE);
+        super(path);
     }
 
     public XMLBasicReader(String path, boolean validating) {
-        this(getInputSource(path), validating);
+        super(path, validating, null);
+    }
+
+    public XMLBasicReader(String path, Class resolveBase) {
+        super(path, DocumentReader.validate(), resolveBase);
+    }
+
+    public XMLBasicReader(InputSource source) {
+        super(source, DocumentReader.validate(), null);
     }
 
     public XMLBasicReader(InputSource source, boolean validating) {
-        this(source, validating, null);
+        super(source, validating, null);
     }
 
+    public XMLBasicReader(InputSource source, Class resolveBase) {
+        super(source, DocumentReader.validate(), resolveBase);
+    }
 
     public XMLBasicReader(InputSource source, boolean validating, Class resolveBase) {
-        try {
-            xmlFilePath = source.getSystemId();
-            DocumentBuilder dbuilder = getDocumentBuilder(validating, new XMLEntityResolver(validating, resolveBase));
-
-            if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
-            if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
-            document = dbuilder.parse(source);
-        } catch(org.xml.sax.SAXException se) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
-        } catch(java.io.IOException ioe) {
-            throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
-        }
-    }
-    /*
-    public XMLBasicReader(Document doc) {
-        document = doc;
-        xmlFilePath = doc.getDoctype().getSystemId();
-    }
-    */
-    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
-        DocumentBuilder db;
-        try {
-            // get a new documentbuilder...
-            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-            // get docuemtn builder AFTER setting the validation
-            dfactory.setValidating(validating);
-            dfactory.setNamespaceAware(true);
-
-            db = dfactory.newDocumentBuilder();
-
-            db.setErrorHandler(handler);
-
-            // set the entity resolver... which tell us where to find the dtd's
-            db.setEntityResolver(resolver);
-
-        } catch(ParserConfigurationException pce) {
-            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
-            log.error(Logging.stackTrace(pce));
-            return null;
-        }
-        return db;
+        super(source, validating, resolveBase);
     }
 
-    private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler) {
-        return createDocumentBuilder(validating, handler, new XMLEntityResolver(validating));
-    }
-    private static DocumentBuilder createDocumentBuilder(boolean validating, EntityResolver resolver) {
-        return createDocumentBuilder(validating, new XMLErrorHandler(), resolver);
-    }
-    private static DocumentBuilder createDocumentBuilder(boolean validating) {
-        return createDocumentBuilder(validating, new XMLErrorHandler(), new XMLEntityResolver(validating));
-
-    }
-
-
-    public static DocumentBuilder getDocumentBuilder(boolean validating) {
-        if (validating == VALIDATE) {
-            return getDocumentBuilder();
-        } else {
-            if (altDocumentBuilder == null) {
-                altDocumentBuilder = createDocumentBuilder(validating);
-            }
-            return altDocumentBuilder;
-        }
-    }
-
-    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler) {
-        return createDocumentBuilder(validating, handler);
-    }
-
-    public static DocumentBuilder getDocumentBuilder(boolean validating, EntityResolver resolver) {
-        return createDocumentBuilder(validating, resolver);
-    }
-
-    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
-        return createDocumentBuilder(validating, handler, resolver);
-    }
-
+    /**
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder()}
+     */
     public static DocumentBuilder getDocumentBuilder() {
-        if(documentBuilder == null)  {
-            documentBuilder = createDocumentBuilder(VALIDATE);
-        }
-        return documentBuilder;
+        return DocumentReader.getDocumentBuilder();
     }
 
+    /**
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean)}
+     */
+    public static DocumentBuilder getDocumentBuilder(boolean validating) {
+        return DocumentReader.getDocumentBuilder(validating, null, null);
+    }
+
+    /**
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
+     */
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler) {
+        return DocumentReader.getDocumentBuilder(validating, handler, null);
+    }
+
+    /**
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
+     */
+    public static DocumentBuilder getDocumentBuilder(boolean validating, EntityResolver resolver) {
+        return DocumentReader.getDocumentBuilder(validating, null, resolver);
+    }
+
+    /**
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
+     */
+    public static DocumentBuilder getDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
+        return DocumentReader.getDocumentBuilder(validating, handler, resolver);
+    }
+
+    /**
+     * Obtain a DocumentBuilder
+     * @deprecated use {!link DocumentReader.getDocumentBuilder(boolean, ErrorHandler, EntityResolver)}
+     */
     public static DocumentBuilder getDocumentBuilder(Class refer) {
-        return createDocumentBuilder(VALIDATE, new XMLErrorHandler(), new XMLEntityResolver(VALIDATE, refer));
+        return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new XMLEntityResolver(DocumentReader.validate(), refer));
     }
 
     /**
@@ -248,7 +157,7 @@ public class XMLBasicReader  {
             } else if (!e.getNodeName().equals(root)) {
                 // path should start with document root element
                 log.error("path ["+path+"] with root ("+root+") doesn't start with root element ("+e.getNodeName()+"): incorrect xml file" +
-                          "("+xmlFilePath+")");
+                          "("+getFileName()+")");
                 return null;
             }
             while (st.hasMoreTokens()) {
@@ -281,16 +190,7 @@ public class XMLBasicReader  {
         if (e == null) {
             return "";
         } else {
-            NodeList nl = e.getChildNodes();
-            StringBuffer res = new StringBuffer();
-            for (int i=0;i<nl.getLength();i++) {
-                Node n = nl.item(i);
-                if ((n.getNodeType() == Node.TEXT_NODE) ||
-                    (n.getNodeType() == Node.CDATA_SECTION_NODE)) {
-                    res.append(n.getNodeValue().trim());
-                }
-            }
-            return res.toString();
+            return getNodeTextValue(e);
         }
     }
 
@@ -370,11 +270,5 @@ public class XMLBasicReader  {
         }
         return v.elements();
     }
-    /**
-     * Returns the file name associated with this reader (if there is one)
-     */
 
-    public String getFileName() {
-        return xmlFilePath;
-    }
 }
