@@ -18,20 +18,7 @@
 
 <body>
 <mm:cloud>
-<%-- determin source --%>
-<mm:node number="$fragment" notfound="skip">
-  <mm:relatednodes type="videosources" constraints="format = 6" max="1">
-      <mm:node id="source" />
-  </mm:relatednodes>
-  <mm:notpresent referid="source">
-    <mm:relatednodes type="audiosources" constraints="format = 6" max="1">
-      <mm:node id="source" />
-  </mm:relatednodes>
-  </mm:notpresent>
-</mm:node>
-
-<mm:present referid="source">
-
+<mm:node number="$fragment">
 <table class="movie" border="0" cellspacing="0" cellpadding="0">
 <tr>
     <td valign="top" width="32" height="27"><img src="images/movie_top_left.gif" alt="" width="32" height="27" border="0"></td>
@@ -40,7 +27,7 @@
 </tr>
 <tr>
     <td valign="top" background="images/movie_left.gif" width="32" ></td>
-    <td valign="top" bgcolor="#717171"><embed src="<mm:url referids="source" page="display.ram.jsp" />" 
+    <td valign="top" bgcolor="#717171"><embed src="<mm:url referids="fragment" page="display.ram.jsp" />" 
                 width="260" 
                 height="300"   
                 type="audio/x-pn-realaudio-plugin"
@@ -68,11 +55,7 @@
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
-	  </mm:present>
-    <mm:notpresent referid="source">
-       Could not determin source
-    </mm:notpresent>
- 
+</mm:node>
 </mm:cloud>
 </body>
 </mm:locale>
