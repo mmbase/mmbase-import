@@ -21,24 +21,24 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.10 2002-06-13 12:08:35 eduard Exp $
+ * @version $Id: BasicNodeList.java,v 1.11 2002-06-17 10:49:47 eduard Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
-
     protected Cloud cloud;
-    /**
-    * ...
-    */
-    BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
+    protected NodeManager nodemanager = null;
+    
+    BasicNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud=cloud;
     }
 
-    BasicNodeList(Collection c, Cloud cloud) {
-        this(c, cloud, null);
+    BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
+        super(c);
+        this.nodemanager = nodemanager;
+        this.cloud=cloud;
     }
-
+    
     /**
     *
     */
@@ -46,16 +46,20 @@ public class BasicNodeList extends BasicList implements NodeList {
         if (o instanceof Node) {
             return o;
         }
-        MMObjectNode mmn= (MMObjectNode)o;
-        NodeManager nm = cloud.getNodeManager(mmn.parent.getTableName());
-        Node n;
-        if (mmn.parent instanceof InsRel) {
-            n = new BasicRelation(mmn,nm);
-        } else {
-            n = new BasicNode(mmn,nm);
+        MMObjectNode coreNode = (MMObjectNode) o;
+        Node node = null;
+        MMObjectBuilder coreBuilder = coreNode.getBuilder();
+        NodeManager nodeManager = cloud.getNodeManager(coreBuilder.getTableName());
+        if(coreBuilder instanceof InsRel) {
+            // we are an relation,.. this means we have to create a relation..
+            node = new BasicRelation(coreNode, nodeManager);
         }
-        set(index, n);
-        return n;
+        else {
+            // 'normal' node
+            node = new BasicNode(coreNode, nodeManager);
+        }
+        set(index, node);
+        return node;
     }
 
     /**
@@ -72,54 +76,19 @@ public class BasicNodeList extends BasicList implements NodeList {
         return new BasicNodeList(subList(fromIndex, toIndex),cloud);
     }
 
-
-    /*
-    public NodeList sort(String field, boolean order) {
-           Vector nodesVector = new Vector(this);
-           NodeComparator nodeComparator = new NodeComparator(field, order);
-           java.util.Collections.sort(nodesVector, nodeComparator);
-           return new BasicNodeList((Collection)nodesVector, cloud);
-    }
-    */
-
     /**
      *
-     */
-     
+     */    
     public NodeIterator nodeIterator() {
         return new BasicNodeIterator(this);
     }   
      
+     
     public class BasicNodeIterator extends BasicIterator implements NodeIterator {
-
         BasicNodeIterator(BasicList list) {
             super(list);
         }
-
-
-        public void set(Object o) {
-            if (! (o instanceof Node)) {
-                String message;
-                message = "Object must be of type Node.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.set(index, o);
-        }
-        public void add(Object o) {
-            if (! (o instanceof Node)) {
-                String message;
-                message = "Object must be of type Node.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.add(index, o);
-        }
-
-
-        // for efficiency reasons, we implement the same methods
-        // without an 'instanceof' (a simple test program proved that
-        // this is quicker)
+                
         public void set(Node n) {
             list.set(index, n);
         }
