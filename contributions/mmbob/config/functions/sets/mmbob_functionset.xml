@@ -605,4 +605,42 @@
 		<return type="String"> 
 		</return> 
 	</function>
+
+        <function name="removePoster">
+                <description>Remove a Poster from a forum</description>
+                <type>class</type>
+                <class>org.mmbase.applications.mmbob.gui.Controller</class>
+                <method>removePoster</method>
+                <param name="forumid" type="String" description="MMBase node number of the forum" />
+                <param name="removeposterid" type="int" description="MMBase node number of the poster that has to be removed " />
+                <param name="posterid" type="int" description="MMBase node number of the poster" />
+                <return type="Boolean">
+                </return>
+        </function>
+
+        <function name="disablePoster">
+                <description>Disable a Poster from a forum</description>
+                <type>class</type>
+                <class>org.mmbase.applications.mmbob.gui.Controller</class>
+                <method>disablePoster</method>
+                <param name="forumid" type="String" description="MMBase node number of the forum" />
+                <param name="disableposterid" type="int" description="MMBase node number of the poster that has to be disabled " />
+                <param name="posterid" type="int" description="MMBase node number of the poster" />
+                <return type="Boolean">
+                </return>
+        </function>
+
+        <function name="enablePoster">
+                <description>Enable a Poster from a forum</description>
+                <type>class</type>
+                <class>org.mmbase.applications.mmbob.gui.Controller</class>
+                <method>enablePoster</method>
+                <param name="forumid" type="String" description="MMBase node number of the forum" />
+                <param name="enableposterid" type="int" description="MMBase node number of the poster that has to be enabled " />
+                <param name="posterid" type="int" description="MMBase node number of the poster" />
+                <return type="Boolean">
+                </return>
+        </function>
+
+
 </functionset>
