@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63.2.13 2005-02-04 13:41:41 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.14 2005-03-09 13:13:33 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -204,6 +204,7 @@ public class DatabaseStorageManager implements StorageManager {
                 } finally {
                     releaseActiveConnection();
                     factory.getChangeManager().commit(changes);
+
                 }
             }
         }
@@ -370,9 +371,9 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException(ie);
             }
         } else {
-            
             untrimmedResult = result.getString(index);
             if (factory.hasOption(Attributes.LIE_CP1252) && untrimmedResult != null) {
+                log.trace("Lying");                
                 try {                
                     String encoding = factory.getMMBase().getEncoding();
                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
@@ -1063,18 +1064,21 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, setValue);
 
         }
-        if (! encoding.equalsIgnoreCase("UTF-8")) {                
-            try {
-                value = new String(value.getBytes(encoding), encoding);
-            } catch(java.io.UnsupportedEncodingException uee) {
-                log.error(uee);
-                // cannot happen
+        if (value != null) {            
+            if (! encoding.equalsIgnoreCase("UTF-8")) {                
+                try {
+                    value = new String(value.getBytes(encoding), encoding);
+                } catch(java.io.UnsupportedEncodingException uee) {
+                    log.error(uee);
+                    // cannot happen
+                }
+            }            
+            if (factory.hasOption(Attributes.TRIM_STRINGS)) {
+                value = value.trim();
             }
-        }            
-        if (factory.hasOption(Attributes.TRIM_STRINGS)) {
-            value = value.trim();
         }
-        if (objectValue == null) node.storeValue(field.getDBName(),value);
+        
+        if (objectValue == null) node.storeValue(field.getDBName(), value);
         return value;
     }
     
@@ -1241,7 +1245,10 @@ public class DatabaseStorageManager implements StorageManager {
             int dbtype = FieldDefs.TYPE_UNKNOWN;
             if (field != null) {                
                 dbtype = field.getDBType();
-            }            
+            } else { // use database type.
+                dbtype = getJDBCtoMMBaseType(result.getMetaData().getColumnType(index), dbtype);
+            }
+            
             switch (dbtype) {
                 // string-type fields
             case FieldDefs.TYPE_XML :
@@ -1322,7 +1329,10 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void create(MMObjectBuilder builder) throws StorageException {
-        log.debug("Creating a table for " + builder);
+        if (log.isDebugEnabled()) {            
+            log.debug("Creating a table for " + builder);
+        }
+        
         // use the builder to get the fields and create a
         // valid create SQL string
         // for backward compatibility, fields are to be created in the order defined
