@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.40 2003-08-27 21:33:33 michiel Exp $ 
+ * @version $Id: ImageTag.java,v 1.41 2003-11-06 12:41:21 michiel Exp $ 
  */
 
 public class ImageTag extends FieldTag {
@@ -71,10 +71,13 @@ public class ImageTag extends FieldTag {
             ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 CloudContext cc = ct.getDefaultCloudContext();
-                Cloud anonymousCloud = cc.getCloud(ct.getName());
                 try {
+                    Cloud anonymousCloud = cc.getCloud(ct.getName());
                     anonymousCloud.getNode(node.getNumber());
                 } catch (org.mmbase.security.SecurityException se) {
+                    // two situations are anticipated:
+                    // - node not readable by anonymous
+                    // - no anonymous user defined
                     sessionName = ct.getSessionName();
                 }
             } else {
