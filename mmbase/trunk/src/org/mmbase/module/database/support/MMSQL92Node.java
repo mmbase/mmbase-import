@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.38 2000-11-07 14:32:27 vpro Exp $
+$Id: MMSQL92Node.java,v 1.39 2000-11-14 12:27:31 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.38  2000/11/07 14:32:27  vpro
+Rico: removed debug
+
 Revision 1.37  2000/11/07 14:28:55  vpro
 Rico: removed TYPE_TEXT
 
@@ -156,7 +159,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.38 $ $Date: 2000-11-07 14:32:27 $
+* @$Revision: 1.39 $ $Date: 2000-11-14 12:27:31 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -761,6 +764,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	}
 
+	/**
+	 * gives an unique number
+	 * This method needs to be fixed, while using more mmbases.
+	 * @return unique number 
+	 */
 	public synchronized int getDBKey() {
 		// get a new key
 		int number=-1;
@@ -783,24 +791,25 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(number);
 	}
 
-
 	/**
-	* return the number of relation types in this mmbase and table
-	*/
+	 * tells if a table already exists
+	 * @return true if table exists
+	 * @return false if table doesn't exists
+	 */
 	public boolean created(String tableName) {
 		if (size(tableName)==-1) {
-			// System.out.println("TABLE "+tableName+" NOT FOUND");
 			return(false);
 		} else {
-			//System.out.println("TABLE "+tableName+" FOUND");
 			return(true);
 		}
 	}
 
 
 	/**
-	* return the number of relation types in this mmbase and table
-	*/
+	 * return number of entries consisting in given table
+ 	 * @param tableName the table that has to be counted
+	 * @retuns the number of items the table has
+	 */
 	public int size(String tableName) {
 		MultiConnection con=null;
 		Statement stmt=null;
@@ -828,8 +837,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 
 	/**
-	* set prepared statement field i with value of key from node
-	*/
+	 * set prepared statement field i with value of key from node
+	 */
 	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
 		throws SQLException
 	{
@@ -1004,6 +1013,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(line);
 	}
 
+	/**
+	 * gets the sytax of the create statement for current database.
+	 */
 	public String getMatchCREATE(String tableName) {
 		return(parser.getCreateScheme()+" "+mmb.baseName+"_"+tableName+" ");
 	}
