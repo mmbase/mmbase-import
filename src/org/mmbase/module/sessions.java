@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.7 2000-03-31 12:50:04 wwwtech Exp $
+ $Id: sessions.java,v 1.8 2000-04-21 11:14:55 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.7  2000/03/31 12:50:04  wwwtech
+ Wilbert: Introduction of ParseException for method getList
+
  Revision 1.6  2000/03/30 13:11:26  wwwtech
  Rico: added license
 
@@ -45,7 +48,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.7 2000-03-31 12:50:04 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.8 2000-04-21 11:14:55 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -384,6 +387,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			if (cmd.equals("DELSET")) 		return(doDelSet(sp,tok));
 			if (cmd.equals("CONTAINSSET")) 	return(getContainsSet(sp,tok));
 			if (cmd.equals("SETSTRING")) 	return(getSetString(sp,tok));
+			if (cmd.equals("SETCOUNT")) 	return(getSetCount(sp,tok));
 			if (cmd.equals("AVGSET")) 		return(getAvgSet(sp,tok));
 			
 			debug("replace("+cmds+"): WARNING: Unknown command("+cmd+")!");
@@ -496,6 +500,18 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			}
 		} 
 		return("");
+	} 
+
+	public String getSetCount(scanpage sp, StringTokenizer tok) {
+		sessionInfo session=getSession(sp,sp.sname);
+		if (session!=null) {
+			if (tok.hasMoreTokens()) {
+				String key=tok.nextToken();
+				String tmp=session.getSetCount(key);
+				if (tmp!=null) return(tmp);
+			}
+		} 
+		return("0");
 	} 
 
 
