@@ -29,7 +29,7 @@ import org.mmbase.module.database.*;
 public class InsRel extends MMObjectBuilder {
 
 	public String classname = getClass().getName();
-	public boolean debug = true;
+	public boolean debug = false;
 	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	// cache system, holds the relations from the 25 
