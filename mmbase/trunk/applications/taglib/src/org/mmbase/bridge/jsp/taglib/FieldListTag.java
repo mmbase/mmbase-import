@@ -26,7 +26,7 @@ import org.mmbase.util.StringSplitter;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.30 2003-08-07 17:53:17 michiel Exp $ 
+ * @version $Id: FieldListTag.java,v 1.31 2003-08-08 09:22:54 michiel Exp $ 
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
@@ -49,7 +49,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         return currentItemIndex;
     }
 
-    public int getOffset() {
+    public int getIndexOffset() {
         return 1;
     }
 

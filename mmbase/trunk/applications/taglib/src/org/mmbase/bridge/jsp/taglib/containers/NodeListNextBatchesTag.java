@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListNextBatchesTag.java,v 1.2 2003-08-06 07:41:48 michiel Exp $
+ * @version $Id: NodeListNextBatchesTag.java,v 1.3 2003-08-08 09:22:55 michiel Exp $
  */
 public class NodeListNextBatchesTag extends StringListTag implements NodeListContainerReferrer {
     private static Logger log = Logging.getLoggerInstance(NodeListNextBatchesTag.class);
@@ -37,7 +37,7 @@ public class NodeListNextBatchesTag extends StringListTag implements NodeListCon
         container = getAttribute(c);
     }
 
-    public int getOffset() {
+    public int getIndexOffset() {
         return indexOffSet;
     }
 
