@@ -60,4 +60,10 @@ public interface NodeTypeInterface {
 	 * Retrieve all fields of this nodetype (in the default language defined in mmbaseroot.xml)
 	 */
 	public Iterator getFields();
+
+	/**
+	 * creates a node of the type specified by the NodeType
+	 * @returns a new node
+	 */
+	public NodeInterface create();
 }
