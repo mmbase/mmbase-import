@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.17 2001-12-13 14:23:22 eduard Exp $
+	$Id: ConvertImageMagick.java,v 1.18 2002-01-03 13:33:40 pierre Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.17  2001/12/13 14:23:22  eduard
+	eduard: removed a few obsolete System.err.println() thingies, and added startup check. This way during startup converter will be tested, and error produced which could be used to detect failure.
+	
 	Revision 1.16  2001/10/16 15:10:05  vpro
 	Wilbert added property to set scale for colorizehex command to bridge different versions of ImageMagic
 	
@@ -73,7 +76,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.17 2001-12-13 14:23:22 eduard Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.18 2002-01-03 13:33:40 pierre Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -126,7 +129,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 		    Process process=Runtime.getRuntime().exec(command);
                     InputStream in = null;                    
 		    in=process.getInputStream();
-                    process.waitFor(); 
+//                    process.waitFor();
                     
                     ByteArrayOutputStream outputstream=new ByteArrayOutputStream();
                     byte[] inputbuffer=new byte[1024];
