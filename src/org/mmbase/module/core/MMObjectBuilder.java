@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.152 2002-09-20 12:25:41 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.153 2002-09-26 12:43:47 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -83,6 +83,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * The class used to store and retrieve data in the database that is currently in use.
+     * @deprecated use MMBase.getMMBase().getDatabase() or mmb.getDatabase() instead 
      */
     public static MMJdbc2NodeInterface database = null;
 
@@ -278,8 +279,7 @@ public class MMObjectBuilder extends MMTable {
                 MMObjectNode node=typeDef.getNewNode("system");
                 node.setValue("name",tableName);
                 if (description==null) description="not defined in this language";
-                node.setValue("description",description);
-                oType=database.getDBKey();
+                oType=mmb.getDatabase().getDBKey();
                 node.setValue("number",oType);
                 // for typedef, set otype explictly, as it wasn't set in getNewNode()
                 if (this==typeDef) {
@@ -317,16 +317,16 @@ public class MMObjectBuilder extends MMTable {
      */
     public boolean create() {
         log.debug(tableName);
-        return database.create(this);
+        return mmb.getDatabase().create(this);
     }
 
     /**
      * Drops the builder table from the current database
      */
     public boolean drop() {
-        log.info("trying to drop table of builder: '"+tableName+"' with database class: '"+database.getClass().getName()+"'");
+        log.info("trying to drop table of builder: '"+tableName+"' with database class: '"+mmb.getDatabase().getClass().getName()+"'");
         if(size() > 0) throw new RuntimeException("cannot drop a builder, that still contains nodes");
-        return database.drop(this);
+        return mmb.getDatabase().drop(this);
     }
 
     /**
@@ -360,7 +360,7 @@ public class MMObjectBuilder extends MMTable {
     public int insert(String owner, MMObjectNode node) {
         try {
             int n;
-            n=database.insert(this,owner,node);
+            n=mmb.getDatabase().insert(this,owner,node);
             if (n>=0) safeCache(new Integer(n),node);
             String alias=node.getAlias();
             if (alias!=null) createAlias(n,alias);	// add alias, if provided
@@ -421,7 +421,7 @@ public class MMObjectBuilder extends MMTable {
      * @return true if commit successful
      */
     public boolean commit(MMObjectNode node) {
-        return database.commit(this,node);
+        return mmb.getDatabase().commit(this,node);
     }
 
     /**
@@ -492,7 +492,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6
      */
     public void setParentBuilder(MMObjectBuilder parent) throws StorageException {
-        database.registerParentBuilder(parent,this);
+        mmb.getDatabase().registerParentBuilder(parent,this);
         parentBuilder=parent;
     }
     
@@ -552,7 +552,7 @@ public class MMObjectBuilder extends MMTable {
         // removes the node FROM THIS BUILDER
         // seems not a very logical call, as node.parent is the node's actual builder,
         // which may - possibly - be very different from the current builder
-        database.removeNode(this,node);
+        mmb.getDatabase().removeNode(this,node);
     }
 
     /**
@@ -843,7 +843,7 @@ public class MMObjectBuilder extends MMTable {
                     String fieldtype;
                     for (int i=1;i<=rd.getColumnCount();i++) {
                         fieldname=rd.getColumnName(i);
-                        node=database.decodeDBnodeField(node,fieldname,rs,i);
+                        node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
                     }
                     // store in cache if indicated to do so
                     if (usecache) {
@@ -964,7 +964,7 @@ public class MMObjectBuilder extends MMTable {
         if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
         } else {
-            where=QueryConvertor.altaVista2SQL(where,database);
+            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
         }
         String query="SELECT Count(*) FROM "+getFullTableName()+" "+where;
         return basicCount(query);
@@ -1021,7 +1021,7 @@ public class MMObjectBuilder extends MMTable {
             where=convertMMNode2SQL(where);
         } else {
             //where=QueryConvertor.altaVista2SQL(where);
-            where=QueryConvertor.altaVista2SQL(where,database);
+            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
         }
         String query="SELECT * FROM "+getFullTableName()+" "+where;
         return basicSearch(query);
@@ -1078,7 +1078,7 @@ public class MMObjectBuilder extends MMTable {
         try {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database));
+            ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase()));
             Vector results=new Vector();
             Integer number;
             String tmp;
@@ -1165,7 +1165,7 @@ public class MMObjectBuilder extends MMTable {
         } else if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
         } else {
-            where=QueryConvertor.altaVista2SQL(where,database);
+            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
         }
 
         // temp mapper hack only works in single order fields
@@ -1188,7 +1188,7 @@ public class MMObjectBuilder extends MMTable {
         sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
         if (in!=null && in.equals("")) return new Vector();
-        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
+        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
         return basicSearch(query);
     }
 
@@ -1202,7 +1202,7 @@ public class MMObjectBuilder extends MMTable {
     public Vector searchVectorIn(String where,String in) {
         // do the query on the database
         if (in==null || in.equals("")) return new Vector();
-        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
 
@@ -1221,7 +1221,7 @@ public class MMObjectBuilder extends MMTable {
         } else if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
         } else {
-            where=QueryConvertor.altaVista2SQL(where,database);
+            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
         }
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
@@ -1266,7 +1266,7 @@ public class MMObjectBuilder extends MMTable {
         } else if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
         } else {
-            where=QueryConvertor.altaVista2SQL(where,database);
+            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
         }
         if (directions == null) {
             directions = "";
@@ -1314,10 +1314,10 @@ public class MMObjectBuilder extends MMTable {
         // do the query on the database
         if (in==null || in.equals("")) return new Vector();
         if (direction) {
-            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
+            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
             return basicSearch(query);
         } else {
-            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
+            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
             return basicSearch(query);
         }
     }
@@ -1363,7 +1363,7 @@ public class MMObjectBuilder extends MMTable {
                 for (int i=1;i<=rd.getColumnCount();i++) {
                     fieldname=rd.getColumnName(i);
                     //fieldtype=rd.getColumnTypeName(i);
-                    node=database.decodeDBnodeField(node,fieldname,rs,i);
+                    node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
                 }
 		// maybe we retrieved the wrong type of node, if so,.. retrieve the correct one!
 		// TODO: research for performance
@@ -1435,7 +1435,7 @@ public class MMObjectBuilder extends MMTable {
                 for (int index = 1; index <= numberOfColumns; index++) {
                     //String type=rsmd.getColumnTypeName(index);
                     String fieldname=rsmd.getColumnName(index);
-                    node=database.decodeDBnodeField(node,fieldname,rs,index);
+                    node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,index);
                 }
                 sv.addUniqueSorted(node);
             }
@@ -2281,7 +2281,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public String convertMMNode2SQL(String where) {
         log.debug("convertMMNode2SQL(): "+where);
-        String result="WHERE "+database.getMMNodeSearch2SQL(where,this);
+        String result="WHERE "+mmb.getDatabase().getMMNodeSearch2SQL(where,this);
         log.debug("convertMMNode2SQL(): results : "+result);
         return result;
     }
@@ -2292,6 +2292,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setMMBase(MMBase m) {
         mmb=m;
+        // XXX: deprecated
         database=mmb.getDatabase();
     }
 
@@ -2546,7 +2547,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>String</code> containing the contents of a field as text
      */
     public String getShortedText(String fieldname,int number) {
-        return database.getShortedText(tableName,fieldname,number);
+        return mmb.getDatabase().getShortedText(tableName,fieldname,number);
     }
 
     /**
@@ -2556,7 +2557,7 @@ public class MMObjectBuilder extends MMTable {
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
     public byte[] getShortedByte(String fieldname,int number) {
-        return database.getShortedByte(tableName,fieldname,number);
+        return mmb.getDatabase().getShortedByte(tableName,fieldname,number);
     }
 
     /**
@@ -2566,7 +2567,7 @@ public class MMObjectBuilder extends MMTable {
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
     public byte[] getDBByte(ResultSet rs,int idx) {
-        return database.getDBByte(rs,idx);
+        return mmb.getDatabase().getDBByte(rs,idx);
     }
 
     /**
@@ -2576,7 +2577,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>String</code> containing the contents of a field as text
      */
     public String getDBText(ResultSet rs,int idx) {
-        return database.getDBText(rs,idx);
+        return mmb.getDatabase().getDBText(rs,idx);
     }
 
     /**
@@ -2585,8 +2586,8 @@ public class MMObjectBuilder extends MMTable {
      * @return <code>true</code> if the table exists, <code>false</code> otherwise
      */
     public boolean created() {
-        if (database!=null) {
-            return database.created(getFullTableName());
+        if (mmb.getDatabase()!=null) {
+            return mmb.getDatabase().created(getFullTableName());
         } else {
             return super.created();
         }
