@@ -156,7 +156,7 @@
     if (wizard!=null) {
         // create wizard object so that delete/create actions are correctly loaded. No need to store. We'll create another wizard automatically if a button in the list is pressed.
         Wizard wiz=null;
-        wiz = new Wizard(settings_basedir, wizard, null, cloud);
+        wiz = new Wizard(settings_context, settings_basedir, wizard, null, cloud);
         deletable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='delete']")!=null);
         creatable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='create']")!=null);
 
@@ -259,6 +259,12 @@
 
     // output html by using xsl stylesheet
     if (template==null) template = "/xsl/list.xsl";
+
+
+    params.put("ew_path", settings_basedir);
+    params.put("ew_context", settings_context);
+    params.put("ew_imgdb", settings_context + "/" + org.mmbase.module.builders.AbstractImages.IMGDB);
+
     Utils.transformNode(doc, settings_basedir + template, out, params);
 
     // nothing more to do...
@@ -335,8 +341,8 @@
         return n;
 
     }
-
-    private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value) {
+					  
+		private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value) {
         org.w3c.dom.Node n = el.getOwnerDocument().createElement("field");
         Utils.setAttribute(n, "name", name);
         Utils.storeText(n, value);
