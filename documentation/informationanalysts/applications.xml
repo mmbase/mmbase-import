@@ -3,11 +3,15 @@
 <article>
   <articleinfo>
     <date>27 february 2003</date>
-    <title>How to package your MMBase application</title>
+    <title>MMBase Applications</title>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
         <surname>Hangyi</surname>
+      </author>
+      <author>
+        <firstname>Pierre</firstname>
+        <surname>van Rooden</surname>
       </author>
     </authorgroup>
     <legalnotice>
@@ -18,8 +22,13 @@
     <revhistory>
       <revision>
         <revnumber>0.1</revnumber>
-        <date>February 27th 2003</date>
-        <revremark>Henk Hangyi, hangyi@xs4all.nl</revremark>
+        <date>27 February 2003</date>
+        <authorinitials>HH</authorinitials>
+      </revision>
+      <revision>
+        <revnumber>0.5</revnumber>
+        <date>28 February 2003</date>
+        <authorinitials>PvR</authorinitials>
       </revision>
     </revhistory>
   </articleinfo>
