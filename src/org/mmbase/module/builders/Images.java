@@ -8,18 +8,9 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.14 2000-05-29 19:33:52 wwwtech Exp $
+	$Id: Images.java,v 1.15 2000-06-02 10:57:48 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
-	Revision 1.13  2000/05/29 13:17:26  wwwtech
-	Wilbert: Changed fuzzy search for image alias into exact search
-	
-	Revision 1.12  2000/05/27 16:48:29  wwwtech
-	Wilbert: moved new conversion of image alias to method to share it with VWM ImageMaster
-	
-	Revision 1.11  2000/05/27 14:19:07  wwwtech
-	Wilbert: Fixed getImagesBytes5 to return the correct image when title used as alias for img.db?title. Now returns exact match if found instead of last match of fuzzy search
-	
 	Revision 1.10  2000/04/05 11:52:16  wwwtech
 	Rico: added debug, so you can see you need to load icaches as well
 	
@@ -54,6 +45,7 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
+import org.mmbase.module.builders.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
@@ -63,17 +55,40 @@ import org.mmbase.util.*;
  * images holds the images and provides ways to insert, retract and
  * search on them.
  *
- * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.14 2000-05-29 19:33:52 wwwtech Exp $
+ * @author Daniel Ockeloen, Rico Jansen
+ * @version $Id: Images.java,v 1.15 2000-06-02 10:57:48 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 
-	// Currenctly only ImageMagick works
+	ImageConvertInterface imageconvert=null;
+	Hashtable ImageConvertParams=new Hashtable();
+
+	// Currenctly only ImageMagick works / this gets parameterized soon
+	protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick";
 	protected static String ConverterRoot = "/usr/local/";
 	protected static String ConverterCommand = "bin/convert";
+
+
+	public boolean init() {
+		super.init();
+		/* Wait for builder property support
+		String tmp;
+		tmp=getParameter("ImageConvertClass");
+		if (tmp!=null) ImageConvertClass=tmp;
+		loadImageConvertParams(getParameters());
+		*/
+
+		// HACK remove when above comes true
+		ImageConvertParams.put("ImageConvert.ConverterRoot",ConverterRoot);
+		ImageConvertParams.put("ImageConvert.ConverterCommand",ConverterCommand);
+
+		imageconvert=loadImageConverter(ImageConvertClass);
+		imageconvert.init(ImageConvertParams);
+		return(true);
+	}
 
 	public String getGUIIndicator(MMObjectNode node) {
 		int num=node.getIntValue("number");
@@ -97,331 +112,29 @@ public class Images extends MMObjectBuilder {
 		return(null);
 	}
 
-	// glue method until org.mmbase.servlet.servdb is updated
-	public byte[] getImageBytes5(Vector params) {
-		return getImageBytes5(null,params);
-	}
-	
-	public String convertAlias(String num) {
-	// check if its a number if not check for name and even oalias
-		try {
-				int numint=Integer.parseInt(num);
-			} 
-		catch(Exception e) {
-			String title = num;
-			if ((title!=null) && !title.equals("")) {
-				Enumeration g=search("where title='"+num+"'");
-				while (g.hasMoreElements()) {
-					MMObjectNode imgnode=(MMObjectNode)g.nextElement();
-					num=""+imgnode.getIntValue("number");
-					//debug("Hit on: "+imgnode.getStringValue("title"));
-				}//while
-			}//if
-		}//catch
-		return num;
-	}
-
-	public synchronized byte[] getImageBytes5(scanpage sp,Vector params) {
-		int pos,pos2;
+	private void getImageConvertParams(Hashtable params) {
 		String key;
-		String type;
-		String cmd;
-		String format="jpg";
-		String size=null;
-		Vector cmds=new Vector();
-		String ckey="";
-
-		try {
-			//MMObjectBuilder bul=mmb.getMMObject("images");
-			if (params==null || params.size()==0) {
-				MMObjectNode node=getNode(7452);
-				return(node.getByteValue("handle"));
+		for (Enumeration e=params.keys();e.hasMoreElements();) {
+			key=(String)e.nextElement();
+			if (key.startsWith("ImageConvert.")) {
+				ImageConvertParams.put(key,params.get(key));
 			}
-			String num=(String)params.elementAt(0);
-			num = convertAlias(num);
-	
-			ckey=num;
-			for (Enumeration t=params.elements();t.hasMoreElements();) {
-				key=(String)t.nextElement();
-				pos=key.indexOf('(');
-				pos2=key.lastIndexOf(')');
-				if (pos!=-1 && pos2!=-1) {
-					type=key.substring(0,pos);
-					cmd=key.substring(pos+1,pos2);
-					debug("getImageBytes5(): type="+type+" cmd="+cmd);
-					if (type.equals("f")) {
-						format=cmd;
-						ckey+=key;
-					} else if (type.equals("s")) {
-						cmds.addElement("-geometry "+cmd);
-						ckey+=key;
-					} else if (type.equals("r")) {
-						cmds.addElement("-rotate "+cmd);
-						ckey+=key;
-					} else if (type.equals("c")) {
-						cmds.addElement("-colors "+cmd);
-						ckey+=key;
-					} else if (type.equals("colorize")) {
-						// not supported ?
-						cmds.addElement("-colorize "+cmd);
-						ckey+=key;
-					} else if (type.equals("bordercolor")) {
-						// not supported ?
-						cmds.addElement("-bordercolor #"+cmd);
-						ckey+=key;
-					} else if (type.equals("blur")) {
-						cmds.addElement("-blur "+cmd);
-						ckey+=key;
-					} else if (type.equals("edge")) {
-						cmds.addElement("-edge "+cmd);
-						ckey+=key;
-					} else if (type.equals("implode")) {
-						cmds.addElement("-implode "+cmd);
-						ckey+=key;
-					} else if (type.equals("gamma")) {
-						// cmds.addElement("-gamma "+cmd);
-						StringTokenizer tok = new StringTokenizer(cmd,",");
-						String r=tok.nextToken();
-						String g=tok.nextToken();
-						String b=tok.nextToken();
-						cmds.addElement("-gamma "+r+"/"+g+"/"+b);
-						ckey+=key;
-					} else if (type.equals("border")) {
-						cmds.addElement("-border "+cmd);
-						ckey+=key;
-					} else if (type.equals("pen")) {
-						cmds.addElement("-pen #"+cmd+"");
-						ckey+=key;
-					} else if (type.equals("font")) {
-						cmds.addElement("font "+cmd);
-						ckey+=key;
-					} else if (type.equals("circle")) {
-						cmds.addElement("draw 'circle "+cmd+"'");
-						ckey+=key;
-					} else if (type.equals("text")) {
-						StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-						try {
-							String x=tok.nextToken();
-							String y=tok.nextToken();
-							String te=tok.nextToken();
-							cmds.addElement("-draw \"text +"+x+"+"+y+" "+te+"\"");
-							ckey+=key;
-						} catch (Exception e) {}
-					} else if (type.equals("raise")) {
-						cmds.addElement("-raise "+cmd);
-						ckey+=key;
-					} else if (type.equals("shade")) {
-						cmds.addElement("-shade "+cmd);
-						ckey+=key;
-					} else if (type.equals("modulate")) {
-						cmds.addElement("-modulate "+cmd);
-						ckey+=key;
-					} else if (type.equals("colorspace")) {
-						cmds.addElement("-colorspace "+cmd);
-						ckey+=key;
-					} else if (type.equals("shear")) {
-						cmds.addElement("-shear "+cmd);
-						ckey+=key;
-					} else if (type.equals("swirl")) {
-						cmds.addElement("-swirl "+cmd);
-						ckey+=key;
-					} else if (type.equals("wave")) {
-						cmds.addElement("-wave "+cmd);
-						ckey+=key;
-					} else if (type.equals("t")) {
-						cmds.addElement("-transparency #"+cmd+"");
-						ckey+=key;
-					} else if (type.equals("part")) {
-						StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-						try {
-							int x1=Integer.parseInt(tok.nextToken());
-							int y1=Integer.parseInt(tok.nextToken());
-							int x2=Integer.parseInt(tok.nextToken());
-							int y2=Integer.parseInt(tok.nextToken());
-							cmds.addElement("-crop "+(x2-x1)+"x"+(y2-y1)+"+"+x1+"+"+y1);
-							ckey+=key;
-						} catch (Exception e) {}
-					} else if (type.equals("roll")) {
-						StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-						String str;
-						int x=Integer.parseInt(tok.nextToken());
-						int y=Integer.parseInt(tok.nextToken());
-						if (x>=0) str="+"+x;
-						else str=""+x;
-						if (y>=0) str+="+"+y;
-						else str+=""+y;
-						cmds.addElement("-roll "+str);
-						ckey+=key;
-					} else if (type.equals("i")) {
-	                    cmds.addElement("-interlace "+cmd);
-	                    ckey+=key;
-	                }
-				} else {
-					if (key.equals("mono")) {
-						cmds.addElement("-monochrome");
-						ckey+=key;
-					} else if (key.equals("contrast")) {
-						cmds.addElement("-contrast");
-						ckey+=key;
-					} else if (key.equals("lowcontrast")) {
-						cmds.addElement("+contrast");
-						ckey+=key;
-					} else if (key.equals("highcontrast")) {
-						cmds.addElement("-contrast");
-						ckey+=key;
-					} else if (key.equals("noise")) {
-						cmds.addElement("-noise");
-						ckey+=key;
-					} else if (key.equals("emboss")) {
-						cmds.addElement("-emboss");
-						ckey+=key;
-					} else if (key.equals("flipx")) {
-						cmds.addElement("-flop");
-						ckey+=key;
-					} else if (key.equals("flipx")) {
-						cmds.addElement("-flop");
-						ckey+=key;
-					} else if (key.equals("flipy")) {
-						cmds.addElement("-flip");
-						ckey+=key;
-					} else if (key.equals("dia")) {
-						cmds.addElement("-negate");
-						ckey+=key;
-					} else if (key.equals("neg")) {
-						cmds.addElement("+negate");
-						ckey+=key;
-					}
-				}
-			}
-	
-	
-			ImageCaches bul2=(ImageCaches)mmb.getMMObject("icaches");
-			if (bul2==null) {
-				debug("getImageBytes5(): ERROR builder icaches not loaded, load it by putting it in objects.def");
-				return(null);
-			} else {
-				synchronized(ckey) {
-					byte[] ibytes=bul2.getCkeyNode(ckey);
-			
-					if (ibytes!=null) {
-						return(ibytes);
-					} else {
-						// aaa
-						byte[] pict=null;
-						if (num.indexOf('(')==-1 && !num.equals("-1")) {
-							MMObjectNode node=getNode(num);
-							 pict=node.getByteValue("handle");
-						}
-						if (pict!=null) {
-							byte[] pict2=null;
-							if (cmds.size()==0) {
-								// pict2=getConverted(pict,format);
-								pict2=getAllCalc(sp,pict,"",format);
-							} else {
-								cmd="";
-								for (Enumeration t=cmds.elements();t.hasMoreElements();) {
-									key=(String)t.nextElement();
-									cmd+=key+" ";
-								}
-								pict2=getAllCalc(sp,pict,cmd,format);
-							}
-							if (pict2!=null) {
-								MMObjectBuilder bul=mmb.getMMObject("icaches");
-								try {
-									MMObjectNode newnode=bul.getNewNode("system");
-									newnode.setValue("ckey",ckey);
-									newnode.setValue("id",Integer.parseInt(num));
-									newnode.setValue("handle",pict2);
-									newnode.setValue("filesize",pict2.length);
-									newnode.insert("imagesmodule");
-								} catch (Exception e) {}
-								return(pict2);
-							} else {
-								debug("getImageBytes5(): Convert problem params : "+params);
-								return(null);
-							}
-						} else {
-							MMObjectNode node=getNode(7452);
-							return(node.getByteValue("handle"));
-						}
-					}
-				}
-			}
-		} catch(Exception h) {
-			debug("getImageBytes5(): Image problem on : "+params+" : "+h);
-			h.printStackTrace();
-			return(null);
 		}
 	}
 
-	byte[] getAllCalc(scanpage sp,byte[] pict,String cmd, String format) {	
-		Process p=null;
-        String s="",tmp="";
-		DataInputStream dip= null;
-		DataInputStream diperror= null;
-		String command;
-		PrintStream out=null;	
-		RandomAccessFile  dos=null;	
+	private ImageConvertInterface loadImageConverter(String classname) {
+		Class cl;
+		ImageConvertInterface ici=null;
 
- 		if (sp!=null)
-			debug("getAllCalc(): converting img("+cmd+") for page("+sp.getUrl()+") and user("+sp.getSessionName()+")");
-		else
-			debug("getAllCalc(): converting img("+cmd+") for UNKNOWN");
-
-		byte[] result=new byte[1024*1024];
 		try {
-			command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
-			debug("getAllCalc(): "+command);
-			p = (Runtime.getRuntime()).exec(command);
-        	PrintStream printStream = new PrintStream(p.getOutputStream()); // set the input stream for cgi
-			printStream.write(pict,0,pict.length);
-			printStream.flush();	
-			printStream.close();	
-			debug("getAllCalc(): close out done "+cmd);
-			String line;
-			debug("getAllCalc(): close error read done "+cmd);
-			//p.waitFor();
+			cl=Class.forName(classname);
+			ici=(ImageConvertInterface)cl.newInstance();
+			debug("loadImageConverter(): loaded : "+classname);
 		} catch (Exception e) {
-			s+=e.toString();
-			out.print(s);
-			return(null);
+			debug("loadImageConverter(): can't load : "+classname);
 		}
-
-		dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
-
-		// look on the input stream
-        try {
-			int len3=0;
-			int len2=0;
-
-           	len2=dip.read(result,0,result.length);
-			while (len2!=-1) { 
-           		len3=dip.read(result,len2,result.length-len2);
-				if (len3==-1) {
-					break;
-				} else {
-					len2+=len3;
-				}
-			}
-			dip.close();
-			byte[] res=new byte[len2];
-	    	System.arraycopy(result, 0, res, 0, len2);
-			debug("getAllCalc(): read oke "+cmd+" len "+len2);
-			return(res);
-        } catch (Exception e) {
-			debug("getAllCalc(): converting failed ! img("+cmd+")");
-			e.printStackTrace();
-        	try {
-				dip.close();
-        	} catch (Exception f) {
-			}
-			return(null);
-			//e.printStackTrace();
-		}
-
-
+		return(ici);
 	}
-
 
 	public String getImageMimeType(Vector params) {
 		String format=null,mimetype;
@@ -442,9 +155,96 @@ public class Images extends MMObjectBuilder {
 		}
 		if (format==null) format="jpg";
 		mimetype=mmb.getMimeType(format);
-		// debug("Images:: getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
+		if (debug) debug("getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
 		
 		return(mimetype);
+	}
+
+
+	// glue method until org.mmbase.servlet.servdb is updated
+	public byte[] getImageBytes5(Vector params) {
+		return getImageBytes5(null,params);
+	}
+
+	// glue method until org.mmbase.servlet.servdb is updated
+	public byte[] getImageBytes5(scanpage sp,Vector params) {
+		return ConvertImage(sp,params);
+	}
+
+	public String convertAlias(String num) {
+		// check if its a number if not check for name
+		int number=-1;
+		try {
+			number=Integer.parseInt(num);
+		} catch(NumberFormatException e) {
+			Enumeration g=search("WHERE title='"+num+"'");
+			while (g.hasMoreElements()) {
+				MMObjectNode imgnode=(MMObjectNode)g.nextElement();
+				number=imgnode.getIntValue("number");
+			}
+		}	
+		return(""+number);
+	}
+
+	public byte[] ConvertImage(scanpage sp,Vector params) {
+		String ckey="",key;
+		byte[] picture=null;
+		int number=-1;
+
+		if (params!=null && params.size()==0) {
+	
+			String num=(String)params.elementAt(0);
+
+			num=convertAlias(num);
+			number=Integer.parseInt(num);
+				
+			if (number>=0) {
+				// flatten parameters as a 'hashed' key;
+				ckey=""+number;
+				for (Enumeration t=params.elements();t.hasMoreElements();) {
+					key=(String)t.nextElement();
+					ckey+=key;
+				}
+			
+				ImageCaches bul=(ImageCaches)mmb.getMMObject("icaches");
+				if (bul!=null) {
+					picture=bul.getCkeyNode(ckey);
+					if (picture==null) {
+						MMObjectNode node;
+						node=getNode(number);
+						if (node!=null) {
+							byte[] inputpicture=node.getByteValue("handle");
+							if (inputpicture!=null) {
+								picture=imageconvert.ConvertImage(inputpicture,params);
+								if (picture!=null) {
+									MMObjectNode newnode=bul.getNewNode("system");
+									newnode.setValue("ckey",ckey);
+									newnode.setValue("id",number);
+									newnode.setValue("handle",picture);
+									newnode.setValue("filesize",picture.length);
+									newnode.insert("imagesmodule");
+								} else {
+									debug("ConvertImage(): Convert problem params : "+params);
+								}
+							} else {
+								debug("ConvertImage: Image Node is bad "+number);
+							}
+						} else {
+							debug("ConvertImage: Image node not found "+number);
+						}
+					} else {
+						// We are done ImageCache HIT
+					}
+				} else {
+					debug("ConvertImage(): ERROR builder icaches not loaded, load it by putting it in objects.def");
+				}
+			} else {
+				debug("ConvertImage: Parameter is not a valid image "+num);
+			}
+		} else {
+			debug("ConvertImage(): no parameters");
+		}
+		return(picture);
 	}
 }
 		
