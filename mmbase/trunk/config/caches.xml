@@ -7,7 +7,7 @@
 	the changes are persistent then)
 
 	@since   MMBase-1.6
-	@version $Id: caches.xml,v 1.3 2003-04-10 15:18:07 pierre Exp $
+	@version $Id: caches.xml,v 1.4 2003-07-14 21:21:02 michiel Exp $
 	@author  Michiel Meeuwissen
 
 -->
@@ -22,13 +22,25 @@
 		<size>4096</size>
 	</cache>
 
+  <!-- simple node lists -->
+	<cache name="NodeListCache">
+		<status>active</status>
+		<size>300</size>
+	</cache>
+
 	<!-- cluster nodes -->
 	<cache name="MultilevelCache">
 		<status>active</status>
 		<size>300</size>
 	</cache>
 
-	<!-- related nodes, used in InsRel -->
+	<!-- related nodes -->
+	<cache name="RelatedNodesCache">
+		<status>active</status>
+		<size>300</size>
+	</cache>
+
+	<!-- related nodes, (not?) used in InsRel -->
 	<cache name="RelatedCache">
 		<status>active</status>
 		<size>25</size>
