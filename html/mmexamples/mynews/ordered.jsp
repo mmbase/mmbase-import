@@ -18,7 +18,7 @@
    <mm:field  escape="p" name="body"/>
 
    <table>
-   <%-- we have to use the related tag if we want to order with pos --%>
+   <%-- since 1.7 you can also order with relatednodes itself, in < 1.7  you needed to use the related tag to order with pos --%>
    <mm:relatednodes id="newsid" role="posrel" type="news" orderby="posrel.pos">
      <mm:first>
        <table><tr><th>title</th><th class="navigate">&nbsp;</th></tr>
