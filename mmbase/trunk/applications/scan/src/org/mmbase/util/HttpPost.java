@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.14 2002-07-31 13:22:47 eduard Exp $
+ * @version $Id: HttpPost.java,v 1.15 2003-01-07 10:28:27 kees Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -225,8 +225,7 @@ public class HttpPost {
     
     private static String getString(byte[] data, String encoding) {
         if(encoding == null) {
-            // depricated.. dont know how to replace..
-            return new String(data,0);
+            return new String(data);
         }
         try {
             return new String(data, encoding);
