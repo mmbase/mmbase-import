@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.30 2003-06-12 09:47:19 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.31 2003-08-26 12:57:00 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -465,9 +465,15 @@ public class WizardDatabaseConnector {
      */
     public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException {
 
-        String objecttype = Utils.getAttribute(objectDef, "type");
 
-        if (log.isDebugEnabled()) log.debug("Create object of type " + objecttype);
+
+        if (objectDef == null) throw new WizardException("No 'objectDef' given"); // otherwise NPE in getAttribute
+
+        String objectType = Utils.getAttribute(objectDef, "type");
+
+        if (objectType.equals("")) throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
+
+        if (log.isDebugEnabled()) log.debug("Create object of type " + objectType);
         String nodename = objectDef.getNodeName();
 
         // no relations to add here..
@@ -489,12 +495,13 @@ public class WizardDatabaseConnector {
             relations = Utils.selectNodeList(objectDef, ".");
         } else if (nodename.equals("object")) {
             // create a new object of the given type
-            objectNode = getNew(targetParentNode, objecttype);
+            objectNode = getNew(targetParentNode, objectType);
             fillObjectFields(data,targetParentNode,objectDef,objectNode,params,createorder);
             relations = Utils.selectNodeList(objectDef, "relation");
         } else {
            throw new WizardException("Can only create with 'action' 'object' or 'relation' nodes");
         }
+
 
         // Let's see if we need to create new relations (maybe even with new objects inside...
         Node lastCreatedRelation = null;
@@ -514,14 +521,14 @@ public class WizardDatabaseConnector {
             String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
             Node inside_object = null;
             Node inside_objectdef = Utils.selectSingleNode(relation, "object");
-            if (dnumber!=null) {
+            if (dnumber != null) {
                 // dnumber is given (direct reference to an existing mmbase node)
                 // obtain the object.
                 // we can do this here as it is a single retrieval
                 try {
                     inside_object = getDataNode(targetParentNode.getOwnerDocument(), dnumber, null);
                 } catch (Exception e) {
-                    throw new WizardException("Could not load object ("+dnumber+"). Message: "+Logging.stackTrace(e));
+                    throw new WizardException("Could not load object (" + dnumber + "). Message: " + Logging.stackTrace(e));
                 }
                 // but annotate that this one is loaded from mmbase. Not a new one
                 Utils.setAttribute(inside_object, "already-exists", "true");
