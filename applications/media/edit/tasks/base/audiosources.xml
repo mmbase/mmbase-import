@@ -7,7 +7,7 @@
    <!ENTITY formats      SYSTEM "formats.xml" >
   ]
 ><wizard-schema id="media">
-	<title xml:lang="en">Video source</title>
-	<title xml:lang="nl">Videobron</title>   
+	<title xml:lang="en">Audio source</title>
+	<title xml:lang="nl">Audiobron</title>   
   &base;
  </wizard-schema>
