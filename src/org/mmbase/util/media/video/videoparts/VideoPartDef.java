@@ -196,33 +196,44 @@ public class VideoPartDef
 		return b.toString();
 	}
 
-	public String getRealVideoUrl( scanpage sp )
-	{
+	/**
+	 * Gets the Realvideo url and ads the 'title','start' and 'end' name and values parameters.
+	 * davzev: Removed the double quotes around the values since Real SMIL doesn't handle it correctly. 
+	 * @param sp the scanepage
+	 * @return a String with the url.
+	 */
+	public String getRealVideoUrl( scanpage sp ) {
 		String result = null;
-
 		result = rawvideo.getRealVideoUrl( sp );
 
-		if( result != null )
-		{
-			if( title != null && !title.equals("") )
-				result += "?title=\""+title+"\"";
-			else
-				result += "?title=\"\"";
+		if( result != null ) {
+
+			if( title != null && !title.equals("") ) {
+				//result += "?title=\""+title+"\"";
+				result += "?title="+title;
+			} else {
+				//result += "?title=\"\"";
+				result += "?title=";
+			}
 
 			String ss = null;
-			if( starttime != null && !starttime.equals(""))
-				ss = "&start=\""+starttime+"\"";
+			if( starttime != null && !starttime.equals("")) {
+				//ss = "&start=\""+starttime+"\"";
+				ss = "&start="+starttime;
+			}
 
-			if( stoptime != null && !stoptime.equals(""))
-				if( ss != null )
-					ss += "&end=\""+stoptime+"\"";
-				else
-					ss  = "&end=\""+stoptime+"\"";
-
+			if( stoptime != null && !stoptime.equals("")) {
+				if( ss != null ) {
+					//ss += "&end=\""+stoptime+"\"";
+					ss += "&end="+stoptime;
+				} else {
+					//ss  = "&end=\""+stoptime+"\"";
+					ss = "&end="+stoptime;
+				}
+			}
 			if( ss != null && !ss.equals(""))
 				result += ss;				
 		}
-
 		return result;
 	}
 
