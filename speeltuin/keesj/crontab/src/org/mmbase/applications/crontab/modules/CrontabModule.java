@@ -13,16 +13,16 @@ import org.mmbase.applications.crontab.*;
 import org.mmbase.module.WatchedReloadableModule;
 import org.mmbase.util.logging.*;
 
-
 /**
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
  */
 public class CrontabModule extends WatchedReloadableModule {
+	
     private static final Logger log = Logging.getLoggerInstance(CrontabModule.class);
     protected CronDaemon cronDaemon = null;
-    
+
     /** 
      * Need to remember which crontab entries where 'mine', to known which must be removed if
      * configuration changes.
@@ -48,8 +48,8 @@ public class CrontabModule extends WatchedReloadableModule {
         Map params = getInitParameters();
         Iterator i = getInitParameters().entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
-            String value = (String) entry.getValue();
+            Map.Entry entry = (Map.Entry)i.next();
+            String value = (String)entry.getValue();
             String[] tokens = value.trim().split("[\n|]");
             String times;
             if (tokens.length > 0) {
@@ -69,9 +69,9 @@ public class CrontabModule extends WatchedReloadableModule {
             String configString = null;
             if (tokens.length > 2) {
                 description = tokens[2].trim();
-            } 
+            }
             if (description == null || description.length() == 0) {
-                description = (String) entry.getKey();
+                description = (String)entry.getKey();
             }
 
             if (tokens.length > 3) {
@@ -79,12 +79,11 @@ public class CrontabModule extends WatchedReloadableModule {
             }
 
             try {
-                CronEntry job = new CronEntry((String) entry.getKey(), times, description, className);
-                job.setConfiguration(configString);
+                CronEntry job = new CronEntry((String)entry.getKey(), times, description, className, configString);
                 myEntries.add(job);
                 cronDaemon.add(job);
             } catch (Exception e) {
-                log.error("Could not add to JCronDaemon " + entry.getKey() + "|" + times + "|" + description + "|" + className + " " + e.getClass().getName() + ": " + e.getMessage());
+                log.error("Could not add to CronDaemon " + entry.getKey() + "|" + times + "|" + description + "|" + className + " " + e.getClass().getName() + ": " + e.getMessage());
             }
         }
     }
@@ -97,10 +96,10 @@ public class CrontabModule extends WatchedReloadableModule {
         log.info("Reloading crontab");
         Iterator i = myEntries.iterator();
         while (i.hasNext()) {
-            cronDaemon.remove((CronEntry) i.next());
+            cronDaemon.remove((CronEntry)i.next());
         }
         myEntries.clear();
         init();
     }
-    
+
 }

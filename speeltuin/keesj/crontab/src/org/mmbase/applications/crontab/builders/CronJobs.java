@@ -20,6 +20,7 @@ import org.mmbase.util.logging.*;
  * @mmbase-nodemanager-field name string
  * @mmbase-nodemanager-field crontime string
  * @mmbase-nodemanager-field classfile string
+ * @mmbase-nodemanager-field config string
  *
  * @mmbase-relationtype-name related
  *
@@ -48,7 +49,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
             }
         }
         cronDaemon = CronDaemon.getInstance();
-        NodeIterator nodeIterator = LocalContext.getCloudContext().getCloud("mmbase").getNodeManager("cronjobs").getList(null, null, null).nodeIterator();
+        NodeIterator nodeIterator = LocalContext.getCloudContext().getCloud("mmbase").getNodeManager(getTableName()).getList(null, null, null).nodeIterator();
         while (nodeIterator.hasNext()) {
             cronDaemon.add(createJCronEntry(nodeIterator.nextNode()));
         }
@@ -63,7 +64,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
 
     private CronEntry createJCronEntry(Node node) {
         try {
-            return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"));
+            return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"));
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -73,12 +74,14 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
     public boolean commit(MMObjectNode objectNodenode) {
         boolean retval = super.commit(objectNodenode);
         Node node = LocalContext.getCloudContext().getCloud("mmbase").getNode(objectNodenode.getNumber());
+        cronDaemon.remove(cronDaemon.getCronEntry("" + node.getNumber()));
+        cronDaemon.add(createJCronEntry(node));
         return retval;
     }
 
     public void removeNode(MMObjectNode objectNodenode) {
         super.removeNode(objectNodenode);
         Node node = LocalContext.getCloudContext().getCloud("mmbase").getNode(objectNodenode.getNumber());
-        //jCronDaemon.getJCronEntries().getJCronEntry("" +  node.getNumber()).();
+        cronDaemon.remove(cronDaemon.getCronEntry("" + node.getNumber()));
     }
 }
