@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.15 2003-03-10 11:50:16 pierre Exp $
+ * @version $Id: Channel.java,v 1.16 2003-06-18 19:32:27 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -150,7 +150,7 @@ public class Channel extends MMObjectBuilder {
             defaultUserType="chatter";
         }
         // get message builder
-        messageBuilder = (Message)mmb.getMMObject("message");
+        messageBuilder   = (Message) mmb.getMMObject("message");
         // get community object type
         communityBuilder = (Community)mmb.getMMObject("community");
         // obtain temporary node manager
@@ -171,7 +171,9 @@ public class Channel extends MMObjectBuilder {
      */
 
     private void openChannels() {
-        communityBuilder.openAllCommunities();
+        if (communityBuilder != null) {
+            communityBuilder.openAllCommunities();
+        }
 /*
         log.debug("Try to open all channels who are set open in the database");
         String where="WHERE "+mmb.getDatabase().getAllowedField(F_OPEN)+"=" + OPEN +
@@ -617,6 +619,12 @@ public class Channel extends MMObjectBuilder {
         return getListUsers(node, usertype, compareUsers,offset, max);
     }
 
+    // javadoc overriden
+    public void setDefaults(MMObjectNode node) {
+        //node.
+    }
+
+
     /**
      * Retrieve a sorted list of users connected to a channel.
      * @param channel the channel
@@ -645,11 +653,14 @@ public class Channel extends MMObjectBuilder {
         // During call to Channel.init(), communityBuilder.oType can still be 0
         // So need to check it before using it
         // When openChannels is removed from init this can be removed
-        int oType = communityBuilder.oType;
-        if (oType==0) oType = mmb.TypeDef.getIntValue("community");
-        Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
-        if (relatedCommunity.hasMoreElements())
-           return (MMObjectNode)relatedCommunity.nextElement();
+        if (communityBuilder != null) {
+            int oType = communityBuilder.oType;
+            if (oType == 0) oType = mmb.TypeDef.getIntValue("community");
+            Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
+            if (relatedCommunity.hasMoreElements()) {
+                return (MMObjectNode)relatedCommunity.nextElement();
+            }
+        }
         return null;
     }
 
@@ -791,15 +802,19 @@ public class Channel extends MMObjectBuilder {
      * Ask URL from related community and append the channel number to the URL.
      */
     public String getDefaultUrl(int src) {
-        Enumeration e = mmb.getInsRel().getRelated(src, communityBuilder.oType);
-        if (!e.hasMoreElements()) {
-            log.warn("GetDefaultURL Could not find related community for channel node " + src);
+        if (communityBuilder != null) {
+            Enumeration e = mmb.getInsRel().getRelated(src, communityBuilder.oType);
+            if (!e.hasMoreElements()) {
+                log.warn("GetDefaultURL Could not find related community for channel node " + src);
+                return null;
+            }
+            MMObjectNode commNode = (MMObjectNode)e.nextElement();
+            String url = commNode.parent.getDefaultUrl(commNode.getNumber());
+            if (url != null) url += "+" + src;
+            return url;
+        } else {
             return null;
         }
-        MMObjectNode commNode = (MMObjectNode)e.nextElement();
-        String URL = commNode.parent.getDefaultUrl(commNode.getNumber());
-        if (URL!=null) URL += "+" + src;
-        return URL;
     }
 
     /**

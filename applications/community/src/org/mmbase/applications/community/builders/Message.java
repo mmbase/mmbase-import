@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.16 2002-11-12 16:57:47 pierre Exp $
+ * @version $Id: Message.java,v 1.17 2003-06-18 19:32:28 michiel Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -722,12 +722,18 @@ public class Message extends MMObjectBuilder {
 
         MMObjectNode channel = isPostedInChannel(node);
         MMObjectNode community = channelBuilder.communityParent(channel);
-        String kind = (String) community.getValue("kind");
+        String kind;
+        if (community != null) {
+            kind = (String) community.getValue("kind");
+        } else {
+            kind = "forum";
+        }
 
-        if (kind.equalsIgnoreCase("chatbox"))
+        if (kind.equalsIgnoreCase("chatbox")) {
             relatedMessages = getTemporaryRelated(node, "message").elements();
-        else
+        } else {
             relatedMessages = getReplies(node);
+        }
 
         if (relatedMessages == null) return result;
 
