@@ -96,8 +96,6 @@ public class servdb extends JamesServlet {
         // org.mmbase Roots		= getRoots();
 
         playlists	= (PlaylistsInterface)	getModule("PLAYLISTS");
-		if( playlists == null ) 
-			log.error("Could not find module with name 'PLAYLIST'!");
 
         cache		= (cacheInterface)		getModule("cache");
 		if( cache == null )
@@ -426,7 +424,9 @@ public class servdb extends JamesServlet {
                                             cline.mimetype="audio/x-pn-realaudio";
                                             mimetype=cline.mimetype;
                                             cacheReq=false;
-                                        }
+                                        } else {
+                                            log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
+					}
                                         // ----
                                         // jump
                                         // ----
