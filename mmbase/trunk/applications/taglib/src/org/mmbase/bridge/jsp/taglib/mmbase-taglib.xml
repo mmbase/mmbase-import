@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.283 2005-01-11 14:41:38 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.284 2005-01-23 11:12:26 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2878,6 +2878,12 @@ transaction was commited, following should result anything:
         </info>
       </possiblevalue>
       <possiblevalue>
+        <value>reusesearchinput</value>
+        <info>
+	  Adds the search query to the surrounding param-handler, like an mm:url.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
         <value>value</value>
         <info>
           The value of this field. Can only be used if the parent FieldProvider also provides a
@@ -2889,6 +2895,21 @@ transaction was commited, following should result anything:
         <info>
           The guivalue of this field. Can only be used if the parent FieldProvider also provides a
           Node (can be in other language).
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>type</value>
+        <info>
+	  The type of this field. Which is an integer.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>guitype</value>
+        <info>
+	  The guitype of this field. The guitype further specializes on the type, and can be found
+	  in the guitype field of builder xml's. 
+	  The combination of type/guitype is used by e.g. the 'input' version of this tag, to create
+	  feasible HTML input entries.
         </info>
       </possiblevalue>
     </attribute>
