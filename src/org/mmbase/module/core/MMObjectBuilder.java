@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.167 2002-10-11 15:15:54 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.168 2002-10-14 11:34:19 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -86,7 +86,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * The class used to store and retrieve data in the database that is currently in use.
-     * @deprecated use MMBase.getMMBase().getDatabase() or mmb.getDatabase() instead 
+     * @deprecated use MMBase.getMMBase().getDatabase() or mmb.getDatabase() instead
      */
     public static MMJdbc2NodeInterface database = null;
 
@@ -303,7 +303,7 @@ public class MMObjectBuilder extends MMTable {
                     }
                 }
             }
-        } else {         
+        } else {
             // warn if typedef was not created
             // except for the 'object' and 'typedef' basic builders
             if(!tableName.equals("typedef") && !tableName.equals("object")) {
@@ -313,11 +313,11 @@ public class MMObjectBuilder extends MMTable {
         }
         // should this be here??
         if (obj2type==null) init_obj2type();
-        
+
         // add temporary fields
         checkAddTmpField("_number");
         checkAddTmpField("_exists");
-        
+
         return true;
     }
 
@@ -375,10 +375,10 @@ public class MMObjectBuilder extends MMTable {
             String alias = node.getAlias();
             if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
-	} 
+	}
 	catch(RuntimeException e) {
-	    // do we really wanna catch our exceptions here? 
-	    // the only purpose now to catch them here, is to log 
+	    // do we really wanna catch our exceptions here?
+	    // the only purpose now to catch them here, is to log
 	    // failures of inserts..
 	    String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
 	    log.error(msg);
@@ -508,8 +508,8 @@ public class MMObjectBuilder extends MMTable {
         mmb.getDatabase().registerParentBuilder(parent,this);
         parentBuilder=parent;
     }
-    
-    
+
+
     /**
      * checks if the attribute buildername is an instance of this builder.
      * @param buildername a builder name
@@ -519,17 +519,17 @@ public class MMObjectBuilder extends MMTable {
      */
     private boolean isInstanceOfBuilder(String builderName) {
         String bn = builderName; // Only used for logging.
-        
+
         while(!builderName.equals(tableName)) {
-            
+
             // See if builderName has a parent builderName
             MMObjectBuilder builder = mmb.getMMObject(builderName);
             if (builder.parentBuilder==null) {
                 log.debug(bn+" isInstanceOfBuilder "+tableName+" == false");
                  return false;
             }
-            
-            builderName = builder.parentBuilder.tableName;    
+
+            builderName = builder.parentBuilder.tableName;
         }
         log.debug(bn+" isInstanceOfBuilder "+tableName+" == true");
         return true;
@@ -698,7 +698,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public int getNodeType(int number) {
 	// assertment
-	if(number <= 0 ) throw new RuntimeException("node number was invalid("+number+")" );	
+	if(number <= 0 ) throw new RuntimeException("node number was invalid("+number+")" );
 
         int otype=-1;
         try {
@@ -708,7 +708,7 @@ public class MMObjectBuilder extends MMTable {
                 if (tmpv!=null) {
                     otype=tmpv.intValue();
                 }
-            }	    
+            }
             if (otype==-1 || otype==0) {
                 // first get the otype to select the correct builder
                 MultiConnection con=mmb.getConnection();
@@ -721,7 +721,7 @@ public class MMObjectBuilder extends MMTable {
                     if (otype!=0) {
                         if (obj2type!=null) obj2type.put(new Integer(number),new Integer(otype));
                     }
-                } 
+                }
 		else {
 		    // duh a SQLException?
                     throw new SQLException("Could not find the otype(no records) using following query:"+sql);
@@ -861,7 +861,7 @@ public class MMObjectBuilder extends MMTable {
                 if (rs.next()) {
                     // create a new object and add it to the result vector
                     MMObjectBuilder bu = mmb.getBuilder(bul);
-                    if (bu == null) { 
+                    if (bu == null) {
                         log.warn("Builder of node " + number + " could not be found, taking it 'object'");
                         bu = mmb.getBuilder("object");
                     }
@@ -1021,7 +1021,7 @@ public class MMObjectBuilder extends MMTable {
             }
         } catch (Exception e) {
             // something went wrong print it to the logs
-            log.error("basicSearch(): ERROR in search "+query);          
+            log.error("basicSearch(): ERROR in search "+query);
         }  finally {
             mmb.closeConnection(con,stmt);
         }
@@ -1053,7 +1053,7 @@ public class MMObjectBuilder extends MMTable {
         }
         return "SELECT * FROM " + getFullTableName() + " " + where;
     }
-    
+
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
@@ -1061,7 +1061,7 @@ public class MMObjectBuilder extends MMTable {
      * @deprecated Use search() instead
      */
     public Vector searchVector(String where) {
-        // do the query on the database 
+        // do the query on the database
         return basicSearch(getQuery(where));
     }
 
@@ -1071,7 +1071,7 @@ public class MMObjectBuilder extends MMTable {
      * - returns List rather then Vector.
      * @since MMBase-1.6
      */
-    
+
     public List searchList(String where) throws SQLException {
         return getList(getQuery(where));
     }
@@ -1154,7 +1154,7 @@ public class MMObjectBuilder extends MMTable {
             String tmp;
             while(rs.next()) {
                 results.addElement(new Integer(rs.getInt(1)));
-            }          
+            }
             return results;
         } catch (SQLException e) {
             // something went wrong print it to the logs
@@ -1390,7 +1390,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * As searchVector
-     * But 
+     * But
      * - throws Exception on error
      * - returns List
      *
@@ -1470,7 +1470,7 @@ public class MMObjectBuilder extends MMTable {
 		if(node.getNumber() <= 0) {
 		    // never happend to me, and never should!
 		    log.error("invalid node found, node number was invalid:" + node.getNumber()+", database invalid?");
-		    // dont know what to do with this node,... 
+		    // dont know what to do with this node,...
 		    // continue to the next one!
 		    continue;
 
@@ -1482,14 +1482,14 @@ public class MMObjectBuilder extends MMTable {
 		// maybe we got the wrong node typeback, if so
 		// try to retrieve the correct node from the cache first
 		if(oType != -1 && oType != node.getOType()){
-		    // try to retrieve the correct node from the 
+		    // try to retrieve the correct node from the
 		    // nodecache
-		    node = (MMObjectNode) nodeCache.get(number);
-		    if(node != null) {
+		    MMObjectNode cachenode = (MMObjectNode) nodeCache.get(number);
+		    if(cachenode != null) {
+                        node=cachenode;
 			fromCache = true;
 			cacheGetCount ++;
-		    }
-		    else {
+		    } else {
 			// add this node to the list of nodes that still need to
 			// be converted..
 			// we dont request the builder here, for this we need the
@@ -1504,8 +1504,7 @@ public class MMObjectBuilder extends MMTable {
 			nodes.add(node);
 			convertCount ++;
 		    }
-		}
-		else if (oType == node.getOType()) {
+		} else if (oType == node.getOType()) {
 		    MMObjectNode oldNode = (MMObjectNode)nodeCache.get(number);
 		    // when we want to use cache also for new found nodes
 		    // and cache may not be replaced, use the one from the
@@ -1515,16 +1514,15 @@ public class MMObjectBuilder extends MMTable {
 			fromCache = true;
 			cacheGetCount++;
 		    }
-		}
-		else {
+		} else {
 		    // skipping everything, our builder hasnt been started yet...
-		}		
-		
+		}
+
 		// add the result to the result vector
                 results.add(node);
-		
+
 		// we can add the node to the cache _if_
-		// it was not from cache already, and it 
+		// it was not from cache already, and it
 		// is of the correct type..
 		if(!fromCache && oType == node.getOType()) {
 		    // can someone tell me what this has to do?
@@ -1534,15 +1532,15 @@ public class MMObjectBuilder extends MMTable {
 		    cachePutCount++;
                 }
             }
-        } 
+        }
 	catch(java.sql.SQLException e) {
             log.error(Logging.stackTrace(e));
         }
-	
+
 	if(CORRECT_NODE_TYPES && convert.size() > 0){
 	    // retieve the nodes from the builders....
 	    // and put them into one big hashmap (integer/node)
-	    // after that replace all the nodes in result, that 
+	    // after that replace all the nodes in result, that
 	    // were invalid.
 	    Map convertedNodes = new HashMap();
 
@@ -1567,7 +1565,7 @@ public class MMObjectBuilder extends MMTable {
 		    // TODO: research: add incorrect node's to node cache?
 		    log.error("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber()+", is it active?");
 		    continue;
-		}		
+		}
 		Iterator i = nodes.iterator();
 		String numbers = null;
 		// TODO: research: is there an upper limit for a sql query?
@@ -1582,21 +1580,21 @@ public class MMObjectBuilder extends MMTable {
 		    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
 		    while(enum.hasMoreElements()) {
 			MMObjectNode current = (MMObjectNode)enum.nextElement();
-			convertedNodes.put(new Integer(current.getNumber()), current);	    
-		    }		       
+			convertedNodes.put(new Integer(current.getNumber()), current);
+		    }
 		}
 		else throw new RuntimeException("how can the numbers string be null?");
-	    }	
-    
+	    }
+
 	    // insert all the corrected nodes that were found into the list..
 	    for(int i=0; i<results.size(); i++) {
 		MMObjectNode current = (MMObjectNode) results.get(i);
 		Integer number = new Integer(current.getNumber());
 		if(convertedNodes.containsKey(number)) {
-		    // converting the node...		    
+		    // converting the node...
 		    results.set(i,  convertedNodes.get(number));
 		    convertedCount ++;
-		}		
+		}
 		current = (MMObjectNode) results.get(i);
 		if(current.getNumber() <= 0) {
 		    // never happend to me, and never should!
@@ -1610,11 +1608,11 @@ public class MMObjectBuilder extends MMTable {
 	    log.warn(msg);
 	}
 	if(log.isDebugEnabled()) {
-            log.debug("retrieved " + results.size() + 
-                        " nodes, converted " + convertedCount + 
-                        " of the " + convertCount + 
-                        " invalid nodes(" + convert.size() + 
-                        " types, " + cacheGetCount + 
+            log.debug("retrieved " + results.size() +
+                        " nodes, converted " + convertedCount +
+                        " of the " + convertCount +
+                        " invalid nodes(" + convert.size() +
+                        " types, " + cacheGetCount +
                         " from cache, " + cachePutCount + " to cache)");
         }
 	return results;
@@ -1781,7 +1779,7 @@ public class MMObjectBuilder extends MMTable {
         FieldDefs node=getField(fieldName);
         if (node==null) {
             // log warning, except for virtual builders
-            if (!virtual) { 
+            if (!virtual) {
                 log.warn("getDBType(): Can't find fielddef on field '"+fieldName+"' of builder "+tableName);
             }
             return FieldDefs.TYPE_UNKNOWN;
@@ -1941,7 +1939,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Retrieve the table name (without the clouds' base name)
      * @return a <code>String</code> containing the table name
-     * 
+     *
      */
     public String getTableName() {
         return tableName;
@@ -1972,7 +1970,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public Object getValue(MMObjectNode node, String field) {
         Object rtn = getObjectValue(node, field);
-        
+
         // Old code
         if (field.indexOf("short_")==0) {
             String val=node.getStringValue(field.substring(6));
@@ -2005,7 +2003,7 @@ public class MMObjectBuilder extends MMTable {
                 String function = field.substring(0, pos1);
                 if (log.isDebugEnabled()) {
                     log.debug("function= " + function + ", fieldname =" + name);
-                }                
+                }
                 rtn = getFunctionValue(node, function, getFunctionParameters(name));
             }
         }
@@ -2064,10 +2062,10 @@ public class MMObjectBuilder extends MMTable {
      */
 
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
         }
-        
+
         if (function.equals("info")) {
             Map info = new HashMap();
             info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
@@ -2158,7 +2156,7 @@ public class MMObjectBuilder extends MMTable {
                         rtn = getLocaleGUIIndicator(locale, field, node);
                     }
                 }
-                
+
                 if (rtn == null) {
                     FieldDefs fdef = getField(field);
                     if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
@@ -2171,7 +2169,7 @@ public class MMObjectBuilder extends MMTable {
                 return rtn;
             }
         }
-        
+
         String field;
         if (arguments.size() == 0) {
             field = "";
@@ -2275,8 +2273,8 @@ public class MMObjectBuilder extends MMTable {
      * @return the result of the 'function', or null if no valid functions could be determined.
      * @deprecated use executeFunction(MMObjectNode, String, List)
      */
-    protected Object executeFunction(MMObjectNode node, String function, String field) {      
-        if (log.isDebugEnabled()) { 
+    protected Object executeFunction(MMObjectNode node, String function, String field) {
+        if (log.isDebugEnabled()) {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + field);
         }
         return null;
@@ -2442,13 +2440,13 @@ public class MMObjectBuilder extends MMTable {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
             o.nodeRemoteChanged(machine,number,builder,ctype);
         }
-        
+
         MMObjectBuilder pb = getParentBuilder();
         if(pb!=null && isInstanceOfBuilder(builder)) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeRemoteChanged(machine, number, builder, ctype);
         }
-        
+
         return true;
     }
 
@@ -2493,13 +2491,13 @@ public class MMObjectBuilder extends MMTable {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
             o.nodeLocalChanged(machine,number,builder,ctype);
         }
-        
+
         MMObjectBuilder pb = getParentBuilder();
         if(pb!=null && isInstanceOfBuilder(builder)) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeLocalChanged(machine, number, builder, ctype);
         }
-        
+
         return true;
     }
 
@@ -2642,8 +2640,8 @@ public class MMObjectBuilder extends MMTable {
             String name=node.getDBName();
             if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
                 if(sortedDBLayout.contains(name)) {
-                    log.fatal("Adding the field " + name + " to sortedDBLayout again. This is very wrong. Skipping");                
-                    continue;                    
+                    log.fatal("Adding the field " + name + " to sortedDBLayout again. This is very wrong. Skipping");
+                    continue;
                 }
                 sortedDBLayout.add(name);
             }
