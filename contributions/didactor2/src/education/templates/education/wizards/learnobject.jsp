@@ -24,7 +24,7 @@
    <mm:node element="learnobjects"> 
     <mm:import id="objecttype"><mm:nodeinfo type="type" /></mm:import>
     <mm:write referid="treeName" />.addItem(
-        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:compare referid="objecttype" value="pages"></a> (<a href='<%= request.getContextPath() %>/pdf.db?number=<mm:field name="number"/>'>PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> (<a href='<%= request.getContextPath() %>/pdf.db?number=<mm:field name="number"/>'>PDF)</mm:compare>",
+        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:compare referid="objecttype" value="pages"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>)</mm:compare>",
         "<mm:write referid="wizardjsp"/>?wizard=<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />",
         null,
         "bewerk object",

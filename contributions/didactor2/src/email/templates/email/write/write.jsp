@@ -340,7 +340,7 @@
 	      <mm:relatednodes type="attachments">
 		<div class="attachment">
 		<input type="checkbox" name="delete_attachments" value="<mm:field name="number"/>">
-		<mm:field name="title"/></div>
+		<a href="<mm:attachment/>"><mm:field name="title"/></a></div>
 	      </mm:relatednodes>
 	      </mm:node>
 	      </mm:present>
