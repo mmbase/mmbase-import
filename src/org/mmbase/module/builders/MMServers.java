@@ -17,25 +17,20 @@ import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @author  $Author: daniel $
- * @version $Id: MMServers.java,v 1.22 2004-01-28 23:46:00 daniel Exp $
+ * @author  $Author: michiel $
+ * @version $Id: MMServers.java,v 1.23 2004-02-02 18:30:59 michiel Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
-    private static Logger log = Logging.getLoggerInstance(MMServers.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MMServers.class);
     private int serviceTimeout=60*15; // 15 minutes
-    private int intervaltime = 60 * 1000;
+    private int intervalTime = 60 * 1000;
     private String javastr;
     private String osstr;
     private String host;
     private Vector possibleServices=new Vector();
 
     private int starttime;
-
-    /**
-     * Thread in which the 1min checkup runs
-     */
-    Thread kicker;
 
     /**
      * @javadoc
@@ -48,7 +43,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
         String tmp = getInitParameter("ProbeInterval");
         if (tmp != null) {
             if (log.isDebugEnabled()) log.debug("ProbeInterval was configured to be " + tmp + " seconds");
-            intervaltime = Integer.parseInt(tmp) * 1000;
+            intervalTime = Integer.parseInt(tmp) * 1000;
         }
 	start();
     }
@@ -57,24 +52,12 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     /**
      * Starts the thread for the task scheduler
      */
-    public void start() {
-        /* Start up the main thread */
-        if (kicker == null) {
-            kicker = new Thread(this,"MMServers");
-            kicker.setDaemon(true);
-            kicker.start();
-        }
+    protected void start() {
+        Thread kicker = new Thread(this, "MMServers");
+        kicker.setDaemon(true);
+        kicker.start();
     }
 
-    /**
-     * Stops the thread for the task scheduler
-     * Sets the kicker field to null, which causes the run method to terminate.
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.interrupt();
-        kicker = null;
-    }
 
     /**
      * @javadoc
@@ -140,30 +123,30 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
 
-        /**
-         * run, checkup probe runs every intervaltime to
-	 * set the state of the server (used in clusters)
-         */
-        public void run() {
-                kicker.setPriority(Thread.MIN_PRIORITY+1);
-                while (kicker != null) {
-			int thistime=intervaltime;
-                	if (mmb!=null && mmb.getState()) {
-                        	doCheckUp();
-			} else {
-				// shorter wait, the server is starting
-				thistime=2*1000; // wait 2 second
-			}
-
-			// wait the defined time
-                        try { 
-				Thread.sleep(thistime);
-		        } catch (InterruptedException e) {
-               	 		log.debug(e.toString());
-            		}
-                }
+    /**
+     * run, checkup probe runs every intervaltime to
+     * set the state of the server (used in clusters)
+     */
+    public void run() {
+        while (true) {
+            int thisTime = intervalTime;
+            if (mmb != null && mmb.getState()) {
+                doCheckUp();
+            } else {
+                // shorter wait, the server is starting
+                thisTime = 2 * 1000; // wait 2 second
+            }
+            
+            // wait the defined time
+            try { 
+                Thread.sleep(thistime);
+            } catch (InterruptedException e) {
+                log.debug(e.toString());
+                break;
+            }
         }
-
+    }
+    
     /**
      * @javadoc
      */
