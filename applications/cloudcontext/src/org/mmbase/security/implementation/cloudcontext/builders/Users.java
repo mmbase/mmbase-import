@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.23 2003-12-22 13:32:37 michiel Exp $
+ * @version $Id: Users.java,v 1.24 2004-01-05 10:21:25 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -70,9 +70,10 @@ public class Users extends MMObjectBuilder {
         mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
 
+        // MM: I think this is should not be configured.
         String s = (String)getInitParameters().get("encoding");
         if (s == null) {
-            log.warn("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
+            log.debug("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
             encoder = new Encode("MD5");
         } else {
             encoder = new Encode(s);
