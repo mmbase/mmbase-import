@@ -16,7 +16,7 @@ public class DocletRelationManagerConfiguration  implements RelationManagerConfi
     String sourceNodeManagerName;
     String destinationNodeManagerName;
     String directionality="bidirectional";
-    String nodeManagerName;
+    String nodeManagerName = "insrel";
     
     /** Creates a new instance of DocletRelationManagerConfiguration */
     public DocletRelationManagerConfiguration() {};
@@ -26,13 +26,17 @@ public class DocletRelationManagerConfiguration  implements RelationManagerConfi
     }
     public String getName() {
         return name;
-    }    
-
+    }
+    
     public void setDestinationNodeManagerName(String destinationNodeManagerName){
         this.destinationNodeManagerName = destinationNodeManagerName;
     }
     
     public String getDestinationNodeManagerName() {
+        if (destinationNodeManagerName == null){
+            System.err.println("destination node manager name for relation manager configuration of relation " + getName() + " is null");
+        }
+        
         return destinationNodeManagerName;
     }
     
@@ -51,11 +55,14 @@ public class DocletRelationManagerConfiguration  implements RelationManagerConfi
     
     
     public String getSourceNodeManagerName() {
+        if (sourceNodeManagerName == null){
+            System.err.println("source node manager name for relation manager configuration of relation " + getName() + " is null");
+        }
         return sourceNodeManagerName;
     }
     
     public void setDirectionality(String directionality){
-            this.directionality = directionality;
+        this.directionality = directionality;
     }
     
     public String getDirectionality() {
