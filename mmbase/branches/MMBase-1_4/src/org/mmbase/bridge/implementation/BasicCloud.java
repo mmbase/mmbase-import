@@ -167,10 +167,11 @@ public class BasicCloud implements Cloud, Cloneable {
             log.error(message);
             throw new BridgeException(message);
         } else {
-            assert(Operation.READ,node.getNumber());
             if (node.getIntValue("number")==-1) {
                 return new BasicNode(node, getNodeManager(node.parent.getTableName()), Integer.parseInt(nodenumber));
             } else {
+                // only assert for committed nodes...
+                assert(Operation.READ,node.getNumber());
                 return new BasicNode(node, getNodeManager(node.parent.getTableName()));
             }
         }
