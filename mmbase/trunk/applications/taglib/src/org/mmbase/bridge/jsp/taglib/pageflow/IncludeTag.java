@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.47 2004-03-23 19:15:42 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.48 2004-03-23 22:50:54 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -198,9 +198,9 @@ public class IncludeTag extends UrlTag {
             helper.setValue(debugStart(relativeUrl) + page + debugEnd(relativeUrl));                
 
 
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-            throw new TaglibException(e);
+        } catch (Throwable e) {
+            log.error(relativeUrl + " " +  Logging.stackTrace(e));
+            throw new TaglibException(relativeUrl + " " + e.getMessage(), e);
         }
 
         if (log.isDebugEnabled()) {
