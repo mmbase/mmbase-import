@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
@@ -23,18 +22,17 @@ import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.6 2004-06-30 17:51:54 michiel Exp $ 
+ * @version $Id: NodeListHelper.java,v 1.7 2004-12-14 15:15:53 pierre Exp $
  * @since MMBase-1.7
  */
 
 public class NodeListHelper implements ListProvider {
 
     private static final Logger log = Logging.getLoggerInstance(NodeListHelper.class);
-        
+
     private ContextReferrerTag thisTag;
     private NodeProviderHelper nodeHelper;
 
@@ -43,7 +41,6 @@ public class NodeListHelper implements ListProvider {
         this.nodeHelper = nodeHelper;
     }
 
-
     public String getId() {
         try {
             return (String) thisTag.id.getValue(thisTag);
@@ -51,8 +48,6 @@ public class NodeListHelper implements ListProvider {
             throw new RuntimeException(j);
         }
     }
-
-
 
     /**
      * The maximum number of elements in a list.
@@ -66,9 +61,7 @@ public class NodeListHelper implements ListProvider {
      */
     protected Attribute offset = Attribute.NULL;
 
-
     protected Attribute comparator = Attribute.NULL;
-
 
     /**
      * Lists do implement ContextProvider
@@ -100,11 +93,12 @@ public class NodeListHelper implements ListProvider {
      */
     protected int timerHandle = -1;
 
-    private String previousValue = null; 
+    private String previousValue = null;
 
     public int getIndex() {
         return currentItemIndex;
     }
+
     public int getIndexOffset() {
         return 1;
     }
@@ -112,6 +106,7 @@ public class NodeListHelper implements ListProvider {
     public void remove() {
         nodeIterator.remove();
     }
+
     /**
      * Set the list maximum
      * @param m the max number of values returned
@@ -136,7 +131,6 @@ public class NodeListHelper implements ListProvider {
         return offset;
     }
 
-
     public void setComparator(String c) throws JspTagException {
         comparator = thisTag.getAttribute(c);
     }
@@ -155,7 +149,6 @@ public class NodeListHelper implements ListProvider {
     }
 
     public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        
         ListSorter.sort(nodes, (String) comparator.getValue(thisTag), thisTag.getPageContext());
 
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
@@ -192,21 +185,15 @@ public class NodeListHelper implements ListProvider {
         previousValue = null;
         changed = true;
 
-
-
         if (nodeIterator.hasNext()) {
             setNext(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
             return ContextReferrerTag.EVAL_BODY;
         } else {
             return BodyTagSupport.SKIP_BODY;
         }
-
-
     }
 
-
     public void doStartTagHelper() throws JspTagException {
-
         // make a (temporary) container
         collector = new ContextCollector(thisTag.getContextProvider());
 
@@ -227,7 +214,7 @@ public class NodeListHelper implements ListProvider {
     }
 
     public int doAfterBody() throws JspTagException {
-        log.debug("doafterbody");    
+        log.debug("doafterbody");
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().unRegister(getId());
         }
@@ -253,11 +240,9 @@ public class NodeListHelper implements ListProvider {
             }
             return BodyTagSupport.SKIP_BODY;
         }
-
     }
 
     public void doEndTag() throws JspTagException {
-
         if (getId() != null) {
             thisTag.getContextProvider().getContextContainer().register(getId(), returnList, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
@@ -272,7 +257,6 @@ public class NodeListHelper implements ListProvider {
         nodeIterator = null;
         returnList = null;
         previousValue = null;
-        
     }
 
     public void setNext() throws JspTagException {
@@ -315,11 +299,7 @@ public class NodeListHelper implements ListProvider {
         return returnList.size();
     }
 
-
     public Object getCurrent() {
         return nodeHelper.getNodeVar();
     }
-
-
-
 }
