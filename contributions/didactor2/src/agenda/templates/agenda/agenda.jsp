@@ -49,6 +49,16 @@
      <%@include file="getselecteditems.jsp"%>
     </mm:relatednodes>
   </mm:relatednodes>
+
+<%-- get invitations --%>
+
+<mm:list nodes="$user" path="people,invitationrel,items,eventrel,agendas" constraints="eventrel.stop > $startseconds AND eventrel.start < $endseconds">
+     <mm:import jspvar="itemNumber"><mm:field name="items.number"/></mm:import>
+       <%
+          linkedlist.add( itemNumber );
+      %> 
+ </mm:list>
+
 </mm:node>
   
 <mm:listnodescontainer type="items">

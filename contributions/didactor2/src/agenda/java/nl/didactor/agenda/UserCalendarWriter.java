@@ -33,7 +33,30 @@ public class UserCalendarWriter implements CalendarWriter {
         long stopTime = calendarView.getStopTime().getTime().getTime() / 1000;
         writePersonal(calendarView, startTime, stopTime);
         writeClass(calendarView, startTime, stopTime);
+        writeInvitations(calendarView, startTime, stopTime);
     }
+
+    private void writeInvitations(CalendarView calendarView, long startTime, long stopTime) {
+        NodeList nodes = cloud.getList("", //startnode 
+                           "agendas,eventrel,items,invitationrel,people",  //path
+                           "items.number,items.title,items.body,items.repeatuntil,items.repeatinterval,eventrel.start,eventrel.stop",   //fields
+                            "((NOT ((eventrel.start < " + startTime
+                             + " AND eventrel.stop < " + startTime
+                             + ") OR (eventrel.start > " + stopTime
+                             + " AND eventrel.stop > " + stopTime + ")) "
+                             + ") OR (" 
+                             + "eventrel.start < " + stopTime 
+                             + " AND items.repeatuntil > " + startTime
+                             + ")) AND ("
+                             + " people.username = '" + username + "')",
+                           "eventrel.start", //sortby
+                           null, null, false);
+
+        for (NodeIterator ni = nodes.nodeIterator(); ni.hasNext();) {
+            addNode(ni.nextNode(), calendarView, startTime, stopTime, 0);
+        }
+    }
+
 
     private void writePersonal(CalendarView calendarView, long startTime, long stopTime) {
         NodeList nodes = cloud.getList("", //startnode 
