@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import org.mmbase.bridge.jsp.taglib.ContextTag;
+import org.mmbase.bridge.jsp.taglib.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.13 2003-08-27 21:33:42 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.14 2003-09-05 16:32:38 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -307,7 +307,10 @@ public class ContextContainer extends HashMap {
                 valid = false;
             }
         }
-        if (! valid) throw new JspTagException ("'" + newid + "' is not a valid Context identifier");
+        if (! valid) {
+            log.info(Logging.stackTrace(new Throwable()));
+            throw new TaglibException ("'" + newid + "' is not a valid Context identifier", new Throwable());
+        }
 
         log.debug("Valid");
         //pageContext.setAttribute(id, n);
