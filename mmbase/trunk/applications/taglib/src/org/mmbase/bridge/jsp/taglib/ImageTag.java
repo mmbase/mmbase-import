@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 
 import java.util.Vector;
+import java.util.List;
 import java.util.StringTokenizer;
 import org.mmbase.bridge.Node;
 
@@ -67,10 +68,19 @@ public class ImageTag extends FieldTag {
             number = node.getStringValue("number");
         } else {
             // the cached image
-            number = node.getStringValue("cache(" + template + ")");
+            List args = new Vector();
+            args.add(template);
+            number = node.getFunctionValue("cache", args).toString();
         }
 
-        String servletPath = node.getStringValue("servletpath(" + sessionName + ",," + context + ")");
+        String servletPath;
+        {
+            List args = new Vector();
+            args.add(sessionName);
+            args.add("");
+            args.add(context);
+            servletPath = node.getFunctionValue("servletpath", args).toString();
+        }
 
         String url;
         String fileName = node.getStringValue("filename");
