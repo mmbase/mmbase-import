@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.123 2004-04-21 15:25:34 michiel Exp $
+ * @version $Id: Wizard.java,v 1.124 2004-05-02 15:02:00 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -101,6 +101,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private String sessionKey = "editwizard";
     private String referrer = "";
     private String templatesDir = null;
+    private String timezone;
 
     /**
      * public xmldom's: the schema, the data and the originaldata is stored.
@@ -233,6 +234,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         templatesDir = f;
     }
 
+    public void setTimezone(String s) {
+        timezone = s;
+    }
+    
     public String getObjectNumber() {
         return objectNumber;
     }
@@ -518,6 +523,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("referrer", referrer);
         params.put("referrer_encoded", java.net.URLEncoder.encode(referrer));
         params.put("language", cloud.getLocale().getLanguage());
+        params.put("timezonee", timezone);
         params.put("cloud", cloud);
 
         if (templatesDir != null) {
@@ -537,61 +543,53 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @see #processRequest
      */
     private void storeValues(ServletRequest req) throws WizardException {
-        Document doc = Utils.parseXML("<request/>");
         Enumeration list = req.getParameterNames();
         log.debug("Synchronizing editor data, using the request");
 
+        String formEncoding = req.getCharacterEncoding();
+        boolean hasEncoding = formEncoding != null;
+        if (!hasEncoding) {
+            log.debug("request did not mention encoding");
+            // The form encoding was not known, so probably  ISO-8859-1 was supposed (as required by HTTP)
+            // lets make sure it is right though, because wizard pages posted UTF-8:
+            if (cloud != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
+                }
+                formEncoding = cloud.getCloudContext().getDefaultCharacterEncoding();
+            } else { 
+                // no cloud? I don't know how to get default char encoding then.
+                // suppose it utf-8
+                if (log.isDebugEnabled()) {
+                    log.debug("No cloud found, supposing parameter in UTF-8");
+                }
+                formEncoding = "UTF-8";
+            }
+        }
+        else {
+            log.debug("found encoding in the request: " + formEncoding);
+        }
+        
         while (list.hasMoreElements()) {
             String name = (String) list.nextElement();
 
             if (name.startsWith("internal_")) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Ignoring parameter " + name);
-                }
+                log.debug("Ignoring parameter " + name);
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Processing parameter " + name);
-                }
+                log.debug("Processing parameter " + name);
 
                 String[] ids = processFormName(name);
-
                 if (log.isDebugEnabled()) {
                     log.debug("found ids: " + ((ids == null) ? "null" : (" " + java.util.Arrays.asList(ids))));
                 }
-
                 if (ids != null) {
-                    String formEncoding = req.getCharacterEncoding();
-
-                    if (log.isDebugEnabled()) {
-                        log.debug("found encoding in the request: " + formEncoding);
-                    }
-
                     String result;
-
-                    if (formEncoding == null) {
-                        log.debug("request did not mention coding");
-
-                        // The form encoding was not known, so probably  ISO-8859-1 was supposed (as required by HTTP)
-                        // lets make sure it is right though, because wizard pages posted UTF-8:
+                    if (!hasEncoding) {
                         try {
-                            if (cloud != null) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
-                                }
-                                result = new String(req.getParameter(name).getBytes("ISO-8859-1"),
-                                                    cloud.getCloudContext() .getDefaultCharacterEncoding());
-                            } else { // no cloud? I don't know how to get default char encoding then.
-                                // suppose it utf-8
-                                if (log.isDebugEnabled()) {
-                                    log.debug("No cloud found, supposing parameter in UTF-8");
-                                }
-                                result = new String(req.getParameter(name).getBytes("ISO-8859-1"), "UTF-8");
-                            }
-                            if (log.isDebugEnabled()) {
-                                log.debug("Found in post '" + req.getParameter(name) +  "' -> '" + result + "'");
-                            }
-
-
+                           result = new String(req.getParameter(name).getBytes("ISO-8859-1"), formEncoding);
+                           if (log.isDebugEnabled()) {
+                               log.debug("Found in post '" + req.getParameter(name) +  "' -> '" + result + "'");
+                           }
                         } catch (java.io.UnsupportedEncodingException e) {
                             log.warn(e.toString());
                             result = req.getParameter(name);
@@ -599,12 +597,72 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
                         result = req.getParameter(name);
                     }
+
+                    if (result.equals("date")) {
+                        result = buildDate(req, name);
+                    }
+                    if (result.equals("datetime")) {
+                        result = buildDatetime(req, name);
+                    }
+                    if (result.equals("duration")) {
+                        result = buildDuration(req, name);
+                    }
+
                     storeValue(ids[0], ids[1], result);
                 }
             }
         }
     }
+    
+    private String buildDate(ServletRequest req, String name) {
+        try {
+            int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
+            int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
+            int year = Integer.parseInt(req.getParameter("internal_" + name + "_year"));
+            
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month - 1, day, 0, 0, 0);
+            return "" + cal.getTimeInMillis() / 1000;
+        } catch (RuntimeException e) { //NumberFormat NullPointer
+            log.debug("Failed to parse date for " + name + " " + e.getMessage());
+            return "";
+        }
+    }
+    
+    private String buildDatetime(ServletRequest req, String name) {
+        try {
+            int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
+            int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
+            int year = Integer.parseInt(req.getParameter("internal_" + name + "_year"));
+            int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
+            int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
+            
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month - 1, day, hours, minutes, 0);
+            return "" + cal.getTimeInMillis() / 1000;
+        } catch (RuntimeException e) { //NumberFormat NullPointer
+            log.debug("Failed to parse datetime for " + name + " "
+                    + e.getMessage());
+            return "";
+        }
+    }
 
+    private String buildDuration(ServletRequest req, String name) {
+        try {
+            int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
+            int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
+            int seconds = Integer.parseInt(req.getParameter("internal_" + name + "_seconds"));
+    
+            Calendar cal = Calendar.getInstance();
+            cal.set(1970, 0, 1, hours, minutes, seconds);
+            return "" + cal.getTimeInMillis() / 1000;
+        } catch (RuntimeException e) { //NumberFormat NullPointer
+            log.debug("Failed to parse duration for " + name + " " + e.getMessage());
+            return "";
+        }
+    }
+
+    
     /**
      * This method is used to determine what form is the sequential next, previous, first etc.
      * You can use the parameter to indicate what you want to know:

@@ -6,10 +6,12 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.47 2004-04-07 12:36:01 pierre Exp $
+     * @version  $Id: list.jsp,v 1.48 2004-05-02 15:02:02 nico Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
+     * @author   Nico Klasens
+     * @author   Martijn Houtman
      */
 
 log.trace("list.jsp");
@@ -200,16 +202,27 @@ for (int i=0; i < results.size(); i++) {
     }
     for (int j=0; j < listConfig.fieldList.size(); j++) {
         String fieldname = (String)listConfig.fieldList.get(j);
-        String fieldguiname = fieldname;
+        
+        Field field = null;
+        String value = "";
         if (listConfig.multilevel) {
             int period=fieldname.indexOf('.');
             String nmname=fieldname.substring(0,period);
             if (nmname.charAt(period-1)<='9') nmname=nmname.substring(0, period-1);
-            fieldguiname=cloud.getNodeManager(nmname).getField(fieldname.substring(period+1)).getGUIName();
+            field=cloud.getNodeManager(nmname).getField(fieldname.substring(period+1));
         } else {
-            fieldguiname=item.getNodeManager().getField(fieldname).getGUIName();
+            field=item.getNodeManager().getField(fieldname);
         }
-        addField(obj, fieldguiname, item.getStringValue("gui(" + fieldname + ")"));
+        if (field.getGUIType().equals("eventtime")) {
+           // eventtime is formatted lateron with xslt
+           value = item.getStringValue(fieldname);
+           if (value.equals("-1")) {
+             value = "";
+           }
+        } else {
+          value = item.getStringValue("gui(" + fieldname + ")");
+        }
+        addField(obj, field.getGUIName(), value, field.getGUIType());
     }
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
@@ -217,7 +230,6 @@ for (int i=0; i < results.size(); i++) {
     Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
     Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
 }
-
 
 // place page information
 int pagecount = new Double(Math.floor(resultsSize / len)).intValue();
@@ -287,9 +299,10 @@ private org.w3c.dom.Node addObject(org.w3c.dom.Node el, int number, int index, S
 
 }
 
-private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value) {
+private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value, String guitype) {
     org.w3c.dom.Node n = el.getOwnerDocument().createElement("field");
     Utils.setAttribute(n, "name", name);
+    Utils.setAttribute(n, "guitype", guitype);
     Utils.storeText(n, value);
     el.appendChild(n);
     return n;

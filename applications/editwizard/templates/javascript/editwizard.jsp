@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.50 2004-04-24 11:26:45 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.51 2004-05-02 15:02:01 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -25,41 +25,50 @@ function doOnLoad_ew() {
     for (var i=0; i<form.elements.length; i++) {
         var elem = form.elements[i];
 
+        // set date fields to clientside now time if a new wizard.
+        var superId = elem.getAttribute("super");
+        if (superId != null) {
+          var superElement = form[superId];
+
+          var dttype = superElement.getAttribute("dttype");
+          var ftype = superElement.getAttribute("ftype");
+          var id = superElement.name;
+          
+          if (dttype == "datetime") {
+            if (superElement.getAttribute("new") == "true") {
+              var d = new Date();
+
+              if (elem.name == "internal_" + id + "_day") {
+                elem.selectedIndex = d.getDate() - 1;
+              }
+              if (elem.name == "internal_" + id + "_month") {
+                elem.selectedIndex = d.getMonth();
+              }
+              if (elem.name == "internal_" + id + "_year") {
+                var y = d.getFullYear();
+                if (y <= 0) y--;
+                elem.value = y;
+              }
+
+              if (elem.name == "internal_" + id + "_hours") {
+                elem.selectedIndex = d.getHours();
+              }
+              if (elem.name == "internal_" + id + "_minutes") {
+                elem.selectedIndex = d.getMinutes();
+              }
+              if (elem.name == "internal_" + id + "_seconds") {
+                elem.selectedIndex = d.getSeconds();
+              }
+            }
+          }
+        }
+        
         //handle complex data types
         var dttype = elem.getAttribute("dttype");
         var ftype = elem.getAttribute("ftype");
-        switch (dttype) {
-            case "datetime":
-                if (elem.value == "") { //|| (elem.value == -1)
-                    var d = new Date();
-                    elem.value = Math.round(d.getTime()/1000);
-                }
-
-                if (elem.value && (elem.value != "")) {
-                    var d = getDate(elem.value);
-                    var id = elem.name;
-                    if ((ftype == "datetime") || (ftype == "date")) {
-                        form.elements["internal_" + id + "_day"].selectedIndex = d.getDate() - 1;
-                        form.elements["internal_" + id + "_month"].selectedIndex = d.getMonth();
-                        var y = d.getFullYear();
-                        if (y <= 0) y--;
-                        form.elements["internal_" + id + "_year"].value = y;
-                    }
-
-                    if ((ftype == "datetime") || (ftype == "time")) {
-                        form.elements["internal_" + id + "_hours"].selectedIndex = d.getHours();
-                        form.elements["internal_" + id + "_minutes"].selectedIndex = d.getMinutes();
-                    }
-
-                    if (ftype == "duration") {
-                        form.elements["internal_" + id + "_hours"].selectedIndex = d.getUTCHours();
-                        form.elements["internal_" + id + "_minutes"].selectedIndex = d.getUTCMinutes();
-                        form.elements["internal_" + id + "_seconds"].selectedIndex = d.getUTCSeconds();
-                    }
-                }
-                break;
+        if (dttype != "" && ftype != "") {
+          initializeElement(elem, dttype, ftype);
         }
-        initializeElement(elem, dttype, ftype);
     }
 
     resizeEditTable();
@@ -194,7 +203,7 @@ function doSearch(el, cmd, sessionkey) {
     constraints += ")";
 
     // build url
-    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>";
+    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&timezone=<%=request.getParameter("timezone")%>";
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);
     url += setParam("constraints", constraints);
