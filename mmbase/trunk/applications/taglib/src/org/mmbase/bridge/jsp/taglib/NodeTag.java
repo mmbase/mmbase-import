@@ -50,11 +50,15 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
     }
 
-    public void setKey(String key) throws JspTagException {
-        CloudProvider cp = findCloudProvider();
-        node = cp.getNode(key);
-        if (node == null) {
-            throw new JspTagException("No key "  + key + " in Context");            
+    public void setId(String id) {
+        super.setId(id);
+        node = null;
+        try {
+            // try to find if already in context.
+            CloudProvider cp = findCloudProvider();
+            node = cp.getNode(id);
+        } catch (JspTagException e) {
+            //could not be found. No problem.
         }
     }
 
@@ -62,7 +66,10 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     public void setContextid(String ci) {
         this.contextid = ci;
     }
-
+    /**
+     * The element attribute is used to access elements of
+     * clusternodes. 
+     */
     public void setElement(String e) {
         element = e;
     }
@@ -81,6 +88,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 // get the node from a parent element.           
                 NodeProvider nodeProvider;
                 try {
+                    log.debug("getting node from parent");
                     nodeProvider = 
                         (NodeProvider) findAncestorWithClass((Tag)this,
                                                              Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider"));
@@ -88,7 +96,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                     throw new JspTagException("Could not find NodeProvider class");
                 }
                 if (nodeProvider == null) {
-                    throw new JspTagException("Could not find parent NodeProvider");
+                    throw new JspTagException("Could not find parent NodeProvider (id = " + getId() + ")");
                 }
                 if (element != null) {
                     node = nodeProvider.getNodeVar().getNodeValue(element);
