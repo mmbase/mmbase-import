@@ -24,11 +24,22 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.53 2004-01-15 23:23:04 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.54 2004-03-19 23:16:18 michiel Exp $
  * @see ContextTag
  */
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
+
+    /**
+     * EVAL_BODY is EVAL_BODY_INCLUDE or EVAL_BODY_BUFFERED. It wants to be EVAL_BODY_INCLUDE, but
+     * because that often not works, it on default it EVAL_BODY_BUFFERED. 
+     * 
+     * This configurable constant might become deprecated, because it is a bit experimental.
+     */
+    public static int EVAL_BODY = -1;
+    // should be EVAL_BODY_INCLUDE. But
+    // 1. Completely unsupported by orion 1.6.0
+    // 2. Buggy supported by tomcat < 4.1.19
 
 
     private static final Logger log = Logging.getLoggerInstance(ContextReferrerTag.class);
@@ -54,6 +65,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     public void setPageContext(PageContext pc) {
+        if (EVAL_BODY == -1) { // as yet unset
+            EVAL_BODY =  "true".equals(pc.getServletContext().getInitParameter("mmbase.taglib.eval_body_include")) ?
+                EVAL_BODY_INCLUDE : EVAL_BODY_BUFFERED; 
+
+            log.info("Using " + (EVAL_BODY == EVAL_BODY_BUFFERED ? " EVAL_BODY_BUFFERED " :  "EVAL_BODY_INCLUDE"));
+        }
+
         if (log.isDebugEnabled()) {
             log.debug("setting page context: " + this.getClass().getName());
         }

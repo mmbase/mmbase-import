@@ -37,15 +37,10 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.91 2004-03-08 18:18:52 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.92 2004-03-19 23:16:17 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
-
-    private static int EVAL_BODY = EVAL_BODY_BUFFERED;
-    // should be EVAL_BODY_INCLUDE. But
-    // 1. Completely unsupported by orion 1.6.0
-    // 2. Buggy supported by tomcat < 4.1.19
 
     private static final int METHOD_UNSET = -1;
     private static final int METHOD_HTTP = 0;
@@ -288,7 +283,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             Cookie c = searchCookie();
             if (c == null) {
                 c = new Cookie(REALM + getSessionName(), r);
-                c.setMaxAge(-1); // a day
+                c.setPath(request.getContextPath());
+                c.setMaxAge(-1); // duration of browser
             } else {
                 c.setValue(r);
             }
@@ -371,7 +367,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         if (getRealm() == null) {
-            if (!setRealm("MMBase@" + request.getServerName())) {
+            if (!setRealm("MMBase" + request.getContextPath() + "@" + request.getServerName())) {
                 return SKIP_BODY;
             }
         }
@@ -709,8 +705,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             log.debug(
                 "Cloud was logged on with different authentication type ('"
                     + cloud.getUser().getAuthenticationType()
-                    + "' in stead of the requested '"
-                    + getAuthenticate()
+                    + "' in stead of the requested '" + getAuthenticate()
                     + "'. Should do procedure again.");
             removeCloud();
             return;
@@ -1019,6 +1014,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         checkCloud(); // perhaps the just created cloud does not satifisfy other conditions? (rank)
         if (cloud == null) { // stil null, give it up then...
+            /*
+            user = new HashMap();
+            if (doHTTPAuthentication(user) == SKIP_BODY) {
+                return SKIP_BODY;
+            }
+            */
+
             log.debug("Could not create Cloud.");
             // throw new JspTagException("Could not create cloud (even not anonymous)");
             return SKIP_BODY;
@@ -1053,10 +1055,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             logon = s.equals("") ? null : StringSplitter.split(s);
         }
 
-        if (checkReuse()) {
+        if (checkReuse()) { // referid
             return evalBody();
         }
-        if (checkAnonymous()) {
+        if (checkAnonymous()) { // check if requested, and create
             if (cloud == null) { // could not be created!
                 // what can we do now?                
                 return SKIP_BODY;
@@ -1066,14 +1068,14 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 return evalBody();
             }
         }
-        if (checkAsis()) {
-            if (cloud == null) {
+        if (checkAsis()) { // checks if request 'asis'
+            if (cloud == null) { // could not even make anonymous
                 return SKIP_BODY;
             } else {
                 return evalBody();
             }
         }
-        setupSession();
+        setupSession(); // might need session now
         if (log.isDebugEnabled()) {
             log.debug("startTag " + cloud);
         }
@@ -1087,7 +1089,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             return SKIP_BODY;
         }
-        if (checkLogoutMethod()) {
+        if (checkLogoutMethod()) { 
             return evalBody();
         }
 
@@ -1106,12 +1108,14 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     // if EVAL_BODY == EVAL_BODY_BUFFERED
     public int doAfterBody() throws JspTagException {
-        try {
-            if (bodyContent != null) {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch (IOException ioe) {
+                throw new TaglibException(ioe);
             }
-        } catch (IOException ioe) {
-            throw new TaglibException(ioe);
         }
         return SKIP_BODY;
     }
