@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: JMSendMail.java,v 1.8 2004-04-23 12:59:46 pierre Exp $
+ * @version $Id: JMSendMail.java,v 1.9 2004-06-01 13:49:46 michiel Exp $
  */
 public class JMSendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(JMSendMail.class);
@@ -100,6 +100,7 @@ public class JMSendMail extends AbstractSendMail {
 
     /**
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
+     * @since MMBase-1.7.1
      */
 
     protected MimeMessage constructMessage(String from, String to, Map headers) throws MessagingException {
