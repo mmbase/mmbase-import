@@ -63,6 +63,6 @@ It depends on the Resources application.
 		]]></description>
 
 	 <install-notice>
-	 <![CDATA[The MyNews application is installed. Look at the <a href="/mmexamples">MMBase demo page</a> for the magazine.
+	 <![CDATA[The MyNews application is installed. Look at the MMBase demo page for the magazine.
 	 ]]></install-notice>
 </application>
