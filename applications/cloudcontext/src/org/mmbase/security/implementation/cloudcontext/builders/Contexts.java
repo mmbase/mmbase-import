@@ -12,8 +12,10 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.security.Authorization;
-import java.util.*;
 import org.mmbase.bridge.Query;
+
+import java.util.*;
+
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
@@ -34,7 +36,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.30 2004-01-19 17:27:25 michiel Exp $
+ * @version $Id: Contexts.java,v 1.31 2004-02-09 18:15:38 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -48,9 +50,10 @@ public class Contexts extends MMObjectBuilder {
     static final String DEFAULT_CONTEXT = "default";  // default used to be 'admin', but does that make sense?
     static final int DEFAULT_MAX_CONTEXTS_IN_QUERY = 50;
     public final static Parameter PARAMETER_OPERATION = new Parameter("operation", String.class);
+    public final static Parameter PARAMETER_GROUPORUSER = new Parameter("grouporuser", String.class);
 
     public final static Parameter[] ALLOWS_PARAMETERS = {
-        new Parameter("grouporuser", String.class),
+        PARAMETER_GROUPORUSER,
         PARAMETER_OPERATION
     };
 
@@ -58,7 +61,7 @@ public class Contexts extends MMObjectBuilder {
 
 
     public final static Parameter[] GRANT_PARAMETERS = {
-        new Parameter("grouporuser",  String.class),
+        PARAMETER_GROUPORUSER,
         PARAMETER_OPERATION,
         Parameter.USER
     };
@@ -882,10 +885,10 @@ public class Contexts extends MMObjectBuilder {
     }
 
     protected MMObjectNode getGroupOrUserNode(Parameters a) {
-        MMObjectNode groupOrUser = getNode(a.getString("grouporuser"));
-        if (groupOrUser == null) throw new IllegalArgumentException("There is no node with id '" + a.get("grouporuser") + "'");
+        MMObjectNode groupOrUser = getNode(a.getString(PARAMETER_GROUPORUSER));
+        if (groupOrUser == null) throw new IllegalArgumentException("There is no node with id '" + a.get(PARAMETER_GROUPORUSER) + "'");
         if (! (groupOrUser.parent instanceof Groups || groupOrUser.parent instanceof Users)) {
-            throw new IllegalArgumentException("Node '" + a.get("grouporuser") + "' does not represent a group or a user");
+            throw new IllegalArgumentException("Node '" + a.get(PARAMETER_GROUPORUSER) + "' does not represent a group or a user");
         }
         return groupOrUser;
     }
@@ -921,49 +924,49 @@ public class Contexts extends MMObjectBuilder {
             }
         } else if (function.equals("allows")) {
             Parameters a = Parameters.get(ALLOWS_PARAMETERS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
-            if (allows(node, getNode(a.getString("grouporuser")), Operation.getOperation(a.getString("operation")))) {
+            if (allows(node, getNode(a.getString(PARAMETER_GROUPORUSER)), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
             Parameters a = Parameters.get(PARENTSALLOW_PARAMETERS, args);
-            if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")))) {
+            if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("grant")) {
             Parameters a = Parameters.get(GRANT_PARAMETERS, args);
-            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("revoke")) {
             Parameters a = Parameters.get(REVOKE_PARAMETERS, args);
-            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("maygrant")) {
             Parameters a = Parameters.get(MAYGRANT_PARAMETERS, args);
-            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("mayrevoke")) {
             Parameters a = Parameters.get(MAYREVOKE_PARAMETERS, args);
-            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString(PARAMETER_OPERATION)), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("may")) {
             Parameters a = Parameters.get(MAY_PARAMETERS, args);
-            MMObjectNode checkingUser = getUserNode((org.mmbase.bridge.User) a.get("user"));
+            MMObjectNode checkingUser = getUserNode((org.mmbase.bridge.User) a.get(Parameter.USER));
             if (checkingUser == null) {
                 throw new SecurityException("Self was not supplied");
             }
@@ -984,7 +987,7 @@ public class Contexts extends MMObjectBuilder {
             }
             MMObjectNode contextNode = getContextNode(node);
             
-            if (mayDo(userToCheck, contextNode, Operation.getOperation(a.getString("operation")), true)) {
+            if (mayDo(userToCheck, contextNode, Operation.getOperation(a.getString(PARAMETER_OPERATION)), true)) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
