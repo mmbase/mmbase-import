@@ -30,11 +30,17 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
 
     /**
      * Gets the one MagicXMLReader (there can only be one).
+     * @return MagicXMLReader if mmbase was staterd or null if mmbase was not started
      */
 
-    public static MagicXMLReader getInstance() {
+    public synchronized static MagicXMLReader getInstance() {
 	if (reader == null) { // can only occur once.
-	    String configPath = MMBaseContext.getConfigPath();
+	    String configPath = null;
+	    try {
+		    configPath = MMBaseContext.getConfigPath();
+	    } catch (Exception e){
+		    return null;
+	    }
 	    File magicxml = new File(configPath, MAGICXMLFILE);
 	    log.info("Magic XML file is: " + magicxml);
 	    try {
