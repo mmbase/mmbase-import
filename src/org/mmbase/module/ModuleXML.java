@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.11 $ $Date: 2000-08-20 10:57:47 $
+ * @version $Revision: 1.12 $ $Date: 2000-09-12 20:04:03 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -67,8 +67,11 @@ public abstract class ModuleXML extends Module {
             }
             //create new ContentHandler and let the parser use it
             xmlReader = new XMLProperties();
+            EntityResolver resolver = new XMLEntityResolver();
+            parser.setEntityResolver(resolver);
             parser.setContentHandler(xmlReader);
         } catch(Exception e) {}
+
 
 
 
@@ -208,6 +211,7 @@ public abstract class ModuleXML extends Module {
                         //System.out.println("ModuleXML -> "+modprops);
                     }
                     //debug("loadModulesFromDisk(): MOD "+key+" "+modprops);
+
 
 
                     if (modprops!=null) {
