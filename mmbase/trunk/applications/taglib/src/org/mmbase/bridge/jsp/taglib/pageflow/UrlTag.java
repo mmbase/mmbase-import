@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.59 2004-01-20 23:15:49 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.60 2004-02-18 18:39:32 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -58,6 +58,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     public void setEscapeamps(String e) throws JspTagException {
         escapeAmps = getAttribute(e);
     }
+
 
     public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) {
@@ -124,32 +125,40 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
         StringWriter w = new StringWriter();
         StringBuffer show = w.getBuffer();
-        show.append(getPage());
-        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-        if (show.toString().equals("")) {
 
-            String thisPage = null;
-            String requestURI = req.getRequestURI();
-            if (requestURI.endsWith("/")) {
-                thisPage = ".";
-            } else {
-                thisPage = new File(requestURI).getName();
-            }
 
-            show.append(thisPage);
-        }
 
-        if (doMakeRelative()) { 
-            makeRelative(show);
+        if (referid != Attribute.NULL) {
+            if (page != Attribute.NULL) throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
+            show.append(getObject(getReferid()));
         } else {
-            if (show.charAt(0) == '/') { // absolute on servletcontex
-                show.insert(0, req.getContextPath());
+            
+            show.append(getPage());
+            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
+            if (show.toString().equals("")) {
+                
+                String thisPage = null;
+                String requestURI = req.getRequestURI();
+                if (requestURI.endsWith("/")) {
+                    thisPage = ".";
+                } else {
+                    thisPage = new File(requestURI).getName();
+                }
+                
+                show.append(thisPage);
+            }
+            
+            if (doMakeRelative()) { 
+                makeRelative(show);
+            } else {
+                if (show.charAt(0) == '/') { // absolute on servletcontex
+                    show.insert(0, req.getContextPath());
+                }
             }
         }
+
 
         String amp = (writeamp ? "&amp;" : "&");
-
-
         String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);
 
         if (referids != Attribute.NULL) {
