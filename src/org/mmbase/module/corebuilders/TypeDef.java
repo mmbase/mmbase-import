@@ -34,7 +34,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.44 2004-11-25 10:24:36 pierre Exp $
+ * @version $Id: TypeDef.java,v 1.45 2004-11-25 12:36:31 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -47,7 +47,7 @@ public class TypeDef extends MMObjectBuilder {
     // Logger routine
     private static final Logger log = Logging.getLoggerInstance(TypeDef.class);
     // Directory where new builder configuration files are deployed by default
-    private File defaultDeploy = null;
+    String defaultDeploy = null;
     // if true, auto-deploying builders (and saving configfiles) is possible
     private boolean autoDeploy = true;
 
@@ -88,16 +88,7 @@ public class TypeDef extends MMObjectBuilder {
             if (builderDeployDir == null) {
                 builderDeployDir = "applications";
             }
-            defaultDeploy = new File(MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator + builderDeployDir);
-            // create the dir, when it wasnt there...
-            if (!defaultDeploy.exists()) {
-                // try to create the directory for deployment....
-                if (!defaultDeploy.mkdirs() || !defaultDeploy.canWrite()) {
-                    log.error("Could not create or write in directory: " + defaultDeploy + ", auto-builder deploy turned off");
-                    autoDeploy = false;
-                }
-            }
-            defaultDeploy = defaultDeploy.getAbsoluteFile();
+            defaultDeploy = builderDeployDir;
             log.service("Using '" + defaultDeploy + "' as default deploy dir for our builders.");
         }
         return result;
@@ -144,9 +135,13 @@ public class TypeDef extends MMObjectBuilder {
         // look if we can store to file, if it aint there yet...
         String path = getBuilderConfiguration(node);
         java.net.URL url = ResourceLoader.getConfigurationRoot().findResource(path);
-        if (url == null) {
-            // first store our config....
-            storeBuilderConfiguration(node);
+        try {
+            if (! url.openConnection().getDoInput()) {
+                // first store our config....
+                storeBuilderConfiguration(node);
+            }
+        } catch (Exception e) {
+            log.error(e);
         }
         // try if the builder was already in TypeDef for some reason
         // this can happen when another thread was here first
@@ -449,6 +444,7 @@ public class TypeDef extends MMObjectBuilder {
      * @param   node The node, from which we want to know it;s MMObjectBuilder
      * @return  The path where the builder should live or <code>null</code> in case of strange failures
      *          When the builder was not loaded.
+     * @since MMBase-1.8
      */
     protected String getBuilderConfiguration(MMObjectNode node) {
         // call our code above, to get our path...
@@ -676,7 +672,7 @@ public class TypeDef extends MMObjectBuilder {
         }
         // still null, make up a nice url for our builder!
         if (defaultDeploy != null) {
-            String file = defaultDeploy.getPath();
+            String file = defaultDeploy;
             if (log.isDebugEnabled()) {
                 log.debug("builder file:" + file);
             }
@@ -693,16 +689,7 @@ public class TypeDef extends MMObjectBuilder {
             log.debug("Load builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
         String path = getBuilderPath(node);
-        // remove everything till last '/builders/'
-        // TODO: find a better way for whole file location stuff
-        String search = File.separator + "builders";
-        int pos = path.lastIndexOf(search);
-        if (pos == -1) {
-            String msg = "could not retrieve the path to store the file..(path: " + path + " search: " + search + ")";
-            log.fatal(msg);
-            throw new RuntimeException(msg);
-        }
-        path = path.substring(pos + search.length()) + File.separator;
+        log.info("Loading bulider from " + path);
         MMObjectBuilder builder = mmb.loadBuilderFromXML(node.getStringValue("name"), path);
         if (builder == null) {
             // inactive builder?
@@ -721,13 +708,16 @@ public class TypeDef extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
+        log.info("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         org.w3c.dom.Document doc = node.getXMLValue("config");
         if (doc == null) {
             log.error("Field config was null! Could not save the file for " + node.getStringValue("name") + Logging.stackTrace(new Throwable()));
             return;
         }
+        String path = getBuilderConfiguration(node);
+        log.info("Storing to " + path);
         try {
-            ResourceLoader.getConfigurationRoot().storeDocument(getBuilderConfiguration(node), doc);
+            mmb.getBuilderLoader().storeDocument(path, doc);
         } catch (java.io.IOException ioe) {
             log.error("Could not store builder configuration " + ioe.getMessage());
         }
