@@ -6,7 +6,6 @@
     <h2>Login</h2>
      <mm:import externid="reason">please</mm:import>
      <mm:import externid="referrer">search_node.jsp</mm:import>
-      <mm:cloud method="logout" sessionname="$config.session" />
       <mm:compare referid="reason" value="failed">
         <p class="failed">
           Failed to log in. Try again.
