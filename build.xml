@@ -1063,6 +1063,33 @@ Build-compiler: ${build.compiler}
 
   </target>
 
+  <target name="documentation.index">
+    <!-- compile class for listing of builders -->
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile.classpath"
+           debug="${debug}"
+           optimize="${optimize}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/util/DocumentationIndex.java" />
+    </javac>
+
+    <java classname="org.mmbase.util.DocumentationIndex"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="no"
+          output="${mmdocs.dir}/index.html">
+      <jvmarg value="-mx100m" />
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+      </classpath>
+      <arg value="${mmdocs.dir}" />
+    </java>
+
+  </target>
+
+
   <!-- =================================================================== -->
   <!--  Create the Builder documentation                                   -->
   <!-- TODO, should be moved to documentation module                      -->

@@ -10,6 +10,10 @@ This document describes the steps required to upgrade an existing
 MMBase-installation. Please make sure you have a backup of all
 important files (webapp, database) before upgrading.
 
+- The classfile for the typedef builder has changed from
+  org.mmbase.modules.corebuilder.ObjectTypes to org.mmbase.modules.corebuilder.TypeDef
+  This needs to be changed in the typdef.xml configuration file.
+
 - If you use the multicast feature to cast changes between mmbase servers, and upgrade from a
   version < 1.7.2.
   The multicast configuration is moved from mmbaseroot.xml to utils/multicast.xml!

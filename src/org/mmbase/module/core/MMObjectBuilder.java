@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.275 2004-10-25 12:02:42 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.276 2004-10-29 11:58:18 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -382,7 +382,6 @@ public class MMObjectBuilder extends MMTable {
                     if (this == typeDef) {
                         node.setValue("otype", oType);
                     }
-                    log.debug("Inserting the new typedef node");
                     typeDef.insert("system", node, false);
                     // for typedef, call it's parents init again, as otype is only now set
                     if (this == typeDef) {
