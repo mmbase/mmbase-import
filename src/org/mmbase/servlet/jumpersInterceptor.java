@@ -17,7 +17,7 @@ import org.mmbase.module.core.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.apache.tomcat.core.*;
+// rmeoved temp, daniel. import org.apache.tomcat.core.*;
 
 
 /**
@@ -29,11 +29,13 @@ import org.apache.tomcat.core.*;
 
  */
 
-public class jumpersInterceptor extends JamesServlet implements RequestInterceptor { 
+// changed for compile. public class jumpersInterceptor extends JamesServlet implements RequestInterceptor { 
+  /* removed to allow full compile, daniel
+public class jumpersInterceptor extends JamesServlet { 
+
 
     static MMBase mmbase = null;
     
-    //Tomcat's Contentmanager
     ContextManager cm; 
     protected String methods[]=new String[0];
 
@@ -46,9 +48,7 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
 	this.cm=cm;
     }
    
-    /**
-    * preService will be invoked before Tomcat services a request
-    */
+
     public int preService(Request req, Response res) {
 	if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
 	incRefCount(req.getFacade());
@@ -88,7 +88,6 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
     }
 
 
-    //Dummy methods for Interface RequestInterceptor
     public int requestMap(Request request ) {
 	return 0;
     }
@@ -126,3 +125,4 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
 	return methods;
     }
 }
+ */
