@@ -91,14 +91,15 @@ public class servdb extends JamesServlet {
 	 */
 	public void init() {
 		// org.mmbase Roots		= getRoots();
-		playlists	= (PlaylistsInterface)	getModule("PLAYLISTS");
-		cache		= (cacheInterface)		getModule("cache");
-		//images		= (imagesInterface)		getModule("IMAGES");
-		mmbase		= (MMBase)		getModule("MMBASEROOT");
-    	sessions	= (sessionsInterface)	getModule("SESSION");
-    	// org.mmbase stats		= (StatisticsInterface)	getModule("STATS");
-		//org.mmbase start();
-		lastmod 	= new Date();
+
+			playlists	= (PlaylistsInterface)	getModule("PLAYLISTS");
+			cache		= (cacheInterface)		getModule("cache");
+			//images		= (imagesInterface)		getModule("IMAGES");
+			mmbase		= (MMBase)		getModule("MMBASEROOT");
+   		 	sessions	= (sessionsInterface)	getModule("SESSION");
+   		 	// org.mmbase stats		= (StatisticsInterface)	getModule("STATS");
+			//org.mmbase start();
+			lastmod 	= new Date();
 	}
 
 
@@ -299,7 +300,12 @@ public class servdb extends JamesServlet {
 
 						if ( getParamValue("ea", vec)  != null ) {
 							if (debug) debug("service(rastream): episode found");
-							cline.buffer = playlists.getRAMfile( isInternal, vec );
+
+							if( playlists != null )
+								cline.buffer = playlists.getRAMfile( isInternal, vec );
+							else
+								debug("service(rastream): WARNING: triggered playlists, but module not loaded!");
+
 						} else {
 							if (debug) debug("service(rastream): rastream found");
 								long time = System.currentTimeMillis();
@@ -343,7 +349,10 @@ public class servdb extends JamesServlet {
 						if ( getParamValue("ea", vec)  != null )
 						{
 							if (debug) debug("service(rastream): episode found");
-							cline.buffer = playlists.getRAMfile(isInternal, vec );
+							if( playlists != null )
+								cline.buffer = playlists.getRAMfile(isInternal, vec );
+							else
+								debug("service(rastream): WARNING: triggered playlists, but module not loaded!");
 						}
 						else
 						{
