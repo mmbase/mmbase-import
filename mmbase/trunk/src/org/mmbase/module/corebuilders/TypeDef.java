@@ -21,7 +21,8 @@ import org.mmbase.util.logging.*;
  * object types (builders)
  *
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @author Pierre van Rooden
+ * @version $Id: TypeDef.java,v 1.35 2003-05-12 11:59:29 pierre Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
