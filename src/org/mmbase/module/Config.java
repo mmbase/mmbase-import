@@ -50,7 +50,7 @@ import org.w3c.dom.Document;
  * </pre>
  *
  * @author Cees Roele
- * @version $Id: Config.java,v 1.23 2004-03-26 14:59:20 michiel Exp $
+ * @version $Id: Config.java,v 1.24 2004-07-30 18:04:30 michiel Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -484,7 +484,20 @@ public class Config extends ProcessorModule {
             ParseResult pr = new ParseResult(path);
             StringBuffer res = new StringBuffer();
             try {
-                BufferedReader reader = new BufferedReader(new FileReader(path));
+                String encoding = "UTF-8";
+                {
+                    BufferedReader firstLineReader = new BufferedReader(new FileReader(path));
+                    
+                    if (firstLineReader.ready()) {
+                        String lineOne = firstLineReader.readLine();
+                        encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(lineOne);
+                    }
+                    firstLineReader.close();
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), encoding));
+                
+
                 String line;
                 int lineno = 0;
                 int j = 0;
