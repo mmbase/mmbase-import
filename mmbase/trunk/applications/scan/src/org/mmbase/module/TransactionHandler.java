@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
-  private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+  private static Logger log = Logging.getLoggerInstance(TransactionHandler.class.getName());
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static Upload upload = null;
