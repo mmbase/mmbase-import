@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.7 $ $Date: 2000-04-11 14:33:13 $
+ * @version $Revision: 1.8 $ $Date: 2000-05-01 20:59:04 $
  */
 public abstract class Module {
 
