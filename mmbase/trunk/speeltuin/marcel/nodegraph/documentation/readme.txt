@@ -18,6 +18,12 @@ Requirements:
 Copy the lib/ from cewolf directory to your webapp/WEB-INF/lib and restart
 the server.
 
+Add an extra line to your mmbase startup script, to let java think you're
+running headless. To display images, java will actually 'talk' to X or your
+windows subsystem and crash if this is not running: 
+
+ export JAVA_OPTS='-Djava.awt.headless=true'
+
 You can now view a history of all your builders in mmbase. It is quite crude,
 in that it will not show the 'day-of-week' but rather '1,2,3'. 
 
