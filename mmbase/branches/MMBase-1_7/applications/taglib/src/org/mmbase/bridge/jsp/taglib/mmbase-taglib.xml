@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+<!--  
 This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
 To convert this file to a standard .tld file you need  an xslt engine like xalan:
@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.248.2.13 2004-07-23 09:27:35 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.248.2.14 2004-07-23 19:33:20 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -133,7 +133,70 @@ version: $Id: mmbase-taglib.xml,v 1.248.2.13 2004-07-23 09:27:35 pierre Exp $
     <description>tree related tags</description>
     <info>
       <p>
-        These are the MMBase tags which do relate to trees.
+        These are the MMBase tags which relate to 'tree' like structures in MMBase. The core tag of
+        this set is the tree tag itself. With the tree-tag you can present arbitrary deeply nested
+        structures in HTML.
+      </p>
+      <p>
+        The following example demonstrates how to use tree's in mmbase taglib
+          <pre><![CDATA[
+<mm:import externid="node" required="true" />
+<mm:node number="$node">
+
+  <%-- the current node is used as a 'starting query', so this node itself will also be listed by mm:tree --%>
+
+  <mm:treecontainer path="posrel,categories,object" searchdirs="destination">
+    <%-- the query will be extended with posrel,categories, and then with any objects related to the categories,
+         and then with any 'posrel' related categories related to those object etc.
+    --%>
+         
+    <%-- the categories must be order according to the 'pos' field in the posrel. --%>
+    <mm:sortorder field="posrel.pos" /> 
+
+    <%-- don't do every category, but only those with 'a' in their title --%>
+    <mm:constraint field="categories.title" operator="LIKE" value="%a%" /> 
+
+    <%-- also some trivial sortorder on the 'object' steps --%>
+    <mm:sortorder  field="object.number" direction="up" />        
+
+    In this tree <mm:size /> objects are presented.
+
+    <mm:tree>
+       
+      <%-- If the current node provided by the tree is on the end of a 'longer branch', then we start a
+           ul. mm:grow is iterated zero (if the previous node was _bigger or equal_) or one (if the previous 
+           node was _smaller_  times. (Because in a forward tree iteration the branch can not grow faster 
+           than that)
+           --%>         
+      <mm:grow> 
+        <ul>
+        <%-- we also say now already what should happen if it later 'shrinks' again. The body of this will be temporary
+             put onto a stack until it is taken of it by the mm:shrink tag. -->
+        <mm:onshrink></ul></mm:onshrink>
+      </mm:grow>     
+
+      <%-- a tree tag provides 'real' nodes, so in the body we can show this node --%>
+
+      <li><mm:nodeinfo type="guitype" />: <mm:field name="number" /> <mm:function name="gui" escape="none" />
+     
+      <mm:onshrink></li></mm:onshrink>
+
+      <%-- mm:shrink will use what was put onto the 'shrink tag' by the mm:onshrink tags. The body of mm:shrink
+      will be called zero (if the next node will be bigger then the current one) or more times. How
+      often it iterates depends on how often mm:onshrink was called. It will be emptied until the top element
+      of the shrink tag correspends to a depth which is smaller then the current depth.
+      --%>
+
+      <mm:shrink />
+    </mm:tree>
+
+  </mm:treecontainer>      
+</mm:node>    
+]]>
+</pre>
+      </p>
+      <p>
+        Trees wich do not need such complicated sortorders or constraints can also be used stand-alone. 
       </p>
     </info>
   </type>
@@ -249,7 +312,7 @@ version: $Id: mmbase-taglib.xml,v 1.248.2.13 2004-07-23 09:27:35 pierre Exp $
           in this jsp. E.g.: <!-- example by Erik van Oosten -->
           <pre><![CDATA[
 <%!
-/**
+/** 
  * Comparator to order mmbase nodes on their field named "title".
  */
  static private final Collator DUTCH_COLLATOR = Collator.getInstance(new Locale("nl", "NL"));
@@ -264,10 +327,10 @@ version: $Id: mmbase-taglib.xml,v 1.248.2.13 2004-07-23 09:27:35 pierre Exp $
         String title2 = ((org.mmbase.bridge.Node) o2).getStringValue("title");
         return DUTCH_COLLATOR.compare(title1, title2);
     }
-}
+ }
 %>;
 <mm:listnodescontainer>
-  <!-- make sure the list is not gigantic, when sorting with
+  <!-- make sure the list is not gigantic, when sorting with 
        comparator it happens in memory, not by database! -->
   <mm:ageconstraint maxage="7" />
   <mm:listnodes comparator="DutchCaseInsensitiveCollator">
@@ -286,7 +349,7 @@ version: $Id: mmbase-taglib.xml,v 1.248.2.13 2004-07-23 09:27:35 pierre Exp $
       </examplevalue>
 
     </attribute>
-
+   
     <see tag="listreferrer" />
   </taginterface>
   <taginterface>
@@ -649,7 +712,7 @@ version: $Id: mmbase-taglib.xml,v 1.248.2.13 2004-07-23 09:27:35 pierre Exp $
     <attribute>
       <name>set</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>      
       <info>
         The 'set' from which the function must be taken. These are a kind of static functions (no
         object is associated with them). These 'sets' of functions are a bit like namespaces.
@@ -1413,23 +1476,23 @@ version: $Id: mmbase-taglib.xml,v 1.248.2.13 2004-07-23 09:27:35 pierre Exp $
           If the page was called with the 'command' parameter set to 'login', the tag assumes a request is being made to log on using the parameters passed.
           The actual names of the parameter passed differs by security method chosen, which is defined by the 'authenticate' attribute.
           For instance, with authenticate method 'username/password', the following additional parameters are recognized:
-
-
+          
+          
           cloud: similar to the cloudtag's 'name' attribute
           username: similar to the  cloudtag's 'username' attribute
           password: similar to the  cloudtag's 'password' attribute
-
+          
           If login succeeds, the page continues and displays normally. If the login fails, or if no 'command=login' attribute was specified, the request is redirected to the page specified in the attribute.
           This 'login apge' can then take care of authentication, i.e. by displaying a form that allows the user to enter and submit the appropriate parameters (username/password) back to the originally called page.
           The page may also implement its own method of authentication.
-
+          
           The 'command=login' parameter has no effect when the loginpage attribute was not specified.
         </p>
         <p>
           The page should link page to the page which is supplied in the reference parameter.
           The login page itselve should have a parameter 'command' with value 'login', 'authenticate' with the authentication method which is wanted.
           Additional parameters will be passed to the underlying security implementation.
-
+          
           A simple login page could contain the following jsp-code:
           <pre>
         <![CDATA[
@@ -1986,7 +2049,7 @@ access the value of title:
     <see tag="booleanfunction" />
     <see tag="function" />
     <see tag="functioncontainer" />
-    <see tag="nodelistfunction" />
+    <see tag="nodelistfunction" />    
     <example><![CDATA[
 <mm:listnodes type="mediasources" max="10">
   <mm:function name="mimetype" />:  <mm:function name="format" />
@@ -1995,7 +2058,7 @@ access the value of title:
       <li><%= ((org.mmbase.applications.media.urlcomposers.URLComposer)uc).getURL() %></li>
     </mm:listfunction>
   </ul>
-</mm:listnodes>
+</mm:listnodes> 
 ]]></example>
   </tag>
 
@@ -2797,6 +2860,11 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
+      <info>
+        Actually, the node-info tag also is the 'nodemanager' info tag. If for some reason you need
+        information about a node-manager, without having a node, you can specify it with this
+        attribute.
+      </info>
     </attribute>
     <example>&lt;mm:node number="1645"&gt;
 Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
@@ -3467,6 +3535,18 @@ like the parameter list or the session (where ever it is available) --&gt;
          directly, so without interpreting/compiling by the web-server. Mainly useful for
          documenation of page-creating/taglib itself.
       </info>
+    </attribute>
+    <attribute>
+      <name>encoding</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The encoding of the to-be-included page. If the included page does provide the right
+        information about this, then there should be no need to use this attribute ever. But if it
+        fails, then you can explicitely try to repair it, using this attribute.
+      </info>
+      <since>MMBase-1.7.1</since>
     </attribute>
     <see tag="context" />
     <see tag="param" />
@@ -4562,7 +4642,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The time-zone for which the time must be shown. Defaults to the server's time-zone.
+        The time-zone for which the time must be shown. Defaults to the server's time-zone. 
       </info>
       <since>MMBase-1.7</since>
       <examplevalue>
@@ -4732,7 +4812,7 @@ The 0 is just counter, which starts at 0 on every page.
        language, taglib behaviour, content type.
       </p>
       <p>
-        The content-tag can also provide a default 'escaping' behavior for surrounded 'writer' tags.
+        The content-tag can also provide a default 'escaping' behavior for surrounded 'writer' tags. 
       </p>
     </info>
     <since>MMBase-1.7</since>
@@ -4766,7 +4846,7 @@ The 0 is just counter, which starts at 0 on every page.
           The Content-Type of this page.
         </p>
         <p>
-          Setting the content-type can also trigger a default 'escaper' and 'postprocessor'.
+          Setting the content-type can also trigger a default 'escaper' and 'postprocessor'. 
         </p>
         <document file="resources/taglibcontent.xml" mode="content" />
       </info>
@@ -4817,7 +4897,7 @@ The 0 is just counter, which starts at 0 on every page.
         </p>
         <p>
           The following postprocessors can be specified.
-        </p>
+        </p>        
         <document file="resources/taglibcontent.xml" mode="postprocessors" />
       </info>
     </attribute>
@@ -5281,7 +5361,7 @@ The 0 is just counter, which starts at 0 on every page.
   <mm:listnodes>
     <mm:field name="username" /> <br />
   </mm:listnodes>
-</mm:listnodescontainer>]]>
+</mm:listnodescontainer>]]> 
         </example>
   </tag>
 
@@ -5350,7 +5430,7 @@ The 0 is just counter, which starts at 0 on every page.
     <since>MMBase-1.7</since>
     <attribute>
       <name>element</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
       </info>
@@ -5362,7 +5442,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The name of the alias.
+        The name of the alias, or (since MMBase-1.8) a list of possible aliases.
       </info>
     </attribute>
     <attribute>
@@ -5705,29 +5785,53 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.tree.list</type>
     <extends>queryreferrer</extends>
     <extends>nodeprovider</extends>
+    <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeTag</tagclass>
     <info>
-      The Tree Tag makes it possible to show a piece of the MMBase cloud genericly.
+      <p>
+        The Tree Tag makes it possible to show a piece of the MMBase cloud genericly. This tag never
+        works alone. Firstly, it will try to find a surrounding 'treecontainer' tag, which defines the
+        'starting query' and other the properties of this tree. If there is no surrounding
+        tree-container tag, then it can also use one of the other node list containers
+        (relatednodescontainer and listnodescontainer) to define the 'starting' query. If also that
+        does not succeed then it will start looking for any surrounding node-provider (such as
+        relatednodes, listnodes and node) and will use the provided node as a base for the starting
+        query of the tree.
+      </p>
     </info>
+    
     <see type="tree" />
+    <see tag="treecontainer" />
+    <see tag="relatednodescontainer" />
+    <see tag="listnodescontainer" />
+    <see tag="nodeprovider" />
     <since>MMBase-1.7</since>
     <attribute>
       <name>type</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        The tree will grow with path-elements of this type.
+      </info>
       <see tag="relatednodes" attribute="type" />
     </attribute>
     <attribute>
       <name>role</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>      
+      <info>
+        The path-elements will be connected by relations with this role.
+      </info>
       <see tag="relatednodes" attribute="role" />
     </attribute>
     <attribute>
       <name>searchdir</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        This is the directions in which the relations must be followed (destination or source).
+      </info>
       <see tag="relatednodes" attribute="searchdir" />
     </attribute>
     <attribute>
@@ -5738,26 +5842,92 @@ The 0 is just counter, which starts at 0 on every page.
         To avoid coming into an infinite loop (which is possible because mmbase data is not actually structured as a tree, but as
         a 'network' of nodes), there should always be a 'maximal' depth to which relations are followed. This defaults to 5.
       </info>
+      <see tag="treecontainer" attribute="orderby" />
     </attribute>
     <attribute>
       <name>orderby</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        It is possible to order the elements of a level of a tree by using the 'orderby' field. If you wish
-        to order using the fieldvalue of the relation from one level to another, prefix the field with
-        the buildername (for example: "posrel.pos").
-      </info>
+        It is possible to order the elements of a level of a tree by using the 'orderby' field. If
+        you wish to order using the fieldvalue of the relation from one level to another, prefix the
+        field with the builder name or role(for example: "categories.title" or "posrel.pos"). You
+        can order by more fields, by comma-separating their names.
+      </info>     
+      <see tag="list" attribute="orderby" />
       <since>MMBase-1.7.1</since>
     </attribute>
     <attribute>
-      <name>direction</name>
+      <name>directions</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Search direction for the 'orderby' argument.
+        Sort orders for the 'orderby' arguments (comma separated 'up' and 'down'). This list may be
+        shorter than the list of 'orderby'. Missing directions are defaulted to the last specified one.
       </info>
+      <see tag="list" attribute="directions" />
       <since>MMBase-1.7.1</since>
+    </attribute>
+  </tag>
+  <tag>
+    <name>treecontainer</name>
+    <type>mmbase.tree.list</type>
+    <extends>queryreferrer</extends>
+    <extends>contextreader</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeContainerTag</tagclass>
+    <info>
+      <p>
+        The treecontainer tag is a the 'container' tag for the tree-tag. It searches on the same way
+        as the tree tag itself for a 'starting query', the only difference being that it will not
+        itself look for a surrounding tree-container (so, it will look parent node-list-containers and
+        if unsuccesfull for a parent node-providers).
+      </p>
+      <p>
+        Just as for example in the relatednodescontainer the attributes define how the 'starting'
+        query must be extended. The essential difference for 'trees' though, is that it will happen
+        <em>recursively</em>. So the surrounding queryreferrer tags like 'mm:constraint' will work
+        only on a kind of 'template' query, and will then be applied repeatedly.
+      </p>
+      <p>
+        The use of treecontainer, tree and its subtags can perhaps most easily be explained by an
+        example, which can be find on the page about tree related tags.
+      </p>
+    </info>
+    <see type="tree" />
+    <see type="queryreferrer" />
+    <since>MMBase-1.7.1</since>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="type" />
+    </attribute>
+    <attribute>
+      <name>path</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="type" />
+    </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainer" attribute="role" />
+    </attribute>
+    <attribute>
+      <name>searchdirs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="relatednodescontainers" attribute="searchdir" />
+    </attribute>
+    <attribute>
+      <name>maxdepth</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        To avoid coming into an infinite loop (which is possible because mmbase data is not actually structured as a tree, but as
+        a 'network' of nodes), there should always be a 'maximal' depth to which relations are followed. This defaults to 5.
+      </info>
     </attribute>
   </tag>
 
@@ -5769,10 +5939,11 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.GrowTag</tagclass>
     <info>
-      Iterates from previous depth to (not inclusive) current depth. On the first iteration of mm:tree this will iterators one time.
+      Iterates from previous depth to (not inclusive) current depth. On the first iteration of mm:tree this will iterate one time.
       Currently there are not upside down trees implemented, which means that this tag now always iterates one or zero times.
     </info>
     <see type="tree" />
+    <see tag="shrink" />
     <since>MMBase-1.7</since>
   </tag>
 
@@ -5787,8 +5958,9 @@ The 0 is just counter, which starts at 0 on every page.
       for what 'current depth' means.
       This tag iterates from previous depth to current current depth (like grow), but the body is remembered, not executed.
     </info>
-    <see tag="depth" />
     <see type="tree" />
+    <see tag="depth" />
+    <see tag="shrink" />
     <since>MMBase-1.7</since>
   </tag>
 
@@ -5803,6 +5975,9 @@ The 0 is just counter, which starts at 0 on every page.
       Iterates from previous depth to (inclusive) current depth. For each depth it provides (as a writer) what was defined with 'onshrink'.
     </info>
     <see type="tree" />
+    <see tag="tree" />
+    <see tag="onshrink" />
+    <see tag="grow" />
     <since>MMBase-1.7</since>
   </tag>
 
@@ -5823,7 +5998,8 @@ The 0 is just counter, which starts at 0 on every page.
     <since>MMBase-1.7</since>
   </tag>
 
-  <!--tag>
+  <!-- 
+  <tag>
     <name>test</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.TestTag</tagclass>
     <attribute>
@@ -5831,6 +6007,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
-  </tag-->
+  </tag>
+  -->
 
 </taglib>
