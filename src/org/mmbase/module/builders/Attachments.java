@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.17 2002-07-04 10:11:25 pierre Exp $
+ * @version $Id: Attachments.java,v 1.18 2002-08-13 11:28:47 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -149,7 +149,7 @@ public class Attachments extends AbstractServletBuilder {
         // does not seem to work...
         // Using the bridge (jsp), mimetype is never filled automaticly
         // TODO: fix MagicFile
-        log.debug("Setting field " + field + " of node " + node);
+        if (log.isDebugEnabled()) log.debug("Setting field " + field + " of node " + node);
         if(field.equals("handle")) {
             String mimetype = node.getStringValue("mimetype");
             if (mimetype != null && !mimetype.equals("")) {
@@ -159,7 +159,13 @@ public class Attachments extends AbstractServletBuilder {
                 log.debug("Attachment size of file = " + handle.length);
                 node.setValue("size", handle.length);
                 MagicFile magic = new MagicFile();
-                node.setValue("mimetype", magic.test(handle));
+                try {
+                    node.setValue("mimetype", magic.test(handle));
+                } catch (Throwable e) {
+                    log.warn("Exception in MagicFile  for " + node);
+                    node.setValue("mimetype", "application/octet-stream");                    
+                }
+
                 log.debug("ATTACHMENT mimetype of file = " + magic.test(handle));
             }
             return true;
