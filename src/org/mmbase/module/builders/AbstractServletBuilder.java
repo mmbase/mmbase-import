@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.14 2003-05-19 09:00:15 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.15 2003-05-19 09:59:12 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -289,14 +289,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 }
                 
                 String  rtn = getSGUIIndicator(node, a);
-                //"session=" + args.get(2) + "+", 
-                //                         (HttpServletResponse) args.get(3), 
-                //                         (HttpServletRequest) args.get(4), 
-                //                         (String) args.get(0), node);
-                //if (args.size() <= 3) {
-                //                    rtn = getGUIIndicator((String) args.get(0), node);
-                ///} else {
-                // language is ignored
                 if (rtn == null) return super.executeFunction(node, function, args);
                 return rtn;                
             }            
