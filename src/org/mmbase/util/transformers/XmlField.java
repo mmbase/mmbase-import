@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.20 2004-01-05 17:40:52 michiel Exp $
+ * @version $Id: XmlField.java,v 1.21 2004-02-11 20:03:08 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -207,7 +207,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             for (; requested_level > level; level++) {
                 add += "<section>";
             }
-            add += "<section><title>";
+            add += "<section><h>";
 
             obj.insert(pos, add);
             pos += add.length();
@@ -228,7 +228,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 break; // not found, could not happen.
             // replace it.
             obj.delete(pos, 4);
-            obj.insert(pos, "</title>");
+            obj.insert(pos, "</h>");
             pos += 2;
             pos = obj.indexOf("<p>$", pos); // search the next one.
         }
@@ -592,14 +592,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         switch (to) {
             case RICH :
             case POOR :
-                return XSLTransform("mmxf2rich.xsl", data);
+                return XSLTransform("mmxf2rich.xslt", data);
             case RICHBODY :
             case POORBODY :
-                return XSLTransform("mmxf2rich.xsl", XML_TAGSTART + data + XML_TAGEND);
+                return XSLTransform("mmxf2rich.xslt", XML_TAGSTART + data + XML_TAGEND);
             case ASCII :
-                return XSLTransform("mmxf2ascii.xsl", data);
+                return XSLTransform("mmxf2ascii.xslt", data);
             case XHTML :
-                return XSLTransform("mmxf2xhtml.xsl", data);
+                return XSLTransform("mmxf2xhtml.xslt", data);
             case BODY :
                 return xmlBody(data);
             case XML :
