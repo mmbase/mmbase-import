@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
+import org.mmbase.bridge.jsp.taglib.util.*;
+
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
@@ -26,7 +26,7 @@ import org.mmbase.util.StringSplitter;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.31 2003-08-08 09:22:54 michiel Exp $ 
+ * @version $Id: FieldListTag.java,v 1.32 2003-08-08 13:30:03 michiel Exp $ 
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
@@ -127,14 +127,13 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     /**
      * Lists do implement ContextProvider
      */
-    protected ContextContainer container;
-    private   Map              collector;
+    private   ContextCollector collector;
 
 
 
     // ContextProvider implementation
     public ContextContainer getContainer() {
-        return container;
+        return collector.getContainer();
     }
 
 
@@ -142,8 +141,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     *
     **/
     public int doStartTag() throws JspTagException{
-        container = new ContextContainer(null, getContextProvider().getContainer());
-        collector = new HashMap();
+        collector = new ContextCollector(getContextProvider().getContainer());
 
         if (getReferid() != null) {
             if (nodeManagerAtt != Attribute.NULL || type != Attribute.NULL) {
@@ -198,14 +196,13 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         if (getId() != null) {
             getContextProvider().getContainer().unRegister(getId());
         }
-        collector.putAll(container);
-        container.clear();
+
+        collector.doAfterBody();
 
         if (fieldIterator.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
-            getContextProvider().getContainer().registerAll(collector);
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
