@@ -29,7 +29,8 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @verson $Id: EmailHandler.java,v 1.11 2004-04-14 20:23:24 michiel Exp $
+ * @author Simon Groenewolt
+ * @verson $Id: EmailHandler.java,v 1.12 2004-04-21 13:32:23 daniel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -80,7 +81,7 @@ public class EmailHandler {
                 // make sure that CC and BCC are only on first mail, otherwise those poor people get a lot of mail.
                 headers.put("CC", null);
                 headers.put("BCC", null);
-                
+
             } 
         } else {            
             // one simple mail
@@ -105,7 +106,7 @@ public class EmailHandler {
      */
     private static Map getHeaders(MMObjectNode node) {
         Map headers = new HashMap();
-       
+
         // headers.put("From", node.getStringValue("from"));
         headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
         headers.put("CC",       unemptyString(node.getStringValue("cc")));
@@ -158,7 +159,7 @@ public class EmailHandler {
         return toUsers;
 
     }
-    
+
     /**
      * Get the email addresses of related users;
      */
@@ -191,7 +192,36 @@ public class EmailHandler {
             }
             URL includeURL = new URL(absoluteUrl + prefix + params);
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+            String contentType = connection.getContentType();
+
+            // Default encoding for http transport is iso-8859-1
+            String encoding = "ISO-8859-1";
+
+            // If a Content-Type header is present: get the encoding from there
+            if (contentType != null) {
+
+               StringTokenizer tokenizer = new StringTokenizer(contentType, "; ");
+               while (tokenizer.hasMoreTokens()) {
+                  String value = tokenizer.nextToken();
+                  if (value.startsWith("charset=")) {
+                      // charset overrides the defaults for the mimetypes
+                      encoding = value.substring(8);
+                  }
+                  if (value.equals("text/xml")) {
+                      // default encoding for text/xml
+                      encoding = "utf-8";
+                  }
+                  if (value.equals("text/html")) {
+                      // default encoding for text/html
+                      encoding = "ISO-8859-1";
+                  }
+                  if (value.equals("text/plain")) {
+                      // default encoding for text/plain
+                      encoding = "ISO-8859-1";
+                  }
+               }
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream(), encoding));
             int buffersize = 10240;
             char[] buffer = new char[buffersize];
             StringBuffer string = new StringBuffer();
@@ -235,7 +265,7 @@ public class EmailHandler {
             // add the content part stripped of its return/linefeed
             result.append(tok.nextToken());
         }
-        
+
         // now use the html br and p tags to insert
         // the wanted returns
         StringObject obj = new StringObject(result.toString());
@@ -250,7 +280,7 @@ public class EmailHandler {
         obj.replace("<p />","\n\n");
         obj.replace("<P>","\n\n");
 
-        
+
         // return the coverted body
         return obj.toString();
     }
@@ -271,13 +301,13 @@ public class EmailHandler {
         // if the body starts with a url call that url
         if (obody.indexOf("http://") == 0) {
             body = getUrlExtern(obody, "", "" + to.nodeNumber);
-            
+
                 // convert html to plain text unless a the html tag is found
             if (body.indexOf("<html>")==-1 && body.indexOf("<HTML>")==-1) {
                 //body=html2plain(body);
             }
         }
-            
+
         String osubject = (String) headers.get("Subject");
 
         // if the subject starts with a url call that url
@@ -294,7 +324,7 @@ public class EmailHandler {
             headers.put("Mime-Version", "1.0");
             headers.put("Content-Type", "text/html; charset=\"ISO-8859-1\"");
         }
-        
+
         // is the don't mail tag set ? this allows
         // a generated body to signal it doesn't
         // want to be mailed since for some reason
@@ -311,7 +341,7 @@ public class EmailHandler {
                 log.info("Email -> fake send to " + to);
                 return true;
             } else {
-                
+
                 boolean mailResult;
                 // get mail text to see if we have a mime msg
                 if (body.indexOf("<multipart") == -1) {
@@ -321,7 +351,7 @@ public class EmailHandler {
                     mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
                 }
 
-                
+
                 if (! mailResult) {
                     log.debug("Email -> mail failed");
                     node.setValue("mailstatus", EmailBuilder.STATE_FAILED);
@@ -368,3 +398,4 @@ public class EmailHandler {
     }
 
 }
+
