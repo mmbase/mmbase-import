@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: base.css,v 1.10 2002-08-20 12:18:53 pierre Exp $
+  @version  $Id: base.css,v 1.11 2002-08-21 17:27:40 michiel Exp $
   
 */
 
@@ -60,6 +60,9 @@ a.pagenav:hover	{
 .imagebutton_down	{ cursor:pointer; cursor:hand; xpadding:0; xmargin:1 0 0 1; width:20; height:20; border-style:none; border-width:0; }
 
 
+textarea.debug {
+width: 100%;
+}
 
 table.body tr th {
    font-family:"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
