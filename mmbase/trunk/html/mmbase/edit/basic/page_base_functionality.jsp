@@ -22,10 +22,10 @@ String toHtml(Stack stack, HttpServletRequest request) {
   StringBuffer buf = new StringBuffer();
   if (stack.size() < 1) return "";
   String[] info = (String []) stack.get(0);
-  buf.append("<a href='" + request.getContextPath() +  info[1] + "'>" + info[0] + "</a>");
+  buf.append("<a href='" + (info[1].startsWith("/") ? request.getContextPath() : "")+  info[1] +  "'>" + info[0] + "</a>");
   for (int i = 1; i < stack.size(); i++) {
      info = (String []) stack.get(i);
-     buf.append("-&gt; <a href='" + request.getContextPath() +  info[1] + "&amp;pop=" + (stack.size() - i) + "'>" + info[0] + "</a>");
+     buf.append("-&gt; <a href='" + (info[1].startsWith("/") ? request.getContextPath() : "")+  info[1] + "&amp;pop=" + (stack.size() - i) + "'>" + info[0] + "</a>");
   }
   return buf.toString();
 }

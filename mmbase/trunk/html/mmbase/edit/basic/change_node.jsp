@@ -10,6 +10,8 @@
 <mm:import externid="node_number" required="true" from="parameters"/>
 <!-- We use two forms to avoid uploading stuff when not needed, because we cancel or only delete.-->
 
+<mm:url page="change_node.jsp" id="purl" write="false" referids="node_number" />
+
 <mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="node">
 
 <% if (urlStack.size() == 0) {
