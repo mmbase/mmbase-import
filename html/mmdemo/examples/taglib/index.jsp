@@ -19,10 +19,7 @@ simple so that the page sources are as clear as possible.
 </p>
 
 <p>
-This page should work after building Tomcat or Orion from the build file. The
-other example pages use an additional taglib from the Jakarta project. Please
-download and install the request taglib from
-<a href="http://jakarta.apache.org/taglibs/doc/request-doc/intro.html">the jakarta website</a>.
+This page should work after building Tomcat or Orion from the build file. 
 </p>
 
 <p>
