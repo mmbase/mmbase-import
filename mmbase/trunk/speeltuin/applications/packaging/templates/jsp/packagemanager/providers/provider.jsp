@@ -21,7 +21,7 @@
 		  <th width="100">
 			Name
 		  </th>
-		  <td width="100">
+		  <td width="100" align="left">
 			<mm:field name="name" />
 		  </td>
 		  </tr>
@@ -30,7 +30,7 @@
 		  <th>
 			Method
 		  </th>
-		  <td>
+		  <td align="left">
 			<mm:field name="method" />
 		  </td>
 		  </tr>
@@ -39,7 +39,7 @@
 		  <th>
 			Maintainer
 		  </th>
-		  <td>
+		  <td align="left">
 			<mm:field name="maintainer" />
 		  </td>
 		  </tr>
@@ -48,16 +48,16 @@
 		  <th>
 			Account
 		  </th>
-		  <td>
+		  <td align="left">
 			<mm:field name="account" />
 		  </td>
 		  </tr>
 
 		  <tr>
-		  <th>
+		  <th align="left">
 			Password
 		  </th>
-		  <td>
+		  <td align="left">
 			<mm:field name="password" />
 		  </td>
 		  </tr>
@@ -124,7 +124,7 @@
 		  <td width="100">
 			Share Path
 		  </td>
-		  <td>
+		  <td align="left">
 			<mm:field name="path" />
 		  </td>
 		  </tr>
