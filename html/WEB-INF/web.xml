@@ -21,6 +21,35 @@
   </context-param>
   -->  
 
+  <!-- 
+    MMBase Taglib settingse
+    -->
+
+  <!-- 
+  Whether tags should try to evaluate the body without buffering if that is possible. This feature
+  of taglibs is not supported by all applications servers (orion, tomcat < 4.1.19?), in which case
+  setting this to true will cause rather strange results.
+  If your application server does support this well (resin 3, tomcat 5), you can set this to true,
+  and improve performance.
+  -->
+  <context-param>
+    <param-name>mmbase.taglib.eval_body_include</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
+
+  <!-- 
+  Whether the mm:url tag should produce relative URL's (relative to the page on which the mm:url is
+  called).  You might try to set this to 'true' if you desire only relative urls in your site. This
+  is an expirimental option, which is known not to work in certain situations (like redirects).
+  -->
+  <context-param>
+    <param-name>mmbase.taglib.url.makerelative</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
+
+
   <!-- Filter for jumpers
    Uncomment this code if you want to activate the jumpers filter.
    You need to install the jumpers builder first
