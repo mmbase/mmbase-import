@@ -50,8 +50,8 @@
   <xsl:apply-templates select="tag|taginterface" mode="file" />
 
   <!-- create a toc file -->
-  <!-- xsl:document href="{$basedir}/toc.html"-->
-  <xalan:write file="{$basedir}/toc.html"><!-- xsl:document not supported by xalan.. Sigh..-->
+  <!-- xsl:document href="{$basedir}/index.html"-->
+  <xalan:write file="{$basedir}/index.html"><!-- xsl:document not supported by xalan.. Sigh..-->
   <html>
     <head>
       <title>MMBase taglib - Table Of Contents</title>
@@ -161,7 +161,7 @@
           <td></td>
         </tr>
         <xsl:if test="not($type='all')">
-          <tr><td /><td><a href="toc.html">complete table of contents</a></td></tr>
+          <tr><td /><td><a href="../index.html">complete table of contents</a></td></tr>
         </xsl:if>
         <tr>
           <td></td>
@@ -357,7 +357,7 @@
       <td colspan="2" bgcolor="white" align="right">
         <a name="{name}"/>
         <xsl:if test="$file">
-          <a href="toc.html">toc</a>
+          <a href="../index.html">toc</a>
         </xsl:if>
         <xsl:if test="not($file)">
           <a href="#toc">toc</a>
