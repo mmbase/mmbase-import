@@ -34,6 +34,7 @@
     <singular xml:lang="fr">Objet</singular>
     <singular xml:lang="fy">Objekt</singular>
     <singular xml:lang="it">Oggetto</singular>
+    <singular xml:lang="ja">舞台</singular><!-- 'buttai' or? 部隊 -->
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="en">Objects</plural>
     <plural xml:lang="nl">Objecten</plural>
@@ -41,6 +42,7 @@
     <plural xml:lang="fr">Objets</plural>
     <plural xml:lang="fy">Objekts</plural>
     <plural xml:lang="it">Oggetti</plural>
+    <singular xml:lang="ja">舞台</singular>
   </names>
 
   <!-- <descriptions>
@@ -66,7 +68,8 @@
   <!-- <fieldlist>
   defines the different fields in this object, be carefull the order is important
   once defined keep them in the same order.
-  If you use number and owner (the 2 default fields, please check the docs for this)
+  If you use number and owner (the 2 default fields, please check the
+  docs for this)
   -->
   <fieldlist>
     <!-- POS 1 : <field> 'number' is a default field (see docs) -->
@@ -80,6 +83,7 @@
         <guiname xml:lang="fy">Objekt Nummer</guiname>
         <guiname xml:lang="it">Oggetto</guiname>
         <guiname xml:lang="zh">号</guiname>
+        <guiname xml:lang="ja">数</guiname><!-- 'kazu', I found 6 other possibilities ... , suuzi, suu-->
         <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
@@ -113,6 +117,7 @@
         <guiname xml:lang="fy">Context</guiname>
         <guiname xml:lang="it">Proprietario</guiname>
         <guiname xml:lang="zh">闆</guiname>
+        <guiname xml:lang="ja">主勇者</guiname><!-- 'shoyuusha' -->
     <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
