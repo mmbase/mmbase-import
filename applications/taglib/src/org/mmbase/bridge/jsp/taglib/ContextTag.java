@@ -56,6 +56,8 @@ public class ContextTag extends ContextReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
+    private HashMap myHashMap=new HashMap();
+
     private ContextTag parent = null;
     private boolean    searchedParent = false;
 
@@ -229,13 +231,14 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     final private HashMap getHashMap() {
-        String key = "CONTEXT:" + getId();
+        return myHashMap;
+/*        String key = "CONTEXT:" + getId();
         log.debug("using HashMap " + key);
         if (pageContext.getAttribute(key) == null) {
             pageContext.setAttribute(key, new HashMap());
         }
         return (HashMap) pageContext.getAttribute(key);
-    }
+*/    }
 
     private boolean isRegistered(String key) {
         return (getHashMap().containsKey(key));
