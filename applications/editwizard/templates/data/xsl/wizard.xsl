@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.128 2004-05-02 15:02:01 nico Exp $
+    @version $Id: wizard.xsl,v 1.129 2004-05-02 16:34:21 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1129,7 +1129,7 @@
         <!-- create action is present, but no startwizard command. Add the object into the wizard -->
         <xsl:if test="command[@name=&apos;insert&apos;]">
           <xsl:for-each select="command[@name=&apos;add-item&apos;]">
-            <a href="javascript:doSendCommand(&apos;{@cmd}&apos;);">
+            <a href="javascript:doAddInline(&apos;{@cmd}&apos;);">
               <xsl:call-template name="prompt_new"/>
             </a>
           </xsl:for-each>
