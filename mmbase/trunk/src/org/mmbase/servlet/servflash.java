@@ -51,7 +51,6 @@ public class servflash extends JamesServlet {
      */
     public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
     {    
-        res.setContentType("application/x-shockwave-flash");
         BufferedOutputStream out=null;
         try {
             out=new BufferedOutputStream(res.getOutputStream());
@@ -62,8 +61,23 @@ public class servflash extends JamesServlet {
 
             String url=req.getRequestURI();
             String query=req.getQueryString();
-            byte[] bytes=gen.getScanParsedFlash(url,query,req);
-            out.write(bytes,0,bytes.length);
+	    if (url.endsWith(".swt")) {
+        	res.setContentType("text/plain");
+            	byte[] bytes=gen.getDebugSwt(url,query,req);
+		if (bytes!=null) {
+	            	out.write(bytes,0,bytes.length);
+		} else {
+			res.sendError(404);
+		}
+	    } else {
+        	res.setContentType("application/x-shockwave-flash");
+           	 byte[] bytes=gen.getScanParsedFlash(url,query,req);
+		if (bytes!=null) {
+	            	out.write(bytes,0,bytes.length);
+		} else {
+			res.sendError(404);
+		}
+	    }	
         }
     }
 
