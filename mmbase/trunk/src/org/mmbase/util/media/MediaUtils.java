@@ -325,6 +325,32 @@ public class MediaUtils
 				result += "%20";
 		return result;
 	}
+	
+	/**
+     * Removes RealPlayer incompatible characters from the string.
+     * '#' characters are replaced by space characters.
+     * Characters that are allowed are every letter or digit and ' ', '.', '-' and '_' chars.
+     * @param s the String that needs to be fixed.
+     * @return a Nedstat compatible String.
+     */
+    public static String makeRealCompatible(String s) {
+        if (s != null) {
+            char[] sArray = s.replace('#',' ').toCharArray();
+            char[] dArray = new char[sArray.length];
+
+            int j = 0;
+            for (int i=0;i<sArray.length;i++) {
+                if (Character.isLetterOrDigit(sArray[i]) ||(sArray[i]==' ')||(sArray[i]=='.')||(sArray[i]=='-')||(sArray[i]=='_')) {
+                    dArray[j] = sArray[i];
+                    j++;
+                }
+            }
+            //Only use the characters until the first character with value=0. This is from index 0 to j-1.
+            return (new String(dArray)).substring(0,j);
+        } else {
+            return null;
+        }
+    }
 
 	public static void main( String args[] )
 	{
