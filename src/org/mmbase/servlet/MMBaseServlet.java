@@ -22,10 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.*;
 
 import org.w3c.dom.*;
 import org.mmbase.util.XMLBasicReader;
@@ -38,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.9 2002-06-28 21:07:22 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.10 2002-06-30 19:35:08 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -67,7 +64,7 @@ public class MMBaseServlet extends  HttpServlet {
     /**
      * Hashtable containing currently running servlets
      */
-    private static Hashtable runningServlets = new Hashtable();
+    private static Map runningServlets = new Hashtable();
     /**
      * Toggle to print running servlets to log.
      * @javadoc Not clear, I don't understand it.
@@ -75,10 +72,36 @@ public class MMBaseServlet extends  HttpServlet {
     private static int printCount;
 
     private static int servletInstanceCount = 0;
-    private static Hashtable servletMappings = new Hashtable();;
-    private static Hashtable associatedServlets = new Hashtable();
+    private static Map servletMappings    = new Hashtable();;
+    private static Map associatedServlets = new Hashtable();
 
+    /**
+     * On default, servlets are not associated with any function.
+     * 
+     * This function is called in the init method.
+     *
+     * @return A map of Strings (function) -> Integer (priority). Never null. 
+     */
 
+    protected Map getAssociations() {
+        return new Hashtable();
+    }
+
+    private static class ServletEntry {
+        ServletEntry(String n) {
+            this(n, null);
+        }
+        ServletEntry(String n, Integer p) {
+            name = n; 
+            if (p == null) {
+                priority = 0;
+            } else {
+                priority = p.intValue();
+            }
+        }
+        String name;
+        int    priority;
+    }
 
     /**
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
@@ -107,25 +130,25 @@ public class MMBaseServlet extends  HttpServlet {
             // used to determine the accurate way to access a servlet
             try {
                 // get config and do stuff.
-                String path=MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
-                XMLBasicReader webDotXml= new XMLBasicReader(path, false);
-                Enumeration mappings=webDotXml.getChildElements("web-app","servlet-mapping");
+                String path = MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
+                XMLBasicReader webDotXml = new XMLBasicReader(path, false);
+                Enumeration mappings = webDotXml.getChildElements("web-app","servlet-mapping");
                 while (mappings.hasMoreElements()) {
-                    Element mapping=(Element)mappings.nextElement();
-                    Element servName=webDotXml.getElementByPath(mapping,"servlet-mapping.servlet-name");
-                    String name=webDotXml.getElementValue(servName);
+                    Element mapping = (Element)mappings.nextElement();
+                    Element servName = webDotXml.getElementByPath(mapping,"servlet-mapping.servlet-name");
+                    String name = webDotXml.getElementValue(servName);
                     if (!(name.equals(""))) {
-                        Element urlPattern=webDotXml.getElementByPath(mapping,"servlet-mapping.url-pattern");
+                        Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
                         String pattern=webDotXml.getElementValue(urlPattern);
                         if (!(pattern.equals(""))) {
-                            List ls=(List)servletMappings.get(servName);
-                            if (ls==null) ls=new Vector();
+                            List ls = (List)servletMappings.get(servName);
+                            if (ls == null) ls = new Vector();
                             ls.add(pattern);
-                            servletMappings.put(name,ls);
+                            servletMappings.put(name, ls);
                         }
                     }
                 }
-                webDotXml=null;
+                webDotXml = null;
             } catch (Exception e) {
                 log.error(Logging.stackTrace(e));
             }
@@ -138,6 +161,12 @@ public class MMBaseServlet extends  HttpServlet {
             if (mmbase == null) {
                 log.error("Could not find module with name 'MMBASEROOT'!");
             }
+        }
+
+        Iterator i = getAssociations().entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry e = (Map.Entry) i.next();
+            associate((String) e.getKey(), getServletName(), (Integer) e.getValue());
         }
 
     }
@@ -175,8 +204,7 @@ public class MMBaseServlet extends  HttpServlet {
      * @return the name of the servlet associated with the topic, or null if there is none
      */
     public static String getServletByAssociation(String topic) {
-        String servletName=(String)associatedServlets.get(topic);
-        return servletName;
+        return ((ServletEntry) associatedServlets.get(topic)).name;
     }
 
 
@@ -186,9 +214,16 @@ public class MMBaseServlet extends  HttpServlet {
      * For now, only one servlet can be registered.
      * @param topic the topic that deidentifies the type of association
      * @param servletname name of the servlet to associate with the topic
+     * @param  priority    priority of this association, the association only occurs if no servlet
+     *                    with higher priority for the same topic is present already
      */
-    public static synchronized void associate(String topic, String servletName) {
-        associatedServlets.put(topic,servletName);
+    private static synchronized void associate(String function, String servletName, Integer priority) {
+        if (priority == null) priority = new Integer(0);
+        ServletEntry e = (ServletEntry) associatedServlets.get(function);
+        if (e == null || (priority.intValue() >= e.priority)) {
+            log.service("Association " + function + " with servlet " + servletName + (e == null ? ""  : " (removing " + e.name +")"));
+            associatedServlets.put(function, new ServletEntry(servletName, priority));
+        }
     }
 
     /**
@@ -291,8 +326,8 @@ public class MMBaseServlet extends  HttpServlet {
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
                     log.info("Running servlets: "+curCount);
-                    for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
-                        log.info(e.nextElement());
+                    for(Iterator i = runningServlets.values().iterator(); i.hasNext();) {
+                        log.info(i.next());
                     }
                 }// curCount>0
             }
