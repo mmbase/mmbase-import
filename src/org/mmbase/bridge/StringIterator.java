@@ -9,14 +9,14 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.Iterator;
+import java.util.ListIterator;
 
 /**
  * A list of strings
  *
  * @author Pierre van Rooden
  */
-public interface StringIterator extends Iterator {
+public interface StringIterator extends ListIterator {
 
 	/**
 	*

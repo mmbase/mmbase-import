@@ -27,31 +27,30 @@ public class BasicNodeList extends BasicList implements NodeList {
     /**
     * ...
     */
-    public BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
+    BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
         super(c);
         this.cloud=cloud;
         this.nodemanager=nodemanager;
     }
 
-    public BasicNodeList(Collection c, Cloud cloud) {
+    BasicNodeList(Collection c, Cloud cloud) {
         this(c, cloud, null);
     }
 
     /**
     *
     */
-    public Object get(int index) {
-        Object o=getObject(index);
+    public Object convert(Object o, int index) {
         if (o instanceof Node) {
-            return (Node)o;
+            return o;
         }
         MMObjectNode mmn= (MMObjectNode)o;
         NodeManager nm = nodemanager;
         if (nm==null) {
             nm=cloud.getNodeManager(mmn.parent.getTableName());
         }
-        Node n=new BasicNode(mmn,nm);
-        objects[index]=n;
+        Node n = new BasicNode(mmn,nm);
+        set(index, n);
         return n;
     }
 
@@ -91,9 +90,34 @@ public class BasicNodeList extends BasicList implements NodeList {
         BasicNodeIterator(BasicList list) {
             super(list);
         }
-    
+
+             
+        public void set(Object o) {
+            if (! (o instanceof Node)) {
+                throw new BridgeException("Object must be of type Node" );
+            }
+            list.set(index, o);
+        }
+        public void add(Object o) {
+            if (! (o instanceof Node)) {
+                throw new BridgeException("Object must be of type Node" );
+            }
+            list.add(index, o);
+        }
+        
+        
+        // for efficiency reasons, we implement the same methods
+        // without an 'instanceof' (a simple test program proved that
+        // this is quicker)
+        public void set(Node n) {
+            list.set(index, n);
+        }
+        public void add(Node n) {
+            list.add(index, n);
+        }
+            
         public Node nextNode() {
-            return (Node)nextObject();
+            return (Node)next();
         }
     
     }
