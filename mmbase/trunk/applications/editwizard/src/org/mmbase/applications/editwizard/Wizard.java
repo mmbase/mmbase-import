@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.129 2004-11-11 17:44:45 michiel Exp $
+ * @version $Id: Wizard.java,v 1.130 2004-11-17 15:55:01 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -51,8 +51,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     public static final String PUBLIC_ID_EDITWIZARD_1_0 = "-//MMBase//DTD editwizard 1.0//EN";
     public static final String PUBLIC_ID_EDITWIZARD_1_0_FAULT = "-//MMBase/DTD editwizard 1.0//EN";
     public static final String DTD_EDITWIZARD_1_0       = "wizard-schema_1_0.dtd";
-    
-    
+
+
     static {
         XMLEntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0, DTD_EDITWIZARD_1_0, Wizard.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_EDITWIZARD_1_0_FAULT, DTD_EDITWIZARD_1_0, Wizard.class);
@@ -61,7 +61,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     // File -> Document (resolved includes/shortcuts)
     private static WizardSchemaCache wizardSchemaCache;
     private static NodeCache nodeCache;
-    
+
     static {
         wizardSchemaCache = new WizardSchemaCache();
         wizardSchemaCache.putCache();
@@ -238,7 +238,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     public void setTimezone(String s) {
         timezone = s;
     }
-    
+
     public String getObjectNumber() {
         return objectNumber;
     }
@@ -573,7 +573,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
                 }
                 formEncoding = cloud.getCloudContext().getDefaultCharacterEncoding();
-            } else { 
+            } else {
                 // no cloud? I don't know how to get default char encoding then.
                 // suppose it utf-8
                 if (log.isDebugEnabled()) {
@@ -585,7 +585,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         else {
             log.debug("found encoding in the request: " + formEncoding);
         }
-        
+
         while (list.hasMoreElements()) {
             String name = (String) list.nextElement();
 
@@ -630,7 +630,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    /** 
+    /**
      * @return Calendar with timezone parameter
      */
     private Calendar getCalendar() {
@@ -647,13 +647,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return Calendar.getInstance();
         }
     }
-   
+
     private String buildDate(ServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
             int month = Integer.parseInt(req.getParameter("internal_" + name + "_month"));
             int year = Integer.parseInt(req.getParameter("internal_" + name + "_year"));
-            
+
             Calendar cal = getCalendar();
             cal.set(year, month - 1, day, 0, 0, 0);
             return "" + cal.getTimeInMillis() / 1000;
@@ -670,7 +670,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             int year = Integer.parseInt(req.getParameter("internal_" + name + "_year"));
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
-            
+
             Calendar cal = getCalendar();
             cal.set(year, month - 1, day, hours, minutes, 0);
             return "" + cal.getTimeInMillis() / 1000;
@@ -686,7 +686,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
             int seconds = Integer.parseInt(req.getParameter("internal_" + name + "_seconds"));
-    
+
             Calendar cal = getCalendar();
             cal.set(1970, 0, 1, hours, minutes, seconds);
             return "" + cal.getTimeInMillis() / 1000;
@@ -696,7 +696,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    
+
 
     /**
      * This method is used to determine what form is the sequential next, previous, first etc.
@@ -869,7 +869,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // Test if this list has a query and get the time-out related values.
             Node query = Utils.selectSingleNode(list, "query");
             long currentTime = new Date().getTime();
-            long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list, 
+            long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
                                                                          "query-timeout", String.valueOf(this.listQueryTimeOut)));
             long lastExecuted = currentTime - queryTimeOut - 1;
 
@@ -2286,7 +2286,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 
         relationDefinition = relationDefinition.cloneNode(true); // why is this necessary?
-      
+
         if (log.isDebugEnabled()) {
             log.debug("Creating object " + relationDefinition.getNodeName() + " type " + Utils.getAttribute(relationDefinition, "type"));
         }
@@ -2316,10 +2316,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     Collection newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
                     // newly loaded objects must be marked as 'already-existing'.
 
-                    Iterator i = newSubRelations.iterator(); 
+                    Iterator i = newSubRelations.iterator();
                     while (i.hasNext()) {
                         Node newSubRelation = (Node) i.next();
-                        Utils.setAttribute(newSubRelation, "already-exists", "true");                        
+                        Utils.setAttribute(newSubRelation, "already-exists", "true");
                         NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
 
                         for (int j = 0; j < newSubObjects.getLength(); j++) {
@@ -2332,7 +2332,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                             Node newSubSubRelation = newSubSubRelations.item(k);
                             Utils.setAttribute(newSubSubRelation, "already-exists", "true");
                         }
-                    }                    
+                    }
                 } else {
                     log.debug("Nothing found to load");
                 }
@@ -2358,7 +2358,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * 
+     *
      * @param type Content-type of the byte (or null). If not null, then the fields 'mimetype',
      *             'size' and 'filename' are filled as well.
      * @since MMBase-1.7.2
@@ -2370,19 +2370,19 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
         if (type != null) {
             Node mimetypeField = Utils.selectSingleNode(data, "//object[field/@did = '" + did + "']/field[@name='mimetype']");
-            if (mimetypeField != null) {            
-                Utils.storeText(mimetypeField, type);            
-            } 
+            if (mimetypeField != null) {
+                Utils.storeText(mimetypeField, type);
+            }
             Node sizeField = Utils.selectSingleNode(data, "//object[field/@did = '" + did + "']/field[@name='size']");
-            if (sizeField != null && bytes != null) {   
+            if (sizeField != null && bytes != null) {
                 Utils.storeText(sizeField, "" + bytes.length);
-            } 
+            }
             Node fileNameField = Utils.selectSingleNode(data, "//object[field/@did = '" + did + "']/field[@name='filename']");
-            if (fileNameField != null && name != null) {   
+            if (fileNameField != null && name != null) {
                 Utils.storeText(fileNameField, name);
-            } 
+            }
         }
-        
+
     }
 
 
@@ -2795,7 +2795,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
         synchronized public Document getDocument(URL key) {
             Entry entry = (Entry) super.get(key);
-          
+
             if (entry == null) {
                 return null;
             }
@@ -2817,16 +2817,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         // stop watching files
                     }
                 };
-          
+
             Entry(URL f, Document doc, List dependencies) {
                 this.file = f;
                 this.doc = doc;
                 fileWatcher.add(f);
-              
+
                 Iterator i = dependencies.iterator();
-              
+
                 while (i.hasNext()) {
-                    String ff = (String) i.next();
+                    URL ff = (URL) i.next();
                     fileWatcher.add(ff);
                 }
 
