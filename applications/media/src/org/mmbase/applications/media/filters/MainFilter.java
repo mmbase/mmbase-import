@@ -39,7 +39,7 @@ import java.lang.Integer;
  * @author Michiel Meeuwissen
  */
 public class MainFilter {
-    private static Logger log = Logging.getLoggerInstance(MainFilter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MainFilter.class);
 
     public static final String MAIN_TAG          = "mainFilter";
     public static final String FILTERCONFIGS_TAG = "filterConfigs";
