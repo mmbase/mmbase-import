@@ -31,16 +31,11 @@
 </mm:context>
 </mm:compare>
 
-<mm:notpresent referid="search">
-    <mm:import id="where" />
-</mm:notpresent>
-
 <!-- ordered to search with form button 'search'. Following are some tricks to get the where right.-->    
 <mm:present referid="search">
   <mm:import id="where"><mm:context><mm:fieldlist id="search_form" nodetype="$node_type" type="search"><mm:fieldinfo type="usesearchinput"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:notpresent referid="notfirst"><mm:import id="notfirst">yes</mm:import></mm:notpresent><mm:write /></mm:isnotempty></mm:fieldinfo></mm:fieldlist></mm:context></mm:import>
     <!-- -everything on one line, to avoid pollution of $where with spaces.
          -context is used to avoid pollution of current context with used id's. --> 
-</mm:present>
 
              
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
@@ -91,6 +86,7 @@
 </mm:last>
 </mm:listnodes>
 </table>
+</mm:present>
 
 <table><!-- pager -->
   <tr>
