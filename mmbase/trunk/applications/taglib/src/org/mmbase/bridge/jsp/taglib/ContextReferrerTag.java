@@ -44,8 +44,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected ContextTag pageContextTag = null;
 
-    protected Attribute  contextId = Attribute.NULL; // context to which this tag is referring to.
-    protected Attribute  referid =   Attribute.NULL;
+    protected  Attribute  contextId = Attribute.NULL; // context to which this tagg is referring to.
+    protected  Attribute  referid=   Attribute.NULL;
 
     private String       thisPage = null;
 
@@ -149,8 +149,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             thisPage = null;
         }
         id = null;
-        referid = null;
-        contextId = null;
+        referid   = Attribute.NULL;
+        contextId = Attribute.NULL;
         pageContextTag = null;
     }
 
