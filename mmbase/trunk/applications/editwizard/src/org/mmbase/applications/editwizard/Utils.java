@@ -40,12 +40,12 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.36 2003-11-27 12:49:11 pierre Exp $
+ * @version $Id: Utils.java,v 1.37 2003-12-02 21:16:40 michiel Exp $
  */
 
 public class Utils {
 
-    private static Logger log = Logging.getLoggerInstance(Utils.class);
+    private static final Logger log = Logging.getLoggerInstance(Utils.class);
     /**
      * This method returns a new instance of a DocumentBuilder.
      *
@@ -243,14 +243,14 @@ public class Utils {
             }
             // otherwise return the text contained by the node's children
             Node childnode=node.getFirstChild();
-            String value="";
-            while (childnode!=null) {
+            StringBuffer value = new StringBuffer();
+            while (childnode != null) {
                 if ((childnode.getNodeType()==Node.TEXT_NODE) || (childnode.getNodeType()==Node.CDATA_SECTION_NODE)) {
-                    value+=childnode.getNodeValue();
+                    value.append(childnode.getNodeValue());
                 }
-                childnode=childnode.getNextSibling();
+                childnode = childnode.getNextSibling();
             }
-            if (!"".equals(value)) return value;
+            if (value.length() > 0) return value.toString();
         } catch (Exception e) {
             log.warn(e.getMessage());
         }
@@ -286,25 +286,21 @@ public class Utils {
             XObject x = null;
             // select based on cloud locale setting
             if (cloud != null) {
-                x=XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");
+                x = XPathAPI.eval(node, xpath + "[lang('"+cloud.getLocale().getLanguage()+"')]");                
             }
-            // if not found or n.a., just grab the first you can find
-            if (x == null || (x instanceof XNodeSet && x.nodelist().getLength() < 1)) {
+            String xs = (x == null ? "" : x.str());
+            // mm: according to javadoc of xalan 2.5.2,  x cannot be null, so I don't know if it was possible in older xalans, so just to be on the safe side
+
+            // if not found or n.a., just grab the first you can find 
+            if (xs.equals("")) {
                 x = XPathAPI.eval(node, xpath);
             }
-            if (x == null || (x instanceof XNodeSet && x.nodelist().getLength() < 1)) {
-                return defaultvalue;
+            xs = (x == null ? "" : x.str());
+            if (xs.equals("")) {
+                xs =  defaultvalue;
             }
-            if (x instanceof XNodeSet) {
-                try {
-                    return getText(x.nodelist().item(0));
-                } catch (Throwable ignore) {
-                    //Error will occur if older Xalan/Xerces is used. If so, we'll just return the string value. Will work in most cases.
-                    return x.toString();
-                }
-            } else {
-                return x.toString();
-            }
+            return xs;
+
         } catch (Exception e) {
             log.error(Logging.stackTrace(e) + ", evaluating xpath:" + xpath);
         }
