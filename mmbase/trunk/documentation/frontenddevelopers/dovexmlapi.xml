@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Dove 1.1 XML API</title>
     <date>20 july 2002</date>
-    <edition>$Id: dovexmlapi.xml,v 1.7 2003-02-28 12:19:58 pierre Exp $</edition>
+    <edition>$Id: dovexmlapi.xml,v 1.8 2003-04-02 15:26:13 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -298,7 +298,8 @@
   ]]></programlisting>
     <para>The response contains the requested relation objects, wrapped by the object used to retrieve them. All additional fields of the relations are also returned.</para>
     <note>
-      <para>The common relation fields <database class="field">snumber</database>, <database class="field">dnumber</database> and <database class="field">rnumber</database> are not returned as field elements, but as the attributes <sgmltag class="attribute">source</sgmltag>, <sgmltag class="attribute">destination</sgmltag>, and <sgmltag class="attribute">role</sgmltag>. In this respect, source is always identical to the object that initiated the search, destination to the object that is looked for. These fields contain MMBase object numbers. The role attribute contains the forward role (<database class="field">sname</database> field) of the relation.</para>
+      <para>
+        The common relation fields <database class="field">snumber</database>, <database class="field">dnumber</database> and <database class="field">rnumber</database> are not returned as field elements, but as the attributes <sgmltag class="attribute">source</sgmltag>, <sgmltag class="attribute">destination</sgmltag>, and <sgmltag class="attribute">role</sgmltag>.These fields contain MMBase object numbers (snumber and dnumber of the relation). It is possible to check if the initiating node was the source or the destination of the relations, by checking wether its number is in the 'source' or in de 'destination' attribute. The role attribute contains the forward role (<database class="field">sname</database> field) of the relation.</para>
     </note>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT getrelations (object+) >
