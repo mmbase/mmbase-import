@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.8 2003-02-25 21:38:31 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.9 2003-02-26 09:29:01 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -213,7 +213,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             MMObjectNode typerel = (MMObjectNode) alltypes.nextElement();
             addCacheEntry(typerel, buildersInitialized);
         }
-        log.service("Done reading typerel cache " + (buildersInitialized ? "(considered inheritance)" : "") + ": " + typeRelNodes );
+        log.debug("Done reading typerel cache " + (buildersInitialized ? "(considered inheritance)" : "") + ": " + typeRelNodes );
     }
 
     /**
