@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="eo.nl" version="0" extends="object">
-<!-- @version $Id: addresses.xml,v 1.6 2002-06-19 10:02:01 pierre Exp $ -->
+<builder name="addresses" maintainer="eo.nl" version="0" extends="object">
+<!-- @version $Id: addresses.xml,v 1.7 2002-10-22 12:15:53 gerard Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -42,7 +42,12 @@
 -->
 <fieldlist>
     <!-- POS 3 : <field> 'address'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Address</guiname>
@@ -70,7 +75,12 @@
     </field>
 
     <!-- POS 4 : <field> 'city'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">City</guiname>
@@ -98,7 +108,12 @@
     </field>
 
     <!-- POS 5 : <field> 'zipcode'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Zip Code</guiname>
@@ -126,7 +141,12 @@
     </field>
 
     <!-- POS 6 : <field> 'pobox'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">PO Box</guiname>
@@ -154,7 +174,12 @@
     </field>
 
     <!-- POS 7 : <field> 'phone'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Phone Number</guiname>
@@ -182,7 +207,12 @@
     </field>
 
     <!-- POS 8 : <field> 'fax'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">FaxNumber</guiname>
@@ -210,7 +240,12 @@
     </field>
 
     <!-- POS 9 : <field> 'mobile'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Mobile Number</guiname>
@@ -238,7 +273,12 @@
     </field>
 
     <!-- POS 10 : <field> 'country'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Country</guiname>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: companies.xml,v 1.8 2002-06-19 10:02:02 pierre Exp $ -->
+<builder name="companies" maintainer="mmbase.org" version="0" extends="object">
+<!-- @version $Id: companies.xml,v 1.9 2002-10-22 12:15:53 gerard Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -39,7 +39,12 @@
 -->
 <fieldlist>
     <!-- POS 3 : <field> 'name'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Name</guiname>
@@ -67,7 +72,12 @@
     </field>
 
     <!-- POS 4 : <field> 'symbol'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Symbol</guiname>
@@ -95,7 +105,12 @@
     </field>
 
     <!-- POS 5 : <field> 'intro'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Intro</guiname>
@@ -123,7 +138,12 @@
     </field>
 
     <!-- POS 6 : <field> 'body'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Biography</guiname>

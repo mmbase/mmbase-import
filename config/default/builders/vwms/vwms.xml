@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="vwms" maintainer="mmbase.org" version="0" extends="object">
 
 <!-- <status>
     what is the status of this builder options : active or inactive
@@ -63,7 +63,12 @@ a key/value system. Its a optional tag.
 <fieldlist>
 
     <!-- POS 3 : <field> 'name'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Name</guiname>
@@ -91,7 +96,12 @@ a key/value system. Its a optional tag.
     </field>
 
     <!-- POS 4 : <field> 'wantedcpu'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Machine</guiname>
@@ -119,7 +129,12 @@ a key/value system. Its a optional tag.
     </field>
 
     <!-- POS 5 : <field> 'maintime'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Maintenance Time</guiname>
@@ -147,7 +162,12 @@ a key/value system. Its a optional tag.
     </field>
 
     <!-- POS 6 : <field> 'status'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">State</guiname>
@@ -175,7 +195,12 @@ a key/value system. Its a optional tag.
     </field>
 
     <!-- POS 7 : <field> 'description'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Description</guiname>
@@ -203,7 +228,12 @@ a key/value system. Its a optional tag.
     </field>
 
     <!-- POS 8 : <field> 'classname'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Class Name</guiname>

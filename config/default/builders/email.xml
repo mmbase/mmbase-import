@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: email.xml,v 1.8 2002-10-09 08:44:04 michiel Exp $ -->  
+<builder name="email" maintainer="mmbase.org" version="0" extends="object">
+<!-- @version $Id: email.xml,v 1.9 2002-10-22 12:15:53 gerard Exp $ -->  
   <status>inactive</status>
   <classfile>Email</classfile>
   <searchage>14</searchage>
@@ -23,7 +23,12 @@
 
   <fieldlist>
     
-    <field>
+      <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Onderwerp</guiname>
         <guiname xml:lang="nl">Subject</guiname>
@@ -43,7 +48,12 @@
         </db>
     </field>
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">From</guiname>
         <guiname xml:lang="nl">Van</guiname>
@@ -63,7 +73,12 @@
       </db>
     </field>
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">To</guiname>
         <guiname xml:lang="nl">Naar</guiname>
@@ -83,7 +98,12 @@
       </db>
     </field>
     
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Reply To</guiname>
         <guiname xml:lang="nl">Antwoord Naar</guiname>
@@ -104,7 +124,12 @@
     </field>
 
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Body Url</guiname>
         <guiname xml:lang="nl">Tekst Url</guiname>
@@ -124,7 +149,12 @@
       </db>
     </field>
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Body</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
@@ -144,7 +174,12 @@
       </db>
     </field>
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Type</guiname>
         <guiname xml:lang="nl">Type</guiname>
@@ -164,7 +199,12 @@
       </db>
     </field>
     
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Status</guiname>
@@ -184,7 +224,12 @@
       </db>
     </field>
     
-    <field>      
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>      
       <gui>
         <guiname xml:lang="en">Send Time</guiname>
         <guiname xml:lang="nl">Verzendtijd</guiname>
@@ -204,7 +249,12 @@
       </db>
     </field>
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Build Time</guiname>
         <guiname xml:lang="nl">Bouwtijd</guiname>
@@ -224,7 +274,12 @@
       </db>
     </field>
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Repeat Time</guiname>
         <guiname xml:lang="nl">Herhaaltijd</guiname>
@@ -244,7 +299,12 @@
       </db>
     </field>
 
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
       <gui>
         <guiname xml:lang="en">Last Mailed</guiname>
         <guiname xml:lang="nl">Laatst Verstuurd</guiname>

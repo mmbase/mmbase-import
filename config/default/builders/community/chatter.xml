@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: chatter.xml,v 1.3 2002-06-19 10:02:05 pierre Exp $ -->
+<builder name="chatter" maintainer="mmbase.org" version="0" extends="object">
+<!-- @version $Id: chatter.xml,v 1.4 2002-10-22 12:15:57 gerard Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -39,7 +39,12 @@
 -->
 <fieldlist>
     <!-- POS 3 : <field> 'username'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Username</guiname>
@@ -67,7 +72,12 @@
     </field>
 
     <!-- POS 4 : <field> 'password'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Password</guiname>

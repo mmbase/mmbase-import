@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object" maintainer="mmbase.org" version="0">
+<builder name="typedef" extends="object" maintainer="mmbase.org" version="0">
   <classfile>org.mmbase.module.corebuilders.ObjectTypes</classfile>
 
   <searchage>1000</searchage>
@@ -41,6 +41,11 @@
 
      <!-- POS 3 : <field> 'name'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">Name of the object type</description>
+         <description xml:lang="nl">Naam van het objecttype</description>
+       </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Name</guiname>
@@ -72,6 +77,11 @@
 
      <!-- POS 4 : <field> 'description'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">Description of the object type</description>
+         <description xml:lang="nl">Omschrijving van het objecttype</description>
+       </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Description</guiname>
@@ -103,6 +113,13 @@
 
      <!-- POS 5 : <field> 'config'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">Configuration of the object type,
+         stored as xml</description>
+         <description xml:lang="nl">Configuratie van het objecttype,
+         opgeslagen als xml</description>
+       </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Configuration</guiname>
