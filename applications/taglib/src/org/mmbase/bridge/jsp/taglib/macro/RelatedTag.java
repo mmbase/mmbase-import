@@ -10,37 +10,42 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.macro;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.Tag;
 
-import org.mmbase.bridge.jsp.taglib.NodeListTag;
+import org.mmbase.bridge.Node;
+
+import org.mmbase.bridge.jsp.taglib.ListTag;
 import org.mmbase.bridge.jsp.taglib.NodeProvider;
+
 /**
-* Shortcut for NodeList where the start node is the parent node
-*
-* FIXME: cannot indicate from which node ('node' attribute is already occupied...)
-*/
-public class RelatedTag extends NodeListTag {
+ * Shortcut for List where the start node is the parent node.
+ */
+public class RelatedTag extends ListTag {
+
+    private String parentNodeId = null;
+
+    /**
+     * Override original ListTag method.
+     */
+    public void setNodes(String nodes) throws JspTagException {
+        throw new JspTagException("Nodes is not a supported attribute for the related tag");
+    }
+
+    /**
+     * Node makes it possible to refer to another node than the direct
+     * ancestor.
+     */
+    public void setNode(String node){
+        parentNodeId = node;
+    }
+
     public int doStartTag() throws JspTagException {
- 
-
-        // Hmm, well, we are repeating a little code from NodeReferrer
-        // here.
-        // Not too nice. Perhaps NodeReferrer simply should be an
-        // interface, then we could at least logically represent this
-        // repetition.
-
-        // Sigh, class RelatedTag extends NodeListTag, NodeReferrerTag
-        // would be really convenient...
-        try {
-            NodeProvider nodeProvider = (NodeProvider) findAncestorWithClass((Tag)this, Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider")); 
-            if (nodeProvider == null) {
-                throw new JspTagException ("Could not find parent nodeProvider");  
-            } 
-            setNode(nodeProvider.getNodeVar().getStringValue("number"));
-        }catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find NodeProvider class");  
-        }
-
+        NodeProvider nodeProvider =
+          (NodeProvider)findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
+        Node node=nodeProvider.getNodeVar();
+        nodesString=node.getStringValue("number");
+        String nodeType=node.getNodeManager().getName();
+        // adapt the path to include the (needed) starting ndoemanager name
+        pathString= nodeType+","+pathString;
         return super.doStartTag();
     }
 }

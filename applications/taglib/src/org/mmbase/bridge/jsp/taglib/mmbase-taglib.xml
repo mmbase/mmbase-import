@@ -43,10 +43,10 @@ one or more examplevalue tags is you want to give some example values.
   <info>Tag library for MMBase based on MMCI(MMBase Cloud Interface).</info>
   <tag>
     <name>list</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.NodeListTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
-    <info>The list tag provides a syntax to list objects managed by MMBase.</info>
+    <info>The list tag provides a syntax to list clusters of nodes managed by MMBase.</info>
     <attribute>
       <name>nodes</name>
       <required>false</required>
@@ -54,13 +54,7 @@ one or more examplevalue tags is you want to give some example values.
       <info>Comma-separated list of nodes, this attribute defines the starting point of the list. The parameter is equivalent to node.</info>
     </attribute>
     <attribute>
-      <name>node</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>Node number, or node alias. This attribute defines the starting point of the list.</info>
-    </attribute>
-    <attribute>
-      <name>type</name>
+      <name>path</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot;</info>
@@ -87,8 +81,7 @@ one or more examplevalue tags is you want to give some example values.
       <info>
         Comma-separated list of fields that should be made available in the
         page. The fields are selected from attributes of the corresponding node
-        managers defined in type. If the type fields contains more elements e.g.
-        type=&quot;mags,news&quot; then it is required to append a prefix to
+        managers defined in type. It is required to append a prefix to
         each field listed e.g. fields=&quot;mags.title,news.title&quot;. In the
         jsp page the values are available in form of Strings e.g. mags.title is
         available as mags_title and can be accessed using
@@ -101,21 +94,11 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>command</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        On a non-multilevel list, you can also do a 'command'. The
-        'getList(command)' method from the NodeManager interface will
-        be called then.
-      </info>
-    </attribute>
-    <attribute>
       <name>sorted</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The fields on which the result set must be sorted. 
+        The fields on which the result set must be sorted. These must have a prefix.
       </info>
     </attribute>
     <attribute>
@@ -160,18 +143,18 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        See the 'id' attribute of the Node tag. 
-      </info>    
+        See the 'id' attribute of the Node tag.
+      </info>
     </attribute>
     <attribute>
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        See the 'jspvar' attribute of the Node tag. 
-      </info>    
+        See the 'jspvar' attribute of the Node tag.
+      </info>
     </attribute>
-<example>&lt;mm:list node="123" type="mags,news" fields="mags.title,news.number"&gt;
+<example>&lt;mm:list nodes="123" path="mags,news" fields="mags.title,news.number"&gt;
   &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
   &lt;%= mags_title %&gt;
 &lt;/mm:list&gt;</example>
@@ -183,11 +166,26 @@ one or more examplevalue tags is you want to give some example values.
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-        The list tag provides a syntax to list objects managed by MMBase
+        The related tag provides a syntax to list objects managed by MMBase.
+        It is similar to the list tag but uses a parent node as its starting point.
     </info>
-
     <attribute>
-      <name>type</name>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Node number, or node alias. This attribute defines the starting point of the list.</info>
+    </attribute>
+    <attribute>
+      <name>path</name>
+      <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot;
+            The nodemanager of the starting node is implied and should not be included.
+      </info>
+      <examplevalue>
+        <value>news</value>
+      </examplevalue>
+      <examplevalue>
+        <value>related,news</value>
+      </examplevalue>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -198,11 +196,6 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
     <attribute>
       <name>where</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>command</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -246,6 +239,156 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+<example>&lt;mm:node number="Magazine" &gt;
+&lt;mm:related type="posrel,news" sorted="posrel.pos" fields="news.title" &gt;
+  &lt;mm:head&gt;news in this magazine, ordered&lt;/mm:head&gt;
+  &lt;%= news_title %&gt;
+&lt;/mm:related&gt;</example>
+  </tag>
+  <tag>
+    <name>listnodes</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>The list tag provides a syntax to list objects of a single type managed by MMBase.</info>
+    <attribute>
+      <name>type</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>A NodeManagers. This determines the type of object to return</info>
+      <examplevalue>
+        <value>mags</value>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>fields</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Comma-separated list of fields that should be made available in the
+        page. In the jsp page the values are available in form of Strings
+        e.g. title is available can be accessed using &lt;%= title %&gt;.
+      </info>
+    </attribute>
+    <attribute>
+      <name>where</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>sorted</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The fields on which the result set must be sorted.
+      </info>
+    </attribute>
+    <attribute>
+      <name>direction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        The direction of sorting.
+      </info>
+      <possiblevalue>
+        <value>UP</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DOWN</value>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The maximum number of results.</info>
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The start index.</info>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'id' attribute of the Node tag.
+      </info>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'jspvar' attribute of the Node tag.
+      </info>
+    </attribute>
+<example>&lt;mm:listnodes type="mags" fields="title" &gt;
+  &lt;mm:head&gt;magazine list&lt;/mm:head&gt;
+  &lt;%= title %&gt;
+&lt;/mm:listnodes&gt;</example>
+
+  </tag>
+  <tag>
+    <name>relatednodes</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodesTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+        The relatednodes tag provides a syntax to list related objects managed by MMBase
+    </info>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>fields</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>where</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>sorted</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>direction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+<example>&lt;mm:node number="Magazine" &gt;
+&lt;mm:relatednodes type="news" fields="title" &gt;
+  &lt;mm:head&gt;news in this magazine&lt;/mm:head&gt;
+  &lt;%= title %&gt;
+&lt;/mm:relatednodes&gt;</example>
   </tag>
   <tag>
     <name>even</name>
