@@ -145,7 +145,7 @@ using list tag: <br />
    <mm:node element="news">
      <em>node element="news"</em>:<br />
      title: <mm:field name="title" /><br />
-     <em>should follow four times the related URL:</em><br />
+     <em>should follow 6 times (numbered from 1 to 6) the related URL:</em><br />
      <mm:relatednodes type="urls">
        1  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
