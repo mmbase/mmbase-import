@@ -9,17 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * This class is somekinda enumeration of the ranks possible within
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Rank.java,v 1.7 2003-01-31 16:06:28 pierre Exp $
+ * @version $Id: Rank.java,v 1.8 2003-06-16 17:25:46 michiel Exp $
  */
-public class Rank {
+public final class Rank {
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
 
@@ -41,15 +40,15 @@ public class Rank {
     private static Map ranks = new HashMap();
 
     static {
-        registerRank(ANONYMOUS,ANONYMOUS.toString());
-        registerRank(BASICUSER,BASICUSER.toString());
-        registerRank(ADMIN,ADMIN.toString());
+        registerRank(ANONYMOUS); 
+        registerRank(BASICUSER); 
+        registerRank(ADMIN); 
     }
 
     /**
      *	constructor
      */
-    public Rank(int rank, String description) {
+    protected Rank(int rank, String description) {
         this.rank = rank;
         this.description = description;
     }
@@ -66,7 +65,7 @@ public class Rank {
     /**
      *	@return a string containing the description of the rank
      */
-    public String toString(){
+    public String toString() {
         return description;
     }
 
@@ -77,16 +76,29 @@ public class Rank {
     private String description;
 
     public static Rank getRank(String rankDesc) {
-        return (Rank)ranks.get(rankDesc);
+        return (Rank) ranks.get(rankDesc);
     }
 
-    public static void registerRank(Rank rankObject, String rankDesc) {
-        ranks.put(rankDesc,rankObject);
+    protected static void registerRank(Rank rank) {
+        ranks.put(rank.toString(), rank);
     }
 
     public static Rank registerRank(int rank, String rankDesc) {
-        Rank rankObject=new Rank(rank,rankDesc);
-        registerRank(rankObject,rankDesc);
+        Rank rankObject = new Rank(rank, rankDesc);
+        registerRank(rankObject);
         return rankObject;
+    }
+
+    public static Set getRanks() {
+        return new HashSet(ranks.values());
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof Rank) {
+            Rank r = (Rank) o;
+            return r.rank == rank;
+        } else {
+            return false;
+        }
     }
 }
