@@ -23,10 +23,8 @@ import org.mmbase.service.interfaces.*;
  * @author Daniel Ockeloen
  */
 public class g2encoders extends RemoteBuilder {
-
 	private boolean debug = true;
 	private g2encoderInterface impl;
-	StringTagger tagger;
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		super.init(con,servicefile);
@@ -50,8 +48,15 @@ public class g2encoders extends RemoteBuilder {
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
+	/**
+	 * Gets node from mmbase and checks the node state reacts to state value.
+	 * State value 'version' gets the version info, 'encode' starts encoding process. 
+	 * @param nodenr a String with servicenode objectnr
+	 * @param buildername the name of the service
+	 * @param ctype the node changetype.
+	 */
 	public void nodeChanged(String nodenr,String buildername,String ctype) {		
-		// get the node
+		// Gets the node by requesting it from the mmbase space through remotexml.
 		getNode();
 				
 		String state=getStringValue("state");
@@ -80,6 +85,11 @@ public class g2encoders extends RemoteBuilder {
 		debug("doVersion(): commit done");
 	}
 
+	/**
+	 * Sets the remotebuilder node to 'busy' and starts the Real encoding process, 
+	 * when encoding finishes state is set to 'waiting'.
+	 * Encoding result information is saved in the nodes info field.
+	 */
 	private void doEncode() {
 		setValue("state","busy");
 		commit();
@@ -88,7 +98,7 @@ public class g2encoders extends RemoteBuilder {
 
 		if (impl!=null) {
 			String cmds=getStringValue("info");
-			if( debug ) debug("doEncode(): starting imp.doEncode("+cmds+")");
+			if( debug ) debug("doEncode(): starting impl.doEncode("+cmds+")");
 		    setValue("info",impl.doEncode(cmds));	
 		} else {
 			debug("doEncode(): ERROR: cannot encode! No implementation!");
@@ -111,6 +121,7 @@ public class g2encoders extends RemoteBuilder {
 			impl = (g2encoderInterface)newclass.newInstance();
 		} catch (Exception f) {
 			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
+			f.printStackTrace();
 		}
 	}
 
