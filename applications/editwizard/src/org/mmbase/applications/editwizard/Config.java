@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.23 2002-08-14 18:12:03 michiel Exp $
+ * @version $Id: Config.java,v 1.24 2002-08-19 13:46:31 michiel Exp $
  */
 
 public class Config {
@@ -185,7 +185,9 @@ public class Config {
                     if (i18n.isDirectory()) {
                         extraDirs.add("i18n:", i18n);
                     } else {
-                        log.warn("Tried to internationalize the editwizard for language " + config.language + " for which support is lacking (" + i18n + " is not an existing directory)");
+                        if (! "en".equals(config.language)) { // english is default anyway
+                            log.warn("Tried to internationalize the editwizard for language " + config.language + " for which support is lacking (" + i18n + " is not an existing directory)");
+                        }
                     }
                 }
 
