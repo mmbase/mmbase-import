@@ -8,7 +8,7 @@
 </head>
 <body>
 <pre>
-<mm:formatter format="presentxml">
+<mm:formatter format="escapexmlpretty">
   <mm:include cite="true" page="$page" />
 </mm:formatter>
 </pre>
