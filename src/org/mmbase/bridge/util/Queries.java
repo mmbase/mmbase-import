@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.40 2004-07-23 14:52:18 michiel Exp $
+ * @version $Id: Queries.java,v 1.41 2004-07-29 17:17:35 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -64,6 +64,7 @@ abstract public  class Queries {
      * getList, but you want to use new Query features without rewriting the complete thing.
      *
      * It can also be simply handy to specify things as Strings.
+     * @todo Should this method be part of Cloud itself?
      */
     public static Query createQuery(Cloud cloud, String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct) {
 
@@ -505,7 +506,6 @@ abstract public  class Queries {
      * @return The new constraint or null
      */
     public static Constraint copyConstraint(Constraint c, Step sourceStep, Query query, Step step) {
-
         if (c == null) return null;
 
         if (c instanceof CompositeConstraint) {
