@@ -569,7 +569,7 @@ builddate=${builddate}
       </section>
     </manifest>
 
-    <mkdir dir="${build.dir}" />
+    <mkdir dir="${release.lib.dir}" />
     <jar jarfile="${mmbase.jar}"
          basedir="${build.dir}/classes"
        includes="org/mmbase/**"
