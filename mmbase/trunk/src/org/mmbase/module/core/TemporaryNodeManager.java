@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManager.java,v 1.6 2000-11-08 14:24:46 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.7 2000-11-08 14:31:23 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/11/08 14:24:46  vpro
+	Rico: fixed getObject
+	
 	Revision 1.5  2000/11/08 13:24:19  vpro
 	Rico: included owner in operations
 	
@@ -37,7 +40,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.6 2000-11-08 14:24:46 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.7 2000-11-08 14:31:23 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -61,7 +64,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		} else {
 			debug("Can't find builder "+type);
 		}
-		return(owner+key);
+		return(key);
 	}
 
 	public String deleteTmpNode(String owner,String key) {
@@ -97,7 +100,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			}
 		}
 		if (node != null) {
-			return(makeKey(owner,key));
+			return(key);
 		} else {
 			return null;
 		}
