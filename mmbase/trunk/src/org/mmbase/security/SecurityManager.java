@@ -1,5 +1,7 @@
 package org.mmbase.security;
 
+import org.mmbase.util.XMLBasicReader;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -7,7 +9,7 @@ import org.mmbase.util.logging.Logging;
  *  This class is the main class of the security system. It loads the authentication
  *  and authorization classes if needed, and they can be requested from this manager.
  */
-public final class SecurityManager {
+public class SecurityManager extends java.lang.SecurityManager  {
     private static Logger log=Logging.getLoggerInstance(SecurityManager.class.getName());
 
     /** our current authentication class */
@@ -20,7 +22,7 @@ public final class SecurityManager {
     private boolean active = false;
 
 	/** the shared secret used by this system */
-    private static String sharedSecret;
+    private String sharedSecret = null;
 
     /**
      *	The constructor, will load the classes for authorization and authentication
@@ -30,13 +32,14 @@ public final class SecurityManager {
      *	@exception  org.mmbase.security.SecurityException When the class could not
      *	    be loaded
      */
-    public SecurityManager(String configUrl)
-      throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException
-    {
-    	SecurityXmlReader reader = new SecurityXmlReader(configUrl);
+    public SecurityManager(String configPath) throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException {
+        super();
+
+        log.debug("using: '" + configPath + "' as config file for security");
+    	XMLBasicReader reader = new XMLBasicReader(configPath);
 
       	// are we active ?
-      	String sActive = reader.getAttribute("/security", "active");
+      	String sActive = reader.getElementAttributeValue(reader.getElementByPath("security"),"active");
       	if(sActive.equalsIgnoreCase("true")) {
 	    log.debug("SecurityManager will be active");
 	    active = true;
@@ -46,40 +49,40 @@ public final class SecurityManager {
 	    active = false;
 	}
       	else {
-	    log.error("security attibure active must have value of true or false("+configUrl+")");
+	    log.error("security attibure active must have value of true or false("+configPath+")");
 	    throw new SecurityException("security attibure active must have value of true or false");
 	}
 
       	// load our authentication...
-      	String authClass = reader.getAttribute("/security/authentication", "class");
+      	String authClass = reader.getElementAttributeValue(reader.getElementByPath("security.authentication"),"class");
       	if(authClass == null) {
-	    log.error("attribute class could not be found in authentication("+configUrl+")");
+	    log.error("attribute class could not be found in authentication("+configPath+")");
     	    throw new java.util.NoSuchElementException("class in authentication");
 	}
-      	String authUrl = reader.getAttribute("/security/authentication", "url");
+      	String authUrl = reader.getElementAttributeValue(reader.getElementByPath("security.authentication"),"url");
       	if(authUrl == null) {
-	    log.error("attribute url could not be found in authentication("+configUrl+")");
+	    log.error("attribute url could not be found in authentication("+configPath+")");
 	    throw new java.util.NoSuchElementException("url in authentication");
 	}
       	loadAuthentication(authClass, authUrl);
 
       	// load our authorization...
-      	String auteClass = reader.getAttribute("/security/authorization", "class");
+      	String auteClass = reader.getElementAttributeValue(reader.getElementByPath("security.authorization"),"class");
       	if(auteClass == null) {
-	    log.error("attribute class could not be found in auhotization("+configUrl+")");
+	    log.error("attribute class could not be found in auhotization("+configPath+")");
 	    throw new java.util.NoSuchElementException("class in authorization");
 	}
-      	String auteUrl = reader.getAttribute("/security/authorization", "url");
+      	String auteUrl = reader.getElementAttributeValue(reader.getElementByPath("security.authorization"),"url");
       	if(auteUrl == null) {
-	    log.error("attribute url could not be found in auhotization("+configUrl+")");
+	    log.error("attribute url could not be found in auhotization("+configPath+")");
 	    throw new java.util.NoSuchElementException("url in authorization");
 	}
       	loadAuthorization(auteClass, auteUrl);
 
         // load the sharedSecret
-      	sharedSecret = reader.getValue("/security/sharedsecret");
+      	String sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
       	if(sharedSecret == null) {
-	    log.error("sharedsecret could not be found in security("+configUrl+")");
+	    log.error("sharedsecret could not be found in security("+configPath+")");
 	    throw new java.util.NoSuchElementException("sharedsecret in security");
 	}
     }
@@ -116,7 +119,7 @@ public final class SecurityManager {
      * @return true if received shared secret equals your own shared secret
      * @return false if received shared secret not equals your own shared secret
      */
-    public static boolean checkSharedSecret(String key) {
+    public boolean checkSharedSecret(String key) {
         if(sharedSecret.equals(key)) {
             return true;
         } else {
@@ -129,7 +132,7 @@ public final class SecurityManager {
      * get the shared Secret
      * @return the shared Secret
      */
-    public static String getSharedSecret() {
+    public String getSharedSecret() {
         return sharedSecret;
     }
 
