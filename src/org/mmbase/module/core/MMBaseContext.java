@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.16 2001-09-25 15:47:26 eduard Exp $
+$Id: MMBaseContext.java,v 1.17 2001-10-03 14:23:34 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2001/09/25 15:47:26  eduard
+eduard: on failure finding config directory, config will tell what the absolute path of the directory was, wherin it was trying to find the mmbase stuff, furthermore mmbase.config now has default value(otherise null).
+
 Revision 1.15  2001/08/16 14:59:19  pierre
 pierre: fixed the check for configuration security files
 
@@ -83,7 +86,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.16 $ $Date: 2001-09-25 15:47:26 $
+ * @$Revision: 1.17 $ $Date: 2001-10-03 14:23:34 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -124,7 +127,7 @@ public class MMBaseContext {
             if (configpath == null) {
 	    	// desperate looking for a location.. (say we are a war file..)
 		// keeping the value 'null' will always give a failure..
-                configpath =  servletContext.getRealPath("WEB-INF/config");
+                configpath =  servletContext.getRealPath("/WEB-INF/config");
             }
             try {
                 initConfigpath();
