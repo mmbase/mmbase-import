@@ -20,9 +20,12 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * @version $Id: XMLBuilderReader.java,v 1.18 2000-08-29 10:55:24 case Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.19 2000-08-29 13:33:02 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2000/08/29 10:55:24  case
+ * cjr: Modified getProperties for <properties> and <property name=..> tags
+ *
  * Revision 1.17  2000/08/22 11:32:53  daniel
  * small fix for maintainer default
  *
@@ -234,8 +237,8 @@ public class XMLBuilderReader extends XMLBasicReader {
 	    String name, value;
 	    while (enum.hasMoreElements()) {
 		p = (Element)enum.nextElement();
-		name = getElementAttributeValue(e,"name");
-		value = getElementValue(e);
+		name = getElementAttributeValue(p,"name");
+		value = getElementValue(p);
 		hash.put(name,value);
 	    }
 	}
