@@ -8,7 +8,7 @@
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
 //	     http://students.infoiasi.ro/~mishoo
 //
-// $Id: htmlarea.js,v 1.3.2.2 2004-05-26 12:00:32 andre Exp $
+// $Id: htmlarea.js,v 1.3.2.3 2005-03-16 14:52:30 pierre Exp $
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
@@ -1367,13 +1367,13 @@ HTMLArea._object = null;
 HTMLArea.checkSupportedBrowser = function() {
         if (HTMLArea.is_gecko) {
                 if (navigator.productSub < 20021201) {
-                        alert("You need at least Mozilla-1.3 Alpha.\n" +
-                              "Sorry, your Gecko is not supported.");
+                        // alert("You need at least Mozilla-1.3 Alpha.\n" +
+                        //      "Sorry, your Gecko is not supported.");
                         return false;
                 }
                 if (navigator.productSub < 20030210) {
-                        alert("Mozilla < 1.3 Beta is not supported!\n" +
-                              "I'll try, though, but it might not work.");
+                        // alert("Mozilla < 1.3 Beta is not supported!\n" +
+                        //      "I'll try, though, but it might not work.");
                 }
         }
         return HTMLArea.is_gecko || (HTMLArea.is_ie55up && !HTMLArea.is_mac);
