@@ -55,8 +55,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Position number, useful for ordering the relations</description>
+          <description xml:lang="nl">Postitie of volgordenummer, te gebruiken voor het sorteren van de relaties</description>
         </descriptions>
         <!-- gui related -->
         <gui>
