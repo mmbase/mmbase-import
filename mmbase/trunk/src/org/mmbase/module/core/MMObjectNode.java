@@ -10,13 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
-import java.sql.*;
 
 import org.mmbase.module.*;
-import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.gui.html.*;
+import org.mmbase.module.gui.html.EditState;
+import org.mmbase.module.gui.html.MMLanguage;
+
 import org.mmbase.util.logging.*;
 
 import org.w3c.dom.Document;
@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.77 $ $Date: 2002-06-18 09:19:29 $
+ * @version $Revision: 1.78 $ $Date: 2002-07-06 13:20:42 $
  */
 
 public class MMObjectNode {
@@ -108,13 +108,6 @@ public class MMObjectNode {
 
     // object to sync access to properties
     private Object properties_sync=new Object();
-
-    /**
-     * Empty constructor added for javadoc
-     * @deprecated Unused. Should be removed.
-     */
-    public MMObjectNode() {
-    }
 
     /**
      * Main constructor.
@@ -832,31 +825,6 @@ public class MMObjectNode {
     }
 
     /**
-     * Get a value of a certain field and return is in string form (regardless of actual type).
-     * @param fieldName the name of the field who's data to return
-     * @return the field's value as a <code>String</code>
-     * @deprecated use {@link #getStringValue} instead.
-     */
-    public String getValueAsString(String fieldName) {
-    // WH Will remove/replace this one soon
-    // Testing of db types will be moved to the DB specific classes
-    // Currently used by:
-    // Music.getObjects and getObjects2 (last is dead code)
-    // FieldEditor.getEditField
-    // HTMLBase.getNodeStringValue
-    // ObjectSelector.getObjectFields
-    // MMObjectBuilder.getGUIIndicator
-    // Forums.getObjectField
-    // Teasers.doTSearch
-        Object o=getValue(fieldName);
-        if (o!=null) {
-            return ""+o; // getValue(fieldName);
-        } else {
-            return "";
-        }
-    }
-
-    /**
      * Returns the DBType of a field.
      * @param fieldName the name of the field who's type to return
      * @return the field's DBType
@@ -1016,15 +984,6 @@ public class MMObjectNode {
      */
     public String getName() {
         return  parent.getTableName();
-    }
-
-    /**
-     * Set the parent builder for this node.
-     * @param bul the builder
-     * @deprecated Unused. Should be removed.
-     */
-    public void setParent(MMObjectBuilder bul) {
-        parent=bul;
     }
 
     /**
