@@ -29,8 +29,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">User login name</description>
+          <description xml:lang="nl">Login naam voor de gebruiker</description>
         </descriptions>
       <gui>
         <guiname xml:lang="en">UserName</guiname>
@@ -53,8 +53,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">User password</description>
+          <description xml:lang="nl">Gebruikers wachtwoord</description>
         </descriptions>
       <gui>
         <guiname xml:lang="en">Password</guiname>
