@@ -5,14 +5,15 @@
     <title>Something wend wrong</title>
 </head>
 <body>
-<h2>Something went wrong:</h2>
+<h2>DON'T PANIC!</h2>
+<strong>Something went wrong:</strong>
 <h3><font color="#ff0000">
 <%
     /**
      * exception.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: exception.jsp,v 1.3 2002-07-18 11:29:57 eduard Exp $
+     * @version  $Id: exception.jsp,v 1.4 2002-07-19 14:53:55 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -29,7 +30,7 @@
 %>
 </font></h3>
 <% if(lines.hasMoreElements()) { %>
-<small>(exception was mulitple lines, but timmed to one line)</small>
+<small>(exception was multiple lines, but trimmed to one line)</small>
 <% } %>
 <h3>For techies:</h3>
 <small><pre>
