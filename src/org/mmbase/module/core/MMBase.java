@@ -561,20 +561,20 @@ public class MMBase extends ProcessorModule  {
  		String path = builderpath + ipath;
  		// new code checks all the *.xml files in builder dir
  		File bdir = new File(path);
-                if (bdir.isDirectory()) {
-                	String files[] = bdir.list();
-                        for (int i=0;i<files.length;i++) {
-                        	String bname=files[i];
-                                if (bname.endsWith(".xml")) {
-                                         bname=bname.substring(0,bname.length()-4);
-                                         loadBuilderFromXML(bname,ipath);
-                                } else {
+        if (bdir.isDirectory()) {
+            String files[] = bdir.list();
+            for (int i=0;i<files.length;i++) {
+                String bname=files[i];
+                if (bname.endsWith(".xml")) {
+                     bname=bname.substring(0,bname.length()-4);
+                     loadBuilderFromXML(bname,ipath);
+                } else {
  				 	 loadBuilders(ipath +  bname + File.separator);
- 				}
-                        }
-                }
-     	}
-
+ 			    }
+            }
+        }
+		
+    }
      	     	
      	/**
 	*  Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
@@ -589,8 +589,7 @@ public class MMBase extends ProcessorModule  {
 			if (debug) debug("Builder '"+builder+"' is already loaded");
 			return bul;
 		}
- 	
- 	        String path = builderpath + ipath;
+ 	    String path = builderpath + ipath;
  		if ((new File(path+builder+".xml")).exists()) {
  			return loadBuilderFromXML(builder,ipath);
  		} else {
@@ -609,10 +608,10 @@ public class MMBase extends ProcessorModule  {
  			}
  			return(null);
  		}
-     	}
+    }
 
 	
-     	/**
+    /**
 	*  Create a new builder object using a xml configfile located in a given path relative to the main builder config path,
 	*  and return the builder object.
 	*  If the builder already exists, the existing object is returned instead.
@@ -631,19 +630,19 @@ public class MMBase extends ProcessorModule  {
 		}
 		
 		String path = builderpath + ipath;
- 		XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
-		Hashtable descriptions=parser.getDescriptions();
-		String description=(String)descriptions.get(language);
-		String dutchsname="Default!";
-		String objectname=builder; // should this allow override in file ?
-		int searchage=parser.getSearchAge();
-		String classname=parser.getClassFile();
-		Hashtable properties=parser.getProperties();
+		try {
+ 		    XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
+		    Hashtable descriptions=parser.getDescriptions();
+		    String description=(String)descriptions.get(language);
+		    String dutchsname="Default!";
+		    String objectname=builder; // should this allow override in file ?
+		    int searchage=parser.getSearchAge();
+		    String classname=parser.getClassFile();
+		    Hashtable properties=parser.getProperties();
 
-		String status=parser.getStatus();
-		if (status.equals("active")) {
-			debug(" Starting builder : "+objectname);
-			try {
+		    String status=parser.getStatus();
+		    if (status.equals("active")) {
+			    debug(" Starting builder : "+objectname);
 				// is it a full name or inside the org.mmase.* path
 				int pos=classname.indexOf('.');
 				Class newclass=null;
@@ -679,10 +678,10 @@ public class MMBase extends ProcessorModule  {
 				// oke set the huge hack for insert layout 
 				//bul.setDBLayout(fields);
 
-				} catch (Exception e) {
-					e.printStackTrace();
-					return(null);
-				}
+		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			return(null);
 		}
 		return(bul);
 	}
