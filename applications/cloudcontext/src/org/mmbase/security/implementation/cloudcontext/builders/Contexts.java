@@ -22,6 +22,7 @@ import org.mmbase.cache.Cache;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.*;
 
 /**
  * Representation of a 'context', which can be read as a valid value of the 'owner' field of any
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.14 2003-08-13 10:39:18 michiel Exp $
+ * @version $Id: Contexts.java,v 1.15 2003-08-15 19:42:28 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -43,9 +44,21 @@ public class Contexts extends MMObjectBuilder {
      * @javadoc
      */
     static final String DEFAULT_CONTEXT = "default";  // default used to be 'admin', but does that make sense?
-
-
     static final int DEFAULT_MAX_CONTEXTS_IN_QUERY = 50;
+
+    public final static Argument[] ALLOW_ARGUMENTS = {
+        new Argument("grouporuser", String.class),
+        new Argument("operation", String.class)
+    };
+
+
+    public final static Argument[] GRANT_ARGUMENTS = {
+        new Argument("grouporuser",  String.class),
+        new Argument("operation", String.class),
+        new Argument("user", org.mmbase.bridge.User.class),
+
+    };
+
 
 
     protected static Cache contextCache = new Cache(30) { // 30 'contexts' (organisations or so)
@@ -130,36 +143,7 @@ public class Contexts extends MMObjectBuilder {
             return true;
         }        
         
-
-        // retrieve the nodes
-        MMObjectNode source      = getNode(sourceNodeId);
-        MMObjectNode destination = getNode(destinationNodeId);
-
-        if  ( (source.parent instanceof Users) && (destination.parent instanceof Ranks)) {
-            if (user.getNode().equals(source)) {
-                log.debug("Cannot change own rank");
-                return false;
-            }
-
-            if (Ranks.getBuilder().getRank(destination).getInt() > user.getRank().getInt()) {
-                log.debug("May not increase rank of other user to rank higher than own rank");
-                return false;
-            }
-            if (operation == Operation.CREATE) { 
-                List ranks =  source.getRelatedNodes("mmbaseranks", "rank", ClusterBuilder.SEARCH_DESTINATION);
-                if (ranks.size() > 0) {
-                    log.debug("May only create relation to rank if there are none now.");
-                    return false;
-                }
-            }
-        }
-
-        if ( (source.parent instanceof Contexts) && (destination.parent instanceof Groups)) {
-            if (operation == Operation.CREATE) {
-                return Groups.getBuilder().mayGrant(destination, source.getStringValue("name"), Operation.READ, user.getNode());
-            }
-            
-        }
+        // interesting right-righs are implemented in mayDo.
 
         return mayDo(user, nodeId, operation);
 
@@ -180,22 +164,10 @@ public class Contexts extends MMObjectBuilder {
             builder = node.getBuilder();
         }
 
-        // may never unlink relation with own rank
-        if (operation == Operation.DELETE && builder instanceof InsRel) {
-            MMObjectNode source      = getNode(node.getIntValue("snumber"));
-            MMObjectNode destination = getNode(node.getIntValue("dnumber"));
-            if (source.parent instanceof Users && destination.parent instanceof Ranks) {
-                if (user.getNode().equals(source)) {
-                    log.debug("May not unlink rank with own user object");
-                    return false;
-                }
-                
-            }                                          
-        }
-
         // admin bypasses security system
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
-            log.debug("admin may do everything");
+            log.debug("admin may do everything, besides deleting itself");
+            if (user.getNode().getNumber() == nodeId && operation == Operation.DELETE) return false;
             return true;
         }
 
@@ -210,6 +182,53 @@ public class Contexts extends MMObjectBuilder {
             return true;
         }
 
+
+
+        // security-implmentation related issues
+        if (builder instanceof InsRel) {
+            MMObjectNode source      = getNode(node.getIntValue("snumber"));
+            MMObjectNode destination = getNode(node.getIntValue("dnumber"));
+            
+            if (source.parent instanceof Users && destination.parent instanceof Ranks) {                
+
+                // forbid hackery
+                if (operation == Operation.WRITE || operation == Operation.CHANGE_RELATION) {
+                    return false;
+                }
+                if (operation == Operation.DELETE || operation == Operation.CREATE) {
+
+                    // only 'high rank' user may change rank at all:
+                    if(user.getRank().getInt() <= Rank.BASICUSER.getInt()) return false;
+
+                    // may never unlink/link relation with own rank
+                    if (user.getNode().equals(source)) {
+                        log.debug("May not unlink rank with own user object");
+                        return false;
+                    }
+
+                    // may not change rank of higher rank users
+                    if (user.getRank().getInt() <= destination.getIntValue("rank")) { 
+                        return false;
+                    }
+                }
+                // otherwise: ok:
+                return true;
+            }
+            if (builder instanceof RightsRel) {
+                // forbid hackery
+                if (operation == Operation.WRITE || operation == Operation.CHANGE_RELATION) {
+                    return false;
+                }
+                if (operation == Operation.CREATE) {
+                    return mayGrant(source, destination, Operation.getOperation(node.getStringValue("operation")), user.getNode());
+                }
+                if (operation == Operation.DELETE) {
+                    return mayRevoke(source, destination, Operation.getOperation(node.getStringValue("operation")), user.getNode());
+                }
+            }          
+        }
+
+
         // if this is a group node, then you may do anything on it, if you are member of the group,
         // and you rank is higher then 'basic user'.
         if (builder instanceof Groups) {
@@ -223,15 +242,19 @@ public class Contexts extends MMObjectBuilder {
 
         // when it is our user node, and you are this user, you may do anything on it (change password)
         if (builder instanceof Users) {
-            if (user.getNode().equals(node) && (operation == Operation.READ || operation == Operation.WRITE)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("May always " + operation + " on own user node: " + nodeId);
+            if (user.getNode().equals(node))
+                if ((operation == Operation.READ || operation == Operation.WRITE)) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("May always " + operation + " on own user node: " + nodeId);
+                    }
+                    return true;
                 }
-                return true;
+            if (operation == Operation.DELETE) {
+                // may not delete own user.
+                return false;
             }
         }
 
-        // retrieve all the groups in which the context of this node is.
 
         MMObjectNode contextNode = getContextNode(node); // the mmbasecontext node associated with this node
 
@@ -243,17 +266,23 @@ public class Contexts extends MMObjectBuilder {
      */
     protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
 
-        return mayDo(user.getNode(), contextNode, operation);
+        return mayDo(user.getNode(), contextNode, operation, true);
     }
 
-    protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation) {
+    protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
 
-        Iterator iter = getGroups(contextNode, operation).iterator();        
+        Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
 
+        if (checkOwnRights) {
+            if (groupsAndUsers.contains(user)) return true;
+        }
+
+        Iterator iter = groupsAndUsers.iterator();
         // now checking if this user is in one of these groups.
-        while (iter.hasNext()) {
+        while (iter.hasNext()) {          
             MMObjectNode group = (MMObjectNode) iter.next();            
-            log.trace("checking group " + group);
+            if (! (group.parent instanceof Groups)) continue;
+            if (log.isDebugEnabled()) log.trace("checking group " + group);
             if(Groups.getBuilder().contains(group, user)) { 
                 if (log.isDebugEnabled()) {
                     log.debug("User " + user.getStringValue("username") + " may " + operation + " according to context " + contextNode);
@@ -340,24 +369,16 @@ public class Contexts extends MMObjectBuilder {
                     ac = new AllowingContexts(contexts, inverse);
                     allowingContextsCache.put(userContext.getIdentifier(), ac);
                 }
-                if (ac.contexts.size() == 0) {
-                    if (ac.inverse) {
-                        return Authorization.COMPLETE_CHECK;
-                    } else {
-                        // may read nothing, simply making the query result nothing: number = -1 
-                        Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
-                        return new Authorization.QueryCheck(true, mayNothing);
-                    }
-                }
                 
                 List steps = query.getSteps();
-                if (steps.size() * ac.contexts.size() < maxContextsInQuery) { 
+                Constraint constraint = null;
+
+                // constraints on security objects
+                {
                     Iterator i = steps.iterator();
-                    Constraint constraint = null;
                     while (i.hasNext()) {
                         Step step = (Step) i.next();
                         Constraint newConstraint = null;
-
                         if (step.getTableName().equals("mmbasegroups")) {
                             newConstraint = query.createConstraint(query.createStepField(step, "number"), userContext.getGroups()); // must be member of group to see group
                             if(operation != Operation.READ) { //
@@ -366,16 +387,50 @@ public class Contexts extends MMObjectBuilder {
                                     return new Authorization.QueryCheck(true, mayNothing);
                                 }
                             }
+                        } else if (step.getTableName().equals("mmbaseranks")) { // higher ranks are none of your businuess (especially usefull for editors)
+                            newConstraint = query.createConstraint(query.createStepField(step, "rank"), FieldCompareConstraint.LESS_EQUAL, new Integer(userContext.getRank().getInt()));
                         } else {
-                            StepField field = query.createStepField(step, "owner");
-                            newConstraint = query.createConstraint(field, ac.contexts);
-                            if (ac.inverse) query.setInverse(newConstraint, true);
-                            if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
-                                Users users = Users.getBuilder();
-                                Constraint own = query.createConstraint(query.createStepField(step, "number"),
-                                                                        new Integer(users.getUser(userContext.getIdentifier()).getNumber()));
-                                newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
-                            }
+                            continue;
+                        }
+
+                        if (constraint == null) {
+                            constraint = newConstraint;
+                        } else {
+                            constraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+                        } 
+                        
+                    }
+                }
+
+                if (ac.contexts.size() == 0) {
+                    if (ac.inverse) {
+                        if (constraint == null) {
+                            return Authorization.COMPLETE_CHECK;
+                        } else {
+                            return new Authorization.QueryCheck(true, constraint);
+                        }
+                    } else {
+                        // may read nothing, simply making the query result nothing: number = -1 
+                        Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
+                        return new Authorization.QueryCheck(true, mayNothing);
+                    }
+                }
+
+
+                if (steps.size() * ac.contexts.size() < maxContextsInQuery) { 
+                    Iterator i = steps.iterator();
+                    while (i.hasNext()) {
+                        Step step = (Step) i.next();
+                        Constraint newConstraint = null;
+                        StepField field = query.createStepField(step, "owner");
+                        newConstraint = query.createConstraint(field, ac.contexts);
+                        if (ac.inverse) query.setInverse(newConstraint, true);
+
+                        if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
+                            Users users = Users.getBuilder();
+                            Constraint own = query.createConstraint(query.createStepField(step, "number"),
+                                                                    new Integer(users.getUser(userContext.getIdentifier()).getNumber()));
+                            newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
                         }
 
 
@@ -408,9 +463,9 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * @return a  Set of all groups which allow the given operation (not recursively).
+     * @return a  Set of all groups/users which allow the given operation (not recursively).
      */
-    protected  Set getGroups(MMObjectNode contextNode, Operation operation) {        
+    protected  Set getGroupsAndUsers(MMObjectNode contextNode, Operation operation) {        
         
         Set found = operationsCache.get(contextNode, operation);
         if (found == null) {
@@ -442,9 +497,11 @@ public class Contexts extends MMObjectBuilder {
         return found;
     }
 
+    /*
     protected  Set getGroups(String context, Operation operation) {
         return getGroups(getContextNode(context), operation);
     }
+    */
 
     protected final MMObjectNode getContextNode(String context) {
         MMObjectNode contextNode = (MMObjectNode) contextCache.get(context);
@@ -560,6 +617,227 @@ public class Contexts extends MMObjectBuilder {
 
         return hashSet;
     }
+
+
+    //********************************************************************************
+    // EDIT FUNCTIONS
+    //********************************************************************************
+
+    /**
+     * Wether users of the given group may do operation on a node of given context (so no following)
+     * @return boolean
+     */    
+    protected boolean allows(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
+        return getGroupsAndUsers(contextNode, operation).contains(groupOrUserNode);
+    }
+
+    /**
+     * Wether users of the given group may do operation on a node of given context, because
+     * (one of) the parents of this group allow it.
+     * 
+     * @return boolean
+     */    
+    protected boolean parentsAllow(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
+        Groups groups = Groups.getBuilder();
+
+        Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
+        Iterator i = groupsAndUsers.iterator();
+        while (i.hasNext()) {
+            MMObjectNode containingGroup = (MMObjectNode) i.next();
+            if (groups.contains(containingGroup, groupOrUserNode)) return true;
+        }
+        return false;
+    }
+
+    /**
+     */
+    protected boolean mayGrant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) { 
+        Users users = Users.getBuilder();
+        if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
+        Groups groups = Groups.getBuilder();
+
+        if (groupOrUserNode.parent instanceof Groups) {
+            if (! groups.contains(groupOrUserNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group 
+        } else {
+            if (groupOrUserNode.equals(user)) return false; // if not admin, you may not grant yourself rights. (and for admin it is not necessary)
+            if (users.getRank(groupOrUserNode).getInt() >= users.getRank(user).getInt()) return false; // may not grant to users of higher/equal rank than yourself
+        }
+        return mayDo(user, contextNode, operation, true); // you need to have the right yourself to grant it.
+    }
+
+
+
+    /**
+     */
+    protected boolean grant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {    
+        if (allows(contextNode, groupOrUserNode, operation)) return true; // already allowed
+        // create a relation..
+        if (mayGrant(contextNode, groupOrUserNode, operation, user)) {
+            if (log.isServiceEnabled()) {
+                log.service("Granting right " + operation + " on context " + contextNode  + " to group/user " + groupOrUserNode + " by " + user);
+            }
+            RightsRel rightsRel = RightsRel.getBuilder();
+            MMObjectNode ownerContextNode = user.getNodeValue("defaultcontext");
+            String ownerString;
+            if (ownerContextNode != null) {
+                ownerString = ownerContextNode.getStringValue("name");
+            } else {
+                ownerString = DEFAULT_CONTEXT;
+            }
+            MMObjectNode newRight = rightsRel.getNewNode(ownerString, contextNode.getNumber(), groupOrUserNode.getNumber(), operation);
+            return newRight.insert(ownerString) > 0;
+
+        } else {
+            log.service("Granting right " + operation + " on context " + contextNode  + " to group/user " + groupOrUserNode + " by " + user + " failed because it it not allowed");
+            return false;
+        }
+    }
+
+
+
+    /**
+     * @untested
+     */
+
+    protected boolean mayRevoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) { 
+        Users users = Users.getBuilder();
+        if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
+        if (groupOrUserNode.parent instanceof Groups) {
+            if (! Groups.getBuilder().contains(groupOrUserNode, user.getNumber()) || users.getRank(user).getInt() <= Rank.BASICUSER.getInt()) return false; // must be 'high rank' member of group 
+        } else {
+            if (groupOrUserNode.equals(user)) return false; // if not admin, you may not revoke yourself rights. (and for admin it does not make sense
+            if (users.getRank(groupOrUserNode).getInt() >= users.getRank(user).getInt()) return false; // may not revoke from users of higher/equal rank than yourself
+        }
+        return mayDo(user, contextNode, operation, true); // you need to have the right yourself to revoke it (otherwise you could not grant it back)
+    }
+
+
+
+    /**
+     */
+
+    protected boolean revoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) { 
+        Users users = Users.getBuilder();
+        if (!allows(contextNode, groupOrUserNode, operation)) return true; // already disallowed
+
+        if (mayRevoke(contextNode, groupOrUserNode, operation, user)) {
+            if (log.isServiceEnabled()) {
+                log.service("Revoking right " + operation + " on context " + contextNode + " to group " + groupOrUserNode + " by " + user);
+            }
+            RightsRel rights   = RightsRel.getBuilder(); 
+            NodeSearchQuery q = new NodeSearchQuery(rights);
+            BasicStepField snumber = q.getField(rights.getField("snumber"));
+            BasicStepField dnumber = q.getField(rights.getField("dnumber"));
+            BasicFieldValueConstraint c1 = new BasicFieldValueConstraint(snumber, new Integer(contextNode.getNumber()));
+            BasicFieldValueConstraint c2 = new BasicFieldValueConstraint(dnumber, new Integer(groupOrUserNode.getNumber()));           
+            BasicCompositeConstraint cons = new BasicCompositeConstraint(BasicCompositeConstraint.LOGICAL_AND);
+            cons.addChild(c1);
+            cons.addChild(c2);
+            q.setConstraint(cons);
+            try {
+                Iterator i = rights.getNodes(q).iterator();
+                while (i.hasNext()) {
+                    MMObjectNode right = (MMObjectNode) i.next();
+                    rights.removeNode(right);
+                }
+            } catch (Exception sqe) {
+                log.error(sqe.toString());
+                return false;
+            }
+            return true;
+        } else {
+            log.service("Revoking right " + operation + " on context " + contextNode + " to group/user " + groupOrUserNode + " by " + user + " failed because it it not allowed");
+            return false;
+        }
+
+    }
+    
+    /**
+     * util
+     */
+    protected MMObjectNode getUserNode(org.mmbase.bridge.User bridgeUser) {
+        Users users = Users.getBuilder();
+        return users.getUser(bridgeUser.getIdentifier());
+    }
+
+    protected MMObjectNode getGroupOrUserNode(Arguments a) {
+        MMObjectNode groupOrUser = getNode(a.getString("grouporuser"));
+        if (groupOrUser == null) throw new IllegalArgumentException("There is no node with id '" + a.get("grouporuser") + "'");
+        if (! (groupOrUser.parent instanceof Groups || groupOrUser.parent instanceof Users)) {
+            throw new IllegalArgumentException("Node '" + a.get("grouporuser") + "' does not represent a group or a user");
+        }
+        return groupOrUser;
+    }
+
+
+
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
+        log.debug("executefunction of abstractservletbuilder");
+        if (function.equals("info")) {
+            List empty = new ArrayList();
+            Map info = (Map) super.executeFunction(node, function, empty);
+            info.put("allow",        "" + ALLOW_ARGUMENTS + " Wether operation may be done according to this context");
+            info.put("parentsallow", "" + ALLOW_ARGUMENTS + " Wether operation may be done by members of this group, also because of parents");
+            info.put("grant",        "" + GRANT_ARGUMENTS + " Grant a right");
+            info.put("revoke",       "" + GRANT_ARGUMENTS + " Revoke a right");
+            info.put("maygrant",     "" + GRANT_ARGUMENTS + " Check if user may grant a right");
+            info.put("mayrevoke",    "" + GRANT_ARGUMENTS + " Check if user may revoke a right");
+
+            if (args == null || args.size() == 0) {
+                return info;
+            } else {
+                return info.get(args.get(0));
+            }
+        } else if (function.equals("allows")) {
+            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);  // 'ALLOW' argument would be more logical, but don't wien because of the extra argument (practical can use several functions with same arguments list)
+            if (allows(node, getNode(a.getString("grouporuser")), Operation.getOperation(a.getString("operation")))) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+        } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't wien because of the extra argument (practical can use several functions with same arguments list)
+            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")))) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+        } else if (function.equals("grant")) {
+            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+        } else if (function.equals("revoke")) {
+            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+        } else if (function.equals("maygrant")) {
+            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+        } else if (function.equals("mayrevoke")) {
+            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
+
+        } else {
+            return super.executeFunction(node, function, args);
+        }
+    }
+
+
+
 
     public String toString(MMObjectNode n) {
         return n.getStringValue("name");
