@@ -109,10 +109,10 @@ public class RelDef extends MMObjectBuilder {
 
 
     /**
-    * Returns the builder of a relation definition.
-    * @return the builder
+    * Returns the builder name of a relation definition.
+    * @return the builder name
     **/
-    public MMObjectBuilder getBuilder(MMObjectNode node) {
+    public String getBuilderName(MMObjectNode node) {
         String bulname=null;
   	    if (usesbuilder) {
   	        int builder = node.getIntValue("builder");
@@ -121,14 +121,23 @@ public class RelDef extends MMObjectBuilder {
   	        bulname=node.getStringValue("sname");
   	    }
   	    if (bulname==null) {
+  	        return "insrel";
+  	    } else {
+  	        return bulname;
+  	    }
+    }
+
+    /**
+    * Returns the builder of a relation definition.
+    * @return the builder
+    **/
+    public MMObjectBuilder getBuilder(MMObjectNode node) {
+        String bulname=getBuilderName(node);
+  	    MMObjectBuilder bul=mmb.getMMObject(bulname);
+  	    if (bul==null) {
   	        return mmb.getInsRel();
   	    } else {
-  	        MMObjectBuilder bul=mmb.getMMObject(bulname);
-  	        if (bul==null) {
-  	            return mmb.getInsRel();
-  	        } else {
-  	            return bul;
-  	        }
+  	        return bul;
   	    }
     }
 
@@ -202,6 +211,16 @@ public class RelDef extends MMObjectBuilder {
         }
         return success;
    }
+
+    /**
+    * Remove a node from the cloud.
+    * @param node The node to remove.
+    */
+    public void removeNode(MMObjectNode node) {
+        String name=node.getStringValue("sname");
+        super.removeNode(node);
+        relCache.remove(name);
+    }
 
     /**
     * Sets defaults for a new relation definition.
@@ -301,10 +320,10 @@ public class RelDef extends MMObjectBuilder {
     * Search the relation definition table for the identifying number of
     * a relation, by name of the relation to use
     * Similar to {@link #getGuessedByName} (but does not make use of dname)
+    * Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
     * @ param name The builder name on which to search for the relation
     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
     * 	indicated buildername, the first one found is returned.
-    * @deprecated Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
     **/
     public int getGuessedNumber(String name) {
 	    Integer number;
