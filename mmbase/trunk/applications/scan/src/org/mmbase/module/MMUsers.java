@@ -225,33 +225,6 @@ public class MMUsers extends ProcessorModule {
 		super.init ();
 		mmbase = (MMBase)getModule ("MMBASEROOT");
 
-		// get email config and check it
-   		emailFrom = getInitParameter("from");
-		if (emailFrom == null || emailFrom.equals("")) 
-			debug ("missing init param from");
-		if (emailFrom.equals("youremail@yourcompany.nl")) 
-			debug ("from init parameter is still default, please change!!!!");
-		emailReturnPath = getInitParameter("returnpath");
-		if (emailReturnPath == null || emailReturnPath.equals("")) 
-			debug (" missing init param returnpath");
-		if (emailReturnPath.equals("youremail@yourcompany.nl")) 
-			debug (" returnpath init parameter is still default, please change!!!!");
-		emailSubject = getInitParameter("subject");
-		if (emailSubject == null || emailSubject.equals("")) 
-			debug ("missing init param subject");              
-		emailBodyBegin = getInitParameter("bodybegin"); 
-		if (emailBodyBegin == null || emailBodyBegin.equals("")) 
-			debug ("missing init param bodybegin");
-		emailBodyLogin = getInitParameter("bodylogin");
-		if (emailBodyLogin == null || emailBodyBegin.equals("")) 
-			debug ("missing init param bodylogin");
-		emailBodyPasswd = getInitParameter("bodypasswd"); 
-		if (emailBodyPasswd == null || emailBodyPasswd.equals("")) 
-			debug ("missing init param bodypasswd");
-		emailBodyEnd = getInitParameter("bodyend");
-		if (emailBodyEnd == null || emailBodyEnd.equals("")) 
-			debug ("missing init param bodyend");
-
 	}
 
 	/*
@@ -395,6 +368,34 @@ public class MMUsers extends ProcessorModule {
 
 	private void sendConfirmationEMail (String address, String loginname, String password) 
 	{
+
+		// get email config and check it
+   		emailFrom = getInitParameter("from");
+		if (emailFrom == null || emailFrom.equals("")) 
+			debug ("missing init param from");
+		if (emailFrom.equals("youremail@yourcompany.nl")) 
+			debug ("from init parameter is still default, please change!!!!");
+		emailReturnPath = getInitParameter("returnpath");
+		if (emailReturnPath == null || emailReturnPath.equals("")) 
+			debug (" missing init param returnpath");
+		if (emailReturnPath.equals("youremail@yourcompany.nl")) 
+			debug (" returnpath init parameter is still default, please change!!!!");
+		emailSubject = getInitParameter("subject");
+		if (emailSubject == null || emailSubject.equals("")) 
+			debug ("missing init param subject");              
+		emailBodyBegin = getInitParameter("bodybegin"); 
+		if (emailBodyBegin == null || emailBodyBegin.equals("")) 
+			debug ("missing init param bodybegin");
+		emailBodyLogin = getInitParameter("bodylogin");
+		if (emailBodyLogin == null || emailBodyBegin.equals("")) 
+			debug ("missing init param bodylogin");
+		emailBodyPasswd = getInitParameter("bodypasswd"); 
+		if (emailBodyPasswd == null || emailBodyPasswd.equals("")) 
+			debug ("missing init param bodypasswd");
+		emailBodyEnd = getInitParameter("bodyend");
+		if (emailBodyEnd == null || emailBodyEnd.equals("")) 
+			debug ("missing init param bodyend");
+
 		debug ("Sending e-mail to " + address + " concerning login '" + loginname
 			+ "' and password '" + password + "'");
 		if (sendMail == null) sendMail = (SendMailInterface)getModule("sendmail");
