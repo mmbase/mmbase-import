@@ -1,4 +1,6 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -56,10 +58,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="nl">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -85,10 +87,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Owner</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -114,10 +116,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Name</name>
-			<name xml:lang="en">Name</name>
-			<name xml:lang="nl">Naam</name>
-			<type>string</type>
+			<guiname xml:lang="us">Name</guiname>
+			<guiname xml:lang="en">Name</guiname>
+			<guiname xml:lang="nl">Naam</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -143,10 +145,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Symbol</name>
-			<name xml:lang="en">Symbol</name>
-			<name xml:lang="nl">Symbool</name>
-			<type>string</type>
+			<guiname xml:lang="us">Symbol</guiname>
+			<guiname xml:lang="en">Symbol</guiname>
+			<guiname xml:lang="nl">Symbool</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -172,10 +174,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Intro</name>
-			<name xml:lang="en">Intro</name>
-			<name xml:lang="nl">Intro</name>
-			<type>field</type>
+			<guiname xml:lang="us">Intro</guiname>
+			<guiname xml:lang="en">Intro</guiname>
+			<guiname xml:lang="nl">Intro</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -201,8 +203,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Bio</name>
-			<type>field</type>
+			<guiname xml:lang="us">Bio</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>

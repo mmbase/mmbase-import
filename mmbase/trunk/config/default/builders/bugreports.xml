@@ -22,16 +22,6 @@
 
 <searchage>14</searchage>
 
-
-<!-- <properties>
-     you can define properties to be used by the classfile (if used) it uses
-     a key/value system. Its a optional tag.
--->
-<properties>
-    <property name="from">bugs@mmbase.org</property>
-    <property name="replyto">bugs@mmbase.org</property>
-</properties>
-
 <!-- <names>
 	names defines the different names used in user visible parts, singular for
 	for talking about 1 object (Url,Person) and plurar for talking about multiple
@@ -57,6 +47,15 @@
 	<description xml:lang="en">Bug tracking system</description>
 	<description xml:lang="us">Bug tracking system</description>
 </descriptions>
+
+<!-- <properties>
+     you can define properties to be used by the classfile (if used) it uses
+     a key/value system. Its a optional tag.
+-->
+<properties>
+    <property name="from">bugs@mmbase.org</property>
+    <property name="replyto">bugs@mmbase.org</property>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important

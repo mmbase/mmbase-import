@@ -58,10 +58,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="nl">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -87,10 +87,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Owner</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -116,10 +116,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Username</name>
-			<name xml:lang="en">Username</name>
-			<name xml:lang="nl">Gebruikersnaam</name>
-			<type>string</type>
+			<guiname xml:lang="us">Username</guiname>
+			<guiname xml:lang="en">Username</guiname>
+			<guiname xml:lang="nl">Gebruikersnaam</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -145,10 +145,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Password</name>
-			<name xml:lang="en">Password</name>
-			<name xml:lang="nl">Paswoord</name>
-			<type>string</type>
+			<guiname xml:lang="us">Password</guiname>
+			<guiname xml:lang="en">Password</guiname>
+			<guiname xml:lang="nl">Paswoord</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>

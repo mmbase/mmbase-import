@@ -48,6 +48,10 @@
 	<description xml:lang="nl">A channel of a community</description>
 </descriptions>
 
+<properties>
+    <property name="baserecordpath">/tmp/chatlogs</property>
+</properties>
+
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
 	once defined keep them in the same order.
@@ -58,10 +62,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="nl">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -87,10 +91,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Owner</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -116,10 +120,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Name</name>
-			<name xml:lang="en">Name</name>
-			<name xml:lang="nl">Naam</name>
-			<type>string</type>
+			<guiname xml:lang="us">Name</guiname>
+			<guiname xml:lang="en">Name</guiname>
+			<guiname xml:lang="nl">Naam</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -145,10 +149,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Subtitle</name>
-			<name xml:lang="en">Subtitle</name>
-			<name xml:lang="nl">Subtitel</name>
-			<type>string</type>
+			<guiname xml:lang="us">Subtitle</guiname>
+			<guiname xml:lang="en">Subtitle</guiname>
+			<guiname xml:lang="nl">Subtitel</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -174,10 +178,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Intro</name>
-			<name xml:lang="en">Intro</name>
-			<name xml:lang="nl">Intro</name>
-			<type>field</type>
+			<guiname xml:lang="us">Intro</guiname>
+			<guiname xml:lang="en">Intro</guiname>
+			<guiname xml:lang="nl">Intro</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -203,10 +207,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Body</name>
-			<name xml:lang="en">Body</name>
-			<name xml:lang="nl">Body</name>
-			<type>field</type>
+			<guiname xml:lang="us">Body</guiname>
+			<guiname xml:lang="en">Body</guiname>
+			<guiname xml:lang="nl">Beschrijving</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -232,10 +236,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Session</name>
-			<name xml:lang="en">Session</name>
-			<name xml:lang="nl">Sessie</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Session</guiname>
+			<guiname xml:lang="en">Session</guiname>
+			<guiname xml:lang="nl">Sessie</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -261,10 +265,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Login</name>
-			<name xml:lang="en">Login</name>
-			<name xml:lang="nl">Login</name>
-			<type>channellogin</type>
+			<guiname xml:lang="us">Login</guiname>
+			<guiname xml:lang="en">Login</guiname>
+			<guiname xml:lang="nl">Login</guiname>
+			<guitype>channellogin</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -290,10 +294,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Open</name>
-			<name xml:lang="en">Open</name>
-			<name xml:lang="nl">Open</name>
-			<type>channelopen</type>
+			<guiname xml:lang="us">Open</guiname>
+			<guiname xml:lang="en">Open</guiname>
+			<guiname xml:lang="nl">Open</guiname>
+			<guitype>channelopen</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -319,10 +323,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Highest sequence</name>
-			<name xml:lang="en">Highest sequence</name>
-			<name xml:lang="nl">Hoogste volgordenr</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Highest sequence</guiname>
+			<guiname xml:lang="en">Highest sequence</guiname>
+			<guiname xml:lang="nl">Hoogste volgordenr</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -348,10 +352,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Maximum users</name>
-			<name xml:lang="en">Maximum users</name>
-			<name xml:lang="nl">Maximum gebruikers</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Maximum users</guiname>
+			<guiname xml:lang="en">Maximum users</guiname>
+			<guiname xml:lang="nl">Maximum gebruikers</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -372,8 +376,6 @@
 			<type state="persistent" notnull="true">INTEGER</type>
 		</db>
 	</field>
-
-
 
 </fieldlist>
 
