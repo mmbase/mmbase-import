@@ -24,12 +24,12 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.4 2003-06-30 13:32:55 michiel Exp $
+ * @version $Id: Ranks.java,v 1.5 2003-07-08 17:42:45 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
 
-    private static final Logger log = Logging.getLoggerInstance(Ranks.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Ranks.class);
 
     public Ranks() {
         super();        
