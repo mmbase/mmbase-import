@@ -17,10 +17,13 @@ import java.util.StringTokenizer;
  * standard output or standard error (the configure string can contain
  * `stderr' or `stdout' (default)).  It does not know categories (and
  * therefore is a Singleton class). It is possible to configure what
- * should be logged as well. and you cannot configure what to
- * log (everything is always logged).
+ * should be logged as well (with a level-string token in the
+ * configure string).
  *
- * @author Michiel Meeuwissen */
+ * @author  Michiel Meeuwissen
+ * @version $Id: SimpleImpl.java,v 1.9 2003-03-11 20:22:58 michiel Exp $
+ * @since   MMBase-1.4
+ */
 
 public class SimpleImpl extends AbstractSimpleImpl implements Logger {
 
