@@ -60,7 +60,6 @@ public class EmailHandler {
 
         // get To of the mail (to field + related users + related users in groups
 	Vector toUsers = getAttachedUsers(node);
-	log.info("USERS="+toUsers);
 
         // get From of the mail
         String from=node.getStringValue("from");
