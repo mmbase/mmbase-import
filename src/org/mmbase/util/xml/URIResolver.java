@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.10 2003-01-14 15:58:12 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.11 2003-01-14 17:05:25 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {
@@ -129,7 +129,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
         } else {
             String help = cwd.getAbsolutePath() + extraDirs.toString(); 
             hashCode = help.hashCode();
-            if (los.isDebugEnabled()) log.debug("getting hashCode " + hashCode + " based on '" + help + "'");
+            if (log.isDebugEnabled()) log.debug("getting hashCode " + hashCode + " based on '" + help + "'");
         }
     }
 
