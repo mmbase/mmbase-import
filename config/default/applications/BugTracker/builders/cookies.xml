@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder maintainer="mmbase.org" version="0">
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<builder maintainer="mmbase.org"  version="1" extends="object">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -21,6 +21,7 @@
 <classfile>Cookies</classfile>
 
 <searchage>7</searchage>
+
 
 <!-- <names>
 	names defines the different names used in user visible parts, singular for
@@ -47,13 +48,6 @@
 	<description xml:lang="en">Cookie defines a key for a browser cookie</description>
 	<description xml:lang="us">Cookie defines a key for a browser cookie</description>
 </descriptions>
-
-<!-- <properties>
-you can define properties to be used by the classfile (if used) it uses
-a key/value system. Its a optional tag.
--->
-<properties>
-</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -119,6 +113,7 @@ a key/value system. Its a optional tag.
 		</db>
 	</field>
 
+
 	<!-- POS 3 : <field> 'cookiekey'  -->
 	<field>
 		<!-- gui related -->
@@ -148,7 +143,7 @@ a key/value system. Its a optional tag.
 		</db>
 	</field>
 
-	<!-- POS 4 : <field> 'firstlogin'  -->
+	<!-- POS 4 : <field> 'lastname'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
