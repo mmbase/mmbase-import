@@ -13,7 +13,7 @@ import java.util.*;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.LRUHashtable;
 import org.mmbase.util.StringTagger;
-
+import org.mmbase.util.logging.*;
 
 /**
  * This object handles cache multilevel tag cache requests. it removed
@@ -24,9 +24,11 @@ import org.mmbase.util.StringTagger;
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.8 2002-07-17 16:39:14 michiel Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.9 2002-10-08 15:24:07 michiel Exp $
  */
 public class MultilevelCacheHandler extends Cache {
+
+    private static Logger log = Logging.getLoggerInstance(MultilevelCacheHandler.class.getName());
 
     // listeners, keeps a list of entry's per objectmanager
     private Hashtable listeners = new Hashtable();
@@ -68,7 +70,7 @@ public class MultilevelCacheHandler extends Cache {
     public Object put(Object hash, Object o, Vector types,StringTagger tagger) {
         if (! isActive()) return null;
         MultilevelCacheEntry n = new MultilevelCacheEntry(this, hash, o, tagger);
-        addListeners(types,n);
+        addListeners(types, n);
         return put(hash,n);
     }
 
@@ -109,13 +111,13 @@ public class MultilevelCacheHandler extends Cache {
      * @javadoc
      * @todo types should be List
      */
-    private void addListeners(Vector types,MultilevelCacheEntry n) {
+    private void addListeners(Vector types, MultilevelCacheEntry n) {
         Enumeration e=types.elements();
         while (e.hasMoreElements()) {
             String type=(String)e.nextElement();
             char lastchar=type.charAt(type.length()-1);
-            if (lastchar>='1' && lastchar<='9') {
-                type=type.substring(0,type.length()-1);
+            if (Character.isDigit(lastchar)) {
+                type = type.substring(0, type.length() - 1);
             }
             MultilevelSubscribeNode l = (MultilevelSubscribeNode)listeners.get(type);
             if (l == null) {
