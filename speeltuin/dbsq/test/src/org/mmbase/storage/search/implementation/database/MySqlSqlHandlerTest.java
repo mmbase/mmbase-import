@@ -14,7 +14,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class MySqlSqlHandlerTest extends TestCase {
     
@@ -114,26 +114,26 @@ public class MySqlSqlHandlerTest extends TestCase {
         // Test use of "LIMIT" construct.
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL"));
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL"));
         
         query.setMaxNumber(100);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL LIMIT 100"));
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL LIMIT 100"));
         
         query.setOffset(50);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL LIMIT 50,100"));
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL LIMIT 50,100"));
 
         query.setMaxNumber(-1);
         assertTrue(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT images.m_number AS 'm_number' FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL LIMIT 50,"
+        "SELECT m_number FROM " 
+        + prefix + "images WHERE m_number IS NULL LIMIT 50,"
         + Integer.MAX_VALUE));
     }
     

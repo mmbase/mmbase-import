@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ConstraintParserTest extends TestCase {
     
@@ -97,12 +97,12 @@ public class ConstraintParserTest extends TestCase {
         StepField field = instance.getField("number");
         assertTrue(field.toString(), field.getStep() == step1);
         assertTrue(field.toString(), field.getFieldName().equals("number"));
-        assertTrue(field.toString(), field.getAlias().equals("number"));
+        assertTrue(field.toString(), field.getAlias() == null);
         
         field = instance.getField("step1.number");
         assertTrue(field.toString(), field.getStep() == step1);
         assertTrue(field.toString(), field.getFieldName().equals("number"));
-        assertTrue(field.toString(), field.getAlias().equals("step1.number"));
+        assertTrue(field.toString(), field.getAlias() == null);
         
         try {
             // Field does not exist, should throw IllegalArgumentException.
@@ -121,12 +121,12 @@ public class ConstraintParserTest extends TestCase {
         field = instance.getField("step1.title");
         assertTrue(field.toString(), field.getStep() == step1);
         assertTrue(field.toString(), field.getFieldName().equals("title"));
-        assertTrue(field.toString(), field.getAlias().equals("step1.title"));
+        assertTrue(field.toString(), field.getAlias() == null);
 
         field = instance.getField("pools.name");
         assertTrue(field.toString(), field.getStep() == step3);
         assertTrue(field.toString(), field.getFieldName().equals("name"));
-        assertTrue(field.toString(), field.getAlias().equals("pools.name"));
+        assertTrue(field.toString(), field.getAlias() == null);
     }
     
     /** Test of getField(String, List) method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
@@ -136,12 +136,12 @@ public class ConstraintParserTest extends TestCase {
         StepField field = ConstraintParser.getField("number", steps);
         assertTrue(field.toString(), field.getStep() == step1);
         assertTrue(field.toString(), field.getFieldName().equals("number"));
-        assertTrue(field.toString(), field.getAlias().equals("number"));
+        assertTrue(field.toString(), field.getAlias() == null);
         
         field = ConstraintParser.getField("step1.number", steps);
         assertTrue(field.toString(), field.getStep() == step1);
         assertTrue(field.toString(), field.getFieldName().equals("number"));
-        assertTrue(field.toString(), field.getAlias().equals("step1.number"));
+        assertTrue(field.toString(), field.getAlias() == null);
         
         try {
             // Field does not exist, should throw IllegalArgumentException.
@@ -160,12 +160,12 @@ public class ConstraintParserTest extends TestCase {
         field = ConstraintParser.getField("step1.title", steps);
         assertTrue(field.toString(), field.getStep() == step1);
         assertTrue(field.toString(), field.getFieldName().equals("title"));
-        assertTrue(field.toString(), field.getAlias().equals("step1.title"));
+        assertTrue(field.toString(), field.getAlias() == null);
 
         field = ConstraintParser.getField("pools.name", steps);
         assertTrue(field.toString(), field.getStep() == step3);
         assertTrue(field.toString(), field.getFieldName().equals("name"));
-        assertTrue(field.toString(), field.getAlias().equals("pools.name"));
+        assertTrue(field.toString(), field.getAlias() == null);
     }
     
     /** Test of parseSimpleCondition method, of class org.mmbase.storage.search.legacy.ConstraintParser. */
