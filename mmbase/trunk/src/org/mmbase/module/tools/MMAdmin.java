@@ -272,6 +272,8 @@ public class MMAdmin extends ProcessorModule {
 			Hashtable bh=(Hashtable)h.nextElement();	
 			String path=(String)bh.get("path");
 			String prepath=MMBaseContext.getConfigPath()+("/applications/");
+
+			if (fileExists(prepath+path)) {
 			XMLNodeReader nodereader=new XMLNodeReader(prepath+path,prepath+appname+"/",mmb);
 			
 			String exportsource=nodereader.getExportSource();
@@ -302,6 +304,7 @@ public class MMAdmin extends ProcessorModule {
 				}
 			} else {
 				System.out.println("Application installer : can't reach syncnodes builder");
+			}
 			}
 		}
 		return(true);
@@ -353,6 +356,7 @@ public class MMAdmin extends ProcessorModule {
 			Hashtable bh=(Hashtable)h.nextElement();	
 			String path=(String)bh.get("path");
 			path=MMBaseContext.getConfigPath()+("/applications/")+path;
+			if (fileExists(path)) {
 			XMLRelationNodeReader nodereader=new XMLRelationNodeReader(path,mmb);
 			
 			String exportsource=nodereader.getExportSource();
@@ -408,6 +412,7 @@ public class MMAdmin extends ProcessorModule {
 				}
 			} else {
 				System.out.println("Application installer : can't reach syncnodes builder");
+			}
 			}
 		}
 		return(true);
@@ -786,5 +791,15 @@ public class MMAdmin extends ProcessorModule {
 			}
 		}
 		return(results);
+	}
+
+
+	private boolean fileExists(String path) {
+		File f=new File(path);
+		if (f.exists() && f.isFile()) {
+			return(true);
+		} else {
+			return(false);
+		}
 	}
 }
