@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.*;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -29,15 +29,16 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.47.2.4 2005-03-16 23:34:40 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.47.2.5 2005-03-24 13:19:22 michiel Exp $
  */
 
-public class WriterHelper {
-
+public class WriterHelper  {
 
     private static final Logger log = Logging.getLoggerInstance(WriterHelper.class);
     public static boolean NOIMPLICITLIST = true;
     public static boolean IMPLICITLIST   = false;
+
+    private BodyContent bodyContent;
 
     static final int TYPE_UNKNOWN = -10;
     static final int TYPE_UNSET   = -1;
@@ -179,8 +180,8 @@ public class WriterHelper {
     public void overrideNoImplicitList() {
         overrideNoImplicitList = true;
     }
-
-    /**
+ 
+    /**   
      * Some writer tags produce very specific content, and take care
      * of escaping themselves (UrlTag). They turn off escaping (on default).
      */
@@ -204,6 +205,19 @@ public class WriterHelper {
         }
     }
 
+    /**
+     * @deprecated body-content is requested from thisTag
+     */
+    public void setBodyContent(BodyContent bc) {
+        bodyContent = bc;
+    }
+    /**
+     * @deprecated page-context is requested from thisTag
+     */
+    public void setPageContext(PageContext pc) {
+    }
+    
+    
     public void setJspvar(String j) {
         jspvar = j;
     }
@@ -217,18 +231,6 @@ public class WriterHelper {
 
     public String getJspvar() {
         return jspvar;
-    }
-
-
-    /**
-     * @deprecated body-content is requested from thisTag
-     */
-    public void setBodyContent(BodyContent bc) {
-    }
-    /**
-     * @deprecated page-context is requested from thisTag
-     */
-    public void setPageContext(PageContext pc) {
     }
 
     /**
@@ -290,13 +292,13 @@ public class WriterHelper {
             return;
         }
 
-        if (noImplicitList && ! overrideNoImplicitList) {
+        if (noImplicitList &&  ! overrideNoImplicitList) {
             // Take last of list if vartype defined not to be a list:
             if (v instanceof List) {
                 if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
                     List l = (List) v;
                     if (l.size() > 0) {
-                        v = l.get(l.size() - 1); // last element
+                        v = l.get(l.size() - 1);
                         // v = l.get(0);               // first element, allows for 'overriding'.
                     } else {
                         v = null;
@@ -449,7 +451,6 @@ public class WriterHelper {
 
 
     public String getString() {
-        BodyContent bodyContent = thisTag.getBodyContent();
         if (bodyContent != null) {
             return bodyContent.getString();
         } else {
@@ -464,7 +465,9 @@ public class WriterHelper {
      */
 
     public int doAfterBody() throws JspException {
+        bodyContent = thisTag.getBodyContent();
         return javax.servlet.jsp.tagext.Tag.SKIP_BODY;
+
     }
 
     /**
@@ -473,12 +476,9 @@ public class WriterHelper {
      * It decides if to write or not.
      */
     public int doEndTag() throws JspTagException {
-        if (log.isDebugEnabled()) {            
-            log.debug("doEndTag of WriterHelper value: '" + value + "'");
-        }
+        log.debug("doEndTag of WriterHelper");
         try {
-            String body = getString(); // un-nulls also bodyContent
-            BodyContent bodyContent = thisTag.getBodyContent();
+            String body = getString();
             if (isWrite()) {
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
                 getPageString(thisTag.getPageContext().getOut()).write(body);
@@ -501,6 +501,7 @@ public class WriterHelper {
         overrideWrite = null; // for use next time
         overrideNoImplicitList = false;
         hasBody       = false;
+        bodyContent   = null;
         value         = null;
     }
 
