@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.3 2003-11-21 22:01:50 michiel Exp $
+ * @version $Id: Function.java,v 1.4 2003-12-11 21:56:21 michiel Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
@@ -86,6 +86,12 @@ abstract public class Function {
     }
     public ReturnType getReturnType() {
         return returnType;
+    }
+    public void setReturnType(ReturnType type) {
+        if (returnType != null) {
+            throw new IllegalStateException("Returntype is set already");
+        }
+        returnType = type;
     }
     
 
