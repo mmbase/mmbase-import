@@ -23,7 +23,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {
@@ -43,8 +43,7 @@ public class QuerySampleCode {
         MMBaseContext.init(args[0], true);
         
         // Sql handler that generates SQL strings.
-        SqlHandler sqlHandler 
-            = new BasicSqlHandler(new java.util.HashMap());
+        SqlHandler sqlHandler = new BasicSqlHandler(new java.util.HashMap());
         
         MMBase mmbase = MMBase.getMMBase();
         MMObjectBuilder images = mmbase.getBuilder("images");
@@ -145,6 +144,34 @@ public class QuerySampleCode {
         AND pools.number=insrel.dnumber) 
         AND images.title='Logo' 
         ORDER BY title ASC
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // An example of creating an aggregating query counting a single field:
+        query = new BasicSearchQuery(true);
+        step1 = query.addStep(images);
+        FieldDefs imagesNumber = images.getField("number");
+        BasicAggregatedField field1a = query.addAggregatedField(
+            step1, imagesNumber, AggregatedField.AGGREGATION_TYPE_COUNT);
+        field1a.setAlias("number_count");
+
+/* 
+ Result:
+        SELECT COUNT(images.number) AS number_count 
+        FROM <basename>images images
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // Add grouping on a second field.
+        BasicAggregatedField field2a = query.addAggregatedField(
+            step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+
+/* 
+ Result:
+        SELECT COUNT(images.number) AS number_count,
+            images.title AS title 
+        FROM <basename>images images 
+        GROUP BY title
  */
         System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
 

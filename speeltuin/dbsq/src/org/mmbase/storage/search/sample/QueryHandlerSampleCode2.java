@@ -17,7 +17,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode2 {
@@ -37,8 +37,7 @@ public class QueryHandlerSampleCode2 {
         MMBaseContext.init(args[0], true);
         
         // Sql handler that generates SQL strings.
-        SqlHandler sqlHandler 
-            = new BasicSqlHandler(new java.util.HashMap());
+        SqlHandler sqlHandler = new BasicSqlHandler(new java.util.HashMap());
         
         MMBase mmbase = MMBase.getMMBase();
         MMJdbc2NodeInterface database = mmbase.getDatabase();
