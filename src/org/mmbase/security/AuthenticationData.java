@@ -10,11 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 import org.mmbase.util.functions.*;
 
+
 /**
  * This interface represents information about the authentication implemtentation.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: AuthenticationData.java,v 1.2 2005-03-07 15:13:15 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.3 2005-03-16 16:05:33 michiel Exp $
  * @since MMBase-1.8
  */
 public interface  AuthenticationData {
@@ -42,6 +43,7 @@ public interface  AuthenticationData {
 
     static final int METHOD_DEFAULT = Integer.MAX_VALUE;
 
+    static final String    STRINGS = "org.mmbase.security.resources.parameters";
 
     /**
      * Common parameters for logon-info
@@ -57,11 +59,12 @@ public interface  AuthenticationData {
     static final Parameter PARAMETER_LOGOUT        = new Parameter("logout",  Boolean.class);
     static final Parameter PARAMETER_AUTHENTICATE  = new Parameter("authenticate", String.class);
 
+
     /**
      *	The method returns wether the UserContext has become invalid for some reason (change in security config?)
      *	@param userContext The UserContext of which we want to know the rights
      *	@return <code>true</code> when valid, otherwise <code>false</code>
-     *	@exception SecurityException When something strang happend
+     *	@exception SecurityException When something strange happened
      */
     boolean isValid(UserContext userContext) throws SecurityException;
 
