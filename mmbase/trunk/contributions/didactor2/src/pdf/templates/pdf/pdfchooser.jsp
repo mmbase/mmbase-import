@@ -26,8 +26,9 @@
     }
 
     URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number+"&provider="+providerNumber);
+    URL imageUrl = new URL(baseUrl+"/pdf/pdfheaderimage.jsp?provider="+providerNumber);
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-    PDFConverter.pageAsPDF(url, outStream);
+    PDFConverter.pageAsPDF(url, outStream,imageUrl);
 %>
     <mm:node number="$number">
         <mm:import id="attachmentname"><mm:field name="title"/><mm:field name="name"/></mm:import>
