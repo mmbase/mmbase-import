@@ -358,7 +358,7 @@ public class StateManager implements CommandHandlerInterface {
 					MMObjectBuilder bul=state.getBuilder();
 					FieldDefs ndefs=bul.getNextField(currentfield);
 					if (ndefs!=null) {
-						state.setHtmlValue("NEXTFIELD",""+ndefs.getGUIType()+".shtml?"+ndefs.getDBName()+"+"+ndefs.getGUIName());
+						state.setHtmlValue("NEXTFIELD",""+ndefs.getGUIType()+".shtml?"+ndefs.getDBName()+"+"+ndefs.getGUIName(state.getLanguage()));
 					} else {
 						state.setHtmlValue("NEXTFIELD","empty.shtml");
 					}

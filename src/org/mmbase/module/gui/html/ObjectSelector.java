@@ -81,6 +81,7 @@ public class ObjectSelector implements CommandHandlerInterface {
 	 *
 	 */
 	Vector getObjectFields(EditState ed) {
+		String language=ed.getLanguage();
 		Vector results=new Vector();
 		MMObjectBuilder obj=ed.getBuilder();
 		MMObjectNode node=ed.getEditNode();
@@ -102,7 +103,7 @@ public class ObjectSelector implements CommandHandlerInterface {
 					} else {
 						results.addElement(val);
 					}
-					results.addElement(def.getGUIName());
+					results.addElement(def.getGUIName(language));
 					results.addElement(def.getGUIType());
 				}
 			}
@@ -342,13 +343,14 @@ public class ObjectSelector implements CommandHandlerInterface {
 	 */
 	Vector getObjectSelectionTitles(EditState state) {
 		Vector result = new Vector();
+		String language=state.getLanguage();
 		MMObjectBuilder builder = state.getBuilder();
 		Vector fieldDefs;
 		
 		if (builder != null) {
 			fieldDefs = builder.getSortedListFields();
 			for (Enumeration enum = fieldDefs.elements(); enum.hasMoreElements();) {
-				result.addElement(((FieldDefs)enum.nextElement()).getGUIName());
+				result.addElement(((FieldDefs)enum.nextElement()).getGUIName(language));
 			}
 		}
 
