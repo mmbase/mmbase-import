@@ -122,6 +122,39 @@
 		</return> 
 	</function>
 
+       <function name="getForumHeaderPath">
+               <description>Provide the headerpath for the given forum</description>  
+                <type>class</type>
+                <class>org.mmbase.applications.mmbob.gui.Controller</class>
+                <method>getForumHeaderPath</method>
+                <param name="forumid" type="String" description="MMBase node number of the forum" />
+                <return type="String">
+                    <field name="headerPath" type="String" description="the headerpath for the given forum" />
+                </return>
+       </function>
+
+       <function name="getForumFooterPath">
+               <description>Provide the footerpath for the given forum</description>
+                <type>class</type>
+                <class>org.mmbase.applications.mmbob.gui.Controller</class>
+                <method>getForumFooterPath</method>
+                <param name="forumid" type="String" description="MMBase node number of the forum" />
+                <return type="String">
+                    <field name="footerPath" type="String" description="the footerpath for the given forum" />
+                </return>
+       </function>
+
+       <function name="getForumFromEmailAddress">
+               <description>Provide the from emailaddress for the given forum</description>
+                <type>class</type>
+                <class>org.mmbase.applications.mmbob.gui.Controller</class>
+                <method>getForumFromEmailAddress</method>
+                <param name="forumid" type="String" description="MMBase node number of the forum" />
+                <return type="String">
+                    <field name="fromEmailAddress" type="String" description="the from emailaddress for the given forum" />
+                </return>
+       </function>
+
 	<function name="getPosterInfo">
 		<description>Provide info on a poster forum</description>
 		<type>class</type>
