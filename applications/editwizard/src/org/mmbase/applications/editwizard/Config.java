@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.5 2002-05-08 09:01:11 michiel Exp $
+ * @version $Id: Config.java,v 1.6 2002-05-15 12:10:36 michiel Exp $
  */
 
 public class Config {
@@ -125,14 +125,17 @@ public class Config {
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
             }
         }
-        protected String getParam(String paramName) { return request.getParameter(paramName); }
+        protected String getParam(String paramName) { 
+            if (request.getParameter(paramName) == null) return null;
+            return org.mmbase.util.Encode.decode("ESCAPE_URL_PARAM", request.getParameter(paramName)).replace('\\', '/'); 
+        }
         
         protected String getParam(String paramName, String def) {
             if (request.getParameter(paramName) == null) {
                 if (def == null) return null;
-                return def.toString();
+                return def.toString(); 
             }
-            return request.getParameter(paramName);
+            return getParam(paramName);
         }
         
         protected Integer getParam(String paramName, Integer def) {
