@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
  
-  $Id: Attachments.java,v 1.2 2000-08-06 00:31:05 case Exp $
+  $Id: Attachments.java,v 1.3 2000-08-16 21:50:02 case Exp $
  
   $Log: not supported by cvs2svn $
+  Revision 1.2  2000/08/06 00:31:05  case
+  cjr: Now calls org.mmbase.util.MagicFile to automatically set mimetype on upload
+ 
  
 */
 package org.mmbase.module.builders;
@@ -30,7 +33,7 @@ import org.mmbase.util.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: Attachments.java,v 1.2 2000-08-06 00:31:05 case Exp $
+ * @version $Id: Attachments.java,v 1.3 2000-08-16 21:50:02 case Exp $
  *
  */
 public class Attachments extends MMObjectBuilder {
@@ -40,14 +43,20 @@ public class Attachments extends MMObjectBuilder {
     protected String defaultMimeType = "application/x-binary";
 
     public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
-        debug("CMDS="+cmds);
-        debug("VARS="+vars);
+        if (debug) {
+            debug("CMDS="+cmds);
+            debug("VARS="+vars);
+        }
         EditState ed = (EditState)vars.get("EDITSTATE");
-        System.out.println("Attachments::process() called");
+        if (debug) {
+            debug("Attachments::process() called");
+        }
         String action = command.nextToken();
         if (action.equals("SETFIELD")) {
             String fieldname = command.nextToken();
-            System.out.println("fieldname = "+fieldname);
+            if (debug) {
+                debug("fieldname = "+fieldname);
+            }
             setEditFileField(ed, fieldname, cmds, sp);
         }
         return false;
@@ -72,62 +81,6 @@ public class Attachments extends MMObjectBuilder {
         return (null);
     }
 
-    /**
-     * Eh, this function seems to be called when committing a not ("save changes")
-     * I'd rather put the functionality defined here into a method that is called 
-     * when processing a form, but hey, I haven't found how to do that.
-     *
-     * So anytime the stuff is committed, this piece of code tries to set the size
-     * of the uploaded file and, eventually, the mimetype.
-     * 
-     */
-    /*
-      XXX This method should go, now that processing is taking place immediately
-    public int preCommit(EditState ed, MMObjectNode node) {
-        String mimeType;
-        byte[] handle = node.getByteValue("handle");
-        if (handle != null) {
-            int size = handle.length;
-            mimeType = defaultMimeType; // Dunno how to dynamically determine this :-(
-            node.setValue("size",size);
-            node.setValue("mimetype",mimeType);
-            if (debug) debug("handle size set to "+size);
-            if (debug) debug("handle mimetype set to "+mimeType);
-        }
-        return(-1);
-}
-    */
-
-    /**
-     * cjr: copied from FieldEditor, commented out the FieldDefs def = .. line
-     */
-    /* XXX doesn't work XXX
-    protected boolean setEditDISKField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
-    MMObjectBuilder obj=ed.getBuilder();
-    //FieldDefs def=obj.getField(fieldname); // Doesn't seem to be called ?!
-    try {
-     MMObjectNode node=ed.getEditNode();
-     if (node!=null) {
-    //String filename=(String)cmds.get("EDIT-BUILDER-SETFIELDFILE_DISK-"+fieldname);
-    String filename = sp.poster.getPostParameterFile(fieldname);
-    System.out.println("filename = "+filename);
-    //byte[] bytes=getFile(filename);
-    byte[] bytes = getFile("/tmp/net7681");
-    if (bytes==null) {
-      System.out.println("FieldEditor-> Empty file !!");
-} else {
-      node.setValue(fieldname,bytes);
-      node.setValue("mimetype","foo/bar");
-      node.setValue("size",5000);
-}
-     }
-} catch (Exception e) {
-     e.printStackTrace();
-}
-    return(true);
-}
-    */
-
     protected boolean setEditFileField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
         MMObjectBuilder obj=ed.getBuilder();
         //FieldDefs def=obj.getField(fieldname);
@@ -135,16 +88,42 @@ public class Attachments extends MMObjectBuilder {
             MMObjectNode node=ed.getEditNode();
             if (node!=null) {
                 byte[] bytes=sp.poster.getPostParameterBytes("file");
+
+                // [begin] Let's see if we can get to the filename, -cjr
+                String file_name = sp.poster.getPostParameter("file_name");
+                String file_type = sp.poster.getPostParameter("file_type");
+                String file_size = sp.poster.getPostParameter("file_size");
+                if (debug) {
+                    if (file_name == null) {
+                        debug("file_name is NULL");
+                    } else {
+                        debug("file_name = "+file_name);
+                    }
+                    if (file_type == null) {
+                        debug("file_type is NULL");
+                    } else {
+                        debug("file_type = "+file_type);
+                    }
+                    if (file_size == null) {
+                        debug("file_size is NULL");
+                    } else {
+                        debug("file_size = "+file_size);
+                    }
+                }
+
+                // [end]
                 node.setValue(fieldname,bytes);
 
                 if (bytes != null && bytes.length > 0) {
-                    MagicFile magic = new MagicFile();
-                    String mimetype = magic.test(bytes);
-                    node.setValue("mimetype",mimetype);
-                    node.setValue("size",bytes.length);
-                } else {
+                    //MagicFile magic = new MagicFile();
+                    //String mimetype = magic.test(bytes);
+                    node.setValue("mimetype",file_type);
+                    node.setValue("filename",file_name);
+                    node.setValue("size",bytes.length);  // Simpler than converting "file_size"
+                }
+                else {
                     if (debug) {
-                        debug("Damn. Got zero bytes");
+                        debug("Grr. Got zero bytes");
                     }
                 }
             }
