@@ -60,11 +60,11 @@ public class PostThread {
 	this.postcount=node.getIntValue("postcount");
 	if (postcount==-1) postcount=0;
 
-	this.lastpostsubject=node.getStringValue("lastpostsubject");
-	this.lastposter=node.getStringValue("lastposter");
-	this.lastposttime=node.getIntValue("lastposttime");
-	this.lastposternumber=node.getIntValue("posternumber");
-	this.lastpostnumber=node.getIntValue("number");
+	this.lastpostsubject=node.getStringValue("c_lastpostsubject");
+	this.lastposter=node.getStringValue("c_lastposter");
+	this.lastposttime=node.getIntValue("c_lastposttime");
+	this.lastposternumber=node.getIntValue("lastposternumber");
+	this.lastpostnumber=node.getIntValue("lastpostnumber");
 	log.info("WHAAAA="+lastpostnumber);
 	log.info("WHAAAA="+lastposternumber);
 
