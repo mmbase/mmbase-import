@@ -30,12 +30,19 @@ import org.mmbase.util.logging.Logging;
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
     protected String type = null;
+    protected String role = null;
 
     /**
      * @param type a nodeManager
      */
     public void setType(String type) throws JspTagException {
         this.type = getAttributeValue(type);
+    }
+    /**
+     * @param role a role
+     */
+    public void setRole(String role) throws JspTagException {
+        this.role = getAttributeValue(role);
     }
     
     /**
@@ -56,13 +63,19 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         if ( (constraints != null && !constraints.equals(""))
              || 
              (orderby != null && !orderby.equals(""))
-             ) {
+             ) { // given orderby or constraints, start hacking:
 
             if (type == null) {
                 throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
             } 
             NodeManager manager = getCloud().getNodeManager(type);
-            NodeList    initialnodes = node.getRelatedNodes(type);
+            NodeList initialnodes;
+
+            if (role == null) {
+                initialnodes = node.getRelatedNodes(type);
+            } else {
+                initialnodes = node.getRelatedNodes(type, role, directions);
+            }
             
             String where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
@@ -82,9 +95,16 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             }
         } else {
             if (type == null) {
+                if (role != null) {
+                    throw new JspTagException("Must specify type attribute when using 'role'");
+                }
                 nodes = node.getRelatedNodes();
             } else {
-                nodes = node.getRelatedNodes(type);
+                if (role == null) {
+                    nodes = node.getRelatedNodes(type);
+                } else {
+                    nodes = node.getRelatedNodes(type, role, directions);
+                }
             }
         }
         return setReturnValues(nodes, true);
