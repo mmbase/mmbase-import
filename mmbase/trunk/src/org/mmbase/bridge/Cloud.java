@@ -19,7 +19,7 @@ import org.mmbase.storage.search.SearchQuery;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.35 2003-06-23 14:23:33 kees Exp $
+ * @version $Id: Cloud.java,v 1.36 2003-07-21 15:24:49 michiel Exp $
  */
 public interface Cloud {
 
@@ -476,8 +476,17 @@ public interface Cloud {
      * 
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
+     * @todo should accept Query?
      */
     public NodeList getList(SearchQuery query);
+
+
+    /**
+     * Create an empty Query, which can be filled, and used in {getList#query}.
+     * @since MMBase-1.7
+     */
+
+    public Query createQuery();
 
 
     /**
@@ -494,4 +503,6 @@ public interface Cloud {
      * @since MMBase-1.6
      */
     public Locale  getLocale();
+
+
 }
