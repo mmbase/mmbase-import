@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.153 2002-09-26 12:43:47 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.154 2002-09-30 12:42:20 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -78,8 +78,10 @@ public class MMObjectBuilder extends MMTable {
      * Collection for temporary nodes,
      * Used by the Temporarynodemanager when working with transactions
      * The default size is 1024.
+     * @rename to Map temporaryNodes
+     * @scope  protected
      */
-    public static Hashtable TemporaryNodes=new Hashtable(TEMPNODE_DEFAULT_SIZE);
+    public static Hashtable TemporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
 
     /**
      * The class used to store and retrieve data in the database that is currently in use.
@@ -269,35 +271,42 @@ public class MMObjectBuilder extends MMTable {
             log.info("Creating table for builder " + tableName);
             create();
         }
-        TypeDef typeDef=mmb.getTypeDef();
+        TypeDef typeDef = mmb.getTypeDef();
         // only deteremine otype if typedef is available,
         // or this is typedef itself (have to start somewhere)
-        if (((typeDef!=null)  && (typeDef.getObjectType()!=-1)) ||
-            (this==typeDef)) {
-            oType=typeDef.getIntValue(tableName);
-            if (oType==-1) {
-                MMObjectNode node=typeDef.getNewNode("system");
-                node.setValue("name",tableName);
-                if (description==null) description="not defined in this language";
-                oType=mmb.getDatabase().getDBKey();
-                node.setValue("number",oType);
+        if (((typeDef != null)  && (typeDef.getObjectType()!=-1)) || (this == typeDef)) {
+                     oType = typeDef.getIntValue(tableName);
+            if (oType == -1) { // no object type number defined yet
+                if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
+                MMObjectNode node = typeDef.getNewNode("system");
+                node.setValue("name", tableName);
+
+                // This sucks:
+                if (description == null) description = "not defined in this language";
+
+                node.setValue("description", description);
+
+                oType = mmb.getDatabase().getDBKey();
+                log.debug("Got key " + oType);
+                node.setValue("number", oType);
                 // for typedef, set otype explictly, as it wasn't set in getNewNode()
-                if (this==typeDef) {
-                    node.setValue("otype",oType);
+                if (this == typeDef) {
+                    node.setValue("otype", oType);
                 }
+                log.debug("Inserting the new typedef node");
                 node.insert("system");
                 // for typedef, call it's parents init again, as otype is only now set
-                if (this==typeDef) {
+                if (this == typeDef) {
                     if (parentBuilder!=null) {
                         parentBuilder.init();
                     }
                 }
             }
-        } else {
+        } else {         
             // warn if typedef was not created
             // except for the 'object' and 'typedef' basic builders
             if(!tableName.equals("typedef") && !tableName.equals("object")) {
-                log.warn("init(): for tablename("+tableName+") -> can't get to typeDef");
+                log.warn("init(): for tablename(" + tableName + ") -> can't get to typeDef");
                 return false;
             }
         }
@@ -362,7 +371,7 @@ public class MMObjectBuilder extends MMTable {
             int n;
             n=mmb.getDatabase().insert(this,owner,node);
             if (n>=0) safeCache(new Integer(n),node);
-            String alias=node.getAlias();
+            String alias = node.getAlias();
             if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
         } catch(Exception e) {
@@ -810,17 +819,17 @@ public class MMObjectBuilder extends MMTable {
             if(bi == 0) {
                 bul = "typedef";
             }
-            else if(bi > 0) {
-                bul=mmb.getTypeDef().getValue(bi);
+            else if (bi > 0) {
+                bul = mmb.getTypeDef().getValue(bi);
             }
             else {
                 // smaller then 0, cant be possible!
-                String msg = "The nodetype of node #" + number + " could not be found(nodetype # " + bi + ")";
+                String msg = "The nodetype of node #" + number + " could not be found (nodetype # " + bi + ")";
                 log.error(msg);
                 throw new RuntimeException(msg);
             }
             if (bul == null) {
-                log.error("The nodetype of node #" + number + " could not be found(nodetype # " + bi + ")");
+                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + bi + ")");
                 return null;
             }
 
@@ -829,7 +838,7 @@ public class MMObjectBuilder extends MMTable {
             try {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
-                ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
+                ResultSet rs = stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_" + bul + " WHERE "+mmb.getDatabase().getNumberString()+"="+number);
                 if (rs.next()) {
                     // create a new object and add it to the result vector
                     MMObjectBuilder bu=mmb.getMMObject(bul);
@@ -988,12 +997,10 @@ public class MMObjectBuilder extends MMTable {
             if (rs.next()) {
                 nodecount= rs.getInt(1);
             }
-            stmt.close();
-            con.close();
-            // return the results
         } catch (Exception e) {
             // something went wrong print it to the logs
-            log.error("basicSearch(): ERROR in search "+query);
+            log.error("basicSearch(): ERROR in search "+query);          
+        }  finally {
             mmb.closeConnection(con,stmt);
         }
         return nodecount;
@@ -1008,14 +1015,13 @@ public class MMObjectBuilder extends MMTable {
         return searchVector(where).elements();
     }
 
+
     /**
-     * Returns a vector containing all the objects that match the searchkeys
-     * @param where scan expression that the objects need to fulfill
-     * @return a vector containing all the objects that apply.
-     * @deprecated Use search() instead
+     * Parses arguments of searchVector and searchList
+     * @since MMBase-1.6
      */
-    public Vector searchVector(String where) {
-        // do the query on the database
+
+    protected String getQuery(String where) {
         if (where==null) where="";
         if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
@@ -1023,8 +1029,29 @@ public class MMObjectBuilder extends MMTable {
             //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
         }
-        String query="SELECT * FROM "+getFullTableName()+" "+where;
-        return basicSearch(query);
+        return "SELECT * FROM "+getFullTableName()+" "+where;
+    }
+    
+    /**
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where scan expression that the objects need to fulfill
+     * @return a vector containing all the objects that apply.
+     * @deprecated Use search() instead
+     */
+    public Vector searchVector(String where) {
+        // do the query on the database 
+        return basicSearch(getQuery(where));
+    }
+
+    /**
+     * As searchVector. Differences are:
+     * - Throws exception on SQL errors
+     * - returns List rather then Vector.
+     * @since MMBase-1.6
+     */
+    
+    public List searchList(String where) throws SQLException {
+        return getList(getQuery(where));
     }
 
     /**
@@ -1048,24 +1075,39 @@ public class MMObjectBuilder extends MMTable {
      * @return A Vector which contains all nodes that were found
      */
     private Vector basicSearch(String query) {
-        MultiConnection con=null;
-        Statement stmt=null;
+        Vector results;
         try {
-            con=mmb.getConnection();
-            stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery(query);
-            Vector results=readSearchResults(rs);
-            stmt.close();
-            con.close();
-            // return the results
-            return results;
+            results = (Vector) getList(query);
         } catch (Exception e) {
             // something went wrong print it to the logs
             log.error("basicSearch(): ERROR in search " + query + " : " + Logging.stackTrace(e));
+            results = new Vector();  // Return an empty Vector
+        }
+        return results;
+    }
+
+    /**
+     * As basicSearch
+     * But:
+     * - Throws exception on error
+     * - Returns List
+     * @since MMBase-1.6
+     */
+
+    private List getList(String query) throws SQLException {
+        MultiConnection con=null;
+        Statement stmt=null;
+        Vector results;
+        try {
+            con = mmb.getConnection();
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            results = readSearchResults(rs);
+        } finally {
             mmb.closeConnection(con,stmt);
         }
-
-        return new Vector(); // Return an empty Vector
+        // return the results
+        return results;
     }
 
     /**
@@ -1075,24 +1117,28 @@ public class MMObjectBuilder extends MMTable {
      */
     public Vector searchNumbers(String where) {
         // do the query on the database
+        MultiConnection con = null;
+        Statement stmt = null;
         try {
-            MultiConnection con=mmb.getConnection();
-            Statement stmt=con.createStatement();
+            con=mmb.getConnection();
+            stmt=con.createStatement();
+
             ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase()));
             Vector results=new Vector();
             Integer number;
             String tmp;
             while(rs.next()) {
                 results.addElement(new Integer(rs.getInt(1)));
-            }
-            stmt.close();
-            con.close();
+            }          
             return results;
         } catch (SQLException e) {
             // something went wrong print it to the logs
             log.error(Logging.stackTrace(e));
             return null;
+        } finally {
+            mmb.closeConnection(con,stmt);
         }
+
     }
 
     /**
@@ -1207,15 +1253,12 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Returns a vector containing all the objects that match the searchkeys
-     * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
-     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
-     * @return a vector containing all the objects that apply.
+     * Parses arguments of searchVector and searchList
+     *
+     * @since MMBase-1.6
      */
-    public Vector searchVector(String where,String sorted,boolean direction) {
-        // do the query on the database
+
+    protected String getQuery(String where, String sorted, boolean direction) {
         if (where==null) {
             where="";
         } else if (where.indexOf("MMNODE")!=-1) {
@@ -1225,42 +1268,36 @@ public class MMObjectBuilder extends MMTable {
         }
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
+        String query;
         if (direction) {
-            String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
-            return basicSearch(query);
+            query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
+
         } else {
-            String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" DESC";
-            return basicSearch(query);
+            query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" DESC";
         }
+        return query;
     }
 
     /**
-     * Returns a vector containing all the objects that match the searchkeys in
-     * a given order.
-     *
-     * @param where       where clause that the objects need to fulfill
-     * @param sorted      a comma separated list of field names on wich the
-     *                    returned list should be sorted
-     * @param directions  A comma separated list of the values indicating wether
-     *                    to sort up (ascending) or down (descending) on the
-     *                    corresponding field in the <code>sorted</code>
-     *                    parameter or <code>null</code> if sorting on all
-     *                    fields should be up.
-     *                    The value DOWN (case insensitive) indicates
-     *                    that sorting on the corresponding field should be
-     *                    down, all other values (including the
-     *                    empty value) indicate that sorting on the
-     *                    corresponding field should be up.
-     *                    If the number of values found in this parameter are
-     *                    less than the number of fields in the
-     *                    <code>sorted</code> parameter, all fields that
-     *                    don't have a corresponding direction value are
-     *                    sorted according to the last specified direction
-     *                    value.
-     * @return            a vector containing all the objects that apply in the
-     *                    requested order
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
+     * @return a vector containing all the objects that apply.
      */
-    public Vector searchVector(String where, String sorted, String directions) {
+    public Vector searchVector(String where,String sorted,boolean direction) {
+        // do the query on the database
+        return basicSearch(getQuery(where, sorted, direction));
+    }
+
+    /**
+     * Parses arguments of searchVector and searchList
+     *
+     * @since MMBase-1.6
+     */
+
+    protected String getQuery(String where, String sorted, String directions) {
         if (where==null) {
             where="";
         } else if (where.indexOf("MMNODE")!=-1) {
@@ -1293,9 +1330,50 @@ public class MMObjectBuilder extends MMTable {
                 orderBy += ", ";
             }
         }
-        String query = "SELECT * FROM " + getFullTableName() + " " + where
-                       + " ORDER BY " + orderBy;
-        return basicSearch(query);
+        return "SELECT * FROM " + getFullTableName() + " " + where + " ORDER BY " + orderBy;
+    }
+
+    /**
+     * Returns a vector containing all the objects that match the searchkeys in
+     * a given order.
+     *
+     * @param where       where clause that the objects need to fulfill
+     * @param sorted      a comma separated list of field names on wich the
+     *                    returned list should be sorted
+     * @param directions  A comma separated list of the values indicating wether
+     *                    to sort up (ascending) or down (descending) on the
+     *                    corresponding field in the <code>sorted</code>
+     *                    parameter or <code>null</code> if sorting on all
+     *                    fields should be up.
+     *                    The value DOWN (case insensitive) indicates
+     *                    that sorting on the corresponding field should be
+     *                    down, all other values (including the
+     *                    empty value) indicate that sorting on the
+     *                    corresponding field should be up.
+     *                    If the number of values found in this parameter are
+     *                    less than the number of fields in the
+     *                    <code>sorted</code> parameter, all fields that
+     *                    don't have a corresponding direction value are
+     *                    sorted according to the last specified direction
+     *                    value.
+     * @return            a vector containing all the objects that apply in the
+     *                    requested order
+     */
+    public Vector searchVector(String where, String sorted, String directions) {
+        return basicSearch(getQuery(where, sorted, directions));
+    }
+
+    /**
+     * As searchVector
+     * But 
+     * - throws Exception on error
+     * - returns List
+     *
+     * @since MMBase-1.6
+     */
+
+    public List searchList(String where, String sorted, String  directions) throws SQLException {
+        return getList(getQuery(where, sorted, directions));
     }
 
     /**
@@ -1388,8 +1466,7 @@ public class MMObjectBuilder extends MMTable {
                             log.fatal(msg);
                             throw new RuntimeException(msg);
                         }
-                    }
-                    else if(log.isDebugEnabled()) {
+                    } else if(log.isDebugEnabled()) {
 			log.info("skipping casting to valid node-type for node #" +node.getNumber()+ "(we are starting the builder:" + getClass().getName() + ")");
 		    }
                 }
@@ -1408,8 +1485,7 @@ public class MMObjectBuilder extends MMTable {
                     }
                 }
             }
-        }
-        catch(java.sql.SQLException e) {
+        } catch(java.sql.SQLException e) {
             log.error(Logging.stackTrace(e));
         }
         return results;
@@ -1509,8 +1585,8 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>FieldDefs</code> belonging with the indicated field
      */
     public FieldDefs getField(String fieldName) {
-        FieldDefs node=(FieldDefs)fields.get(fieldName);
-        return node;
+        FieldDefs fielddefs = (FieldDefs) fields.get(fieldName);
+        return fielddefs;
     }
 
     /**
@@ -1714,6 +1790,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Retrieve the table name (without the clouds' base name)
      * @return a <code>String</code> containing the table name
+     * 
      */
     public String getTableName() {
         return tableName;
@@ -1751,8 +1828,10 @@ public class MMObjectBuilder extends MMTable {
             if (pos2!=-1) {
                 name=field.substring(pos1+1,pos2);
                 function=field.substring(0,pos1);
-                log.debug("function= "+function+", fieldname ="+name);
-                rtn=executeFunction(node,function,name);
+                if (log.isDebugEnabled()) {
+                    log.debug("function= "+function+", fieldname ="+name);
+                }
+                rtn = executeFunction(node, function, name);
             }
         }
         // Old code
@@ -1773,12 +1852,16 @@ public class MMObjectBuilder extends MMTable {
         return rtn;
     }
 
+    /**
+     * @deprecated use executeFunction(node, function, list)
+     */
+
     protected Vector getFunctionParameters(String fields) {
         int commapos=0;
         int nested=0;
         Vector v= new Vector();
         int i;
-        log.debug("Fields="+fields);
+        if (log.isDebugEnabled()) log.debug("Fields=" + fields);
         for(i = 0; i<fields.length(); i++) {
             if ((fields.charAt(i)==',') || (fields.charAt(i)==';')){
                 if(nested==0) {
@@ -1800,6 +1883,78 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * @since MMBase-1.6
+     */
+
+    public Object executeFunction(MMObjectNode node, String function, List arguments) {
+        if (log.isDebugEnabled()) { 
+            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
+        }
+        
+        // For backwards compatibility we call the old executeFunction
+        // for the simple cases.
+        Object rtn = null;
+        if (arguments == null) arguments = new Vector();
+        if (arguments.size() == 0) {
+            rtn =  executeFunction(node, function, "");
+            if (rtn != null) return rtn;
+        } 
+        if (arguments.size() == 1 && arguments.get(0) instanceof String) {
+            rtn =  executeFunction(node, function, (String) arguments.get(0));
+            if (rtn != null) return rtn;
+        }
+        if (function.equals("wrap")) {       
+            try {
+                String val  = node.getStringValue((String)arguments.get(0));
+                int wrappos = Integer.parseInt((String)arguments.get(1));
+                return wrap(val, wrappos);
+            } catch(Exception e) {}
+        } else if (function.equals("substring")) {
+            try {
+                String val = node.getStringValue((String)arguments.get(0));
+                int len    = Integer.parseInt((String)arguments.get(1));
+                if (arguments.size() > 2) {
+                    String filler = (String)arguments.get(2);
+                    rtn = substring(val, len, filler);
+                } else {
+                    rtn = substring(val, len, null);
+                }
+            } catch(Exception e) {}
+        } else if (function.equals("smartpath")) {
+            try {
+                String documentRoot = (String) arguments.get(0);
+                String path         = (String) arguments.get(1);
+                String version      = (String) arguments.get(2);
+                if (version != null) {
+                    if (version.equals("")) {
+                        version = null;
+                    }
+                }
+                rtn = getSmartPath(documentRoot, path, "" + node.getNumber(), version);
+            } catch(Exception e) {
+                log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
+            }
+        } else if (function.equals("sgui")) {
+            // 'ServletBuilders' can need a first argument (to store a reference to a logged-on
+            // cloud). Other builders could simply give gui().
+            // See AbstractServletBuilder.            
+            if (arguments.size() < 2) {
+                if (arguments.size() == 0) arguments.add("");
+                rtn = executeFunction(node, "gui", arguments);
+            } else {
+                rtn = executeFunction(node, "gui", arguments.subList(1, arguments.size()));
+            }
+        } else { // still not found!, try 'subfnctions'
+            if (arguments.size() == 1 && arguments.get(0) instanceof String) {
+                List args = getFunctionParameters((String) arguments.get(0));
+                if (args.size() != 1) rtn = executeFunction(node, function, args);
+            }
+            if (rtn == null) log.warn("Builder ("+tableName+") unknown function '"+function+"'");
+        }
+        return rtn;
+    }
+
+    /**
      * Executes a function on the field of a node, and returns the result.
      * This method is called by the builder's {@link #getValue} method.
      * Derived builders should override this method to provide additional functions.
@@ -1814,100 +1969,85 @@ public class MMObjectBuilder extends MMTable {
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
-    protected Object executeFunction(MMObjectNode node,String function,String field) {
-        Object rtn=null;
+    protected Object executeFunction(MMObjectNode node, String function, String field) {
+
+        if (log.isDebugEnabled()) { 
+            log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + field);
+        }
+
         // time functions
         if(function.equals("date")) {					// date
             int v=node.getIntValue(field);
-            rtn=DateSupport.date2string(v);
+            return DateSupport.date2string(v);
         } else if (function.equals("time")) {			// time hh:mm
             int v=node.getIntValue(field);
-            rtn=DateSupport.getTime(v);
+            return DateSupport.getTime(v);
         } else if (function.equals("timesec")) {		// timesec hh:mm:ss
             int v=node.getIntValue(field);
-            rtn=DateSupport.getTimeSec(v);
+            return DateSupport.getTimeSec(v);
         } else if (function.equals("longmonth")) {		// longmonth September
             int v=node.getIntValue(field);
-            rtn=DateStrings.longmonths[DateSupport.getMonthInt(v)];
+            return DateStrings.longmonths[DateSupport.getMonthInt(v)];
         } else if (function.equals("monthnumber")) {
             int v=node.getIntValue(field);
-            rtn=""+(DateSupport.getMonthInt(v)+1);
+            return ""+(DateSupport.getMonthInt(v)+1);
         } else if (function.equals("month")) {			// month Sep
             int v=node.getIntValue(field);
-            rtn=DateStrings.Dutch_months[DateSupport.getMonthInt(v)];
+            return DateStrings.Dutch_months[DateSupport.getMonthInt(v)];
         } else if (function.equals("weekday")) {		// weekday Sunday
             int v=node.getIntValue(field);
-            rtn=DateStrings.Dutch_longdays[DateSupport.getWeekDayInt(v)];
+            return DateStrings.Dutch_longdays[DateSupport.getWeekDayInt(v)];
         } else if (function.equals("shortday")) {		// shortday Sun
             int v=node.getIntValue(field);
-            rtn=DateStrings.Dutch_days[DateSupport.getWeekDayInt(v)];
+            return DateStrings.Dutch_days[DateSupport.getWeekDayInt(v)];
         } else if (function.equals("day")) {			// day 4
             int v=node.getIntValue(field);
-            rtn=""+DateSupport.getDayInt(v);
+            return ""+DateSupport.getDayInt(v);
         } else if (function.equals("shortyear")) {			// year 01
             int v=node.getIntValue(field);
-            rtn=(DateSupport.getYear(v)).substring(2);
+            return (DateSupport.getYear(v)).substring(2);
         } else if (function.equals("year")) {			// year 2001
             int v=node.getIntValue(field);
-            rtn=DateSupport.getYear(v);
+            return DateSupport.getYear(v);
         } else if (function.equals("thisdaycurtime")) {			//
             int curtime=node.getIntValue(field);
             // gives us the next full day based on time (00:00)
             int days=curtime/(3600*24);
-            rtn=""+((days*(3600*24))-3600);
+            return ""+((days*(3600*24))-3600);
         } else if (function.equals("age")) {
             Integer val = new Integer(node.getAge());
-            rtn = val.toString();
+            return val.toString();
         } else if (function.equals("wap")) {
             String val=node.getStringValue(field);
-            rtn=getWAP(val);
+            return getWAP(val);
         } else if (function.equals("html")) {
             String val=node.getStringValue(field);
-            rtn=getHTML(val);
+            return getHTML(val);
         } else if (function.equals("shorted")) {
             String val=node.getStringValue(field);
-            rtn=getShort(val,32);
+            return getShort(val,32);
         } else if (function.equals("uppercase")) {
             String val=node.getStringValue(field);
-            rtn=val.toUpperCase();
+            return val.toUpperCase();
         } else if (function.equals("lowercase")) {
             String val=node.getStringValue(field);
-            rtn=val.toLowerCase();
+            return val.toLowerCase();
         } else if (function.equals("hostname")) {
             String val=node.getStringValue(field);
-            rtn=hostname_function(val);
+            return hostname_function(val);
         } else if (function.equals("urlencode")) {
             String val=node.getStringValue(field);
-            rtn=getURLEncode(val);
+            return getURLEncode(val);
         } else if (function.startsWith("wrap_")) {
             String val=node.getStringValue(field);
             try {
                 int wrappos=Integer.parseInt(function.substring(5));
-                rtn=wrap(val,wrappos);
-            } catch(Exception e) {}
-        } else if (function.equals("wrap")) {
-            Vector v=getFunctionParameters(field);
-            try {
-                String val=node.getStringValue((String)v.get(0));
-                int wrappos=Integer.parseInt((String)v.get(1));
-                rtn=wrap(val,wrappos);
-            } catch(Exception e) {}
-        } else if (function.equals("substring")) {
-            Vector v=getFunctionParameters(field);
-            try {
-                String val=node.getStringValue((String)v.get(0));
-                int len=Integer.parseInt((String)v.get(1));
-                if (v.size()>2) {
-                    String filler=(String)v.get(2);
-                    rtn=substring(val,len,filler);
-                } else {
-                    rtn=substring(val,len,null);
-                }
+                return wrap(val,wrappos);
             } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
-             double val=node.getDoubleValue(field);
+             double val = node.getDoubleValue(field);
              NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
-             rtn=""+nf.format(val);
+             return  "" + nf.format(val);
         } else if (function.equals("gui")) {
             String val = null;
             if (field.equals("")) {
@@ -1923,36 +2063,15 @@ public class MMObjectBuilder extends MMTable {
                     }
                 }
             }
-            rtn=val;
-        } else if (function.equals("smartpath")) {
-            Vector v=getFunctionParameters(field);
-            try {
-                String documentRoot = (String)v.get(0);
-                String path = (String)v.get(1);
-                String version = (String)v.get(2);
-                if (version != null) {
-                    if (version.equals("")) {
-                        version = null;
-                    }
-                }
-                rtn = getSmartPath(documentRoot, path, "" + node.getNumber(), version);
-            } catch(Exception e) {
-                log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
-            }
-        } else if (function.equals("sgui")) {
-            // 'ServletBuilders' can need a first argument (to store a reference to a logged-on
-            // cloud). Other builders could simply give gui().
-            // See AbstractServletBuilder.
-            int comma = field.indexOf(',');
-            if (comma == -1) {
-                rtn = executeFunction(node, "gui", field);
-            } else {
-                rtn = executeFunction(node, "gui", field.substring(comma + 1));
-            }
+            return val;
         } else {
-            log.warn("Builder ("+tableName+") unknown function '"+function+"'");
+            // old manner: parsing list from string. That is ugly.
+            List args = getFunctionParameters(field);
+            if (args.size() > 1) {
+                return executeFunction(node, function, args);
+            }                                   
         }
-        return rtn;
+        return null;
     }
 
     /**
