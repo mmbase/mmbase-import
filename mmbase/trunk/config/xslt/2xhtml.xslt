@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.5 2004-03-02 17:09:08 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.6 2004-03-03 22:43:10 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1"
@@ -91,6 +91,7 @@
     <xsl:choose>
       <xsl:when test="not($urls)">
         <!-- no relations found, simply ignore the anchor -->
+        <xsl:copy-of select="@*" />
         <xsl:apply-templates />
       </xsl:when>
       <xsl:when test="count($urls)=1">
@@ -131,7 +132,7 @@
 
 
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="p|a">
+  <xsl:template match="p|a[@id != '']">
     <xsl:copy>
 
       <!-- store the 'relation' nodes for convenience in $rels:-->
@@ -158,6 +159,7 @@
   <xsl:template match="section|p" mode="sub">
     <xsl:param name="relatednodes" />
     <xsl:apply-templates  select="$relatednodes[@type='images']"  mode="concise" />
+    <xsl:copy-of select="@*" />
     <xsl:apply-templates />
     <xsl:if test="count($relatednodes[@type='urls']) &gt; 0">
       <small><xsl:apply-templates  select="$relatednodes[@type='urls']"  mode="concise" /></small>
