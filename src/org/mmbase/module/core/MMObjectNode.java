@@ -13,6 +13,7 @@ import java.util.*;
 import java.sql.*;
 
 import org.mmbase.module.*;
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.gui.html.*;
@@ -1173,6 +1174,7 @@ public class MMObjectNode {
      * Get the related nodes of a certain type. The returned nodes are not the
      * nodes directly attached to this node (the relation nodes) but the nodes
      * attached to the relation nodes of this node.
+     *
      * @param type the type of objects to be returned
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
@@ -1190,6 +1192,59 @@ public class MMObjectNode {
                 result.addElement(node);
             }
         }
+        return result;
+    }
+
+    /**
+     * Get the related nodes of a certain type. The returned nodes are not the
+     * nodes directly attached to this node (the relation nodes) but the nodes
+     * attached to the relation nodes of this node.
+     *
+     * This is a much faster routine than getRelatedNodes(type)
+     *
+     * @param type the type of objects to be returned
+     * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
+     */
+    public Vector getRelatedNodesFast(String type ) { 
+        return getRelatedNodesFast(parent.mmb.getMMObject(type).oType);
+    }
+
+    /**
+     * Get the related nodes of a certain type. The returned nodes are not the
+     * nodes directly attached to this node (the relation nodes) but the nodes
+     * attached to the relation nodes of this node.
+     *
+     * This is a much faster routine than getRelatedNodes(type)
+     * 
+     * @param type the type of objects to be returned
+     * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
+     */
+    public Vector getRelatedNodesFast(int type) { 
+        Vector result = new Vector();
+        try { 
+            String query1 = "select i.dnumber number from vpro4_object o, vpro4_insrel i where i.snumber="+getNumber()+" and o.number = i.dnumber and o.otype="+type+";";
+            String query2 = "select i.snumber number from vpro4_object o, vpro4_insrel i where i.dnumber="+getNumber()+" and o.number = i.snumber and o.otype="+type+";";
+
+            MultiConnection con=parent.mmb.getConnection();
+
+            Statement stmt1 = con.createStatement();
+            ResultSet rs1 = stmt1.executeQuery( query1 );
+            while(rs1.next()) 
+                result.addElement(parent.getNode(rs1.getInt(1)));
+            stmt1.close();
+
+            // union
+
+            Statement stmt2 = con.createStatement();
+            ResultSet rs2 = stmt2.executeQuery( query2 );
+            while(rs1.next()) 
+                result.addElement(parent.getNode(rs1.getInt(1)));
+            stmt2.close();
+            con.close();
+        } catch (SQLException e) { 
+            log.error("While doing query1("+query1+") and query2("+query2+"), got exception: " + e );
+        }
+
         return result;
     }
 
