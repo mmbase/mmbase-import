@@ -18,16 +18,26 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.util.XMLEntityResolver;
+
 import java.util.*;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.6 2004-02-02 20:52:33 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.7 2004-02-18 17:14:29 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class ValueIntercepter {
+
+    public static final String PUBLIC_ID_FIELD_TYPE_DEFINITIONS_0_1 = "-//MMBase//DTD fieldtypedefinitions 0.1//EN";
+    public static final String DTD_FIELD_TYPE_DEFINITIONS_0_1 = "fieldtypedefinitions_0_1.dtd";
+
+    public static final String PUBLIC_ID_FIELD_TYPE_DEFINITIONS = PUBLIC_ID_FIELD_TYPE_DEFINITIONS_0_1;
+    public static final String DTD_FIELD_TYPE_DEFINITIONS = DTD_FIELD_TYPE_DEFINITIONS_0_1;
+
+    public static final String XML_FIELD_TYPE_DEFINITIONS = "resources/fieldtypedefinitions.xml";
 
     private static Logger log;
 
@@ -101,7 +111,7 @@ public class ValueIntercepter {
         log = Logging.getLoggerInstance(ValueIntercepter.class);
         // read the XML
         try {
-            readFieldTypes();
+            readFieldTypeDefinitions();
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
@@ -158,14 +168,17 @@ public class ValueIntercepter {
     /**
      * Initialize the type handlers default supported by the system.
      */
-    private static void readFieldTypes() {
-
-        log.service("Reading fieldtypes");
+    private static void readFieldTypeDefinitions() {
         Class thisClass = ValueIntercepter.class;
-        InputSource fieldtypes = new InputSource(thisClass.getResourceAsStream("resources/fieldtypes.xml"));
-        XMLBasicReader reader  = new XMLBasicReader(fieldtypes, thisClass);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_FIELD_TYPE_DEFINITIONS, DTD_FIELD_TYPE_DEFINITIONS, thisClass);
+        log.service("Reading fieldtype-definitions");
+        InputSource fieldTypes = new InputSource(thisClass.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));
+        if (fieldTypes.getSystemId() == null) {
+            fieldTypes.setSystemId("resource:" + thisClass.getPackage().getName() + "/" + XML_FIELD_TYPE_DEFINITIONS); // I've honousley no idea what it should be, but this is at least fit for humans (in case of errors)
+        }
+        XMLBasicReader reader  = new XMLBasicReader(fieldTypes, thisClass);
 
-        Element fieldtypesElement = reader.getElementByPath("fieldtypes");
+        Element fieldtypesElement = reader.getElementByPath("fieldtypedefinitions");
         Enumeration e = reader.getChildElements(fieldtypesElement, "fieldtype");
         while (e.hasMoreElements()) {
             Element typeElement = (Element) e.nextElement();

@@ -1,4 +1,4 @@
-<!ELEMENT fieldtypes (fieldtype*) >
+<!ELEMENT fieldtypedefinitions (fieldtype*) >
 <!ELEMENT fieldtype  (setprocessor*, getprocessor*, specialization*) >
 <!ATTLIST fieldtype  id  NMTOKEN  #REQUIRED > 
 
