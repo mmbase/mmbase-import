@@ -16,9 +16,9 @@
    String basepath=request.getContextPath()+request.getServletPath();
    basepath=basepath.substring(0,basepath.lastIndexOf("/"));
    if (newfield!=null) {
-     String editpath = basepath+"/"+newfield.getGUIType()+".jsp";
-     if (!new java.io.File(pageContext.getServletContext().getRealPath(editpath)).exists()) {
-       editpath = basepath+"/autoedit.jsp";
+     String editpath = newfield.getGUIType()+".jsp";
+     if (!new java.io.File(pageContext.getServletContext().getRealPath(basepath+"/"+editpath)).exists()) {
+       editpath = "autoedit.jsp";
      } %>
       <frame src="<mm:url page="<%=editpath%>" ><mm:param name="field"><%=newfield.getName()%></mm:param></mm:url>" name="workarea" scrolling="auto" marginheight="0" marginwidth="0" />
 <% } else { %>
