@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xmlnews exportsource="mmbase://localhost/mmbase/new" timestamp="20021109011559">
+<xmlnews exportsource="mmbase://localhost/mmbase/richtext" timestamp="20021109011559">
 	<node number="5673" owner="system" alias="xmltest">
-		<date>1011988784</date>
 		<body>&lt;mmxf&gt;
 &lt;section title=&quot;Strange languages and so on&quot;&gt;
 &lt;p id=&quot;lang&quot;&gt;Strange languages are very interesting. As everybody knows. There are two url's and one image related to this paragraph.&lt;/p&gt;
