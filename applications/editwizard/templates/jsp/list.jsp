@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.47.2.2 2004-09-15 13:04:26 jaco Exp $
+     * @version  $Id: list.jsp,v 1.47.2.3 2005-03-22 09:38:28 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -202,7 +202,7 @@ for (int i=0; i < results.size(); i++) {
     }
     for (int j=0; j < listConfig.fieldList.size(); j++) {
         String fieldname = (String)listConfig.fieldList.get(j);
-        
+
         Field field = null;
         String value = "";
         if (listConfig.multilevel) {
@@ -222,7 +222,7 @@ for (int i=0; i < results.size(); i++) {
         } else {
           value = item.getStringValue("gui(" + fieldname + ")");
         }
-        addField(obj, field.getGUIName(), value, field.getGUIType());
+        addField(obj, field.getGUIName(), fieldname, value, field.getGUIType());
     }
 
     if (listConfig.multilevel) {
@@ -315,9 +315,10 @@ private org.w3c.dom.Node addObject(org.w3c.dom.Node el, int number, int index, S
 
 }
 
-private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value, String guitype) {
+private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String fieldName, String value, String guitype) {
     org.w3c.dom.Node n = el.getOwnerDocument().createElement("field");
     Utils.setAttribute(n, "name", name);
+    Utils.setAttribute(n, "fieldname", fieldName);
     Utils.setAttribute(n, "guitype", guitype);
     Utils.storeText(n, value);
     el.appendChild(n);

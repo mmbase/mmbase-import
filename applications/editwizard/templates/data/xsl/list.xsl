@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.37.2.1 2004-09-15 13:04:25 jaco Exp $
+    @version $Id: list.xsl,v 1.37.2.2 2005-03-22 09:38:28 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -229,7 +229,17 @@
             <th>
               <xsl:value-of select="@name" />
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-            </th>
+              <a class="pagenav"
+                 title="{$tooltip_sort_on} {@name} ({$tooltip_sort_up})"
+                 href="{$listpage}&amp;orderby={@fieldname}&amp;directions=UP">
+               <xsl:call-template name="prompt_sort_up" />
+              </a>
+              <a class="pagenav"
+                 title="{$tooltip_sort_on} {@name} ({$tooltip_sort_down})"
+                 href="{$listpage}&amp;orderby={@fieldname}&amp;directions=DOWN">
+               <xsl:call-template name="prompt_sort_down" />
+             </a>
+           </th>
           </xsl:for-each>
         </tr>
       </xsl:if>
