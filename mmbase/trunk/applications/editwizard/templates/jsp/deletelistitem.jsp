@@ -5,16 +5,16 @@
 %><%@ page import="org.w3c.dom.Node"
 %><%@ page import="org.mmbase.applications.editwizard.*"
 %><%
-    Wizard wiz = new Wizard(request.getContextPath(), config.uriResolver, config.wizard, null, cloud);
+    Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, ewconfig.wizard, null, cloud);
     Node deleteaction = Utils.selectSingleNode(wiz.schema, "/*/action[@type='delete']");
     if (deleteaction != null) {
         // Ok. let's delete this object.
         org.mmbase.bridge.Node obj = cloud.getNode(request.getParameter("objectnumber"));
         obj.delete(true);
-        response.sendRedirect(response.encodeURL("list.jsp"));
+        response.sendRedirect(response.encodeURL("list.jsp?proceed=yes"));
     } else {
         // No delete action defined in the wizard schema. We cannot delete.
-        out.println("No delete action is defined in the wizard schema: '"+ config.wizard + "'. <br />You should place &lt;action type=\"delete\" /> in your schema so that delete actions will be allowed.");
+        out.println("No delete action is defined in the wizard schema: '"+ ewconfig.wizard + "'. <br />You should place &lt;action type=\"delete\" /> in your schema so that delete actions will be allowed.");
 
     }
 %>
