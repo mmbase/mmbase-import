@@ -27,10 +27,11 @@ import org.mmbase.util.logging.Logging;
  * @author Karthik Rangaraju
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: DijkstraSemaphore.java,v 1.7 2004-01-13 14:47:27 michiel Exp $
  */
 public class DijkstraSemaphore {
 
-    private static Logger log = Logging.getLoggerInstance(DijkstraSemaphore.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(DijkstraSemaphore.class);
 
     private int count;
     private int maxCount;
@@ -68,9 +69,14 @@ public class DijkstraSemaphore {
         // Using a spin lock to take care of rogue threads that can enter
         // before a thread that has exited the wait state acquires the monitor
         while (count == 0) {
-            long startwait = System.currentTimeMillis();
+            long startwait = 0;
+            if (log.isDebugEnabled()) {
+                startwait = System.currentTimeMillis();
+            }
             wait();
-            log.debug("Waited " + (System.currentTimeMillis() - startwait) + " ms for a connection");
+            if (startwait != 0) { 
+                log.debug("Waited " + (System.currentTimeMillis() - startwait) + " ms for a connection");
+            }
         }
         count--;
         synchronized (starvationLock) {
