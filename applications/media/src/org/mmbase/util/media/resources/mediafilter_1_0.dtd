@@ -1,0 +1,12 @@
+<!-- Author Rob Vermeulen (VPRO) -->
+<!ELEMENT mainFilter (chain, filterConfigs?)>
+
+<!ELEMENT chain (filter+)>
+<!ELEMENT filter (#PCDATA)>
+
+<!ENTITY % configSubTags " "><!-- default no configs, add them in the DOCTYPE of mediasourcefilter.xml -->
+
+<!ELEMENT filterConfigs (config*)>
+
+<!ELEMENT config (%configSubTags;)>
+
