@@ -27,7 +27,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.8 2003-04-25 21:54:04 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.9 2003-08-27 21:39:13 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -35,9 +35,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /** Empty StepField array. */
     private static final StepField[] STEP_FIELD_ARRAY = new StepField[0];
     
-    /** Logger instance. */
-    private static Logger log
-    = Logging.getLoggerInstance(SearchQueryHandler.class.getName());
+
+    private static final Logger log = Logging.getLoggerInstance(BasicQueryHandler.class);
     
     /** Sql handler used to generate SQL statements. */
     private SqlHandler sqlHandler = null;
@@ -58,10 +57,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
     }
     
     // javadoc is inherited
-    public List getNodes(SearchQuery query, MMObjectBuilder builder)
-    throws SearchQueryException {
-        StepField[] fields =
-        (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
+    public List getNodes(SearchQuery query, MMObjectBuilder builder)     throws SearchQueryException {
+
+        StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
         List steps = query.getSteps();
         List results = new ArrayList();
         String sqlString = null;
@@ -150,7 +148,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 // Truncate results to provide weak support for maxnumber.
                 while (rs.next() 
 //                && (sqlHandlerSupportsMaxNumber || results.size() < query.getMaxNumber())
-) {
+                       ) {
                     MMObjectNode node = null;
                     if (builder instanceof ClusterBuilder) {
                         // Cluster nodes.
@@ -167,7 +165,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         String prefix;
                         if (builder instanceof ClusterBuilder) {
                             fieldName = fields[i].getFieldName();
-                            prefix = fields[i].getStep().getAlias() + ".";
+                           
+                            prefix = fields[i].getStep().getAlias();
+
+                            // if steps happens to lack an alias, make sure that it still might work:
+                            // (will for example go ok for 'node' clusterresults (containing only fields of one step))
+                            if (prefix == null) {
+                                prefix = ""; // fields[i].getStep().getTableName() + '.';
+                            } else {
+                                prefix += '.';
+                            }
                         } else if (builder instanceof ResultBuilder) {
                             fieldName = fields[i].getAlias();
                             if (fieldName == null) {
@@ -182,6 +189,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         // TODO: (later) use alternative to decodeDBnodeField, to
                         // circumvent the code in decodeDBnodeField that tries to
                         // reverse replacement of "disallowed" fieldnames.
+
                         database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
                     }
                     if (builder instanceof ClusterBuilder) {
@@ -196,8 +204,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
         } catch (Exception e) {
             // Something went wrong, log exception
             // and rethrow as SearchQueryException.
-            log.error("Query failed:" + query + "\n" + Logging.stackTrace(e));
-            throw new SearchQueryException(e.toString() + " " + query.toString());
+            log.debug("Query failed:" + query + "\n" + Logging.stackTrace(e));
+            throw new SearchQueryException(query.toString(), e);
         } finally {
             mmbase.closeConnection(con, stmt);
         }
