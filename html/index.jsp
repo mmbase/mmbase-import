@@ -29,21 +29,6 @@
     <th>Section</th>
     <th colspan="2">Description</th>
   </tr>  
-  <tr>
-    <td>MMBase Demos Installation</td>
-    <td>
-      <p>
-        Install the applications for MMBase examples. Go here <strong>FIRST</strong> if you run MMBase for the first time, and if you want
-        to use or view the MMBase examples.
-      </p>
-      <p>
-        You need to log on using the administrator password (default: admin / admin2k).
-      </p>
-    </td>
-    <td class="link" >
-      <a href="<mm:url page="mmexamples/install.jsp" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
-    </td>
-  </tr>
   
   <tr>
     <td>MMBase Demos</td>
@@ -57,17 +42,20 @@
       <a href="<mm:url page="mmexamples/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>
-  
+
   <tr>
-    <td>Taglib Demo</td>
+    <td>Manage your MMBase installation</td>
     <td>
-      Demonstrates the use of the MMBase taglib, a library of useful tags with which you can
-      retrieve data form MMBase in your web pages.
+      <p>
+        Your MMBase installation comes with a configuration panel that allows you to perform certain
+        administrative tasks, and has links to several editors that allow you to edit information stored
+        in your MMBase instance.
+      </p>
     </td>
-    <td class="link" >
-      <a href="<mm:url page="mmexamples/taglib/whatistaglib.jsp" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
+    <td class="link">
+      <a href="<mm:url page="mmbase/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
-  </tr>
+  </tr>  
   
   <tr>
     <td>MMBase Documentation</td>
@@ -79,32 +67,6 @@
     </td>
   </tr>
   
-  <tr>
-    <td>JSP Editors</td>
-    <td>
-      <p>
-        Generic editors for adding and changing objects in MMBase.
-        These editors are mostly intended for experienced users.
-      </p>
-    </td>
-    <td class="link" >
-      <a href="<mm:url page="mmbase/edit/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
-    </td>
-  </tr>
-  
-  <tr>
-    <td>Admin pages</td>
-    <td>
-      <p>
-        The administrator's pages of MMBase allow you to retrieve info and configure modules, builders, the cache,
-        servers, and databases.
-      </p>
-    </td>
-    <td class="link" >
-      <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif" /></a>
-    </td>
-  </tr>
-
   <tr>
     <td>www.mmbase.org</td>
     <td>
