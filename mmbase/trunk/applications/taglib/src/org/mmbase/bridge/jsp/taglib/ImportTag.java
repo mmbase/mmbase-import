@@ -121,7 +121,7 @@ public class ImportTag extends WriteTag {
             }
         }
         if (found) {
-            helper.setValue(value, helper.NOIMPLICITLIST); 
+            helper.setValue(value, WriterHelper.NOIMPLICITLIST); 
             if (useId != null) {
                 getContextTag().reregister(useId, helper.getValue());
             }

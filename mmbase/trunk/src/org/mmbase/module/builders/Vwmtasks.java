@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.12 2003-03-10 11:50:21 pierre Exp $
+ * @version $Id: Vwmtasks.java,v 1.13 2003-05-08 06:01:19 kees Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -94,6 +94,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"VwmTasks");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }
@@ -104,9 +105,7 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
      */
     public void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker.suspend();
-        kicker.stop();
+        kicker.interrupt();
         kicker = null;
     }
 
@@ -116,14 +115,13 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
      * for a number of seconds as set in {@link #SLEEP_TIME}.
      */
     public void run() {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);
         log.info("Thread started, entering while loop");
 
         while (kicker!=null) {
 			log.service("Periodically sleep "+SLEEP_TIME
 			    +" seconds and add all new vwmtasks that were created since last check ("
                 +DateSupport.date2string(lastchecked)+").");
-            try {Thread.sleep(SLEEP_TIME*1000);} catch (InterruptedException e){}
+            try {Thread.sleep(SLEEP_TIME*1000);} catch (InterruptedException e){return;}
             getVwmTasks();
         }
     }

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: PropertiesProbe.java,v 1.7 2003-03-10 11:50:20 pierre Exp $
+ * @version $Id: PropertiesProbe.java,v 1.8 2003-05-08 06:01:22 kees Exp $
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
@@ -47,6 +47,7 @@ public class PropertiesProbe implements Runnable {
 		/* Start up the main thread */
 		if (kicker == null) {
 			kicker = new Thread(this,"cdplayer");
+			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -56,9 +57,7 @@ public class PropertiesProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
-		kicker.suspend();
-		kicker.stop();
+		kicker.interrupt();
 		kicker = null;
 	}
 
@@ -75,10 +74,9 @@ public class PropertiesProbe implements Runnable {
 
 	/**
 	 */
-	public void doWork() {
-		kicker.setPriority(Thread.MIN_PRIORITY+1);  
+	public void doWork() {  
 		while (kicker!=null) {
-			try {Thread.sleep(10000);} catch (InterruptedException e){}
+			try {Thread.sleep(10000);} catch (InterruptedException e){ return ;}
 			if (parent.getMachineName().equals("test1")) doExpire();
 		}
 	}

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Users.java,v 1.7 2003-03-10 11:50:21 pierre Exp $
+ * @version $Id: Users.java,v 1.8 2003-05-08 06:01:20 kees Exp $
  */
 public class Users extends MMObjectBuilder {
 
@@ -175,7 +175,7 @@ public class Users extends MMObjectBuilder {
         // remove from cache
         cache.remove(key);
         // not get module sessions and forget the session
-        sessions s=(sessions)mmb.getModule("SESSION");
+        sessions s=(sessions)Module.getModule("SESSION");
         if (s!=null) {
             // session module found ask it to forget
             // this sessions

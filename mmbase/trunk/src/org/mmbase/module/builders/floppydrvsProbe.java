@@ -22,133 +22,129 @@ import org.mmbase.util.logging.Logger;
  * there load and info from the config module).
  *
  * @rename FloppydrvsProbe
- * @version $Id: floppydrvsProbe.java,v 1.9 2003-03-10 11:50:21 pierre Exp $
+ * @version $Id: floppydrvsProbe.java,v 1.10 2003-05-08 06:01:22 kees Exp $
  * @author Daniel Ockeloen
  * @author David V van Zeventer
  */
 public class floppydrvsProbe implements Runnable {
-    
+
     static Logger log = Logging.getLoggerInstance(floppydrvsProbe.class.getName());
-    
+
     Thread kicker = null;
-    floppydrvs parent=null;
-    int trackNr=-1;
-    String filename=null;
-    MMObjectNode node=null;
-    
-    public floppydrvsProbe(floppydrvs parent,MMObjectNode node) {
-        this.parent=parent;
-        this.node=node;
+    floppydrvs parent = null;
+    int trackNr = -1;
+    String filename = null;
+    MMObjectNode node = null;
+
+    public floppydrvsProbe(floppydrvs parent, MMObjectNode node) {
+        this.parent = parent;
+        this.node = node;
         init();
     }
-    
+
     public void init() {
         this.start();
     }
-    
+
     /**
      * Starts the admin Thread.
      */
     public void start() {
-                /* Start up the main thread */
+        /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this,"floppydrives");
+            kicker = new Thread(this, "floppydrives");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }
-    
+
     /**
      * Stops the admin Thread.
      */
     public void stop() {
-                /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
-        kicker.suspend();
-        kicker.stop();
+        /* Stop thread */
+        kicker.interrupt();
         kicker = null;
     }
-    
+
     /**
      * admin probe, try's to make a call to all the maintainance calls.
      */
     public void run() {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);
-        String name=node.getStringValue("name");
-        String cdtype=node.getStringValue("cdtype");
-        String state=node.getStringValue("state");
-        String info=node.getStringValue("info");
-        StringTagger tagger=new StringTagger(info);
-        
+        String name = node.getStringValue("name");
+        String cdtype = node.getStringValue("cdtype");
+        String state = node.getStringValue("state");
+        String info = node.getStringValue("info");
+        StringTagger tagger = new StringTagger(info);
+
         if (state.equals("getdir")) {
             if (log.isDebugEnabled()) {
                 log.debug("run(): state='getdir' !!!");
             }
             try {
                 // set node busy while getting dir
-                node.setValue("state","busy");
+                node.setValue("state", "busy");
                 node.commit();
-                
-                node.setValue("info",parent.getDir(node));
+
+                node.setValue("info", parent.getDir(node));
                 // signal we are done
-                node.setValue("state","waiting");
+                node.setValue("state", "waiting");
                 node.commit();
-            }catch (GetDirFailedException gdfe){
+            } catch (GetDirFailedException gdfe) {
                 String Exc = "GetDirFailedException ->";
                 if (log.isDebugEnabled()) {
-                    log.debug("run():"+Exc+gdfe.errval+"  "+gdfe.explanation);
+                    log.debug("run():" + Exc + gdfe.errval + "  " + gdfe.explanation);
                 }
-                node.setValue("state","error");
-                node.setValue("info",Exc+gdfe.errval+"  "+gdfe.explanation+"\n\r");
+                node.setValue("state", "error");
+                node.setValue("info", Exc + gdfe.errval + "  " + gdfe.explanation + "\n\r");
                 node.commit();
             }
-        }
-        else if (state.equals("copy")) {
+        } else if (state.equals("copy")) {
             log.debug("run(): state='copy' !!!!");
             try {
                 try {
                     // set node busy while copying
-                    node.setValue("state","busy");
+                    node.setValue("state", "busy");
                     node.commit();
-                    
-                    String srcfile=tagger.Value("srcfile");
-                    log.debug("DEBUG4='"+srcfile+"'");
-                    String number=tagger.Value("id");  //Get AudioParts node id
-                    log.debug("DEBUG5='"+number+"'");
-                    int inumber=Integer.parseInt(number);
-                    log.debug("DECODE="+srcfile+" "+number);
-                    String dstfile="/data/audio/wav/"+number+".wav";
-                    
-                    MMObjectNode rnode=addRawAudio(inumber,2,3,441000,2);  //Add RawAudio obj to file
+
+                    String srcfile = tagger.Value("srcfile");
+                    log.debug("DEBUG4='" + srcfile + "'");
+                    String number = tagger.Value("id"); //Get AudioParts node id
+                    log.debug("DEBUG5='" + number + "'");
+                    int inumber = Integer.parseInt(number);
+                    log.debug("DECODE=" + srcfile + " " + number);
+                    String dstfile = "/data/audio/wav/" + number + ".wav";
+
+                    MMObjectNode rnode = addRawAudio(inumber, 2, 3, 441000, 2); //Add RawAudio obj to file
                     // MEDIAPROJECT, this code replaces the old code.
                     // MMObjectNode rnode = addAudioSource(inumber, MediaSources.BUSY, MediaSources.WAV_FORMAT, 441000, MediaSources.STEREO);
-                    
-                    parent.copy(srcfile,dstfile);
-                    
-                    rnode.setValue("status",3);
+
+                    parent.copy(srcfile, dstfile);
+
+                    rnode.setValue("status", 3);
                     // MEDIAPROJECT, this code replaces the old code.
                     // rnode.setValue("state",MediaSources.DONE);
                     rnode.commit();
-                    
-                    AudioParts bul=(AudioParts)parent.mmb.getMMObject("audioparts");
-                                        /* removed temp to allow compile, Daniel (marcel this is not ported ?)
-                                        if (bul!=null){
-                                                bul.wavAvailable(""+inumber);  //Add more audiofiles using diff. settings.
-                                        }
-                                         */
-                    node.setValue("state","waiting");
+
+                    AudioParts bul = (AudioParts) parent.mmb.getMMObject("audioparts");
+                    /* removed temp to allow compile, Daniel (marcel this is not ported ?)
+                    if (bul!=null){
+                            bul.wavAvailable(""+inumber);  //Add more audiofiles using diff. settings.
+                    }
+                     */
+                    node.setValue("state", "waiting");
                     node.commit();
-                }catch (CopyFailedException cfe){
+                } catch (CopyFailedException cfe) {
                     String Exc = "CopyFailedException ->";
-                    log.error("run():"+Exc+cfe.errval+"  "+cfe.explanation);
-                    node.setValue("state","error");
-                    node.setValue("info",Exc+cfe.errval+" "+cfe.explanation+"\n\r");
+                    log.error("run():" + Exc + cfe.errval + "  " + cfe.explanation);
+                    node.setValue("state", "error");
+                    node.setValue("info", Exc + cfe.errval + " " + cfe.explanation + "\n\r");
                     node.commit();
                 }
-            }catch (Exception e) {
-            }
+            } catch (Exception e) {}
         }
     }
-    
+
     /*
     private MMObjectNode addAudioSource(int audiofragment, int status, int format, int speed, int channels) {
         MMObjectBuilder bul=parent.mmb.getMMObject("audiosources");
@@ -174,21 +170,21 @@ public class floppydrvsProbe implements Runnable {
         return(node);
     }
     */
-    
-    public MMObjectNode addRawAudio(int id,int status,int format,int speed,int channels) {
-        MMObjectBuilder bul=parent.mmb.getMMObject("rawaudios");
-        if (bul!=null) {
-            MMObjectNode node=bul.getNewNode("system");
-            node.setValue("id",id);
-            node.setValue("status",status);
-            node.setValue("format",format);
-            node.setValue("speed",speed);
-            node.setValue("channels",channels);
-            int number=bul.insert("system",node);
-            node.setValue("number",number);
-            return(node);
+
+    public MMObjectNode addRawAudio(int id, int status, int format, int speed, int channels) {
+        MMObjectBuilder bul = parent.mmb.getMMObject("rawaudios");
+        if (bul != null) {
+            MMObjectNode node = bul.getNewNode("system");
+            node.setValue("id", id);
+            node.setValue("status", status);
+            node.setValue("format", format);
+            node.setValue("speed", speed);
+            node.setValue("channels", channels);
+            int number = bul.insert("system", node);
+            node.setValue("number", number);
+            return (node);
         } else {
-            return(null);
+            return (null);
         }
     }
 }

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
-import java.lang.reflect.*; // necessary for SizeOf
 
 import java.io.File;
 import org.mmbase.util.LRUHashtable;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.17 2003-02-03 18:18:31 pierre Exp $
+ * @version $Id: Cache.java,v 1.18 2003-05-08 06:00:39 kees Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 

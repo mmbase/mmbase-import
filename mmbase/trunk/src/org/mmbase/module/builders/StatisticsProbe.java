@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @version $Id: StatisticsProbe.java,v 1.6 2003-03-10 11:50:20 pierre Exp $
+ * @version $Id: StatisticsProbe.java,v 1.7 2003-05-08 06:01:20 kees Exp $
  * @author Daniel Ockeloen
  */
 public class StatisticsProbe implements Runnable {
@@ -40,6 +40,7 @@ public class StatisticsProbe implements Runnable {
 		/* Start up the main thread */
 		if (kicker == null) {
 			kicker = new Thread(this,"StatisticsProbe");
+			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -49,9 +50,7 @@ public class StatisticsProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
-		kicker.suspend();
-		kicker.stop();
+		kicker.interrupt();
 		kicker = null;
 	}
 
@@ -74,6 +73,5 @@ public class StatisticsProbe implements Runnable {
 			parent.checkDirty();
 			try {Thread.sleep(60*1000);} catch (InterruptedException e){}
 		}
-		// parent.probe=null;
 	}
 }

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.49 2003-05-04 15:04:43 kees Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.50 2003-05-08 06:01:21 kees Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log =
@@ -90,7 +90,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
         // and when somebody has failure with converting images, it is much earlier detectable, when it wrong in settings, since it are settings of
         // the builder...
         
-        // TODO: on error switch to jai????
+        // TODO: on error switch to Dummy????
         // TODO: research how we tell convert, that is should use the System.getProperty(); with respective the value's 'java.io.tmpdir', 'user.dir'
         //       this, since convert writes at this moment inside the 'user.dir'(working dir), which isnt writeable all the time.
         
