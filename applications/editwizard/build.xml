@@ -7,6 +7,7 @@
 	<property name="project.name"     value="editwizard" />
 	<property name="project.package"   value="org/mmbase/applications/editwizard" />
 	<property name="project.target.templates.dir"   value="edit/wizard" />
+	<property name="project.extra.path" location="../dove/build/mmbase-dove.jar" />
 
 	&base;
 
@@ -14,7 +15,6 @@
 	<property name="fileupload.file" value="commons-fileupload-1.0" />
 	<property name="fileupload.url" value="http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}.tar.gz" />
 	<property name="fileupload.jar" value="${expand.dir}/commons-fileupload-1.0/commons-fileupload-1.0.jar" />
-	<property name="project.extra.path" location="../dove/build/mmbase-dove.jar" />
 
 
 	<target name="init.get">
