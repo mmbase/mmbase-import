@@ -90,7 +90,8 @@ public class ModuleHandler implements Module {
 	    if (mmbase_module instanceof ProcessorInterface) {
 	        return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
 	    } else {
-	        throw new BasicBridgeException("getInfo() is not supported by this module.");
+	        throw new BridgeException("getInfo() is not supported by this "
+                                          + "module.");
 	    }
 	}
 
@@ -110,7 +111,8 @@ public class ModuleHandler implements Module {
 	        ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),
                         cmds,auxparameters);
 	    } else {
-	        throw new BasicBridgeException("process() is not supported by this module.");
+	        throw new BridgeException("process() is not supported by this "
+                                          + "module.");
 	    }
 	}
 
@@ -166,11 +168,12 @@ public class ModuleHandler implements Module {
       		    }
       		    return new BasicNodeList(res,cloud,tempNodeManager);
     	    } catch (Exception e) {
-    	        throw new BasicBridgeException(""+e);
+    	        throw new BridgeException(e.getMessage());
     	    }
 
 	    } else {
- 	        throw new BasicBridgeException("getInfo() is not supported by this module.");
+ 	        throw new BridgeException("getInfo() is not supported by this "
+                                          + "module.");
 	    }
 	}
 

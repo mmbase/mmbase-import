@@ -73,7 +73,7 @@ public class BasicCloudContext implements CloudContext {
         } 
 	else {
 	    // why dont we start mmbase, when there isnt a running instance, just change the check...
-            throw new BasicBridgeException("MMBase has not been started, and cannot be started by this Class");
+            throw new BridgeException("MMBase has not been started, and cannot be started by this Class");
         }
     }
 
@@ -85,7 +85,8 @@ public class BasicCloudContext implements CloudContext {
     public Module getModule(String moduleName) {
     	Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
-            throw new BasicBridgeException("Module "+moduleName+" does not exist.");
+            throw new BridgeException("Module " + moduleName
+                                      + " does not exist.");
         }
         return mod;
     }
@@ -96,7 +97,7 @@ public class BasicCloudContext implements CloudContext {
         
     public Cloud getCloud(String name, String application, HashMap loginInfo) {
     	if ( !localClouds.contains(name) ) {
-	     throw new BasicBridgeException("Cloud "+name+" does not exist.");
+	     throw new BridgeException("Cloud " + name + " does not exist.");
 	}
 	return new BasicCloud(name, application, loginInfo,this);
     }

@@ -97,7 +97,7 @@ public class BasicNode implements Node {
 
     protected MMObjectNode getNode() {
         if (noderef==null) {
-            throw new BasicBridgeException("Node is invalidated or removed.");
+            throw new BridgeException("Node is invalidated or removed.");
         }
         return noderef;
     }
@@ -120,7 +120,7 @@ public class BasicNode implements Node {
         return i;
     }
 
-    /*
+    /**
      * Returns whether this is a new (not yet committed) node.
      */
     boolean isNew() {
@@ -143,10 +143,10 @@ public class BasicNode implements Node {
         if (account==null) {
             account = cloud.getAccount();
         } else if (account != cloud.getAccount()) {
-            throw new BasicBridgeException("User context changed. Cannot proceed to edit this node .");
+            throw new BridgeException("User context changed. Cannot proceed to edit this node .");
         }
         if (nodeManager instanceof VirtualNodeManager) {
-            throw new BasicBridgeException("Cannot make edits to a virtual node.");
+            throw new BridgeException("Cannot make edits to a virtual node.");
         }
 
         int realnumber=noderef.getNumber();
@@ -171,7 +171,7 @@ public class BasicNode implements Node {
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
             if (action == ACTION_CREATE) {
-                throw new BasicBridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
+                throw new BridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
             }
 
             // when editing a temporary node id must exist (otherwise create one)
@@ -199,11 +199,13 @@ public class BasicNode implements Node {
         if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
             //|| "snumber".equals(attribute) || "dnumber".equals(attribute) || "rnumber".equals(attribute)
             ) {
-            throw new BasicBridgeException("Not allowed to change field " + attribute);
+            throw new BridgeException("Not allowed to change field "
+                                      + attribute);
         }
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
-            throw new BasicBridgeException("Can't change unknown field " + attribute);
+            throw new BridgeException("Can't change unknown field "
+                                      + attribute);
         }
 
     }
@@ -340,7 +342,9 @@ public class BasicNode implements Node {
                 // option unset, fail if any relations exit
                 int relations = getNode().getRelationCount();
                 if(relations!=0) {
-                    throw new BasicBridgeException("This node cannot be deleted. It has "+relations+" relations attached to it.");
+                    throw new BridgeException("This node cannot be deleted. It has "
+                                              + relations
+                                              + " relations attached to it.");
                 }
             }
             // remove aliases
@@ -372,9 +376,10 @@ public class BasicNode implements Node {
         return noderef.toString();
     };
 
-    /*
-     * Removes all relations of certain type.
-     * @param type Type of relation (-1 = don't care)
+    /**
+     * Removes all relations of a certain type.
+     *
+     * @param type  the type of relation (-1 = don't care)
      */
     private void deleteRelations(int type) {
         RelDef reldef=mmb.getRelDef();
@@ -406,7 +411,7 @@ public class BasicNode implements Node {
         RelDef reldef=mmb.getRelDef();
         int rType=reldef.getNumberByName(type);
         if (rType==-1) {
-            throw new BasicBridgeException("Cannot find relation type.");
+            throw new BridgeException("Cannot find relation type.");
         } else {
             deleteRelations(rType);
         }
@@ -436,7 +441,8 @@ public class BasicNode implements Node {
     public RelationList getRelations(String type) {
         int rType=mmb.getRelDef().getNumberByName(type);
         if (rType==-1) {
-            throw new BasicBridgeException("Relation type "+type+" does not exist.");
+            throw new BridgeException("Relation type " + type
+                                      + " does not exist.");
         } else {
             return getRelations(rType);
         }
@@ -508,7 +514,7 @@ public class BasicNode implements Node {
             // this will be resolved by the transaction manager
             aliasNode.setValue("_destination", getValue("_number"));
         } else if (isnew) {
-            throw new BasicBridgeException("Cannot add alias to a new node that has not been committed.");
+            throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
             getNode().parent.createAlias(getNumber(),aliasName);
         }

@@ -9,21 +9,23 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge;
 
+import org.mmbase.util.logging.*;
+
 /**
  * This exception gets thrown when something goes wronmg on the MMCI.
  */
 public class BridgeException extends RuntimeException {
+    private static Logger log = Logging.getLoggerInstance(BridgeException.class.getName());
+
     /**
-	 * Create the error.
- 	 */
-	public BridgeException() {
-	}
-	
-	/**
-	 * Create the error.
-	 * @param message a description of the error
- 	 */
-	public BridgeException(String message) {
-		super(message);
-	}
+     * Constructs a <code>BridgeException</code> with the specified detail
+     * message.
+     *
+     * @param message  a description of the error
+     */
+    public BridgeException(String message) {
+        super(message);
+        log.error(message);
+    }
+
 }

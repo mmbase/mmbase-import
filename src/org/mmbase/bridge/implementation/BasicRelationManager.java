@@ -79,7 +79,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public NodeManager getSourceManager() {
         if (typeRelNode==null) {
-          throw new BasicBridgeException("This relationmanager does not contain source information.");
+          throw new BridgeException("This relationmanager does not contain source information.");
         }
         int nr=typeRelNode.getIntValue("snumber");
         return cloud.getNodeManager(nr);
@@ -87,7 +87,8 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public NodeManager getDestinationManager() {
         if (typeRelNode==null) {
-          throw new BasicBridgeException("This relationmanager does not contain destination information.");
+          throw new BridgeException("This relationmanager does not contain "
+                                    + "destination information.");
         }
         int nr=typeRelNode.getIntValue("dnumber");
         return cloud.getNodeManager(nr);
@@ -99,14 +100,19 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         // maybe should be made more flexible?
         //
         if (sourceNode.getCloud() != cloud) {
-            throw new BasicBridgeException("Relationmanager and source node are not in the same transaction or in different clouds");
+            throw new BridgeException("Relationmanager and source node are not "
+                                      + "in the same transaction or in "
+                                      + "different clouds");
         }
         if (destinationNode.getCloud() != cloud) {
-            throw new BasicBridgeException("Relationmanager type and destination node are not in the same transaction or in different clouds");
+            throw new BridgeException("Relationmanager type and destination "
+                                      + "node are not in the same transaction "
+                                      + "or in different clouds");
         }
         if (!(cloud instanceof Transaction)  &&
              (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
-            throw new BasicBridgeException("Cannot add a relation to a new node that has not been committed.");
+            throw new BridgeException("Cannot add a relation to a new node "
+                                      + "that has not been committed.");
         }
 
        BasicRelation relation = (BasicRelation)createNode();
