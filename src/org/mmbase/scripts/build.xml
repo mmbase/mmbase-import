@@ -386,8 +386,23 @@ NetComponents can be found at:
   <!-- =================================================================== -->
   <!-- Compile the source directory (exclude remote)                       -->
   <!-- =================================================================== -->
+  <target name="warn14" if="java14">
+    <echo>
+  WARNING
+  MMBase doesn't compile when using J2SE 1.4, you have to change 2
+  files by hand: MultiConnection.java and MultiStatement.java (both in
+  the &lt;org/mmbase/modules/database&gt;-dir). Uncomment the methods for
+  J2SE 1.4, more information is provided in the javadocs in these files.
+</echo>
+  </target>
+  
   <target name="compile.local" description="Compile the source directory(exclude remote)"
           depends="init.compile">
+
+    <echo message="java version: ${ant.java.version}" />
+    <condition property="java14"><equals arg1="${ant.java.version}" arg2="1.4" /></condition>
+    <antcall target="warn14" />
+
     <copy todir="${build.dir}/classes">
       <fileset dir="${source-src.dir}">
         <include name="**/*.properties"/>
@@ -1345,7 +1360,7 @@ Version: MMBase build ${version}
     description="Make the MMBase documentation from docbook-sources">
 
     <copy todir="${build.dir}" file="${source-documentation.dir}/style/docbook2xhtml.xslt" />
-    <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/html/docbook.xsl" />
+    <replace  file="${build.dir}/docbook2xhtml.xslt" token="[BASESTYLESHEET]" value="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl" />
 
     <!-- copy also the images and resources -->
     <copy todir="${mmdocs.dir}/" >
