@@ -12,15 +12,16 @@ public class PDFServlet extends HttpServlet {
     public void doGet (HttpServletRequest req, HttpServletResponse resp) 
         throws ServletException, java.io.IOException
     {
-        resp.setContentType("application/pdf");      
+        resp.setContentType("application/pdf");
         String baseUrl = getServletContext().getInitParameter("internalUrl");
         if (baseUrl == null) {
             throw new ServletException("Please set 'internalUrl' in the web.xml!");
         }
         int number = Integer.parseInt(req.getParameter("number"));
         int provider = Integer.parseInt(req.getParameter("provider"));
-        URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number+"&povider="+provider);
-        PDFConverter.pageAsPDF(url, resp.getOutputStream());
+        URL url = new URL(baseUrl+"/pdf/pdfhtml.jsp?number="+number+"&provider="+provider);
+        URL headerImage =  new URL(baseUrl+"/pdf/pdfheaderimage.jsp?provider="+provider);
+        PDFConverter.pageAsPDF(url, resp.getOutputStream(),headerImage);
    }
 }
 
