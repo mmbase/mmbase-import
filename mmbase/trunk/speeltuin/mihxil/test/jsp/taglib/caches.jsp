@@ -13,7 +13,7 @@
 <table width="100%" border="1" celpadding="1">
 <tr><th>Cache</th><th>Size</th><th>Hits</th><th>Misses</th><th>Content</th></tr>
 <% Iterator i = org.mmbase.cache.Cache.getCaches().iterator();
-   while (i.hasNext()) {
+   while (i.hasNext()) {     
       Cache cache = Cache.getCache((String) i.next());
       out.println("<tr><td>" + cache.getDescription() + "</td><td align=\"right\">" + cache.getSize() + " </td><td align=\"right\">" + cache.getHits() + " </td><td align=\"right\">" + cache.getMisses() + " </td>");
 %>
@@ -36,7 +36,7 @@
 <%
     Enumeration e = cache.getOrderedElements();
     while (e.hasMoreElements()) {
-        out.println("<tr><td>" + e.nextElement() + "</td></tr>");
+        out.println("<tr><td></td><td>" + e.nextElement() + "</td></tr>");
     }
 }
 %>
