@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.7 2002-06-27 16:02:52 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.8 2002-06-27 20:13:26 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends MMObjectBuilder {
@@ -41,14 +41,19 @@ public abstract class AbstractImages extends MMObjectBuilder {
         imageServletPath=null;
     }
 
+    public static String getImageServletPath(String context) {
+        if (imageServletPath == null) {
+            imageServletPath = MMBaseServlet.getServletPath(context, "images",  "img.db");
+        }
+       return  imageServletPath;
+    }
+
+
     /**
      * Returns the path to the image serlvet.
      */
     protected String getServlet() {
-        if (imageServletPath == null) {
-            imageServletPath = MMBaseServlet.getServletPath(MMBaseContext.getHtmlRootUrlPath(), "images",  "img.db");
-        }
-       return  imageServletPath;
+        return getImageServletPath(MMBaseContext.getHtmlRootUrlPath());
     }
 
     /**
