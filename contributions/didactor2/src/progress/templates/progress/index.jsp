@@ -86,7 +86,7 @@
        if ( testCounter++ < startAt ) {
            continue;
        }
-       if ( testCounter > startAt + 20) {
+       if ( testCounter > startAt + 15) {
            showNextLink = true;
            break;
        }
@@ -115,13 +115,13 @@
 </table>
 <% if (showNextLink) { %>
 <span style="float: right"><a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="startAt"><%= startAt + 20 %></mm:param>
-</mm:treefile>">Volgende 20</a></span>
+    <mm:param name="startAt"><%= startAt + 15 %></mm:param>
+</mm:treefile>">Volgende 15</a></span>
 <% }
    if (showPrevLink) { %>
 <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="startAt"><%= startAt - 20 %></mm:param>
-</mm:treefile>">Vorige 20</a>
+    <mm:param name="startAt"><%= startAt - 15 %></mm:param>
+</mm:treefile>">Vorige 15</a>
 <% } %>
  </div>
 </div>

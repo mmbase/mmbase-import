@@ -64,7 +64,7 @@
 
       <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="nodetype" value="tests">
-        <% if (testCounter >= startAt.intValue() && testCounter < startAt.intValue()+20) { %>
+        <% if (testCounter >= startAt.intValue() && testCounter < startAt.intValue()+15) { %>
 
       
         <mm:import id="testNo" reset="true"><mm:field  name="number" /></mm:import>

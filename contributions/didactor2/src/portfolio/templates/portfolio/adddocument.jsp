@@ -33,26 +33,22 @@
   <mm:import id="user" reset="true"><mm:write referid="contact"/></mm:import>
 </mm:compare>
 
-    <div class="rows">
+<div class="rows">
 
-    <div class="navigationbar">
-      <div class="titlebar">
-        <mm:import id="titletext"><fmt:message key="MYDOCUMENTS" /></mm:import>
-        <mm:compare referid="typeof" value="1">
-          <mm:import id="titletext" reset="true"><fmt:message key="MYDOCUMENTS" /></mm:import>
-        </mm:compare>
-        <mm:compare referid="typeof" value="2">
-          <mm:import id="titletext" reset="true"><fmt:message key="SHAREDDOCUMENTS" /></mm:import>
-        </mm:compare>
-        <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />" />
-        <mm:write referid="titletext"/>
-      </div>
-    </div>
+<div class="navigationbar">
+<div class="titlebar">
+<img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
+<fmt:message key="PORTFOLIO" />
+</div>
+</div>
 
-    <div class="folders">
-      <div class="folderHeader"></div>
-      <div class="folderBody"></div>
-    </div>
+<div class="folders">
+
+<div class="folderHeader">
+<fmt:message key="PORTFOLIO" />
+</div>
+<div class="folderBody"></div>
+</div>
 
     <div class="mainContent">
       <div class="contentHeader">

@@ -91,22 +91,15 @@
 
 <div class="navigationbar">
 <div class="titlebar">
-<%-- determine if the context is my documents or shared documents --%>
-<mm:compare referid="typeof" value="1">
-  <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />"/>
-      <fmt:message key="MYDOCUMENTS" />
-</mm:compare>
-<mm:compare referid="typeof" value="2">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />"/>
-      <fmt:message key="SHAREDDOCUMENTS" />
-</mm:compare>
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
+      <fmt:message key="PORTFOLIO" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
-    <fmt:message key="FOLDERS" />
+    <fmt:message key="PORTFOLIO" />
 </div>
 
 <div class="folderBody">
@@ -386,14 +379,14 @@
             <mm:import id="mayread" reset="true">false</mm:import>
                 <mm:relatednodes type="portfoliopermissions" max="1">
                     <mm:field name="readrights">
-                        <mm:compare value="2">
+                        <mm:compare value="1">
                          <mm:isgreaterthan referid="user" value="0">
                             <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
                                 <mm:import id="mayread" reset="true">true</mm:import>
                             </mm:list>
                         </mm:isgreaterthan>
                         </mm:compare>
-                         <mm:compare value="3">
+                         <mm:compare value="2">
                          <mm:isgreaterthan referid="user" value="0">
                             <di:hasrole role="teacher">
                                 <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
@@ -401,6 +394,10 @@
                                 </mm:list>
                             </di:hasrole>
                         </mm:isgreaterthan>
+                        </mm:compare>
+                        <mm:compare value="3">
+                            <mm:isgreaterthan referid="user" value="0">
+                                <mm:import id="mayread" reset="true">true</mm:import>                           </mm:isgreaterthan>
                         </mm:compare>
                         <mm:compare value="4">
                             <mm:import id="mayread" reset="true">true</mm:import>
