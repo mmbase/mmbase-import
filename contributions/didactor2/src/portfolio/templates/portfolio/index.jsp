@@ -48,14 +48,16 @@
         <mm:import id="mayeditentries" reset="true">true</mm:import>
     </mm:list>
 </di:hasrole>
-<mm:list nodes="$user" path="people1,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+<mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
     <mm:import id="mayeditentries" reset="true">true</mm:import>
 </mm:list>
 
 <mm:import id="mayeditfolders">false</mm:import>
-<mm:list nodes="$user" path="people1,portfolios,folders" constraints="folders.number=$currentfolder AND portfolios.m_type!=1" max="1">
-    <mm:import id="mayeditfolders" reset="true">true</mm:import>
-</mm:list>
+<mm:compare referid="user" value="$myuser">
+    <mm:compare referid="typeof" value="1" inverse="true">
+        <mm:import id="mayeditfolders" reset="true">true</mm:import>
+    </mm:compare>
+</mm:compare>
 
 
 
@@ -194,10 +196,45 @@
 </mm:compare>
 
 
+<mm:compare referid="mayeditfolders" value="true">
+    <mm:field name="number" id="portfolionumber">
+        <mm:import externid="up"/>
+        <mm:present referid="up">
+            <mm:list nodes="$portfolionumber" path="portfolios,posrel,folders" constraints="folders.number=$up" max="1">
+                <mm:import id="posrel"><mm:field name="posrel.number"/></mm:import>
+                <mm:import id="pos" jspvar="pos" vartype="Integer"><mm:field name="posrel.pos"/></mm:import>
+                 <mm:list nodes="$portfolionumber" path="portfolios,posrel,folders" constraints="posrel.pos =($pos - 1)" max="1">
+                    <mm:import id="posrel2"><mm:field name="posrel.number"/></mm:import>
+                </mm:list>
+                <mm:node referid="posrel">
+                    <mm:setfield name="pos"><%= pos.intValue() - 1 %></mm:setfield>
+                </mm:node>
+                <mm:node referid="posrel2">
+                    <mm:setfield name="pos"><%= pos.intValue() %></mm:setfield>
+                </mm:node>
+            </mm:list>
+        </mm:present>
 
+        <mm:import externid="down"/>
+        <mm:present referid="down">
+            <mm:list nodes="$portfolionumber" path="portfolios,posrel,folders" constraints="folders.number=$down" max="1">
+                <mm:import id="posrel"><mm:field name="posrel.number"/></mm:import>
+                <mm:import id="pos" jspvar="pos" vartype="Integer"><mm:field name="posrel.pos"/></mm:import>
+                 <mm:list nodes="$portfolionumber" path="portfolios,posrel,folders" constraints="posrel.pos =($pos + 1)" max="1">
+                    <mm:import id="posrel2"><mm:field name="posrel.number"/></mm:import>
+                </mm:list>
+                <mm:node referid="posrel">
+                    <mm:setfield name="pos"><%= pos.intValue() + 1 %></mm:setfield>
+                </mm:node>
+                <mm:node referid="posrel2">
+                    <mm:setfield name="pos"><%= pos.intValue() %></mm:setfield>
+                </mm:node>
+            </mm:list>
+        </mm:present>   
+    </mm:field>
+</mm:compare>
 
   <mm:present referid="currentportfolioisopen">
-
 
     <mm:relatednodes role="posrel" type="folders" orderby="posrel.pos">
 
@@ -219,7 +256,11 @@
 		 <mm:param name="typeof"><mm:write referid="currentportfoliotype"/></mm:param>
 		       </mm:treefile>">
 			<mm:field name="name" />
-      </a><br />
+      </a>
+      <mm:compare referid="mayeditfolders" value="true">
+        <mm:first inverse="true"><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids,currentfolder,contact,typeof"/>&amp;up=<mm:write referid="currentnumber"/>">(-)</a></mm:first>
+        <mm:last inverse="true"><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids,currentfolder,contact,typeof"/>&amp;down=<mm:write referid="currentnumber"/>">(+)</a></mm:last>
+        </mm:compare><br />
 
     </mm:relatednodes>
 
@@ -449,7 +490,7 @@ Mijn gegevens:
 <table class="Font">
   <tr>
     <td>
-      <table>
+      <table class="Font">
         <tr>
           <td>Initialen:</td>
           <td><mm:field name="initials"/></td>

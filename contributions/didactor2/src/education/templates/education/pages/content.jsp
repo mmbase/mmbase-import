@@ -31,7 +31,7 @@
     <mm:import jspvar="text" reset="true"><mm:field name="text" escape="none"/></mm:import>
   
 
-  <table width="100%" border="0" class="pagetable">
+  <table width="100%" border="0" class="Font">
   
   <mm:compare referid="layout" value="0">
   <tr><td width="50%"><%@include file="/shared/cleanText.jsp"%></td></tr>
