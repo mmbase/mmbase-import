@@ -23,7 +23,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.9 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.10 2005-01-03 12:11:23 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -149,6 +149,10 @@ public class BasicFunctionValue implements FieldValue {
         throw CANNOTCHANGE;
     }
 
+
+    public void setObject(Object value) {
+        throw CANNOTCHANGE;
+    }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
