@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class AssignedFileWriter  {
 
-    private static Logger log = Logging.getLoggerInstance(AssignedFileWriter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AssignedFileWriter.class);
 
     public static boolean write() {
         String body =

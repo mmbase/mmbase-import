@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 public class Theme {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(Theme.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(Theme.class); 
     private HashMap stylesheets;
     private HashMap imagesets;
     private String mainid;
