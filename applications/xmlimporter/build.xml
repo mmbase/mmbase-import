@@ -7,7 +7,7 @@
   <property name="project.name"     value="xmlimporter" />
   <property name="project.package"   value="org/mmbase/applications/xmlimporter" />
   <property name="project.target.templates.dir"   value="xmlimporter" />
-  <property name="project.extra.path" location="../scan/build/mmbase-scan.jar" />
+  <property name="project.jars.includes" value="scan/build/mmbase-scan.jar" />
   &base;
 
   <target name="scan">

@@ -7,7 +7,8 @@
   <property name="project.name"     value="editwizard" />
   <property name="project.package"   value="org/mmbase/applications/editwizard" />
   <property name="project.target.templates.dir"   value="edit/wizard" />
-  <property name="project.extra.path" location="../dove/build/mmbase-dove.jar" />
+
+  <property name="project.jars.includes" value="dove/build/mmbase-dove.jar" />
 
   &base;
 
