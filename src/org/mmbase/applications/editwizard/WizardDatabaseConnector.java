@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.10 2002-03-22 09:48:51 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.11 2002-04-19 20:20:28 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -476,7 +476,7 @@ public class WizardDatabaseConnector {
     private Element sendCommand(Element cmd, HashMap uploads) throws WizardException {
         Element results=null;
         try {
-            Document tmp = Utils.EmptyDocument();
+            Document tmp = Utils.emptyDocument();
             Dove dove = new Dove(tmp);
             results = dove.executeRequest(cmd,userCloud,uploads);
         } catch (Exception e) {
@@ -514,7 +514,7 @@ public class WizardDatabaseConnector {
 
         Element results=sendCommand(docel,null);
 
-        Document response = Utils.EmptyDocument();
+        Document response = Utils.emptyDocument();
         response.appendChild(response.importNode(results,true));
 
         // map response back to each command.
@@ -556,7 +556,7 @@ public class WizardDatabaseConnector {
      * @param     newData         The new data.
      */
     public Node getPutData(Document originalData, Document newData) throws WizardException {
-        Document workDoc = Utils.EmptyDocument();
+        Document workDoc = Utils.emptyDocument();
         workDoc.appendChild(workDoc.importNode(newData.getDocumentElement().cloneNode(true), true));
 
         Node workRoot = workDoc.getDocumentElement();
