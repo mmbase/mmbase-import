@@ -22,6 +22,11 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Shortcut for List where the start node is the parent node.
+ *
+ * @author Michiel Meeuwissen
+ * @author Jacco de Groot
+ * @author Pierre van Rooden
+ * @version $Id: RelatedTag.java,v 1.20 2003-04-09 14:26:22 pierre Exp $
  */
 public class RelatedTag extends ListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
