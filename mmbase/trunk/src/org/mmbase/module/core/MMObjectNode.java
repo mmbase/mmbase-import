@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.119 2004-02-23 19:01:02 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.120 2004-02-24 17:43:35 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -370,7 +370,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     if (result.equals("")) {
                         result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
                     } else {
-                        result.append(","+key+"="+dbtype+":'"+value+"'");
+                        result.append(","+key+"="+dbtype+":'");
+                        Casting.toStringBuffer(result, value).append("'");
                     }
                 }
             }
@@ -405,8 +406,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param fieldName the name of the field to change
      * @param fieldValue the value to assign
      */
-    public void storeValue(String fieldName, Object fieldValue) {
-        if (fieldValue==null) {
+    public void storeValue(String fieldName,Object fieldValue) {
+        if (fieldValue == null) {
             values.remove(fieldName);
         } else {
             values.put(fieldName, fieldValue);
@@ -459,12 +460,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Document)) {
             log.debug("im called far too often");
             if (fieldValue == null && parent.getField(fieldName).getDBNotNull()) {
-                throw new RuntimeException("field with name '"+fieldName+"' may not be null");
+                throw new RuntimeException("field with name '" + fieldName + "' may not be null");
             }
             String value = Casting.toString(fieldValue);
             value = value.trim();
             if(value.length()==0 && parent.getField(fieldName).getDBNotNull()) {
-                throw new RuntimeException("field with name '"+fieldName+"' may not be empty");
+                throw new RuntimeException("field with name '" + fieldName + "' may not be empty");
             }
             Document doc = toXML(value, fieldName);
             if(doc != null) {
@@ -472,12 +473,15 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 fieldValue = doc;
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Setting " + fieldName + " to " +  Casting.toString(fieldValue));
+        }
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
 
         // process the changed value (?)
         if (parent != null) {
-            if(!parent.setValue(this,fieldName, originalValue)) {
+            if(!parent.setValue(this, fieldName, originalValue)) {
                 // setValue of parent returned false, no update needed...
                 return false;
             }
@@ -786,7 +790,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         // we signal with a empty byte[] that its not obtained yet.
         if (obj instanceof byte[]) {
-            // was allready unmapped so return the value
+            // was already unmapped so return the value
             return (byte[]) obj;
         } else {
             byte[] b;
@@ -799,7 +803,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 }
                 // we could in the future also leave it unmapped in the values
                 // or make this programmable per builder ?
-                storeValue(prefix+fieldName,b);
+                storeValue(prefix + fieldName, b);
             } else {
                 if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
                     String s = getStringValue(fieldName);
