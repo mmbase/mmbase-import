@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.47 2002-07-09 18:45:26 michiel Exp $
+ * @version $Id: Wizard.java,v 1.48 2002-07-16 17:40:09 michiel Exp $
  *
  */
 public class Wizard {
@@ -625,7 +625,7 @@ public class Wizard {
      * @param       data    Points to the datacontext node which should be used for this form.
      */
     public void createPreHtmlForm(Node form, Node formdef, Node data) throws WizardException {
-        if (log.isDebugEnabled()) log.debug("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + data);
+        if (log.isDebugEnabled()) log.trace("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + data);
         // select all fields on first level
         NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|list|command");
 
@@ -1037,7 +1037,7 @@ public class Wizard {
      * @param       datanode     the current context data node. It might be 'null' if the field already contains the 'number' attribute.
      */
     private void createFormField(Node form, Node field, Node datanode) throws WizardException {
-        if (log.isDebugEnabled()) log.debug("Creating form field for " + field);
+        if (log.isDebugEnabled()) log.debug("Creating form field for " + field + " wizard for obj: " + objectNumber);
         // copy all attributes from fielddefinition to new pre-html field definition
 
         Node newfield = form.getOwnerDocument().createElement("field");
@@ -1066,16 +1066,19 @@ public class Wizard {
 
         // resolve special attributes
         if (ftype.equals("startwizard")) {
-            String objectNumber = Utils.getAttribute(newfield,"objectnumber", null);
-            // if no objectnumber is found, assign teh numbe rof teh currebnt field.
-            // exception is when teh direct parent is a form.
-            // in that acse, wee are editting teh current object, so indtead asisgn new
+            log.debug("this is a startwizard");
+            String objectNumber = Utils.getAttribute(newfield, "objectnumber", null); // this is shadowing the member!
+            log.debug("What is this number  " +  objectNumber);
+            // if no objectnumber is found, assign the number of the current field.
+            // exception is when the direct parent is a form.
+            // in that case, we are editting the current object, so instead asign new
+
             // note: this latter does not take into account fieldsets!
-            if (objectNumber==null) {
+            if (objectNumber == null) {
                 if (form.getNodeName().equals("form")) {
-                    objectNumber="new";
+                    objectNumber = "new";
                 } else {
-                    objectNumber=Utils.getAttribute(newfield, "number", "new");
+                    objectNumber = Utils.getAttribute(newfield, "number", "new");
                 }
             }
             objectNumber = Utils.transformAttribute(datanode, objectNumber);
@@ -1454,13 +1457,14 @@ public class Wizard {
             break;
         }
         case WizardCommand.COMMIT : {
-            log.service("Committing wizard");
+            log.service("Committing wizard " + objectNumber);
             // This command takes no parameters.
             try {
                 if (log.isDebugEnabled()) {
                     log.debug("orig: " +     Utils.stringFormatted(originalData));
                     log.debug("new orig: " + Utils.stringFormatted(data));
                 }
+                
                 Element results = databaseConnector.put(originalData, data, binaries);
                 NodeList errors = Utils.selectNodeList(results,".//error");
                 if (errors.getLength() > 0){
@@ -1470,9 +1474,18 @@ public class Wizard {
                     }
                     throw new WizardException(errorMessage);
                 }
-                // find the (new) objectNumber and store it. Just take the first one found.
-                String newnumber=Utils.selectSingleNodeText(results,".//object/@number", null);
-                if (newnumber != null) objectNumber=newnumber;
+                // find the (new) objectNumber and store it. 
+                String oldnumber = Utils.selectSingleNodeText(data, ".//object/@number", null); // select the 'most outer' object.
+                if (log.isDebugEnabled()) {
+                    log.trace("results : " + results);
+                    log.debug("found old number " + oldnumber);
+                }
+
+                // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this 
+                // xpath
+                String newnumber = Utils.selectSingleNodeText(results,".//object[@oldnumber='" + oldnumber + "']/@number", null);
+                log.debug("found new wizard number " + newnumber);
+                if (newnumber != null) objectNumber = newnumber;
                 committed = true;
                 mayBeClosed = true;
             } catch (WizardException e) {
