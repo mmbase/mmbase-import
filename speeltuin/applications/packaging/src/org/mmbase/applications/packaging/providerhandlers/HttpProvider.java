@@ -211,12 +211,12 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
 
 	// it should now be in our import dir for us to get the package from
 	try {
-		String localname=MMBaseContext.getConfigPath()+"/packaging/import/"+id+"_"+version+".mmb";
+		String localname=getImportPath()+id+"_"+version+".mmb";
        		JarFile jarFile = new JarFile(localname);
        		JarEntry je = jarFile.getJarEntry(packageid+"_"+packageversion+".mmp");
 		try {
 			InputStream in=jarFile.getInputStream(je);	
-			BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(MMBaseContext.getConfigPath()+"/packaging/import/.temp_"+packageid+"_"+packageversion+".mmp"));
+			BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(getImportPath()+".temp_"+packageid+"_"+packageversion+".mmp"));
 			int val;
                    		while ((val = in.read()) != -1) {
                      			out.write(val);
@@ -226,7 +226,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
 			log.error("can't load : "+path);
 			e.printStackTrace();
 		}
-       		JarFile tmpjarfile = new JarFile(MMBaseContext.getConfigPath()+"/packaging/import/.temp_"+packageid+"_"+packageversion+".mmp");
+       		JarFile tmpjarfile = new JarFile(getImportPath()+".temp_"+packageid+"_"+packageversion+".mmp");
 		return tmpjarfile;
 		} catch(Exception e) {
 			log.error("can't load : "+path);
@@ -250,10 +250,10 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
 			byte[] buffer = new byte[buffersize];
 
 			// create a new name in the import dir
-			String localname=MMBaseContext.getConfigPath()+"/packaging/import/"+id+"_"+version+".mmp";
+			String localname=getImportPath()+id+"_"+version+".mmp";
 			log.info("WOO1="+id+" localname="+localname);
 			// not a very nice way should we have sepr. extentions ?
-			if (id.indexOf("_bundle_")!=-1) localname=MMBaseContext.getConfigPath()+"/packaging/import/"+id+"_"+version+".mmb";
+			if (id.indexOf("_bundle_")!=-1) localname=getImportPath()+id+"_"+version+".mmb";
 			log.info("WOO2="+id+" localname="+localname);
 
 			BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(localname));
@@ -371,4 +371,13 @@ public class HttpProvider extends BasicProvider implements ProviderInterface,Run
 		n2=n2.getNextSibling();
 	}
     }
+
+   public String getImportPath() {
+        String path=MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"import"+File.separator;
+        File dir=new File(path);
+        if (!dir.exists()) {
+                dir.mkdir();
+        }
+        return path;
+   }
 }
