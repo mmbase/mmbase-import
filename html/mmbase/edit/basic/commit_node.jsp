@@ -38,11 +38,26 @@
     	</mm:fieldlist>
     </mm:createnode>	
     <mm:node id="new_node2" referid="new_node">
-    <!-- give an id,  because orion 1.5.2 doesn't set it to null... -->  
-    <mm:remove referid="redirectTo" /> 
-    <mm:import id="redirectTo"><mm:url page="change_node.jsp" >
-      <mm:param name="node_number"><mm:field name="number" /></mm:param>
-	</mm:url></mm:import>
+    
+      <!-- give an id,  because orion 1.5.2 doesn't set it to null... -->  
+      <mm:remove referid="redirectTo" /> 
+
+      <mm:import externid="node" />
+      <mm:present referid="node">
+        <mm:import externid="role_name" />
+        <mm:import externid="direction" />
+        <mm:import id="redirectTo"><mm:url page="new_relation.jsp" referids="node,role_name,direction,node_type" >
+          <mm:param name="create_relation">yes</mm:param>
+          <mm:param name="node_number"><mm:field name="number" /></mm:param>
+        </mm:url></mm:import>
+      </mm:present>
+
+      <mm:notpresent referid="node">
+        <mm:import id="redirectTo"><mm:url page="change_node.jsp" >
+          <mm:param name="node_number"><mm:field name="number" /></mm:param>
+        </mm:url></mm:import>
+      </mm:notpresent>
+        
     </mm:node>
 	
     <!-- if alias added (only for new nodes), do that too --> 
