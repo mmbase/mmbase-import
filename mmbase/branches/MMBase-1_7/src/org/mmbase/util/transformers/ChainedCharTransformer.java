@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.15 2004-01-05 17:39:07 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.15.2.1 2004-10-15 18:34:24 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -82,6 +82,21 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
         }
         return this;
     }
+
+
+    /** 
+     * Implementation without Threads. Not needed when transforming by String. 
+     */
+    public String transform(String string) {
+        ListIterator i = charTransformers.listIterator();
+        while (i.hasNext()) {
+            CharTransformer ct = (CharTransformer) i.next();
+            string = ct.transform(string);            
+        }
+        return string;
+        
+    }
+
 
     // javadoc inherited
     public Writer transform(Reader startReader, Writer endWriter) {
