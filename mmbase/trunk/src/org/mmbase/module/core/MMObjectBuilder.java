@@ -607,7 +607,9 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public Vector searchVector(String where,String sorted) {
 		// do the query on the database
-		if (where.indexOf("MMNODE")!=-1) {
+		if (where==null) {
+			where="";
+		} else if (where.indexOf("MMNODE")!=-1) {
 			where=convertMMNode2SQL(where);
 		} else {
 			where=QueryConvertor.altaVista2SQL(where);
@@ -643,7 +645,9 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public Vector searchVector(String where,String sorted,boolean direction) {
 		// do the query on the database
-		if (where.indexOf("MMNODE")!=-1) {
+		if (where==null) {
+			where="";
+		} else if (where.indexOf("MMNODE")!=-1) {
 			where=convertMMNode2SQL(where);
 		} else {
 			where=QueryConvertor.altaVista2SQL(where);
