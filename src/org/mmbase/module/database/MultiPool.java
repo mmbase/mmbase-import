@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.38 2004-01-13 14:03:45 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.39 2004-01-13 14:35:50 michiel Exp $
  */
 public class MultiPool {
 
@@ -32,10 +32,9 @@ public class MultiPool {
     private DijkstraSemaphore semaphore;
     private int      totalConnections = 0;
     private int      maxQueries = 500;
-    private String   url;
     private String   name;
     private String   password;
-    private String   dbm;
+    private String   url;
     private DatabaseSupport databaseSupport;
 
     private static final boolean DORECONNECT  = true;
@@ -43,26 +42,26 @@ public class MultiPool {
     /**
      * @javadoc
      */
-    MultiPool(DatabaseSupport databaseSupport, String url, String name, String password,int conMax) throws SQLException {
+    MultiPool(DatabaseSupport databaseSupport, String url, String name, String password, int conMax) throws SQLException {
         this(databaseSupport, url, name, password, conMax, 500);
 
     }
     /**
      * Establish connection to the JDBC Pool(s)
      */
-    MultiPool(DatabaseSupport databaseSupport,String url, String name, String password, int conMax,int maxQueries) throws SQLException {
+    MultiPool(DatabaseSupport databaseSupport, String url, String name, String password, int conMax,int maxQueries) throws SQLException {
 
         log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, which will be refreshed after " + maxQueries + " queries");
         this.conMax          = conMax;
-        this.url             = url;
         this.name            = name;
+        this.url             = url;
         this.password        = password;
         this.maxQueries      = maxQueries;
         this.databaseSupport = databaseSupport;
 
         boolean logStack = true;
         while (!fillPool(logStack)) {
-            log.error("Cannot run with no connections, retrying after 10 seconds");
+            log.error("Cannot run with no connections, retrying after 10 seconds.");
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException ie) {
@@ -73,8 +72,6 @@ public class MultiPool {
         }
      
         semaphore = new DijkstraSemaphore(pool.size());
-
-        dbm = getDBMfromURL(url);
     }
 
 
@@ -282,7 +279,7 @@ public class MultiPool {
                 con.claim();
                 try {
                     if (con.isClosed()) {
-                        log.warn("Got a closed connection from the connection Pool. Trying to get a new one");
+                        log.warn("Got a closed connection from the connection Pool. Trying to get a new one.");
                         con = getMultiConnection();
                         con.claim();
                     }
@@ -386,41 +383,13 @@ public class MultiPool {
      * @javadoc
      */
     public String toString() {
-        return "dbm=" + dbm + ",name=" + name + ",conmax=" + conMax;
+        return "dbm=" + url + ",name=" + name + ",conmax=" + conMax;
     }
-
-    /**
-     * @javadoc
-     */
-    private String getDBMfromURL(String url) {
-        return url;
-    }
-
-    /**
-     * @javadoc
-     */
-    /*
-    private boolean checkConnection(Connection conn) {
-        Statement statement;
-        boolean rtn;
-        try {
-            statement = conn.createStatement();
-            statement.executeQuery("select count(*) from systables");
-            statement.close();
-            rtn = true;
-        } catch (Exception e) {
-            rtn = false;
-            log.error("checkConnection failed");
-            log.error(Logging.stackTrace(e));
-        }
-        return(rtn);
-    }
-    */
 
 
     /**
      * Support class to close connections in a seperate thread, as some JDBC drivers
-     * have a tendency to hang themselves on a runing sql close.
+     * have a tendency to hang themselves on a running sql close.
      */
     static class ConnectionCloser implements Runnable {
         private static final Logger log = Logging.getLoggerInstance(ConnectionCloser.class);
@@ -438,8 +407,7 @@ public class MultiPool {
         protected void start() {
             // Start up the thread
             Thread kicker = new Thread(this, "ConnectionCloser");
-            kicker.setDaemon(true);
-            // MM: why is is a daemon thread. Can run() actually hang? That would be bad!
+            kicker.setDaemon(true); // For the case if indeed the close 'hangs' the thread.
             kicker.start();
         }
 
