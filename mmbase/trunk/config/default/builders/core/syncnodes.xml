@@ -5,12 +5,10 @@
   <searchage>14</searchage>
   <names>
 	 <!-- singles per language  as defined by RFC xxx -->
-	 <singular xml:lang="us">SyncNode</singular>
 	 <singular xml:lang="en">SyncNode</singular>
 	 <singular xml:lang="nl">SyncNode</singular>
 	 <singular xml:lang="eo">Samignodo</singular>
 	 <!-- multiple per language  as defined by RFC xxx -->
-	 <plural xml:lang="us">SyncNodes</plural>
 	 <plural xml:lang="en">SyncNodes</plural>
 	 <plural xml:lang="nl">SyncNodes</plural>
 	 <plural xml:lang="eo">Samignodoj</plural>
@@ -20,8 +18,6 @@
   small description of the builder for human reading
   -->
   <descriptions>
-	 <!-- descriptions per language  as defined by RFC xxx -->
-	 <description xml:lang="us">SyncNodes are used to map remote mmbase nodes to this node</description>
 	 <description xml:lang="en">SyncNodes are used to map remote mmbase nodes to this node</description>
 	 <description xml:lang="nl">SyncNodes worden gebruikt om remote mmbase nodes te mappen naar lokale nodes</description>
 	 <description xml:lang="eo">Samignodoj estas uzataj por mapi forajn MMBase-nodoj al lokaj</description>
@@ -37,7 +33,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">ExportSource</guiname>
 		  <guiname xml:lang="en">ExportSource</guiname>
 		  <guiname xml:lang="nl">ExportSource</guiname>
 		  <guiname xml:lang="eo">Eksportfonto</guiname>
@@ -67,7 +62,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">TimeStamp</guiname>
 		  <guiname xml:lang="en">TimeStamp</guiname>
 		  <guiname xml:lang="nl">TijdStempel</guiname>
 		  <guiname xml:lang="eo">Tempstampo</guiname>
@@ -97,7 +91,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">ExportNumber</guiname>
 		  <guiname xml:lang="en">ExportNumber</guiname>
 		  <guiname xml:lang="nl">ExportNummer</guiname>
 		  <guiname xml:lang="eo">Eksportnumero</guiname>
@@ -128,7 +121,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">LocalNumber</guiname>
 		  <guiname xml:lang="en">LocalNumber</guiname>
 		  <guiname xml:lang="nl">LocalNummer</guiname>
 		  <guiname xml:lang="eo">Ĉi-numero</guiname>
@@ -148,7 +140,7 @@
 		<!-- database related  -->
 		<db>
 		  <!-- name of the field in the database -->
-		  <name>localnumber</name>
+        <name>localnumber</name>
 		  <!-- MMBase datatype and demands on it -->
 		  <type state="persistent" notnull="true">INTEGER</type>
 		</db>

@@ -19,12 +19,10 @@
 		<!-- singles per language as defined by ISO 639 -->
 		<singular xml:lang="nl">MMServer</singular>
 		<singular xml:lang="en">MMServer</singular>
-		<singular xml:lang="us">MMServer</singular>
 		<singular xml:lang="eo">MMServilo</singular>
 		<!-- multiple per language as defined by ISO 639 -->
 		<plural xml:lang="nl">MMServers</plural>
 		<plural xml:lang="en">MMServers</plural>
-		<plural xml:lang="us">MMServers</plural>
 		<plural xml:lang="eo">MMServiloj</plural>
 	</names>
 
@@ -35,8 +33,7 @@
 		<!-- descriptions per language as defined by ISO 639  -->
 		<description xml:lang="nl">MMServers bepaalt de node binnen een mmbase cluster</description>
 		<description xml:lang="en">MMServers defines node of a mmbase within this system</description>
-		<description xml:lang="us">MMServers defines node of a mmbase within this system</description>
-		<description xml:lang="us">Tipo MMServilo difinas la nodon en MMBase-aro</description>
+		<description xml:lang="eo">Tipo MMServilo difinas la nodon en MMBase-aro</description>
 	</descriptions>
 
 	<!-- <properties>
@@ -58,7 +55,6 @@
       <gui>
 				<guiname xml:lang="nl">Server</guiname>
 				<guiname xml:lang="en">Server</guiname>
-				<guiname xml:lang="us">Server</guiname>
 				<guiname xml:lang="us">Server</guiname>
 				<guiname xml:lang="eo">Servilo</guiname>
 				<guitype>string</guitype>
@@ -89,7 +85,6 @@
 			<gui>
 				<guiname xml:lang="nl">Status</guiname>
 				<guiname xml:lang="en">State</guiname>
-				<guiname xml:lang="us">State</guiname>
 				<guiname xml:lang="eo">Stato</guiname>
 				<guitype>integer</guitype>
 			</gui>
@@ -119,7 +114,6 @@
 			<gui>
 				<guiname xml:lang="nl">Laatst.Gezien</guiname>
 				<guiname xml:lang="en">Last.Seen</guiname>
-				<guiname xml:lang="us">Last.Seen</guiname>
 				<guiname xml:lang="eo">Laste.vidita</guiname>
 				<guitype>eventtime</guitype>
 			</gui>
@@ -149,7 +143,6 @@
 			<gui>
 				<guiname xml:lang="nl">Host</guiname>
 				<guiname xml:lang="en">Host</guiname>
-				<guiname xml:lang="us">Host</guiname>
 				<guiname xml:lang="eo">Ĉefkomputilo</guiname>
 				<guitype>string</guitype>
 			</gui>
@@ -179,7 +172,6 @@
 			<gui>
 				<guiname xml:lang="nl">OS</guiname>
 				<guiname xml:lang="en">OS</guiname>
-				<guiname xml:lang="us">OS</guiname>
 				<guiname xml:lang="eo">Operaciumo</guiname>
 				<guitype>string</guitype>
 			</gui>
@@ -209,7 +201,6 @@
 			<gui>
 				<guiname xml:lang="nl">JDK</guiname>
 				<guiname xml:lang="en">JDK</guiname>
-				<guiname xml:lang="us">JDK</guiname>
 				<guiname xml:lang="eo">JDK</guiname>
 				<guitype>string</guitype>
 			</gui>

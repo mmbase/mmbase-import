@@ -29,13 +29,11 @@
   >-->
   <names>
     <singular xml:lang="en">Object</singular>
-    <singular xml:lang="us">Object</singular>
     <singular xml:lang="nl">Object</singular>
     <singular xml:lang="eo">Objekto</singular>
     <singular xml:lang="fr">Objet</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="en">Objects</plural>
-    <plural xml:lang="us">Objects</plural>
     <plural xml:lang="nl">Objecten</plural>
     <plural xml:lang="eo">Objektoj</plural>
     <plural xml:lang="fr">Objets</plural>
@@ -47,7 +45,6 @@
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="en">Objects</description>
-    <description xml:lang="us">Objects</description>
     <description xml:lang="nl">Objekten</description>
     <description xml:lang="eo">Objektoj</description>
     <description xml:lang="fr">Objets</description>
@@ -72,7 +69,6 @@
       <gui>
         <guiname xml:lang="nl">Object</guiname>
         <guiname xml:lang="en">Object</guiname>
-        <guiname xml:lang="us">Object</guiname>
         <guiname xml:lang="eo">Objekto</guiname>
         <guiname xml:lang="fr">Objet</guiname>
         <guitype>integer</guitype>
@@ -103,7 +99,6 @@
       <gui>
         <guiname xml:lang="nl">Eigenaar</guiname>
         <guiname xml:lang="en">Owner</guiname>
-        <guiname xml:lang="us">Owner</guiname>
         <guiname xml:lang="eo">Posedanto</guiname>
         <guiname xml:lang="fr">Propriétaire</guiname>
     <guitype>string</guitype>
