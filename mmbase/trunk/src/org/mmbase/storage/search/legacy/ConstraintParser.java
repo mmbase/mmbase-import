@@ -67,6 +67,12 @@ import org.mmbase.util.logging.*;
  * <li><em>stepalias</em><b>.</b><em>fieldname</em>
  * <li><em>fieldname</em> (only when the query has just one step).
  * </ul>
+ * A <em>value</em> can be one of these forms:
+ * <ul>
+ * <li><em>string between single quotes</em> for string fields, example: <code>'A string value'</code>
+ * <li><em>numerical value</em> for numerical fields, example: <code>123.456</code>
+ * <li><em>numerical value between single quotes</em> for numerical fields, example" <code>'123.456'</code>
+ * </ul>
  * A <em>string-search-condition</em> can be of this form:
  * <ul>
  * <li><b>StringSearch(</b><em>field</em><b>,</b>PHRASE|PROXIMITY|WORD<b>,</b>
@@ -103,7 +109,7 @@ import org.mmbase.util.logging.*;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.18 2004-03-11 23:27:14 eduard Exp $
+ * @version $Id: ConstraintParser.java,v 1.19 2004-03-14 00:11:34 robmaris Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -119,20 +125,23 @@ public class ConstraintParser {
     private List steps = null;
 
     /**
-     * Parses string or numerical value from list of tokens.
+     * Parses string or numerical value from list of tokens, to match the type
+     * of the specified field.
      * If the first token is not "'", it is interpreted as a numerical value,
      * otherwise it is required to be the first token of the sequence
-     * "'", "value", "'", representing a string value.
+     * "'", "value", "'", representing a string value for string fields, or
+     * a numerical value for numerical fields.
      *
      * @param iTokens Tokens iterator, must be positioned before the (first)
      *        token representing the value.
+     * @param field The field.
      * @return A <code>String</code> or <code>Double</code> object representing
-     *        the value
+     *        the value.
      * @throws NumberFormatException when the first token is not (the start of)
      *        a valid value expression (it may be a <em>field</em> instead).
      */
     // package visibility!
-    static Object parseValue(Iterator iTokens) throws NumberFormatException {
+    static Object parseValue(Iterator iTokens, StepField field) throws NumberFormatException {
         Object result = null;
         String token = (String) iTokens.next();
         if (token.equals("'")) {
@@ -144,6 +153,14 @@ public class ConstraintParser {
                 "Unexpected token (expected \"'\"): \""
                 + token + "\"");
              }
+            
+            int fieldType = field.getType();
+            if (fieldType == FieldDefs.TYPE_BYTE || fieldType == FieldDefs.TYPE_DOUBLE ||
+                fieldType == FieldDefs.TYPE_FLOAT || fieldType == FieldDefs.TYPE_INTEGER ||
+                fieldType == FieldDefs.TYPE_LONG || fieldType == FieldDefs.TYPE_NODE) {
+                // String represents a numerical value.
+                result = new Double(token);
+            }
         } else {
             result = new Double(token);
         }
@@ -484,7 +501,7 @@ public class ConstraintParser {
 
         if (token.equalsIgnoreCase("LIKE")) {
             // LIKE 'value'
-            String value = (String) parseValue(iTokens);
+            String value = (String) parseValue(iTokens, field);
             boolean caseSensitive = true;
             if (function != null) {
                 if ((function.equals("LOWER")
@@ -526,7 +543,7 @@ public class ConstraintParser {
 
                 iTokens.previous();
                 do {
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     separator = (String) iTokens.next();
                     if (separator.equals(",") || separator.equals(")")) {
                         fieldValueInConstraint.addValue(value);
@@ -541,14 +558,14 @@ public class ConstraintParser {
 
         } else if (token.equalsIgnoreCase("BETWEEN")) {
             // BETWEEN value1 AND value2
-            Object value1 = parseValue(iTokens);
+            Object value1 = parseValue(iTokens, field);
             String separator = (String) iTokens.next();
             if (!separator.equals("AND")) {
                 throw new IllegalArgumentException(
                     "Unexpected token (expected \"AND\"): \""
                     + separator + "\"");
             }
-            Object value2 = parseValue(iTokens);
+            Object value2 = parseValue(iTokens, field);
             boolean caseSensitive = true;
             if (function != null
                     && value1 instanceof String && value2 instanceof String) {
@@ -575,7 +592,7 @@ public class ConstraintParser {
             if (token.equals("=")) {
                 try {
                     // == value
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
                         .setOperator(FieldValueConstraint.EQUAL);
                 } catch (NumberFormatException e) {
@@ -590,7 +607,7 @@ public class ConstraintParser {
                 iTokens.previous();
                 try {
                     // = value
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     boolean caseSensitive = true;
                     if (function != null && value instanceof String) {
                         String strValue = (String) value;
@@ -618,7 +635,7 @@ public class ConstraintParser {
             if (token.equals("=")) {
                 try {
                     // <= value
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
                         .setOperator(FieldValueConstraint.LESS_EQUAL);
                 } catch (NumberFormatException e) {
@@ -632,7 +649,7 @@ public class ConstraintParser {
             } else if (token.equals(">")) {
                 try {
                     // <> value
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
                         .setOperator(FieldValueConstraint.NOT_EQUAL);
                 } catch (NumberFormatException e) {
@@ -647,7 +664,7 @@ public class ConstraintParser {
                 try {
                     // < value
                     iTokens.previous();
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
                         .setOperator(FieldValueConstraint.LESS);
                 } catch (NumberFormatException e) {
@@ -664,7 +681,7 @@ public class ConstraintParser {
             if (token.equals("=")) {
                 try {
                     // >= value
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
                         .setOperator(FieldValueConstraint.GREATER_EQUAL);
                 } catch (NumberFormatException e) {
@@ -679,7 +696,7 @@ public class ConstraintParser {
                 try {
                     // > value
                     iTokens.previous();
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
                         .setOperator(FieldValueConstraint.GREATER);
                 } catch (NumberFormatException e) {
@@ -696,7 +713,7 @@ public class ConstraintParser {
             if (token.equals("=")) {
                 try {
                     // != value
-                    Object value = parseValue(iTokens);
+                    Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
                         .setOperator(FieldValueConstraint.NOT_EQUAL);
                 } catch (NumberFormatException e) {
