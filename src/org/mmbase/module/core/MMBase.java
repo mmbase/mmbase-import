@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.81 2002-11-21 13:35:08 pierre Exp $
+ * @version $Id: MMBase.java,v 1.82 2003-01-13 16:55:41 robmaris Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -172,6 +172,8 @@ public class MMBase extends ProcessorModule  {
     /**
      * MultiRelations virtual builder, used for performing multilevel searches.
      * @scope private
+     * @deprecated Use the <code>ClusterBuilder</code> instance retrieved by
+     * {@link #getClusterBuilder() getClusterBuilder()} instead.
      */
     MultiRelations MultiRelations;
 
@@ -228,9 +230,9 @@ public class MMBase extends ProcessorModule  {
     private MMBaseCop mmbaseCop = null;
 
     /**
-     * Reference to the cluster builder.
-     * The cluster builder is a version of the multirelations builder
-     * that is used by the MMCI.
+     * Reference to the cluster builder, a virtual builder used to perform 
+     * multilevel searches.
+     * @see ClusterBuilder
      */
     private ClusterBuilder clusterBuilder;
 
@@ -624,8 +626,11 @@ public class MMBase extends ProcessorModule  {
     }
 
     /**
-     * Returns a reference to the cluster builder.
-     * @return an instantiation of the <code>ClusterBuilder</code>
+     * Returns a reference to the cluster builder, a virtual builder used to 
+     * perform multilevel searches.
+     * 
+     * @return The cluster builder.
+     * @see ClusterBuilder
      */
     public ClusterBuilder getClusterBuilder() {
         return clusterBuilder;
