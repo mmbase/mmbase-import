@@ -324,9 +324,19 @@ public class Poll extends ProcessorModule  {
 	 * Execute the commands provided in the form values
 	 */
 	public boolean process (scanpage sp, Hashtable cmds, Hashtable vars) {
-		String voteFor = (String)cmds.get ("VOTE");
 
-		if (voteFor != null) processVote (sp, voteFor);
+        String cmdline,token;
+
+		for (Enumeration h = cmds.keys();h.hasMoreElements();) {
+			cmdline=(String)h.nextElement();	
+			StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
+			token = tok.nextToken();
+			if (token.equals("VOTE")) {
+				String voteFor =(String)cmds.get(cmdline);
+				if (voteFor != null) processVote (sp, voteFor);
+			} else debug ("unknown command : "+cmdline);
+        }
+
 		
 		return false;
 	}
@@ -341,15 +351,18 @@ public class Poll extends ProcessorModule  {
 
 		if (tokens.hasMoreTokens ()) {
 			String qid = tokens.nextToken ();
+            debug("qid="+qid);
 
 			if (tokens.hasMoreTokens ()) {
 				String			aid		= tokens.nextToken ();
+                debug("aid="+aid);
 				MMObjectNode	relNode	= getRelation (qid, aid);
 
 				if (relNode != null) {
 					int votes = relNode.getIntValue ("pos");
 
 					relNode.setValue ("pos", votes + 1);
+                    relNode.commit();
 
 					if (!_updates.contains (relNode)) _updates.addElement (relNode);
 
@@ -552,6 +565,7 @@ public class Poll extends ProcessorModule  {
 				relnode=(MMObjectNode)e.nextElement();
                 rtn.addElement(((Integer)relnode.getValue("number")).toString());
             }
+        }
 		return(rtn);
 	}
 
