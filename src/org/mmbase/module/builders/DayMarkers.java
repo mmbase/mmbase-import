@@ -17,17 +17,15 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.7 2000-05-30 07:41:00 wwwtech Exp $
+ * @version $Id: DayMarkers.java,v 1.8 2000-05-30 11:19:16 wwwtech Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
 	public int day=0;
 	Hashtable daycache=new Hashtable();
-	DayMarkersProbe probe;
 
 	public DayMarkers() {
 		day=daycount();
-		probe=new DayMarkersProbe(this);
 	}
 
 	public int daycount() {
@@ -86,9 +84,10 @@ public class DayMarkers extends MMObjectBuilder {
 	/**
 	 * This gets called every hour to see if the day has past.
 	*/
-	protected void probeCall() {
+	public void probe() {
 		int newday;
 		newday=daycount();
+		debug("Days "+newday+" current "+day);
 		if (newday>day) {
 			day=newday;
 			createMarker();
