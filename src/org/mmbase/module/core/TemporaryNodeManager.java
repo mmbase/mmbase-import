@@ -16,17 +16,18 @@ import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.OAlias;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.22 2001-07-04 13:08:56 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.23 2001-07-24 07:30:06 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
-    private static Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class.getName());
 
 	private MMBase mmbase;
 
@@ -54,7 +55,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		MMObjectBuilder builder=null;
 		RelDef reldef;
 		int rnumber;
-		
+
 		// decode type to a builder using reldef
 		reldef=mmbase.getRelDef();
 		rnumber=reldef.getGuessedByName(type);
@@ -72,6 +73,18 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		setObjectField(owner,key,"_dnumber",getTmpKey(owner,destination));
 		setObjectField(owner,key,"rnumber",""+rnumber);
 		return(key);
+	}
+
+	public String createTmpAlias(String name,String owner,String key, String destination) {
+		MMObjectBuilder builder=mmbase.getOAlias();
+		String bulname=builder.getTableName();
+
+		// Create alias node
+		createTmpNode(bulname,owner,key);
+		builder.checkAddTmpField("_destination");
+		setObjectField(owner,key,"_destination",getTmpKey(owner,destination));
+		setObjectField(owner,key,"name",name);
+		return key;
 	}
 
 	public String deleteTmpNode(String owner,String key) {
@@ -96,6 +109,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			node.parent.checkAddTmpField("_snumber");
 			node.parent.checkAddTmpField("_dnumber");
 		}
+                if (node.parent instanceof OAlias) {
+                    node.parent.checkAddTmpField("_destination");
+                }
 		return(node);
 	}
 
@@ -117,6 +133,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			if (node.parent instanceof InsRel) {
 				node.parent.checkAddTmpField("_snumber");
 				node.parent.checkAddTmpField("_dnumber");
+			}
+			if (node.parent instanceof OAlias) {
+				node.parent.checkAddTmpField("_destination");
 			}
 			return(key);
 		} else {
@@ -203,7 +222,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			rtn="";
 		} else {
 			rtn=node.getValueAsString(field);
-		} 
+		}
 		return(rtn);
 	}
 
@@ -216,7 +235,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			rtn="";
 		} else {
 			rtn=node.getValueAsString(field);
-		} 
+		}
 		return(rtn);
 	}
 
