@@ -275,7 +275,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				currentObjectArgumentNode = nm2.getNamedItem("mmbaseId");
 				if (currentObjectArgumentNode != null) oMmbaseId = currentObjectArgumentNode.getNodeValue();
 				// source relation
-				currentObjectArgumentNode = nm2.getNamedItem("soure");
+				currentObjectArgumentNode = nm2.getNamedItem("source");
 				if (currentObjectArgumentNode != null) relationSource = currentObjectArgumentNode.getNodeValue();
 				// destination relation
 				currentObjectArgumentNode = nm2.getNamedItem("destination");
@@ -288,7 +288,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				anonymousObject = false;
 			}
 
-			if (_debug) debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
+			if (_debug) {
+				if(oName.equals("createObject")) {
+					debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
+				} else {
+					debug("-> " + oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
+				}
+			}
 
 			if (oName.equals("createObject")) {
 				// check for existence
@@ -309,7 +315,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					throw new TransactionHandlerException(oName + " Object id already exists: " + id);
 				}
 				// actually create and administrate if not anonymous
-				currentObjectContext = tmpObjectManager.createTmpRelation(type, userTransactionInfo.user.getName(), relationSource, relationDestination);
+				currentObjectContext = tmpObjectManager.createTmpRelationNode(type, userTransactionInfo.user.getName(), id, relationSource, relationDestination);
 				if (!anonymousObject) {
 					transactionInfo.knownObjectContexts.put(id, currentObjectContext);
 				}
@@ -361,7 +367,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			if (oName.equals("getObject")) {
 			} 
 			
-			if (_debug) debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
+			if (_debug) {
+				if(oName.equals("createObject")) {
+					debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
+				} else {
+					debug("<- " + oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
+				}
+			}
 		}
 	}
 
@@ -442,7 +454,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		String getName() { 
 			int length = name.length();
 			String tempname = "TR"+ name.substring(length-8,length);
-			debug("Temporary name ="+tempname,0);
+			//debug("Temporary name ="+tempname,0);
 			return tempname;
 		}
 	}
