@@ -10,11 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.gui.flash;
 
-import java.lang.*;
 import java.util.*;
 import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
 import org.mmbase.util.*;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
@@ -28,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.17 2002-11-20 10:04:28 vpro Exp $
+ * @version $Id: MMFlash.java,v 1.18 2003-03-04 14:55:03 nico Exp $
  */
 public class MMFlash extends Module {
 

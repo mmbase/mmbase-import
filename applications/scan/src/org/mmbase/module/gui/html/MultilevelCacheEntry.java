@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import java.lang.*;
 import java.util.*;
 import org.mmbase.util.*;
 

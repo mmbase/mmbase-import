@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database;
 
-import java.util.*;
 import java.sql.*;
 
 /**

@@ -10,16 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.gui.html;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
 import java.io.*;
 import java.util.zip.*;
-//import javax.servlet.*;
-//import javax.servlet.http.*;
 
 import org.mmbase.module.*;
-import org.mmbase.servlet.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
@@ -34,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.61 $ $Date: 2003-01-23 10:06:51 $
+ * @$Revision: 1.62 $ $Date: 2003-03-04 14:55:05 $
  */
 public class scanparser extends ProcessorModule {
 

@@ -9,15 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
-import java.io.*;
-import java.sql.*;
 import java.lang.String;
-
-import javax.servlet.http.*;
-import javax.servlet.*;
 
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
