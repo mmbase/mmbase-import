@@ -22,9 +22,13 @@ import org.mmbase.module.core.MMBaseContext;
  *
  *
  * @author Gerard van Enk
- * @version $Revision: 1.5 $ $Date: 2000-09-11 20:09:52 $
+ * @version $Revision: 1.6 $ $Date: 2000-10-19 23:17:19 $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2000/09/11 20:09:52  case
+ * cjr: Changed call to MMBaseContext.getConfigPath() to System.getProperty()
+ *      to be able to call this *without* having to start mmbase
+ *
  * Revision 1.4  2000/08/10 20:44:15  case
  * cjr: removed some debug, checked path for '//', removed a stupid method
  *      that I added earlier.
@@ -64,7 +68,21 @@ public class XMLEntityResolver implements EntityResolver {
                 String dtdName = systemId.substring(i+5);
                 // 11 sept 2000, changed MMBaseContext to getProperty call to be able to use from cmdline
                 //String configpath = MMBaseContext.getConfigPath();
-                String configpath = System.getProperty("mmbase.config");
+                // fixed fo mmdemo String configpath = System.getProperty("mmbase.config");
+                String configpath = null;
+                String dtmp=System.getProperty("mmbase.mode");
+                if (dtmp!=null && dtmp.equals("demo")) {
+                        String curdir=System.getProperty("user.dir");
+                        if (curdir.endsWith("orion")) {
+                                curdir=curdir.substring(0,curdir.length()-6);
+                        }
+                        configpath=curdir+"/config";
+                } else {
+                        configpath=System.getProperty("mmbase.config");
+                }
+
+
+
                 String separator = "";
                 if (!configpath.endsWith(File.separator)) {
                     separator = File.separator;
