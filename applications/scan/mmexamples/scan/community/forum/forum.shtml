@@ -3,7 +3,7 @@
 <PROCESSOR MMBASE>
 <head>
 <title>MMBase Forum</title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="../../../share/community/css/mmbase.css" />
 </head>
 <body class="basic">
 <table summary="forum threads" width="93%" cellspacing="1" cellpadding="3" border="0">
@@ -13,7 +13,8 @@
 <IF $MOD-communityprc-$PARAM1-ISOPEN^=Nreadonly>
 <tr>
 <td class="data" colspan="3">Start new thread</td>
-<td class="navigate" align="right"><a href="createnewthread.shtml?$MOD-MMBASE-FIELD-$PARAM1-number^" ><img src="../../images/next.gif" alt="reply" border="0" align="left" /></a></td>
+<td class="navigate" align="right"><a href="createnewthread.shtml?$MOD-MMBASE-FIELD-$PARAM1-number^" >
+<img src="../../../share/community/images/next.gif" alt="reply" border="0" align="left" /></a></td>
 </tr>
 </IF>
 <tr>
@@ -42,7 +43,8 @@
 </tr>
 <tr>
 <td class="data" colspan="3" >ADMIN: Administer Forum</td>
-<td class="navigate" align="right"><a href="forumadmin.shtml?$PARAM1" ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a></td>
+<td class="navigate" align="right"><a href="forumadmin.shtml?$PARAM1" >
+<img src="../../../share/community/images/change.gif" alt="change" border="0" align="right" /></a></td>
 </tr>
 </table>
 </body></html>
