@@ -33,12 +33,12 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.39 2003-09-05 16:32:37 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.40 2003-09-10 11:16:10 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
 
-    private static final Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
+    private static final Logger log = Logging.getLoggerInstance(IncludeTag.class);
     private static final Logger pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
 
     private static final int DEBUG_NONE = 0;
@@ -80,7 +80,9 @@ public class IncludeTag extends UrlTag {
      * Opens an Http Connection, retrieves the page, and returns the result.
      **/
     private void external(BodyContent bodyContent, String absoluteUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("External: found url: >" + absoluteUrl + "<");
+        if (log.isDebugEnabled()) { 
+            log.debug("External: found url: >" + absoluteUrl + "<");
+        }
         try {
             URL includeURL = new URL(absoluteUrl); 
 
@@ -133,10 +135,12 @@ public class IncludeTag extends UrlTag {
             }            
             helper.setValue(debugStart(absoluteUrl) + string.toString() + debugEnd(absoluteUrl));
             
-            if (log.isDebugEnabled()) log.debug("found string: " + helper.getValue());
+            if (log.isDebugEnabled()) { 
+                log.debug("found string: " + helper.getValue());
+            }
 
         } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());            
+            throw new TaglibException (e);            
         }         
     }
 
@@ -194,7 +198,7 @@ public class IncludeTag extends UrlTag {
             helper.setValue(debugStart(relativeUrl) + response.toString() + debugEnd(relativeUrl));
         } catch (Exception e) {
             log.debug(Logging.stackTrace(e));
-            throw new TaglibException(e.toString(), e);
+            throw new TaglibException(e);
         }
 
         if (log.isDebugEnabled()) {
@@ -252,7 +256,7 @@ public class IncludeTag extends UrlTag {
             }
             helper.setValue(debugStart(urlFile) + string.toString() + debugEnd(urlFile));
         } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString()); 
+            throw new TaglibException (e); 
         }
     }
     
@@ -286,7 +290,9 @@ public class IncludeTag extends UrlTag {
                 nudeUrl = gotUrl;
                 params  = "";
             }
-            if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
+            if (log.isDebugEnabled()) { 
+                log.debug("Found nude url " + nudeUrl);
+            }
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
 
@@ -311,7 +317,9 @@ public class IncludeTag extends UrlTag {
                         includeURI = includeURI.substring(0, paramsIndex);
                     }
                 } 
-                log.debug("Include: Level="+includeLevel+" URI="+includeURI);
+                if (log.isDebugEnabled()) {
+                    log.debug("Include: Level=" + includeLevel + " URI=" + includeURI);
+                }
 
                 if (nudeUrl.charAt(0) == '/') {
                     log.debug("URL was absolute on servletcontext");
@@ -346,8 +354,10 @@ public class IncludeTag extends UrlTag {
                 if (paramsIndex != -1) {
                     includeURI = includeURI.substring(0, paramsIndex);
                 }
-                request.setAttribute("includeTagURI",includeURI);
-                log.debug("Next Include: Level="+includeLevel+" URI="+includeURI);
+                request.setAttribute("includeTagURI", includeURI);
+                if (log.isDebugEnabled()) {
+                    log.debug("Next Include: Level=" + includeLevel + " URI=" + includeURI);
+                }
 
                 if (getCite()) {
                     cite(bodyContent, urlString, request); 
@@ -372,7 +382,7 @@ public class IncludeTag extends UrlTag {
             }
           
         } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());            
+            throw new TaglibException (e);
         }
         if (pageLog.isDebugEnabled()) {
             pageLog.debug("END Parsing mm:include JSP page"); 

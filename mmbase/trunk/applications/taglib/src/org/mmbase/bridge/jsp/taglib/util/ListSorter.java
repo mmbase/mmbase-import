@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.util;
 
 import javax.servlet.jsp.JspTagException;
+import org.mmbase.bridge.jsp.taglib.TaglibException;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
 
@@ -18,7 +19,7 @@ import java.util.*;
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.1 2003-08-08 16:03:49 michiel Exp $
+ * @version $Id: ListSorter.java,v 1.2 2003-09-10 11:16:10 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {
@@ -47,7 +48,7 @@ public class  ListSorter  {
                     Comparator comp = (Comparator) claz.newInstance();
                     Collections.sort(list, comp);                     
                 } catch (Exception e) {
-                    throw new JspTagException(e.toString());
+                    throw new TaglibException(e);
                 }                             
             }
         }

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.4 2003-08-29 12:12:25 keesj Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.5 2003-09-10 11:16:07 michiel Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
 
@@ -58,7 +58,7 @@ public class BooleanFunctionTag extends AbstractFunctionTag implements Condition
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             }
         } catch(java.io.IOException e){
-            throw new JspTagException("IO Error: " + e.getMessage());
+            throw new TaglibException(e);
         }
         return EVAL_PAGE;
     }

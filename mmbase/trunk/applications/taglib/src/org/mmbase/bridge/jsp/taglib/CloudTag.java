@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.76 2003-08-27 21:33:30 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.77 2003-09-10 11:16:07 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -292,7 +292,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     String url = response.encodeRedirectURL(thisPage);
                     response.sendRedirect(url);
                 } catch (IOException e) {
-                    throw new JspTagException(e.toString());
+                    throw new TaglibException(e);
                 }
                 return false;
             }
@@ -382,7 +382,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         try {
             pageContext.getOut().print(FAILMESSAGE + message);
         } catch (IOException ioe) {
-            throw new JspTagException(ioe.toString());
+            throw new TaglibException(ioe);
         }
         setAnonymousCloud(); // there must also be _some_ cloud, to avoid exception on
         evalBody(); //  register var
@@ -813,9 +813,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             rd.forward(request, response);
             return SKIP_BODY;
         } catch (javax.servlet.ServletException ioe) {
-            throw new JspTagException("error sending redirect:" + ioe);
+            throw new TaglibException("error sending redirect", ioe);
         } catch (java.io.IOException ioe) {
-            throw new JspTagException("error sending redirect:" + ioe);
+            throw new TaglibException("error sending redirect", ioe);
         }
     }
 
@@ -984,7 +984,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 String url = request.getRequestURI();
                 response.sendRedirect(url);
             } catch (java.io.IOException ioe) {
-                throw new JspTagException(Logging.stackTrace(ioe));
+                throw new TaglibException(ioe);
             }
             return SKIP_BODY;
         }
@@ -1015,7 +1015,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             }
         } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
+            throw new TaglibException(ioe);
         } 
         return SKIP_BODY;        
     }

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.12 2003-08-27 21:33:30 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.13 2003-09-10 11:16:07 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -271,7 +271,7 @@ public class ContentTag extends LocaleTag  {
                         bodyContent.writeOut(bodyContent.getEnclosingWriter());
                     }
                 } catch (java.io.IOException ioe){
-                    throw new JspTagException(ioe.toString());
+                    throw new TaglibException(ioe);
                 }                 
             }
         }

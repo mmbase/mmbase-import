@@ -26,7 +26,7 @@ import java.io.IOException;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.2 2003-08-27 21:33:34 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.3 2003-09-10 11:16:08 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer {
 
@@ -105,7 +105,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
                 } catch (IOException ioe){
-                    throw new JspTagException(ioe.toString());
+                    throw new TaglibException(ioe);
                 }
             }
             return SKIP_BODY;

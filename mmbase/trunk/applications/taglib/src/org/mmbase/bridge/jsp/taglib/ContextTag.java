@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.61 2003-08-27 21:33:31 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.62 2003-09-10 11:16:07 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -108,7 +108,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             try {
                 parent = getContextProvider();
             } catch (JspTagException e) {
-                throw new JspTagException("Could not find parent context!");
+                throw new TaglibException("Could not find parent context!", e);
             }
             searchedParent = true;
         }
@@ -254,7 +254,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             }
             return SKIP_BODY;
         } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
+            throw new TaglibException(ioe);
         }
     }
 

@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.32 2003-08-27 21:33:37 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.33 2003-09-10 11:16:08 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -35,6 +35,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     private Attribute offset      = Attribute.NULL;
 
     private Attribute precision   = Attribute.NULL;
+    private Attribute relevance   = Attribute.NULL;
 
     private final static int PRECISION_UNSET   = -1;
     private final static int PRECISION_SECONDS = 1;
@@ -68,7 +69,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         DateFormatSymbols dfs = new SimpleDateFormat("", Locale.ENGLISH).getDateFormatSymbols();
         setDays(dfs);
         setMonths(dfs);
-    }
+   }
 
     
     // Attributes
@@ -84,8 +85,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         precision = getAttribute(p);
     }
 
-    private int getPrecision() throws JspTagException {
-        String p = precision.getString(this).toLowerCase();
+    protected int getPrecisionConstant(String p) throws JspTagException {
         if (p.equals("")) {
             return PRECISION_UNSET;
         } else if (p.equals("seconds")) {
@@ -103,9 +103,25 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         } else if (p.equals("years")) {
             return PRECISION_YEARS;
         } else {
-            throw new JspTagException("Unknown value for precision attribute: '" + p + "'");
+            throw new JspTagException("Unknown value for precision/significance attribute: '" + p + "'");
         }
+    }
+
+
+    private int getPrecision() throws JspTagException {
+        String p = precision.getString(this).toLowerCase();
+        return getPrecisionConstant(p);
         
+    }
+
+
+    public void setRelevance(String p) throws JspTagException {
+        relevance = getAttribute(p);
+    }
+
+    private int getRelevance() throws JspTagException {
+        String p = relevance.getString(this).toLowerCase();
+        return getPrecisionConstant(p);
     }
     
     protected DateFormat getFormat() throws JspTagException {
@@ -247,7 +263,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                     String msg = "Cannot evaluate handleDay with time '" + usetime + "' (exception:" + e + ")";
                     // Why should we log this? designers dont have access to logs
                     // log.error(msg);
-                    throw new JspTagException(msg);
+                    throw new TaglibException(msg, e);
                 }
             }
             // Is a month specified, like: january, february ?
@@ -258,7 +274,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                     String msg = "Cannot evaluate handleMonth with time '" + usetime + "' (exception:" + e + ")";
                     // Why should we log this? designers dont have access to logs
                     // log.error(msg);
-                    throw new JspTagException(msg);
+                    throw new TaglibException(msg, e);
                 }
             }
             // Is a keyword used, like: yesterday, today ?
@@ -269,7 +285,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                     String msg = "Cannot evaluate handleKeyword with time '" + usetime + "' (exception:" + e + ")";
                     // Why should we log this? designers dont have access to logs
                     // log.error(msg);
-                    throw new JspTagException(msg);
+                    throw new TaglibException(msg, e);
                 }
             }
             if (date == null) {
@@ -281,7 +297,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 parseFormat.applyPattern(iformat);
                 date = parseFormat.parse(usetime);
             } catch (java.text.ParseException e) {
-                throw new JspTagException(e.toString());
+                throw new TaglibException(e);
             }
 
         }
@@ -320,9 +336,31 @@ public class TimeTag extends ContextReferrerTag implements Writer {
             default:                 cal.set(Calendar.MILLISECOND,    0);
             }
             if (prec == PRECISION_WEEKS)  {
-                // this can not be done in above fall-through mechanism, gecause should not be done if >= PRECION_WEEKS
+                // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS
                 cal.set(Calendar.DAY_OF_WEEK,  1);
             }
+            date = cal.getTime();
+        }
+
+        if (relevance != Attribute.NULL) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            int rel = getRelevance();
+            switch(rel) {
+            case PRECISION_SECONDS:  cal.set(Calendar.MINUTE,    0);
+            case PRECISION_MINUTES:  cal.set(Calendar.HOUR,      0);
+            case PRECISION_HOURS:    cal.set(Calendar.DAY_OF_MONTH,    0);
+            case PRECISION_DAYS:     cal.set(Calendar.MONTH,  Calendar.JANUARY);
+            case PRECISION_MONTHS:   cal.set(Calendar.YEAR, 0);
+            case PRECISION_YEARS:   
+            default: 
+            }
+            /*
+            if (rel == PRECISION_WEEKS)  {
+                // this can not be done in above fall-through mechanism, because should not be done if >= PRECION_WEEKS
+                cal.set(Calendar.DAY_OF_WEEK,  1);
+            }
+            */
             date = cal.getTime();
         }
         
@@ -390,7 +428,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
                 throw new JspTagException("Time '" + t+ "' could not be parsed according to yyyy/MM/dd, HH:mm:ss or yyyy/MM/dd HH:mm:ss");
             }
         } catch (ParseException e) {
-            throw new JspTagException(e.toString());
+            throw new TaglibException(e);
         }
         return date;
         
@@ -487,13 +525,13 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         int index=0;
         
         if(keyword.equals("today"))   {
-            index=0;
+            index = 0;
         } else
             if(keyword.equals("tomorrow"))   {
-                index=DAY;
+                index = DAY;
             } else
                 if(keyword.equals("yesterday"))   {
-                    index=-DAY;
+                    index = -DAY;
                 }
         
         long now = System.currentTimeMillis();

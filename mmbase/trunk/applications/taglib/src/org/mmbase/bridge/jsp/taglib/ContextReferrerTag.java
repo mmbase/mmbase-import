@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.48 2003-09-05 16:32:36 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.49 2003-09-10 11:16:07 michiel Exp $
  * @see ContextTag
  */
 
@@ -117,7 +117,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         try {
             id = getAttribute(i);
         } catch (JspTagException j) {
-            throw new RuntimeException(j.toString());
+            throw new RuntimeException(j);
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         try {
             return (String) id.getValue(this);
         } catch (JspTagException j) {
-            throw new RuntimeException(j.toString());
+            throw new RuntimeException(j);
         }
     }
 
@@ -271,7 +271,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             try {
                 return new Integer(new java.math.BigDecimal(i).intValue());
             } catch (NumberFormatException e2) {
-                throw new JspTagException(i + " is not an integer value ");
+                throw new TaglibException(i + " is not an integer value ", e2);
             }
         }
     }
@@ -286,7 +286,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         try {
             clazz = Class.forName(classname);
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find " + classname + " class");
+            throw new TaglibException ("Could not find " + classname + " class", e);
         }
         return findParentTag(clazz, id, exception);
     }

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.47 2003-08-27 21:33:36 michiel Exp $ 
+ * @version $Id: NodeTag.java,v 1.48 2003-09-10 11:16:08 michiel Exp $ 
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -199,7 +199,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());        
             } catch (IOException ioe){
-                throw new JspTagException(ioe.toString());
+                throw new TaglibException(ioe);
             }
         }
         return SKIP_BODY;
