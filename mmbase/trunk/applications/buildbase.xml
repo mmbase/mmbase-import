@@ -336,7 +336,11 @@ web-app/*                All kind of templates. They problably can (need?) to be
       <classpath>
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
+        <pathelement path="${xalan.jar}" />
+        <pathelement path="${mail.jar}" />
+        <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
       </classpath>
     </javadoc>
   </target>
