@@ -12,7 +12,9 @@ package org.mmbase.module.database.support;
 
 /**
  * Class dTypeInfo
- * 
+ *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @javadoc
  * @rename DTypeInfo
   */
@@ -23,7 +25,7 @@ public String dbType;
 public int minSize=-1;
 public int maxSize=-1;
 
-	public dTypeInfo() {
-	}
+    public dTypeInfo() {
+    }
 
 }

@@ -21,9 +21,11 @@ import org.mmbase.util.logging.*;
  * the MMJdbc2NodeInterface, for backward compatibility.
  * This code may become deprecated in the future.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.7 2003-09-02 19:51:47 michiel Exp $
+ * @version $Id: Support2Storage.java,v 1.8 2004-01-27 12:04:47 pierre Exp $
  */
 public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -156,7 +158,7 @@ public abstract class Support2Storage extends BaseJdbc2Node implements DatabaseS
     }
 
     /**
-     * Get byte of a database blob.  It is unclear why this function is called 'getShorted..'.  
+     * Get byte of a database blob.  It is unclear why this function is called 'getShorted..'.
      * This function is final because if you extend Support2Storage, you should override storage
      * interface functions, not support functions.
      * @deprecated use /override getBytes(MMObjectNode, fieldname)

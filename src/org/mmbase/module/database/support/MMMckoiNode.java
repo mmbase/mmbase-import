@@ -23,8 +23,10 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.12 2004-01-08 16:37:21 robmaris Exp $
+ * @version $Id: MMMckoiNode.java,v 1.13 2004-01-27 12:04:48 pierre Exp $
  */
 public class MMMckoiNode extends BaseJdbc2Node implements MMJdbc2NodeInterface {
 

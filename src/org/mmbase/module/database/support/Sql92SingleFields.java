@@ -1,7 +1,7 @@
 /*
         This software is OSI Certified Open Source Software.
         OSI Certified is a certification mark of the Open Source Initiative.
- 
+
         The license (Mozilla version 1.0) can be read at the MMBase site.
         See http://www.MMBase.org/license
  */
@@ -20,28 +20,30 @@ import org.mmbase.util.logging.*;
 
 /**
  * Generic node handler for database's with the information stored on one location.
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92SingleFields.java,v 1.2 2003-04-22 13:40:20 kees Exp $
+ * @version $Id: Sql92SingleFields.java,v 1.3 2004-01-27 12:04:49 pierre Exp $
  */
 public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92SingleFields.class.getName());
     protected MMBase mmb;
-    
+
     // conversion related..
     private HashMap disallowed2allowed;
     private HashMap allowed2disallowed;
-    
+
     // how to create new fields?
     private HashMap typeMapping;
     private int maxDropSize=0;
-    
+
     public void init(MMBase mmb, XMLDatabaseReader parser) {
         // the mmmbase module
         this.mmb=mmb;
-        
+
         this.typeMapping=new HashMap(parser.getTypeMapping());
         maxDropSize = parser.getMaxDropSize();
-        
+
         // from a specific word to the new ones...
         disallowed2allowed = new HashMap(parser.getDisallowedFields());
         // we also need the info how to convert them back:
@@ -51,11 +53,11 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             Object item = iter.next();
             allowed2disallowed.put(disallowed2allowed.get(item), item);
         }
-        
+
         // Instantiate and initialize sql handler.
         super.init(disallowed2allowed, parser);
     }
-    
+
     public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
         try {
             // Connection connection = DriverManager.getConnectio(url, uid, pass);
@@ -77,7 +79,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             throw sqle;
         }
     }
-    
+
     /**
      * Returns whether this database support layer allows for buidler to be a parent builder
      * (that is, other builders can 'extend' this builder and its database tables).
@@ -89,7 +91,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
     public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
         return true;
     }
-    
+
     /**
      * Registers a builder as a parent builder (that is, other buidlers can 'extend' this
      * builder and its database tables).
@@ -107,14 +109,14 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             throw new UnsupportedDatabaseOperationException("Cannot extend the builder with name "+parent.getTableName());
         }
     }
-    
+
     public boolean created(String tableName) {
         MultiConnection con=null;
         DatabaseMetaData meta;
         try {
             con=mmb.getConnection();
             meta = con.getMetaData();
-            
+
             // retrieve the table info..
             ResultSet rs = meta.getTables(null, null, tableName, null);
             boolean exists = false;
@@ -147,16 +149,16 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             throw new RuntimeException(sqle.toString());
         }
     }
-    
+
     /** is next function nessecary? */
     public boolean createObjectTable(String notUsed) {
         log.debug("createObjectTable");
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("createObjectTable");
     }
-    
+
     abstract protected boolean createSequence();
-    
+
     public String getDisallowedField(String allowedfield) {
         log.trace(allowedfield);
         if (allowed2disallowed.containsKey(allowedfield)) {
@@ -164,7 +166,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return allowedfield;
     }
-    
+
     public String getAllowedField(String disallowedfield) {
         log.trace(disallowedfield);
         if (disallowed2allowed.containsKey(disallowedfield)) {
@@ -172,51 +174,51 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return disallowedfield;
     }
-    
+
     public String getNumberString() {
         return getAllowedField("number");
     }
-    
+
     public String getOTypeString() {
         return getAllowedField("otype");
     }
-    
+
     public String getOwnerString() {
         return getAllowedField("owner");
     }
-    
+
     protected String sequenceTableName() {
         return mmb.baseName + "_autoincrement";
     }
-    
+
     protected String numberCheckNameName() {
         return mmb.baseName + "_check_number";
     }
-    
+
     protected String objectTableName() {
         return mmb.baseName + "_object";
     }
-    
+
     public abstract boolean create(MMObjectBuilder bul);
-    
+
     /** get the table that we inherit from */
     protected MMObjectBuilder getInheritBuilder(MMObjectBuilder bul) {
         // object table _must_ always be the top builder....
         if(bul.getTableName().equals("object")) return null;
-        
+
         // builder extends something,... return it....
         if(bul.getParentBuilder() != null) {
             return bul.getParentBuilder();
         }
-        
+
         // fallback to the old code...
         log.warn("falling back to old inherit code: define a object.xml, and use <builder ... extends=\"object\"> in " + bul.getTableName() + ".xml");
-        
+
         if(bul instanceof InsRel && !bul.getTableName().equals("insrel")) return mmb.getBuilder("insrel");
-        
+
         return mmb.getBuilder("object");
     }
-    
+
     /** get the table that we inherit from */
     protected String getInheritTableName(MMObjectBuilder bul) {
         MMObjectBuilder builder = getInheritBuilder(bul);
@@ -225,7 +227,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return builder.getTableName();
     }
-    
+
     protected boolean isBuilderField(MMObjectBuilder bul, String fieldname) {
         // look if it really an field of us,..
         return bul.getField(fieldname) != null;
@@ -236,20 +238,20 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             // our top table, all fields must be created
             return false;
         }
-        
+
         if(bul.getParentBuilder() != null) {
             // if parent builder has the field, it is inherited..
             return bul.getParentBuilder().getField(fieldname) != null;
         }
-        
+
         // old fallback code...
         log.warn("falling back to old inherit code: define a object.xml, and use <builder ... extends=\"object\"> in " + bul.getTableName() + ".xml");
-        
+
         // normally we inherited from object..
         if(fieldname.equals("number")) return true;
         if(fieldname.equals("owner")) return true;
         if(fieldname.equals("otype")) return true;
-        
+
         // if we are something to do with relations...
         if(bul instanceof InsRel && !bul.getTableName().equals("insrel")) {
             if(fieldname.equals("snumber")) return true;
@@ -259,7 +261,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return false;
     }
-    
+
     protected boolean isReferenceField(FieldDefs def, MMObjectBuilder bul) {
         // only integer references the number table???
         if((def.getDBType() == FieldDefs.TYPE_INTEGER) || (def.getDBType() == FieldDefs.TYPE_NODE)) {
@@ -293,9 +295,9 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return false;
     }
-    
+
     abstract protected String getDbFieldDef(FieldDefs def, MMObjectBuilder bul);
-    
+
     protected String getDbFieldType(FieldDefs fieldDef, int fieldSize, boolean fieldRequired) {
         if (typeMapping==null) {
             String msg = "typeMapping was null";
@@ -342,10 +344,10 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return closedMatch;
     }
-    
+
     public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
         String tableName = bul.getTableName();
-        
+
         int number = node.getIntValue("number");
         // did the user supply a number allready,...
         if (number == -1) {
@@ -356,20 +358,20 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             }
             node.setValue("number", number);
         }
-        
+
         // do the actual insert..
         number = insertRecord(bul, owner, node);
-        
+
         if(number < 1) {
             throw new RuntimeException("invalid node number stored: #" + number);
         }
-        
+
         //bul.signalNewObject(bul.tableName,number);
         if (bul.broadcastChanges) {
             mmb.mmc.changedNode(number, bul.tableName, "n");
-            
+
             if (bul instanceof InsRel) {
-                
+
                 // figure out tables to send the changed relations
                 MMObjectNode n1 = bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2 = bul.getNode(node.getIntValue("dnumber"));
@@ -383,16 +385,16 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         log.debug("inserted with number #"+number+" the node :" + node);
         return number;
     }
-    
+
     protected abstract int insertRecord(MMObjectBuilder bul,String owner, MMObjectNode node);
-    
+
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
         return decodeDBnodeField(node,fieldname,rs,i,"");
     }
-    
+
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
         int type=node.getDBType(prefix+fieldname);
-        
+
         try {
             switch (type) {
                 case FieldDefs.TYPE_XML:
@@ -439,20 +441,20 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return node;
     }
-    
-    
-    
+
+
+
     /**
      * commit this node to the database
      */
     public abstract boolean commit(MMObjectBuilder bul, MMObjectNode node);
-    
+
     public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
         int number=node.getIntValue("number");
         if(log.isDebugEnabled()) {
             log.debug("delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number+"("+node+")");
         }
-        
+
         Vector rels=bul.getRelations_main(number);
         if (rels != null && rels.size() > 0) {
             // we still had relations ....
@@ -499,7 +501,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             }
         }
     }
-    
+
     public String getMMNodeSearch2SQL(String where, MMObjectBuilder bul) {
         log.warn("still have to review!!");
         String result="";
@@ -535,7 +537,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         log.debug("the node search for where: "+ where +" on builder: "+bul.getTableName()+" was : " + result);
         return result;
     }
-    
+
     private String parseFieldPart(String fieldname,int dbtype,String part) {
         log.warn("still have to review!!");
         String result="";
@@ -594,13 +596,13 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return result;
     }
-    
-    
+
+
     public boolean drop(MMObjectBuilder bul) {
         log.info("drop table for builder with name: " + bul.getTableName());
         return changeMetaData(bul, "DROP TABLE " +mmb.baseName+"_"+bul.getTableName());
     }
-    
+
     public boolean updateTable(MMObjectBuilder bul) {
         log.info("update table for builder with name: " + bul.getTableName());
         // dont know what this function SHOULD do...
@@ -608,14 +610,14 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("updateTable");
     }
-    
+
     public abstract boolean addField(MMObjectBuilder bul,String fieldname);
     public abstract boolean removeField(MMObjectBuilder bul,String fieldname);
     public abstract boolean changeField(MMObjectBuilder bul,String fieldname);
-    
+
     protected boolean changeMetaData(MMObjectBuilder bul, String sql) {
         log.info("change meta data for builder with name: " + bul.getTableName() + " with sql: " + sql);
-        
+
         // are we allowed to change the metadata?
         int size=bul.size();
         // return when we are allowed...
@@ -624,7 +626,7 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             log.error("check <maxdropsize> in your database.xml(in xml:"+maxDropSize+" and records#"+size+")");
             return false;
         }
-        
+
         // do the update/drop whatever...
         MultiConnection con = null;
         Statement stmt = null;
@@ -654,27 +656,27 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             return false;
         }
     }
-    
+
     /** is next function nessecary? */
     public byte[] getDBByte(ResultSet rs,int idx) {
         log.debug("getDBByte");
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("getDBText");
     }
-    
+
     /** is next function nessecary? */
     public void setDBByte(int i, PreparedStatement stmt, byte[] bytes) {
         log.debug("setDBByte");
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("setDBByte");
     }
-    
+
     /**
      * Retrieves a new unique number, which can be used to inside objectTableName() table
      * @return a new unique number for new nodes or -1 on failure
      */
     public abstract int getDBKey();
-    
+
     protected boolean setValuePreparedStatement(PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
         switch(node.getDBType(key)) {
             case FieldDefs.TYPE_NODE:
@@ -710,23 +712,23 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
         }
         return true;
     }
-    
+
     public byte[] getShortedByte(String tableName,String fieldname,int number) {
         MultiConnection con = null;
         Statement stmt = null;
-        
+
         try {
             log.debug("retrieving the field :" + fieldname +" of object("+number+") of type : " + tableName);
             con = mmb.getConnection();
-            
+
             // TODO: use prepare statement, can be cached..
             stmt = con.createStatement();
-            
+
             String sql = "SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" WHERE "+getNumberString()+" = "+number;
             log.debug("gonna excute the followin query: " + sql);
             ResultSet rs = stmt.executeQuery(sql);
             if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
-            
+
             byte[] data=null;
             if(rs.next()) {
                 data = rs.getBytes(1);
@@ -734,9 +736,9 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             }
             rs.close();
             stmt.close();
-            
+
             con.close();
-            
+
             if (data != null) {
                 log.debug("retrieved "+data.length+" bytes of data");
             }
@@ -772,14 +774,14 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             return null;
         }
     }
-    
+
     /** is next function nessecary? */
     public String getShortedText(String tableName, String fieldname, int number) {
         log.debug("getShortedText");
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("getShortedText");
     }
-    
+
     /** is next function nessecary? */
     public String getDBText(ResultSet rs,int idx) {
         log.debug("getDBText");

@@ -15,10 +15,12 @@ package org.mmbase.storage.database;
  *
  * There is nothing specific for OO databases right now. Inheritance is handles in super-classes.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.6
- * @version $Id: OODatabaseStorage.java,v 1.6 2003-05-07 13:46:57 kees Exp $
+ * @version $Id: OODatabaseStorage.java,v 1.7 2004-01-27 12:04:46 pierre Exp $
  */
 public abstract class OODatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage {
 
@@ -28,4 +30,4 @@ public abstract class OODatabaseStorage extends SQL92DatabaseStorage implements 
     }
 
 }
- 
+

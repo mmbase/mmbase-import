@@ -21,9 +21,11 @@ import org.mmbase.util.XMLDatabaseReader;
 /**
  * MMJdbc2NodeInterface interface needs to be implemented to support a new database
  * It is used to abstract the query's needed for mmbase for each database.
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.25 2003-09-01 13:29:45 pierre Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.26 2004-01-27 12:04:47 pierre Exp $
  */
 public interface MMJdbc2NodeInterface extends SearchQueryHandler {
     /**

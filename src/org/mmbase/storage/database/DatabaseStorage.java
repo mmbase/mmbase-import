@@ -27,9 +27,11 @@ import org.mmbase.util.XMLDatabaseReader;
  * The second methods are used as callback methods by a DatabaseTransaction object,
  * to handle specific database dependent routines, such as storing binary objects.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.5 2003-06-24 09:47:25 michiel Exp $
+ * @version $Id: DatabaseStorage.java,v 1.6 2004-01-27 12:04:46 pierre Exp $
  */
 public interface DatabaseStorage extends Storage  {
 

@@ -17,8 +17,10 @@ import org.mmbase.util.logging.*;
  * MMMysql42Node implements the MMJdbc2NodeInterface for
  * mysql.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Daniel Ockeloen
- * @version $Id: MMMysql42Node.java,v 1.22 2003-03-04 14:39:57 nico Exp $
+ * @version $Id: MMMysql42Node.java,v 1.23 2004-01-27 12:04:48 pierre Exp $
  */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
     /**
@@ -37,7 +39,7 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
         } catch (java.io.UnsupportedEncodingException e) {
             log.error("Getting encoded bytes: " + e.toString());
             tmp = rs.getString(i);
-        } 
+        }
 
         return tmp;
     }
