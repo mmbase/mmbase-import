@@ -241,4 +241,7 @@
 <mm:import id="keyword" reset="true">Disable</mm:import><mm:import id="mlg_Disable"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Disabled</mm:import><mm:import id="mlg_Disabled"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Enable</mm:import><mm:import id="mlg_Enable"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Account_disabled</mm:import><mm:import id="mlg_Account_disabled"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Account_not_found</mm:import><mm:import id="mlg_Account_not_found"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Wrong_password</mm:import><mm:import id="mlg_Wrong_password"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
