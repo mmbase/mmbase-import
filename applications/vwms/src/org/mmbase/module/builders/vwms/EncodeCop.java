@@ -32,13 +32,15 @@ import org.mmbase.util.logging.*;
  * for RawAudio changes of type 'c' or 'n' where the rawaudio.state is equals 
  * to 1 and where the RawAudio represents encoded audio (eg. type=Real G2).  
  * 
- * The last type of node thats being checked is the g2encoder service. However,
- * the current code doesn't work at all and will be changed/removed soon. 
- * (See method comment for more info.)
- * 
- * To keep track of which EncodeHandlers are busy and are still waiting to begin, 
- * the EncodeCop uses 2 lists that can be altered using add/remove methods. 
- * 
+ * The last type of node thats being checked is the g2encoder service. 
+ * Here we check if the state is waiting and its info field is empty.
+ * If this is true, we make this g2encoder available for usage by adding it to 
+ * a free services list.
+ *
+ * When an EncodeHandler is created, it is added to the EncoderHandlers list.
+ * The EncodeHandlers are removed from this list when they finish or when an error occurs 
+ * during handling.
+ *
  * Recovery :
  * When the mmbase running this EncodeCop is being reset recovery is needed.
  * Why?, cause there could be services that are still busy or services 
@@ -73,13 +75,15 @@ import org.mmbase.util.logging.*;
  * 
  * 
  * @author Daniel Ockeloen, David van Zeventer
- * @version $Revision: 1.16 $ $Date: 2001-04-20 14:42:20 $
+ * @version $Revision: 1.17 $ $Date: 2001-04-27 14:37:49 $
  */
 public class EncodeCop extends Vwm implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
 
 	Vector EncoderHandlers		= new Vector();
-	Vector waitingEncodeHandlers= new Vector();
+
+	// A list of free services from which EncodeHandlers will receive a service.
+	private Vector freeservices = new Vector();	
 
 	private boolean firstProbeCall = true;
 
@@ -104,12 +108,16 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 
 			Vwms.mmb.addLocalObserver("g2encoders",this);
 			Vwms.mmb.addRemoteObserver("g2encoders",this);
-		
-			// Recover for cdplayer en g2encoder services that were busy or that just finished during reset. 
+	
+			g2encoders g2bul=(g2encoders)Vwms.mmb.getMMObject("g2encoders");
 			cdplayers cdpbul=(cdplayers)Vwms.mmb.getMMObject("cdplayers");
+
+			// Add all free g2encoder services to freeservices list.	
+			addFreeServices(g2bul);
+
+			// Recover for cdplayer en g2encoder services that were busy or that just finished during reset. 
 			recoverForBusyServices(cdpbul);
 			recoverForFinishedServices(cdpbul);
-			g2encoders g2bul=(g2encoders)Vwms.mmb.getMMObject("g2encoders");
 			recoverForBusyServices(g2bul);
 			recoverForFinishedServices(g2bul);
 		}
@@ -149,11 +157,17 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * @return true, always.
 	 */
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		log.info("("+number+","+builder+","+ctype+"): Checking ctype and buildertype.");
+		log.debug("("+number+","+builder+","+ctype+"): Checking for changes of type 'c' OR 'n' and buildertype.");
 		if (ctype.equals("c") || ctype.equals("n")) {
-			if (builder.equals("audioparts")) audiopartChanged(number,ctype);	
-			if (builder.equals("rawaudios")) rawaudioChanged(number,ctype);	
-			if (builder.equals("g2encoders")) g2encoderChanged(number,ctype);	
+			boolean result = false;
+			if (builder.equals("audioparts"))
+				result=audiopartChanged(number,ctype);	
+			else if (builder.equals("rawaudios"))
+				result=rawaudioChanged(number,ctype);
+			else if (builder.equals("g2encoders"))
+				result=g2encoderChanged(number,ctype);
+			if (!result)
+				log.error("Couldn't check the audiopart for changes");
 		}
 		return true;
 	}
@@ -163,7 +177,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * EncodeHandler with task 'newcdtrack' to rip for this new audiopart.
 	 * @param number - a String containing the object nr of this audioparts node.
 	 * @param ctype - a String with the node changed type.
-	 * @return true, always.
+	 * @return false when we can't the builder to get & check the audiopart, otherwise true .
 	 * @param number
 	 */
 	public boolean audiopartChanged(String number,String ctype) {
@@ -171,13 +185,21 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		if (ctype.equals("n")) {
 			AudioParts bul=(AudioParts)Vwms.mmb.getMMObject("audioparts");
 			if (bul!=null) {
-				MMObjectNode apNode=bul.getNode(number);
-				if(apNode.getIntValue("source") == AudioParts.AUDIOSOURCE_CD) {
-					log.info("New audiopart source:CD, adding new EncodeHandler with task 'newcdtrack'");
-					EncoderHandlers.addElement(new EncodeHandler(this,"newcdtrack",apNode));
+				try {
+					MMObjectNode apNode=bul.getHardNode(Integer.parseInt(number));
+					if(apNode.getIntValue("source") == AudioParts.AUDIOSOURCE_CD) {
+						log.info("New audiopart source:CD, adding new EncodeHandler with task 'newcdtrack'");
+						EncoderHandlers.addElement(new EncodeHandler(this,"newcdtrack",apNode));
+					}
+				} catch (NumberFormatException nfe) {
+					log.error("Can't get node cause number:"+number+" is not an integer.");
+					nfe.printStackTrace();
+					return false;
 				}
-			} else
+			} else {
 				log.error("Can't get the AudioParts builder.");
+				return false;
+			}
 		}
 		return true;
 	}
@@ -187,97 +209,68 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * an EncodeHandler with task 'g2encode' to encode for this rawaudio. 
 	 * @param number - a String containing the object nr of this rawaudios node.
 	 * @param ctype - a String with the node changed type.
-	 * @return true, always.
+	 * @return false when we can't the builder to get & check the rawaudio, otherwise true.
 	 */
 	public boolean rawaudioChanged(String number,String ctype) {
-		log.info("("+number+","+ctype+"): Getting raNode and checking state & format.");
+		log.debug("("+number+","+ctype+"): Getting raNode and checking state & format.");
 		RawAudios bul=(RawAudios)Vwms.mmb.getMMObject("rawaudios");		
 		if (bul!=null) {
-			MMObjectNode raNode=bul.getNode(number);
-			int status=raNode.getIntValue("status");
-			int format=raNode.getIntValue("format");
+			try {
+				//log.info("cached  NODE: "+bul.nodeCache.get(new Integer(number)));
+				MMObjectNode raNode=bul.getHardNode(Integer.parseInt(number));
+				//log.info("getHardNode NODE: "+raNode);
+				int state=raNode.getIntValue("status"); //state is called status !?#
+				int format=raNode.getIntValue("format");
 
-			if (status==RawAudioDef.STATUS_VERZOEK && format==RawAudioDef.FORMAT_G2) {
-                log.info("raNode state:"+RawAudioDef.STATUS_VERZOEK+" format:"+RawAudioDef.FORMAT_G2+" (G2), adding new EncodeHandler with task 'g2encode'."); 
-				EncoderHandlers.addElement(new EncodeHandler(this,"g2encode",raNode));
+				if (state==RawAudioDef.STATUS_VERZOEK && format==RawAudioDef.FORMAT_G2) {
+					log.info("("+number+","+ctype+"): raNode state:"+state+" format:"+format+", adding new EncodeHandler, task 'g2encode'.");
+					EncoderHandlers.addElement(new EncodeHandler(this,"g2encode",raNode));
+				}
+			} catch (NumberFormatException nfe) {
+				log.error("Can't get node cause number:"+number+" is not an integer.");
+				nfe.printStackTrace();
+				return false;
 			}
-		} else
+		} else {
 			log.error("Can't get the RawAudios builder!");
+			return false;
+		}
 		return true;
 	}
 
 	/**
-	 * Checks if the incoming g2encoders node has an EncoderHandler running for it 
-	 * and releases the EncodeHandler, no matter if it's still busy or not! this is wrong
-	 * and will be fixed soon.
-	 * Above all to find the EncodeHandler it compares the incoming g2encoder number with
-	 * the EncodeHandlers.node.number value which is never of type g2encoder!
-     *
-	 * That's why this method currently will print 'crashed/rebooted' always.
+	 * Checks if the g2encoder state is waiting and has an empty info field.
+	 * If this is true that the g2encoder is added made avaiable again by adding it to 
+	 * the freeservices list.
 	 *
 	 * @param number - a String containing the object nr of this g2encoders node.
 	 * @param ctype - a String with the node changed type.
-	 * @return true, always.
+	 * @return false when we can't the builder or get & check the g2encoder, otherwise true.
 	 */
 	public boolean g2encoderChanged(String number,String ctype) {
-		log.info("("+number+","+ctype+"): About to get EncodeHandler for "+number);
-
-		// check whether we have a encodeHandler running.. not, than machine crashed 
-		try {
-			int num = Integer.parseInt(number);
-			if (getEncodeHandler(num) == null) {
-				log.error("("+number+","+ctype+"): ERROR: No handler found, machine crashed/rebooted !?!");
-			} else {
-				log.info("("+number+","+ctype+"): EncodeHandler found, everything ok, signalling free()!");
-				signalEncoderFree(num);
+		g2encoders g2bul=(g2encoders)Vwms.mmb.getMMObject("g2encoders");
+		if (g2bul!=null) {
+			try {
+				MMObjectNode g2encnode = g2bul.getHardNode(Integer.parseInt(number));
+				String state = g2encnode.getStringValue("state");
+				String info  = g2encnode.getStringValue("info");
+				String name  = g2encnode.getStringValue("name");
+				// A service is available when state is waiting and the info field is empty.
+				if (state.equals("waiting") && info.equals("")) {
+					log.info("("+number+","+ctype+"): Adding service "+name+" available for usage"); 
+					addService(g2encnode.getIntValue("number"));	
+				} else
+					log.info("("+number+","+ctype+"): Can't put service "+name+" available, state!=waiting ("+state+") info!='' ("+info+")");
+			} catch (NumberFormatException nfe) {
+				log.error("("+number+","+ctype+"): Can't check service state & info cause number("+number+") isn't an int!");
+				nfe.printStackTrace();
+				return false;
 			}
-		} catch (NumberFormatException nfe) {
-			log.error("("+number+","+ctype+"): ERROR: while converting String "+number+" to int");
-			nfe.printStackTrace();
-		}	
-		return true;
-	}
-
-	/**
-	 * Tries to get a reference to the EncodeHandler that handles current g2encoder.
-	 * It finds the encodehandler by comparing the g2encoders number with the 
-	 * EncodeHandlers.node.number value, which can only be a rawaudio or audiopartnr.
-	 * Method will be changed soon.
-	 * @param number the g2encoder objnr to which an EncodeHandler is assigned.
-	 * @return EncodeHandler reference.
-	 */
-	private EncodeHandler getEncodeHandler(int number) {
-		log.info("Getting EncodeHandler reference for g2encoder "+number+" from EncoderHandlers vector"); 
-		Enumeration 	e 		= EncoderHandlers.elements();
-		EncodeHandler	result	= null;
-		EncodeHandler 	eh 		= null;
-		while(e.hasMoreElements() && (result==null)) {
-			eh = (EncodeHandler) e.nextElement();
-			log.info("vector element is an EncodeHandler, task="+eh.task+" node="+eh.node); 
-			log.info("Comparing incoming g2encoders obj:"+number+" with EncHand.rawaudiog2:"+eh.node.getIntValue("number")); 
-			if(eh.node != null)
-				if(eh.node.getIntValue("+number+") == number)
-					result = eh;
+		} else {
+			log.error("Can't get the g2encoders builder!");
+			return false;
 		}
-		return result;
-	}
-
-	/**
-	 * Adds EncodeHandler reference to the waitingEncoderHandlers vector.
-	 * This results in a signal to the encodecop that we are waiting for a free encoder..
-	 * @param h EncodeHandlers reference.
-	 */
-	public void addWaitingEncodeHandler(EncodeHandler h) {
-		waitingEncodeHandlers.add(h);
-	}
-
-	/**
-	 * Removes EncodeHandler reference from the waitingEncoderHandlers vector.
-	 * This will remove ourselfs from waitinglist, we are not waiting, but activly searching for encoder
-	 * @param h EncodeHandlers reference.
-	 */
-	public void removeWaitingEncodeHandler(EncodeHandler h) {
-		waitingEncodeHandlers.remove(h);	
+		return true;
 	}
 
 	/**
@@ -289,24 +282,6 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		return EncoderHandlers.remove(eh);
 	}
 
-	/**
-	 * The encodecop saw a free encoder, signal first waiting handler that a free encoder has arrived
-	 * @param number the g2encoders objectnumber used to select the EncodeHandler through which signal must occur.
-	 */
-	public void signalEncoderFree(int number) {
-		log.info(": Getting the waiting EncodeHandler for g2encoder "+number+" from waitingEncodeHandlers vector");
-		Enumeration e = waitingEncodeHandlers.elements();
-		EncodeHandler eh = null;
-		if(e.hasMoreElements()) {
-			eh = (EncodeHandler)e.nextElement();
-			log.info("Vector element is an EncodeHandler, task="+eh.task+" node="+eh.node); 
-			if(eh.node.getIntValue("number") != number)	// just to be sure..
-				eh.notifyG2Free();
-			else
-				log.error("SEVERE: this node is waiting for free encoder, but got signal that it has finished!!!");
-		}		
-	}
-	
 	/**
 	 * Searches all services that are 'busy'. For every service found we check for the idtag in info field.
 	 * The idtag contains the reference (objnr) to the audiopart for which service is busy.
@@ -413,7 +388,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 					nfe.printStackTrace();
 				}
 			} else if ((!infoTagger.containsKey(result)) && (!infoTagger.containsKey(idname)))
-				log.info("Service "+servicenode.getStringValue("name")+" finished correctly.");
+				log.info("Service "+servicenode.getStringValue("name")+" "+finishedWith+" correctly.");
 			else
 				log.error("Info field misses either result or id key in service: "+servicenode);
 		}
@@ -435,5 +410,66 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			log.error("No mmserver found!");
 			return null;
 		}
+	}
+
+
+	/**
+	 * Retrieves a service from a list of free services. 	
+	 * If there aren't any, we wait until we are notified that there is one available, 
+	 * which will then be retrieved.
+	 * @return a free service.
+	 */
+    public synchronized int retrieveService() {
+        if (freeservices.size()==0) {
+            try {
+                wait();
+            } catch (InterruptedException ie) {
+				ie.printStackTrace();
+			}
+        }
+        return ((Integer)freeservices.remove(0)).intValue();
+    }
+
+	/**
+	 * Adds service to the list of free services. 
+	 * @param servicenumber that is added.
+	 * @return true if service was deleted, false if service couldn't be found.
+	 */
+    public synchronized void addService(int servicenumber) {
+        freeservices.add(new Integer(servicenumber));
+        notify();
+    }
+
+	/**
+	 * Removes the first occurence of this services from the list of free services. 
+	 * This situaion occurs when servicenode is deleted by someone.
+	 * @param servicenumber  that has to be removed.
+	 * @return true if service was deleted, false if service couldn't be found.
+	 */
+	public synchronized boolean removeService(int servicenumber) {
+		return freeservices.remove(new Integer(servicenumber));
+	}
+
+	/**
+	 * Searches for free services, (these are services having a waiting state and an 
+	 * empty info field), and add them to the list of free services.
+	 * @param servicebul reference to servicebuilder type.
+	 */
+	private void addFreeServices(MMObjectBuilder servicebul) {
+		Enumeration e = servicebul.search("WHERE state='waiting' AND info=''");
+		MMObjectNode service = null;
+		while (e.hasMoreElements()) {
+			service = (MMObjectNode) e.nextElement();
+			log.info("Adding service "+service.getStringValue("name")+" available for usage"); 
+			addService(service.getIntValue("number"));
+		}
+	} 
+
+	/**
+	 * Returns contents of freeservices list as a String.
+	 * @return contents of freeservices list as a String.
+	 */
+	public synchronized String getContentsOfFreeServicesList() {
+		return freeservices.toString();
 	}
 }
