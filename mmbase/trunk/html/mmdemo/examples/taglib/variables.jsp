@@ -67,7 +67,7 @@ page="${a}" />
  since it is not a node, but a String.
 </p>
 <p>
- Lets put a news node in variable `typedefnode'.
+ Lets put a node in variable `typedefnode'.
 </p>
 <mm:cloud>
 <mm:listnodes type="typedef" max="1" ><mm:node id="typedefnode" /></mm:listnodes>
@@ -83,9 +83,55 @@ page="${a}" />
 <p>
  This was of course a lousy example, because for simply writing a field
  you don't need jsp at all:
-<mm:node referid="typedefnode">
-  <mm:field name="description" />
-</mm:node>
+<mm:node referid="typedefnode"><mm:field name="description" /></mm:node>
+</p>
+<h1>Tags and id's</h1>
+<h2>Referring to other tags than the direct parent</h2>
+<p>
+  We have already seen how to use the 'id' attribute of the 'import'
+  tag and of the 'node' tag. The 'id' like the name of the variable in
+  the Context. It has also another function, which is however closely
+  related. When a tag needs a parent tag - for example a 'field'
+  always needs a 'NodeProvider' as a parent - and you don't want to
+  refer to the direct parent, but to a parent of the parent, you can
+  do this by indicating the id of this parent in an
+  attribute. 'NodeReferrer' tags e.g. always can have the attribute
+  'node' for this goal. Here we write again the same field as above,
+  but it is not nested with two node tags:
+  <mm:node id="outernode" referid="typedefnode">
+    <mm:node number="1">
+       <mm:field node="outernode" name="description" /> 
+    </mm:node>
+  </mm:node>
+</p>
+<h2>Creating context variables of lists</h2>
+<p>
+  What happens if you supply the 'id' attribute to a 'List' tag? Of
+  course, if the List tag is a 'NodeProvider' still this id can be
+  used in the 'node' attribute of Field tags in the body. But the
+  variable written to the context now of course is not of the type
+  'Node', but of the type Vector (of Nodes). This also means that also
+  list tags can have the 'referid' attribute, so that you can reuse
+  the list. Lets show this.
+</p>
+<p>A list:
+<ul>
+<mm:listnodes id="alist" type="typedef" max="5">
+  <li><mm:field name="description" /></li>
+</mm:listnodes>
+</ul>						  
+</p>
+<p>Reusing the same list:
+<ul>
+<mm:listnodes referid="alist">
+  <li><mm:field name="description" /></li>
+</mm:listnodes>
+</ul>
+</p>
+<p>Making a jspvar of the list. Size of list is: 
+<mm:write referid="alist" jspvar="list" type="Vector">
+  <%= list.size() %>
+</mm:write>
 </p>
 
 </mm:cloud>
