@@ -14,8 +14,8 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
  * Builds a MultiCast Thread to receive  and send 
@@ -25,9 +25,14 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  */
-public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
+public class MMRemoteMultiCast implements Runnable,MMProtocolDriver { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = MMRemoteMultiCast.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCast.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCast.class.getName());
 
     Thread kicker = null;
     int follownr=1;
@@ -48,8 +53,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
     private Hashtable listeners=new Hashtable();
 
     public MMRemoteMultiCast(String machineName,String host, int port) {
-        if (log.isDebugEnabled()) {
-            log.debug("MMRemoteMultiCast(" + machineName + "," + host + "," + port + ")");
+        if (__debug) {
+            /*log.debug*/__debug("MMRemoteMultiCast(" + machineName + "," + host + "," + port + ")");
         }
 
         this.mport=port;
@@ -95,7 +100,7 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
             kicker.setPriority(Thread.NORM_PRIORITY+1);  
             doWork();
         } catch(Exception e) {
-            log.error("run(): " + Logging.stackTrace(e));
+            /*log.error*/__debug("run(): " ); e.printStackTrace();
         }
     }
 
@@ -107,12 +112,12 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
         String s = null;
         StringTokenizer tok;
 
-        log.info("doWork(): started...");
+        /*log.info*/__debug("doWork(): started...");
         try {
             ia = InetAddress.getByName(multicastaddress);
         } catch(Exception e) {
-            log.error("doWork(): On address(" + multicastaddress + "): ");
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("doWork(): On address(" + multicastaddress + "): ");
+            /*log.error*/e.printStackTrace();
         }
         try {
             MulticastSocket ms = new MulticastSocket(mport);
@@ -126,27 +131,27 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
                     s=new String(dp.getData(),0,0,dp.getLength());
                     nodesTospawn.append(s);
                 } catch (Exception f) {
-                    log.error("doWork(): On address("+multicastaddress+","+mport+"): while receiving("+s+"): ");
-                    log.error(Logging.stackTrace(f));
+                    /*log.error*/__debug("doWork(): On address("+multicastaddress+","+mport+"): while receiving("+s+"): ");
+                    /*log.error*/f.printStackTrace();
                 }
             }
 
         } catch(Exception e) {
-            log.error("doWork(): On address("+multicastaddress+","+mport+"): while receiving("+s+"): ");
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("doWork(): On address("+multicastaddress+","+mport+"): while receiving("+s+"): ");
+            /*log.error*/e.printStackTrace();
         }
     }
 
     public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
-        if (log.isDebugEnabled()) {
-            log.debug("handleMessage(" + machine + "," + vnr + "," + id + "," + tb + "," + ctype + ")");
+        if (__debug) {
+            /*log.debug*/__debug("handleMessage(" + machine + "," + vnr + "," + id + "," + tb + "," + ctype + ")");
         }
 
         String mapper=tb+"/"+id;
         RemoteBuilder serv=(RemoteBuilder)listeners.get(mapper);
         if (serv==null)
             {
-                log.error("handleMessage(" + machine + "," + vnr + "," + id + "," + tb + "," + ctype + "): could not get RemoteBuilder(" + mapper + ")!");
+                /*log.error*/__debug("handleMessage(" + machine + "," + vnr + "," + id + "," + tb + "," + ctype + "): could not get RemoteBuilder(" + mapper + ")!");
                 return(true);
             }
 
@@ -156,19 +161,19 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
                     new MMRemoteMultiCastProbe(this,serv,id,tb,ctype,false);
                 }
                 else
-                    log.warn("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): Unknown type '"+ctype+"' (not g/s)");
+                    /*log.warn*/__debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): Unknown type '"+ctype+"' (not g/s)");
 
             } catch(Exception e) {	
-                log.error("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): while received from local: ");
-                log.error(Logging.stackTrace(e));
+                /*log.error*/__debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): while received from local: ");
+                /*log.error*/e.printStackTrace();
             }
 		
         } else {
             try { 
                 new MMRemoteMultiCastProbe(this,serv,id,tb,ctype,true);
             } catch(Exception e) {
-                log.error("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): while received from remote: ");
-                log.error(Logging.stackTrace(e));
+                /*log.error*/__debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+"): while received from remote: ");
+                /*log.error*/e.printStackTrace();
             }
         }
         return(true);
@@ -176,8 +181,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 
 
     public boolean handleXML(String machine,String vnr,String id,String tb,String ctype,String xml) {
-        if (log.isDebugEnabled()) {
-            log.debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+","+xml+")");
+        if (__debug) {
+            /*log.debug*/__debug("handleMessage("+machine+","+vnr+","+id+","+tb+","+ctype+","+xml+")");
         }
         if (machine.equals(machineName)) {
             // do nothing its for myself !!
@@ -191,8 +196,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
     }
 
     public boolean changedNode(int nodenr,String tableName,String type) {
-        if (log.isDebugEnabled()) {
-            log.debug("changedNode("+nodenr+","+tableName+","+type+")");
+        if (__debug) {
+            /*log.debug*/__debug("changedNode("+nodenr+","+tableName+","+type+")");
         }
 
         String chars=machineName+","+(follownr++)+","+nodenr+","+tableName+","+type;
@@ -202,8 +207,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 
 
     public boolean commitNode(String nodenr,String tableName,String xml) {
-        if (log.isDebugEnabled()) {
-            log.debug("commitNode("+nodenr+","+tableName+","+xml+")");
+        if (__debug) {
+            /*log.debug*/__debug("commitNode("+nodenr+","+tableName+","+xml+")");
         }
 
         String chars=machineName+","+(follownr++)+","+nodenr+","+tableName+",s,"+xml;
@@ -213,8 +218,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
 
 
     public boolean getNode(String nodenr,String tableName) {
-        if (log.isDebugEnabled()) {
-            log.debug("geNode("+nodenr+","+tableName+")");
+        if (__debug) {
+            /*log.debug*/__debug("geNode("+nodenr+","+tableName+")");
         }
 
         String chars=machineName+","+(follownr++)+","+nodenr+","+tableName+",g";
@@ -224,8 +229,8 @@ public class MMRemoteMultiCast implements Runnable,MMProtocolDriver {
     }
 	
     public boolean addListener(String buildername,String nodenr,RemoteBuilder serv) {
-        if (log.isDebugEnabled()) {
-            log.debug("addListener("+buildername+","+nodenr+","+serv+")");
+        if (__debug) {
+            /*log.debug*/__debug("addListener("+buildername+","+nodenr+","+serv+")");
         }
 
         listeners.put(buildername+"/"+nodenr,serv);	

@@ -17,23 +17,28 @@ import java.util.*;
 import org.mmbase.remote.*;
 import org.mmbase.service.interfaces.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
- * @version $Revision: 1.7 $ $Date: 2001-04-11 15:31:22 $ 
+ * @version $Revision: 1.8 $ $Date: 2001-04-20 14:15:50 $ 
  * @author Daniel Ockeloen
  */
-public class dropboxes extends RemoteBuilder {
+public class dropboxes extends RemoteBuilder { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = dropboxes.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(dropboxes.class.getName()); 
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(dropboxes.class.getName()); 
 
 	private dropboxInterface impl;
 	StringTagger tagger;
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		super.init(con,servicefile);
-		log.info("init("+con+","+servicefile+")");
+		/*log.info*/__debug("init("+con+","+servicefile+")");
 
 		// the node was loaded allready so check what the state was
 		// and put us in ready/waiting state
@@ -48,29 +53,29 @@ public class dropboxes extends RemoteBuilder {
 	}
 
 	public void nodeRemoteChanged(String nodenr,String buildername,String ctype) {
-		if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged("+nodenr+","+buildername+","+ctype+")");
+		if (__debug) {
+            /*log.debug*/__debug("nodeRemoteChanged("+nodenr+","+buildername+","+ctype+")");
         }
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
 	public void nodeLocalChanged(String nodenr,String buildername,String ctype) {
-		if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged("+nodenr+","+buildername+","+ctype+")");
+		if (__debug) {
+            /*log.debug*/__debug("nodeLocalChanged("+nodenr+","+buildername+","+ctype+")");
         }
 		nodeChanged(nodenr,buildername,ctype);
 	}
 
 	public void nodeChanged(String nodenr,String buildername,String ctype) {
-		if (log.isDebugEnabled()) {
-            log.debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
+		if (__debug) {
+            /*log.debug*/__debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
         }
 		// get the node
 		getNode();
 				
 		String state=getStringValue("state");
-		if (log.isDebugEnabled()) {
-            log.debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): got state("+state+")");
+		if (__debug) {
+            /*log.debug*/__debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): got state("+state+")");
         }
 		if (state.equals("version")) {
 			doVersion();
@@ -125,8 +130,8 @@ public class dropboxes extends RemoteBuilder {
 	 */
 	void getConfig() {
 		String implClassName=(String)props.get("implementation");
-		if (log.isDebugEnabled()) {
-            log.debug("getConfig(): impl("+implClassName+")");
+		if (__debug) {
+            /*log.debug*/__debug("getConfig(): impl("+implClassName+")");
         }
 		try {
 			Class newclass=Class.forName(implClassName);
@@ -138,7 +143,7 @@ public class dropboxes extends RemoteBuilder {
 			tmp=(String)props.get("wwwpath");
 			impl.setWWWPath(tmp);
 		} catch (Exception f) {
-			log.error("getConfig(): Can't load class("+implClassName+")");
+			/*log.error*/__debug("getConfig(): Can't load class("+implClassName+")");
 		}
 	}
 

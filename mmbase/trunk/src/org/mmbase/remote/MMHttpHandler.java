@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.10 2001-04-11 15:31:23 michiel Exp $
+$Id: MMHttpHandler.java,v 1.11 2001-04-20 14:15:48 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2001/04/11 15:31:23  michiel
+michiel: new logging system
+
 Revision 1.9  2001/03/29 13:17:55  install
 Rob added shared secret checks
 
@@ -37,17 +40,22 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
  *
- * @version $Revision: 1.10 $ $Date: 2001-04-11 15:31:23 $
+ * @version $Revision: 1.11 $ $Date: 2001-04-20 14:15:48 $
  * @author Daniel Ockeloen
  */
-public class MMHttpHandler implements Runnable {
+public class MMHttpHandler implements Runnable { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = MMHttpHandler.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(MMHttpHandler.class.getName()); 
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(MMHttpHandler.class.getName()); 
 
 	Thread kicker = null;
 
@@ -58,8 +66,8 @@ public class MMHttpHandler implements Runnable {
 	public final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
 
 	public MMHttpHandler(Socket clientsocket,Hashtable listeners) {
-        if (log.isDebugEnabled()) {
-            log.debug("MMHttpHandler("+clientsocket+","+listeners+"): Created, initializing..");
+        if (__debug) {
+            /*log.debug*/__debug("MMHttpHandler("+clientsocket+","+listeners+"): Created, initializing..");
         }
 		this.clientsocket=clientsocket;
 		this.listeners=listeners;
@@ -76,11 +84,11 @@ public class MMHttpHandler implements Runnable {
 	public void start() {
 		/* Start up the main thread */
 		if (kicker == null) {
-			log.info("start(): Creating and starting new Thread.");
+			/*log.info*/__debug("start(): Creating and starting new Thread.");
 			kicker = new Thread(this,"MMHttpHandler");
 			kicker.start();
 		} else {
-			log.info("start(): No create needed, thread already up and running, name:"+kicker.getName());
+			/*log.info*/__debug("start(): No create needed, thread already up and running, name:"+kicker.getName());
 		}
 	}
 	
@@ -102,8 +110,8 @@ public class MMHttpHandler implements Runnable {
 				
 				if (tok.hasMoreTokens()) {
 					String method=tok.nextToken();
-                    if (log.isDebugEnabled()) {
-                        log.debug("run(): Got method: "+method);
+                    if (__debug) {
+                        /*log.debug*/__debug("run(): Got method: "+method);
                     }
 					if (method.equals("GET"))
 						doGet(tok,in,out);
@@ -113,24 +121,24 @@ public class MMHttpHandler implements Runnable {
 			}
 			// Read all remaining data that was sent with request.
 			line = in.readLine();
-            if (log.isDebugEnabled()) {
-                log.debug("run: Reading lines of remaining data sent with request value: "+line);
+            if (__debug) {
+                /*log.debug*/__debug("run: Reading lines of remaining data sent with request value: "+line);
             }
 			while (line.equals("")) {
 				line = in.readLine();
-                if (log.isDebugEnabled()) {
-                    log.debug("run: Reading lines of remaining data sent with request value: "+line);
+                if (__debug) {
+                    /*log.debug*/__debug("run: Reading lines of remaining data sent with request value: "+line);
                 }
 			}
 
 			// Close socket.
-            if (log.isDebugEnabled()) {
-                log.debug("run: Closing socket.");
+            if (__debug) {
+                /*log.debug*/__debug("run: Closing socket.");
             }
             clientsocket.close();	
 		} catch(Exception e) {
-			log.error("run(): exception: "+e);
-			log.error(Logging.stackTrace(e));
+			/*log.error*/__debug("run(): exception: "+e);
+			/*log.error*/e.printStackTrace();
 		}
 	}
 
@@ -146,28 +154,28 @@ public class MMHttpHandler implements Runnable {
 			String requestUrl=tok.nextToken();
 			int filePos = requestUrl.indexOf(REMOTE_REQUEST_URI_FILE);
 			if (filePos!=-1){               
-                if (log.isDebugEnabled()) {
-                    log.debug("doGet: Found requestURI file "+REMOTE_REQUEST_URI_FILE);
+                if (__debug) {
+                    /*log.debug*/__debug("doGet: Found requestURI file "+REMOTE_REQUEST_URI_FILE);
                 }
 				int queryPos = requestUrl.indexOf("?");
 				if (queryPos!=-1){
 					String queryString=requestUrl.substring(queryPos+1); //+1 ='?' char.
-                    if (log.isDebugEnabled()) {
-                        log.debug("doGet: Retrieved querystring: "+queryString);
+                    if (__debug) {
+                        /*log.debug*/__debug("doGet: Retrieved querystring: "+queryString);
                     }
 					doXMLSignal(queryString);
 					statusCode = "200 OK";
 				} else {
-				    log.error("doGet: No querystring: "+requestUrl);
+				    /*log.error*/__debug("doGet: No querystring: "+requestUrl);
 					statusCode = "400 Bad Request"; 
 				}
 			}else {
-                log.warn("doGet: WARNING: unknown requesturl:"+requestUrl);
+                /*log.warn*/__debug("doGet: WARNING: unknown requesturl:"+requestUrl);
 				statusCode = "404 Not Found"; 
 			}
 		}
-        if (log.isDebugEnabled()) {
-            log.debug("doGet: Returning "+statusCode);
+        if (__debug) {
+            /*log.debug*/__debug("doGet: Returning "+statusCode);
         }
 		out.println(statusCode);
 		out.flush();
@@ -180,8 +188,8 @@ public class MMHttpHandler implements Runnable {
 	 * @param queryString Contains the service reference, buildername and changetype.
 	 */
 	void doXMLSignal(String queryString) {
-        if (log.isDebugEnabled()) {
-            log.debug("doXMLSignal("+queryString+"): Getting info from queryString");
+        if (__debug) {
+            /*log.debug*/__debug("doXMLSignal("+queryString+"): Getting info from queryString");
         }
 
 		StringTokenizer tok=new StringTokenizer(queryString,"+ \n\r\t");
@@ -193,14 +201,14 @@ public class MMHttpHandler implements Runnable {
 					String ctype=tok.nextToken();
 					RemoteBuilder serv=(RemoteBuilder)listeners.get(serviceRef);
 					if (serv==null) {
-						log.error("doXMLSignal("+queryString+"): no remote builder found for service reference:"+serviceRef);
+						/*log.error*/__debug("doXMLSignal("+queryString+"): no remote builder found for service reference:"+serviceRef);
 					} else {
-						log.info("doXMLSignal("+queryString+"): Send nodeRemoteChanged signal to notify service that it's state has changed.");
+						/*log.info*/__debug("doXMLSignal("+queryString+"): Send nodeRemoteChanged signal to notify service that it's state has changed.");
 						serv.nodeRemoteChanged(serviceRef,builderName,ctype);
 					}
-				} else log.error("doXMLSignal("+queryString+"): no 'ctype' found!");
-			} else log.error("doXMLSignal("+queryString+"): no 'buildername' found!");
-		} else log.error("doXMLSignal("+queryString+"): no 'service reference' found!");
+				} else /*log.error*/__debug("doXMLSignal("+queryString+"): no 'ctype' found!");
+			} else /*log.error*/__debug("doXMLSignal("+queryString+"): no 'buildername' found!");
+		} else /*log.error*/__debug("doXMLSignal("+queryString+"): no 'service reference' found!");
 	}
 
 	void doPost(StringTokenizer tok, DataInputStream in, PrintStream out) {
@@ -217,20 +225,20 @@ public class MMHttpHandler implements Runnable {
     				Hashtable posted=readPostUrlEncoded(buffer);
 					statusCode = "200 OK";
 				} catch(Exception e) { 
-					log.error("doPost(): could not handle post!"); 
-					log.error(Logging.stackTrace(e));
+					/*log.error*/__debug("doPost(): could not handle post!"); 
+					/*log.error*/e.printStackTrace();
 					statusCode = "400 Bad Request, error during reading posted content";
 				}
 			} else {
-				log.error("doPost(): No 'Content-length' specified in this post!");
+				/*log.error*/__debug("doPost(): No 'Content-length' specified in this post!");
 				statusCode = "411 Length Required"; 
 			}
 		} else {
-			log.error("doPost(): 'Content-type' is: "+header+", should be : "+CONTENT_TYPE);
+			/*log.error*/__debug("doPost(): 'Content-type' is: "+header+", should be : "+CONTENT_TYPE);
 			statusCode = "415 Unsupported Media Type"; 
 		}
-        if (log.isDebugEnabled()) {
-            log.debug("doPost: Returning "+statusCode);
+        if (__debug) {
+            /*log.debug*/__debug("doPost: Returning "+statusCode);
         }
 		out.println(statusCode);
 		out.flush();
@@ -270,8 +278,8 @@ public class MMHttpHandler implements Runnable {
                     }
                 }
             } catch (Exception e) {
-                log.error("readContentLength("+len+"): can't read post msg from client");
-				log.error(Logging.stackTrace(e));
+                /*log.error*/__debug("readContentLength("+len+"): can't read post msg from client");
+				/*log.error*/e.printStackTrace();
             }
         return(buffer);
     }
@@ -331,7 +339,7 @@ public class MMHttpHandler implements Runnable {
                         letter=(char)Integer.parseInt(mimestr.substring(i+1,i+3),16);
                         mimestr=mimestr.substring(0,i)+letter+mimestr.substring(i+3);
                     } catch (Exception e) {
-						log.error(Logging.stackTrace(e));
+						/*log.error*/e.printStackTrace();
                     }
                     i++;
                 }

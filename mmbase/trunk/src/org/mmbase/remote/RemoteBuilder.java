@@ -9,6 +9,11 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.12  2001/04/19 14:30:50  vpro
+Davzev: Temporarily added oldstyle debugging next to newstyle because
+the remotebuilders: cdplayers,g2encoders and dropboxes now contain the oldstyle again.
+Oldstyle will soon be removed when rembuilders contain newstyle logging.
+
 Revision 1.11  2001/04/13 13:47:05  michiel
 michiel: new logging system, indentation
 
@@ -35,16 +40,21 @@ import java.lang.*;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 
 /**
- * @version $Revision: 1.12 $ $Date: 2001-04-19 14:30:50 $  
+ * @version $Revision: 1.13 $ $Date: 2001-04-20 14:15:49 $  
  * @author Daniel Ockeloen
  */
-public class RemoteBuilder {
-    private static Logger log = Logging.getLoggerInstance(RemoteBuilder.class.getName());
+public class RemoteBuilder { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = RemoteBuilder.class.getName();
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(RemoteBuilder.class.getName());
 
 	// Temporary insert the old logging style since cdplayers g2encoders and dropboxes havent got new style.
 	// Will be removed very soon
@@ -63,8 +73,8 @@ public class RemoteBuilder {
 
     public void init(MMProtocolDriver con,String servicefile) {
         this.con=con;
-        if (log.isDebugEnabled()) {
-            log.debug("init("+con+","+servicefile+"): Reading props from servicefile in props hashtable.");
+        if (__debug) {
+            /*log.debug*/__debug("init("+con+","+servicefile+"): Reading props from servicefile in props hashtable.");
         }
         ExtendedProperties Reader=new ExtendedProperties();
         props = Reader.readProperties(servicefile);
@@ -72,12 +82,12 @@ public class RemoteBuilder {
         nodename=(String)props.get("nodename");
 
         
-        if (log.isDebugEnabled()) {
-            log.debug("init("+con+","+servicefile+"): Calling con.addListener("+buildername+","+nodename+","+this+")");
+        if (__debug) {
+            /*log.debug*/__debug("init("+con+","+servicefile+"): Calling con.addListener("+buildername+","+nodename+","+this+")");
         }
         con.addListener(buildername,nodename,this);
-        if (log.isDebugEnabled()) {
-            log.debug("init("+con+","+servicefile+"): Calling getNode()");
+        if (__debug) {
+            /*log.debug*/__debug("init("+con+","+servicefile+"): Calling getNode()");
         }
         getNode();
     }
@@ -87,15 +97,15 @@ public class RemoteBuilder {
      */
     public synchronized void getNode() {
         int MULTICASTWAIT=8000;
-        if (log.isDebugEnabled()) { 
-            log.debug("getNode(): Calling con.getNode("+nodename+","+buildername+")");
+        if (__debug) { 
+            /*log.debug*/__debug("getNode(): Calling con.getNode("+nodename+","+buildername+")");
         }
         con.getNode(nodename,buildername);
         if (con.getProtocol().equals("multicast")) {
             try {
                 wait(MULTICASTWAIT);
             } catch(Exception e) {
-                log.error(Logging.stackTrace(e));
+                /*log.error*/e.printStackTrace();
             }
         }
     }
@@ -115,14 +125,14 @@ public class RemoteBuilder {
      * @ctype the node changetype.
      */
     public void nodeRemoteChanged(String nodename,String buildername,String ctype) {        
-        if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged("+nodename+","+buildername+","+ctype+"): Do nothing");
+        if (__debug) {
+            /*log.debug*/__debug("nodeRemoteChanged("+nodename+","+buildername+","+ctype+"): Do nothing");
         }
     }
 
     public void nodeLocalChanged(String nodename,String buildername,String ctype) {        
-        if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged("+nodename+","+buildername+","+ctype+"): Do noting");
+        if (__debug) {
+            /*log.debug*/__debug("nodeLocalChanged("+nodename+","+buildername+","+ctype+"): Do noting");
         }
     }
 
@@ -151,8 +161,8 @@ public class RemoteBuilder {
             String value=nodedata.substring(nodedata.indexOf(begintoken)+begintoken.length());
             value=value.substring(0,value.indexOf(endtoken));
 
-            if (log.isDebugEnabled()) {
-                log.debug("gotXMLValues: Storing field in hashtable as key:"+key+", value:"+value);
+            if (__debug) {
+                /*log.debug*/__debug("gotXMLValues: Storing field in hashtable as key:"+key+", value:"+value);
             }
             values.put(key,value);
 
@@ -186,8 +196,8 @@ public class RemoteBuilder {
      * Gets the node in XML value Calls con.commitNode with it. 
      */
     public void commit() {
-        if (log.isDebugEnabled()) {
-            log.debug("commit(): Calling con.commitNode("+nodename+","+buildername+","+toXML());
+        if (__debug) {
+            /*log.debug*/__debug("commit(): Calling con.commitNode("+nodename+","+buildername+","+toXML());
         }
         con.commitNode(nodename,buildername,toXML());
     }
@@ -197,8 +207,8 @@ public class RemoteBuilder {
      * @return a String with XML contents.
      */
     public String toXML() {
-        if (log.isDebugEnabled()) {
-            log.debug("toXML(): Converting node(=hashtable) to XML.");
+        if (__debug) {
+            /*log.debug*/__debug("toXML(): Converting node(=hashtable) to XML.");
         }
         String body="<?xml version=\"1.0\"?>\n";
         // body+="<!DOCTYPE mmnode."+buildername+" SYSTEM \"http://openbox.vpro.nl/mmnode/"+buildername+".dtd\">\n";
@@ -210,49 +220,49 @@ public class RemoteBuilder {
                 body+="<"+key+">"+value+"</"+key+">\n";
         }
         body+="</"+buildername+">\n";
-        if (log.isDebugEnabled()) {
-            log.debug("toXML(): Returning body: "+body);
+        if (__debug) {
+            /*log.debug*/__debug("toXML(): Returning body: "+body);
         }
         return(body);
     }
 
     public boolean maintainance() {
-        if (log.isDebugEnabled()) {
-            log.debug("maintenance: lease="+lease+", state="+getStringValue("state"));
+        if (__debug) {
+            /*log.debug*/__debug("maintenance: lease="+lease+", state="+getStringValue("state"));
         }
         if (lease!=-1 && getStringValue("state").equals("claimed")) {
             if (lease<1) {
-                if (log.isDebugEnabled()) {
-                    log.debug("maintenance: Setting state to waiting and emptying info field.");
+                if (__debug) {
+                    /*log.debug*/__debug("maintenance: Setting state to waiting and emptying info field.");
                 }
                 setValue("state","waiting");            
                 setValue("info","");
                 commit();
-                log.info("C=0 released !");
+                /*log.info*/__debug("C=0 released !");
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("maintenance: lease="+lease+", decrementing lease value");
+                if (__debug) {
+                    /*log.debug*/__debug("maintenance: lease="+lease+", decrementing lease value");
                 }
-                log.info("C="+lease);
+                /*log.info*/__debug("C="+lease);
                 lease--;
             }
         } else {
-            if (log.isDebugEnabled()) {
-                log.debug("maintenance: Setting lease to -1");
+            if (__debug) {
+                /*log.debug*/__debug("maintenance: Setting lease to -1");
             }
             lease=-1;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("maintenance: Calling getNode() and checking state");
+        if (__debug) {
+            /*log.debug*/__debug("maintenance: Calling getNode() and checking state");
         }
         getNode();
         String state=getStringValue("state");
-        // log.debug("state ("+nodename+")="+state);
+        // /*log.debug*/__debug("state ("+nodename+")="+state);
         // does the server think im down ?
         if (state.equals("down")) {
-            if (log.isDebugEnabled()) {
-                log.debug("maintenance: State is down, resetting to waiting");
+            if (__debug) {
+                /*log.debug*/__debug("maintenance: State is down, resetting to waiting");
             }
             setValue("state","waiting");
             commit();
@@ -261,8 +271,8 @@ public class RemoteBuilder {
     }
 
     public void setClaimed() {
-        if (log.isDebugEnabled()) {
-            log.debug("maintenance: Getting lease value from info field");
+        if (__debug) {
+            /*log.debug*/__debug("maintenance: Getting lease value from info field");
         }
         String cmds=getStringValue("info");
         StringTagger tagger=new StringTagger(cmds);

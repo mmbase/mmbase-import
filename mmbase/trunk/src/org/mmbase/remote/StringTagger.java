@@ -11,8 +11,8 @@ package org.mmbase.remote;
 
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 
 /**
@@ -20,9 +20,14 @@ import org.mmbase.util.logging.Logging;
 * its ideal for name value pairs and name value pairs with multi
 * values. It also provides support for quoted values.
 */
-public class StringTagger {
+public class StringTagger { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = StringTagger.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(StringTagger.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(StringTagger.class.getName());
 
     private Hashtable tokens;
     private Hashtable multitokens;
@@ -52,7 +57,7 @@ public class StringTagger {
         tokens = new Hashtable();
         multitokens = new Hashtable();
         createTagger(line);
-        //log.debug("TOKENS IN TAGGER"+tokens);
+        ///*log.debug*/__debug("TOKENS IN TAGGER"+tokens);
     }
 
     /**
