@@ -4,7 +4,7 @@
 <h1>Testing taglib</h1>
 <h2>cloud, transaction</h2>
 <mm:import id="curtime"><%= System.currentTimeMillis()%></mm:import>
-<mm:cloud method="http">
+<mm:cloud method="http" jspvar="cloud">
 
 <h3>Canceling transaction</h3>
 <mm:transaction name="mytrans" commitonclose="false">
@@ -48,6 +48,8 @@ transaction was commited, following should result anything:
   </mm:createnode>
   <mm:createrelation source="node1" destination="node2" role="related" />
 </mm:transaction>
+<hr />
+logged on as: <%= cloud.getUser().getIdentifier() %><br />
 </mm:cloud>
 You should see this.
 <hr />
