@@ -111,7 +111,9 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
 		if (vwms==null) vwms=(Vwms)mmb.getMMObject("vwms");
 		int checktime=lastchecked;
 		lastchecked=(int)(DateSupport.currentTimeMillis()/1000);
-		Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
+		//Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
+		Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND "+mmb.getDatabase().getAllowedField("status")+"=1");
+
 		while(e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
 			if (debug) System.out.println("VWMtasks -> Starting tasks "+node);
