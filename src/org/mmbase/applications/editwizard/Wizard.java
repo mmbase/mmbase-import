@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.42 2002-07-05 15:03:22 pierre Exp $
+ * @version $Id: Wizard.java,v 1.43 2002-07-05 21:08:54 michiel Exp $
  *
  */
 public class Wizard {
@@ -48,7 +48,7 @@ public class Wizard {
 
     // schema / session data
     private String name;
-    private String objectnumber;
+    private String objectNumber;
 
     // the wizard (file) name. Eg.: samples/jumpers will choose the file $path/samples/jumpers.xml
     private String wizardName;
@@ -59,7 +59,7 @@ public class Wizard {
     private String dataId;
 
     // stores the current formid
-    private String currentformid;
+    private String currentFormId;
 
     // filename of the stylesheet which should be used to make the html form.
     private File wizardStylesheetFile;
@@ -75,15 +75,15 @@ public class Wizard {
      */
     private  Document schema;
     private  Document data;
-    private  Document originaldata;
+    private  Document originalData;
 
     // not yet committed uploads are stored in there hashmaps
-    private HashMap binaries;
-    private HashMap binarynames;
-    private HashMap binarypaths;
+    private Map binaries;
+    private Map binaryNames;
+    private Map binaryPaths;
 
     // in the wizards, variables can be used. Values of the variables are stored here.
-    private Hashtable variables;
+    private Map variables;
 
     // the constraints received from mmbase are stored + cached in this xmldom
     private Document constraints;
@@ -92,7 +92,7 @@ public class Wizard {
     private long listQueryTimeOut = 60 * 60;
 
     // the database connector handles communition with mmbase. the instance is stored here.
-    private WizardDatabaseConnector dbconn;
+    private WizardDatabaseConnector databaseConnector;
 
     /**
      * This boolean tells the jsp that the wizard may be closed, as far as he is concerned.
@@ -132,8 +132,8 @@ public class Wizard {
         context = c;
         uriResolver = uri;
         binaries = new HashMap();
-        binarynames = new HashMap();
-        binarypaths = new HashMap();
+        binaryNames = new HashMap();
+        binaryPaths = new HashMap();
         variables = new Hashtable();
         errors = new Vector();
         constraints = Utils.parseXML("<constraints/>");
@@ -156,12 +156,12 @@ public class Wizard {
      * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
      *
      * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
-     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
+     * @param dataid the dataid (objectNumber) of the main object what is used by the editwizard
      */
     public void initialize(String wizardname, String dataid, Cloud cloud) throws WizardException, SecurityException {
         // initialize database connector
-        dbconn = new WizardDatabaseConnector();
-        dbconn.setUserInfo(cloud);
+        databaseConnector = new WizardDatabaseConnector();
+        databaseConnector.setUserInfo(cloud);
         // set cloud
         this.cloud=cloud;
         // add username to variables
@@ -183,7 +183,7 @@ public class Wizard {
     }
 
     public String getObjectNumber() {
-        return objectnumber;
+        return objectNumber;
     }
 
     public String getDataId() {
@@ -247,12 +247,12 @@ public class Wizard {
      * Loads the wizard schema, and a work document, and fills it with initial data.
      *
      * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
-     * @param dataid the dataid (objectnumber) of the main object what is used by the editwizard
+     * @param dataid the dataid (objectNumber) of the main object what is used by the editwizard
      */
     protected void loadWizard(String wizardname, String di) throws WizardException, SecurityException {
 
         if (wizardname == null) throw new WizardException("Wizardname may not be null");
-        // if (di         == null) throw new WizardException("Objectnumber may not be null");
+        // if (di         == null) throw new WizardException("ObjectNumber may not be null");
         wizardName = wizardname;
         dataId = di;
         File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
@@ -260,7 +260,7 @@ public class Wizard {
 
         // store variables so that these can be used in the wizard schema
         variables.put("wizardname", wizardname);
-        if (dataId != null) variables.put("objectnumber", dataId);
+        if (dataId != null) variables.put("objectNumber", dataId);
         // TODO: dataId == null only means that this wizard object is being abused in list.jsp
         //       should not allow this kind of hackery.
 
@@ -268,7 +268,7 @@ public class Wizard {
         loadSchema(wizardSchemaFile);    // expanded filename of the wizard
 
         // setup original data
-        originaldata = Utils.emptyDocument();
+        originalData = Utils.emptyDocument();
 
         // If the given dataid=new, we have to create a new object first, given
         // by the object definition in the schema.
@@ -287,9 +287,9 @@ public class Wizard {
                 data = Utils.parseXML("<data />");
                 Node parent = data.getDocumentElement();
                 // Ask the database to create that object, ultimately to get the new id.
-                Node newobject = dbconn.createObject(data, parent, objectdef, variables);
+                Node newobject = databaseConnector.createObject(data, parent, objectdef, variables);
                 parent.appendChild(newobject);
-                dbconn.tagDataNodes(data);
+                databaseConnector.tagDataNodes(data);
                 dataId = Utils.getAttribute(newobject,"number");
                 if (log.isDebugEnabled()) {
                     log.debug("Created object " + newobject.getNodeName() + " type " + Utils.getAttribute(newobject,"type") + ", id " + dataId);
@@ -298,12 +298,12 @@ public class Wizard {
                 // - load data.
                 // - tags the datanodes
                 try{
-                    data = dbconn.load(schema.getDocumentElement(), dataId);
+                    data = databaseConnector.load(schema.getDocumentElement(), dataId);
                     if (data==null) {
-                        throw new WizardException("The requested object could not be loaded from MMBase. Objectnumber:" + dataId + ". Does the object exists and do you have enough rights to load this object.");
+                        throw new WizardException("The requested object could not be loaded from MMBase. ObjectNumber:" + dataId + ". Does the object exists and do you have enough rights to load this object.");
                     }
                     // store original data, so that the put routines will know what to save/change/add/delete
-                    originaldata.appendChild(originaldata.importNode(data.getDocumentElement().cloneNode(true), true));
+                    originalData.appendChild(originalData.importNode(data.getDocumentElement().cloneNode(true), true));
                 } catch (org.mmbase.security.SecurityException secure){
                     log.warn("Wizard failed to login: " + secure.getMessage());
                     throw secure;
@@ -314,7 +314,7 @@ public class Wizard {
         }
 
         // initialize a editor session
-        if (currentformid == null){currentformid = determineNextForm("first");}
+        if (currentFormId == null){currentFormId = determineNextForm("first");}
     }
 
     /**
@@ -326,7 +326,7 @@ public class Wizard {
      */
     public void processRequest(ServletRequest req) throws WizardException {
         String curform = req.getParameter("curform");
-        if (curform != null && !curform.equals("")) currentformid = curform;
+        if (curform != null && !curform.equals("")) currentFormId = curform;
 
         storeValues(req);
         processCommands(req);
@@ -341,10 +341,11 @@ public class Wizard {
      * @param out The writer where the output (html) should be written to.
      * @param instancename name of the current instance
      */
-    public void writeHtmlForm(Writer out, String instancename) throws WizardException {
+    public void writeHtmlForm(Writer out, String instanceName) throws WizardException {
+        log.debug("writeHtmlForm for " + instanceName);
         Node datastart = Utils.selectSingleNode(data, "/data/*");
         // Build the preHtml version of the form.
-        preform = createPreHtml(schema.getDocumentElement(), currentformid, datastart, instancename);
+        preform = createPreHtml(schema.getDocumentElement(), currentFormId, datastart, instanceName);
         Validator.validate(preform, schema);
         Map params = new HashMap();
         params.put("ew_context", context);
@@ -355,7 +356,7 @@ public class Wizard {
         try {
             Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
         } catch (javax.xml.transform.TransformerException e) {
-            throw new WizardException(e.toString());
+            throw new WizardException(e.toString() + ":" + Logging.stackTrace(e));
         }
     }
 
@@ -424,7 +425,7 @@ public class Wizard {
 
         // Assume that steps are defined for the moment.
         String nextformid = "FORM_NOT_FOUND";
-        Node laststep = Utils.selectSingleNode(schema, "//steps/step[@form-schema='" + currentformid + "']");
+        Node laststep = Utils.selectSingleNode(schema, "//steps/step[@form-schema='" + currentFormId + "']");
         Node nextstep = null;
         // If the last step doesn't exist, get the first step.
         // If the last step exists, determine the next step.
@@ -453,9 +454,9 @@ public class Wizard {
      *
      * @see #createPreHtml
      */
-    public Document createPreHtml(String instancename) throws WizardException {
+    public Document createPreHtml(String instanceName) throws WizardException {
         Node datastart = Utils.selectSingleNode(data, "/data/*");
-        return createPreHtml(schema.getDocumentElement(), "1", datastart, instancename);
+        return createPreHtml(schema.getDocumentElement(), "1", datastart, instanceName);
     }
 
     /**
@@ -472,9 +473,10 @@ public class Wizard {
      * @param       instancename    The instancename of this wizard
      */
 
-    public Document createPreHtml(Node wizardSchema, String formid, Node data, String instancename) throws WizardException {
+    public Document createPreHtml(Node wizardSchema, String formid, Node data, String instanceName) throws WizardException {
+        if (log.isDebugEnabled()) log.debug("Create preHTML of " + instanceName);
         // intialize preHTML wizard
-        Document preHtml = Utils.parseXML("<wizard instance=\""+instancename+"\" />");
+        Document preHtml = Utils.parseXML("<wizard instance=\""+instanceName+"\" />");
         Node wizardnode = preHtml.getDocumentElement();
 
         // copy all global wizard nodes.
@@ -560,7 +562,7 @@ public class Wizard {
                 log.debug("Performing query for optionlist '" + listname + "'. Cur time " + currentTime + " last executed " + lastExecuted + " timeout " + queryTimeOut + " > " + (currentTime - lastExecuted));
                 Node queryresult = null;
                 try{
-                    queryresult = dbconn.getList(query);
+                    queryresult = databaseConnector.getList(query);
                     queryresult = Utils.selectSingleNode(queryresult,"/getlist/query");
                 } catch (Exception e){
                     // Bad luck, tell the user and try the next list.
@@ -623,6 +625,7 @@ public class Wizard {
      * @param       data    Points to the datacontext node which should be used for this form.
      */
     public void createPreHtmlForm(Node form, Node formdef, Node data) throws WizardException {
+        if (log.isDebugEnabled()) log.debug("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + data);
         // select all fields on first level
         NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|list|command");
 
@@ -641,29 +644,38 @@ public class Wizard {
                 Utils.appendNodeList(itemprops, newfieldset);
                 // place newfieldset in pre-html form
                 form.appendChild(newfieldset);
-                createPreHtmlForm(newfieldset,field,data);
+                createPreHtmlForm(newfieldset, field, data);
             } else {
 
             String xpath = Utils.getAttribute(field, "fdatapath", null);
 
-            if (xpath==null) {
-                throw new WizardException("A field tag should contain one of the following attributes: fdatapath or field");
+            if (xpath == null) {
+                throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
             }
             // xpath is found. Let's see howmany 'hits' we have
             NodeList fieldinstances = Utils.selectNodeList(data, xpath);
             if (fieldinstances==null) {
-                throw new WizardException("The xpath: "+xpath+" is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
+                throw new WizardException("The xpath: " + xpath + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
             }
-            Node fielddatanode = null;
-            if (fieldinstances.getLength()>0) fielddatanode = fieldinstances.item(0);
+            Node fieldDataNode = null;
+            if (fieldinstances.getLength() > 0) fieldDataNode = fieldinstances.item(0);
 
             // A normal field.
             if (nodeName.equals("field")) {
-                if (fielddatanode!=null) {
+                if (fieldDataNode != null) {
                     // create normal formfield.
-                    mergeConstraints(field, fielddatanode);
-                    createFormField(form, field, fielddatanode);
+                    mergeConstraints(field, fieldDataNode);
+                    createFormField(form, field, fieldDataNode);
+                } else {
+                    String ftype = Utils.getAttribute(field, "ftype");
+                    if("function".equals(ftype)) {
+                        log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
+                        //set number attribute in field
+                        Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
+                        createFormField(form, field, fieldDataNode);
+                    }
                 }
+
             }
             // A list "field". Needs special processing.
             if (nodeName.equals("list")) {
@@ -937,8 +949,9 @@ public class Wizard {
             if (item == null) {
                 item = Utils.selectSingleNode(fieldlist, "item");
                 if (item == null) {
-                    throw new WizardException ("Could not find item");
+                    throw new WizardException ("Could not find item in a list of " + wizardName);
                 }
+                if (log.isDebugEnabled()) log.debug("found an item " + item.toString());
             }
             Node newitem = item.cloneNode(false);
             newitem = form.getOwnerDocument().importNode(newitem, false);
@@ -950,7 +963,7 @@ public class Wizard {
             NodeList itemprops = Utils.selectNodeList(item, "title|description");
             Utils.appendNodeList(itemprops, newitem);
 
-            // and now, do the recursive tric! All our fields inside need to be processed.
+            // and now, do the recursive trick! All our fields inside need to be processed.
             createPreHtmlForm(newitem, item, datacontext);
 
             // finally, see if we need to place some commands here
@@ -994,12 +1007,12 @@ public class Wizard {
 
 
 
-        // can we place an add-button?
+        log.debug("can we place an add-button?");
         if (hiddenCommands.indexOf("|add-item|") == -1 && (maxoccurs == -1 || maxoccurs > nrOfItems) && (Utils.selectSingleNode(fieldlist, "action[@type='create']")!=null)) {
             String defaultpath=".";
             if (fieldlist.getParentNode().getNodeName().equals("item")) {
                 // this is a list in a list.
-                defaultpath="object";
+                defaultpath = "object";
             }
             String fparentdatapath = Utils.getAttribute(fieldlist, "fparentdatapath", defaultpath);
             Node chosenparent = Utils.selectSingleNode(parentdatanode, fparentdatapath);
@@ -1013,16 +1026,18 @@ public class Wizard {
                 addSingleCommand(newlist, "add-item", chosenparent);
             }
         }
+        log.debug("end");
     }
 
     /**
      * This method generates a form field node in the pre-html.
      *
-     * @param       form    the pre-html form node
-     * @param       field   the form definition field node
-     * @param       datanode        the current context data node
+     * @param       form        the pre-html form node
+     * @param       field       the form definition field node
+     * @param       datanode     the current context data node. It might be 'null' if the field already contains the 'number' attribute.
      */
     private void createFormField(Node form, Node field, Node datanode) throws WizardException {
+        if (log.isDebugEnabled()) log.debug("Creating form field for " + field);
         // copy all attributes from fielddefinition to new pre-html field definition
 
         Node newfield = form.getOwnerDocument().createElement("field");
@@ -1031,10 +1046,10 @@ public class Wizard {
         // place newfield in pre-html form
         form.appendChild(newfield);
 
-        Vector exceptattrs = new Vector();
+        List exceptattrs = new Vector();
         exceptattrs.add("fid");
         // copy all attributes from data to new pre-html field def
-        if (datanode.getNodeType() != Node.ATTRIBUTE_NODE){
+        if (datanode != null && datanode.getNodeType() != Node.ATTRIBUTE_NODE){
             Utils.copyAllAttributes(datanode, newfield, exceptattrs);
         }
 
@@ -1044,16 +1059,16 @@ public class Wizard {
         String htmlfieldname = calculateFormName(newfield);
         Utils.setAttribute(newfield, "fieldname", htmlfieldname);
 
-        // place objectnumber as attribute number, if not already was placed there by the copyAllAttributes method.
-        if (Utils.getAttribute(datanode, "number",null)==null) {
+        // place objectNumber as attribute number, if not already was placed there by the copyAllAttributes method.
+        if (datanode != null && Utils.getAttribute(datanode, "number", null) == null) {
             Utils.setAttribute(newfield, "number", Utils.getAttribute(datanode.getParentNode(),"number"));
         }
 
         // resolve special attributes
-        if (ftype.equals("startwizard")) {
-            String objectnumber = Utils.getAttribute(newfield,"objectnumber", "new");
-            objectnumber = Utils.transformAttribute(datanode, objectnumber);
-            Utils.setAttribute(newfield, "objectnumber", objectnumber);
+        if (ftype.equals("startwizard")) {           
+            String objectNumber = Utils.getAttribute(newfield,"objectNumber", "new");
+            objectNumber = Utils.transformAttribute(datanode, objectNumber);
+            Utils.setAttribute(newfield, "objectNumber", objectNumber);
         }
 
         // binary type needs special processing
@@ -1067,7 +1082,15 @@ public class Wizard {
         // by default, theValue is the text of the node.
         String theValue = "";
         try {
-            if (datanode.getNodeType() == Node.ATTRIBUTE_NODE){
+            if (datanode == null) {
+                if (ftype.equals("function")) {
+                    theValue = Utils.getAttribute(field, "name");
+                    log.debug("Found a function field " + theValue);
+                } else {
+                    log.debug("Probably a new node");                    
+                    throw new WizardException("No datanode given for field " + theValue + " and ftype does not equal 'function' (but " + ftype + ")");
+                }
+            } else if (datanode.getNodeType() == Node.ATTRIBUTE_NODE){
                 theValue = datanode.getNodeValue();
             } else {
                 theValue = datanode.getFirstChild().getNodeValue();
@@ -1080,7 +1103,8 @@ public class Wizard {
             theValue = Utils.getAttribute(newfield, "destination");
         }
 
-        if (theValue==null) theValue="";
+
+        if (theValue == null) theValue="";
         Node value = form.getOwnerDocument().createElement("value");
         Utils.storeText(value, theValue);
         newfield.appendChild(value);
@@ -1150,9 +1174,11 @@ public class Wizard {
      * @param  fid     The wizarddefinition field id what applies to this data
      * @param  value   The (String) value what should be stored in the data.
      */
-    private void storeValue(String did, String fid, String value) throws WizardException {
-        if (log.isDebugEnabled())
+    private void storeValue(String did, String fid, String value) throws WizardException {       
+        if (log.isDebugEnabled()) {
+            log.debug("String value " + value + " in " + did + " for field " + fid);
             log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
+        }
         Node dttypeNode = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@dttype");
         if (dttypeNode == null) {
             throw new WizardException("No node with fid=" + fid + " could be found");
@@ -1162,6 +1188,7 @@ public class Wizard {
         boolean ok = false;
 
         if (datanode == null){
+            log.debug("Node datanode found!");          
             // Nothing.
         } else if (dttype.equals("binary")) {
             // binaries are stored differently
@@ -1186,6 +1213,8 @@ public class Wizard {
      * @param       req     The ServletRequest where the commands (name/value pairs) reside.
      */
     public void processCommands(ServletRequest req) throws WizardException {
+
+        log.debug("processing commands");
         mayBeClosed = false;
         startWizard=false;
         startWizardCmd=null;
@@ -1193,10 +1222,11 @@ public class Wizard {
         boolean found=false;
         String commandname="";
 
-        Vector errors = new Vector();
+        List  errors = new Vector();
         Enumeration list = req.getParameterNames();
         while (list.hasMoreElements()) {
             commandname = (String)list.nextElement();
+            if (log.isDebugEnabled()) log.debug("found a command " + commandname);
             if (commandname.indexOf("cmd/")==0 && !commandname.endsWith(".y")) {
                 // this is a command.
                 String commandvalue = req.getParameter(commandname);
@@ -1283,11 +1313,11 @@ public class Wizard {
             // The command parameters is a value indicating the number of the node(s) to update.
             String value = cmd.getValue();
             NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
-            NodeList originalNodesToUpdate = Utils.selectNodeList(originaldata, ".//*[@number='" + value + "']");
+            NodeList originalNodesToUpdate = Utils.selectNodeList(originalData, ".//*[@number='" + value + "']");
             if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
                 Node updatedNode=null;
                 try {
-                    updatedNode = dbconn.getDataRaw(value,null);
+                    updatedNode = databaseConnector.getDataRaw(value,null);
                 } catch (Exception e) {
                     break;
                 }
@@ -1376,7 +1406,7 @@ public class Wizard {
         case WizardCommand.GOTO_FORM: {
             // The command parameters is the did of the form to jump to.
             // note that a fid parameter is expected in the command syntax but ignored
-            currentformid = cmd.getDid();
+            currentFormId = cmd.getDid();
             break;
         }
         case WizardCommand.ADD_ITEM : {
@@ -1391,7 +1421,9 @@ public class Wizard {
             String did = cmd.getDid();
             String value = cmd.getValue();
 
+            if (log.isDebugEnabled()) log.debug("Adding item fid: " + fid + " did: " + did + " value: "  + value);
             if (value != null && !value.equals("")){
+                log.debug("no value");
                 int createorder=1;
                 StringTokenizer ids = new StringTokenizer(value,"|");
                 while (ids.hasMoreElements()){
@@ -1411,9 +1443,14 @@ public class Wizard {
             break;
         }
         case WizardCommand.COMMIT : {
+            log.service("Committing wizard");
             // This command takes no parameters.
             try {
-                Element results = dbconn.put(originaldata, data, binaries);
+                if (log.isDebugEnabled()) {
+                    log.debug("orig: " +     Utils.stringFormatted(originalData));
+                    log.debug("new orig: " + Utils.stringFormatted(data));
+                }
+                Element results = databaseConnector.put(originalData, data, binaries);
                 NodeList errors = Utils.selectNodeList(results,".//error");
                 if (errors.getLength() > 0){
                     String errorMessage = "Errors received from MMBase :";
@@ -1422,13 +1459,13 @@ public class Wizard {
                     }
                     throw new WizardException(errorMessage);
                 }
-                // find the (new) objectnumber and store it. Just take the first one found.
-                String newnumber=Utils.selectSingleNodeText(results,".//object/@number",null);
-                if (newnumber!=null) objectnumber=newnumber;
-                committed=true;
+                // find the (new) objectNumber and store it. Just take the first one found.
+                String newnumber=Utils.selectSingleNodeText(results,".//object/@number", null);
+                if (newnumber != null) objectNumber=newnumber;
+                committed = true;
                 mayBeClosed = true;
             } catch (WizardException e) {
-                log.error("could not send PUT command!. Wizardname:"+wizardName+"Exception occured: " + e.getMessage());
+                log.error("could not send PUT command!. Wizardname:" + wizardName + "Exception occured: " + e.getMessage());
                 throw e;
             }
             break;
@@ -1449,6 +1486,8 @@ public class Wizard {
      *                    list using one add-item command). The first ordernr in a list is 1
      */
     private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate, int createorder) throws WizardException{
+
+        log.debug("Adding list item");
         // Determine which list issued the add-item command, so we can get the create code from there.
         Node listnode = Utils.selectSingleNode(schema, ".//list[@fid='" + listId + "']");
         Node objectdef=null;
@@ -1475,7 +1514,7 @@ public class Wizard {
 
         objectdef = objectdef.cloneNode(true);
 
-        log.debug("Creating object " + objectdef.getNodeName() + " type " + Utils.getAttribute(objectdef,"type"));
+        if (log.isDebugEnabled()) log.debug("Creating object " + objectdef.getNodeName() + " type " + Utils.getAttribute(objectdef,"type"));
         // Put the value from the command in that object-definition.
         if (destinationId != null){
             Utils.setAttribute(objectdef, "destination", destinationId);
@@ -1483,7 +1522,7 @@ public class Wizard {
         // We have to add the object to the data, so first determine to which parent it belongs.
         Node parent = Utils.selectSingleNode(data, ".//*[@did='" + dataId + "']");
         // Ask the database to create that object.
-        Node newObject = dbconn.createObject(data,parent, objectdef, variables, createorder);
+        Node newObject = databaseConnector.createObject(data, parent, objectdef, variables, createorder);
 
         // Temporary hack: only images can be shown as summarized.
         if (Utils.getAttribute(newObject,"type").equals("images")){
@@ -1509,8 +1548,8 @@ public class Wizard {
      */
     public void setBinary(String did, byte[] data, String name, String path) {
         binaries.put(did, data);
-        binarynames.put(did, name);
-        binarypaths.put(did, path);
+        binaryNames.put(did, name);
+        binaryPaths.put(did, path);
     }
 
     /**
@@ -1530,7 +1569,7 @@ public class Wizard {
      * @return     The name as set when #setBinary was used.
      */
     public String getBinaryName(String did) {
-        return (String)binarynames.get(did);
+        return (String) binaryNames.get(did);
     }
 
     /**
@@ -1540,7 +1579,7 @@ public class Wizard {
      * @return     The path as set when #setBinary was used.
      */
     public String getBinaryPath(String did) {
-        return (String)binarypaths.get(did);
+        return (String) binaryPaths.get(did);
     }
 
     /**
@@ -1760,7 +1799,7 @@ public class Wizard {
         if (con==null) {
             // objecttype not in repository. Load from MMBase.
             try {
-                con = dbconn.getConstraints(objecttype);
+                con = databaseConnector.getConstraints(objecttype);
             } catch (Exception e) {
                 log.error(Logging.stackTrace(e));
                 return null;
