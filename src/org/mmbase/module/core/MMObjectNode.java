@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.99 2003-03-25 19:05:19 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.100 2003-03-28 14:01:59 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -221,7 +221,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * @since MMBase-1.6.2
      */
-    String defaultToString() {        
+    String defaultToString() {
         StringBuffer result=new StringBuffer("prefix='"+prefix+"'");
     try {
         Enumeration e=values.keys();
@@ -1227,25 +1227,30 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * If you query from this_node_type(type) (typex, insrel, typey where typex == typey) {
-     *   if the insrel table is directional, use the multirelations.SEARCH_EITHER
+     *   if the insrel table is directional, use the multirelations.SEARCH_BOTH
      *   if the insrel table is not directional, use the multirelations.SEARCH_SOURCE + multirelations.SEARCH_DESTINATION
      * }
-     * Otherwise the SEARCH_EITHER will result in an OR on insrel which will never return in
+     * Otherwise the SEARCH_BOTH will result in an OR on insrel which will never return in
      * (huge) databases.
-     * @since MMBase-1.6.2
+     * @param type the type of teh realted node to return
+     * @param search_type the type of directionality to use
+     * @since MMBase-1.6.3
      */
-    public Vector getRelatedNodes(String type, int search_type) { 
-        return getRelatedNodes(type, "insrel", search_type); 
+    public Vector getRelatedNodes(String type, int search_type) {
+        return getRelatedNodes(type, "insrel", search_type);
     }
 
     /**
      * If you query from this_node_type(type) (typex, insrel, typey where typex == typey) {
-     *   if the insrel table is directional, use the multirelations.SEARCH_EITHER
+     *   if the insrel table is directional, use the multirelations.SEARCH_BOTH
      *   if the insrel table is not directional, use the multirelations.SEARCH_SOURCE + multirelations.SEARCH_DESTINATION
      * }
-     * Otherwise the SEARCH_EITHER will result in an OR on insrel which will never return in
+     * Otherwise the SEARCH_BOTH will result in an OR on insrel which will never return in
      * (huge) databases.
-     * @since MMBase-1.6.2
+     * @param type the type of teh realted node to return
+     * @param role the role of the relation (null if no role specified)
+     * @param search_type the type of directionality to use
+     * @since MMBase-1.6.3
      */
     public Vector getRelatedNodes(String type, String role, int search_type) {
         Vector result;
@@ -1259,50 +1264,53 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         //   (this will return virtual audio- and/or videoparts ordered on their *real* parent)
         // - construct a list of nodes for each parentbuilder seperately
         // - ask the parentbuilder for each list of virtual nodes to get a list of the real nodes
-    
-    
+
+
         if( builder != null ) {
             ClusterBuilder clusterBuilder = this.parent.mmb.getClusterBuilder();
-    
+
             // multilevel from table this.parent.name -> type
             Vector tables = new Vector();
             tables.add(parent.getTableName() + "1");
-            tables.add(role);
+            if (role!=null) {
+                tables.add(role);
+            }
             tables.add(type + "2");
-    
+
             // return type.number (and otype for sorting)
             Vector fields = new Vector();
             fields.add(type + "2.number");
             fields.add(type + "2.otype");
-    
+
             // order list UP
-            Vector directions = new Vector();
-            directions.add("UP");
-    
+//            Vector directions = new Vector();
+//            directions.add("UP");
+
             // and order on otype
-            Vector ordered = new Vector();
-            ordered.add(type + "2.otype");
-    
-            String where = "WHERE " + parent.getTableName() +"1.number != " + type + "2.number";
-    
+//            Vector ordered = new Vector();
+//            ordered.add(type + "2.otype");
+
+//            String where = "WHERE " + parent.getTableName() +"1.number != " + type + "2.number";
+
             Vector vnode = new Vector();
             vnode.add("" + getNumber());
-    
+
             // retrieve the related nodes (these are virtual)
-            Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,where,ordered,directions,search_type);
-    
+//            Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,where,ordered,directions,search_type);
+            Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,null,null,null,search_type);
+
             if(v == null) v = new Vector();
             result = new Vector(getRealNodes(v, type + "2"));
-    
+
         } else {
             log.error("This type(" + type + ") is not a valid buildername!");
              result = new Vector(); // return empty vectro
         }
-    
+
          if (log.isDebugEnabled()) {
              log.debug("related("+parent.getTableName()+"("+getNumber()+")) -> "+type+" = size("+result.size()+")");
          }
-    
+
         return result;
     }
 
@@ -1389,11 +1397,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public static int getRelationCacheHits() {
         return relation_cache_hits;
     }
-    
+
     public static int getRelationCacheMiss() {
         return relation_cache_miss;
     }
-    
+
     public int getByteSize() {
         return getByteSize(new org.mmbase.util.SizeOf());
     }
@@ -1418,7 +1426,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.6.2
      */
     public boolean equals(Object o) {
-        if (o instanceof MMObjectNode) {                
+        if (o instanceof MMObjectNode) {
             MMObjectNode n = (MMObjectNode) o;
             if (parent != null) {
                 return parent.equals(this, n);
@@ -1437,7 +1445,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
           return n.getNumber() == getNumber();
           } else { // I don't know about others
           return super.equals(n); // compare as objects.
-          } 
+          }
         */
         return super.equals(n); // compare as objects.
     }
