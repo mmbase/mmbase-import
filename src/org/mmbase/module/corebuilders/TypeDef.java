@@ -167,7 +167,7 @@ public class TypeDef extends MMObjectBuilder {
     public String getValue(int type) {
         String result = (String) getNumberToNameCache().get(new Integer(type));
         if (result == null) {
-            log.error("Could not find builder name for typdef number " + type);
+            log.error("Could not find builder name for typedef number " + type);
         }
         return result;
     }
