@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.10 2002-04-12 08:53:00 pierre Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.11 2003-04-28 10:56:16 kees Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 
@@ -52,6 +52,7 @@ public class ImageRequestProcessor implements Runnable {
     public void start() {
         if (kicker == null) {
             kicker = new Thread(this, "ImageConvert");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }
@@ -61,7 +62,7 @@ public class ImageRequestProcessor implements Runnable {
      */
     public void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);
+        kicker.interrupt();
         kicker = null;
     }
 
