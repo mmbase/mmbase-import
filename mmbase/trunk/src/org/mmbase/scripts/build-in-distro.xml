@@ -288,7 +288,7 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="clean-dist,compile,jar,javadocs">
+  <target name="dist" depends="clean-dist,jar,javadocs">
     <mkdir dir="${dist.root}"/>
     <mkdir dir="${dist.version}"/>
     <mkdir dir="${dist.dir}"/>
@@ -306,7 +306,7 @@ about the Ant build tool.
     </copydir>
 
     <!-- copy the scripts -->
-    <copydir src="${top.dir}/scripts/**" dest="${dist.scripts}">
+    <copydir src="${top.dir}/scripts" dest="${dist.scripts}">
       <exclude name="compile"/>
       <exclude name="compile2"/>
       <exclude name="createjar"/>
