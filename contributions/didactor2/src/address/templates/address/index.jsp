@@ -5,7 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-
+<%@page import="java.util.StringTokenizer"%>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 
@@ -18,6 +18,7 @@
 </mm:treeinclude>
 
 <mm:import externid="field"/><%-- submit selected email addresses to mail/write.jsp --%>
+<mm:import externid="mailid"/>
 
 <div class="rows">
 
@@ -36,10 +37,57 @@
 
     <mm:node number="$user">
 
+      <mm:import externid="addr_class"/>
+      
       <mm:relatednodes type="addressbooks" max="1">
-        <mm:import id="addressbook"><mm:field name="number"/></mm:import>
-        <mm:field name="name"/>
+            <mm:import id="addressbook"><mm:field name="number"/></mm:import>
+            <mm:notpresent referid="addr_class"><b></mm:notpresent>
+     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids">
+                 <mm:param name="addressbook"><mm:field name="number"/></mm:param>
+                 <mm:present referid="field">
+                    <mm:param name="field"><mm:write referid="field"/></mm:param>
+                 </mm:present>
+                  <mm:present referid="mailid">
+                    <mm:param name="mailid"><mm:write referid="mailid"/></mm:param>
+                 </mm:present>
+              </mm:treefile>"><mm:field name="name"/></a>
+              <mm:notpresent referid="addr_class"></b></mm:notpresent>
+              <br />
       </mm:relatednodes>
+
+      <mm:relatednodes type="classes" orderby="name">
+      <mm:import id="thisclass" reset="true"><mm:field name="number"/></mm:import>
+     <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
+     <a href="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids">
+                  <mm:present referid="field">
+                    <mm:param name="field"><mm:write referid="field"/></mm:param>
+                 </mm:present>
+                  <mm:present referid="mailid">
+                    <mm:param name="mailid"><mm:write referid="mailid"/></mm:param>
+                 </mm:present>
+                 <mm:param name="addr_class"><mm:field name="number"/></mm:param>
+              </mm:treefile>"><mm:field name="name"/></a>
+             <mm:present referid="addr_class"><mm:compare referid="thisclass" value="$addr_class"><b></mm:compare></mm:present>
+             <br/>
+      </mm:relatednodes>
+    
+
+      <form action="<mm:treefile page="/address/index.jsp" objectlist="$includePath" referids="$referids"/>" method="GET">
+      <mm:present referid="field">
+          <input type="hidden" name="field" value="<mm:write referid="field"/>"/>
+      </mm:present>
+      <mm:present referid="mailid">
+          <input type="hidden" name="mailid" value="<mm:write referid="mailid"/>"/>
+      </mm:present>
+       <mm:present referid="addr_class">
+          <input type="hidden" name="addr_class" value="<mm:write referid="addr_class"/>"/>
+      </mm:present>
+   
+      <input type="text" size="20" name="addr_search"/><br/>
+      <input type="submit" value="<fmt:message key="SEARCH"/>"/>
+      </form>
+                      
+                                           
 
       <mm:notpresent referid="addressbook">
         <mm:import id="addressbook">-1</mm:import>
@@ -60,7 +108,6 @@
   </mm:notpresent>
   
   <mm:present referid="field"><%-- refer to email/write.jsp --%>
-  <mm:import externid="mailid"/>
   <form action="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids"/>" method="POST">
   <input type="hidden" name="id" value="<mm:write referid="mailid"/>">
   <input type="hidden" name="field" value="<mm:write referid="field"/>">
@@ -94,11 +141,44 @@
       <mm:import id="emaildomain"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/></mm:import>
 
       <mm:import id="linkedlist" jspvar="linkedlist" vartype="List"/>
+      <mm:import externid="addr_search" jspvar="addr_search" vartype="String"/>
 
-      <%-- Get all people of related classes except yourself --%>
-      <mm:relatednodes type="classes">
+      <mm:present referid="addr_search">
+        <mm:import id="list_class">1</mm:import>
+        <mm:import id="list_book">1</mm:import>
+      </mm:present>
+    
+       <mm:present referid="addr_class">
+        <mm:import id="list_class" reset="true">1</mm:import>
+      </mm:present>
+    
+      <mm:notpresent referid="addr_class">
+        <mm:import id="list_book" reset="true">1</mm:import>
+      </mm:notpresent>
+
+     <%-- Get all people of related classes except yourself --%>
+      <mm:present referid="list_class">
+      <mm:relatednodescontainer path="classes">
+        <mm:present referid="addr_class">
+            <mm:constraint field="number" value="$addr_class"/>
+        </mm:present>
+        <mm:relatednodes>
         <mm:relatednodescontainer path="people">
           <mm:constraint field="number" value="$user" inverse="true"/>
+          <mm:present referid="addr_search">
+           <mm:composite operator="OR">
+          <%
+            StringTokenizer st = new StringTokenizer(addr_search);
+            while (st.hasMoreTokens()) {
+                %><mm:import id="addr_search_word" reset="true"><%= st.nextToken() %></mm:import>
+                    <mm:constraint field="people.firstname" value="%$addr_search_word%" operator="LIKE"/>
+                    <mm:constraint field="people.lastname" value="%$addr_search_word%" operator="LIKE"/>
+                    <mm:constraint field="people.email" value="%$addr_search_word%" operator="LIKE"/>
+         <% } %>
+            </mm:composite>
+          </mm:present>
+                
+                
           <mm:relatednodes>
             <mm:remove referid="peoplenumber"/>
             <mm:import id="peoplenumber" jspvar="peoplenumber"><mm:field name="number"/></mm:import>
@@ -111,11 +191,27 @@
 
         </mm:relatednodescontainer>
       </mm:relatednodes>
+      </mm:relatednodescontainer>
+      </mm:present>
 
       <%-- Get all contacts --%>
+      <mm:present referid="list_book">
       <mm:relatednodes type="addressbooks">
         <mm:relatednodescontainer path="contacts">
           <mm:constraint field="number" value="$user" inverse="true"/>
+          <mm:present referid="addr_search">
+          <mm:composite operator="OR">
+          <%
+            StringTokenizer st = new StringTokenizer(addr_search);
+            while (st.hasMoreTokens()) {
+                %><mm:import id="addr_search_word" reset="true"><%= st.nextToken() %></mm:import>
+                    <mm:constraint field="contacts.firstname" value="%$addr_search_word%" operator="LIKE"/>
+                    <mm:constraint field="contacts.lastname" value="%$addr_search_word%" operator="LIKE"/>
+                    <mm:constraint field="contacts.email" value="%$addr_search_word%" operator="LIKE"/>
+         <% } %>
+            </mm:composite>
+          </mm:present>
+ 
           <mm:relatednodes>
             <mm:remove referid="peoplenumber"/>
             <mm:import id="peoplenumber" jspvar="peoplenumber"><mm:field name="number"/></mm:import>
@@ -127,6 +223,7 @@
           </mm:relatednodes>
         </mm:relatednodescontainer>
       </mm:relatednodes>
+      </mm:present>
 
 
       <mm:listnodescontainer type="people">
