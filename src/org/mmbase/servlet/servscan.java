@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.18 2001-02-20 18:21:54 michiel Exp $
+ * @version $Id: servscan.java,v 1.19 2001-03-08 18:46:52 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -41,9 +41,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class servscan extends JamesServlet {
 
-	static Logger log =Logging.getLoggerInstance(servscan.class.getName()); 
-
-	private String classname = getClass().getName();
+	private static Logger log = Logging.getLoggerInstance(servscan.class.getName()); 
 
 	// modules used in servscan
 	private static ProcessorModule grab=null;
@@ -55,7 +53,6 @@ public class servscan extends JamesServlet {
 
 	//int lastlistitem=0;
 	private static String  fileroot;
-	private static boolean debug=false;
 	private scanparser parser;
 
 
@@ -110,9 +107,14 @@ public class servscan extends JamesServlet {
 	 * Servlet request service.
 	 * This processes the the page and sends it back
 	 */
-	public void service(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException {
+
+
+	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		incRefCount(req);
 		try {
+			
+			log.service("Scan page: " + req.getRequestURI());
+
 			scanpage sp=new scanpage();
 			sp.req_line=req.getRequestURI();
 			sp.querystring=req.getQueryString();
@@ -144,16 +146,18 @@ public class servscan extends JamesServlet {
 			do {
 				sp.rstatus=0;
 				sp.body=parser.getfile(sp.req_line);
+				log.trace("body :" + sp.body);
 				doSecure(sp,res); // name=doSecure(sp,res); but name not used here
 				long stime=handleTime(sp);
 
 				try {	
 					if (handleCache(sp,res,out)) return;
 				} catch (Exception e) {
-					System.out.println("servscan - something is wrong with scancache");	
+					log.error("servscan - something is wrong with scancache");	
 				}
 	
-				if (sp.body!=null && !sp.body.equals("")) {
+				log.trace("body " + sp.body);
+				if (sp.body != null && !sp.body.equals("")) {
 					long oldtime = System.currentTimeMillis();
 					// Process HTML
 					sp.body = handle_line(sp.body, session, sp);
@@ -200,7 +204,7 @@ public class servscan extends JamesServlet {
 				}
 			} while (sp.rstatus==2);	
 			// End of page parser
-			
+			log.debug("page parsed");
 			out.flush();
 			out.close();
 		} catch(NotLoggedInException e) {
@@ -209,6 +213,7 @@ public class servscan extends JamesServlet {
 			log.debug( "service(): exception on page: "+getRequestURL(req));
 			a.printStackTrace();
 		} finally { decRefCount(req); }
+		
 	}// service
 
 	private final void setHeaders(scanpage sp,HttpServletResponse res,int len) {
@@ -352,7 +357,7 @@ public class servscan extends JamesServlet {
 			 try {
 			 	parser.scancache.newput(sp.wantCache,res,req_line,sp.body, sp.mimetype);
 			 } catch (Exception e) {
-				System.out.println("servscan - something is wrong with scancache");	
+				log.error("servscan - something is wrong with scancache");	
 			 }
 		}
 		return(true);
@@ -442,7 +447,7 @@ public class servscan extends JamesServlet {
 
 	void doEditorReload(scanpage sp,HttpServletResponse res) {
 		int EXPIRE = 120;
-		if (log.isDebugEnabled()) log.debug("doEditorReload called, sp.reload:"+sp.reload);
+		if (log.isDebugEnabled()) log.debug("doEditorReload called, sp.reload:" + sp.reload);
 		
 		if (sessions!=null) {
 			String sname=getCookie(sp.req,res);
