@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.4 2002-04-19 20:03:09 michiel Exp $
+  @version $Id: searchlist.xsl,v 1.5 2002-05-07 13:32:42 michiel Exp $
   --> 
 
 
@@ -19,7 +19,7 @@
     <span class="pagenav">
       <xsl:choose>
         <xsl:when test="page[@previous='true']">
-          <a class="pagenav" href="{$url}&amp;start={page[@previous='true']/@start}" onclick="return dobrowse(this);">&lt;&lt;</a><xsl:text> </xsl:text>
+          <a class="pagenav" href="{$listpage}&amp;start={page[@previous='true']/@start}" onclick="return dobrowse(this);">&lt;&lt;</a><xsl:text> </xsl:text>
         </xsl:when>
         <xsl:otherwise>
           &lt;&lt;<xsl:text> </xsl:text>
@@ -30,7 +30,7 @@
       
       <xsl:choose>
         <xsl:when test="page[@next='true']">
-          <a class="pagenav" href="{$url}&amp;start={page[@next='true']/@start}" onclick="return dobrowse(this);">&gt;&gt;</a>
+          <a class="pagenav" href="{$listpage}&amp;start={page[@next='true']/@start}" onclick="return dobrowse(this);">&gt;&gt;</a>
         </xsl:when>
         <xsl:otherwise>
           &gt;&gt;
@@ -40,7 +40,7 @@
   </xsl:template>
 
   <xsl:template match="page">
-    <a class="pagenav" href="{$url}&amp;start={@start}" onclick="return dobrowse(this);"><xsl:value-of select="position()" /></a><xsl:text> </xsl:text>
+    <a class="pagenav" href="{$listpage}&amp;start={@start}" onclick="return dobrowse(this);"><xsl:value-of select="position()" /></a><xsl:text> </xsl:text>
   </xsl:template>
 
 
