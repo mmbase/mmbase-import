@@ -89,7 +89,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.3 2004-09-30 19:47:16 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.4 2004-09-30 22:23:59 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -614,6 +614,124 @@ public class ResourceLoader extends ClassLoader {
         storeSource(new DOMSource(doc), name);
     }
 
+    /**
+     * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
+     */
+    public Reader getReader(String name) throws IOException {
+        try {
+            InputStream is = getResourceAsStream(name);
+            if (is == null) return null;
+            if (name.endsWith(".properties")) {
+                // todo \ u escapes must be escaped to decent Character's.
+                return new InputStreamReader(is, "ISO-8859-1");
+            }
+            byte b[] = new byte[100];
+            if (is.markSupported()) {
+                is.mark(101);
+            }
+            try {
+                is.read(b, 0, 100);
+                if (is.markSupported()) {
+                    is.reset();
+                } else {
+                    is = getResourceAsStream(name);
+                }
+            } catch (IOException ioe) {
+                is = getResourceAsStream(name);
+            }
+
+            
+            String encoding = GenericResponseWrapper.getXMLEncoding(b);
+            if (encoding != null) {
+                return new InputStreamReader(is, encoding);
+            }
+            
+            // all other things, default to UTF-8
+            return new InputStreamReader(is, "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+            // could not happen
+            return null;
+        }
+    }
+
+    /**
+     * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
+     */
+    public Writer getWriter(String name) throws IOException {
+        final OutputStream os = createResourceAsStream(name);
+        try {
+            if (os == null) return null;
+            if (name.endsWith(".properties")) {
+                // todo: perform \ u escaping.
+                return new OutputStreamWriter(os, "ISO-8859-1");
+            }
+        } catch (UnsupportedEncodingException uee) {
+        }
+        return new Writer() { // perhaps anonymous is a bit too much for this..
+                // this buffers first 100 bytes, just to determine encoding for XML types.
+                private Writer wrapped = null;
+                private StringBuffer start = new StringBuffer(100);
+                private int wrote = 0;
+                private void wrap() throws IOException {
+                    if (wrapped == null) {
+                        String encoding = GenericResponseWrapper.getXMLEncoding(start.toString());
+                        if (encoding == null) {
+                            encoding = "UTF-8";
+                        }
+                        try {
+                            wrapped = new OutputStreamWriter(os, encoding);
+                        } catch (UnsupportedEncodingException uee) {
+                        }
+                        wrapped.write(start.toString());
+                    }
+                }
+                public void close() throws IOException {
+                    wrap();
+                    wrapped.close();                    
+                }
+                public void flush() throws IOException {
+                    wrap();
+                    wrapped.flush();
+                }
+                
+                    public void write(char[] cbuf) throws IOException {
+                        if (wrapped != null) {
+                            wrapped.write(cbuf);
+                        } else {
+                            write(cbuf, 0, cbuf.length);
+                        } 
+                    }
+                
+                public void write(int c) throws IOException {
+                    if (wrapped != null) { wrapped.write(c); } else { super.write(c); }
+                }
+                
+                public void write(String str) throws IOException {
+                    if (wrapped != null) { wrapped.write(str); } else { super.write(str); }
+                }
+
+                public void write(String str, int off, int len) throws IOException {
+                    if (wrapped != null) { wrapped.write(str, off, len); } else { super.write(str, off, len); }
+
+                }
+                public void write(char[] cbuf, int off, int len) throws IOException {
+                    if (wrapped != null) {
+                        wrapped.write(cbuf, off, len);
+                    } else {
+                        for (int i = off; i< len; i++) {
+                            start.append(cbuf[i]);
+                            wrote++;
+                            if (wrote == 100) {
+                                wrap();
+                                write(cbuf, off + i, len -i);
+                                break;
+                            }
+                        }
+                    }
+                }
+            };
+    }
+
 
     /**
      * @return A List of all files associated with the resource.
@@ -636,63 +754,29 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
-
-    /***
-     * The MMURLStreamHandler is a StreamHandler for the protocol PROTOCOL. 
-     */
-    
-    protected static class MMURLStreamHandler extends URLStreamHandler {
-
-        MMURLStreamHandler() {
-            super();
-        }
-        protected URLConnection openConnection(URL u) throws IOException {
-            return new MMURLConnection(u);
-        }
-        /**
-         * mm: cannot be an external form, so the 'external' form of that will be
-         * http://www.mmbase.org/mmbase/config
-         *
-         * ExternalForms are mainly used in entity-resolving.
-         * {@inheritDoc}
-         */
-        protected String toExternalForm(URL u) {
-            MMURLConnection con = new MMURLConnection(u);
-            return con.toExternalForm();
-        }
-    }
-
     /**
-     * Implements the logic for our MM protocol.
+     * Resolves MM:urls
      */
-    protected static class MMURLConnection extends URLConnection {           
-
+    protected static class Resolver {
         private URL url;
-        private boolean determinedDoOutput = false;
 
-        MMURLConnection(URL url) {
-            super(url);
-            //log.debug("Connection to " + url + Logging.stackTrace(new Throwable()));
-            if (! url.getProtocol().equals(PROTOCOL)) {
-                throw new RuntimeException("Only supporting URL's with protocol " + PROTOCOL);
-            }
-            this.url = url;
+        // try to cache the results a bit.
+        private MMObjectNode node = null;
+        private File files[] = {null, null, null, null};
+        private URL servletContextResource = null;
+        private URL classLoaderResource    = null;
+        
+
+        Resolver(URL u) {
+            this.url = u;
         }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void connect() throws IOException {
-            // don't know..
-            connected = true;
-        }
-
 
         /**
          * Gets the Node associated with this URL if there is one.
          * @return MMObjectNode or <code>null</code>
          */
         protected MMObjectNode getResourceNode() {
+            if (node != null) return node;
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
@@ -700,7 +784,7 @@ public class ResourceLoader extends ClassLoader {
                     query.setConstraint(constraint);
                     Iterator i = resourceBuilder.getNodes(query).iterator();
                     if (i.hasNext()) {
-                        MMObjectNode node = (MMObjectNode) i.next();
+                        node = (MMObjectNode) i.next();
                         return node;
                     }
                 } catch (org.mmbase.storage.search.SearchQueryException sqe) {
@@ -716,19 +800,23 @@ public class ResourceLoader extends ClassLoader {
          * @return File or <code>null</code>
          */
         protected File getResourceFile(boolean exists, boolean writeable) {
-            Iterator files = ResourceLoader.getRootFiles(url.getPath()).iterator();
-            while (files.hasNext()) {
-                File file = (File) files.next();
+            int index = (exists ? 0 : 1) + (writeable ? 0 : 2);
+            if (files[index] != null) return files[index];
+            Iterator i = ResourceLoader.getRootFiles(url.getPath()).iterator();
+            while (i.hasNext()) {
+                File file = (File) i.next();
                 if (exists && file.exists()) {
                     if (log.isDebugEnabled()) {
                         log.debug("Found file " + file);
                     }
                     if (! writeable || file.canWrite()) {
+                        files[index] = file;
                         return file;
                     }
                 }
                 if (writeable && ! file.exists()) {
                     if (file.getParentFile().canWrite()) {
+                        files[index] = file;
                         return file;
                     }
                 }
@@ -741,6 +829,7 @@ public class ResourceLoader extends ClassLoader {
          * @return URL or <code>null</code> if there is not ServletContext, or it does not have this resource.
          */
         protected URL getServletContextResource() {
+            if (servletContextResource != null) return servletContextResource;
             if (ResourceLoader.servletContext != null) {
                 Iterator resources = ResourceLoader.resourceRoots.iterator();
                 while (resources.hasNext()) {
@@ -748,6 +837,7 @@ public class ResourceLoader extends ClassLoader {
                     try {
                         URL u  = servletContext.getResource(root + url.getPath());                    
                         if (u != null) {
+                            servletContextResource = u;
                             return u;
                         }
                     } catch (MalformedURLException mfue) {
@@ -763,56 +853,17 @@ public class ResourceLoader extends ClassLoader {
          * @return URL or <code>null</code> if there is no such resource according to ClassLoader.
          */
         protected URL getClassLoaderResource() {
+            if (classLoaderResource != null) return classLoaderResource;
             Iterator resources  = ResourceLoader.classLoaderRoots.iterator();
             while (resources.hasNext()) {
                 String root = (String) resources.next();
                 URL u = ResourceLoader.class.getResource(root + url.getPath());
                 if (u != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Found resource " + root + url.getPath());
-                    }
+                    classLoaderResource = u;
                     return u;
                 }
             } 
             return null;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public InputStream getInputStream() throws IOException  {
-            {
-                MMObjectNode node = getResourceNode();
-                if (node != null) {
-                    return new ByteArrayInputStream(node.getByteValue(HANDLE_FIELD));
-                }
-            }
-            {
-                File file = getResourceFile(true, false);
-                if (file != null) {
-                    return new FileInputStream(file);
-                }
-            }
-            try {
-                URL u = getServletContextResource();
-                if (u != null) {
-                    return u.openStream();
-                }
-            } catch (UnknownServiceException use) {
-                // should not happen
-                log.warn("" + use.getMessage());
-            }
-            try {
-                URL u = getClassLoaderResource();
-                if (u != null) {
-                    return u.openStream();
-                }
-            } catch (UnknownServiceException use) {
-                // should not happen
-                log.warn("" + use.getMessage());
-            }
-            return null;
-            
         }
 
         /**
@@ -850,6 +901,98 @@ public class ResourceLoader extends ClassLoader {
             return null;
             
         }
+    }
+
+    /***
+     * The MMURLStreamHandler is a StreamHandler for the protocol PROTOCOL. 
+     */
+    
+    protected static class MMURLStreamHandler extends URLStreamHandler {
+
+        private URLConnection connection = null;
+        MMURLStreamHandler() {
+            super();
+        }
+        protected URLConnection openConnection(URL u) throws IOException {
+            return new MMURLConnection(u);
+        }
+        /**
+         * mm: cannot be an external form, so the 'external' form of that will be
+         * http://www.mmbase.org/mmbase/config
+         *
+         * ExternalForms are mainly used in entity-resolving and URL.toString()
+         * {@inheritDoc}
+         */
+        protected String toExternalForm(URL u) {
+            Resolver res = new Resolver(u);
+            return res.toExternalForm();
+        }
+    }
+
+    /**
+     * Implements the logic for our MM protocol.
+     */
+    protected static class MMURLConnection extends URLConnection {           
+
+        private boolean determinedDoOutput = false;
+        private Resolver resolver;
+
+        MMURLConnection(URL u) {
+            super(u);
+            //log.debug("Connection to " + url + Logging.stackTrace(new Throwable()));
+            if (! url.getProtocol().equals(PROTOCOL)) {
+                throw new RuntimeException("Only supporting URL's with protocol " + PROTOCOL);
+            }
+            resolver = new Resolver(url);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void connect() throws IOException {
+            // don't know..
+            connected = true;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public InputStream getInputStream() throws IOException  {
+            {
+                MMObjectNode node = resolver.getResourceNode();
+                if (node != null) {
+                    return new ByteArrayInputStream(node.getByteValue(HANDLE_FIELD));
+                }
+            }
+            {
+                File file = resolver.getResourceFile(true, false);
+                if (file != null) {
+                    return new FileInputStream(file);
+                }
+            }
+            try {
+                URL u = resolver.getServletContextResource();
+                if (u != null) {
+                    return u.openStream();
+                }
+            } catch (UnknownServiceException use) {
+                // should not happen
+                log.warn("" + use.getMessage());
+            }
+            try {
+                URL u = resolver.getClassLoaderResource();
+                if (u != null) {
+                    return u.openStream();
+                }
+            } catch (UnknownServiceException use) {
+                // should not happen
+                log.warn("" + use.getMessage());
+            }
+            return null;
+            
+        }
+
+
         /** 
          * Makes an OutputStream for a Node to fill the handle field.
          */
@@ -876,27 +1019,30 @@ public class ResourceLoader extends ClassLoader {
          * Returns <code>true</true> if you can successfully use getOutputStream();
          */
         public boolean getDoOutput() {
-            while (! determinedDoOutput) {
-                if (getResourceFile(false, true) != null) {
-                    setDoOutput(true);
-                    break;
-                } 
-                if (ResourceBuilder.resourceBuilder != null) {
-                    setDoOutput(true);
-                    break;
-                }
-                URL u = getServletContextResource();
-                if (u != null && u.openConnection().getDoOutput()) {
-                    setDoOutput(true);
-                    break;
-                }
-                u = getClassResource();
-                if (u != null && u.openConnection().getDoOutput()) {
-                    setDoOutput(true);
-                    break;
-                }
+            if (! determinedDoOutput) {
                 determinedDoOutput = true;
-                // todo, this assumes that ser
+                if (resolver.getResourceFile(false, true) != null) {
+                    setDoOutput(true);
+                    return true;
+                } 
+                if (ResourceLoader.resourceBuilder != null) {
+                    setDoOutput(true);
+                    return true;
+                }
+                try {
+                    URL u = resolver.getServletContextResource();
+                    if (u != null && u.openConnection().getDoOutput()) {
+                        setDoOutput(true);
+                        return true;
+                    }
+                    u = resolver.getClassLoaderResource();
+                    if (u != null && u.openConnection().getDoOutput()) {
+                        setDoOutput(true);
+                        return true;
+                    }
+                } catch (Exception e) {
+                }
+                //defaulting to false.
             }
             return super.getDoOutput();
                             
@@ -906,20 +1052,20 @@ public class ResourceLoader extends ClassLoader {
          */
         public OutputStream getOutputStream() throws IOException  {
             { // if already a node, change that.
-                MMObjectNode node = getResourceNode();
+                MMObjectNode node = resolver.getResourceNode();
                 if (node != null) { // already a node, change this node
                     return getOutputStream(node);
                 }
             }
             { // if already a file, change that
-                File file = getResourceFile(true, true);
+                File file = resolver.getResourceFile(true, true);
                 if (file != null) { // already a file, rewrite this file
                     
                     return new FileOutputStream(file);
                 }
             } 
             try { // little hope that this would work, but lets try it any way
-                URL u = getServletContextResource();
+                URL u = resolver.getServletContextResource();
                 if (u != null) {
                     return u.openConnection().getOutputStream();
                 }
@@ -928,7 +1074,7 @@ public class ResourceLoader extends ClassLoader {
             }
 
             try { // little hope that this would work, but lets try it any way
-                URL u = getClassLoaderResource();
+                URL u = resolver.getClassLoaderResource();
                 if (u != null) {
                     return u.openConnection().getOutputStream();
                 } 
@@ -941,7 +1087,7 @@ public class ResourceLoader extends ClassLoader {
 
             // first, conservatively, try to create a file:
             { 
-                File file = getResourceFile(false, true);
+                File file = resolver.getResourceFile(false, true);
                 if (file != null) { // that would succeed!
                     if (! file.exists()) {
                         file.createNewFile();
@@ -958,7 +1104,7 @@ public class ResourceLoader extends ClassLoader {
             }
 
             // Can find no place to store this resource. Giving up.
-            throw new IOException("Cannot create an OutputStream for " + url + "( " + getResourceFile(false, false) + " cannot be written, no resource-node could be created)");
+            throw new IOException("Cannot create an OutputStream for " + url + "( " + resolver.getResourceFile(false, false) + " cannot be written, no resource-node could be created)");
         }
 
     }
