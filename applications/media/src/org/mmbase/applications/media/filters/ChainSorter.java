@@ -19,9 +19,9 @@ import org.w3c.dom.Element;
  * Chains some comparators to make one new comparator.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ChainSorter.java,v 1.1 2003-02-05 16:31:36 michiel Exp $
+ * @version $Id: ChainSorter.java,v 1.2 2003-02-05 16:39:39 michiel Exp $
  */
-public class ChainSorter extends  SorterFilter {
+public class ChainSorter extends  Sorter {
 
     private List comparators;
     public  ChainSorter() {
@@ -36,7 +36,7 @@ public class ChainSorter extends  SorterFilter {
     /**
      * Add one filter to the chain
      */
-    public void add(SorterFilter ri) {
+    public void add(Sorter ri) {
         comparators.add(ri);
     }
 
@@ -50,7 +50,7 @@ public class ChainSorter extends  SorterFilter {
     public void configure(XMLBasicReader reader, Element e) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
-            SorterFilter ri = (SorterFilter) i.next();
+            Sorter ri = (Sorter) i.next();
             ri.configure(reader, e);
         }
     }
@@ -58,7 +58,7 @@ public class ChainSorter extends  SorterFilter {
     public int compareURLComposer(URLComposer o1, URLComposer o2) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
-            int comp = ((SorterFilter) i.next()).compare(o1, o2); 
+            int comp = ((Sorter) i.next()).compare(o1, o2); 
             if (comp != 0) return comp; 
         }
         return 0;

@@ -106,8 +106,8 @@ public class MainFilter {
             try {
                 Class newclass = Class.forName(clazz);
                 Filter filter = (Filter) newclass.newInstance();
-                if (filter instanceof SorterFilter) {
-                    chainComp.add((SorterFilter) filter);
+                if (filter instanceof Sorter) {
+                    chainComp.add((Sorter) filter);
                 } else {
                     if (chainComp.size() > 0) { 
                         filters.add(chainComp);
