@@ -74,10 +74,10 @@
 
 <mm:present referid="path">
   <table border="1">
-    <mm:list nodes="<%=nodes%>" path="<%=path%>" fields="<%=fields%>"
-             constraints="<%=constraints%>" orderby="<%=orderby%>"
-             directions="<%=directions%>" distinct="<%=distinct%>"
-             max="<%=max%>" offset="<%=offset%>" searchdir="<%=searchdir%>">
+    <mm:list nodes="${nodes}" path="${path}" fields="<%=fields%>"
+             constraints="${constraints}" orderby="${orderby}"
+             directions="${directions}" distinct="${distinct}"
+             max="${max}" offset="${offset}" searchdir="${searchdir}">
       <tr>
         <mm:compare referid="fields" value="">
           <% for (Enumeration e = convertToEnumeration(path); e.hasMoreElements();) { %>
