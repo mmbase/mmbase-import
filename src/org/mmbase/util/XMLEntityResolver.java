@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $ Id: $
+ * @version $Id: XMLEntityResolver.java,v 1.22 2003-03-11 20:29:10 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
