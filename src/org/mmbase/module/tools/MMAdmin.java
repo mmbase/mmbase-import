@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.52 2002-10-24 12:56:08 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.53 2002-11-01 11:39:52 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -456,7 +456,6 @@ public class MMAdmin extends ProcessorModule {
         if (mod!=null) {
             String value=mod.getInitParameter(key);
             if (value!=null) return value;
-
         }
         return "";
 
@@ -492,20 +491,13 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * @javadoc
-     * @todo should obtain data from the configuration file
      */
     String getModuleDescription(String modulename) {
-        /*
-        String path=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator;
-        XMLModuleReader app=new XMLModuleReader(path+modulename+".xml");
-        if (app!=null) {
-            Hashtable desc=app.getDescriptions();
-            String us=(String)desc.get("en");
-            if (us!=null) {
-                return us;
-            }
+        Module mod=(Module)getModule(modulename);
+        if (mod!=null) {
+            String value=mod.getModuleInfo();
+            if (value!=null) return value;
         }
-        */
         return "";
     }
 
