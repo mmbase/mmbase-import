@@ -17,16 +17,27 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
+ * The Vts index creator creates Verity Text Search indices,
+ * when used with an Informix database and a Verity Text Search datablade.
+ * This class is provided as a utility to supplement the 
+ * {@link VtsSqlHandler VtsSqlHandler}.
+ * <p>
+ * When run as an application, the index creator reads a list of vts-indices 
+ * from a configuration file, and creates the indices that are not present 
+ * already.
+ * The configurationfile must be named <em>vtsindices.xml</em> and located
+ * inside the <em>databases</em> configuration directory. 
+ * It's dtd is located in the directory 
+ * <code>org.mmbase.storage.search.implementation.database.vts.resources</code>
+ * in the MMBase source tree and 
+ * <a href="http://www.mmbase.org/dtd/vtsindices.dtd">here</a> online. 
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  * @version Revision
  */
 public class VtsIndexCreator {
-    
-    /** The vtsindices configuration file. */
-    private File configFile = null;
     
     /** Database connection. */
     private Connection con = null;
@@ -36,9 +47,7 @@ public class VtsIndexCreator {
      *
      * @param path Path to the vts indices configuration file.
      */
-    public VtsIndexCreator(String path) {
-        configFile = new File(path);
-    }
+    public VtsIndexCreator() {}
     
     /**
      * Application main method. 
@@ -47,14 +56,12 @@ public class VtsIndexCreator {
      * that are not already created.
      *
      * @param args The command line arguments, should be path to
-     *        MMBase configuration directory and path to 
-     *        vtsindices config file.
+     *        MMBase configuration directory.
      */
     public static void main(String[] args) {
-        if (args.length != 2) {
+        if (args.length != 1) {
             System.out.println("Command line arguments not as expected,"
-                + "should be path to MMBase configuration directory and path to "
-                + "vtsindices config file.");
+                + "should be path to MMBase configuration directory.");
             System.exit(1);
         }
         try {
@@ -64,8 +71,7 @@ public class VtsIndexCreator {
             MMBaseContext.init(args[0], false);
             
             // Execute tasks.
-            VtsIndexCreator app = new VtsIndexCreator(args[1]);
-            app.execute();
+            new VtsIndexCreator().execute();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -75,13 +81,20 @@ public class VtsIndexCreator {
     }
     
     /**
-     * Executes the tasks.
+     * Executes the tasks: reads configuration file and creates indices
+     * as needed.
+     * Requires MMBase to be started.
      */
-    private void execute() throws Exception {
+    public void execute() throws Exception {
         try {
             // Read config.
-            XmlVtsIndicesReader configReader = new XmlVtsIndicesReader(
-                new InputSource(new BufferedReader(new FileReader(configFile))));
+            File vtsConfigFile = new File(
+                MMBaseContext.getConfigPath() + "/databases/vtsindices.xml");
+            XmlVtsIndicesReader configReader = 
+                new XmlVtsIndicesReader(
+                    new InputSource(
+                        new BufferedReader(
+                            new FileReader(vtsConfigFile))));
             
             // Connect.
             con = MMBase.getMMBase().getConnection();

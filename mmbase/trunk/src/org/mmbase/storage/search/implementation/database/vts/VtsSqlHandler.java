@@ -21,13 +21,24 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
- * The Vts query handler adds support for Verity Text Search constraints.
+ * The Vts query handler adds support for Verity Text Search constraints,
+ * when used with an Informix database and a Verity Text Search datablade.
+ * This class is provided as a coding example of a ChainedSqlHandler.
+ * <p>
+ * On initialization, the handler reads a list of vts-indices from a 
+ * configuration file.
+ * The configurationfile must be named <em>vtsindices.xml</em> and located
+ * inside the <em>databases</em> configuration directory. 
+ * It's dtd is located in the directory 
+ * <code>org.mmbase.storage.search.implementation.database.vts.resources</code>
+ * in the MMBase source tree and 
+ * <a href="http://www.mmbase.org/dtd/vtsindices.dtd">here</a> online. 
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
-// TODO: (later) add javadoc, elaborate on overwritten methods.
+// TODO RvM: (later) add javadoc, elaborate on overwritten methods.
 public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     
     /** Logger instance. */
@@ -243,14 +254,21 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     /** 
      * Initializes the handler by reading the vtsindices configuration file
      * to determine which fields have a vts index.
+     * <p>
+     * The configurationfile must be named <em>vtsindices.xml</em> and located
+     * inside the <em>databases</em> configuration directory.
+     * 
+     * @throw IOException When a failure occurred while trying to read the 
+     *        configuration file.
      */
-    // TODO: provide a way to configure the location of the vtsindices.xml config file.
     private void init() throws IOException {
-        XmlVtsIndicesReader configReader = new XmlVtsIndicesReader(
-            new InputSource(
-            new BufferedReader(
-            new FileReader("C:/projects/konijn/testindices.xml"))));
-//            new FileReader("C:/projects/konijn/vtsindices.xml"))));
+        File vtsConfigFile = new File(
+            MMBaseContext.getConfigPath() + "/databases/vtsindices.xml");
+        XmlVtsIndicesReader configReader = 
+            new XmlVtsIndicesReader(
+                new InputSource(
+                    new BufferedReader(
+                        new FileReader(vtsConfigFile))));
         
         Enumeration eSbspaces = configReader.getSbspaceElements();
         while (eSbspaces.hasMoreElements()) {
