@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
 * @author Mark Huijser
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.30 $ $Date: 2001-03-09 09:12:03 $
+* @$Revision: 1.31 $ $Date: 2001-04-19 15:04:27 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -116,11 +116,13 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                                 }
 
                                 // Gather all the fields of this builder without the fields that already are
-                                // inherited from the parent object.
+                                // inherited from the parent object and without the fields that are declared
+                                // virtual in the builder.xml
 
                                 if (!tableName.equals("insrel")&&!tableName.equals("typerel")&&!tableName.equals("reldef")&&
-                                    !name.equals("owner")&&!name.equals("otype")&&!name.equals("snumber")&&!name.equals("dnumber")&&!name.equals("rnumber")&&
-                                    !name.equals("dir")) {
+                                    !name.equals("owner")&&!name.equals("otype")&&!name.equals("snumber")&&
+                                    !name.equals("dnumber")&&!name.equals("rnumber")&&!name.equals("dir")&& 
+                                    def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                                         if(createtype==null) {
                                                 createtype=part;
                                         } else {
