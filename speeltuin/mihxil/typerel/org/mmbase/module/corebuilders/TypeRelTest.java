@@ -8,7 +8,7 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TypeRelTest extends TestCase {
 
@@ -46,14 +46,16 @@ public class TypeRelTest extends TestCase {
         Node reldef = relDefManager.createNode();
         reldef.setValue("sname", BIDIRROLE);
         reldef.setValue("dname", BIDIRROLE);
+        reldef.setValue("sguiname", BIDIRROLE);
+        reldef.setValue("dguiname", BIDIRROLE);
         reldef.setIntValue("dir", 2);
-        reldef.setIntValue("builder", insRelManager.getNumber());
+        reldef.setNodeValue("builder", insRelManager);
         reldef.commit();
 
         Node typerel = typeRelManager.createNode();
-        typerel.setIntValue("snumber", newsManager.getNumber());
-        typerel.setIntValue("dnumber", urlsManager.getNumber());
-        typerel.setIntValue("rnumber", reldef.getNumber());
+        typerel.setNodeValue("snumber", newsManager);
+        typerel.setNodeValue("dnumber", urlsManager);
+        typerel.setNodeValue("rnumber", reldef);
         typerel.commit();
 
         // now this relation must exist.
@@ -81,14 +83,19 @@ public class TypeRelTest extends TestCase {
         Node reldef = relDefManager.createNode();
         reldef.setValue("sname", UNIDIRROLE);
         reldef.setValue("dname", UNIDIRROLE);
+        reldef.setValue("sguiname", UNIDIRROLE);
+        reldef.setValue("dguiname", UNIDIRROLE);
+
         reldef.setIntValue("dir", 1);
-        reldef.setIntValue("builder", insRelManager.getNumber());
+        reldef.setNodeValue("builder", insRelManager);
+
         reldef.commit();
 
         Node typerel = typeRelManager.createNode();
-        typerel.setIntValue("snumber", newsManager.getNumber());
-        typerel.setIntValue("dnumber", urlsManager.getNumber());
-        typerel.setIntValue("rnumber", reldef.getNumber());
+        typerel.setNodeValue("snumber", newsManager);
+        typerel.setNodeValue("dnumber", urlsManager);
+
+        typerel.setNodeValue("rnumber", reldef);
         typerel.commit();
 
         // now this relation must exist.
