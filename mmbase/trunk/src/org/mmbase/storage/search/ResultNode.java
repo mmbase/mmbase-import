@@ -30,14 +30,14 @@ import org.mmbase.module.corebuilders.*;
  * {@link ResultBuilder ResultBuilder}, that contains info on the node's fields.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 // TODO: move to org.mmbase.module.core?
 public class ResultNode extends VirtualNode {
     
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param parent The node's parent.
      */
