@@ -5,7 +5,8 @@
 <%-- the page is called with a parameter newsid
 we can use the parameter attribute of node to create a context 
 for the MMBase node --%>
-<mm:node number="param:newsid">
+<mm:import externid="newsid"/>
+<mm:node number="${newsid}">
 <HTML>
  <HEAD>
   <%-- we are in the news node  we can ask 
@@ -29,15 +30,15 @@ for the MMBase node --%>
   brakes and paragraphs --%>
   <P><mm:field  name="html(body)"/></P>
 
-  <mm:related type="images">
+  <mm:relatednodes type="images">
    <mm:first>Related images<BR></mm:first>
     <IMG SRC="/img.db?<mm:field name="number"/>+(200)">
-  </mm:related>
+  </mm:relatednodes>
 
-  <mm:related type="urls">
+  <mm:relatednodes type="urls">
    <mm:first>Related urls<BR></mm:first>
    <A HREF="<mm:field name="url"/>"><mm:field name="description"/></A><BR>
-  </mm:related>
+  </mm:relatednodes>
   </TD>
   </TR>
   </TABLE>

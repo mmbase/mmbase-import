@@ -38,7 +38,7 @@ use the default magazine with alias default.mags --%>
 
   <%-- we are still in the magazine node, we can now aks for related news items
   by using the related tag --%>
-  <mm:related type="news">
+  <mm:relatednodes type="news">
    <%-- the first tag is a macro for <mm:listcondition value="first"/> --%>
    <mm:first><TR><TD WIDTH="30"></TD><TD><TABLE width="100%" cellspacing=1 cellpadding=3 border=0><TR><TH ALIGN="LEFT">title</TH><TH ALIGN="RIGHT">link</TH></TR></mm:first> 
 
@@ -52,7 +52,7 @@ use the default magazine with alias default.mags --%>
     <TD ALIGN="RIGHT"><A HREF="newsitem.jsp?magid=<mm:field node="mag" name="number"/>&newsid=<mm:field name="number"/>">link</A></TD>
    </TR> 
    <mm:last></TABLE></TD></TR></mm:last>
-  </mm:related>
+  </mm:relatednodes>
   </TABLE>
   </CENTER>
  </BODY>
