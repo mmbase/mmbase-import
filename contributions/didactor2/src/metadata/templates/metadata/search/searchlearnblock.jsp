@@ -16,6 +16,7 @@ try {
     String query = request.getParameter("search_query").toUpperCase();
     String qtype = request.getParameter("search_type");
 
+    System.err.println("matching '"+metaValue+"' against '"+query+"'");
     boolean hit = false;
     if ("exact".equals(qtype)) {
 	hit = metaValue.indexOf(query) > -1;
