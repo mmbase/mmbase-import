@@ -26,7 +26,7 @@ about the Ant build tool.
     <property name="build.javadocs" value="${build.dir}/javadocs"/>
 
     <available property="tomcat.present" 
-               classname="org/apache/tomcat/startup" />
+               classname="org.apache.tomcat.startup.Tomcat" />
   </target>
 
   <!-- =================================================================== -->
@@ -77,7 +77,7 @@ about the Ant build tool.
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
-      <exclude name="**/JumpersInterceptor.java" unless="tomcat.present" />
+      <exclude name="**/jumpersInterceptor.java" unless="tomcat.present" />
       <exclude name="**/hitlisted/**" />
       <exclude name="**/scripts/**" />
       <exclude name="**/docs/**" />
