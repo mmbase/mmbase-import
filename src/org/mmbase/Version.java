@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase;
 
 import java.io.*;
-import java.net.*;
+import java.net.URL;
+import java.text.DateFormat;
 import java.util.*;
 import java.util.jar.*;
 
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.8 2002-02-28 07:33:58 pierre Exp $
+ * @version $Id: Version.java,v 1.9 2002-03-04 14:45:26 pierre Exp $
  */
 public class Version {
 
@@ -95,7 +96,7 @@ public class Version {
         body+="Created-By: "+maintainer+"\n";
         body+="Implementation-Vendor: mmbase organisation\n";
         body+="Implementation-Version: "+major+"."+minor+"."+(build+1)+"\n";
-        body+="Implementation-Date: "+new Date().toGMTString()+"\n\n";
+        body+="Implementation-Date: "+DateFormat.getDateTimeInstance().format(new Date())+"\n\n";
         String newbody="maintainer="+maintainer+"\n";
         newbody+="major="+major+"\n";
         newbody+="minor="+minor+"\n";
