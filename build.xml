@@ -210,7 +210,7 @@ builddate=${builddate}
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib.release,jar,web,rmmci">
+          depends="lib.release,jar,web">
 
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
@@ -393,13 +393,6 @@ builddate=${builddate}
   </target>
 
 
-  <!-- =================================================================== -->
-  <!-- Compile the source directory                                        -->
-  <!-- =================================================================== -->
-  <target name="compile" description="Compile the source directory"
-     depends="compile.local,compile.remote">
-  </target>
-
   <target name="build"   description="Compile and generate tld's"
      depends="taglib.tld,community.tld,compile" >
   </target>
@@ -418,7 +411,7 @@ builddate=${builddate}
 
 
   <!-- =================================================================== -->
-  <!-- Compile the source directory (exclude remote)                       -->
+  <!-- Compile the source directory                                        -->
   <!-- =================================================================== -->
   <target name="info14" if="java14">
     <echo>
@@ -434,8 +427,7 @@ builddate=${builddate}
  <!-- just to make the output of ant a  little bit clearer. Otherwise
  it look like compiling is part of 'info14' target.... -->
 
-  <target name="compile.local" description="Compile the source directory(exclude remote)"
-          depends="init.compile">
+  <target name="compile" description="Compile the source directory" depends="init.compile">
 
     <echo message="java version: ${ant.java.version}" />
     <condition property="java14"><equals arg1="${ant.java.version}" arg2="1.4" /></condition>
@@ -469,10 +461,6 @@ builddate=${builddate}
            optimize="${optimize}"
            deprecation="${deprecation}">
       <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
-      <exclude name="org/mmbase/module/RemoteMMCI.java"/>
-      <exclude name="org/mmbase/bridge/ContextProvider.java"/>
-      <exclude name="org/mmbase/bridge/RemoteContext.java"/>
-      <exclude name="org/mmbase/bridge/remote/**"/>
       <exclude name="org/mmbase/module/JMSendMail.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
@@ -1277,142 +1265,6 @@ Build-compiler: ${build.compiler}
     <delete dir="${expand.dir}"/>
   </target>
 
-
-  <!-- =================================================================== -->
-  <!-- (Step 1 for remote) Compile the remote generator classes            -->
-  <!-- =================================================================== -->
-  <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init">
-    <javac srcdir="${source-src.dir}"
-           destdir="${build.dir}/classes"
-           classpathref="compile.classpath"
-           debug="${debug}"
-           optimize="${optimize}"
-           deprecation="${deprecation}">
-           <include name="org/mmbase/bridge/remote/generator/*.java"/>
-    </javac>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- check if MMCI.xml is present                                        -->
-  <!-- =================================================================== -->
-  <target name="check.mmci.xml.present" description="check if MMCI.xml is present" depends="init">
-    <available property="mmci.xml.present" file="${generated-source-src.dir}/MMCI.xml"/>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- (Step 2 for remote) Generate the source for the remote classes      -->
-  <!-- =================================================================== -->
-  <target name="generate.remote"
-          description="Generate the source for the remote classes"
-  depends="init,init.compile,compile.remote.generator,check.mmci.xml.present"
-          unless="mmci.xml.present">
-
-
-    <mkdir dir="${generated-source-src.dir}/org/mmbase/bridge/remote"/>
-    <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
-       using the sun jaxp implementation. By forking we do not use theant classloader -->
-
-    <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="compile.classpath" >
-      <arg value="${generated-source-src.dir}/MMCI.xml" />
-  <classpath>
-    <pathelement location="${build.dir}/classes" />
-  </classpath>
-    </java>
-  <!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
-    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile.classpath" fork="true" >
-      <arg value="${generated-source-src.dir}"/>
-      <arg value="${generated-source-src.dir}/MMCI.xml"/>
-      <classpath>
-        <pathelement location="${build.dir}/classes"/>
-      </classpath>
-    </java>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- (Step 3 for remote) Compile the remote classes                      -->
-  <!-- =================================================================== -->
-  <target name="compile.remote" description="Compile the remote classes" depends="init,init.compile,generate.remote">
-    <javac
-           destdir="${build.dir}/classes"
-           classpathref="compile.classpath"
-           debug="${debug}"
-           optimize="${optimize}"
-           deprecation="${deprecation}">
-      <src path="${generated-source-src.dir}" />
-      <src path="${source-src.dir}" />
-      <include name="org/mmbase/bridge/remote/*.java"/>
-      <include name="org/mmbase/bridge/remote/rmi/*.java"/>
-      <include name="org/mmbase/bridge/remote/implementation/*.java"/>
-    </javac>
-    <rmic base="${build.dir}/classes" classpathref="compile.classpath">
-      <include name="org/mmbase/bridge/remote/rmi/*.class"/>
-        <classpath>
-           <pathelement location="${build.dir}/classes"/>
-        </classpath>
-    </rmic>
-    <javac
-           destdir="${build.dir}/classes"
-           classpathref="compile.classpath"
-           debug="${debug}"
-           optimize="${optimize}"
-           deprecation="${deprecation}">
-      <src path="${generated-source-src.dir}" />
-      <src path="${source-src.dir}" />
-      <include name="org/mmbase/bridge/RemoteContext.java"/>
-      <include name="org/mmbase/bridge/ContextProvider.java"/>
-      <include name="org/mmbase/module/RemoteMMCI.java"/>
-    </javac>
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Create rmmci.jar                                                    -->
-  <!-- =================================================================== -->
-  <target name="rmmci" depends="compile">
-    <mkdir dir="${build.dir}/rmmcitmp"/>
-    <unjar src="${servlet.jar}" dest="${build.dir}/rmmcitmp" />
-    <unjar src="${xml-apis.jar}" dest="${build.dir}/rmmcitmp" />
-    <echo file="${build.dir}/rmmcitmp/manifest.mf">
-Name: org/mmbase
-Vendor: MMBase Community
-URL: http://www.mmbase.org
-Comment: The Remote MMBase Cloud Interfaces to connect to MMBase.
-Version: ${distro}.${builddate}
-Distribution: ${distro}
-Build-by: ${ant.version}
-Build-java-version: ${ant.java.version}
-Build-compiler: ${build.compiler}
-</echo>
-
-    <jar jarfile="${build.dir}/mmbase/rmmci.jar"
-         manifest="${build.dir}/rmmcitmp/manifest.mf"
-    >
-       <fileset dir="${build.dir}/classes">
-        <include name="org/mmbase/bridge/*.class"/>
-        <include name="org/mmbase/bridge/remote/**"/>
-       </fileset>
-       <fileset dir="${build.dir}/rmmcitmp">
-        <include name="org/w3c/dom/Document.class"/>
-        <include name="org/w3c/dom/Node.class"/>
-        <include name="org/w3c/dom/Element.class"/>
-        <include name="javax/servlet/ServletRequest.class"/>
-        <include name="javax/servlet/ServletResponse.class"/>
-        <include name="javax/servlet/http/HttpServletRequest.class"/>
-        <include name="javax/servlet/http/HttpServletResponse.class"/>
-       </fileset>
-    </jar>
-    <delete dir="${build.dir}/rmmcitmp" />
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the remote-classes                                            -->
-  <!-- =================================================================== -->
-  <target name="clean.remote" depends="init">
-    <delete failonerror="false" dir="${generated-source-src.dir}/org/mmbase/bridge/remote"/>
-    <delete failonerror="false" file="${generated-source-src.dir}/MMCI.xml"/>
-  </target>
-
   <target name="xsltransformer" depends="init.compile">
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
@@ -1617,7 +1469,7 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target
     name="clean.build"
-    depends="clean.compile,clean.remote,clean.generatedsource,clean.apptool,clean.lib"
+    depends="clean.compile,clean.generatedsource,clean.apptool,clean.lib"
     description="Clean all classes and generated java, safe for every recompilation"
     >
     <!-- apptool? -->
