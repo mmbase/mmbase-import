@@ -181,7 +181,7 @@
       debug="true"
       optimize="false"
       classpathref="compile.classpath"
-      deprecation="true"
+      deprecation="false"
       >
       <src path="${tests.source.dir}/bridge"/>
       <src path="${tests.source.dir}/typerel"/>
