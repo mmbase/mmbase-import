@@ -8,15 +8,9 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.27 2000-07-12 15:13:45 install Exp $
+$Id: MMSQL92Node.java,v 1.28 2000-07-15 10:02:15 daniel Exp $
 
 $Log: not supported by cvs2svn $
-Revision 1.26  2000/07/12 13:16:24  install
-Rob bug removed
-
-Revision 1.25  2000/07/10 15:59:04  daniel
-Daniel.. removed invalid methods
-
 Revision 1.24  2000/07/06 10:19:58  daniel
 Daniel.. started to add more mmbase types (not done yet)
 
@@ -131,7 +125,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.27 $ $Date: 2000-07-12 15:13:45 $
+* @$Revision: 1.28 $ $Date: 2000-07-15 10:02:15 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -139,7 +133,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	public String name="sql92";
-	Hashtable typesmap = new Hashtable();
 	XMLDatabaseReader parser;
 	Hashtable typeMapping = new Hashtable();
 	Hashtable disallowed2allowed;
@@ -147,25 +140,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	MMBase mmb;
 
-	final static int TYPE_STRING = 1;
-	final static int TYPE_INTEGER = 2;
-	final static int TYPE_TEXT = 3;
-	final static int TYPE_BLOB = 4;
-	final static int TYPE_REAL = 5;
-	final static int TYPE_DOUBLE = 6;
-
 	public MMSQL92Node() {
-		typesmap.put("VARCHAR",new Integer(TYPE_STRING));
-		typesmap.put("VARSTRING",new Integer(TYPE_STRING));
-		typesmap.put("STRING",new Integer(TYPE_STRING));
-		typesmap.put("INTEGER",new Integer(TYPE_INTEGER));
-		typesmap.put("text",new Integer(TYPE_TEXT));
-		typesmap.put("TEXT",new Integer(TYPE_TEXT));
-		typesmap.put("BLOB",new Integer(TYPE_BLOB));
-		typesmap.put("BYTE",new Integer(TYPE_BLOB));
-		typesmap.put("BINARY",new Integer(TYPE_BLOB));
-		typesmap.put("REAL",new Integer(TYPE_REAL));
-		typesmap.put("DOUBLE",new Integer(TYPE_DOUBLE));
 	}
 
 	public void init(MMBase mmb,XMLDatabaseReader parser) {
@@ -177,11 +152,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		allowed2disallowed=getReverseHash(disallowed2allowed);
 	}
 
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i) {
-		return(decodeDBnodeField(node,fieldtype,fieldname,rs,i,""));
+	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
+		return(decodeDBnodeField(node,fieldname,rs,i,""));
 	}
 
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
+	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
 		try {
 
 		// is this fieldname disallowed ? ifso map it back
@@ -189,29 +164,42 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			fieldname=(String)allowed2disallowed.get(fieldname);
 		}
 
-		if (fieldtype!=null && fieldtype.equals("LONG")) fieldtype="INTEGER";
-		int type=((Integer)typesmap.get(fieldtype)).intValue();
+		int type=node.getDBType(fieldname);
+		System.out.println("AAAA="+fieldname+" "+type);
 		switch (type) {
-			case TYPE_STRING:
+			case FieldDefs.TYPE_STRING:
 				String tmp=rs.getString(i);
 				if (tmp==null) { 
 					node.setValue(prefix+fieldname,"");
 				} else {
 					node.setValue(prefix+fieldname,tmp);
 				}
-				return(node);
-			case TYPE_INTEGER:
-				node.setValue(prefix+fieldname,rs.getInt(i));
-				return(node);
-			case TYPE_BLOB:
+				break;
+
+			case FieldDefs.TYPE_INTEGER:
+				node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
+				break;
+			case FieldDefs.TYPE_LONG:
+				node.setValue(prefix+fieldname,(Long)rs.getObject(i));
+				break;
+			case FieldDefs.TYPE_FLOAT:
+				// who does this now work ????
+				//node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
+				node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
+				break;
+			case FieldDefs.TYPE_DOUBLE:
+				node.setValue(prefix+fieldname,(Double)rs.getObject(i));
+				break;
+			case FieldDefs.TYPE_BYTE:
 				node.setValue(prefix+fieldname,"$SHORTED");
-				return(node);
-			case TYPE_TEXT:
+				break;
+			case FieldDefs.TYPE_TEXT:
 				node.setValue(prefix+fieldname,"$SHORTED");
-				return(node);
+				break;
 			}
+			return (node);
 		} catch(SQLException e) {
-			System.out.println("MMSQL92Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
+			System.out.println("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
 			e.printStackTrace();	
 		}
 		return(node);
@@ -240,7 +228,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			pos=part.indexOf('=');
 			if (pos!=-1) {
 				String fieldname=part.substring(0,pos);
-				String dbtype=bul.getDBType(fieldname);
+				int dbtype=bul.getDBType(fieldname);
 				//System.out.println("TYPE="+dbtype);
 				result+=parseFieldPart(fieldname,dbtype,part.substring(pos+1));
 				if (cmd!=null) {
@@ -256,7 +244,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 
 
-	public String parseFieldPart(String fieldname,String dbtype,String part) {
+	public String parseFieldPart(String fieldname,int dbtype,String part) {
 		String result="";
 		boolean like=false;
 		char operatorChar = part.charAt(0);
@@ -267,8 +255,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			value=value.substring(pos+1,value.length()-1);
 			like=true;
 		}
-		if (dbtype.equals("var") || dbtype.equals("varchar")) {
-		//if (dbtype.equals("var") || dbtype.equals("VARCHAR")) {
+		if (dbtype==FieldDefs.TYPE_STRING) {
 			switch (operatorChar) {
 			case '=':
 			case 'E':
@@ -280,17 +267,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				}
 				break;
 			}
-		} else if (dbtype.equals("VARSTRING_EX")) {
-			switch (operatorChar) {
-			case '=':
-			case 'E':
-				// EQUAL
-				result+="etx_contains("+fieldname+",Row('"+value+"','SEARCH_TYPE=PROX_SEARCH(5)'))";
-				break;
-			}
-
-		} else if (dbtype.equals("int")) {
-		//} else if (dbtype.equals("INTEGER")) {
+		} else if (dbtype==FieldDefs.TYPE_LONG || dbtype==FieldDefs.TYPE_INTEGER) {
 			switch (operatorChar) {
 			case '=':
 			case 'E':
@@ -648,15 +625,21 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			try {
 				MultiConnection con=mmb.getConnection();
 				PreparedStatement stmt=con.prepareStatement(values);
-				String type;int i=1;
+				int type;int i=1;
 				for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
 						key=(String)e.nextElement();
 						type=node.getDBType(key);
-						if (type.equals("int") || type.equals("integer")) {
+						if (type==FieldDefs.TYPE_INTEGER) {
 							stmt.setInt(i,node.getIntValue(key));
-						} else if (type.equals("text")) {
+						} else if (type==FieldDefs.TYPE_FLOAT) {
+							stmt.setFloat(i,node.getFloatValue(key));
+						} else if (type==FieldDefs.TYPE_DOUBLE) {
+							stmt.setDouble(i,node.getDoubleValue(key));
+						} else if (type==FieldDefs.TYPE_LONG) {
+							stmt.setLong(i,node.getLongValue(key));
+						} else if (type==FieldDefs.TYPE_TEXT) {
 							setDBText(i,stmt,node.getStringValue(key));
-						} else if (type.equals("byte")) {
+						} else if (type==FieldDefs.TYPE_BYTE) {
 							setDBByte(i,stmt,node.getByteValue(key));
 						} else {
 							stmt.setString(i,node.getStringValue(key));
@@ -817,17 +800,23 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
 		throws SQLException
 	{
-		String type = node.getDBType(key);
-		if (type.equals("int") || type.equals("integer")) {
+		int type = node.getDBType(key);
+		if (type==FieldDefs.TYPE_INTEGER) {
 			stmt.setInt(i, node.getIntValue(key));
-		} else if (type.equals("text") || type.equals("clob")) {
+		} else if (type==FieldDefs.TYPE_FLOAT) {
+			stmt.setFloat(i, node.getFloatValue(key));
+		} else if (type==FieldDefs.TYPE_DOUBLE) {
+			stmt.setDouble(i, node.getDoubleValue(key));
+		} else if (type==FieldDefs.TYPE_LONG) {
+			stmt.setLong(i, node.getLongValue(key));
+		} else if (type==FieldDefs.TYPE_TEXT) {
 			String tmp=node.getStringValue(key);
 			if (tmp!=null) {
 				setDBText(i, stmt,tmp);
 			} else {
 				setDBText(i, stmt,"");
 			}
-		} else if (type.equals("byte")) {	
+		} else if (type==FieldDefs.TYPE_BYTE) {	
 				setDBByte(i, stmt, node.getByteValue(key));
 		} else { 
 			String tmp=node.getStringValue(key);
@@ -922,7 +911,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 		result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
 
-			 System.out.println("XMLCREATE="+result);
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -943,7 +931,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner varchar(12) not null);");
+			stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner VARCHAr(12) not null);");
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
@@ -956,41 +944,16 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	public String convertXMLType(FieldDefs def) {
 		
 		// get the wanted mmbase type
-		String type=def.getDBType();
+		int type=def.getDBType();
 		// get the wanted mmbase type
 		String name=def.getDBName();
 
-		System.out.println("TYPE convertXML="+name+" t="+type);
-		// weird extra code to map to old types, needs to be done
-		// better, will do that soon once all types are clear (daniel).
-		if (type.equals("varchar")) {
-			type="VARCHAR";
-		} else
-		if (type.equals("int")) {
-			type="INTEGER";
-		} else
-		if (type.equals("real")) {
-			type="REAL";
-		} else
-		if (type.equals("double")) {
-			type="DOUBLE";
-		} else
-		if (type.equals("blob")) {
-			type="BYTE";
-		} else
-		if (type.equals("byte")) {
-			type="BYTE";
-		}
-		// end of weird map
-	
 		// get the wanted size
 		int size=def.getDBSize();
 
 		// get the wanted notnull
 		boolean notnull=def.getDBNotNull();
 		if (name.equals("otype")) { 
-			//notnull=true;
-			//type="INTEGER";
 			return("otype integer "+parser.getNotNullScheme());
 		} else {
 			if (disallowed2allowed.containsKey(name)) {
@@ -1003,10 +966,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}	
 
 	
-	String matchType(String type, int size, boolean notnull) {
+	String matchType(int type, int size, boolean notnull) {
 		String result=null;
 		if (typeMapping!=null) {
-			dTypeInfos  typs=(dTypeInfos)typeMapping.get(type);
+			dTypeInfos  typs=(dTypeInfos)typeMapping.get(new Integer(type));
 			if (typs!=null) {
 				for (Enumeration e=typs.maps.elements();e.hasMoreElements();) {
 					 dTypeInfo typ = (dTypeInfo)e.nextElement();

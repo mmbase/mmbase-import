@@ -256,7 +256,7 @@ public class MMBaseMultiCast implements Runnable {
 			value=value.substring(0,value.indexOf(endtoken));
 
 			// set the node
-			String dbtype=node.getDBType(key);
+			int dbtype=node.getDBType(key);
 			if (!key.equals("number") && !key.equals("otype") && !key.equals("owner"))
 				node.setValue( key, dbtype, value );
 

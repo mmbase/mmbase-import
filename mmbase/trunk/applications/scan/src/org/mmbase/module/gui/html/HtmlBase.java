@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.24 2000-07-14 05:41:07 daniel Exp $
+	$Id: HtmlBase.java,v 1.25 2000-07-15 10:11:19 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.24  2000/07/14 05:41:07  daniel
+	removed fieldDef dep. for getField
+	
 	Revision 1.23  2000/06/28 10:48:07  daniel
 	Daniel.. removed ref to FieldDef
 	
@@ -101,7 +104,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.24 2000-07-14 05:41:07 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.25 2000-07-15 10:11:19 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -836,6 +839,7 @@ public class HtmlBase extends ProcessorModule {
 		Enumeration e,f;
 		boolean reload=getReload(sp,tagger);
 
+		System.out.println("WWW10");
 		Vector type=tagger.Values("TYPE");
 		if ((type==null) || (type.size()==0)) throw new MultiLevelParseException("No TYPE specified");
 		Vector dbsort=tagger.Values("DBSORT");
@@ -874,12 +878,14 @@ public class HtmlBase extends ProcessorModule {
 				dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
 			}
 			nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir);
+			System.out.println("WWW11="+nodes.toString());
 			results=new Vector();
 			for (e=nodes.elements();e.hasMoreElements();) {
 				node=(MMObjectNode)e.nextElement();
 				for (f=fields.elements();f.hasMoreElements();) {
 					// hack hack this is way silly, StringTagger needs to be fixed
 					fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
+					System.out.println("FF="+fieldname);
 					if (fieldname.indexOf('(')>=0) {
 						result=""+node.getValue(fieldname);
 					} else {

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.11 2000-07-12 13:29:05 daniel Exp $
+$Id: FieldDefs.java,v 1.12 2000-07-15 09:47:26 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/07/12 13:29:05  daniel
+Daniel added isKey to FieldDefs
+
 Revision 1.10  2000/06/28 14:44:58  daniel
 Daniel.. added method to get all GUINames
 
@@ -50,7 +53,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.11 $ $Date: 2000-07-12 13:29:05 $
+ * @$Revision: 1.12 $ $Date: 2000-07-15 09:47:26 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -58,13 +61,22 @@ public class FieldDefs  {
 	public final static int DBSTATE_SYSTEM = 3;
 	public final static int DBSTATE_UNKNOWN = -1;
 
+
+	public final static int TYPE_STRING = 1;
+	public final static int TYPE_INTEGER = 2;
+	public final static int TYPE_TEXT = 3;
+	public final static int TYPE_BYTE = 4;
+	public final static int TYPE_FLOAT = 5;
+	public final static int TYPE_DOUBLE = 6;
+	public final static int TYPE_LONG = 7;
+
 	private String GUIName; 
 	public Hashtable GUINames = new Hashtable(); 
 	public String GUIType; 
 	public int	  GUISearch; 
 	public int    GUIList; 
 	public String DBName;
-	public String DBType;
+	public int DBType;
 	public int	  GUIPos;
 	public int	  DBState=-1;
 	public boolean	  DBNotNull=false;
@@ -77,7 +89,7 @@ public class FieldDefs  {
 	public FieldDefs() {
 	}
 
-	public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName, String DBType) {
+	public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName, int DBType) {
 		this.GUIName=GUIName;
 		this.GUIType=GUIType;
 		this.GUISearch=GUISearch;
@@ -89,7 +101,7 @@ public class FieldDefs  {
 	}
 
 
-	public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName, String DBType, int GUIPos, int DBState) {
+	public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName, int DBType, int GUIPos, int DBState) {
 		this.GUIName=GUIName;
 		this.GUIType=GUIType;
 		this.GUISearch=GUISearch;
@@ -128,7 +140,7 @@ public class FieldDefs  {
 		return (DBName);
 	}
 
-	public String getDBType() {
+	public int getDBType() {
 		return (DBType);
 	}
 
