@@ -12,7 +12,7 @@
 
     <FONT FACE="Arial,Helvetica">
 
-            <FORM METHOD="POST" ACTION="/mmeditors/Content.shtml?$PARAM3" TARGET="Content">
+            <FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml?$PARAM3" TARGET="Content">
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
                 <INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 
@@ -67,7 +67,7 @@
 				<ELSE>
 					<INPUT SIZE=45 NAME="PRC-CMD-STATE-SETHTMLVALUE-stoptime" VALUE="[MAAK LEEG OF VUL '-1' OM TIJD TE VERWIJDEREN, OF VUL TIJD IN]" TYPE=TEXT><BR>
 				</IF>
-				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> Ok
+				<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> Ok
 			</FORM>
 		</TD>
 	</TR>

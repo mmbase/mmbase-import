@@ -1,7 +1,10 @@
 <!--
-$Id: newfile.shtml,v 1.2 2000-08-16 09:47:21 case Exp $
+$Id: newfile.shtml,v 1.3 2002-05-14 16:25:04 eduard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/08/16 09:47:21  case
+cjr: hm. I seem to have forgotten to commit this when committing attachment code
+
 -->
 <HTML>
 <HEAD>
@@ -11,7 +14,7 @@ $Log: not supported by cvs2svn $
 <CENTER>
 <SECURE>
 
-<FORM METHOD="POST" ACTION="/mmeditors/Content.shtml?$PARAM3" TARGET="Content" ENCTYPE="multipart/form-data">
+<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml?$PARAM3" TARGET="Content" ENCTYPE="multipart/form-data">
 <CENTER>
 <P><TABLE BORDER=0 CELLSPACING=4 CELLPADDING=4>
    <TR>

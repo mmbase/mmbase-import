@@ -23,14 +23,14 @@
 		<TD>
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
-			<FORM METHOD="POST" ACTION="/mmeditors/Editor.shtml" TARGET="_top">
+			<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Editor.shtml" TARGET="_top">
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
 				<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 				<SELECT NAME="PRC-CMD-STATE-REMOVERELATION">
 				<OPTION VALUE="YES">Yes
 				<OPTION VALUE="NO" SELECTED>No
 				</SELECT><BR>
-				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> Ok
+				<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> Ok
 			</FORM>
 		</TD>
 	</TR>

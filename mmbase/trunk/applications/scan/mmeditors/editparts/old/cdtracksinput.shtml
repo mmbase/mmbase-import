@@ -23,7 +23,7 @@
 		<TD>
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
-			<FORM METHOD="POST" ACTION="/mmeditors/Content.shtml" TARGET="Content">
+			<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml" TARGET="Content">
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
 				<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 				<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">
@@ -68,9 +68,9 @@
 		<TD>
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
-			<FORM METHOD="POST" ACTION="/mmeditors/Content.shtml" TARGET="Content">
+			<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/Content.shtml" TARGET="Content">
 				<MACRO SELECT PRC-CMD-EDIT-SETFIELDVALUE-$PARAM1 "RANGE-0-25-1" PROCESSOR="INFO" SELECTED="$MOD-MMEDIT-EDIT-GETFIELDVALUE-$PARAM1^" PROC><BR>
-				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> Ok
+				<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> Ok
 			</FORM>
 		</TD>
 	</TR>

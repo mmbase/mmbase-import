@@ -6,7 +6,7 @@
 <!--
 function jumpPage(form) {
 	i = form.SelectMenu.options[form.SelectMenu.selectedIndex];
-	location.href = "/mmeditors/editparts/cdtracksinput.shtml?$PARAM1+$PARAM2+"+i.value;
+	location.href = "$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts/cdtracksinput.shtml?$PARAM1+$PARAM2+"+i.value;
 }
 // -->
 </SCRIPT>
@@ -79,7 +79,7 @@ function jumpPage(form) {
 		<TD>
 			<CENTER>
 			<FONT FACE="Arial,Helvetica">
-			<FORM METHOD="POST" ACTION="/mmeditors/editparts/cdtracksinput2.shtml?$PARAM3+$MOD-INFO-USER-NAME^" TARGET="Content">
+			<FORM METHOD="POST" ACTION="$MOD-INFO-SERVERCONTEXT^/mmeditors/editparts/cdtracksinput2.shtml?$PARAM3+$MOD-INFO-USER-NAME^" TARGET="Content">
                 <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="MMEDIT">
 				<INPUT TYPE="HIDDEN" NAME="SECURE" VALUE="Basic">
 				<INPUT TYPE="HIDDEN" NAME="PRC-CMD-STATE-NEXTFIELD" VALUE="$PARAM1">
@@ -90,7 +90,7 @@ function jumpPage(form) {
 				<OPTION VALUE="$ITEM1">$ITEM1 - $ITEM2 ($ITEM3 Sec.)
 				</LIST>
 				</SELECT>
-				<INPUT TYPE="IMAGE" SRC="/mmeditors/beeld/rood.gif"> Ok
+				<INPUT TYPE="IMAGE" SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/beeld/rood.gif"> Ok
 				</IF>
 			</FORM>
 		</TD>
