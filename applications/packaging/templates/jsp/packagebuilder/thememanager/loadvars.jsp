@@ -41,16 +41,20 @@
 
 <%-- use defaults if the thememanger has been installed but the jar isn't loaded --%>
 <mm:compare referid="thememanager" value="false">
-  <mm:import id="style_default">css/mmbase-dev.css</mm:import>
+  <mm:import id="style_default">css/default.css</mm:import>
   <mm:import id="image_arrowright">images/arrow-right.gif</mm:import>
   <mm:import id="image_arrowleft">images/arrow-left.gif</mm:import>
+  <mm:import id="image_warning">images/warning.png</mm:import>
+  <mm:import id="image_error">images/error.png</mm:import>
 </mm:compare>
 
 </mm:present>
 
 <%-- if thememanager hasn't been installed use defaults --%>      
 <mm:present referid="thememanager" inverse="true">
-  <mm:import id="style_default">css/mmbase-dev.css</mm:import>
+  <mm:import id="style_default">css/default.css</mm:import>
   <mm:import id="image_arrowright">images/arrow-right.gif</mm:import>
   <mm:import id="image_arrowleft">images/arrow-left.gif</mm:import>
+  <mm:import id="image_warning">images/warning.png</mm:import>
+  <mm:import id="image_error">images/error.png</mm:import>
 </mm:present>
