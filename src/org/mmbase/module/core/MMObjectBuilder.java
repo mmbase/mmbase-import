@@ -1758,7 +1758,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * get all builder properties
      */
-    protected Hashtable getInitParameters() {
+    public Hashtable getInitParameters() {
         return(properties);
     }
 
