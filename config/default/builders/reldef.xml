@@ -260,6 +260,33 @@ a key/value system. Its a optional tag.
 		</db>
 	</field>
 
+    <!-- POS 8 : <field> 'builder' -->
+    <field>
+        <!-- gui related -->
+        <gui>
+            <guiname xml:lang="nl">Builder</guiname>
+            <guiname xml:lang="en">Builder</guiname>
+            <guiname xml:lang="us">Builder</guiname>
+            <guitype>reltypes</guitype>
+        </gui>
+        <!-- editor related -->
+        <editor>
+            <positions>
+                <!-- position in the input area of the editor -->
+                <input>6</input>
+                <!-- position in list area of the editor -->
+                <list>6</list>
+                <!-- position in search area of the editor -->
+                <search>6</search>
+            </positions>
+        </editor>
+        <!-- database related -->
+        <db>
+            <!-- name of the field in the database -->
+            <name>builder</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" notnull="true" key="false">INTEGER</type>
+        </db>
+    </field>
 </fieldlist>
-
 </builder>
