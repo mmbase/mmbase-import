@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.38 $ $Date: 2002-09-20 13:34:11 $
+ * @version $Revision: 1.39 $ $Date: 2002-10-03 14:46:24 $
  */
 public abstract class Module {
 
     static private Logger log = Logging.getLoggerInstance(Module.class.getName());
-    static Hashtable modules;
+    static Map modules;
     static String mmbaseconfig;
     static ModuleProbe mprobe;
 
@@ -301,11 +301,11 @@ public abstract class Module {
 
     public static synchronized final void startModules() {
         // call the onload to get properties
-        if( log.isDebugEnabled()) {
-            log.debug("startModules(): onloading modules(" + modules + ")");
-        }
-        for (Enumeration e=modules.elements();e.hasMoreElements();) {
-            Module mod=(Module)e.nextElement();
+        log.service("Starting modules " + modules.keySet());
+
+    
+        for (Iterator i = modules.values().iterator(); i.hasNext();) {
+            Module mod = (Module)i.next();
             if( log.isDebugEnabled() ) {
                 log.debug("startModules(): modules.onload(" + mod + ")");
             }
@@ -320,8 +320,8 @@ public abstract class Module {
         if (log.isDebugEnabled()) {
             log.debug("startModules(): init the modules(" + modules + ")");
         }
-        for (Enumeration e=modules.elements();e.hasMoreElements();) {
-            Module mod = (Module) e.nextElement();
+        for (Iterator i = modules.values().iterator(); i.hasNext();) {
+            Module mod = (Module) i.next();
             log.info("Starting module " + mod.getName());
             if ( log.isDebugEnabled()) {
                 log.debug("startModules(): mod.startModule(" + mod + ")");
@@ -363,9 +363,10 @@ public abstract class Module {
      *      module does not exist or is inactive.
      */
     synchronized public static Object getModule(String name, boolean startOnLoad) {
-        // are the modules loaded yet ? if not load them
-        if (modules==null) {
-            modules=loadModulesFromDisk();
+        // are the modules loaded yet ? if not load them       
+        if (modules == null) {
+            log.service("Loading MMBase modules...");
+            modules = loadModulesFromDisk();
             if (log.isDebugEnabled()) {
                 log.debug("getModule(" + name + "): Modules not loaded, loading them..");
             }
