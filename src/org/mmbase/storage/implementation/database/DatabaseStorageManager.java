@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.18 2003-09-08 17:06:13 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.19 2003-09-09 13:14:22 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1039,6 +1039,7 @@ public class DatabaseStorageManager implements StorageManager {
         } finally {
             releaseActiveConnection();
         }
+        verify(builder);
     }
 
     /**
