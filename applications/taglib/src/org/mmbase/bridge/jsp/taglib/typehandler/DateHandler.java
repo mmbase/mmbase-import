@@ -14,6 +14,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.16 2004-05-13 14:04:06 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.17 2004-05-26 21:58:21 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -367,6 +368,32 @@ public class DateHandler extends AbstractTypeHandler {
         return con;
 
     }
+
+    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+        String fieldName = field.getName();
+        String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
+        if (operator == null || operator.equals("no")) {
+            return;
+        }
+        handler.addParameter(prefix(fieldName + "_search"), operator);
+
+        String options = tag.getOptions();
+        if (options == null || options.indexOf("time") > -1) {
+            String hour    = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hour"));
+            String minute  = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minute"));
+            String  second = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_second"));
+            handler.addParameter(prefix(fieldName + "_hour"), hour);
+            handler.addParameter(prefix(fieldName + "_minute"), minute);
+            handler.addParameter(prefix(fieldName + "_second"), second);
+        }
+        String day    =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_day"));
+        String month  =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_month"));
+        String year   =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_year"));
+        handler.addParameter(prefix(fieldName + "_day"), day);
+        handler.addParameter(prefix(fieldName + "_month"), month);
+        handler.addParameter(prefix(fieldName + "_year"), year);
+    }
+
 
 
 }

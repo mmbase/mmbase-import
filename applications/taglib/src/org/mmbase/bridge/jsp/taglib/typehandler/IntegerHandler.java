@@ -16,6 +16,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.21 2004-01-19 17:22:09 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.22 2004-05-26 21:58:21 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -245,6 +246,16 @@ public class IntegerHandler extends AbstractTypeHandler {
         }
 
     }
+
+    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+        String guiType = field.getGUIType();      
+        if (guiType.equals("eventtime")) {
+            dateHandler.paramHtmlInput(handler, field);
+        } else {
+            super.paramHtmlInput(handler, field);
+        }
+    }
+
 
     private class IntegerDateHandler extends DateHandler {
         public IntegerDateHandler(FieldInfoTag tag) {
