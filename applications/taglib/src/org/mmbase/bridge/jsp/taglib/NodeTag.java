@@ -34,8 +34,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private String number    = null;
     private String type      = null;
     private String element   = null;
-    private String contextid = null;
-    private boolean unregistered = false;
 
     /**
      * Release all allocated resources.
@@ -46,43 +44,14 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         number = null;
         type = null ;
         element = null;
-        contextid = null;
-        node = null;	   
     }
 
-    public void setId(String iid) {
-        log.debug("setting id of node to " + iid);
-        super.setId(iid);
-    }
     
     public void setNumber(String number) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("setting number to " + number);
         }
-        node = null;
         this.number = getAttributeValue(number);
-    }
-
-
-    public void setReferid(String r) throws JspTagException{
-        unregistered = false;
-        super.setReferid(r);
-        node = null;
-        // try to find if already in context.
-        log.debug("looking up Node with " + referid + " in context");
-        Object n = getContextTag().getObject(referid);
-        log.debug("found: " + n);
-        if (n instanceof Node) {
-            log.debug("found a Node in Context");
-            node = (Node) n;
-        } else if (n instanceof String) {
-            log.debug("found a Node Number in Context");
-            setNumber((String)n);
-            getContextTag().unRegister(referid); // it will be reregistered, as a real node
-            unregistered = true;
-        } else {
-            throw new JspTagException("Element " + referid + " from context " + contextid + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
-        }
     }
 
 
@@ -90,15 +59,33 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
      * The element attribute is used to access elements of
      * clusternodes.
      */
-    public void setElement(String e) {
-        node = null;
-        element = e;
+    public void setElement(String e) throws JspTagException {
+        element = getAttributeValue(e);
     }
 
 
     public int doStartTag() throws JspTagException{
+        node = null;
+        if (referid != null) {
+            // try to find if already in context.
+            log.debug("looking up Node with " + referid + " in context");
+            Object n = getContextTag().getObject(referid);
+            log.debug("found: " + n);
+            if (n instanceof Node) {
+                log.debug("found a Node in Context");
+                node = (Node) n;
+            } else if (n instanceof String) {
+                log.debug("found a Node Number in Context");
+                setNumber((String)n);
+                getContextTag().unRegister(referid); // it will  reregistered, as a real node
+                if (id == null) {
+                    id = referid; // must be reregistered as a node with same id as it had.
+                }                
+            } else {
+                throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
+            }
+        }
 
-        if (unregistered && id == null) id = referid; // must be reregistered as a node with same id as it had.
         if (node == null) {
             log.debug("node is null");
             if (number != null) {
