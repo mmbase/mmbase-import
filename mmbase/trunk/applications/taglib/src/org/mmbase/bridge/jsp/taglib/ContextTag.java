@@ -43,6 +43,7 @@ import org.mmbase.util.logging.Logging;
 */
 public class ContextTag extends CloudReferrerTag implements CloudProvider {
 
+    private static final int TYPE_PARENT         = -10; // uses parent Contex, if there is one.
     private static final int TYPE_HASHMAP        = 0;
     private static final int TYPE_PARAMETERS     = 10;
     private static final int TYPE_POSTPARAMETERS = 20;
@@ -53,7 +54,10 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
     private HashMap hashMap = new HashMap(); 
     // this hashmap can always be useful, also if the context is not TYPE_HASHMAP
 
-    private int type = TYPE_HASHMAP;
+    private int type = TYPE_PARENT;
+
+    private CloudProvider parent = null;
+    private boolean searchedParent = false;
 
     private HttpPost poster = null;
     private HttpServletRequest httpRequest = null;
@@ -73,14 +77,30 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         return poster;
     }
 
+    private CloudProvider getParentCloudProvider() {
+        if (! searchedParent) {
+            try {
+                parent = findCloudProvider();
+            } catch (JspTagException e) {
+                // ok. No parent CloudProvider. No problem.
+                // use the hashmap.
+                parent = null;
+            }
+            searchedParent = true;
+        }
+        return parent;
+    }
+
     public void setType(String s) throws JspTagException {
-        if ("hashmap".equals(s)) {
+        if ("parent".equalsIgnoreCase(s)) {
+            type = TYPE_PARENT;
+        } else if ("hashmap".equalsIgnoreCase(s)) {
             type = TYPE_HASHMAP;
-        } else if ("session".equals(s)) {
+        } else if ("session".equalsIgnoreCase(s)) {
             type = TYPE_SESSION;
-        } else if ("parameters".equals(s)) {
+        } else if ("parameters".equalsIgnoreCase(s)) {
             type = TYPE_PARAMETERS;
-        } else if ("postparameters".equals(s)) {
+        } else if ("postparameters".equalsIgnoreCase(s)) {
             type = TYPE_POSTPARAMETERS;
         } else {
             throw new JspTagException("Unknown context-type " + s);
@@ -104,16 +124,39 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
      */
 
     public void register(String key, Object n) {
+        if (log.isDebugEnabled()) {
+            log.trace("registering " + n + " under " + key);
+        }
         switch (type) {
         case TYPE_SESSION:
             getHttpRequest().getSession().setAttribute(key, n);
             break;
         case TYPE_PARAMETERS:
         case TYPE_POSTPARAMETERS:
+        case TYPE_PARENT:
+            if (getParentCloudProvider() != null) {
+                parent.register(key, n);
+                break;
+            }
         case TYPE_HASHMAP:
-        default:
             hashMap.put(key, n);
-            break;            
+            break;        
+        }
+    }
+
+    public void unRegister(String key) {
+        switch(type) {
+        case TYPE_SESSION:            
+            getHttpRequest().getSession().removeAttribute(key);
+            break;
+        case TYPE_PARENT:
+            if (getParentCloudProvider() != null) {
+                parent.unRegister(key);
+                break;
+            }
+        case TYPE_HASHMAP:
+            hashMap.remove(key);
+            break;
         }
     }
 
@@ -122,6 +165,9 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
     }
     
     public Object getObject(String key) throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.trace("getting object " + key);
+        }
         Object result;
         switch (type) {
         case TYPE_SESSION:
@@ -133,7 +179,14 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
         case TYPE_PARAMETERS:
             result = pageContext.getRequest().getParameter(key);
             if (result != null) break;
+        case TYPE_PARENT:
+            if (getParentCloudProvider() != null) {
+                result = parent.getObject(key);
+                break;
+            }
         case TYPE_HASHMAP:
+            result = hashMap.get(key);
+            break;
         default:
             result = null;
         }
@@ -142,6 +195,11 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
 
     public byte[] getBytes(String key) throws JspTagException {
         switch (type) {
+        case TYPE_PARENT:
+            if (getParentCloudProvider() != null) {
+                return parent.getBytes(key);
+            }
+        case TYPE_SESSION:
         case TYPE_POSTPARAMETERS:
             try {
                 return getPoster().getPostParameterBytes(key);
@@ -170,9 +228,13 @@ public class ContextTag extends CloudReferrerTag implements CloudProvider {
                 n = getCloudProviderVar().getNode(pageContext.getRequest().getParameter(key));
                 break;
             } // else also try with hashmap:
+        case TYPE_PARENT:
+            if (getParentCloudProvider() != null) {
+                return parent.getNode(key);
+            }
         case TYPE_HASHMAP:
         default:
-            n = (Node) hashMap.get(id);
+            n = (Node) hashMap.get(key);
         }
         if (n == null) {
             throw new JspTagException("No node with key " + key + " was registered");
