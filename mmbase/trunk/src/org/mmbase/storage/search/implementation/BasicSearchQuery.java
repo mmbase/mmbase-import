@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery {
@@ -258,7 +258,9 @@ public class BasicSearchQuery implements SearchQuery {
                 && steps.equals(query.getSteps())
                 && fields.equals(query.getFields())
                 && sortOrders.equals(query.getSortOrders())
-                && constraint.equals(query.getConstraint());
+                && (constraint == null?
+                    query.getConstraint() == null:
+                    constraint.equals(query.getConstraint()));
         } else {
             return false;
         }
