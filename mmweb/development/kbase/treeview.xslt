@@ -15,7 +15,7 @@
 -->
 	
 	<!-- Change the encoding here if you need it, i.e. UTF-8 -->
-	<xsl:output method="html" encoding="iso-8859-1" indent="yes"/>
+	<xsl:output method="html" encoding="utf-8" indent="yes"/>
 	
 	<!-- ************************************ Parameters ************************************ -->
 	<!-- deploy-treeview, boolean - true if you want to deploy the tree-view at the first print -->
@@ -28,7 +28,10 @@
 	<xsl:param name="param-shift-width" select="15"/>
 	
 	<!-- image source directory-->
-	<xsl:param name="param-img-directory" select="'img/'"/>
+
+	<xsl:param name="param-img-directory" select="//param[@name='img-directory']/@value"/>
+
+
 	
 	<!-- ************************************ Variables ************************************ -->
 	<xsl:variable name="var-simple-quote">'</xsl:variable>
