@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.81 2004-01-14 11:44:08 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.82 2004-02-19 17:34:47 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -753,6 +753,7 @@ public class MMAdmin extends ProcessorModule {
                                 syncnode.setValue("localnumber", localnumber);
                                 syncnode.insert("import");
 
+                                log.debug("inserting " + newNode);
                                 if (localnumber == newNode.getNumber()) {
                                     // && (newNode.parent instanceof Message)) { terrible stuff
 
@@ -1569,15 +1570,22 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name = aname;
                     String sname = name.substring(0, name.length() - 4);
-                    XMLModuleReader app = new XMLModuleReader(path + aname);
-                    results.addElement(sname);
+                    XMLModuleReader app =  null;
 
+                    try {
+                        app = new XMLModuleReader(path + aname);
+                    } catch (Throwable t) {
+                        log.error("Could not load module with xml '" + path + aname + "': " + t.getMessage());
+                        continue;
+                    }
+                    results.addElement(sname);
+                    
                     results.addElement("" + app.getModuleVersion());
                     String status = app.getStatus();
                     if (status.equals("active")) {
                         results.addElement("yes");
                     } else {
-                        results.addElement("no");
+                            results.addElement("no");
                     }
                     results.addElement(app.getModuleMaintainer());
                 }
