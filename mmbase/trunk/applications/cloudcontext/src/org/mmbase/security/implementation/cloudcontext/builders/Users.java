@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.30 2004-08-10 10:41:09 keesj Exp $
+ * @version $Id: Users.java,v 1.31 2004-09-07 13:59:51 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -47,7 +47,7 @@ public class Users extends MMObjectBuilder {
     public final static String FIELD_VALID_TO      = "validto";
     public final static String FIELD_LAST_LOGON    = "lastlogon";
 
-    public final static long VALID_TO_DEFAULT      = 4102441200L; // 1-1-2100
+    public final static long VALID_TO_DEFAULT      = 4102441200L; // 2100-1-1
 
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
@@ -57,22 +57,18 @@ public class Users extends MMObjectBuilder {
 
     protected static Cache rankCache = new Cache(20) {
             public String getName()        { return "CCS:SecurityRank"; }
-            public String getDescription() { return "Caches the rank of users"; }
+            public String getDescription() { return "Caches the rank of users. User node --> Rank"; }
         };
 
     protected static Cache userCache = new Cache(20) {
             public String getName()        { return "CCS:SecurityUser"; }
-            public String getDescription() { return "Caches the users"; }
+            public String getDescription() { return "Caches the users. UserName --> User Node"; }
         };
 
     // javadoc inherited
     public boolean init() {
-        rankCache.putCache();
-		userCache.putCache();
-        CacheInvalidator.getInstance().addCache(rankCache);
-        CacheInvalidator.getInstance().addCache(userCache);
-        mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
-        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
+        rankCache.putCache(); 
+        userCache.putCache();
 
         // MM: I think this is should not be configured.
         String s = (String)getInitParameters().get("encoding");
@@ -333,34 +329,43 @@ public class Users extends MMObjectBuilder {
      * @javadoc
      */
     public boolean isValid(MMObjectNode node)  {
-        return true;
-        /*
-        if (node == null) { // if this is the case in the previous line you would have had a nullpointerexception.
-            log.debug("node was null!");
-            return false;
+        boolean valid = true;
+        long time = System.currentTimeMillis() / 1000;
+        if (getField(FIELD_VALID_FROM) != null) {
+            if (node.getLongValue(FIELD_VALID_FROM) > time) {
+                valid = false;
+            }
         }
-        log.debug("original node #" + mmobjectnode.getNumber() + ": " + mmobjectnode.hashCode() + " current node #" + mmobjectnode1.getNumber() + " : " + mmobjectnode1.hashCode());
-
-
-        if (mmobjectnode1 == mmobjectnode) {
-            return true;
-        } else {
-            log.debug("hashcode's were different, comparing the number fields");
-            return mmobjectnode.getNumber() == mmobjectnode1.getNumber();
-       }
-        */
+        if (getField(FIELD_VALID_TO) != null) {
+            if (node.getLongValue(FIELD_VALID_TO) < time) {
+                valid = false;
+            }
+        }
+        if (node.getIntValue(FIELD_STATUS) < 0) {
+            valid = false;
+        }
+        if (! valid) {
+            invalidateCaches(node.getNumber());
+        }
+        return valid;
     }
 
     /**
      * Makes sure unique values and not-null's are filed
      */
     public void setDefaults(MMObjectNode node) {
+        log.info("Setting defaults");
         MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
         node.setValue(FIELD_DEFAULTCONTEXT, defaultDefaultContext);
         node.setValue(FIELD_PASSWORD, "");
-        setUniqueValue(node, FIELD_USERNAME, "user");
+        node.setValue(FIELD_STATUS, 0);
+        String currentUserName = node.getStringValue(FIELD_USERNAME);
+        if (currentUserName.equals("")) {
+            currentUserName = "user";
+        }
+        setUniqueValue(node, FIELD_USERNAME, currentUserName);
         if (getField(FIELD_VALID_FROM) != null) {
-            node.setValue(FIELD_VALID_FROM,System.currentTimeMillis()/1000);
+            node.setValue(FIELD_VALID_FROM, System.currentTimeMillis()/1000);
         }
         if (getField(FIELD_VALID_TO) != null) {
             node.setValue(FIELD_VALID_TO, VALID_TO_DEFAULT);
@@ -435,6 +440,81 @@ public class Users extends MMObjectBuilder {
         return n.getStringValue("username");
     }
 
+    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
+        nodeChanged(machine, number, builder, ctype);
+        return super.nodeLocalChanged(machine, number, builder, ctype);
+    }
+
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+        nodeChanged(machine, number, builder, ctype);
+        return super.nodeRemoteChanged(machine, number, builder, ctype);
+    }
+
+
+    protected void invalidateCaches(int nodeNumber) {
+        Iterator i = rankCache.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            MMObjectNode node = (MMObjectNode) entry.getKey();
+            if (node.getNumber() == nodeNumber) {
+                i.remove();
+            }
+        }
+        i = userCache.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            Object value = entry.getValue();
+            if (value == null) {
+                i.remove();
+            } else {
+                MMObjectNode node = (MMObjectNode) value;
+                if (node.getNumber() == nodeNumber) {
+                    i.remove();
+                }
+            }
+        }
+    }
+    
+
+    public boolean nodeChanged(String machine, String number, String builder, String ctype) {
+        if (ctype.equals("d")) {
+            int nodeNumber = Integer.parseInt(number);
+            invalidateCaches(nodeNumber);
+        } else if (ctype.equals("c")) {            
+            MMObjectNode node = getNode(number);
+
+            Map ranks = new HashMap();
+            Iterator i = rankCache.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                MMObjectNode cacheNode = (MMObjectNode) entry.getKey();
+                if (cacheNode.getNumber() == node.getNumber()) {
+                    ranks.put(node, entry.getValue());
+                    i.remove();
+                }
+            }
+            rankCache.putAll(ranks);
+
+            Map users = new HashMap();
+            i = userCache.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Object value = entry.getValue();
+                if (value == null) {
+                    i.remove();
+                } else {
+                    MMObjectNode cacheNode = (MMObjectNode) value;
+                    if (cacheNode.getNumber() == node.getNumber()) {
+                        users.put(entry.getKey(), node);
+                        i.remove();
+                    }
+                }
+            }   
+            userCache.putAll(users);
+        }
+        return true;
+        
+    }
 
 
 }
