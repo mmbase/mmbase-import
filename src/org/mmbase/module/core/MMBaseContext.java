@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.15 2001-08-16 14:59:19 pierre Exp $
+$Id: MMBaseContext.java,v 1.16 2001-09-25 15:47:26 eduard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2001/08/16 14:59:19  pierre
+pierre: fixed the check for configuration security files
+
 Revision 1.14  2001/07/24 11:04:38  jaco
 jaco: Throw a RunTimeException if a get method is called before the init method.
 
@@ -80,7 +83,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.15 $ $Date: 2001-08-16 14:59:19 $
+ * @$Revision: 1.16 $ $Date: 2001-09-25 15:47:26 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -102,8 +105,7 @@ public class MMBaseContext {
      *                           config files.
      *
      */
-    public synchronized static void init(ServletContext servletContext)
-             throws ServletException {
+    public synchronized static void init(ServletContext servletContext) throws ServletException {
         if (!initialized) {
             sx = servletContext;
             // Get the current directory using the user.dir property.
@@ -118,6 +120,11 @@ public class MMBaseContext {
             configpath = sx.getInitParameter("mmbase.config");
             if (configpath == null) {
                 configpath = System.getProperty("mmbase.config");
+            }
+            if (configpath == null) {
+	    	// desperate looking for a location.. (say we are a war file..)
+		// keeping the value 'null' will always give a failure..
+                configpath =  servletContext.getRealPath("WEB-INF/config");
             }
             try {
                 initConfigpath();
@@ -196,7 +203,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "Parameter mmbase.config is not pointing to "
-                             + "a directory.";
+                             + "a directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
@@ -204,7 +211,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "File 'security/security.xml' missing in "
-                             + "mmbase.config directory.";
+                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
@@ -213,7 +220,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "File 'accounts.properties' missing in "
-                             + "mmbase.config directory.";
+                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
@@ -222,7 +229,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "Directory 'builders' missing in "
-                             + "mmbase.config directory.";
+                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
@@ -230,7 +237,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "Directory 'modules' missing in "
-                             + "mmbase.config directory.";
+                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
@@ -238,7 +245,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "File 'modules/mmbaseroot.xml' missing in "
-                             + "mmbase.config directory.";
+                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
@@ -246,7 +253,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "File 'modules/jdbc.xml' missing in "
-                             + "mmbase.config directory.";
+                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
@@ -254,7 +261,7 @@ public class MMBaseContext {
             userdir = null;
             configpath = null;
             String message = "File 'log/log.xml' missing in "
-                             + "mmbase.config directory.";
+                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
             System.err.println(message);
             throw new Exception(message);
         }
