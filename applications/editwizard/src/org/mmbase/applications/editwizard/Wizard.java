@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.78 2003-04-16 10:06:08 pierre Exp $
+ * @version $Id: Wizard.java,v 1.79 2003-04-24 08:08:22 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -888,6 +888,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Utils.setAttribute(formstep, "form-schema", formid);
                 stepsnode.appendChild(formstep);
             }
+            // TODO: according to the dtd, schemanode should be inserted before any form-schema nodes
             schemanode.appendChild(stepsnode);
         }
     }
@@ -904,10 +905,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // field nodes
             String name      = Utils.getAttribute(singlenode, "name", null);
             String fdatapath = Utils.getAttribute(singlenode, "fdatapath", null);
-            if (name == null && fdatapath == null) {
-                fdatapath = "object/field[@name='number']";
-            }
-            if (name != null && fdatapath == null) {
+            if (fdatapath==null) {
+                if (name == null || name.equals("number")) {
+                    fdatapath = "@number";
+                    Utils.setAttribute(singlenode, "ftype", "data");
+                } else {
+                    fdatapath="field[@name='"+name+"']";
+                }
                 // normal field or a field inside a list node?
                 Node parentNode=singlenode.getParentNode();
                 String parentname = parentNode.getNodeName();
@@ -916,11 +920,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     parentname = parentNode.getParentNode().getNodeName();
                 }
                 if (parentname.equals("item")) {
-                    fdatapath = "object/field[@name='"+name+"']";
-                } else {
-                    fdatapath = "field[@name='"+name+"']";
+                    fdatapath = "object/"+fdatapath;
                 }
-
                 Utils.setAttribute(singlenode, "fdatapath", fdatapath);
             }
         } else if (nodeName.equals("list")) {
@@ -1140,7 +1141,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             String listTitle = Utils.selectSingleNodeText(fieldlist, "title", "some list");
             ((Element) form).setAttribute("invalidlist", listTitle);
         } else {
-            ((Element) newlist).setAttribute("status", "invalid");
+            ((Element) newlist).setAttribute("status", "valid");
         }
 
         log.debug("can we place an add-button?");
