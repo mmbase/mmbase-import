@@ -7,16 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Log: not supported by cvs2svn $
-Revision 1.7  2001/12/14 09:33:17  pierre
-pierre: Cleaning project:
-added @javadoc and @rename tags, and License statement where needed
-
-Revision 1.6  2000/06/20 15:21:03  wwwtech
-Davzev: added cvs comments.
-
-*/
 package org.mmbase.module;
 
 import org.mmbase.util.LRUHashtable;
@@ -29,7 +19,7 @@ import org.mmbase.util.LRUHashtable;
  * @rename CacheInterface
  * @move org.mmbase.cache
  * @author  $Author: pierre $
- * @version $Revision: 1.8 $
+ * @version $Id: cacheInterface.java,v 1.9 2003-03-10 11:50:13 pierre Exp $
  */
 public interface cacheInterface {
     /**

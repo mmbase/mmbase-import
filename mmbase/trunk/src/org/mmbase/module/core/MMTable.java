@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version 31 januari 2001
+ * @version $Id: MMTable.java,v 1.7 2003-03-10 11:50:33 pierre Exp $
  */
 public class MMTable {
 

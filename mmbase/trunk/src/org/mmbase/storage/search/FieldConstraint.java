@@ -13,7 +13,7 @@ package org.mmbase.storage.search;
  * A constraint on a stepfield.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Id: FieldConstraint.java,v 1.2 2003-03-10 11:50:46 pierre Exp $
  * @since MMBase-1.7
  */
 public interface FieldConstraint extends Constraint {

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * a way to block until the next event or notify of
  * a possible queue change.
  *
- * @version 15 May 2001
+ * @version $Id: EmailSendProbe.java,v 1.7 2003-03-10 11:50:18 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class EmailSendProbe implements Runnable {

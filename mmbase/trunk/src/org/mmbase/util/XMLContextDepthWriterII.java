@@ -41,7 +41,7 @@ import org.mmbase.module.corebuilders.*;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version 08-11-2000
+ * @version $Id: XMLContextDepthWriterII.java,v 1.8 2003-03-10 11:51:14 pierre Exp $
  */
 public class XMLContextDepthWriterII  {
 

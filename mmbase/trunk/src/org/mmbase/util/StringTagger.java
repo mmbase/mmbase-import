@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
-* @version 18 Apr 2001
+* @version $Id: StringTagger.java,v 1.12 2003-03-10 11:51:13 pierre Exp $
 */
 public class StringTagger implements Map {
 

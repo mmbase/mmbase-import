@@ -20,9 +20,9 @@ import org.w3c.dom.Element;
  * This implementation of the Field Value interface is used by getFunctionValue of Node. This
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
- * @author   Michiel Meeuwissen
- * @version  $Id: BasicFunctionValue.java,v 1.4 2002-10-15 15:28:29 pierre Exp $
- * @since    MMBase-1.6
+ * @author  Michiel Meeuwissen
+ * @version $Id: BasicFunctionValue.java,v 1.5 2003-03-10 11:50:10 pierre Exp $
+ * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
 

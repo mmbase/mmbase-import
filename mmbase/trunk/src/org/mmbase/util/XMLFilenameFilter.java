@@ -14,16 +14,10 @@ import java.io.FilenameFilter;
 
 
 /**
- * @author cjr@dds.nl
- * @version $Id: XMLFilenameFilter.java,v 1.2 2003-02-10 23:44:41 nico Exp $
- *
  * Implement a FilenameFilter for xml files
- * 
- * $Log: not supported by cvs2svn $
- * Revision 1.1  2000/08/20 10:38:27  case
- * cjr: Moved XMLFilenameFilter class outside Config module
  *
- *
+ * @author cjr@dds.nl
+ * @version $Id: XMLFilenameFilter.java,v 1.3 2003-03-10 11:51:14 pierre Exp $
  */
 public class XMLFilenameFilter implements FilenameFilter {
     public boolean accept(File directory, String name) {

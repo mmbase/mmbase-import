@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version 26 Apr 2001
+ * @version $Id: ClusterNode.java,v 1.7 2003-03-10 11:50:30 pierre Exp $
  */
 public class ClusterNode extends VirtualNode {
     /**

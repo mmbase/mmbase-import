@@ -21,8 +21,8 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @author    Case Roole, cjr@dds.nl
- * @version   $Id: BuilderReport.java,v 1.4 2002-03-15 15:29:45 pierre Exp $
+ * @author  Case Roole, cjr@dds.nl
+ * @version $Id: BuilderReport.java,v 1.5 2003-03-10 11:50:11 pierre Exp $
  */
 public class BuilderReport extends AbstractReport {
 

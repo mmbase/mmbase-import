@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Id: BasicCompositeConstraint.java,v 1.3 2003-03-10 11:50:54 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint

@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to a AND- or OR-expression in SQL SELECT-syntax. 
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Id: CompositeConstraint.java,v 1.2 2003-03-10 11:50:44 pierre Exp $
  * @since MMBase-1.7
  */
 public interface CompositeConstraint extends Constraint {

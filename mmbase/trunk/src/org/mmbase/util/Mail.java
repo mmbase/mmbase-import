@@ -16,7 +16,7 @@ import java.util.*;
  * and send it with the SendMail-module.
  *
  * @author Rob Vermeulen
- * @version 31 December 1996
+ * @version $Id: Mail.java,v 1.7 2003-03-10 11:51:08 pierre Exp $
  */
 public class Mail {
 

@@ -11,7 +11,7 @@ package org.mmbase.module.builders;
 
 /**
  * &author David V van Zeventer
- * @version 11 Dec 1998
+ * @version $Id: DrivePropsNotFoundException.java,v 1.5 2003-03-10 11:50:18 pierre Exp $
  */
 public class DrivePropsNotFoundException extends Exception {
 	public String errval;

@@ -13,7 +13,7 @@ import org.mmbase.module.core.*;
 
 /**
  * @javadoc
- * @version $Revision: 1.9 $ $Date: 2003-03-04 14:12:22 $
+ * @version $Id: Todos.java,v 1.10 2003-03-10 11:50:21 pierre Exp $
  */
 public class Todos extends MMObjectBuilder {
 

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *</ul>
  *
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: NetFileSrv.java,v 1.13 2003-03-10 11:50:20 pierre Exp $
  */
 public class NetFileSrv extends MMObjectBuilder {
 

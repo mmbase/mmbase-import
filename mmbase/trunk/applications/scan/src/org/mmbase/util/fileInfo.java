@@ -18,7 +18,7 @@ package org.mmbase.util;
  * @rename FileInfo
   * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version 10 Apr 2001
+ * @version $Id: fileInfo.java,v 1.8 2003-03-10 11:51:15 pierre Exp $
  */
 public class fileInfo {
     /**

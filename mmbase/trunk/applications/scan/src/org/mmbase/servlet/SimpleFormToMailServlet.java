@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *  and the form will be mailed.
  *
  * @author  marmaa@vpro.nl (Marcel Maatkamp) 
- * @version 2.0.1  
+ * @version $Id: SimpleFormToMailServlet.java,v 1.9 2003-03-10 11:50:40 pierre Exp $ 
  */
 public abstract class SimpleFormToMailServlet extends JamesServlet {
     static Logger log = Logging.getLoggerInstance(performance.class.getName());

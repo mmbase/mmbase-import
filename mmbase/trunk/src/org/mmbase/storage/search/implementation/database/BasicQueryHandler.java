@@ -27,7 +27,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Id: BasicQueryHandler.java,v 1.6 2003-03-10 11:50:58 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {

@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The caseSensitive property defaults to <code>true</code>.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Id: BasicFieldConstraint.java,v 1.5 2003-03-10 11:50:54 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {

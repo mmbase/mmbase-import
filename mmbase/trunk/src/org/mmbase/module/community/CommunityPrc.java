@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version 31 Jan 2001
+ * @version $Id: CommunityPrc.java,v 1.8 2003-03-10 11:50:28 pierre Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {

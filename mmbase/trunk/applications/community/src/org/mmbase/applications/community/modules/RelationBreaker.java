@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use NodeBreaker instead
  *
  * @author Dirk-Jan Hoekstra
- * @version 5 Jan 2001
+ * @version $Id: RelationBreaker.java,v 1.6 2003-03-10 11:50:29 pierre Exp $
  */
 
 public class RelationBreaker extends Thread {

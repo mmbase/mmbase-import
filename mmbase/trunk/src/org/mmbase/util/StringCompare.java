@@ -15,7 +15,7 @@ package org.mmbase.util;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version 05-Mar-1997
+ * @version $Id: StringCompare.java,v 1.5 2003-03-10 11:51:13 pierre Exp $
  */
 public class StringCompare implements CompareInterface {
 

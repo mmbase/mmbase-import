@@ -34,8 +34,8 @@ import org.mmbase.util.logging.Logging;
  * and do not add functionality that could not be performed on it's own by AudioUtils.
  * @duplicate very similar to {@link org.mmbase.util.media.video.videoparts.VideoPartDef}
  *
- * @author    vpro
- * @version   $Id: AudioPartDef.java,v 1.9 2002-11-12 16:57:57 pierre Exp $
+ * @author  vpro
+ * @version $Id: AudioPartDef.java,v 1.10 2003-03-10 11:51:16 pierre Exp $
  */
 
 public class AudioPartDef {

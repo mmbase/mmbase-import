@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 /**
- * @version 23 Dec 1998
+ * @version $Id: MMEventsProbe.java,v 1.5 2003-03-10 11:50:20 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {

@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: Urls.java,v 1.15 2003-03-10 11:50:21 pierre Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Urls.class.getName());

@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version 9 Jan 1997
+ * @version $Id: PasswordGenerator.java,v 1.6 2003-03-10 11:51:09 pierre Exp $
  */
 
 public class PasswordGenerator extends Module implements PasswordGeneratorInterface {

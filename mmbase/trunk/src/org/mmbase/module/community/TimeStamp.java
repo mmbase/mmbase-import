@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version 28 May 2001
+ * @version $Id: TimeStamp.java,v 1.6 2003-03-10 11:50:29 pierre Exp $
  */
 
 public class TimeStamp extends Date

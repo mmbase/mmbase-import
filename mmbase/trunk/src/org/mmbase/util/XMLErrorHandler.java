@@ -19,7 +19,7 @@ import org.xml.sax.SAXParseException;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.9 $ $Date: 2003-02-10 23:44:37 $
+ * @version $Id: XMLErrorHandler.java,v 1.10 2003-03-10 11:51:14 pierre Exp $
  */
 
 public class XMLErrorHandler implements ErrorHandler {

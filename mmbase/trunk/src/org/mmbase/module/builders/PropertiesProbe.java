@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version 28 Nov 1998
+ * @version $Id: PropertiesProbe.java,v 1.7 2003-03-10 11:50:20 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {

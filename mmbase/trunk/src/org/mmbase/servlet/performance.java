@@ -19,9 +19,9 @@ import org.mmbase.util.logging.*;
  * Performance Servlet is used as a basic Servlet to test whether the installation of succeeded.
  * It also does a very basic test to measure how fast the JVM is.
  *
- * @rename     Performance
- * @author     vpro
- * @version    $Id: performance.java,v 1.10 2002-06-28 08:38:05 pierre Exp $
+ * @rename  Performance
+ * @author  vpro
+ * @version $Id: performance.java,v 1.11 2003-03-10 11:50:41 pierre Exp $
  */
 public class performance extends BridgeServlet {
     // logging

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version 7-Jul-1997
+ * @version $Id: SortedVector.java,v 1.8 2003-03-10 11:51:12 pierre Exp $
  *
  * Todo: Remove duplicate code for the binary search
  */
