@@ -1,9 +1,11 @@
 all:
+	mkdir -p classes
 	javac -d classes src/nanoxml/*.java
 	javac -d classes -classpath lib/rmmci.jar src/org/mmbase/applications/bugtracker/*.java
 	javac -d classes -classpath classes src/org/mmbase/applications/config/*.java
 	javac -d classes -classpath .:$(JAVA_HOME)/lib/tools.jar:classes src/org/mmbase/applications/mmbasedoclet/*.java
 app:
+	mkdir -p docs
 	javadoc \
 		-classpath $(JAVA_HOME)/lib/tools.jar \
 		-sourcepath src \
