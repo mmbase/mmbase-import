@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.5 2004-02-24 15:41:48 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.6 2004-08-26 12:02:48 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -33,8 +33,7 @@ import org.mmbase.storage.search.*;
 
 abstract public class QueryResultCache extends Cache {
 
-    private static Logger log = Logging.getLoggerInstance(QueryResultCache.class);
-
+    private static final Logger log = Logging.getLoggerInstance(QueryResultCache.class);
 
     /**
      * Need reference to all existing these caches, to be able to invalidate them.
@@ -221,9 +220,9 @@ abstract public class QueryResultCache extends Cache {
 
         // javadoc inherited (from MMBaseObserver)
         public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-            // local changes are solved in MMObjectBuilder itself.
-            //return nodeChanged() > 0; //machine, number, builder, ctype);
-             return true;
+            // local changes are solved in MMObjectBuilder itself, but something goes wrong then (ImageCaches.getCachedNode code e.g.)
+            return nodeChanged() > 0; //machine, number, builder, ctype);
+            //return true;
 
         }
         
