@@ -34,20 +34,20 @@ public class CreateNodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class.getName());
     
-    private String type=null;
+    private String nodemanager = null;
         
-    public void setType(String t) {
-        type = t;
+    public void setNodemanager(String n) {
+        nodemanager = n;
     }
     
     
     public int doStartTag() throws JspTagException{            
         Node node;
         
-        node = getCloudProviderVar().getNodeManager(type).createNode();
+        node = getCloudProviderVar().getNodeManager(nodemanager).createNode();
         setNodeVar(node);        
         log.debug("created node " + node.getValue("gui()"));
-        return EVAL_BODY_TAG; // should perhaps give a SKIP_BODY if 'field' is given.
+        return EVAL_BODY_TAG; 
     }
     
     public void doInitBody() throws JspTagException {       
