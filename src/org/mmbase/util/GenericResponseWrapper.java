@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.3.2.9 2005-02-14 14:46:11 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.3.2.10 2005-02-21 14:40:31 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -175,8 +175,29 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         getHttpServletResponse().addCookie(c);
     }
     public void setHeader(String header, String value) {
-        getHttpServletResponse().setHeader(header,value);
+        getHttpServletResponse().setHeader(header, value);
     }
+    public void setDateHeader(String header, long value) {
+        getHttpServletResponse().setDateHeader(header, value);
+    }
+    public void setIntHeader(String header, int value) {
+        getHttpServletResponse().setIntHeader(header, value);
+    }
+
+    public void addHeader(String header, String value) {
+        getHttpServletResponse().addHeader(header, value);
+    }
+    public void addDateHeader(String header, long value) {
+        getHttpServletResponse().addDateHeader(header, value);
+    }
+    public void addIntHeader(String header, int value) {
+        getHttpServletResponse().addIntHeader(header, value);
+    }
+    public boolean containsHeader(String header) {        
+        return getHttpServletResponse().containsHeader(header);
+    }
+
+
 
 
     /**
