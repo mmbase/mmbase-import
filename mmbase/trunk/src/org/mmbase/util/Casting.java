@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.31 2004-12-23 15:56:28 pierre Exp $
+ * @version $Id: Casting.java,v 1.32 2005-01-03 20:15:40 michiel Exp $
  */
 
 import java.util.*;
@@ -160,6 +160,9 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static StringBuffer toStringBuffer(StringBuffer buffer, Object o) {
+        if (o == null || o == MMObjectNode.VALUE_NULL) {
+            return buffer;
+        }
         try {
             toWriter(new StringBufferWriter(buffer), o);
         } catch (java.io.IOException e) {}
@@ -174,39 +177,79 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static Writer toWriter(Writer writer, Object o) throws java.io.IOException {
-        if (o == null || o == MMObjectNode.VALUE_NULL || o instanceof Writer) {
+        if (o instanceof Writer) {
             return writer;
         }
-        if (o instanceof String) {
-            writer.write((String)o);
-        } else if (o instanceof byte[]) {
-            writer.write(new String((byte[])o));
-        } else if (o instanceof MMObjectNode) {
-            writer.write("" + ((MMObjectNode)o).getNumber());
-        } else if (o instanceof Node) {
-            writer.write("" + ((Node)o).getNumber());
-        } else if (o instanceof Date) {
-            if (((Date)o).getTime() != -1) { // datetime not set
-                writer.write(ISO_8601_UTC.format((Date)o));
-            }
-        } else if (o instanceof Document) {
-            // doctype unknown.
-            writer.write(convertXmlToString(null, (Document)o));
-        } else if (o instanceof List) {
-            Iterator i = ((List)o).iterator();
-            boolean hasNext = i.hasNext();
-            while (i.hasNext()) {
-                toWriter(writer, i.next());
-                    hasNext = i.hasNext();
-                if (hasNext) {
-                    writer.write(",");
-                }
-            }
-        } else {
-            writer.write("" + o);
-        }
+        Object s = wrapToString(o);
+        writer.write(s.toString());
         return writer;
+    }
+    
+    /**
+     * Does not yet really cast the object to String, but only wraps it in an object with a toString as we desire. Casting can now be done with 
+     * toString() on the resulting object.
+     *
+     * @todo  Not everything is wrapped already. 
+     * @since MMBase-1.8
+     */
 
+    public static Object wrapToString(final Object o) {
+        if (o == null || o == MMObjectNode.VALUE_NULL) {
+            return "";
+        } else if (o instanceof Node) {
+            return new org.mmbase.bridge.util.NodeWrapper((Node)o) {
+                    public String toString() {
+                        return "" + node.getNumber();
+                    }
+                };
+        } else if (o instanceof MMObjectNode) {
+            // don't know how to wrap
+            return "" + ((MMObjectNode)o).getNumber();
+        } else if (o instanceof Date) {
+            return new java.util.Date(((Date)o).getTime()) {
+                    public String toString() {
+                        if (getTime()  != -1) { // datetime not set
+                            return ISO_8601_UTC.format((Date)o);
+                        } else {
+                            return "";
+                        }
+                    }
+                };
+        } else if (o instanceof Document) {
+            // don't know how to wrap
+            return convertXmlToString(null, (Document)o);
+        } else if (o instanceof List) {
+            return new AbstractList() {
+                    private final List list = (List) o;
+                    public Object get(int index) { return list.get(index); }
+                    public int size() { return list.size(); }
+                    public Object set(int index, Object value) { return list.set(index, value); }
+                    public void add(int index, Object value) { list.add(index, value); }
+                    public Object remove(int index) { return list.remove(index); }
+                    public boolean isEmpty() 	    {return list.isEmpty();}
+                    public boolean contains(Object o)   {return list.contains(o);}
+                    public Object[] toArray() 	    {return list.toArray();}
+                    public Object[] toArray(Object[] a) {return list.toArray(a);}
+                    public Iterator iterator() { return list.iterator(); }
+                    public ListIterator listIterator() { return list.listIterator(); }
+                    public String toString() {
+                        StringBuffer buf = new StringBuffer();
+                        Iterator i = list.iterator();
+                        boolean hasNext = i.hasNext();
+                        while (i.hasNext()) {
+                            buf.append(i.next());
+                            hasNext = i.hasNext();
+                            if (hasNext) {
+                                buf.append(',');
+                            }
+                        }
+                        return buf.toString();
+                    }
+                };
+        } else {
+            return o;
+        }
+        
     }
 
     /**
