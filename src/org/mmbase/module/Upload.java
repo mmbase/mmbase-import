@@ -53,7 +53,13 @@ public class Upload extends ProcessorModule {
 		try {
 			bytes = sp.poster.getPostParameterBytes("file");
 		} catch (Exception e) {
-			log.warn("Upload module postValue to large");
+			log.error("Upload module postValue to large");
+			return false;
+		}
+
+		if (sp.poster.getPostParameter("file_name") == null) {
+	    	log.error("no filename ");
+			return false;
 		}
 
 		log.debug("Upload module is storing "+filename);
