@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.17 2002-07-19 18:16:35 michiel Exp $
+    @version  $Id: index.jsp,v 1.18 2002-07-22 16:17:37 michiel Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -37,7 +37,7 @@
 <body>
    <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->
   <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
-  <mm:import id="templates">/templates</mm:import>
+  <mm:import id="templates">/templates</mm:import><!-- unused now -->
   <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
         <h1>Editwizard Examples</h1>
   <p>
@@ -66,7 +66,7 @@
 
   <table>    
    <tr><td>          
-        <a href="<mm:url referids="referrer,templates" page="${jsps}list.jsp">           
+        <a href="<mm:url referids="referrer" page="${jsps}list.jsp">           
            <mm:param name="wizard">tasks/people</mm:param>
            <mm:param name="nodepath">people</mm:param>
            <mm:param name="fields">number,firstname,lastname</mm:param>
