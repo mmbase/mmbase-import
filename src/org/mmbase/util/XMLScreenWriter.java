@@ -26,37 +26,22 @@ import org.mmbase.util.logging.*;
  * @author Cees Roele
  * @version 19 Apr 2001
  */
-public class XMLScreenWriter  {
+public class XMLScreenWriter extends XMLBasicReader {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(XMLScreenWriter.class.getName());
-    Document document;
-    DOMParser parser;
 
     static String tag_color = "#007700";
     static String attribute_color = "#DD0000";
     static String comment_color = "#FF8000";
     static String doctype_color = "#6666CC";
 
-
     public XMLScreenWriter(String filename) {
-        try {
-            parser = new DOMParser();
-            parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-            parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-            //Errors errors = new Errors();
-            //parser.setErrorHandler(errors);
-            parser.parse(filename);
-            document = parser.getDocument();
-
-	} catch(Exception e) {
-            log.error(e.getMessage());
-	    log.error(Logging.stackTrace(e));
-	}
+        super(filename);
     }
 
     public void write(Writer out) throws IOException {
-	write(out,document,-1);
+    	write(out,document,-1);
     }
 
     public void write(Writer out, Node node, int level) throws IOException {
