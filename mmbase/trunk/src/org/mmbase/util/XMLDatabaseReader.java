@@ -72,6 +72,27 @@ public class XMLDatabaseReader  {
     }
 
 
+
+
+    /**
+    * mmbase database driver
+    */
+    public String getMMBaseDatabaseDriver() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("mmbasedriver")) {
+				Node n3=n2.getFirstChild();
+		    		return(n3.getNodeValue());
+			
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(null);
+    }
+
     /**
     */
     public Hashtable getDisallowedFields() {
