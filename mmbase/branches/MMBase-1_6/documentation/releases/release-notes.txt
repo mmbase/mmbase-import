@@ -394,7 +394,7 @@ Upgrade:
 [1.6.4]
 - Replace mmbase.jar
 - Replace editwizard jsp and xsl files
-- Replace jsp editor files
+- Replace jsp editor files and/or replace my_editor files
 
 [1.6.3]
 - Replace mmbase.jar
