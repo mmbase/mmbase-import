@@ -314,7 +314,6 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
                 if (n3!=null) {
 			version=n3.getNodeValue();
 		}
-		log.info("NAME="+name+" maintainer="+maintainer+" version="+version);
 
 		/*
         	org.w3c.dom.Node n2=reader.getElementByPath("datacreator.model.startnode");
@@ -343,7 +342,7 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
 			if (n3!=null) {
 				depth = n3.getFirstChild().getNodeValue();
 			}
-			log.info("alias="+alias+" builder="+builder+" where="+where+" depth="+depth);
+			//log.info("alias="+alias+" builder="+builder+" where="+where+" depth="+depth);
 			Vector resultmsgs = new Vector();
         		String id = name + "@" + maintainer + "_cloud/model";
 		        id = id.replace(' ', '_');
@@ -367,7 +366,6 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
         Iterator nbl=model.getNeededBuilders();
         while (nbl.hasNext()) {
             NeededBuilder nb=(NeededBuilder)nbl.next();
-	    log.info("BUILDER="+nb.getName());
 	    int i=MMBase.getMMBase().getTypeDef().getIntValue(nb.getName());
 	    set.add(new Integer(i));
         }
@@ -399,7 +397,6 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
     }
 
     public void setDataFileType(String project, String target,String type) {
-	log.info("NEW DEPTH="+project+" "+target+" "+type);
         Project p = ProjectManager.getProject(project);
         if (p != null) {
             Target t = p.getTarget(target);

@@ -768,8 +768,6 @@ public class BasicCreator implements CreatorInterface,Runnable {
 		String fn=target.getBaseDir()+"packaging"+File.separator+filen;
 
 		String dfn=filen;
-		log.info("SCREENSHOW ADD FILE="+fn);
-		log.info("SCREENSHOW ADD DFILE="+dfn);
         	packageStep step=getNextPackageStep();
         	step.setUserFeedBack("added screenshot file : "+dfn+" ... done");
         	byte[] buffer = new byte[1024];
@@ -966,7 +964,6 @@ public class BasicCreator implements CreatorInterface,Runnable {
                        		if (n3!=null) file=n3.getNodeValue();
 				n3=n2.getFirstChild();
                        		if (n3!=null) description=n3.getNodeValue();
-				log.info("SCREENSHOT="+name+" "+file+"D="+description);
 				target.addScreenshot(name,file,description);
 
 			}
@@ -997,7 +994,6 @@ public class BasicCreator implements CreatorInterface,Runnable {
                        		if (n3!=null) link=n3.getNodeValue();
 				n3=n2.getFirstChild();
                        		if (n3!=null) description=n3.getNodeValue();
-				log.info("STARTURL="+name+" "+link+"D="+description);
 				target.addStarturl(name,link,description);
 
 			}

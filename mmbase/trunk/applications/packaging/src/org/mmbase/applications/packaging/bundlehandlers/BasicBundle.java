@@ -642,7 +642,7 @@ public class BasicBundle implements BundleInterface {
                     			}
 				}	
 			} else if (method.equals("http")) {
-				log.info("HTTP METHOD");
+				ufile=file;
 			}
 		   }
 
