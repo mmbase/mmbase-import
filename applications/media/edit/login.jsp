@@ -9,14 +9,14 @@
 <body>
     <span class="kop">Login</span>
      <mm:import externid="reason">please</mm:import>
-     <mm:import externid="referrer">edit.jsp</mm:import>
+     <mm:import externid="referrer">search.jsp</mm:import>
       <mm:compare referid="reason" value="failed">
         <p class="failed">
           Failed to log in. Try again.
         </p>
       </mm:compare>
     <table>
-      <form method="post" action="<mm:write referid="referrer" />" >
+      <form method="post" action="dologin.jsp" >
         <tr><td>Name:</td><td><input type="text" name="username"></td></tr>
         <tr><td>Password</td><td><input type="password" name="password"></td></tr>
         <!-- tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr-->

@@ -13,7 +13,7 @@
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 </head>
-<mm:cloud>
+<mm:cloud method="asis">
 <mm:node number="$fragment" notfound="skip">
 <%-- determin which player to use --%>
 <mm:write referid="config.player">

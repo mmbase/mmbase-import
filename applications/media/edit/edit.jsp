@@ -2,7 +2,7 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" %><mm:content language="$config.lang" postprocessor="reducespace">
-<mm:cloud jspvar="cloud" loginpage="login.jsp">
+<mm:cloud jspvar="cloud" method="asis">
 <html>
 <mm:write id="language" referid="config.lang" write="false" />
 <head>
@@ -11,7 +11,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: edit.jsp,v 1.8 2003-09-24 20:47:19 michiel Exp $
+    @version  $Id: edit.jsp,v 1.9 2003-09-28 14:21:04 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -23,7 +23,7 @@
 <body  onload="init('poolselector');">
   <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->     
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%>?origin=<mm:write referid="origin" /></mm:import>
-  <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
+  <mm:import id="jsps"><mm:write referid="config.editwizards" />jsp/</mm:import>
 
   <mm:import id="videofieldoptions">
      <option value="videofragments.title"><mm:fieldlist nodetype="videofragments" fields="title"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>

@@ -3,6 +3,7 @@
  String  getHost() { 
      return org.mmbase.applications.media.urlcomposers.Config.host; 
  }
+
  String thisServer(javax.servlet.http.HttpServletRequest request, String url) { 
     return "http://" + getHost() + request.getContextPath() + url;
  } 
@@ -26,7 +27,8 @@
   <mm:write  referid="lang"       cookie="mmjspeditors_language" />
   <mm:write  referid="quality"    cookie="mediaeditors_quality" />
   <mm:write  referid="player"     cookie="mediaeditors_player" />
-  
+
+  <mm:import id="editwizards"><%=org.mmbase.applications.media.urlcomposers.Config.editwizardsDir == null ? "/mmapps/editwizard" : org.mmbase.applications.media.urlcomposers.Config.editwizardsDir%></mm:import>
 </mm:context><% 
    java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; 

@@ -10,12 +10,18 @@
 <% if (org.mmbase.security.Rank.getRank(cloud.getUser().getRank()).compareTo(org.mmbase.security.Rank.getRank("basic user")) >= 0) { %>
   |
   <a <mm:compare value="edit">class="current"</mm:compare> href="<mm:url page="${dir}poolselector.jsp" />"><%=m.getString("edit")%></a>
-<% if (org.mmbase.security.Rank.getRank(cloud.getUser().getRank()).compareTo(org.mmbase.security.Rank.getRank("editor")) >= 0) { %>
+<% if (org.mmbase.security.Rank.getRank(cloud.getUser().getRank()).compareTo(org.mmbase.security.Rank.getRank("project manager")) >= 0) { %>
   |
   <a <mm:compare value="security">class="current"</mm:compare> href="<mm:url page="${dir}security.jsp" />"><%=m.getString("security")%></a>
 <% 
   }
-} %>
+%>
+  |
+  <a href="<mm:url page="${dir}search.jsp?logout=true" />">Logout</a>
+<% } else { %>
+  |
+  <a href="<mm:url page="${dir}login.jsp" />">Login</a>
+<% } %>
   |
   <a <mm:compare value="config">class="current"</mm:compare> href="<mm:url page="${dir}config/" />"><%=m.getString("config")%></a>
 </mm:write>

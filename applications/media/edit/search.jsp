@@ -1,6 +1,14 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd>
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@include file="config/read.jsp" %><mm:locale language="$config.lang"><mm:cloud jspvar="cloud" loginpage="login.jsp"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd">
+%><%@include file="config/read.jsp" 
+%><mm:content language="$config.lang" postprocessor="reducespace">
+<mm:import externid="logout" />
+<mm:present referid="logout">
+  <mm:cloud method="logout" />
+</mm:present>
+
+<mm:cloud jspvar="cloud" method="asis">
 <html>
 <head>
    <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
@@ -13,7 +21,6 @@
   <hr />
  <h1>Zoek</h1>
   <p>
-<mm:log />
   <table>
   <form target="content" action="<mm:url page="view/index.jsp" />" >   
     <tr><td>Type</td><td><select name="type">
@@ -42,4 +49,4 @@
 </body>
 </html>
 </mm:cloud>
-</mm:locale>
+</mm:content>
