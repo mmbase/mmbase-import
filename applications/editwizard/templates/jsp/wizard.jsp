@@ -1,11 +1,11 @@
 <%@ include file="settings.jsp"
-%><mm:cloud name="mmbase" method="http" jspvar="cloud"><%@ page errorPage="exception.jsp"
+%><mm:locale language="<%=ewconfig.language%>"><mm:cloud name="mmbase" method="http" jspvar="cloud"><%@ page errorPage="exception.jsp"
 %><mm:log jspvar="log"><%
     /**
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.12 2002-07-23 14:50:06 pierre Exp $
+     * @version  $Id: wizard.jsp,v 1.13 2002-07-25 15:18:44 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -84,6 +84,5 @@ if (wizardConfig.wiz.startWizard()) {
     log.trace("Send html back");
     wizardConfig.wiz.writeHtmlForm(out, wizardConfig.wizard);
 }
-%>
-</mm:log></mm:cloud>
+%></mm:log></mm:cloud></mm:locale>
 

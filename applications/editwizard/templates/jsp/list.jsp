@@ -1,12 +1,12 @@
 <%@ page errorPage="exception.jsp"
-%><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException"
+%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.21 2002-07-19 20:16:58 michiel Exp $
+     * @version  $Id: list.jsp,v 1.22 2002-07-25 15:18:44 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -255,6 +255,7 @@ if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
 if (title != null) params.put("wizardtitle", title);
 if (listConfig.title != null) params.put("title", listConfig.title);
 params.put("username", cloud.getUser().getIdentifier());
+params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());
 params.put("ew_path", new File(request.getServletPath()).getParentFile().getParent() + "/");
 
@@ -282,4 +283,4 @@ private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value
     el.appendChild(n);
     return n;
 }
-%></mm:log></mm:cloud>
+%></mm:log></mm:cloud></mm:locale>
