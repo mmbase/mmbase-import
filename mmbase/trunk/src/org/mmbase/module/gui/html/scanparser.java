@@ -1,5 +1,5 @@
 /*
-$Id: scanparser.java,v 1.5 2000-03-09 16:39:22 wwwtech Exp $
+$Id: scanparser.java,v 1.6 2000-03-10 12:09:58 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/09 16:39:22  wwwtech
+Davzev added $MOD $PARAM etc... support to method:do_counter().
+
 
 */
 package org.mmbase.module.gui.html;
@@ -32,7 +35,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.5 $ $Date: 2000-03-09 16:39:22 $
+ * @$Revision: 1.6 $ $Date: 2000-03-10 12:09:58 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -172,7 +175,7 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	boolean do_vals(String cmd,sessionInfo session,scanpage sp) {
+	boolean do_vals(String cmd,sessionInfo session,scanpage sp) throws ParseException {
 		int il=-1;
 		int ir=-1;
 		int andpos=cmd.indexOf(" AND ");
@@ -215,7 +218,7 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	boolean do_val(String cmd,sessionInfo session,scanpage sp) {
+	boolean do_val(String cmd,sessionInfo session,scanpage sp) throws ParseException {
 		int il=-1;
 		int ir=-1;
 		int pos=cmd.indexOf('=');
@@ -253,7 +256,7 @@ public class scanparser extends ProcessorModule {
 	 * Process the HTML for our own extensions
 	 * 
 	 */
-	public final String handle_line(String body,sessionInfo session,scanpage sp) {
+	public final String handle_line(String body,sessionInfo session,scanpage sp) throws ParseException {
 
 		if (debug) debug("handle_line(): scanparser-> debug 1");
 		String part=null;
@@ -399,14 +402,14 @@ public class scanparser extends ProcessorModule {
 	/**
 	 * Main function, calls the several handlers for the diffenrent TAGS
 	 */
-	private final String finddocmd(String body,String cmd,int endc,int docmd,sessionInfo session,scanpage sp) {
+	private final String finddocmd(String body,String cmd,int endc,int docmd,sessionInfo session,scanpage sp) throws ParseException {
 		return(finddocmd(body,cmd,""+(char)endc,docmd,session,sp));
 	}
 
 	/**
 	 * Main function, calls the several handlers for the diffenrent TAGS
 	 */
-	private final String finddocmd(String body,String cmd,String endc,int docmd,sessionInfo session,scanpage sp) {
+	private final String finddocmd(String body,String cmd,String endc,int docmd,sessionInfo session,scanpage sp) throws ParseException {
 		int precmd=0,postcmd=0,prepostcmd=0;
 		StringBuffer newbody=new StringBuffer();
 		int pos,pos2;
@@ -532,7 +535,7 @@ public class scanparser extends ProcessorModule {
 	 * $param sp The current scanpage object.
 	 * $return A String containing the counter value.
 	 */
-	private String do_counter( String part, sessionInfo session, scanpage sp )
+	private String do_counter( String part, sessionInfo session, scanpage sp ) throws ParseException
 	{
 		String result = null;
 
@@ -548,10 +551,12 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	private final String do_part(String part2,sessionInfo session,scanpage sp) {
+	private final String do_part(String part2,sessionInfo session,scanpage sp) throws ParseException {
 
 		String part="",filename,paramline=null;;
 		Vector oldparams=sp.getParamsVector();
+
+		sp.partlevel++;
 
 		part2=dodollar(part2,session,sp);
 		// we now may have a a param setup like part.shtml?1212+1212+1212
@@ -565,6 +570,13 @@ public class scanparser extends ProcessorModule {
 		} else {
 			filename=part2;
 		}
+
+		// Test if we are going circular
+		if (sp.partlevel>4) {
+			debug("Warning more then "+sp.partlevel+" nested parts "+sp.req_line);
+			if (sp.partlevel>10) throw new CircularParseException("Too many parts, level="+sp.partlevel+" URI "+sp.req_line);
+		}
+
 		// debug("do_part(): filename="+filename);
 		// debug("do_part(): paramline="+paramline);
 		part=getfile(filename);
@@ -578,6 +590,7 @@ public class scanparser extends ProcessorModule {
 				String pragma = sp.getHeader("Pragma:");
 				if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
 	//				debug("do_part(): scancache=PARTHIT");
+					sp.partlevel--;
 					return(rst);
 				}	
 			}
@@ -597,9 +610,11 @@ public class scanparser extends ProcessorModule {
 				scancache.put(wantCache,part2,part);
 			}
 			sp.setParamsVector(oldparams);
+			sp.partlevel--;
 			return(part);
 		} else {
 			sp.setParamsVector(oldparams);
+			sp.partlevel--;
 			return("");
 		}
 	}
@@ -649,7 +664,7 @@ public class scanparser extends ProcessorModule {
 	/**
 	 * Main function, replaces most of the $ commands
 	 */
-	private final String dodollar(String newbody,sessionInfo session,scanpage sp) {
+	private final String dodollar(String newbody,sessionInfo session,scanpage sp) throws ParseException {
 
 		if ( newbody.indexOf('$') == -1) {
 			return newbody;
@@ -879,7 +894,7 @@ public class scanparser extends ProcessorModule {
 			}
 	}
 
-     private final String do_unmap(String part,sessionInfo session,scanpage sp) {
+     private final String do_unmap(String part,sessionInfo session,scanpage sp) throws ParseException {
         String part1,part2;
         int pnt;
 
@@ -888,7 +903,7 @@ public class scanparser extends ProcessorModule {
     }
 
 
-	private final String do_do(String part,sessionInfo session,scanpage sp) {
+	private final String do_do(String part,sessionInfo session,scanpage sp) throws ParseException {
 		String part1,part2;
 		int pnt;
 		part=dodollar(part,session,sp);
@@ -911,7 +926,7 @@ public class scanparser extends ProcessorModule {
 		return("");
 	}
 
-    private final String do_include(String part2,sessionInfo session,scanpage sp) {
+    private final String do_include(String part2,sessionInfo session,scanpage sp) throws ParseException {
         String part="";
         part2=dodollar(part2,session,sp);
         //time(" - cookie = " + cookie + ", doinclude - dodollar", false);
@@ -961,7 +976,7 @@ public class scanparser extends ProcessorModule {
 	 * the module name in the html page (<PROCESSOR YourProcessor>, and
 	 * for forms <INPUT TYPE="HIDDEN" NAME="PRC-VAR-PROCESSOR" VALUE="YourProcessor">)
 	 */
-	private final String do_macro(String part,sessionInfo session,scanpage sp) {
+	private final String do_macro(String part,sessionInfo session,scanpage sp) throws ParseException {
 		String tokje;
 
 		Vector cmds;
@@ -1052,7 +1067,7 @@ public class scanparser extends ProcessorModule {
 	/** 
 	* handle if/then/elseif/\/if
 	*/
-	String do_conditions_lif(String body,sessionInfo session,scanpage sp) {
+	String do_conditions_lif(String body,sessionInfo session,scanpage sp) throws ParseException {
 		StringBuffer buffer = new StringBuffer();
 
 		int depth=0;
@@ -1091,7 +1106,7 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	String do_if(String body,sessionInfo session,scanpage sp) {
+	String do_if(String body,sessionInfo session,scanpage sp) throws ParseException {
 		int endpos=-1;
 		// first hunt down the command
 		int pos = body.indexOf('>');
@@ -1152,7 +1167,7 @@ public class scanparser extends ProcessorModule {
 	/** 
 	* handle if/then/elseif/\/if
 	*/
-	String do_conditions(String body,sessionInfo session,scanpage sp) {
+	String do_conditions(String body,sessionInfo session,scanpage sp) throws ParseException {
 		StringBuffer buffer = new StringBuffer();
 
 		int depth=0;
@@ -1191,7 +1206,7 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	private String do_list(String cmd,String template, sessionInfo session,scanpage sp) {
+	private String do_list(String cmd,String template, sessionInfo session,scanpage sp) throws ParseException {
 		long ll1,ll2;
 		StringBuffer rtn=new StringBuffer();
 		ProcessorInterface tmpprocessor=null;
@@ -1644,72 +1659,54 @@ public class scanparser extends ProcessorModule {
 	public void maintainance() {
 	}
 
-
-	//public synchronized String calcPage(String part2,HttpServletRequest req,int cachetype) {
 	public synchronized String calcPage(String part2,scanpage sp,int cachetype) {
 
 		debug("calcPage("+part2+","+printURI(sp)+","+cachetype+")");
 
 		try {
-		/*
-		this.req=req;	
-		part2=dodollar(part2,req);
-		*/
-
-		String filename,paramline=null;
-
-		// we now may have a a param setup like part.shtml?1212+1212+1212
-		// split it so we can load the file and get the params
-		int pos=part2.indexOf('?');
-		if (pos!=-1) {
-			filename=part2.substring(0,pos);
-			paramline=part2.substring(pos+1);
-			//((worker)req).setParamLine(paramline);
-			sp.setParamsLine(paramline);
-			if (sp.req_line==null) sp.req_line=filename;
-			debug("calcPage(): setting paramline="+paramline);
-		} else {
-			filename=part2;
-		}
-
-		debug("calcPage(): filename="+filename);
-		debug("calcPage(): paramline="+paramline);
-		sp.body=getfile(filename);
-
-		if (sp.body!=null) {
-
-			String wantCache=null;
-
-			// start cache
-			/*
-			String wantCache=null;
-			if (sp.body.indexOf("<CACHE HENK>")!=-1) {
-				//debug("calcPage(): scancache("+scancache+")");
-				wantCache="HENK";
-				String rst=scancache.get(wantCache,part2);
-			}
-			*/
+			String filename,paramline=null;
 	
-			if (sp.body.indexOf("<CACHE PAGE")!=-1) {
-				wantCache="PAGE";
-			}
-			sp.wantCache=wantCache;
-			// end cache
-			// unlike include we need to map this ourselfs before including it
-			// in this page !!
-			//part=handle_line(part,req);
-			sp.body=handle_line(sp.body,null,sp);
-			if (wantCache!=null) {
-				//debug("calcPage(): PUT CACHE OF FILE="+part2+" file="+part);
-				scancache.newput2(wantCache,part2,sp.body,cachetype);
+			// we now may have a a param setup like part.shtml?1212+1212+1212
+			// split it so we can load the file and get the params
+			int pos=part2.indexOf('?');
+			if (pos!=-1) {
+				filename=part2.substring(0,pos);
+				paramline=part2.substring(pos+1);
+				//((worker)req).setParamLine(paramline);
+				sp.setParamsLine(paramline);
+				if (sp.req_line==null) sp.req_line=filename;
+				debug("calcPage(): setting paramline="+paramline);
+			} else {
+				filename=part2;
 			}
 	
-			return(sp.body);
-		} else {
-			return("");
-		}
+			debug("calcPage(): filename="+filename);
+			debug("calcPage(): paramline="+paramline);
+			sp.body=getfile(filename);
+	
+			if (sp.body!=null) {
+	
+				String wantCache=null;
+	
+				if (sp.body.indexOf("<CACHE PAGE")!=-1) {
+					wantCache="PAGE";
+				}
+				sp.wantCache=wantCache;
+				// end cache
+				// unlike include we need to map this ourselfs before including it
+				// in this page !!
+				//part=handle_line(part,req);
+				sp.body=handle_line(sp.body,null,sp);
+				if (wantCache!=null) {
+					scancache.newput2(wantCache,part2,sp.body,cachetype);
+				}
+		
+				return(sp.body);
+			} else {
+				return("");
+			}
 		} catch (Exception r) {
-			debug("calcPage("+part2+","+printURI(sp)+","+cachetype+"): ERROR: ");
+			debug("calcPage("+part2+","+printURI(sp)+","+cachetype+"): ERROR: "+r);
 			r.printStackTrace();
 			return("");
 		}

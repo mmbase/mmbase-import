@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.6 2000-03-09 15:57:47 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.7 2000-03-10 12:09:57 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/03/09 15:57:47  wwwtech
+	Rico: fixed bugs in the detection of the reload state, also detects CACHE PAGE pages as a reload situation now
+	
 	Revision 1.5  2000/03/09 13:10:40  wwwtech
 	Rico: added cache passthrough for multilevel
 	
@@ -47,14 +50,14 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.6 2000-03-09 15:57:47 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.7 2000-03-10 12:09:57 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
-	private int multilevel_cachesize=128;
+	private int multilevel_cachesize=256;
 	private LRUHashtable multilevel_cache;
 
 	MMBase mmb=null;
