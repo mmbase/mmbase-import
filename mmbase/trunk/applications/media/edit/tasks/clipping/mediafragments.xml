@@ -67,16 +67,17 @@
   <list role="related" destination="templates" minoccurs="0" maxoccurs="1">
     <title xml:lang="en">Default template (optional)</title>
     <title xml:lang="nl">Default sjabloon (optioneel)</title>
-    <command name="search" nodepath="templates" fields="name,url" orderby="name" age="-1">
+    <command name="search" nodepath="templates" fields="name" orderby="name" age="-1">
         <search-filter>
           <name>zoek</name>
-          <search-fields>name|url</search-fields>
+          <search-fields>name</search-fields>
         </search-filter>
     </command>
     <item>
-      <fieldset><field ftype="data" name="name" /><field ftype="data" name="url" /></fieldset>
+      <field ftype="data" name="name" />
+      <field ftype="data" name="description" />
     </item>
-    <command name="startwizard" inline="true" wizardname="tasks/clipping/templates" objectnumber="new" origin="{$origin}" />
+    <!-- command name="startwizard" inline="true" wizardname="tasks/clipping/templates" objectnumber="new" origin="{$origin}" /-->
     <action type="create">
       <relation role="related" destination="templates" />
     </action>

@@ -30,22 +30,19 @@ import java.net.*;
 </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.7 2003-02-05 15:18:01 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.8 2003-02-18 00:11:16 michiel Exp $
  * @since MMBase-1.7
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     private static Logger log = Logging.getLoggerInstance(RamURLComposer.class.getName());
     
-    private final static String SERVLET_MAPPING = "/mediafragment"; // todo make configurable/ read from web.xml 
-
-
     protected  Format          format;
     public RamURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
         this.format = Format.get(source.getIntValue("format"));
     }
     protected StringBuffer  getURLBuffer() {
-        return new StringBuffer(SERVLET_MAPPING + "." + format + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&format=" + format);
+        return new StringBuffer("http://" + Config.host + Config.templatesDir + "mediafragment.jsp?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&format=" + format);
 
         // todo, perhaps simply the right source number should be passed
     }

@@ -33,7 +33,11 @@
     Define the sequence of preference of the servers.
     -->
       <preferredSource>    
-        <source format="wmp" />
+        <source format="smil" /> <!-- we like smil -->
+        <source format="html" /> <!-- also nice (generates html code for object tag -->
+
+        <!-- well.. -->
+        <source format="wmp" />  
         <source format="ram" />
         <source format="rm" />
         <source format="ra" />

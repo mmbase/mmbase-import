@@ -28,7 +28,7 @@ import java.util.Locale;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.9 2003-02-17 09:11:28 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.10 2003-02-18 00:11:16 michiel Exp $
  */
 
 public class URLComposer  {
@@ -63,9 +63,16 @@ public class URLComposer  {
     } 
 
 
-    public String getGUIIndicator(Locale locale) {
+    public String getGUIIndicator(Map options) {
+        Locale locale = (Locale) options.get("locale");
         return getFormat().getGUIIndicator(locale);
     }
+
+    public String getDescription(Map options) {
+        Locale locale = (Locale) options.get("locale");
+        return null; // no informative description
+    }
+
 
     /**
      * Returns true. This can be overridden if the URLComposer not
