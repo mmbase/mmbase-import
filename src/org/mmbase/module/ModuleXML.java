@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.14 $ $Date: 2000-12-20 00:27:31 $
+ * @version $Revision: 1.15 $ $Date: 2000-12-24 23:16:32 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -39,8 +39,66 @@ public abstract class ModuleXML extends Module {
     }
 
     public static synchronized Hashtable loadModulesFromDisk() {
-        return(loadModulesFromDisk_xml());
+        Hashtable results=loadModulesFromDisk_xml();
+	System.out.println("AAAAAAA="+results);
+	if (results!=null) {
+        	return(results);
+	} else {
+        	return(loadModulesFromDisk_xml2());
+	}
     }
+
+    public static synchronized Hashtable loadModulesFromDisk_xml2() {
+        Hashtable results=new Hashtable();
+
+        String dtmp=System.getProperty("mmbase.mode");
+        if (dtmp!=null && dtmp.equals("demo")) {
+            String curdir=System.getProperty("user.dir");
+            if (curdir.endsWith("orion")) {
+                curdir=curdir.substring(0,curdir.length()-6);
+            }
+            mmbaseconfig=curdir+"/config";
+        } else {
+            mmbaseconfig=System.getProperty("mmbase.config");
+            if (mmbaseconfig==null) 
+                debug("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
+        }
+        MMBaseContext.setConfigPath(mmbaseconfig);
+
+	String dirname=(mmbaseconfig+"/modules/");
+	File bdir = new File(dirname);
+        if (bdir.isDirectory()) {
+            String files[] = bdir.list();
+            for (int i=0;i<files.length;i++) {
+                String bname=files[i];
+                if (bname.endsWith(".xml")) {
+                     bname=bname.substring(0,bname.length()-4);
+ 		     XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
+		     if (parser!=null) {		
+			if (parser.getStatus().equals("active")) {
+				String cname=parser.getClassFile();
+            			// try starting the module and give it its properties
+            			try {
+               		 		Class newclass=Class.forName(cname);
+                	 		Object mod = newclass.newInstance();
+                			if (mod!=null) {
+                    				results.put(bname,mod);
+                    				Hashtable modprops = parser.getProperties();
+                    				if (modprops!=null) {
+			                       	 ((Module)mod).properties=modprops;
+                    				}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		    }
+		}
+	    }
+	}
+	return(results);
+    }
+
 
     public static synchronized Hashtable loadModulesFromDisk_xml() {
         Class newclass;
@@ -119,11 +177,15 @@ public abstract class ModuleXML extends Module {
                 f.printStackTrace();
             }
         } else {
+	    /*
             filename = filename + ".properties";
             mods = Reader.readProperties(filename);
+	    */
+	    return(null);
         }
 
         if (debug) debug("mods =" + mods.toString());
+
 
         // oke try loading all these modules and start em up
         for (Enumeration e=mods.keys();e.hasMoreElements();) {

@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.18 $ $Date: 2000-12-20 00:27:16 $
+ * @version $Revision: 1.19 $ $Date: 2000-12-24 23:16:18 $
  */
 public abstract class Module {
 
@@ -93,6 +93,10 @@ public abstract class Module {
     protected String getInitParameter(String key) {
 		if (properties!=null) {
 			String value=(String)properties.get(key);
+			if (value==null) {
+				key=key.toLowerCase();
+				value=(String)properties.get(key);
+			}
 			return(value);
 		} else {
 			debug("getInitParameters("+key+"): No properties found, called before they where loaded");
