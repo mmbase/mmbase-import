@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.14 2002-01-31 10:05:12 pierre Exp $
+ * @version $Id: BasicRelationManager.java,v 1.15 2002-09-06 10:18:44 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
@@ -70,6 +70,14 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public String getReciprocalRole() {
         return relDefNode.getStringValue("dname");
+    }
+
+    public String getForwardGUIName() {
+        return relDefNode.getStringValue("sguiname");
+    }
+
+    public String getReciprocalGUIName() {
+        return relDefNode.getStringValue("dguiname");
     }
 
     public int getDirectionality() {
