@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <wizard-schema id="empty">
-	<title>(taglib) example</title>
+	<title>(advanced) example</title>
 
 	<action type="create">
 		<object type="news">
@@ -13,14 +13,11 @@
 	<action type="load">
 		<relation destination="people" role="related" />
 		<relation destination="images" role="related" />
+		<relation destination="urls" role="related" />
 	</action>
 	
-	<steps>
-		<step form-schema="step1" />
-	</steps>
-
-	<form-schema id="step1">
-		<title>Enter form title here</title>
+	<form-schema id="basics">
+		<title>Basic News</title>
 		<field name="title" >
 			<prompt>Title</prompt>
 		</field>
@@ -72,4 +69,38 @@
     </list>
 
 	</form-schema>
+
+	<form-schema id="url">
+		<field name="title" ftype="data" />
+    <title>Relate URL's (example of pop-up wizard)</title>
+    <list fdatapath="relation[object/@type='urls']" minoccurs="0" maxoccurs="*" type="urls">
+		<!-- list role="related" destination="urls" minoccurs="0"  maxoccurs="*"-->
+      <title>Links</title>       
+			<command name="search" nodepath="urls" fields="name,description,url" orderby="name" age="-1">
+				<prompt>Url (demonstration searching in multipable fields, and of two types of startwizards)</prompt>
+				<search-filter>
+					<name>URL</name>
+					<search-fields>url|name|description</search-fields>
+				</search-filter>
+			</command>
+			
+      <!-- a not-inline startwizard will pop-up a window to create the new object -->
+      <command name="startwizard" inline="false" wizardname="samples/urls" objectnumber="new" />
+
+      <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
+      <command name="startwizard" inline="true" wizardname="samples/urls" objectnumber="new" />
+
+      <!-- samples/urls: you'll not find a samples/urls.xml in this directory. Search in /mmapps/editwizard/data -->
+
+      <item>
+        <field ftype="data" name="url" />
+        <field ftype="data" name="name" />
+      </item>
+			
+			<action type="create">
+				<relation destinationtype="urls" role="related" />
+			</action>
+		</list>
+
+  </form-schema>
 </wizard-schema>

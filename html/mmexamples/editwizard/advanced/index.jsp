@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.6 2002-05-17 11:12:32 michiel Exp $
+    @version  $Id: index.jsp,v 1.7 2002-05-17 14:17:42 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -99,7 +99,8 @@
      </td><td>       
       Demonstrated is how to use editwizards 'libs'. These are pieces
       of XML stored in the editwizard data directory which you can
-      include in you own wizards.
+      include in you own wizards. You'll find an example for
+      'subwizards' here as well.
      </td></tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
