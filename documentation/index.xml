@@ -4,7 +4,7 @@
 	 <articleinfo>
 		<title>Documentation Overview</title>
 		<date>3 december 2002</date>
-		<edition>$Id: index.xml,v 1.10 2003-02-14 15:13:56 pierre Exp $</edition>
+		<edition>$Id: index.xml,v 1.11 2003-02-17 11:53:09 pierre Exp $</edition>
 		<legalnotice>
 			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
 			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -119,6 +119,9 @@
 			</listitem>
 			<listitem>
 				<para><ulink url="templaters/builders/index.html">MMBase standard builders</ulink></para>
+			</listitem>
+			<listitem>
+				<para><ulink url="mmci/api/index.html">Bridge (MMCI) API documentation</ulink></para>
 			</listitem>
 			<listitem>
 				<!-- old format (mmdocs) documentation -->

@@ -57,7 +57,11 @@
 
   <xsl:template match="authorgroup" mode="titlepage.mode">
     <div xmlns="http://www.w3.org/1999/xhtml" class="{name(.)}">
-      <strong class="{name(.)}"><xsl:text>Authors: </xsl:text></strong>
+      <strong class="{name(.)}">
+        <xsl:text>Author</xsl:text>
+        <xsl:if test="count(./author) != 1"><xsl:text>s</xsl:text></xsl:if>
+        <xsl:text>: </xsl:text>
+      </strong>
       <xsl:apply-templates mode="titlepage.mode"/>
     </div>
   </xsl:template>
@@ -90,7 +94,10 @@
       <p>
         <a href="http://www.mmbase.org">MMBase</a>
       </p>
-      <xsl:if test="not(($root = './') and ($filename = 'index'))">
+
+      <xsl:variable name="thisfile"><xsl:call-template name="href.target"><xsl:with-param name="object" select="."/></xsl:call-template></xsl:variable>
+
+      <xsl:if test="not(($root = './') and ($thisfile = 'index.html'))">
         <p>
           <a href="{$root}index.html">home</a>
         </p>
