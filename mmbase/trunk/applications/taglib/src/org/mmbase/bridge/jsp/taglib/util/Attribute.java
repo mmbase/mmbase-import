@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.4 2003-03-07 09:31:02 pierre Exp $
+ * @version $Id: Attribute.java,v 1.5 2003-03-07 09:45:30 pierre Exp $
  * @since   MMBase-1.6.1
  */
 
@@ -154,7 +154,7 @@ public class Attribute {
 
     /**
      * Parses this attribute into list of 'attributeparts'.
-     * The method {@link getValue} will concatenate them together again (after evaluation).
+     * The method {@link #getValue} will concatenate them together again (after evaluation).
      */
 
     protected void parse() throws AttributeException {
