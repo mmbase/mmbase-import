@@ -9,7 +9,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: edit.jsp,v 1.3 2003-01-21 17:41:11 michiel Exp $
+    @version  $Id: edit.jsp,v 1.4 2003-02-17 18:07:20 pierre Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -55,41 +55,37 @@
            <select name="searchfields">
                <mm:write referid="videofieldoptions" />
            </select>
-           <input type="text" name="searchvalue" />
-           <input type="hidden" name="wizard" value="tasks/base/videofragments" />
-           <input type="hidden" name="nodepath" value="pools,videofragments" />
-           <input type="hidden" name="fields" value="videofragments.number,videofragments.title" />
-           <input type="hidden" name="orderby" value="videofragments.title" />
-           <input type="hidden" name="directions" value="down" />
+           <input type="text" name="searchvalue" 
+           /><input type="hidden" name="wizard" value="tasks/base/videofragments" 
+           /><input type="hidden" name="nodepath" value="pools,videofragments"
+           /><input type="hidden" name="fields" value="videofragments.number,videofragments.title"
+           /><input type="hidden" name="orderby" value="videofragments.title"
+           /><input type="hidden" name="directions" value="down" />
         </form><a href="javascript:document.forms['basevideo'].submit();"><img src="media/search.gif" border="0"/></a>
        <a href="<mm:url referids="referrer,language,origin" page="${jsps}wizard.jsp">
             <mm:param name="wizard">tasks/base/videofragments</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newstream")%>" /></a></td></tr>
 
-
    <tr><td><%=m.getString("clippingvideo")%></td>
-        <td><form style="display: inline; " id="clippingvideo" 
+      <td><form style="display: inline; " id="clippingvideo" 
                   action="<mm:url referids="referrer,language,origin,startnodes" page="${jsps}list.jsp" />" 
                   method="post">
-           <select name="searchfields">
-               <mm:write referid="videofieldoptions" />
-           </select>
-           <input type="text" name="searchvalue" />
-           <input type="hidden" name="wizard" value="tasks/clipping/videofragments" />
-           <input type="hidden" name="nodepath" value="pools,videofragments,parent,videofragments2" />
-           <input type="hidden" name="fields" value="videofragments2.number,videofragments.number,videofragments.title,videofragments2.title" />
-           <input type="hidden" name="orderby" value="videofragments.title,videofragments2.title" />
-          <input type="hidden" name="directions" value="down" />
-          <input type="hidden" name="distinct" value="true" />
-        </form><a href="javascript:document.forms['clippingvideo'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a><a href="<mm:url referids="referrer,origin,language" page="${jsps}wizard.jsp">
+         <select name="searchfields">
+             <mm:write referid="videofieldoptions" />
+         </select>
+         <input type="text" name="searchvalue"
+         /><input type="hidden" name="wizard" value="tasks/clipping/videofragments"
+         /><input type="hidden" name="nodepath" value="pools,videofragments,parent,videofragments2"
+         /><input type="hidden" name="fields" value="videofragments2.number,videofragments.number,videofragments.title,videofragments2.title"
+         /><input type="hidden" name="orderby" value="videofragments.title,videofragments2.title"
+         /><input type="hidden" name="directions" value="down"
+         /><input type="hidden" name="distinct" value="true" />
+      </form><a href="javascript:document.forms['clippingvideo'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a>
+      <a href="<mm:url referids="referrer,origin,language" page="${jsps}wizard.jsp">
             <mm:param name="wizard">tasks/clipping/videofragments</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" /></a></td></tr>
-
-
-
-
 
   <tr><th class="kop" colspan="2">Audio</th></tr>
 
@@ -98,14 +94,14 @@
            <select name="searchfields">
               <mm:write referid="audiofieldoptions" />             
            </select>
-           <input type="text" name="searchvalue" />
-           <input type="hidden" name="wizard" value="tasks/base/audiofragments" />
-           <input type="hidden" name="nodepath" value="pools,audiofragments" />
-           <input type="hidden" name="fields" value="audiofragments.number,audiofragments.title" />
-           <input type="hidden" name="orderby" value="audiofragments.title" />
-           <input type="hidden" name="startnodes" value="media.myfragments" />
-           <input type="hidden" name="origin" value="media.myfragments" />
-           <input type="hidden" name="directions" value="down" />
+           <input type="text" name="searchvalue"
+           /><input type="hidden" name="wizard" value="tasks/base/audiofragments"
+           /><input type="hidden" name="nodepath" value="pools,audiofragments"
+           /><input type="hidden" name="fields" value="audiofragments.number,audiofragments.title"
+           /><input type="hidden" name="orderby" value="audiofragments.title"
+           /><input type="hidden" name="startnodes" value="media.myfragments"
+           /><input type="hidden" name="origin" value="media.myfragments"
+           /><input type="hidden" name="directions" value="down" />
         </form><a href="javascript:document.forms['baseaudio'].submit();"><img src="media/search.gif" border="0"/></a>
        <a href="<mm:url referids="referrer,language" page="${jsps}wizard.jsp">
             <mm:param name="wizard">tasks/base/audiofragments</mm:param>
@@ -113,25 +109,19 @@
             <mm:param name="origin">media.myfragments</mm:param>
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newstream")%>" /></a></td></tr>
 
-
-
-
-
-
-
    <tr><td><%=m.getString("clippingaudio")%></td><td><form style="display: inline; " id="clippingaudio" action="<mm:url referids="referrer,language" page="${jsps}list.jsp" />" method="post">
            <select name="searchfields">
                <mm:write referid="audiofieldoptions" />
            </select>
-           <input type="text" name="searchvalue" />
-           <input type="hidden" name="wizard" value="tasks/clipping/audiofragments" />
-           <input type="hidden" name="nodepath" value="pools,audiofragments,parent,audiofragments2" />
-           <input type="hidden" name="fields" value="audiofragments2.number,audiofragments.number,audiofragments.title,audiofragments2.title" />
-           <input type="hidden" name="orderby" value="audiofragments.title,audiofragments2.title" />
-           <input type="hidden" name="startnodes" value="media.myfragments" />
-           <input type="hidden" name="origin" value="media.myfragments" />
-          <input type="hidden" name="directions" value="down" />
-          <input type="hidden" name="distinct" value="true" />
+           <input type="text" name="searchvalue"
+           /><input type="hidden" name="wizard" value="tasks/clipping/audiofragments"
+           /><input type="hidden" name="nodepath" value="pools,audiofragments,parent,audiofragments2"
+           /><input type="hidden" name="fields" value="audiofragments2.number,audiofragments.number,audiofragments.title,audiofragments2.title"
+           /><input type="hidden" name="orderby" value="audiofragments.title,audiofragments2.title"
+           /><input type="hidden" name="startnodes" value="media.myfragments"
+           /><input type="hidden" name="origin" value="media.myfragments"
+           /><input type="hidden" name="directions" value="down"
+           /><input type="hidden" name="distinct" value="true" />
         </form><a href="javascript:document.forms['clippingaudio'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a>
                <a href="<mm:url referids="referrer,language,origin" page="${jsps}wizard.jsp">
             <mm:param name="wizard">tasks/clipping/audiofragments</mm:param>
