@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: BasicFunctionValue.java,v 1.3 2002-10-01 05:58:03 michiel Exp $
+ * @version  $Id: BasicFunctionValue.java,v 1.4 2002-10-15 15:28:29 pierre Exp $
  * @since    MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -65,50 +65,50 @@ public class BasicFunctionValue implements FieldValue {
     public byte[] toByte() {
         return Casting.toByte(value);
     }
-    
+
     public float toFloat() {
         return Casting.toFloat(value);
     }
-    
+
     public double toDouble() {
         return Casting.toDouble(value);
     }
-    
+
     public long toLong() {
         return Casting.toLong(value);
     }
-    
+
     public int toInt() {
         return Casting.toInt(value);
     }
-    
+
     public Node toNode() {
         MMObjectNode noderes = Casting.toNode(value, mmobjectnode.parent);
         if (noderes != null) {
             if (noderes.parent instanceof InsRel) {
-                return new BasicRelation(noderes, node.getCloud().getNodeManager(noderes.parent.getTableName()));
+                return new BasicRelation(noderes, node.getCloud()); //.getNodeManager(noderes.parent.getTableName()));
             } else {
-                return new BasicNode    (noderes, node.getCloud().getNodeManager(noderes.parent.getTableName()));
+                return new BasicNode    (noderes, node.getCloud()); //.getNodeManager(noderes.parent.getTableName()));
             }
         } else {
             return null;
         }
     }
-    
+
     public String toString() {
         return Casting.toString(value);
     }
-    
+
     public Document toXML() throws IllegalArgumentException {
         return Casting.toXML(value, null, null);
     }
-    
+
     public Element toXML(Document tree) throws IllegalArgumentException {
         Document doc = toXML();
         if(doc == null) return  null;
         return (Element) tree.importNode(doc.getDocumentElement(), true);
     }
-    
+
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
@@ -142,7 +142,7 @@ public class BasicFunctionValue implements FieldValue {
      * Function values cannot be changed, and all set-functions throw an exception.
      * @throws BridgeException
      */
-    
+
     public void setDouble(double value) {
         throw CANNOTCHANGE;
     }
@@ -151,7 +151,7 @@ public class BasicFunctionValue implements FieldValue {
      * Function values cannot be changed, and all set-functions throw an exception.
      * @throws BridgeException
      */
-    
+
     public void setLong(long value) {
         throw CANNOTCHANGE;
     }
@@ -160,7 +160,7 @@ public class BasicFunctionValue implements FieldValue {
      * Function values cannot be changed, and all set-functions throw an exception.
      * @throws BridgeException
      */
-    
+
     public void setInt(int value) {
         throw CANNOTCHANGE;
     }
@@ -169,7 +169,7 @@ public class BasicFunctionValue implements FieldValue {
      * Function values cannot be changed, and all set-functions throw an exception.
      * @throws BridgeException
      */
-    
+
     public void setByte(byte[] value) {
         throw CANNOTCHANGE;
     }
@@ -178,7 +178,7 @@ public class BasicFunctionValue implements FieldValue {
      * Function values cannot be changed, and all set-functions throw an exception.
      * @throws BridgeException
      */
-    
+
     public void setString(String value) {
         throw CANNOTCHANGE;
     }
@@ -187,7 +187,7 @@ public class BasicFunctionValue implements FieldValue {
      * Function values cannot be changed, and all set-functions throw an exception.
      * @throws BridgeException
      */
-    
+
     public void setNode(Node value) {
         throw CANNOTCHANGE;
     }
@@ -196,7 +196,7 @@ public class BasicFunctionValue implements FieldValue {
      * Function values cannot be changed, and all set-functions throw an exception.
      * @throws BridgeException
      */
-    
+
     public void setXML(Document value) {
         throw CANNOTCHANGE;
     }

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.11 2002-10-03 12:28:11 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.12 2002-10-15 15:28:30 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
@@ -33,8 +33,12 @@ public class VirtualNodeManager extends BasicNodeManager {
         super(builder,cloud);
     }
 
-    VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
+    VirtualNodeManager(BasicCloud cloud) {
         super(new VirtualBuilder(((BasicCloudContext)cloud.getCloudContext()).mmb), cloud);
+    }
+
+    VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
+        this(cloud);
         // determine fields and field types
         for (Enumeration e = node.values.keys(); e.hasMoreElements(); ) {
             String fieldName=(String)e.nextElement();

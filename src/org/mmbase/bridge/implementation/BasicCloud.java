@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.71 2002-10-10 10:34:15 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.72 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -167,9 +167,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             } else if (node.parent instanceof RelDef || node.parent instanceof TypeRel) {
                 return new BasicRelationManager(node, this, nodeid);
             } else if (node.parent instanceof InsRel) {
-                return new BasicRelation(node, nm, nodeid);
+                return new BasicRelation(node, this, nodeid);
             } else {
-                return new BasicNode(node, nm, nodeid);
+                return new BasicNode(node, this, nodeid);
             }
         } else {
             this.verify(Operation.READ,nodenr);
@@ -178,9 +178,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             } else if (node.parent instanceof RelDef || node.parent instanceof TypeRel) {
                 return new BasicRelationManager(node, this);
             } else if (node.parent instanceof InsRel) {
-                return new BasicRelation(node, nm);
+                return new BasicRelation(node, this);
             } else {
-                return new BasicNode(node, nm);
+                return new BasicNode(node, this);
             }
         }
     }
@@ -750,8 +750,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             NodeManager tempNodeManager = null;
             if (resultlist.size()>0) {
                 tempNodeManager = new VirtualNodeManager((MMObjectNode)resultlist.get(0),this);
+            } else {
+                tempNodeManager = new VirtualNodeManager(this);
             }
-            return new BasicNodeList(resultlist,this,tempNodeManager);
+            return new BasicNodeList(resultlist,tempNodeManager);
         } else {
             String message;
             message = "Parameters are invalid :" + pars + " - " + constraints;

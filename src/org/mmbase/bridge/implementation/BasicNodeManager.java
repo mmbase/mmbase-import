@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.40 2002-10-09 09:13:21 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.41 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -50,8 +50,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      * @param id the id of the node in the temporary cloud
      */
-    BasicNodeManager(MMObjectNode node, BasicCloud cloud, int nodeid) {
-        super(node,cloud.getNodeManager(node.getBuilder().getTableName()), nodeid);
+    BasicNodeManager(MMObjectNode node, Cloud cloud, int nodeid) {
+        super(node,cloud, nodeid);
         // no initialization - for a new node, builder is null.
     }
 
@@ -63,7 +63,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param node the MMObjectNode to base the NodeManager on.
      * @param Cloud the cloud to which this node belongs
      */
-    BasicNodeManager(MMObjectNode node, BasicCloud cloud) {
+    BasicNodeManager(MMObjectNode node, Cloud cloud) {
         super(node,cloud);
         initManager();
     }
@@ -114,13 +114,13 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
 
         if (getMMObjectBuilder() instanceof TypeDef) {
-            // returing a node for the moment...
-            // Having a not-yet commited NodeManager does not seem wise...
-            return new BasicNode(node, this, id);
+            return new BasicNodeManager(node, getCloud(), id);
+        } else if (getMMObjectBuilder() instanceof RelDef || getMMObjectBuilder() instanceof TypeRel) {
+            return new BasicRelationManager(node, getCloud(), id);
         } else if (getMMObjectBuilder() instanceof InsRel) {
-            return new BasicRelation(node, this, id);
+            return new BasicRelation(node, getCloud() /*this*/, id);
         } else {
-            return new BasicNode(node, this, id);
+            return new BasicNode(node, getCloud() /*this*/, id);
         }
     }
 
@@ -213,7 +213,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 v.remove(i);
             }
         }
-        return new BasicNodeList(v,cloud,this);
+        return new BasicNodeList(v,this);
     }
 
     public String getInfo(String command) {
@@ -269,11 +269,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 }
                 res.add(node);
             }
-               NodeManager tempNodeManager = null;
-               if (res.size()>0) {
-                  tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
+            NodeManager tempNodeManager = null;
+            if (res.size()>0) {
+                tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
             }
-            return new BasicNodeList(res,cloud,tempNodeManager);
+            return new BasicNodeList(res,tempNodeManager);
         } catch (Exception e) {
             String message;
             message = e.getMessage();
@@ -297,10 +297,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     // overriding behavior of BasicNode
 
     public void commit() {
-        super.commit();  // commit the node - the buidler should now be loaded by TypeDef/ObjectTypes
+        super.commit();  // commit the node - the builder should now be loaded by TypeDef/ObjectTypes
         // rebuild builder reference and fieldlist.
-        builder=((TypeDef)getNode().getBuilder()).getBuilder(getNode());
-        init();
+        initManager();
     }
 
     public void delete(boolean deleteRelations) {

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.22 2002-10-03 12:28:11 pierre Exp $
+ * @version $Id: BasicRelation.java,v 1.23 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -35,33 +35,43 @@ public class BasicRelation extends BasicNode implements Relation {
 
     protected boolean relationChanged = false; // Indicates a change in snum or dnum
 
+    /**
+     * @javadoc
+     */
+    BasicRelation(MMObjectNode node, Cloud cloud) {
+        super(node,cloud);
+    }
 
     /**
      * @javadoc
      */
     BasicRelation(MMObjectNode node, NodeManager nodeManager) {
         super(node,nodeManager);
-        if (nodeManager instanceof RelationManager) {
-            this.relationManager=relationManager;
-        }
-        snum = node.getIntValue("snumber");
-        dnum = node.getIntValue("dnumber");
-
-        snumtype = mmb.getTypeDef().getNodeType(snum);
-        dnumtype = mmb.getTypeDef().getNodeType(dnum);
     }
 
     /**
      * @javadoc
      */
-    BasicRelation(MMObjectNode node, NodeManager nodeManager, int id) {
-        super(node,nodeManager,id);
-        isnew=true;
-        if (nodeManager instanceof RelationManager) {
-            this.relationManager=relationManager;
+    BasicRelation(MMObjectNode node, Cloud cloud, int id) {
+        super(node,cloud,id);
+    }
 
+    /**
+     * Initializes the node.
+     * Determines nodemanager and cloud (depending on information available),
+     * Sets references to MMBase modules and initializes state in case of a transaction.
+     */
+    protected void init() {
+        super.init();
+        if (nodeManager instanceof RelationManager) {
+            relationManager=(RelationManager)nodeManager;
         }
-        temporaryNodeId=id;
+        snum = getIntValue("snumber");
+        snumtype = -1;
+        if (snum!=-1) snumtype = mmb.getTypeDef().getNodeType(snum);
+        dnum = getIntValue("dnumber");
+        dnumtype = -1;
+        if (dnum!=-1) dnumtype = mmb.getTypeDef().getNodeType(dnum);
     }
 
 
@@ -128,7 +138,7 @@ public class BasicRelation extends BasicNode implements Relation {
     }
 
     /**
-     * 
+     *
      * @javadoc
      */
     void checkValid() {
@@ -169,14 +179,14 @@ public class BasicRelation extends BasicNode implements Relation {
         if (! (BasicCloud.isTemporaryId(snum) || BasicCloud.isTemporaryId(dnum))) {
             if (isnew) {
                 cloud.verify(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
-                relationChanged = false;            
+                relationChanged = false;
             } else {
                 if (relationChanged) {
                     cloud.verify(Operation.CHANGE_RELATION, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
                     relationChanged = false;
-                }        
+                }
             }
-        } 
+        }
         super.commit();
         if (!(cloud instanceof Transaction)) {
             snum = getNode().getIntValue("snumber");

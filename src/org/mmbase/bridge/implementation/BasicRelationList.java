@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.10 2002-10-03 12:28:11 pierre Exp $
+ * @version $Id: BasicRelationList.java,v 1.11 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
@@ -35,16 +35,23 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
     /**
      * ...
      */
-    BasicRelationList(Collection c, BasicCloud cloud, NodeManager nodemanager) {
-        super(c,cloud,nodemanager);
+    BasicRelationList(Collection c, Cloud cloud) {
+        super(c,cloud);
     }
 
-    protected Object validate(Object o) throws ClassCastException {
+    /**
+     * ...
+     */
+    BasicRelationList(Collection c, NodeManager nodemanager) {
+        super(c,nodemanager);
+    }
+
+    protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
         if (o instanceof MMObjectNode) {
             if (((MMObjectNode) o).getBuilder() instanceof org.mmbase.module.corebuilders.InsRel) {
                 return o;
             } else {
-                throw new ClassCastException("not a relation node");
+                throw new IllegalArgumentException("requires a relation node");
             }
         } else {
             return (Relation)o;
@@ -62,7 +69,7 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
      *
      */
     public RelationList subRelationList(int fromIndex, int toIndex) {
-        return new BasicRelationList(subList(fromIndex, toIndex),cloud,nodemanager);
+        return new BasicRelationList(subList(fromIndex, toIndex),nodeManager);
     }
 
     /**
