@@ -7,7 +7,7 @@
   @author Michiel Meeuwissen
   @author Pierre van Rooden
   @author Martijn Houtman
-  @version $Id: wizard.xsl,v 1.3 2004-01-14 14:12:47 pierre Exp $
+  @version $Id: wizard.xsl,v 1.3.2.1 2004-04-16 09:04:56 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -245,7 +245,7 @@
 
       // Store htmlarea names.
       var htmlAreas = new Array();
-      <xsl:for-each select="//form[@id=/wizard/curform]//*[@ftype='html']">
+      <xsl:for-each select="//form[@id=/wizard/curform]//*[@ftype='html' and @maywrite!='false']">
         htmlAreas[htmlAreas.length] = '<xsl:value-of select="@fieldname"/>';
       </xsl:for-each>
 
