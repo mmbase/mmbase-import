@@ -1061,9 +1061,11 @@ Build-compiler: ${build.compiler}
       <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
     </ant>
 
+    <ant target="documentation.index" />
+
   </target>
 
-  <target name="documentation.index">
+  <target name="documentation.index" depends="init.compile" description="generates the index.html for the documentation">
     <!-- compile class for listing of builders -->
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
@@ -1086,7 +1088,6 @@ Build-compiler: ${build.compiler}
       </classpath>
       <arg value="${mmdocs.dir}" />
     </java>
-
   </target>
 
 
