@@ -40,7 +40,7 @@ if (urlStack == null) {
 }
 
 
-%>
+%><mm:content postprocessor="swallow">
 <mm:import externid="pop" />
 <mm:import externid="push" />
 <mm:import externid="nopush" />
@@ -81,11 +81,8 @@ if (urlStack == null) {
 
 
 <mm:write referid="config" session="mmeditors_config" />
-
-<% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
-%>
-<mm:locale language="$config.lang" country="$config.country" jspvar="locale">
-<%
+</mm:content><% 
+java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
+%><mm:locale language="$config.lang" country="$config.country" jspvar="locale"><%
   m = java.util.ResourceBundle.getBundle("org.mmbase.jspeditors.editors", locale);
-%>
-</mm:locale>
+%></mm:locale>
