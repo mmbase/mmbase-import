@@ -76,20 +76,22 @@ a:hover { text-decoration: underline; }
 
 .path
 {
-	margin: 0px 0px 4px 0px;
 	background: #E7E6DE;
-	border: 1px solid #ccc;
 	font-weight: bold;
-	padding: 2px;
-	display: block;
+	padding: 4px;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.fltleft {
+	float: left;
+}
+.fltright
+{
+	float: right;
+	padding: 0 2px 0 0;
 }
 
-.rel
-{
-	margin: 0px 0px 4px 0px;
-	padding: 2px;
-	display: block;
-}
 
 .gui
 {
@@ -97,18 +99,88 @@ a:hover { text-decoration: underline; }
 	padding: 2px;
 }
 
-.editbutton
+.rel
+{
+	padding: 4px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.rel0
+{
+	padding: 4px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.rel1
+{
+	padding: 4px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.rel2
+{
+	padding: 4px 4px 4px 20px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.reltxt
+{
+	float: left;
+	padding: 2px;
+}
+
+.relnode
+{
+	clear: both;
+	padding: 0 0 0 20px;
+}
+
+/* buttons */
+.buttonedit
 {
 	float: left;
 	margin: 0 4px 0 0;
 }
 
+.buttonrelate
+{
+	float: right;
+	margin: 0 0 4px 4px;
+	padding: 2px;
+}
+
 .buttons
 {
 	float: left;
-	margin: 0 4px 0 0;
+	margin: 1px 4px 1px 0;
 	display: block;
 }
+
+/* edit relation */
+.editrelation
+{
+	padding: 4px;
+	display: block;
+	background: #fff;
+	text-align: right;
+	text-transform: inherit;
+	clear: both;
+}
+
+.editrelation form { margin: 0; }
+.editrelation input {
+	width:52px;
+}
+
 
 /* end sidebar stuff*/
 #footer
