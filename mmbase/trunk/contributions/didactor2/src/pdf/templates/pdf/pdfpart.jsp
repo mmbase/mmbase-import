@@ -42,14 +42,15 @@
     <%= "<h"+level.toString()+">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
     <br/>
     <mm:import jspvar="text" reset="true"><mm:field name="intro" escape="none"/><mm:field name="text" escape="none"/></mm:import>
-    <%
-
+ <%
+    System.err.println("Cleaning up '"+text+"'");
         //
         // remove some of the annoying html that messes up the PDFs
         // 
-        text = text.replaceAll("</?font[^>]*>","");
-        text = text.replaceAll("(<t[dh][^>])width=\"[^\"]*\"","$1");
-        text = text.replaceAll("(<t[dh][^>])height=\"[^\"]*\"","$1");
+        text = text.replaceAll("</?(font|style)[^>]*>","");
+        text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
+        text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
+        text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='100%'>");
         text = text.replaceAll("<p\\s*/>","");
         text = text.replaceFirst("\\A\\s*","");
         text = text.replaceFirst("\\s*\\z","");
@@ -59,8 +60,8 @@
         if (!text.endsWith("</p>")) {
             text = text+"</p>";
         }
-    %>
-   
+    System.err.println("Result: '"+text+"'");
+%><%= text %>  
     <mm:compare referid="node_type" value="learnblocks">
        <%= text %>
     </mm:compare>

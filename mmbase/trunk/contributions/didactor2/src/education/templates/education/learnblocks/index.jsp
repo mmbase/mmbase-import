@@ -27,7 +27,8 @@
 
 <mm:node number="$learnobject">
   <h1><mm:field name="name"/></h1>
-  <mm:field name="intro" escape="none"/>
+  <mm:import jspvar="text" reset="true"><mm:field name="intro" escape="none"/></mm:import>
+  <%@include file="/shared/cleanText.jsp"%>
 </mm:node>
 
 </body>

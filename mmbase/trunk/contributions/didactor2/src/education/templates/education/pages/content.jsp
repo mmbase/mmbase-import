@@ -27,23 +27,27 @@
   <h2> <mm:field name="name"/></h2>
 </mm:notpresent>
 
+
+    <mm:import jspvar="text" reset="true"><mm:field name="text" escape="none"/></mm:import>
+  
+
   <table width="100%" border="0" class="pagetable">
   
   <mm:compare referid="layout" value="0">
-  <tr><td width="50%"><mm:field name="text" escape="none"/></td></tr>
+  <tr><td width="50%"><%@include file="/shared/cleanText.jsp"%></td></tr>
   <tr><td><%@include file="images.jsp"%></td></tr>
   </mm:compare>
   <mm:compare referid="layout" value="1">
   <tr><td  width="50%"><%@include file="images.jsp"%></td></tr>
-  <tr><td><mm:field name="text" escape="none"/></td></tr>
+  <tr><td><%@include file="/shared/cleanText.jsp"%></td></tr>
   </mm:compare>
   <mm:compare referid="layout" value="2">
-  <tr><td><mm:field name="text" escape="none"/></td>
+  <tr><td><%@include file="/shared/cleanText.jsp"%></td>
       <td><%@include file="images.jsp"%></td></tr>
   </mm:compare>
   <mm:compare referid="layout" value="3">
   <tr><td><%@include file="images.jsp"%></td>
-      <td><mm:field name="text" escape="none"/></td></tr>
+      <td><%@include file="/shared/cleanText.jsp"%></td></tr>
   </mm:compare>
  
   </table>
