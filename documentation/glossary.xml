@@ -100,56 +100,48 @@
         which defines an object type in the MMBase object cloud.</para></listitem><listitem><para>The
         xml configuration file used by MMBase to create a table in the
         database.</para></listitem></orderedlist><example><title>Example of a
-        builder with only one field, named title.</title><para><programlisting>&#60;?xml
-        version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&#62; &#60;!DOCTYPE
-        builder PUBLIC &#34;-//MMBase/DTD builder config 1.1//EN&#34;
-        &#34;http://www.mmbase.org/dtd/builder_1_1.dtd&#34;&#62; &#60;builder
-        name=&#34;news&#34; maintainer=&#34;mmbase.org&#34;
-        version=&#34;0&#34; extends=&#34;object&#34;&#62;
-        &#60;status&#62;active&#60;/status&#62;
-        &#60;searchage&#62;14&#60;/searchage&#62; &#60;names&#62; &#60;!--
-        singles per language as defined by ISO 639 --&#62; &#60;singular
-        xml:lang=&#34;en&#34;&#62;NewsItem&#60;/singular&#62; &#60;singular
-        xml:lang=&#34;fr&#34;&#62;Nouvelle&#60;/singular&#62; &#60;singular
-        xml:lang=&#34;nl&#34;&#62;NieuwsItem&#60;/singular&#62; &#60;singular
-        xml:lang=&#34;eo&#34;&#62;Novaĵo&#60;/singular&#62; &#60;!-- multiple
-        per language as defined by ISO 639 --&#62; &#60;plural
-        xml:lang=&#34;en&#34;&#62;NewsItems&#60;/plural&#62; &#60;plural
-        xml:lang=&#34;fr&#34;&#62;Nouvelles&#60;/plural&#62; &#60;plural
-        xml:lang=&#34;nl&#34;&#62;NieuwsItems&#60;/plural&#62; &#60;plural
-        xml:lang=&#34;eo&#34;&#62;Novaĵoj&#60;/plural&#62; &#60;/names&#62;
-        &#60;!-- &#60;descriptions&#62; small description of the builder for
-        human reading --&#62; &#60;descriptions&#62; &#60;!-- descriptions per
-        language as defined by ISO 639 --&#62; &#60;description
-        xml:lang=&#34;en&#34;&#62;News item&#60;/description&#62;
-        &#60;description
-        xml:lang=&#34;fr&#34;&#62;Nouvelles&#60;/description&#62;
-        &#60;description xml:lang=&#34;nl&#34;&#62;Nieuws
-        item&#60;/description&#62; &#60;description
-        xml:lang=&#34;eo&#34;&#62;Novaĵoj&#60;/description&#62;
-        &#60;/descriptions&#62; &#60;fieldlist&#62; &#60;!-- POS 3 :
-        &#60;field&#62; &#39;title&#39; --&#62; &#60;field&#62;
-        &#60;descriptions&#62; &#60;description
-        xml:lang=&#34;en&#34;&#62;Title of the news item&#60;/description&#62;
-        &#60;description xml:lang=&#34;nl&#34;&#62;Titel (hoofd kop) van het
-        nieuwsitem&#60;/description&#62; &#60;/descriptions&#62; &#60;gui&#62;
-        &#60;guiname xml:lang=&#34;en&#34;&#62;Title&#60;/guiname&#62;
-        &#60;guiname xml:lang=&#34;fr&#34;&#62;Titre&#60;/guiname&#62;
-        &#60;guiname xml:lang=&#34;nl&#34;&#62;Titel&#60;/guiname&#62;
-        &#60;guiname xml:lang=&#34;eo&#34;&#62;Titolo&#60;/guiname&#62;
-        &#60;guitype&#62;string&#60;/guitype&#62; &#60;/gui&#62;
-        &#60;editor&#62; &#60;positions&#62; &#60;!-- position in the input
-        area of the editor --&#62; &#60;input&#62;1&#60;/input&#62; &#60;!--
-        position in list area of the editor --&#62;
-        &#60;list&#62;1&#60;/list&#62; &#60;!-- position in search area of the
-        editor --&#62; &#60;search&#62;1&#60;/search&#62; &#60;/positions&#62;
-        &#60;/editor&#62; &#60;!-- database related --&#62; &#60;db&#62;
-        &#60;!-- name of the field in the database --&#62; &#60;name
-        xml:lang=&#34;en&#34;&#62;title&#60;/name&#62; &#60;!-- MMBase
-        datatype and demands on it --&#62; &#60;type
-        state=&#34;persistent&#34; size=&#34;255&#34; notnull=&#34;true&#34;
-        key=&#34;false&#34;&#62;STRING&#60;/type&#62; &#60;/db&#62;
-        &#60;/field&#62; &#60;/fieldlist&#62; &#60;/builder&#62;</programlisting></para></example><remark>The
+        builder with only one field, named title.</title><para>
+							<programlisting><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="object" maintainer="mmbase.org" name="news" version="0">
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">NewsItem</singular>
+    <singular xml:lang="nl">NieuwsItem</singular>
+    <plural xml:lang="en">NewsItems</plural>
+    <plural xml:lang="nl">NieuwsItems</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">News item</description>
+    <description xml:lang="nl">Nieuws item</description>
+  </descriptions>
+
+  <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="en">Title of the news item</description>
+        <description xml:lang="nl">Titel (hoofd kop) van het nieuwsitem</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <db>
+        <name>title</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>
+]]>
+</programlisting></para></example><remark>The
         term builder is used when one speaks about the object cloud and its
         representation in the database.</remark></glossdef>
 
@@ -1202,5 +1194,6 @@
         <glosssee></glosssee>
       </glossentry>
     </glosslist>
+		
   </section>
 </article>
