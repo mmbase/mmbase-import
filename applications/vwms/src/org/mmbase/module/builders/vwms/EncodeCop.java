@@ -75,7 +75,7 @@ import org.mmbase.util.logging.*;
  * 
  * 
  * @author Daniel Ockeloen, David van Zeventer
- * @version $Revision: 1.19 $ $Date: 2001-05-07 12:40:20 $
+ * @version $Revision: 1.20 $ $Date: 2001-05-11 07:57:49 $
  */
 public class EncodeCop extends Vwm implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -177,7 +177,7 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 
 	/**
 	 * Checks the audiopart ctype and source value and when ok, it creates an 
-	 * EncodeHandler with task 'newcdtrack' to rip for this new audiopart.
+	 * EncodeHandler with task 'cdrip' to rip for this new audiopart.
 	 * @param machine Name of the machine that changed the node.
 	 * @param number - a String containing the object nr of this audioparts node.
 	 * @param ctype - a String with the node changed type.
@@ -192,8 +192,8 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 				try {
 					MMObjectNode apNode=bul.getHardNode(Integer.parseInt(number));
 					if(apNode.getIntValue("source") == AudioParts.AUDIOSOURCE_CD) {
-						log.info("New audiopart source:CD, adding new EncodeHandler with task 'newcdtrack'");
-						EncoderHandlers.addElement(new EncodeHandler(this,"newcdtrack",apNode));
+						log.info("New audiopart source:CD, adding new EncodeHandler with task 'cdrip'");
+						EncoderHandlers.addElement(new EncodeHandler(this,"cdrip",apNode));
 					}
 				} catch (NumberFormatException nfe) {
 					log.error("Can't get node cause number:"+number+" is not an integer.");
