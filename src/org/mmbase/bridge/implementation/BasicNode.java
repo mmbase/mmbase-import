@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.127 2004-05-07 13:18:09 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.128 2004-06-11 17:14:33 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -450,26 +450,30 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public Object getValue(String fieldName) {
         if (nodeManager.hasField(fieldName)) {
             int type = nodeManager.getField(fieldName).getType();
+            Object value = noderef.getValue(fieldName);
+            if (value == null || value == MMObjectNode.VALUE_NULL) return null;
             switch(type) {
-            case Field.TYPE_STRING:  return (getObjectValue(fieldName) == null ? null : getStringValue(fieldName));
+            case Field.TYPE_STRING:  return getStringValue(fieldName);
             case Field.TYPE_BYTE:    return getByteValue(fieldName);
-            case Field.TYPE_INTEGER: return (getObjectValue(fieldName) == null ? null : new Integer(getIntValue(fieldName)));
-            case Field.TYPE_FLOAT:   return (getObjectValue(fieldName) == null ? null : new Float(getFloatValue(fieldName)));
-            case Field.TYPE_DOUBLE:  return (getObjectValue(fieldName) == null ? null : new Double(getDoubleValue(fieldName)));
-            case Field.TYPE_LONG:    return (getObjectValue(fieldName) == null ? null : new Long(getLongValue(fieldName)));
+            case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+            case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+            case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+            case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
             case Field.TYPE_XML:     return getXMLValue(fieldName);
             case Field.TYPE_NODE:    return getNodeValue(fieldName);
-            default:                 getNode().getValue(fieldName);
+            default:                 
+                log.error("Unknown fieldtype '" + type + "'"); 
+                return value;
             }
         } else {
             //log.warn("Requesting value of unknown field '" + fieldName + "')");
+            return noderef.getValue(fieldName);
         }
 
-        return getNode().getValue(fieldName);
     }
 
     public Object getObjectValue(String fieldName) {
-        Object result = getNode().getValue(fieldName);
+        Object result = noderef.getValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             result = ValueIntercepter.processGet(0, this, nodeManager.getField(fieldName), result);
         }
@@ -478,7 +482,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     public boolean getBooleanValue(String fieldName) {
-        return getNode().getBooleanValue(fieldName);
+        return noderef.getBooleanValue(fieldName);
     }
 
     public Node getNodeValue(String fieldName) {
@@ -1070,13 +1074,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     // javadoc inherited (from Node)
     public String getContext() {
-        return cloud.getContext(getNumber());
+        return getNode().getContext(((BasicUser)cloud.getUser()).getUserContext());
     }
 
 
     // javadoc inherited (from Node)
-    public StringList getPossibleContexts() {
-        return new BasicStringList(cloud.getPossibleContexts(getNumber()));
+    public StringList getPossibleContexts() {        
+        return new BasicStringList(getNode().getPossibleContexts(((BasicUser)cloud.getUser()).getUserContext()));
     }
 
     public boolean mayWrite() {
