@@ -280,8 +280,8 @@ public class MediaSources extends MMObjectBuilder {
     public Object executeFunction(MMObjectNode node, String function, String field) {
         if (log.isDebugEnabled()) log.debug("executeFunction  " + function + "(" + field + ") on" + node);
         if (function.equals("str")) {
-            if (field.equals("status")) {
-                int val=node.getIntValue("status");
+            if (field.equals("state")) {
+                int val=node.getIntValue("state");
                 switch(val) {
                     case REQUEST: return "Request";
                     case BUSY: return "Busy";
@@ -296,11 +296,14 @@ public class MediaSources extends MMObjectBuilder {
                     case STEREO: return "Stereo";
                     default: return "Undefined";
                 }
+            } else if (field.equals("codec")) {
+                int val=node.getIntValue("codec");
+                return MediaSources.convertNumberToCodec(val);
             } else if (field.equals("format")) {
                 int val=node.getIntValue("format");
                 return MediaSources.convertNumberToFormat(val);
             } else {
-                return field;
+                return node.getStringValue(field);
             }
         } else if (function.equals("absoluteurl")) {
             return getURL(node, field);
@@ -433,5 +436,26 @@ public class MediaSources extends MMObjectBuilder {
         if(format.equals("ogm")) return OGM_FORMAT;
         log.error("Cannot convert format ("+format+") to number");
         return -1;
+    }
+
+    public static int convertCodecToNumber(String codec) {
+        codec = codec.toLowerCase();
+        if(codec.equals("vorbis")) return VORBIS_CODEC;
+        if(codec.equals("g2")) return G2_CODEC;
+        if(codec.equals("div3")) return DIV3_CODEC;
+        if(codec.equals("div4")) return DIV4_CODEC;
+        if(codec.equals("divx")) return DIVX_CODEC;
+        log.error("Cannot convert codec ("+codec+") to number");
+        return -1;
+    }
+    public static String convertNumberToCodec(int codec) {
+        switch(codec) {
+            case VORBIS_CODEC: return "vorbis";
+            case G2_CODEC: return "g2";
+            case DIV3_CODEC: return "div3";
+            case DIV4_CODEC: return "div4";
+            case DIVX_CODEC: return "divx";
+            default: return "Undefined";
+        }
     }
 }
