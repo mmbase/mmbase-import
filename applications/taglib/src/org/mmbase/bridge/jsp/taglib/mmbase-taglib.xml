@@ -1031,6 +1031,11 @@ See mmexamples/taglib for more elaborated examples.
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="offset" />
     </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
     <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
   &lt;mm:first&gt;news in this magazine&lt;/mm:first&gt;
