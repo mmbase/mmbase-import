@@ -38,11 +38,7 @@ public class UrlTag extends ContextReferrerTag {
     }
 
     public void setPage(String p) throws JspTagException {
-        try {
-            page = getAttributeValue(p); 
-        } catch (JspTagException e) {
-            throw new JspTagException(e.toString() + " (perhaps you should escape dots)");
-        }
+        page = getAttributeValue(p); 
     }
 
     public void setJspvar(String jv) {
@@ -60,10 +56,11 @@ public class UrlTag extends ContextReferrerTag {
         return EVAL_BODY_TAG;
     }
 
-    protected String getUrl() throws JspTagException {        
+    protected String getUrl(boolean writeamp) throws JspTagException {        
         String show = page;
+        String amp = (writeamp ? "&amp;" : "&");
         
-        String connector = (show.indexOf('?') == -1 ? "?" : "&amp;");
+        String connector = (show.indexOf('?') == -1 ? "?" : amp);
 
         if (referids != null) {
             Iterator i = referids.iterator();
@@ -72,7 +69,7 @@ public class UrlTag extends ContextReferrerTag {
                 if (getContextTag().isPresent(key)) {
                     String value = getString(key);                
                     show += connector + key + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value);
-                    connector = "&amp;";
+                    connector = amp;
                 }
             }
         }
@@ -82,7 +79,7 @@ public class UrlTag extends ContextReferrerTag {
             while (i.hasNext()) {
                 Map.Entry map  = (Map.Entry) i.next();
                 show += connector + (String) map.getKey() + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", map.getValue().toString());
-                connector = "&amp;";
+                connector = amp;
             }
         }
         
@@ -92,6 +89,9 @@ public class UrlTag extends ContextReferrerTag {
         }
         return show;
 
+    }
+    protected String getUrl() throws JspTagException {
+        return getUrl(true);
     }
 
     public int doAfterBody() throws JspTagException {
