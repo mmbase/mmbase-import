@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.15 2000-09-01 15:10:06 wwwtech Exp $
+ * @version $Id: servscan.java,v 1.16 2000-10-09 13:25:25 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -369,8 +369,8 @@ public class servscan extends JamesServlet {
 					sp.wantCache="HENK";
 //					debug("handleCache(): CACHE="+parser.scancache);
 					String rst=parser.scancache.get(sp.wantCache,req_line, sp.body.substring(start,end+1));
-					String pragma = sp.getHeader("Pragma");
-					if (rst!=null && (pragma==null || !pragma.equals(sp.loadmode))) {
+					if (debug) debug("handleCache: sp.reload: "+sp.reload);
+					if (rst!=null && !sp.reload) {
 						setHeaders(sp,res,rst.length());
 						// org.mmbase res.writeHeaders();
 						out.print(rst);
@@ -379,16 +379,16 @@ public class servscan extends JamesServlet {
 						if (debug) debug("handleCache(): cache.hit("+req_line+")");
 						return(true);
 					} else {
-						debug("hanldeCache(): cache.miss("+req_line+")");
+						debug("handleCache(): cache.miss("+req_line+")");
 					}
 				}
 			}
 
 			if (sp.body!=null && sp.body.indexOf("<CACHE PAGE>")!=-1) {
 				sp.wantCache="PAGE";
-				String pragma = sp.getHeader("Pragma");
 				String rst=parser.scancache.get(sp.wantCache,req_line);
-				if (rst!=null && (pragma==null || !pragma.equals(sp.loadmode))) {
+				if (debug) debug("handleCache: sp.reload: "+sp.reload);
+				if (rst!=null && !sp.reload) {
 					setHeaders(sp,res,rst.length());
 					// org.mmbase res.writeHeaders();
 					out.print(rst);
@@ -433,12 +433,13 @@ public class servscan extends JamesServlet {
 		return(name);
 	}
 
-
 	void doEditorReload(scanpage sp,HttpServletResponse res) {
+		int EXPIRE = 120;
+		if (debug) debug("doEditorReload called, sp.reload:"+sp.reload);
+		
 		if (sessions!=null) {
 			String sname=getCookie(sp.req,res);
 			sessionInfo session=sessions.getSession(sp,sname);
-
 
 			// try to obtain and set the reload mode.
 			String tmp=session.getValue("RELOAD");
@@ -448,25 +449,34 @@ public class servscan extends JamesServlet {
 				if (tmp2!=null) {
 					try {
 						int then=Integer.parseInt(tmp2);
-						int now=(int)(DateSupport.currentTimeMillis()/1000);
-						if ((now-then)<300) {
-							sp.loadmode="no-cache";
+						int now= (int)(DateSupport.currentTimeMillis()/1000);
+						//debug("doEditorReload: then:"+then);
+						//debug("doEditorReload: now :"+now);
+						if ((now-then)<EXPIRE) {
+							//sp.loadmode="no-cache";
+							sp.reload=true;
+							debug("doEditorReload: sp.reload:"+sp.reload+", remote user:"+HttpAuth.getRemoteUser(sp.req));
+							if (debug) debug("doEditorReload: sp.reload:"+sp.reload+", expire time not reached: "+(now-then)+"<"+EXPIRE+" sec");
 						} else {
 							session.setValue("RELOAD","N");
-							sp.loadmode="cache";
+							//sp.loadmode="cache";
+							sp.reload=false;
+							if (debug) debug("doEditorReload: Reload expired "+(now-then)+">="+EXPIRE+" , sp.reload:"+sp.reload);
 						}
 					} catch(Exception e) {
 						session.setValue("RELOAD","N");
-						sp.loadmode="cache";
+						//sp.loadmode="cache";
+						sp.reload=false;
 					}
 				} else {
 					session.setValue("RELOAD","N");
-					sp.loadmode="cache";
+					//sp.loadmode="cache";
+					sp.reload=false;
 				}
 			} else {
-				sp.loadmode="cache";
+				//sp.loadmode="cache";
+				sp.reload=false;
 			}
 		}
 	}
-
 }
