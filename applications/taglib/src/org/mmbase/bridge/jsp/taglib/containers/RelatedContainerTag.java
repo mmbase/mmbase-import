@@ -22,7 +22,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.10 2004-07-10 12:16:45 nico Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.11 2004-07-23 14:55:59 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -62,6 +62,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
         Node node = getNode();
         Step step = query.addStep(node.getNodeManager());
+        query.setAlias(step, node.getNodeManager().getName() + "0");
         query.addNode(step, node);
 
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
