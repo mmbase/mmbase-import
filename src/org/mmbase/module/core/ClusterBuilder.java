@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.27 2003-01-13 17:03:35 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.28 2003-01-22 12:31:17 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1451,6 +1451,9 @@ public class ClusterBuilder extends VirtualBuilder {
     private void addField(BasicSearchQuery query, BasicStep step, 
             String fieldName, Map fieldsByAlias) {
                 
+        // Fieldalias = stepalias.fieldname.
+        // This value is used to store the field in fieldsByAlias.
+        // The actual alias of the field is not set.
         String fieldAlias = step.getAlias() + "." + fieldName;
         if (fieldsByAlias.containsKey(fieldAlias)) {
             // Added already.
@@ -1467,7 +1470,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // Add the stepfield.
         BasicStepField stepField 
-            = query.addField(step, fieldDefs).setAlias(fieldAlias);
+            = query.addField(step, fieldDefs);
         fieldsByAlias.put(fieldAlias, stepField);
     }
             
