@@ -27,7 +27,7 @@ response.setDateHeader("Date",  now);
 <mm:remove referid="config" /><!-- it is not possible to overwrite existing var -->
 <mm:context id="config">
   <mm:import id="page_size">20</mm:import>
-  <mm:import id="hide_search">false</mm:import>
+  <!-- mm:import id="hide_search">false</mm:import-->
   <mm:import id="style_sheet" externid="mmjspeditors_style" from="cookie">mmbase.css</mm:import>
   <mm:import id="lang"        externid="mmjspeditors_language"  from="cookie" >en</mm:import>
   <mm:import id="method"        externid="mmjspeditors_method"  from="cookie" >loginpage</mm:import>

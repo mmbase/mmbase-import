@@ -9,7 +9,7 @@
 <mm:context id="edit">
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
 
-<body class="basic" <mm:present referid="node_type"><mm:compare referid="config.hide_search" value="false"> onLoad="document.search.elements[0].focus();"</mm:compare></mm:present>>
+<body class="basic" <mm:present referid="node_type">onLoad="document.search.elements[0].focus();"</mm:present>>
     <table summary="node editors" width="100%" class="super">
     	<tr align="left">
     	    <th width="20%"><%=m.getString("search_node.search")%></th>
