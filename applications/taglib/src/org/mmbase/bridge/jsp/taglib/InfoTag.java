@@ -36,45 +36,60 @@ public class InfoTag extends MMTaglib implements BodyTag {
     public int doStartTag() throws JspException{
 	return EVAL_BODY_TAG;
     }
+
+       /**
+     * implementation of TagExtraInfo return values declared here
+     * should be filled at one point, currently fillVars is responsible for
+     * that ant gets called before every
+     **/
+    public VariableInfo[] getVariableInfo(TagData data){
+	VariableInfo[] variableInfo = new VariableInfo[1];;
+
+	String id = "";
+	if (data.getAttribute("id") != null){
+            id = "" + data.getAttribute("id");
+	}
+
+        variableInfo[0] = new VariableInfo(id,
+                                           "java.lang.String",
+                                           true,
+                                           VariableInfo.AT_END);
+	return variableInfo;
+    }
     
      /**
       *
       **/
     public int doAfterBody() throws JspException {
-	try {            
-	    //command is in the body of the tag
-	    String command = bodyOut.getString();
-            String result;
-            
-            if (nodeManager != null) {
-                if (module != null) {
-                    throw new JspTagException("Cannot give both module and nodemanager");
-                }
-                result = getDefaultCloud().getNodeManager(nodeManager).getInfo(command,
-                                                                               pageContext.getRequest(),
-                                                                               pageContext.getResponse());
-            } else if (module != null) {
-                result = getDefaultCloudContext().getModule(module).getInfo(command,
-                                                                               pageContext.getRequest(),
-                                                                               pageContext.getResponse());
-            } else {
-                throw new JspTagException("Must give module or nodemanager");
+       
+        //command is in the body of the tag
+        String command = bodyOut.getString();
+        String result;
+        
+        if (nodeManager != null) {
+            if (module != null) {
+                throw new JspTagException("Cannot give both module and nodemanager");
             }
-            	    
-	    //pageContext.getOut().print(retval);
-	    bodyOut.clearBody();
-	    bodyOut.print(result);
-	    bodyOut.writeOut(bodyOut.getEnclosingWriter());
-	} catch (java.io.IOException ioe){
-	    throw new JspTagException("IOException " + ioe.getMessage());
-	}
-        return SKIP_BODY;
+            result = getDefaultCloud().getNodeManager(nodeManager).getInfo(command,
+                                                                           pageContext.getRequest(),
+                                                                           pageContext.getResponse());
+        } else if (module != null) {
+            result = getDefaultCloudContext().getModule(module).getInfo(command,
+                                                                        pageContext.getRequest(),
+                                                                        pageContext.getResponse());
+        } else {
+            throw new JspTagException("Must give module or nodemanager");
+        }
+        
+        //pageContext.getOut().print(retval);
+        pageContext.setAttribute(getId(), result);
+        return SKIP_BODY;        
     }
+
+
+
+
+
+
+
 }
-
-
-
-
-
-
-
