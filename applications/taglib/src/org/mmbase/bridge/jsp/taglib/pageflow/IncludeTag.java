@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.58 2005-03-16 23:23:52 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.59 2005-03-16 23:39:46 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -380,7 +380,7 @@ public class IncludeTag extends UrlTag {
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
                 request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
-                request.setAttribute(INCLUDE_PATH_KEY, nudeUrl);
+
                 if (log.isDebugEnabled()) {
                     log.debug("Next Include: Level=" + includeLevel + " URI=" + includedServlet);
                 }
@@ -397,11 +397,7 @@ public class IncludeTag extends UrlTag {
                 } else {
                     request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
                 }
-                if (includingServlet == null) {
-                    request.removeAttribute(INCLUDE_PATH_KEY);
-                } else {                 
-                    request.setAttribute(INCLUDE_PATH_KEY,  includingServlet);
-                }
+
             } else { // really absolute
                 if (getCite()) {
                     cite(bodyContent, gotUrl, request);
