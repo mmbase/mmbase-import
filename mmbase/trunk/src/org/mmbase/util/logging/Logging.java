@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.26 2004-01-15 23:21:20 michiel Exp $
+ * @version $Id: Logging.java,v 1.27 2004-01-22 14:39:49 michiel Exp $
  */
 
 
@@ -317,11 +317,11 @@ public class Logging {
     public static String stackTrace(Throwable e, int max) {
         StackTraceElement[] stackTrace = e.getStackTrace();
         String message = e.getMessage();
-        StringBuffer buf;
+        StringBuffer buf = new StringBuffer(e.getClass().getName() + ": ");
         if (message == null) {
-            buf = new StringBuffer();
+
         }  else {
-            buf = new StringBuffer(message);
+            buf.append(message);
         }
         for (int i = 0; i < stackTrace.length; i++) {
             if (i == max) break;
