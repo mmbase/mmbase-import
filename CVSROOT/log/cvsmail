@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.12 2004-11-23 10:12:51 michiel Exp $
+#  $Id: cvsmail,v 1.13 2004-11-23 10:16:14 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -62,7 +62,7 @@ if ($child = fork()) {
 
     # mail message           
 	# for 'mail'
-    my $message = "From: $user <wwwtech\@mmbase.org>\nSubject: $subject\n".join("", @message);
+    my $message = "From: $user <$cvsuser\@mmbase.org>\nSubject: $subject\n".join("", @message);
 	# for 'mutt'
 	#my $message = join("", @message);
 
