@@ -23,27 +23,44 @@ function setButtonsInactive() {
 
 function updateButtons(allvalid) {
    var savebut = document.getElementById("bottombutton-save");
+   var saveonlybut = document.getElementById("bottombutton-saveonly");
     
-   if(savebut!= null) {
-      if (allvalid) {
-         setSaveInactive("false");
+   if (allvalid) {
+      setSaveInactive("false");
 
+      if(savebut!= null) {
          savebut.src = savebut.getAttribute("enabledsrc");
          savebut.className = "bottombutton";
          savebut.disabled = false;
-         var usetext = getToolTipValue(savebut,"titlesave", "Stores all changes.");
+         var usetext = getToolTipValue(savebut,"titlesave", "Stores all changes (and quit)");
          savebut.title = usetext;
-      } else {
-         setSaveInactive("true");
-
+      }
+      if(saveonlybut!= null) {
+         saveonlybut.src = saveonlybut.getAttribute("enabledsrc");
+         saveonlybut.className = "bottombutton";
+         saveonlybut.disabled = false;
+         var usetext = getToolTipValue(saveonlybut,"titlesave", "Store all changes (but continue editing).");
+         saveonlybut.title = usetext;
+      }
+   } else {
+      setSaveInactive("true");
+      if(savebut!= null) {
          savebut.src = savebut.getAttribute("disabledsrc");
          savebut.className = "bottombutton-disabled";
          savebut.disabled = true;
-         var usetext = getToolTipValue(savebut,"titlenosave", "You cannot save because one or more forms are invalid.");
+         var usetext = getToolTipValue(savebut,"titlenosave", "The changes cannot be saved, since some data is not filled in correctly.");
          savebut.title = usetext;
+      }
+      if(saveonlybut!= null) {
+         saveonlybut.src = saveonlybut.getAttribute("disabledsrc");
+         saveonlybut.className = "bottombutton-disabled";
+         saveonlybut.disabled = true;
+         var usetext = getToolTipValue(saveonlybut,"titlenosave", "The changes cannot be saved, since some data is not filled in correctly.");
+         saveonlybut.title = usetext;
       }
    }
 }
+
 
 function setFacusOnFirstInput() {
     var form = document.forms["form"];
