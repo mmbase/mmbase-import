@@ -171,10 +171,12 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
-            try {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch (IOException ioe){
-                throw new JspTagException(ioe.toString());
+            if (bodyContent != null) {
+                try {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                } catch (IOException ioe){
+                    throw new JspTagException(ioe.toString());
+                }
             }
             return SKIP_BODY;
         }

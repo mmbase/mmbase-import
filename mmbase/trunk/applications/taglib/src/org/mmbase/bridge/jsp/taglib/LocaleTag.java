@@ -67,12 +67,14 @@ public class LocaleTag extends ContextReferrerTag  {
         return EVAL_BODY_BUFFERED;
     }
     public int doAfterBody() throws JspTagException {
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            return SKIP_BODY;
-        } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
-        }        
+        if (bodyContent != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (IOException ioe){
+                throw new JspTagException(ioe.toString());
+            }        
+        }
+        return SKIP_BODY;
     }
 
 }

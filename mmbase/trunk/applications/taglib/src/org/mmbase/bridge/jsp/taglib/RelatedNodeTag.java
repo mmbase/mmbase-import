@@ -76,10 +76,12 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
     **/
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
+        if (bodyContent != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (IOException ioe){
+                throw new JspTagException(ioe.toString());
+            }
         }
         return SKIP_BODY;
     }

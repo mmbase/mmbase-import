@@ -95,10 +95,12 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         if (jspvar!=null) {
             pageContext.setAttribute(jspvar, ""+resultvalue);
         }
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (java.io.IOException ioe){
-            throw new JspTagException(ioe.toString());
+        if (bodyContent != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (java.io.IOException ioe){
+                throw new JspTagException(ioe.toString());
+            }
         }
         return SKIP_BODY;
     }

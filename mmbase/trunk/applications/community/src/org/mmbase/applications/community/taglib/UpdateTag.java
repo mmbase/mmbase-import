@@ -83,10 +83,12 @@ public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
         if (err!=null) {
             throw new JspTagException("Post failed : "+err);
         }
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (java.io.IOException ioe){
-            throw new JspTagException(ioe.toString());
+        if (bodyContent != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (java.io.IOException ioe){
+                throw new JspTagException(ioe.toString());
+            }
         }
         return SKIP_BODY;
     }
