@@ -6,15 +6,23 @@
   <body>
     <p>
       MMBase is based on servlets. To start MMBase you have to have at least one servlet which
-      extends MMBaseServlet. It could be MMBaseServlet itself (which can't do much by itself, but
-      MMBase then is availabe in your jsp).
+      extends MMBaseServlet. It could be MMBaseServlet itself (which can't do much by itself - it
+      will give back the version only - but MMBase then is availabe in your JSP-pages).
+    </p>
+    <p>
+      The abstract 'BridgeServlet' can be used to base new servlets upon in which the MMBase 'cloud'
+      is to be used.
     </p>
     <p>
       A very normal servlet to have it a an image servlet. There are two now: ImageServlet and
       'servdb'. The latter used to be the 'all purpose' MMBase servlet, but as soon as all purposes
       are migrated to stand alone, more clean, servlets this class will be deprecated.
     </p>
-    <!-- version of package description $Id: package.html,v 1.1 2002-04-19 22:26:15 michiel Exp $ -->
+    <p>
+      There are also a few servlet presents in the package which are mere `test' or `demo' servlets.
+    </p>
+    <!-- version of package description $Id: package.html,v 1.2 2002-06-30 20:15:53 michiel Exp $ -->
     @since   MMBase-1.0
+    @see     org.mmbase.bridge
   </body>
 </html>
