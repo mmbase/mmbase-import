@@ -14,7 +14,8 @@ package org.mmbase.util;
  * @see org.mmbase.util.SortedVector
  *
  * @author Rico Jansen
- * @version $Id: Sortable.java,v 1.5 2003-03-10 11:51:11 pierre Exp $
+ * @version $Id: Sortable.java,v 1.6 2004-05-03 10:50:18 michiel Exp $
+ * @deprecated I think this is the same as java.util.Comparable
  */
 public interface Sortable
 {
