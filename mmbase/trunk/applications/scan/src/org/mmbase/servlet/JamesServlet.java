@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.25 2001-05-20 08:23:58 michiel Exp $
+* @version $Id: JamesServlet.java,v 1.26 2001-06-23 16:16:13 daniel Exp $
 */
 
 
@@ -43,7 +43,7 @@ public class JamesServlet extends HttpServlet {
     /**
      * Logging
      */
-    static Logger log;
+    // static Logger log;
 
     private static int servletCount;
     private static Object servletCountLock = new Object();
@@ -53,24 +53,17 @@ public class JamesServlet extends HttpServlet {
     /**
      * Debug method for logging. obsolete
      */
-    protected void debug( String msg ) { log.debug(msg + " <deprecated call>"); }
+    protected void debug( String msg ) { 
+	//	log.debug(msg + " <deprecated call>"); }
+    }
 
     // Initializing the servlet.
     // This starts and configures the logging system.
     static {
 
-        /*
-        String dtmp=System.getProperty("mmbase.mode");
-        if (dtmp!=null && dtmp.equals("demo")) {
-            String curdir=System.getProperty("user.dir");
-            outputfile=curdir+"/log/mmbase.log";
-        } else {
-            outputfile = System.getProperty("mmbase.outputfile");
-        }
-        */
-
         // Remaining output and error can still be redirected.
-        outputfile = System.getProperty("mmbase.outputfile");
+	/** moved to MMBaseContext
+        String outputfile = MMBaseContext.getOutputFile();
         if (outputfile != null) {
             try {
                 PrintStream mystream=new PrintStream(new FileOutputStream(outputfile,true));
@@ -84,17 +77,20 @@ public class JamesServlet extends HttpServlet {
         } else {
             System.err.println("mmbase.outputfile = null, no redirection of System.out to file");
         }
+	*/
 
 
         /* Michiel:
            This doesn't seem to be such a bad place to initialise our logging stuff.
         */
-
+	/*
         System.out.println("MMBase starts now");
-        Logging.configure(System.getProperty("mmbase.config") + File.separator + "log" + File.separator + "log.xml");
+        //Logging.configure(System.getProperty("mmbase.config") + File.separator + "log" + File.separator + "log.xml");
+        Logging.configure(MMBaseContext.getConfigPath() + File.separator + "log" + File.separator + "log.xml");
         log = Logging.getLoggerInstance(JamesServlet.class.getName());
         System.out.println("Logging starts now");
         log.info("\n====================\nStarting MMBase\n====================");
+	*/
 
     }
 
@@ -112,9 +108,11 @@ public class JamesServlet extends HttpServlet {
      * Retrieves an initialization parameter.
      * Note: overides the normal way to set init params in javax.
      */
+   /*
     public String getInitParameter(String var) {
         return null;
     }
+   */
 
     /**
      * Retrieves all initialization parameters.
@@ -241,7 +239,7 @@ public class JamesServlet extends HttpServlet {
                     return cookie.replace('=','/');
                 }
             }
-            log.debug("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
+            //log.debug("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
             return null;
         } else {
 
@@ -255,7 +253,7 @@ public class JamesServlet extends HttpServlet {
             // debug(methodName+": address("+getAddress(req)+"), oldcookie("+cookies+"), this user has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
             MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
             if (mmbase == null) {
-                log.debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
+                //log.debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
                 return null;
             }
 
@@ -277,7 +275,7 @@ public class JamesServlet extends HttpServlet {
                 Properties propBuilder = null;
                 propBuilder = (Properties) mmbase.getMMObject("properties");
                 if (propBuilder==null) {
-                    log.debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
+                    //log.debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
                 }
                 StringTokenizer st = new StringTokenizer(cookies, ";");
                 while (st.hasMoreTokens()) {
@@ -285,7 +283,7 @@ public class JamesServlet extends HttpServlet {
                     if (cookie.startsWith(JAMES_COOKIENAME)) {
 
                         // Change the value field of the related property to the mmbaseIdent value.
-                        log.debug(methodName+": Changing property with value:"+cookie+" to: "+mmbaseCookie);
+                        //log.debug(methodName+": Changing property with value:"+cookie+" to: "+mmbaseCookie);
                         Enumeration e = propBuilder.search("WHERE key='SID' AND value='"+cookie.replace('=','/')+"'");
                         if (e.hasMoreElements()) {
                             MMObjectNode propNode = (MMObjectNode)e.nextElement();
@@ -404,13 +402,12 @@ public class JamesServlet extends HttpServlet {
         
         if ((printCount & 31)==0) {
 			if (curCount>0) {
-	            log.info("Running servlets: "+curCount);
+	            //log.info("Running servlets: "+curCount);
 	            for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
-	                log.info(e.nextElement());
+	                //log.info(e.nextElement());
 				}
 			}
         }
-       
     }
 
     /**
@@ -426,7 +423,46 @@ public class JamesServlet extends HttpServlet {
      * Initializes the servlet.
      */
     public void init() {
-        log.debug("init van JamesServlet");
+        //log.debug("init van JamesServlet");
+        System.out.println("init van JamesServlet "+this);
+         String curdir=System.getProperty("user.dir");
+
+	if (MMBaseContext.getConfigPath()==null) {
+		String tmp=getInitParameter("mmbase.config");
+		if (tmp!=null) {
+			if (!tmp.startsWith("/") && !tmp.startsWith("\\")) {
+				// so local path add start root
+				tmp=curdir+"/"+tmp;
+			}
+			System.out.println(tmp);
+ 			MMBaseContext.setConfigPath(tmp);
+		}
+	}
+
+	if (MMBaseContext.getHtmlRoot()==null) {
+		String tmp=getInitParameter("mmbase.htmlroot");
+		if (tmp!=null) {
+			if (!tmp.startsWith("/") && !tmp.startsWith("\\")) {
+				// so local path add start root
+				tmp=curdir+"/"+tmp;
+			}
+			System.out.println(tmp);
+			MMBaseContext.setHtmlRoot(tmp);
+		}
+	}
+
+	if (MMBaseContext.getOutputFile()==null) {
+		String tmp=getInitParameter("mmbase.outputfile");
+		if (tmp!=null) {
+			if (!tmp.startsWith("/") && !tmp.startsWith("\\")) {
+				// so local path add start root
+				tmp=curdir+"/"+tmp;
+			}
+			System.out.println(tmp);
+			MMBaseContext.setOutputFile(tmp);
+		}
+	}
+
         ServletConfig sc=getServletConfig();
         ServletContext sx=sc.getServletContext();
         MMBaseContext.setServletContext(sx);
@@ -437,7 +473,7 @@ public class JamesServlet extends HttpServlet {
      */
     protected void finalize() {
         System.out.println("end"); // obsolete call
-        log.info("end of MMBase \n\n");
+        //log.info("end of MMBase \n\n");
     }
 
 //  ------------------------------------------------------------------------------------------------------------
@@ -582,6 +618,8 @@ public class JamesServlet extends HttpServlet {
         }
         return hn;
     }
+
+
 }
 
 /**
@@ -623,4 +661,5 @@ class DebugServlet {
     public String toString() {
         return classname +" servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+URIs+")";
     }
+
 }
