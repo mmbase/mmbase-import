@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.234 2004-01-20 23:15:50 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.235 2004-02-04 17:15:40 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2103,6 +2103,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <extends>cloudreferrer</extends>
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateRelationTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       Creates a relation between two nodes.
     </info>
@@ -5344,6 +5345,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       The Tree Tag makes it possible to show a piece of the MMBase cloud genericly.
     </info>
+    <see type="tree" />
     <since>MMBase-1.7</since>    
     <attribute>
       <name>type</name>
@@ -5385,6 +5387,7 @@ The 0 is just counter, which starts at 0 on every page.
       Iterates from previous depth to (not inclusive) current depth. On the first iteration of mm:tree this will iterators one time. 
       Currently there are not upside down trees implemented, which means that this tag now always iterates one or zero times.
     </info>
+    <see type="tree" />
     <since>MMBase-1.7</since>    
   </tag>
 
@@ -5400,6 +5403,7 @@ The 0 is just counter, which starts at 0 on every page.
       This tag iterates from previous depth to current current depth (like grow), but the body is remembered, not executed.
     </info>
     <see tag="depth" />
+    <see type="tree" />
     <since>MMBase-1.7</since>    
   </tag>
 
@@ -5413,6 +5417,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Iterates from previous depth to (inclusive) current depth. For each depth it provides (as a writer) what was defined with 'onshrink'.
     </info>
+    <see type="tree" />
     <since>MMBase-1.7</since>    
   </tag>
 
@@ -5429,6 +5434,7 @@ The 0 is just counter, which starts at 0 on every page.
       Provides the current depth of the tree. The current depth is defined by the surrounding 'grow'
       or 'shrink' tag (if present) or the 'tree' tag itself otherwise.
     </info>
+    <see type="tree" />
     <since>MMBase-1.7</since>
   </tag>
 
