@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 December 2002</date>
-    <edition>$Id: index.xml,v 1.35 2003-07-24 13:42:26 rob Exp $</edition>
+    <edition>$Id: index.xml,v 1.36 2003-07-25 09:16:20 pierre Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -154,13 +154,6 @@
           Remote MMBase Cloud Interface
           (<ulink url="backenddevelopers/rmmci.html" id="rmmci">HTML</ulink>, 
           <ulink url="backenddevelopers/rmmci.pdf" id="rmmci.pdf">PDF</ulink>)
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Storage layer
-          (<ulink url="backenddevelopers/storage.html" id="storage">HTML</ulink>, 
-          <ulink url="backenddevelopers/storage.pdf" id="storage.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
