@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.205 2003-09-24 08:43:04 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.206 2003-09-24 21:17:24 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2288,7 +2288,8 @@ transaction was commited, following should result anything:
     <extends>fieldprovider</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
-    <extends>cloudreferrer</extends>
+    <extends>fieldreferrer</extends>
+    <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.FieldProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
