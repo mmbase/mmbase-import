@@ -15,6 +15,7 @@ import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * If this class is used as the class for your builder, then an
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.62 2002-10-02 21:23:31 michiel Exp $
+ * @version $Id: Images.java,v 1.63 2002-10-25 18:48:15 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -123,26 +124,29 @@ public class Images extends AbstractImages {
     /**
      * @since MMBase-1.6
      */
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, String sessionName) {
         int num = node.getNumber();
         if (num == -1 ) {   // img.db cannot handle uncommited images..
             return "...";
         }
         // NOTE that this has to be configurable instead of static like this
-        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
-        
+        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");       
         List args = new Vector();
         args.add("s(100x60)");
         String imageThumb = servlet + executeFunction(node, "cache", args);
         String image      = servlet + node.getNumber();
+        if (res != null) {
+            imageThumb = res.encodeURL(imageThumb);
+            image      = res.encodeURL(image);
+        }
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
     /**
      * @javadoc
      */
-    protected String getSGUIIndicator(MMObjectNode node, String session) {
-        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), session);
+    protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
+        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), res, session);
     }
 
     // called by init..used to retrieve all settings

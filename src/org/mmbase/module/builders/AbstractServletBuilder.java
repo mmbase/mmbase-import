@@ -15,6 +15,7 @@ import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Some builders are associated with a servlet. Think of images and attachments.
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.10 2002-10-02 21:23:31 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.11 2002-10-25 18:48:14 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -144,8 +145,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * they have to implement the 'SGUIIndicators'
      */
 
-    abstract protected String getSGUIIndicator(String session, MMObjectNode node);
-    abstract protected String getSGUIIndicator(String session, String field, MMObjectNode node);
+    abstract protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node);
+    abstract protected String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node);
 
 
     /**
@@ -161,14 +162,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
     final public String getGUIIndicator(MMObjectNode node) {              
-        return getSGUIIndicator("", node);
+        return getSGUIIndicator("", null, node);
     }
     /**
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
 
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
-        return getSGUIIndicator("", field, node);
+        return getSGUIIndicator("", null, field, node);
     }
 
 
@@ -185,11 +186,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new Vector();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
-            info.put("servletpath", "(session,number,context) Returns the path to a the servlet presenting this node. All arguments are optional");
-            info.put("servletpathof", "bla bla");
+            info.put("servletpath", "(session information,number,context) Returns the path to a the servlet presenting this node. All arguments are optional");
+            info.put("servletpathof", "(function) Returns the servletpath associated with a certain function");
             info.put("format", "bla bla");
-            info.put("mimetype", "bla bla");
-            info.put("gui", "bla bla");
+            info.put("mimetype", "Returns the mimetype associated with this object");
+            info.put("gui", "Gui representation of this object.");
 
             if (args == null || args.size() == 0) {
                 return info;
@@ -243,10 +244,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 return getGUIIndicator(node);
             } else {
                 String rtn;
-                if (args.size() <= 1) {
+                if (args.size() <= 3) {
                     rtn = getGUIIndicator((String) args.get(0), node);
                 } else {
-                    rtn = getSGUIIndicator("session=" + args.get(1) + "+", (String) args.get(0), node);
+                    // language is ignored
+                    rtn = getSGUIIndicator("session=" + args.get(2) + "+", (HttpServletResponse) args.get(3), (String) args.get(0), node);
                 }
                 if (rtn == null) return super.executeFunction(node, function, args);
                 return rtn;
