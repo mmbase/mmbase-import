@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.6 2002-07-05 10:41:54 pierre Exp $
+ * @version  $Id: validator.js,v 1.7 2002-07-19 09:06:18 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -103,8 +103,8 @@ function validateElement_validator(el, silent) {
                 var year = 1970;
             }
             if ((el.getAttribute("ftype") == "datetime") || (el.getAttribute("ftype") == "time")) {
-                var hours = form.elements["internal_" + id + "_hours"].value;
-                var minutes = form.elements["internal_" + id + "_minutes"].value;
+                var hours = form.elements["internal_" + id + "_hours"].selectedIndex;
+                var minutes = form.elements["internal_" + id + "_minutes"].selectedIndex;
             } else {
                 var hours = 0;
                 var minutes = 0;
