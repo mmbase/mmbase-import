@@ -8,7 +8,7 @@
 		<channels>-1</channels>
 		<codec>-1</codec>
 		<bitrate>-1</bitrate>
-		<format>6</format>
+		<format>17</format>
 		<height>-1</height>
 		<filesize>-1</filesize>
 	</node>
@@ -21,7 +21,7 @@
 		<channels>-1</channels>
 		<codec>-1</codec>
 		<bitrate>-1</bitrate>
-		<format>6</format>
+		<format>17</format>
 		<height>300</height>
 		<filesize>-1</filesize>
 	</node>
@@ -34,7 +34,7 @@
 		<channels></channels>
 		<codec></codec>
 		<bitrate></bitrate>
-		<format>11</format>
+		<format>18</format>
 		<height></height>
 		<filesize></filesize>
 	</node>

@@ -14,4 +14,5 @@ i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
 	<map format="*"   codec="*">audio/x-pn-realaudio</map>    
 	<map format="asf" codec="*">video/x-ms-asf</map>    
 	<map format="avi" codec="*">video/x-msvideo</map>    
+	<map format="wmp" codec="*">video/x-ms-wmp</map>    
 </mimemapping>
