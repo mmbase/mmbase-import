@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html;charset=utf-8" import="org.mmbase.security.Rank,java.util.*" errorPage="error.jsp"
+<%@page language="java" contentType="text/html;charset=utf-8" errorPage="error.jsp"
 %><%@ include file="util/headernocache.jsp"
 %><mm:content language="$language" postprocessor="reducespace" expires="0">
 <html>
@@ -13,13 +13,16 @@
     <mm:import id="tab">index</mm:import>
     <%@ include file="util/navigation.jsp"%>
     <div id="content">
-      <% if (Rank.getRank(cloud.getUser().getRank()).getInt() >= 100) { %>
-      <os:cache key="<%="edit_cat_"+cloud.getUser().getIdentifier()%>" time="<%=cacheperiod%>" refresh="<%=needsRefresh%>" scope="application">
-        <%@include file="cat.jsp" %>
-      </os:cache>
-      <% } else { %>
-          Access Denied.
-      <% }%>
+      <mm:cloudinfo type="rank">
+        <mm:isgreaterthan value="99">
+          <os:cache key="<%="edit_cat_"+cloud.getUser().getIdentifier()%>" time="<%=cacheperiod%>" refresh="<%=needsRefresh%>" scope="application">
+            <%@include file="cat.jsp" %>
+          </os:cache>
+        </mm:isgreaterthan>
+        <mm:islessthan value="100">
+        Access Denied.
+        </mm:islessthan>
+      </mm:cloudinfo>
     </div>
   </body>
   </mm:cloud>
