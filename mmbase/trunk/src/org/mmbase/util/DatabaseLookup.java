@@ -65,6 +65,13 @@ public class DatabaseLookup {
 		return new File(databaseConfigPath, databaseConfigName + ".xml");
             }
         }
+	String error = "unresolved connection information:\n";
+	error += databaseInformation(connection);
+	error += "\nPlease add resolve information to lookup.xml, since this database is not known to the system.";
+	throw new RuntimeException(error);
+    }
+
+    private String databaseInformation(Connection connection) {
 	try {
 	    DatabaseMetaData dmd = connection.getMetaData();
 	    String databaseProductName = dmd.getDatabaseProductName();
@@ -73,16 +80,14 @@ public class DatabaseLookup {
 	    int driverMinorVersion = dmd.getDriverMinorVersion();
 	    String driverName = dmd.getDriverName();
 	    String driverVersion = dmd.getDriverVersion();
-	    String error = "unresolved connection information:";
-	    error += "\ndatabase product name:'" + databaseProductName + "'";
-	    error += "\ndatabase product version:'" + databaseProductVersion + "'";
-	    error += "\ndriver class:'"+connection.getClass().getName()+"'";
-	    error += "\ndriver major  version #" + driverMajorVersion;
-	    error += "\ndriver minor  version #" + driverMinorVersion;
-	    error += "\ndriver name '" + driverName + "'";
-	    error += "\ndriver version '" + driverVersion + "'";
-	    error += "\nPlease add resolve information to lookup.xml, since this database is not known to the system.";
-	    throw new RuntimeException(error);
+	    String result =  "database product name:'" + databaseProductName + "'";
+	    result += "\ndatabase product version:'" + databaseProductVersion + "'";
+	    result += "\ndriver class:'"+connection.getClass().getName()+"'";
+	    result += "\ndriver major  version #" + driverMajorVersion;
+	    result += "\ndriver minor  version #" + driverMinorVersion;
+	    result += "\ndriver name '" + driverName + "'";
+	    result += "\ndriver version '" + driverVersion + "'";
+	    return result;
 	}
 	catch(java.sql.SQLException sqle) {
 	    throw new RuntimeException(Logging.stackTrace(sqle));
@@ -137,6 +142,8 @@ public class DatabaseLookup {
 	    current = current.getNextSibling();
 	}
 	log.info("Selected database: '"+database+"' based on #" + i + " rules in it's filter.");
+	if(i<=1) { log.warn("Please add additional filter,  add filter-rules and/or change the order in file: config/databases/lookup.xml, database lookup information:\n"+databaseInformation(connection));
+	}
 	return true;
     }
 
