@@ -190,6 +190,7 @@
           description="Create PDF documentation from the DocBook sources">
 
     <mkdir dir="${documentation.temp.dir}" />
+    <mkdir dir="${basedir}/media" />
 
     <!-- copy the images to a temp dir, this is needed because of -->
     <!-- a strange problem with fop's basedir                     -->
@@ -249,7 +250,8 @@
              classpathref="fop.classpath"/>
     
     <!-- transform fo-xml into pdf --> 
-    <fop format="application/pdf" outdir="${documentation.dest.dir}" messagelevel="info">
+    <fop format="application/pdf" outdir="${documentation.dest.dir}" 
+         messagelevel="info">
       <fileset dir="${documentation.temp.dir}">
         <include name="**/*.fo"/>
         <exclude name="**/builders.fo" />
