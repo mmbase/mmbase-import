@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.7 2002-11-14 16:22:11 robmaris Exp $
+$Id: MMOORel2Node.java,v 1.8 2002-11-28 13:04:54 robmaris Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2002/11/14 16:22:11  robmaris
+RvM: replaced calls to deprecated MMObjectNode getTableName() by getName().
+
 Revision 1.6  2001/07/09 12:30:03  jaco
 jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
 
@@ -72,7 +75,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.7 $ $Date: 2002-11-14 16:22:11 $
+* @$Revision: 1.8 $ $Date: 2002-11-28 13:04:54 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -268,46 +271,14 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		return(bytes);
 	}
 
-	/* temp removed daniel
-	public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul) {
-		String result="";
-		where=where.substring(7);
-		//StringTokenizer parser = new StringTokenizer(where, "+- \n\r",true);
-		StringTokenizer parser = new StringTokenizer(where, "+-\n\r",true);
-		while (parser.hasMoreTokens()) {
-			String part=parser.nextToken();
-			String cmd=null;
-			if (parser.hasMoreTokens()) {
-				cmd=parser.nextToken();
-			} 
-			//log.debug("CMD="+cmd+" PART="+part);
-			// do we have a type prefix (example episodes.title==) ?
-			int pos=part.indexOf('.');
-			if (pos!=-1) {
-				part=part.substring(pos+1);
-			}
-			//log.debug("PART="+part);
-			
-			// remove fieldname  (example title==) ?
-			pos=part.indexOf('=');
-			if (pos!=-1) {
-				String fieldname=part.substring(0,pos);
-				String dbtype=bul.getDBType(fieldname);
-				//log.debug("TYPE="+dbtype);
-				result+=parseFieldPart(fieldname,dbtype,part.substring(pos+1));
-				if (cmd!=null) {
-					if (cmd.equals("+")) {
-						result+=" AND ";
-					} else {
-						result+=" AND NOT ";
-					}
-				}
-			}
-		}
-		return(result);
-	}
-	*/
-
+    /**
+     * Not to be confused with {@link #parseFieldPart(String,int,String)
+     * parseFieldPart(String,int,String)}.
+     *
+     * @deprecated This code no longer serves a purpose, and is called from 
+     *             nowhere.
+     * @deprecated-now RvM: Can be removed safely.
+     */
 	public String parseFieldPart(String fieldname,String dbtype,String part) {
 		String result="";
 		boolean like=false;
