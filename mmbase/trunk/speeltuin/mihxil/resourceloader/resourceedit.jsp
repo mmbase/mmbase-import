@@ -12,8 +12,9 @@
 <body style="margin-left: 0;">
   <%! Xml  xmlEscaper     = new Xml(Xml.ESCAPE);  %>
   <%
-  ResourceLoader resourceLoader = (ResourceLoader) session.getAttribute("resourceedit_document");
-  if (resourceLoader == null) resourceLoader = ResourceLoader.getConfigurationRoot();   
+  ResourceLoader resourceLoader = (ResourceLoader) session.getAttribute("resourceedit_resourceloader");
+  if (resourceLoader == null) resourceLoader = ResourceLoader.getConfigurationRoot();
+  ResourceLoader parent = resourceLoader.getParentResourceLoader() == null ? resourceLoader : resourceLoader.getParentResourceLoader();
 %>
   <form method="post" name="resource" action="<mm:url />">
 <table style="padding: 0">
@@ -21,14 +22,34 @@
   <mm:import externid="dirs" />
   <mm:write referid="dirs" jspvar="dir" vartype="String">
     <mm:isnotempty>
-    <% if (resourceLoader.equals(ResourceLoader.getConfigurationRoot())) {
+    <% if (resourceLoader.equals(ResourceLoader.getConfigurationRoot())
+           || resourceLoader.equals(ResourceLoader.getWebRoot()) ) {
           if (dir.equals("..")) dir = ""; // can hapen in case of lost session (server restart)
         }
         resourceLoader = new ResourceLoader(resourceLoader, dir); 
-        session.setAttribute("resourceedit_document", resourceLoader);
+        session.setAttribute("resourceedit_resourceloader", resourceLoader);
     %>    
     </mm:isnotempty>
   </mm:write>
+  <mm:import externid="root" />
+  <mm:present referid="root">
+    <mm:write referid="root" >
+      <mm:compare value="web">
+      <% if (parent.equals(ResourceLoader.getConfigurationRoot())) {
+            resourceLoader = parent = ResourceLoader.getWebRoot();
+            session.setAttribute("resourceedit_resourceloader", resourceLoader);
+         }
+      %>
+      </mm:compare>
+      <mm:compare value="config">
+      <% if (parent.equals(ResourceLoader.getWebRoot())) {
+            resourceLoader = parent = ResourceLoader.getConfigurationRoot();
+            session.setAttribute("resourceedit_resourceloader", resourceLoader);
+         }
+      %>
+      </mm:compare>
+    </mm:write>
+  </mm:present>
   <mm:import externid="resource" vartype="string" jspvar="resource" />
   <mm:import externid="recursive" />
   <% boolean recursive = false; %>
@@ -43,11 +64,19 @@
       <mm:write referid="title" /> 
     </th> 
     <th class="main" colspan="1">
-      Root: <%= resourceLoader.toInternalForm("") %>
+      <mm:present referid="resource">
+        <%= parent.equals(ResourceLoader.getConfigurationRoot()) ? "configuration root" : "web root" %>
+        <%= resourceLoader.toInternalForm("") %>
+      </mm:present>
       <mm:notpresent referid="resource">
+      <select name="root" onChange="document.forms[0].submit();">         
+         <option value="config" <%= parent.equals(ResourceLoader.getConfigurationRoot()) ? "selected=\"selected\"" : "" %> >configuration root</option>
+         <option value="web"    <%= parent.equals(ResourceLoader.getWebRoot())           ? "selected=\"selected\"" : "" %> >web root</option>
+      </select>
+      <%= resourceLoader.toInternalForm("") %>
       <select name="dirs" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">
         <option value=""></option>
-        <% if (! resourceLoader.equals(ResourceLoader.getConfigurationRoot())) {
+        <% if (resourceLoader.getParentResourceLoader() != null) {
          %>
            <option value="..">..</option>
         <%
@@ -84,6 +113,9 @@
            </mm:write>
           <mm:write value=".*\.properties$$">
              <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >properties</option>
+           </mm:write>
+          <mm:write value=".*\.jsp$$">
+             <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >JSP's</option>
            </mm:write>
         </select>
         <input type="submit" name="s" value="search" />
@@ -194,6 +226,10 @@
 
 </mm:cloud>
 </table>
+<hr />
+<p>
+  Current resourceLoader :<%= resourceLoader %>
+</p>
 </form>
 </body>
 </html>
