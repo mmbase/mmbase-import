@@ -159,7 +159,14 @@
 				<td><mm:field name="postthreadcount" /></td>
 				<td><mm:field name="postcount" /></td>
 				<td><mm:field name="viewcount" /></td>
-				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg_by" /> <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a><p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1"><mm:write referid="mlg_no_messages" /></mm:compare></mm:field></td>
+				<td align="left" valign="top"><mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <mm:write referid="mlg_by" />  
+  <mm:field name="lastposternumber">
+    <mm:compare value="-1" inverse="true">
+       <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a>
+    </mm:compare>
+    <mm:compare value="-1" ><mm:field name="lastposter" /></mm:compare>
+  </mm:field>
+  <p /><mm:field name="lastsubject" /></mm:compare><mm:compare value="-1"><mm:write referid="mlg_no_messages" /></mm:compare></mm:field></td>
 			</tr>
 		  </mm:nodelistfunction>
 </table>
