@@ -9,12 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
  
-
-import java.util.*;
+import org.mmbase.util.LRUHashtable;
 
 public interface cacheInterface {
 	public void init();
-	public Hashtable lines();
+	public LRUHashtable lines();
 	public boolean clear();
 	public cacheline get(Object key);
 	public cacheline put(Object key,Object value);
