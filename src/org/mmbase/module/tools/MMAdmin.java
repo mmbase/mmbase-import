@@ -56,6 +56,8 @@ public class MMAdmin extends ProcessorModule {
 			String cmd=tok.nextToken();	
 			if (cmd.equals("APPLICATIONS")) return(getApplicationsList());
 			if (cmd.equals("BUILDERS")) return(getBuildersList());
+			if (cmd.equals("MODULES")) return(getModulesList());
+			if (cmd.equals("DATABASES")) return(getDatabasesList());
 		}
 		return(null);
 	}
@@ -681,6 +683,88 @@ public class MMAdmin extends ProcessorModule {
 						results.addElement("yes");
 					}
 					results.addElement(app.getBuilderMaintainer());
+				}
+			}
+		}
+		return(results);
+	}
+
+
+	Vector getModulesList() {
+		Versions ver=(Versions)mmb.getMMObject("versions");
+		if (ver==null) {
+			System.out.println("Versions builder not installed, Can't get to builders");
+			return(null);
+		}
+		Vector results=new Vector();
+		
+		String path=MMBaseContext.getConfigPath()+("/modules/");
+		// new code checks all the *.xml files in builder dir
+        	File bdir = new File(path);
+		if (bdir.isDirectory()) {
+			String files[] = bdir.list();		
+			for (int i=0;i<files.length;i++) {
+				String aname=files[i];
+				if (aname.endsWith(".xml")) {
+					String name=aname;
+					String sname=name.substring(0,name.length()-4);
+					XMLBuilderReader app=new XMLBuilderReader(path+aname);
+					results.addElement(sname);
+
+					results.addElement("0");
+					results.addElement("yes");
+					results.addElement("mmbase.org");
+					/*
+					results.addElement(""+app.getBuilderVersion());
+					int installedversion=ver.getInstalledVersion(sname,"builder");
+					if (installedversion==-1) {
+						results.addElement("no");
+					} else {
+						results.addElement("yes");
+					}
+					results.addElement(app.getBuilderMaintainer());
+					*/
+				}
+			}
+		}
+		return(results);
+	}
+
+
+	Vector getDatabasesList() {
+		Versions ver=(Versions)mmb.getMMObject("versions");
+		if (ver==null) {
+			System.out.println("Versions builder not installed, Can't get to builders");
+			return(null);
+		}
+		Vector results=new Vector();
+		
+		String path=MMBaseContext.getConfigPath()+("/databases/");
+		// new code checks all the *.xml files in builder dir
+        	File bdir = new File(path);
+		if (bdir.isDirectory()) {
+			String files[] = bdir.list();		
+			for (int i=0;i<files.length;i++) {
+				String aname=files[i];
+				if (aname.endsWith(".xml")) {
+					String name=aname;
+					String sname=name.substring(0,name.length()-4);
+					XMLBuilderReader app=new XMLBuilderReader(path+aname);
+					results.addElement(sname);
+
+					results.addElement("0");
+					results.addElement("yes");
+					results.addElement("mmbase.org");
+					/*
+					results.addElement(""+app.getBuilderVersion());
+					int installedversion=ver.getInstalledVersion(sname,"builder");
+					if (installedversion==-1) {
+						results.addElement("no");
+					} else {
+						results.addElement("yes");
+					}
+					results.addElement(app.getBuilderMaintainer());
+					*/
 				}
 			}
 		}
