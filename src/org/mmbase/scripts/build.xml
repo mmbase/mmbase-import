@@ -1507,7 +1507,8 @@ Change directory to ${build.dir}/orion and run:
 		<pathelement location="${build.dir}/classes" />
 	</classpath>
     </java>
-    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile" >
+	<!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
+    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile" fork="true" >
        <arg value="${source-src.dir}"/>
        <arg value="${source-src.dir}/MMCI.xml"/>
 	<classpath>
