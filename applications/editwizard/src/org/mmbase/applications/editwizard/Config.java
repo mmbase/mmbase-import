@@ -24,13 +24,13 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.39 2003-08-29 09:34:38 pierre Exp $
+ * @version $Id: Config.java,v 1.40 2003-10-02 11:58:25 pierre Exp $
  */
 
 public class Config {
 
     /**
-     * Default maximum upload size for files (4 MB). 
+     * Default maximum upload size for files (4 MB).
      */
     public final static int DEFAULT_MAX_UPLOAD_SIZE = 4 * 1024 * 1024;
 
@@ -57,7 +57,7 @@ public class Config {
         public Map    attributes = new HashMap();
 
         /**
-         * Basic configuration. The configuration object passed is updated with information retrieved 
+         * Basic configuration. The configuration object passed is updated with information retrieved
          * from the request object with which the configurator was created. The following parameters are accepted:
          *
          * <ul>
@@ -86,8 +86,8 @@ public class Config {
                 attributes.put(name,value);
             }
         }
-        
-        /** 
+
+        /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
         public Map getAttributes() {
@@ -105,9 +105,9 @@ public class Config {
         public String parentFid;
         public String parentDid;
         public String popupId;
-        
+
         /**
-         * Configure a wizard. The configuration object passed is updated with information retrieved 
+         * Configure a wizard. The configuration object passed is updated with information retrieved
          * from the request object with which the configurator was created. The following parameters are accepted:
          *
          * <ul>
@@ -118,7 +118,7 @@ public class Config {
          *
          * @since MMBase-1.6.4
          * @param configurator the configurator containing request information
-         * @throws WizardException if expected parameters were not given 
+         * @throws WizardException if expected parameters were not given
          */
         public void configure(Config.Configurator configurator) throws WizardException {
             super.configure(configurator);
@@ -126,15 +126,15 @@ public class Config {
             objectNumber = configurator.getParam("objectnumber");
         }
 
-        /** 
+        /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
         public Map getAttributes() {
             Map attributeMap = super.getAttributes();
             attributeMap.put("popupid", popupId);
             if (objectNumber!=null) attributeMap.put("objectnumber", objectNumber);
-            
-            return attributeMap;   
+
+            return attributeMap;
         }
     }
 
@@ -147,7 +147,7 @@ public class Config {
 
         public static final int SEARCH_YES  = 10;
         public static final int SEARCH_FORCE  = 11; // like 'yes', but searching occurs only if not searching empty string.
-        
+
 
         public String title;
         public File   template;
@@ -171,7 +171,7 @@ public class Config {
         public boolean distinct = false;
         public int pagelength   = 50;
         public int maxpagecount = 10;
-        
+
         public boolean multilevel = false;
         public String mainObjectName = null;
         public List fieldList = null;
@@ -188,11 +188,11 @@ public class Config {
         ListConfig() { // for backwards compatibility
             this.cloud = null;
         }
-        
+
         private boolean parsed = false;
-        
+
         /**
-         * Configure a list page. The configuration object passed is updated with information retrieved 
+         * Configure a list page. The configuration object passed is updated with information retrieved
          * from the request object with which the configurator was created. The following parameters are accepted:
          *
          * <ul>
@@ -210,7 +210,6 @@ public class Config {
          *   <li>constraints</li>
          *   <li>forcesearch</li>
          *   <li>realsearchfield</li>
-         *   <li>searchdir</li>
          *   <li>directions</li>
          *   <li>orderby</li>
          *   <li>distinct</li>
@@ -225,10 +224,10 @@ public class Config {
             pagelength   = configurator.getParam("pagelength", new Integer(pagelength)).intValue();
             maxpagecount = configurator.getParam("maxpagecount", new Integer(maxpagecount)).intValue();
             startNodes   = configurator.getParam("startnodes", startNodes);
-            
+
             // Get nodepath parameter. if a (new) parameter was passed,
             // re-parse the node path and field list
-            // This allows for custom list stylesheets to make a query more or less complex through 
+            // This allows for custom list stylesheets to make a query more or less complex through
             // user interaction
             String parameter  = configurator.getParam("nodepath");
             if (parameter != null) {
@@ -238,10 +237,10 @@ public class Config {
             if (nodePath == null) {
                 throw new WizardException("The parameter 'nodepath' is required but not given.");
             }
-            
+
             // Get fields parameter. if a (new) parameter was passed,
             // re-parse the node path and field list
-            // This allows for custom list stylesheets to make a query more or less complex through 
+            // This allows for custom list stylesheets to make a query more or less complex through
             // user interaction
             parameter  = configurator.getParam("fields");
             if (parameter != null) {
@@ -249,15 +248,15 @@ public class Config {
                 parsed = false;
             }
             if (fields == null) {
-                //throw new WizardException("The parameter 'fields' is required but not given."); 
-                log.debug("The parameter 'fields' is  not given, going to take the first field"); 
+                //throw new WizardException("The parameter 'fields' is required but not given.");
+                log.debug("The parameter 'fields' is  not given, going to take the first field");
                 // this will happen during parsing.
-                
+
             }
-            
+
             age = configurator.getParam("age", new Integer(age)).intValue();
             if (age >= 99999) age=-1;
-            
+
             start           = configurator.getParam("start", new Integer(start)).intValue();
             searchType      = configurator.getParam("searchtype", searchType);
             searchFields    = configurator.getParam("searchfields", searchFields);
@@ -265,7 +264,7 @@ public class Config {
             searchDir       = configurator.getParam("searchdir",searchDir);
             baseConstraints = configurator.getParam("constraints", baseConstraints);
             String searchString =  configurator.getParam("search", (String) null);
-            if (searchString != null) {                
+            if (searchString != null) {
                 searchString = searchString.toLowerCase();
                 if (searchString.equals("auto")) {
                     search = SEARCH_AUTO;
@@ -282,7 +281,7 @@ public class Config {
 
             /// what the heck is this.
             realSearchField = configurator.getParam("realsearchfield", realSearchField);
-            
+
             if (searchFields == null) {
                 constraints = baseConstraints;
             } else {
@@ -290,7 +289,7 @@ public class Config {
                 String sType = searchType;
                 // get the actual field to search on.
                 // this can be 'owner' or 'number' instead of the original list of searchfields,
-                // in which case searchtype may change 
+                // in which case searchtype may change
                 String sFields = realSearchField;
                 if (sFields == null) sFields = searchFields;
                 if (sFields.equals("owner") || sFields.endsWith(".owner")) {
@@ -345,7 +344,7 @@ public class Config {
             directions  = configurator.getParam("directions", directions);
             orderBy     = configurator.getParam("orderby",    orderBy);
             distinct    = configurator.getParam("distinct",   new Boolean(true)).booleanValue();
-            
+
             // only perform the following is there was no prior parsing
             if (!parsed) {
                 String templatePath = configurator.getParam("template", "xsl/list.xsl");
@@ -366,7 +365,7 @@ public class Config {
                 if (mainObjectName == null) {
                     // search last manager - default 'main' object.
                     while (stok.hasMoreTokens()) {
-                        mainObjectName = stok.nextToken(); 
+                        mainObjectName = stok.nextToken();
                     }
                 }
                 // now we always have a mainObjectName already (the last from nodePath)
@@ -377,12 +376,12 @@ public class Config {
                         StringBuffer fieldsBuffer = new StringBuffer();
                         FieldIterator i = cloud.getNodeManager(mainObjectName).
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
-                        while (i.hasNext()) {                            
+                        while (i.hasNext()) {
                             fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(i.nextField().getName());
                             if (i.hasNext()) fieldsBuffer.append(',');
                         }
                         fields = fieldsBuffer.toString();
-                    } else {                       
+                    } else {
                         // the list.jsp _does_ provide a cloud, but well, perhaps people have old list.jsp's?
                         throw new WizardException("The parameter 'fields' is required but not given (or make sure there is a cloud)");
                     }
@@ -393,12 +392,12 @@ public class Config {
                 if (stok.countTokens() == 0) {
                     throw new WizardException("The parameter 'fields' should be passed with a comma-separated list of fieldnames.");
                 }
-            
+
                 fieldList = new ArrayList();
                 while (stok.hasMoreTokens()) {
                     String token = stok.nextToken();
                     fieldList.add(token);
-                    // Check if the number field for a multilevel object was specified 
+                    // Check if the number field for a multilevel object was specified
                     // (determine mainObjectName from fieldlist)
 
                     // MM: so, there are several ways to specify the 'main' object.
@@ -410,7 +409,7 @@ public class Config {
 
                     if (! mainPresent && token.endsWith(".number")) {
                         mainObjectName = token.substring(0, token.length() - 7);
-                        mainPresent = true; 
+                        mainPresent = true;
                         // Only to avoid reentering this 'if'. Of course the 'main' parameter actually is still not present.
                     }
                 }
@@ -428,7 +427,7 @@ public class Config {
                             }
                         }
                         searchFields = searchFieldsBuffer.toString();
-                    } else {                       
+                    } else {
                         // the list.jsp _does_ provide a cloud, but well, perhaps people have old list.jsp's?
                         throw new WizardException("Cannot auto-determin search-fields without a cloud (use a newer list.jsp");
                     }
@@ -437,11 +436,11 @@ public class Config {
                 if (search == SEARCH_NO && searchFields != null) {
                     log.debug("Using searchfields and explicitiy no search");
                     searchFields = null;
-                }    
-    
+                }
+
                 // add the main object's numberfield to fields
                 // this ensures the field is retrieved even if distinct weas specified
-                String numberField = "number"; 
+                String numberField = "number";
                 if (multilevel) {
                     numberField = mainObjectName + ".number";
                 }
@@ -453,7 +452,7 @@ public class Config {
 
         }
 
-        /** 
+        /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
         public Map getAttributes() {
@@ -474,10 +473,10 @@ public class Config {
             // search attributes
             if (searchType!=null) attributeMap.put("searchtype", searchType);
             if (searchFields!=null) attributeMap.put("searchfields", searchFields);
-            if (realSearchField!=null) attributeMap.put("realsearchfield", realSearchField);            
+            if (realSearchField!=null) attributeMap.put("realsearchfield", realSearchField);
             if (searchValue!=null) attributeMap.put("searchvalue", searchValue);
-            
-            return attributeMap;   
+
+            return attributeMap;
         }
     }
 
@@ -503,7 +502,7 @@ public class Config {
             config.sessionId = response.encodeURL("test.jsp").substring(8);
             log.debug("Sessionid : " + config.sessionId);
 
-            
+
 
             if (config.language == null) {
                 config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
@@ -561,7 +560,7 @@ public class Config {
                     extraDirs.add("ref:", refFile);
                 }
 
-                /* Optionally, you can indicate with a 'templates' option where the xml's and 
+                /* Optionally, you can indicate with a 'templates' option where the xml's and
                    xsl must be searched (if they cannot be found in the referring dir).
                 */
                 config.templates = request.getParameter("templates");
@@ -603,19 +602,19 @@ public class Config {
                 config.maxupload = getParam("maxsize", config.maxupload);
             }
         }
-        
+
         public String getRealPath(String path) {
             return page.getServletContext().getRealPath(path);
         }
-        
+
         public File resolveToFile(String templatePath) {
             return config.uriResolver.resolveToFile(templatePath);
         }
-        
+
         public PageContext getPage() {
             return page;
         }
-        
+
         protected String getParam(String paramName) {
             return request.getParameter(paramName);
         }
@@ -625,7 +624,7 @@ public class Config {
             if (value == null) value = defaultValue;
             return value;
         }
-        
+
         protected int  getParam(String paramName, int def) {
             String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
@@ -670,7 +669,7 @@ public class Config {
         public  ListConfig createList() {
             return createList(null);
         }
-        
+
         public Config.WizardConfig createWizard(Cloud cloud) throws WizardException {
             WizardConfig wizard = new WizardConfig();
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
@@ -686,7 +685,7 @@ public class Config {
         }
 
         /**
-         * Configure a list or wizard. The configuration object passed is updated with information retrieved 
+         * Configure a list or wizard. The configuration object passed is updated with information retrieved
          * from the request object with which the configurator was created.
          * @since MMBase-1.6.4
          * @param config the configuration object for the list or wizard.

@@ -86,6 +86,7 @@
 <!ATTLIST command startnodes CDATA #IMPLIED >
 <!ATTLIST command constraints CDATA #IMPLIED >
 <!ATTLIST command origin CDATA #IMPLIED >
+<!ATTLIST command searchdir CDATA #IMPLIED >
 
 <!ELEMENT fieldset ( prompt*, field+, prompt* ) >
 
