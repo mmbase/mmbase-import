@@ -1130,9 +1130,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.InfoTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
-	  This tag can be used to call getInfo from Module and
-	  NodeManager. The result of 'getInfo' is a string which on
-	  default is written to the page.
+      <p>
+        This tag can be used to call getInfo from Module and
+        NodeManager. The result of 'getInfo' is a string which on
+        default is written to the page. Most of this functionality
+        doesn't have much to do with MMBase, and can be acquired with
+        jsp or other taglibs too.
+      </p>
 	</info>
     <attribute>
       <name>nodemanager</name>
@@ -1150,6 +1154,10 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <rtexprvalue>true</rtexprvalue>
       <info>The command which is given</info>
     </attribute>
+    <example>
+a password:     &lt;mm:info nodemanager="users" command="newpassword" /&gt;
+user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
+    </example>
   </tag>
   <tag>
     <name>node</name>
