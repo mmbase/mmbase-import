@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.24 2002-10-17 16:57:58 pierre Exp $
+ * @version $Id: BasicRelation.java,v 1.25 2002-11-05 21:59:40 robmaris Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -185,7 +185,7 @@ public class BasicRelation extends BasicNode implements Relation {
                 relationChanged = false;
             } else {
                 if (relationChanged) {
-                    cloud.verify(Operation.CHANGE_RELATION, mmb.getTypeDef().getIntValue(getNodeManager().getName()), snum, dnum);
+                    cloud.verify(Operation.CHANGE_RELATION, noderef.getNumber(), snum, dnum);
                     relationChanged = false;
                 }
             }
