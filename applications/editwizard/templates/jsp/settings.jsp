@@ -9,7 +9,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.1 2002-04-19 19:52:07 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.2 2002-04-22 14:37:33 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -26,7 +26,7 @@
         }
 
         public void config(Config.ListConfig c) {
-            c.template = config.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
+            c.template = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
             c.nodePath = getParam("nodepath", c.nodePath);
             c.fields   = getParam("fields", c.fields);
             c.age      = getParam("age", new Integer(c.age)).intValue();
@@ -42,7 +42,7 @@
     }
         
 
-Config config = null;
+Config ewconfig = null;
 Configurator configurator;
 
 %><mm:log jspvar="log"><%
@@ -66,29 +66,29 @@ Object configObject = session.getAttribute(instanceName);
 
 if (configObject == null || ! (configObject instanceof Config)) {
     log.debug("creating new configuration (in session is " + configObject + ")");
-    config = new Config();
-    session.setAttribute(instanceName, config);    
+    ewconfig = new Config();
+    session.setAttribute(instanceName, ewconfig);    
 } else {
     log.debug("using configuration from session");
-    config = (Config) configObject;
+    ewconfig = (Config) configObject;
 }
-String refer = config.backPage;
+String refer = ewconfig.backPage;
 log.trace("backpage in config is " + refer);
 
 if (request.getParameter("logout") != null) {
     log.debug("logout parameter given, clearing session");
     session.removeAttribute(instanceName);
-    config = new Config();
+    ewconfig = new Config();
     //config.backPage = refer;
-    session.setAttribute(instanceName, config);
+    session.setAttribute(instanceName, ewconfig);
 } 
 
-config.sessionKey = instanceName;
-configurator = new Configurator(request, response, config);
+ewconfig.sessionKey = instanceName;
+configurator = new Configurator(request, response, ewconfig);
 
 if (request.getParameter("remove") != null) {
     log.debug("Removing top object requested from " + request.getHeader("Referer"));
-    if(config.subObjects.size() > 0) config.subObjects.pop();
+    if(ewconfig.subObjects.size() > 0) ewconfig.subObjects.pop();
     String redir;
     if (configurator.getBackPage().startsWith("http:")) {
         redir = configurator.getBackPage();
@@ -104,9 +104,9 @@ if (request.getParameter("remove") != null) {
     return;
 } 
 
-log.service("Doing for wizard " + config.wizard);
-log.service("Stack " + config.subObjects);
-log.service("URIResolver " + config.uriResolver.getPrefixPath());
+log.service("Doing for wizard " + ewconfig.wizard);
+log.service("Stack " + ewconfig.subObjects);
+log.service("URIResolver " + ewconfig.uriResolver.getPrefixPath());
 
 log.service("end of settings.jsp");
 %></mm:log>
