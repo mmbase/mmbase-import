@@ -48,20 +48,23 @@
 
 <mm:compare referid="editor" value="neededbuilders">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="25%">
-<tr><th colspan="5">Needed Builders</ht></tr>
+<tr><th colspan="5">Builders in this model</ht></tr>
 <tr><th>Name</ht><th>Maintainer</th><th>Version</th><th></th><th></th></tr>
 <mm:nodelistfunction set="mmpb" name="getNeededBuilders" referids="modelfilename">
+<mm:context>
 <tr>
-	<td><mm:field name="name" /></td>
-	<td><mm:field name="maintainer" /></td>
-	<td><mm:field name="version" /></td>
+	<td><mm:field name="name" id="oldbuilder" /></td>
+	<td><mm:field name="maintainer" id="oldmaintainer" /></td>
+	<td><mm:field name="version" id="oldversion" /></td>
 	<form action="" method="post">
 	<td width="50"><input type="submit" value="edit"></td>
 	</form>
-	<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename" />" method="post">
+	<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,oldbuilder,oldmaintainer,oldversion" />" method="post">
+	<input type="hidden" name="editor" value="confirmdeleteneededbuilder" />
 	<td width="50"><input type="submit" value="delete"></td>
 	</form>
 </tr>
+</mm:context>
 </mm:nodelistfunction>
 <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename" />" method="post">
 <input type="hidden" name="action" value="addneededbuilder" />
@@ -73,23 +76,26 @@
 
 <mm:compare referid="editor" value="neededreldefs">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="45%">
-<tr><th colspan="8">Needed RefDefs</ht></tr>
+<tr><th colspan="8">Relation Types in this model</ht></tr>
 <tr><th>Source</ht><th>Target</th><th>Direction</th><th>GuiSourceName</th><th>GuiTargetName</th><th>BuilderName</th><th></th><th></th></tr>
 <mm:nodelistfunction set="mmpb" name="getNeededRelDefs" referids="modelfilename">
+<mm:context>
 <tr>
-	<td><mm:field name="source" /></td>
-	<td><mm:field name="target" /></td>
-	<td><mm:field name="direction" /></td>
-	<td><mm:field name="guisourcename" /></td>
-	<td><mm:field name="guitargetname" /></td>
-	<td><mm:field name="buildername" /></td>
+	<td><mm:field name="source" id="oldsource" /></td>
+	<td><mm:field name="target" id="oldtarget" /></td>
+	<td><mm:field name="direction" id="olddirection" /></td>
+	<td><mm:field name="guisourcename" id="oldguisourcename" /></td>
+	<td><mm:field name="guitargetname" id="oldguitargetname" /></td>
+	<td><mm:field name="buildername" id="oldbuilder" /></td>
 	<form action="" method="post">
 	<td width="50"><input type="submit" value="edit"></td>
 	</form>
-	<form action="" method="post">
+	<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,oldsource,oldtarget,olddirection,oldguisourcename,oldguitargetname,oldbuilder" />" method="post">
+        <input type="hidden" name="editor" value="confirmdeleteneededreldef" />
 	<td width="50"><input type="submit" value="delete"></td>
 	</form>
 </tr>
+</mm:context>
 </mm:nodelistfunction>
 
 <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor" />" method="post">
@@ -114,20 +120,23 @@
 
 <mm:compare referid="editor" value="allowedrelations">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="45%">
-<tr><th colspan="5">AllowedRelations</ht></tr>
+<tr><th colspan="5">Possible Relations in this model</ht></tr>
 <tr><th>From</ht><th>To</th><th>Type</th><th></th><th></th></tr>
 <mm:nodelistfunction set="mmpb" name="getAllowedRelations" referids="modelfilename">
+<mm:context>
 <tr>
-	<td><mm:field name="from" /></td>
-	<td><mm:field name="to" /></td>
-	<td><mm:field name="type" /></td>
+	<td><mm:field name="from" id="oldfrom" /></td>
+	<td><mm:field name="to" id="oldto" /></td>
+	<td><mm:field name="type" id="oldtype" /></td>
 	<form action="" method="post">
 	<td width="50"><input type="submit" value="edit"></td>
 	</form>
-	<form action="" method="post">
+	<form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor,oldfrom,oldto,oldtype" />" method="post">
+	<input type="hidden" name="editor" value="confirmdeleteallowedrelation" />
 	<td width="50"><input type="submit" value="delete"></td>
 	</form>
 </tr>
+</mm:context>
 </mm:nodelistfunction>
 <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor" />" method="post">
 <input type="hidden" name="action" value="addallowedrelation" />
@@ -152,6 +161,56 @@
 </table>
 </mm:compare>
 
+
+<mm:compare referid="editor" value="confirmdeleteneededbuilder">
+<mm:import externid="oldbuilder" />
+<mm:import externid="oldmaintainer" />
+<mm:import externid="oldversion" />
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 130px;" width="35%">
+<tr><th colspan="2">Delete NeededBuilder : <mm:write referid="oldbuilder" /></ht></tr>
+<tr>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,oldbuilder,oldmaintainer,oldversion" />" method="post">
+	<td align="middle" height="35"><input type="hidden" name="action" value="deleteneededbuilder" /><input type="submit" value="Yes, Delete" /></td>
+   </form></td>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename" />" method="post"><td align="middle"><input type="submit" value="Oops, No" /></td></tr>
+</table>
+</mm:compare>
+
+<mm:compare referid="editor" value="confirmdeleteneededreldef">
+<mm:import externid="oldsource" />
+<mm:import externid="oldtarget" />
+<mm:import externid="olddirection" />
+<mm:import externid="oldguisourcename" />
+<mm:import externid="oldguitargetname" />
+<mm:import externid="oldbuilder" />
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 130px;" width="35%">
+<tr><th colspan="2">Delete NeededRelDef : <mm:write referid="oldbuilder" /></ht></tr>
+<tr>  
+   <mm:remove referid="editor" />
+   <mm:import id="editor">neededreldefs</mm:import>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,oldbuilder,oldsource,oldtarget,olddirection,oldguisourcename,oldguitargetname,editor" />" method="post">
+	<td align="middle" height="35"><input type="hidden" name="action" value="deleteneededreldef" /><input type="submit" value="Yes, Delete" /></td>
+   </form></td>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor" />" method="post"><td align="middle"><input type="submit" value="Oops, No" /></td></tr>
+</table>
+</mm:compare>
+
+
+<mm:compare referid="editor" value="confirmdeleteallowedrelation">
+<mm:import externid="oldfrom" />
+<mm:import externid="oldto" />
+<mm:import externid="oldtype" />
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 130px;" width="35%">
+<tr><th colspan="2">Delete Allowed Relation : <mm:write referid="oldfrom" /> <mm:write referid="oldto" /> <mm:write referid="oldtype" /> </ht></tr>
+<tr>  
+   <mm:remove referid="editor" />
+   <mm:import id="editor">allowedrelations</mm:import>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,oldfrom,oldto,oldtype,editor" />" method="post">
+	<td align="middle" height="35"><input type="hidden" name="action" value="deleteallowedrelation" /><input type="submit" value="Yes, Delete" /></td>
+   </form></td>
+   <form action="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename,editor" />" method="post"><td align="middle"><input type="submit" value="Oops, No" /></td></tr>
+</table>
+</mm:compare>
 
 </mm:cloud>
 <br />

@@ -22,6 +22,14 @@
 	<mm:booleanfunction set="mmpb" name="addNeededBuilder" referids="modelfilename,newbuilder,newmaintainer,newversion" />
 </mm:compare>
 
+
+<mm:compare value="deleteneededbuilder" referid="action">
+	<mm:import externid="oldbuilder" />
+	<mm:import externid="oldmaintainer" />
+	<mm:import externid="oldversion" />
+	<mm:booleanfunction set="mmpb" name="deleteNeededBuilder" referids="modelfilename,oldbuilder,oldmaintainer,oldversion" />
+</mm:compare>
+
 <mm:compare value="addneededreldef" referid="action">
 	<mm:import externid="newsource" />
 	<mm:import externid="newtarget" />
@@ -32,11 +40,29 @@
 	<mm:booleanfunction set="mmpb" name="addNeededRelDef" referids="modelfilename,newbuilder,newsource,newtarget,newdirection,newguisourcename,newguitargetname" />
 </mm:compare>
 
+
+<mm:compare value="deleteneededreldef" referid="action">
+	<mm:import externid="oldsource" />
+	<mm:import externid="oldtarget" />
+	<mm:import externid="olddirection" />
+	<mm:import externid="oldguisourcename" />
+	<mm:import externid="oldguitargetname" />
+	<mm:import externid="oldbuilder" />
+	<mm:booleanfunction set="mmpb" name="deleteNeededRelDef" referids="modelfilename,oldbuilder,oldsource,oldtarget,olddirection,oldguisourcename,oldguitargetname" />
+</mm:compare>
+
 <mm:compare value="addallowedrelation" referid="action">
 	<mm:import externid="newfrom" />
 	<mm:import externid="newto" />
 	<mm:import externid="newtype" />
 	<mm:booleanfunction set="mmpb" name="addAllowedRelation" referids="modelfilename,newfrom,newto,newtype" />
+</mm:compare>
+
+<mm:compare value="deleteallowedrelation" referid="action">
+	<mm:import externid="oldfrom" />
+	<mm:import externid="oldto" />
+	<mm:import externid="oldtype" />
+	<mm:booleanfunction set="mmpb" name="deleteAllowedRelation" referids="modelfilename,oldfrom,oldto,oldtype" />
 </mm:compare>
 
 </mm:cloud>
