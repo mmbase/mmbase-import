@@ -1,0 +1,9 @@
+<LIST OBJECTS TYPE="users" PROCESSOR="MMBASE" FIELDS="number" WHERE="account=='$SESSION-LID^'" VERSION="2.0">
+	<LIF $ITEML==0>
+		<GOTO createUser.shtml>
+	<ELSE>
+		Account name allready in use
+	</IF>
+	<LISTLOOP>
+	</LISTLOOP>
+</LIST>

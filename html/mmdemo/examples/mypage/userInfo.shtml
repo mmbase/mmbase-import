@@ -1,0 +1,15 @@
+name : $MOD-MMBASE-FIELD-$PARAM1-firstname $MOD-MMBASE-FIELD-$PARAM1-lastname
+<BR>
+first login : 
+$MOD-MMBASE-FIELD-$PARAM2-time_firstlogin
+$MOD-MMBASE-FIELD-$PARAM2-weekday_firstlogin
+$MOD-MMBASE-FIELD-$PARAM2-day_firstlogin
+$MOD-MMBASE-FIELD-$PARAM2-year_firstlogin
+<BR>
+last login : 
+$MOD-MMBASE-FIELD-$PARAM2-time_lastlogin
+$MOD-MMBASE-FIELD-$PARAM2-weekday_lastlogin
+$MOD-MMBASE-FIELD-$PARAM2-day_lastlogin
+$MOD-MMBASE-FIELD-$PARAM2-year_lastlogin
+
+
