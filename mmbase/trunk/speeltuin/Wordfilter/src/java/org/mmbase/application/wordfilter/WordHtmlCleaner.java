@@ -27,7 +27,7 @@ import xmlbs.PropertiesDocumentStructure;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class WordHtmlCleaner {
 
@@ -267,7 +267,7 @@ public class WordHtmlCleaner {
    }
 
    private static String removeEmptyTags(String text) {
-      return text.replaceAll("<.*/>", "");
+      return text.replaceAll("<[bBiIuU]\\s*/>", "");
    }
 
    
