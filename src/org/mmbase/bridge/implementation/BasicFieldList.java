@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.10 2003-03-04 13:44:37 nico Exp $
+ * @version $Id: BasicFieldList.java,v 1.11 2003-03-21 17:45:06 michiel Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
     private static Logger log = Logging.getLoggerInstance(BasicFieldList.class.getName());
@@ -66,14 +66,10 @@ public class BasicFieldList extends BasicList implements FieldList {
      *
      */
     public FieldIterator fieldIterator() {
-        return new BasicFieldIterator(this);
+        return new BasicFieldIterator();
     }
 
-    public class BasicFieldIterator extends BasicIterator implements FieldIterator {
-
-        BasicFieldIterator(BasicList list) {
-            super(list);
-        }
+    protected class BasicFieldIterator extends BasicIterator implements FieldIterator {
 
         public Field nextField() {
             return (Field) next();
