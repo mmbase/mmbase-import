@@ -16,12 +16,11 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
-import sun.security.x509.BasicConstraintsExtension;
 
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.9 2003-05-19 07:35:48 kees Exp $
+ * @version $Id: Versions.java,v 1.10 2003-05-19 07:50:15 kees Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
