@@ -21,15 +21,14 @@
 	  <!-- Unique index declaration -->
     <scheme name="create-secondary-key-scheme">UNIQUE ({2})</scheme>
 		
-	  <!-- Postgresql extended tables -->
-		<scheme name="create-table-scheme">CREATE TABLE {1} ({4} {5}) EXTENDS {6}</scheme>
+	  <!-- Postgresql extends tables -->
+		<scheme name="create-table-scheme">CREATE TABLE {1} ({4} {5}) INHERITS ({6})</scheme>
 
 	  <!-- Postgresql sequences (work differently) -->
 		<scheme name="create-sequence-scheme" />
 		<scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement INCREMENT 1 START {2}</scheme>
 		<scheme name="update-sequence-scheme" />
-		<scheme name="read-sequence-scheme">SELECT NEXTVAL ('{0}_autoincrement')</scheme>
-		
+		<scheme name="read-sequence-scheme">SELECT NEXTVAL (''{0}_autoincrement'')</scheme>
 	</attributes>
 
 	<!-- Postgresql type mappings -->
