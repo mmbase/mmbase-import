@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import java.util.Map;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.core.*;
 
 /**
@@ -19,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.6 2003-07-28 12:57:41 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.7 2003-07-31 07:49:53 pierre Exp $
  */
 public interface StorageManager {
 
@@ -73,8 +74,9 @@ public interface StorageManager {
      * @param node the node to retrieve the text from
      * @param fieldname the name of the field to retrieve
      * @return the retrieved text
+     * @throws StorageException if an error occurred while retrieving the text value
      */
-    public String getText(MMObjectNode node,String fieldname);
+    public String getTextValue(MMObjectNode node, FieldDefs field) throws StorageException;
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
@@ -82,8 +84,9 @@ public interface StorageManager {
      * @param node the node to retrieve the byte array from
      * @param fieldname the name of the field to retrieve
      * @return the retrieved byte array
+     * @throws StorageException if an error occurred while retrieving the binary value
      */
-    public byte[] getBytes(MMObjectNode node,String fieldname);
+    public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException;
 
     /**
      * This method inserts a new object, and registers the change.
@@ -107,7 +110,7 @@ public interface StorageManager {
      * @return <code>true</code> if succesful
      * @throws StorageException if an error occurred during delete
      */
-    public boolean delete(MMObjectNode node) throws StorageException;
+    public void delete(MMObjectNode node) throws StorageException;
 
     /**
      * Select a node from a specified builder
