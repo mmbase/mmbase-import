@@ -95,7 +95,9 @@ public class WriterHelper  {
      * For implementation of the write attribute.
      */
     public void setWrite(Boolean w) {
-        log.debug("Setting write to " + w);
+        if (log.isDebugEnabled()) {
+            log.debug("Setting write to " + w);
+        }
         write = w;
     }
 
@@ -270,6 +272,7 @@ public class WriterHelper  {
 
         if (value instanceof byte[]) {         
             // writing bytes to the page?? We write base64 encoded...
+            // this is an ondocumented feature...
             return org.mmbase.util.Encode.encode("BASE64", (byte[]) value); 
         }
         return value.toString();
@@ -318,6 +321,10 @@ public class WriterHelper  {
         }            
         overridewrite = null; // for use next time
         hasBody       = false;
+        bodyContent   = null;
+        pageContext   = null;
+        value         = null;
+        log.debug("End of deEndTag");
         return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
     }
 
