@@ -71,7 +71,7 @@
               codebase="http://activex.microsoft.com/activex/	controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
               standby="Loading Microsoft Windows Media Player components..."
               type="application/x-oleobject">
-              <param name="fileName" value="<mm:field id="source" name="url(wmf)" />">
+              <param name="fileName" value="<mm:field id="source" name="url(asf)" />">
               <param name="animationatStart" value="true">
               <param name="transparentatStart" value="true">
               <param name="autoStart" value="true">              
@@ -80,6 +80,7 @@
       <embed type="application/x-mplayer2"
         pluginspage = "http://www.microsoft.com/Windows/MediaPlayer/"
         SRC="<mm:field name="url(asf)" />"
+        enablejavascript="true"
         name="embeddedplayer"
         AutoStart="true">        
       </embed>
