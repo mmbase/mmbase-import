@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.22 2002-07-19 20:16:58 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.23 2002-08-12 19:37:22 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -144,11 +144,16 @@ Object configObject = session.getAttribute(sessionKey);
 if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) { // nothing (ok) in the session
     if (log.isDebugEnabled()) log.debug("creating new configuration (in session is " + configObject + ")");
     ewconfig = new Config();
-    session.setAttribute(sessionKey, ewconfig);  // put it in the session
+    if (! sessionKey.endsWith("_search")) {
+        session.setAttribute(sessionKey, ewconfig);  // put it in the session
+    }
+
 } else {
     log.debug("using configuration from session");
     ewconfig = (Config) configObject;
 }
+
+
 String refer = ewconfig.backPage;
 log.trace("backpage in config is " + refer);
 
