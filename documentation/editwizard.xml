@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<!-- !DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN"  -->
 <book>
   <bookinfo>
     <date>2002-06-27</date>
     <title>MMBase editwizard documentation</title>
+    <authorgroup>
+      <author>
+        <firstname>Kars</firstname>
+        <surname>Veling</surname>
+      </author>
+      <author>
+        <firstname>Henk</firstname>
+        <surname>Hangyi</surname>
+      </author>
+    </authorgroup>
+    <edition>February 22th 2002;
+Kars Veling, kars@q42.nl</edition>
+    <edition>March 22th 2002
+Kars Veling, kars@q42.nl
+</edition>
+    <edition>July 4th, 2002
+Henk Hangyi</edition>
   </bookinfo>
   <chapter id="introduction">
     <title>Introduction</title>
@@ -75,7 +92,7 @@ The editwizards rely heavily on XML and XSL. Therefore, this guide assumes you k
 </para>
           </listitem>
           <listitem>
-            <para>Click on the demo to "Images"
+            <para>Click on the demo "Images"
 </para>
           </listitem>
           <listitem>
@@ -103,6 +120,252 @@ The editwizards rely heavily on XML and XSL. Therefore, this guide assumes you k
           </listitem>
         </orderedlist>
       </para>
+    </sect1>
+  </chapter>
+  <chapter id="gettingstarted">
+    <title>Getting started</title>
+    <para>Congratulations, the editwizards are up and running!
+In this chapter we will make a simple wizard to learn the basics about the wizards. Let's try to build up a simple wizard yourself.
+</para>
+    <sect1>
+      <title>Step 1. Deciding what to do</title>
+      <para>First, you need to decide what your wizard should do.
+In our first example, we just want to let the user edit the plain fields of a –very- simple object.
+We use the builder: “people” to make our first wizard.
+</para>
+      <para>Users will be able to add, delete and change people-objects (persons in real-life) using this wizard.
+If you just want to see how it’s done, see the working example in the editwizard installation.
+</para>
+      <para>We also need to decide where to put our wizards; all wizards should be placed somewhere in the directory ‘data’ inside the ‘editwizard’ main directory.
+Let's say we make a new directory, named "practice" in the "data" directory.
+So, the path from the web-root looks as follows: mmapps/editwizard/data/practice
+</para>
+    </sect1>
+    <sect1>
+      <title>Step 2. create a basic wizard</title>
+      <para>Create a text file in the subdir you decided, with the extension ".xml".
+In our example, it should be named: /practice/simple.xml . 
+Open the newly created simple.xml in a text-editor and copy or type the following code into simple.xml.
+Save the simple.xml file.
+
+</para>
+      <programlisting>&lt;?xml version="1.0"?&gt;
+&lt;wizard-schema id="some_id"&gt;
+&lt;title&gt;Practice&lt;/title&gt;
+
+&lt;action type="create"&gt;
+&lt;object type="people" /&gt;
+&lt;/action&gt;
+
+&lt;action type="delete" /&gt;
+
+&lt;form-schema id="step1"&gt;
+&lt;title&gt;People Wizard&lt;/title&gt;
+&lt;field name="firstname"&gt;
+&lt;prompt&gt;Firstname&lt;/prompt&gt;
+&lt;/field&gt;
+&lt;field name="lastname"&gt;
+&lt;prompt&gt;Lastname&lt;/prompt&gt;
+&lt;/field&gt;
+&lt;/form-schema&gt;
+
+&lt;/wizard-schema&gt;</programlisting>
+    </sect1>
+    <sect1>
+      <title>Step 3. Get it working</title>
+      <para>Okay. The wizard is made. How to check if it works?
+Open your webbrowser and type in the url to your running mmbase website, and add the command to run our created wizard. Eg.:
+<programlisting>http://localhost:4242/mmapps/editwizard/list.jsp?wizard=practice/simple&amp;nodepath=people&amp;fields=firstname
+</programlisting>You should see a login screen first. Login as you would with the MMEditors or the MMBase admin.
+After you logged in, you should see a screen like this:
+<screenshot>
+          <graphic fileref="media/simple1.jpg"/>
+        </screenshot>Here, you can see that there is no person entered. In your case this might be different.
+Let's create a new person. Click on the star-icon on the bottom-right of the screen.
+If everything is working correctly, you should see the following page:
+<screenshot>
+          <graphic fileref="media/simple2.jpg"/>
+        </screenshot>Here you can see your first wizard in action!
+Two fields are visible (as defined in the simple.xml file).
+Fill in the two fields and press save.
+Your newly created person should be visible in the list-view.
+Congratulations. You've made -and runned- your first wizard.
+And now? You can image you can change fieldnames, titles and object-types so that you can edit different objects in the system. Wizard can do a lot more. We’ll get to that in the following chapter.
+</para>
+    </sect1>
+  </chapter>
+  <chapter id="wizardbasics">
+    <title>Wizard Basics</title>
+    <para>If you are here, you can already make and run a simple wizard.
+Let's go deeper into the features of the wizards.
+Basically, you should use a basic wizard like the practice example. In the following text this basic example is expanded.
+</para>
+    <sect1 id="createaction">
+      <title>Create action</title>
+      <para>In the create action is defined what should be created in mmbase if the user clicks on the create-button.
+A create action is placed inside the /wizard node.
+You can create multiple objects inside each other (and create relations between them), place default values in some fields.
+Example:
+</para>
+      <programlisting>&lt;action type=”create”&gt;
+	&lt;object type=”people”&gt;
+		&lt;field name=”firstname”&gt;NOBODY&lt;/field&gt;
+		&lt;relation role=”related”&gt;
+			&lt;object type=”news” /&gt;
+		&lt;/relation&gt;
+	&lt;/object&gt;
+&lt;/action&gt;
+</programlisting>
+      <para>This action creates 2 objects and 1 relation. A new people object with in the field “firstname” is placed “NOBODY”.
+And, a relation is created between this new people object and a new news object.
+<remark>MMBase will default not allow you to make a relation between people and news. So remove the relation and inside-object node in the object to try it in a wizard.
+</remark>
+      </para>
+    </sect1>
+    <sect1 id="loadaction">
+      <title>Load action</title>
+      <para>Generally, the wizard needs to know what objects and relations to ‘load’ before the wizard-pages are displayed.
+Default, it loads the given mmbase object and its fields. But, in the future, we will need to load objects-over-relations, multiple objects and nested objects.
+Users can use the load-action to define the load behaviour of the wizards.
+</para>
+    </sect1>
+    <sect1 id="deleteaction">
+      <title>Delete action</title>
+      <para>Place a delete action in the wizard if you want to allow the users to delete objects.
+Try to remove the &lt;action type=”delete” /&gt; from the practice wizard and reload the list to see what the impact is.<remark>The delete buttons will disappear.
+
+</remark>
+      </para>
+    </sect1>
+    <sect1 id="fieldtypes">
+      <title>Field types</title>
+      <para>Default, the wizard uses the field-types as defined in the builders in mmbase. But, you can override.
+In the reference you can see what field types you can use and what options you have.</para>
+    </sect1>
+    <sect1 id="validation">
+      <title>Validation</title>
+      <para>Very important, you'll be able to do basic validation on the fields.
+Basically, in fields you can add attributes to validate the field. Eg.:<programlisting>&lt;field name="firstname"&gt; ...</programlisting>can be extended with validation fields. Because the "firstname" field is a text-field, you can apply text-validation rules. Eg.:<programlisting>&lt;field name="firstname" dtminlength="1" dtmaxlength="20" &gt; ...</programlisting>now, the field should contain 1 character, at may at most contain 20 characters.
+Try it!</para>
+    </sect1>
+  </chapter>
+  <chapter id="usinglists">
+    <title>Using lists in the wizards</title>
+    <para>You've seen a few basics of the wizards. We are now ready to make some other wizards.
+A quite important feature of the editwizard is the "lists".
+With lists, you can show, edit, delete and create objects related to the current working-object.
+</para>
+    <para>For this example you'll need the people and the news objects in MMBase.
+In the basic MMbase distribution, the people and the news are set to 'active' by default.
+If they are not enabled in your MMBase installation, please activate them.
+By default, MMBase does NOT allow a relation between people and news.
+Use the standard MMBase editors (see MMBase documentation) to make sure the creation of the relation is allowed via relations of type "related".</para>
+    <sect1 id="createwizard">
+      <title>Create a new wizard</title>
+      <para>Create in the practice directory a new file named people.xml.
+Enter the following xml:
+<programlisting>&lt;wizard-schema id="people"&gt;
+  &lt;title&gt;People&lt;/title&gt;
+
+  &lt;action type="create"&gt;
+    &lt;object type="people"&gt;
+      &lt;field name="firstname"&gt;Enter firstname HERE&lt;/field&gt;
+      &lt;/object&gt;
+    &lt;/action&gt;
+  
+  &lt;action type="delete" /&gt;
+  
+  &lt;action type="load"&gt;
+    &lt;relation destination="news" role="related" /&gt;
+    &lt;/action&gt;
+  
+  &lt;form-schema id="step1"&gt;
+    &lt;title&gt;People_&lt;/title&gt;
+    &lt;field name="firstname" &gt;
+      &lt;prompt&gt;Firstname&lt;/prompt&gt;
+      &lt;/field&gt;
+    &lt;field name="lastname" &gt;
+      &lt;prompt&gt;Lastname&lt;/prompt&gt;
+      &lt;/field&gt;
+    &lt;list role="related" destination="news" minoccurs="0"
+      maxoccurs="*"&gt;
+      &lt;title&gt;
+        Related newsitems
+        &lt;/title&gt;
+      &lt;command name="search" nodepath="news" fields="title" age="-1"
+        &gt;
+        &lt;prompt&gt;Search newsitems&lt;/prompt&gt;
+        &lt;search-filter&gt;
+          &lt;name&gt;name contains&lt;/name&gt;
+          &lt;search-fields&gt;title&lt;/search-fields&gt;
+          &lt;/search-filter&gt;
+        &lt;/command&gt;
+
+      &lt;item&gt;
+        &lt;field name="title" ftype="data"&gt;
+          &lt;prompt&gt;Newsitem&lt;/prompt&gt;
+          &lt;description&gt;
+		Here you can see the name of the related newsitem
+	  &lt;/description&gt;
+          &lt;/field&gt;
+        &lt;/item&gt;
+      &lt;action type="create"&gt;
+        &lt;relation destinationtype="news" role="related"&gt;
+          &lt;/relation&gt;
+        &lt;/action&gt;
+      &lt;/list&gt;
+    &lt;/form-schema&gt;
+&lt;/wizard-schema&gt;
+
+</programlisting>
+      </para>
+    </sect1>
+    <sect1 id="testwizard">
+      <title>Test our wizard</title>
+      <para>Now, everything should be working. Let's try.</para>
+      <orderedlist>
+        <listitem>
+          <para>Open a browser and go to the wizards. Eg.:
+http://localhost:4242/mmapps/editwizard/jsp/list.jsp?fields=firstname&amp;wizard=practice/people&amp;nodepath=people
+</para>
+        </listitem>
+        <listitem>
+          <para>Login if needed</para>
+        </listitem>
+        <listitem>
+          <para>Now you should see a list with all people-objects available in the system. By default, one user exists. (Admin)</para>
+        </listitem>
+        <listitem>
+          <para>Let's create a new one. Click on the star-icon in the bottom-right of the window.</para>
+        </listitem>
+        <listitem>
+          <para>Now, you should see a wizard-form with your new people-object.
+By default, the firstname is filled with "Enter firstname HERE".
+<remark>You can see that text in the entered wizard above.</remark>
+          </para>
+        </listitem>
+        <listitem>
+          <para>Fill in your values and press Save. You should see the list again with your new people-object added.</para>
+        </listitem>
+        <listitem>
+          <para>Now, let's test the list. Edit the admin user, by clicking on its name.
+</para>
+        </listitem>
+        <listitem>
+          <para>Search for a newsitem to relate it to, by click on the search-icon in the square: "Related newsitems".</para>
+        </listitem>
+        <listitem>
+          <para>A popup should be visible now, with all newsitems available at this time. If none are showing, add a new newsitem using the MMBase basic editors (/mmeditors/index.shtml).</para>
+        </listitem>
+        <listitem>
+          <para>Click on a newsitem of your choice and press Ok. Now, the wizard-form will reload and you should see the newly related newsitem in the square.
+</para>
+        </listitem>
+        <listitem>
+          <para>Press Save. Now, the admin object is edited; it is related to the newsitem of your choice. Open the admin people-object again to verify.
+</para>
+        </listitem>
+      </orderedlist>
     </sect1>
   </chapter>
 </book>
