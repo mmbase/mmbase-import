@@ -1,3 +1,4 @@
+<%@page errorPage="error.jsp" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <html>
 <title>Testing MMBase/taglib</title>
@@ -48,6 +49,10 @@
   </mm:fieldlist>
 </mm:node>
 (should see title and subtitle fields)
+<h3>field-function wrap, html</h3>
+<mm:node referid="node">
+  <mm:field name="html(wrap(title, 10))" />
+</mm:node>
 
 
 <mm:log>testing edit node</mm:log>
