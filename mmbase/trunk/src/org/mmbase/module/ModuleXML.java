@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.4 $ $Date: 2000-05-19 15:09:22 $
+ * @version $Revision: 1.5 $ $Date: 2000-05-19 15:24:35 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -79,6 +79,7 @@ public abstract class ModuleXML extends Module {
 		// get us a (normal) propertie reader	
 		ExtendedProperties Reader=new ExtendedProperties();
         Hashtable mods = null;		
+		String filename_upper;
 
 		// load the properties file of this server
 		String filename=mmbaseconfig+"/modules";
@@ -122,6 +123,10 @@ debug("mods =" + mods.toString());
 					filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
 					filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
 
+					filename_upper=mmbaseconfig+"/modules/"+key.toUpperCase();
+					filename_upper=filename_upper.replace('/',(System.getProperty("file.separator")).charAt(0));
+					filename_upper=filename_upper.replace('\\',(System.getProperty("file.separator")).charAt(0));
+
 					// extra check to load propertie files from weird places (security reasons for example)
 					String tmp=System.getProperty("mmbase.mod_"+key);
 					if (tmp!=null) {
@@ -137,8 +142,10 @@ debug("mods =" + mods.toString());
 						modprops = xmlReader.getProperties();
 					 } else {
 						// Warning this is rather blunt
-						filename = filename.toUpperCase() + ".properties";
+						filename = filename_upper + ".properties";
 					    modprops = Reader.readProperties(filename);
+						System.out.println("ModuleXML -> "+filename);
+						System.out.println("ModuleXML -> "+modprops);
 					 }
 					//debug("loadModulesFromDisk(): MOD "+key+" "+modprops);
 					if (modprops!=null) {
