@@ -19,7 +19,7 @@
 <em>see <a href="<mm:url page="${taglibdoc}/fieldlist.jsp" />">fieldlist</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/fieldinfo.jsp" />">fieldinfo</a></em><br />
 <mm:node referid="nodenumber">
-  <mm:fieldlist type="create"> 
+  <mm:fieldlist> 
     <mm:fieldinfo type="guiname" />: <mm:field /><br />
   </mm:fieldlist>
 </mm:node>
@@ -27,7 +27,7 @@
 <h3>getting node by number (number attribute): </h3>
 <em>see <a href="<mm:url page="${taglibdoc}/last.jsp" />">last</a></em><br />
 <mm:node number="$nodenumber">
-  <mm:fieldlist type="create"> 
+  <mm:fieldlist> 
     <mm:fieldinfo type="name" /><mm:last inverse="true">, </mm:last>
     <mm:last><br /></mm:last>
   </mm:fieldlist>
