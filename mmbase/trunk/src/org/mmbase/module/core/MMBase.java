@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.80 2002-11-20 15:03:33 pierre Exp $
+ * @version $Id: MMBase.java,v 1.81 2002-11-21 13:35:08 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -341,10 +341,10 @@ public class MMBase extends ProcessorModule  {
             cookieDomain=tmp;
         }
 
-        sendmail=(SendMailInterface)getModule("sendmail");
         machineName=getInitParameter("MACHINENAME");
 
-        jdbc= (JDBCInterface) getModule("JDBC");
+        // retrieve JDBC module and start it
+        jdbc= (JDBCInterface) getModule("JDBC", true);
 
 
         if (multicasthost != null) {
@@ -467,16 +467,16 @@ public class MMBase extends ProcessorModule  {
         log.debug(" creating new multimedia base : "+baseName);
         Vector v;
 
-	// why are we giving our member variable it's own value here?
+ 	    // why are we giving our member variable it's own value here?
         // database=getDatabase();
-	getDatabase();
+        getDatabase();
 
         MMObjectBuilder objekt=null;
         try {
             objekt=loadBuilder("object");
         } catch (BuilderConfigurationException e) {
             // object builder was not defined -
-            // builde ris optional, so this is not an error
+            // builder is optional, so this is not an error
         }
         if (objekt!=null) {
             objekt.init();
@@ -811,9 +811,12 @@ public class MMBase extends ProcessorModule  {
 
     /**
      * Retrieves a reference to the sendmail module.
+     * @deprecated use getModule("sendmail") instead
      * @return a <code>SendMailInterface</code> object if the module was loaded, <code>null</code> otherwise.
      */
     public SendMailInterface getSendMail() {
+        // retrieve module if needed
+        if (sendmail==null) sendmail=(SendMailInterface)getModule("sendmail");
         return sendmail;
     }
 
@@ -1091,7 +1094,7 @@ public class MMBase extends ProcessorModule  {
      * If the builder cannot be found in this path, a BuilderConfigurationException is thrown.
      * @since MMBase-1.6
      * @param builder name of the builder to initialize
-     * @return the initialized builder object, or null if no builder could be created..
+     * @return the initialized builder object, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      */
     MMObjectBuilder loadBuilder(String builder) {
@@ -1103,7 +1106,7 @@ public class MMBase extends ProcessorModule  {
      * Return the actual path.
      * @param builder name of the builder to find
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
-     * @return the file path to the builder xml, or null if no builder could be found.
+     * @return the file path to the builder xml, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      */
     public String getBuilderPath(String builder, String path) {
@@ -1133,7 +1136,7 @@ public class MMBase extends ProcessorModule  {
      * If the builder already exists, the existing object is returned instead.
      * @param builder name of the builder to initialize
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
-     * @return the initialized builder object, or null if no builder could be created..
+     * @return the initialized builder object, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      */
     MMObjectBuilder loadBuilder(String builder, String ipath) {
@@ -1241,60 +1244,46 @@ public class MMBase extends ProcessorModule  {
      */
     public MMJdbc2NodeInterface getDatabase() {
         if (database==null) {
-	    File databaseConfig = null;
-	    String databaseConfigDir = MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator;
-	    String databasename = getInitParameter("DATABASE");
-	    if(databasename == null){
-		DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
-		if(jdbc == null) throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
-		// How do we know for sure that the JDBC.init() has been called first?
-		// the only way is by using the startModule, (little bit scary to use here)
-                Module m = (Module) jdbc;
-                if(!m.hasStarted()) {
-                    // STUPID
-		    log.error("jdbc module not started, trying to do an explicit start of jdbc module");
-                    m.startModule();
+            File databaseConfig = null;
+            String databaseConfigDir = MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator;
+            String databasename = getInitParameter("DATABASE");
+            if(databasename == null){
+                DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+                if (jdbc == null) throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
+                try {
+                    // dont use the getDirectConnection, upon failure, it will loop,....
+                    databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
+                } catch(java.sql.SQLException sqle) {
+                    log.error(sqle);
+                    log.error(Logging.stackTrace(sqle));
+                    throw new RuntimeException("error retrieving an connection to the database:" + sqle);
                 }
-		try {
-		    // dont use the getDirectConnection, upon failure, it will loop,....
-		    databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
-		}
-		catch(java.sql.SQLException sqle) {
-		    log.error(sqle);
-		    log.error(Logging.stackTrace(sqle));
-		    throw new RuntimeException("error retrieving an connection to the database:" + sqle);
-		}
-	    }
-	    else {
-		// use the correct databas-xml
-		databaseConfig = new File(databaseConfigDir + databasename + ".xml");
-	    }
-	    // get our config...
-	    XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
-
-	    try {
+            } else {
+                // use the correct databas-xml
+                databaseConfig = new File(databaseConfigDir + databasename + ".xml");
+            }
+            // get our config...
+            XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
+            try {
                 Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
                 database = (MMJdbc2NodeInterface) newclass.newInstance();
-	    }
-	    catch(ClassNotFoundException cnfe){
-	        String msg = "class not found:\n" + Logging.stackTrace(cnfe);
-		log.error(msg);
-		throw new RuntimeException(msg);
-	    }
-	    catch(InstantiationException ie) {
-	        String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
-		log.error(msg);
-		throw new RuntimeException(msg);
-	    }
-	    catch(IllegalAccessException iae) {
-	        String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
-		log.error(msg);
-		throw new RuntimeException(msg);
-	    }
-	    // print information about our database connection..
-	    log.info("Using class: '"+database.getClass().getName()+"' with config: '"+databaseConfig+"'." );
-	    // init the database..
-	    database.init(this, dbdriver);
+            } catch(ClassNotFoundException cnfe){
+                String msg = "class not found:\n" + Logging.stackTrace(cnfe);
+                log.error(msg);
+                throw new RuntimeException(msg);
+            } catch(InstantiationException ie) {
+                String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
+                log.error(msg);
+                throw new RuntimeException(msg);
+            } catch(IllegalAccessException iae) {
+                String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
+                log.error(msg);
+                throw new RuntimeException(msg);
+            }
+            // print information about our database connection..
+            log.info("Using class: '"+database.getClass().getName()+"' with config: '"+databaseConfig+"'." );
+	        // init the database..
+	        database.init(this, dbdriver);
         }
         return database;
     }
