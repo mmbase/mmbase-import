@@ -40,7 +40,9 @@
   <!-- documentation related settings -->
   <property name="mmbase.html.documentation.dir" value="${source-html.dir}/mmdocs" />
   <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
-  <property name="documentation.src.dir" value="."/>
+  <property name="documentation.src.dir"  value="."/>
+
+  <property name="documentation.xml-source.dir" value="${documentation.src.dir}"/>
   <property name="documentation.builders.language" value="en" />
   <property name="documentation.temp.dir" value="${documentation.build.dir}/temp" />
   <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
@@ -84,13 +86,19 @@
   <!-- copy all the images and resources -->
   <target name="documentation.resources" depends="style.copy">
     <copy todir="${documentation.dest.dir}/" >
-      <fileset dir="${documentation.src.dir}" >
+      <fileset dir="${documentation.xml-source.dir}" >
         <exclude name="**/*.xml"/>
         <exclude name="**/*.sgm"/>
         <exclude name="**/*.xslt"/>
         <exclude name="**/*.properties*"/>
         <exclude name="build/**"/>
         <exclude name="build.*" />
+      </fileset>
+    </copy>
+    <copy todir="${documentation.dest.dir}/" >
+      <fileset dir="${documentation.src.dir}" >
+        <include name="style/*.css"/>
+        <include name="style/*.png"/>
       </fileset>
     </copy>
   </target>
@@ -103,8 +111,7 @@
   <!-- copy all documentation from the mmdocs dir                  -->
   <!-- this is documentation that hasn't been converted to docbook -->
   <!-- (yet)                                                       -->
-  <target name="documentation.static.copy"
-          depends="documentation.resources">
+  <target name="documentation.static.copy">
     <copy todir="${documentation.dest.dir}/" >
       <fileset dir="${mmbase.html.documentation.dir}" />
     </copy>
@@ -115,9 +122,10 @@
   <!-- Perform docbook2html conversion                                                  -->
   <!-- ================================================================================ -->
   <target name="documentation.html"
-          depends="documentation.static.copy,mmbase.jar,download"
+          depends="documentation.resources,mmbase.jar,download"
           description="Create HTML documentation from the DocBook sources">
 
+    <echo message="${documentation.dest.dir}" />
     <java classname="org.mmbase.util.XSLTransformer"
           fork="yes"
           failonerror="no">
@@ -133,7 +141,7 @@
         </fileset>
       </classpath>
       <arg value="${documentation.build.dir}/docbook2xhtml.xslt" />
-      <arg value="${documentation.src.dir}" />
+      <arg value="${documentation.xml-source.dir}" />
       <arg value="${documentation.dest.dir}" />
       <arg value="exclude=build.xml" />
       <arg value="exclude=build" />
@@ -154,7 +162,7 @@
     <!-- a strange problem with fop's basedir                     -->
     <!-- It's a very bad hack, but it's needed                    -->
     <copy todir="${basedir}/media/" flatten="yes" >
-      <fileset dir="${documentation.src.dir}" >
+      <fileset dir="${documentation.xml-source.dir}" >
         <exclude name="build/**"/>
         <include name="**/*.jpg"/>
         <include name="**/*.png"/>
@@ -180,7 +188,7 @@
         </fileset>
       </classpath>
       <arg value="${documentation.docbook.fo.stylesheet}" />
-      <arg value="${documentation.src.dir}" />
+      <arg value="${documentation.xml-source.dir}" />
       <arg value="${documentation.temp.dir}" />
       <arg value="extension=fo" />
       <arg value="exclude=build" />
@@ -229,13 +237,13 @@
         <include name="**/*.fo"/>
       </fileset>
     </delete -->
-    <!-- delete dir="${basedir}/media/" /-->
+    <delete dir="${basedir}/media/" />
   </target>
 
   <!-- ================================================================================ -->
   <!-- Main documentation Target                                                        -->
   <!-- ================================================================================ -->
-  <target name="documentation" depends="documentation.html,documentation.pdf">
+  <target name="documentation" depends="documentation.html,documentation.static.copy,documentation.pdf">
     <!-- delete dir="${documentation.temp.dir}"/ -->
   </target>
  
