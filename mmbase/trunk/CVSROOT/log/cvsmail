@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.6 2004-10-07 10:12:30 michiel Exp $
+#  $Id: cvsmail,v 1.7 2004-10-07 11:06:40 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -60,7 +60,10 @@ if ($child = fork()) {
     }
 
     # mail message           
-    my $message = "From: $user <wwwtech\@mmbase.org>\nSubject: $subject\n".join("", @message);
+	# for 'mail'
+    #my $message = "From: $user <wwwtech\@mmbase.org>\nSubject: $subject\n".join("", @message);
+	# for 'mutt'
+	my $message = join("", @message);
 
     # also log this message:
     my $logfile = new FileHandle(">>$log_filename");
@@ -74,7 +77,7 @@ if ($child = fork()) {
 
     # do the mailing
     if (1) {
-	my $mail = new FileHandle("|/usr/local/bin/mutt -s \"$subject\" $toaddress");
+	my $mail = new FileHandle("|/usr/local/bin/mutt -s \"$subject\" $toaddress -e 'my_hdr From: $user <wwwtech\@mmbase.org>'");
 	
 	print $mail $message."\n";
 	
