@@ -68,7 +68,7 @@ public class HttpAuth {
                 String dtmp=System.getProperty("mmbase.mode");
                 if (dtmp!=null && dtmp.equals("demo")) {
                         String curdir=System.getProperty("user.dir");
-                        if (curdir.endsWith("/orion")) {
+                        if (curdir.endsWith("orion")) {
                                 curdir=curdir.substring(0,curdir.length()-6);
                         }
                         accountconfig=curdir+"/config";
