@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.8 2000-10-17 09:27:59 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.9 2000-10-17 14:34:10 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -127,9 +127,9 @@ if [ "$oldCP" != "" ]; then
     CLASSPATH=${CLASSPATH}:${oldCP}
 fi
 
-# MMBASE libs lezen
+# adding MMBASE libs to classpath
 for i in ${MMBASE_LIB}/* ; do
-  CLASSPATH=$i:${CLASSPATH
+  CLASSPATH=$i:${CLASSPATH}
 done
 
 CLASSPATH=${JDBC_CLASSPATH}:${CLASSPATH}
@@ -205,18 +205,6 @@ if [ "$oldCP" != "" ]; then
 else
     unset CLASSPATH
 fi
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

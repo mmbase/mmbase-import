@@ -273,9 +273,8 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-
-  <!--<target name="dist" depends="compile,jar,javadocs">-->
-<target name="dist" depends="compile,jar">
+    
+  <target name="dist" depends="compile,jar,javadocs">
 
     <mkdir dir="${dist.root}"/>
     <mkdir dir="${dist.version}"/>
@@ -301,14 +300,14 @@ about the Ant build tool.
     <copyfile src="${src.dir}/org/mmbase/scripts/build-in-distro.xml" dest="${dist.scripts}/build.xml"/>
 
     <!-- make scripts executable -->
-    <chmod perm="+x" file="${dist.scripts}/compile"/>
-    <chmod perm="+x" file="${dist.scripts}/compile2"/>
-    <chmod perm="+x" file="${dist.scripts}/createjar"/>
-    <chmod perm="+x" file="${dist.scripts}/oriondoc"/>
-    <chmod perm="+x" file="${dist.scripts}/startorion"/>
-    <chmod perm="+x" file="${dist.scripts}/tomcat_mmbase.sh"/>
-    <chmod perm="+x" file="${dist.scripts}/startup_tomcat_mmbase.sh"/>
-    <chmod perm="+x" file="${dist.scripts}/shutdown_tomcat_mmbase.sh"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/compile"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/compile2"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/createjar"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/oriondoc"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/startorion"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/tomcat_mmbase.sh"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/startup_tomcat_mmbase.sh"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/shutdown_tomcat_mmbase.sh"/>
 
     <!-- copy the javadocs -->
     <copydir src="${build.javadocs}" dest="${dist.docs}/api"/>
