@@ -1,24 +1,28 @@
 #!/usr/local/bin/perl -w
 
-
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.14 2002-11-08 20:13:55 michiel Exp $
+#  $Id: cvsmail,v 1.15 2002-11-08 20:17:08 michiel Exp $
 
 use strict;
 use FileHandle;
 
-# argumentoj:
+# arguments
 my ($log_filename, $user, $files) = @ARGV;
 
-my @files = split(" ", $files);
-
-my $dir = shift @files;
-
+# configuration
 my $basedir     = "/home/michiel/";
 my $toaddress   = "cvs\@mmbase.org";
 my $cvs         = "/usr/local/bin/cvs";
+
+if ($files == undef) {
+  exit 1;
+}
+
+my @files = split(" ", $files);
+my $dir = shift @files;
+
 
 my $child;
 if ($child = fork()) {
