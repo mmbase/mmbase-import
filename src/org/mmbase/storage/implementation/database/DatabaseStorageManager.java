@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.26 2003-09-19 11:31:20 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.27 2003-09-22 09:07:39 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -694,7 +694,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setNodeValue(PreparedStatement statement, int index, MMObjectNode value, FieldDefs field) throws StorageException, SQLException {
-        if (value == MMObjectNode.VALUE_NULL) {
+        if (value == MMObjectNode.VALUE_NULL || value == null) {
             if (field.getDBNotNull()) {
                 throw new StorageException("Field with name "+field.getDBName()+" can not be NULL.");
             } else {
@@ -1257,7 +1257,9 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public boolean exists(MMObjectBuilder builder) throws StorageException {
         boolean result = exists((String)factory.getStorageIdentifier(builder));
-        if (result) { verify(builder); }
+        if (result) { 
+            verify(builder); 
+        }
         return result;
     }
 
@@ -1467,7 +1469,8 @@ public class DatabaseStorageManager implements StorageManager {
                 log.warn("VERIFY: Column " + column + " in Storage but not defined!");
             }
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            log.error("Error during check of table. Asuming it correct." + e.getMessage() + Logging.stackTrace(e));
+            //throw new StorageException(e.getMessage(), e);
         } finally {
             releaseActiveConnection();
         }
