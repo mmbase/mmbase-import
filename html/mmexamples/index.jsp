@@ -81,16 +81,6 @@
     </tr>
     
     <tr>
-      <td>Community (requires 'community' module and 'community' taglib from mmbase-community.jar)</td>
-      <td>
-        Example of the community-features of MMBase (forum<!-- &amp; chat-->)
-      </td>
-      <td class="link" >
-        <a href="<mm:url page="community.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
-      </td>
-    </tr>
-    
-    <tr>
       <th class="header" colspan="3">Other Demo's</th>
     </tr>
     
