@@ -16,6 +16,8 @@ import org.mmbase.module.core.*;
 /**
  * This object subscribes itself to builder changes
  * @author Daniel Ockeloen
+ *
+ * @deprecated-now This is an _excact copy_ of org.mmbase.cache.MultilevelSubscribeNode
  */
 public class MultilevelSubscribeNode implements MMBaseObserver {
 
