@@ -9,8 +9,11 @@ See http://www.MMBase.org/license
 */
 
 /*
-$Id: ImageMaster.java,v 1.14 2000-06-14 15:22:15 wwwtech Exp $
+$Id: ImageMaster.java,v 1.15 2000-07-04 12:05:30 vpro Exp $
 $Log: not supported by cvs2svn $
+Revision 1.14  2000/06/14 15:22:15  wwwtech
+Rico: made netfiles object check/create synchronized
+
 Revision 1.13  2000/06/08 09:16:58  wwwtech
 Wilbert: buggie method path2ckey no longer converts alias to number, so the correct images from ICaches wil be found
 
@@ -166,8 +169,10 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 				String mimetype = "image/jpeg"; // When not overwritten, it will stay on 'jpeg'.
 
 				// get the clear ckey
+				// '/img.db?xxxxxxxxxx.asis'
+				// zap '/img.db?' and '.asis'
 				String ckey=filename.substring(8);
-				int pos=ckey.indexOf(".");
+				int pos=ckey.lastIndexOf(".");
 				if (pos!=-1) {
 					ckey=ckey.substring(0,pos);
 					// We now have a clean ckey ( aka 234242+f(gif) )
