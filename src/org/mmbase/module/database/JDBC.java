@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.28 2002-10-10 18:22:59 michiel Exp $
+ * @version $Id: JDBC.java,v 1.29 2002-10-11 10:50:08 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -40,7 +40,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private String JDBChost;
     private int JDBCport;
     private int maxConnections;
-    private int maxQuerys;
+    private int maxQueries;
     private String JDBCdatabase;
     private String databasesupportclass;
     private DatabaseSupport databasesupport;
@@ -54,7 +54,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         getProps();
         getDriver();
         loadSupport();
-        poolHandler=new MultiPoolHandler(databasesupport,maxConnections,maxQuerys);
+        poolHandler=new MultiPoolHandler(databasesupport,maxConnections,maxQueries);
     }
 
     /*
@@ -193,10 +193,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             log.warn("connections was not set or a invalid integer :" + e + "(using default " + maxConnections + ")");
         }
         try {
-            maxQuerys=Integer.parseInt(getInitParameter("querys"));
-        } catch (Exception e) {
-            maxQuerys = 500;
-            log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQuerys + ")");
+            maxQueries = Integer.parseInt(getInitParameter("queries"));
+        } catch (Exception f) {
+            try {
+                maxQueries = Integer.parseInt(getInitParameter("querys")); //fall back backward compatible
+            } catch (Exception e) {            
+                maxQueries = 500;
+                log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQueries + ")");
+            }
         }
         JDBCdatabase=getInitParameter("database");
         if (databasesupportclass==null || databasesupportclass.length()==0) {
