@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import java.io.*;
 import java.util.*;
+import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
@@ -86,22 +87,18 @@ public class MMList extends MMTaglib
 		
 	    //size +1 since we return every variable + one hashTable
 	    //for every iteration
-	    variableInfo =    new VariableInfo[fields.size() + 1];
-	    int i ;
-	    for (i =0 ; i < fields.size(); i++){
+	    //variableInfo =    new VariableInfo[fields.size() + 1];
+	    variableInfo =    new VariableInfo[(fields.size()*2) + 1];
+	    int j=0;
+	    for (int i =0 ; i < fields.size(); i++){
 		String field = (String)fields.elementAt(i);
 		//it would be nice to return Integer is a field is of that type
-		variableInfo[i] = new VariableInfo(prefix + getSimpleReturnValueName(field),
-						   "java.lang.String",
-						   true,
-						   VariableInfo.NESTED);
+		variableInfo[j++] = new VariableInfo(prefix + getSimpleReturnValueName(field),"java.lang.String",true,VariableInfo.NESTED);
+		variableInfo[j++] = new VariableInfo("item"+(i+1),"java.lang.String",true,VariableInfo.NESTED);
 		    
 	    }
 	    //add the Hashtable , name it node to confuse people :)
-	    variableInfo[i] = new VariableInfo(prefix + "node",
-					       "org.mmbase.bridge.Node",
-					       true,
-					       VariableInfo.NESTED);
+	    variableInfo[j++] = new VariableInfo(prefix + "node","org.mmbase.bridge.Node",true,VariableInfo.NESTED);
 	} 
 	return variableInfo;
     }
@@ -130,7 +127,13 @@ public class MMList extends MMTaglib
      * the whole node part is not interpreted at all
      **/
     public void setNodes(String nodes){
-	this.nodesString = nodes;
+	// parse/map the nodes they can be params, sessions or aliases
+	// instead of just numbers 
+	nodesString=parseNodes(nodes);
+    }
+
+    public void setNode(String node){
+	nodesString=parseNodes(node);
     }
 
     /**
@@ -224,8 +227,14 @@ public class MMList extends MMTaglib
 			}
 		    } else if (hasNode){
 		    	action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
-			Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
-			nodes.addAll(node.getRelatedNodes(typeString));
+			try {
+				Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
+				nodes.addAll(node.getRelatedNodes(typeString));
+			} catch(Exception e) {
+				Node node  = getDefaultCloud().getNode(searchNodes);
+				System.out.println("NODES="+node.getRelatedNodes(typeString));
+				nodes.addAll(node.getRelatedNodes(typeString));
+			}
 		    } else { 
 		    	action = "list all objects of type("+ typeString + ")";
 			NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
@@ -235,6 +244,101 @@ public class MMList extends MMTaglib
 		    }
 		}
 	} catch (NullPointerException npe){
+		showListError(npe,nodesSearchString,nodeManagers,searchNodes,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct,maxString,action);
+	}
+
+
+	if (maxString != null){ // for the moment max can only be here because
+				//there is no other way to tell the MMCI that a list sould be shorter
+	    try {
+		int max = Integer.parseInt(maxString);
+		if (max < nodes.size()){
+				//very bag coding
+		    returnValues = new Vector(nodes.subList(0,max)).elements();
+		}else {
+		    returnValues = nodes.elements();
+		}
+	    } catch (NumberFormatException e){
+		throw new JspException ("MAX Field in tag is no a number");
+	    }
+	} else {
+	    returnValues = nodes.elements();
+	}
+	// if we get a result from the query 
+	// evaluate the body , else skip the body
+	if (returnValues.hasMoreElements())
+	    return EVAL_BODY_TAG;
+	return SKIP_BODY;
+    }
+
+
+    public void doInitBody() throws JspException {
+	fillVars();
+    }
+
+    public int doAfterBody() throws JspException {
+	try {
+	    if (returnValues.hasMoreElements()){
+		fillVars();
+		return EVAL_BODY_TAG;
+	    } else {
+		bodyOut.writeOut(bodyOut.getEnclosingWriter());
+		return Tag.SKIP_BODY;
+	    }
+	} catch (IOException ioe){
+	    throw new JspTagException(ioe.toString());
+	}
+    }
+
+    private void fillVars(){
+	if (returnValues.hasMoreElements()){
+	    Node node = (Node)returnValues.nextElement();
+	    String prefix = getPrefix();
+	    Enumeration returnFieldEnum = StringSplitter(fieldsString,",").elements();
+	    int j=1;	
+	    while (returnFieldEnum.hasMoreElements()){
+		String field = (String)returnFieldEnum.nextElement();
+	    	pageContext.setAttribute(getPrefix() + getSimpleReturnValueName(field) ,"" + node.getValue(field));
+	    	pageContext.setAttribute("item"+(j++) ,"" + node.getValue(field));
+	    }
+    	    pageContext.setAttribute(getPrefix() + "node" ,node);
+	}
+    }
+
+
+    /**
+     * simple util method to split comma separated values
+     * to a vector
+     * @param string the string to split
+     * @param delimiter 
+     * @return a Vector containing the elements, the elements are also trimed
+     **/
+    private Vector StringSplitter(String string,String delimiter){
+	Vector retval = new Vector();
+	StringTokenizer st = new StringTokenizer(string,delimiter);
+	while(st.hasMoreTokens()){
+	    retval.addElement(st.nextToken().trim());
+	}
+	return retval;
+    }
+
+    private String getSimpleReturnValueName(String fieldName){
+	return fieldName.replace('.','_');
+    }
+
+    private String parseNodes(String nodes) {
+	// should be a StringTokenizer have to check mmci how
+	// multinodes are handled
+	if (nodes.startsWith("param(")) {
+		String name=nodes.substring(6,nodes.length()-1);
+		HttpServletRequest req=(HttpServletRequest)pageContext.getRequest();
+		return(req.getParameter(name));
+	}
+	return(nodes);
+    }
+
+
+    private void showListError(Exception npe,String nodesSearchString,String nodeManagers,String searchNodes,String searchFields,String searchWhere, String searchSorted,String searchDirection, boolean searchDistinct,String maxString,String action) throws JspException { 
 		StringBuffer sb = new StringBuffer();
 		sb.append("nodes=" + nodesSearchString);
 		sb.append("\n");
@@ -295,81 +399,4 @@ public class MMList extends MMTaglib
 		 }
 		throw new JspException("MMList error\n" + sb.toString());
 	}
-
-
-	if (maxString != null){ // for the moment max can only be here because
-				//there is no other way to tell the MMCI that a list sould be shorter
-	    try {
-		int max = Integer.parseInt(maxString);
-		if (max < nodes.size()){
-				//very bag coding
-		    returnValues = new Vector(nodes.subList(0,max)).elements();
-		}else {
-		    returnValues = nodes.elements();
-		}
-	    } catch (NumberFormatException e){
-		throw new JspException ("MAX Field in tag is no a number");
-	    }
-	} else {
-	    returnValues = nodes.elements();
-	}
-	// if we get a result from the query 
-	// evaluate the body , else skip the body
-	if (returnValues.hasMoreElements())
-	    return EVAL_BODY_TAG;
-	return SKIP_BODY;
-    }
-
-
-    public void doInitBody() throws JspException {
-	fillVars();
-    }
-
-    public int doAfterBody() throws JspException {
-	try {
-	    if (returnValues.hasMoreElements()){
-		fillVars();
-		return EVAL_BODY_TAG;
-	    } else {
-		bodyOut.writeOut(bodyOut.getEnclosingWriter());
-		return Tag.SKIP_BODY;
-	    }
-	} catch (IOException ioe){
-	    throw new JspTagException(ioe.toString());
-	}
-    }
-
-    private void fillVars(){
-	if (returnValues.hasMoreElements()){
-	    Node node = (Node)returnValues.nextElement();
-	    String prefix = getPrefix();
-	    Enumeration returnFieldEnum = StringSplitter(fieldsString,",").elements();
-	    while (returnFieldEnum.hasMoreElements()){
-		String field = (String)returnFieldEnum.nextElement();
-	    	pageContext.setAttribute(getPrefix() + getSimpleReturnValueName(field) ,"" + node.getValue(field));
-	    }
-    	    pageContext.setAttribute(getPrefix() + "node" ,node);
-	}
-    }
-
-
-    /**
-     * simple util method to split comma separated values
-     * to a vector
-     * @param string the string to split
-     * @param delimiter 
-     * @return a Vector containing the elements, the elements are also trimed
-     **/
-    private Vector StringSplitter(String string,String delimiter){
-	Vector retval = new Vector();
-	StringTokenizer st = new StringTokenizer(string,delimiter);
-	while(st.hasMoreTokens()){
-	    retval.addElement(st.nextToken().trim());
-	}
-	return retval;
-    }
-
-    private String getSimpleReturnValueName(String fieldName){
-	return fieldName.replace('.','_');
-    }
 }
