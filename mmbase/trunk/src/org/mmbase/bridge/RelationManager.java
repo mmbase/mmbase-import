@@ -26,29 +26,29 @@ package org.mmbase.bridge;
  * @author Pierre van Rooden
  */
 public interface RelationManager extends NodeManager {
-	/** 
-	 * Directionality constant : uni-directional
+    /** 
+     * Directionality constant : uni-directional
      */
     public final static int UNIDIRECTIONAL = 1;
 
     /** 
-	 * Directionality constant : bi-directional
+     * Directionality constant : bi-directional
      */
     public final static int BIDIRECTIONAL = 2;
 
-	/**
-	 * Retrieves the role of the source to the destination
-	 * @return the role as a <code>String</code>
-	 */
-	public String getForwardRole();
-
-	/**
-	 * Retrieves the role of the destination to the source
-	 * @return the role as a <code>String</code>
-	 */
-	public String getReciprocalRole();
-
- 	/**
+    /**
+     * Retrieves the role of the source to the destination
+     * @return the role as a <code>String</code>
+     */
+    public String getForwardRole();
+    
+    /**
+     * Retrieves the role of the destination to the source
+     * @return the role as a <code>String</code>
+     */
+    public String getReciprocalRole();
+    
+    /**
      * Retrieves the directionality for this type (the default assigned to a new relation).
      * @return one of the directionality constants
      */
@@ -60,17 +60,27 @@ public interface RelationManager extends NodeManager {
      */
     public NodeManager getSourceManager();
 
-	/**
+    /**
      * Retrieves the type of node that can act as the destination of a relation of this type.
      * @return the destination NodeManager
      */
     public NodeManager getDestinationManager();
 
-	/**
+    /**
      * Adds a relation from this type.
      * @param sourceNode the node from which you want to relate
      * @param destinationNode the node to which you want to relate
-	 * @return the added relation
+     * @return the added relation
      */
     public Relation createRelation(Node sourceNode, Node destinationNode);
+
+    /**
+     * Retrieves all the relations of this type from a given node.
+     * @param node the node from which to give the relations
+     * @return a list of relations
+     **/
+
+    public RelationList getRelations(Node node);
+
+
 }
