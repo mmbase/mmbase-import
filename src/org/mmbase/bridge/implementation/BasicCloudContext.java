@@ -91,24 +91,20 @@ public class BasicCloudContext implements CloudContext {
     }
 
     public Cloud getCloud(String cloudName) {
-    	return getCloud(cloudName, "", getNewUser());
+    	return getCloud(cloudName, "anonymous", null);
     }
         
-    public Cloud getCloud(String name, String application, User user) {
+    public Cloud getCloud(String name, String application, HashMap loginInfo) {
     	if ( !localClouds.contains(name) ) {
 	     throw new BasicBridgeException("Cloud "+name+" does not exist.");
 	}
-	return new BasicCloud(name, application, user,this);
+	return new BasicCloud(name, application, loginInfo,this);
     }
 
     public StringList getCloudNames() {
     	return new BasicStringList(localClouds);
     }
 
-    public User getNewUser() {
-    	return new org.mmbase.security.UserContext();
-    }    
-    
     /**
      * Create a temporary scanpage object.
      */

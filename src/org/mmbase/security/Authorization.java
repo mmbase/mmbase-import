@@ -16,7 +16,7 @@ public class Authorization {
     protected MMBaseCop manager;
 
     /** The url where the configfile is located */    
-    protected String configUrl;
+    protected String configPath;
     
     /** 
      *	The method which sets the settings of this class. This method is 
@@ -24,20 +24,20 @@ public class Authorization {
      *	This class will set the member variables of this class and then
      *	call the member function load();
      *	@param manager The class that created this instance.
-     *	@param configUrl The url which contains the config information for.     
+     *	@param configPath The url which contains the config information for.     
      *	    the authorization.
      */        
-    public final void load(MMBaseCop manager, String configUrl) {
-    	log.debug("Calling load() with configUrl:" + configUrl);    
+    public final void load(MMBaseCop manager, String configPath) {
+    	log.debug("Calling load() with configPath:" + configPath);    
     	this.manager = manager;
-    	this.configUrl = configUrl;
+    	this.configPath = configPath;
     	load();
     }
 
     /** 
      *	This method could be overrided by an extending class. 
      *	It should set the settings for this class, and when needed 
-     *	retrieve them from the file at location configUrl.
+     *	retrieve them from the file at location configPath.
      */        
     protected void load() {
     }

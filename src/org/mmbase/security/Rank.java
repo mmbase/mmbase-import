@@ -52,4 +52,11 @@ public final class Rank {
     
     /** the description of this rank */    
     private String description;
+    
+    public static Rank getRank(String rankDesc) {
+    	if(ANONYMOUS.toString().equals(rankDesc)) return ANONYMOUS;
+    	if(BASICUSER.toString().equals(rankDesc)) return BASICUSER;
+    	if(ADMIN.toString().equals(rankDesc)) return ADMIN;
+	return null;		
+    }
 }

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -52,11 +53,11 @@ public interface CloudContext {
 	 * @param name                     the name of the cloud to be returned
 	 * @param application	    	   the type of authentication, which should be 
 	 * 	    	    	    	   used by the authentication implementation.
-	 * @param user	    	    	   the user related information.
+	 * @param loginInfo 	    	    the user related login information.
 	 * @return                         the requested cloud
     	 * @throws CloudNotFoundException  if the specified cloud could not be found
 	 */
-	public Cloud getCloud(String name, String application, User user);
+	public Cloud getCloud(String name, String application, HashMap loginInfo);
 	
 	/**
 	 * Returns the names of all the clouds known to the system
@@ -65,13 +66,4 @@ public interface CloudContext {
 	 *   	    	    	    	our Context
 	 */
 	public StringList getCloudNames();
-
-
-	/**
-	 * Returns a new User object, which can be filled, and used for the login
-	 * @return                      a new User object, which can be filled, 
-	 *  	    	    	    	and used for the login
-	 */
-    	public User getNewUser();
-	
  }
