@@ -37,6 +37,8 @@ public class ImportTag extends WriteTag {
     protected int     from         = ContextTag.LOCATION_NOTSET;
 
     protected String externid      = null;
+
+    private boolean found = false;
     
 
     /**
@@ -81,8 +83,40 @@ public class ImportTag extends WriteTag {
     }
 
     public int doStartTag() throws JspTagException {
-        
-        return EVAL_BODY_TAG;
+        Object value = null;
+        log.trace("dostarttag of import");
+        if (externid != null) {
+            log.trace("Externid was given " + externid);
+            if (id == null) {
+                log.trace("No id was given, using externid ");
+                id = externid;                    
+            } else {
+                log.trace("An id was given (" + id + ")");
+            }
+                    
+            if (from == ContextTag.LOCATION_NOTSET) {
+                found = (getContextTag().findAndRegister(externid, id) != null);
+            } else {
+                found = (getContextTag().findAndRegister(from, externid, id) != null);
+            }
+
+            if (! found && required) {
+                throw new JspTagException("Required parameter '" + externid + "' not found in " + ContextTag.locationToString(from));
+            } 
+            if (found) {
+                value = getObject(id);
+                if (log.isDebugEnabled()) {
+                    log.debug("found value for " + id + " " + value);
+                }
+            }
+        } 
+        if (found) {
+            helper.setValue(value);
+            return SKIP_BODY;        
+        } else {
+            return EVAL_BODY_TAG;
+        }
+
     }
 
     /**
@@ -123,53 +157,36 @@ public class ImportTag extends WriteTag {
         return res;
     }
 
-    public int doAfterBody() throws JspTagException{        
-        Object value = null;
-        log.trace("doafterbody of import");
+    public int doAfterBody() throws JspTagException {  
+        Object value;
         if (externid != null) {
-            log.trace("Externid was given " + externid);
-            if (id == null) {
-                log.trace("No id was given, using externid ");
-                id = externid;                    
-            } else {
-                log.trace("An id was given (" + id + ")");
-            }
-                    
-            boolean found;
-            if (from == ContextTag.LOCATION_NOTSET) {
-                found = (getContextTag().findAndRegister(externid, id) != null);
-            } else {
-                found = (getContextTag().findAndRegister(from, externid, id) != null);
-            }
-
-            if (! found) {
-                log.debug("External Id " + externid + " not found");
+            if (! found ) {
+                if (log.isDebugEnabled()) log.debug("External Id " + externid + " not found");
                 // try to find a default value in the body.
                 Object body = getFromBodyContent();
                 if (! "".equals(body)) { // hey, there is a body content!
-                    log.debug("Found a default in the body (" + body + ")");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found a default in the body (" + body + ")");
+                    }
                     getContextTag().unRegister(id); // first unregister the empty value;
                     getContextTag().register(id, body);
+                    value = body;
+                    helper.setValue(value);
                     found = true;
                 }                
-            }
-            if (! found && required) {
-                throw new JspTagException("Required parameter '" + externid + "' not found in " + ContextTag.locationToString(from));
-            } 
-            if (found) {
-                value = getObject(id);
-                log.debug("found value for " + id + " " + value);
             }
         } else { // get value from the body of the tag.
             if (id == null) {
                 throw new JspTagException("Attributes referid and id cannot be both missing");
             }
             value = getFromBodyContent();
-            log.debug("Setting " + id + " to " + value);
-            getContextTag().register(id, value);            
+            helper.setValue(value);
+            if (log.isDebugEnabled()) {
+                log.debug("Setting " + id + " to " + value);
+            }
+            getContextTag().register(id, value);                        
         }
-        helper.setValue(value);
-
+        found = false; // for use next time
         return SKIP_BODY;
     }
 
