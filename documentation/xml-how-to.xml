@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>How To Use XML</title>
 		<date>2003-02-12</date>
-		<edition>$Id: xml-how-to.xml,v 1.6 2003-07-27 17:47:49 henk Exp $</edition>
+		<edition>$Id: xml-how-to.xml,v 1.7 2004-02-27 12:43:44 gerard Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Henk</firstname>
@@ -60,7 +60,7 @@
 		<title>A very simple XML could be the following</title>
 		<para>Within MMBase is a security framework, in which different security implementations can be used. In this way it is possible to adapt MMBase to the needs of the environment in which it runs. Currently there are a few different implementations ready. The context security and the cloud security are the most advanced schemes available.</para>
 		<programlisting><![CDATA[
-<?xml version="1.0&" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE root SYSTEM "definition.dtd">
 <root></root>
 		]]></programlisting>
