@@ -48,6 +48,7 @@
 </td>
 <td width="850" border="0">
     <%=mainmenu("1","about","license")%>
+    <%=mainmenu("7","demos",null)%>
     <%=mainmenu("2","editors","basic")%>
     <%=mainmenu("3","admin","servers")%>
     <%=mainmenu("4","tools","cache")%>
@@ -73,4 +74,5 @@
 </table>
 </body>
 </html>
+
 
