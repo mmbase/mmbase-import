@@ -15,17 +15,23 @@ package org.mmbase.storage.search;
  * This corresponds with comparison operators <, =, > and LIKE in SQL SELECT-syntax. 
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface FieldCompareConstraint extends FieldConstraint {
     /**
-     * Gets the operator used to compare values. This must be either <code>LESS</code>, <code>EQUAL</code> or <code>GREATER</code>. <code>LIKE</code> is allowed as well when the associated field is of string type.
+     * Gets the operator used to compare values. 
+     * This must be one of the values declared here.
+     * The value <code>LIKE</code> is allowed only when the associated field 
+     * is of string type.
      */
     int getOperator();
 
     int LESS = 1;
-    int EQUAL = 2;
-    int GREATER = 3;
-    int LIKE = 4;
+    int LESS_EQUAL = 2;
+    int EQUAL = 3;
+    int NOT_EQUAL = 4;
+    int GREATER = 5;
+    int GREATER_EQUAL = 6;
+    int LIKE = 7;
 }
