@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.73 2004-02-26 22:11:20 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.74 2004-06-28 21:39:07 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -243,13 +243,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         default:
         }
 
-        Locale locale = null;
-        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
-        if (localeTag != null) {
-            locale = localeTag.getLocale();
-        } else {
-            locale = getCloud().getLocale();
-        }
+        Locale locale = getLocale();;
 
         switch(infoType) {
         case TYPE_NAME:
@@ -268,7 +262,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field",    field.getName());
-            args.set("language", locale.getLanguage());
+            args.set("language",   locale.getLanguage());
+            args.set("locale",   locale);
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request", pageContext.getRequest());
