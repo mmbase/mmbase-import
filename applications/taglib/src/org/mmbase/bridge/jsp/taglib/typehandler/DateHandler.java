@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.15 2004-04-23 13:37:11 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.16 2004-05-13 14:04:06 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -325,7 +325,13 @@ public class DateHandler extends AbstractTypeHandler {
         } else if (operator.equals("smaller")) {
             return "( [" + fieldName + "] <" + time + ")";
         } else if (operator.equals("equal")) {
-            return "( [" + fieldName + "] = " + time + ")";
+
+            String options = tag.getOptions();
+            if (options != null && options.indexOf("date") > -1) {
+                return "( [" + fieldName + "] >= " + time + "  AND [" + fieldName + "] < " + (time + 24 * 60 * 60) + ")";
+            } else {
+                return "( [" + fieldName + "] = " + time + ")";
+            }
         } else {
             log.warn("Found unknown operator value '" + operator + "'");
             return null;
@@ -347,7 +353,12 @@ public class DateHandler extends AbstractTypeHandler {
         } else if (operator.equals("less")) {
             con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.LESS, time);
         } else if (operator.equals("equal")) {
-            con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.EQUAL, time);
+            String options = tag.getOptions();
+            if (options != null && options.indexOf("date") > -1) {
+                con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, new Long(time.longValue() + 24 * 60 * 60), false);
+            } else {
+                con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.EQUAL, time);
+            }
         } else {
             log.warn("Found unknown operator value '" + operator + "'");
             return null;
