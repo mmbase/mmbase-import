@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.200 2002-12-27 12:32:37 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.201 2003-01-03 12:42:38 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1280,7 +1280,8 @@ public class MMObjectBuilder extends MMTable {
      * constraint. 
      *
      * @param where The constraint, can be a SQL where-clause, a MMNODE 
-     *        expression or an altavista-formatted expression.
+     *        expression, an altavista-formatted expression, empty or 
+     *        <code>null</code>.
      * @return The query.
      * @since MMBase-1.7
      */
@@ -1288,14 +1289,12 @@ public class MMObjectBuilder extends MMTable {
     NodeSearchQuery getSearchQuery(String where) {
         NodeSearchQuery query;
         
-        if (where == null || where.length() == 0) {
-            // Empty constraint.
-            query = new NodeSearchQuery(this);
-        } else if (where.startsWith("MMNODE ")) {
+        if (where != null && where.startsWith("MMNODE ")) {
             // MMNODE expression.
             query = convertMMNodeSearch2Query(where);
         } else {
-            query = QueryConvertor.altaVista2SearchQuery(where, this);
+            query = new NodeSearchQuery(this);
+            QueryConvertor.setConstraint(query, where);
         }
 
         return query;
