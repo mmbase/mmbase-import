@@ -85,7 +85,11 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 nodes = manager.getList(where,sortedString,directionString);
             }
         } else {
-            nodes = node.getRelatedNodes(typeString);
+            if (typeString==null) {
+                nodes = node.getRelatedNodes();
+            } else {
+                nodes = node.getRelatedNodes(typeString);
+            }
         }
         return setReturnValues(nodes,true);
     }
