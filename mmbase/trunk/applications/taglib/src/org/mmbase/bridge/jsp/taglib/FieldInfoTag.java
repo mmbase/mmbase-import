@@ -14,8 +14,6 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Enumeration;
 
 import org.mmbase.bridge.Node;
@@ -41,7 +39,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.61 2003-05-19 10:01:20 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.62 2003-05-22 10:33:21 kees Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
