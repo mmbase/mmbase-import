@@ -83,6 +83,9 @@
       <p><em>With &lt;%@:include (utf-8 page)</em></p>
       <%@include file="atincluded.jsp" %>
 
+      <p><em>With &lt;%@:include (iso-8859-1 page):</em></p>
+      <%@include file="atincluded1.jsp" %>
+
       <hr />
       used node: <mm:write referid="node" /> (<mm:field name="number" />)<br />
       <a href="<mm:url page=".." />">back</a><br />
