@@ -47,9 +47,6 @@ public class Urls extends MMObjectBuilder {
 			{
 				t=node.getStringValue(field);
 			}
-			if (t!=null && t.length()>15) {
-				t=t.substring(0,12)+"...";
-			}
 			return(t);
 		}
 	}
