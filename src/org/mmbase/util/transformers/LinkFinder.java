@@ -60,6 +60,7 @@ public class LinkFinder extends ReaderTransformer implements CharTransformer {
                 postFix.insert(0, "&quot;");
                 l -= 6;
                 word.setLength(l);
+                w = word.toString();
             }
 
             // to allow for . , and like in the end, we tear those of.
