@@ -11,7 +11,7 @@
     <singular xml:lang="nl">Competentie Profiel</singular>
     <singular xml:lang="en">Competence Profile</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Competentie Profielend</plural>
+    <plural xml:lang="nl">Competentie Profielen</plural>
     <plural xml:lang="en">Competence Profiles</plural>
   </names>
 
