@@ -10,7 +10,7 @@
     <create>CREATE TABLE {0} ({1})</create>
     <not-null>{0} {1} NOT NULL</not-null>
     <primary-key>{0} {1} NOT NULL, PRIMARY KEY ({0})</primary-key>
-    <foreign-key>{0} {1} NOT NULL, INDEX ({0})</foreign-key>
+    <foreign-key>{0} {1} NULL, INDEX ({0})</foreign-key>
     <key>{0} {1} NOT NULL, UNIQUE ({0})</key>
   </scheme>
 
