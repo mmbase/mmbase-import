@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.8 2003-09-02 20:21:43 michiel Exp $
+ * @version $Id: VirtualBuilder.java,v 1.9 2003-12-17 20:45:03 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
 
@@ -165,7 +165,7 @@ public class VirtualBuilder extends MMObjectBuilder {
      * 
      * @param results The (virtual) nodes.
      */
-    protected void processSearchResults(List results) {
+    public void processSearchResults(List results) {
         // empty!
     }
 }
