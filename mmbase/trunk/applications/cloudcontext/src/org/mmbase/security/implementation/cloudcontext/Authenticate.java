@@ -29,7 +29,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.9 2005-03-15 09:08:58 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.10 2005-03-16 15:46:13 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -122,7 +122,7 @@ public class Authenticate extends Authentication {
                 }
             }
             node = users.getUser(userName, password);
-            if (! users.isValid(node)) {
+            if (node != null && ! users.isValid(node)) {
                 throw new SecurityException("Logged in an invalid user");
             }
         } else if ("class".equals(s)) {
