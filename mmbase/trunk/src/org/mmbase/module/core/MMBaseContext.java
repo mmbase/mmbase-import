@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.10 2001-06-23 18:07:27 daniel Exp $
+$Id: MMBaseContext.java,v 1.11 2001-06-26 07:52:13 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2001/06/23 18:07:27  daniel
+oops forgot something
+
 Revision 1.9  2001/06/23 16:13:46  daniel
 added support for servlet params
 
@@ -55,11 +58,11 @@ import org.mmbase.util.logging.Logging;
 /**
  * Using MMBaseContext class you can retrieve the servletContext from anywhere using the get method.
  * Currently the servletContext is set by class servscan in the init() method.
- * 
+ *
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.10 $ $Date: 2001-06-23 18:07:27 $
+ * @$Revision: 1.11 $ $Date: 2001-06-26 07:52:13 $
  */
 public class MMBaseContext {
 
@@ -73,11 +76,11 @@ public class MMBaseContext {
 	public static boolean setServletContext(ServletContext sx) {
 		servletContext=sx;
 		return(true);
-	} 
+	}
 
 	public static ServletContext getServletContext() {
 		return(servletContext);
-	} 
+	}
 
 	public static boolean setOutputFile(String c) {
 		outputfile=c;
@@ -88,7 +91,7 @@ public class MMBaseContext {
 	public static String getOutputFile() {
 		if (outputfile==null) {
         		outputfile = System.getProperty("mmbase.outputfile");
-			setLogging();
+//			setLogging();
 		}
 		return(outputfile);
 	}
@@ -138,7 +141,7 @@ public class MMBaseContext {
 	public static boolean setConfigPath(String c) {
 	System.out.println("PATH="+c);
         boolean returnValue=true;
-        
+
         // the config dir has to contain the following files:
         // - accounts.properties
         // - modules.xml
@@ -149,37 +152,37 @@ public class MMBaseContext {
         File jdbc = new File(c + "/modules/jdbc.xml");
         File modulesdir = new File(c + "/modules");
         File builders = new File(c + "/builders");
-                
+
         // if all missing, great change that config path is wrong
-        boolean allMissing= !(accounts.exists() || modules.exists() || mmbaseroot.exists() 
+        boolean allMissing= !(accounts.exists() || modules.exists() || mmbaseroot.exists()
                               || jdbc.exists() || modulesdir.exists() || builders.exists());
 
         if(allMissing) {
-            log.error("wrong configdirectory");                                            
+            log.error("wrong configdirectory");
             returnValue = false;
         } else {
             if(! accounts.exists()) {
-                log.error("file 'accounts.properties' missing in mmbase.config dir");                                           
+                log.error("file 'accounts.properties' missing in mmbase.config dir");
                 returnValue = false;
             }
             if(! modules.exists()) {
-                // log.error("file 'modules.xml' missing in mmbase.config dir");                                         
+                // log.error("file 'modules.xml' missing in mmbase.config dir");
                 returnValue = false;
             }
             if(! mmbaseroot.exists()) {
-                log.error("file 'modules/mmbaseroot.xml' missing in mmbase.config dir");                                         
+                log.error("file 'modules/mmbaseroot.xml' missing in mmbase.config dir");
                 returnValue = false;
-            }                    
+            }
             if(! jdbc.exists()) {
-                log.error("file 'modules/jdbc.xml' missing in mmbase.config dir");                                         
+                log.error("file 'modules/jdbc.xml' missing in mmbase.config dir");
                 returnValue = false;
-            }  
+            }
             if(! modulesdir.exists()) {
-                log.error("dir 'modules' missing in mmbase.config dir");                                         
+                log.error("dir 'modules' missing in mmbase.config dir");
                 returnValue = false;
             }
             if(! builders.exists()) {
-                log.error("dir 'builders' missing in mmbase.config dir");                                         
+                log.error("dir 'builders' missing in mmbase.config dir");
                 returnValue = false;
             }
         }
@@ -192,6 +195,6 @@ public class MMBaseContext {
         		configpath = System.getProperty("mmbase.config");
 		}
 		return(configpath);
-	} 
+	}
 
 }
