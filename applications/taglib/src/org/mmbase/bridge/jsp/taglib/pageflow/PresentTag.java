@@ -16,29 +16,14 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
-* A very simple tag to check if a request post parameter is present.
-* Inspired by Struts taglib.
+* A very simple tag to check if certain id is present in the parent context.
 * 
 * @author Michiel Meeuwissen
 */
 public class PresentTag extends ContextReferrerTag {
-           
-    private String key;
-
-    public void setKey(String k) {
-        key = k;
-    }
-
-    protected String getKey() throws JspTagException {
-        String param = getContextTag().getString(key);
-        if (param == null) {
-            param = pageContext.getRequest().getParameter(key); 
-        }
-        return param;        
-    }
-    
+               
     public int doStartTag() throws JspTagException {
-        if (getKey() != null) {
+        if (getContextTag().isPresent(getReferid())) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
