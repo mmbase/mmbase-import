@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.4 2003-08-22 12:34:48 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.5 2003-08-25 12:27:29 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -262,6 +262,7 @@ public class DatabaseStorageManager implements StorageManager {
      * The default method uses {@link ResultSet.getString()} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
+     
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -720,8 +721,10 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Store the text value of a field in a prepared statement
-     * This basic implementation uses {@link PreparedStatement.setString()} to set the data.
      * Null values are stored as NULL if possible, otherwise they are stored as an empty string.
+     * If the FORCE_ENCODE_TEXT option is set, text is encoded (using the MMBase encoding) to a byte array 
+     * and stored as a binary stream.
+     * Otherwise it uses {@link PreparedStatement.setString()} to set the data.
      * Override this method if you use another way to store large texts (i.e. Clobs).
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
@@ -914,6 +917,19 @@ public class DatabaseStorageManager implements StorageManager {
         List compositeIndices = new ArrayList();
         // obtain the parentBuilder
         MMObjectBuilder parentBuilder = builder.getParentBuilder();
+        Scheme rowtypeScheme;
+        Scheme tableScheme;
+        // if the builder has no parent, it is an object table,
+        // so use CREATE_OBJECT_ROW_TYPE and CREATE_OBJECT_TABLE schemes.
+        // Otherwise use CREATE_ROW_TYPE and CREATE_TABLE schemes.
+        //
+        if (parentBuilder == null ) {
+            rowtypeScheme = factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE);
+            tableScheme = factory.getScheme(Schemes.CREATE_OBJECT_TABLE, Schemes.CREATE_OBJECT_TABLE_DEFAULT);
+        } else {
+            rowtypeScheme = factory.getScheme(Schemes.CREATE_ROW_TYPE);
+            tableScheme = factory.getScheme(Schemes.CREATE_TABLE, Schemes.CREATE_TABLE_DEFAULT);
+        }
         for (Iterator f = fields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
             // persistent field? ( use inStorage() )
@@ -938,8 +954,10 @@ public class DatabaseStorageManager implements StorageManager {
                     // test on other indices
                     String indexDef = getIndexDefinition(field);
                     if (indexDef != null) {
-//                        if (createIndices.length() > 0) createIndices.append(", ");
-                        createIndices.append(", ");
+                        // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
+                        // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement, 
+                        // and the comma should not be prefixed.
+                        if (rowtypeScheme == null || createIndices.length() > 0) createIndices.append(", ");
                         createIndices.append(indexDef);
                         if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
                         createFieldsAndIndices.append(fieldDef+", "+indexDef);
@@ -954,22 +972,12 @@ public class DatabaseStorageManager implements StorageManager {
             // test on other indices
             String indexDef = getCompositeIndexDefinition(compositeIndices);
             if (indexDef != null) {
-                createCompositeIndices.append(",");
+                // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
+                // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement, 
+                // and the comma should not be prefixed.
+                if (rowtypeScheme == null || createIndices.length() > 0) createCompositeIndices.append(", ");
                 createCompositeIndices.append(indexDef);
             }
-        }
-        Scheme rowtypeScheme;
-        Scheme tableScheme;
-        // if the builder has no parent, it is an object table,
-        // so use CREATE_OBJECT_ROW_TYPE and CREATE_OBJECT_TABLE schemes.
-        // Otherwise use CREATE_ROW_TYPE and CREATE_TABLE schemes.
-        //
-        if (parentBuilder == null ) {
-            rowtypeScheme = factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE);
-            tableScheme = factory.getScheme(Schemes.CREATE_OBJECT_TABLE, Schemes.CREATE_OBJECT_TABLE_DEFAULT);
-        } else {
-            rowtypeScheme = factory.getScheme(Schemes.CREATE_ROW_TYPE);
-            tableScheme = factory.getScheme(Schemes.CREATE_TABLE, Schemes.CREATE_TABLE_DEFAULT);
         }
         try {
             getActiveConnection();
