@@ -640,9 +640,36 @@ Change directory to ${build.dir}/orion and run:
           failonerror="yes">
       <arg value="-Q"/>
       <arg value="-IN"/>
-      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+    </java>
+    <!-- create the mmcommunity tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-XML"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmcommunity-taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+    </java>
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmcommunity-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
@@ -664,7 +691,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-Q"/>
       <arg value="-XML"/>
       <arg value="-IN"/>
-      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
@@ -676,9 +703,34 @@ Change directory to ${build.dir}/orion and run:
           failonerror="yes">
       <arg value="-Q"/>
       <arg value="-IN"/>
-      <arg value="file://${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.html"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+    </java>
+    <!-- create the mmcommunity tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-XML"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmcommunity-taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+    </java>
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-IN"/>
+      <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmcommunity-taglib.xml"/>
+      <arg value="-OUT"/>
+      <arg value="${web.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
