@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.200 2003-09-16 09:41:14 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.201 2003-09-18 17:31:20 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -570,6 +570,7 @@ See mmexamples/taglib for more elaborated examples.
         <value>...</value>
         <info>All possible values are defined in taglibcontent.xml</info>
       </possiblevalue>
+      <since>MMBase-1.7</since>
     </attribute>
   </taginterface>
   <taginterface>
@@ -582,7 +583,7 @@ See mmexamples/taglib for more elaborated examples.
   <taginterface>
     <name>containerreferrer</name>
     <info>
-  
+      A containerreferrer is a tag that can use information provided by some container tag.
     </info>
     <since>MMBase-1.7</since>
     <attribute>
@@ -620,6 +621,7 @@ See mmexamples/taglib for more elaborated examples.
   <taginterface>
     <name>functiontag</name>
     <info>
+      Evaluates 'function' on e.g. a node.
     </info>
     <since>MMBase-1.7</since>
     <attribute>
@@ -1121,7 +1123,7 @@ See mmexamples/taglib for more elaborated examples.
       <name>comparator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
+      <see tag="list" attribute="comparator" />
       <since>MMBase-1.7</since>
     </attribute>
     <example>&lt;mm:listnodes type="mags"  &gt;
@@ -1821,7 +1823,7 @@ access the value of title:
       <name>comparator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
+      <see tag="list" attribute="comparator" />
       <since>MMBase-1.7</since>
     </attribute>
   </tag>
@@ -2365,7 +2367,7 @@ transaction was commited, following should result anything:
       <name>comparator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
+      <see tag="list" attribute="comparator" />
       <since>MMBase-1.7</since>
     </attribute>
     <attribute>
@@ -3200,8 +3202,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <requirednote>Either `value', 'valueset' or `referid2' must be present.</requirednote>
       <info>
-          List of values. Compare is done with each, and total result if one of them evaluates true.
-          The value to which you want to compare, this is always a String.
+          List of values. Compare is done with each, and total result is true if one of them evaluates true.
       </info>
       <since>MMBase-1.7</since>
     </attribute>
@@ -4835,7 +4836,7 @@ The 0 is just counter, which starts at 0 on every page.
         If the node is not related to itself, it still is not listed by this tag if you set this attribute to true.
       </info>
     </attribute>
-
+    <since>MMBase-1.7</since>
   </tag>
 
 
@@ -4848,23 +4849,31 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.StringListTag</tagclass>
     <info>
-      
+      <p>
+        A simple list iterating some list, coming from the 'context. So the 'referid' is required for this list.
+        The original list can for example have been produced by the import tag with vartype="list"
+      </p>
+      <p>
+        You can also use 'aliaslist' for this (as can be done in MMBase 1.6) but that is a bit
+        silly, if you are not actually listing node aliases.
+      </p>
     </info>
+    <see tag="import" attribute="vartype" />
+    <see tag="aliaslist" />
     <since>MMBase-1.7</since>
     <attribute>
       <name>referid</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-
+        This tag can only reuse Lists, so you have to use this attribute.
       </info>
     </attribute>
     <attribute>
       <name>comparator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <see tag="list" attribute="searchdir" />
-      <since>MMBase-1.7</since>
+      <see tag="list" attribute="comparator" />
     </attribute>
   </tag>
 
