@@ -3,7 +3,7 @@
        - DTD for MMBase builder definitions
 -->
 <!ELEMENT builder (status?,classfile?,searchage?,names?,descriptions?,properties?,fieldlist?)>
-<!ATTLIST builder name CDATA #IMPLIED>
+<!ATTLIST builder name CDATA #REQUIRED>
 <!ATTLIST builder maintainer CDATA #IMPLIED>
 <!ATTLIST builder version CDATA #IMPLIED>
 <!ATTLIST builder extends CDATA #IMPLIED>
