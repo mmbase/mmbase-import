@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.13 2002-03-18 16:42:31 eduard Exp $
+ * @version $Id: Wizard.java,v 1.14 2002-03-29 20:14:00 michiel Exp $
  *
  */
 public class Wizard {
@@ -165,7 +165,7 @@ public class Wizard {
 
         // store variables so that these can be used in the wizard schema
         variables.put("wizardname",wizardname);
-        if (dataid!=null) variables.put("objectnumber",dataid);
+        if (dataid!=null) variables.put("objectnumber", dataid);
 
         // load wizard schema
         loadSchema();
@@ -189,11 +189,13 @@ public class Wizard {
                 data = Utils.parseXML("<data />");
                 Node parent = data.getDocumentElement();
                 // Ask the database to create that object, ultimately to get the new id.
-                Node newobject = dbconn.createObject(data,parent, objectdef, variables);
+                Node newobject = dbconn.createObject(data, parent, objectdef, variables);
                 parent.appendChild(newobject);
                 dbconn.tagDataNodes(data);
                 dataid = Utils.getAttribute(newobject,"number");
-                log.debug("Created object " + newobject.getNodeName() + " type " + Utils.getAttribute(newobject,"type") + ", id " + dataid);
+                if (log.isDebugEnabled()) {
+                    log.debug("Created object " + newobject.getNodeName() + " type " + Utils.getAttribute(newobject,"type") + ", id " + dataid);
+                }
             } else {
                 // - load data.
                 // - tags the datanodes
@@ -207,10 +209,8 @@ public class Wizard {
                 } catch (SecurityException secure){
                     log.warn("Wizard failed to login: " + secure.getMessage());
                     throw secure;
-                } catch (WizardException we) {
-                    throw we;
                 } catch (Exception e){
-                    throw new WizardException("Wizard could not be initialized.");
+                    throw new WizardException("Wizard could not be initialized. (" + e.toString() + ")");
                 }
             }
         }
@@ -244,11 +244,10 @@ public class Wizard {
     */
     public void writeHtmlForm(Writer out, String instancename) throws WizardException {
         Node datastart = Utils.selectSingleNode(data, "/data/*");
-
         // Build the preHtml version of the form.
-        preform = createPreHtml(schema.getDocumentElement(),currentformid,datastart, instancename);
+        preform = createPreHtml(schema.getDocumentElement(), currentformid, datastart, instancename);
         Validator.validate(preform, schema);
-        Utils.transformNode(preform, this.wizardStylesheetFilename, out);
+        Utils.transformNode(preform, wizardStylesheetFilename, out, null);
     }
 
     /////////////////////////////////////
@@ -886,14 +885,14 @@ public class Wizard {
 
         // resolve special attributes
         if (ftype.equals("startwizard")) {
-            String objectnumber = Utils.getAttribute(newfield,"objectnumber","new");
+            String objectnumber = Utils.getAttribute(newfield,"objectnumber", "new");
             objectnumber = Utils.transformAttribute(datanode, objectnumber);
             Utils.setAttribute(newfield, "objectnumber", objectnumber);
         }
 
         // upload type needs special processing
         if (ftype.equals("upload")) {
-                addUploadData(newfield);
+            addUploadData(newfield);
         }
 
         NodeList list = Utils.selectNodeList(field, "optionlist|prompt|description|action");
@@ -1069,124 +1068,124 @@ public class Wizard {
     public void processCommand(WizardCommand cmd) throws WizardException {
         // processes the given command
         switch (cmd.getType()) {
-            case WizardCommand.DELETE_ITEM : {
-                // delete item!
-                // The command parameters is the did of the node to delete.
-                // note that a fid parameter is expected in the command syntax but ignored
-                String did = cmd.getDid();
+        case WizardCommand.DELETE_ITEM : {
+            // delete item!
+            // The command parameters is the did of the node to delete.
+            // note that a fid parameter is expected in the command syntax but ignored
+            String did = cmd.getDid();
 
-                Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
+            Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
+            if (datanode != null) {
+                // all child objects are added to a repository.
+                // No idea why. Dutch comments say:
+                // als een relation wordt verwijderd naar een object, worden automatisch de wijzigingen die evt. in
+                // dat object gemaakt waren, ongedaan gemaakt.
+                Node newrepos = data.createElement("repos");
+
+                NodeList inside_objects = Utils.selectNodeList(datanode, "*");
+                Utils.appendNodeList(inside_objects, newrepos);
+
+                //place repos
+                datanode.getParentNode().appendChild(newrepos);
+
+                //remove relation and inside objects
+                datanode.getParentNode().removeChild(datanode);
+            }
+            break;
+        }
+        case WizardCommand.MOVE_UP: ;
+        case WizardCommand.MOVE_DOWN: {
+            // This is in fact a SWAP action (swapping the order-by fieldname), not really move up or down.
+            // The command parameters are the fid of the list in which the item falls (determines order),
+            // and the did's of the nodes that are to be swapped.
+            String fid  = cmd.getFid();
+            String did      = cmd.getDid();
+            String otherdid = cmd.getParameter(2);
+
+            // Step one: get the fieldname to swap
+            // this fieldname is determined by checking the 'orderby' attribute in a list
+            // If there is no orderby attribute, you can't swap (there is no order defined),
+            // so nothing happens.
+            Node parentnode=Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']");
+            String orderby=Utils.getAttribute(parentnode.getParentNode(),"orderby");
+
+            // step 2: select the nodes and their fieldfs (provide dthey have them)
+            // and swap the values.
+            // when the list is sorted again the order of the nodes will be changed
+            if (orderby != null) {
+                log.debug("swap "+did+" and "+otherdid+" on "+orderby);
+                Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']/"+orderby);
                 if (datanode != null) {
-                    // all child objects are added to a repository.
-                    // No idea why. Dutch comments say:
-                    // als een relation wordt verwijderd naar een object, worden automatisch de wijzigingen die evt. in
-                    // dat object gemaakt waren, ongedaan gemaakt.
-                    Node newrepos = data.createElement("repos");
-
-                    NodeList inside_objects = Utils.selectNodeList(datanode, "*");
-                    Utils.appendNodeList(inside_objects, newrepos);
-
-                    //place repos
-                    datanode.getParentNode().appendChild(newrepos);
-
-                    //remove relation and inside objects
-                    datanode.getParentNode().removeChild(datanode);
+                    // find other datanode
+                    Node othernode = Utils.selectSingleNode(data, ".//*[@did='" + otherdid + "']/"+orderby);
+                    // now we gotta swap the value of them nodes.. (must be strings).
+                    if (othernode !=null) {
+                        String datavalue=Utils.getText(datanode);
+                        String othervalue=Utils.getText(othernode);
+                        Utils.storeText(othernode,datavalue);
+                        Utils.storeText(datanode,othervalue);
+                    }
                 }
-                break;
             }
-            case WizardCommand.MOVE_UP: ;
-            case WizardCommand.MOVE_DOWN: {
-                // This is in fact a SWAP action (swapping the order-by fieldname), not really move up or down.
-                // The command parameters are the fid of the list in which the item falls (determines order),
-                // and the did's of the nodes that are to be swapped.
-                String fid  = cmd.getFid();
-                String did      = cmd.getDid();
+            break;
+        }
+        case WizardCommand.GOTO_FORM: {
+            // The command parameters is the did of the node to delete.
+            // note that a fid parameter is expected in the command syntax but ignored
+            currentformid = cmd.getDid();
+            break;
+        }
+        case WizardCommand.ADD_ITEM : {
+            // The command parameters are the fid of the list in which the item need be added,
+            // the did of the object under which it should be added (the parent node),
+            // and a second id, indicating the object id to add.
+            // The second id can be passed eitehr as a paremeter (the 'otherdid' parameter), in
+            // which case it involves a newly created item, OR as a value, in which case it is an
+            // enumerated list of did's, the result of a search.
+            //
+            String fid = cmd.getFid();
+            String did = cmd.getDid();
+            String value = cmd.getValue();
+
+            if (value != null && !value.equals("")){
+                StringTokenizer ids = new StringTokenizer(value,"|");
+                while (ids.hasMoreElements()){
+                    Node newObject = addListItem(fid, did, ids.nextToken(),false);
+                }
+            } else {
                 String otherdid = cmd.getParameter(2);
-
-                // Step one: get the fieldname to swap
-                // this fieldname is determined by checking the 'orderby' attribute in a list
-                // If there is no orderby attribute, you can't swap (there is no order defined),
-                // so nothing happens.
-                Node parentnode=Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']");
-                String orderby=Utils.getAttribute(parentnode.getParentNode(),"orderby");
-
-                // step 2: select the nodes and their fieldfs (provide dthey have them)
-                // and swap the values.
-                // when the list is sorted again the order of the nodes will be changed
-                if (orderby != null) {
-                    log.debug("swap "+did+" and "+otherdid+" on "+orderby);
-                    Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']/"+orderby);
-                    if (datanode != null) {
-                        // find other datanode
-                        Node othernode = Utils.selectSingleNode(data, ".//*[@did='" + otherdid + "']/"+orderby);
-                        // now we gotta swap the value of them nodes.. (must be strings).
-                        if (othernode !=null) {
-                            String datavalue=Utils.getText(datanode);
-                            String othervalue=Utils.getText(othernode);
-                            Utils.storeText(othernode,datavalue);
-                            Utils.storeText(datanode,othervalue);
-                        }
+                if (otherdid.equals("")) otherdid=null;
+                Node newObject = addListItem(fid, did, otherdid, true);
+            }
+            break;
+        }
+        case WizardCommand.CANCEL : {
+            // This command takes no parameters.
+            mayBeClosed = true;
+            break;
+        }
+        case WizardCommand.COMMIT : {
+            // This command takes no parameters.
+            try {
+                Element results = dbconn.put(originaldata, data, uploads);
+                NodeList errors = Utils.selectNodeList(results,".//error");
+                if (errors.getLength() > 0){
+                    String errorMessage = "Errors received from MMBase :";
+                    for (int i=0; i<errors.getLength(); i++){
+                        errorMessage = errorMessage + "\n" + Utils.getText(errors.item(i));
                     }
+                    throw new WizardException(errorMessage);
                 }
-                break;
-            }
-            case WizardCommand.GOTO_FORM: {
-                // The command parameters is the did of the node to delete.
-                // note that a fid parameter is expected in the command syntax but ignored
-                currentformid = cmd.getDid();
-                break;
-            }
-            case WizardCommand.ADD_ITEM : {
-                // The command parameters are the fid of the list in which the item need be added,
-                // the did of the object under which it should be added (the parent node),
-                // and a second id, indicating the object id to add.
-                // The second id can be passed eitehr as a paremeter (the 'otherdid' parameter), in
-                // which case it involves a newly created item, OR as a value, in which case it is an
-                // enumerated list of did's, the result of a search.
-                //
-                String fid = cmd.getFid();
-                String did = cmd.getDid();
-                String value = cmd.getValue();
-
-                if (value != null && !value.equals("")){
-                    StringTokenizer ids = new StringTokenizer(value,"|");
-                    while (ids.hasMoreElements()){
-                        Node newObject = addListItem(fid, did, ids.nextToken(),false);
-                    }
-                } else {
-                    String otherdid = cmd.getParameter(2);
-                    if (otherdid.equals("")) otherdid=null;
-                    Node newObject = addListItem(fid, did, otherdid, true);
-                }
-                break;
-            }
-            case WizardCommand.CANCEL : {
-                // This command takes no parameters.
+                // find the (new) objectnumber and store it. Just take the first one found.
+                String newnumber=Utils.selectSingleNodeText(results,".//object/@number",null);
+                if (newnumber!=null) objectnumber=newnumber;
                 mayBeClosed = true;
-                break;
+            } catch (WizardException e) {
+                log.error("could not send PUT command!. Wizardname:"+wizardName+"Exception occured: " + e.getMessage());
+                throw e;
             }
-            case WizardCommand.COMMIT : {
-                // This command takes no parameters.
-                try {
-                    Element results = dbconn.put(originaldata, data, uploads);
-                    NodeList errors = Utils.selectNodeList(results,".//error");
-                    if (errors.getLength() > 0){
-                        String errorMessage = "Errors received from MMBase :";
-                        for (int i=0; i<errors.getLength(); i++){
-                            errorMessage = errorMessage + "\n" + Utils.getText(errors.item(i));
-                        }
-                        throw new WizardException(errorMessage);
-                    }
-                    // find the (new) objectnumber and store it. Just take the first one found.
-                    String newnumber=Utils.selectSingleNodeText(results,".//object/@number",null);
-                    if (newnumber!=null) objectnumber=newnumber;
-                    mayBeClosed = true;
-                } catch (WizardException e) {
-                    log.error("could not send PUT command!. Wizardname:"+wizardName+"Exception occured: " + e.getMessage());
-                    throw e;
-                }
-                break;
-            }
+            break;
+        }
         }
     }
 
@@ -1295,7 +1294,7 @@ public class Wizard {
      * @param       fieldnode       the fieldnode where the upload data information should be stored.
      */
     public void addUploadData(Node fieldnode) {
-            // add's information about the possible placed uploads in the fieldnode.
+        // add's information about the possible placed uploads in the fieldnode.
         // assumes this field is an upload-field
         String did = Utils.getAttribute(fieldnode, "did", null);
         if (did!=null) {
@@ -1339,7 +1338,7 @@ public class Wizard {
 
         // merge the constraints from mmbase with the constraints placed in the wizard.
 
-                // first, only 'guitype' and 'required' values.
+        // first, only 'guitype' and 'required' values.
         String xmlSchemaType=null;
         String guitype = Utils.selectSingleNodeText(con, "guitype", "string/line");
         int pos=guitype.indexOf("/");
