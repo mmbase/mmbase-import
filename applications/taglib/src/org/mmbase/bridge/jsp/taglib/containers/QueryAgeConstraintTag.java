@@ -23,12 +23,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAgeConstraintTag.java,v 1.8 2003-12-09 20:12:58 michiel Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.1 2003-12-18 09:05:45 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
-public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
+public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeListAgeConstraintTag.class);
+    private static final Logger log = Logging.getLoggerInstance(QueryAgeConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
@@ -88,7 +88,7 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
         if (minAge == Attribute.NULL && maxAge == Attribute.NULL) {
             throw new JspTagException("Either 'minage' or 'maxage' (or both) attributes must be present");
         }
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
 
         String fieldName;
@@ -131,7 +131,7 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            NodeListCompositeConstraintTag cons = (NodeListCompositeConstraintTag) findParentTag(NodeListCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons!=null) {
                 cons.addChildConstraint(newConstraint);
             } else {

@@ -15,18 +15,18 @@ import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
- * Applies a maxnumber to the surrounding query.
+ * Applies a sortorder to the surrounding query.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListSortOrderTag.java,v 1.3 2003-08-29 12:12:24 keesj Exp $
+ * @version $Id: QuerySortOrderTag.java,v 1.1 2003-12-18 09:05:48 michiel Exp $
  */
-public class NodeListSortOrderTag extends CloudReferrerTag implements NodeListContainerReferrer {
+public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeListSortOrderTag.class);
+    //private static final Logger log = Logging.getLoggerInstance(QuerySortOrderTag.class);
 
     protected Attribute container  = Attribute.NULL;
     protected Attribute direction  = Attribute.NULL;
@@ -45,7 +45,7 @@ public class NodeListSortOrderTag extends CloudReferrerTag implements NodeListCo
 
 
     public int doStartTag() throws JspTagException { 
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         
         String dir = direction.getString(this).toUpperCase();
         

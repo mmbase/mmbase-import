@@ -14,37 +14,36 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.util.logging.*;
+//import org.mmbase.util.logging.*;
 
 /**
- * Make query distinct (or not)
+ * Applies a maxnumber to the surrounding query.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListDistinctTag.java,v 1.1 2003-09-03 19:40:04 michiel Exp $
+ * @version $Id: QueryMaxNumberTag.java,v 1.1 2003-12-18 09:05:47 michiel Exp $
  */
-public class NodeListDistinctTag extends CloudReferrerTag implements NodeListContainerReferrer {
+public class QueryMaxNumberTag extends CloudReferrerTag implements QueryContainerReferrer {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeListDistinctTag.class);
+    //private static final Logger log = Logging.getLoggerInstance(QueryMaxNumberTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
-    protected Attribute distinct   = Attribute.NULL;
-
+    protected Attribute max     = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
     }
 
     public void setValue(String a) throws JspTagException {
-        distinct = getAttribute(a);
+        max = getAttribute(a);
     }
 
 
     public int doStartTag() throws JspTagException { 
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
-        Query query = c.getQuery();       
-        query.setDistinct(distinct.getBoolean(this, true));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        Query query = c.getQuery();
+        query.setMaxNumber(max.getInt(this, -1));
         return SKIP_BODY;
     }
 

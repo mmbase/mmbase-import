@@ -18,12 +18,13 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.*;
 
 /**
+ * Container cognate for ListTag.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.4 2003-10-13 08:34:24 keesj Exp $
+ * @version $Id: ListContainerTag.java,v 1.5 2003-12-18 09:05:41 michiel Exp $
  */
-public class ListContainerTag extends CloudReferrerTag implements NodeListContainer {
+public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
 
     private static final Logger log = Logging.getLoggerInstance(ListContainerTag.class);

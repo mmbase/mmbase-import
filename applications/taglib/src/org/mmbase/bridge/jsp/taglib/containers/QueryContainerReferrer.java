@@ -10,14 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 
+
 /**
- * Just a marker. Some tags need either and can using this interface find the 'closest' one.
+ * A QueryContainerReferrer is just like a containerReferrer.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListContainerOrListProvider.java,v 1.2 2003-08-29 12:12:24 keesj Exp $
+ * @version $Id: QueryContainerReferrer.java,v 1.1 2003-12-18 09:05:47 michiel Exp $
  */
-public interface NodeListContainerOrListProvider {
+public interface QueryContainerReferrer extends ContainerReferrer {
 
- 
 }

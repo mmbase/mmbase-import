@@ -19,13 +19,14 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.*;
 
 /**
+ * A way to make paging-mechanisms. Considers 'offset' and 'maxnumber' of surrounding query.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListPreviousBatchesTag.java,v 1.5 2003-08-29 12:12:25 keesj Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.1 2003-12-18 09:05:48 michiel Exp $
  */
-public class NodeListPreviousBatchesTag extends StringListTag implements NodeListContainerReferrer {
-    private static final Logger log = Logging.getLoggerInstance(NodeListPreviousBatchesTag.class);
+public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
+    private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
@@ -53,7 +54,7 @@ public class NodeListPreviousBatchesTag extends StringListTag implements NodeLis
 
 
     protected List getList() throws JspTagException {
-        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
