@@ -3,8 +3,8 @@
 <article>
   <articleinfo>
     <title>MMBase Architectural Overview</title>
-    <date>20 March 2003</date>
-    <edition>$Id: architecture.xml,v 1.4 2003-07-01 14:45:30 johannes Exp $</edition>
+    <date>2003-03-20</date>
+    <edition>$Id: architecture.xml,v 1.5 2003-07-27 17:47:53 henk Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -19,7 +19,7 @@
     <revhistory>
       <revision>
         <revnumber>0.1</revnumber>
-        <date>20 March 2003</date>
+        <date>2003-03-20</date>
         <authorinitials>HH</authorinitials>
       </revision>
     </revhistory>

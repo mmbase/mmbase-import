@@ -3,8 +3,8 @@
 <article>
   <articleinfo>
     <title>MMBase Applications</title>
-    <date>27 February 2003</date>
-    <edition>$Id: applications.xml,v 1.8 2003-07-01 14:45:30 johannes Exp $</edition>
+    <date>2003-02-27</date>
+    <edition>$Id: applications.xml,v 1.9 2003-07-27 17:47:53 henk Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -23,12 +23,12 @@
     <revhistory>
       <revision>
         <revnumber>0.1</revnumber>
-        <date>27 February 2003</date>
+        <date>2003-02-27</date>
         <authorinitials>HH</authorinitials>
       </revision>
       <revision>
         <revnumber>0.5</revnumber>
-        <date>28 February 2003</date>
+        <date>2003-02-28</date>
         <authorinitials>PvR</authorinitials>
       </revision>
     </revhistory>

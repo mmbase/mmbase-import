@@ -4,8 +4,8 @@
 <article class="specification">
   <articleinfo>
     <title>Dove 1.1 XML API</title>
-    <date>20 July 2002</date>
-    <edition>$Id: dovexmlapi.xml,v 1.11 2003-07-01 14:45:28 johannes Exp $</edition>
+    <date>2002-07-20</date>
+    <edition>$Id: dovexmlapi.xml,v 1.12 2003-07-27 17:47:51 henk Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>

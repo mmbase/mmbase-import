@@ -3,8 +3,8 @@
 <article>
   <articleinfo>
     <title>Relations in MMBase</title>
-    <date>14 may 2003</date>
-    <edition>$Id: relations.xml,v 1.5 2003-06-30 13:16:07 johannes Exp $</edition>
+    <date>2003-05-14</date>
+    <edition>$Id: relations.xml,v 1.6 2003-07-27 17:47:53 henk Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -21,7 +21,7 @@
     <revhistory>
       <revision>
         <revnumber>0.1</revnumber>
-        <date>16 April 2003</date>
+        <date>2003-04-16</date>
         <authorinitials>HH</authorinitials>
       </revision>
     </revhistory>
