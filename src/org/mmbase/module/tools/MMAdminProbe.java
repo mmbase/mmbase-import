@@ -9,11 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.tools;
 
-
-import org.mmbase.module.database.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -21,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * Bootstrap class that wait's in a thead for MMBase to have a running state. Once the state is running
  * it calls MMAdmin.probeCall() and finishes.
  * @author Daniel Ockeloen
- * @version  $Revision: 1.4 $ $Date: 2002-11-25 19:39:19 $ 
+ * @version  $Revision: 1.5 $ $Date: 2003-03-04 14:39:56 $ 
  */
 public class MMAdminProbe implements Runnable {
 

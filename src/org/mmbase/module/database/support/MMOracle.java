@@ -15,7 +15,6 @@ import java.sql.*;
 
 import org.mmbase.module.database.*;
 
-import oracle.jdbc.driver.OracleResultSet;
 import oracle.sql.BLOB;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @version 09 Mar 2001
- * @$Revision: 1.15 $ $Date: 2002-11-21 09:50:03 $
+ * @$Revision: 1.16 $ $Date: 2003-03-04 14:39:57 $
  */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
    
@@ -656,8 +655,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
                //Use oracle.sql.BLOB because java.sql.Blob lacks setBytes()
                //JDBC3 java.sql.Blob adds the method setBytes(int,byte[])
                //Oracle JDBC uses the method putBytes(int,byte[])
-               oracle.sql.BLOB dbBlob =
-               (oracle.sql.BLOB) rs.getBlob(fieldname);
+               BLOB dbBlob =
+               (BLOB) rs.getBlob(fieldname);
                if (log.isDebugEnabled()) log.trace("Blob Update = " + fieldname);
                //update blob
                dbBlob.putBytes(1, node.getByteValue(key));

@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
+import java.io.DataInputStream;
+
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;

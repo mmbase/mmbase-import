@@ -9,6 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
+
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;

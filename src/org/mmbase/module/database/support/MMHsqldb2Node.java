@@ -9,14 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database.support;
 
-import java.util.*;
-import java.io.*;
 import java.sql.*;
 
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.*;
+
 import org.mmbase.util.logging.*;
 
 
@@ -26,7 +23,7 @@ import org.mmbase.util.logging.*;
 *
 * @since MMBase-1.5
 * @author Gerard van Enk
-* @version $Id: MMHsqldb2Node.java,v 1.4 2002-05-28 21:49:38 gerard Exp $
+* @version $Id: MMHsqldb2Node.java,v 1.5 2003-03-04 14:39:57 nico Exp $
 *  
 */
 public class MMHsqldb2Node extends MMSQL92Node {

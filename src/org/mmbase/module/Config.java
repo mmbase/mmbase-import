@@ -9,16 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
 import java.io.*;
-import java.sql.*;
 
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.util.*;
@@ -58,9 +54,12 @@ import org.mmbase.module.core.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.16 2002-12-18 20:57:15 michiel Exp $
+ * @version $Id: Config.java,v 1.17 2003-03-04 14:40:03 nico Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2002/12/18 20:57:15  michiel
+ * fixes for #4780 and 784
+ *
  * Revision 1.14.6.2  2002/12/18 20:53:03  michiel
  * fix for #4780
  *
