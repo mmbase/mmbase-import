@@ -66,7 +66,12 @@ public class MMNode extends MMTaglib implements BodyTag {
 	    	String content = bodyOut.getString();
 
 	    	// node is the node with which you want to fiddle
-			Node node = getDefaultCloud().getNode(number);
+			Node node = null;
+			try {
+				node = getDefaultCloud().getNode(Integer.parseInt(number));
+			} catch (NumberFormatException e){
+				node = getDefaultCloud().getNodeByAlias(number);
+			}
 			if(node==null) {
 				value = "mm:node number="+number+", Cannot find Node with number "+number;
 	    		bodyOut.clearBody();
@@ -87,16 +92,17 @@ public class MMNode extends MMTaglib implements BodyTag {
 			if(action!=null) {
 				if(action.toLowerCase().equals("countrelations")) {
 					if(type==null) {
-						value = ""+node.countRelations();
+						value = ""+node.countAllRelations();
 					} else {
 						value = ""+node.countRelations(type);
 					}
 				}
 				if(action.toLowerCase().equals("countrelatednodes")) {
 					if(type==null) {
-						value = ""+node.countRelations();
+						value = ""+node.getAllRelatedNodes().size();
 					} else {
-						value = ""+node.getRelatedNodes(type).size();
+						//keesj:should there be a specific call in the MMCI
+						value = ""+node.countRelatedNodes(type);
 					}
 				}
 			}
