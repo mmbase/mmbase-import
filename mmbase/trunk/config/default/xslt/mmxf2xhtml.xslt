@@ -2,7 +2,7 @@
   This translates a mmbase XML field to XHTML. So if you have MMXF
   fields in your datbase, this describes how they are presented as XHTML.
  
-  @version $Id: mmxf2xhtml.xslt,v 1.5 2002-06-25 15:41:10 michiel Exp $  
+  @version $Id: mmxf2xhtml.xslt,v 1.6 2002-11-09 01:03:34 michiel Exp $  
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet 
@@ -21,7 +21,7 @@
     </xsl:template>
         
 
-    <xsl:template match ="p|section|ul|li|em">
+    <xsl:template match ="p|ul|li|em">
       <xsl:copy-of select="." />
     </xsl:template>
 
@@ -30,7 +30,7 @@
     <xsl:if test="count(ancestor::section)=1"><p><b><xsl:value-of select="@title" /></b></p></xsl:if>
     <xsl:if test="count(ancestor::section)=2"><p><xsl:value-of select="@title" /></p></xsl:if>
     <xsl:if test="count(ancestor::section)>2"><xsl:value-of select="@title" /><br /></xsl:if>
-    <xsl:apply-templates select = "section|p" />
+    <xsl:apply-templates select = "section|p|ul" />
   </xsl:template>
   
 </xsl:stylesheet>
