@@ -91,7 +91,7 @@ public class servdb extends JamesServlet {
         playlists = (PlaylistsInterface) getModule("PLAYLISTS");
         cache = (cacheInterface) getModule("cache");
         if (cache == null) {
-            log.error("Could not find module with name 'cache'!");
+            log.debug("Could not find cache module, proceeding without cache");
         }
         mmbase = (MMBase) getModule("MMBASEROOT");
         if (mmbase == null) {
@@ -474,7 +474,7 @@ public class servdb extends JamesServlet {
                             out.flush();
                             out.close();
 
-                            if(len>0 && cacheReq)
+                            if(len>0 && cacheReq && (cache!=null))
                                 cache.put("www"+req.getRequestURI()+req.getQueryString(),cline);
                         } catch(Exception e) {
                             log.error("Servfile : Error writing to socket");
