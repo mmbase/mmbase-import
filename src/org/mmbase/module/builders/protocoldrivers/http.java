@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/11/22 14:14:36  vpro
+davzev: Added debug method and comments to the methods.
+
 */
 package org.mmbase.module.builders.protocoldrivers;
 
@@ -21,7 +24,7 @@ import java.io.*;
  * This is the http implementation of the ProtocolDriver interface. It can signal a 
  * specific remote builder node using HTTP GET.
  * 
- * @version $Revision: 1.4 $ $Date: 2000-11-22 14:14:36 $ 
+ * @version $Revision: 1.5 $ $Date: 2000-11-22 17:33:19 $ 
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {
@@ -61,7 +64,21 @@ public class http implements ProtocolDriver {
 	public String getProtocol() {
 		return("http");
 	}
-
+	/**
+	 * Gets the remote hostname.
+	 * @return the remote hostname.
+	 */
+	public String getRemoteHost() {
+		return this.remoteHost;
+	}
+	/**
+	 * Gets the remote portnumber.
+	 * @return the remote portnumber.
+	 */
+	public int getRemotePort() {
+		return this.remotePort;
+	}
+	
 	/**
 	 * Sends a signal from mmbase to the remote side to tell that a remote node has a 
 	 * status has been changed.
@@ -92,5 +109,13 @@ public class http implements ProtocolDriver {
 			debug("Exception "+e);
 		}
 		return(true);
+	}
+	
+	/**
+	 * Gets the protocolname, remotehost and remote port.
+	 * @return a String with info about this protocoldriver.
+	 */
+	public String toString() {
+		return "protocol:"+getProtocol()+", connected at "+getRemoteHost()+" port:"+getRemotePort();
 	}
 }
