@@ -10,13 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.context;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-
-import org.mmbase.security.Operation;
-import org.mmbase.security.SecurityException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextCache.java,v 1.6 2002-07-05 14:18:41 michiel Exp $
+ * @version $Id: ContextCache.java,v 1.7 2003-03-04 15:29:37 nico Exp $
  */
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());

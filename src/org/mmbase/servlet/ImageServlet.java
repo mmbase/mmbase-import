@@ -12,7 +12,6 @@ package org.mmbase.servlet;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.Map;
-import java.util.Date;
 
 import org.mmbase.bridge.Node;
 
@@ -22,7 +21,7 @@ import org.mmbase.bridge.Node;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.11 2002-11-06 22:04:16 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.12 2003-03-04 15:32:14 nico Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages

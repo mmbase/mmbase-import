@@ -14,9 +14,6 @@ import org.mmbase.security.UserContext;
 import org.mmbase.security.Authentication;
 
 import java.util.Map;
-import java.io.FileInputStream;
-
-import org.mmbase.module.core.MMObjectNode;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Authenticate.java,v 1.6 2002-06-07 12:56:58 pierre Exp $
+ * @version $Id: Authenticate.java,v 1.7 2003-03-04 15:29:37 nico Exp $
  */
 class User extends UserContext {
     private String user;

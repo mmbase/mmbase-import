@@ -12,8 +12,6 @@ package org.mmbase.security.implementation.basic;
 
 import java.util.Map;
 
-import org.mmbase.security.UserContext;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -21,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Class AnonymousLoginModule
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: AnonymousLoginModule.java,v 1.4 2002-06-07 12:56:56 pierre Exp $
+ * @version $Id: AnonymousLoginModule.java,v 1.5 2003-03-04 15:29:36 nico Exp $
  */
 
 public class AnonymousLoginModule implements LoginModule {

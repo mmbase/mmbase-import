@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.basic;
 
-import java.util.HashMap;
-import java.io.File;
-
 import org.mmbase.util.ExtendedProperties;
 
 import org.mmbase.module.core.MMObjectNode;
@@ -23,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: OwnerAuthorization.java,v 1.7 2002-07-26 08:47:34 vpro Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.8 2003-03-04 15:29:36 nico Exp $
  */
 public class OwnerAuthorization extends Authorization {
     private static Logger log=Logging.getLoggerInstance(OwnerAuthorization.class.getName());

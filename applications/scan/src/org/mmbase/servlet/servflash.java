@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import java.io.*;
-import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 

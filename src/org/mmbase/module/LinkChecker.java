@@ -11,11 +11,9 @@ package org.mmbase.module;
 
 import java.net.*;
 import java.util.*;
-import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.builders.*;
 import org.mmbase.util.logging.*;
 /**
  * The linkChecker module detects broken urls in the urls builder
@@ -26,7 +24,7 @@ import org.mmbase.util.logging.*;
  * 
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.8 2003-01-16 10:48:01 kees Exp $
+ * @version $Id: LinkChecker.java,v 1.9 2003-03-04 15:26:33 nico Exp $
  **/
 public class LinkChecker extends ProcessorModule implements Runnable {
 
