@@ -35,7 +35,7 @@ public class MultilevelCacheHandler extends LRUHashtable {
 	private static Hashtable caches=new Hashtable();
 
 	// the state, true is active
-	private static boolean state=false;
+	private static boolean state=true;
 	
 	// 
 	public MultilevelCacheHandler(String name,int size) {
@@ -44,6 +44,7 @@ public class MultilevelCacheHandler extends LRUHashtable {
 	}
 
 	public Object put(Object hash,Object o,Vector types,StringTagger tagger) {
+		System.out.println("P="+tagger.toString());
 		MultilevelCacheEntry n=new MultilevelCacheEntry(this,hash,o,tagger);
 		addListeners(types,n);
 		return(put(hash,n));
@@ -119,9 +120,9 @@ public class MultilevelCacheHandler extends LRUHashtable {
 
 		obj=tagger.Values("TYPES");
 	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
-		obj=tagger.Values("DBSORT");
+		obj=tagger.Values("SORTED");
 	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
-		obj=tagger.Values("DBDIR");
+		obj=tagger.Values("DIR");
 	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
 		obj=tagger.Value("WHERE");
 	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
