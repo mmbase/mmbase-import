@@ -97,9 +97,10 @@
 <mm:write referid="mode">
 <mm:compare value="createview">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="40%">  
+<mm:compare referid="syntaxerrors" value="false">
 <mm:nodefunction set="mmpb" name="getProjectTargetInfo" referids="project,target">
 <form action="<mm:url page="index.jsp" referids="main,sub,name,target,bundle"><mm:param name="mode" value="log" /></mm:url>" method="post">
-<tr>    
+	<tr>    
         <th colspan="2">Create a new version of this bundle </th>
 </tr><td height="25">Last created version </td><td> <mm:field name="lastversion" /> (<mm:field name="lastdate" />)</td></tr>
 <tr><td>New Version</td><td><input name="newversion" size="4" value="<mm:field name="nextversion" />"></td></tr>
@@ -108,6 +109,11 @@
 </td>
 </form>
 </mm:nodefunction>
+</mm:compare>
+<mm:compare referid="syntaxerrors" value="true">
+<tr><th>Packaging feedback</th></tr>
+<tr><td><p /><b><center><font color="red">Packaging refused, fix syntax errors first.</font></center></b><p/ ></td></tr>
+</mm:compare>
 </table>
 </mm:compare>
 <mm:compare value="log">

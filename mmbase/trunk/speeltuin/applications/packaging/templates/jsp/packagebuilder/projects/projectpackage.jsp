@@ -98,6 +98,7 @@
 <mm:write referid="mode">
 <mm:compare value="createview">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="40%">  
+<mm:compare referid="syntaxerrors" value="false">
 <mm:nodefunction set="mmpb" name="getProjectTargetInfo" referids="project,target">
 <form action="<mm:url page="index.jsp" referids="main,sub,name,target,package"><mm:param name="mode" value="log" /></mm:url>" method="post">
 <tr>    
@@ -109,6 +110,11 @@
 </td>
 </form>
 </mm:nodefunction>
+</mm:compare>
+<mm:compare referid="syntaxerrors" value="true">
+<tr><th>Packaging feedback</th></tr>
+<tr><td><p /><b><center><font color="red">Packaging refused, fix syntax errors first.</font></center></b><p/ ></td></tr>
+</mm:compare>
 </table>
 </mm:compare>
 
