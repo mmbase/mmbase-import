@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.45 2002-10-17 16:57:57 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.46 2002-10-18 08:30:09 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -248,9 +248,41 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) {
-        //
-        throw new UnsupportedOperationException("getAllowedRelations is not implemented yet");
-        //
+        int thisOType= getMMObjectBuilder().oType;
+        int requestedRole=-1;
+        if (role!=null) {
+            requestedRole = mmb.getRelDef().getNumberByName(role);
+            if (requestedRole == -1) {
+                throw new NotFoundException("Could not get role '" + role + "'");
+            }
+        }
+
+        int dir  = ClusterBuilder.getSearchDir(direction);
+
+        Enumeration typerelNodes;
+        if (nodeManager!=null) {
+            int otherOType=nodeManager.getNumber();
+            typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType,otherOType);
+        } else {
+            typerelNodes=mmb.getTypeRel().getAllowedRelations(thisOType);
+        }
+        List nodes=new Vector();
+        while (typerelNodes.hasMoreElements()) {
+            MMObjectNode n= (MMObjectNode)typerelNodes.nextElement();
+            if ((requestedRole==-1) || (requestedRole==n.getIntValue("rnumber"))) {
+                if (thisOType== n.getIntValue("dnumber")) {
+                    if (dir == ClusterBuilder.SEARCH_DESTINATION) {
+                        continue;
+                    }
+                } else {
+                    if (dir == ClusterBuilder.SEARCH_SOURCE) {
+                        continue;
+                    }
+                }
+                nodes.add(n);
+            }
+        }
+        return new BasicRelationManagerList(nodes,cloud);
     }
 
     public String getInfo(String command) {
