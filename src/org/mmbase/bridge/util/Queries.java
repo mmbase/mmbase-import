@@ -9,17 +9,15 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.util;
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.legacy.*;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.util.StringSplitter;
-import org.mmbase.util.Encode;
-import org.mmbase.util.logging.*;
-import org.mmbase.module.core.ClusterBuilder;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import java.util.*;
+
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.implementation.BasicQuery;
+import org.mmbase.module.core.*;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+import org.mmbase.storage.search.*;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class contains various utility methods for manipulating and creating query objecs. Most
@@ -27,7 +25,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.9 2003-11-10 18:45:37 michiel Exp $
+ * @version $Id: Queries.java,v 1.10 2003-12-01 12:27:27 keesj Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -41,16 +39,16 @@ public class Queries {
      *
      * It can also be simply handy to specify things as Strings.
      */
-    public static Query createQuery(Cloud cloud,
-                                    String startNodes,
-                                    String nodePath,
-                                    String fields,
-                                    String constraints,
-                                    String orderby,
-                                    String directions,
-                                    String searchDir,
-                                    boolean distinct) {
-
+    public static Query createQuery(
+        Cloud cloud,
+        String startNodes,
+        String nodePath,
+        String fields,
+        String constraints,
+        String orderby,
+        String directions,
+        String searchDir,
+        boolean distinct) {
 
         {
             // the bridge test case say that you may also specifiy empty string (why?)
@@ -108,7 +106,6 @@ public class Queries {
         }
         return query;
     }
-
 
     /**
      * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing)
@@ -183,7 +180,6 @@ public class Queries {
         return true;
     }
 
-
     /**
      * Converts a constraint by turning all 'quoted' fields into
      * database supported fields.
@@ -232,15 +228,24 @@ public class Queries {
         } else if (constraints.startsWith("WHERE")) {
             constraints = constraints.substring(5);
         }
+
+        //keesj: what does this code do?
         StringBuffer result = new StringBuffer();
+        //if there is a quote in the constraints posa will not be equals -1 
         int posa = constraints.indexOf('\'');
         while (posa > -1) {
+        	//keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
             int posb = constraints.indexOf('\'', 1);
             if (posb == -1) {
                 posa = -1;
             } else {
+            	//keesj:part is now the first part of the constraints if there is a quote in the query
                 String part = constraints.substring(0, posa);
+                
+                //append to the string buffer "part" the first part 
                 result.append(convertClausePartToDBS(part)).append(constraints.substring(posa, posb + 1));
+                
+                //keesj:obfucation contest?
                 constraints = constraints.substring(posb + 1);
                 posa = constraints.indexOf('\'');
             }
@@ -249,13 +254,13 @@ public class Queries {
         return result.toString();
     }
 
-
     /**
      * Adds a 'legacy' constraint to the query. Alreading existing constraints remain ('AND' is used)
      * @return the new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
-        if (constraints == null || constraints.equals("")) return null;
+        if (constraints == null || constraints.equals(""))
+            return null;
         constraints = convertClauseToDBS(constraints);
         if (!validConstraints(constraints)) {
             throw new BridgeException("invalid constraints:" + constraints);
@@ -280,18 +285,19 @@ public class Queries {
      */
     public static List addSortOrders(Query query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
-        if (sorted == null) return query.getSortOrders().subList(0, 0);
+        if (sorted == null)
+            return query.getSortOrders().subList(0, 0);
         if (directions == null) {
             directions = "";
         }
         List list = query.getSortOrders();
         int initialSize = list.size();
 
-        StringTokenizer sortedTokenizer     = new StringTokenizer(sorted, ",");
+        StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
         StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
 
         while (sortedTokenizer.hasMoreTokens()) {
-            String    fieldName = sortedTokenizer.nextToken().trim();
+            String fieldName = sortedTokenizer.nextToken().trim();
             int dot = fieldName.indexOf('.');
 
             StepField sf;
@@ -322,7 +328,8 @@ public class Queries {
      */
     protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
-        while (Character.isDigit(complete.charAt(end))) --end;
+        while (Character.isDigit(complete.charAt(end)))
+            --end;
         return complete.substring(0, end + 1);
     }
 
@@ -332,7 +339,8 @@ public class Queries {
      * @return The new steps.
      */
     public static List addPath(Query query, String path, String searchDirs) {
-        if (path == null || path.equals("")) return query.getSteps().subList(0, 0);
+        if (path == null || path.equals(""))
+            return query.getSteps().subList(0, 0);
         if (searchDirs == null) {
             searchDirs = "";
         }
@@ -340,20 +348,20 @@ public class Queries {
         List list = query.getSteps();
         int initialSize = list.size();
 
-        StringTokenizer pathTokenizer       = new StringTokenizer(path, ",");
+        StringTokenizer pathTokenizer = new StringTokenizer(path, ",");
         StringTokenizer searchDirsTokenizer = new StringTokenizer(searchDirs, ",");
 
         Cloud cloud = query.getCloud();
 
-        if (query.getSteps().size() == 0 ) { // if no steps yet, first step must be added with addStep
+        if (query.getSteps().size() == 0) { // if no steps yet, first step must be added with addStep
             String completeFirstToken = pathTokenizer.nextToken().trim();
-            String firstToken      = removeDigits(completeFirstToken);
+            String firstToken = removeDigits(completeFirstToken);
             //if (cloud.hasRole(firstToken)) {
-                // you cannot start with a role.., should we throw exception?
-                // naa, the following code will throw exception that node type does not exist.
+            // you cannot start with a role.., should we throw exception?
+            // naa, the following code will throw exception that node type does not exist.
             //}
             Step step = query.addStep(cloud.getNodeManager(firstToken));
-            if (! firstToken.equals(completeFirstToken)) {
+            if (!firstToken.equals(completeFirstToken)) {
                 query.setAlias(step, completeFirstToken);
             }
         }
@@ -361,39 +369,40 @@ public class Queries {
         String searchDir = null; // outside the loop, so defaulting to previous searchDir
         while (pathTokenizer.hasMoreTokens()) {
             String completeToken = pathTokenizer.nextToken().trim();
-            String token      = removeDigits(completeToken);
+            String token = removeDigits(completeToken);
 
             if (searchDirsTokenizer.hasMoreTokens()) {
-                 searchDir = searchDirsTokenizer.nextToken();
+                searchDir = searchDirsTokenizer.nextToken();
             }
 
-
             if (cloud.hasRole(token)) {
-                if (! pathTokenizer.hasMoreTokens()) throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")" );
+                if (!pathTokenizer.hasMoreTokens())
+                    throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")");
                 String nodeManagerAlias = pathTokenizer.nextToken().trim();
-                String nodeManagerName  = removeDigits(nodeManagerAlias);
+                String nodeManagerName = removeDigits(nodeManagerAlias);
                 NodeManager nodeManager = cloud.getNodeManager(nodeManagerName);
                 RelationStep relationStep = query.addRelationStep(nodeManager, token, searchDir);
 
                 /// make it possible to postfix with numbers manually
-                if (! cloud.hasRole(completeToken)) {
+                if (!cloud.hasRole(completeToken)) {
                     query.setAlias(relationStep, completeToken);
                 }
-                if (! nodeManagerName.equals(nodeManagerAlias)) {
+                if (!nodeManagerName.equals(nodeManagerAlias)) {
                     Step next = relationStep.getNext();
                     query.setAlias(next, nodeManagerAlias);
                 }
             } else {
-                NodeManager nodeManager  = cloud.getNodeManager(token);
-                RelationStep step = query.addRelationStep(nodeManager, null/* role */, searchDir);
-                if (! completeToken.equals(nodeManager.getName())) {
+                NodeManager nodeManager = cloud.getNodeManager(token);
+                RelationStep step = query.addRelationStep(nodeManager, null /* role */
+                , searchDir);
+                if (!completeToken.equals(nodeManager.getName())) {
                     Step next = step.getNext();
                     query.setAlias(next, completeToken);
                 }
             }
         }
         if (searchDirsTokenizer.hasMoreTokens()) {
-            throw new BridgeException("Too many search directions (" + path + "/" + searchDirs + ")" );
+            throw new BridgeException("Too many search directions (" + path + "/" + searchDirs + ")");
         }
         return list.subList(initialSize, list.size());
     }
@@ -406,10 +415,8 @@ public class Queries {
         Cloud cloud = query.getCloud();
         Query count = query.aggregatingClone();
         Step step = (Step) (count.getSteps().get(0));
-        count.addAggregatedField(step,
-                                 cloud.getNodeManager(step.getTableName()).getField("number"),
-                                 AggregatedField.AGGREGATION_TYPE_COUNT);
-        Node result = (Node) cloud.getList(count).get(0);
+        count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
+        Node result = (Node)cloud.getList(count).get(0);
         return result.getIntValue("number");
     }
 
@@ -424,7 +431,7 @@ public class Queries {
         }
         Iterator i = steps.iterator();
         while (i.hasNext()) {
-            Step step = (Step) i.next();
+            Step step = (Step)i.next();
             if (stepAlias.equals(step.getAlias())) {
                 return step;
             } else if (stepAlias.equals(step.getTableName())) {
