@@ -28,10 +28,18 @@ public class DocletFieldConfiguration implements FieldConfiguration{
     }
     
     public String getType(){
-        return type;
+        return type.toUpperCase();
     }
     
     public String getSize(){
         return size;
+    }
+    
+    public String getGUIName() {
+        return getName();
+    }
+    
+    public String getGUIType() {
+        return getType().toLowerCase();
     }
 }
