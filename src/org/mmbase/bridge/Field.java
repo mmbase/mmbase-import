@@ -17,7 +17,7 @@ import java.util.Locale;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.16 2004-09-17 09:20:49 michiel Exp $
+ * @version $Id: Field.java,v 1.17 2004-09-17 10:15:45 michiel Exp $
  */
 public interface Field {
 
@@ -47,7 +47,7 @@ public interface Field {
      * // not yet working
      * @since MMBase-1.8
      */
-    //public final static int TYPE_LIST      = 12;
+    public final static int TYPE_LIST      = 12;
 
 
     public final static int TYPE_UNKNOWN = -1;
