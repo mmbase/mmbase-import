@@ -39,8 +39,8 @@ Applications build file
 	<property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
 	<property name="project.name" value="storage" />
 	<property name="project.jar.name" value="mmbase-storage" />
-	<property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" />
-	<!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
+	<property name="mmbase.classes" value="no_extra_classes" />
+	<!-- specify mmbase classes to appear in the jar too. -->
 
 	<property name="tests.source.dir"   location="../../tests" />
 	<property name="tests.build.dir" value="${tests.source.dir}/build" />
