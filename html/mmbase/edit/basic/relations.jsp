@@ -20,7 +20,7 @@
         </tr>
 
             <%-- list all relation types, where we are the source --%>
-           <% { boolean source = true; %>
+           <% { String searchDir = "destination"; %>
             <%@ include file="relation.jsp" %>
            <% } %>
 
@@ -28,8 +28,8 @@
             <th colspan="8"><%=m.getString("relations.to")%></th>
         </tr>
 
-            <%-- list all relation types, where we are the source --%>
-           <% { boolean source = false; %>
+            <%-- list all relation types, where we are the destination --%>
+           <% { String searchDir = "source"; %>
              <%@ include file="relation.jsp" %>
            <% } %>
 
