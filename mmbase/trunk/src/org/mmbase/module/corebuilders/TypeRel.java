@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeRel.java,v 1.27 2002-07-05 12:56:19 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.28 2002-12-13 13:45:52 robmaris Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -485,16 +485,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     * Checks whether a specific relation exists.
+     * Tests if a specific relation type is defined.
+     * <p>
+     * Note that this routine returns false both when a snumber/dnumber 
+     * are swapped, and when a typecombo does not exist - 
+     * it is not possible to derive whether one or the other has occurred.
+     * <p>
      * Maintains a cache containing the last checked relations
      *
-     * Note that this routine returns false both when a snumber/dnumber are swapped, and when a typecombo
-     * does not exist -  it is not possible to derive whether one or the other has occurred.
-     *
-     * @param n1 Number of the source node
-     * @param n2 Number of the destination node
-     * @param r  Number of the relation definition
-     * @return A <code>boolean</code> indicating success when the relation exists, failure if it does not.
+     * @param n1 The source type number.
+     * @param n2 The destination type number.
+     * @param r The relation definition (role) number.
+     * @return <code>true</code> when the relation exists, false otherwise.
      */
     public boolean reldefCorrect(int n1,int n2, int r) {
         // determine whether one of the specified types is 'object'
