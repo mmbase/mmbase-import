@@ -2,6 +2,8 @@
 <!DOCTYPE mediaservers SYSTEM "http://www.mmbase.org/dtd/servers_1_0.dtd">
 <!-- 
   The servers which are to be used to store streams on.
+
+  mm:  This file can be removed.
 -->
 <mediaservers default="play">
    <server id="streams" description="streams script">http://cgi.omroep.nl/cgi-bin/streams?%s</server>

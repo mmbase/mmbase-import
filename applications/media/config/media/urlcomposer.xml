@@ -4,11 +4,16 @@
 <urlcomposer>
   <!-- Maybe in a later stage we can define her things according to the creation 
         of urls (real, media player, etc.)
+
+   mm: I think this file can be removed
   -->
   
 	<!-- This will arrange the mimetype mapping according to the format/codec. 
 		You can use wildcards, the most strict mapping will have priority. 
-  i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
+  i.e. format"ogg" codec="vorbis" will be prefered to format="*"
+		codec="*"
+
+  Moved to a seperate file:
   -->
 	<mimemapping>
 		<map format="ra" codec="*">audio/x-pn-realaudio</map>

@@ -6,15 +6,16 @@
  %format;
  %real;
 ]>
-<mediasourcefilter  xmlns:node ="http://www.mmbase.org/dtd/realcomparator_1_0.dtd">
+<mediasourcefilter>
 	<!-- 
   Define the chain of filters, the filter that has to filter first
   has to be mentioned as first. A filter is specified or by the classname
-  (class needs ResponseInfoComparator).
+  (class needs to be ResponseInfoComparator).
 		-->
 	<chain>
 		<filter>org.mmbase.util.media.AvailableComparator</filter>
-		<filter>org.mmbase.util.media.FormatComparator</filter>
+		<filter>org.mmbase.util.media.ClientFormatComparator</filter>
+		<filter>org.mmbase.util.media.ServerFormatComparator</filter>
 		<filter>org.mmbase.util.media.RealComparator</filter>
 	</chain>
 
