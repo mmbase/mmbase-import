@@ -771,6 +771,17 @@ one or more examplevalue tags is you want to give some example values.
         </info>
       </possiblevalue>
     </attribute>
+	<attribute>
+      <name>sessionname</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		The name the cloud must get in the session. Using this it is
+		possible to avoid keeping to have to type your password when
+		switching between two sites wich both use http
+		authentication.
+      </info>
+    </attribute>
     <attribute>
       <name>authenticate</name>
       <required>false</required>
