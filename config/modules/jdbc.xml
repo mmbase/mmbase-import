@@ -67,8 +67,11 @@
 		this way we can provide the url for several databases and you only need to
 		set the above variables.
 		-->
-		<!--
+		<!-- MySQL
 		<property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
+		-->
+		<!-- Oracle
+		<property name="url">jdbc:oracle:oci8:@$DBM</property>
 		-->
 		<property name="url">jdbc:hsqldb:$DBM</property>
 
@@ -122,7 +125,7 @@
 		PostgreSQL:     org.postgresql.Driver   (http://jdbc.postgresql.org/download.html)
 		Hypersonic:     org.hsql.jdbcDriver     (http://hsqldb.sourceforge.net/)
 		HsqlDB:         org.hsqldb.jdbcDriver   (http://hsqldb.sourceforge.net/)
-
+		Oracle:			oracle.jdbc.driver.OracleDriver
 		-->
 		<property name="driver">org.hsqldb.jdbcDriver</property>
 
