@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.25 2003-11-27 09:16:58 michiel Exp $
+ * @version $Id: Logging.java,v 1.26 2004-01-15 23:21:20 michiel Exp $
  */
 
 
@@ -67,11 +67,19 @@ public class Logging {
     private static Class  logClass          = SimpleImpl.class; // default Logger Implementation
     private static File   configurationFile = null;             // Logging is configured with a configuration file. The path of this file can be requested later.
     private static boolean configured = false;
-    private static Logger log = getLoggerInstance(Logging.class); // logger for this class itself
+    private static final Logger log = getLoggerInstance(Logging.class); // logger for this class itself
+
+    /**
+     * The category for logging info about pages (like stop / start). Also if pages take the
+     * initiative for logging themselves they should log below this category.
+     * @since MMBase-1.7
+     */
+    public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      
 
     private Logging() {
         // this class has no instances.
     }
+
 
     /**
      * Configure the logging system.
