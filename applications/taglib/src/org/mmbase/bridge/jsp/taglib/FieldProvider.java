@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 /**
  * Interface designed to make it possible for child tags
  * to access a field defined in a tag.
@@ -18,7 +19,7 @@ import org.mmbase.bridge.Field;
  * @author Michiel Meeuwissen
  *
  */
-public interface FieldProvider extends NodeProvider {
+public interface FieldProvider extends TagIdentifier {
     // Since a field cannot exist alone, it must also implement NodeProvider.
     // The get the value of a field, you always need a Node too. A 'Field' is only
     // a description.
@@ -28,5 +29,9 @@ public interface FieldProvider extends NodeProvider {
      *
      */
     public Field getFieldVar() throws JspTagException;	
+
+    public Node getNodeVar() throws JspTagException;	
+    public void setModified();
+
 
 }
