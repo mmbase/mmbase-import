@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 import org.w3c.dom.Document;
 import org.mmbase.util.Casting;
+import java.util.*;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
@@ -56,6 +57,12 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("stringfield", "Bridge testing!");     
         node.setValue("xmlfield", getEmptyDocument());
         node.setValue("nodefield", typedefNode);
+        node.setValue("datetimefield", new Date());
+        node.setValue("booleanfield", Boolean.TRUE);
+        List list = new ArrayList();
+        list.add(Boolean.TRUE);
+        list.add(Boolean.TRUE);
+        node.setValue("listfield", list);
         node.commit();
     }
 
@@ -84,7 +91,14 @@ public class FilledNodeTest extends NodeTest {
                 //   assertTrue(getEmptyDocument().isEqualNode((org.w3c.dom.Node)object)); java 1.5
                 assertTrue(Casting.toString(getEmptyDocument()).equals(Casting.toString((Document)object)));
             } else if (fieldTypes[i].equals("node")) {
-                // undefined
+                Node typedefNode = getCloud().getNodeManager("bb");
+                assertTrue(((Node) object).getNumber() == typedefNode.getNumber());
+            } else if (fieldTypes[i].equals("datetime")) {
+                // unimplemented
+            } else if (fieldTypes[i].equals("boolean")) {
+                assertTrue(object.equals(Boolean.TRUE));
+            } else if (fieldTypes[i].equals("list")) {                
+                // unimplemented
             } else {
                 fail();
             }
@@ -264,6 +278,12 @@ public class FilledNodeTest extends NodeTest {
                 //assertTrue(getEmptyDocument().isEqualNode(document)); java 1.5
                 assertTrue(Casting.toString(getEmptyDocument()).equals(Casting.toString(document)));
             } else if (fieldTypes[i].equals("node")) {
+                // undefined
+            } else if (fieldTypes[i].equals("boolean")) {
+                // undefined
+            } else if (fieldTypes[i].equals("datetime")) {
+                // undefined
+            } else if (fieldTypes[i].equals("list")) {
                 // undefined
             } else {
                 fail();
