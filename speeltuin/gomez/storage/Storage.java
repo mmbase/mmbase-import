@@ -17,19 +17,25 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storage.java,v 1.3 2003-07-17 17:13:09 pierre Exp $
+ * @version $Id: Storage.java,v 1.4 2003-07-18 12:09:05 pierre Exp $
  */
 public final class Storage {
 
     /**
      * The default storage factory class.
-     * For backward compatibility with classes that do not provide the factory classname in the
-     * mmbaseroot configuration file.
+     * This classname is used if you doe not spevify the clasanme in the 'storagemanagerfactory' proeprty in mmabseroot.xml. 
      */
     static private final String DEFAULT_FACTORY_CLASS = "org.mmbase.storage.database.DatabaseStorageManagerFactory";
 
     /**
-     * Obtain the storage manager factory belonging to the indicated MMBase module.
+     * The legacy storage factory class.
+     * For backward compatibility with the old database support classes.
+     * So... how to determine you should use this?
+     */
+    static private final String LEGACY_FACTORY_CLASS = "org.mmbase.storage.legacy.LegacyStorageManagerFactory";
+
+    /**
+     * Obtain the StorageManagerFactory belonging to the indicated MMBase module.
      * @param mmbase The MMBase module for which to retrieve the storagefactory
      * @return The StorageManagerFactory
      * @throws StorageFactoryException if the StorageManagerFactory class cannot be located, accessed, or instantiated,
@@ -65,7 +71,7 @@ public final class Storage {
      */
     static public StorageManagerFactory getStorageManagerFactory()
                   throws StorageFactoryException, StorageInaccessibleException {
-        // determine the mmbase module.
+        // determine the default mmbase module.
         return getStorageManagerFactory(MMBase.getMMBase());
     }
 }
