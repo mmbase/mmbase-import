@@ -58,6 +58,7 @@ public class MMAdmin extends ProcessorModule {
 			if (cmd.equals("APPLICATIONS")) return(getApplicationsList());
 			if (cmd.equals("BUILDERS")) return(getBuildersList());
 			if (cmd.equals("FIELDS")) return(getFields(tok.nextToken()));
+			if (cmd.equals("ISOGUINAMES")) return(getISOGuiNames(tok.nextToken(),tok.nextToken()));
 			if (cmd.equals("MODULES")) return(getModulesList());
 			if (cmd.equals("DATABASES")) return(getDatabasesList());
 		}
@@ -156,6 +157,10 @@ public class MMAdmin extends ProcessorModule {
 				return(""+getBuilderClass(tok.nextToken()));
 			} else if (cmd.equals("BUILDERDESCRIPTION")) { 
 				return(""+getBuilderDescription(tok.nextToken()));
+			} else if (cmd.equals("GETGUINAMEVALUE")) { 
+				return(getGuiNameValue(tok.nextToken(),tok.nextToken(),tok.nextToken()));
+			} else if (cmd.equals("GETBUILDERFIELD")) { 
+				return(getBuilderField(tok.nextToken(),tok.nextToken(),tok.nextToken()));
 			}
 		}
 		return("No command defined");
@@ -846,5 +851,106 @@ public class MMAdmin extends ProcessorModule {
 		} else {
 			return(false);
 		}
+	}
+
+	private String getBuilderField(String buildername,String fieldname, String key) {
+		MMObjectBuilder bul=mmb.getMMObject(buildername);
+		if (bul!=null) {
+			FieldDefs def=bul.getField(fieldname);
+			if (key.equals("dbkey")) {
+				if (def.isKey()) {
+					return("true");
+				} else {
+					return("false");
+				}
+			} else if (key.equals("dbnotnull")) {
+				if (def.getDBNotNull()) {
+					return("true");
+				} else {
+					return("false");
+				}
+			} else if (key.equals("dbname")) {
+				return(def.getDBName());
+			} else if (key.equals("dbsize")) {
+				int size=def.getDBSize();
+				if (size!=-1) {
+					return(""+size);
+				} else {
+					return("fixed");
+				}
+			} else if (key.equals("dbstate")) {
+				int state=def.getDBState();
+				switch (state) {
+					case FieldDefs.DBSTATE_VIRTUAL: return("virtual");
+					case FieldDefs.DBSTATE_PERSISTENT: return("persistent");
+					case FieldDefs.DBSTATE_SYSTEM: return("system");
+					case FieldDefs.DBSTATE_UNKNOWN: return("unknown");
+				}
+			} else if (key.equals("dbmmbasetype")) {
+				int type=def.getDBType();
+				switch (type) {
+					case FieldDefs.TYPE_STRING: return("STRING");
+					case FieldDefs.TYPE_INTEGER: return("INTEGER");
+					case FieldDefs.TYPE_BYTE: return("BYTE");
+					case FieldDefs.TYPE_FLOAT: return("FLOAT");
+					case FieldDefs.TYPE_DOUBLE: return("DOUBLE");
+					case FieldDefs.TYPE_LONG: return("LONG");
+					case FieldDefs.TYPE_UNKNOWN: return("UNKNOWN");
+				}
+			} else if (key.equals("editorinput")) {
+				int pos=def.getGUIPos();
+				if (pos==-1) {
+					return("not shown");
+				} else {
+					return(""+pos);
+				}
+			} else if (key.equals("editorsearch")) {
+				int pos=def.getGUISearch();
+				if (pos==-1) {
+					return("not shown");
+				} else {
+					return(""+pos);
+				}
+			} else if (key.equals("editorlist")) {
+				int pos=def.getGUIList();
+				if (pos==-1) {
+					return("not shown");
+				} else {
+					return(""+pos);
+				}
+			} else if (key.equals("guitype")) {
+				return(def.getGUIType());
+			}
+		}	
+		return("");
+	}
+			
+	private Vector getISOGuiNames(String buildername, String fieldname) {
+		Vector results=new Vector();
+		MMObjectBuilder bul=mmb.getMMObject(buildername);
+		if (bul!=null) {
+			FieldDefs def=bul.getField(fieldname);
+			Hashtable guinames=def.getGUINames();
+			for (Enumeration h = guinames.keys();h.hasMoreElements();) {
+				String key=(String)h.nextElement();	
+				String value=(String)guinames.get(key);
+				results.addElement(key);
+				results.addElement(value);
+			}
+		}
+		return(results);
+	}
+
+
+	private String getGuiNameValue(String buildername, String fieldname,String key) {
+		MMObjectBuilder bul=mmb.getMMObject(buildername);
+		if (bul!=null) {
+			FieldDefs def=bul.getField(fieldname);
+			String value=def.getGUIName(key);
+			if (value!=null) {
+				return(value);
+			}
+		}
+		return("");
 	}
 }
