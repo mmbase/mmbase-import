@@ -1,6 +1,33 @@
 
 Migratie issues
 
+2004-11-26
+
+in de web.xml moet voor sites die de PDF functionaliteit gebruiken de parameter
+internalUrl gezet worden:
+
+   <!-- 
+        please set this to the interal url of the web application
+        if that is different from the "outside" url.
+
+        it needs to be the full url including the application path
+        i.e.
+
+        if the application startpage is http://localhost:8080/didactor/index.jsp
+
+        this url should be http://localhost:8080/didactor
+
+        this url is used by the application to do HTTP requests
+        to itself.
+    -->
+    <context-param>
+        <param-name>internalUrl</param-name>
+        <param-value>http://localhost:8080/didactor</param-value>
+    </context-param>
+
+Op dit moment hoeft dat alleen voor baronie college.
+
+
 2004-11-11
 
 Inlogtijden kloppen niet. De berekening is oplost, maar de tijden moeten gereset worden:
