@@ -13,8 +13,8 @@
     </mmcommunity:tree>    
 </mm:notpresent>
 <mm:present referid="startnode"> lastnode=<mm:write referid="startnode"/>;</mm:present>
-<mmcommunity:tree thread="Chat" startaftersequence="${startnode}" directions="DOWN"     fields="sequence,timestamp,body,info" >
-    time = new Date(<mm:field name="timestamp" />);
+<mmcommunity:tree thread="Chat" startaftersequence="${startnode}" directions="DOWN"     fields="sequence,timestampsec,body,info" >
+    time = new Date(<mm:field name="timestampsec" /> * 1000);
     minut = time.getMinutes();
     top.chatbox.document.write(time.getHours() +  ":" + (minut < 10 ? "0" : "") + minut + "  <em><mm:field name="getinfovalue(name)" />:</em> <mm:field name="html(body)" /><br />");
     lastnode=<mm:field name="sequence" />+1;
