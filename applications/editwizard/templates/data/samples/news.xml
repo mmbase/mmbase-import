@@ -39,7 +39,7 @@
 
 		<list destination="people" minoccurs="0" maxoccurs="*">
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
-				<prompt>#Search command prompt</prompt>
+				<prompt>People</prompt>
 				<search-filter>
 					<name>firstname contains</name>
 					<search-fields>firstname</search-fields>
@@ -64,6 +64,7 @@
 		</list>
 		<list role="related" destination="images">
 			<command name="search" nodepath="images" fields="title" age="-1">
+        <prompt>Images</prompt>
 			</command>
 			<item>
 				<field name="title" ftype="image" />
