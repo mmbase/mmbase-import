@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.15 2002-06-28 13:08:53 pierre Exp $
+ * @version $Id: Dove.java,v 1.16 2002-07-03 07:06:47 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -726,9 +726,14 @@ public class Dove extends AbstractDove {
                                 String fieldname=field.getAttribute(ELM_NAME);
                                 String href=field.getAttribute(ELM_HREF);
                                 if (!href.equals("")) {
+                                    // binary data.
                                     Object repval=repository.get(href);
                                     if (repval!=null) {
                                         values.put(fieldname,repval);
+                                        // also retrieve and set filename
+                                        if(field.getFirstChild()!=null) {
+                                            values.put("filename",field.getFirstChild().getNodeValue());
+                                        }
                                     }
                                 } else {
                                     if(field.getFirstChild()==null) {
