@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.32 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Users.java,v 1.33 2005-03-15 09:10:23 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -242,6 +242,7 @@ public class Users extends MMObjectBuilder {
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
      */
     public MMObjectNode getUser(String userName)  {
+        if (userName == null ) return null;
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
@@ -332,12 +333,14 @@ public class Users extends MMObjectBuilder {
         boolean valid = true;
         long time = System.currentTimeMillis() / 1000;
         if (getField(FIELD_VALID_FROM) != null) {
-            if (node.getLongValue(FIELD_VALID_FROM) > time) {
+            long from = node.getLongValue(FIELD_VALID_FROM);
+            if (from > time) {
                 valid = false;
             }
         }
         if (getField(FIELD_VALID_TO) != null) {
-            if (node.getLongValue(FIELD_VALID_TO) < time) {
+            long to = node.getLongValue(FIELD_VALID_TO);
+            if (to > 0 && to < time) {
                 valid = false;
             }
         }
@@ -354,7 +357,6 @@ public class Users extends MMObjectBuilder {
      * Makes sure unique values and not-null's are filed
      */
     public void setDefaults(MMObjectNode node) {
-        log.info("Setting defaults");
         MMObjectNode defaultDefaultContext = Contexts.getBuilder().getContextNode(node.getStringValue("owner"));
         node.setValue(FIELD_DEFAULTCONTEXT, defaultDefaultContext);
         node.setValue(FIELD_PASSWORD, "");
