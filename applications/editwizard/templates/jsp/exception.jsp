@@ -2,7 +2,7 @@
 <% if(exception == null) exception = new javax.servlet.jsp.JspException("dummy-exception, to test the errorpage-page"); %>
 <html>
 <head>
-    <title>Something wend wrong</title>
+    <title>Something went wrong</title>
 </head>
 <body>
 <h2>DON'T PANIC!</h2>
@@ -13,7 +13,7 @@
      * exception.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: exception.jsp,v 1.4 2002-07-19 14:53:55 pierre Exp $
+     * @version  $Id: exception.jsp,v 1.5 2002-07-24 09:32:28 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
