@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.19 2004-01-18 12:08:51 nico Exp $
+    @version $Id: prompts.xsl,v 1.20 2004-01-20 17:59:31 michiel Exp $
     
     prompts used in this editwizard. 
     Override these prompts to change the view in your own versions.
@@ -193,7 +193,7 @@
 
   <!-- prompts and tooltips for lists -->
   <xsl:template name="prompt_edit_list">
-    <xsl:value-of select="$wizardtitle" /> (<xsl:value-of select="list/@count" /> items)
+      <xsl:value-of select="$title" disable-output-escaping="yes"  />(<xsl:value-of select="/list/@count" /> items)
   </xsl:template>
   <xsl:variable name="tooltip_edit_list">These are the items that you can edit.</xsl:variable>
 
