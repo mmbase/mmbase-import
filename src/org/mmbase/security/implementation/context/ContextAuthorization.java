@@ -9,29 +9,31 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.context;
 
-import org.mmbase.security.*;
-import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in
-                                              // java.lang
-
-
 import java.util.*;
 import java.io.FileInputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
-
 import org.xml.sax.InputSource;
-
-import org.mmbase.module.core.MMObjectNode;
-
 import org.apache.xpath.XPathAPI;
 import org.apache.xerces.parsers.DOMParser;
 
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.security.*;
+import org.mmbase.security.SecurityException; // must be imported explicity, because it is also in
+                                              // java.lang
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-/** authorization based on a config*/
+/**
+ * Authorization based on a config
+ * @javadoc
+ *
+ * @author Eduard Witteveen
+ * @author Pierre van Rooden
+ * @version $Id: ContextAuthorization.java,v 1.19 2002-06-07 12:57:00 pierre Exp $
+ */
 public class ContextAuthorization extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(ContextAuthorization.class.getName());
     private Document 	    document;

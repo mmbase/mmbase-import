@@ -17,9 +17,11 @@ import org.mmbase.util.ExtendedProperties;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
 /**
- * simple implemetation, to provide authentication from files...
+ * Simple implemetation, to provide authentication from files...
+ * @javadoc
+ * @author Eduard Witteveen
+ * @version $Id: FileLoginModule.java,v 1.3 2002-06-07 12:56:57 pierre Exp $
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
@@ -37,9 +39,9 @@ public class FileLoginModule implements LoginModule {
 
         if (! configFile.isAbsolute()) {
             File   parentFile   = (File) properties.get("_parentFile");
-            log.debug("" + configFile.getPath() + " is not absolute."); 
+            log.debug("" + configFile.getPath() + " is not absolute.");
             configFile = new File(parentFile.getParent() + File.separator + configFile.getPath());
-            log.debug("Trying " + configFile.getAbsolutePath()); 
+            log.debug("Trying " + configFile.getAbsolutePath());
         }
 
         log.debug("trying to load file login modules with password file:"  + configFile.getAbsolutePath());
@@ -60,8 +62,8 @@ public class FileLoginModule implements LoginModule {
     }
 
     public boolean login(NameContext user, Map loginInfo,  Object[] parameters) {
-    	if(!loginInfo.containsKey("username")) throw new org.mmbase.security.SecurityException("key 'username' not found  in login information");
-    	if(!loginInfo.containsKey("password")) throw new org.mmbase.security.SecurityException("key 'password' not found  in login information");	
+        if(!loginInfo.containsKey("username")) throw new org.mmbase.security.SecurityException("key 'username' not found  in login information");
+        if(!loginInfo.containsKey("password")) throw new org.mmbase.security.SecurityException("key 'password' not found  in login information");
         ExtendedProperties reader = new ExtendedProperties();
 
         log.debug("reading accounts from " + configFile);
