@@ -1,10 +1,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ page language="java" contentType="text/html; charset=utf-8" session="true"
+%><%@ page language="java" contentType="text/html; charset=utf-8"
 %><mm:cloud
 ><%@ include file="/includes/getids.jsp" 
-%><%@ include file="/includes/header.jsp"
-%>
-<td class="white" colspan="2" valign="top">
+%><%@ include file="/includes/alterheader.jsp" %>
+<div id="pagecontent">
 <mm:node referid="page"><h2><mm:field name="title" /></h2></mm:node>
 <mm:import externid="item" />
 <mm:import externid="eventnr"><mm:write referid="item" /></mm:import>
@@ -91,6 +90,6 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	</div>
 	<!-- /previous and next -->
 </div>
-</td>
-<%@ include file="/includes/footer.jsp"
-%></mm:cloud>
+</div>
+<%@ include file="/includes/alterfooter.jsp" %>
+</mm:cloud>
