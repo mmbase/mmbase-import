@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.9 2004-02-16 12:10:17 keesj Exp $
+ * @version $Id: Attributes.java,v 1.10 2004-03-16 13:52:04 pierre Exp $
  */
 public final class Attributes {
 
@@ -104,5 +104,11 @@ public final class Attributes {
      * The default is <code>false</code>
      */
     public static final String REMOVE_EMPTY_DEFINITIONS = "database-remove-empty-definitions";
+
+    /**
+     * Option: <code>sequence-buffer-size</code>.
+     * @javadoc
+     */
+    public static final String SEQUENCE_BUFFER_SIZE = "sequence-buffer-size";
 
 }
