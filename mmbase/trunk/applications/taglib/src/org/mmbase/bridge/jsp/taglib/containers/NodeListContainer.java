@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListContainer.java,v 1.1 2003-07-23 17:46:58 michiel Exp $
+ * @version $Id: NodeListContainer.java,v 1.2 2003-07-25 21:14:57 michiel Exp $
  */
 public interface NodeListContainer extends TagIdentifier {
 
@@ -44,5 +44,7 @@ public interface NodeListContainer extends TagIdentifier {
      */
     void   setResult(NodeList result) throws JspTagException;
 
+
+    Cloud getCloud() throws JspTagException;
 
 }
