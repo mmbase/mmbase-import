@@ -59,7 +59,7 @@ public class MagicXMLReader extends XMLBasicReader implements DetectorProvider {
     private List detectors = null;
 
     private  MagicXMLReader(String path) {
-	super(path);
+	super(path, MagicXMLReader.class);
     }
 
     public String getVersion() {
