@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
  
 */
 
-package org.mmbase.module.community;
+package org.mmbase.applications.community.modules;
 
 import java.util.Date;
 
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: TimeStamp.java,v 1.6 2003-03-10 11:50:29 pierre Exp $
+ * @version $Id: TimeStamp.java,v 1.7 2003-06-18 20:03:55 michiel Exp $
  */
 
 public class TimeStamp extends Date

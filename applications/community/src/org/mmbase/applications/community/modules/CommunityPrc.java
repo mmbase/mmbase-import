@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.module.community;
+package org.mmbase.applications.community.modules;
 
 import java.util.*;
 
@@ -16,10 +16,7 @@ import org.mmbase.util.*;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.builders.Message;
-import org.mmbase.module.builders.Channel;
-import org.mmbase.module.builders.Community;
-
+import org.mmbase.applications.community.builders.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -45,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.8 2003-03-10 11:50:28 pierre Exp $
+ * @version $Id: CommunityPrc.java,v 1.9 2003-06-18 20:03:55 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {

@@ -8,7 +8,8 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.module.community;
+
+package org.mmbase.applications.community.modules;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -16,7 +17,7 @@ import java.util.Vector;
 
 /**
  * @author Dirk-Jan Hoekstra
- * @version $Id: CompareMessages.java,v 1.3 2003-03-10 11:50:28 pierre Exp $
+ * @version $Id: CompareMessages.java,v 1.4 2003-06-18 20:03:55 michiel Exp $
  *
  * CompareMessages implements the CompareInterface used by SortedVector.
  * At forhand you've to specify on which fields the message nodes should be compared,
