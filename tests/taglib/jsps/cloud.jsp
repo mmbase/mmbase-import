@@ -1,7 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><html
   <head>
-   <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+
   </head>
   <body>
     <h1>Cloud logout/login</h1>
