@@ -271,13 +271,26 @@ public interface Node {
 
     /**
      * Returns all relation nodes attached to this node that have a specific
-     * relation manager.
+     * role
      *
-     * @param relationManager  the name of the relation manager the returned
-     *                         relation nodes should have
-     * @return                 a list of relation nodes
+     * @param role  the name of the role the returned
+     *              relation nodes should have
+     * @return      a list of relation nodes
      */
-    public RelationList getRelations(String relationManager);
+    public RelationList getRelations(String role);
+
+    /**
+     * Returns all relation nodes attached to this node that have a specific
+     * role, or refer a node from a specific nodemanager
+     *
+     * @param role  the name of the role the returned
+     *              relation nodes should have
+     * @param nodeManager  the name of the nodemanager for the nodes the returned
+     *                     relation nodes should have a relation to
+     * @return      a list of relation nodes
+     */
+    public RelationList getRelations(String role, String nodeManager);
+
 
     /**
      * Returns the number of relations this node has with other nodes.
