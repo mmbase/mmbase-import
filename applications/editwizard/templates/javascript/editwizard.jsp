@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.52 2004-05-02 16:34:20 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.53 2004-06-03 08:48:28 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -203,7 +203,7 @@ function doSearch(el, cmd, sessionkey) {
     constraints += ")";
 
     // build url
-    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&timezone=<%=request.getParameter("timezone")%>";
+    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);
     url += setParam("constraints", constraints);

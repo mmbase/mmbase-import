@@ -9,7 +9,7 @@
     @author Nico Klasens
     @author Martijn Houtman
 
-    @version $Id: baselist.xsl,v 1.7 2004-06-02 16:21:25 michiel Exp $
+    @version $Id: baselist.xsl,v 1.8 2004-06-03 08:47:38 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -21,7 +21,7 @@
     <xsl:param name="val" select="."/>
     <xsl:choose>
       <xsl:when test="@guitype='eventtime'">
-        <xsl:value-of select="date:format(string($val), $date-pattern, $timezone, $language)" disable-output-escaping="yes"/>
+        <xsl:value-of select="date:format(string($val), $date-pattern, $timezone, $language, $country)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$val" disable-output-escaping="yes" />
