@@ -27,16 +27,16 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * The element that follows root is the oldest element in the table
      * (and thus first to be removed if size maxes out).
      */
-    private LRUentry root=new LRUentry("root","root");
+    private LRUEntry root=new LRUEntry("root","root");
     /**
      * Last (virtual) element of the table.
      * The element that precedes dangling is the latest element in the table
      */
-    private LRUentry dangling=new LRUentry("dangling","dangling");
+    private LRUEntry dangling=new LRUEntry("dangling","dangling");
     /**
      * Holds working element. Possibly global for speed reasons.
      */
-    private LRUentry work;
+    private LRUEntry work;
 
     /**
      * Maximum size (capacity) of the table
@@ -77,11 +77,11 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      */
     public LRUHashtable(int size,int cap,float lf) {
         super(1);
-        root.next=dangling;
-        dangling.prev=root;
-        this.size=size;
-        entries=new Hashtable(cap,lf);
-        hit=miss=puts=0;
+        root.next = dangling;
+        dangling.prev = root;
+        this.size = size;
+        entries = new Hashtable(cap, lf);
+        hit = miss = puts =0;
     }
 
     /**
@@ -90,7 +90,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * @param cap the starting capacity (used to improve performance)
      */
     public LRUHashtable(int size,int cap) {
-        this(size,cap,0.75f);
+        this(size, cap, 0.75f);
     }
 
     /**
@@ -99,7 +99,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * @param size the maximum capacity
      */
     public LRUHashtable(int size) {
-        this(size,101,0.75f);
+        this(size, 101, 0.75f);
     }
 
     /**
@@ -117,7 +117,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * @return the original value of the element if it existed, <code>null</code> if it could not be found
      */
     public synchronized Object put(Object key,Object value) {
-        work=(LRUentry)entries.get(key);
+        work=(LRUEntry)entries.get(key);
         if (work!=null) {
             rtn=work.value;
             work.value=value;
@@ -125,7 +125,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             appendEntry(work);
         } else {
             rtn=null;
-            work=new LRUentry(key,value);
+            work=new LRUEntry(key,value);
             entries.put(key,work);
             appendEntry(work);
             currentsize++;
@@ -143,7 +143,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * @return the times the key has been requested
      */
     public int getCount(Object key) {
-        work=(LRUentry)entries.get(key);
+        work=(LRUEntry)entries.get(key);
 	if (work!=null) {
 		return(work.getcount);	
 	} else {
@@ -157,8 +157,8 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * @return the value of the element, or <code>null</code> if it could not be found
      */
     public synchronized Object get(Object key) {
-        work=(LRUentry)entries.get(key);
-        if (work!=null) {
+        work = (LRUEntry)entries.get(key);
+        if (work != null) {
             hit++;
 	    work.getcount++;
             rtn=work.value;
@@ -166,7 +166,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
             appendEntry(work);
         } else {
             miss++;
-            rtn=null;
+            rtn = null;
         }
         return rtn;
     }
@@ -177,7 +177,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
      * @return the original value of the element if it existed, <code>null</code> if it could not be found
      */
     public synchronized Object remove(Object key) {
-        work=(LRUentry)entries.remove(key);
+        work=(LRUEntry)entries.remove(key);
         if (work!=null) {
             rtn=work.value;
             removeEntry(work);
@@ -219,7 +219,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * Append an entry to the end of the list.
      */
-    private void appendEntry(LRUentry wrk) {
+    private void appendEntry(LRUEntry wrk) {
         dangling.prev.next=wrk;
         wrk.prev=dangling.prev;
         wrk.next=dangling;
@@ -229,7 +229,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
     /**
      * remove an entry from the list.
      */
-    private void removeEntry(LRUentry wrk) {
+    private void removeEntry(LRUEntry wrk) {
         wrk.next.prev=wrk.prev;
         wrk.prev.next=wrk.next;
         wrk.next=null;
@@ -256,7 +256,7 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         if (which) {
             StringBuffer b=new StringBuffer();
             b.append("Size "+currentsize+", Max "+size+" : {");
-            LRUentry walk=root.next;
+            LRUEntry walk=root.next;
             while (walk!=dangling) {
                 if (which) {
                     b.append(""+walk.key+"="+walk.value);
@@ -371,94 +371,144 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         return "Access "+(hit+miss)+ " Ratio "+getRatio()+" Size "+size()+" Puts "+puts;
     }
 
+
+    /**
+     * @deprecated use getOrderedEntries
+     */
     public Enumeration getOrderedElements() {
 	return(getOrderedElements(-1));
     }
 
+    /**
+     * @deprecated use getOrderedEntries
+     */
     public Enumeration getOrderedElements(int maxnumber) {
-	Vector results=new Vector();
-	LRUentry current=root.next;
+	Vector results = new Vector();
+	LRUEntry current = root.next;
 	if (maxnumber!=-1) {
-		int i=0;
-        	while (current!=null && current!=dangling && i<maxnumber) {
-			results.insertElementAt(current.value,0);	
-			current=current.next;
-			i+=1;
-		}
+            int i=0;
+            while (current!=null && current!=dangling && i<maxnumber) {
+                results.insertElementAt(current.value,0);	
+                current=current.next;
+                i+=1;
+            }
 	} else {
-        	while (current!=null && current!=dangling) {
-			results.insertElementAt(current.value,0);	
-			current=current.next;
+            while (current!=null && current!=dangling) {
+                results.insertElementAt(current.value,0);	
+                current=current.next;
 		}
 	}
 	return(results.elements());
     }
 
+    /**
+     * Returns an ordered list of Map.Entry's.
+     * 
+     * @since MMBase-1.6
+     */
+
+    public List getOrderedEntries() { 
+        return getOrderedEntries(-1); 
+    } 
+
+    /**
+     * Returns an ordered list of Map.Entry's. This can be used to
+     * present the contents of the LRU Map.
+     * 
+     * @since MMBase-1.6
+     */
+
+    public List getOrderedEntries(int maxNumber) {
+	List results = new Vector();
+	LRUEntry current = root.next;
+        int i=0;
+        while (current != null && current != dangling && (maxNumber < 0 || i < maxNumber)) {
+            results.add(0, current); 
+            current = current.next;
+            i++;
+        }
+	return results;
+    }
+
+    /**
+     * Enumerator for the LRUHashtable.
+     */
+    private static class LRUHashtableEnumerator implements Enumeration {
+        private Enumeration superior;
+        
+        LRUHashtableEnumerator(Hashtable entries) {
+            superior=entries.elements();
+        }
+        
+        public boolean hasMoreElements() {
+            return superior.hasMoreElements();
+        }
+        
+        public Object nextElement() {
+            LRUEntry entry;
+            
+            entry=(LRUEntry)superior.nextElement();
+            return entry.value;
+        }
+    }
+
+    /**
+     * Element used to store information fro the LRUHashtable.
+     */
+    private static class LRUEntry implements Map.Entry {
+        /**
+         * The element value
+         */
+        protected Object value;
+        /**
+         * The next, newer, element
+         */
+        protected LRUEntry next;
+        /**
+         * The previous, older, element
+         */
+        protected LRUEntry prev;
+        /**
+         * The element key
+         */
+        protected Object key;
+        /**
+         * the number of times this
+         * entry has been requested
+         */
+        protected int getcount=0;
+        
+        LRUEntry(Object key, Object val) {
+            this(key, val, null, null);
+        }
+        
+        LRUEntry(Object key, Object value, LRUEntry prev, LRUEntry next) {
+            this.value = value;
+            this.next  = next;
+            this.prev  = prev;
+            this.key   = key;
+        }
+
+        public Object getKey() {
+            return key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Object setValue(Object o) {
+            throw new UnsupportedOperationException("Cannot change values in LRU Hashtable");
+        }
+        
+        public String toString() {
+            return (value!=null) ? value.toString() : null;
+        }
+        
+    }
+
+
 }
 
-/**
- * Enumerator for the LRUHashtable.
- */
-class LRUHashtableEnumerator implements Enumeration {
-    private Enumeration superior;
-
-    LRUHashtableEnumerator(Hashtable entries) {
-        superior=entries.elements();
-    }
-
-    public boolean hasMoreElements() {
-        return superior.hasMoreElements();
-    }
-
-    public Object nextElement() {
-        LRUentry entry;
-
-        entry=(LRUentry)superior.nextElement();
-        return entry.value;
-    }
-}
-
-/**
- * Element used to store information fro the LRUHashtable.
- */
-class LRUentry {
-    /**
-     * The element value
-     */
-    protected Object value;
-    /**
-     * The next, newer, element
-     */
-    protected LRUentry next;
-    /**
-     * The previous, older, element
-     */
-    protected LRUentry prev;
-    /**
-     * The element key
-     */
-    protected Object key;
-    /**
-    * the number of times this
-    * entry has been requested
-    */
-    protected int getcount=0;
-
-    LRUentry(Object key,Object val) {
-        this(key,val,null,null);
-    }
-
-    LRUentry(Object key,Object value,LRUentry prev,LRUentry next) {
-        this.value=value;
-        this.next=next;
-        this.prev=prev;
-        this.key=key;
-    }
-
-    public String toString() {
-        return (value!=null) ? value.toString() : null;
-    }
-
-}
 
 
