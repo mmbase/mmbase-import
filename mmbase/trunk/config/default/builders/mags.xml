@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
 <!-- <status>
-	what is the status of this builder options : active or inactive
+    what is the status of this builder options : active or inactive
 -->
 <status>inactive</status>
 
@@ -18,7 +18,7 @@
 </names>
 
   <!-- <descriptions>
-	small description of the builder for human reading
+    small description of the builder for human reading
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
@@ -26,7 +26,7 @@
     <description xml:lang="en">Magazines</description>
     <description xml:lang="en">Ĵurnaloj</description>
   </descriptions>
-  
+
   <fieldlist>
     <!-- POS 3 : <field> 'title'  -->
     <field>
