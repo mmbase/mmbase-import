@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.6 2004-12-16 09:23:48 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.7 2004-12-20 10:37:50 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends AbstractDataType {
@@ -112,6 +112,11 @@ public class ReturnType extends AbstractDataType {
      */
     public Map getSubTypes() {
         return Collections.unmodifiableMap(typeStruct);
+    }
+
+
+    public String toString() {
+        return getType().getName();
     }
 
 }

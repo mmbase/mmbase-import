@@ -15,7 +15,7 @@ import java.util.List;
  * @javadoc
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.1 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: WrappedFunction.java,v 1.2 2004-12-20 10:37:50 michiel Exp $
  */
 public class WrappedFunction implements Function {
 
@@ -72,6 +72,10 @@ public class WrappedFunction implements Function {
 
     public void setReturnType(DataType type) {
         wrappedFunction.setReturnType(type);
+    }
+
+    public String toString() {
+        return "WRAPPED " + wrappedFunction.toString();
     }
 
 }
