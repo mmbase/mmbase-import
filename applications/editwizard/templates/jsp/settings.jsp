@@ -3,13 +3,13 @@
 %><%@page import="java.util.*, org.mmbase.bridge.Cloud, org.mmbase.util.logging.Logger"
 %><%@page import="org.mmbase.util.xml.URIResolver"
 %><%@ page import="org.mmbase.applications.editwizard.*"
-%><%@ page import="org.mmbase.applications.editwizard.SecurityException"
+%><%@ page import="org.mmbase.applications.editwizard.SecurityException,org.mmbase.applications.editwizard.Config"
 %><%!
     /**
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.2 2002-04-22 14:37:33 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.3 2002-05-03 14:44:35 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -56,9 +56,10 @@ response.addHeader("Pragma","no-cache");
 session.setMaxInactiveInterval(60 * 60 * 24); // 24 hours;
 String now = org.mmbase.util.RFC1123.makeDate(new Date());
 response.addHeader("Expires",       now);
-response.addHeader("Date",          now);
+//response.addHeader("Date",          now);
 response.addHeader("Last-modified", now);
 
+log.trace("done setting headers");
 String instanceName = request.getParameter("instanceName");
 if (instanceName == null) instanceName = "editwizard";
 
