@@ -1,4 +1,6 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -35,7 +37,7 @@
 	<plural xml:lang="us">CachedImages</plural>
 	<plural xml:lang="en">CachedImages</plural>
 	<plural xml:lang="nl">GecachtePlaatjes</plural>
-	<singular xml:lang="fr">ImagesAntémémoire</singular>
+	<plural xml:lang="fr">ImagesAntémémoire</plural>
 </names>
 
 <!-- <descriptions>
@@ -59,11 +61,11 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<name xml:lang="fr">Objet</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="nl">Object</guiname>
+			<guiname xml:lang="fr">Objet</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -89,11 +91,11 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="nl">Eigenaar</name>
-			<name xml:lang="fr">propriétaire</name>
-			<type>string</type>
+			<guiname xml:lang="us">Owner</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="nl">Eigenaar</guiname>
+			<guiname xml:lang="fr">propriétaire</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -119,11 +121,11 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Ckey</name>
-			<name xml:lang="en">Ckey</name>
-			<name xml:lang="nl">Ckey</name>
-			<name xml:lang="fr">Ckey</name>
-			<type>string</type>
+			<guiname xml:lang="us">Ckey</guiname>
+			<guiname xml:lang="en">Ckey</guiname>
+			<guiname xml:lang="nl">Ckey</guiname>
+			<guiname xml:lang="fr">Ckey</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -149,11 +151,11 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">ID</name>
-			<name xml:lang="en">ID</name>
-			<name xml:lang="nl">ID</name>
-			<name xml:lang="fr">ID</name>
-			<type>integer</type>
+			<guiname xml:lang="us">ID</guiname>
+			<guiname xml:lang="en">ID</guiname>
+			<guiname xml:lang="nl">ID</guiname>
+			<guiname xml:lang="fr">ID</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -179,11 +181,11 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Image</name>
-			<name xml:lang="en">Image</name>
-			<name xml:lang="nl">Plaatje</name>
-			<name xml:lang="fr">Iamge</name>
-			<type>newimage</type>
+			<guiname xml:lang="us">Image</guiname>
+			<guiname xml:lang="en">Image</guiname>
+			<guiname xml:lang="nl">Plaatje</guiname>
+			<guiname xml:lang="fr">Iamge</guiname>
+			<guitype>newimage</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -209,11 +211,11 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Size</name>
-			<name xml:lang="en">Size</name>
-			<name xml:lang="nl">Grootte</name>
-			<name xml:lang="fr">Taille</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Size</guiname>
+			<guiname xml:lang="en">Size</guiname>
+			<guiname xml:lang="nl">Grootte</guiname>
+			<guiname xml:lang="fr">Taille</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>

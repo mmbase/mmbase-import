@@ -52,8 +52,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -79,8 +79,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -106,8 +106,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Titel</name>
-			<type>string</type>
+			<guiname xml:lang="us">Titel</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -133,8 +133,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Intro</name>
-			<type>field</type>
+			<guiname xml:lang="us">Intro</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder>
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -58,10 +58,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="nl">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -87,10 +87,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Owner</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -116,10 +116,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Description</name>
-			<name xml:lang="en">Description</name>
-			<name xml:lang="nl">Omschrijving</name>
-			<type>string</type>
+			<guiname xml:lang="us">Description</guiname>
+			<guiname xml:lang="en">Description</guiname>
+			<guiname xml:lang="nl">Omschrijving</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -145,10 +145,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Rating</name>
-			<name xml:lang="en">Rating</name>
-			<name xml:lang="nl">Zwaarte</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Rating</guiname>
+			<guiname xml:lang="en">Rating</guiname>
+			<guiname xml:lang="nl">Zwaarte</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
