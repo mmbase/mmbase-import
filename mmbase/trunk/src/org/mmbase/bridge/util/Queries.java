@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.15 2003-12-09 20:10:55 michiel Exp $
+ * @version $Id: Queries.java,v 1.16 2003-12-16 21:29:13 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -338,7 +338,7 @@ public class Queries {
 
     }
     /**
-     * Used in implmentation of createConstraint
+     * Used in implementation of createConstraint
      */
     protected static Number getNumberValue(String stringValue) throws BridgeException {
         try {
@@ -353,7 +353,7 @@ public class Queries {
     }
 
     /**
-     * Used in implmentation of createConstraint
+     * Used in implementation of createConstraint
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
         
@@ -397,7 +397,7 @@ public class Queries {
     }
 
     /**
-     * Defaulting version of {@link #createConstraing(Query, String, int, Object, Object, boolean)}.
+     * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean)}.
      * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used).
      */
     public static Constraint createConstraint(Query query, String fieldName, int operator, Object value) {
@@ -660,7 +660,7 @@ public class Queries {
         Query count = query.aggregatingClone();
         Step step = (Step) (count.getSteps().get(0));
         count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-        Node result = (Node)cloud.getList(count).get(0);
+        Node result = (Node) cloud.getList(count).get(0);
         return result.getIntValue("number");
     }
 
