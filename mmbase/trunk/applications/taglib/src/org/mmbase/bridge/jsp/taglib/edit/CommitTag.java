@@ -16,6 +16,9 @@ import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.CloudProvider;
 import org.mmbase.bridge.Transaction;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
 * This tag can be used inside a transaction tag, to commit it. It also
 * serves as a baseclass for e.g. CancelTag
@@ -26,12 +29,17 @@ import org.mmbase.bridge.Transaction;
 public class CommitTag extends CloudReferrerTag { 
     // perhaps it would be nicer to extend CloudReferrer to TransactionReferrer first.
 
+    private static Logger log = Logging.getLoggerInstance(CommitTag.class.getName());
+
     void setTransaction(String t) {
         setCloud(t);
     }
 
     protected void doAction(Transaction t) {
         t.commit();
+    }
+    protected String actionName() {
+        return "commit";
     }
 
     public int doStartTag() throws JspTagException{
@@ -43,10 +51,15 @@ public class CommitTag extends CloudReferrerTag {
             throw new JspTagException ("Could not find TransactionTag class");  
         }
         TransactionTag tt = (TransactionTag) findAncestorWithClass((Tag)this, transactionClass); 
-        Transaction trans = (Transaction) tt.getCloudVar();
-        doAction(trans);
-        if (tt.getId() != null) {
-            tt.unRegister(tt.getId());
+
+        if (tt == null) {
+            log.warn("No transaction tag found, no " + actionName() + " could be done");
+        } else {
+            Transaction trans = (Transaction) tt.getCloudVar();
+            doAction(trans);
+            if (tt.getId() != null) {
+                tt.unRegister(tt.getId());
+            }
         }
         return SKIP_BODY;    
     }    
