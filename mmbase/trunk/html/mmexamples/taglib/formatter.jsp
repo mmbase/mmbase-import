@@ -17,19 +17,20 @@
 
 <mm:node id="ok" referid="node" notfound="skip" />
 
-
 <mm:notpresent referid="ok">
   <mm:cloud method="http">
      Creating the test node.
-	 <mm:createnode id="ok" type="xmlnews">
+	 <mm:createnode id="ok" type="news">
        <mm:setfield name="title">XML Test Node</mm:setfield>
-       <mm:setfield name="body">XML Test Node</mm:setfield>
+       <mm:setfield name="subtitle">A nice example</mm:setfield>
+       <mm:setfield name="body">XML Test Node. _Don't_ forget to add some relations to this node (this is not done yet automaticly, an application must be created first)</mm:setfield>
      </mm:createnode>
      <mm:node referid="ok">
 			<mm:createalias>xmltest</mm:createalias>
      </mm:node>
   </mm:cloud>
 </mm:notpresent>
+
 <mm:present referid="ok">
 
 <mm:node referid="ok">
