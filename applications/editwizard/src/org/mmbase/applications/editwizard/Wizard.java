@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.51 2002-07-18 10:57:36 eduard Exp $
+ * @version $Id: Wizard.java,v 1.52 2002-07-18 14:30:12 pierre Exp $
  *
  */
 public class Wizard {
@@ -586,7 +586,7 @@ log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString())
                 // Not found in definition. Put an error in the list and proceed with the
                 // next list.
                 log.debug("Not found! Proceeding with next list.");
-                Element option = list.getOwnerDocument().createElement("option");
+                Element option = optionlist.getOwnerDocument().createElement("option");
                 option.setAttribute("id","-");
                 Utils.storeText(option,"Error: optionlist '" + listname + "' not found");
                 optionlist.appendChild(option);
