@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.80 2002-11-14 16:52:39 michiel Exp $
+  @version $Id: wizard.xsl,v 1.81 2002-11-18 12:25:09 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -166,7 +166,7 @@
       <xsl:call-template name="stepaattributes" />
       <xsl:call-template name="prompt_step" />
     </a>
-    <xsl:value-of select="/*/form[@id=current()/@form-schema]/title" />
+    <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="/*/form[@id=current()/@form-schema]/title" /></xsl:call-template>
   </xsl:template>
 
 
