@@ -29,9 +29,9 @@
 	</tr>
 	  <mm:nodefunction set="mmpb" name="getProjectTargetInfo" referids="project,target">
  	    <tr><th>Target</th><td><mm:field name="name" /></td>
- 	    <tr><th>Package</th><td><mm:field name="packagename" /></td>
+ 	    <tr><th>Package</th><td><mm:field name="packagename"><mm:compare value=""><font color="red">missing name</font></mm:compare></mm:field><mm:field name="packagename" /></td>
  	    <tr><th>Type</th><td><mm:field name="type" /></td>
- 	    <tr><th>Maintainer</th><td><mm:field name="maintainer" /></td>
+ 	    <tr><th>Maintainer</th><td><mm:field name="maintainer"><mm:compare value=""><font color="red">missing maintainer</font></mm:compare></mm:field><mm:field name="maintainer" /></td>
 	    <mm:import id="burl">projects/packageeditors/<mm:field name="type" />/button.jsp</mm:import>
 	    <mm:import id="surl">projects/packageeditors/<mm:field name="type" />/index.jsp</mm:import>
 	  </mm:nodefunction>
@@ -196,7 +196,7 @@
 <tr>
 <form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 	<td  valign="top">
-		<b>Package Name</b><p />
+		<b><mm:field name="packagename"><mm:compare value=""><font color="red">Package Name</font></mm:compare><mm:compare value="" inverse="true">Package Name</mm:compare></mm:field></b><p />
 		<input type="hidden" name="action" value="setpackagename" />
 		&nbsp;&nbsp;<input name="newname" size="30" value="<mm:field name="packagename" />">
 		<input type="submit" value="save">
@@ -204,7 +204,7 @@
 </form>
 <form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 	<td  valign="top">
-		<b>Package Maintainer</b><p />
+		<b><mm:field name="maintainer"><mm:compare value=""><font color="red">Package Maintainer</font></mm:compare><mm:compare value="" inverse="true">Package Maintainer</mm:compare></mm:field></b><p />
 		<input name="newmaintainer" size="30" value="<mm:field name="maintainer" />" >
 		<input type="hidden" name="action" value="setpackagemaintainer" />
 		<input type="submit" value="save">
@@ -214,7 +214,7 @@
 <form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 <tr>
 	<td colspan="2" valign="top">
-		<b>Package Description</b><p />
+		<b><mm:field name="description"><mm:compare value=""><font color="red">Package Description</font></mm:compare><mm:compare value="" inverse="true">Package Description</mm:compare></mm:field></b><p />
 		<center><textarea name="newdescription" rows="7" style="width: 98%"><mm:field name="description" /></textarea></center>
 		<p />
 		 <input type="hidden" name="action" value="setpackagedescription" />
@@ -264,7 +264,7 @@
 	</td>
 	<td valign="top">
 		<br />
-		<b>Licence info</b><p />
+		<b><mm:field name="licensetype"><mm:compare value=""><font color="red">License Info</font></mm:compare><mm:compare value="" inverse="true">License Info</mm:compare></mm:field></b><p />
 		<form action="<mm:url page="index.jsp" referids="main,sub,name,package,mode" />" method="post">
 		Type : <select name="newlicensetype">
 			<option><mm:field name="licensetype" />

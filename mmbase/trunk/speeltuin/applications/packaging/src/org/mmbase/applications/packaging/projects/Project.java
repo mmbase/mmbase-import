@@ -134,6 +134,7 @@ public class Project {
 	}
 	// check if the dirs are created, if not create them
 	String dirsp=basedir+path.substring(0,path.lastIndexOf(File.separator));
+	log.info("WOOOT="+dirsp);
 	File dirs=new File(dirsp);
 	if (!dirs.exists()) {
 		dirs.mkdirs();
@@ -372,6 +373,22 @@ public class Project {
         }
         return true;
     }
+
+   public boolean hasSyntaxErrors() {
+        // performs several syntax checks to signal
+        // the users in the gui tools on possible problems
+        Enumeration e=packagetargets.elements();
+        while (e.hasMoreElements()) {
+                Target t=(Target)e.nextElement();
+		if (t.hasSyntaxErrors()) return true;
+	}
+        e=bundletargets.elements();
+        while (e.hasMoreElements()) {
+                Target t=(Target)e.nextElement();
+		if (t.hasSyntaxErrors()) return true;
+	}
+	return false;
+   }
 
 
 }
