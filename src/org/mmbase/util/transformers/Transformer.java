@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Interface for transformations.
@@ -31,9 +31,9 @@ public interface Transformer {
     /**
      * Returns which transformations can be done by an object of this class.
      *
-     * @return An HashMap with String Integer/Class pairs.
+     * @return A Map with String Integer/Class pairs.
      */
-    public HashMap transformers();
+    public Map transformers();
 
     /**
      * Returns the encoding that is currently active
