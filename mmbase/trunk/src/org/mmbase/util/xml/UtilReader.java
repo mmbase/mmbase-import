@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.11 2004-11-11 16:56:12 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.12 2004-12-06 14:41:40 michiel Exp $
  */
 public class UtilReader {
 
@@ -129,8 +129,9 @@ public class UtilReader {
         org.xml.sax.InputSource is;
         try {
             is = ResourceLoader.getConfigurationRoot().getInputSource(s);
-        } catch (Exception e) {
-            log.error(e);
+        } catch (java.io.IOException ioe) {
+            // input source does not exist
+            log.debug(ioe);
             return;
         }
         if (is != null) {
