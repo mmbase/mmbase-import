@@ -1515,9 +1515,12 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTEI</teiclass>
     <bodycontent>JSP</bodycontent>
+    <see>commit</see>
+    <see>cancel</see>
     <info>
-     The transaction tag creates a transaction. A transaction is
-     a context too.
+     The transaction tag creates a transaction. A transaction is a
+     group of actions that should be performed as a whole. If one of
+     the things goes wrong, you can roll them back all.
     </info>
     <attribute>
       <name>name</name>
@@ -1533,8 +1536,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-       The name of the Jsp variable to export. If not
-       specified, then a variable with name `trans' will exist.
+       The name of the Jsp variable to export.
       </info>
     </attribute>
     <attribute>
@@ -1553,13 +1555,48 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       </possiblevalue>
     </attribute>
 	<example>
-&lt;mm:transaction id="post_list" name="my_trans"&gt;
-	&lt;mm:createnode type="list"&gt;
-		&lt;mm:setfield name="title"&gt;New list node&lt;/mm:setfield&gt;
-	&lt;/mm:createnode&gt;
+&lt;h3&gt;Canceling transaction&lt;/h3&gt;
+&lt;mm:transaction name="mytrans" commitonclose="false"&gt;
+  &lt;mm:createnode type="news"&gt;
+    &lt;mm:setfield name="title"&gt;Test node, created in transaction, canceled&lt;/mm:setfield&gt;
+    &lt;mm:setfield name="subtitle"&gt;&lt;mm:write referid="curtime" /&gt;&lt;/mm:setfield&gt;
+  &lt;/mm:createnode&gt;
+  &lt;mm:cancel /&gt;
 &lt;/mm:transaction&gt;
-&lt;mm:remove referid="post_list" /&gt;
-What is the advantage of using transaction???
+Transaction was canceled, following should not result anything:
+&lt;mm:listnodes id="l" type="news" constraints="subtitle = '$curtime'"&gt;
+  &lt;mm:field name="gui()" /&gt;
+&lt;/mm:listnodes&gt;
+&lt;br /&gt;
+&lt;h3&gt;Committing transaction&lt;/h3&gt;
+&lt;mm:transaction name="mytranz" jspvar="trans"&gt;
+  jspvar of type Transaction: &lt;%= trans instanceof org.mmbase.bridge.Transaction %&gt;&lt;br /&gt;
+  &lt;mm:createnode type="news"&gt;
+    &lt;mm:setfield name="title"&gt;Test node, created in transaction, commited&lt;/mm:setfield&gt;
+    &lt;mm:setfield name="subtitle"&gt;&lt;mm:write referid="curtime" /&gt;&lt;/mm:setfield&gt;
+  &lt;/mm:createnode&gt;
+&lt;/mm:transaction&gt;
+transaction was commited, following should result anything:
+&lt;mm:listnodes id="node" type="news" constraints="subtitle = '$curtime'" max="1"&gt;
+  &lt;mm:field name="subtitle"&gt;
+    &lt;mm:compare referid2="curtime"&gt;
+        YES (created node was &lt;mm:field id="nodenumber" name="number" /&gt;)
+        &lt;mm:write referid="nodenumber" session="testnodenumber" /&gt;         
+        &lt;mm:write referid="node" session="testnode" /&gt;         
+    &lt;/mm:compare&gt;
+  &lt;/mm:field&gt;
+   &lt;mm:field name="title" /&gt;
+&lt;/mm:listnodes&gt;
+&lt;br /&gt;
+&lt;h3&gt;Creating relation in transaction&lt;/h3&gt;
+&lt;mm:transaction name="mytranc"&gt;
+  &lt;mm:node id="node1" number="$nodenumber" /&gt;
+  &lt;mm:createnode id="node2" type="news"&gt;
+     &lt;mm:setfield name="title"&gt;Test node2, created in transaction, made relation to it&lt;/mm:setfield&gt;
+	 &lt;mm:setfield name="subtitle"&gt;&lt;mm:write referid="curtime" /&gt;&lt;/mm:setfield&gt;
+  &lt;/mm:createnode&gt;
+  &lt;mm:createrelation source="node1" destination="node2" role="related" /&gt;
+&lt;/mm:transaction&gt;
 	</example>
   </tag>
   <tag>
@@ -1569,6 +1606,7 @@ What is the advantage of using transaction???
     <info>
       The cancel tag can be used to cancel a transaction.
     </info>
+    <see>transaction</see>
     <attribute>
       <name>transaction</name>
       <required>false</required>
@@ -1581,6 +1619,7 @@ What is the advantage of using transaction???
     <name>commit</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CommitTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <see>transaction</see>
     <info>
       The commit tag can be use to commit a transaction.
     </info>
@@ -2296,10 +2335,10 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 &lt;mm:import id="compare"&gt;6&lt;/mm:import&gt;
 &lt;mm:write referid="number"&gt;
    &lt;mm:isgreaterthan value="$compare"&gt;
-       &lt;mm:write /&gt; greater then &lt;mm:write referid="compare" /&gt;
+       &lt;mm:write /&gt; greater than &lt;mm:write referid="compare" /&gt;
    &lt;/mm:isgreaterthan&gt;
    &lt;mm:islessthan value="$compare"&gt;
-       &lt;mm:write /&gt; less then &lt;mm:write referid="compare" /&gt;
+       &lt;mm:write /&gt; less than &lt;mm:write referid="compare" /&gt;
    &lt;/mm:islessthan&gt;
 &lt;/mm:write&gt;
 	</example>
