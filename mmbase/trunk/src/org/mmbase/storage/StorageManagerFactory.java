@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.7 2004-03-05 14:52:14 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.8 2004-09-07 12:55:46 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -64,7 +64,7 @@ public abstract class StorageManagerFactory {
     /** The map with disallowed fieldnames and (if given) alternates
      *
      */
-    protected Map disallowedFields;
+    protected SortedMap disallowedFields;
 
     /**
      * The query handler to use with this factory.
@@ -137,7 +137,7 @@ public abstract class StorageManagerFactory {
     protected final void init(MMBase mmbase) throws StorageError {
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
-        disallowedFields = new HashMap();
+        disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
         typeMappings = Collections.synchronizedList(new ArrayList());
         changeManager = new ChangeManager(mmbase);
         try {
@@ -447,7 +447,7 @@ public abstract class StorageManagerFactory {
      * @return  A Map of disallowed field names
      */
     public Map getDisallowedFields() {
-        return Collections.unmodifiableMap(disallowedFields);
+        return Collections.unmodifiableSortedMap(disallowedFields);
     }
 
     /**
@@ -455,7 +455,8 @@ public abstract class StorageManagerFactory {
      * Unlike setAttributes(), this actually replaces the existing disallowed fields map.
      */
     protected void setDisallowedFields(Map disallowedFields) {
-        this.disallowedFields = new HashMap(disallowedFields);
+        this.disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
+        this.disallowedFields.putAll(disallowedFields);
     }
 
     /**
