@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.35 2002-06-28 11:21:56 pierre Exp $
+ * @version $Id: Wizard.java,v 1.36 2002-06-28 12:49:16 pierre Exp $
  *
  */
 public class Wizard {
@@ -78,9 +78,9 @@ public class Wizard {
     private  Document originaldata;
 
     // not yet committed uploads are stored in there hashmaps
-    private HashMap uploads;
-    private HashMap uploadnames;
-    private HashMap uploadpaths;
+    private HashMap binaries;
+    private HashMap binarynames;
+    private HashMap binarypaths;
 
     // in the wizards, variables can be used. Values of the variables are stored here.
     private Hashtable variables;
@@ -131,9 +131,9 @@ public class Wizard {
     protected Wizard(String c, URIResolver uri) throws WizardException {
         context = c;
         uriResolver = uri;
-        uploads = new HashMap();
-        uploadnames = new HashMap();
-        uploadpaths = new HashMap();
+        binaries = new HashMap();
+        binarynames = new HashMap();
+        binarypaths = new HashMap();
         variables = new Hashtable();
         errors = new Vector();
         constraints = Utils.parseXML("<constraints/>");
@@ -1030,9 +1030,9 @@ public class Wizard {
             Utils.setAttribute(newfield, "objectnumber", objectnumber);
         }
 
-        // upload type needs special processing
-        if (ftype.equals("upload")) {
-            addUploadData(newfield);
+        // binary type needs special processing
+        if (ftype.equals("binary")) {
+            addBinaryData(newfield);
         }
 
         NodeList list = Utils.selectNodeList(field, "optionlist|prompt|description|action");
@@ -1137,9 +1137,9 @@ public class Wizard {
 
         if (datanode == null){
             // Nothing.
-        } else if (ftype.equals("upload")) {
-            // uploads are stored differently
-            if (getUpload(did)!=null) {
+        } else if (ftype.equals("binary")) {
+            // binaries are stored differently
+            if (getBinary(did)!=null) {
                 Utils.setAttribute(datanode, "href", did);
                 Utils.storeText(datanode,"YES");
             }
@@ -1388,7 +1388,7 @@ public class Wizard {
         case WizardCommand.COMMIT : {
             // This command takes no parameters.
             try {
-                Element results = dbconn.put(originaldata, data, uploads);
+                Element results = dbconn.put(originaldata, data, binaries);
                 NodeList errors = Utils.selectNodeList(results,".//error");
                 if (errors.getLength() > 0){
                     String errorMessage = "Errors received from MMBase :";
@@ -1475,70 +1475,70 @@ public class Wizard {
     }
 
     /**
-     * With this method you can store an upload binary in the wizard.
+     * With this method you can store a binary in the wizard.
      *
      * @param       did     This is the dataid what points to in what field the binary should be stored, once commited.
      * @param       data    This is a bytearray with the data to be stored.
      * @param       name    This is the name which will be used to show what file is uploaded.
      * @param       path    The (local) path of the file placed.
      */
-    public void setUpload(String did, byte[] data, String name, String path) {
-        uploads.put(did, data);
-        uploadnames.put(did, name);
-        uploadpaths.put(did, path);
+    public void setBinary(String did, byte[] data, String name, String path) {
+        binaries.put(did, data);
+        binarynames.put(did, name);
+        binarypaths.put(did, path);
     }
 
     /**
-     * This method allows you to retrieve the data of a temporarily stored upload-binary.
+     * This method allows you to retrieve the data of a temporarily stored binary.
      *
      * @param       did     The dataid of the binary you want.
      * @return     the binary data, if found.
      */
-    public byte[] getUpload(String did) {
-        return (byte[])uploads.get(did);
+    public byte[] getBinary(String did) {
+        return (byte[])binaries.get(did);
     }
 
     /**
-     * With this method you can retrieve the uploadname of a placed binary.
+     * With this method you can retrieve the binaryname of a placed binary.
      *
      * @param       did     The dataid of the binary you want.
-     * @return     The name as set when #setUpload was used.
+     * @return     The name as set when #setBinary was used.
      */
-    public String getUploadName(String did) {
-        return (String)uploadnames.get(did);
+    public String getBinaryName(String did) {
+        return (String)binarynames.get(did);
     }
 
     /**
-     * With this method you can retrieve the uploadpath of a placed binary.
+     * With this method you can retrieve the binarypath of a placed binary.
      *
      * @param       did     The dataid of the binary you want.
-     * @return     The path as set when #setUpload was used.
+     * @return     The path as set when #setBinary was used.
      */
-    public String getUploadPath(String did) {
-        return (String)uploadpaths.get(did);
+    public String getBinaryPath(String did) {
+        return (String)binarypaths.get(did);
     }
 
     /**
-     * This method stores upload data in the data, so that the information can be used by the html.
+     * This method stores binary data in the data, so that the information can be used by the html.
      * This method is called from the form creating code.
      *
-     * @param       fieldnode       the fieldnode where the upload data information should be stored.
+     * @param       fieldnode       the fieldnode where the binary data information should be stored.
      */
-    public void addUploadData(Node fieldnode) {
-        // add's information about the possible placed uploads in the fieldnode.
-        // assumes this field is an upload-field
+    public void addBinaryData(Node fieldnode) {
+        // add's information about the possible placed binaries in the fieldnode.
+        // assumes this field is an binary-field
         String did = Utils.getAttribute(fieldnode, "did", null);
         if (did!=null) {
-            byte[] upload = getUpload(did);
-            if (upload!=null) {
+            byte[] binary = getBinary(did);
+            if (binary!=null) {
                 // upload
-                Node uploadnode = fieldnode.getOwnerDocument().createElement("upload");
-                Utils.setAttribute(uploadnode, "uploaded", "true");
-                Utils.setAttribute(uploadnode, "size", upload.length+"");
-                Utils.setAttribute(uploadnode, "name", getUploadName(did));
-                String path=getUploadPath(did);
-                Utils.createAndAppendNode(uploadnode, "path", path);
-                fieldnode.appendChild(uploadnode);
+                Node binarynode = fieldnode.getOwnerDocument().createElement("upload");
+                Utils.setAttribute(binarynode, "uploaded", "true");
+                Utils.setAttribute(binarynode, "size", binary.length+"");
+                Utils.setAttribute(binarynode, "name", getBinaryName(did));
+                String path=getBinaryPath(did);
+                Utils.createAndAppendNode(binarynode, "path", path);
+                fieldnode.appendChild(binarynode);
             }
         }
     }
@@ -1616,6 +1616,8 @@ public class Wizard {
             //
             dttype = xmlSchemaType;
         }
+        // switch old 'upload' to 'binary'
+        if ("upload".equals(dttype)) dttype="binary";
 
         if (ftype==null) {
             // import guitype or ftype
@@ -1623,6 +1625,8 @@ public class Wizard {
             //
             ftype=guitype;
         }
+        // switch old 'upload' to 'binary'
+        if ("upload".equals(ftype)) ftype="binary";
 
         if (ftype==null) {
             // no ftype defined? Hmm.. Maybe the constraints can help.

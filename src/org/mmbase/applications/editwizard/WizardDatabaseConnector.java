@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.16 2002-06-03 12:20:38 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.17 2002-06-28 12:49:16 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -535,14 +535,14 @@ public class WizardDatabaseConnector {
      * Sends an Element containing the xml-representation of a command to a Dove
      * class, and retuirns the result as an Element.
      * @param cmd the command Element to execute
-     * @param uploads a HashMap containing files (binaries) uploaded in the wizard
+     * @param binaries a HashMap containing files (binaries) uploaded in the wizard
      */
-    private Element sendCommand(Element cmd, HashMap uploads) throws WizardException {
+    private Element sendCommand(Element cmd, HashMap binaries) throws WizardException {
         Element results=null;
         try {
             Document tmp = Utils.emptyDocument();
             Dove dove = new Dove(tmp);
-            results = dove.executeRequest(cmd,userCloud,uploads);
+            results = dove.executeRequest(cmd,userCloud,binaries);
         } catch (Exception e) {
             log.error("Error while communicating with Dove servlet."+e.getMessage());
             throw new WizardException("Error while communicating with Dove servlet. Message:"+e.getMessage());
@@ -604,12 +604,12 @@ public class WizardDatabaseConnector {
      *
      * @param     originalData            The original data object tree.
      * @param     newData                 The new and manipulated data. According to differences between the original and the new data, the transaction is constructed.
-     * @param     uploads                 A hashmap with the uploaded binaries.
+     * @param     binaries                 A hashmap with the uploaded binaries.
      * @return   The element containing the results of the put transaction.
      */
-    public Element put(Document originalData, Document newData, HashMap uploads) throws WizardException {
+    public Element put(Document originalData, Document newData, HashMap binaries) throws WizardException {
         Node putcmd =getPutData(originalData, newData);
-        return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), uploads);
+        return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), binaries);
     }
 
     /**

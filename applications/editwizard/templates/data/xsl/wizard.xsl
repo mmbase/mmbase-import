@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.26 2002-06-28 12:30:18 pierre Exp $
+  @version $Id: wizard.xsl,v 1.27 2002-06-28 12:48:21 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -237,7 +237,7 @@
            </xsl:if>
           </nobr>
         </xsl:when>
-        <xsl:when test="@ftype='upload'">
+        <xsl:when test="@ftype='binary'">
           <xsl:choose>
             <xsl:when test="@dttype='image' and not(upload)">
               <div class="imageupload">
@@ -261,15 +261,15 @@
               </div>
             </xsl:when>
             <xsl:otherwise>
-              <nobr><xsl:call-template name="prompt_file_upload" /><input type="hidden" name="{@fieldname}" value="YES" />
+              <nobr><input type="hidden" name="{@fieldname}" value="YES" />
                 <xsl:choose>
-                  <xsl:when test="not(upload)"><xsl:call-template name="prompt_no_file" />
+                  <xsl:when test="not(upload)"><xsl:call-template name="prompt_no_file" /><br />
                     <a href="{$ew_context}/attachment.db?{@number}"><xsl:call-template name="prompt_do_download" /></a><br />
                   </xsl:when>
-                  <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
+                  <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)<br />
                   </xsl:otherwise>
                 </xsl:choose>
-                <xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text><a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_do_upload" /></a>
+                <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_do_upload" /></a>
               </nobr>
             </xsl:otherwise>
           </xsl:choose>
