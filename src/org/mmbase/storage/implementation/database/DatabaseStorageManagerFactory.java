@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.17 2004-12-03 14:57:55 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.18 2005-01-25 12:45:19 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -288,8 +288,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
     protected Object instantiateBasicHandler(Class handlerClass) {
         // first handler
         try {
-            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {Map.class});
-            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] { disallowedFields } );
+            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {});
+            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] {} );
             log.service("Instantiated SqlHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {
@@ -307,8 +307,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         // Chained handlers
         try {
             java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
-            ChainedSqlHandler sqlHandler = (ChainedSqlHandler) constructor.newInstance(new Object[] {handler});
-            log.service("Instantiated chained SearchQueryHandler of type " + handlerClass.getName());
+            ChainedSqlHandler sqlHandler = (ChainedSqlHandler) constructor.newInstance(new Object[] { handler });
+            log.service("Instantiated chained SQLHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {
             throw new StorageConfigurationException(nsme);

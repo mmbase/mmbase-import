@@ -8,17 +8,13 @@ import junit.textui.TestRunner;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.util.logging.*;
-import org.mmbase.module.database.MultiConnection;
-import java.sql.*;
-
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandlerTest.java,v 1.6 2004-09-07 13:09:22 pierre Exp $
+ * @version $Id: BasicQueryHandlerTest.java,v 1.7 2005-01-25 12:45:19 pierre Exp $
  */
 public class BasicQueryHandlerTest extends TestCase {
 
@@ -69,14 +65,14 @@ public class BasicQueryHandlerTest extends TestCase {
         typedef = mmbase.getBuilder("typedef");
 
         // Disallowed fields map.
-        disallowedValues = new HashMap();
+//        disallowedValues = new HashMap();
 //        disallowedValues.put("number", "m_number");
 //        disallowedValues.put("snumber", "m_snumber");
 //        disallowedValues.put("dnumber", "m_dnumber");
 //        disallowedValues.put("title", "m_title");
 //        disallowedValues.put("i", "m_i");
 
-        SqlHandler sqlHandler = new BasicSqlHandler(disallowedValues);
+        SqlHandler sqlHandler = new BasicSqlHandler();
         instance = new BasicQueryHandler(sqlHandler);
 
         // Add testnodes.

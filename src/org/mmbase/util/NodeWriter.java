@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.22 2004-10-12 10:54:52 michiel Exp $
+ * @version $Id: NodeWriter.java,v 1.23 2005-01-25 12:45:19 pierre Exp $
  */
 public class NodeWriter{
 
@@ -82,7 +82,7 @@ public class NodeWriter{
 
         write("<" + builderName + " "
               + "exportsource=\"mmbase://"+   // was: mmbase://127.0.0.1/install/b1
-              mmb.getHost()+"/"+mmb.getJDBC().getDatabaseName()+"/"+mmb.getBaseName()+"\" "+
+              mmb.getHost()+"/"+mmb.getStorageManagerFactory().getCatalog()+"/"+mmb.getBaseName()+"\" "+
               "timestamp=\""+timestamp+"\">\n"); // was : 20000602143030
         // initialize the nr of nodes written
         nrOfNodes = 0;

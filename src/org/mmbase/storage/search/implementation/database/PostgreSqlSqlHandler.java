@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.7 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.8 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -48,8 +48,8 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *        to allowed alternatives.
      */
-    public PostgreSqlSqlHandler(Map disallowedValues) {
-        super(disallowedValues);
+    public PostgreSqlSqlHandler() {
+        super();
     }
 
     // javadoc is inherited

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.5 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.6 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -32,8 +32,8 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *        to allowed alternatives.
      */
-    public HSqlSqlHandler(Map disallowedValues) {
-        super(disallowedValues);
+    public HSqlSqlHandler() {
+        super();
     }
 
     // javadoc is inherited

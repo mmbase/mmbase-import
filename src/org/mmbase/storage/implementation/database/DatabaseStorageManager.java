@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.81 2004-11-26 19:55:33 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.82 2005-01-25 12:45:19 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1364,6 +1364,8 @@ public class DatabaseStorageManager implements StorageManager {
 
     /**
      * Attempts to return a single field value from the resultset of a query.
+     * @todo This method is called from the search query code and therefor needs to be public.
+     *       Perhaps code from searchquery should be moved to storage.
      * @param result the resultset
      * @param index the index of the field in the resultset
      * @param field the expected MMBase field type. This can be null
@@ -1371,7 +1373,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @return the value
      * @throws StorageException if the value cannot be retrieved from the resultset
      */
-    protected Object getValue(ResultSet result, int index, FieldDefs field) throws StorageException {
+    public Object getValue(ResultSet result, int index, FieldDefs field) throws StorageException {
         try {
             int dbtype = FieldDefs.TYPE_UNKNOWN;
             if (field != null) {
@@ -1991,9 +1993,9 @@ public class DatabaseStorageManager implements StorageManager {
                     if ((colInfo == null)) {
 
                         // bug #6609, marcel
-                        if((field!=null) && (field.getDBName()!=null) && (field.getDBName().equals(id))) 
+                        if((field!=null) && (field.getDBName()!=null) && (field.getDBName().equals(id)))
                             log.error("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
-                        else 
+                        else
                             log.error("VERIFY: Field '" + field.getDBName() + "' (mapped to field '"+id+"') of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
 
                         // set field to virtual so it will not be stored -
