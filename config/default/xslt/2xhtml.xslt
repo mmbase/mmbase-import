@@ -3,14 +3,14 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen 
-  @version: $Id: 2xhtml.xslt,v 1.7 2002-06-24 13:55:12 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.8 2002-06-25 15:41:10 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1" 
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
   xmlns:mmxf="http://www.mmbase.org/mmxf"
-  exclude-result-prefixes="node mmxf" 
+  exclude-result-prefixes="node" 
 >
   <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
   <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
@@ -83,7 +83,7 @@
   </xsl:template>
   
   <!-- An anchor can handle only urls links -->
-  <xsl:template match="mmxf:a" mode="sub">
+  <xsl:template match="a" mode="sub">
     <xsl:param name="relatednodes" />
     <xsl:variable name="urls" select="$relatednodes[@type='urls']" />
     <xsl:choose>
@@ -105,21 +105,31 @@
   
   
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="mmxf:p|mmxf:a"> 
-    <xsl:element name="{local-name()}">
-      <!-- find the nodes which are related to this node (by means of a 'idrel' -->
-      <xsl:variable name="relatednodes" select="//objects/object[@id=//objects/object[@type='idrel' and 
-        field[@name='id']=current()/@id and
-        source/@object=current()/ancestor::object/@id]/destination/@object]" />
-      
+  <xsl:template match="p|a"> 
+    <xsl:copy>
+     
+      <!-- store the 'relation' nodes for convenience in $rels:-->
+      <xsl:variable name="rels"   select="ancestor::object/relation[@role='idrel']" />
+
+        <!-- also for conveniences: all related nodes to this node-->
+      <xsl:variable name="related_to_node"   select="//objects/object[@id=$rels/@related]" />
+
+        <!-- There are two type of relations, it is handy to treat them seperately: -->
+      <xsl:variable name="srelations" select="//objects/object[@id=$rels[@type='source']/@object      and field[@name='id'] = current()/@id]" />
+      <xsl:variable name="drelations" select="//objects/object[@id=$rels[@type='destination']/@object and field[@name='id'] = current()/@id]" />
+
+        <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
+      <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/field[@name = 'dnumber']] | $related_to_node[@id = $drelations/field[@name='snumber']]" />
+             
       <xsl:apply-templates select="." mode="sub">
         <xsl:with-param name="relatednodes" select="$relatednodes" />
       </xsl:apply-templates>
-    </xsl:element>
+    </xsl:copy>
   </xsl:template>
 
+
   <!-- A paragraph can handle images and urls links -->
-  <xsl:template match="mmxf:p" mode="sub">
+  <xsl:template match="p" mode="sub">
     <xsl:param name="relatednodes" />
     <xsl:apply-templates  select="$relatednodes[@type='images']"  mode="concise" />	
     <xsl:apply-templates />
