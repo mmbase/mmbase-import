@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Users.java,v 1.8 2003-05-08 06:01:20 kees Exp $
+ * @version $Id: Users.java,v 1.8.2.1 2004-09-20 09:45:58 marcel Exp $
  */
 public class Users extends MMObjectBuilder {
 
@@ -172,14 +172,17 @@ public class Users extends MMObjectBuilder {
 	* @param key the value of the browser cookie. 
     */
     public void flushCache(String key) {
-        // remove from cache
-        cache.remove(key);
-        // not get module sessions and forget the session
-        sessions s=(sessions)Module.getModule("SESSION");
-        if (s!=null) {
-            // session module found ask it to forget
-            // this sessions
-            s.forgetSession(key);
+        // bugfix #6583: code does not check if key == null
+        if(key != null) { 
+            // remove from cache
+            cache.remove(key);
+            // not get module sessions and forget the session
+            sessions s=(sessions)Module.getModule("SESSION");
+            if (s!=null) {
+                // session module found ask it to forget
+                // this sessions
+                s.forgetSession(key);
+            }
         }
     }    
 }
