@@ -155,7 +155,7 @@ throws JspTagException
     return members;
 }
 
-// Is the user the teacher of the subject?
+// Is the user the workgroupmember of the subject?
 public static boolean isWorkgroupMember( MMObjectNode usernode, int subjectpersonnode, int classno, int educationno, String rolename,
                                         Cloud cloud)
 throws JspTagException
@@ -168,7 +168,7 @@ throws JspTagException
     return members.contains( new Integer( usernode.getNumber()));
 }
 
-// Is the user a workgroupmember of the subject?
+// Is the user a classmember of the subject?
 public static boolean isClassMember( MMObjectNode usernode, int subjectpersonnode, int classno, int educationno, String rolename,
                              Cloud cloud)
 throws JspTagException
@@ -177,7 +177,7 @@ throws JspTagException
         if (subjectnode == null) {
             throw new JspTagException( "Person with number '" + subjectpersonnode+ "' not found");
         }
-        List members= getWorkgroupMembers( subjectnode, classno, educationno, rolename, cloud);
+        List members= getClassMembers( subjectnode, classno, educationno, rolename, cloud);
         return members.contains( new Integer( usernode.getNumber()));
 }
 

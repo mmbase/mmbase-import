@@ -38,7 +38,6 @@
 <%--    Some buttons working on this folder--%>
   </div>
   <div class="contentBodywit">
-<br/><br/><br/>
 
 
 <mm:node number="$education">
