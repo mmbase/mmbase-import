@@ -59,7 +59,7 @@
 <!ATTLIST relation destination NMTOKEN #REQUIRED >
 <!ATTLIST relation destinationtype NMTOKEN #REQUIRED >
 
-<!ELEMENT field (#PCDATA | (guiname,guitype,maxlength,required))>
+<!ELEMENT field (#PCDATA | (guiname,description,guitype,maxlength,required))>
 <!ATTLIST field name NMTOKEN #REQUIRED >
 
 <!ELEMENT guiname (#PCDATA) >
