@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.22 2002-06-30 20:12:23 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.23 2002-09-03 08:37:01 eduard Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -146,29 +146,39 @@ public class ImageCaches extends AbstractImages {
      */
     public synchronized byte[] getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
-        byte[] rtn = (byte []) handleCache.get(ckey);
-        if (rtn != null) {
-            log.debug("found in handle cache");
-        } else {
-            log.debug("not found in handle cache, getting it from database.");
-            int number = getCachedNodeNumber(ckey);
-            if (number == -1) {
+	if(handleCache.contains(ckey)) {
+	    // found the node in the cache..
+	    return (byte []) handleCache.get(ckey);
+	}
+	log.debug("not found in handle cache, getting it from database.");
+	int number = getCachedNodeNumber(ckey);
 
-            }
-            rtn = getImageBytes(number);
-            if (rtn == null) {
-                // if it didn't work, also cache this result, to avoid concluding that again..
-                // handleCache.put(ckey, new byte[0]);
-                // this should be done differenty.
-            } else {
-                // only cache small images.
-                if (rtn.length< (100*1024)) handleCache.put(ckey, rtn);
-            }
-        }
-        if (rtn == null && log.isDebugEnabled()) {
-            log.debug("getCkeyNode: empty array returned for ckey " + ckey);
-        }
-        return rtn;
+	if (number == -1) {
+	    // we dont have a cachednode yet, return null	    
+	    log.info("cached node not found, returning null");
+	    return null;
+	}
+
+	// cached node can be found with the number nunmber
+	byte data[] = getImageBytes(number);
+        
+	if (data == null) {
+	    // if it didn't work, also cache this result, to avoid concluding that again..
+	    // should this trow an exception every time? I think so, otherwise we would generate an
+	    // image every time it is requested, which also net very handy...
+	    // handleCache.put(ckey, new byte[0]);
+	    // this should be done differenty.
+	    String msg = "The node(#"+number+") which should contain the cached result for ckey:" + ckey + " had as value <null>, this means that something is really wrong.(how can we have an cache node with node value in it?)";
+	    log.error(msg);
+	    throw new RuntimeException(msg);	  
+	}
+
+	// is this not configurable?
+	// only cache small images.
+	if (data.length< (100*1024))  {
+	    handleCache.put(ckey, data);
+	}
+        return data;
     }
 
     /**
