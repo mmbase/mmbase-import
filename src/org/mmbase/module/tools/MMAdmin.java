@@ -332,6 +332,10 @@ public class MMAdmin extends ProcessorModule {
 				if (r.hasMoreElements()) {
 					MMObjectNode oldnode=(MMObjectNode)r.nextElement();	
 					return(oldnode.getIntValue("number"));
+				} else {
+					// so no dub
+					int localnumber=newnode.insert("import");
+					return(localnumber);
 				}
 
 			} else {
