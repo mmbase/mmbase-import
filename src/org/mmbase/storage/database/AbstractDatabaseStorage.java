@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.17 2004-05-06 12:34:46 keesj Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.18 2004-06-15 21:25:42 robmaris Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -776,13 +776,17 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         try {
             trans = createDatabaseTransaction();
             ResultSet rs = trans.executeQuery(sqlselect);
-            if ((rs!=null) && rs.next()) {
-                result = getDBByte(rs,1);
-                if (log.isDebugEnabled()) {
-                    log.debug("got " + result.length + " bytes for field  " + fieldName);
+            try {
+                if ((rs!=null) && rs.next()) {
+                    result = getDBByte(rs,1);
+                    if (log.isDebugEnabled()) {
+                        log.debug("got " + result.length + " bytes for field  " + fieldName);
+                    }
                 }
+                trans.commit();
+            } finally {
+                rs.close();
             }
-            trans.commit();
         } catch (Exception e) {
             log.error(e.toString());
             if (trans != null) trans.rollback();

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Daniel Ockeloen
- * @version $Id: MMMysql42Node.java,v 1.23 2004-01-27 12:04:48 pierre Exp $
+ * @version $Id: MMMysql42Node.java,v 1.24 2004-06-15 21:17:01 robmaris Exp $
  */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
     /**
@@ -59,8 +59,12 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.executeUpdate("lock tables "+mmb.baseName+"_numberTable WRITE;");
             stmt.executeUpdate("update "+mmb.baseName+"_numberTable set number = number+1");
             ResultSet rs=stmt.executeQuery("select number from "+mmb.baseName+"_numberTable;");
-            while(rs.next()) {
-                number=rs.getInt(1);
+            try {
+                while(rs.next()) {
+                    number=rs.getInt(1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.executeUpdate("unlock tables;");
             stmt.close();

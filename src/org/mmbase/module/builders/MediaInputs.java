@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MediaInputs.java,v 1.6 2003-03-10 11:50:20 pierre Exp $
+ * @version $Id: MediaInputs.java,v 1.7 2004-06-15 21:05:53 robmaris Exp $
  */
 public class MediaInputs extends MMObjectBuilder {
 
@@ -118,10 +118,14 @@ public class MediaInputs extends MMObjectBuilder {
 
 			Statement stmt=conn.createStatement();
 			ResultSet rs=stmt.executeQuery(query);
-			while(rs.next()) {
-				mediums.addElement(new Integer(rs.getInt(1)));
-				channels.addElement(new Integer(rs.getInt(2)));
-			}
+            try {
+                while(rs.next()) {
+                    mediums.addElement(new Integer(rs.getInt(1)));
+                    channels.addElement(new Integer(rs.getInt(2)));
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			conn.close();
 		} catch (Exception e) {
@@ -148,11 +152,15 @@ public class MediaInputs extends MMObjectBuilder {
 		try {
 			stmt=conn.createStatement();
 			rs=stmt.executeQuery("select number from "+mmb.baseName+"_"+tableName+" where medium="+medium+" AND channel="+channel);	
-			if (rs.next()) {
-				exi=true;
-			} else { 
-				exi=false;
-			}
+            try {
+                if (rs.next()) {
+                    exi=true;
+                } else { 
+                    exi=false;
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			conn.close();
 			if (exi) {

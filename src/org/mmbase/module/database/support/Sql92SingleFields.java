@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92SingleFields.java,v 1.4 2004-03-11 23:25:03 eduard Exp $
+ * @version $Id: Sql92SingleFields.java,v 1.5 2004-06-15 21:23:53 robmaris Exp $
  */
 public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92SingleFields.class.getName());
@@ -120,13 +120,17 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             // retrieve the table info..
             ResultSet rs = meta.getTables(null, null, tableName, null);
             boolean exists = false;
-            if (rs.next()) {
-                // yipee we found something...
-                log.debug("the tablename found is :" + rs.getString(3) + " looking for("+tableName+")");
-                exists = true;
-            }
-            else {
-                log.info("the tablename '" + tableName +"' was not found");
+            try {
+                if (rs.next()) {
+                    // yipee we found something...
+                    log.debug("the tablename found is :" + rs.getString(3) + " looking for("+tableName+")");
+                    exists = true;
+                }
+                else {
+                    log.info("the tablename '" + tableName +"' was not found");
+                }
+            } finally {
+                rs.close();
             }
             // meta.close();
             con.close();
@@ -730,11 +734,14 @@ public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2
             if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
 
             byte[] data=null;
-            if(rs.next()) {
-                data = rs.getBytes(1);
-                log.debug("data was read from the database(#"+data.length+" bytes)");
+            try {
+                if(rs.next()) {
+                    data = rs.getBytes(1);
+                    log.debug("data was read from the database(#"+data.length+" bytes)");
+                }
+            } finally {
+                rs.close();
             }
-            rs.close();
             stmt.close();
 
             con.close();

@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MediaOutputs.java,v 1.6 2003-03-10 11:50:20 pierre Exp $
+ * @version $Id: MediaOutputs.java,v 1.7 2004-06-15 21:07:35 robmaris Exp $
  */
 public class MediaOutputs extends MMObjectBuilder {
 
@@ -124,15 +124,19 @@ public class MediaOutputs extends MMObjectBuilder {
 
 			stmt=conn.createStatement();
 			ResultSet rs=stmt.executeQuery(query);
-			while(rs.next()) {
-				num=rs.getInt(1);
-				node=getNode(num);
-				if (node!=null) {
-					res.addElement(node);
-				} else {
-					log.warn("MediaOutputs -> Node "+num+" not found");
-				}
-			}
+            try {
+                while(rs.next()) {
+                    num=rs.getInt(1);
+                    node=getNode(num);
+                    if (node!=null) {
+                        res.addElement(node);
+                    } else {
+                        log.warn("MediaOutputs -> Node "+num+" not found");
+                    }
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			conn.close();
 		} catch (Exception e) {

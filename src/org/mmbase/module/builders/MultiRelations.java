@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.36 2004-02-23 19:01:00 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.37 2004-06-15 21:09:10 robmaris Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -442,23 +442,27 @@ public class MultiRelations extends MMObjectBuilder {
                 log.debug("Query "+query);
 
                 ResultSet rs=stmt.executeQuery(query);
-                MMObjectNode node;
-                Vector results=new Vector();
-                String tmp,prefix;
-                while(rs.next()) {
-                    // create a new object and add it to the result vector
-                    node=new MMObjectNode(this);
-                    ResultSetMetaData rd=rs.getMetaData();
-                    String fieldname;
-                    for (int i=1;i<=rd.getColumnCount();i++) {
-                        prefix=selectTypes.elementAt(i-1)+".";
-                        fieldname=rd.getColumnName(i);
-                        node=database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+                try {
+                    MMObjectNode node;
+                    Vector results=new Vector();
+                    String tmp,prefix;
+                    while(rs.next()) {
+                        // create a new object and add it to the result vector
+                        node=new MMObjectNode(this);
+                        ResultSetMetaData rd=rs.getMetaData();
+                        String fieldname;
+                        for (int i=1;i<=rd.getColumnCount();i++) {
+                            prefix=selectTypes.elementAt(i-1)+".";
+                            fieldname=rd.getColumnName(i);
+                            node=database.decodeDBnodeField(node,fieldname,rs,i,prefix);
+                        }
+                        results.addElement(node);
                     }
-                    results.addElement(node);
+                    //  return the results
+                    return results;
+                } finally {
+                    rs.close();
                 }
-                //  return the results
-                return results;
             } finally {
                 mmb.closeConnection(con,stmt);
             }
@@ -952,8 +956,12 @@ public class MultiRelations extends MMObjectBuilder {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where "+mmb.getDatabase().getNumberString()+"="+number);
-            if (rs.next()) {
-                result=getDBText(rs,1);
+            try {
+                if (rs.next()) {
+                    result=getDBText(rs,1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
@@ -988,8 +996,12 @@ public class MultiRelations extends MMObjectBuilder {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where "+mmb.getDatabase().getNumberString()+"="+number);
-            if (rs.next()) {
-                result=getDBByte(rs,1);
+            try {
+                if (rs.next()) {
+                    result=getDBByte(rs,1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
