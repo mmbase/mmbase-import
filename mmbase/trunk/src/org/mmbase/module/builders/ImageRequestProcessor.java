@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.6 2001-03-26 09:44:30 install Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.7 2001-04-26 12:45:46 vpro Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 
@@ -55,8 +55,11 @@ public class ImageRequestProcessor implements Runnable {
 
 		try {
 			while(kicker!=null) {
+				log.debug("Waiting for request");
 				req=(ImageRequest)queue.get();
+				log.debug("Starting request");
 				processRequest(req);
+				log.debug("Done with request");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -78,6 +81,7 @@ public class ImageRequestProcessor implements Runnable {
 			log.debug("processRequest : input is empty : "+id);
 			picture=new byte[0];
 		} else {
+			log.debug("processRequest : Converting : "+id);
 			picture=convert.ConvertImage(inputpicture,params);
 			if (picture!=null) {
 				MMObjectNode newnode=images.getNewNode("imagesmodule");
@@ -93,8 +97,11 @@ public class ImageRequestProcessor implements Runnable {
 				log.warn("processRequest(): Convert problem params : "+params);
 				picture=new byte[0];
 			}
+			log.debug("processRequest : converting done : "+id);
 		}
+		log.debug("Setting output "+id);
 		req.setOutput(picture);
+		log.debug("Removing key "+id);
 		table.remove(ckey);
 	}
 }

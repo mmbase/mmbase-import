@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.39 2001-04-26 12:23:19 vpro Exp $
+ * @version $Id: Images.java,v 1.40 2001-04-26 12:45:46 vpro Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -276,19 +276,19 @@ public class Images extends MMObjectBuilder {
 			return null;
 		}
 		
+		ImageRequest req;
 		// convert the image, this will be done in an special thread,...
 		synchronized(imageRequestTable) {
-			ImageRequest req = (ImageRequest) imageRequestTable.get(ckey);
+			req = (ImageRequest) imageRequestTable.get(ckey);
 			if (req != null) {
 				log.info("ConvertImage: a conversion in progress ("+ckey+")...  (requests="+(req.count()+1)+")");
-				return req.getOutput();
 			} else {
 				req = new ImageRequest(objectId, ckey, params, inputPicture);
 				imageRequestTable.put(ckey,req);
 				imageRequestQueue.append(req);
-				return req.getOutput();
 			}
 		}
+		return req.getOutput();
 	}
 
 	public int convertAlias(String num) {
