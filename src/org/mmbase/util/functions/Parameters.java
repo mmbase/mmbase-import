@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.3 2004-01-26 09:25:05 pierre Exp $
+ * @version $Id: Parameters.java,v 1.4 2004-02-02 10:41:37 michiel Exp $
  * @see Parameter
  */
 
@@ -59,6 +59,8 @@ public class Parameters extends AbstractList implements List  {
      * List.
      */
     protected  Parameter[] definition = null;
+
+    protected boolean autoCasting = false;
 
 
     Parameters() {
@@ -134,6 +136,22 @@ public class Parameters extends AbstractList implements List  {
         return list;
     }
 
+    /**
+     * Sets the 'auto casting' property (which on default is false)
+     * @see #isAutoCasting
+     */
+    public void setAutoCasting(boolean ac) {
+        autoCasting = ac;        
+    }
+
+    /**
+     * Whether this Parameters object is 'automaticly casting'. If it is, that means that you can set e.g.
+     * an Integer by a String.
+     */
+    public boolean isAutoCasting() {
+        return autoCasting;
+    }
+
 
     // implementation of List
     // @throws NullPointerException if definition not set
@@ -151,6 +169,7 @@ public class Parameters extends AbstractList implements List  {
     // @throws NullPointerException if definition not set
     public Object set(int i, Object value) {
         Parameter a = definition[i];
+        if (autoCasting) value = a.autoCast(value);
         a.checkType(value);
         return backing.put(a.key, value);
     }
@@ -188,27 +207,9 @@ public class Parameters extends AbstractList implements List  {
         for (int i = 0; i < definition.length; i++) {
             Parameter a = definition[i];
             if (a.key.equals(arg)) {
-                if (a.isType(value)) {
-                    backing.put(arg, value);
-                } else {
-                    if (value instanceof String) {
-                        if (a.getType().equals(Integer.class)) {
-                            try {
-                                backing.put(arg, new Integer(Integer.parseInt((String)value)));
-                            } catch(Exception e) {
-                                throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to Integer");
-                            }
-                        } else if (a.getType().equals(int.class)) {
-                            try {
-                                backing.put(arg, new Integer(Integer.parseInt((String)value)));
-                            } catch(Exception e) {
-                                throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to int");
-                            }
-                        }
-                    } else {
-                        throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + a.getType() + " (but is " + (value == null ? value : value.getClass()) + ")");
-                    }
-                }
+                if (autoCasting) value = a.autoCast(value);
+                a.checkType(value);
+                backing.put(arg, value);
                 return this;
             }
         }
