@@ -54,7 +54,9 @@ public class CreateNodeTag extends NodeTag implements BodyTag {
         }
         setNodeVar(node);
         setModified(); 
-        log.debug("created node " + node.getValue("gui()"));
+        if (log.isDebugEnabled()) {
+            log.debug("created node " + node.getValue("gui()"));
+        }
         return EVAL_BODY_TAG;
     }
 
