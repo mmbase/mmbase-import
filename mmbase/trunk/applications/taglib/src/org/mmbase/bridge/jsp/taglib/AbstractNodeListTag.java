@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.62 2004-03-23 21:42:46 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.63 2004-03-24 00:59:01 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -292,7 +292,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
 
     public int doAfterBody() throws JspTagException {
-        log.debug("doafterbody");
         super.doAfterBody();
         return listHelper.doAfterBody();
 
@@ -301,10 +300,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int doEndTag() throws JspTagException {
         listHelper.doEndTag();
         return  super.doEndTag();
-    }
-
-    public void doInitBody() throws JspTagException {
-        
     }
 
     /**

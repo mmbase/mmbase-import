@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.64 2004-01-19 17:22:08 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.65 2004-03-24 00:59:01 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -119,7 +119,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         }
         log.debug("out");
         // return EVAL_BODY_INCLUDE; does not work in orion 1.6, tomcat < 4.1.19
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY;
     }
 
     private ContextProvider getParentContext() throws JspTagException {
@@ -266,15 +266,16 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
-
-        try {
-            if (bodyContent != null) {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            try {
+                if (bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch (IOException ioe){
+                throw new TaglibException(ioe);
             }
-            return SKIP_BODY;
-        } catch (IOException ioe){
-            throw new TaglibException(ioe);
         }
+        return SKIP_BODY;
     }
 
 
