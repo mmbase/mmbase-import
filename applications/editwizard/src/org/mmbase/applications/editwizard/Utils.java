@@ -24,16 +24,20 @@ import org.apache.xpath.objects.XNodeSet;
 
 import org.mmbase.util.logging.*;
 
+import org.mmbase.cache.xslt.*;
+
 /**
  * This class contains static utility methods used by the editwizard.
  * Most methods handle xml functions for you and are just to support ease and lazyness.
+ *
+ * 
  *
  * @javadoc
  * @author  Kars Veling
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.8 2002-03-18 16:42:31 eduard Exp $
+ * @version $Id: Utils.java,v 1.9 2002-03-29 20:15:52 michiel Exp $
  */
 public class Utils {
 
@@ -106,13 +110,9 @@ public class Utils {
      * @param        writer  The writer where the stream should be written to.
      */
     public static void printXML(Node node, Writer writer) {
-        try {
-            TransformerFactory tfactory = TransformerFactory.newInstance();
-            tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
-            // This creates a transformer that does a simple identity transform,
-            // and thus can be used for all intents and purposes as a serializer.
-            Transformer serializer = tfactory.newTransformer();
-
+        try {                   
+            Transformer serializer = FactoryCache.getCache().getDefaultFactory().newTransformer();
+            // shouldn't this tranformer be cached?
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             serializer.transform(new DOMSource(node),  new StreamResult(writer));
@@ -404,12 +404,17 @@ public class Utils {
      * @param       params  Optional params.
      */
     public static void transformNode(Node node, String xslfilename, Result result, Hashtable params) {
-        try {
-            TransformerFactory tfactory = TransformerFactory.newInstance();
-            tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
-            // Generate a Transformer.
-            Transformer transformer = tfactory.newTransformer(new StreamSource(new File(xslfilename)));
-
+        try {                       
+            TemplateCache cache= TemplateCache.getCache();
+            Source xsl = new StreamSource(new File(xslfilename));
+            Templates cachedXslt = cache.getTemplates(xsl);
+            if (cachedXslt == null) {
+                cachedXslt = FactoryCache.getCache().getFactory(new java.io.File("")).newTemplates(xsl);
+                cache.put(xsl, cachedXslt);
+            } else {
+                if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
+            }
+            Transformer transformer = cachedXslt.newTransformer();
             // Set any stylesheet parameters.
             setStylesheetParams(transformer, params);
             if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
