@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.32 2003-04-10 07:59:42 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.33 2003-04-10 13:51:37 pierre Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -55,12 +55,12 @@ public class XMLBasicReader  {
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
     /** Public ID of the Error DTD version 1.0 */
-    public static final String PUBLICID_ERROR_1_0 = "-//MMBase//DTD error 1.0//EN";
-    /** DTD respource filename of the Error DTD version 1.0 */
+    public static final String PUBLIC_ID_ERROR_1_0 = "-//MMBase//DTD error 1.0//EN";
+    /** DTD resource filename of the Error DTD version 1.0 */
     public static final String DTD_ERROR_1_0 = "error_1_0.dtd";
 
     /** Public ID of the most recent Error DTD */
-    public static final String PUBLICID_ERROR = PUBLICID_ERROR_1_0;
+    public static final String PUBLIC_ID_ERROR = PUBLIC_ID_ERROR_1_0;
     /** DTD respource filename of the most recent Error DTD */
     public static final String DTD_ERROR = DTD_ERROR_1_0;
 
@@ -69,7 +69,7 @@ public class XMLBasicReader  {
      * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        XMLEntityResolver.registerPublicID(PUBLICID_ERROR_1_0, DTD_ERROR_1_0, XMLBasicReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_ERROR_1_0, DTD_ERROR_1_0, XMLBasicReader.class);
     }
 
     /** set this one to true, and parser will be loaded...  */
@@ -103,7 +103,7 @@ public class XMLBasicReader  {
             InputSource is = new InputSource();
             is.setSystemId(FILENOTFOUND + path);
             is.setCharacterStream(new StringReader("<?xml version=\"1.0\"?>\n" +
-                                                   "<!DOCTYPE error PUBLIC \"" + PUBLICID_ERROR + "\"" +
+                                                   "<!DOCTYPE error PUBLIC \"" + PUBLIC_ID_ERROR + "\"" +
                                                    " \"http://www.mmbase.org/dtd/error_1_0.dtd\">\n" +
                                                    "<error>" + e.toString() + "</error>"));
             return is;
