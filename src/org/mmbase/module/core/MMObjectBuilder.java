@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.278 2004-11-01 12:48:07 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.279 2004-11-08 13:31:30 marcel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -73,7 +73,7 @@ public class MMObjectBuilder extends MMTable {
     public final static int TEMPNODE_DEFAULT_SIZE = 1024;
 
     /** Default replacements for method getHTML() */
-    public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
+    public final static String DEFAULT_ALINEA = "<br />&#160;<br />"; // marcel: bugfix #6617: changed &nbsp to &#160;
     public final static String DEFAULT_EOL = "<br />";
 
 
