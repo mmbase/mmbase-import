@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
  * XML and will respond with a 200 OK if the xml was understood by the
  * mmbase system.
  *
- * @version $Revision: 1.5 $ $Date: 2000-03-29 09:27:38 $
+ * @version $Revision: 1.6 $ $Date: 2000-03-30 12:58:22 $
  */
 public class remoteXML extends JamesServlet {
 
@@ -37,7 +37,7 @@ public class remoteXML extends JamesServlet {
  	*/
 	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
 	{	
-		incRefCount();
+		incRefCount(req);
 		try {
 			if (req.getMethod().equals("POST")) {
 				handlePost(req,res);
@@ -45,7 +45,7 @@ public class remoteXML extends JamesServlet {
 			if (req.getMethod().equals("GET")) {
 				handleGet(req,res);
 			}
-		} finally { decRefCount(); }
+		} finally { decRefCount(req); }
 	}
 
 	private void handlePost(HttpServletRequest req,HttpServletResponse res) {

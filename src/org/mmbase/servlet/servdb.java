@@ -95,7 +95,7 @@ public class servdb extends JamesServlet {
 
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
     {
-		incRefCount();
+		incRefCount(req);
 		try {
 		scanpage sp = getscanpage( req, res );
 
@@ -448,7 +448,7 @@ public class servdb extends JamesServlet {
 					}
 			}
 		}
-		} finally { decRefCount(); }
+		} finally { decRefCount(req); }
 	}
 
 	private final void setHeaders(HttpServletRequest req,HttpServletResponse res,int len) {
