@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.4 2003-07-23 14:11:34 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.5 2003-07-23 14:34:57 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -143,6 +143,14 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
 
     public void setOption(Object key, boolean value) {
         setAttribute(key,new Boolean(value));
+    }
+
+	public List getTypeMappings() {
+        return Collections.unmodifiableList(typeMappings);
+    }
+
+	public Map getDisallowedFields() {
+        return Collections.unmodifiableMap(disallowedFields);
     }
 
     abstract public double getVersion();
