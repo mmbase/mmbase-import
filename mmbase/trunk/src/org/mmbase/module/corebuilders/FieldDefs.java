@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.16 2000-12-28 09:27:36 daniel Exp $
+$Id: FieldDefs.java,v 1.17 2001-03-04 00:24:47 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2000/12/28 09:27:36  daniel
+added a few set methods
+
 Revision 1.15  2000/12/16 20:42:42  daniel
 added several set calls
 
@@ -65,7 +68,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.16 $ $Date: 2000-12-28 09:27:36 $
+ * @$Revision: 1.17 $ $Date: 2001-03-04 00:24:47 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -219,6 +222,10 @@ public class FieldDefs  {
 
 	public void setDBPos(int value) {
 		DBPos=value;
+	}
+
+	public int getDBPos() {
+		return(DBPos);
 	}
 
 	public void setDBState(int value) {
