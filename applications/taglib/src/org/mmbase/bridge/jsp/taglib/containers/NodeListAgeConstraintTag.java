@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAgeConstraintTag.java,v 1.1 2003-07-31 20:31:40 michiel Exp $
+ * @version $Id: NodeListAgeConstraintTag.java,v 1.2 2003-08-01 10:43:25 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
@@ -98,23 +98,28 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
 
         StepField stepField = query.createStepField(fieldName);
         
-        Constraint constraint = null;
+        Constraint newConstraint = null;
         
         int minAgeInt = minAge.getInt(this, -1);
         int maxAgeInt = maxAge.getInt(this, -1);
 
         if (maxAgeInt != -1 && minAgeInt > 0) {
-            constraint = query.createConstraint(stepField, getDayMark(maxAgeInt), getDayMark(minAgeInt));
+            newConstraint = query.createConstraint(stepField, getDayMark(maxAgeInt), getDayMark(minAgeInt));
         } else if (maxAgeInt != -1) { // only on max
-            constraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, getDayMark(maxAgeInt));
+            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, getDayMark(maxAgeInt));
         } else if (minAgeInt > 0) {
-            constraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, getDayMark(minAgeInt));
+            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, getDayMark(minAgeInt));
         } else {
             // both unspecified
         }
 
-        if (constraint != null) {
-            query.setConstraint(constraint);
+        if (newConstraint != null) {
+            Constraint constraint = query.getConstraint();
+            if (constraint != null) {
+                log.debug("compositing constraint");
+                newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+            }
+            query.setConstraint(newConstraint);
         }
                 
         return SKIP_BODY;
