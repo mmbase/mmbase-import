@@ -138,7 +138,8 @@ public class ModuleHandler implements Module {
     	        }
    		        NodeManager tempNodeManager = null;
    		        if (cloud==null) {
-       		        cloud=cloudContext.getCloud("mmbase",true); // get cloud object so you can create a node list. doh.
+			// anonymous access on the cloud....
+       		        cloud=cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
        		    }
   		        if (res.size()>0) {
   		            tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);

@@ -38,13 +38,6 @@ public interface CloudContext {
 	public Module getModule(String name);
 
 	/**
-	 * Returns all clouds available in this context.
-    	 *
-	 * @return  all available clouds
-	 */
-	public CloudList getClouds();
-
-	/**
 	 * Returns the cloud with the specified name.
     	 *
 	 * @param name                     the name of the cloud to be returned
@@ -64,18 +57,4 @@ public interface CloudContext {
     	 * @throws CloudNotFoundException  if the specified cloud could not be found
 	 */
 	public Cloud getCloud(String name, String application, User user);
-
-	/**
-	 * Returns the cloud with the specified name in readonly mode if requested.
-    	 * If a cloud is in readonly mode no transactions are possible, nor any
-    	 * edits/changes to the cloud. This can be used for optimization.
-    	 *
-	 * @param name                     the name of the cloud to be returned
-	 * @param readonly                 <code>true</code> if the returned cloud
-    	 *                                 should be in readonly mode
-	 * @return                         the requested cloud
-    	 * @throws CloudNotFoundException  if the specified cloud could not be found
-	 */
-	public Cloud getCloud(String name, boolean readonly);
-
  }
