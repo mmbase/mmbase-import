@@ -7,6 +7,11 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+/*
+	EXCEPTION This code has been taken from the web and
+	does not fall under our own copyright. We must retrieve
+	the correct license for this code or replace it.
+*/
 package org.mmbase.util;
 
 /******************************************************************
