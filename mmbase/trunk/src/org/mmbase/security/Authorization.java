@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.security.SecurityException;
 import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.Constraint;
 import java.util.Set;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.20 2003-09-01 13:29:45 pierre Exp $
+ * @version $Id: Authorization.java,v 1.21 2004-03-10 14:08:13 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
     private static final Logger log = Logging.getLoggerInstance(Authorization.class);
@@ -85,12 +86,12 @@ public abstract class Authorization extends Configurable {
      *
      * It is wise to override check, and not verify (And I wonder why this method is not simply final).
      *
-     * @exception org.mmbase.SecurityException  If the assertion fails
+     * @exception SecurityException  If the assertion fails
      * @see #check(UserContext, int, Operation)
      */
-    public void verify(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    public void verify(UserContext user, int nodeid, Operation operation) throws SecurityException {
         if (!check(user, nodeid, operation)) {
-            throw new org.mmbase.security.SecurityException("Operation '" + operation + "' on " + nodeid + " was NOT permitted to " + user.getIdentifier());
+            throw new SecurityException("Operation '" + operation + "' on " + nodeid + " was NOT permitted to " + user.getIdentifier());
         }
     }
 
@@ -120,13 +121,12 @@ public abstract class Authorization extends Configurable {
      *
      * It is wise to override check, and not verify (And I wonder why this method is not simply final).
      *
-     * @exception org.mmbase.SecurityException  If the assertion fails
+     * @exception SecurityException  If the assertion fails
      * @see #check(UserContext, int, int, int, Operation)
      */
-    public void verify(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws org.mmbase.security.SecurityException {
+    public void verify(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws SecurityException {
         if (!check(user, nodeid, srcnodeid, dstnodeid, operation)) {
-            throw new org.mmbase.security.SecurityException(
-                "Operation '" + operation + "' on " + nodeid + " was NOT permitted to " + user.getIdentifier());
+            throw new SecurityException("Operation '" + operation + "' on " + nodeid + " was NOT permitted to " + user.getIdentifier());
         }
     }
 
@@ -136,9 +136,9 @@ public abstract class Authorization extends Configurable {
      *	@param  user 	The UserContext, containing the information about the user.
      *	@param  nodeid  The id of the MMObjectNode, which has to be asserted.
      *	@return the context setting of the node.
-     *	@exception org.mmbase.SecurityException If operation is not allowed(needs read rights)
+     *	@exception SecurityException If operation is not allowed(needs read rights)
      */
-    public abstract String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException;
+    public abstract String getContext(UserContext user, int nodeid) throws SecurityException;
 
     /**
      *	This method could be overrided by an extending class.
@@ -148,10 +148,10 @@ public abstract class Authorization extends Configurable {
      *	@param user The UserContext, containing the information about the user.
      *	@param nodeid The id of the MMObjectNode, which has to be asserted.
      *	@param context The context which rights the node will get
-     *	@exception org.mmbase.SecurityException If operation is not allowed
-     *	@exception org.mmbase.SecurityException If context is not known
+     *	@exception SecurityException If operation is not allowed
+     *	@exception SecurityException If context is not known
      */
-    public abstract void setContext(UserContext user, int nodeid, String context) throws org.mmbase.security.SecurityException;
+    public abstract void setContext(UserContext user, int nodeid, String context) throws SecurityException;
 
     /**
      *	This method could be overrided by an extending class.
@@ -162,9 +162,9 @@ public abstract class Authorization extends Configurable {
      *	@param nodeid The id of the MMObjectNode, which has to be asserted.
      *	@return a <code>Set</code> of <code>String</code>s which
      *	    	represent a context in readable form..
-     *	@exception org.mmbase.SecurityException maybe
+     *	@exception SecurityException
      */
-    public abstract Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException ;
+    public abstract Set getPossibleContexts(UserContext user, int nodeid) throws SecurityException ;
 
 
     /**
