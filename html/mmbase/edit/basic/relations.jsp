@@ -7,14 +7,7 @@
 
 <mm:field id="thisnodenumber" name="number"> </mm:field>
 
-<mm:import id="thisnumber">0</mm:import>
-<mm:import id="typewhere">name='<mm:nodeinfo type="nodemanager" />'</mm:import>
-
-<mm:listnodes type="typedef" constraints="${typewhere}">
-    <mm:remove referid="thisnumber" />
-    <mm:import id="thisnumber"><mm:field name="number" /></mm:import>
-</mm:listnodes>
-
+<mm:import id="thisnumber"><mm:field name="otype" /></mm:import>
 <mm:import id="tn" vartype="Integer" jspvar="thisnumber"><mm:write referid="thisnumber" /></mm:import>
 
 <mm:import id="thiswhere">snumber=<mm:write referid="thisnumber" /> or dnumber=<mm:write referid="thisnumber" /></mm:import>
@@ -37,7 +30,7 @@
 	} else {
 	    other = cloud.getNode(dnumber);
 	}
-	otherman =  cloud.getNodeManager(other.getStringValue("name"));     %>	
+	otherman =  cloud.getNodeManager(other.getStringValue("name"));     %>
    <!-- first column: present relation type -->
    <td class="data"><%=rel.getValue("gui(dname)")%> <%=otherman.getGUIName()%>:</td>
 	<mm:import id="thiswhere2">(snumber=<mm:field referid="thisnodenumber" /> or (dnumber=<mm:field referid="thisnodenumber"/> and dir<>1)) and (rnumber=<%=rnumber%>)</mm:import>
@@ -61,13 +54,13 @@
 		</mm:url>' ><img src="images/select.gif" alt="->" border="0" width="20" height="20" align="right" /></a>
 	    </td>
 		<!-- go to relation itself -->
-        <td class="data">relation</td>	   
+        <td class="data">relation</td>
 		<!-- delete the relation node -->
 		<td class="navigate">
         	<a href='<mm:url page="commit_node.jsp" referids="backpage_cancel,backpage_ok">
             	<mm:param name="node_number"><%=rel_node.getNumber()%></mm:param>
 				<mm:param name="node_type"><%= reln.getNodeManager().getName() %></mm:param>
-            	<mm:param name="delete">true</mm:param>				
+            	<mm:param name="delete">true</mm:param>
 				</mm:url>' ><img src="images/delete.gif" alt="->" border="0" width="20" height="20" align="right" /></a>
         </td>
 		<td class="navigate">
