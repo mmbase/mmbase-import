@@ -20,7 +20,7 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.10 2003-05-19 07:50:15 kees Exp $
+ * @version $Id: Versions.java,v 1.11 2004-04-13 13:50:28 keesj Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -58,7 +58,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         }
         //should not happend
         if (i.hasNext()) {
-            log.warn("More then one version was found for (name,type)()" + name + "," + type + ")");
+            log.warn("more than one version was found for " + type+" with name " + name  +" .");
         }
         return retval;
 
