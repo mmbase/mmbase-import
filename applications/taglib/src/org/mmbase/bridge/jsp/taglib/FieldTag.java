@@ -100,7 +100,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
     }
     protected void setFieldVar() throws JspTagException {
-        setFieldVar(name.getString(this));
+        setFieldVar((String) name.getValue(this));
     }
 
     /**
@@ -116,7 +116,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     public int doStartTag() throws JspTagException {
         log.debug("Field.doStartTag()" );
         node= null;
-        fieldName = name.getString(this);
+        fieldName = (String) name.getValue(this);
         setFieldVar(fieldName); // set field and node
 
         // found the node now. Now we can decide what must be shown:
