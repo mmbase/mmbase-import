@@ -213,6 +213,7 @@ public class AudioPartDef
 				//result += "?title=\""+title+"\"";
 				//Our realplayer can't handle url encoded string.
 				//result += "?title="+MediaUtils.plusToProcent20(URLEncoder.encode(title)); //URLEncode value.
+				title=MediaUtils.makeRealCompatible(title);
 				result += "?title="+title;
 			} else {
 				//result += "?title=\"\"";
