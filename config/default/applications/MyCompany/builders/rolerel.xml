@@ -72,7 +72,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">role</name>
+				<name>role</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" notnull="false" key="false" size="12">STRING</type>
 			</db>

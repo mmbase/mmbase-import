@@ -55,7 +55,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">title</name>
+				<name>title</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 			</db>
@@ -89,7 +89,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">subtitle</name>
+				<name>subtitle</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="255" notnull="false" key="false">STRING</type>
 			</db>
@@ -123,7 +123,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">intro</name>
+				<name>intro</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="2048" notnull="false" key="false">STRING</type>
 			</db>
@@ -157,7 +157,7 @@
 			<!-- database related  -->
 			<db>
 				<!-- name of the field in the database -->
-				<name xml:lang="en">body</name>
+				<name>body</name>
 				<!-- MMBase datatype and demands on it -->
 				<type state="persistent" size="64000" notnull="false" key="false">STRING</type>
 			</db>
