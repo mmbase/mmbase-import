@@ -16,10 +16,10 @@
     	    <th width="20%"><%=m.getString("search_node.search")%>
             
              (<mm:compare referid="config.liststyle" value="short" >
-                <a href="<mm:url page="search_node.jsp" ><mm:param name="set_liststyle">long</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showall")%></span></a>
+                <a href="<mm:url page="search_node.jsp" ><mm:param name="mmjspeditors_liststyle">long</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showall")%></span></a>
               </mm:compare>
               <mm:compare referid="config.liststyle" value="short" inverse="true" >
-                <a href="<mm:url page="search_node.jsp" ><mm:param name="set_liststyle">short</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showshortlist")%></span></a>
+                <a href="<mm:url page="search_node.jsp" ><mm:param name="mmjspeditors_liststyle">short</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showshortlist")%></span></a>
               </mm:compare>)
             
             </th>
