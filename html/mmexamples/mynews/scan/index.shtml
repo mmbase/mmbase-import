@@ -11,7 +11,7 @@
 	<TD WIDTH="30"></TD>
 	<TD BGCOLOR="#32BDAD" COLSPAN="1">
 	<center>
-	<FONT COLOR="#000000" FACE="Arial,Helvetica"><B>
+	<FONT COLOR="#FFFFFF" FACE="Arial,Helvetica"><B>
 		$MOD-MMBASE-FIELD-$PARAM1-title^
 	</B></FONT>
 	</center>
@@ -21,9 +21,9 @@
 	<TD WIDTH="30"></TD>
 	<TD BGCOLOR="#00425A" COLSPAN="1">
 	<CENTER>
-	<FONT COLOR="#42BDAD" FACE="Arial,Helvetica">
-		$MOD-MMBASE-FIELD-$PARAM1-html_intro^
-		<B>( <A HREF="magazine.shtml$PARAM1">more info</A> )</B>
+	<FONT COLOR="#FFFFFF" FACE="Arial,Helvetica">
+		$MOD-MMBASE-FIELD-$PARAM1-html_intro^<BR>
+		<B>( <A HREF="magazine.shtml?$PARAM1">Read information about magazine</A> )</B>
 	</FONT>
 	</CENTER>
 	</TD>
