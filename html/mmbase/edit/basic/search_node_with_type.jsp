@@ -221,9 +221,33 @@
      </td>
  </tr>  
 </mm:listnodes>
+
 </table>
 
 <mm:write referid="pager" escape="none" />
+
+
+<mm:maycreate type="$node_type">
+  <table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
+    <tr>
+      <td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />) </td>
+      <td class="navigate">
+        <a href="<mm:url referids="node_type,node?,role_name?,direction?"  page="create_node.jsp" />" >
+        <span class="create"></span><span class="alt">[create]</span>
+      </a>
+    </td>
+  </tr>
+</table>
+</mm:maycreate>
+<mm:maycreate type="${node_type}" inverse="true">
+  <table width="100%">
+    <tr>
+      <td class="data"><%= m.getString("search_node.maynotcreate")%> <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
+      <td class="navigate">&nbsp;</td>        
+    </tr>
+  </table> 
+</mm:maycreate>
+
 
 </mm:listnodescontainer>
 

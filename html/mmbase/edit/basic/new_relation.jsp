@@ -33,19 +33,7 @@
     </mm:compare>     
      
      <tr><td>
-		<mm:include  referids="to_page" page="search_node_with_type.jsp?nopush=true" />
-        <mm:maycreate type="$node_type">
-                 <table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
-                 <tr>
-                     <td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />)</td>
-                     <td class="navigate">
-                         <a href="<mm:url referids="node_type,node,role_name,direction" page="create_node.jsp" />" >
-                      <span class="create"></span><span class="alt">[create]</span>
-                         </a>
-                     </td>
-                 </tr>
-             </table>
-       </mm:maycreate>
+     <mm:include  referids="to_page" page="search_node_with_type.jsp?nopush=true" />
      </td></tr>
      </table>
 
@@ -133,6 +121,11 @@
     <body>
     <h1>Redirecting</h1>
     <a href="<mm:url page="${redirectTo}" />"><%=m.getString("new_relation.redirect")%></a>
+    <%-- never mind .. --%>
+    <mm:write referid="redirectTo" jspvar="redirect" vartype="string">
+      <% response.sendRedirect(redirect); %>
+    </mm:write>
+
   </mm:present>
 
   </mm:node>
