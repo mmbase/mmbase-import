@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.20 2003-05-12 08:39:09 michiel Exp $
+    @version  $Id: index.jsp,v 1.21 2003-09-22 17:24:48 pierre Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -40,7 +40,18 @@
   <mm:import id="templates">/templates</mm:import><!-- unused now -->
   <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
   <mm:import id="pagelength">10</mm:import>
-        <h1>Editwizard Examples</h1>
+  <table class="body">
+    <tr><td class="left" /><td>
+      <table class="body" cellspacing="0" cellpadding="4" width="100%">
+        <tr>
+          <td class="mysteps_top" valign="top" width="575">
+          <span class="title"><nobr><span class="titleprompt">Editwizard Examples</span></nobr></span></td>
+          <td class="gutter" width="200"><br /></td>
+        </tr>
+  </table>
+  </td></tr><tr><td class="left" />
+  <td class="listcanvas">
+   <table>
   <p>
    This example overrides some XSL's the editwizard bij placing
    variants in xsl/ relative to this file. It addes a stylesheet by
@@ -49,25 +60,13 @@
    file in the 'tasks' directory.
   </p>
   <p>
-  <td>
      <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/list.xsl</mm:param></mm:url>">view xsl/list.xsl</a>
      <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/wizard.xsl</mm:param></mm:url>">view xsl/wizard.xsl</a>
      <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/base.xsl</mm:param></mm:url>">view xsl/base.xsl</a>
-  </td>
   </p>
-  <!-- check if the MyNews application was installed -->
-  <mm:cloud method="http">
-  <mm:listnodes type="versions" constraints="[type] LIKE '%application%' AND [name] LIKE '%MyNews%'">
-      <mm:first><mm:import id="mynews_installed">true</mm:import></mm:first>
-  </mm:listnodes>
-  </mm:cloud>
-        <br />
-  <!-- Yes, installed, show the editwizard entry page -->
-  <mm:present referid="mynews_installed">
-
-  <table>    
-   <tr><td>          
-        <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">           
+  <table class="listcanvas">
+   <tr><td>
+        <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
            <mm:param name="wizard">tasks/people</mm:param>
            <mm:param name="nodepath">people</mm:param>
            <mm:param name="fields">number,firstname,lastname</mm:param>
@@ -144,7 +143,7 @@ view XML</a></td>
  </tr>
     <tr><td>
     <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
-        	 <mm:param name="wizard">tasks/news</mm:param>
+             <mm:param name="wizard">tasks/news</mm:param>
            <mm:param name="nodepath">news</mm:param>
            <mm:param name="fields">number,title</mm:param>
            <mm:param name="orderby">number</mm:param>
@@ -164,9 +163,9 @@ view XML</a></td>
    </tr>
     <tr><td>
     <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
-		       <mm:param name="title">MyNews Magazine news</mm:param>
-		       <mm:param name="startnodes">default.mags</mm:param>
-        	 <mm:param name="wizard">tasks/news</mm:param>
+               <mm:param name="title">MyNews Magazine news</mm:param>
+               <mm:param name="startnodes">default.mags</mm:param>
+             <mm:param name="wizard">tasks/news</mm:param>
            <mm:param name="nodepath">mags,news</mm:param>
            <mm:param name="fields">news.number,news.title</mm:param>
            <mm:param name="orderby">news.number</mm:param>
@@ -177,7 +176,7 @@ view XML</a></td>
      </td></tr>
     <tr><td>
     <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
-        	 <mm:param name="wizard">tasks/mags</mm:param>
+             <mm:param name="wizard">tasks/mags</mm:param>
            <mm:param name="nodepath">mags</mm:param>
            <mm:param name="fields">number,title</mm:param>
            <mm:param name="orderby">number</mm:param>
@@ -191,7 +190,7 @@ view XML</a></td>
 
     <tr><td>
     <a href="<mm:url referids="referrer,pagelength" page="${jsps}list.jsp">
-        	 <mm:param name="wizard">tasks/people</mm:param>
+             <mm:param name="wizard">tasks/people</mm:param>
            <mm:param name="nodepath">news,people</mm:param>
            <mm:param name="fields">people.number,news.title,people.firstname,people.lastname</mm:param>
            <mm:param name="orderby">people.lastname</mm:param>
@@ -205,16 +204,10 @@ view XML</a></td>
       </tr>
      </table>
 
-   </mm:present>
-
-   <!-- MyNews applications was not installed, perhaps builders are missing and so on. Give warning. -->
-   <mm:notpresent referid="mynews_installed">
-   <h1>The 'MyNews' application was not deployed. Please deploy it before using this example.</h1>
-   </mm:notpresent>
-
 <hr />
    <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <a href="<mm:url page="../index.html" />">back</a>
-
+  </td></tr>
+  </table>
 </body>
 </html>
