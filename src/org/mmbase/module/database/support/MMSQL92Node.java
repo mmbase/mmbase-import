@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.61 2002-05-24 06:17:13 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.62 2002-06-04 20:20:07 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -107,7 +107,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
-        return(decodeDBnodeField(node,fieldname,rs,i,""));
+        return decodeDBnodeField(node,fieldname,rs,i,"");
     }
 
     /**
@@ -145,13 +145,15 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     /**
      * @javadoc
      */
-    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs, int i, String prefix) {
         try {
             // is this fieldname disallowed ? ifso map it back
             if (allowed2disallowed.containsKey(fieldname)) {
                 fieldname=(String)allowed2disallowed.get(fieldname);
             }
-
+            if (node == null) {
+                log.warn("Cannot decode field " + fieldname + " because given node is null");
+            }
             int type=node.getDBType(prefix+fieldname);
             switch (type) {
             case FieldDefs.TYPE_XML:
@@ -191,12 +193,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 node.setValue(prefix+fieldname,"$SHORTED");
                 break;
             }
-            return (node);
+            return node;
         } catch(SQLException e) {
             log.error("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
             log.error(Logging.stackTrace(e));
         }
-        return(node);
+        return node;
     }
 
     /**
