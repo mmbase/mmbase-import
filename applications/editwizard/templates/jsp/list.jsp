@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.26 2002-08-30 19:12:55 michiel Exp $
+     * @version  $Id: list.jsp,v 1.27 2002-09-03 16:28:39 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -65,6 +65,14 @@ if (listConfig==null) {
 }
 
 configurator.config(listConfig); // configure the thing, that means, look at the parameters.
+{
+    String t = request.getParameter("template");
+    if (t == null || t.equals("")) t = "xsl/list.xsl";
+    listConfig.template = ewconfig.uriResolver.resolveToFile(t);
+}
+
+
+
 
 if (listConfig.nodePath == null) {
    throw new JspTagException("No nodePath given");
