@@ -249,6 +249,9 @@ public class MMBase extends ProcessorModule  {
 		return(FieldDef);
 	}
 
+	/**
+	 * Get a database connection that is multiplexed and checked.
+	 */
 	public MultiConnection getConnection() {
 		try {
 			MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
@@ -264,7 +267,13 @@ public class MMBase extends ProcessorModule  {
 		}
 	}
 
+	/**
+	 * Get a direct database connection, should only be used
+	 * if you want to do database specific things that use non-jdbc
+	 * interface calls. Use very sparingly
+	 */
 	public Connection getDirectConnection() {
+		debug(" getDirectConnection()");
 		try {
 			Connection con=jdbc.getDirectConnection(jdbc.makeUrl());
 			return(con);
