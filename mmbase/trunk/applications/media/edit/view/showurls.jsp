@@ -16,7 +16,7 @@
     boolean subfragment = false; 
     boolean foundNonFragments = false;
    %>
-<mm:field name="subfragment()" jspvar="bool">
+<mm:field name="issubfragment()" jspvar="bool">
      <% subfragment = ((Boolean) bool).booleanValue(); %>
 </mm:field>
 <h1><mm:field name="title" /></h1>
