@@ -15,6 +15,7 @@ import org.mmbase.security.Authorization;
 import java.util.*;
 import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.cache.Cache;
@@ -30,16 +31,18 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.12 2003-08-06 21:54:00 michiel Exp $
+ * @version $Id: Contexts.java,v 1.13 2003-08-11 13:31:14 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class);
+
     /**
+     *
      * @javadoc
      */
-    static final String DEFAULT_CONTEXT = "admin";
+    static final String DEFAULT_CONTEXT = "default";  // default used to be 'admin', but does that make sense?
 
 
     static final int DEFAULT_MAX_CONTEXTS_IN_QUERY = 50;
@@ -151,6 +154,13 @@ public class Contexts extends MMObjectBuilder {
             }
         }
 
+        if ( (source.parent instanceof Contexts) && (destination.parent instanceof Groups)) {
+            if (operation == Operation.CREATE) {
+                return Groups.getBuilder().mayGrant(destination, source.getStringValue("name"), Operation.READ, user);
+            }
+            
+        }
+
         return mayDo(user, nodeId, operation);
 
     }
@@ -200,10 +210,15 @@ public class Contexts extends MMObjectBuilder {
             return true;
         }
 
-        // if this is a group node, then you may do anything on it, if you are member of the group.
-        // should that be?
+        // if this is a group node, then you may do anything on it, if you are member of the group,
+        // and you rank is higher then 'basic user'.
         if (builder instanceof Groups) {
-            return Groups.getBuilder().contains(node, user);
+            boolean res = Groups.getBuilder().contains(node, user);  // members may see the group
+            if (operation != Operation.READ) {
+                return res && user.getRank().getInt() > Rank.BASICUSER.getInt();
+            } else {
+                return res;
+            }
         }
 
         // when it is our user node, and you are this user, you may do anything on it (change password)
@@ -308,7 +323,7 @@ public class Contexts extends MMObjectBuilder {
                         log.debug("disallowing: " + disallowing + " all " + getAllContexts());
                     }
 
-                    // searching which is 'smallest' disallowing contexts, or allowing contexts.
+                    // searching which is 'smallest': disallowing contexts, or allowing contexts.
                     if (disallowing.size() < (getAllContexts().size() / 2)) {
                         contexts = disallowing;
                         inverse = true;
@@ -324,7 +339,7 @@ public class Contexts extends MMObjectBuilder {
                     if (ac.inverse) {
                         return Authorization.COMPLETE_CHECK;
                     } else {
-                        // may read nothing
+                        // may read nothing, simply making the query result nothing: number = -1 
                         Constraint mayNothing = query.createConstraint(query.createStepField((Step) query.getSteps().get(0), "number"), new Integer(-1));
                         return new Authorization.QueryCheck(true, mayNothing);
                     }
@@ -336,15 +351,28 @@ public class Contexts extends MMObjectBuilder {
                     Constraint constraint = null;
                     while (i.hasNext()) {
                         Step step = (Step) i.next();
-                        StepField field = query.createStepField(step, "owner");
-                        Constraint newConstraint = query.createConstraint(field, ac.contexts);
-                        if (ac.inverse) query.setInverse(newConstraint, true);
-                        if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
-                            Users users = Users.getBuilder();
-                            Constraint own = query.createConstraint(query.createStepField(step, "number"),
-                                                                    new Integer(users.getUser(userContext.getIdentifier()).getNumber()));
-                            newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
+                        Constraint newConstraint = null;
+
+                        if (step.getTableName().equals("mmbasegroups")) {
+                            newConstraint = query.createConstraint(query.createStepField(step, "number"), userContext.getGroups()); // must be member of group to see group
+                            if(operation != Operation.READ) { //
+                                if (userContext.getRank().getInt() <= Rank.BASICUSER.getInt()) { // may no nothing, simply making the query result nothing: number = -1 
+                                    Constraint mayNothing = query.createConstraint(query.createStepField(step, "number"), new Integer(-1));
+                                    return new Authorization.QueryCheck(true, mayNothing);
+                                }
+                            }
+                        } else {
+                            StepField field = query.createStepField(step, "owner");
+                            newConstraint = query.createConstraint(field, ac.contexts);
+                            if (ac.inverse) query.setInverse(newConstraint, true);
+                            if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
+                                Users users = Users.getBuilder();
+                                Constraint own = query.createConstraint(query.createStepField(step, "number"),
+                                                                        new Integer(users.getUser(userContext.getIdentifier()).getNumber()));
+                                newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
+                            }
                         }
+
 
                         if (constraint == null) {
                             constraint = newConstraint;
@@ -373,28 +401,9 @@ public class Contexts extends MMObjectBuilder {
         return getContextNode(s);
 
     }
-    private final MMObjectNode getContextNode(String s) {
-        MMObjectNode context = (MMObjectNode) contextCache.get(s);
-        if (context == null) {
-
-            Enumeration enumeration = searchWithWhere(" name = '" + s + "' ");
-            if (enumeration.hasMoreElements()) {
-                context =  (MMObjectNode) enumeration.nextElement();
-            } else {
-                // log.warn("context with name '" + s + "' not found, using default: '" + "admin" + "'");
-                enumeration = searchWithWhere(" name = 'admin' ");
-                if (!enumeration.hasMoreElements()) {
-                    throw new SecurityException("no context with name 'admin' defined! This one is needed as default");
-                }
-                context = (MMObjectNode) enumeration.nextElement();
-            }
-            contextCache.put(s, context);
-        }
-        return context;
-    }
 
     /**
-     * @return a  Set of all groups which are allowed to for operation operation.
+     * @return a  Set of all groups which allow the given operation (not recursively).
      */
     protected  Set getGroups(MMObjectNode contextNode, Operation operation) {        
         
@@ -420,12 +429,47 @@ public class Contexts extends MMObjectBuilder {
                     }  
                 } 
             }
-            log.debug("found groups for operation " + operation + " " + found);
+            if (log.isDebugEnabled()) {
+                log.debug("found groups for operation " + operation + " " + found);
+            }
             operationsCache.put(contextNode, operation, found);
         }
         return found;
     }
 
+    protected  Set getGroups(String context, Operation operation) {
+        return getGroups(getContextNode(context), operation);
+    }
+
+    protected final MMObjectNode getContextNode(String context) {
+        MMObjectNode contextNode = (MMObjectNode) contextCache.get(context);
+        if (contextNode == null && ! contextCache.contains(context)) {           
+            try {
+                NodeSearchQuery query = new NodeSearchQuery(this);
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), context);
+                query.setConstraint(constraint);
+                Iterator i = getNodes(query).iterator();
+                if (i.hasNext()) {
+                    contextNode = (MMObjectNode)i.next();
+                } else {
+                    if (! DEFAULT_CONTEXT.equals(context)) {
+                        log.warn("Could not find context '" + context + "' using default context '" + DEFAULT_CONTEXT + "'");
+                        contextNode = getContextNode(DEFAULT_CONTEXT);
+                        if (contextNode == null) {
+                            log.error("Could not find default context '" + DEFAULT_CONTEXT + "'.");
+                        }
+                    }
+                }
+            } catch (SearchQueryException sqe) {
+                log.error(sqe.toString());
+                contextNode = null;
+                
+            }
+            contextCache.put(context, contextNode);
+        }
+        return contextNode;
+
+    }
 
    
 
@@ -438,7 +482,7 @@ public class Contexts extends MMObjectBuilder {
             throw new SecurityException("node #" + nodeId + " not found");
         }
         if (node.getBuilder() instanceof Groups) {
-            return "unused";
+            return "unused"; // confusing
         }
         return getContextNode(node).getStringValue("name");
     }
@@ -521,7 +565,10 @@ public class Contexts extends MMObjectBuilder {
         boolean inverse;
         AllowingContexts(SortedSet c, boolean i) {
             contexts = c;
-             inverse = i;
+            inverse = i;
+        }
+        public String toString() {
+            return (inverse ? "NOT IN " : "IN ") + contexts;
         }
         
     }
