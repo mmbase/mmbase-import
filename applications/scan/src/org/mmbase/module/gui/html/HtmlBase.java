@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.8 2000-03-15 10:18:42 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.9 2000-03-17 12:19:45 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/03/15 10:18:42  wwwtech
+	Rico added which url caused the exception to doRelations
+	
 	Revision 1.7  2000/03/10 12:09:57  wwwtech
 	Rico: added circular part detection to scanparser, it is also now possilbe to subclass ParseException and throw that in scanparser for those unholdable situations.
 	
@@ -53,7 +56,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.8 2000-03-15 10:18:42 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.9 2000-03-17 12:19:45 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -837,7 +840,11 @@ public class HtmlBase extends ProcessorModule {
 				for (f=fields.elements();f.hasMoreElements();) {
 					// hack hack this is way silly, StringTagger needs to be fixed
 					fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
-					result=getNodeStringValue(node,fieldname);
+					if (fieldname.indexOf('(')>=0) {
+						result=""+node.getValue(fieldname);
+					} else {
+						result=getNodeStringValue(node,fieldname);
+					}
 					if (result!=null && !result.equals("null")) {
 	    				results.addElement(result); 
 					} else {
@@ -1019,24 +1026,28 @@ public class HtmlBase extends ProcessorModule {
 
 	private Vector removeFunctions(Vector fields) {
 		Vector results=new Vector();
+		String fieldname,prefix;
+		int posdot,posarc,posunder,pos;
 		Enumeration f=fields.elements();
 		for (;f.hasMoreElements();) {
-			// hack hack this is way silly Strip needs to be fixed
-			String fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
+			fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
 			// get the first part (Example : episodes.);
-			String prefix="";
-			int pos1=fieldname.indexOf('.');
-			if (pos1!=-1) {
-				prefix=fieldname.substring(0,pos1+1);	
-			}
-			pos1=fieldname.indexOf('(');
-			if (pos1!=-1) {
-				int pos2=fieldname.indexOf(')');
-				results.addElement(fieldname.substring(pos1+1,pos2));
+			// we got two styles:
+			// episodes.html_body
+			// html(episodes.body)
+			prefix="";
+			posdot=fieldname.indexOf('.');
+			posarc=fieldname.indexOf('(');
+			posunder=fieldname.indexOf('_');
+			if (posarc!=-1) {
+				pos=fieldname.indexOf(')');
+				results.addElement(fieldname.substring(posarc+1,pos));
 			} else {
-				pos1=fieldname.indexOf('_');
-				if (pos1!=-1) {
-					results.addElement(prefix+fieldname.substring(pos1+1));
+				if (posdot!=-1) {
+					prefix=fieldname.substring(0,posdot+1);	
+				}
+				if (posunder!=-1) {
+					results.addElement(prefix+fieldname.substring(posunder+1));
 				} else {
 					results.addElement(fieldname);
 				}
