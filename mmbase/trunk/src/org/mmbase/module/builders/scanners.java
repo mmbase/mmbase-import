@@ -26,21 +26,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @rename Scanners
  * @author Rob Vermeulen
- * @version $Id: scanners.java,v 1.9 2002-04-19 09:20:42 pierre Exp $
+ * @version $Id: scanners.java,v 1.10 2002-11-25 13:09:21 pierre Exp $
  */
 public class scanners extends MMObjectBuilder implements MMBaseObserver {
 
     static Logger log =Logging.getLoggerInstance(scanners.class.getName());
-    /**
-     * @javadoc
-     * @deprecated-now where is this called?
-     */
-    public final static String buildername = "scanners";
-    /**
-     * @javadoc
-     * @deprecated-now where is this called?
-     */
-    public static java.util.Properties driveprops= null;
 
     public scanners() {
     }

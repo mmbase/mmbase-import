@@ -10,14 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.sql.*;
-import java.io.*;
-
-import javax.servlet.http.*;
 
 import org.mmbase.module.*;
-import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
+
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -25,67 +21,64 @@ import org.mmbase.util.logging.*;
  * The camera builder contains camera that MMBase can use.
  * These camera will implement the ImageInterface so that the Image builder
  * can access the camera. The camera will use a implementation that will
- * also be defined by a builder.
- * 
+ * also be defined by a builder (?).
+ *
  * @author Rob Vermeulen
- * @date 12 juli 2000
+ * @version $Id: Cameras.java,v 1.4 2002-11-25 13:09:21 pierre Exp $
  */
 public class Cameras extends MMObjectBuilder implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(Cameras.class.getName());
 
-	public final static String buildername = "Cameras";
-	public static java.util.Properties driveprops= null;
+    public Cameras() {
+    }
 
-	public Cameras() {
-	}
-
-	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
-		String camera ="";
+    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
+        String camera ="";
         String path = "";
+       	String comparefield = "modtime";
         Vector result = new Vector();
 
-		try {
-			camera = tok.nextToken();
-		} catch (Exception e) {
-			log.error("Syntax of LIST commando = <LIST BUILDER-camera-[cameraname]");	
-		}
+	try {
+            camera = tok.nextToken();
+	} catch (Exception e) {
+	    log.error("Syntax of LIST commando = <LIST BUILDER-camera-[cameraname]");
+	}
 
-       	String comparefield = "modtime";
-       	DirectoryLister imglister = new DirectoryLister(); 
-		Enumeration g = search("WHERE name='"+camera+"'");
+       	DirectoryLister imglister = new DirectoryLister();
+	Enumeration g = search("WHERE name='"+camera+"'");
         while (g.hasMoreElements()) {
-          	MMObjectNode cameranode=(MMObjectNode)g.nextElement();
-           	path=cameranode.getStringValue("directory");
+            MMObjectNode cameranode=(MMObjectNode)g.nextElement();
+            path=cameranode.getStringValue("directory");
         }
 
-		Vector unsorted = null;
-		Vector sorted = null;
-		try {
-           	unsorted = imglister.getDirectories(path);  //Retrieve all filepaths
+	Vector unsorted = null;
+	Vector sorted = null;
+	try {
+            unsorted = imglister.getDirectories(path);  //Retrieve all filepaths
             sorted = imglister.sortDirectories(unsorted,comparefield);
-        	result = imglister.createThreeItems(sorted,tagger);
-		} catch (Exception e) {
-			log.error("Something went wrong in the directory listner, probably "+path+" does not exists needed by "+camera);
-		}
+            result = imglister.createThreeItems(sorted,tagger);
+	} catch (Exception e) {
+	    log.error("Something went wrong in the directory listner, probably "+path+" does not exists needed by "+camera);
+	}
         tagger.setValue("ITEMS", "3");
         String reverse = tagger.Value("REVERSE");
         if (reverse!=null){
-         	if(reverse.equals("YES")){
+            if(reverse.equals("YES")){
                	int items = 3;
                 result = imglister.reverse(result,items);
             }
         }
 
-		// This is very ugly, but I don't want to change the class Directorylistner.
-		// This code removes the htmlroot from the 3th argument
-		String htmlroot = MMBaseContext.getHtmlRoot();
-		for(int i=2; i<= result.size(); i+=3) {
-			String s = (String)result.remove(i);
-			s="/"+s.substring(htmlroot.length());
-			result.insertElementAt(s,i);
-		}
+	// This is very ugly, but I don't want to change the class Directorylistner.
+	// This code removes the htmlroot from the 3th argument
+	String htmlroot = MMBaseContext.getHtmlRoot();
+	for(int i=2; i<= result.size(); i+=3) {
+            String s = (String)result.remove(i);
+            s="/"+s.substring(htmlroot.length());
+            result.insertElementAt(s,i);
+	}
 
-        return (result);
+        return result;
     }
 
 }
