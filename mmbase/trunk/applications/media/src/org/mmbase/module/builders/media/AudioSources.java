@@ -15,13 +15,18 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
+ * @author Rob Vermeulen
+ * @version $Id: AudioSources.java,v 1.2 2003-01-03 21:35:43 michiel Exp $
+ * @since MMBase-1.7
  */
-public class AudioSources extends MediaSources {
-    
+public class AudioSources extends MediaSources {    
     private static Logger log = Logging.getLoggerInstance(AudioSources.class.getName());
     
     /**
-     * creates a new audiosource and relates it to an audiofragment.
+     * Creates a new audiosource and relates it to an audiofragment.
+     *
+     * I think this is to be used by VWMS's
+     *
      * @param audiofragment the audiofragment to relate this new audiosource to.
      * @return The new created audiofragment.
      */

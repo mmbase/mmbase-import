@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.media;
 
 import java.util.*;
+import java.net.URL;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.media.*;
@@ -38,12 +39,20 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
+ * @version $Id: MediaFragments.java,v 1.16 2003-01-03 21:35:43 michiel Exp $
+ * @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
     
     // logging
     private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
+
+    // let the compiler check for typo's:
+    public static final String FUNCTION_URLS        = "urls";
+    public static final String FUNCTION_PARENT      = "parent";    
+    public static final String FUNCTION_SUBFRAGMENT = "subfragment";
+
     
     // This filter is able to find the best mediasource by a mediafragment.
     private MediaSourceFilter mediaSourceFilter;
@@ -56,7 +65,7 @@ public class MediaFragments extends MMObjectBuilder {
 
     private boolean           initDone           = false;
     
-  
+ 
     public boolean init() {
         if(initDone) return super.init();
         log.service("Init of media-fragments");
@@ -83,7 +92,7 @@ public class MediaFragments extends MMObjectBuilder {
     }
         
     /**
-     * 
+     * @author mm
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) { 
@@ -92,9 +101,12 @@ public class MediaFragments extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new Vector();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
-            info.put("showurl", "(<format>, <item>) ");
+            info.put("url", "(<format>, <item>) ");
             info.put("longurl", "(<format>) ");
-            info.put("urlresult", "(<??>) ");
+            info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really MediaURLComposer.ResponseInfo's)");
+            info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode of the parent or null");
+            info.put(FUNCTION_SUBFRAGMENT, "() Wether this fragment is a subfragment (returns a Boolean)");
+            // info.put("urlresult", "(<??>) ");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
 
             if (args == null || args.size() == 0) {
@@ -102,9 +114,21 @@ public class MediaFragments extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }            
-        } else if (function.equals("showurl")) {
+        } else if (function.equals(FUNCTION_URLS)) {
+            return getURLs(node, args);
+        } else if (function.equals(FUNCTION_SUBFRAGMENT)) {
+            return new Boolean(isSubFragment(node));
+        } else if (function.equals(FUNCTION_PARENT)) {
+            return getParentFragment(node);
+        } else if (function.equals("url")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getURL(node, new Hashtable());
+            Map info = new Hashtable();
+            if (args != null && args.size() > 0) info.put("format", (String) args.get(0));
+            try {
+                return getURL(node, info);
+            } catch (java.net.MalformedURLException e) {
+                return "";
+            }
         } else if (function.equals("longurl")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
             return getLongURL(node, new Hashtable());
@@ -124,7 +148,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param node the mediafragment
      * @return length in milliseconds
      */
-    private long calculateLength(MMObjectNode node) {
+    protected long calculateLength(MMObjectNode node) {
         long start  = node.getLongValue("start");
         long stop   = node.getLongValue("stop");
         long length = node.getLongValue("length");
@@ -143,6 +167,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param node the mediapart node
      * @return the title of the mediapart
      */
+    /*
     public String getGUIIndicator(MMObjectNode node) {
         String url = node.getFunctionValue("showurl", null).toString();
         if (! "".equals(url)) {
@@ -151,6 +176,7 @@ public class MediaFragments extends MMObjectBuilder {
             return "[" + node.getStringValue("title") + "]";
         }        
     }
+    */
     
     /**
      * Retrieves the url with URI information of the mediasource that matches best.
@@ -169,6 +195,27 @@ public class MediaFragments extends MMObjectBuilder {
         }
         return mediaSourceBuilder.getLongUrl(mediaFragment, mediaSource, info);
     }
+
+    /** 
+     * Returns a List of all possible (unfiltered) ResponseInfo's for this Fragment.
+     * A list of arguments can be supplied, which is currently unused (but should not be null).
+     * It could contain a Map with preferences, or other information about the client.
+     *
+     * @author mm
+     */
+    protected List getURLs(MMObjectNode fragment, List arguments) {
+        List result = new ArrayList();
+
+        arguments.add(0, fragment);
+        Iterator i = getSources(fragment).iterator();
+        while (i.hasNext()) {
+            MMObjectNode source = (MMObjectNode) i.next();
+            result.addAll((List) source.getFunctionValue("urls", arguments));
+        }
+        arguments.remove(0);
+        return result;        
+    }
+
       
     /**
      * Retrieves the url (e.g. pnm://www.mmbase.org/music/test.ra) of the 
@@ -178,14 +225,14 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, etc.)
      * @return the url of the audio file
      */
-    private String getURL(MMObjectNode mediaFragment, Map info) {
-        log.debug("Getting url");
+    protected URL getURL(MMObjectNode mediaFragment, Map info) throws java.net.MalformedURLException  {
+        log.debug("Getting url of a fragment.");
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
         if(mediaSource == null) {
             log.error("Cannot determine url");
-            return "";
+            return new URL("");
         }
-        return mediaSourceBuilder.getUrl(mediaSource, info);
+        return mediaSourceBuilder.getURL(mediaSource, info);
     }
     
     /**
@@ -227,7 +274,7 @@ public class MediaFragments extends MMObjectBuilder {
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    public boolean isSubFragment(MMObjectNode mediafragment) {
+    protected boolean isSubFragment(MMObjectNode mediafragment) {
         int mediacount = mediafragment.getRelationCount("mediasources");        
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
@@ -237,7 +284,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param mediafragment sub media fragment
      * @return the parent media fragment
      */
-    public MMObjectNode getParentFragment(MMObjectNode mediafragment) {
+    protected MMObjectNode getParentFragment(MMObjectNode mediafragment) {
         Enumeration e = mediafragment.getRelatedNodes("mediafragments").elements();
         
         if(!e.hasMoreElements()) {
@@ -252,8 +299,9 @@ public class MediaFragments extends MMObjectBuilder {
      * Get all mediasources belonging to this mediafragment
      * @param mediafragment the mediafragment
      * @return All mediasources related to given mediafragment
+     * @scope  should be protected
      */
-    public List getMediaSources(MMObjectNode mediafragment) {
+    public List getSources(MMObjectNode mediafragment) {
         if (log.isDebugEnabled()) log.debug("Get mediasources mediafragment "+mediafragment.getNumber());
         while(isSubFragment(mediafragment)) {
             if (log.isDebugEnabled()) log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
@@ -274,14 +322,15 @@ public class MediaFragments extends MMObjectBuilder {
      * 
      * @param mediaFragment The MMObjectNode
      */
-    public  void removeMediaSources(MMObjectNode mediafragment) {
-        List ms = getMediaSources(mediafragment);
+    public  void removeSources(MMObjectNode mediafragment) {
+        List ms = getSources(mediafragment);
         for (Iterator mediaSources = ms.iterator() ;mediaSources.hasNext();) {
             MMObjectNode mediaSourceNode = (MMObjectNode) mediaSources.next();
             mediaSourceBuilder.removeRelations(mediaSourceNode);
             mediaSourceBuilder.removeNode(mediaSourceNode);
         }
     }
+
 
 
     // --------------------------------------------------------------------------------
