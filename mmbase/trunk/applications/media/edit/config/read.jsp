@@ -1,6 +1,5 @@
-<mm:context id="config">
+<%@include file="server.jsp" %><mm:context id="config">
  <mm:import id="configsubmitted" externid="config" from="parameters" />
-
  <mm:present referid="configsubmitted">
     <%-- for config-page --%>
     <mm:import id="lang"    externid="lang"   from="parameters"/>

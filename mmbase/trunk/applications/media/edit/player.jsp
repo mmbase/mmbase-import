@@ -16,14 +16,30 @@
 </head>
 <mm:cloud>
 <mm:node number="$fragment">
-<mm:field name="format(ram)">
-  <mm:compare value="ram">
-    <mm:write id="player" value="real" write="false" />
+
+<%-- determin which player to use --%>
+<mm:write referid="config.player">
+  <mm:compare value="real">
+      <mm:field name="format(ram)">
+         <mm:compare value="wmp">
+            <mm:write id="player" value="wm" write="false" />
+         </mm:compare>
+         <mm:compare value="wmp" inverse="true">
+            <mm:write id="player" value="real" write="false" />
+         </mm:compare>
+      </mm:field>
   </mm:compare>
-  <mm:compare value="ram" inverse="true">
-    <mm:write id="player" value="wm" write="false" />
+  <mm:compare value="wm">
+      <mm:field name="format(wmp)">
+         <mm:compare value="ram">
+            <mm:write id="player" value="real" write="false" />
+         </mm:compare>
+         <mm:compare value="ram" inverse="true">
+            <mm:write id="player" value="wm" write="false" />
+         </mm:compare>
+      </mm:field>
   </mm:compare>
-</mm:field>
+</mm:write>
 
 <body id="<mm:write referid="player" />">
 
@@ -36,9 +52,10 @@
 <tr>
     <td valign="top" background="images/movie_left.gif" width="32" ></td>
     <td valign="top" bgcolor="#717171">
-          <mm:write referid="config.player">
+          <mm:write referid="player">
           <mm:compare value="real">
-              <embed src="<mm:url referids="fragment" id="source" name="../view/mediafragment.jsp?format=rm" />"
+              <mm:import id="source"><%=thisServer(request)%>/mediafragment.rm?format=rm&environment=false&fragment=<mm:field name="number" /></mm:import>
+              <embed src="<mm:write referid="source" />"
                 width="260" 
                 height="300"   
                 type="audio/x-pn-realaudio-plugin"
