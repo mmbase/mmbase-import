@@ -17,7 +17,7 @@
 </mm:maywrite>
 <mm:maywrite inverse="true">
  <mm:import id="showtype">guivalue</mm:import>
-  <%= m.getString("change_node.maynotedit")%>
+<h2><%= m.getString("change_node.maynotedit")%></h2>
 </mm:maywrite>
 <%-- create the form
      by the way, it is not necessary to indicate that
@@ -74,7 +74,9 @@
   <th><%=m.getString("change_node.aliases")%></th>
   <td class="data" width="90%"><mm:aliaslist><mm:write /><mm:last inverse="true">, </mm:last></mm:aliaslist></td>
   <td class="navigate" width="0%">
- <a href="<mm:url referids="node_number" page="edit_aliases.jsp" />"><img src="images/select.gif" alt="[edit aliases]" width="20" height="20" border="0" align="right"/></a>     
+   <mm:maywrite>
+ <a href="<mm:url referids="node_number" page="edit_aliases.jsp" />"><img src="images/select.gif" alt="[edit aliases]" width="20" height="20" border="0" align="right"/></a> 
+   </mm:maywrite>    
  </td>
 </tr>
 </table>
