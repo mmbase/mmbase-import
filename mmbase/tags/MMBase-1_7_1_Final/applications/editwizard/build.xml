@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE project
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase editwizard project" default="dependent.jar" basedir=".">
+	<property name="project.name"     value="editwizard" />
+	<property name="project.package"   value="org/mmbase/applications/editwizard" />
+	<property name="project.target.templates.dir"   value="edit/wizard" />
+	<property name="project.extra.path" location="../dove/build/mmbase-dove.jar" />
+
+	&base;
+
+	<!-- jakarta commons FileUpload -->
+	<property name="fileupload.file" value="commons-fileupload-1.0" />
+	<property name="fileupload.url" value="http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}.tar.gz" />
+	<property name="fileupload.jar" value="${expand.dir}/commons-fileupload-1.0/commons-fileupload-1.0.jar" />
+
+
+	<target name="init.get">
+		<available property="fileupload.present" file="${download.dir}/${fileupload.file}.tar.gz" />
+		<available property="fileupload.expanded" file="${fileupload.jar}" />
+	</target>
+
+
+	<target name="dove">
+		<echo message="${applications.dir}/dove" />
+		<ant dir="${applications.dir}/dove" inheritAll="false" />
+	</target>
+
+	<target name="dependent.jar" depends="dove,fileupload,jar" />
+
+
+	<target name="dependent.package" depends="dependent.jar,fileupload,package" />
+
+	<target name="fileupload" depends="expand.fileupload">
+		<copy todir="${project.jar.dir}" file="${fileupload.jar}">
+		</copy>
+	</target>
+
+	<!-- Fileupload is necessary for the editwizards -->
+	<target name="get.fileupload" depends="init.get" unless="fileupload.present">
+		<get src="${fileupload.url}"
+			dest="${download.dir}/${fileupload.file}.tar.gz"
+			verbose="on" />
+	</target>
+
+	<target name="expand.fileupload" depends="get.fileupload" unless="fileupload.expanded">
+		<gunzip src="${download.dir}/${fileupload.file}.tar.gz" dest="${expand.dir}/${fileupload.file}.tar"/>
+		<untar src="${expand.dir}/${fileupload.file}.tar" dest="${expand.dir}"/>
+		<delete file="${expand.dir}/${fileupload.file}.tar" />
+	</target>
+
+	<target name="dependent.install" depends="dependent.jar,install,fileupload">
+		<copy todir="${release.lib.dir}" file="${fileupload.jar}" />
+	</target>
+
+</project>
+
+
+
+

@@ -1,0 +1,17 @@
+<!--
+Display result of command on specific xml file
+
+$PARAM1: command, only SHOW is available now
+$PARAM2: directory, e.g. builders, databases, modules
+$PARAM3: filename
+-->
+<PROCESSOR MMBASE>
+<SECURE>
+<html>
+<head><title>MMConfig</title></head>
+<body bgcolor="#ffffff">
+
+$MOD-CONFIG-$PARAM1-$PARAM2-$PARAM3
+
+</body>
+</html>

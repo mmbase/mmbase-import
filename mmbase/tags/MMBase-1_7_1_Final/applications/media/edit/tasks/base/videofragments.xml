@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+ [
+    <!ENTITY type          "video" >
+    <!ENTITY base          SYSTEM "mediafragments.xml">
+    <!ENTITY addsources    SYSTEM "sourceslist.xml" >
+]
+>
+
+<wizard-schema id="media">
+	<title>Base video stream editor</title>
+	<title xml:lang="nl">Basis videostream editor</title>
+  &base;
+</wizard-schema>

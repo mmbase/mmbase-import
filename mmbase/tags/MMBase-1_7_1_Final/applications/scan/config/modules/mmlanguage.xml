@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module>
+	<status>active</status>
+	<classfile>org.mmbase.module.gui.html.MMLanguage</classfile>
+
+	<!-- <properties>
+    @javadoc
+	 -->
+	<properties>
+		<!-- nl, dutch -->
+		<property name="nl_other_editors">Andere Editors</property>
+		<property name="nl_search">Zoeken</property>
+		<property name="nl_ok">Ok</property>
+		<property name="nl_new">Nieuw</property>
+		<property name="nl_fields">Velden</property>
+		<property name="nl_relations">Relaties</property>
+		<property name="nl_remove">Verwijder</property>
+		<property name="nl_display">Weergave</property>
+		<property name="nl_to">tot</property>
+		<property name="nl_of_total">van totaal</property>
+		<property name="nl_back">terug</property>
+		<property name="nl_yes">Ja</property>
+		<property name="nl_no">Nee</property>
+		<property name="nl_remove_object">Object Verwijderen</property>
+		<property name="nl_change_field">Verander Veld</property>
+		<property name="nl_go_to">Ga Naar</property>
+		<property name="nl_save_changes">Veranderingen Bewaren</property>
+		<property name="nl_do_not_save_changes">Veranderingen Niet Bewaren</property>
+		<property name="nl_create_relation">Relatie Aanmaken</property>
+		<property name="nl_remove_relation">Relatie Verwijderen</property>
+		<property name="nl_do_not_create_relation">Relatie Niet Aanmaken</property>
+		<property name="nl_age">Leeftijd</property>
+		<property name="nl_none">Geen</property>
+		<property name="nl_results_found">resultaten gevonden</property>
+
+		<!-- en, english -->
+		<property name="en_other_editors">Other Editors</property>
+		<property name="en_search">Search</property>
+		<property name="en_ok">Oke</property>
+		<property name="en_new">New</property>
+		<property name="en_fields">Fields</property>
+		<property name="en_relations">Relations</property>
+		<property name="en_remove">Remove</property>
+		<property name="en_display">Display</property>
+		<property name="en_to">to</property>
+		<property name="en_of_total">of total</property>
+		<property name="en_back">Back</property>
+		<property name="en_yes">Yes</property>
+		<property name="en_no">No</property>
+		<property name="en_remove_object">Remove Object</property>
+		<property name="en_change_field">Change Field</property>
+		<property name="en_go_to">Go To</property>
+		<property name="en_save_changes">Save Changes</property>
+		<property name="en_do_not_save_changes">Don't Save Changes</property>
+		<property name="en_create_relation">Create Relation</property>
+		<property name="en_remove_relation">Remove Relation</property>
+		<property name="en_do_not_create_relation">Don't Create Relation</property>
+		<property name="en_age">Age</property>
+		<property name="en_none">No</property>
+		<property name="en_results_found">results found</property>
+
+		<!-- sp, spanish -->
+		<property name="sp_other_editors">Otros editores</property>
+		<property name="sp_search">Buscar</property>
+		<property name="sp_ok">Ok</property>
+		<property name="sp_new">Nuevo</property>
+		<property name="sp_fields">Campos</property>
+		<property name="sp_relations">Relaciones</property>
+		<property name="sp_remove">Quitar</property>
+		<property name="sp_display">Mostrar</property>
+		<property name="sp_to">a</property>
+		<property name="sp_of_total">Del total</property>
+		<property name="sp_back">Atras</property>
+		<property name="sp_yes">Si</property>
+		<property name="sp_no">No</property>
+		<property name="sp_remove_object">Quitar objeto</property>
+		<property name="sp_change_field">Cambiar el campo</property>
+		<property name="sp_go_to">Ir a</property>
+		<property name="sp_save_changes">Guardar cambios</property>
+		<property name="sp_do_not_save_changes">No guardar cambios</property>
+		<property name="sp_create_relation">Crear una relacion</property>
+		<property name="sp_remove_relation">Quitar relacion</property>
+		<property name="sp_do_not_create_relation">No crear relacion</property>
+		<property name="sp_age">Edad</property>
+		<property name="sp_none">No</property>
+		<property name="sp_results_found">Resultados encontrados</property>
+	</properties>
+</module>
