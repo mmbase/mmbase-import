@@ -1260,18 +1260,22 @@ public class Controller {
 			if (po!=null) {
 				org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
 				String md5passwd = md5.transform(password);
-				if (!password.equals("blocked") && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd))) {
+				if (!password.equals("blocked") && (po.getPassword().equals(password) || po.getPassword().equals(md5passwd)) && !po.isBlocked()) {
 					virtual.setValue("state","passed");
 					virtual.setValue("posterid",po.getId());
 				} else {
 					virtual.setValue("state","failed");
-					virtual.setValue("reason","password not valid");
+                    if (po.isBlocked()) {
+                        virtual.setValue("reason","account blocked");
+                    } else {
+                        virtual.setValue("reason","password not valid");
+                    }
+
 				}	
 			} else {
 				virtual.setValue("state","failed");
 				virtual.setValue("reason","account not valid");
 			}
-		
 		}
 		return virtual;
 	}
