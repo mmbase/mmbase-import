@@ -55,7 +55,7 @@ public class MediaUrlComposer {
         mediaFragmentBuilder = mf;
         mediaSourceBuilder = ms;
         
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "urlcomposer.xml");
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "media" + File.separator + "urlcomposer.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for urlcomposer " + configFile + " does not exist");
             return;
