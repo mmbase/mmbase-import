@@ -12,6 +12,7 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">videosources</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">insrel</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">posrel</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">pools</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">publishtimes</builder>
@@ -20,6 +21,7 @@
   <neededreldeflist>
     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
     <reldef source="parent"  target="parent"  direction="bidirectional" guisourcename="Parent"  guitargetname="Child" builder="insrel" />
+    <reldef source="posrel"  target="posrel"  direction="bidirectional" guisourcename="Posrel"  guitargetname="Posrel" builder="posrel" />
   </neededreldeflist>
 
   <allowedrelationlist>
@@ -68,6 +70,7 @@
 
 	<relationsourcelist>
 		<relationsource builder="insrel" path="Media/insrel.xml" />
+		<relationsource builder="insrel" path="Media/posrel.xml" />
   </relationsourcelist>
   
   <contextsourcelist>
