@@ -48,7 +48,7 @@ public class CALC extends ProcessorModule {
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
-	 public Vector  getList(scanpage sp,StringTagger tagger, String value) {
+	 public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
     	String line = Strip.DoubleQuote(value,Strip.BOTH);
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {

@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.6 $ $Date: 2000-03-30 13:11:23 $
+ * @$Revision: 1.7 $ $Date: 2000-03-31 12:50:01 $
  */
 public class INFO extends ProcessorModule {
 
@@ -63,7 +63,7 @@ public class INFO extends ProcessorModule {
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
-	 public Vector getList(scanpage sp,StringTagger tagger, String value) {
+	 public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
     	String line = Strip.DoubleQuote(value,Strip.BOTH);
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {

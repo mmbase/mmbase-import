@@ -20,7 +20,7 @@ public interface  ProcessorInterface  {
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
-	abstract public Vector  getList(scanpage sp,StringTagger tagger, String value);
+	abstract public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException;
 
 	/**
 	 * Execute the commands provided in the form values

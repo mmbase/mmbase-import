@@ -151,7 +151,7 @@ public class Poll extends ProcessorModule  {
 	 * [what]	-	ANSWERS-[question-id]
 	 *				example: ANSWERS-903200
 	 */
-	 public Vector getList (scanpage sp, StringTagger tagger, String value) {
+	 public Vector getList (scanpage sp, StringTagger tagger, String value) throws ParseException {
 		Vector result = null;
 
 		String          line = Strip.DoubleQuote (value, Strip.BOTH);

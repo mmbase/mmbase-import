@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.6 2000-03-30 13:11:26 wwwtech Exp $
+ $Id: sessions.java,v 1.7 2000-03-31 12:50:04 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.6  2000/03/30 13:11:26  wwwtech
+ Rico: added license
+
  Revision 1.5  2000/03/29 10:05:00  wwwtech
  Rob: Licenses changed
 
@@ -42,7 +45,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.6 2000-03-30 13:11:26 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.7 2000-03-31 12:50:04 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -323,7 +326,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	public sessions() {
 	}
 
-	public Vector getList(scanpage sp, StringTagger tagger, String cmd) {
+	public Vector getList(scanpage sp, StringTagger tagger, String cmd) throws ParseException {
 		String val;
 		sessionInfo tmps;
 
