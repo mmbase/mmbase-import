@@ -12,8 +12,8 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.NotFoundException;
-import java.net.URL;
-import java.net.HttpURLConnection;
+import java.net.*;
+//import javax.net.ssl.*;
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.50 2004-06-15 17:34:40 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.51 2004-07-13 16:37:44 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -86,6 +86,25 @@ public class IncludeTag extends UrlTag {
 
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 
+            /*
+            if (connection instanceof HttpsURLConnection) {
+                ((HttpsURLConnection) connection).setHostnameVerifier(new HostnameVerifier() {
+                        public boolean verify(String hostname, SSLSession session) {
+                            return true;
+                        }
+                    }); 
+            }
+            */
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode >= 300) {
+                if (responseCode >= 500) {
+                    log.warn("Server error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage());
+                } else if (responseCode >= 400) {
+                    log.warn("Client error " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage());
+                } 
+                log.warn("Redirect " + responseCode + " during mm:include of " + includeURL + " " + connection.getResponseMessage() + " " + connection.getInstanceFollowRedirects());
+            }
             if (request != null) {
                 // Also propagate the cookies (like the jsession...)
                 // Then these, and the session,  also can be used in the include-d page
@@ -102,38 +121,32 @@ public class IncludeTag extends UrlTag {
                 }
             }
 
-            BufferedReader in;
-            String coding = connection.getContentEncoding();
-
-            // I don't understand really why this explicit treatment of the encoding is necessary,
-            // but anyhow it didn't work without this in sun jdk 1.3.1/orion 1.5.3
-            // it almost seems a hack like this.
-            if (log.isDebugEnabled()) log.debug("found content encoding " + coding);
-            if (coding == null) {
-                // default, steal from current response.
-                coding = response.getCharacterEncoding();
+            String encoding = connection.getContentEncoding();
+            log.info("Found content encoding " + encoding);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            InputStream inputStream = connection.getInputStream();
+            int c = inputStream.read();
+            while (c != -1) {
+                bytes.write(c);
+                c = inputStream.read();
             }
-            if (coding == null) { // stil null?
-                in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
-            } else {
-                try {
-                    in = new BufferedReader(new InputStreamReader (connection.getInputStream(), coding));
-                }  catch (UnsupportedEncodingException e) { // sometimes there are strange things there...
-                    log.debug("Found a strange encoding in connection: " + coding);
-                    in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
-                } catch (Exception e) {
-                    throw new TaglibException(e.getMessage(), e);
+            byte[] allBytes = bytes.toByteArray();
+            if (encoding == null) {
+                encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
+                String contentType = connection.getContentType();
+                if (contentType != null) { 
+                    String charset = GenericResponseWrapper.getEncoding(contentType);
+                    if (encoding == null) {
+                        encoding = charset;
+                    } else {
+                        if (!charset.equals(encoding)) {
+                            // interesing, some server sent XML with a charset. Let's ignore that (tomcat is silly in that)
+                        }
+                    }
                 }
             }
-
-            int buffersize = 10240;
-            char[] buffer = new char[buffersize];
-            StringBuffer string = new StringBuffer();
-            int len;
-            while ((len = in.read(buffer, 0, buffersize)) != -1) {
-                string.append(buffer, 0, len);
-            }
-            helper.setValue(debugStart(absoluteUrl) + string.toString() + debugEnd(absoluteUrl));
+            log.debug("Using " + encoding);
+            helper.setValue(debugStart(absoluteUrl) + new String(allBytes, encoding) + debugEnd(absoluteUrl));
 
             if (log.isDebugEnabled()) {
                 log.debug("found string: " + helper.getValue());
