@@ -259,4 +259,25 @@ public class BundleContainer implements BundleInterface {
     public String getLicenseBody() {
 	return activeBundle.getLicenseBody();
     }
+
+    public void setProgressBar(int stepcount) {
+	activeBundle.setProgressBar(stepcount);
+    }
+
+    public void increaseProgressBar() {
+	activeBundle.increaseProgressBar();
+    }
+
+    public void increaseProgressBar(int stepcount) {
+	activeBundle.increaseProgressBar(stepcount);
+    }
+
+   public int getProgressBarValue() {
+	return activeBundle.getProgressBarValue();
+   }
+
+   public int getPackageProgressBarValue() {
+	return activeBundle.getPackageProgressBarValue();
+   }
+
 }

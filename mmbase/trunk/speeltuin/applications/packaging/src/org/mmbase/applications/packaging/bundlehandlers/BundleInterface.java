@@ -54,4 +54,11 @@ public interface BundleInterface {
         public Enumeration getNeededPackages();
 
 	public String getPath();
+
+        public int getProgressBarValue();
+        public int getPackageProgressBarValue();
+        public void setProgressBar(int stepcount); 
+        public void increaseProgressBar();
+        public void increaseProgressBar(int stepcount);
+
 }
