@@ -414,12 +414,17 @@ public class scancache extends Module implements scancacheInterface {
 	}
 	
 	/**
-	 * Removes an entry from the cache.
+	 * Removes an entry from the local cache.
+	 * Memo if pool is PAGE key will only be removed from the local cache not from proxy
 	 * @param pool name of cache, "HENK" or "PAGE"
-	 * @param key url of page 
+	 * @param key URL of page to remove
 	 * @return nothing
 	 */
-	public void removeCacheEntry(String pool, String key) {
-			timepool.remove( pool+key );
+	public void remove(String poolName, String key) {
+			File file = new File(cachepath + poolName + key);
+			file.delete();
+			LRUHashtable pool=(LRUHashtable)pools.get(poolName);
+			if (pool!=null) pool.remove(key);
+			timepool.remove(poolName + key);
 	}
 }
