@@ -19,8 +19,9 @@ import org.mmbase.util.logging.*;
 /**
  * Class for creating builder configuration files.
  *
+ * @deprecated-now use org.mmbase.xml.BuilderWriter instead
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.15 2002-03-22 14:21:19 daniel Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.16 2002-03-26 13:16:32 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -38,20 +39,20 @@ public class XMLBuilderWriter  {
                         "<!DOCTYPE builder PUBLIC \"//MMBase - builder//\" \"http://www.mmbase.org/dtd/builder.dtd\">\n";
 
         StringBuffer body = new StringBuffer(500);
-		body.append(header);
-		body.append("<builder maintainer=\"");
-		body.append(bul.getMaintainer());
-		body.append("\" version=\"");
-		body.append(bul.getVersion());
-		body.append("\">\n\n");
-		
+        body.append(header);
+        body.append("<builder maintainer=\"");
+        body.append(bul.getMaintainer());
+        body.append("\" version=\"");
+        body.append(bul.getVersion());
+        body.append("\">\n\n");
+
         // status
         body.append("<!-- <status>\n");
         body.append("\twhat is the status of this builder options : active or inactive\n");
         body.append("-->\n");
         body.append("<status>active</status>\n\n");
-		
-		
+
+
         // classfile
         body.append("<!-- <classfile>\n");
         body.append("\tThis is a optional tag, it names the classfile that allows you to add\n");
@@ -110,7 +111,7 @@ public class XMLBuilderWriter  {
         body.append("<!-- descriptions per language as defined by ISO 639  -->\n");
 
         // XXX:escape descriptions and store them as CDATA
-		
+
         names=bul.getDescriptions();
         if (names!=null) {
             for (Enumeration e=names.keys();e.hasMoreElements();) {
@@ -126,19 +127,19 @@ public class XMLBuilderWriter  {
 
         // properties
         body.append("<!-- <properties>\n");
-     	body.append("you can define properties to be used by the classfile (if used) it uses\n");
-     	body.append("a key/value system. Its a optional tag.\n");
-		body.append("-->\n");
-		body.append("<properties>\n");
+        body.append("you can define properties to be used by the classfile (if used) it uses\n");
+        body.append("a key/value system. Its a optional tag.\n");
+        body.append("-->\n");
+        body.append("<properties>\n");
         Hashtable props=bul.getInitParameters();
         if (props!=null) {
             for (Enumeration e=props.keys();e.hasMoreElements();) {
                 String name=(String)e.nextElement();
-				String value=(String)props.get(name);
-    			body.append("\t<property name=\""+name+"\">"+value+"</property>\n");
-			}
-	    }
-		body.append("</properties>\n\n");
+                String value=(String)props.get(name);
+                body.append("\t<property name=\""+name+"\">"+value+"</property>\n");
+            }
+        }
+        body.append("</properties>\n\n");
 
         // fieldlists
         body.append("<!-- <fieldlist>\n");
@@ -230,17 +231,17 @@ public class XMLBuilderWriter  {
                     body.append("\t\t\t<!-- name of the field in the database -->\n");
                     body.append("\t\t\t<name>"+def.getDBName()+"</name>\n");
                     body.append("\t\t\t<!-- MMBase datatype and demands on it -->\n");
-					
+
                     String tmps = FieldDefs.getDBStateDescription(def.getDBState());
                     String tmpt = FieldDefs.getDBTypeDescription(def.getDBType());
                     int size=def.getDBSize();
-					
+
                     if (size==-1) {
                         body.append("\t\t\t<type state=\""+tmps+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n");
-					} else { 
-						body.append("\t\t\t<type state=\""+tmps+"\" size=\""+size+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n");
-					}
-					
+                    } else {
+                        body.append("\t\t\t<type state=\""+tmps+"\" size=\""+size+"\" notnull=\""+def.getDBNotNull()+"\" key=\""+def.isKey()+"\">"+tmpt+"</type>\n");
+                    }
+
                     body.append("\t\t</db>\n");
                     body.append("\t</field>\n\n");
                 }
@@ -262,28 +263,28 @@ public class XMLBuilderWriter  {
      * @param value the text to write
      * @return always <code>true</code>
      */
-	static boolean saveFile(String filename,String value) {
-		PrintWriter writer = null;
-		boolean retVal = true;
+    static boolean saveFile(String filename,String value) {
+        PrintWriter writer = null;
+        boolean retVal = true;
         try {
-			writer = new PrintWriter(new FileWriter(new File(filename)));
-			writer.print(value);
-			writer.flush();
+            writer = new PrintWriter(new FileWriter(new File(filename)));
+            writer.print(value);
+            writer.flush();
         }
-		catch(IOException e) {
+        catch(IOException e) {
             log.error(e.getMessage());
             log.error(Logging.stackTrace(e));
             retVal = false;
         }
-		finally {			
-			if(writer != null) {
-				if(writer.checkError()) {
-					log.error("saving file -"+filename+"- failed");
-					retVal = false;
-				}
-				writer.close();
-			}
-		}
+        finally {
+            if(writer != null) {
+                if(writer.checkError()) {
+                    log.error("saving file -"+filename+"- failed");
+                    retVal = false;
+                }
+                writer.close();
+            }
+        }
         return retVal;
     }
 }
