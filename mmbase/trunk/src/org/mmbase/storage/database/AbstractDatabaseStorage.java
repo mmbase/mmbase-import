@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.5 2002-11-22 08:28:03 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.6 2002-12-05 15:28:56 robmaris Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -114,6 +114,9 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         setCreateScheme(document.getCreateScheme());
         setCreateExtendedScheme(document.getCreateExtendedScheme());
         setMaxDropSize(document.getMaxDropSize());
+        
+        // Instantiate and initialize sql handler.
+        super.init(getFieldNameMap(), document);
     }
 
     /**
@@ -1099,18 +1102,4 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @return true if succesful
      */
     abstract public boolean updateStorage(MMObjectBuilder builder);
-
-    // QueryHandler method placeholders, need implementation
-
-    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
-        throw new UnsupportedOperationException("The getSupportLevel method from the QueryHandler is not implemented yet.");
-    }
-
-    public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException {
-        throw new UnsupportedOperationException("The getSupportLevel method from the QueryHandler is not implemented yet.");
-    }
-
-    public List getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
-        throw new UnsupportedOperationException("The getNodes method from the QueryHandler is not implemented yet.");
-    }
 }
