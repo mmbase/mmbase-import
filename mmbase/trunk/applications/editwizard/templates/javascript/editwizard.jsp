@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.26 2003-05-09 07:47:05 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.27 2003-05-09 08:32:21 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -226,8 +226,11 @@ function doSearch(el, cmd, sessionkey) {
                 constraints += fieldname+" = "+searchterm;
             }
         }
-        // make sure these fields are added to the fields-param
-        if (fields.indexOf(fieldname)==-1) fields += ","+fieldname;
+        // make sure these fields are added to the fields-param, but not if its the number field
+        // 
+        if (fields.indexOf(fieldname)==-1 && fieldname.indexOf("number")==-1) {
+            fields += ","+fieldname;
+        }
     }
     constraints += ")";
 
