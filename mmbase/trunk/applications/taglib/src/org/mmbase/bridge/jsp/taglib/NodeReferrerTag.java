@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
     private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
-    private String parentNodeId = null;
+    protected String parentNodeId = null;
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
      * to make it possible to refer to another node than the direct
@@ -69,5 +69,4 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     protected Node getNode() throws JspTagException {
         return findNodeProvider().getNodeVar();
     }
-
 }
