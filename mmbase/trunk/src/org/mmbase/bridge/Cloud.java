@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.42 2003-09-03 19:30:02 michiel Exp $
+ * @version $Id: Cloud.java,v 1.43 2003-12-17 20:50:26 michiel Exp $
  */
 public interface Cloud {
 
@@ -507,14 +507,12 @@ public interface Cloud {
             String searchDir, boolean distinct);
 
     /**
-     * Executed a query and returns the result as a NodeList.
+     * Executes a query and returns the result as a Cluster Node List (also if the query is a NodeQuery).
      * 
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
      */
     public NodeList getList(Query query);
-
-
 
 
     /**
