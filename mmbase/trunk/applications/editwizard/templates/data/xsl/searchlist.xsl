@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.16 2004-01-05 11:12:34 nico Exp $
+    @version $Id: searchlist.xsl,v 1.17 2004-02-02 12:36:10 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -92,14 +92,13 @@
                   <xsl:attribute name="class">odd</xsl:attribute>
                 </xsl:otherwise>
               </xsl:choose>
-
-              <td>
-                <input
-                  type="checkbox"
-                  style="visibility:hidden;"
-                  name="{@number}"
-                  did="{@number}"
-                  id="cb_{@number}" />
+              <td style="display: none;">
+              <input
+                type="checkbox"
+                style="visibility: hidden;"
+                name="{@number}"
+                did="{@number}"
+                id="cb_{@number}" />
               </td>
               <xsl:choose>
                 <xsl:when test="@type=&apos;images&apos;">
