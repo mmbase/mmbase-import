@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE web-app 
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <!-- Filter for jumpers -->
@@ -50,7 +50,7 @@
     <display-name>Dove</display-name>
     <description>
        adds the Dove protocol, which is used for communication with,
-       and passing commands to, the MMBase system using an xml format 
+       and passing commands to, the MMBase system using an xml format
     </description>
     <servlet-class>org.mmbase.applications.dove.servlet.DoveServlet</servlet-class>
     <load-on-startup>5</load-on-startup>
@@ -80,6 +80,13 @@
     <url-pattern>/xml/dove.xml</url-pattern>
   </servlet-mapping>
 
+  <!-- mapping for attachment-requests -->
+  <!-- uncomment this when using attachments builder
+  <servlet-mapping>
+    <servlet-name>servdb</servlet-name>
+    <url-pattern>/attachment.db/*</url-pattern>
+  </servlet-mapping>
+  -->
 
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
@@ -100,12 +107,12 @@
     <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
   </taglib>
 
-  <!-- mmbase-community-taglib, 
+  <!-- mmbase-community-taglib,
 
   Only works when community-application has been activated, which can
   be done after activating the needed builders (community, channel, chatter, message,
   people). To use it you also need the communityprc module to be active.
-  
+
   -->
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
