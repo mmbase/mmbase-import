@@ -1,4 +1,5 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:content type="text/html" expires="0">
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
 <mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
@@ -6,37 +7,36 @@
 <head>
   <title>MMBase Demo installation</title>
   <link rel="stylesheet" href="../mmbase/style/css/mmbase.css" type="text/css" />
+    <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
 </head>
 
 <body >
-<table align="center" width="97%" cellspacing="1" cellpadding="3" border="0">
-<tr>
+<table>
+  <tr>
     <th class="main" colspan="3">MMBase Demo Installation</th>
-</tr>
-<tr>
+  </tr>
+  <tr>
     <td colspan="3">
-<br />
-This section will help you install the various example applications that are shipped with MMBase.
-The applications are listed in the order in which they should be installed (some applications depend on each other).
-To install an application, click the 'INSTALL' link.<br />
-The Yahoo, Community, and BugTracker applications require some additional actions that can not (yet) be automatically started.<br />
-These are explained as you install them. You are advised to follow the notes.<br />
-You can return to this installation script any time.<br />
-<br />
+      <p>
+        This section will help you install the various example applications that are shipped with MMBase.
+        To install an application, click the 'INSTALL' link.
+      </p>
+      <p>
+        These are explained as you install them. You are advised to follow the notes.
+        You can return to this installation script any time.
+      </p>
     </td>
-</tr>
-<tr>
-<th>Step</th>
-<th>Task</th>
-<th>Progress</th>
-</tr>
-<mm:import externid="installstep" jspvar="installstep" vartype="Integer">-1</mm:import>
+  </tr>
+  <tr>
+    <th>Step</th> <th>Task</th> <th>Progress</th>
+  </tr>
+  <mm:import externid="installstep" jspvar="installstep" vartype="Integer">-1</mm:import>
         <%
            String[] steps= {
             "Resources",
             "MyNews",
             "Community",
-            "BugTracker",
             "Codings",
             "RichText",
             "MyCompany",
@@ -76,22 +76,20 @@ You can return to this installation script any time.<br />
         <%=msg%>
     </td>
     <td class="link" >
-                <% if (installed) {%>
-                     Installed,
-                     <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[review&nbsp;installation&nbsp;notes]</a>
-
-                <% } else { %>
-                <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[INSTALL&nbsp;NOW]</a>
-                <% } %>
+      <% if (installed) {%>
+        Installed
+        <%-- TODO XXX doesn't work <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[review&nbsp;installation&nbsp;notes]</a> --%>        
+      <% } else { %>
+        <a href="<mm:url page='<%="install.jsp?installstep="+step+"#step"+step%>' />">[INSTALL&nbsp;NOW]</a>
+      <% } %>
     </td>
-</tr>
-        <% } %>
-
-<tr><td colspan="3">&nbsp;</td></tr>
-
+  </tr>
+  <% } %>
+        
 </table>
 <hr />
 <a href="<mm:url page="." />"> back </a>
 </body>
 </html>
 </mm:cloud>
+</mm:content>
