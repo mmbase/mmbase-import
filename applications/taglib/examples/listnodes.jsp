@@ -3,12 +3,12 @@
 
 <mm:cloud>
 
-<mm:import externid="type"        >news</mm:import>
-<mm:import externid="constraints">[title] LIKE '%XML%'</mm:import>
-<mm:import externid="orderby"     />
-<mm:import externid="directions"  /> 
-<mm:import externid="max"        >10</mm:import>
-<mm:import externid="offset"     />
+<mm:import externid="type"        from="parameters">news</mm:import>
+<mm:import externid="constraints" from="parameters">[title] LIKE '%XML%'</mm:import>
+<mm:import externid="orderby"     from="parameters" />
+<mm:import externid="directions"  from="parameters" /> 
+<mm:import externid="max"         from="parameters">10</mm:import>
+<mm:import externid="offset"      from="parameters"/>
 
 <html>
 
