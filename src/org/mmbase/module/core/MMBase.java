@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.110 2004-02-24 13:49:03 michiel Exp $
+ * @version $Id: MMBase.java,v 1.111 2004-03-15 09:43:53 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -556,7 +556,6 @@ public class MMBase extends ProcessorModule {
     public MMObjectBuilder getBuilder(String name) throws CircularReferenceException {
         MMObjectBuilder builder = getMMObject(name);
         if (builder == null && (mmbaseState == STATE_LOAD)) {
-
             // MM:  odd way to check this. Could it not be done a bit more explicitely?
             if (builderLoading(name)) {
                 throw new CircularReferenceException("Circular reference to builder with name '" + name + "': currently loading " + loading);
@@ -1373,7 +1372,8 @@ public class MMBase extends ProcessorModule {
         log.service("Initializing storage");
         // check if there is a storagemanagerfactory specified
         String factoryClassName = getInitParameter("storagemanagerfactory");
-        if (factoryClassName != null) {
+
+        if (factoryClassName != null) { // 'new' storage
             try {
                 storageManagerFactory = StorageManagerFactory.newInstance(this);
                 // if so, instantiate the support class wrapper for the storage layer
@@ -1384,7 +1384,7 @@ public class MMBase extends ProcessorModule {
                 log.error(se.getMessage());
                 throw new StorageError();
             }
-        } else {
+        } else { // deprecated code for 'old' storage implementations:
             File databaseConfig = null;
             String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
             String databasename = getInitParameter("DATABASE");
@@ -1427,7 +1427,7 @@ public class MMBase extends ProcessorModule {
             log.info("Using class: '" + database.getClass().getName() + "' with config: '" + databaseConfig + "'.");
             // init the database..
             database.init(this, dbdriver);
-        }
+        } // end deprecated code
     }
 
     /**
