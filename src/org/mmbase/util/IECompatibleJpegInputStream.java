@@ -22,7 +22,7 @@ import java.io.*;
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.4 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.5 2005-02-09 21:18:20 keesj Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
@@ -138,7 +138,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
      * Util method that uses the IECompatibleInputStream to convert a byte array
      * if the content is not a jpeg the content is not affected
      * @param in the byte array
-     * @returnthe converted (ie compatible) jpeg
+     * @return the converted (ie compatible) jpeg
      */
     public static byte[] process(byte[] in) {
         try {
