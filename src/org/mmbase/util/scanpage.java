@@ -1,12 +1,3 @@
-/*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
 package org.mmbase.util;
 
 import java.lang.*;
@@ -25,7 +16,7 @@ import org.mmbase.module.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.5 2000-03-10 12:09:58 wwwtech Exp $
+ * @version $Id: scanpage.java,v 1.6 2000-03-28 16:00:15 wwwtech Exp $
  */
 public class scanpage {
 	public ProcessorInterface processor;
@@ -130,7 +121,10 @@ public class scanpage {
 	*/
 	public String getUrl()
 	{
-		return req.getRequestURI()+"?"+req.getQueryString();
+		if( req != null )
+			return req.getRequestURI()+"?"+req.getQueryString();
+		else
+			return null;
 	}
 
 
