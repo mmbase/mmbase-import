@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Take the systemId and converts it into a local file, using the MMBase config path
  *
  * @author Gerard van Enk
- * @version $Revision: 1.12 $ $Date: 2002-04-17 13:17:51 $
+ * @version $Revision: 1.13 $ $Date: 2002-08-14 14:25:27 $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -29,12 +29,21 @@ public class XMLEntityResolver implements EntityResolver {
     private String dtdpath;
     private boolean hasDTD; // tells whether or not a DTD is set - if not, no validition can take place
 
+    private boolean validate;  
+
     /**
      * empty constructor
      */
     public XMLEntityResolver() {
         hasDTD = false;
         dtdpath = null;
+        validate = true;
+    }
+
+    public XMLEntityResolver(boolean v) {
+        hasDTD = false;
+        dtdpath = null;
+        validate = v;
     }
 
     /**
@@ -44,6 +53,9 @@ public class XMLEntityResolver implements EntityResolver {
 
         //does systemId contain a mmbase-dtd
         if ((systemId == null) || (systemId.indexOf("http://www.mmbase.org/") == -1)) {
+            if (! validate) {
+                return new InputSource(new StringReader(""));
+            }
             // it's a systemId we can't do anything with,
             // so let the parser decide what to do
             return null;
@@ -51,7 +63,7 @@ public class XMLEntityResolver implements EntityResolver {
             // cannot determine the dtd - create an empty dtd stream instead
             return new InputSource(new StringReader(""));
         } else {
-            hasDTD = true;
+            hasDTD = true ;
             int i = systemId.indexOf("/dtd/");
             String dtdName = systemId.substring(i+5);
             String configpath = MMBaseContext.getConfigPath();

@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.17 2002-06-26 11:36:04 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.18 2002-08-14 14:25:27 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -80,11 +80,14 @@ public class XMLBasicReader  {
             // get a new documentbuilder...
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
+
+
             // turn validating on, or not
-            XMLEntityResolver resolver = new XMLEntityResolver(); // strange to ask the resolver is mmbase is initilized
+            XMLEntityResolver resolver = new XMLEntityResolver(validating); // strange to ask the resolver is mmbase is initilized
             boolean validate = validating && resolver.canResolve();
 
             // get docuemtn builder AFTER setting the validation
+            dfactory.setValidating(validate);
             dfactory.setValidating(validate);
             db = dfactory.newDocumentBuilder();
 
