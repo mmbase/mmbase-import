@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.111 $ $Date: 2001-12-07 11:48:08 $
+ * @version $Revision: 1.112 $ $Date: 2002-01-08 09:47:32 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1874,8 +1874,8 @@ public class MMObjectBuilder extends MMTable {
      * @param nodeNumber the numbve ror alias of the node to filter on
      * @param version the version number (or <code>null</code> if not applicable) to filter on
      * @return the found path as a <code>String</code>, or <code>null</code> if not found
-     * @deprecated This is a utility method for use with a number of SCAN commands. Since it does not actually require knowledge of the nodes,
-     * this method should be moved to the {@link org.mmbase.module.gui.html.scanparser} class.
+	 * This method should be added to the bridge so jsp can make use of it. 
+	 * This method can be overriden to make an even smarter search possible.
      */
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         File dir = new File(documentRoot+path);
