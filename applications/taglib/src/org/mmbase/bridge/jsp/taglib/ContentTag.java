@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.16 2003-11-18 19:36:22 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.17 2003-12-03 17:14:04 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -178,7 +178,7 @@ public class ContentTag extends LocaleTag  {
                 }
             }
             String defaultEncoding = element.getAttribute("defaultencoding");
-            if (! defaultEncoding.equals("")) {
+            if (! defaultEncoding.equals("NOTSPECIFIED")) {
                 defaultEncodings.put(type, defaultEncoding);
             }
         }
@@ -299,15 +299,18 @@ public class ContentTag extends LocaleTag  {
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
-        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-        response.setLocale(locale);
         String type = getType();
-        String enc  = getEncoding();
-        log.debug("Found encoding " + enc);
-        if (enc.equals("")) {
-            response.setContentType(getType());
-        } else {
-            response.setContentType(getType() + "; charset=" + enc);
+
+        if (! type.equals("")) {
+            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+            response.setLocale(locale);
+            String enc  = getEncoding();
+            log.debug("Found encoding " + enc);
+            if (enc.equals("")) {
+                response.setContentType(getType());
+            } else {
+                response.setContentType(getType() + ";charset=" + enc);
+            }
         }
         if (getPostProcessor() == null) {
             log.debug("no postprocessor");
@@ -321,24 +324,27 @@ public class ContentTag extends LocaleTag  {
 
     public int doAfterBody() throws JspTagException {       
         if (bodyContent != null) {
-            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
-                long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME;
-                response.setDateHeader("Expires", later);
-                response.setHeader("Cache-Control", "public");
-            } else {
-                long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME * 1000);
-                if (exp == 0) { // means : cannot be cached!
-                    response.setHeader("Cache-Control", "no-cache");
-                    response.setHeader("Pragma","no-cache");
-                    response.setDateHeader("Expires",  System.currentTimeMillis());
-                } else {
-                    long later = System.currentTimeMillis() + exp * 1000;
+            if (! getType().equals("")) {
+                HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                if (expires == Attribute.NULL && request.getSession(false) == null) { // if no session, can as well cache in proxy
+                    long later = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME;
                     response.setDateHeader("Expires", later);
                     response.setHeader("Cache-Control", "public");
+                } else {
+                    // perhaps default cache behaviour should be no-cache if there is a session?
+                    long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME * 1000);
+                    if (exp == 0) { // means : cannot be cached!
+                        response.setHeader("Cache-Control", "no-cache");
+                        response.setHeader("Pragma","no-cache");
+                        response.setDateHeader("Expires",  0); //System.currentTimeMillis());
+                    } else {
+                        long later = System.currentTimeMillis() + exp * 1000;
+                        response.setDateHeader("Expires", later);
+                        response.setHeader("Cache-Control", "public");
+                    }
+                    
                 }
-                
             }
             CharTransformer post = getPostProcessor();
             if (post != null) {
