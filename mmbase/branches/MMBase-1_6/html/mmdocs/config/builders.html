@@ -1,0 +1,193 @@
+<HTML>
+<TITLE>builder config file</TITLE>
+<BODY BGCOLOR="#FFFFFF">
+
+
+<H2><B>builder.dtd , builders as urls,people,images ... </B></H2>
+<BR>
+
+
+
+<B>&lt;builder maintainer="mmbase.org" version="0"&gt;</B>
+<BR>
+This file contains all the settings for one builder<BR><BR>
+<B>maintainer</B> - maintainer of the builder defined as a domain<BR>
+<B>version</B> - version of the builder<BR>
+<BR>
+<BR>
+<BR>
+
+
+
+<B>&lt;status&gt;active&lt;/status&gt;</B>
+<BR>
+<B>value</B> - state of the builder either active or inactive<BR>
+<BR>
+<BR>
+<BR>
+
+
+
+<B>&lt;classfile&gt;Urls&lt;/classfile&gt;</B>
+<BR>
+<B>value</B> -  a optional tag, it names the classfile that allows you to add support routines or changes them on a per builder base. For example images has routines to image support.<BR><BR>
+
+possible values : 'Dummy' makes mmbase use the default setup, short name : 'Urls' will start class : org.mmbase.module.builders.Urls.class, long name : 'nl.vpro.mmbase.module.builders.Urls' will start that class
+<BR>
+<BR>
+<BR>
+
+
+
+<B>&lt;searchage&gt;31&lt;/searchage&gt;</B>
+<BR>
+<B>value</B> - how old may the objects be when searching in a editor (this is a default value users can allways override).
+<BR>
+<BR>
+<BR>
+
+
+<B>&lt;names&gt;</B>
+<BR>
+names defines the different names used in user visible parts, singular for for talking about 1 object (Url,Person) and plurar for talking about multiple. all defined in 
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;singular xml:lang="en"&gt;URL&lt;/singular&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>lang</B> - Country code as defined by ISO 639<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - Translation for that language<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;plural xml:lang="en"&gt;URLS&lt;/plural&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>lang</B> - Country code as defined by ISO 639<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - Translation for that language<BR>
+<B>&lt;/names&gt;</B>
+<BR>
+<BR>
+<BR>
+
+
+
+<B>&lt;descriptions&gt;</B>
+<BR>
+        small description of the builder for human reading
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;description xml:lang="en"&gt;URL&lt;/description&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>lang</B> - Country code as defined by ISO 639<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - Translation for that language<BR>
+<B>&lt;/description&gt;</B>
+
+
+<BR>
+<BR>
+<BR>
+<B>&lt;properties&gt;</B>
+<BR>
+	Define possible properties for this builder, to be used getInitParament(name)
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;property name="ImageConvert.ConvertorRoot" &gt;/usr/local/&lt;/property&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>name</B> - name of the property<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - value of that property<BR>
+<B>&lt;/properties&gt;</B>
+
+
+<BR>
+<BR>
+<BR>
+<BR>
+<B>&lt;fieldlist&gt;</B>
+<BR>
+defines the different fields in this object, be carefull the order is important once defined keep them in the same order.  If you use number and owner (the 2 default fields, please check the docs for this)
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;field&gt;</B>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;gui&gt;</B>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;guiname xml:lang="en"&gt;Owner&lt;/guiname&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>lang</B> - by ISO 639<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - Description of field in that language<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;guitype&gt;integer&lt;/guiname&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>guitype</B> - defines the gui type used in the editors, the basic ones are integer, string <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+field,float,double,long but other types are possible and depend on your the editors you <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+use (its guitypes).<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;/gui&gt;</B>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;editor&gt;</B>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;positions&gt;</B>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;input&gt;3&lt;/input&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - the input/edit possition inside the editor (-1 if not shown)<BR><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;search&gt;3&lt;/search&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - the place of the field in the search selector (-1 if not shown)<BR><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;list&gt;3&lt;/list&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - the place of the field in the search result list (-1 if not shown)<BR><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;/positions&gt;</B>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;/editor&gt;</B>
+<BR><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;db&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;name&gt;title&lt;/name&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - table name we want in our database (will be automapped if needed)<BR><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;type state="persistent" notnull="true" key="true"&gt;STRING&lt;/type&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>state</B> - storage type, persistant or virtual<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>notnull</B> - can this field be null, true of false<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>key</B> - is this field part of the builders key, true of false<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>size</B> - optional size of field (valid on STRING AND BYTE)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>value</B> - MMBase storage type options : STRING, INTEGER, BYTE, DOUBLE, <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+FLOAT,LONG<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;/db&gt;</B><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<B>&lt;/field&gt;</B><BR>
+<B>&lt;/fieldlist&gt;</B>
+<BR><BR>
+<B>&lt;/builder&gt;</B>
+
+
+</BODY>
+</HTML>

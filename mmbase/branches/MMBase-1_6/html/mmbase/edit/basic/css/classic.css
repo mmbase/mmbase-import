@@ -1,0 +1,149 @@
+@import url(base.css);
+
+body.basic { 
+    background-color: white;
+    margin-top: 1em;
+    color: black; 
+}
+
+body.navigationbar {
+    background-color: white;
+    color: black;
+}
+
+a:link    { color: black; }
+a:visited { color: black; }
+a:active  { color: gray; }
+a:hover   { color: gray; }
+
+
+span.alt {
+ display: none;
+}
+
+span:before {
+ content: "##";
+}
+
+span.select {
+ background: center #0f0;
+ color: #0f0;
+ width="20"; 
+}
+
+span.create {
+ background: center #00f;
+ color: #00f;
+  width="20"; 
+}
+span.change {
+ background: center #00f;
+ color: #00f;
+  width="20"; 
+}
+span.delete {
+ background: center #f00;
+ color: #f00;
+  width="20"; 
+}
+
+span.previous {
+  background: center url(../images/previous.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.previous:before {
+  content: url(../images/previous.gif); /* makes it work in Mozilla */
+}
+
+span.next {
+  background: center url(../images/next.gif); /* makes it work in IE */
+  width: 20px;
+}
+
+span.next:before {
+  content: url(../images/next.gif); /* makes it work in Mozilla */
+}
+
+
+
+
+
+table { 
+}
+th {
+  background-color: black;
+   color: white;
+   font-weight:bold
+}
+
+table.edit th {
+ background-color: #bbb;
+ color: black;
+}
+
+table.list   { 
+		width : 93%; 
+		border: solid black;
+		border-width: 1;
+		border-spacing: 0;
+}
+
+table.list td {
+    vertical-align : top;
+    horizontal-align : left;	
+	border: solid black thin;
+ padding: 1;    
+ cell-spacing: 1;    
+}	
+
+table.list th {
+   background-color: #bbb;
+   color: black;
+   font-weight:bold
+}
+
+textarea.small {
+     height: 6em;
+}
+textarea.big   {
+	 height: 15em;
+}
+
+.data {
+  background-color: #bbb;
+ color: black;
+  text-align: right;
+  font-weight:bold
+}
+.navigate {
+    background-color: white;
+    color: black;
+}
+
+.edit {
+     background-color: white;
+     color: black;
+}
+.search {
+     background-color: white;
+     color: black;
+}
+
+.linkdata {
+     background-color: white;
+     color: black;
+     text-align: center;
+}
+
+.listdata {
+     background-color: white;
+     color: black;
+     text-align: left;
+}
+
+.multidata  {
+     background-color: white;
+     color: black;
+     padding-top: 1em;
+}

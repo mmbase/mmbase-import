@@ -1,0 +1,930 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+[
+]>
+<article
+class="specification"
+><title
+>Dove 1.1 XML API</title
+><articleinfo
+><author
+><firstname
+>Pierre</firstname
+><surname
+>van Rooden</surname
+></author
+><legalnotice
+><para
+>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para
+><para
+>The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license</para
+></legalnotice
+><releaseinfo
+>Version 1.0 was released with MMBase 1.5.1. Version 1.1 is included with MMBase 1.6.</releaseinfo
+><releaseinfo
+>MMBase 1.5 includes a beta version of Dove.</releaseinfo
+><date
+>20/7/2002</date
+></articleinfo
+><section
+><title
+>Introduction</title
+><para
+>The Dove is a support class for MMBase, which adds a protocol for communication with, and passing commands to, the MMBase system using an XML format. The current implementation (org.mmbase.applications.dove.Dove) makes use of the MMCI to communicate with MMBase. Alternate implementations (i.e. versions that work on the Core) can be implemented by extending the AbstractDove class. Every implementation should at the least support the XML format presented here, though it is possible that implementations add custom commands or functionality. Commands are run by passing an XML DOM root element to an instance of Dove (the request). The calling member function returns an Element that contains the result of the passed command (the response). This document focuses on the structure of the request and response XML (the Dove Communication API). The actual mechanics for instantiation of the Dove class and calling its member functions are documented in the Dove class API.</para
+><para
+>The version noted here is version 1.0, which is included with MMBase version 1.5.</para
+><sidebar
+><title
+>A Note On XML Validation</title
+><para
+>The XML you pass to the Dove is an already parsed tree, to support varying methods of obtaining the XML. This means that XML validation need be done by the calling code.</para
+><para
+>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognize a tag. Future implementations may forgo this kind of &#39;validation&#39;, so assuming this behavior is discouraged, and is not a part of the API specification.</para
+><note
+><para
+>Specific behavior of the default Dove implementation are included in this document as a note (like this).</para
+></note
+></sidebar
+><sidebar
+><title
+>A Note on Syntax</title
+><para
+>The commands handled below will include a syntax description and, were appropriate, an example.</para
+><programlisting
+>The syntax descriptions will be in a DTD format, and shown as source text (like this).</programlisting
+><para
+>Only syntax relevant to the appropriate section will be shown (the actual DTD differs slightly as some elements are used in various places).</para
+><orderedlist
+><title
+>For more information on how to read DTD&#39;s, see:</title
+><listitem
+><para
+>W3 Schools: <ulink
+url="http://www.w3schools.com/dtd/default.asp"
+>http://www.w3schools.com/dtd/default.asp</ulink
+></para
+></listitem
+><listitem
+><para
+>Zvon: <ulink
+url="http://www.zvon.org/xxl/DTDTutorial/General/book.html"
+>http://www.zvon.org/xxl/DTDTutorial/General/book.html</ulink
+></para
+></listitem
+></orderedlist
+><para
+>The examples are fictitious XML documents. To shorten the examples, the XML declaration and DOCTYPE elements are not included.</para
+><programlisting
+>The XML examples, or fractions thereof, are shown as source text (like this).
+The part of the example that deals with the XML tag being handled is <emphasis
+role="bold"
+>emphasized.</emphasis
+></programlisting
+><orderedlist
+><title
+>For more information on XML, see:</title
+><listitem
+><para
+>W3 Schools:<ulink
+url="http://www.w3schools.com/xml/default.asp"
+>http://www.w3schools.com/xml/default.asp</ulink
+></para
+></listitem
+><listitem
+><para
+>Zvon: <ulink
+url="http://www.zvon.org/xxl/XMLTutorial/General/book.html"
+>http://www.zvon.org/xxl/XMLTutorial/General/book.html</ulink
+></para
+></listitem
+></orderedlist
+><para
+>This document deals with three versions of Dove: 1.0 beta (included in MMBase 1.5), 1.0 (included in MMBase 1.5.1), and 1.1. (MMBase 1.6).</para
+><para
+>Where appropriate, notes will be used to indicate which versions support certain functionality.</para
+></sidebar
+><section
+><title
+>Passing Commands</title
+><para
+>The root element of the request xml is the <emphasis
+>request</emphasis
+> tag.</para
+><para
+>Each request tag contains at most one security tag (containing user login information), and one or more dove command tags (each tag being one command). If more than one command is passed, the commands are handled in the order that they apprear in the xml.</para
+><programlisting
+>&#60;!ELEMENT request (security?,
+          (getdata|getnew|getnewrelation|getrelations|
+           getconstraints|getlist|put)+) &#62;</programlisting
+><para
+>The commands that should be comprehended are : getdata, getnew, getnewrelation, getrelations, getconstraints, getlist, and put.</para
+><note
+><para
+>Note: Custom Dove implementations may implement additional commands.</para
+></note
+><para
+>The command tags support an id attribute. The attribute has no significance to the Dove, but is ment to support a client-generated id system. When an id attribute is provided, this attribute is also returned in the appropriate tag in the response.</para
+><para
+>The result of the commands are tallied and returned in an xml with as root the <emphasis
+>response</emphasis
+> tag.</para
+><para
+>The body of the xml contains either an error tag (when connecting to MMBase failed), or a list of tags containing the results of the command passed, in the order that those commands were given. The response does not contain any security information, even if the request did.</para
+><programlisting
+>&#60;!ELEMENT response (getdata|getnew|getnewrelation|getrelations|
+           getconstraints|getlist|put|error)+ &#62;</programlisting
+><para
+>Each command contains the result of that command or an error tag if the command failed.</para
+><note
+><para
+>Note: If Dove cannot handle the command, an error tag is returned instead to stay compliant with the response dtd. It is recommended you validate a document before passing it to the Dove.</para
+></note
+></section
+><section
+><title
+>Security</title
+><para
+>It is possible to pass a security tag to Dove, enabling the class to log in on MMBase. The tag accepts a name and password attribute, as well as a cloud name and a login method name. These attributes are similar in meaning to the attributes of the cloud tag in the MMBase taglib (documented elsewhere). All attributes are optional. In generla, name and password will be required unless the default method for authentication is overruled.</para
+><programlisting
+>&#60;!ELEMENT security EMPTY&#62;
+&#60;!ATTLIST security name NMTOKEN #IMPLIED &#62;
+&#60;!ATTLIST security password NMTOKEN #IMPLIED &#62;
+&#60;!ATTLIST security method CDATA &#39;name/password&#39; &#62;
+&#60;!ATTLIST security cloud CDATA &#39;mmbase&#39; &#62;</programlisting
+><example
+><title
+>Example:</title
+><programlisting
+>&#60;request&#62;<emphasis
+role="strong"
+>
+
+  &#60;security name=&#34;admin&#34; password=&#34;admin2k&#34; /&#62;</emphasis
+>
+
+  &#60;getdata&#62;&#60;object number=&#34;675&#34; /&#62;&#60;/getdata&#62;
+
+&#60;/request&#62;</programlisting
+></example
+><note
+><para
+>Note: Dove does not allow anonymous access: if you do not provide a security login, you need to provide a secure MMCI cloud as an additional parameter when passing the XML.</para
+></note
+></section
+><section
+><title
+>Errors</title
+><para
+>hen the Dove fails to execute a command it returns an error tag. An error tag contains a type attribute that details the type of the error.</para
+><itemizedlist
+><listitem
+><para
+>parser</para
+><para
+>The xml given is invalid or does not follow the grammar. This likely means there is a bug in the client code.</para
+></listitem
+><listitem
+><para
+>server</para
+><para
+>The code invoked is either not yet implemented or another, server-related, error occurred (such as no memory, bad configuration, etc.). Server errors entirely fail a request.</para
+></listitem
+><listitem
+><para
+>client</para
+><para
+>The data requested could not be retrieved or values specified were invalid. I.e. a requested node does not exist (any more), or a put failed due to invalid data.</para
+></listitem
+></itemizedlist
+><para
+>The body of the tag contains a description of the actual error.</para
+><programlisting
+>&#60;!ENTITY % errortype &#34;(server,parser,client)&#34;&#62;
+&#60;!ELEMENT error (#PCDATA)&#62;
+&#60;!ATTLIST error type %errortype #REQUIRED &#62;</programlisting
+><para
+>If the error occurs due to a security issue, only the error is returned (no command is executed).</para
+><example
+><title
+>Example:</title
+><programlisting
+>&#60;response&#62;
+  <emphasis
+role="bold"
+>&#60;error type=&#34;client&#34;&#62;Authentication error : password invalid&#60;/error&#62;
+</emphasis
+>&#60;/response&#62;</programlisting
+></example
+><para
+>If the error occurred while attempting to execute a command, it occurs at the location where the error occurred.</para
+><example
+><title
+>Example:</title
+><programlisting
+>&#60;response&#62;
+
+  &#60;getdata&#62;
+    &#60;object number=&#34;234&#34;&#62;
+      <emphasis
+role="bold"
+>&#60;error type=&#34;client&#34;&#62;node not found&#60;/error&#62;</emphasis
+>
+    &#60;/object&#62;
+ &#60;/getdata&#62;
+
+&#60;/response&#62;</programlisting
+></example
+><note
+><para
+>Note: Except during a put, Dove attempts to continue execution when it runs into an error.</para
+></note
+></section
+></section
+><section
+><title
+>Commands</title
+><para
+>The following pages list the commands that can be passed to the Dove.</para
+><para
+>An implementation should support the following commands:</para
+><table
+frame="all"
+><title
+>Dove Commands</title
+><tgroup
+cols="2"
+><tbody
+><row
+><entry
+><command
+>getdata</command
+></entry
+><entry
+>Retrieves an MMBase node</entry
+></row
+><row
+><entry
+><command
+>getnew</command
+></entry
+><entry
+>Returns a new, empty node</entry
+></row
+><row
+><entry
+><command
+>getnewrelation</command
+></entry
+><entry
+>Returns a new, empty relation node</entry
+></row
+><row
+><entry
+><command
+>getrelations</command
+></entry
+><entry
+>Returns the relations of a node of a certain role</entry
+></row
+><row
+><entry
+><command
+>getconstraints</command
+></entry
+><entry
+>Returns the constraints of a node type</entry
+></row
+><row
+><entry
+><command
+>getlist</command
+></entry
+><entry
+>Returns the constraints of a node type</entry
+></row
+><row
+><entry
+><command
+>put</command
+></entry
+><entry
+>Returns the constraints of a node type</entry
+></row
+></tbody
+></tgroup
+></table
+></section
+><section
+><title
+>getdata</title
+><para
+>A <command
+>getdata</command
+> command retrieves objects from MMBase by their number.</para
+><para
+>The command should contain one or more object tags, each tag referencing an object through the number attribute. If the referenced object can be found, the object, along with type and all its fields, is returned in the response. If retrieving the object fails, the returned response object tag contains an error tag describing the problem.</para
+><para
+>If you do not want to retrieve all an object&#39;s fields, you can specify the fields you want to retrieve by including field tags in the body of the object tag. The field tags&#39; name attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned. Note that you should not retrieve relation objects directly - use <command
+>getrelations</command
+> instead.</para
+><programlisting
+>&#60;!ELEMENT getdata (object+) &#62;
+&#60;!ATTLIST getdata id ID #IMPLIED&#62;
+
+&#60;!ELEMENT object (field*)&#62;
+&#60;!ATTLIST object number NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT field EMPTY&#62;
+&#60;!ATTLIST field name NMTOKEN #REQUIRED &#62;</programlisting
+><para
+>The response contains, aside from the fields, the type of the object.</para
+><programlisting
+>&#60;!ELEMENT getdata (object+) &#62;
+&#60;!ATTLIST getdata id ID #IMPLIED&#62;
+
+&#60;!ELEMENT object (field*)&#62;
+&#60;!ATTLIST object did ID #IMPLIED&#62;
+&#60;!ATTLIST object number NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST object type NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT field (#PCDATA) &#62;
+&#60;!ATTLIST field did ID #IMPLIED&#62;
+&#60;!ATTLIST field name NMTOKEN #REQUIRED &#62;
+</programlisting
+><example
+><title
+>Example</title
+><programlisting
+>&#60;request&#62;<emphasis
+role="bold"
+>
+
+  &#60;getdata id=&#34;1&#34;&#62;
+    &#60;object number=&#34;675&#34; /&#62;
+  &#60;/getdata&#62;
+
+  &#60;getdata id=&#34;2&#34;&#62;
+    &#60;object number=&#34;672&#34; &#62;
+     &#60;field name=&#34;title&#34; /&#62;
+    &#60;/object&#62;
+    &#60;object number=&#34;671&#34; &#62;
+     &#60;field name=&#34;name&#34; /&#62;
+     &#60;field name=&#34;url&#34; /&#62;
+    &#60;/object&#62;
+  &#60;/getdata&#62;</emphasis
+>
+
+&#60;/request&#62;</programlisting
+><para
+>The result of this command could look like this:</para
+><programlisting
+>&#60;response&#62;
+
+  <emphasis
+role="bold"
+>&#60;getdata id=&#34;1&#34;&#62;
+    &#60;object number=&#34;675&#34; type=&#34;people&#34;&#62; 
+      &#60;field name=&#34;firstname&#34;&#62;Harrison&#60;/field&#62;
+      &#60;field name=&#34;lastname&#34;&#62;Ford&#60;/field&#62;
+      &#60;field name=&#34;email&#34;&#62;harrisonford@hollywood.com&#60;/field&#62;
+    &#60;/object&#62;
+  &#60;/getdata&#62;
+
+  &#60;getdata id=&#34;2&#34;&#62;
+    &#60;object number=&#34;672&#34; type=&#34;movies&#34;&#62;
+     &#60;field name=&#34;title&#34;&#62;Star Wars&#60;/field&#62;
+    &#60;/object&#62;
+    &#60;object number=&#34;671&#34; type=&#34;urls&#34;&#62;
+     &#60;field name=&#34;name&#34; &#62;Star Wars Site&#60;/field&#62;
+     &#60;field name=&#34;url&#34; &#62;http://www.starwars.com&#60;/field&#62;
+    &#60;/object&#62;
+  &#60;/getdata&#62;</emphasis
+>
+
+&#60;/response&#62;</programlisting
+></example
+></section
+><section
+><title
+>getrelations</title
+><para
+>A <command
+>getrelations</command
+> command obtains the relation objects belonging to the specified objects, filtered by a specified destination type or relation role.</para
+><para
+>The command should contain one or more object tags, each tag referencing an object through the number attribute. If the referenced object can be found, the object&#39;s relations are retrieved and returned.</para
+><para
+>An object tag may include one or more relation tags, allowing to retrieve a narrow selection of relations, relating to a specified type of object or using a specified role. Restricting the selection is done by supplying a role or a destinationtype attribute (or both) to a relation tag.</para
+><para
+>By default, all fields of a relation are returned. If you do not want to retrieve all an relations&#39;s fields, you can specify the fields you want to retrieve by including field tags in the body of the relation tag. The field tags&#39; name attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned.</para
+><programlisting
+linenumbering="unnumbered"
+>&#60;!ELEMENT getrelations (object+) &#62;
+&#60;!ATTLIST getrelations id ID #IMPLIED&#62;
+
+&#60;!ELEMENT object (relation*)&#62;
+&#60;!ATTLIST object number NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT relation (field*)&#62;
+&#60;!ATTLIST relation role NMTOKEN #IMPLIED &#62;
+&#60;!ATTLIST relation destinationtype NMTOKEN #IMPLIED &#62;
+
+&#60;!ELEMENT field (#PCDATA) &#62;
+&#60;!ATTLIST field name NMTOKEN #REQUIRED &#62;</programlisting
+><para
+>The response contains the requested relation objects, wrapped by the object used to retrieve them. All additonal fields of the relations are also returned.</para
+><note
+><para
+>The common relation fields <systemitem
+>snumber</systemitem
+>, dnumber and rnumber are not returned as field elements, but as the attributes source, destination, and role. In this respect, source is always identical to the object that initiated the search, destination to the object that is looked for. These fields contain MMBase object numbers. The role attribute contains the forward role (sname) of the relation.</para
+></note
+><programlisting
+>&#60;!ELEMENT getrelations (object+) &#62;
+&#60;!ATTLIST getrelations id ID #IMPLIED&#62;
+
+&#60;!ELEMENT object (relation*)&#62;
+&#60;!ATTLIST object number NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT relation (field*)&#62;
+&#60;!ATTLIST relation number NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST relation role NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST relation source NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST relation destination NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT field (#PCDATA) &#62;
+&#60;!ATTLIST field name NMTOKEN #REQUIRED &#62;</programlisting
+><example
+><title
+>Example:</title
+><programlisting
+>&#60;request&#62;
+
+  <emphasis
+role="bold"
+>&#60;getrelations id=&#34;1&#34;&#62;
+    &#60;object number=&#34;675&#34; /&#62;
+  &#60;/getrelations&#62;
+
+  &#60;getrelations id=&#34;2&#34;&#62;
+    &#60;object number=&#34;672&#34; &#62;
+      &#60;relation role=&#34;part&#34; /&#62;
+      &#60;relation destinationtype=&#34;scenes&#34; role=&#34;posrel&#34;&#62;
+        &#60;field name=&#34;pos&#34; /&#62;
+      &#60;/relation&#62;
+    &#60;/object&#62;
+  &#60;/getrelations&#62;</emphasis
+>
+
+&#60;/request&#62;</programlisting
+><para
+>Which may result in the following response:</para
+><programlisting
+>&#60;response&#62;
+
+<emphasis
+role="bold"
+>  &#60;getrelations id=&#34;1&#34;&#62;
+    &#60;object number=&#34;675&#34; type=&#34;people&#34;&#62;
+      &#60;relation number=&#34;682&#34; type=&#34;insrel&#34; source=&#34;675&#34; destination=&#34;681&#34; role=&#34;related&#34; /&#62;
+      &#60;relation number=&#34;684&#34; type=&#34;insrel&#34; source=&#34;675&#34; destination=&#34;683&#34; role=&#34;related&#34; /&#62;
+      &#60;relation number=&#34;690&#34; type=&#34;insrel&#34; source=&#34;675&#34; destination=&#34;678&#34; role=&#34;actor&#34; /&#62;
+    &#60;/object&#62;
+  &#60;/getrelations&#62;
+
+  &#60;getrelations id=&#34;2&#34;&#62;
+    &#60;object number=&#34;672&#34; type=&#34;movies&#34;&#62;
+      &#60;relation number=&#34;677&#34; type=&#34;insrel&#34; source=&#34;672&#34; destination=&#34;678&#34; role=&#34;part&#34; /&#62;
+      &#60;relation number=&#34;700&#34; type=&#34;posrel&#34; source=&#34;672&#34; destination=&#34;699&#34; role=&#34;posrel&#34; &#62;
+        &#60;field name=&#34;pos&#34; &#62;1&#60;/field&#62;
+      &#60;/relation&#62;
+      &#60;relation number=&#34;702&#34; type=&#34;posrel&#34; source=&#34;672&#34; destination=&#34;701&#34; role=&#34;posrel&#34;&#62;
+        &#60;field name=&#34;pos&#34; &#62;2&#60;/field&#62;
+      &#60;/relation&#62;
+      &#60;relation number=&#34;704&#34; type=&#34;posrel&#34; source=&#34;672&#34; destination=&#34;703&#34; role=&#34;posrel&#34;&#62;
+        &#60;field name=&#34;pos&#34; &#62;3&#60;/field&#62;
+      &#60;/relation&#62;
+    &#60;/object&#62;
+  &#60;/getrelations&#62;</emphasis
+>
+
+&#60;/response&#62;</programlisting
+></example
+></section
+><section
+><title
+>Nesting calls (getdata/getrelations)</title
+><note
+><para
+>Deep nesting is possible only with Dove version 1.0 that is available with MMBase 1.5.1 and up.</para
+></note
+><para
+>Loading one object or set of realations a atime can be time consuming, especially if a lot of interrelated objects need to be loaded.</para
+><para
+>It is possible to define a load action of related objects in one command, by nesting objects and their relations.</para
+><programlisting
+>&#60;!ELEMENT getdata (object+) &#62; ...
+
+&#60;!ELEMENT getrelations (object+) &#62; ...</programlisting
+><programlisting
+>&#60;!ELEMENT getdata (object+) &#62; ...
+
+&#60;!ELEMENT getrelations (object+) &#62; ...</programlisting
+><example
+><title
+>Example</title
+><para
+>A possible combination of nesting objects and relations could look like this:</para
+><programlisting
+>&#60;request&#62;
+
+  <emphasis
+role="bold"
+>&#60;getdata id=&#34;1&#34;&#62;
+    &#60;object number=&#34;672&#34;&#62;
+
+      &#60;field name=&#34;title&#34; /&#62;
+
+      &#60;relation role=&#34;part&#34; &#62;
+        &#60;object &#62;
+          &#60;field name=&#34;name&#34; /&#62;
+          &#60;relation destinationtype=&#34;people&#34; role=actor&#34; &#62;
+            &#60;object &#62;
+               &#60;field name=&#34;firstname&#34; /&#62;
+               &#60;field name=&#34;lastname&#34; /&#62;
+            &#60;/object&#62;
+          &#60;/relation&#62;
+        &#60;/object&#62;
+      &#60;/relation&#62;
+
+      &#60;relation destinationtype=&#34;scenes&#34; role=&#34;posrel&#34;&#62;
+        &#60;field name=&#34;pos&#34; /&#62;
+        &#60;object&#62;
+          &#60;field name=&#34;title&#34; /&#62;
+        &#60;/object&#62;
+      &#60;/relation&#62;
+
+    &#60;/object&#62;
+
+  &#60;/getdata&#62;</emphasis
+>
+
+&#60;/request&#62;</programlisting
+><para
+>And this could be the response:</para
+><programlisting
+>&#60;response&#62;
+
+  &#60;getdata id=&#34;1&#34;&#62;
+    &#60;object number=&#34;672&#34; type=&#34;movies&#34;&#62;
+
+     &#60;field name=&#34;title&#34; &#62;
+<emphasis
+role="bold"
+>
+      &#60;relation number=&#34;677&#34; type=&#34;insrel&#34; source=&#34;672&#34; destination=&#34;678&#34; role=&#34;part&#34; &#62;
+        &#60;object number=&#34;678&#34; type=&#34;elements&#34;&#62;
+          &#60;field name=&#34;name&#34; &#62;Han Solo&#60;/field&#62;
+          &#60;relation number=&#34;690&#34; type=&#34;insrel&#34; source=&#34;678&#34; destination=&#34;675&#34; role=actor&#34; &#62;
+            &#60;object number=&#34;690&#34; type=&#34;people&#34; &#62;
+               &#60;field name=&#34;firstname&#34; &#62;Harrison&#60;/field&#62;
+               &#60;field name=&#34;lastname&#34; &#62;Ford&#60;/field&#62;
+            &#60;/object&#62;
+          &#60;/relation&#62;
+        &#60;/object&#62;
+      &#60;/relation&#62;
+
+      &#60;relation number=&#34;700&#34; type=&#34;posrel&#34; source=&#34;672&#34; destination=&#34;699&#34; role=&#34;posrel&#34; &#62;
+        &#60;field name=&#34;pos&#34; &#62;1&#60;/field&#62;
+        &#60;object number=&#34;699&#34; type=&#34;scenes&#34;&#62;
+          &#60;field name=&#34;title&#34;&#62;Entering Mos Eisly&#60;/field&#62;
+        &#60;/object&#62;
+      &#60;/relation&#62;
+      &#60;relation number=&#34;702&#34; type=&#34;posrel&#34; source=&#34;672&#34; destination=&#34;701&#34; role=&#34;posrel&#34;&#62;
+        &#60;field name=&#34;pos&#34; &#62;2&#60;/field&#62;
+        &#60;object number=&#34;701&#34; type=&#34;scenes&#34;&#62;
+          &#60;field name=&#34;title&#34;&#62;These are not the droids you are looking for&#60;/field&#62;
+        &#60;/object&#62;
+      &#60;/relation&#62;
+      &#60;relation number=&#34;704&#34; type=&#34;posrel&#34; source=&#34;672&#34; destination=&#34;703&#34; role=&#34;posrel&#34;&#62;
+        &#60;field name=&#34;pos&#34; &#62;3&#60;/field&#62;
+        &#60;object number=&#34;703&#34; type=&#34;scenes&#34;&#62;
+          &#60;field name=&#34;title&#34;&#62;Boring conversation anyway&#60;/field&#62;
+        &#60;/object&#62;
+      &#60;/relation&#62;
+
+    &#60;/object&#62;
+  &#60;/getdata&#62;</emphasis
+>
+
+&#60;/response&#62;</programlisting
+></example
+></section
+><section
+><title
+>getnew</title
+><para
+>A <command
+>getnew</command
+> command creates a new, empty object of a specified object type.</para
+><para
+>The new object is returned with a (system-generated) temporary objectnumber, and any fields for this object, with default values according to the system.
+This call is for generating normal objects - for generating relations use <command
+>getnewrelation</command
+>.</para
+><para
+>The command requires a type attribute that holds the type to generate
+</para
+><programlisting
+>&#60;!ELEMENT getnew EMPTY &#62;
+&#60;!ATTLIST getnew id ID #IMPLIED&#62;
+&#60;!ATTLIST getnew type NMTOKEN #REQUIRED&#62;
+</programlisting
+><para
+>The response contains the new object, in a fashion similar to getdata. The getnew element itself also contains the original type passed.
+All fields of the object are returned.</para
+><programlisting
+>&#60;!ELEMENT getnew (object|error) &#62;
+&#60;!ATTLIST getnew id ID #IMPLIED&#62;
+&#60;!ATTLIST getnew type NMTOKEN #REQUIRED&#62;
+
+&#60;!ELEMENT object (field*)&#62;
+&#60;!ATTLIST object number NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST object type NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT field (#PCDATA) &#62;
+&#60;!ATTLIST field name NMTOKEN #REQUIRED &#62;
+</programlisting
+><example
+><title
+>Example:</title
+><programlisting
+>&#60;request&#62;
+
+<emphasis
+role="bold"
+>  &#60;getnew type=&#34;people&#34; /&#62;
+</emphasis
+>
+&#60;/request&#62;</programlisting
+><para
+>And the result may look like this:</para
+><programlisting
+>&#60;response&#62;
+
+<emphasis
+role="bold"
+>  &#60;getnew id=&#34;1&#34; type=&#34;people&#34;&#62;
+    &#60;object number=&#34;n62967893564&#34; type=&#34;people&#34;&#62; 
+      &#60;field name=&#34;firstname&#34; /&#62;
+      &#60;field name=&#34;lastname&#34; /&#62;
+      &#60;field name=&#34;email&#34; /&#62;
+    &#60;/object&#62;
+  &#60;/getnew&#62;
+</emphasis
+>
+&#60;/response&#62;
+</programlisting
+></example
+></section
+><section
+><title
+>getnewrelation</title
+><para
+>A <command
+>getnewrelation</command
+> command creates a new, empty relation object with a specified role, source, and destination.</para
+><para
+>The new object is returned with a (system-generated) temporary objectnumber, role, source, and destination, and any additional fields for this object, with default values according to the system. This call is for generating relations - for normal objects use <command
+>getnew</command
+>.</para
+><para
+>The command requires a role, source, and destination attribute that holds information for the relation to generate.
+</para
+><programlisting
+>&#60;!ELEMENT getnewrelation EMPTY&#62;
+&#60;!ATTLIST getnewrelation id ID #IMPLIED&#62;
+&#60;!ATTLIST getnewrelation role NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST getnewrelation source NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST getnewrelation destination NMTOKEN #REQUIRED &#62;
+</programlisting
+><para
+>The response contains the new relation, in a fashion similar to getrelations. The getnewrelation element itself also contains the original attributes passed.
+All additonal fields of the relation are returned. </para
+><note
+><para
+>snumber,  dnumber and rnumber are not returned as fields, but as the attruibutes source, destination, and role.</para
+></note
+><programlisting
+>&#60;!ELEMENT getnewrelation (relation|error)&#62;
+&#60;!ATTLIST getnewrelation id ID #IMPLIED&#62;
+&#60;!ATTLIST getnewrelation role NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST getnewrelation source NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST getnewrelation destination NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT relation (field*)&#62;
+&#60;!ATTLIST relation number NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST relation type NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST relation role NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST relation source NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST relation destination NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT field (#PCDATA) &#62;
+&#60;!ATTLIST field name NMTOKEN #REQUIRED &#62;
+</programlisting
+><example
+><title
+>Example:</title
+><programlisting
+>&#60;request&#62;
+
+<emphasis
+role="bold"
+>  &#60;getnewrelation role=&#34;posrel&#34; source=&#34;134&#34; destination=&#34;n72647968&#34; /&#62;
+</emphasis
+>
+&#60;/request&#62;</programlisting
+><para
+>And the result:</para
+><programlisting
+>&#60;response&#62;
+
+<emphasis
+role="bold"
+>  &#60;getnewrelation role=&#34;posrel&#34; source=&#34;134&#34; destination=&#34;n72647968&#34; /&#62;
+    &#60;relation number=&#34;n62967893568&#34; role=&#34;posrel&#34; 
+              source=&#34;134&#34; destination=&#34;n72647968&#34; &#62; 
+      &#60;field name=&#34;dir&#34; &#62;2&#60;/field&#62;
+      &#60;field name=&#34;pos&#34; /&#62;
+    &#60;/relation&#62;
+  &#60;/getnewrelation&#62;</emphasis
+>
+
+&#60;/response&#62;
+</programlisting
+></example
+></section
+><section
+><title
+>getconstraints</title
+><para
+>A <command
+>getconstraints</command
+> command obtains constraint information for an object type.</para
+><para
+>The type should be specified in the type attribute. An optional xml:lang attribute can be specified to indicate the preferred language of any gui information (help text, prompts, etc.).  A Dove implementation that supports this will return data in the preferred language where possible.</para
+><programlisting
+>&#60;!ELEMENT getconstraints (object+) &#62;
+&#60;!ATTLIST getconstraints id ID #IMPLIED&#62;
+&#60;!ATTLIST getconstraints TYPE NMTOKEN #REQUIRED&#62;
+&#60;!ATTLIST getconstraints xml:lang NMTOKEN &#34;us&#34;&#62;
+</programlisting
+><para
+>The response contains various tags contianing basic information about the object type, the fields of the type, and any allowed relations.</para
+><para
+>Tags supported in API 1.0 are singularname, pluralname, and description.</para
+><para
+>The fields tag lists all editable fields of an object. Each field has its own tag, with a name attribute and a number of subtags : guiname, guitype, maxlength and required.</para
+><para
+>The guitype of a field has a mime-type like format of the form datatype/presentationtype.</para
+><para
+>The datatype part is one of string, int, long, float, double, datetime, or binary.</para
+><para
+>The presentationtype may vary (common types are line, text, or date).
+</para
+><programlisting
+>&#60;!ELEMENT getconstraints (error|(singularname,pluralname,description,fields,relations))+) &#62;
+&#60;!ATTLIST getconstraints id ID #IMPLIED&#62;
+&#60;!ATTLIST getconstraints type NMTOKEN #REQUIRED &#62;
+&#60;!ATTLIST getconstraints xml:lang NMTOKEN &#34;us&#34; &#62;
+
+&#60;!ELEMENT singularname (#PCDATA) &#62;
+&#60;!ATTLIST singularname xml:lang NMTOKEN &#34;us&#34; &#62;
+
+&#60;!ELEMENT pluralname (#PCDATA) &#62;
+&#60;!ATTLIST pluralname xml:lang NMTOKEN &#34;us&#34; &#62;
+
+&#60;!ELEMENT description (#PCDATA) &#62;
+&#60;!ATTLIST description xml:lang NMTOKEN &#34;us&#34; &#62;
+
+&#60;!ELEMENT fields (field*) &#62;
+
+&#60;!ELEMENT relations (relation*) &#62;
+
+&#60;!ELEMENT relation EMPTY &#62;
+&#60;!ATTLIST relation role NMTOKEN #REQUIRED&#62;
+&#60;!ATTLIST relation destinationtype NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT field (guiname,guitype,maxlength,required)&#62;
+&#60;!ATTLIST field name NMTOKEN #REQUIRED &#62;
+
+&#60;!ELEMENT guiname (#PCDATA) &#62;
+&#60;!ATTLIST guiname xml:lang NMTOKEN &#34;us&#34; &#62;
+
+&#60;!ELEMENT guitype (#PCDATA) &#62;
+
+&#60;!ELEMENT maxlength (#PCDATA) &#62;
+
+&#60;!ELEMENT required (#PCDATA) &#62;
+</programlisting
+><example
+><title
+>Example:</title
+><programlisting
+>&#60;request&#62;
+
+<emphasis
+role="bold"
+>  &#60;getconstraints type=&#34;people&#34; xml:lang=&#34;nl&#34;/&#62;
+</emphasis
+>
+&#60;/request&#62;
+</programlisting
+><para
+>And a possible result:</para
+><programlisting
+>&#60;response&#62;
+
+ <emphasis
+role="bold"
+> &#60;getconstraints type=&#34;people&#34; xml:lang=&#34;nl&#34;&#62;
+    &#60;singularname xml:lang=&#34;nl&#34;&#62;Persoon&#60;/singularname&#62;
+    &#60;pluralname xml:lang=&#34;nl&#34;&#62;Personen&#60;/pluralname&#62;
+    &#60;description xml:lang=&#34;nl&#34;&#62;Persoonsgegevens.&#60;/description&#62;
+    &#60;fields&#62;
+      &#60;field name=&#34;firstname&#34;&#62;
+         &#60;guiname xml:lang=&#34;nl&#34;&#62;Voornaam&#60;/guiname&#62;
+         &#60;guitype&#62;string/line&#60;/guitype&#62;
+         &#60;maxlength&#62;20&#60;/maxlength&#62;
+         &#60;required&#62;FALSE&#60;/required&#62;
+      &#60;/field&#62;
+      &#60;field name=&#34;lastname&#34;&#62;
+         &#60;guiname xml:lang=&#34;nl&#34;&#62;Achternaam&#60;/guiname&#62;
+         &#60;guitype&#62;string/line&#60;/guitype&#62;
+         &#60;maxlength&#62;50&#60;/maxlength&#62;
+         &#60;required&#62;TRUE&#60;/required&#62;
+      &#60;/field&#62;
+      &#60;field name=&#34;email&#34;&#62;
+         &#60;guiname xml:lang=&#34;nl&#34;&#62;Email adres&#60;/guiname&#62;
+         &#60;guitype&#62;string/line&#60;/guitype&#62;
+         &#60;maxlength&#62;35&#60;/maxlength&#62;
+         &#60;required&#62;FALSE&#60;/required&#62;
+      &#60;/field&#62;
+    &#60;/fields&#62;
+    &#60;relations&#62;
+      &#60;relation destinationtype=&#34;images&#34; role=&#34;related&#34; /&#62;
+      &#60;relation destinationtype=&#34;movies&#34; role=&#34;actor&#34; /&#62;
+    &#60;/relations&#62;
+  &#60;/getconstraints&#62;
+</emphasis
+>
+&#60;/response&#62;
+</programlisting
+></example
+></section
+><section
+><title
+>getlist</title
+><para
+></para
+><programlisting
+></programlisting
+><para
+></para
+><programlisting
+></programlisting
+><example
+><title
+>Example:</title
+><programlisting
+></programlisting
+><para
+></para
+><programlisting
+></programlisting
+></example
+></section
+><section
+><title
+>put</title
+><para
+></para
+><programlisting
+></programlisting
+><para
+></para
+><programlisting
+></programlisting
+><example
+><title
+>Example:</title
+><programlisting
+></programlisting
+><para
+></para
+><programlisting
+></programlisting
+></example
+></section
+></article
+>
