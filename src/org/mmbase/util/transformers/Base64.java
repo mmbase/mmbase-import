@@ -27,7 +27,7 @@ import sun.misc.BASE64Encoder;
  * @author Michiel Meeuwissen 
  */
 
-public class Base64 implements ByteToCharTransformer {
+public class Base64 implements ByteToCharTransformer,ConfigurableTransformer {
     private final static String ENCODING = "BASE64";
     private final static int BASE_64 = 1;
 
