@@ -20,22 +20,17 @@ Selecteer afbeelding:
 <TR>
 
 <LIST BUILDER-scanners-$PARAM5 PROCESSOR="MMBASE" REVERSE=YES MAX=30 INDEXSYMBOL=# TYPEFORMAT=scan#.jpg PREVIEWFORMAT=scan#-s.jpg>
+     <TD>
+                  <INPUT TYPE="radio" NAME="PRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1" VALUE="$ITEM1">
+                  <A HREF="JavaScript:openWin('$ITEM3');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
+                  $ITEM2
+    </TD>
 
-	<IF $ITEMP=E3 OR $ITEMP=E6 OR $ITEMP=E9 OR $ITEMP=E12 OR $ITEMP=E15 OR $ITEMP=E18 OR $ITEMP=E21 OR $ITEMP=E24 OR $ITEMP=E27>
-                <TD>
-                  <INPUT TYPE="radio" NAME="PRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1" VALUE="$ITEM1">
-                  <A HREF="JavaScript:openWin('$ITEM3');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
-                  $ITEM2
-                </TD>
-                </TR>
-                <TR>
-        <ELSE>
-                <TD>
-                  <INPUT TYPE="radio" NAME="PRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1" VALUE="$ITEM1">
-                  <A HREF="JavaScript:openWin('$ITEM3');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
-                  $ITEM2
-                </TD>
-        </IF>
+    <LIF $MOD-CALC-($ITEMP%3)^=E0>
+        </TR>
+        <TR>
+    </IF>
+
 </LIST>
 </TR>
 </TABLE>
