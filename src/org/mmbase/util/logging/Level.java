@@ -49,6 +49,21 @@ public final class Level {
     private Level (int p) {
         level = p;
     }
+
+    public static Level toLevel (String level) {
+        
+        String s = level.toUpperCase();
+        if (s.equals("TRACE") )   return TRACE;
+        if (s.equals("DEBUG") )   return DEBUG;
+        if (s.equals("SERVICE") ) return SERVICE;
+        if (s.equals("INFO") )    return INFO;
+        if (s.equals("WARN") )    return WARN;
+        if (s.equals("ERROR") )   return ERROR;
+        if (s.equals("FATAL") )   return FATAL;
+
+        return DEBUG;
+        
+    }
     
     /**
      * Makes an integer from this object. 
