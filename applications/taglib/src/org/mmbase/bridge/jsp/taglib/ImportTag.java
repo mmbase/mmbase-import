@@ -103,22 +103,21 @@ public class ImportTag extends WriteTag {
 
     private Object getFromBodyContent() throws JspTagException {
         Object res;
-        log.debug("type: " + type);
-        
-        if (type == null || "Object".equalsIgnoreCase(type) || "String".equalsIgnoreCase(type)) {
-            res = bodyContent.getString();
-        } else if ("Node".equalsIgnoreCase(type)) {
+        switch(type) {
+        case WriteTag.TYPE_NODE:
             throw new JspTagException("Type Node not (yet) supported for this Tag");
-        } else if ("Integer".equalsIgnoreCase(type)) {
-            log.debug("integer");
+        case WriteTag.TYPE_INTEGER:
             res = new Integer(bodyContent.getString());
-        } else if ("Vector".equalsIgnoreCase(type)) {
+            break;
+        case WriteTag.TYPE_VECTOR:
+        case WriteTag.TYPE_LIST:
             String bod = bodyContent.getString();
             if (! "".equals(bod)) {
                 res = stringSplitter(bod);
             } else { res = ""; }
-        } else {
-            throw new JspTagException("Unknown type '" + type + "'");
+            break;
+        default:
+            res = bodyContent.getString();
         }
         return res;
     }
