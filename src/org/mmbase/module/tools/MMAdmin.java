@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.54 2002-11-10 19:06:14 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.55 2002-11-24 15:25:19 daniel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1706,7 +1706,16 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         MMObjectBuilder bul=getMMObject(builder);
         if (bul!=null) {
-            int pos=bul.getFields().size()+1;
+            int pos=1;
+	    Enumeration enum=bul.getFields().elements();
+       		while (enum.hasMoreElements()) {
+            		FieldDefs def=(FieldDefs)enum.nextElement();
+			int state=def.getDBState();
+            		if (state==FieldDefs.DBSTATE_PERSISTENT || state==FieldDefs.DBSTATE_SYSTEM) {
+				pos++;
+			}
+        	}
+
 
             FieldDefs def=new FieldDefs();
             def.setDBPos(pos);
