@@ -11,6 +11,7 @@ package org.mmbase.storage.search.implementation;
 
 import java.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 
@@ -18,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.5 2003-03-10 11:50:56 pierre Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.6 2003-07-21 20:50:04 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery {
@@ -62,13 +63,140 @@ public class BasicSearchQuery implements SearchQuery {
     public BasicSearchQuery() {
         this(false);
     }
+
+    /**
+     * A deep copy. Needed if you want to do multiple queries (and change the query between them).
+     * Used by bridge.Query#clone (so it will be decided that that is not needed, ths can be removed too)
+     * @see org.mmbase.bridge.Query#clone 
+     */
+    public BasicSearchQuery(SearchQuery q) {
+        distinct  = q.isDistinct();
+        maxNumber = q.getMaxNumber();
+        offset    = q.getOffset();
+        Iterator i;
+
+        MMBase mmb = MMBase.getMMBase();
+        i = q.getSteps().iterator();
+        while (i.hasNext()) {            
+            Step step = (Step) i.next();
+            if (step instanceof RelationStep) {
+                RelationStep relationStep = (RelationStep) step;               
+                MMObjectBuilder dest   = mmb.getBuilder(relationStep.getNext().getTableName());
+                InsRel         insrel  = (InsRel) mmb.getBuilder(relationStep.getTableName());
+                BasicRelationStep newRelationStep = addRelationStep(insrel, dest);
+                newRelationStep.setDirectionality(relationStep.getDirectionality());
+                newRelationStep.setCheckedDirectionality(relationStep.getCheckedDirectionality());
+                newRelationStep.setRole(relationStep.getRole());
+                newRelationStep.setAlias(relationStep.getAlias());
+                Iterator j = relationStep.getNodes().iterator();
+                while (j.hasNext()) {
+                    newRelationStep.addNode(((Integer) j.next()).intValue());
+                }
+                BasicStep next    = (BasicStep) relationStep.getNext();
+                BasicStep newNext = (BasicStep) newRelationStep.getNext();
+                newNext.setAlias(next.getAlias());
+                j = next.getNodes().iterator();
+                while (j.hasNext()) {
+                    newNext.addNode(((Integer) j.next()).intValue());
+                }
+                i.next(); // dealt with that already
+                                                                    
+            } else {
+                BasicStep newStep = addStep(mmb.getBuilder(step.getTableName()));
+                newStep.setAlias(step.getAlias());
+                Iterator j = step.getNodes().iterator();
+                while (j.hasNext()) {
+                    newStep.addNode(((Integer) j.next()).intValue());
+                }
+            }
+        }
+        i = q.getFields().iterator();
+        while (i.hasNext()) {
+            StepField field = (StepField) i.next();
+            Step step = field.getStep();
+            MMObjectBuilder bul = mmb.getBuilder(step.getTableName());
+            int j = q.getSteps().indexOf(step);
+            Step newStep = (Step) steps.get(j);
+            BasicStepField newField = addField(newStep, bul.getField(field.getFieldName()));
+            newField.setAlias(field.getAlias());                                        
+        }
+        i = q.getSortOrders().iterator();
+        while (i.hasNext()) {
+            SortOrder sortOrder = (SortOrder) i.next();
+            StepField field = sortOrder.getField();
+            int j = q.getFields().indexOf(field);
+            StepField newField = (StepField) fields.get(j);
+            BasicSortOrder newSortOrder = addSortOrder(newField);
+            newSortOrder.setDirection(sortOrder.getDirection());
+        }
+        Constraint c = q.getConstraint();
+        if (c != null) {
+            setConstraint(copyConstraint(q, c));
+        }
+    }
     
+    /**
+     * Used by copy-constructor. Constraints have to be done recursively.
+     */
+    protected Constraint copyConstraint(SearchQuery q, Constraint c) {        
+        if (c instanceof CompositeConstraint) {
+            CompositeConstraint constraint = (CompositeConstraint) c;
+            BasicCompositeConstraint newConstraint = new BasicCompositeConstraint(constraint.getLogicalOperator());
+            Iterator i = constraint.getChilds().iterator();
+            while (i.hasNext()) {
+                Constraint cons = (Constraint) i.next();
+                newConstraint.addChild(copyConstraint(q, cons));
+            }
+            newConstraint.setInverse(constraint.isInverse());
+            return newConstraint;
+        } else if (c instanceof CompareFieldsConstraint) {
+            CompareFieldsConstraint constraint = (CompareFieldsConstraint) c;
+            int j = q.getFields().indexOf(constraint.getField());
+            int k = q.getFields().indexOf(constraint.getField2());
+            BasicCompareFieldsConstraint newConstraint = new BasicCompareFieldsConstraint((StepField) fields.get(j), (StepField) fields.get(k));
+            newConstraint.setOperator(constraint.getOperator());
+            newConstraint.setInverse(constraint.isInverse());
+            return newConstraint;
+        } else if (c instanceof FieldValueConstraint) {
+            FieldValueConstraint constraint = (FieldValueConstraint) c;
+            int j = q.getFields().indexOf(constraint.getField());
+            Object value = constraint.getValue();
+            BasicFieldValueConstraint newConstraint = new BasicFieldValueConstraint((StepField) fields.get(j), value);
+            newConstraint.setOperator(constraint.getOperator());
+            newConstraint.setInverse(constraint.isInverse());
+            return newConstraint;            
+        } else if (c instanceof FieldNullConstraint) {
+            FieldNullConstraint constraint = (FieldNullConstraint) c;
+            int j = q.getFields().indexOf(constraint.getField());
+            BasicFieldNullConstraint newConstraint = new BasicFieldNullConstraint((StepField) fields.get(j));
+            newConstraint.setInverse(constraint.isInverse());
+            return newConstraint;            
+        } else if (c instanceof FieldValueBetweenConstraint) {
+            FieldValueBetweenConstraint constraint = (FieldValueBetweenConstraint) c;
+            int j = q.getFields().indexOf(constraint.getField());
+            BasicFieldValueBetweenConstraint newConstraint = new BasicFieldValueBetweenConstraint((StepField) fields.get(j), constraint.getLowerLimit(), constraint.getUpperLimit());
+            newConstraint.setInverse(constraint.isInverse());
+            return newConstraint;            
+        } else if (c instanceof FieldValueInConstraint) {
+            FieldValueInConstraint constraint = (FieldValueInConstraint) c;
+            int j = q.getFields().indexOf(constraint.getField());
+            BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint((StepField) fields.get(j));
+            Iterator k = constraint.getValues().iterator();
+            while (k.hasNext()) {
+                newConstraint.addValue(k.next());
+            }
+            newConstraint.setInverse(constraint.isInverse());
+            return newConstraint;            
+        }
+        throw new RuntimeException("Could not copy constraint " + c);
+    }
+
     /**
      * Sets distinct.
      *
      * @param distinct The distinct value.
      * @return This <code>BasicSearchQuery</code> instance.
-     */
+    */
     public BasicSearchQuery setDistinct(boolean distinct) {
         this.distinct = distinct;
         return this;
@@ -83,8 +211,7 @@ public class BasicSearchQuery implements SearchQuery {
      */
     public BasicSearchQuery setMaxNumber(int maxNumber) {
         if (maxNumber < -1) {
-            throw new IllegalArgumentException(
-            "Invalid maxNumber value: " + maxNumber);
+            throw new IllegalArgumentException( "Invalid maxNumber value: " + maxNumber);
         }
         this.maxNumber = maxNumber;
         return this;
@@ -135,7 +262,7 @@ public class BasicSearchQuery implements SearchQuery {
     InsRel builder, MMObjectBuilder nextBuilder) {
         int nrOfSteps = steps.size();
         if (nrOfSteps == 0) {
-            throw new IllegalStateException(
+           throw new IllegalStateException(
             "No previous step.");
         }
         BasicStep previous = (BasicStep) steps.get(nrOfSteps - 1);
