@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.111 2003-12-02 21:18:13 michiel Exp $
+ * @version $Id: Wizard.java,v 1.112 2003-12-19 11:09:32 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -473,7 +473,22 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     * @param out The writer where the output (html) should be written to.
     * @param instancename name of the current instance
     */
-   public void writeHtmlForm(Writer out, String instanceName)
+   public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
+      writeHtmlForm(out, instanceName, null);
+   }
+
+   /**
+    * Constructs and writes final form-html to the given out writer.
+    * You can specify an instancename, so that the wizard is able to start another wizard in the
+    * <em>same</em> session. The jsp pages and in the html the instancenames are used to keep track
+    * of one and another.
+    *
+    * @param out The writer where the output (html) should be written to.
+    * @param instancename name of the current instance
+    * @param externParams sending parameters to the stylesheet which are not
+    *    from the editwizards itself
+    */
+   public void writeHtmlForm(Writer out, String instanceName, Map externParams)
       throws WizardException, TransformerException {
       if (log.isDebugEnabled()) {
          log.debug("writeHtmlForm for " + instanceName);
@@ -496,6 +511,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
       if (templatesDir != null) {
          params.put("templatedir", templatesDir);
+      }
+
+      if (externParams != null && !externParams.isEmpty()) {
+         params.putAll(externParams);
       }
 
       Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out,

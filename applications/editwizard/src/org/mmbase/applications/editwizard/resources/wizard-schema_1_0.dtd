@@ -93,6 +93,9 @@
 <!ELEMENT fieldset ( prompt*, field+, prompt* ) >
 
 <!ELEMENT field ( #PCDATA | optionlist | prompt | description | prefix | postfix )* >
+<!ATTLIST field dtpattern CDATA #IMPLIED >
+<!ATTLIST field dtmax NMTOKEN #IMPLIED >
+<!ATTLIST field dtmin NMTOKEN #IMPLIED >
 <!ATTLIST field dtmaxlength NMTOKEN #IMPLIED >
 <!ATTLIST field dtminlength NMTOKEN #IMPLIED >
 <!ATTLIST field dtrequired NMTOKEN #IMPLIED >
@@ -105,6 +108,7 @@
 <!ATTLIST field inline NMTOKEN #IMPLIED >
 <!ATTLIST field wizardname CDATA #IMPLIED >
 <!ATTLIST field objectnumber CDATA #IMPLIED >
+<!ATTLIST field hide CDATA #IMPLIED >
 
 <!ELEMENT subtitle ( #PCDATA ) >
 <!ATTLIST subtitle xml:lang NMTOKEN #IMPLIED >
