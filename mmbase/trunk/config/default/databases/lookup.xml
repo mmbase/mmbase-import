@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database-filters PUBLIC "-//MMBase/DTD database lookup 1.0//EN" "http://www.mmbase.org/dtd/database-lookup_1_0.dtd">
+<database-filters>
+  <!-- 
+    The database-config is the name referencing the database-config-xml. 
+    The first filter where all the rules apply, will be selected.
+  -->
+      
+  <filter database-config="postgresql71">
+  
+    <!-- driver name, must match driver-name-string from jdbc driver -->
+    <driver-name>PostgreSQL Native Driver</driver-name>
+    
+    <!-- driver version, must match driver-verion-string from jdbc driver -->
+    <driver-version>PostgreSQL 7.1.2 JDBC2</driver-version>
+
+    <!-- driver class, the class-name-string must begin with string provided in the tag -->
+    <driver-class>org.postgresql.</driver-class>
+    
+    <!-- major driver version, can be 'from', 'equals' and 'until' and has to be an integer value  -->    
+    <driver-major-version condition="equals">7</driver-major-version>
+    
+    <!-- minor driver version, can be 'from', 'equals' and 'until' and has to be an integer value  -->        
+    <driver-minor-version condition="from">1</driver-minor-version>
+    
+    <!-- minor driver version, can be 'from', 'equals' and 'until' and has to be an integer value  -->        
+    <driver-minor-version condition="equals">1</driver-minor-version>
+    
+    <!-- minor driver version, can be 'from', 'equals' and 'until' and has to be an integer value  -->            
+    <driver-minor-version condition="until">2</driver-minor-version>
+    
+    <!-- database product name, must match database product name from jdbc driver -->
+    <database-product-name>PostgreSQL</database-product-name>
+    
+    <!-- database product name, must match database product version from jdbc driver -->    
+    <database-product-version>7.2.1</database-product-version>    
+  </filter>
+  
+  <!-- matche's for on mysql -->      
+  <filter database-config="mysql">
+    <driver-class>org.gjt.mm.mysql.</driver-class>
+  </filter>  
+  <filter database-config="mysql">
+    <driver-class>org.mysql.</driver-class>
+  </filter>
+  
+  <!-- matche's for on postgresql (postgresql71 has already been catched) -->
+  <filter database-config="postgresql71">
+    <driver-class>org.postgresql.</driver-class>   
+  </filter>
+  
+  <filter database-config="hypersonic">
+    <driver-class>org.hsql.</driver-class>
+  </filter>
+  
+  <filter database-config="hsqldb">
+    <driver-class>org.hsqldb.</driver-class>
+  </filter>
+
+  <!-- when no rules, then it will always be used when no previous rules apply-->      
+  <filter database-config="sql92" />
+</database-filters>

@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.71 2002-09-25 15:53:01 michiel Exp $
+ * @version $Id: MMBase.java,v 1.72 2002-10-01 14:48:46 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1229,29 +1229,20 @@ public class MMBase extends ProcessorModule  {
      */
     public MMJdbc2NodeInterface getDatabase() {
         if (database==null) {
+	    File databaseConfig = null;
+	    String databaseConfigDir = MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator;
 	    String databasename = getInitParameter("DATABASE");
 	    if(databasename == null){
-		// databasename was null, try to guess it from the classname of the connection.
-		String ccn = getDirectConnection().getClass().getName();
-		// the way to determine this should be in a configuration...
-		// this should for be a classname, with a string that is fed to
-		// the connection, and the result that this connection returns 
-		// to see what kinda version is running behind the jdbc interface.
-		if(ccn.startsWith("org.gjt.mm.mysql")) databasename = "mysql";
-		else if(ccn.startsWith("org.mysql")) databasename = "mysql";
-		else if(ccn.startsWith("org.postgresql")) databasename = "postgresql71";
-		else if(ccn.startsWith("org.hsql")) databasename = "hypersonic";
-		else if(ccn.startsWith("org.hsqldb")) databasename = "hsqldb";
-		else {	     
-		    String fallback = "sql92";
-		    databasename = fallback;
-		    log.warn("could not detect the database type, will use the fallback:" + databasename);
-		}
-		log.info("Auto detected database type:" + databasename+ ", add '<property name=\"database\">"+databasename+"</property>' to mmbaseroot.xml, to override.");
+		DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+		databaseConfig = lookup.getDatabaseConfig(getDirectConnection());
 	    }
-	    // use the correct databas-xml
-	    String path = MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator + databasename + ".xml";
-	    XMLDatabaseReader dbdriver = new XMLDatabaseReader(path);	    
+	    else {
+		// use the correct databas-xml
+		databaseConfig = new File(databaseConfigDir + databasename + ".xml");
+	    }
+	    // get our config...
+	    XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
+
 	    try {                
                 Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
                 database = (MMJdbc2NodeInterface) newclass.newInstance();
@@ -1272,7 +1263,7 @@ public class MMBase extends ProcessorModule  {
 		throw new RuntimeException(msg);
 	    }
 	    // print information about our database connection..	    
-	    log.info("Using class: '"+database.getClass().getName()+"' with config: '"+path+"'." );
+	    log.info("Using class: '"+database.getClass().getName()+"' with config: '"+databaseConfig+"'." );
 	    // init the database..
 	    database.init(this, dbdriver);
         }
