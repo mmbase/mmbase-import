@@ -116,28 +116,40 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     **/
     public int doStartTag() throws JspTagException{
 
-        NodeManager nodeManager;
 
-        if (nodeManagerString == null) { // living as NodeReferrer
-            nodeManager = getNodeVar().getNodeManager();
+        if (getReferid() != null) {
+            if (nodeManagerString != null || type != NO_TYPE) {
+                throw new JspTagException("Cannot specify referid attribute together with nodetype/type attributes");
+            }
+            Object o =  getObject(getReferid());
+            if (! (o instanceof FieldList)) {
+                throw new JspTagException("Context variable " + getReferid() + " is not a FieldList");
+            }
+            returnList = (FieldList) o;
         } else {
-            nodeManager = getCloud().getNodeManager(nodeManagerString);
-        }
+            NodeManager nodeManager;
 
-        if (type != NO_TYPE) {           
-            returnList = nodeManager.getFields(type);            
-            if (fields != null) {
-                throw new JspTagException ("Cannot specify fields and type attribute both at the same time fiels = " + fields + " type = " + type);
+            if (nodeManagerString == null) { // living as NodeReferrer
+                nodeManager = getNodeVar().getNodeManager();
+            } else {
+                nodeManager = getCloud().getNodeManager(nodeManagerString);
             }
 
-        } else {
-            returnList = nodeManager.getFields();
-            if (fields != null) {
-                returnList.clear();
-                java.util.Iterator i = fields.iterator();
-                while (i.hasNext()) {
-                    returnList.add(nodeManager.getField((String) i.next()));
-                }                
+            if (type != NO_TYPE) {           
+                returnList = nodeManager.getFields(type);            
+                if (fields != null) {
+                    throw new JspTagException ("Cannot specify fields and type attribute both at the same time fiels = " + fields + " type = " + type);
+                }
+                
+            } else {
+                returnList = nodeManager.getFields();
+                if (fields != null) {
+                    returnList.clear();
+                    java.util.Iterator i = fields.iterator();
+                    while (i.hasNext()) {
+                        returnList.add(nodeManager.getField((String) i.next()));
+                    }                
+                }
             }
         }
         returnValues = returnList.fieldIterator();
