@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.21 2003-06-16 13:21:28 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.22 2003-07-03 08:54:49 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -82,7 +82,9 @@ public class MMBaseServlet extends  HttpServlet {
     // topic -> servletmapping
     // set by instantiated servlets
     private static Map associatedServletMappings = new Hashtable();
-
+    // mapping to servlet instance
+    private static Map mapToServlet = new Hashtable();
+    
     /**
      * On default, servlets are not associated with any function.
      *
@@ -149,7 +151,7 @@ public class MMBaseServlet extends  HttpServlet {
                         Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
                         String pattern=webDotXml.getElementValue(urlPattern);
                         if (!(pattern.equals(""))) {
-                            List ls = (List) servletMappings.get(servName);
+                            List ls = (List) servletMappings.get(name);
                             if (ls == null) {
                                 ls = new Vector();
                                 servletMappings.put(name, ls);
@@ -177,7 +179,22 @@ public class MMBaseServlet extends  HttpServlet {
             Map.Entry e = (Map.Entry) i.next();
             associate((String) e.getKey(), getServletName(), (Integer) e.getValue());
         }
+        log.debug("Associating this servlet with mappings");
+        i = getServletMappings(getServletConfig().getServletName()).iterator();
+        while (i.hasNext()) {
+            String mapping=(String)i.next();
+            mapToServlet.put(mapping,this);
+        }
+    }
 
+    /**
+     * Gets the servlet that belongs to the given mapping
+     *
+     * @param mapping the mapping used to access the servlet
+     * @return the Servlet that handles the mapping
+     */
+    public static HttpServlet getServletByMapping(String mapping) {
+        return (HttpServlet)mapToServlet.get(mapping);
     }
 
     /**
@@ -400,6 +417,12 @@ public class MMBaseServlet extends  HttpServlet {
 
     public void destroy() {
         log.info("Servlet " + getServletName() + " is taken out of service");
+        log.debug("Disassociating this servlet with mappings");
+        Iterator i = getServletMappings(getServletConfig().getServletName()).iterator();
+        while (i.hasNext()) {
+            String mapping=(String)i.next();
+            mapToServlet.remove(mapping);
+        }       
         super.destroy();
          // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
