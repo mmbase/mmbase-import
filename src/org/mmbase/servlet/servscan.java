@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.10 2000-05-25 15:59:08 wwwtech Exp $
+ * @version $Id: servscan.java,v 1.11 2000-05-30 11:32:48 wwwtech Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -152,7 +152,8 @@ public class servscan extends JamesServlet {
 					// Send data back
 					if (sp.body!=null) {
 						if (sp.rstatus==0) {
-							res.setContentType( addCharSet( mimetype ) ); 
+							sp.mimetype = addCharSet(mimetype);
+							res.setContentType( sp.mimetype ); 
 							out.print(sp.body);
 							handleCacheSave(sp,res);
 						} else if (sp.rstatus==1) {
@@ -340,7 +341,7 @@ public class servscan extends JamesServlet {
 		if (sp.wantCache!=null) {
 			 String req_line=sp.req_line;
 			 if (sp.querystring!=null) req_line+="?"+sp.querystring;
-			 parser.scancache.newput(sp.wantCache,res,req_line,sp.body);
+			 parser.scancache.newput(sp.wantCache,res,req_line,sp.body, sp.mimetype);
 		}
 		return(true);
 	}
