@@ -19,12 +19,10 @@
 
 <mm:content type="text/html" language="$language" country="$country" expires="0" jspvar="locale">
 
-<mm:cloud sessionname="$sessionname" method="logout" />
-
-<mm:import externid="reason">please</mm:import>
-  <mm:import externid="exactreason" />
-  <mm:import externid="usernames" />
-  <mm:import externid="referrer">search_node.jsp</mm:import>
+<mm:import from="request"  externid="reason">please</mm:import>
+  <mm:import from="request" externid="exactreason" />
+  <mm:import from="request" externid="usernames" />
+  <mm:import from="request" externid="referrer">.</mm:import>
   <mm:compare referid="reason" value="failed">
     <p class="failed">
       <%=getPrompt("failed", locale)%> <mm:write referid="exactreason"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>.
