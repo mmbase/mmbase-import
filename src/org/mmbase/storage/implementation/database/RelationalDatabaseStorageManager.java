@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.5 2003-12-28 19:04:12 michiel Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.6 2003-12-28 19:45:57 michiel Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -49,7 +49,9 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      */
     public void create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
-        if (localTransaction) beginTransaction();
+        if (localTransaction) {
+            beginTransaction();
+        }
         try {
             do {
                 super.create(node,builder);
@@ -57,8 +59,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
             } while (builder!=null);
             if (localTransaction) commit();
         } catch (StorageException se) {
-            //if (localTransaction) rollback();
-            if (inTransaction) rollback();
+            if (localTransaction && inTransaction) rollback();
             throw se;
         }
     }
@@ -71,7 +72,9 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      */
     public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
-        if (localTransaction) beginTransaction();
+        if (localTransaction) {       
+            beginTransaction();
+        }
         try {
             do {
                 super.change(node,builder);
@@ -79,8 +82,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
             } while (builder!=null);
             if (localTransaction) commit();
         } catch (StorageException se) {
-            // if (localTransaction) rollback();
-            if (inTransaction) rollback();
+            if (localTransaction && inTransaction) rollback();
             throw se;
         }
     }
@@ -93,16 +95,18 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      */
     public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
-        if (localTransaction) beginTransaction();
+        if (localTransaction) {
+            beginTransaction();
+        }
+        
         try {
             do {
-                super.delete(node,builder);
+                super.delete(node, builder);
                 builder = builder.getParentBuilder();
             } while (builder!=null);
             if (localTransaction) commit();
         } catch (StorageException se) {
-            //if (localTransaction) rollback();
-            if (inTransaction) rollback();
+            if (localTransaction && inTransaction) rollback();
             throw se;
         }
     }
