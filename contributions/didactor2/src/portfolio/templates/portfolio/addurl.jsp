@@ -44,6 +44,17 @@
 
       </mm:createnode>
 
+    <%-- create permissions --%>
+    <mm:createnode type="portfoliopermissions" id="permissions">
+         <mm:fieldlist fields="readrights,allowreactions">
+            <mm:fieldinfo type="useinput" />
+        </mm:fieldlist>
+    </mm:createnode>
+
+    <mm:createrelation source="myurls" destination="permissions" role="related"/>
+
+
+      
       <mm:createrelation role="related" source="mycurrentfolder" destination="myurls"/>
 
     </mm:node>
@@ -116,6 +127,27 @@
 	    </tr>
 
 	  </mm:fieldlist>
+
+        <tr>
+            <td>Leesrechten</td>
+            <td><select name="_readrights">
+                <option value="0" >Niet zichtbaar</option>
+                <option value="1" >Zichtbaar voor studenten uit mijn klassen</option>
+                <option value="2" >Zichtbaar voor mijn docenten</option>
+                <option value="3" >Zichtbaar voor iedereen.</option>
+                <option value="4" >Zichtbaar voor niet-ingelogde (anonieme) gebruikers.</option>
+            </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Reacties</td>
+            <td><select name="_allowreactions">
+                <option value="0" >Geen reacties toestaan</option>
+                <option value="1" >Reacties toestaan</option>
+                </select>
+            </td>
+        </tr>
+
 	  </table>
 
       <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
