@@ -2,7 +2,7 @@
      dove.dtd
        - DTD for MMBase DOVE protocol (RPC using xml)
 -->
-<!ENTITY % putstatus "(changed,deleted,new)">
+<!ENTITY % putstatus "(change,delete,new)">
 
 <!ELEMENT request (security?|(getdata|getnew|getnewrelation|getrelations|getconstraints|getlist|put)+) >
 
