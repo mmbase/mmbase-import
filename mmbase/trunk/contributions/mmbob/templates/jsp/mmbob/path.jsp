@@ -33,7 +33,6 @@
 	</mm:node>
 </mm:compare>
 
-
 <mm:compare value="poster_index" referid="type">
 	<mm:node number="$forumid">
 	<a href="<mm:url page="index.jsp">
@@ -238,7 +237,22 @@
 	<mm:field name="subject" /></a>
 	</mm:node>
 </mm:compare>
-</mm:cloud>
+
+</td>
+
+<td align="right">
+    <mm:import externid="pid$forumid">-1</mm:import>
+    <mm:compare referid="pid$forumid" value="-1" inverse="true">
+       <mm:node referid="pid$forumid"> 
+         <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="pid$forumid" />"><mm:field name="account" /></a> 
+         <!--<a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a>-->
+       </mm:node> 
+    </mm:compare>
+    <mm:compare referid="pid$forumid" value="-1" >
+      <b>anonymous</b>
+    </mm:compare>
 </td>
 </tr>
 </table>
+</mm:cloud>
+
