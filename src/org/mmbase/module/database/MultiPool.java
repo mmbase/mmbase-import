@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.46 2004-03-12 10:47:35 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.47 2004-03-12 15:58:40 michiel Exp $
  */
 public class MultiPool {
 
@@ -171,13 +171,12 @@ public class MultiPool {
                     con.realclose();
                 }
                 pool.clear();
-            } catch (SQLException e) {
+            } catch (Throwable e) {
                 log.error(e);
             } finally {
                 conMax = busyPool.size() + pool.size(); // should be 0 now
             }
         }
-        semaphore = null;
     }
 
     /**
@@ -189,7 +188,7 @@ public class MultiPool {
         if (log.isDebugEnabled()) {
             log.debug("JDBC -> Starting the pool check (" + this + ") : busy=" + busyPool.size() + " free=" + pool.size());
         }
-        if (semaphore == null) return; // during start-up or shut-down, this could happen.
+        if (semaphore == null) return; // during start-up this could happen.
         synchronized (semaphore) {
 
             int releaseCount = 0; // number of connection that are put back to pool
@@ -218,7 +217,7 @@ public class MultiPool {
             //// ConcurrentModificationException is thrown.
 
             // Michiel: but the getFree and putBack actions on the two pools are also synchronized on semaphore.
-            //          so nothing can edit them without having acquired the lock on sempahore.
+            //          so nothing can edit them without having acquired the lock on semaphore.
 
 
             int nowTime = (int) (System.currentTimeMillis() / 1000);
@@ -339,21 +338,21 @@ public class MultiPool {
      */
     public MultiConnection getFree() {
 
-        if (semaphore == null) { // could happen during shut down of MMBase
-            try {
-                return getMultiConnection(); // hm....
-            } catch (SQLException sqe) {
-                return null; // will probably cause NPE's but well
-            }
-        }
-
         MultiConnection con = null;
         try {
-
-            totalConnections++;
             //see comment in method checkTime()
-            semaphore.acquire();
             synchronized (semaphore) {
+                totalConnections++;
+                if (conMax == 0) { // could happen during shut down of MMBase
+                    try {
+                        return getMultiConnection(); // hm....
+                    } catch (SQLException sqe) {
+                        return null; // will probably cause NPE's but well
+                    }
+                }
+
+                semaphore.acquire(); // locks until something free
+
                 log.debug("Getting free connection from pool " + pool.size());
                 con = (MultiConnection) pool.remove(0);
                 con.claim();
