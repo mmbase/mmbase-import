@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.23 2001-04-02 13:21:36 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.24 2001-04-02 13:26:55 pierre Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 
@@ -282,25 +282,20 @@ public class MultiRelations extends MMObjectBuilder {
 
 		// Get ALL tables (including missing reltables)
 		alltables=getAllTables(tables);
-log.debug("alltables "+alltables);
         if (alltables==null) return null;
 		
 		// Get the destination select string;
 		select=getSelectString(alltables,fields);
-log.debug("select "+select);
         if (select==null) return null;
 
 		// Get the tables names corresponding to the fields (for the mapping)
 		selectTypes=getSelectTypes(alltables,select);
-log.debug("selecttypes "+selectTypes);
 
 		// create the order parts
 		order=getOrderString(alltables,orderVec,direction);
-log.debug("order "+order);
 
 		// get all the table names 
 		stables=getTableString(alltables);
-log.debug("stables "+stables);
 
 		// Supporting more then 1 source node or no source node at all
 		// Note that node number -1 is seen as no source node
@@ -345,7 +340,6 @@ log.debug("stables "+stables);
 		
 		// get the relation string
 		relstring=getRelationString(alltables, searchdir);
-log.debug("relstring "+relstring);
 		if ((relstring.length()>0) && (basenodestring.length()>0)) {
 				relstring=" AND "+relstring;
 		}
@@ -361,7 +355,6 @@ log.debug("relstring "+relstring);
 		} else {
 			where="";
 		}
-log.debug("where "+where);
 
 		try {
             MultiConnection con=null;
@@ -600,7 +593,6 @@ log.debug("where "+where);
 			val=(String)r.nextElement();			
 //    		val=Strip.DoubleQuote(val,Strip.BOTH);
             field=parseSelectField(alltables,val);
-            log.debug("field="+field);
             if(!field.equals("")) {
                 if (!result.equals("")) result+=",";
                 result+=field;
