@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.12 2003-03-13 15:45:50 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.13 2003-03-14 08:51:15 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -82,23 +82,27 @@ public class MediaSources extends MMObjectBuilder {
     private static Map mimeMapping = null;
     
     public boolean init() {
-        boolean result = super.init();
-        
-        
+        boolean result = super.init();               
         if (mimeMapping == null) {
+            mimeMapping = new HashMap();
+           
             File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
-            log.service("Reading " + mimeMappingFile);
-            XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), getClass());
-            mimeMapping = new Hashtable();
-            
-            for(Enumeration e = reader.getChildElements("mimemapping", "map"); e.hasMoreElements();) {
-                Element map = (Element)e.nextElement();
-                String format = reader.getElementAttributeValue(map, "format");
-                String codec = reader.getElementAttributeValue(map, "codec");
-                String mime = reader.getElementValue(map);
+
+            if (mimeMappingFile.canRead()) {
+                log.service("Reading " + mimeMappingFile);
+                XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), getClass());
                 
-                mimeMapping.put(format + "/" + codec,mime);
-                log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
+                for(Enumeration e = reader.getChildElements("mimemapping", "map"); e.hasMoreElements();) {
+                    Element map = (Element)e.nextElement();
+                    String format = reader.getElementAttributeValue(map, "format");
+                    String codec = reader.getElementAttributeValue(map, "codec");
+                    String mime = reader.getElementValue(map);
+                    
+                    mimeMapping.put(format + "/" + codec,mime);
+                    log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
+                }
+            } else {
+                log.service("The file " + mimeMappingFile + " can not be read");
             }
         }
         
