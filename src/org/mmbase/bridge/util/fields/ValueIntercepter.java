@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.10 2004-03-08 16:01:41 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.10.2.1 2005-02-09 14:28:00 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -304,7 +304,9 @@ public class ValueIntercepter {
         int type = field.getType();
 
         if (type == Field.TYPE_UNKNOWN) {
-            log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+            if (node.getNumber() != -1) {
+                log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+            }            
             return value;
         }
 
@@ -335,7 +337,10 @@ public class ValueIntercepter {
         int type = field.getType();
 
         if (type == Field.TYPE_UNKNOWN) {
-            log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+            if (node.getNumber() != -1) {
+                log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+            }
+            
             return value;
         }
 
