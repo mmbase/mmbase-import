@@ -218,7 +218,7 @@ public class InsRel extends MMObjectBuilder {
 	**/
 	public Vector getRelationsVector(int src) {
 	    if (usesdir) {
-	        return searchVector("WHERE snumber="+src+" OR (dnumber="+src+" and dir=2)");
+	        return searchVector("WHERE snumber="+src+" OR (dnumber="+src+" and dir<>1)");
 	    } else {
 	        return searchVector("WHERE snumber="+src+" OR dnumber="+src);
 	    }
