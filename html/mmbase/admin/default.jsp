@@ -25,7 +25,7 @@
         <mm:import id="url">/mmexamples/index.jsp</mm:import>
       </mm:compare>
       <mm:compare referid="category" value="documentation">
-        <mm:import id="url">/mmdocs/index.html</mm:import>
+        <mm:import id="url">/mmdocs/</mm:import>
       </mm:compare>
       <mm:notpresent referid="url">
         <mm:notpresent referid="subcategory">
@@ -34,8 +34,8 @@
         <mm:present referid="subcategory">
           <mm:import id="url"><mm:write referid="category" />/<mm:write referid="subcategory" />.jsp</mm:import>
         </mm:present>
-        <frame src="<mm:url page="$url" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
       </mm:notpresent>
+      <frame src="<mm:url page="$url" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
       </frameset>
   </mm:present>
 
