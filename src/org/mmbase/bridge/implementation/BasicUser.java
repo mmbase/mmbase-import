@@ -17,45 +17,52 @@ import org.mmbase.security.MMBaseCop;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.6 2003-11-10 16:47:14 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.7 2003-11-16 13:32:57 michiel Exp $
  */
 public class BasicUser implements User {
     private MMBaseCop securityManager;
-    private UserContext usercontext;
+    private UserContext userContext;
 
     private String      authenticationType;
 
-    BasicUser(MMBaseCop securityManager, UserContext usercontext, String authenticationType) {
+    BasicUser(MMBaseCop securityManager, UserContext userContext, String authenticationType) {
         this.securityManager = securityManager;
-        this.usercontext = usercontext;
+        this.userContext = userContext;
         this.authenticationType = authenticationType;
     }
 
     public String getRank() {
-        if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
-        return usercontext.getRank().toString();
+        if(!securityManager.getAuthentication().isValid(userContext)) throw new org.mmbase.security.SecurityException("userContext invalid");
+        return userContext.getRank().toString();
     }
 
     public String getIdentifier() {
-        if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
-        return usercontext.getIdentifier();
+        if(!securityManager.getAuthentication().isValid(userContext)) throw new org.mmbase.security.SecurityException("userContext invalid");
+        return userContext.getIdentifier();
     }
 
     UserContext getUserContext() {
-        // if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
-        return usercontext;
+        // if(!securityManager.getAuthentication().isValid(userContext)) throw new org.mmbase.security.SecurityException("userContext invalid");
+        return userContext;
     }
 
     public boolean isValid() {
-        return securityManager.getAuthentication().isValid(usercontext);
+        return securityManager.getAuthentication().isValid(userContext);
     }
 
 
     public String getOwnerField() {
-        return usercontext.getOwnerField();
+        return userContext.getOwnerField();
     }
 
     public String getAuthenticationType() {
         return authenticationType;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public String toString() {
+        return userContext.getIdentifier() + "/" +  userContext.getRank().toString() + (isValid() ? "" : " (invalid)");
     }
 }
