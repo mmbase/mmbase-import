@@ -267,6 +267,7 @@ Security Bug Fixes:
 Core Bug Fixes:
 ---------------
 [1.7.2]
+- #6633 RelatedNodesCache performes suboptimal 
 - #6616 MMBase shoudl not give response code 500 but 503 on start-up
 - #6608 New builders are inited twice.
 - #6617 MMObjectBuilder.java: DEFAULT_ALINEA contains 
@@ -315,6 +316,7 @@ Database Layer Bug Fixes:
 Editwizard Bug Fixes:
 ---------------------
 [1.7.2]
+- #6634 Editwizard jsps depend on Encoding setting in mmbaeroot.xml
 - #6574 LIKE constraint in search-command does not work 
 - #6573 New XSLs ignore 'prompt' s of search command
 - #6580 Can't use quotes in editwizard search
@@ -337,12 +339,18 @@ Editwizard Bug Fixes:
 - #6430 Edit-rights are not always checked  	
 - #6418 timezone problems  	
 - #6414 Javascript error on save
+- Better calculation of positioning of buttons in wizard in IE/Mac
+- ftype="enumdata" did not show the text label of the option
+- Font-size in some browsers was way to big in the EditWizard HTML
+  area. Fixed it on 12px
 
 
 -----------------
 Taglib Bug Fixes:
 -----------------
 [1.7.2]
+- #6636 Multipart parse result not propagated to mm:included pages. 
+- #6635 java.lang.NullPointerException for escape="text/xml" 
 - #6569 Using wrong character encoding for post data
 - #6586 Uploading files. Associated fields (mimetype, size, filename)
         are not filled by upload of 'handle' fields by mm:fieldinfo
@@ -409,6 +417,8 @@ Taglib Bug Fixes:
 ---------------------
 Editwizard Bug Fixes:
 ---------------------
+[1.7.2]
+- #6634 Editwizard jsps depend on Encoding setting in mmbaeroot.xml 
 [1.7.1]
 - Better calculation of positioning of buttons in wizard in IE/Mac
 - ftype="enumdata" did not show the text label of the option
