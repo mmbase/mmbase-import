@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.16.2.3 2003-03-03 18:39:10 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.16.2.4 2003-03-16 21:12:54 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -190,8 +190,8 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         if(time == null) {
             if(getReferid() != null) { // try to get it from other time tag
                 usetime = getString(getReferid());
-            } else {                   // try to get it from parent writer.
-                Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null, false);
+            } else {                   // try to get it from parent writer.               
+                Writer w =  findWriter(false);
                 if (w != null) {
                     usetime = "" + w.getWriterValue();
                 }
