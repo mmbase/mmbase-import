@@ -63,5 +63,18 @@ public class Urls extends MMObjectBuilder {
 		String url=node.getStringValue("url");
 		return(url);
 	}
+	
+	
+	public boolean nodeLocalChanged(String number,String builder,String ctype) {
+        super.nodeLocalChanged(number,builder,ctype);
+		if (builder.equals(tableName)) {
+			int nr = Integer.parseInt(number);
+			debug("Removing "+number+" from jumper cache");
+			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
+			if (jumpers==null) debug("ERROR: Could not get Jumper builder");
+			else jumpers.delJumpCache(number);
+		}
+		return true;
+	}
 
 }
