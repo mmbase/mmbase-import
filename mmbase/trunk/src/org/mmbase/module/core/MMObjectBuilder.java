@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.249 2003-09-16 21:21:25 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.250 2003-09-22 11:48:52 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -591,10 +591,10 @@ public class MMObjectBuilder extends MMTable {
      * @return A newly initialized <code>MMObjectNode</code>.
      */
     public MMObjectNode getNewNode(String owner) {
-        MMObjectNode node=new MMObjectNode(this);
-        node.setValue("number",-1);
-        node.setValue("owner",owner);
-        node.setValue("otype",oType);
+        MMObjectNode node = new MMObjectNode(this);
+        node.setValue("number", -1);
+        node.setValue("owner", owner);
+        node.setValue("otype", oType);
         setDefaults(node);
         return node;
     }
@@ -605,6 +605,60 @@ public class MMObjectBuilder extends MMTable {
      */
     public void setDefaults(MMObjectNode node) {
     }
+
+    /**
+     * In setDefault you could want to generate unique values for fields (if the field is 'unique').
+     * @since MMBase-1.7
+     */
+    protected String setUniqueValue(MMObjectNode node, String field, String baseValue) {
+        int seq = 0;
+        boolean found = false;
+        String value = baseValue;
+        try {
+            while (! found) {
+                NodeSearchQuery query = new NodeSearchQuery(this);
+                value = baseValue + seq;
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), value);      
+                query.setConstraint(constraint);            
+                if (getNodes(query).size() == 0) {
+                    found = true;
+                    break;
+                }
+                seq++;
+            }
+        } catch (SearchQueryException e) {
+            value =   baseValue + System.currentTimeMillis();
+        }
+        node.setValue(field,  value);
+        return value;
+    }
+
+    /**
+     * In setDefault you could want to generate unique values for fields (if the field is 'unique').
+     * @since MMBase-1.7
+     */
+
+    protected int setUniqueValue(MMObjectNode node, String field, int offset) {
+        int seq = offset;
+        boolean found = false;
+        try {
+            while (! found) {
+                NodeSearchQuery query = new NodeSearchQuery(this);
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), new Integer(seq));
+                query.setConstraint(constraint);            
+                if (getNodes(query).size() == 0) {
+                    found = true;
+                    break;
+                }
+                seq++;
+            }
+        } catch (SearchQueryException e) {
+            seq =  (int) System.currentTimeMillis() / 1000;
+        }
+        node.setValue(field,  seq);
+        return seq;
+    }
+         
 
     /**
      * Remove a node from the cloud.
@@ -2620,7 +2674,7 @@ public class MMObjectBuilder extends MMTable {
         if (function.equals("info")) {
             Map info = new HashMap();
             info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
-            info.put("gui",  "" + GUI_ARGUMENTS + "Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+            info.put("gui",  "" + Arrays.asList(GUI_ARGUMENTS) + "Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
             // language is only implemented in TypeDef now, session in AbstractServletBuilder
             // if needed on more place, then it can be generalized to here.
 
