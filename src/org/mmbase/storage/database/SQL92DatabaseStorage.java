@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.19 2004-01-27 12:04:46 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.20 2004-07-27 11:08:49 keesj Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class);
@@ -611,6 +611,8 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException {
         String tableName=getFullTableName(builder);
         String sqlselect= selectSQL(tableName,null,number);
+        //keesj: the result is not used here. and DatabaseTransaction keeps a result set 
+        //when should a resultset be closed?
         ResultSet result=((DatabaseTransaction)trans).executeQuery(sqlselect);
         return ((DatabaseTransaction)trans).getNodeResult(builder);
     }
@@ -625,6 +627,8 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     public int getNodeType(int number, Transaction trans) throws StorageException {
         String tableName=getFullTableName("object");
         String sqlselect= selectSQL(tableName,"otype",number);
+		//keesj: the result is not used here. and DatabaseTransaction keeps a result set 
+		//when should a resultset be closed?
         ResultSet result=((DatabaseTransaction)trans).executeQuery(sqlselect);
         return ((DatabaseTransaction)trans).getIntegerResult();
     }
