@@ -1,0 +1,43 @@
+<PROCESSOR MMADMIN>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+
+<FORM ACTION="executes/changeVersion.shtml?$PARAM1" METHOD="POST">
+<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD WIDTH="50"><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Current version</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>New version</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" COLSPAN=1>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+</TR>
+
+<TR>
+		<TD WIDTH="30"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+			$MOD-MMBASE-FIELD-$PARAM1-version^
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+			<INPUT NAME="SESSION-VERSION" VALUE="$MOD-MMBASE-FIELD-$PARAM1-version^">
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="1">
+		<INPUT TYPE="SUBMIT" VALUE="SAVE">
+		</TD>
+</TR>
+</TABLE>
+</FORM>
+
+</BODY>
+</HTML>

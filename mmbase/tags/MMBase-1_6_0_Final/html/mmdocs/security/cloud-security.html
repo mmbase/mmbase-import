@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+     
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     
+  <meta name="Generator"
+ content="KWord HTML Export Filter Version = 2.35.2.1 ">
+  <title>context-security.html</title>
+         
+  <style type="text/css">
+BODY { background-color: #FFFFFF }
+  </style>
+</head>
+  <body>
+   
+<p
+ style="text-align: center; font-family: helvetica; font-style: normal; font-weight: bold; font-size: 24pt; color: rgb(0,0,0); text-decoration: none;">Cloud
+Security Configuration</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">Introduction</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Security
+setup inside MMBase</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Inside
+MMbase there is a security framwork, in which different security implementations
+can be loaded. This is designed in such a way, that it is possible to use
+MMBase with the demants and needs that are required from the envouirment
+in which MMbase is used.</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Security
+implementation with a Builder</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">For
+small user groups and to provide an easy way to manage the users, a security
+implementation has been created which uses a builder for its information(mmbaseusers).</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Users</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">The
+users are defined inside the builder 'mmbaseusers'. Users can be added by
+the user 'admin' (default password: 'admin2k'). The passwords are stored
+with an MD5 encryption, and can only be changed by the user itselve, or by
+the 'admin'.</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Rights</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">For
+every node in the system the following rules apply:<br>
+    - Every node can be read<br>
+    - Admin may do everything, except deleting it's own usernode<br>
+    - Normal users may create new nodes of the type's that are not system
+builders<br>
+     - Normal users may create new nodes of the type's that are not system
+builders</p>
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Context</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Everynode
+has it's own context. The node can belong to a user (only that user and the
+admin can change it) or it is shared (all logged in users can change the
+node)<br>
+</p>
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Configuration</p>
+    
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">In
+the file security.xml the cloud security has to be loaded, the builder mmbaseusers
+is responsible for managment of the users.</p>
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"></p>
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Deploment</p>
+     
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">In
+the file security.xml the cloud security has to be loaded, futhermore the
+application with name cloudsecurity has to be deployed (builder will be active).</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><br>
+</p>
+   
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><br>
+    <br>
+<br>
+</p>
+      
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;"></p>
+<br>
+</body>
+</html>

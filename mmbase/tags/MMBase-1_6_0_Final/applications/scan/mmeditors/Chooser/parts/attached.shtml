@@ -1,0 +1,10 @@
+   <TR>
+      <TD BGCOLOR="#0000FF" WIDTH="10"><FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica"><A HREF="$MOD-INFO-SERVERCONTEXT^/mmeditors/$ITEM1.shtml?$ITEM1+$ITEM1+$ITEM1" TARGET="_top"><FONT COLOR="#0000FF">##</A></FONT></TD>
+      <TD BGCOLOR="#000000" WIDTH="190">
+      
+      <FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica">$ITEM2</FONT>
+      </TD>
+      <TD BGCOLOR="#FFFFFF" WIDTH="500">
+      <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">$ITEM2</FONT>
+      </TD>
+   </TR>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">people</builder>
+    <builder maintainer="mmbase.org" version="0">authrel</builder>
+    <builder maintainer="mmbase.org" version="0">typedef</builder>
+    <builder maintainer="mmbase.org" version="0">urls</builder>
+  </neededbuilderlist>	
+
+  <neededreldeflist>
+    <reldef source="authrel" target="authrel" direction="bidirectional" guisourcename="AuthRel" guitargetname="AuthRel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="people" to="typedef" type="authrel" />
+  </allowedrelationlist>
+
+  <datasourcelist>
+    <datasource builder="people" path="BasicAuth/people.xml" /> 
+    <datasource builder="typedef" path="BasicAuth/typedef.xml" /> 
+  </datasourcelist>
+
+  <relationsourcelist>
+    <relationsource builder="authrel" path="BasicAuth/authrel.xml" /> 
+  </relationsourcelist>
+
+
+  <contextsourcelist>
+    <contextsource path="BasicAuth/backup.xml" type="depth" goal="backup"/>
+    </contextsourcelist>
+
+  <description>
+  Basic authorisation, only needed when using scan. Please use
+  a different security implementation, see &lt;mmdocs/security&gt; for more
+  information. This application uses builders provided by the resource
+  and MyCompany application, so please install these two before
+  installing this application.
+  </description>
+
+  <install-notice>
+    Turn authorisation on in mmbaseroot.xml and restart the server
+  </install-notice>
+
+</application>
