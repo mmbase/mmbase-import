@@ -50,6 +50,9 @@
   <escaper id="swallow">
     <class>org.mmbase.util.transformers.Swallower</class>
   </escaper>
+  <escaper id="figlet">
+    <class>org.mmbase.util.transformers.Figlet</class>
+  </escaper>
 
   <!-- The content-tag then can 'postprocess' everything in its body.
        These are meant to be simple transformations, like throwing
@@ -72,6 +75,9 @@
   </postprocessor>
   <postprocessor id="hmetodo">
     <class config="HMETODO">org.mmbase.util.transformers.Latin3Surrogator</class>
+  </postprocessor>
+  <postprocessor id="perl">
+    <class>org.mmbase.util.transformers.Perl</class>
   </postprocessor>
 
 </taglibcontent>
