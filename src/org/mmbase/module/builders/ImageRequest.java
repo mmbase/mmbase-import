@@ -7,77 +7,98 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-	$Id: ImageRequest.java,v 1.2 2001-04-26 12:45:46 vpro Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.1  2000/06/05 14:42:14  wwwtech
-	Rico: image queuing built in plus parallel converters
-	
-*/
 package org.mmbase.module.builders;
 
-import java.util.*;
+import java.util.List;
 
 /**
+ * @javadoc
  * @author Rico Jansen
- * @version $Id: ImageRequest.java,v 1.2 2001-04-26 12:45:46 vpro Exp $
+ * @version $Id: ImageRequest.java,v 1.3 2002-04-12 08:53:00 pierre Exp $
  */
 public class ImageRequest {
-	String ckey;
-	Vector params;
-	byte[] in;
-	byte[] out;
-	int id;
-	int count=0;
 
-	public ImageRequest(int id,String ckey,Vector params,byte[] in) {
-		this.id=id;
-		this.ckey=ckey;
-		this.in=in;
-		this.out=null;
-		this.params=params;
-		count=0;
-	}
+    private String ckey;
+    private List params;
+    private byte[] in;
+    private byte[] out;
+    private int id;
+    private int count=0;
 
-	public Vector getParams() {
-		return(params);
-	}
+    /**
+     * @javadoc
+     */
+    public ImageRequest(int id,String ckey,List params,byte[] in) {
+        this.id=id;
+        this.ckey=ckey;
+        this.in=in;
+        this.out=null;
+        this.params=params;
+        count=0;
+    }
 
-	public String getKey() {
-		return(ckey);
-	}
+    /**
+     * @javadoc
+     */
+    public List getParams() {
+        return params;
+    }
 
-	public byte[] getInput() {
-		return in;
-	}
+    /**
+     * @javadoc
+     */
+    public String getKey() {
+        return ckey;
+    }
 
-	public int getId() {
-		return id;
-	}
+    /**
+     * @javadoc
+     */
+    public byte[] getInput() {
+        return in;
+    }
 
-	public synchronized byte[] getOutput() {
-		if (out==null) {
-			count++;
-			try {
-				wait();
-			} catch (InterruptedException e) { 
-			}
-		}
-		return out;
-	}
+    /**
+     * @javadoc
+     */
+    public int getId() {
+        return id;
+    }
 
-	public synchronized void setOutput(byte[] output) {
-		out=output;
-		count=0;
-		notifyAll();
-	}
+    /**
+     * @javadoc
+     */
+    public synchronized byte[] getOutput() {
+        if (out==null) {
+            count++;
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+        }
+        return out;
+    }
 
-	public int count() {
-		return(count);
-	}
+    /**
+     * @javadoc
+     */
+    public synchronized void setOutput(byte[] output) {
+        out=output;
+        count=0;
+        notifyAll();
+    }
 
-	public String toString() {
-		return("id="+id+" : key="+ckey);
-	}
+    /**
+     * @javadoc
+     */
+    public int count() {
+        return count;
+    }
+
+    /**
+     * @javadoc
+     */
+    public String toString() {
+        return("id="+id+" : key="+ckey);
+    }
 }

@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.Map;
+import java.util.List;
 
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.9 2002-03-05 15:34:14 michiel Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.10 2002-04-12 08:53:00 pierre Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 
@@ -33,9 +33,12 @@ public class ImageRequestProcessor implements Runnable {
     private MMObjectBuilder images;
     private ImageConvertInterface convert;
     private Queue queue;
-    private Hashtable table;
+    private Map table;
 
-    public ImageRequestProcessor(MMObjectBuilder images, ImageConvertInterface convert, Queue queue, Hashtable table) {
+    /**
+     * @javadoc
+     */
+    public ImageRequestProcessor(MMObjectBuilder images, ImageConvertInterface convert, Queue queue, Map table) {
         this.images = images;
         this.convert = convert;
         this.queue = queue;
@@ -43,19 +46,28 @@ public class ImageRequestProcessor implements Runnable {
         start();
     }
 
+    /**
+     * @javadoc
+     */
     public void start() {
         if (kicker == null) {
             kicker = new Thread(this, "ImageConvert");
             kicker.start();
         }
     }
-	
+
+    /**
+     * @javadoc
+     */
     public void stop() {
         /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);  
+        kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
 
+    /**
+     * @javadoc
+     */
     public void run() {
         ImageRequest req;
         try {
@@ -71,8 +83,11 @@ public class ImageRequestProcessor implements Runnable {
         }
     }
 
+    /**
+     * @javadoc
+     */
     private void processRequest(ImageRequest req) {
-        Vector params;
+        List params;
         String ckey;
         byte[] picture,inputpicture;
         int id;
