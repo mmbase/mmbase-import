@@ -21,11 +21,28 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
+ * @version $Id: Arguments.java,v 1.3 2003-08-12 18:11:28 michiel Exp $
  * @see Argument
  */
 
 public class Arguments extends AbstractList implements List  {
     //private static Logger log = Logging.getLoggerInstance(Arguments.class);
+
+
+
+    /**
+     * Converts a certain List to an Arguments if it is not already one.
+     */
+    public static Arguments get(Argument[] def, List args) {
+        Arguments a;
+        if (args instanceof Arguments) {
+            a = (Arguments) args;
+            if (a.definition != def) throw new IllegalArgumentException("Given arguments has other difinition.");
+        } else {
+            a = new Arguments(def, args);
+        }
+        return a;
+    }
 
     /**
      * The contents of this List are stored in this HashMap.
@@ -65,6 +82,7 @@ public class Arguments extends AbstractList implements List  {
         }
     }
     
+
     /**
      * Adds the definitions to a List. Resolves the Attribute.Wrapper's (recursively).
      * @return List with only simple Argument's.
@@ -93,9 +111,26 @@ public class Arguments extends AbstractList implements List  {
 
     // implementation of (modifiable) List
     public Object set(int i, Object value) {
-        return backing.put(definition[i].key, value);
+        Argument a = definition[i];
+        checkType(a, value);
+        return backing.put(a.key, value);
     }
 
+
+    protected void checkType(Argument a, Object value) {
+        if (! a.type.isInstance(value)) {
+            throw new IllegalArgumentException("Argument '" + value + "' must be of type " + a.type + " (but is " + value.getClass() + ")");
+        }
+    }
+
+
+    public boolean hasArgument(Argument arg) {
+        for (int i = 0; i < definition.length; i++) {
+            Argument a = definition[i];
+            if (a.equals(arg)) return true;
+        }
+        return false;
+    }
 
 
     /**
@@ -103,18 +138,31 @@ public class Arguments extends AbstractList implements List  {
      * @throws IllegalArgumentException if either the argument name is unknown to this Arguments, or the value is of the wrong type.
      */
     public Arguments set(String arg, Object value) {
-        for (int i = 0; i <= definition.length; i++) {
+        for (int i = 0; i < definition.length; i++) {
             Argument a = definition[i];
             if (a.key.equals(arg)) {
-                if (! a.type.isInstance(value)) {
-                    throw new IllegalArgumentException("Argument '" + arg + "' must be of type " + a.type + " (but is " + value.getClass() + ")");
-                } else {
-                    backing.put(arg, value);
-                    return this;
-                }
+                checkType(a, value);
+                backing.put(arg, value);
+                return this;
             }
         }
         throw new IllegalArgumentException("The argument '" + arg + "' is not defined");
+    }
+
+    /**
+     * Sets the value of an argument, if the argument is defined, otherwise do nothing.
+     */
+
+    public Arguments setIfDefined(String arg, Object value) {
+        for (int i = 0; i < definition.length; i++) {
+            Argument a = definition[i];
+            if (a.key.equals(arg)) {         
+                if (! a.type.isInstance(value)) break;
+                backing.put(arg, value);
+                return this;
+            }
+        }
+        return this;
     }
 
     public Object get(String arg) {
