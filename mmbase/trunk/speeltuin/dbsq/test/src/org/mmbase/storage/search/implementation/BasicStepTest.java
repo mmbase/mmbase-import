@@ -10,7 +10,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicStepTest extends TestCase {
     
@@ -33,6 +33,7 @@ public class BasicStepTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**
@@ -59,26 +60,24 @@ public class BasicStepTest extends TestCase {
     
     /** Test of setAlias method, of class org.mmbase.storage.search.implementation.BasicStep. */
     public void testSetAlias() {
-        // Default is builder name.
-        assertTrue(instance.getAlias().equals(BUILDER_NAME));
-        
-        // Null value, should throw IllegalArgumentException.
-        try {
-            instance.setAlias(null);
-            fail("Null value, should throw IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-        
-        // Blank spaces, should throw IllegalArgumentException.
-        try {
-            instance.setAlias("   ");
-            fail("Null value, should throw IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
+        // Default is null.
+        assertTrue(instance.getAlias() == null);
         
         BasicStep result = instance.setAlias(TEST_ALIAS);
         String alias = instance.getAlias();
         assertTrue(alias != null);
         assertTrue(alias.equals(TEST_ALIAS));
         assertTrue(result == instance);
+        
+        // Null value, should throw IllegalArgumentException.
+        instance.setAlias(null);
+        assertTrue(instance.getAlias() == null);
+        
+        // Blank spaces, should throw IllegalArgumentException.
+        try {
+            instance.setAlias("   ");
+            fail("Null value, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
     }
     
     /** Test of getAlias method, of class org.mmbase.storage.search.implementation.BasicStep. */

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class MMObjectBuilderTest extends TestCase {
     
@@ -215,7 +215,7 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             String value = TEST_NAME + i;
             results = instance.searchList("WHERE name<'" + value 
-                + "' AND name LIKE '" + TEST_NAME + "%' ORDER BY name DESC");
+                + "' AND name LIKE '" + TEST_NAME + "%'", "name", "DOWN");
             assertTrue(results.size() == i);
         }
         Iterator iResults = results.iterator();
@@ -237,7 +237,7 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             String value = TEST_NAME + i;
             results = instance.searchVector("WHERE name<'" + value 
-                + "' AND name LIKE '" + TEST_NAME + "%' ORDER BY name DESC");
+                + "' AND name LIKE '" + TEST_NAME + "%'", "name",  "DOWN");
             assertTrue(results.size() == i);
         }
         Iterator iResults = results.iterator();
@@ -720,7 +720,7 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             String value = TEST_NAME + i;
             results = toList(instance.search("WHERE name<'" + value 
-                + "' AND name LIKE '" + TEST_NAME + "%' ORDER BY name DESC"));
+                + "' AND name LIKE '" + TEST_NAME + "%'", "name", false));
             assertTrue(results.size() == i);
         }
         Iterator iResults = results.iterator();

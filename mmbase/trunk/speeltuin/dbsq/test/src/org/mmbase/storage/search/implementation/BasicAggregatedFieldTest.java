@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicAggregatedFieldTest extends TestCase {
     
@@ -37,6 +37,7 @@ public class BasicAggregatedFieldTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**
@@ -95,6 +96,14 @@ public class BasicAggregatedFieldTest extends TestCase {
     
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicAggregatedField. */
     public void testToString() {
+        assertTrue(instance.toString(),
+        instance.toString().equals(
+        "AggregatedField(step:" + instance.getStep().getTableName()
+        + ", fieldname:" + instance.getFieldName()
+        + ", alias:" + instance.getAlias()
+        + ", aggregationtype:" + instance.getAggregationType() + ")"));
+        
+        step.setAlias("images1");
         assertTrue(instance.toString(),
         instance.toString().equals(
         "AggregatedField(step:" + instance.getStep().getAlias()

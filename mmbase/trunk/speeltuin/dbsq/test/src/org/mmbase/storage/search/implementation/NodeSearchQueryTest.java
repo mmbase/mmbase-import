@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -104,7 +104,7 @@ public class NodeSearchQueryTest extends TestCase {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
                 assertTrue(stepField.getFieldName().equals(field.getDBName()));
-                assertTrue(stepField.getAlias().equals(field.getDBName()));
+                assertTrue(stepField.getAlias() == null);
                 assertTrue(stepField.getType() == field.getDBType());
                 assertTrue(stepField.getStep().equals(step));
             } else {
