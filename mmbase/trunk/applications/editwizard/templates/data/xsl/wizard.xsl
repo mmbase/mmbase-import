@@ -13,7 +13,7 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.104 2003-12-21 16:16:05 nico Exp $
+    @version $Id: wizard.xsl,v 1.105 2003-12-22 22:33:24 nico Exp $
     
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -85,7 +85,6 @@
       </xsl:otherwise>	
     </xsl:choose>
     
-    <!-- no need to add the html editor if there are not fields of this type -->
     <xsl:call-template name="javascript-html"/>
   </xsl:template>
 
