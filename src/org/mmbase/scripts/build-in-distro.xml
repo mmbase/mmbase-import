@@ -74,7 +74,7 @@ about the Ant build tool.
     <available property="xalan.present"
                classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
     <available property="jai.present"
-               classname="javax.jai.JAI"/>
+               classname="javax.media.jai.JAI"/>
 
     <!-- only needed for runnning MMBase with Apache Tomcat -->
     <available property="tomcat.present" 
