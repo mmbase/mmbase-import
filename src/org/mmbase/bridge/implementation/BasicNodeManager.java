@@ -34,7 +34,7 @@ import org.mmbase.storage.search.implementation.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.65 2003-09-02 20:14:38 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.66 2003-10-09 14:32:28 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -139,7 +139,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     protected Set getQueryFields() {
         return queryFields;
     }
-    
+
 
 
     public Node createNode() {
@@ -173,6 +173,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         } else {
             return cloud.getNodeManager(bul.getTableName());
         }
+    }
+
+    public NodeManagerList getDescendants() {
+        List descs = getMMObjectBuilder().getDescendants();
+        return new BasicNodeManagerList(descs, cloud);
     }
 
     public String getName() {
@@ -217,7 +222,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public String getDescription() {
         if (builder!=null) {
             return builder.getDescription(cloud.getLocale().getLanguage());
-        } 
+        }
         return "";
     }
 
@@ -263,7 +268,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         */
         // end of check invalid search command
-        
+
 
         NodeQuery query = createQuery();
         Queries.addConstraints(query, constraints);
