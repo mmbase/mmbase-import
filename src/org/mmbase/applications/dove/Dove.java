@@ -47,12 +47,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.43 2003-11-21 09:48:35 pierre Exp $
+ * @version $Id: Dove.java,v 1.44 2003-11-26 21:05:42 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
 
-    private static Logger log = Logging.getLoggerInstance(Dove.class);
+    private static final Logger log = Logging.getLoggerInstance(Dove.class);
 
     /**
      * Constructor
@@ -441,11 +441,11 @@ public class Dove extends AbstractDove {
                     int number=java.lang.Math.abs(n.getNumber());
                     data.setAttribute(ELM_NUMBER, "n"+number);
                     if (createDir == ClusterBuilder.SEARCH_SOURCE) {
-                        log.info("Creating relation in the INVERSE direction");
+                        log.debug("Creating relation in the INVERSE direction");
                         data.setAttribute(ELM_DESTINATION, source);
                         data.setAttribute(ELM_SOURCE, destination);
                     } else {
-                        log.info("Creating relation in the NORMAL direction");
+                        log.debug("Creating relation in the NORMAL direction");
                         data.setAttribute(ELM_DESTINATION, destination);
                         data.setAttribute(ELM_SOURCE, source);
                     }
