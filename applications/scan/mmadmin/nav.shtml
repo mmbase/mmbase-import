@@ -30,7 +30,7 @@
 	<TD BGCOLOR="#FFFFFF">
 	</IF>
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<CENTER><A HREF="/mmadmin/examples.shtml"><B>Install examples</B></A>
+	<CENTER><A HREF="/mmadmin/applications.shtml"><B>Applications</B></A>
 	</TD>
 	<IF $PARAM1==5>
 	<TD BGCOLOR="#DDDDFF">
