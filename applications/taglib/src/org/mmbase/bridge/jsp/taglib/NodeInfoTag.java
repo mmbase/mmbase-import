@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.33 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: NodeInfoTag.java,v 1.34 2004-12-10 15:50:02 pierre Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -34,6 +34,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
     private static final int TYPE_NODENUMBER            = 3;
     private static final int TYPE_GUI                   = 4;
     private static final int TYPE_DESCRIPTION           = 5;
+    private static final int TYPE_CONTEXT               = 6;
     private static final int TYPE_QUERY                 = 50; // for debug
 
 
@@ -55,6 +56,8 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             return TYPE_GUINODEMANAGER_PLURAL;
         } else if ("description".equals(t)) {
             return  TYPE_DESCRIPTION;
+        } else if ("context".equals(t)) {
+            return  TYPE_CONTEXT;
         } else if ("number".equals(t)) {
             return  TYPE_NODENUMBER;
         } else if ("gui".equals(t)) {
@@ -92,6 +95,9 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         switch(t) {
         case TYPE_NODENUMBER:
             show = ""+getNode().getNumber();
+            break;
+        case TYPE_CONTEXT:
+            show = getNode().getContext();
             break;
         case TYPE_NODEMANAGER:
             show = nodeManager.getName();
