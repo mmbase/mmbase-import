@@ -23,7 +23,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.4 2003-12-29 16:36:57 nico Exp $
+ * @version $Id: ValueIntercepter.java,v 1.5 2004-01-08 22:15:06 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -284,7 +284,10 @@ public class ValueIntercepter {
 
         int type = field.getType();
 
-        //log.info("processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+        if (type == Field.TYPE_UNKNOWN) {
+            log.warn("TYPE UNKNOWN processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+            return value;
+        }
 
         Processor processor;
         Map map = setProcessor[type][setType];
@@ -312,13 +315,16 @@ public class ValueIntercepter {
 
         int type = field.getType();
 
-        //log.info("processSet " + setType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+        if (type == Field.TYPE_UNKNOWN) {
+            log.warn("TYPE UNKNOWN processGet " + getType + "/" + type + " " + field.getName() + " " + field.getGUIType() + " for node " + node.getNumber()); 
+            return value;
+        }
 
         Processor processor;
         Map map = getProcessor[type][getType];
 
                                                 
-        if (map == null) { // not configured
+        if (map == null) {  // not configured
             map = getProcessor[type][0];
         }
         if (map == null) { // if that too not configured
