@@ -26,7 +26,7 @@
     </td>
     <td valign="top">
       <mm:present referid="nodemanager">
-        <mm:listnodes type="typedef" constraints="where name='${nodemanager}'">
+        <mm:listnodes type="typedef" constraints="name='${nodemanager}'">
           <p><b><mm:field name="name" /></b></p>
           <p><mm:field name="description" /></p>
         </mm:listnodes>
