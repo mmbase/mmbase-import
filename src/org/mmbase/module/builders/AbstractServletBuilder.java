@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.9 2002-09-30 13:00:51 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.10 2002-10-02 21:23:31 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -180,9 +180,23 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      */
 
-    public Object executeFunction(MMObjectNode node, String function, List args) {
-        if (function.equals("servletpath")) {
-            
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
+        log.debug("executefunction of abstractservletbuilder");
+        if (function.equals("info")) {
+            List empty = new Vector();
+            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            info.put("servletpath", "(session,number,context) Returns the path to a the servlet presenting this node. All arguments are optional");
+            info.put("servletpathof", "bla bla");
+            info.put("format", "bla bla");
+            info.put("mimetype", "bla bla");
+            info.put("gui", "bla bla");
+
+            if (args == null || args.size() == 0) {
+                return info;
+            } else {
+                return info.get(args.get(0));
+            }            
+        } else if (function.equals("servletpath")) {            
             if (log.isDebugEnabled()) {
                 log.debug("getting servletpath with args " +args);
             }
@@ -194,9 +208,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
 
             // second argument, which field to use, can for example be 'number' (optional)
-            String f = "";
+            String field = node.getStringValue("number");
             if(args.size() > 0 ) {
-                f = (String) args.remove(0);
+                field = node.getStringValue((String) args.remove(0)); // for example cache(s(100))
             }
 
             // third argument, the servlet context, should not be needed, but shouldn't harm either.
@@ -206,21 +220,16 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
 
             // ok, make the path.
-            String servlet;
+            StringBuffer servlet = new StringBuffer();
             if (context == null) { // context argument is the last, for easy removal later
-                servlet = getServletPath();
+                servlet.append(getServletPath());
             } else {
-                servlet = getServletPath(context, null);
+                servlet.append(getServletPath(context, null));
             }
             if (usesBridgeServlet && ! session.equals("")) {
-                servlet += "session=" + session + "+";
+                servlet.append("session=" + session + "+");
             }
-            
-            if ("".equals(f)) {
-                return servlet;
-            } else {
-                return servlet + node.getStringValue(f);
-            }
+            return servlet.append(field).toString();
         } else if (function.equals("servletpathof")) { 
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
             return getServletPathWithAssociation((String) args.get(0), MMBaseContext.getHtmlRootUrlPath());
@@ -228,15 +237,19 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             // images e.g. return jpg or gif
         } else if (function.equals("mimetype")) { // don't issue a warning, builders can override this. 
             // images, attachments and so on
-        } else if (function.equals("sgui")) {
+        } else if (function.equals("gui")) {
+            log.debug("GUI of servlet builder with " + args);
             if (args == null || args.size() ==0) {
                 return getGUIIndicator(node);
             } else {
+                String rtn;
                 if (args.size() <= 1) {
-                    return getGUIIndicator((String) args.get(0), node);
+                    rtn = getGUIIndicator((String) args.get(0), node);
                 } else {
-                    return getSGUIIndicator("session=" + args.get(0) + "+", (String) args.get(1), node);
+                    rtn = getSGUIIndicator("session=" + args.get(1) + "+", (String) args.get(0), node);
                 }
+                if (rtn == null) return super.executeFunction(node, function, args);
+                return rtn;
             }
         } else {                   
             return super.executeFunction(node, function, args);
