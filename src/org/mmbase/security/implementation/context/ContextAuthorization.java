@@ -444,7 +444,8 @@ public class ContextAuthorization extends Authorization {
         if(node == null) {
             String msg = "node " + n + " not found";
             log.error(msg);
-            throw new NotFoundException(msg);
+            //throw new NotFoundException(msg);
+            throw new SecurityException(msg);
         }
         return node;
     }
