@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.24 $ $Date: 2001-01-12 10:24:03 $
+ * @version $Revision: 1.25 $ $Date: 2001-02-04 16:42:24 $
  */
 public abstract class Module {
 
@@ -264,7 +264,6 @@ public abstract class Module {
     * @return The mimetype.
     */
     public String getMimeType(String ext) {
-        // org.mmbase return((String)mimetypes.get(ext));
         return getMimeTypeFile("dummy."+ext);
     }
 
@@ -272,7 +271,7 @@ public abstract class Module {
         ServletContext sx=MMBaseContext.getServletContext();
         String mimetype=sx.getMimeType(filename);
         if (mimetype==null) {
-            debug("getMimeType("+filename+"): WARNING: Can't find mimetype retval=null -> setting mimetype to default text/html");
+            if (debug) debug("getMimeType("+filename+"): WARNING: Can't find mimetype retval=null -> setting mimetype to default text/html");
             mimetype="text/html";
         }
         return(mimetype);
