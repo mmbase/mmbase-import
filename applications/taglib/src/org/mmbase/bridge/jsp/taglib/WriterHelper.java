@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.65 2005-03-22 15:33:49 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.66 2005-03-24 13:50:59 michiel Exp $
  */
 
 public class WriterHelper {
@@ -110,6 +110,8 @@ public class WriterHelper {
     private   int     vartype          = TYPE_UNSET;
 
     private   ContextReferrerTag thisTag  = null;
+
+    private   BodyContent bodyContent;
 
 
     /**
@@ -466,7 +468,6 @@ public class WriterHelper {
 
 
     public String getString() {
-        BodyContent bodyContent = thisTag.getBodyContent();
         if (bodyContent != null) {
             return bodyContent.getString();
         } else {
@@ -502,6 +503,7 @@ public class WriterHelper {
     public int doAfterBody() throws JspTagException {
         pop_Stack();
         pushed = false;
+        bodyContent = thisTag.getBodyContent();
         return javax.servlet.jsp.tagext.Tag.SKIP_BODY;
     }
 
@@ -514,8 +516,6 @@ public class WriterHelper {
         log.debug("doEndTag of WriterHelper");
         try {
             String body = getString();
-            BodyContent bodyContent = thisTag.getBodyContent();
-
             if (isWrite()) {
                 log.debug("Must write to page");
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
@@ -542,6 +542,7 @@ public class WriterHelper {
         value         = null;
         _Stack        = null;
         pushed        = false;
+        bodyContent   = null;
     }
 
 
