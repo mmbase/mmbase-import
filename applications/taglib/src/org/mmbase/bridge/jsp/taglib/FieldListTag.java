@@ -60,8 +60,8 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
         return currentField;
     }
 
-    public void setNodemanager(String n) {
-        nodeManagerString = n;
+    public void setNodemanager(String n) throws JspTagException {
+        nodeManagerString = getAttributeValue(n);
     }
 
     public void setType(String t) throws JspTagException {

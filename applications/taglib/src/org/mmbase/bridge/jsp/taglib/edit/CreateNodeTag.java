@@ -36,8 +36,8 @@ public class CreateNodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     private String nodemanager = null;
         
-    public void setNodemanager(String n) {
-        nodemanager = n;
+    public void setNodemanager(String n) throws JspTagException {
+        nodemanager = getAttributeValue(n);;
     }
     
     
