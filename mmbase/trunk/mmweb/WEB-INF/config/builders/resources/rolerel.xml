@@ -78,7 +78,7 @@
                <!-- name of the field in the database -->
                <name>role</name>
                <!-- MMBase datatype and demands on it -->
-               <type state="persistent" size="50" notnull="false" key="false">STRING</type>
+               <type state="persistent" size="50" notnull="true" key="false">STRING</type>
            </db>
        </field>
 
