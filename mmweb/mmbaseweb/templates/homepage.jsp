@@ -166,13 +166,13 @@
 	  <mm:time time="today" id="lastweek" offset="-604800" write="false" />
 	  <mm:listnodes type="bugreports" orderby="time" directions="DOWN" constraints="bstatus > 4 and  [time] >= $lastweek">
 		<mm:last>
-		<a href="/index.jsp?portal=199&page=546&sstatus=6">Solved : <mm:size /><a>
+		<a href="<mm:url page="/index.jsp?portal=199&page=546&sstatus=6" />">Solved : <mm:size /><a>
 		</mm:last>
 	  </mm:listnodes>
 	  <br />
 	  <mm:listnodes type="bugreports" orderby="time" directions="DOWN" constraints="bstatus < 2 and  [time] >= $lastweek ">
 		<mm:last>
-		<a href="/index.jsp?portal=199&page=546&sstatus=1">New : <mm:size /><a>
+		<a href="<mm:url page="/index.jsp?portal=199&page=546&sstatus=1" />">New : <mm:size /><a>
 		</mm:last>
 	  </mm:listnodes>
 	  <br />
