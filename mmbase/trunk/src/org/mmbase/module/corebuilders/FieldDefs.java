@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.15 2000-12-16 20:42:42 daniel Exp $
+$Id: FieldDefs.java,v 1.16 2000-12-28 09:27:36 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2000/12/16 20:42:42  daniel
+added several set calls
+
 Revision 1.14  2000/11/16 15:21:58  pierre
 pierre: added public static final TYPE_UNKNOWN
 
@@ -62,7 +65,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.15 $ $Date: 2000-12-16 20:42:42 $
+ * @$Revision: 1.16 $ $Date: 2000-12-28 09:27:36 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -83,10 +86,10 @@ public class FieldDefs  {
 	private String GUIName; 
 	public Hashtable GUINames = new Hashtable(); 
 	public String GUIType; 
-	public int	  GUISearch; 
+	public int    GUISearch; 
 	public int    GUIList; 
 	public String DBName;
-	public int DBType;
+	public int    DBType;
 	public int	  GUIPos;
 	public int	  DBState=-1;
 	public boolean	  DBNotNull=false;
@@ -190,6 +193,10 @@ public class FieldDefs  {
 		GUIType=value;
 	}
 
+	public void setDBName(String value) {
+		DBName=value;
+	}
+
 	public void setGUIList(int value) {
 		GUIList=value;
 	}
@@ -202,6 +209,29 @@ public class FieldDefs  {
 		GUISearch=value;
 	}
 
+	public void setDBSize(int value) {
+		DBSize=value;
+	}
+
+	public void setDBType(int value) {
+		DBType=value;
+	}
+
+	public void setDBPos(int value) {
+		DBPos=value;
+	}
+
+	public void setDBState(int value) {
+		DBState=value;
+	}
+
+	public void setDBKey(boolean value) {
+		isKey=value;
+	}
+
+	public void setDBNotNull(boolean value) {
+		DBNotNull=value;
+	}
 	public String toString() {
 		return("DEF GUIName="+getGUIName()+" GUIType="+GUIType+" Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+" DBname="+DBName+" DBType="+DBType+" DBSTATE="+DBState+" DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+" isKey="+isKey);
 	}
