@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.33 2002-09-30 12:39:46 michiel Exp $
+ * @version $Id: Node.java,v 1.34 2002-10-03 12:29:07 pierre Exp $
  */
 public interface Node {
 
@@ -482,7 +482,7 @@ public interface Node {
      *                          for this type of relation
      */
     public Relation createRelation(Node destinationNode,
-                                   RelationManager relationManager);
+                                   Node relationManager);
 
     /**
      * set the Context of the current Node

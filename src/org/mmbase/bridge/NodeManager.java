@@ -24,9 +24,9 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.14 2002-09-23 20:45:35 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.15 2002-10-03 12:29:07 pierre Exp $
  */
-public interface NodeManager {
+public interface NodeManager extends Node {
 
     public final static int ORDER_CREATE = 0;
     public final static int ORDER_EDIT = 1;
