@@ -63,11 +63,11 @@ NetComponents can be found at:
   <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
-  <property name="source.dir" location="." />
-  <property name="build.dir" value="${source.dir}/build"/>
-  <property name="download.dir" value="${build.dir}/download"/>
-  <property name="expand.dir" value="${download.dir}/expanded"/>
-  <property name="download.zip" value="mmbase-downloads.zip" />
+  <property name="source.dir"   location="." />
+  <property name="build.dir"    value="${source.dir}/build" />
+  <property name="download.dir" value="${build.dir}/download" />
+  <property name="expand.dir"   value="${download.dir}/expanded" />
+  <property name="download.zip" value="mmbase-downloads.zip"  />
 
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
@@ -876,6 +876,14 @@ Build-compiler: ${build.compiler}
       <arg value="-OUT"/>
       <arg value="${reference.dir}/mmbase-taglib.html"/>
     </java>
+
+    <!-- sucks, but at least repairs a broken link for now: -->
+    <!-- taglib-groups.html must be generated from the xml -->
+    <copy todir="${reference.dir}/taglib">      
+      <fileset dir="${source-src.dir}/org/mmbase/bridge/jsp/taglib">
+        <include name="*.html"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="community.tld.check">
@@ -1496,6 +1504,7 @@ Version: MMBase build ${version}
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
+           depend="true"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
