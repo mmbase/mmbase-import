@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.22 2002-05-22 13:44:34 pierre Exp $
+ * @version $Id: Wizard.java,v 1.23 2002-05-23 08:05:04 pierre Exp $
  *
  */
 public class Wizard {
@@ -95,10 +95,13 @@ public class Wizard {
 
     /**
      * This boolean tells the jsp that the wizard may be closed, as far as he is concerned.
-     *
      */
     private boolean mayBeClosed = false;
 
+    /**
+     * This boolean tells the jsp that the wizard was committed, and changes may have been made
+     */
+    private boolean committed = false;
 
     /**
      * This list stores all errors and warnings occured
@@ -194,9 +197,18 @@ public class Wizard {
         return str;
     }
 
-
+    /**
+     * Returns whether the wizard may be closed
+     */
     public boolean mayBeClosed() {
         return mayBeClosed;
+    }
+
+    /**
+     * Returns whether the wizard was committed, which means changes may have been made
+     */
+    public boolean committed() {
+        return committed;
     }
 
     /**
@@ -1299,7 +1311,6 @@ public class Wizard {
             // This command takes no parameters.
             try {
                 Element results = dbconn.put(originaldata, data, uploads);
-                log.info(""+results);
                 NodeList errors = Utils.selectNodeList(results,".//error");
                 if (errors.getLength() > 0){
                     String errorMessage = "Errors received from MMBase :";
@@ -1311,6 +1322,7 @@ public class Wizard {
                 // find the (new) objectnumber and store it. Just take the first one found.
                 String newnumber=Utils.selectSingleNodeText(results,".//object/@number",null);
                 if (newnumber!=null) objectnumber=newnumber;
+                committed=true;
                 mayBeClosed = true;
             } catch (WizardException e) {
                 log.error("could not send PUT command!. Wizardname:"+wizardName+"Exception occured: " + e.getMessage());
