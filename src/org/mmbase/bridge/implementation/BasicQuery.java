@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.36 2004-02-23 19:01:01 pierre Exp $
+ * @version $Id: BasicQuery.java,v 1.36.2.1 2004-05-07 13:19:58 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -322,7 +322,7 @@ public class BasicQuery implements Query  {
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
         BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField) field).field, aggregationType);
-        aggregatedField.setAlias(field.getName());
+        // aggregatedField.setAlias(field.getName());
 
         if (this instanceof NodeQuery) {
             NodeQuery nodeQuery = (NodeQuery) this;
