@@ -39,7 +39,49 @@ public interface NodeInterface {
 	 * @param attribute name of field
 	 * @param value of attribute
 	 */
-	public void setValue(String attribute, String value); 
+	public void setValue(String attribute, Object value); 
+
+	/** 
+	 * Set the value of certain attribute
+	 * @param attribute name of field
+	 * @param value of attribute
+	 */
+	public void setIntValue(String attribute, int value); 
+
+	/** 
+	 * Set the value of certain attribute
+	 * @param attribute name of field
+	 * @param value of attribute
+	 */
+	public void setFloatValue(String attribute, float value); 
+
+	/** 
+	 * Set the value of certain attribute
+	 * @param attribute name of field
+	 * @param value of attribute
+	 */
+	public void setDoubleValue(String attribute, double value); 
+
+	/** 
+	 * Set the value of certain attribute
+	 * @param attribute name of field
+	 * @param value of attribute
+	 */
+	public void setByteValue(String attribute, byte[] value); 
+
+	/** 
+	 * Set the value of certain attribute
+	 * @param attribute name of field
+	 * @param value of attribute
+	 */
+	public void setLongValue(String attribute, long value); 
+
+	/** 
+	 * Set the value of certain attribute
+	 * @param attribute name of field
+	 * @param value of attribute
+	 */
+	public void setStringValue(String attribute, String value); 
 
 	/** 
 	 * Retrieves the value of certain attribute
@@ -47,6 +89,48 @@ public interface NodeInterface {
 	 * @return value of attribute
 	 */
 	public Object getValue(String fieldName);
+
+	/** 
+	 * Retrieves the value of certain attribute
+	 * @param name of attribute you want 
+	 * @return value of attribute
+	 */
+	public int getIntValue(String fieldName);
+
+	/** 
+	 * Retrieves the value of certain attribute
+	 * @param name of attribute you want 
+	 * @return value of attribute
+	 */
+	public float getFloatValue(String fieldName);
+
+	/** 
+	 * Retrieves the value of certain attribute
+	 * @param name of attribute you want 
+	 * @return value of attribute
+	 */
+	public long getLongValue(String fieldName);
+
+	/** 
+	 * Retrieves the value of certain attribute
+	 * @param name of attribute you want 
+	 * @return value of attribute
+	 */
+	public double getDoubleValue(String fieldName);
+
+	/** 
+	 * Retrieves the value of certain attribute
+	 * @param name of attribute you want 
+	 * @return value of attribute
+	 */
+	public byte[] getByteValue(String fieldName);
+
+	/** 
+	 * Retrieves the value of certain attribute
+	 * @param name of attribute you want 
+	 * @return value of attribute
+	 */
+	public String getStringValue(String fieldName);
 
 	/**
 	 * Commit the node to the database
