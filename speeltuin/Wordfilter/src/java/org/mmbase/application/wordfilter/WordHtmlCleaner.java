@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.application.wordfilter;
+package org.mmbase.applications.wordfilter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import xmlbs.PropertiesDocumentStructure;
  * 
  * @author Nico Klasens (Finalist IT Group)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class WordHtmlCleaner {
 
@@ -54,8 +54,12 @@ public class WordHtmlCleaner {
       prop.setProperty("body", "_all");
 
       prop.setProperty("_all", "_style table");
-      prop.setProperty("_style", "strong p a b i u ul ol #TEXT br");
-
+      prop.setProperty("_style", "strong h3 h2 h1 p a b i u ul ol #TEXT br");
+      
+      prop.setProperty("h3", "_style");
+      prop.setProperty("h2", "_style");
+      prop.setProperty("h1", "_style");
+      
       prop.setProperty("p", "_style");
       prop.setProperty("b", "_style");
       prop.setProperty("i", "_style");
@@ -87,71 +91,188 @@ public class WordHtmlCleaner {
     * @return clean html code
     */
    public static String cleanHtml(String textStr) {
-      try {
-         xmlbs.XMLBS xmlbs =
-            new xmlbs.XMLBS("<body>" + textStr + "</body>", xmlbsDTD);
-         xmlbs.process();
-         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-         xmlbs.write(bout);
-         bout.flush();
-         String xmlStr = bout.toString();
+      if (textStr != null) {
 
-         // to string and strip root node
-         xmlStr = xmlStr.substring(xmlStr.indexOf('>') + 1);
-         int i = xmlStr.lastIndexOf('<');
-         if (i != -1) {
-            xmlStr = xmlStr.substring(0, i);
+         try {
+            //The font tag is required to fix wordpad anchor links
+            // xmlbs removes the fonttags
+            String xmlStr = fixWordpad(textStr);
+            xmlStr = fixLists(xmlStr);
+            
+            xmlbs.XMLBS xmlbs =
+               new xmlbs.XMLBS("<body>" + xmlStr + "</body>", xmlbsDTD);
+            xmlbs.process();
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            xmlbs.write(bout);
+            bout.flush();
+            xmlStr = bout.toString();
+   
+            // to string and strip root node
+            xmlStr = xmlStr.substring(xmlStr.indexOf('>') + 1);
+            int i = xmlStr.lastIndexOf('<');
+            if (i != -1) {
+               xmlStr = xmlStr.substring(0, i);
+            }
+   
+            xmlStr = replaceParagraph(xmlStr);
+            xmlStr = removeXmlNamespace(xmlStr);
+            xmlStr = fixAnchors(xmlStr);
+            xmlStr = removeEmptyTags(xmlStr);
+   
+            return xmlStr;
          }
-
-         xmlStr = removeXmlNamespace(xmlStr);
-
-         return xmlStr;
-      }
-      catch (IllegalStateException e) {
-         log.error("Clean html failed");
-         log.error(Logging.stackTrace(e));
-      }
-      catch (IOException e) {
-         log.error("Clean html failed");
-         log.error(Logging.stackTrace(e));
+         catch (IllegalStateException e) {
+            log.error("Clean html failed");
+            log.error(Logging.stackTrace(e));
+         }
+         catch (IOException e) {
+            log.error("Clean html failed");
+            log.error(Logging.stackTrace(e));
+         }
       }
       return "";
    }
 
    /** remove xml namespace declarations
-    * @param xmlStr xml string
+    * @param text xml string
     * @return xml string with namespace removed
     */
-   private static String removeXmlNamespace(String xmlStr) {
-       if (xmlStr == null) {
-          return xmlStr;
-       }
-       else {
-          if (xmlStr.length() < 13 ) {
-             return xmlStr;
-          }
-          else {
-             String xml = null;
-             int begin = 0;
-             int end = 0;
-             while ((begin = xmlStr.indexOf("&lt;?xml", end)) > -1) {
-                 xml += xmlStr.substring(end, begin);
-                 end = xmlStr.indexOf("/&gt;", begin);
-                 if (end > -1) {
-                    end += 5;
-                 }
-                 else {
-                    xml += "&lt;?xml";
-                    end = begin + 8;
-                 }
-             }
-       
-             if (end < xmlStr.length()) {
-                xml += xmlStr.substring(end);
-             }
-             return xml;
-          }
-       }
+   private static String removeXmlNamespace(String text) {
+      text = text.replaceAll("<\\?xml:namespace.*?/>", "");
+      text = text.replaceAll("\\&lt;\\?xml:namespace.*?/\\&gt;", "");
+      return text;
+   }
+   
+   private static String replaceParagraph(String text) {
+      // remove all remaining <p>
+      text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>","");
+      // replace all remaining </p> with a <br><br>
+      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>","<BR><BR>");
+      // remove all <br> at the end
+      text = text.replaceAll("(<\\s*[bB]{1}[rR]{1}\\s*[^>]*?>(\\s|(&nbsp;))*)*\\z","");
+      return text;
+   }
+   
+   /** Fixes the anchors tags for Wordpad: <U><FONT color=#0000ff> ... </U></FONT>
+    *  
+    * @param xmlStr xml string
+    * @return xml string with fixed anchors
+    */
+   private static String fixWordpad(String xmlStr) {
+      String xml = "";
+      int begin = 0;
+      int end = 0;
+      while ((begin = xmlStr.indexOf("<U><FONT color=#0000ff>", end)) > -1) {
+         xml += xmlStr.substring(end, begin);
+         end = xmlStr.indexOf("</U></FONT>", begin);
+         if (end > -1) {
+            String link = xmlStr.substring(begin + "<U><FONT color=#0000ff>".length(), end);
+            xml += "<a href=\"" + stripHtml(link) + "\">" + link + "</a>";
+            end += "</U></FONT>".length();
+         }
+         else {
+            xml += "<U><FONT color=#0000ff>";
+            end = begin + "<U><FONT color=#0000ff>".length();
+         }
+      }
+    
+      if (end < xmlStr.length()) {
+         xml += xmlStr.substring(end);
+      }
+      return xml;
    }
 
+   private static String fixLists(String xmlStr) {
+      String xml = "";
+      int begin = 0;
+      int end = 0;
+      while ((begin = xmlStr.indexOf("<LI>", end)) > -1) {
+         if (begin != end) {
+            xml += xmlStr.substring(end, begin);
+         }
+         
+         end = xmlStr.indexOf("</LI>", begin);
+         if (end > -1) {
+            end += "</LI>".length();
+            xml += xmlStr.substring(begin, end);
+         }
+         else {
+            end = xmlStr.indexOf("<LI>", begin + "<LI>".length());
+            if (end == -1) {
+               end = xmlStr.length();
+            }
+
+            int endList = xmlStr.indexOf("</OL>", begin);
+            if (endList == -1) {
+               endList = xmlStr.indexOf("</UL>", begin);
+               if (endList == -1) {
+                  endList = xmlStr.length();
+               }
+            }
+            
+            if (end <= endList) {
+               xml += xmlStr.substring(begin, end) + "</LI>";
+               end -= 1;
+            }
+            else {
+               if (end > endList) {
+                  xml += xmlStr.substring(begin, endList) + "</LI>";
+                  end = endList;
+                  if (endList != xmlStr.length()) {
+                     xml += xmlStr.substring(endList, (endList + "</OL>".length()));
+                     end += "</OL>".length();
+                  }
+               }
+            }
+         }
+      }
+      if (end < xmlStr.length()) {
+         xml += xmlStr.substring(end);
+      }
+      return xml;
+   }
+   
+   /** Fixes the anchors tags
+    *  
+    * @param xmlStr xml string
+    * @return xml string with fixed anchors
+    */
+   private static String fixAnchors(String xmlStr) {
+      String xml = "";
+      int begin = 0;
+      int end = 0;
+      while ((begin = xmlStr.indexOf("<A", end)) > -1) {
+         xml += xmlStr.substring(end, begin);
+         int endBegin = xmlStr.indexOf(">", begin);
+         end = xmlStr.indexOf("</A>", begin);
+         if (end > -1 && "".equals(stripHtml(xmlStr.substring(endBegin+1, end)))) {
+            String atag = xmlStr.substring(begin, endBegin + 1);
+            int hrefBegin = atag.indexOf("href=\"");
+            if (hrefBegin > -1) {
+               hrefBegin += "href=\"".length();
+               int hrefEnd = atag.indexOf("\"",hrefBegin);
+               xml += atag + atag.substring(hrefBegin, hrefEnd) + "</A>";
+            }
+            end += "</A>".length();
+         }
+         else {
+            end += "</A>".length();
+            xml += xmlStr.substring(begin, end);
+         }
+      }
+      if (end < xmlStr.length()) {
+         xml += xmlStr.substring(end);
+      }
+      return xml;
+   }
+
+   private static String removeEmptyTags(String text) {
+      return text.replaceAll("<.*/>", "");
+   }
+
+   
+   private static String stripHtml(String text) {
+      return text.replaceAll("<.*>", "");
+   }
+   
 }
