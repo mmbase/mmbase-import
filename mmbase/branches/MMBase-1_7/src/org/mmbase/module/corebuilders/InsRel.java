@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.40.2.1 2004-05-28 09:23:42 pierre Exp $
+ * @version $Id: InsRel.java,v 1.40.2.2 2004-12-13 13:59:47 marcel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -441,7 +441,7 @@ public class InsRel extends MMObjectBuilder {
             int src=Integer.parseInt(sourceNode);
             int otype=mmb.TypeDef.getIntValue(wtype);
             return getRelated(src,otype);
-        } catch(Exception e) {}
+        } catch(Exception e) { log.error(Logging.stackTrace(e)); }
         return null;
     }
 
@@ -458,7 +458,7 @@ public class InsRel extends MMObjectBuilder {
                 otype=mmb.TypeDef.getIntValue(wtype);
             }
             return getRelated(src,otype);
-        } catch(Exception e) {}
+        } catch(Exception e) { log.error(Logging.stackTrace(e)); }
         return null;
     }
 
@@ -486,7 +486,7 @@ public class InsRel extends MMObjectBuilder {
             int otype=mmb.getTypeDef().getIntValue(wtype);
             int rnumber=mmb.getRelDef().getNumberByName(role);
             return getRelated(src,otype,rnumber);
-        } catch(Exception e) {}
+        } catch(Exception e) { log.error(Logging.stackTrace(e)); }
         return null;
     }
 
@@ -501,7 +501,7 @@ public class InsRel extends MMObjectBuilder {
             int otype=mmb.getTypeDef().getIntValue(wtype);
             int rnumber=mmb.getRelDef().getNumberByName(role);
             return getRelated(src,otype,rnumber);
-        } catch(Exception e) {}
+        } catch(Exception e) { log.error(Logging.stackTrace(e)); }
         return null;
     }
 
