@@ -23,7 +23,7 @@
 <tr>
 
 		<th COLSPAN="8">
-		 MMBase Package Builder - version 0.2
+		 MMBase Package Builder - version 0.3 (1.8)
 		</th>
 </tr>
 </table>

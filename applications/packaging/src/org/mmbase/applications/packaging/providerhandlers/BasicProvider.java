@@ -15,6 +15,7 @@ import org.mmbase.applications.packaging.*;
 import org.mmbase.applications.packaging.installhandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
+import org.mmbase.applications.packaging.projects.*;
 
 import java.io.*;
 import java.util.*;
@@ -35,6 +36,7 @@ public class BasicProvider implements ProviderInterface {
     private long lastupdate;
   
     private installStep step;
+    private packageStep packagestep;
 
     String name;
     String method;
@@ -301,8 +303,16 @@ public class BasicProvider implements ProviderInterface {
 	this.step = step;
     }    
 
+    public void setPackageStep(packageStep packagestep) {
+	this.packagestep = packagestep;
+    }    
+
     public installStep getInstallStep() {
 	return step; 
+    }
+
+    public packageStep getPackageStep() {
+	return packagestep; 
     }
 
 }

@@ -821,15 +821,8 @@ public class Target {
 	return publishsharepassword;
     }
 
-    public boolean publish(int version) {
+    public boolean publish(int version,packageStep step) {
 	// extra delay to test the background threader
-	/*
-	try {
-		Thread.sleep(10000);
-	} catch(Exception e) {
-		e.printStackTrace();
-	}
-	*/
 	if (isBundle()) {
 		BundleInterface b = BundleManager.getBundle(getId(),""+version);
 		while (b==null) {
@@ -845,6 +838,7 @@ public class Target {
 		}
 		ProviderInterface o=ProviderManager.getProvider(publishprovider);
 		if (o != null && b !=null) {
+			o.setPackageStep(step);
 			boolean result = o.publish(b,getPublishSharePassword());
 			return result;
 		}
@@ -863,6 +857,7 @@ public class Target {
 		}
 		ProviderInterface o=ProviderManager.getProvider(publishprovider);
 		if (o != null && p !=null) {
+			o.setPackageStep(step);
 			boolean result = o.publish(p,getPublishSharePassword());
 			return result;
 		}
