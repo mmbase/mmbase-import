@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.21 2001-10-08 08:23:57 michiel Exp $
+$Id: MMBaseContext.java,v 1.22 2001-10-18 11:10:21 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.21  2001/10/08 08:23:57  michiel
+michiel: of course the parameter itself should stay mmbase.htmlroot rather then mmbase.htmlRoot
+
 Revision 1.20  2001/10/05 08:49:23  michiel
 eduard/michiel (who am i?): orion tried to reinitialize, when we tried to access getResource in init. So it was moved to a later time.
 
@@ -98,7 +101,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.21 $ $Date: 2001-10-08 08:23:57 $
+ * @$Revision: 1.22 $ $Date: 2001-10-18 11:10:21 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -519,5 +522,13 @@ public class MMBaseContext {
 	    htmlRootUrlPathInitialized = true;                      
         } 
         return htmlRootUrlPath;
+    }
+
+    /**
+     * Returns whether this class has been initialized.
+     * This can be used to determine whether MMBase specific configuration data is accessible.
+     */
+    public static boolean isInitialized() {
+        return initialized;
     }
 }
