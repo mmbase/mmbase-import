@@ -17,7 +17,7 @@ import org.mmbase.module.core.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-// rmeoved temp, daniel. import org.apache.tomcat.core.*;
+import org.apache.tomcat.core.*;
 
 
 /**
@@ -29,9 +29,7 @@ import javax.servlet.http.*;
 
  */
 
-// changed for compile. public class jumpersInterceptor extends JamesServlet implements RequestInterceptor { 
-  /* removed to allow full compile, daniel
-public class jumpersInterceptor extends JamesServlet { 
+public class jumpersInterceptor extends JamesServlet implements RequestInterceptor { 
 
 
     static MMBase mmbase = null;
@@ -52,8 +50,8 @@ public class jumpersInterceptor extends JamesServlet {
     public int preService(Request req, Response res) {
 	if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
 	incRefCount(req.getFacade());
-            try {
-	        String url=null;
+	try {
+		String url=null;
 		String tmpr=req.getRequestURI().substring(1);
 		if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
 		if (url!=null) {
@@ -63,7 +61,7 @@ public class jumpersInterceptor extends JamesServlet {
 		    return OK;
 		}
 	    } finally { 
-		decRefCount(req.getFacade()); 
+			decRefCount(req.getFacade()); 
 	    }
 	    return OK;
     }
@@ -71,58 +69,59 @@ public class jumpersInterceptor extends JamesServlet {
 
     private String getUrl(String key) {
         String url=null;
-	Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
-	if (bul!=null) {
-	    if (key.indexOf('-')==-1) {
-	        if (key.endsWith("/")) { 
-		    url=bul.getJump(key.substring(0,key.length()-1));
+		Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
+		if (bul!=null) {
+			if (key.indexOf('-')==-1) {
+				if (key.endsWith("/")) {
+					url=bul.getJump(key.substring(0,key.length()-1));
+				} else {
+					url=bul.getJump(key);
+				}
+			}
+			if (url!=null) return(url);
 		} else {
-		    url=bul.getJump(key);
+			System.out.println("servjumpers -> can't access mmbase/jumpers");
 		}
-	    }
-	    if (url!=null) return(url);
-	} else {
-	    System.out.println("servjumpers -> can't access mmbase/jumpers");
+	
+		return(null);
+
 	}
-	return(null);
-    }
 
 
     public int requestMap(Request request ) {
-	return 0;
+		return 0;
     }
 
     public int contextMap( Request rrequest ) {
-	return 0;
+		return 0;
     }
 
     public int authenticate(Request request, Response response) {
-	return 0;
+		return 0;
     }
 
     public int authorize(Request request, Response response) {
-	return 0;
+		return 0;
     }
 
     public int beforeBody( Request rrequest, Response response ) {
-	return 0;
+		return 0;
     }
 
     public int beforeCommit( Request request, Response response) {
-	return 0;
+		return 0;
     }
 
 
     public int afterBody( Request request, Response response) {
-	return 0;
+		return 0;
     }
 
     public int postService(Request request, Response response) {
-	return 0;
+		return 0;
     }
 
     public String []getMethods()  {
-	return methods;
+		return methods;
     }
 }
- */
