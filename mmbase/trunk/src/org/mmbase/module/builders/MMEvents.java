@@ -19,20 +19,35 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: MMEvents.java,v 1.11 2002-03-14 10:47:13 vpro Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
 	MMEventsProbe probe;
 	DateStrings datestrings;
+    private int notifyWindow=3600;
+    private boolean enableNotify=true;
 
 	public MMEvents() {
 	}
 
 	public boolean init() {
+        String tmp;
+        int nw;
 		super.init();
 		datestrings = new DateStrings(mmb.getLanguage());
-		probe=new MMEventsProbe(this);
+        tmp=getInitParameter("NotifyWindow");
+        if (tmp!=null) {
+            try {
+                nw=Integer.parseInt(tmp);
+                notifyWindow=nw;
+            } catch (NumberFormatException xx) {}
+        }
+        tmp=getInitParameter("EnableNotify");
+        if (tmp!=null && (tmp.equals("false") || tmp.equals("no"))) {
+            enableNotify=false;
+        }
+        if (enableNotify) probe=new MMEventsProbe(this);
 		return true;
 	}
 
@@ -105,14 +120,14 @@ public class MMEvents extends MMObjectBuilder {
 		int now=(int)(DateSupport.currentTimeMillis()/1000);
 		log.debug("The currenttime in seconds NOW="+now);
 		MMObjectNode snode=null,enode=null;
-		Enumeration e=search("WHERE start>"+now+" AND start<"+(now+(3600*1))+" ORDER BY start");
+		Enumeration e=search("WHERE start>"+now+" AND start<"+(now+(notifyWindow))+" ORDER BY start");
 		if (e.hasMoreElements()) {
 			snode=(MMObjectNode)e.nextElement();
 			while (e.hasMoreElements()) {
 				also.addElement(e.nextElement());
 			}
 		}
-		e=search("WHERE stop>"+now+" AND stop<"+(now+(3600*1))+" ORDER BY stop");
+		e=search("WHERE stop>"+now+" AND stop<"+(now+(notifyWindow))+" ORDER BY stop");
 		if (e.hasMoreElements()) {
 			enode=(MMObjectNode)e.nextElement();
 			while (e.hasMoreElements()) {

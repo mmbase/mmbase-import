@@ -51,6 +51,11 @@ you can define properties to be used by the classfile (if used) it uses
 a key/value system. Its a optional tag.
 -->
 <properties>
+    <!-- Enable the automatic notification of when mmevents start or stop -->
+    <!-- you can listen to these notifications with the nodeChanged method -->
+    <property name="EnableNotify">true</property>
+    <!-- Size of the window to look for mmevents that start/stop in seconds -->
+    <property name="NotifyWindow">3600</property>
 </properties>
 
 <!-- <fieldlist>
