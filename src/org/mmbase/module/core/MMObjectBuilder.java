@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.115 $ $Date: 2002-02-14 12:32:33 $
+ * @version $Revision: 1.115.2.1 $ $Date: 2002-10-18 08:10:03 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -679,7 +679,7 @@ public class MMObjectBuilder extends MMTable {
             nr=mmb.getOAlias().getNumber(key);
         }
         // load the node if the number is right
-        if (nr>0) {
+        if (nr>=0) {
             node=getNode(nr,usecache);
         }
         return node;
@@ -2685,7 +2685,7 @@ public class MMObjectBuilder extends MMTable {
     // Default replacements for method getHTML()
     private final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     private final static String DEFAULT_EOL = "<br />";
-    
+
     /**
      * Returns a HTML-version of a string.
      * This replaces a number of tokens with HTML sequences.
@@ -2705,7 +2705,7 @@ public class MMObjectBuilder extends MMTable {
      * @param body text to convert
      * @return the convert text
      */
-  
+
     protected String getHTML(String body) {
         String rtn="";
         if (body!=null) {
