@@ -34,10 +34,10 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.38 2003-08-29 12:12:30 keesj Exp $
+ * @version $Id: XMLBasicReader.java,v 1.39 2004-02-24 17:47:00 michiel Exp $
  */
 public class XMLBasicReader extends DocumentReader {
-    private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
+    private static final Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
 
     public XMLBasicReader(String path) {
         super(path);
