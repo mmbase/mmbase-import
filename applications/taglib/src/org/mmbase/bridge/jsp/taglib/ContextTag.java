@@ -13,6 +13,9 @@ import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
 
 import java.util.HashMap;
+import java.util.Vector;
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -44,11 +47,11 @@ import org.mmbase.util.logging.Logging;
 */
 public class ContextTag extends ContextReferrerTag {
 
-    private static final int TYPE_PARENT         = -10; // uses parent Contex, if there is one.
-    private static final int TYPE_HASHMAP        = 0;
-    private static final int TYPE_PARAMETERS     = 10;
-    private static final int TYPE_POSTPARAMETERS = 20;
-    private static final int TYPE_SESSION        = 30;
+    public static final int TYPE_PARENT         = -10; // uses parent Contex, if there is one.
+    public static final int TYPE_HASHMAP        = 0;
+    public static final int TYPE_PARAMETERS     = 10;
+    public static final int TYPE_POSTPARAMETERS = 20;
+    public static final int TYPE_SESSION        = 30;
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
@@ -91,7 +94,7 @@ public class ContextTag extends ContextReferrerTag {
     private ContextTag getParentContext() {
         if (! searchedParent) {
             try {
-                parent = findContext();
+                parent = getContextTag();
             } catch (JspTagException e) {
                 // ok. No parent Context. No problem.
                 // use the hashmap.
@@ -117,6 +120,13 @@ public class ContextTag extends ContextReferrerTag {
             throw new JspTagException("Unknown context-type " + s);
         }        
     }
+    
+    public int getTypeInt() { 
+        // for some reason simply 'getType'
+        // doesn't work (Bean property gets read only)
+        return type;
+    }
+    
 
     /**
      *
@@ -207,6 +217,16 @@ public class ContextTag extends ContextReferrerTag {
     }
     public String getString(String key) throws JspTagException {
         return (String) getObject(key);
+
+    }
+
+    public String getObjectAsString(String key) throws JspTagException {
+        Object o = getObject(key);
+        if (o instanceof Node) {
+            Node n = (Node) o;
+            return "" + n.getNumber();
+        } 
+        return o.toString();        
     }
 
     public byte[] getBytes(String key) throws JspTagException {
@@ -229,6 +249,50 @@ public class ContextTag extends ContextReferrerTag {
 
     public Node getNode(String key) throws JspTagException {
         return (Node) getObject(key);
+    }
+
+    /**
+     * Returns all keys which are known to this context.
+     */
+
+    public Vector getKeys(int t) {
+        int _t = t;
+        if (type < _t) _t = type; // can e.g. not treat hashmap as parameter context.
+        Vector result = new Vector();
+        switch (_t) {
+        case TYPE_SESSION: {
+            Enumeration e = getSession().getAttributeNames();
+            while (e.hasMoreElements()) {
+                result.add(e.nextElement());
+            }
+        }
+        case TYPE_POSTPARAMETERS: {
+            Enumeration e = getPoster().getPostParameters().keys();
+            while (e.hasMoreElements()) {
+                result.add(e.nextElement());
+            }
+        }
+        case TYPE_PARAMETERS: {
+            Enumeration e = pageContext.getRequest().getParameterNames();
+            while (e.hasMoreElements()) {
+                result.add(e.nextElement());
+            }
+        }
+        case TYPE_PARENT:
+            if (getParentContext() != null) {
+                result.addAll(parent.getKeys(t));
+            }
+        case TYPE_HASHMAP:
+            result.addAll(hashMap.keySet());
+            break;
+        default:
+        }
+        return result;        
+    }
+
+
+    public Vector getKeys() {
+        return getKeys(type);
     }
 
     public int doAfterBody() throws JspTagException {
