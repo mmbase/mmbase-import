@@ -9,7 +9,7 @@
      * debug.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: debug.jsp,v 1.7 2002-08-21 13:56:37 michiel Exp $
+     * @version  $Id: debug.jsp,v 1.8 2003-06-12 13:01:19 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -18,16 +18,20 @@
     Object con = null;
     if (!ewconfig.subObjects.empty()) {
       con = ewconfig.subObjects.peek();
+      if (popup) { 
+        Stack stack = (Stack) ((Config.SubConfig)con).popups.get(popupId);
+        if ((stack != null) && !stack.empty()) {
+            con = stack.peek();
+        }
       }
-    if (con instanceof Config.SubConfig) {
-        wizard=((Config.SubConfig)con).wizard;
     }
+
     Document doc = Utils.parseXML("<debugdata/>");
-    if ((! ewconfig.subObjects.empty()) && ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
-        Config.WizardConfig  wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();
-        add(doc, wizardConfig.wiz.getData(),    wizard);
-        add(doc, wizardConfig.wiz.getSchema(),  wizard);
-        add(doc, wizardConfig. wiz.getPreform(),wizard);
+    if (con instanceof Config.WizardConfig) {
+        wizard=((Config.WizardConfig)con).wizard;
+        add(doc, ((Config.WizardConfig)con).wiz.getData(), wizard);
+        add(doc, ((Config.WizardConfig)con).wiz.getSchema(), wizard);
+        add(doc, ((Config.WizardConfig)con).wiz.getPreForm(), wizard);
     }
     File template = ewconfig.uriResolver.resolveToFile("xsl/debug.xsl");
     Map map = new HashMap();  

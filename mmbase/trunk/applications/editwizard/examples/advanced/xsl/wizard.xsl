@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard wizard.xsl 
 
-  @version   $Id: wizard.xsl,v 1.5 2003-06-12 12:42:55 michiel Exp $
+  @version   $Id: wizard.xsl,v 1.6 2003-06-12 13:01:18 pierre Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -59,7 +59,7 @@
 				 </nobr></span>
       </td>
 		 <td class="mysteps_top">
-        <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}" target="_blank" class="step">[debug]</a></xsl:if>
+        <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}&amp;popupid={$popupid}" target="_blank" class="step">[debug]</a></xsl:if>
 		 </td>
 		</tr>
   </xsl:template>
