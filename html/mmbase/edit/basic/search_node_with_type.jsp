@@ -1,6 +1,6 @@
 <mm:context id="context_search">
 <%-- for selecting next page with listings --%>
-<mm:import externid="page" vartype="decimal" from="parameters">0</mm:import>
+<mm:import externid="page" vartype="integer" from="parameters">0</mm:import>
 
 <mm:import externid="node_type"  required="true" from="parent"/>
 <mm:import externid="to_page"    required="true" from="parent"/><!-- where to link to -->
@@ -45,7 +45,6 @@
 </mm:context>
 <%-- /mm:compare --%>
 
-<mm:write id="offset" value="${+$page*$config.page_size}" vartype="integer"  write="false" />
 
 <mm:listnodescontainer type="$node_type">
 
@@ -67,6 +66,68 @@
 
  <mm:offset    value="${+$page*$config.page_size}"  />
  <mm:maxnumber value="$config.page_size" />  
+
+ <mm:write id="offset" value="${+$page*$config.page_size}" write="false" />
+
+<mm:import id="pager">
+<table><!-- pager -->
+  <tr>
+  <mm:context>
+    <td class="navigate">
+    <nobr>
+    <mm:previousbatches max="20">
+      <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage">
+        <mm:param name="page"><mm:index /></mm:param>
+        <!--pass all search field values -->
+        <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+           <mm:fieldinfo type="reusesearchinput" />
+        </mm:fieldlist>
+       </mm:url>' ><mm:index />
+      <mm:last>
+         <span class="previous"></span><span class="alt">[<-previous page]</span>
+      </mm:last>
+        </a>
+   </mm:previousbatches>
+     </nobr>
+   </td>
+   </mm:context>
+   <td>
+   <mm:write value="$page" />
+   </td>
+   <mm:context>
+      <td class="navigate">    
+      <nobr>  
+      <mm:nextbatches max="21">
+       <mm:index offset="1">
+       <mm:compare value="21" inverse="true">
+       <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage">
+       <mm:param name="page"><mm:index /></mm:param>
+        <!--pass all search field values -->
+         <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+             <mm:fieldinfo type="reusesearchinput" />
+         </mm:fieldlist>
+         </mm:url>' >
+         <mm:first>
+        <span class="next"></span><span class="alt">[next page ->]</span>
+         </mm:first>
+          <mm:index />
+            </a>
+       </mm:compare>
+       <mm:compare value="21">
+        ...
+       </mm:compare>
+       </mm:index>  
+    </mm:nextbatches>
+      </nobr>
+      </td>
+    </mm:context>
+   </tr>
+</table>
+</mm:context>
+</mm:import>
+
+<mm:write referid="pager" escape="none" />
+
 
 <a name="searchresult" />
 <table width="100%" class="list"><!-- list table -->      
@@ -105,57 +166,10 @@
      <% } else { %>&nbsp;<% } %>
      </td>
  </tr>  
- <mm:last>
-   <mm:index>
-      <mm:compare referid2="config.page_size">
-         <mm:import id="next_page">jes</mm:import>
-      </mm:compare>
-  </mm:index>
-</mm:last>
 </mm:listnodes>
 </table>
 
-<table><!-- pager -->
-  <tr>
-    <mm:isgreaterthan referid="page" value="0.5">
-      <td class="navigate">
-            <a href='<mm:url referids="node,node_type,role_name,direction,search">
-                <mm:param name="page"><mm:write vartype="integer" value="${+$page-1}" /></mm:param>
-                <!--pass all search field values -->
-                <mm:context>
-                  <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-                    <mm:fieldinfo type="name">
-                      <mm:import externid="search_form_$_" />
-                      <mm:param name="search_form_$_" value="${search_form_$_}" />
-                    </mm:fieldinfo>
-                  </mm:fieldlist>
-                </mm:context>
-              </mm:url>' >
-                 <span class="previous"></span><span class="alt">[<-previous page]</span>
-      </a>
-        </td> 
-    </mm:isgreaterthan>
-    <mm:present referid="next_page">
-      <td class="navigate">      
-            <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage">
-                <mm:param name="page"><mm:write vartype="integer" value="${+$page+1}" /></mm:param>
-                <!--pass all search field values -->
-                <mm:context>
-                  <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-                    <mm:fieldinfo type="name">
-                      <mm:import externid="search_form_$_" />
-                      <mm:param name="search_form_$_" value="${search_form_$_}" />
-                    </mm:fieldinfo>
-                  </mm:fieldlist>
-                </mm:context>
-              </mm:url>' >
-              <span class="next"></span><span class="alt">[next page ->]</span>
-            </a>
-      </td>
-    </mm:present>
-   </tr>
-</table>
-
+<mm:write referid="pager" escape="none" />
 
 </mm:listnodescontainer>
 
