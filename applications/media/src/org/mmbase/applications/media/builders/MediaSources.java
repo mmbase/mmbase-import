@@ -31,6 +31,7 @@ import org.mmbase.util.logging.Logging;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.filters.MediaSourceFilter;
+import org.mmbase.applications.media.Format;
 
 
 import org.w3c.dom.Document;
@@ -46,7 +47,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.1 2003-02-03 17:50:19 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.2 2003-02-03 18:11:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
