@@ -20,9 +20,15 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * @version $Id: XMLBuilderReader.java,v 1.16 2000-08-18 19:42:13 case Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.17 2000-08-22 11:32:53 daniel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2000/08/18 19:42:13  case
+ * cjr: Fixed bug whereby adding <?xml version="1.0"?> and <!DOCTYPE blabla>
+ *      to the top of the xml file resulted in a parse error.
+ *      (Actually did a pretty complete rewrite of the reader by deriving it
+ *       from XMLBasicReader)
+ *
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -338,7 +344,13 @@ public class XMLBuilderReader extends XMLBasicReader {
     */
     public String getBuilderMaintainer() {
         Element e = getElementByPath("builder");
-        return getElementAttributeValue(e,"maintainer");
+
+        String tmp=getElementAttributeValue(e,"maintainer");
+	if (tmp!=null && !tmp.equals("")) {
+		return(tmp);	
+	} else {
+		return("mmbase.org");
+	}
     }
 }
 
