@@ -123,29 +123,43 @@ Build-compiler: ${build.compiler}
 
   <target name="package" depends="jar">
     <echo file="${project.build.dir}/README-PACKAGE.txt">
-This is the '${project.name}' package of MMBase. And this file contains generic installation instructions for such
-an MMBase package.
+This is the '${project.name}' package of MMBase. 
 
-Generally you find .jar files, which you have to place in WEB-INF/lib of your web-app (next to
-mmbase.jar). Furthermore, possibly there is a config directory which contains (example) configuration
-for your mmbase configuration directory (possibly in WEB-INF/config).
+It can contain:
 
-Other directories will normally contain jsp-templates and such which you can choose to put anywhere in your
-web application.
+web-app/WEB-INF/lib:     Libraries which can be copied to your WEB-INF/lib
+web-app/WEB-INF/config:  Needed configuration (example only). Needes to be merged with existitn config.
+web-app/WEB-INF/web.xml: Example web.xml.
+README-PACKAGE.txt:      This file
+README.txt:              More specific read-worthy stuff.
+src:                     The source codes.
+doc:                     documentation
+web-app/*                All kind of templates. They problably can (need?) to be put in a location in your web-app you like best.
 
 </echo>
 
-    <zip zipfile="${project.zip}">
-       <fileset dir="${project.jar.dir}" includes="*.jar"/>
-       <fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
-       <fileset dir="${project.source.dir}">
-         <patternset id="package.files" >
-           <include name="**"/>
-           <exclude name="*.xml" />
-           <exclude name="build/**" />
-         </patternset>
-       </fileset>
-    </zip>          
+  <zip zipfile="${project.zip}">
+    <zipfileset dir="${project.jar.dir}" includes="*.jar"     prefix="web-app/WEB-INF/lib" />
+    <zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF/config" />
+    <fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
+    <fileset dir="${project.source.dir}">
+      <patternset id="root.package.files" >
+        <include name="doc/**"/>
+        <include name="src/**"/>
+      </patternset>
+    </fileset>
+    <!-- the rest are templates -->
+    <zipfileset dir="${project.source.dir}" prefix="web-app">
+      <patternset id="web-app.package.files" >
+        <include name="**"/>
+        <exclude name="*.xml" />
+        <exclude name="config/**" />
+        <exclude name="doc/**" />
+        <exclude name="src/**" />
+        <exclude name="build/**" />
+      </patternset>
+    </zipfileset>
+  </zip>          
   </target>
 
 
