@@ -63,7 +63,9 @@ public class XMLContextDepthWriter  {
 		MMObjectBuilder bul=mmb.getMMObject(name);
 		
 		// write the header
-		String body="<"+name+" exportsource=\"mmbase://127.0.0.1/install/b1\" timestamp=\"20000602143030\">\n";
+		String body="<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+		body+="<"+name+" exportsource=\"mmbase://127.0.0.1/install/b1\" timestamp=\"20000602143030\">\n";
+
 
 		// lets enum the nodes and filter all of this type
 		Enumeration nods=nodes.elements();
@@ -124,7 +126,8 @@ public class XMLContextDepthWriter  {
 
 		
 		// write the header
-		String body="<"+name+" exportsource=\"mmbase://127.0.0.1/install/b1\" timestamp=\"20000602143030\">\n";
+		String body="<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+		body+="<"+name+" exportsource=\"mmbase://127.0.0.1/install/b1\" timestamp=\"20000602143030\">\n";
 
 		// lets enum the nodes and filter all of this type
 		Enumeration nods=nodes.elements();
