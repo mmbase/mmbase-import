@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.125 2004-09-17 09:39:37 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.126 2004-09-17 09:54:21 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -41,6 +41,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * You cannot store real 'null's in a hashtable, so this constant can be used for this.
      * @since MMBase-1.7
+     * @todo The _type_ of such a 'null' value cannot be determined. Do we need a NULL constant for every type in stead?
      */
     public final static Object VALUE_NULL = new Object() {
             public String toString() { return "[FIELD VALUE NULL]"; }
@@ -527,7 +528,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Setting " + fieldName + " to " +  Casting.toString(fieldValue));
+            String string;
+            if (fieldValue instanceof byte[]) {
+                string = "byte array of size " + ((byte[])fieldValue).length;
+            } else {
+                string = Casting.toString(fieldValue).substring(0, 200);
+            }
+            log.debug("Setting " + fieldName + " to " +  string);
         }
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
@@ -981,6 +988,20 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public double getDoubleValue(String fieldName) {
         return Casting.toDouble(getValue(fieldName));
     }
+
+    /**
+     * @since MMBase-1.8
+     */
+    public Date getDateValue(String fieldName) {
+        return Casting.toDate(getValue(fieldName));
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public List getListValue(String fieldName) {
+        return Casting.toList(getValue(fieldName));
+    }
+
     /**
      * Returns the DBType of a field.
      * @param fieldName the name of the field which' type to return
