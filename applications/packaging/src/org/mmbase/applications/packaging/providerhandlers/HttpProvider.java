@@ -12,6 +12,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 
@@ -166,13 +167,13 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
 
         String url = path + "?user=" + account + "&password=" + password;
         if (ShareManager.getCallbackUrl() != null) {
-            url += "&callbackurl=" + URLParamEscape.escapeurl(ShareManager.getCallbackUrl());
+            url += "&callbackurl=" + Encode.encode("ESCAPE_URL_PARAM",ShareManager.getCallbackUrl());
         }
         try {
             URL includeURL = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
             BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
-            XMLBasicReader reader = new XMLBasicReader(new InputSource(input), HttpProvider.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), HttpProvider.class);
             if (reader != null) {
                 try {
                     for (Enumeration ns = reader.getChildElements("sharedpackages", "package"); ns.hasMoreElements(); ) {
@@ -439,7 +440,7 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
      * @return    The importPath value
      */
     public String getImportPath() {
-        String path = MMBaseContext.getConfigPath() + File.separator + "packaging" + File.separator + "import" + File.separator;
+        String path = PackageManager.getConfigPath() + File.separator + "packaging" + File.separator + "import" + File.separator;
         File dir = new File(path);
         if (!dir.exists()) {
             dir.mkdir();

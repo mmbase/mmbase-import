@@ -12,6 +12,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.projects.*;
 
 import java.io.*;
@@ -168,7 +169,7 @@ public class Model {
     private void readModel(String path) {
         File file = new File(path);
         if (file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(path, Model.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(path, Model.class);
             if (reader != null) {
                 for (Enumeration ns = reader.getChildElements("cloudmodel.neededbuilderlist", "builder"); ns.hasMoreElements(); ) {
             		Element n = (Element) ns.nextElement();
@@ -252,7 +253,7 @@ public class Model {
 	String builderpath=path.substring(0,path.length()-4)+"/"+nb.getName()+".xml";
         File file = new File(builderpath);
         if (file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(builderpath, Model.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(builderpath, Model.class);
             if (reader != null) {
                 org.w3c.dom.Node n = reader.getElementByPath("builder");
 		if (n!=null) {

@@ -16,6 +16,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.applications.packaging.*;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.projects.*;
 
@@ -217,7 +218,7 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 			super.decodeItems(target);
 			// decode the needed packages	
 			ArrayList includedpackages=new ArrayList();
-			XMLBasicReader reader=target.getReader();
+			ExtendedDocumentReader reader=target.getReader();
                        	org.w3c.dom.Node n=reader.getElementByPath(prefix+".neededpackages");
         		org.w3c.dom.Node n2=n.getFirstChild();
      		   	while (n2!=null) {

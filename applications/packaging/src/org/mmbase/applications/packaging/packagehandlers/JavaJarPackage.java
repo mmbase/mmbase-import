@@ -149,7 +149,7 @@ public class JavaJarPackage extends BasicPackage implements PackageInterface {
             // this is just a demo version, the html package people should figure
             // out the real format.
             String name = zippy.getName();
-            String jardir = MMBaseContext.getConfigPath();
+            String jardir = PackageManager.getConfigPath();
             jardir = jardir.substring(0, jardir.length() - 6) + "lib" + File.separator;
 
             // only unpack all thats in the html dir

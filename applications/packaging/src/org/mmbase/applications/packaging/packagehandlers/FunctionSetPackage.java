@@ -15,6 +15,7 @@ import org.mmbase.applications.packaging.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.installhandlers.*;
+import org.mmbase.applications.packaging.util.*;
 
 import java.io.*;
 import java.net.*;
@@ -162,7 +163,7 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
      * @return       Description of the Return Value
      */
     private boolean installFunctionSets(JarFile jf, installStep step) {
-        String functiondir = MMBaseContext.getConfigPath() + File.separator + "functions" + File.separator;
+        String functiondir = PackageManager.getConfigPath() + File.separator + "functions" + File.separator;
 
         JarEntry je = jf.getJarEntry("functionsets.xml");
         if (je == null) {
@@ -172,7 +173,7 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
         if (je != null) {
             try {
                 InputStream input = jf.getInputStream(je);
-                XMLBasicReader reader = new XMLBasicReader(new InputSource(input), FunctionSetPackage.class);
+                ExtendedDocumentReader reader = new ExtendedDocumentReader(new InputSource(input), FunctionSetPackage.class);
                 for (Enumeration ns = reader.getChildElements("functionsets", "functionset"); ns.hasMoreElements(); ) {
                     Element n = (Element) ns.nextElement();
                     String name = n.getAttribute("name");
@@ -204,7 +205,7 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
      * @return       Description of the Return Value
      */
     private boolean installFunctionSet(JarFile jf, installStep step, String name, String file) {
-        String functiondir = MMBaseContext.getConfigPath() + File.separator + "functions" + File.separator;
+        String functiondir = PackageManager.getConfigPath() + File.separator + "functions" + File.separator;
         installStep substep = step.getNextInstallStep();
 
         JarEntry je = jf.getJarEntry(file);
@@ -229,7 +230,7 @@ public class FunctionSetPackage extends BasicPackage implements PackageInterface
         // so the functionset file is installed/updated then update the
         // functionsetfile. the update/write should be done my the function
         // manager but until functions are clear in 1.7 ill do it like this.
-        XMLBasicReader reader = new XMLBasicReader(functiondir + "functionsets.xml", FunctionSetPackage.class);
+        ExtendedDocumentReader reader = new ExtendedDocumentReader(functiondir + "functionsets.xml", FunctionSetPackage.class);
         String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         body += "<!DOCTYPE functionsets PUBLIC \"//MMBase - functionsets//\" \"http://www.mmbase.org/dtd/functionsets_1_0.dtd\">\n";
         body += "<functionsets>\n";

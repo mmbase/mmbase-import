@@ -39,7 +39,7 @@ public class ProviderFileWriter {
 
         body += "</providers>\n";
 
-        String filename = MMBaseContext.getConfigPath() + File.separator + "packaging" + File.separator + "providers.xml";
+        String filename = PackageManager.getConfigPath() + File.separator + "packaging" + File.separator + "providers.xml";
         saveFile(filename, body);
         return true;
     }

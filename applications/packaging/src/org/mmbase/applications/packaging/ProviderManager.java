@@ -15,6 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.Versions;
+import org.mmbase.applications.packaging.util.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 
 import java.io.*;
@@ -149,11 +150,11 @@ public class ProviderManager {
 
     public static void readProviders() {
         providers = new HashMap();
-        String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"providers.xml";
+        String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"providers.xml";
 
         File file = new File(filename);
         if(file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename,ProviderManager.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProviderManager.class);
             if(reader != null) {
                 for(Enumeration ns = reader.getChildElements("providers","provider");ns.hasMoreElements(); ) {
                     Element n = (Element)ns.nextElement();
@@ -225,7 +226,7 @@ public class ProviderManager {
 
     // should be moved to the corrent class
     public static String addSubscribeProvider(String url) {
-        XMLBasicReader reader = getAutoConfigReader(url);
+        ExtendedDocumentReader reader = getAutoConfigReader(url);
         // lets hunt for the file, should be a little nicer
         if (reader == null) reader = getAutoConfigReader(url+"/mmbase/packagemanager/shareautoconfig.jsp");
         if (reader == null) reader = getAutoConfigReader(url+"/mmbase-webapp/mmbase/packagemanager/shareautoconfig.jsp");
@@ -269,14 +270,14 @@ public class ProviderManager {
     }
 
     // should be moved to the correct class 
-    private static XMLBasicReader getAutoConfigReader(String url) {
-        XMLBasicReader reader = null;
+    private static ExtendedDocumentReader getAutoConfigReader(String url) {
+        ExtendedDocumentReader reader = null;
         try {
             if (url.indexOf("http://") != 0) url = "http://"+url;
             URL includeURL = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
             BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
-            reader = new XMLBasicReader(new InputSource(input),ProviderManager.class);
+            reader = new ExtendedDocumentReader(new InputSource(input),ProviderManager.class);
             return reader;
         } catch(Exception e) { 
             return null;
@@ -286,11 +287,11 @@ public class ProviderManager {
 
     public static void readProviderHandlers() {
        providerhandlers = new HashMap();
-       String filename = MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"providerhandlers.xml";
+       String filename = PackageManager.getConfigPath()+File.separator+"packaging"+File.separator+"providerhandlers.xml";
 
         File file = new File(filename);
         if(file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename,ProviderManager.class);
+            ExtendedDocumentReader reader = new ExtendedDocumentReader(filename,ProviderManager.class);
             if(reader != null) {
                 for(Enumeration ns = reader.getChildElements("providerhandlers","providerhandler");ns.hasMoreElements(); ) {
                     Element n = (Element)ns.nextElement();
