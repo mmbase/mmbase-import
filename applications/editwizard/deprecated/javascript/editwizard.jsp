@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.3 2004-03-03 13:13:00 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.4 2004-03-19 15:05:01 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -350,6 +350,7 @@ function doGotoForm(formid) {
 }
 
 function doSendCommand(cmd, value) {
+    saveHtmlAreas();
     var fld = document.getElementById("hiddencmdfield");
     fld.name = cmd;
     fld.value = "";
