@@ -488,44 +488,53 @@
 <xsl:template match="steps-validator">
                         <!-- when multiple steps -->
                         <xsl:if test="count(step) &gt; 1">
-                            <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" /><p>
-                            
-                                <!-- all steps -->
-				<xsl:for-each select="step">
-				    <xsl:variable name="schemaid" select="@form-schema" />
-				    <span onclick="doGotoStep('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon">
-						<xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
-						<xsl:attribute name="title"><xsl:if test="@valid='true'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /></xsl:if><xsl:if test="@valid='false'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /> is NOT valid. Click here to correct the errors.</xsl:if></xsl:attribute>
-						( stap <xsl:value-of select="position()" /> )
-				    </span>
-				    <span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
-				</xsl:for-each>                                                            
-                               
-                            </p><p>
-                            
-                                <!-- previous -->
-				<xsl:choose>
-				<xsl:when test="/wizard/form[@id=/wizard/prevform]">
-					<span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/prevform}')" title="Terug naar '{/wizard/form[@id=/wizard/prevform]/title}'"> &lt;&lt; </span>
-				</xsl:when>
-				<xsl:otherwise>
-					<span class="step-disabled" align="left" width="100%" title="Geen vorige stap.">&lt;&lt;</span>
-				</xsl:otherwise>
-				</xsl:choose>
-                                
-                                - -
-                                
-                                <!-- next -->
-				<xsl:choose>
-				<xsl:when test="/wizard/form[@id=/wizard/nextform]">
-					<span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/nextform}')" title="Verder naar '{/wizard/form[@id=/wizard/nextform]/title}'"> &gt;&gt; </span>
-				</xsl:when>
-				<xsl:otherwise>
-					<span class="step-disabled" align="left" width="100%" title="Geen volgende stap.">&gt;&gt;</span>
-				</xsl:otherwise>
-				</xsl:choose>                            
-                                                                                                
-                            </p></td></tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <hr color="#005A4A" size="1" noshade="true" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    <!-- all steps -->
+				    <xsl:for-each select="step">
+				        <xsl:variable name="schemaid" select="@form-schema" />
+				        <span onclick="doGotoStep('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon">
+						    <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
+						    <xsl:attribute name="title"><xsl:if test="@valid='true'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /></xsl:if><xsl:if test="@valid='false'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /> is NOT valid. Click here to correct the errors.</xsl:if></xsl:attribute>
+						    ( step <xsl:value-of select="position()" /> ) 
+				        </span>
+                                        <span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
+                                        <br />
+				    </xsl:for-each>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <!-- previous -->
+				    <xsl:choose>
+				    <xsl:when test="/wizard/form[@id=/wizard/prevform]">
+					    <span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/prevform}')" title="Terug naar '{/wizard/form[@id=/wizard/prevform]/title}'"> &lt;&lt; </span>
+				    </xsl:when>
+				    <xsl:otherwise>
+					    <span class="step-disabled" align="left" width="100%" title="Geen vorige stap.">&lt;&lt;</span>
+				    </xsl:otherwise>
+				    </xsl:choose>
+
+                                    - -
+
+                                    <!-- next -->
+				    <xsl:choose>
+				    <xsl:when test="/wizard/form[@id=/wizard/nextform]">
+					    <span class="step" align="left" width="100%" onclick="doGotoForm('{/wizard/nextform}')" title="Verder naar '{/wizard/form[@id=/wizard/nextform]/title}'"> &gt;&gt; </span>
+				    </xsl:when>
+				    <xsl:otherwise>
+					    <span class="step-disabled" align="left" width="100%" title="Geen volgende stap.">&gt;&gt;</span>
+				    </xsl:otherwise>
+				    </xsl:choose>
+                                </td>
+                            </tr>
 			</xsl:if>            
                                     
                 <!-- our buttons -->
