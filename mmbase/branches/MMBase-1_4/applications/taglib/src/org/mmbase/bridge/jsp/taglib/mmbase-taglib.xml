@@ -564,18 +564,56 @@ one or more examplevalue tags is you want to give some example values.
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListEvenTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is an even item</info>
+    <attribute>
+        <name>list</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </info>
+    </attribute>
   </tag>
   <tag>
     <name>odd</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListOddTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is an even item</info>
+    <info>The tag can be used in a list to determine if this is an odd item</info>
+    <attribute>
+        <name>list</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </info>
+    </attribute>
   </tag>
   <tag>
     <name>changed</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListChangedTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is an even item</info>
+    <info>The tag can be used in a list to determine if this item has changed compared to the previous one.
+     The criteria applies to the field(s) given in the orderby attribute of the accompanying list.
+     The first item of a list is always concidered 'changed'.
+     </info>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  Inverse the sense of the condition, apply if the item is unchanged.
+	</info>
+    </attribute>
+    <attribute>
+        <name>list</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </info>
+    </attribute>
   </tag>
 
   <tag>
@@ -584,6 +622,15 @@ one or more examplevalue tags is you want to give some example values.
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is the
     fist item in the list.</info>
+    <attribute>
+        <name>list</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </info>
+    </attribute>
     <attribute>
         <name>inverse</name>
         <required>false</required>
@@ -598,7 +645,16 @@ one or more examplevalue tags is you want to give some example values.
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListLastTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is the
-    fist item in the list.</info>
+    last item in the list.</info>
+    <attribute>
+        <name>list</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  The id of the list to which this condition must apply
+	  to. Default it is the enclosing one.
+        </info>
+    </attribute>
     <attribute>
         <name>inverse</name>
         <required>false</required>
@@ -768,7 +824,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>number</name>
         <required>false</required>
-        <requirednote>Either `number' or `referid' must be supplied.</requirednote>
+        <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<refercontext>true</refercontext>
 	<info>
@@ -778,7 +834,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>referid</name>
         <required>false</required>
-        <requirednote>Either `number' or `referid' must be supplied.</requirednote>
+        <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
 	  The `id' (name of the variable) of a node to refer to. In
@@ -807,10 +863,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
     <attribute>
         <name>element</name>
+        <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
 	<info>
-	  The nodenumber or alias identifying this node in MMBase.
+	  The name of the node manager, identifying the node in a list or related list tag.
 	</info>
     </attribute>
     <attribute>
@@ -919,7 +976,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <possiblevalue>
           <value>changed</value>
           <info>
-            Show only when this row differs from the previous row.
+            Show only when this row differs from the previous row (or when it is the first).
           </info>
         </possiblevalue>
     </attribute>
@@ -1697,6 +1754,31 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <refercontext>true</refercontext>
 	<info>
 	The name of the parameter. The value is the body.
+	</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>compare</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
+    <info>
+    Compares the value of a context variable to a String value. Only if
+    they are equal the body is evaluated.
+    </info>
+    <attribute>
+        <name>referid</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	The context variable to compare to.
+	 </info>
+    </attribute>
+    <attribute>
+        <name>value</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+	<info>
+	The value which the context variable must have.
 	</info>
     </attribute>
   </tag>
