@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.9 2002-08-21 16:46:04 michiel Exp $
+ * @version  $Id: validator.js,v 1.10 2002-11-06 10:26:31 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -97,13 +97,12 @@ function validateElement_validator(el, silent) {
             }
             break;
         case "datetime":
-            var months = new Array("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
             if ((el.getAttribute("ftype") == "datetime") || (el.getAttribute("ftype") == "date")) {
-                var month = months[form.elements["internal_" + id + "_month"].selectedIndex];
+                var month =form.elements["internal_" + id + "_month"].selectedIndex;
                 var day = form.elements["internal_" + id + "_day"].selectedIndex+1;
                 var year = form.elements["internal_" + id + "_year"].value;
             } else {
-                var month = "january";
+                var month = 0;
                 var day = 1;
                 var year = 1970;
             }
@@ -115,17 +114,17 @@ function validateElement_validator(el, silent) {
                 var minutes = 0;
             }
 
-            var ms = Date.parse(day + " " + month + " " + year + " " + hours + ":" + minutes);
+			var date = new Date();
+			date.setMonth(month, day);
+			date.setFullYear(year);
+			date.setHours(hours, minutes);
+			
+            var ms = date.getTime();
 			
             //form.elements["debug"].value = ms + "\n" + form.elements["debug"].value;;
-			
-            if (!isNaN(ms)) {
-                var d = new Date();
-                d.setTime(ms);
-            }
-            if (isNaN(ms) || (d.getDate() != day)) {
-                err += getToolTipValue(form,"message_dateformat",
-                       "date/time format is invalid");
+
+            if (date.getDate() != day) {
+			    err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
             } else {
                 // checks min/max. note: should use different way to determine outputformat (month)
                 if ((err.length == 0) && (el.ftype != "time") && (el.dtmin != null) && (ms < 1000*el.dtmin)) {
@@ -144,7 +143,8 @@ function validateElement_validator(el, silent) {
                 }
             }
             if (err.length == 0) {
-                form.elements[id].value = Math.round(ms/1000); // - (60*d.getTimezoneOffset()));
+                form.elements[id].value = Math.round(ms/1000);
+				 // - (60*d.getTimezoneOffset()));
             }
             break;
     }

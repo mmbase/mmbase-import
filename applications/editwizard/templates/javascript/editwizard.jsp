@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.21 2002-09-06 13:30:34 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.22 2002-11-06 10:26:31 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -30,14 +30,14 @@ function doOnLoad_ew() {
 
         // find first editible field
         var hidden = elem.getAttribute("type"); //.toLowerCase();
-        if (hidden!="hidden" && firstfield==null) firstfield=elem;
+        if (hidden != "hidden" && firstfield==null) firstfield=elem;
 
         //handle complex data types
         var dttype = elem.getAttribute("dttype");
         var ftype = elem.getAttribute("ftype");
         switch (dttype) {
             case "datetime":
-                if ((elem.value == "") || (elem.value <= 0)) {
+                if (elem.value == "") {
                     var d = new Date();
                     elem.value = Math.round(d.getTime()/1000);
                 }
@@ -45,7 +45,7 @@ function doOnLoad_ew() {
                 if (elem.value && (elem.value != "")) {
                     var id = elem.name;
                     var d = new Date();
-                    d.setTime(1000*elem.value);
+                    d.setTime(1000 * elem.value);
 
                     if ((ftype == "datetime") || (ftype == "date")) {
                         form.elements["internal_" + id + "_day"].selectedIndex = d.getDate() - 1;
@@ -325,6 +325,16 @@ function doSave() {
         doSendCommand("cmd/commit////");
     }
 }
+
+/*
+function doSaveOnly() {
+    var allvalid = doValidateAndUpdateButtons();
+    if (allvalid) {
+        setButtonsInactive();
+        doSendCommand("cmd/save////");
+    }
+}
+*/
 
 function setParam(name, value) {
     if (value!="" && value!=null) return "&"+name+"="+value;
