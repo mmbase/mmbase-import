@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase" method="http" rank="administrator">
+<mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <% String builder = request.getParameter("builder");
    String field = request.getParameter("field");
 %>
@@ -156,7 +156,9 @@
 </tr>
 
 <%
-    NodeList names=mmAdmin.getList("ISOGUINAMES-"+builder+"-"+field,null,request,response);
+   java.util.Map params = new java.util.Hashtable();
+   params.put("CLOUD", cloud);
+    NodeList names=mmAdmin.getList("ISOGUINAMES-"+builder+"-"+field, params,request,response);
     for (int i=0; i<names.size(); i++) {
         Node name=names.getNode(i);
 %>
