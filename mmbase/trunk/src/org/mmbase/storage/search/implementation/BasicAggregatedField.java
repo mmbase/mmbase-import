@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicAggregatedField extends BasicStepField
@@ -68,9 +68,9 @@ implements AggregatedField {
     public boolean equals(Object obj) {
         if (obj instanceof AggregatedField) {
             AggregatedField field = (AggregatedField) obj;
-            return getStep().getAlias().equals(field.getStep().getAlias())
+            return BasicStepField.compareSteps(getStep(), field.getStep())
                 && getFieldName().equals(field.getFieldName())
-                && getAlias().equals(field.getAlias())
+                && (getAlias() == null? true: getAlias().equals(field.getAlias()))
                 && aggregationType == field.getAggregationType();
         } else {
             return false;
@@ -85,10 +85,17 @@ implements AggregatedField {
 
     // javadoc is inherited
     public String toString() {
-        return "AggregatedField(step:" + getStep().getAlias()
-        + ", fieldname:" + getFieldName()
-        + ", alias:" + getAlias() 
-        + ", aggregationtype:" + aggregationType + ")";
+        StringBuffer sb = new StringBuffer("AggregatedField(step:");
+        if (getStep().getAlias() == null) {
+            sb.append(getStep().getTableName());
+        } else {
+            sb.append(getStep().getAlias());
+        }
+        sb.append(", fieldname:").append(getFieldName()).
+        append(", alias:").append(getAlias()).
+        append(", aggregationtype:").append(aggregationType).
+        append(")");
+        return sb.toString();
     }
     
 }

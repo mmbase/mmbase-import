@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -222,14 +222,17 @@ public class BasicSqlHandler implements SqlHandler {
         // "alias1, alias2, ..."
         StringBuffer sbGroups = new StringBuffer();
         
+        boolean multipleSteps = query.getSteps().size() > 1;
+        
         // Fields expression
         Iterator iFields = query.getFields().iterator();
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
             
             // Fieldname prefixed by table alias.
-            String tableAlias = field.getStep().getAlias();
+            Step step = field.getStep();
             String fieldName = field.getFieldName();
+            String fieldAlias = field.getAlias();
             
             if (field instanceof AggregatedField) {
                 int aggregationType
@@ -237,15 +240,18 @@ public class BasicSqlHandler implements SqlHandler {
                 if (aggregationType == AggregatedField.AGGREGATION_TYPE_GROUP_BY) {
                     
                     // Group by.
-                    sb.append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName));
+                    appendField(sb, step, fieldName, multipleSteps);
                     
                     // Append to "GROUP BY"-buffer.
                     if (sbGroups.length() > 0) {
                         sbGroups.append(",");
                     }
-                    sbGroups.append(getAllowedValue(field.getAlias()));
+                    if (fieldAlias != null) {
+                        sbGroups.append(getAllowedValue(fieldAlias));
+                    } else {
+                        appendField(sbGroups, step, 
+                            fieldName, multipleSteps);
+                    }
                 } else {
                     
                     // Aggregate function.
@@ -270,25 +276,21 @@ public class BasicSqlHandler implements SqlHandler {
                             throw new IllegalStateException(
                             "Invalid aggregationType value: " + aggregationType);
                     }
-                    sb.append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName)).
-                    append(")");
+                    appendField(sb, step, fieldName, multipleSteps);
+                    sb.append(")");
                 }
                 
             } else {
                 
                 // Non-aggregate field.
-                sb.append(getAllowedValue(tableAlias)).
-                append(".").
-                append(getAllowedValue(fieldName));
+                appendField(sb, step, fieldName, multipleSteps);
             }
             
             // Field alias.
-            String fieldAlias = field.getAlias();
-            sb.append(" AS '")
-            .append(getAllowedValue(fieldAlias))
-            .append("'");
+            if (fieldAlias != null) {
+                sb.append(" AS ")
+                .append(getAllowedValue(fieldAlias));
+            }
             
             if (iFields.hasNext()) {
                 sb.append(",");
@@ -314,8 +316,10 @@ public class BasicSqlHandler implements SqlHandler {
             append(tableName);
             
             // Table alias
-            sb.append(" ").
-            append(getAllowedValue(tableAlias));
+            if (tableAlias != null) {
+                sb.append(" ").
+                append(getAllowedValue(tableAlias));
+            }
             
             if (iSteps.hasNext()) {
                 sb.append(",");
@@ -327,10 +331,8 @@ public class BasicSqlHandler implements SqlHandler {
                 if (sbNodes.length() > 0) {
                     sbNodes.append(" AND ");
                 }
-                sbNodes.append(getAllowedValue(tableAlias)).
-                append(".").
-                append(getAllowedValue("number")).
-                append(" IN (");
+                appendField(sbNodes, step, "number", multipleSteps);
+                sbNodes.append(" IN (");
                 Iterator iNodes = nodes.iterator();
                 while (iNodes.hasNext()) {
                     Integer node = (Integer) iNodes.next();
@@ -345,99 +347,62 @@ public class BasicSqlHandler implements SqlHandler {
             // Relation steps.
             if (step instanceof RelationStep) {
                 RelationStep relationStep = (RelationStep) step;
-                String relationAlias = relationStep.getAlias();
-                String previousAlias = relationStep.getPrevious().getAlias();
-                String nextAlias = relationStep.getNext().getAlias();
+                Step previousStep = relationStep.getPrevious();
+                Step nextStep = relationStep.getNext();
                 if (sbRelations.length() > 0) {
                     sbRelations.append(" AND ");
                 }
                 switch (relationStep.getDirectionality()) {
                     case RelationStep.DIRECTIONS_SOURCE:
-                        sbRelations.append("(").
-                        append(getAllowedValue(previousAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("dnumber")).
-                        append(" AND ").
-                        append(getAllowedValue(nextAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("snumber"));
+                        sbRelations.append("(");
+                        appendField(sbRelations, previousStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+                        sbRelations.append(" AND ");
+                        appendField(sbRelations, nextStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
                         if (relationStep.getCheckedDirectionality()) {
-                            sbRelations.append(" AND ").
-                            append(getAllowedValue(relationAlias)).
-                            append(".").
-                            append(getAllowedValue("dir")).
-                            append("<>1");
+                            sbRelations.append(" AND ");
+                            appendField(sbRelations, relationStep, "dir", multipleSteps);
+                            sbRelations.append("<>1");
                         }
                         break;
                         
                     case RelationStep.DIRECTIONS_DESTINATION:
-                        sbRelations.append("(").
-                        append(getAllowedValue(previousAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("snumber")).
-                        append(" AND ").
-                        append(getAllowedValue(nextAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("dnumber"));
+                        sbRelations.append("(");
+                        appendField(sbRelations, previousStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
+                        sbRelations.append(" AND ");
+                        appendField(sbRelations, nextStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
                         break;
                         
                     case RelationStep.DIRECTIONS_BOTH:
-                        sbRelations.append("((").
-                        append(getAllowedValue(previousAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("dnumber")).
-                        append(" AND ").
-                        append(getAllowedValue(nextAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("snumber"));
+                        sbRelations.append("((");
+                        appendField(sbRelations, previousStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+                        sbRelations.append(" AND ");
+                        appendField(sbRelations, nextStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
                         if (relationStep.getCheckedDirectionality()) {
-                            sbRelations.append(" AND ").
-                            append(getAllowedValue(relationAlias)).
-                            append(".").
-                            append(getAllowedValue("dir")).
-                            append("<>1");
+                            sbRelations.append(" AND ");
+                            appendField(sbRelations, relationStep, "dir", multipleSteps);
+                            sbRelations.append("<>1");
                         }
-                        sbRelations.append(") OR (").
-                        append(getAllowedValue(previousAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("snumber")).
-                        append(" AND ").
-                        append(getAllowedValue(nextAlias)).
-                        append(".").
-                        append(getAllowedValue("number")).
-                        append("=").
-                        append(getAllowedValue(relationAlias)).
-                        append(".").
-                        append(getAllowedValue("dnumber")).
-                        append(")");
+                        sbRelations.append(") OR (");
+                        appendField(sbRelations, previousStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "snumber", multipleSteps);
+                        sbRelations.append(" AND ");
+                        appendField(sbRelations, nextStep, "number", multipleSteps);
+                        sbRelations.append("=");
+                        appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+                        sbRelations.append(")");
                         break;
                         
                     default: // Invalid directionality value.
@@ -445,11 +410,9 @@ public class BasicSqlHandler implements SqlHandler {
                         "Invalid directionality value: " + relationStep.getDirectionality());
                 }
                 if (relationStep.getRole() != null) {
-                    sbRelations.append(" AND ").
-                    append(getAllowedValue(relationAlias)).
-                    append(".").
-                    append(getAllowedValue("rnumber")).
-                    append("=").
+                    sbRelations.append(" AND ");
+                    appendField(sbRelations, relationStep, "rnumber", multipleSteps);
+                    sbRelations.append("=").
                     append(relationStep.getRole());
                 }
                 sbRelations.append(")");
@@ -511,7 +474,12 @@ public class BasicSqlHandler implements SqlHandler {
                 
                 // Field alias.
                 String fieldAlias = sortOrder.getField().getAlias();
-                sb.append(getAllowedValue(fieldAlias));
+                Step step = sortOrder.getField().getStep();
+                if (fieldAlias != null) {
+                    sb.append(getAllowedValue(fieldAlias));
+                } else {
+                    appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
+                }
                 
                 // Sort direction.
                 switch (sortOrder.getDirection()) {
@@ -544,6 +512,8 @@ public class BasicSqlHandler implements SqlHandler {
         // Net effect of inverse setting with constraint inverse property.
         boolean overallInverse = inverse ^ constraint.isInverse();
         
+        boolean multipleSteps = query.getSteps().size() > 1;
+        
         if (constraint instanceof FieldConstraint) {
             
             // Field constraint
@@ -551,7 +521,7 @@ public class BasicSqlHandler implements SqlHandler {
             StepField field = fieldConstraint.getField();
             int fieldType = field.getType();
             String fieldName = field.getFieldName();
-            String tableAlias = field.getStep().getAlias();
+            Step step = field.getStep();
             
             if (fieldConstraint instanceof FieldValueInConstraint) {
                 
@@ -566,16 +536,12 @@ public class BasicSqlHandler implements SqlHandler {
                 }
                 if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
-                    sb.append("LOWER(").
-                    append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName)).
-                    append(")");
+                    sb.append("LOWER(");
+                    appendField(sb, step, fieldName, multipleSteps);
+                    sb.append(")");
                 } else {
                     // case sensitive or case irrelevant
-                    sb.append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName));
+                    appendField(sb, step, fieldName, multipleSteps);
                 }
                 sb.append(overallInverse? " NOT IN (": " IN (");
                 Iterator iValues = values.iterator();
@@ -596,16 +562,12 @@ public class BasicSqlHandler implements SqlHandler {
                 = (FieldValueBetweenConstraint) fieldConstraint;
                 if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
-                    sb.append("LOWER(").
-                    append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName)).
-                    append(")");
+                    sb.append("LOWER(");
+                    appendField(sb, step, fieldName, multipleSteps);
+                    sb.append(")");
                 } else {
                     // case sensitive or case irrelevant
-                    sb.append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName));
+                    appendField(sb, step, fieldName, multipleSteps);
                 }
                 sb.append(overallInverse? " NOT BETWEEN ": " BETWEEN ");
                 appendFieldValue(sb, valueBetweenConstraint.getLowerLimit(),
@@ -617,10 +579,8 @@ public class BasicSqlHandler implements SqlHandler {
             } else if (fieldConstraint instanceof FieldNullConstraint) {
                 
                 // Field null constraint
-                sb.append(getAllowedValue(tableAlias)).
-                append(".").
-                append(getAllowedValue(fieldName)).
-                append(overallInverse? " IS NOT NULL": " IS NULL");
+                appendField(sb, step, fieldName, multipleSteps);
+                sb.append(overallInverse? " IS NOT NULL": " IS NULL");
                 
             } else if (fieldConstraint instanceof FieldCompareConstraint) {
                 
@@ -630,16 +590,12 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append(overallInverse? "NOT ": "");
                 if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
-                    sb.append("LOWER(").
-                    append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName)).
-                    append(")");
+                    sb.append("LOWER(");
+                    appendField(sb, step, fieldName, multipleSteps);
+                    sb.append(")");
                 } else {
                     // case sensitive or case irrelevant
-                    sb.append(getAllowedValue(tableAlias)).
-                    append(".").
-                    append(getAllowedValue(fieldName));
+                    appendField(sb, step, fieldName, multipleSteps);
                 }
                 switch (fieldCompareConstraint.getOperator()) {
                     case FieldValueConstraint.LESS:
@@ -688,19 +644,16 @@ public class BasicSqlHandler implements SqlHandler {
                     = (CompareFieldsConstraint) fieldCompareConstraint;
                     StepField field2 = compareFieldsConstraint.getField2();
                     String fieldName2 = field2.getFieldName();
+                    Step step2 = field2.getStep();
                     String tableAlias2 = field2.getStep().getAlias();
                     if (isRelevantCaseInsensitive(fieldConstraint)) {
                         // case insensitive
-                        sb.append("LOWER(").
-                        append(getAllowedValue(tableAlias2)).
-                        append(".").
-                        append(getAllowedValue(fieldName2)).
-                        append(")");
+                        sb.append("LOWER(");
+                        appendField(sb, step2, fieldName2, multipleSteps);
+                        sb.append(")");
                     } else {
                         // case sensitive or case irrelevant
-                        sb.append(getAllowedValue(tableAlias2)).
-                        append(".").
-                        append(getAllowedValue(fieldName2));
+                        appendField(sb, step2, fieldName2, multipleSteps);
                     }
                 } else {
                     throw new UnsupportedOperationException(
@@ -872,6 +825,28 @@ public class BasicSqlHandler implements SqlHandler {
         if (inComposite && hasMultipleChilds) {
             sb.append(")");
         }
+    }
+    
+    /**
+     *
+     * @param includeTablePrefix <code>true</code> when the fieldname must be
+     *        prefixed with the fieldname (e.g. like in "images.number"),
+     *        <code>false</code> otherwise.
+     */
+    // TODO RvM: add to interface, add javadoc
+    protected void appendField(StringBuffer sb, Step step, 
+            String fieldName, boolean includeTablePrefix) {
+        
+        String tableAlias = step.getAlias();
+        if (includeTablePrefix) {
+            if (tableAlias != null) {
+                sb.append(getAllowedValue(tableAlias));
+            } else {
+                sb.append(getAllowedValue(step.getTableName()));
+            }
+            sb.append(".");
+        }
+        sb.append(getAllowedValue(fieldName));
     }
     
 }

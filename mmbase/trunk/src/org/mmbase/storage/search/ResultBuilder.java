@@ -22,7 +22,7 @@ import org.mmbase.module.corebuilders.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
@@ -47,7 +47,11 @@ public class ResultBuilder extends VirtualBuilder {
         Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            fieldsByAlias.put(field.getAlias(), field);
+            String fieldAlias = field.getAlias();
+            if (fieldAlias == null) {
+                fieldAlias = field.getFieldName();
+            }
+            fieldsByAlias.put(fieldAlias, field);
         }
     }
     

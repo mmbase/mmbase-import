@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint 
@@ -99,8 +99,8 @@ implements FieldValueBetweenConstraint {
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getAlias().equals(
-                    constraint.getField().getStep().getAlias())
+                && BasicStepField.compareSteps(getField().getStep(),
+                    constraint.getField().getStep())
                 && lowerLimit.equals(constraint.lowerLimit)
                 && upperLimit.equals(constraint.upperLimit);
         } else {
@@ -120,7 +120,7 @@ implements FieldValueBetweenConstraint {
         StringBuffer sb = new StringBuffer("FieldValueBetweenConstraint(inverse:").
         append(isInverse()).
         append(", field:").
-        append(getField().getAlias()).
+        append(getField().getAlias()). // TODO RvM: handle null alias.
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(", lower:").

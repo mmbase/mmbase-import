@@ -73,7 +73,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -225,7 +225,11 @@ public class ConstraintParser {
         Iterator iSteps = steps.iterator();
         while (iSteps.hasNext()) {
             BasicStep step = (BasicStep) iSteps.next();
-            if (step.getAlias().equals(alias)) {
+            String alias2 = step.getAlias();
+            if (alias2 == null) {
+                alias2 = step.getTableName();
+            }
+            if (alias2.equals(alias)) {
                 return step;
             }
         }

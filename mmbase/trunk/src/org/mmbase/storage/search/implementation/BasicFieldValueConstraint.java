@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
@@ -68,8 +68,8 @@ implements FieldValueConstraint {
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getAlias().equals(
-                    constraint.getField().getStep().getAlias())
+                && BasicStepField.compareSteps(getField().getStep(),
+                    constraint.getField().getStep())
                 && getOperator() == constraint.getOperator()
                 && BasicStepField.equalFieldValues(value, constraint.value);
         } else {
@@ -88,7 +88,7 @@ implements FieldValueConstraint {
         StringBuffer sb = new StringBuffer("FieldValueConstraint(inverse:").
         append(isInverse()).
         append(", field:").
-        append(getField().getAlias()).
+        append(getField().getAlias()).  // TODO RvM: handle null alias.
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(", operator:").

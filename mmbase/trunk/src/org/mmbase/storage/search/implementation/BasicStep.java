@@ -15,10 +15,10 @@ import org.mmbase.storage.search.*;
 
 /**
  * Basic implementation.
- * The step alias is equal to the table name, unless it is explicitly set.
+ * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -48,9 +48,6 @@ public class BasicStep implements Step {
             "Invalid builder value: " + builder);
         }
         this.builder = builder;
-        
-        // Alias defaults to table name.
-        alias = builder.getTableName();
     }
     
     /**
@@ -61,7 +58,7 @@ public class BasicStep implements Step {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicStep setAlias(String alias) {
-        if (alias == null || alias.trim().length() == 0) {
+        if (alias != null && alias.trim().length() == 0) {
             throw new IllegalArgumentException(
             "Invalid alias value: " + alias);
         }
@@ -117,7 +114,7 @@ public class BasicStep implements Step {
         if (obj instanceof Step && !(obj instanceof RelationStep)) {
             Step step = (Step) obj;
             return getTableName().equals(step.getTableName())
-            && alias.equals(step.getAlias())
+            && (alias == null? true: alias.equals(step.getAlias()))
             && nodes.equals(step.getNodes());
         } else {
             return false;
@@ -127,19 +124,15 @@ public class BasicStep implements Step {
     // javadoc is inherited
     public int hashCode() {
         return 41 * builder.getTableName().hashCode()
-        + 43 * alias.hashCode() + 47 * nodes.hashCode();
+        + (alias == null? 0: 43 * alias.hashCode()) + 47 * nodes.hashCode();
     }
     
     // javadoc is inherited
     public String toString() {
-        StringBuffer sb = new StringBuffer("Step(tablename:");
-        sb.append(getTableName()).
-        append(", alias:").
-        append(alias).
-        append(", nodes:").
-        append(nodes).
-        append(")");
-        return sb.toString();
+        return "Step(tablename:" + getTableName()
+        + ", alias:" + alias 
+        + ", nodes:" + nodes
+        + ")";
     }
     
 }

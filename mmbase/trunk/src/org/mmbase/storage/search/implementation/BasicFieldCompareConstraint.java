@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint 
@@ -80,8 +80,8 @@ implements FieldCompareConstraint {
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getAlias().equals(
-                    constraint.getField().getStep().getAlias())
+                && BasicStepField.compareSteps(getField().getStep(),
+                    constraint.getField().getStep())
                 && operator == constraint.operator;
         } else {
             return false;

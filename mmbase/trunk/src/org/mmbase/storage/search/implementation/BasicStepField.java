@@ -14,10 +14,10 @@ import org.mmbase.storage.search.*;
 
 /**
  * Basic implementation.
- * The step alias is equal to the field name, unless it is explicitly set.
+ * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -135,9 +135,6 @@ public class BasicStepField implements StepField {
             + fieldDefs);
         }
         this.fieldDefs = fieldDefs;
-        
-        // Alias defaults to field name.
-        alias = fieldDefs.getDBName();
     }
     
     /**
@@ -148,7 +145,7 @@ public class BasicStepField implements StepField {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicStepField setAlias(String alias) {
-        if (alias == null || alias.trim().length() == 0) {
+        if (alias != null && alias.trim().length() == 0) {
             throw new IllegalArgumentException(
             "Invalid alias value: " + alias);
         }
@@ -189,9 +186,9 @@ public class BasicStepField implements StepField {
     public boolean equals(Object obj) {
         if (obj instanceof StepField) {
             StepField field = (StepField) obj;
-            return getStep().getAlias().equals(field.getStep().getAlias())
+            return BasicStepField.compareSteps(getStep(), field.getStep())
                 && getFieldName().equals(field.getFieldName())
-                && alias.equals(field.getAlias());
+                && (alias == null? true: alias.equals(field.getAlias()));
         } else {
             return false;
         }
@@ -199,20 +196,51 @@ public class BasicStepField implements StepField {
     
     // javadoc is inherited
     public int hashCode() {
-        return 51 * getStep().getAlias().hashCode()
-        + 53 * getFieldName().hashCode() + 59 * alias.hashCode();
+        return (getStep().getAlias() == null?
+            47 * getStep().getTableName().hashCode():
+            51 * getStep().getAlias().hashCode())
+        + 53 * getFieldName().hashCode() 
+        + (alias == null? 0: 59 * alias.hashCode());
     }
 
     // javadoc is inherited
     public String toString() {
         StringBuffer sb = new StringBuffer("StepField(step:");
-        sb.append(getStep().getAlias()).
-        append(", fieldname:").
-        append(getFieldName()).
-        append(", alias:").
-        append(getAlias()).
-        append(")");
+        if (getStep().getAlias() == null) {
+            sb.append(getStep().getTableName());
+        } else {
+            sb.append(getStep().getAlias());
+        }
+        sb.append(", fieldname:").append(getFieldName()).
+        append(", alias:").append(getAlias()).append(")");
         return sb.toString();
+    }
+    
+    /**
+     * Utility method, compares steps by their alias or table name.
+     * Steps are considered equal if their aliases are equal. 
+     * When their aliases are <code>null</code>, the steps are considered
+     * equal if their tablenames are equal as well.
+     * <p>
+     * This can be used to verify that both steps refer to the same step
+     * in a <code>SearchQuery</code> object.
+     * Note that this differs from the equality defined by their 
+     * {@link org.mmbase.storage.search.Step#equals() equals()} method.
+     *
+     * @param step1 The first step.
+     * @param step2 The second step.
+     * @return <code>true</code> when the steps are considered equal,
+     *         <code>false</code> otherwise.
+     */
+    // package visibility!
+    static boolean compareSteps(Step step1, Step step2) {
+        String alias1 = step1.getAlias();
+        if (alias1 == null) {
+            return step2.getAlias() == null
+            && step1.getTableName().equals(step2.getTableName());
+        } else {
+            return alias1.equals(step2.getAlias());
+        }
     }
     
 }
