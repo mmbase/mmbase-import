@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.36 2004-09-17 07:27:57 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.37 2004-10-11 11:19:49 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -442,11 +442,11 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * Replace all for frontend code
      * Replace commands available are GETURL (gets mediafile url for an objectnumber),
-     * @param sp the scanpage
+     * @param sp the PageContext
      * @param command the stringtokenizer reference with the replace command.
      * @return the result value of the replace command or null.
      */
-    public String replace(scanpage sp,StringTokenizer command) {
+    public String replace(PageContext sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
             String token=command.nextToken();
             

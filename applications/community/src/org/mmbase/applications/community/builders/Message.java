@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.24 2004-08-23 14:26:01 michiel Exp $
+ * @version $Id: Message.java,v 1.25 2004-10-11 11:19:48 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -1133,7 +1133,7 @@ public class Message extends MMObjectBuilder {
     /**
      * Handles the $MOD-MMBASE-BUILDER-message- commands.
      */
-    public String replace(scanpage sp, StringTokenizer tok) {
+    public String replace(PageContext sp, StringTokenizer tok) {
         /* The first thing we expect is a message number.
          */
         if (!tok.hasMoreElements()) {
