@@ -32,6 +32,7 @@ public class Email extends MMObjectBuilder {
 	public final static int STATE_WAITING=0;
 	public final static int STATE_DELIVERED=1;
 	public final static int STATE_FAILED=2;
+	public final static int STATE_SPAMGARDE=3;
 
 	public final static int TYPE_ONESHOT=1;
 	public final static int TYPE_REPEATMAIL=2;
@@ -118,6 +119,34 @@ public class Email extends MMObjectBuilder {
 
 		int mailstatus=node.getIntValue("mailstatus");
 		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
+
+			mailstatus=sendMailNode(node);
+			if (mailstatus==STATE_DELIVERED) {
+				int mailtime=node.getIntValue("mailtime");
+				int repeattime=node.getIntValue("repeattime");
+
+				int nowtime=(int)(System.currentTimeMillis()/1000);
+				int proposedtime=mailtime+repeattime;
+				
+				// if we allready passed the time or repeattime
+				// is less then 60 seconds we ignore as a spam
+				// garde
+				if (repeattime>59 && nowtime<proposedtime) {
+					node.setValue("mailtime",proposedtime);
+					node.setValue("mailstatus",STATE_WAITING);
+				} else {
+					node.setValue("mailstatus",STATE_SPAMGARDE);
+				}
+			}
+			// set the changes back to the database
+			node.commit();
+		} 
+	}
+
+
+	/**
+	*/
+	public int sendMailNode(MMObjectNode node) {
 			String subject=node.getStringValue("subject");
 			String to=node.getStringValue("to");
 			String from=node.getStringValue("from");
@@ -134,10 +163,6 @@ public class Email extends MMObjectBuilder {
 				String tmpbody=getPage(url);
 				if (tmpbody!=null) body=tmpbody;
 			}
-	
-			// if its a oneshot mail then create mail and send it
-			// at the end remove the object from the cloud
-			// its one shot so lets mail and zap the node
 	
 			Mail mail=new Mail(to,from);
 			mail.setSubject(subject);
@@ -161,15 +186,7 @@ public class Email extends MMObjectBuilder {
 				node.setValue("mailstatus",STATE_DELIVERED);
 			}
 			node.setValue("mailedtime",(int)(System.currentTimeMillis()/1000));
-		
-			int mailtime=node.getIntValue("mailtime");
-			int repeattime=node.getIntValue("repeattime");
-
-			node.setValue("mailtime",mailtime+repeattime);
-			node.setValue("mailstatus",STATE_WAITING);
-			// set the changes back to the database
-			node.commit();
-		} 
+			return(node.getIntValue("mailstatus"));
 	}
 
 
