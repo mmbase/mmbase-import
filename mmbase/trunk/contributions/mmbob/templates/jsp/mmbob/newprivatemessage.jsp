@@ -30,8 +30,8 @@
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
 	<tr><th>Naar</th><td colspan="2">
 		<mm:node number="$postingid">
-		<mm:field name="poster" />
-		<input name="to" type="hidden" value="<mm:field name="poster" />">
+		<mm:field name="c_poster" />
+		<input name="to" type="hidden" value="<mm:field name="c_poster" />">
 		<input name="poster" type="hidden" value="<mm:node referid="posterid"><mm:field name="account" /></mm:node>">
 	</td></tr>
 	<tr><th>Onderwerp</th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>

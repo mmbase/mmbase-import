@@ -205,6 +205,7 @@ public class Controller {
      */
     public List getPostings(String forumid, String postareaid, String postthreadid, int activeid, int page, int pagesize) {
         List list = new ArrayList();
+       long start = System.currentTimeMillis();
 
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
@@ -256,6 +257,8 @@ public class Controller {
                 }
             }
         }
+        long end = System.currentTimeMillis();
+        log.info("getPostings "+(end-start)+"ms");
 
         return list;
     }
@@ -414,6 +417,103 @@ public class Controller {
             }
         }
         return virtual;
+    }
+
+
+    /**
+     * Provide quota info on a poster
+     *
+     * @param id MMBase node number of the forum
+     * @param posterid Id for poster we want (string/account field)
+     * @return (virtual) MMObjectNode representing posters quota info
+     */
+    public MMObjectNode getQuotaInfo(String id, int posterid,int barsize) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        Forum f = ForumManager.getForum(id);
+        if (f != null) {
+            if (posterid != -1) {
+                Poster po = f.getPoster(posterid);
+		log.info("PO="+po+" id="+posterid);
+		virtual.setValue("quotareached",po.isQuotaReached());
+		int t=po.getQuotaNumber();
+		int u=po.getQuotaUsedNumber();
+		float d=100/(float)t;
+		float b=(float)barsize/t;
+		int up=(int)(d*u);
+		int ub=(int)(b*u);
+
+		log.info("u="+u+" d="+d+" up="+up+" b="+b+" ub="+ub);
+
+		virtual.setValue("quotausedpercentage",up);
+		virtual.setValue("quotaunusedpercentage",100-up);
+		virtual.setValue("quotanumber",t);
+		virtual.setValue("quotausednumber",u);
+		virtual.setValue("quotaunusednumber",t-u);
+		virtual.setValue("quotausedbar",ub);
+            }
+        }
+        return virtual;
+    }
+
+
+    /**
+     * Provide info a mailbox
+     *
+     * @param id MMBase node number of the forum
+     * @param posterid Id for poster we want (string/account field)
+     * @param mailboxid Id for mailbox we want
+     * @return (virtual) MMObjectNode representing info for the given poster
+     */
+    public MMObjectNode getMailboxInfo(String id, int posterid,String mailboxid) {
+	log.info("id="+id+" mailbox="+mailboxid+" posterid="+posterid);
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        Forum f = ForumManager.getForum(id);
+        if (f != null) {
+            if (posterid != -1) {
+                Poster po = f.getPoster(posterid);
+		log.info("PO="+po);
+		if (po != null ) {
+			Mailbox mb=po.getMailbox(mailboxid);
+			log.info("mb="+mb+" mailbox="+mailboxid);
+			if (mb != null) {
+				virtual.setValue("messagecount",mb.getMessageCount());
+				virtual.setValue("messageunreadcount",mb.getMessageUnreadCount());
+				virtual.setValue("messagenewcount",mb.getMessageNewCount());
+			}
+		}
+            }
+        }
+        return virtual;
+    }
+
+
+    /**
+     * signal mailbox change
+     *
+     * @param id MMBase node number of the forum
+     * @param posterid Id for poster we want (string/account field)
+     * @param mailboxid Id for mailbox we want
+     * @return signal given 
+     */
+    public boolean signalMailboxChange(String id, int posterid,String mailboxid) {
+	log.info("signal id="+id+" mailbox="+mailboxid+" posterid="+posterid);
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        Forum f = ForumManager.getForum(id);
+        if (f != null) {
+            if (posterid != -1) {
+                Poster po = f.getPoster(posterid);
+		if (po != null ) {
+			Mailbox mb=po.getMailbox(mailboxid);
+			if (mb != null) {
+				mb.signalMailboxChange();
+			}
+		}
+            }
+        }
+        return true;
     }
 
     /**
@@ -1056,4 +1156,14 @@ public class Controller {
 		}
 		return virtual;
 	}
+
+	public String getDefaultPassword() {
+		return ForumManager.getDefaultPassword();
+	}
+
+	public String getDefaultAccount() {
+		return ForumManager.getDefaultAccount();
+	}
+
+	
 }
