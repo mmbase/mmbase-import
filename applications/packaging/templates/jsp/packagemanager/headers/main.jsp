@@ -81,5 +81,22 @@
 		</a>
 		</th>
 	</mm:compare>
+
+
+	<!-- manual -->
+	<mm:compare referid="main" value="manual" inverse="true">
+		<td align="middle">
+		<a href="index.jsp?main=manual">
+		Manual
+		</a>
+		</td>
+	</mm:compare>
+	<mm:compare referid="main" value="manual">
+		<th>
+		<a href="index.jsp?main=manual">
+		Manual
+		</a>
+		</th>
+	</mm:compare>
   </tr>
 </table>
