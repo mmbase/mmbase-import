@@ -20,6 +20,7 @@ import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
+import org.mmbase.util.logging.*;
 
 /**
  * TransactionHandler Module
@@ -36,11 +37,11 @@ import org.xml.sax.*;
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
-	private static boolean _debug = false;
+    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static Upload upload = null;
-	private static String version="2.3.5";
+	private static String version="2.3.6";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -49,15 +50,6 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	// Reference to the temporaryNodeManager
 	private static TemporaryNodeManagerInterface tmpObjectManager;
 
-	/**
-	 * prints debug
-	 */
-	private void debug( String msg, int indent) {
-		System.out.print("TR: ");
-		for (int i = 1; i < indent; i++) System.out.print("\t");
-		System.out.println(msg);
-	}
-	
 	public TransactionHandler() {
 	}
 	
@@ -65,7 +57,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 * initialize the transactionhandler
 	 */
 	public void init(){
-		if (_debug) debug(">> init TransactionHandler Module version " + version, 0);
+		log.info("Module TransactionHandler ("+version+") started");
 		mmbase=(MMBase)getModule("MMBASEROOT");
 		upload=(Upload)getModule("upload");
  		sessions = (sessionsInterface)getModule("SESSION");
@@ -77,7 +69,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 * onLoad
 	 */	
 	public void onload(){
-		if (_debug) debug(">> onload TransactionHandler Module ", 0);
+		log.debug("TransactionHandler onload");
 	}
 
 	/**
@@ -93,9 +85,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 * @param sp the scanpage 
 	 */
 	public void handleTransaction(String template, sessionInfo session, scanpage sp) {
-			
-		if (_debug) debug("Received template is:", 0);
-		if (_debug) debug(template, 0);
+		
+		log.service("TransactionHandler processing TCP"); 
+		log.debug("Received template is:");
+		log.debug(template);
 		
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(template));
@@ -118,19 +111,16 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			sessions.setValue (session, "FIELDOPERATOR",t.fieldOperator); 
 			sessions.setValue (session, "FIELDNAME",t.fieldId); 
 			sessions.setValue (session, "TRANSACTIONERROR",t.getClass() + ": " + t.getMessage());
-			if(_debug) { 
-				debug("TRANSACTION ERROR >>>>>>>>>>>>>>>>>>",0);
-				debug("TRANSACTIONTRACE " + uti.trace.getTrace(),1);
-				debug("TRANSACTIONOPERATOR " + t.transactionOperator,1);
-				debug("TRANSACTIONID " + t.transactionId,1);
-				debug("OBJECTOPERATOR " + t.objectOperator,2);
-				debug("OBJECTID " + t.objectId,2);
-				debug("FIELDOPERATOR " + t.fieldOperator,3);
-				debug("FIELDNAME " + t.fieldId,3);
-				debug("TRANSACTIONERROR " + t.toString(),1);
-				debug("EXCEPTIONPAGE " + t.exceptionPage,1);
-				debug("TRANSACTION ERROR >>>>>>>>>>>>>>>>>>",0);
-			}
+			log.error("Transaction Error:");
+			log.error("TransactionTrace " + uti.trace.getTrace());
+			log.error("TransactionOperator " + t.transactionOperator);
+			log.error("TransactionId " + t.transactionId);
+			log.error("ObjectOperator " + t.objectOperator);
+			log.error("ObjectId " + t.objectId);
+			log.error("FieldOperator " + t.fieldOperator);
+			log.error("Fieldname " + t.fieldId);
+			log.error("TransActionError " + t.toString());
+			log.error("ExceptionPage " + t.exceptionPage+"\n");
 			// set jump to exception page
 			sp.res.setStatus(302,"OK");
 			sp.res.setHeader("Location",t.exceptionPage);
@@ -151,14 +141,14 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		
 		try {
 			if (xFile !=  null) {
-		   		if (_debug) debug("parsing file: " + xFile, 0);
+		   		log.debug("parsing file: " + xFile);
 		   		parser.parse(xFile);
 		   	} else {
 				if (iSource !=  null) {
-		   			if (_debug) debug("parsing input: " + iSource.toString(), 0);
+		   			log.debug("parsing input: " + iSource.toString());
 		   			parser.parse(iSource);
 				} else {
-		   			debug("No xFile and no iSource file received!", 0);
+		   			log.error("No xFile and no iSource file received!");
 				}
 			}
 		} catch (Exception e) {
@@ -183,7 +173,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			transactionContextList = docRootElement.getChildNodes();
 		
 		} catch (Exception t) {
-		   if(_debug) debug("Error in reading transaction.", 0);
+		   log.error("Error in reading transaction.");
 		}
 
 		// evaluate all these transactions
@@ -194,7 +184,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			throw te;
 		}
 
-		if (_debug) debug("exiting parse method",0);
+		log.debug("exiting parse method");
 	}
 
 
@@ -247,7 +237,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			if (commit==null) commit="true";
 			if (time==null) time="60";
 
-			if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
+			log.debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")");
 			userTransactionInfo.trace.addTrace(tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1, true);
 
 			try {			
@@ -324,7 +314,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 							userTransactionInfo.knownTransactionContexts.remove(id);
 						}
 				} 
-				if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
+				log.debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")");
 				// End execution of XML
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -393,14 +383,12 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				anonymousObject = false;
 			}
 
-			if (_debug) {
-				if(oName.equals("createRelation")) {
-					debug(oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
-					userTransactionInfo.trace.addTrace(oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2, true);
-				} else {
-					debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
-					userTransactionInfo.trace.addTrace(oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2, true);
-				}
+			if(oName.equals("createRelation")) {
+				log.debug(oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")");
+				userTransactionInfo.trace.addTrace(oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2, true);
+			} else {
+				log.debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")");
+				userTransactionInfo.trace.addTrace(oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2, true);
 			}
 
 			try {
@@ -439,9 +427,6 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 						throw new TransactionHandlerException(oName + " no MMbase id: ");
 					}
 					// actually get presistent object
-					debug("#### "+userTransactionInfo.user.getName(),0);
-					debug("#### "+id,0);
-					debug("#### "+oMmbaseId,0);
 					currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
 					// add to tmp cloud
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
@@ -520,12 +505,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				if (oName.equals("accessObject")) {
 				} 
 				
-				if (_debug) {
-					if(oName.equals("createRelation")) {
-						debug("<- " + oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")", 2);
-					} else {
-						debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
-					}
+				if(oName.equals("createRelation")) {
+					log.debug("<- " + oName + " id(" + id + ") source(" +relationSource +") destination("+relationDestination +")");
+				} else {
+					log.debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")");
 				}
 			} catch (Exception e) {
 				TransactionHandlerException t=null;
@@ -568,14 +551,14 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					String url = currentObjectArgumentNode.getNodeValue();
 					fieldValue = upload.getFile(url);
 					upload.deleteFile(url);
-					if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + url, 3);
+					log.debug("-X Object " + oId + ": [" + fieldName + "] set to: " + url);
 				} else {
 
 					Node setFieldValue = fieldContext.getFirstChild();
 					if(setFieldValue!=null) {
 						fieldValue = setFieldValue.getNodeValue();
 					}
-					if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3);
+					log.debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue);
 				}
 				userTransactionInfo.trace.addTrace("setField " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3, true);
 		
@@ -594,13 +577,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	
 	private UserTransactionInfo userInfo(String user) {
 		if (!transactionsOfUser.containsKey(user)) {
-			if (_debug) debug("Create UserTransactionInfo for user "+user,0);
+			log.debug("Create UserTransactionInfo for user "+user);
 			// make acess to all variables indexed by user;
 			UserTransactionInfo uti = new UserTransactionInfo();
 			transactionsOfUser.put(user, uti);
 			uti.user = new User(user);
 		} else {
-			if (_debug) debug("UserTransactionInfo already known for user "+user,0);
+			log.warn("UserTransactionInfo already known for user "+user);
 		}
 		return ((UserTransactionInfo) transactionsOfUser.get(user));
 	}
@@ -613,7 +596,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		try {
 			Thread.sleep(1); // A bit paranoid, but just to be sure that not two threads steal the same millisecond.
 		} catch (Exception e) {
-			debug("What's the reason I may not sleep?",0);
+			log.debug("What's the reason I may not sleep?");
 		}
 		return "ID"+java.lang.System.currentTimeMillis();
 	}
@@ -633,7 +616,6 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		String getName() { 
 			int length = name.length();
 			String tempname = "TR"+ name.substring(length-8,length);
-			//debug("Temporary name ="+tempname,0);
 			return tempname;
 		}
 	}
@@ -709,8 +691,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			} catch (InterruptedException e) {
 			}		
 			uti.knownTransactionContexts.remove(id);
-			if (_debug && !finished) {
-				debug("Transaction with id="+id +" is timed out after "+timeout/1000+" seconds.",0);
+			if (!finished) {
+				log.warn("Transaction with id="+id +" is timed out after "+timeout/1000+" seconds.");
 			}
     	}
 
