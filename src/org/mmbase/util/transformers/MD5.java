@@ -18,9 +18,10 @@ import java.io.Writer;
  * needed. So, be careful 'chaining' it.
  *
  * @author Michiel Meeuwissen 
+ * @version $Id: MD5.java,v 1.6 2003-05-11 10:19:28 michiel Exp $
  */
 
-public class MD5 extends StringTransformer implements CharTransformer, ConfigurableTransformer {
+public class MD5 extends StringTransformer implements CharTransformer {
     private final static String ENCODING = "MD5";
     private MD5Implementation transformer = new MD5Implementation();
 
