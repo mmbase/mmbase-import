@@ -328,7 +328,7 @@ public class MMObjectNode {
 	public Object getValue(String fieldname) {
 
 		// get the value from the values table
-		Object o=values.get(fieldname);
+		Object o=values.get(prefix+fieldname);
 
 		// routine to check for indirect values
 		// this are used for functions for example
