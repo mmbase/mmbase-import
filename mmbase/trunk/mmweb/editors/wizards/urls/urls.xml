@@ -6,7 +6,7 @@
 	
 	<action include="wizards/urls/create_urls.xml" />
 	
-        <action include="wizards/urls/delete_urls.xml" />
+    <action include="wizards/urls/delete_urls.xml" />
 
 	<action include="wizards/urls/load_urls.xml" />
 	
