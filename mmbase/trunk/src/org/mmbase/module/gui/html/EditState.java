@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.gui.html;
 
 import java.util.*;
-import java.sql.*;
-import org.mmbase.module.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.*;
 
@@ -22,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.12 2002-04-18 06:35:47 pierre Exp $
+ * @version $Id: EditState.java,v 1.13 2003-03-04 14:55:04 nico Exp $
  */
 public class EditState {
 
