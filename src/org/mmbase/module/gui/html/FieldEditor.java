@@ -131,7 +131,7 @@ public class FieldEditor implements CommandHandlerInterface {
 		MMObjectBuilder obj=ed.getBuilder(); // This one can be removed...
 		MMObjectNode node=ed.getEditNode();
 		if (node == null) return "";
-		return node.getValueAsString( fieldname );
+        return Encode.encode("ESCAPE_HTML",node.getValueAsString( fieldname ));
 	}
 
 
