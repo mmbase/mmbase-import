@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="false">
+
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+    <requires name="MyCompany" maintainer="mmbase.org" version="1" />
+  </requirements>
 
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">people</builder>
@@ -33,7 +38,7 @@
 
   <description><![CDATA[Basic authorisation, only needed when using scan. Please use a different security implementation.
 See /mmdocs/administrators/security-framework.html for more information.
-This application uses builders provided by the Resource and MyCompany application, so please install these two before installing this application.
+This application uses builders provided by the Resource and MyCompany application.
   ]]></description>
 
   <install-notice><![CDATA[Turn authorisation on in mmbaseroot.xml and restart the server.
