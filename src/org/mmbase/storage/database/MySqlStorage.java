@@ -22,7 +22,7 @@ import java.io.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: MySqlStorage.java,v 1.2 2003-05-02 20:38:28 michiel Exp $
+ * @version $Id: MySqlStorage.java,v 1.3 2003-05-04 11:30:40 kees Exp $
  */
 public class MySqlStorage extends RelationalDatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(MySqlStorage.class.getName());
@@ -84,7 +84,8 @@ public class MySqlStorage extends RelationalDatabaseStorage {
             log.error(Logging.stackTrace(e));
         }
     }
-
-
-
+    
+    public byte[] getDBByte(ResultSet rs, int idx) {
+	return getDBByteBinaryStream(rs,idx);
+    }
 }
