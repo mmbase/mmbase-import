@@ -63,6 +63,7 @@
   a key/value system. Its a optional tag.
   -->
   <properties>
+    <property name="max-nodes-from-query">1000</property>
   </properties>
 
   <!-- <fieldlist>
