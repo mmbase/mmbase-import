@@ -9,15 +9,29 @@ long now = System.currentTimeMillis();
 response.setDateHeader("Expires",  now);
 response.setDateHeader("Last-Modified",  now);
 response.setDateHeader("Date",  now);
+
+java.util.Stack urlStack = (java.util.Stack) session.getAttribute("editor_stack");
+if (urlStack == null) {
+   urlStack = new java.util.Stack();
+   session.setAttribute("editor_stack", urlStack);
+}
+
 %><html>
 <head>
+ <!-- <%= urlStack %> -->
 <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
 <%@ page import="org.mmbase.bridge.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
 
-
+<mm:import externid="pop" />
+<mm:import externid="push" />
+<mm:import externid="nopush" />
+<mm:notpresent referid="nopush">
+  <mm:present referid="push"><% urlStack.push(request.getServletPath() + "?" + request.getQueryString()); %></mm:present>
+</mm:notpresent>
+<mm:present referid="pop"><% urlStack.pop(); %></mm:present>
 <mm:import id="config" externid="mmeditors_config" from="session" />
 
 <mm:context id="config" referid="config">

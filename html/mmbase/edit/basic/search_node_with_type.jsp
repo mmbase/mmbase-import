@@ -195,7 +195,7 @@
      </td>    
      <td class="navigate">  
     <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || (mayLink)) { %>
-            <a href="<mm:url page="$to_page" referids="node_number" />">
+            <a href="<mm:url page="$to_page" referids="node_number"><mm:param name="push" value="url" /></mm:url>">
                   <span class="change"></span><span class="alt">[change]</span>
             </a>
      <% } else { %>&nbsp;<% } %>

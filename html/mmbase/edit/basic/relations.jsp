@@ -1,9 +1,4 @@
 <mm:context id="relations">
-  <%-- make sure the following variables are set --%>
-  <mm:import externid="backpage_cancel" required="true" from="parent"/>
-  <mm:import externid="backpage_ok"     required="true" from="parent"/>
-
-
   <%-- Make sure that we are in a node;
        not specifying by 'numer' or 'referid' attribute makes the tag look for a parent 'NodeProvider' --%>
   <mm:node id="this_node" jspvar="node">
