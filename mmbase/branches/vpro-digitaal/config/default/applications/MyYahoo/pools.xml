@@ -1,6 +1,6 @@
 <pools exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
 
-	<node number="30" owner="system">
+	<node number="30" owner="system" alias="MyYahoo.start">
 		<name>MyYahoo</name>
 		<description>Our own MyYahoo</description>
 	</node>

@@ -1,4 +1,4 @@
-<application name="Basics" maintainer="mmbase.org" version="1" auto-deploy="false">
+<application name="Basics" maintainer="mmbase.org" version="1" auto-deploy="true">
 
 	<neededbuilderlist>
 	  <builder maintainer="mmbase.org" version="2">jumpers</builder>
@@ -12,9 +12,17 @@
 	</allowedrelationlist>
 
 	<datasourcelist>
-	  <datasource path="Basics/jumpers.xml" />
+	  <datasource builder="jumpers" path="Basics/jumpers.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
 	</relationsourcelist>
+
+	<description>
+		Install the basic things like /admin and /edit
+	</description>
+
+	<install-notice>
+		Basics objects installed use /admin or /edit to test
+	</install-notice>
 </application>

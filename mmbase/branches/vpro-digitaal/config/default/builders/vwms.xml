@@ -1,4 +1,6 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -26,9 +28,9 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language  as defined by RFC xxx -->
+	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="us">Vwm</singular>
-	<!-- multiple per language  as defined by RFC xxx -->
+	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="us">Vwm</plural>
 </names>
 
@@ -36,21 +38,18 @@
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language  as defined by RFC xxx -->
+<!-- descriptions per language as defined by ISO 639  -->
 	<description xml:lang="us">Virtual webmasters</description>
 </descriptions>
 
 <!-- <properties>
-     you can define properties to be used by the classfile (if used) it uses
-     a key/value system. Its a optional tag.
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
 -->
 <properties>
-    <!-- used for reporting vwm errors, please change  -->
-    <property name="fromdomain">@yourcompany.nl</property>
-    <!-- the reply address of the errormessage -->
-    <property name="returnpath">youremail@yourcompany.nl</property>
-    <!-- address where the errormessages will be sent to -->
-    <property name="to">youremail@yourcompany.nl</property>
+	<property name="fromdomain">@yourcompany.nl</property>
+	<property name="returnpath">youremail@yourcompany.nl</property>
+	<property name="to">youremail@yourcompany.nl</property>
 </properties>
 
 <!-- <fieldlist>
@@ -63,8 +62,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -82,7 +81,7 @@
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="true" key="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -90,8 +89,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -109,7 +108,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -117,8 +116,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Naam</name>
-			<type>string</type>
+			<guiname xml:lang="us">Naam</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -136,7 +135,7 @@
 			<!-- name of the field in the database -->
 			<name>name</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -144,8 +143,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Machine</name>
-			<type>string</type>
+			<guiname xml:lang="us">Machine</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -163,7 +162,7 @@
 			<!-- name of the field in the database -->
 			<name>wantedcpu</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -171,8 +170,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Onderhoud_Tijd</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Onderhoud_Tijd</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -190,7 +189,7 @@
 			<!-- name of the field in the database -->
 			<name>maintime</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -198,8 +197,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Status</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Status</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -217,7 +216,7 @@
 			<!-- name of the field in the database -->
 			<name>status</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -225,8 +224,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Omschrijving</name>
-			<type>field</type>
+			<guiname xml:lang="us">Omschrijving</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -244,7 +243,7 @@
 			<!-- name of the field in the database -->
 			<name>description</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -252,8 +251,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">ClassName</name>
-			<type>string</type>
+			<guiname xml:lang="us">ClassName</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -271,7 +270,7 @@
 			<!-- name of the field in the database -->
 			<name>classname</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 

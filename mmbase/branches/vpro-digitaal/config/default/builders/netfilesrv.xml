@@ -1,9 +1,11 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
 -->
-<status>active</status>
+<status>inactive</status>
 
 <!-- <classfile>
 	This is a optional tag, it names the classfile that allows you to add
@@ -26,9 +28,9 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language  as defined by RFC xxx -->
+	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="us">NetFileSrv</singular>
-	<!-- multiple per language  as defined by RFC xxx -->
+	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="us">NetFileSrv</plural>
 </names>
 
@@ -36,9 +38,16 @@
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language  as defined by RFC xxx -->
+<!-- descriptions per language as defined by ISO 639  -->
 	<description xml:lang="us">A netfile server is the object that handles netfiles for a service/subservice type</description>
 </descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -50,8 +59,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -69,7 +78,7 @@
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="true" key="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -77,8 +86,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -96,7 +105,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="true">STRING</type>
+			<type state="persistent" size="12" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -104,8 +113,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Service</name>
-			<type>string</type>
+			<guiname xml:lang="us">Service</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -123,7 +132,7 @@
 			<!-- name of the field in the database -->
 			<name>service</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="true">STRING</type>
+			<type state="persistent" size="32" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -131,8 +140,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">SubService</name>
-			<type>string</type>
+			<guiname xml:lang="us">SubService</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -150,7 +159,7 @@
 			<!-- name of the field in the database -->
 			<name>subservice</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="16" notnull="false">STRING</type>
+			<type state="persistent" size="16" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -158,8 +167,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Opties</name>
-			<type>field</type>
+			<guiname xml:lang="us">Opties</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -177,7 +186,7 @@
 			<!-- name of the field in the database -->
 			<name>options</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="2048" notnull="false">STRING</type>
+			<type state="persistent" size="2048" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
