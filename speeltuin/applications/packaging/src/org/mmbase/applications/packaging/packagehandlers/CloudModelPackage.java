@@ -63,12 +63,15 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 		// step1
 		installStep step=getNextInstallStep();
 		step.setUserFeedBack("cloud/model installer started");
-
+	
+		setProgressBar(1000); 
+                increaseProgressBar(100); // downloading is 10%
 		// step 2
 		step=getNextInstallStep();
 		step.setUserFeedBack("receiving package ..");
 		JarFile jf=getJarFile();
 		step.setUserFeedBack("receiving package ... done ("+jf+")");
+                increaseProgressBar(100); // downloading is 20%
 
 
 		// step 3
@@ -76,6 +79,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 		step.setUserFeedBack("checking dependencies ..");
                 if (dependsInstalled(jf,step)) {
 		step.setUserFeedBack("checking dependencies ... done");
+                increaseProgressBar(100); // downloading is 30%
 
 		// step 5
 		step=getNextInstallStep();
@@ -86,8 +90,10 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
 			step=getNextInstallStep();
 			step.setUserFeedBack("updating builders..");
+                	increaseProgressBar(100); // downloading is 40%
 		 	if (installNeededBuilders(jf,reader,step)) {
 				step.setUserFeedBack("updating builders... done");
+                		increaseProgressBar(100); // downloading is 50%
 			} else {
 				step.setUserFeedBack("updating builders... failed");
 				step=getNextInstallStep();
@@ -97,8 +103,10 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
 			step=getNextInstallStep();
 			step.setUserFeedBack("updating relation defs..");
+                	increaseProgressBar(100); // downloading is 60%
 			if (installNeededRelDefs(jf,reader,step)) {
 				step.setUserFeedBack("updating relation defs... done");
+                		increaseProgressBar(100); // downloading is 70%
 			} else {
 				step.setUserFeedBack("updating relation defs... failed");
 				step.setType(installStep.TYPE_ERROR);
@@ -107,17 +115,22 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 				return false;
 			}
 
+                	increaseProgressBar(100); // downloading is 80%
+
 			step=getNextInstallStep();
 			step.setUserFeedBack("updating allowed relations");
 			installAllowedRelations(jf,reader,step);
 			step=getNextInstallStep();
 			step.setUserFeedBack("updating allowed relations done");
 
+                	increaseProgressBar(100); // downloading is 90%
+
 			// step 5
 			step=getNextInstallStep();
 			step.setUserFeedBack("updating mmbase registry ..");
 			updateRegistryInstalled();
 			step.setUserFeedBack("updating mmbase registry ... done");
+                	increaseProgressBar(100); // downloading is 100%
 		} else {
 			step.setUserFeedBack("Opening model.xml file ... failed");
 			step.setType(installStep.TYPE_ERROR);

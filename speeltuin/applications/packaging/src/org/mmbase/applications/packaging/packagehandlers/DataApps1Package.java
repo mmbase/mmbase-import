@@ -71,8 +71,11 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 		// step 2
 		step=getNextInstallStep();
 		step.setUserFeedBack("receiving package ..");
+        	setProgressBar(1000); // lets have 100 steps;
+        
 		JarFile jf=getJarFile();
 		step.setUserFeedBack("receiving package ... done ("+jf+")");
+        	increaseProgressBar(100); // downloading is 10%
 
 
 		// step 3
@@ -80,6 +83,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 		step.setUserFeedBack("checking dependencies ..");
 
 		if (dependsInstalled(jf,step)) {
+        		increaseProgressBar(100);  // 20%
 
 			step.setUserFeedBack("checking dependencies ... done");
 
@@ -91,12 +95,14 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 			} else {
 				step.setUserFeedBack("loading datasets ... failed");
 			}
+        		increaseProgressBar(200);  // 70%
 
 
 			// step 5
 			step=getNextInstallStep();
 			step.setUserFeedBack("updating mmbase registry ..");
 			updateRegistryInstalled();
+        		increaseProgressBar(100);  // 90%
 			step.setUserFeedBack("updating mmbase registry ... done");
 
 		} else {
@@ -105,6 +111,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 			return false;
 		}
 
+        	increaseProgressBar(100);  // 100%
 		// step 6
 		step=getNextInstallStep();
 		step.setUserFeedBack("data/apps1 installer ended");
@@ -143,12 +150,14 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 	MMBase mmb=MMBase.getMMBase();
         installStep substep=step.getNextInstallStep();
         substep.setUserFeedBack("Opening data.xml ..");
+      	increaseProgressBar(100);  // 30%
 	try {	
    	   	JarEntry je = jf.getJarEntry("data.xml");
 		if (je!=null) {
 			InputStream input = jf.getInputStream(je);
           		XMLBasicReader reader = new XMLBasicReader(new InputSource(input),DataApps1Package.class);
             		substep.setUserFeedBack("Opening data.xml ... done");
+      			 increaseProgressBar(100);  // 40%
        			 for(Enumeration ns=reader.getChildElements("dataset.objectsets","objectset");ns.hasMoreElements(); ) {
             		    Element n=(Element)ns.nextElement();
            		    String path=n.getAttribute("path");
@@ -163,6 +172,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
 			    }
 	
 			 }
+      			 increaseProgressBar(100);  // 50%
        			 for(Enumeration ns=reader.getChildElements("dataset.relationsets","relationset");ns.hasMoreElements(); ) {
             		    Element n=(Element)ns.nextElement();
           		    String name=n.getAttribute("name");
@@ -176,6 +186,7 @@ public class DataApps1Package extends BasicPackage implements PackageInterface {
                 substep.setType(installStep.TYPE_ERROR);
 		log.error("problem opending data.xml file");
 	}
+      	increaseProgressBar(100);  // 60%
 	return true;
     }
 

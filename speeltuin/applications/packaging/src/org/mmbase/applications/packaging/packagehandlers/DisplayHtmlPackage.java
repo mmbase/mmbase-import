@@ -50,6 +50,7 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
 		// step1
 		installStep step=getNextInstallStep();
 		step.setUserFeedBack("display/html installer started");
+                setProgressBar(1000); // lets have 100 steps;
 
 		// step 2
 		step=getNextInstallStep();
@@ -57,11 +58,14 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
 		JarFile jf=getJarFile();
 		step.setUserFeedBack("receiving package ... done ("+jf+")");
 
+                increaseProgressBar(100); // downloading is 10%
 
 		// step 3
 		step=getNextInstallStep();
 		step.setUserFeedBack("checking dependencies ..");
 		if (dependsInstalled(jf,step)) {
+
+                increaseProgressBar(100); // downloading is 20%
 
 		step.setUserFeedBack("checking dependencies ... done");
 
@@ -71,11 +75,13 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
 		installPages(jf,step);
 		step.setUserFeedBack("installing html pages ... done");
 
+                increaseProgressBar(100); // downloading is 80%
 
 		// step 5
 		step=getNextInstallStep();
 		step.setUserFeedBack("updating mmbase registry ..");
 		updateRegistryInstalled();
+                increaseProgressBar(100); // downloading is 90%
 		step.setUserFeedBack("updating mmbase registry ... done");
 		} else {
 			step.setUserFeedBack("checking dependencies ... failed");
@@ -85,6 +91,7 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
 		// step 6
 		step=getNextInstallStep();
 		step.setUserFeedBack("display/html installer ended");
+                increaseProgressBar(100); // downloading is 100%
 
 	} catch (Exception e) {
 		log.error("install crash on : "+this);
@@ -119,7 +126,9 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
 
     private boolean installPages(JarFile jf,installStep step) {
 	Enumeration e=jf.entries();
+        increaseProgressBar(100); // downloading is 30%
 	while (e.hasMoreElements()) {
+        	increaseProgressBar(1); // downloading is 1%
 		ZipEntry zippy=(ZipEntry)e.nextElement();
 		
 		// this is just a demo version, the html package people should figure
@@ -159,6 +168,7 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
 			}
 		}
 	}
+        increaseProgressBar(100); // downloading is 70%
 	return true;
     }
 
