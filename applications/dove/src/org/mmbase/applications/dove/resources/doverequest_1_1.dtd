@@ -4,6 +4,7 @@
 -->
 <!ENTITY % putstatus "(change,delete,new)">
 <!ENTITY % searchdir "(source,destination,both)">
+<!ENTITY % createdir "(source,destination)">
 
 <!ELEMENT request (security?|(getdata|getnew|getnewrelation|getrelations|getconstraints|getlist|put)+) >
 
@@ -56,6 +57,7 @@
 <!ELEMENT relation ((field|object)*)>
 <!ATTLIST relation role NMTOKEN #IMPLIED >
 <!ATTLIST relation searchdir %searchdir #IMPLIED >
+<!ATTLIST relation createdir %createdir #IMPLIED >
 <!ATTLIST relation destinationtype NMTOKEN #REQUIRED >
 <!ATTLIST relation status %putstatus #IMPLIED>
 
