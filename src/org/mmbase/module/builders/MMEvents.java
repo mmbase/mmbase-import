@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.13 2003-03-19 14:55:09 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.14 2003-03-21 10:18:42 michiel Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
@@ -126,10 +126,12 @@ public class MMEvents extends MMObjectBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField startField = query.getField(getField("start"));
             query.addSortOrder(startField);
-            query.setConstraint(new BasicFieldValueBetweenConstraint(startField, "" + now, "" + now + notifyWindow));
+            query.setConstraint(new BasicFieldValueBetweenConstraint(startField, new Integer(now), new Integer(now + notifyWindow)));
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
-            also.addAll(getNodes(query));            
-            snode = (MMObjectNode) also.lastElement();
+            also.addAll(getNodes(query));
+            if (also.size() > 0) {
+                snode = (MMObjectNode) also.lastElement();
+            }
         } catch (SearchQueryException e) {
             log.error(e);
         }
@@ -138,10 +140,12 @@ public class MMEvents extends MMObjectBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField stopField = query.getField(getField("stop"));
             query.addSortOrder(stopField);
-            query.setConstraint(new BasicFieldValueBetweenConstraint(stopField, "" + now, "" + now + notifyWindow));
+            query.setConstraint(new BasicFieldValueBetweenConstraint(stopField, new Integer(now), new Integer(now + notifyWindow)));
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
-            enode = (MMObjectNode) also.lastElement();
+            if (also.size() > 0 ) {
+                enode = (MMObjectNode) also.lastElement();
+            }
         } catch (SearchQueryException e) {
             log.error(e);
         }
