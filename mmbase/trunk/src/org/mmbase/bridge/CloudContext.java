@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.15 2002-07-03 17:53:51 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.16 2002-08-16 18:17:02 michiel Exp $
  */
 public interface CloudContext {
 
@@ -68,13 +68,23 @@ public interface CloudContext {
     public StringList getCloudNames();
 
     /**
-     * Returns the default character encoding, which can be used a default.
+     * Returns the default character encoding, which can be used as a default.
      *
      * @return                       A string with the character encoding
      * @since                        MMBase-1.6
      *
      */
     public String getDefaultCharacterEncoding();
+
+
+    /**
+     * Returns the default locale setting.
+     *
+     * @return                       A Locale object
+     * @since                        MMBase-1.6
+     *
+     */
+    public java.util.Locale getDefaultLocale();
     
 
  }
