@@ -21,6 +21,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
+ * @version $Id: EditState.java,v 1.7 2000-10-05 11:21:13 vpro Exp $
  */
 public class EditState {
 
