@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
+<%@page import="org.mmbase.bridge.*,org.mmbase.module.core.MMBase" %>
 <%@include file="../settings.jsp" %>
 <mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
@@ -17,14 +17,17 @@
 </th>
 </tr>
 <tr>
-  <td class="multidata" colspan="7"><p>This overview describes all MMBase servers running on this MMBase system.</p></td>
+  <td class="multidata" colspan="7">
+    <p>
+      This overview describes all MMBase servers running on this MMBase system
+    </p>
+  </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr>
     <th class="header">Machine</th>
     <th class="header">State</th>
     <th class="header">Last Seen</th>
-    <th class="header">Uptime</th>
     <th class="header">Host</th>
     <th class="header">OS</th>
     <th class="navigate">Manage</th>
@@ -42,18 +45,17 @@
     <mm:field name="showatime" />
     </td>
     <td class="data">
-    <mm:field name="uptime" />
-    </td>
-    <td class="data">
     <mm:field name="host" />
     </td>
     <td class="data">
     <mm:field name="os" />
     </td>
     <td class="navigate" width="14">
-        <mm:field name="name" id="server">
-        <a href="<mm:url page="server/actions.jsp?server=$server" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
-        </mm:field>
+      <mm:field name="name">
+        <mm:compare value="<%=MMBase.getMMBase().getMachineName()%>">
+          <a href="<mm:url referids="_@server" page="server/actions.jsp" />"><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" /></a>
+        </mm:compare>
+      </mm:field>
     </td>
 </tr>
 </mm:context>
