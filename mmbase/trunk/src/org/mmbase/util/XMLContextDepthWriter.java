@@ -53,12 +53,12 @@ public class XMLContextDepthWriter  {
     }
 
     static void writeDataSources(XMLApplicationReader app, Vector nodes, String targetpath,MMBase mmb,Vector resultmsgs) {
-	Enumeration res=app.getNeededBuilders().elements();
+	Enumeration res=app.getDataSources().elements();
 	String subtargetpath=targetpath+"/"+app.getApplicationName()+"/";
 	while (res.hasMoreElements()) {
 		int nrofnodes=0;
 		Hashtable bset=(Hashtable)res.nextElement();
-		String name=(String)bset.get("name");
+		String name=(String)bset.get("builder");
 		int type = mmb.getTypeDef().getIntValue(name);
 		MMObjectBuilder bul=mmb.getMMObject(name);
 		
@@ -103,15 +103,20 @@ public class XMLContextDepthWriter  {
 
 
     static void writeRelationSources(XMLApplicationReader app, Vector nodes, String targetpath,MMBase mmb,Vector resultmsgs) {
-//	Enumeration res=app.getNeededBuilders().elements();
-//	while (res.hasMoreElements()) {
-//		Hashtable bset=(Hashtable)res.nextElement();
+	Enumeration res=app.getRelationSources().elements();
+	while (res.hasMoreElements()) {
+		Hashtable bset=(Hashtable)res.nextElement();
 
 	
 		int nrofnodes=0;
-		String name="insrel";
+		String name=(String)bset.get("builder");
 		int type = mmb.getTypeDef().getIntValue(name);
 		MMObjectBuilder bul=mmb.getMMObject(name);
+		String namedrel="related";
+		if (!name.equals("insrel")) {
+			namedrel=name;
+		}
+
 		
 		// write the header
 		String body="<"+name+" exportsource=\"mmbase://127.0.0.1/install/b1\" timestamp=\"20000602143030\">\n";
@@ -127,7 +132,7 @@ public class XMLContextDepthWriter  {
 				int dnumber=node.getIntValue("dnumber");
 
 				// start the node
-				body+="\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+snumber+"\" dnumber=\""+dnumber+"\" rtype=\"related\">\n";
+				body+="\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+snumber+"\" dnumber=\""+dnumber+"\" rtype=\""+namedrel+"\">\n";
 				// write the values of the node
 				Hashtable values=node.getValues();	
 				Enumeration nd=values.keys();
@@ -151,7 +156,7 @@ public class XMLContextDepthWriter  {
 		resultmsgs.addElement("Saving "+nrofnodes+" "+name+" to : "+filename);
 		System.out.println("Writing RelationSource="+filename);
 		saveFile(filename,body);
-	//}
+	}
    }	
 
 
