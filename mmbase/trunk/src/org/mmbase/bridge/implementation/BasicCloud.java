@@ -580,6 +580,7 @@ public class BasicCloud implements Cloud, Cloneable {
         }
         Vector v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,
                                                    orderVec,sdirection,search);
+
         if (v!=null) {
             // get authorization for this call only
             Authorization auth=mmbaseCop.getAuthorization();
@@ -587,9 +588,10 @@ public class BasicCloud implements Cloud, Cloneable {
                 boolean check=true;
                 MMObjectNode node=(MMObjectNode)v.get(i);
                 for (int j=0; check && (j<tables.size()); j++) {
-                    check=auth.check(userContext.getUserContext(),
-                                     node.getIntValue(tables.get(j)+".number"),
-                                     Operation.READ);
+                    int nodenr = node.getIntValue(tables.get(j)+".number");
+                    if (nodenr!=-1) {
+                        check=auth.check(userContext.getUserContext(),nodenr,Operation.READ);
+                    }
                 }
                 if (!check) v.remove(i);
             }
