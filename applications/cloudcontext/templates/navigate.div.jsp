@@ -12,7 +12,14 @@
    <p <mm:compare value="config">class="current"</mm:compare>>
      <a href="<mm:url page="config.jsp" />">Config</a></p> -->
   <mm:write referid="language" vartype="string" jspvar="language">
-  <% if ((new java.io.File(request.getRealPath((new java.io.File(request.getServletPath()).getParent()) + java.io.File.separator + "help_" + language + ".jsp"))).exists()) {%>
+  <%
+      String path;
+      if (request instanceof javax.servlet.http.HttpServletRequestWrapper) {
+         path = ((javax.servlet.http.HttpServletRequest) ((javax.servlet.http.HttpServletRequestWrapper) request).getRequest()).getServletPath();
+      } else {
+         path = request.getServletPath();
+      }
+      if ((new java.io.File(request.getRealPath((new java.io.File(path).getParent()) + java.io.File.separator + "help_" + language + ".jsp"))).exists()) {%>
    <p <mm:compare value="help">class="current"</mm:compare>>
 
      <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">help_<mm:write referid="language" />.jsp</mm:param></mm:url>"><%=getPrompt(m,"help")%></a></p>
