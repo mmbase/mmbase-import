@@ -215,7 +215,7 @@
 			<td colspan="1">
 			<br />
 			<mm:node number="$user">
-			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url referids="portal?,page?" page="$base/changeUser.jsp" />">change name</a> )<br /> i have a new bug and want to report it</font><a href="<mm:url referids="portal?,page?,user" page="newBug.jsp" /><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" ></a>
+			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url referids="portal?,page?,base" page="$base/changeUser.jsp" />">change name</a> )<br /> i have a new bug and want to report it</font><a href="<mm:url referids="portal?,page?,user,base" page="$base/newBug.jsp" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" ></a>
 			</td>
 			</mm:node>
 		</mm:present>
