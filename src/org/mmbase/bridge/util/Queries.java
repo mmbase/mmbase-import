@@ -27,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.8 2003-11-05 15:50:59 pierre Exp $
+ * @version $Id: Queries.java,v 1.9 2003-11-10 18:45:37 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -348,8 +348,10 @@ public class Queries {
         if (query.getSteps().size() == 0 ) { // if no steps yet, first step must be added with addStep
             String completeFirstToken = pathTokenizer.nextToken().trim();
             String firstToken      = removeDigits(completeFirstToken);
-            if (cloud.hasRole(firstToken)) {
-            }
+            //if (cloud.hasRole(firstToken)) {
+                // you cannot start with a role.., should we throw exception?
+                // naa, the following code will throw exception that node type does not exist.
+            //}
             Step step = query.addStep(cloud.getNodeManager(firstToken));
             if (! firstToken.equals(completeFirstToken)) {
                 query.setAlias(step, completeFirstToken);
@@ -383,9 +385,10 @@ public class Queries {
                 }
             } else {
                 NodeManager nodeManager  = cloud.getNodeManager(token);
-                Step step = query.addRelationStep(nodeManager, null, searchDir);
+                RelationStep step = query.addRelationStep(nodeManager, null/* role */, searchDir);
                 if (! completeToken.equals(nodeManager.getName())) {
-                    query.setAlias(step, completeToken);
+                    Step next = step.getNext();
+                    query.setAlias(next, completeToken);
                 }
             }
         }
@@ -416,6 +419,9 @@ public class Queries {
      * @throws ClassCastException if list does not contain only Steps
      */
     public static Step searchStep(List steps, String stepAlias) {
+        if (log.isDebugEnabled()) {
+            log.info("Searching '" + stepAlias + "' in " + steps);
+        }
         Iterator i = steps.iterator();
         while (i.hasNext()) {
             Step step = (Step) i.next();
