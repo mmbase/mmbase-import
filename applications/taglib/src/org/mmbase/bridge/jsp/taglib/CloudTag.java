@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.93 2004-03-24 10:51:24 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.94 2004-03-29 09:09:21 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -50,6 +50,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static final int METHOD_LOGINPAGE = 4;
     // private static final int METHOD_GIVEN_OR_ANONYMOUS = 5;
     private static final int METHOD_DELEGATE = 6;
+    private static final int METHOD_PAGELOGON = 7;
+    private static final int METHOD_SESSIONLOGON = 8;
 
     /**
      * Constants needed for the loginpage attribute functionality
@@ -75,7 +77,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private static final String REALM = "realm_";
 
-    private String jspvar;
+    private String jspVar;
 
     private Cookie[] cookies;
 
@@ -84,6 +86,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private Attribute cloudName = Attribute.NULL;
     private Attribute cloudURI = Attribute.NULL;
     private Cloud cloud;
+
+    /**
+     * @since MMBases-1.7
+     */
+    private boolean sessionCloud = true;
 
     private Attribute authenticate = Attribute.NULL;
 
@@ -188,7 +195,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     public void setJspvar(String jv) {
-        jspvar = jv;
+        jspVar = jv;
     }
 
     public void setAuthenticate(String authenticate) throws JspTagException {
@@ -227,6 +234,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return METHOD_LOGINPAGE;
         } else if ("delegate".equals(m)) {
             return METHOD_DELEGATE;
+        } else if ("pagelogon".equals(m)) {
+            return METHOD_LOGINPAGE;
+        } else if ("sessionlogon".equals(m)) {
+            return METHOD_SESSIONLOGON;
             //} else if ("given_or_anonymous".equals(m)) {
             //    return METHOD_GIVEN_OR_ANONYMOUS;
         } else {
@@ -456,8 +467,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             return SKIP_BODY;
         }
 
-        if (jspvar != null) {
-            pageContext.setAttribute(jspvar, cloud);
+        if (jspVar != null) {
+            log.debug("Setting jspVar " + jspVar);
+            pageContext.setAttribute(jspVar, cloud);
         }
 
         if (locale != null) {
@@ -470,7 +482,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         ContentTag tag = (ContentTag) findParentTag(ContentTag.class, null, false);
         if (tag != null) {
             User user = cloud.getUser();
-            if (! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
+            if (sessionCloud && ! user.getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
                 tag.setUser(cloud.getUser());
             }
         }
@@ -991,19 +1003,23 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         log.debug("logging on the cloud...");
         Map user = null;
         int method = getMethod();
+
         // check how to log on:
         if (method == METHOD_DELEGATE) {
             user = new HashMap();
             user.put("request", request);
             user.put("response", response);
             user.put("usernames", logon);
+            sessionCloud = true;
         } else if (method == METHOD_HTTP) {
             user = new HashMap();
+            sessionCloud = true;
             if (doHTTPAuthentication(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
         } else if (loginpage != Attribute.NULL && (method == METHOD_LOGINPAGE || method == METHOD_UNSET)) {
             user = new HashMap();
+            sessionCloud = true;
             if (doLoginPage(user) == SKIP_BODY) {
                 return SKIP_BODY;
             }
@@ -1011,6 +1027,16 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             user = new HashMap();
             user.put("username", logon.get(0));
             user.put("password", pwd.getString(this));
+            if (method == METHOD_PAGELOGON) {
+                sessionCloud = false;
+            } else {
+                if (method != METHOD_SESSIONLOGON) {
+                    log.warn("Using logon/pwd (or username/password) attributes on page '" + request.getRequestURI() + "' without specifying method='[pagelogon|sessionlogon]', defaulting to 'sessionlogon'. Be aware that users of this page now are authenticated in their session!");
+                }
+                sessionCloud = true;
+            }
+        } else {
+            sessionCloud = false;
         }
 
         // do the MMCI cloud logging on
@@ -1036,7 +1062,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             // throw new JspTagException("Could not create cloud (even not anonymous)");
             return SKIP_BODY;
         } else {
-            if (session != null) {
+            if (session != null && sessionCloud) {
                 session.setAttribute(getSessionName(), cloud);
             }
         }
