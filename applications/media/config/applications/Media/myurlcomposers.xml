@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<myurlcomposers exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+  <!-- manually created file, objectnumbers from 1000 -->
+
+	<node number="1000" owner="default">
+		<rootpath>/cgi-bin/play?</rootpath>
+		<protocol>http</protocol>
+	</node>
+
+	<node number="1001" owner="default">
+		<rootpath>/cgi-bin/streams?</rootpath>
+		<protocol>http</protocol>
+	</node>
+
+</myurlcomposers>

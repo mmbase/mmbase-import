@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <videosources exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
-	<node number="130" owner="admin">
+	<node number="130" owner="default">
 		<state>-1</state>
 		<url>/tv/vpro/noorderlicht/sb.20020328.rm</url>
 		<width>-1</width>
@@ -13,7 +13,7 @@
 		<filesize>-1</filesize>
 	</node>
 
-	<node number="128" owner="michiel">
+	<node number="128" owner="default">
 		<state>-1</state>
 		<url>/tv/nos/journaal/maandag.2000.rm</url>
 		<width>200</width>
@@ -26,7 +26,7 @@
 		<filesize>-1</filesize>
 	</node>
 
-	<node number="217" owner="admin">
+	<node number="217" owner="default">
 		<state></state>
 		<url>/tv/nos/journaal/sb.maandag.2000.asf</url>
 		<width></width>
