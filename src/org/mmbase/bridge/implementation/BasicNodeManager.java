@@ -33,17 +33,23 @@ import org.mmbase.storage.search.legacy.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.63 2003-08-27 08:24:00 pierre Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: BasicNodeManager.java,v 1.64 2003-08-27 21:27:17 michiel Exp $
+
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
-    private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
+    private static final  Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
 
     // builder on which the type is based
     protected MMObjectBuilder builder;
 
     // field types
-    protected Map fieldTypes = new Hashtable();
+    protected Map fieldTypes = new HashMap();
 
+    /**
+     * @since MMBase-1.7
+     */
+    protected Set queryFields = new HashSet();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -111,8 +117,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 return;
             }
         }
-    // clear the list of fields..
-    // why is this needed?
+        // clear the list of fields..
+        // why is this needed?
         List fields = builder.getFields();
         if (fields != null) {
             fieldTypes.clear();
@@ -120,9 +126,21 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 FieldDefs f = (FieldDefs) i.next();
                 Field ft = new BasicField(f,this);
                 fieldTypes.put(ft.getName(),ft);
+                if (f.getDBType() != FieldDefs.TYPE_BYTE && ( f.getDBState() == FieldDefs.DBSTATE_PERSISTENT || f.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
+                    queryFields.add(new BasicField(f, this));
+                }
             }
         }
+
     }
+
+
+
+    protected Set getQueryFields() {
+        return queryFields;
+    }
+    
+
 
     public Node createNode() {
         // create object as a temporary node
@@ -224,86 +242,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return fieldTypes.get(fieldName)!=null;
     }
 
-    /**
-     * Based on NodeSearchQuery
-     *
-     * @since MMBase-1.7
-     */
-    protected NodeList getSecureList(NodeQuery query) {
-
-        Authorization auth = cloud.mmbaseCop.getAuthorization();
-        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
-
-        if (query instanceof BasicQuery) {
-            BasicQuery bquery = (BasicQuery) query;
-            if (bquery.isSecure()) {
-                checked = true;
-            } else {
-                Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
-                bquery.setSecurityConstraint(check);
-                checked = bquery.isSecure();
-            }
-        }
-
-        List resultList;
-        try {
-            resultList = builder.getNodes((NodeSearchQuery)((BasicNodeQuery) query).getQuery()); // result with all MMObjectNodes (without security)
-            // cached in MMObjectBuilder.
-
-        } catch (SearchQueryException sqe) {
-            throw new BridgeException(sqe);
-        }
-        query.markUsed();
-
-        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
-        if (! checked) {
-            log.debug("checking read rights");
-            list.autoConvert = false;
-
-            ListIterator i = list.listIterator();
-            while (i.hasNext()) {
-                if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
-                    i.remove();
-                }
-            }
-        }
-        list.setProperty("query", query);
-        list.autoConvert = true;
-        return list;
-
-    }
-
-
-    /**
-     * Based on multi-level query. Returns however 'normal' nodes based on the last step.
-     *
-     * @todo implement
-     * @since MMBase-1.7
-     */
-    protected NodeList getLastStepList(Query query) {
-        
-        // add all fields
-        List resultList = cloud.getList(query);
-
-
-        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
-        list.autoConvert = false;
-
-        list.setProperty("query", query);
-        list.autoConvert = true;
-        return list;
-
-    }
-
-    public NodeList getList(NodeQuery query) {
-        if (query instanceof BasicNodeQuery) {
-            return getSecureList(query);
-        } else {
-            return getLastStepList(query); // not working yet
-        }
-
-    }
-
 
     // javadoc inherited
     public NodeQuery createQuery() {
@@ -361,14 +299,65 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 }
             }
         }
-        NodeQuery q = new BasicNodeQuery(this, query);
-        NodeList list = getList(q);
+        BasicNodeQuery q = new BasicNodeQuery(this, query); // need to wrap bevauses of security.
+        NodeList list = getSecureList(q);
         list.setProperty("constraints", constraints);
         list.setProperty("orderby",     sorted);
         list.setProperty("directions",  directions);
         return list;
+    }
+
+
+    /**
+     * Based on NodeSearchQuery (but it is wrapped in a BasicNodeQuery, because of security contraints).
+     *
+     * @since MMBase-1.7
+     */
+    protected NodeList getSecureList(BasicNodeQuery query) {
+
+        Authorization auth = cloud.mmbaseCop.getAuthorization();
+        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+
+        if (query instanceof BasicQuery) {
+            BasicQuery bquery = (BasicQuery) query;
+            if (bquery.isSecure()) {
+                checked = true;
+            } else {
+                Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
+                bquery.setSecurityConstraint(check);
+                checked = bquery.isSecure();
+            }
+        }
+
+        List resultList;
+        try {
+            resultList = builder.getNodes((NodeSearchQuery)query.getQuery()); // result with all MMObjectNodes (without security)
+            // cached in MMObjectBuilder.
+
+        } catch (SearchQueryException sqe) {
+            throw new BridgeException(sqe);
+        }
+        query.markUsed();
+
+        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
+        if (! checked) {
+            log.debug("checking read rights");
+            list.autoConvert = false;
+
+            ListIterator i = list.listIterator();
+            while (i.hasNext()) {
+                if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
+                    i.remove();
+                }
+            }
+            list.autoConvert = true;
+        }
+        list.setProperty(NodeList.QUERY_PROPERTY, query);
+        return list;
 
     }
+
+
 
     public RelationManagerList getAllowedRelations() {
        return getAllowedRelations((NodeManager) null, null, null);
