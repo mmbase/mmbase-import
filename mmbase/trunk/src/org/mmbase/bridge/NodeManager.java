@@ -15,14 +15,15 @@ import org.mmbase.module.core.*;
 /**
  * This interface represents a node's type information object - what used to be the 'builder'.
  * It contains all the field and attribuut information, as well as GUI data for editors and
- * some information on deribed and deriving types.
+ * some information on deribed and deriving types. It also contains some maintenance code - code
+ * to create new nodes, en code to query objects belonging to the same manager.
  * Since node types are normally maintained through use of config files (and not in the database),
  * as wel as for security issues, the data of a nodetype cannot be changed except through
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public interface NodeType {
+public interface NodeManager {
 
     /**
      * Gets a new (initialized) node
@@ -30,48 +31,58 @@ public interface NodeType {
     public Node createNode();
  	
  	/**
-     * Retrieves the Cloud to which this node type belongs
+     * Retrieves the Cloud to which this manager belongs
      */
     public Cloud getCloud();
 
 	/**
-     * Retrieve the type name (identifying name) of the nodetype
+     * Retrieve the identifying name of the NodeManager
      */
     public String getName();
  	
  	/**
-	 * Retrieve the name of the nodetype
+	 * Retrieve the descriptive name of the NodeManager
 	 * @param language the language in which you want the name
 	 */
 	public String getGUIName(String language);
 	
 	/**
-     * Retrieve the name of the nodetype (in the default language defined in mmbaseroot.xml)
+     * Retrieve the descriptive name of the NodeManager (in the default language defined in mmbaseroot.xml)
      */
     public String getGUIName();
 
 	/**
-	 * Retrieve the description of the nodetype
+	 * Retrieve the description of the NodeManager
 	 * @param language the language in which you want the description
 	 */
 	public String getDescription(String language);
 
 	/** 
-	 * Retrieve the description of the nodetype
+	 * Retrieve the description of the NodeManager.
 	 */
 	public String getDescription();
 
 	/**
-	 * Retrieve all field types of this nodetype
+	 * Retrieve all field types of this NodeManager.
 	 * @return a <code>List</code> of <code>FieldType</code> objects
 	 */
 	public List getFieldTypes();
 
 	/**
-     * search nodes of this type
-     * @param where the contraint
-     * @param order the field on which you want to sort
-     * @param direction true=UP false=DOWN
+	 * Retrieve the field type for a given fieldname.
+	 * @param fieldName name of the field to retrieve
+	 * @return the requested <code>FieldType</code>
+	 */
+	public FieldType getFieldType(String fieldName);
+	
+	/**
+     * Search nodes beloingin to this NodeManager.
+     * @param where The contraint. this is in essence a SQL where clause.
+     *      Examples: "email IS NOT NULL", "lastname='admin' OR lastname = 'sa'"
+     * @param order the fieldname on which you want to sort.
+     *      Examples: 'lastname', 'number'
+     * @param direction indicates whether the sort is ascending (true) or descending (false).
+     * @return a <code>List</code> of found nodes
      */
     public List search(String where, String sorted, boolean direction);
 

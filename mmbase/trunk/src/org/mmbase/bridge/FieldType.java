@@ -31,10 +31,10 @@ public interface FieldType {
 	public final static int FIELDTYPE_LONG = 7;
 	public final static int FIELDTYPE_UNKNOWN = -1;
     /**
-     * Gets the node type this field belongs to
+     * Gets the NodeManager this field belongs to
      * @return the <code>NodeType</code> object for this field
      */
-    public NodeType getNodeType();
+    public NodeManager getNodeManager();
 
 	/**
      * Retrieve the field name (identifying name)

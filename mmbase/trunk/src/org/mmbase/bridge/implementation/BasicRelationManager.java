@@ -14,21 +14,21 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * This interface represents a relation constraint (or contex, if you like).
- * More specifically, it represents a relation type (itself a node type) as it applies between two
- * other node types.
- * Some of the information here is retrieved from the node type used to build the catual relation node
- * (the data as described in the xml builder config file). This node type is also referred to as the parent type.
+ * This class represents a relation constraint (or contex, if you like).
+ * More specifically, it represents a relation manager (itself a node manager) as it applies between bnode belonging to
+ * two other node managers.
+ * Some of the information here is retrieved from the NodeManager used to build the catual relation node
+ * (the data as described in the xml builder config file). This NodeManager is also referred to as the parent.
  * Other data is retrieved from a special (hidden) object that decsribes what relations apply between two nodes.
  * (formerly known as the TypeRel builder).
- * This includes direction and cardinality, and the type of nodes itself. These fields are the only ones that can be changed
- * (node type data cannot be changed except through the use of an administration module).
+ * This includes direction and cardinality, and the NodeManagers of nodes itself. These fields cannot be changed
+ * except through the use of an administration module.
  * This interface is therefor not a real mmbase 'object' in itself - it exists of two objects joined together.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public class BasicRelationType extends BasicNodeType implements RelationType {
+public class BasicRelationManager extends BasicNodeManager implements RelationManager {
 	
     private MMObjectNode typeRelNode = null;
     private MMObjectNode relDefNode = null;
@@ -36,7 +36,7 @@ public class BasicRelationType extends BasicNodeType implements RelationType {
     private int dnum = 0;
     int roleID  = 0;
   	
-  	BasicRelationType(MMObjectNode node, Cloud cloud) {
+  	BasicRelationManager(MMObjectNode node, Cloud cloud) {
   	    typeRelNode = node;
   	    snum=node.getIntValue("snumber");
   	    dnum=node.getIntValue("dnumber");
@@ -56,7 +56,7 @@ public class BasicRelationType extends BasicNodeType implements RelationType {
         if (node==null) {
 	        return null;
 	    } else {
-            return new BasicRelation(node, (RelationType)this);
+            return new BasicRelation(node, this);
 	    }
     }
 	
@@ -85,21 +85,21 @@ public class BasicRelationType extends BasicNodeType implements RelationType {
 	}
 
     /**
-     * Retrieves the type of node that can act as the source of a relation of this type.
-     * @return the source type
+     * Retrieves the NodeManager of node that can act as the source of a relation of this type.
+     * @return the source NodeManager
      */
-    public NodeType getSourceType() {
+    public NodeManager getSourceManager() {
 	    int nr=typeRelNode.getIntValue("snumber");
-	    return cloud.getNodeType(nr);
+	    return cloud.getNodeManager(nr);
 	}
 
 	/**
      * Retrieves the type of node that can act as the destination of a relation of this type.
-     * @return the destination type
+     * @return the destination NodeManager
      */
-    public NodeType getDestinationType() {
+    public NodeManager getDestinationManager() {
 	    int nr=typeRelNode.getIntValue("dnumber");
-	    return cloud.getNodeType(nr);
+	    return cloud.getNodeManager(nr);
 	}
 	
 	/**

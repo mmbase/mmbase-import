@@ -43,8 +43,8 @@ public interface Relation extends Node {
 	public void setDestination(Node node);
 
  	/**
-     * Retrieves the relation type used
-     * @return the relation type
+     * Retrieves the RelationManager used
+     * @return the RelationManager
      */
-    public RelationType getRelationType();
+    public RelationManager getRelationManager();
 }

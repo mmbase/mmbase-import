@@ -25,24 +25,24 @@ public interface Module {
     public CloudContext getCloudContext();
 
  	/**
-	 * Retrieve the name of the nodetype
+	 * Retrieve the name of the module.
 	 * @param language the language in which you want the name
 	 */
 	public String getName(String language);
 
 	/**
-     * Retrieve the name of the nodetype (in the default language defined in mmbaseroot.xml)
+     * Retrieve the name of the module (in the default language defined in mmbaseroot.xml).
      */
     public String getName();
 
 	/**
-	 * Retrieve the description of the nodetype
+	 * Retrieve the description of the module.
 	 * @param language the language in which you want the description
 	 */
 	public String getDescription(String language);
 
 	/** 
-	 * Retireve the description of the nodetype
+	 * Retireve the description of the module.
 	 */
 	public String getDescription();
 
