@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.9 2003-08-01 12:13:58 michiel Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.10 2003-08-01 16:50:58 michiel Exp $ 
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -44,27 +44,32 @@ public class ListNodesTag extends AbstractNodeListTag {
         type = getAttribute(t);
     }
 
+
+    protected NodeManager nodeManager;
+
     /**
-     * Performs the search
+     * @since MMBase-1.7
      */
-    public int doStartTag() throws JspTagException{
-        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
-        if (superresult != NOT_HANDLED) {
-            return superresult;
-        }
+    protected NodeManager getNodeManager() {
+        return nodeManager;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected NodeList getNodes() throws JspTagException {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
         if (c == null) {
             if (type == Attribute.NULL) {
                 throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given)");
-            }
-            
-            NodeManager manager = getCloud().getNodeManager(type.getString(this));
-            NodeList nodes = manager.getList(constraints.getString(this), orderby.getString(this), directions.getString(this));
-            return setReturnValues(nodes, true);
+            }            
+            nodeManager = getCloud().getNodeManager(type.getString(this));
+            NodeList nodes = nodeManager.getList(constraints.getString(this), orderby.getString(this), directions.getString(this));
+            return nodes;
         } else {
             NodeQuery query = (NodeQuery) c.getQuery();
-
+            nodeManager = query.getNodeManager();
             // following code will also be necessary in list-tag, so need perhaps be available in AbstractNodeListTag
 
             if (constraints != Attribute.NULL) {
@@ -91,8 +96,20 @@ public class ListNodesTag extends AbstractNodeListTag {
             }
             
             NodeList nodes = query.getNodeManager().getList(query);
-            return setReturnValues(nodes, true);
+            return nodes;
         }
+    }
+
+    /**
+     * Performs the search
+     */
+    public int doStartTag() throws JspTagException{
+        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
+        if (superresult != NOT_HANDLED) {
+            return superresult;
+        }
+        return setReturnValues(getNodes(), true);
+
     }
 
 }
