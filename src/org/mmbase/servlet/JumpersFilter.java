@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.13 2005-01-24 11:36:41 marcel Exp $
+ * @version $Id: JumpersFilter.java,v 1.14 2005-02-11 15:08:12 michiel Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -38,6 +38,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      * @deprecated will be dropped in future versions
      */
     public void setFilterConfig(FilterConfig fc) {
+        log.info("Setting filter-config");        
         throw new UnsupportedOperationException("This method is not part of the Servlet api 2.3");
     }
 
@@ -47,6 +48,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      * @deprecated will be dropped in future versions
      */
     public FilterConfig getFilterConfig() {
+        log.info("Getting filter-config");        
         throw new UnsupportedOperationException("This method is not part of the Servlet api 2.3");
     }
 
@@ -66,10 +68,10 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      * Initializes the filter
      */
     public void init(javax.servlet.FilterConfig filterConfig) throws ServletException {
+        log.info("Starting JumpersFilter with " + filterConfig);
         name = filterConfig.getFilterName();
         MMBaseContext.init(filterConfig.getServletContext());
         MMBaseContext.initHtmlRoot();
-
         // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
         initThread = new MMBaseStartThread(this);
         initThread.start();
@@ -83,6 +85,12 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      * @param filterChain The FilterChain.
      */
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws java.io.IOException, ServletException {
+        if (mmbase == null) {
+            HttpServletResponse res = (HttpServletResponse) servletResponse;
+            res.setHeader("Retry-After", "60");
+            res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "MMBase not yet, or not successfully initialized (check mmbase log)");
+            return;            
+        }
         if (jumpers == null) {
             if (mmbase != null) {
                 jumpers = (Jumpers)mmbase.getBuilder("jumpers");
@@ -164,6 +172,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
                 return;
             }
         }
+        
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
