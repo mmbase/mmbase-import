@@ -23,10 +23,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
+ * Basic implementation of Cloud. It wraps a.o. the core's ClusterBuilder and Typedef functionalities.
+ *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.96 2003-07-30 08:52:19 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: BasicCloud.java,v 1.97 2003-08-05 19:08:27 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -624,7 +626,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (query.isAggregating()) { // should this perhaps be a seperate method? --> Then also 'isAggregating' not needed any more
             return getResultNodeList(query);
         } else {
-            return getClusterNodeList(query);
+            return getSecureClusterNodes(query);
         }
     }
 
@@ -658,33 +660,55 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     /**
+     * Result with all Cluster - MMObjectNodes (without security, but with cache)
      * @since MMBase-1.7
      */
-    protected NodeList getClusterNodeList(Query query) {
 
-        List resultList; // result with all Cluster - MMObjectNodes (without security)
-
+    protected List    getClusterNodes(Query query) {
         
-        {
-            ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
-            // check multilevel cache if needed
-            resultList = (List)multilevelCache.get(query);
-
-            // if unavailable, obtain from database
-            if (resultList == null) {
-                log.debug("result list is null, getting from database");
-                try {
-                    resultList = clusterBuilder.getClusterNodes(query);
-                } catch (SearchQueryException sqe) {
-                    throw new BridgeException(sqe);
-                }
-                multilevelCache.put(query, resultList);
+        
+        ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
+        // check multilevel cache if needed
+        List resultList = (List)multilevelCache.get(query);
+        
+        // if unavailable, obtain from database
+        if (resultList == null) {
+            log.debug("result list is null, getting from database");
+            try {
+                resultList = clusterBuilder.getClusterNodes(query);
+            } catch (SearchQueryException sqe) {
+                throw new BridgeException(sqe);
             }
+            multilevelCache.put(query, resultList);
         }
-
+    
         query.markUsed();
 
+        return resultList;
+    }
+
+    /**
+     * Result with Cluster Nodes (checked security)
+     * @since MMBase-1.7
+     */
+    protected NodeList getSecureClusterNodes(Query query) {
+        Authorization auth = mmbaseCop.getAuthorization();
+        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+
+        if (query instanceof BasicQuery) {
+            BasicQuery bquery = (BasicQuery) query;
+            if (bquery.isSecure()) {
+                checked = true;
+            } else {
+                Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+                bquery.setSecurityConstraint(check);
+                checked = bquery.isSecure();
+            }
+        }
+        
         //assert(resultList != null);
+        List resultList = getClusterNodes(query);
+
         if (log.isDebugEnabled()) {
             log.debug("Creating NodeList of size " + resultList.size());
         }
@@ -703,19 +727,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             resultNodeList.setProperty("query", query);
         }
 
-        log.debug("Starting read-check");
-        // resultNodeList is now a BasicNodeList; read restriction should only be applied now
-        // assumed it though, that it contain _only_ MMObjectNodes..
-        {
+
+        if (! checked) {
+            log.debug("Starting read-check");
+            // resultNodeList is now a BasicNodeList; read restriction should only be applied now
+            // assumed it though, that it contain _only_ MMObjectNodes..
+
             // get authorization for this call only
-            Authorization auth = mmbaseCop.getAuthorization();
-
-            // it's a pity that one cannot ask auth if read rights can fail.
-            // the functionality is present there, sometimes, I think.
-
+            
             UserContext user = userContext.getUserContext();
             List steps = query.getSteps();
-
+            
             log.debug("Creating iterator");
             ListIterator li = resultNodeList.listIterator();
             resultNodeList.autoConvert = false; // make sure no conversion to Node happen
@@ -738,7 +760,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             }
             resultNodeList.autoConvert = true;
         }
-
+        
         return resultNodeList;
     }
 
