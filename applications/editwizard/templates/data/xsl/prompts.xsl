@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.16 2004-01-05 11:12:34 nico Exp $
+    @version $Id: prompts.xsl,v 1.17 2004-01-08 15:56:07 michiel Exp $
     
     prompts used in this editwizard. 
     Override these prompts to change the view in your own versions.
@@ -14,7 +14,7 @@
 
   <!-- prompts for starting a editwizard -->
   <xsl:template name="prompt_edit_wizard">
-    <img src="{$mediadir}select.gif" class="imgbutton">
+    <img src="{$mediadir}neworg.gif" class="imgbutton">
       <xsl:if test="prompt">
         <xsl:attribute name="alt">
           <xsl:value-of select="prompt" />
