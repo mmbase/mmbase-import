@@ -611,7 +611,7 @@ public class MMObjectNode {
 	*/
 	public String getDutchSName() {
 		if (parent!=null) {
-			return(parent.dutchSName);
+			return(parent.getDutchSName());
 		} else {
 			System.out.println("MMObjectNode -> can't get parent");
 			return("problem");
