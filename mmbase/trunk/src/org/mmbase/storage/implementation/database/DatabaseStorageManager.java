@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.23 2003-09-10 10:00:16 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.24 2003-09-18 12:20:26 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -76,8 +76,8 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     // for debug purposes
-    protected final void debug(String msg) {
-        if (log.isDebugEnabled()) log.debug(msg);
+    protected final void logQuery(String msg) {
+        log.debug("Query :"+msg);
     }
 
     // javadoc is inherited
@@ -214,12 +214,12 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE,Schemes.UPDATE_SEQUENCE_DEFAULT);
             if (scheme !=null) {
                 query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number") });
-                debug("query:"+query);
+                logQuery(query);
                 s.executeUpdate(query);
             }
             scheme = factory.getScheme(Schemes.READ_SEQUENCE,Schemes.READ_SEQUENCE_DEFAULT);
             query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number") });
-            debug("query:"+query);
+            logQuery(query);
             ResultSet result = s.executeQuery(query);
             if (result.next()) {
                 return result.getInt(1);
@@ -378,7 +378,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @return The File where to store or read the binary data
      */
     protected File getBinaryFile(MMObjectNode node, String fieldName) {
-        File dir = new File((String)factory.getAttribute(Attributes.BINARY_FILE_PATH), node.getBuilder().getTableName());
+        File dir = new File((String)factory.getAttribute(Attributes.BINARY_FILE_PATH)
+                          + File.separator + factory.getCatalog(), node.getBuilder().getFullTableName());
         dir.mkdirs();
         return new File(dir, "" + node.getNumber() + "." + fieldName);
     }
@@ -494,7 +495,7 @@ public class DatabaseStorageManager implements StorageManager {
                     FieldDefs field = (FieldDefs) fields.get(fieldNumber);
                     setValue(ps, fieldNumber+1, node, field);
                 }
-                debug("query:"+query);
+                logQuery(query);
                 ps.executeUpdate();
             } catch (SQLException se) {
                 throw new StorageException(se);
@@ -563,7 +564,7 @@ public class DatabaseStorageManager implements StorageManager {
                     FieldDefs field = (FieldDefs) fields.get(fieldNumber);
                     setValue(ps, fieldNumber+1, node, field);
                 }
-                debug("query:"+query);
+                logQuery(query);
                 ps.executeUpdate();
             } catch (SQLException se) {
                 throw new StorageException(se);
@@ -576,9 +577,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Store the value of a field in a prepared statement
      * @todo Note that this code contains some code that should really be implemented in FieldDefs.
-     * In particular, casting should be done in FieldDefs, IMO. It is also useful if the FieldDefs object
-     * would have setStorageType()/getStorageType() methods, so we can accurately determine the type to
-     * enter, or whether Blobs/Clobs should be used, etc.
+     * In particular, casting should be done in FieldDefs, IMO.
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
      * @param node the node from which to retrieve the value
@@ -802,7 +801,7 @@ public class DatabaseStorageManager implements StorageManager {
             String query = scheme.format(new Object[] { this, builder, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);
+            logQuery(query);
             s.executeUpdate(query);
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -938,11 +937,37 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    /**
+     * Returns whether tables inherit fields form parent tables.
+     * this determines whether fields that are inherited in mmbase builders
+     * are redefined in the database tables.
+     */
+    protected boolean tablesInheritFields() {
+        return true;
+    }
+
+    /**
+     * Determines whether the storage should make a field definition in a builder table for a
+     * specified field.
+     */
+    protected boolean isPartOfBuilderDefinition(FieldDefs field) {
+        // persistent field?
+        // skip binary fields when values are written to file
+        boolean isPart = field.inStorage() &&
+                         (field.getDBType() != FieldDefs.TYPE_BYTE ||
+                          !factory.hasOption(Attributes.STORES_BINARY_AS_FILE));
+        // also, if the database is OO, and the builder has a parent,
+        // skip fields that are in the parent builder
+        MMObjectBuilder parentBuilder = field.getParent().getParentBuilder();
+        if (isPart && parentBuilder != null) {
+            isPart = !tablesInheritFields() || parentBuilder.getField(field.getDBName()) == null;
+        }
+        return isPart;
+    }
+
     // javadoc is inherited
     public void create(MMObjectBuilder builder) throws StorageException {
-        if (log.isDebugEnabled()) {
-            debug("Creating a table for " + builder);
-        }
+        log.debug("Creating a table for " + builder);
         // use the builder to get the fields and create a
         // valid create SQL string
         // for backward compatibility, fields are to be created in the order defined
@@ -969,51 +994,35 @@ public class DatabaseStorageManager implements StorageManager {
         }
         for (Iterator f = fields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
-            // persistent field?
-            // skip binary fields when values are written to file
-            boolean storefield = field.inStorage() && (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE));
-            // also, if the database is OO, and the builder has a parent, skip fields that are in the parent builder
-            if (storefield && parentBuilder != null) {
-                storefield = !factory.hasOption(Attributes.SUPPORTS_INHERITANCE) || parentBuilder.getField(field.getDBName())==null;
-            }
             // convert a fielddef to a field SQL createdefinition
-            if (storefield) {
+            if (isPartOfBuilderDefinition(field)) {
                 String fieldDef = getFieldDefinition(field);
                 if (createFields.length() > 0) createFields.append(", ");
                 createFields.append(fieldDef);
-                // test on composite indices
-                if (!"number".equals(field.getDBName()) && field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+                // test on other indices
+                String constraintDef = getConstraintDefinition(field);
+                if (constraintDef != null) {
+                    // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
+                    // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
+                    // and the comma should not be prefixed.
+                    if (rowtypeScheme == null || createIndices.length() > 0) createIndices.append(", ");
+                    createIndices.append(constraintDef);
+                    if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
+                    createFieldsAndIndices.append(fieldDef+", "+constraintDef);
+                } else {
                     if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
                     createFieldsAndIndices.append(fieldDef);
-                    compositeIndices.add(field);
-                } else {
-                    // test on other indices
-                    String indexDef = getIndexDefinition(field);
-                    if (indexDef != null) {
-                        // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
-                        // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
-                        // and the comma should not be prefixed.
-                        if (rowtypeScheme == null || createIndices.length() > 0) createIndices.append(", ");
-                        createIndices.append(indexDef);
-                        if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
-                        createFieldsAndIndices.append(fieldDef+", "+indexDef);
-                    } else {
-                        if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
-                        createFieldsAndIndices.append(fieldDef);
-                    }
                 }
             }
         }
-        if (compositeIndices.size()>0) {
-            // test on other indices
-            String indexDef = getCompositeIndexDefinition(compositeIndices);
-            if (indexDef != null) {
-                // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
-                // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
-                // and the comma should not be prefixed.
-                if (rowtypeScheme == null || createIndices.length() > 0) createCompositeIndices.append(", ");
-                createCompositeIndices.append(indexDef);
-            }
+        //  composite constraints
+        String compConstraintDef = getCompositeConstraintDefinition(builder);
+        if (compConstraintDef != null) {
+            // note: the indices are prefixed with a comma, as they generally follow the fieldlist.
+            // if the database uses rowtypes, however, fields are not included in the CREATE TABLE statement,
+            // and the comma should not be prefixed.
+            if (rowtypeScheme == null || createIndices.length() > 0) createCompositeIndices.append(", ");
+            createCompositeIndices.append(compConstraintDef);
         }
         try {
             getActiveConnection();
@@ -1025,14 +1034,10 @@ public class DatabaseStorageManager implements StorageManager {
                 // unfortunately Schems don't take this into account
                 query = query.replaceAll("\\(\\s*\\)","");
                 Statement s = activeConnection.createStatement();
-                debug("query:"+query);
+                logQuery(query);
                 s.executeUpdate(query);
             }
             // create the table
-            debug("fields="+createFields.toString());
-            debug("indices="+createIndices.toString());
-            debug("fields+indices="+createFieldsAndIndices.toString());
-            debug("composite="+createCompositeIndices.toString());
             String query = tableScheme.format(new Object[] { this, builder,
                                                         createFields.toString(),
                                                         createIndices.toString(),
@@ -1040,11 +1045,13 @@ public class DatabaseStorageManager implements StorageManager {
                                                         createCompositeIndices.toString(),
                                                         parentBuilder });
             // remove parenthesis with empty field definitions -
-            // unfortunately Schems don't take this into account
+            // unfortunately Schemes don't take this into account
             query = query.replaceAll("\\(\\s*\\)","");
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);
+            logQuery(query);
             s.executeUpdate(query);
+            // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
+            // has to be done seperate
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
@@ -1070,9 +1077,6 @@ public class DatabaseStorageManager implements StorageManager {
         mapping.setFixedSize(size);
         // search type mapping
         List typeMappings = factory.getTypeMappings();
-
-        debug("Map:"+mapping);
-
         int found = typeMappings.indexOf(mapping);
         if (found > -1) {
             String fieldDef = factory.getStorageIdentifier(field)+" "+((TypeMapping)typeMappings.get(found)).getType(size);
@@ -1090,39 +1094,66 @@ public class DatabaseStorageManager implements StorageManager {
      * @param field the field for which to make the index definition
      * @return the index definition as a String, or <code>null</code> if no definition is available
      */
-    protected String getIndexDefinition(FieldDefs field) throws StorageException {
+    protected String getConstraintDefinition(FieldDefs field) throws StorageException {
+        String definitions = null;
         Scheme scheme = null;
         if (field.getDBName().equals("number")) {
             scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
-        } else if (field.isKey()) {
-            scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY);
-        } else if (field.getDBType() == FieldDefs.TYPE_NODE) {
-            scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY);
-        }
-        if (scheme != null) {
-            return scheme.format(new Object[]{ this, field.getParent(), field, field,
-                                               factory.getMMBase(), factory.getStorageIdentifier("number") } );
+            if (scheme != null) {
+                definitions = scheme.format(new Object[]{ this, field.getParent(), field } );
+            }
         } else {
-            return null;
+            if (field.isKey() && !factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+                scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY, Schemes.CREATE_UNIQUE_KEY_DEFAULT);
+                if (scheme != null) {
+                    definitions = scheme.format(new Object[]{ this, field.getParent(), field, field } );
+                }
+            }
+            if (field.getDBType() == FieldDefs.TYPE_NODE) {
+                scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY, Schemes.CREATE_FOREIGN_KEY_DEFAULT);
+                if (scheme != null) {
+                    String definition = scheme.format(new Object[]{ this, field.getParent(), field,
+                                        factory.getMMBase(), factory.getStorageIdentifier("number") } );
+                    if (definitions != null) {
+                        definitions += ", " + definition;
+                    } else {
+                        definitions = definition;
+                    }
+                }
+            }
         }
+        return definitions;
     }
 
     /**
-     * Creates a composite index definition string (an idnex over one or more fields) to be passed when creating a table.
+     * Creates a composite index definition string (an index over one or more fields) to be
+     * passed when creating a table.
      * @param fields a List of fields for which to make the index definition
      * @return the index definition as a String, or <code>null</code> if no definition is available
      */
-    protected String getCompositeIndexDefinition(List fields) throws StorageException {
-        Scheme scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY);
+    protected String getCompositeConstraintDefinition(MMObjectBuilder builder) throws StorageException {
+        Scheme scheme = factory.getScheme(Schemes.CREATE_COMPOSITE_KEY, Schemes.CREATE_COMPOSITE_KEY_DEFAULT);
         if (scheme != null) {
             StringBuffer indices = new StringBuffer();
-            for (Iterator i = fields.iterator(); i.hasNext();) {
-                FieldDefs field = (FieldDefs)i.next();
-                if (indices.length() > 0) indices.append(", ");
-                indices.append(factory.getStorageIdentifier(field));
+            List fields = builder.getFields(FieldDefs.ORDER_CREATE);
+            List compositeIndices = new ArrayList();
+            // obtain the parentBuilder
+            MMObjectBuilder parentBuilder = builder.getParentBuilder();
+            for (Iterator f = fields.iterator(); f.hasNext();) {
+                FieldDefs field = (FieldDefs) f.next();
+                if (isPartOfBuilderDefinition(field) &&
+                    !"number".equals(field.getDBName()) &&
+                    field.isKey() &&
+                    factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+                    if (indices.length() > 0) indices.append(", ");
+                    indices.append(factory.getStorageIdentifier(field));
+                }
             }
-            MMObjectBuilder builder = ((FieldDefs)fields.get(0)).getParent();
-            return scheme.format(new Object[]{ this, builder, builder.getTableName()+"_key", indices.toString(), factory.getMMBase()} );
+            if (indices.length() > 0) {
+                return scheme.format(new Object[]{ this, builder, indices.toString()} );
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
@@ -1151,13 +1182,13 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
             String query = scheme.format(new Object[] { this, builder });
             Statement s = activeConnection.createStatement();
-            debug("query:"+query);
+            logQuery(query);
             s.executeUpdate(query);
             scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
             if (scheme!=null) {
                 query = scheme.format(new Object[] { this, builder });
                 s = activeConnection.createStatement();
-            debug("query:"+query);
+            logQuery(query);
                 s.executeUpdate(query);
             }
         } catch (Exception e) {
@@ -1200,13 +1231,13 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
             if (scheme!=null) {
                 query = scheme.format(new Object[] { this, fieldDef });
-                debug("query:"+query);
+                logQuery(query);
                 s.executeUpdate(query);
             }
             scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
             if (scheme!=null) {
                 query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1) });
-                debug("query:"+query);
+                logQuery(query);
                 s.executeUpdate(query);
             }
         } catch (SQLException se) {
@@ -1231,12 +1262,10 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected boolean exists(String tableName) throws StorageException {
         try {
-            debug("Exists: "+tableName);
             getActiveConnection();
             DatabaseMetaData metaData = activeConnection.getMetaData();
             ResultSet res = metaData.getTables(null, null, tableName, null);
             boolean result = res.next();
-            debug("Exists result: "+result);
             return result;
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
@@ -1336,7 +1365,7 @@ public class DatabaseStorageManager implements StorageManager {
             String tableName = (String)factory.getStorageIdentifier(builder);
             DatabaseMetaData metaData = activeConnection.getMetaData();
             // skip if does not support inheritance, or if this is the object table
-            if (factory.hasOption(Attributes.SUPPORTS_INHERITANCE)) {
+            if (tablesInheritFields()) {
                 MMObjectBuilder parent = builder.getParentBuilder();
                 try {
                     ResultSet superTablesSet = metaData.getSuperTables(null,null, tableName);
@@ -1346,7 +1375,7 @@ public class DatabaseStorageManager implements StorageManager {
                             log.error("VERIFY: parent builder in storage for builder " + builder.getTableName() +
                                  " should be " + parent.getTableName() +" but defined as " + parentName);
                         } else {
-                            debug("VERIFY: parent builder in storage for builder " + builder.getTableName() +
+                            log.debug("VERIFY: parent builder in storage for builder " + builder.getTableName() +
                                  " defined as " + parentName);
                         }
                     } else if (parent != null) {
@@ -1369,6 +1398,7 @@ public class DatabaseStorageManager implements StorageManager {
                 colInfo.put("NULLABLE", new Boolean(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
                 columns.put(columnsSet.getString("COLUMN_NAME"),colInfo);
             }
+            columnsSet.close();
             // iterate through fields and check all fields present
             int pos = 0;
             List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
@@ -1402,7 +1432,7 @@ public class DatabaseStorageManager implements StorageManager {
                                     field.setDBNotNull(!nullable);
                                     log.warn("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable + " (value corrected for this session)");
                                 } else {
-                                    debug("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable);
+                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable);
                                 }
                             }
                             // compare size
@@ -1416,7 +1446,7 @@ public class DatabaseStorageManager implements StorageManager {
                                 } else if (cursize <= 255) {
                                     // ignore the size difference for large fields (blobs or texts) if
                                     // the storage size is larger than that defined for the builder
-                                    debug("VERIFY: Field " + field.getDBName() + " mismatch : size defined as " + cursize + ", but in storage " + size);
+                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : size defined as " + cursize + ", but in storage " + size);
                                 }
                             }
                         }
@@ -1436,72 +1466,188 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    /**
+     * Drop a constraint for a composite index.
+     * You should have an active connection before calling this method.
+     * @param builder the builder for which to drop the composite key
+     * @throws
+     * @throws
+     */
+    protected void deleteCompositeIndex(MMObjectBuilder builder) throws StorageException, SQLException {
+        if (factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+            //  TODO: We should determine if there IS an index before removing it...
+            //  Scheme: DELETE_CONSTRAINT
+            Scheme deleteIndexScheme = factory.getScheme(Schemes.DELETE_CONSTRAINT_SCHEME, Schemes.DELETE_CONSTRAINT_SCHEME_DEFAULT);
+            if (deleteIndexScheme !=null) {
+                DatabaseMetaData metaData = activeConnection.getMetaData();
+                ResultSet indexSet = metaData.getIndexInfo(null, null, builder.getTableName(), true, false);
+                // get index information
+                String indexName = null;
+                while (indexSet.next()) {
+                    int indexType = indexSet.getInt("TYPE");
+                    if (indexType == DatabaseMetaData.tableIndexClustered) {
+                         indexName = indexSet.getString("INDEX_NAME");
+                    }
+                }
+                indexSet.close();
+                // remove index if found
+                if (indexName != null) {
+                    Statement s = activeConnection.createStatement();
+                    String query = deleteIndexScheme.format(new Object[] { this, builder, indexName });
+                    logQuery(query);
+                    s.executeUpdate(query);
+                }
+            }
+        }
+    }
+
+    /**
+     * Create a constraint for a composite index.
+     * @param builder the builder for which to add the composite key
+     */
+    protected void createCompositeIndex(MMObjectBuilder builder) throws StorageException, SQLException {
+        if (factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+            //  Scheme: CREATE_CONSTRAINT
+            Scheme createIndexScheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
+            if (createIndexScheme !=null) {
+                Statement s = activeConnection.createStatement();
+                String constraintDef = getCompositeConstraintDefinition(builder);
+                String query = createIndexScheme.format(new Object[] { this, builder, constraintDef });
+                logQuery(query);
+                s.executeUpdate(query);
+            }
+        }
+    }
+
     // javadoc is inherited
     public void create(FieldDefs field) throws StorageException {
+        if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
+            throw new StorageException("Data definiton statements (create new field) are not supported.");
+        }
+        if (factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE) != null) {
+            throw new StorageException("Can not use data definiton statements (create new field) on row types.");
+        }
         if (field.inStorage() &&
             (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
-            // if the field is a key, remove the composite key
-            if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-                //  Determine if there IS an index
-                //  Scheme: DELETE_INDEX
-            }
             Scheme scheme = factory.getScheme(Schemes.CREATE_FIELD_SCHEME, Schemes.CREATE_FIELD_SCHEME_DEFAULT);
-            if (scheme !=null) {
-                throw new StorageException("Operation not (yet) supported");
-                // get the field,
-                // get the field index
-                // add the field and its index  Scheme: CREATE_FIELD
-            }
-            // if the field is a key, select all key fields and add the composite key
-            if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-                //  Scheme: CREATE_INDEX
+            if (scheme == null) {
+                throw new StorageException("Storage layer does not support the dynamic creation of fields");
+            } else {
+                try {
+                    getActiveConnection();
+                    // add field
+                    String fieldDef = getFieldDefinition(field);
+                    String query = scheme.format(new Object[] { this, field.getParent(), fieldDef });
+                    Statement s = activeConnection.createStatement();
+                    logQuery(query);
+                    s.executeUpdate(query);
+                    // add constraints
+                    scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
+                    if (scheme!=null) {
+                        String constraintDef = getConstraintDefinition(field);
+                        query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
+                        s = activeConnection.createStatement();
+                        logQuery(query);
+                        s.executeUpdate(query);
+                    }
+                    // if the field is a key, redefine the composite key
+                    if (field.isKey()) {
+                        deleteCompositeIndex(field.getParent());
+                        createCompositeIndex(field.getParent());
+                    }
+                } catch (SQLException se) {
+                    throw new StorageException(se);
+                } finally {
+                    releaseActiveConnection();
+                }
             }
         }
     }
 
     // javadoc is inherited
     public void change(FieldDefs field) throws StorageException {
+        if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
+            throw new StorageException("Data definiton statements (change field) are not supported.");
+        }
+        if (factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE) != null) {
+            throw new StorageException("Can not use data definiton statements (change field) on row types.");
+        }
         if (field.inStorage() &&
             (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
-            // if the field is a key, remove the composite key
-            if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-                //  Determine if there IS an index
-                //  Scheme: DELETE_INDEX
-            }
             Scheme scheme = factory.getScheme(Schemes.CHANGE_FIELD_SCHEME, Schemes.CHANGE_FIELD_SCHEME_DEFAULT);
-            if (scheme !=null) {
-                throw new StorageException("Operation not (yet) supported");
-                // get the field,
-                // get the field index
-                // change the field and its index  Scheme: CHANGE_FIELD
-            }
-            // if the field is a key, select all key fields and add the composite key
-            if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-                //  Scheme: CREATE_INDEX
+            if (scheme == null) {
+                throw new StorageException("Storage layer does not support the dynamic changing of fields");
+            } else {
+                try {
+                    getActiveConnection();
+                    // if the field is a key, delete the composite key
+                    // Note: changes in whether a field is part of a unique key or not cannot be
+                    // made at this moment.
+                    if (field.isKey()) {
+                        deleteCompositeIndex(field.getParent());
+                    }
+                    // Todo: explicitly remove indices ??
+                    String fieldDef = getFieldDefinition(field);
+                    String query = scheme.format(new Object[] { this, field.getParent(), fieldDef });
+                    Statement s = activeConnection.createStatement();
+                    logQuery(query);
+                    s.executeUpdate(query);
+                    // add constraints
+                    scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT_SCHEME, Schemes.CREATE_CONSTRAINT_SCHEME_DEFAULT);
+                    if (scheme!=null) {
+                        String constraintDef = getConstraintDefinition(field);
+                        query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
+                        s = activeConnection.createStatement();
+                        logQuery(query);
+                        s.executeUpdate(query);
+                    }
+                    // if the field is a key, add the composite key
+                    if (field.isKey()) {
+                        createCompositeIndex(field.getParent());
+                    }
+                } catch (SQLException se) {
+                    throw new StorageException(se);
+                } finally {
+                    releaseActiveConnection();
+                }
             }
         }
     }
 
     // javadoc is inherited
     public void delete(FieldDefs field) throws StorageException {
+        if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
+            throw new StorageException("Data definiton statements (delete field) are not supported.");
+        }
+        if (factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE) != null) {
+            throw new StorageException("Can not use data definiton statements (delete field) on row types.");
+        }
         if (field.inStorage() &&
             (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
-            // if the field is a key, remove the composite key
-            if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-                //  Determine if there IS an index
-                //  Scheme: DELETE_INDEX
-            }
             Scheme scheme = factory.getScheme(Schemes.DELETE_FIELD_SCHEME, Schemes.DELETE_FIELD_SCHEME_DEFAULT);
-            if (scheme !=null) {
-                throw new StorageException("Operation not (yet) supported");
-                // remove the composite key (in case the key property has changed) Scheme: DROP_INDEX
-                // get the field
-                // get the field index
-                // remove the field and its index  Scheme: DELETE_FIELD
-            }
-            // if the field is a key, select all key fields and add the composite key
-            if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-                //  Scheme: CREATE_INDEX
+            if (scheme == null) {
+                throw new StorageException("Storage layer does not support the dynamic deleting of fields");
+            } else {
+                try {
+                    getActiveConnection();
+                    // if the field is a key, delete the composite key
+                    if (field.isKey()) {
+                        deleteCompositeIndex(field.getParent());
+                    }
+                    // Todo: explicitly remove indices ??
+                    String query = scheme.format(new Object[] { this, field.getParent(), field });
+                    Statement s = activeConnection.createStatement();
+                    logQuery(query);
+                    s.executeUpdate(query);
+                    // if the field is a key, add the composite key
+                    if (field.isKey()) {
+                        createCompositeIndex(field.getParent());
+                    }
+                } catch (SQLException se) {
+                    throw new StorageException(se);
+                } finally {
+                    releaseActiveConnection();
+                }
             }
         }
     }

@@ -12,14 +12,8 @@
 		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />
 
-		<!-- Support composite (unique) indexes -->
-		<option name="database-supports-composite-index" value="true" />
-
-		<!-- Supports inheritance -->
-		<option name="database-supports-inheritance" value="true" />
-
-		<!-- Unique index declaration -->
-		<scheme name="create-unique-key-scheme">UNIQUE ({2})</scheme>
+		<!-- Foreignkeys don't work well under postgresql -->
+		<scheme name="create-foreign-key-scheme" />
 
 		<!-- Postgresql extends tables -->
 		<scheme name="create-table-scheme">CREATE TABLE {1} ({4} {5}) INHERITS ({6})</scheme>

@@ -34,7 +34,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.5 2003-08-29 12:12:27 keesj Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.6 2003-09-18 12:20:27 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -67,6 +67,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager.class;
 
     /**
+     * The catalog used by this storage.
+     */
+    protected String catalog = null;
+
+    /**
      * The datasource in use by this factory.
      * The datasource is retrieved either from the application server, or by wrapping the JDBC Module in a generic datasource.
      */
@@ -92,6 +97,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         return supportsTransactions;
     }
 
+    public String getCatalog() {
+        return catalog;
+    }
+
     /**
      * Opens and reads the storage configuration document.
      * Obtain a datasource to the storage, and load configuration attributes.
@@ -111,13 +120,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         if (dataSourceURI != null) {
             try {
                 String contextName = mmbase.getInitParameter("datasource-context");
-                if (contextName == null) {                    
+                if (contextName == null) {
                     contextName = "java:comp/env";
                 }
                 Context initialContext = new InitialContext();
-log.info("look for:"+contextName);                
                 Context environmentContext = (Context) initialContext.lookup(contextName);
-log.info("found:"+environmentContext);                
                 dataSource = (DataSource)environmentContext.lookup(dataSourceURI);
             } catch(NamingException ne) {
                 log.warn("Datasource '"+dataSourceURI+"' not available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
@@ -136,11 +143,16 @@ log.info("found:"+environmentContext);
         // this allows for easy retrieval of database options
         try {
             Connection con = dataSource.getConnection();
+            catalog = con.getCatalog();
+            log.debug("Connecting to catalog with name "+catalog);
             DatabaseMetaData metaData = con.getMetaData();
+
             // set transaction options
             supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
             setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
-            setOption(Attributes.SUPPORTS_DATA_MANIPULATION_TRANSACTIONS_ONLY, metaData.supportsDataManipulationTransactionsOnly());
+            setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
+            setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
+
             // determine transactionlevels
             if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
                 transactionIsolation = Connection.TRANSACTION_SERIALIZABLE;

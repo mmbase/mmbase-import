@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.5 2003-09-01 13:29:46 pierre Exp $
+ * @version $Id: Attributes.java,v 1.6 2003-09-18 12:20:26 pierre Exp $
  */
 public final class Attributes {
 
@@ -26,17 +26,6 @@ public final class Attributes {
      * You should not set or configure this attribute (but you can retrieve it).
      */
     public static final String DATA_SOURCE = "database-data-source";
-
-    /**
-     * Option: <code>database-supports-inheritance</code>.
-     * When true, the database supports inheritance (you can extend tables). This option influences what fields
-     * MMBase will add to a newly created table.
-     * Note that you should specify this attribute if you have set up the schemes
-     * {@link Schemes#CREATE_ROW_TYPE} and/or
-     * {@link Schemes#CREATE_TABLE} to create tables that support inheritance.
-     * The default is <code>false</code>
-     */
-    public static final String SUPPORTS_INHERITANCE = "database-supports-inheritance";
 
     /**
      * Option: <code>database-supports-transactions</code>.
@@ -79,7 +68,7 @@ public final class Attributes {
      * Option: <code>database-supports-composite-index</code>.
      * When true, the database uses composite indices for 'key' fields.
      * When false, it uses single indices (a separate index for each field)
-     * The default is <code>false</code>
+     * The default is <code>true</code>
      */
     public static final String SUPPORTS_COMPOSITE_INDEX = "database-supports-composite-index";
 
@@ -92,13 +81,13 @@ public final class Attributes {
     public static final String TRANSACTION_ISOLATION_LEVEL = "database.transaction-isolation-level";
 
     /**
-     * Option: <code>database-supports-data-manipulation-transactions-only</code>.
-     * If true, only data manipulation (INSERT, UPDATE) can be done within a transaction.
-     * This option should be used to properly close connections before a data definiton query is run.
-     * The default is determined from the database metadata.
-     * @todo not used at the moment
+     * Option: <code>database-supports-data-definition</code>.
+     * If true, the data definiton (table structure) can be changed using ALTER TABLE statements.
+     * Some databses (such as Informix) may have trouble with ALTER TABLE statements on OO-tables.
+     * Turn this option false for tehse databses.
+     * The default is <code>true</code>
      */
-    public static final String SUPPORTS_DATA_MANIPULATION_TRANSACTIONS_ONLY = "database-supports-data-manipulation-transactions-only";
+    public static final String SUPPORTS_DATA_DEFINITION = "database-supports-data-definition";
 
 
 
