@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Quickstart Installation Guide</title>
+    <date>2004-11-04</date>
+    <edition>$Id: quickstart.xml,v 1.1 2004-11-04 11:38:56 pierre Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Rob</firstname>
+        <surname>van Maris</surname>
+        <affiliation>
+          <orgname>Finalist IT Group</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section>
+    <title>Documentation</title>
+    <para>For a full understanding of the XML Importer, it is recommended to read the following documents, available on the <ulink url="http://www.mmbase.org">MMBase website</ulink></para>
+    <orderedlist>
+      <listitem><simpara>TCP 1.0 documentation (see Temporary Cloud Project).</simpara></listitem>
+      <listitem><simpara>XML Importer overview (see XML Importer Project).</simpara></listitem>
+      <listitem><simpara>The javadoc documentation of the <classname>org.mmbase.applications.xmlimporter</classname> package.</simpara></listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>How to install XML Importer</title>
+    <para>The XML Importer has been tested with the recent CVS versions of MMBase. If you downloaded the MMDistro you have to update some files from cvs and copy them to your source directory. In our case these were:</para>
+    <itemizedlist>
+      <listitem><simpara><classname>org.mmbase.module.INFO.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.builders.MediaParts.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.PlaylistInterface.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.MMBaseContext.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.MMObjectBuilder.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.MMObjectNode.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.TemporaryNodeManager.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.TemporaryNodeManagerInterface.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.TransactionManager.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.TransactionManagerException.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.TransactionManagerInterface.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.core.TransactionResolver.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.corebuilders.FieldDefs.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.database.support.MMSQL92Node.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.gui.html.PageProcess.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.module.gui.html.scanparser.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.servlet.servdb.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.servlet.servscan.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.util.media.MediaUtils.java</classname></simpara></listitem>
+      <listitem><simpara><classname>org.mmbase.util.scanpage.java</classname></simpara></listitem>
+    </itemizedlist>
+    <para>Since MMBase is improved all the time this list will grow with time. If compilation errors occur a cvs update might solve the problem.</para>
+
+    <para>Next:</para>
+    <orderedlist>
+      <listitem><simpara>Download and unzip xmlimporter.zip from the XML-importer homepage on the MMBase website.</simpara></listitem>
+      <listitem><simpara>Update the contents of mmbase/applications/xmlimporter from cvs.</simpara></listitem>
+      <listitem><simpara>Update the contents of html/mmapps/xmlimporter from cvs.</simpara></listitem>
+      <listitem><simpara>Update the file config/default/dtd/transactions.dtd from cvs.</simpara></listitem>
+      <listitem><simpara>Edit transactionhandler.xml in your MMBase modules config directory, so that its status is set to "active" and its classfile to "org.mmbase.applications.xmlimporter.TransactionHandler".</simpara></listitem>
+      <listitem><simpara>Copy upload.jar from /lib to your MMBase lib directory (usually Web-Inf/lib in your web-app). It is solely used for the file upload by the XML importer user interface JSP.</simpara></listitem>
+      <listitem><simpara>In your MMBase config directory, create directories "import" and "import/report".</simpara></listitem>
+      <listitem><simpara>Recompile/rebuild and redeploy your MMBase binaries.</simpara></listitem>
+    </orderedlist>
+
+    <para>The next time MMBase is started, XML Importer will be installed and fully functional. It is recommended to install the examples next.</para>
+  </section>
+
+  <section>
+    <title>How to run the examples</title>
+    <para>It is recommended to execute the JUnit tests as the first step, to see if everything works as expected.</para>
+    <orderedlist>
+      <listitem><simpara>Configure log4j to see the results of the JUnit tests, by setting the priority for the category <classname>org.mmbase.applications.xmlimporter.junit.TestRunner</classname> to "service".</simpara></listitem>
+      <listitem><simpara>Restart MMBase. The junittester module is configured to execute two testsuites when MMBase is initialized: TmpObjectTest, TransactionHanlderTest and SpecificObjectFinderTest.</simpara></listitem>
+      <listitem><simpara>Look in the log4j logfile to see the result of the tests. If all went well, the TestRunner reports having finished both testsuites with result OK.
+      If you see the lines <computeroutput>>OK (6 tests)</computeroutput>, <computeroutput>OK (5 tests)</computeroutput> and <computeroutput>OK (1 tests)</computeroutput> XML Importer is running as expected (in spite of some warnings you may get), otherwise something is wrong.</simpara></listitem>
+    </orderedlist>
+
+    <para>If the TestRunner reports errors or failures, set logging priority to "trace" for the category <classname>org.mmbase.applications.xmlimporter</classname> and restart MMBase to get a more detailed report to see what went wrong. Don't proceed until the problem is fixed and all tests are successfull.</para>
+    <para>If you don't need the junittester anymore, set its status to "inactive" in its configuration file "junittester.xml".</para>
+    <para>The next examples will demonstrate the XML importer with the JSP user interface. It uses 3 XML files with XML Importer commands. In order to understand these, you must have read the XML Importer documentation.</para>
+    <orderedlist>
+      <listitem><simpara>In a browser, go to <ulink url="http://localhost/mmapps/xmlimporter/jsp/importhome.jsp">http://localhost/mmapps/xmlimporter/jsp/importhome.jsp</ulink>.</simpara></listitem>
+      <listitem><simpara>Use the "Browse..." buttons to select the files "transaction1.xml", "transaction2.xml" and "transaction3.xml" in the /demo directory of the unzipped file. These are the XML files to be processed by the XML importer.</simpara></listitem>
+      <listitem><simpara>Press "Start Upload", this will upload the files to a webserver directory ("import" in your MMBase config directory).</simpara></listitem>
+      <listitem><simpara>Press "Back to import page" to return to the importer homepage.</simpara></listitem>
+      <listitem><simpara>Now you can select one of the uploaded files under "Start Import". Select "transaction1.xml" and press "Start Import" to process that file.</simpara></listitem>
+      <listitem><simpara>Description of <filename>transaction1.xml</filename>:</simpara>
+        <para>This transaction creates new objects: 1 movie and 3 related persons - of which 2 are identical.
+        These are then merged based on an exact match of persons and movies.
+        Note that:</para>
+        <itemizedlist>
+          <listitem><simpara>When this transaction is repeated it will not create new objects, because the objects are already present in the persistent cloud.</simpara></listitem>
+          <listitem><simpara>The two identical persons are merged and result in a single persons object.</simpara></listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem><simpara>The next html-pages will inform you when the XML importer has finished, also telling "NO DUPLICATES FOUND", meaning there were no problems (see below). Go to the MMBase editors for personsxxx and moviesxxx to see the resulting objects.</simpara></listitem>
+      <listitem><simpara>From to the importer homepage import "transaction2.xml" in the same way.</simpara></listitem>
+      <listitem><simpara>Desciption of <filename>transactions2.xml</filename>:</simpara>
+        <para>This transaction creates new objects:1 movie and 1 related person.
+        These are then merged based on an exact match of persons and movies.
+        Note that:</para>
+        <itemizedlist>
+          <listitem><simpara>Since the persons merge is based on an exact match of fullnames, "Erik Visser" and "Eric Visser" are considered different persons.</simpara></listitem>
+          <listitem><simpara>Since the movies merge is based on an exact match of titles, "Finalist the Movie" and "Finalist the Movie II" are considered different movies.</simpara></listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem><simpara>The next html-pages will inform you when the XML importer has finished, also telling "NO DUPLICATES FOUND", meaning there were no problems. Go to the MMBase editors for personsxxx and moviesxxx to see the resulting objects.</simpara></listitem>
+      <listitem><simpara>Repeat the import of either transaction1.xml or transaction2.xml. This time, no objects will be created, since they are already present.</simpara></listitem>
+      <listitem><simpara>From the importer homepage import "transaction3.xml" in the same way.</simpara></listitem>
+      <listitem><simpara>Description of <filename>transactions3.xml</filename>:</simpara>
+        <para>This transaction creates new objects:1 movie and 1 related person.
+          These are then merged based on a fuzzy match of persons (90%) and movies (95%).
+          Note that:</para>
+        <itemizedlist>
+              <listitem><simpara>Since the merge is based on a fuzzy (90%) match of fullnames, "Erik Visser", "Eric Visser" and "Erie Visser" are considered the same person, so there will be ambiguity when merging the persons.</simpara></listitem>
+              <listitem><simpara>Since the movies merge is based on a fuzzy (95%) match of titles, "Finalist the Movie II" and "Finalist the Movie III" are considered the same movie, and "Finalist the Movie" is considerd a different movie, so there is no ambiguity when merging the movies.</simpara></listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem><simpara>The next html-pages will inform you when the XML importer has finished, but this time with the following message: "DUPLICATES FOUND". This means there was a transaction that could not be committed because an ambiguity arose while looking for similar objects.</simpara></listitem>
+      <listitem><simpara>Take a look at the file "import\report\tcpReport.txt" in your MMBase config directory, to see which transaction was not committed and what the problem was. (You can set the name of the reportFile by setting the reportFile attribute of the transactions element.)</simpara></listitem>
+      <listitem><simpara>Repeat the import of transactions3.xml, but this time be sure to check the "process duplicates interactive" checkbox.</simpara></listitem>
+      <listitem><simpara>In the interactive mode, the XML importer will consult you as soon as it runs into ambiguity because of duplicates. It will show you the original (input) object, and the objects resulting from merging it with the different candidates. Choose the mergeresult with fullname "Erik Visser" by pressing the button beneath it.</simpara></listitem>
+      <listitem><simpara>Go to the MMBase editors to see the resulting objects. In this case both the movie and person are merged with existing objects, but a new relation is added, since this relation was not present already.</simpara></listitem>
+      <listitem><simpara>Finally, return to the importer homepage, and use third section to delete the uploaded files from the server.</simpara></listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>How to de-install the examples</title>
+    <para>Reverse the steps in the examples installation guide to de-install the examples.</para>
+  </section>
+
+</article>
