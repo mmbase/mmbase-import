@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.9 $ $Date: 2002-05-27 10:50:10 $
+* @$Revision: 1.10 $ $Date: 2002-11-06 22:47:57 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -614,65 +614,6 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
             }
         }
         return(true);
-    }
-
-
-    /**
-    * removeNode
-    */
-    public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
-        int number=node.getIntValue("number");
-        if(log.isDebugEnabled()) {
-            log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-            log.trace("SAVECOPY "+node.toString());
-        }
-        Vector rels=bul.getRelations_main(number);
-        if (rels!=null && rels.size()>0) {
-            log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-        } else {
-        if (number!=-1) {
-            try {
-                MultiConnection con=mmb.getConnection();
-                Statement stmt=con.createStatement();
-                stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-                stmt.close();
-                con.close();
-            } catch (SQLException e) {
-                log.error(Logging.stackTrace(e));
-            }
-            if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
-                try {
-                    MultiConnection con=mmb.getConnection();
-                    Statement stmt=con.createStatement();
-                    stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where "+getNumberString()+"="+number);
-                    stmt.close();
-                    con.close();
-                } catch (SQLException e) {
-                    log.error(Logging.stackTrace(e));
-                }
-            }
-
-            try {
-                MultiConnection con=mmb.getConnection();
-                Statement stmt=con.createStatement();
-                stmt.executeUpdate("delete from "+mmb.baseName+"_object where "+getNumberString()+"="+number);
-                stmt.close();
-                con.close();
-            } catch (SQLException e) {
-                log.error(Logging.stackTrace(e));
-            }
-        }
-        }
-        if (bul.broadcastChanges) {
-            mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"d");
-            if (bul instanceof InsRel) {
-                MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
-                MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
-            }
-        }
-
     }
 
     /**
