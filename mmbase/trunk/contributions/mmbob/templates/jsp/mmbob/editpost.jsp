@@ -38,7 +38,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
   <mm:node referid="postingid">
   <tr><th colspan="3"><mm:write referid="mlg_Edit_message" /></th></tr>
   <form action="<mm:url page="thread.jsp">
