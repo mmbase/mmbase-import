@@ -21,12 +21,12 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualRefererBuilder.java,v 1.3 2003-03-10 11:50:35 pierre Exp $
+ * @version $Id: VirtualReferrerBuilder.java,v 1.1 2004-01-08 11:08:06 pierre Exp $
  */
-public class VirtualRefererBuilder extends VirtualBuilder {
+public class VirtualReferrerBuilder extends VirtualBuilder {
 
     // logging variable
-    private static Logger log = Logging.getLoggerInstance(VirtualRefererBuilder.class.getName());
+    private static Logger log = Logging.getLoggerInstance(VirtualReferrerBuilder.class.getName());
 
     private MMObjectBuilder originalBuilder=null;
 
@@ -37,7 +37,7 @@ public class VirtualRefererBuilder extends VirtualBuilder {
      * do not have a long life span.
      * @param m the MMbase cloud creating the node
      */
-    public VirtualRefererBuilder(MMObjectBuilder originalBuilder) {
+    public VirtualReferrerBuilder(MMObjectBuilder originalBuilder) {
         super(originalBuilder.mmb);
         this.originalBuilder=originalBuilder;
         this.tableName="virtual_"+originalBuilder.getTableName();
