@@ -24,7 +24,7 @@ import org.xml.sax.*;
  * The Vts query handler adds support for Verity Text Search constraints.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 // TODO: (later) add javadoc, elaborate on overwritten methods.
@@ -287,30 +287,27 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
         MMBase mmbase = MMBase.getMMBase();
         MMJdbc2NodeInterface database = mmbase.getDatabase();
         String tablePrefix = mmbase.getBaseName() + "_";
- 
+        
         if (!dbTable.startsWith(tablePrefix)) {
             throw new IllegalArgumentException(
-            "Invalid tablename: \"" + dbTable + "\". " + 
+            "Invalid tablename: \"" + dbTable + "\". " +
             "It should start with the prefix \"" + tablePrefix + "\".");
         }
         
         String builderName = dbTable.substring(tablePrefix.length());
-        // TODO: Update code below when bug has been resolved.
-//        MMObjectBuilder builder = mmbase.getBuilder(builderName);
-        
-       // (temp?) fix for bug #4091.
-        MMObjectBuilder builder = null;
+        MMObjectBuilder builder;
         try {
             builder = mmbase.getBuilder(builderName);
         } catch (BuilderConfigurationException e){
             // Unknown builder.
+            builder = null;
         }
-
+        
         if (builder == null) {
             throw new IllegalArgumentException(
             "Unknown builder: \"" + builderName + "\".");
         }
-
+        
         Iterator iFieldNames = builder.getFieldNames().iterator();
         while (iFieldNames.hasNext()) {
             String fieldName = (String) iFieldNames.next();
