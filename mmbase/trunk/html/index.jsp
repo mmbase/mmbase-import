@@ -6,6 +6,9 @@
   <head>
     <title>Welcome to MMBase</title>
     <link rel="stylesheet" href="mmbase/style/css/mmbase.css" type="text/css" />
+    <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+
   </head>
 <body >
 <table>
@@ -21,7 +24,7 @@
         This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.
       </p>
       <p>
-        MMBase has been build under the <a href="mmbase/mpl-1.0.html">Mozilla Public License, Version 1.0</a>
+        MMBase has been build under the <a href="mmbase/mpl-1.0.jsp">Mozilla Public License, Version 1.0</a>
       </p>
     </td>
   </tr>
