@@ -12,7 +12,6 @@ package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.RealURLComposer;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 import java.util.*;
 import java.net.*;
 import java.text.*;
@@ -22,17 +21,11 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.5 2003-07-11 13:57:02 vpro Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.6 2003-07-15 12:26:37 vpro Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
     
-    private static Logger log = Logging.getLoggerInstance(RealSbURLComposer.class.getName());
-
-    public RealSbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
-        super(provider, source, fragment, info, cacheExpireObjects);
-    }
-
     public boolean canCompose() {
         return provider.getStringValue("host").equals("cgi.omroep.nl");
     }

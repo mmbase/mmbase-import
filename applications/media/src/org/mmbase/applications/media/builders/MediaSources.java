@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.17 2003-07-11 13:57:01 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.18 2003-07-15 12:26:36 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -376,7 +376,7 @@ public class MediaSources extends MMObjectBuilder {
      * @author mm
      */
     
-    protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls, List cacheExpireObjects) {
+    protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
         log.debug("Getting urls for source " + source.getNumber());
         Iterator i = getProviders(source).iterator();

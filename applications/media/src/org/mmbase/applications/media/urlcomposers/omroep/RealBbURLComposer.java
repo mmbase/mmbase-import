@@ -10,19 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers.omroep;
 
-import org.mmbase.module.core.MMObjectNode;
-import java.util.*;
-
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealBbURLComposer.java,v 1.4 2003-07-11 13:57:02 vpro Exp $
+ * @version $Id: RealBbURLComposer.java,v 1.5 2003-07-15 12:26:37 vpro Exp $
  * @since MMBase-1.7
  */
 public class RealBbURLComposer extends RealSbURLComposer {
-    public RealBbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
-        super(provider, source, fragment, info, cacheExpireObjects);
-    }
+     
     protected String getBandPrefix() {
         return "bb.";
     }
@@ -30,7 +25,6 @@ public class RealBbURLComposer extends RealSbURLComposer {
     protected String getBand() {
         return "breedband";
     }
-
 }
 
 

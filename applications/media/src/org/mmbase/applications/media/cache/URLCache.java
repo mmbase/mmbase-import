@@ -66,7 +66,7 @@ public class URLCache extends Cache {
      * @param result  cache result
      * @param objects the objects that can invalidate the cache
      */
-    public synchronized void put(String key, String result, List objects) {
+    public synchronized void put(String key, String result, Set objects) {
         cache.put(key, result);
         log.debug("Adding to cache, key="+key);
         if(objects!=null) {
@@ -111,7 +111,7 @@ public class URLCache extends Cache {
          * @param obj A vector with object numbers (Strings).
          * @param key The key of the cache entry to invalidate if an object changes.
          */
-        private void put(List obj, String key) {
+        private void put(Set obj, String key) {
             for(Iterator objects = obj.iterator();objects.hasNext();) {
                 put((MMObjectNode)objects.next(), key);
             }
