@@ -1,9 +1,10 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.14 2003-12-19 11:45:38 mmweb Exp $;
+ @version $Id: documentation.css,v 1.15 2004-01-09 19:57:36 johannes Exp $;
 */
 
+@import url(../../mmbase/style/css/mmbase.css);
 
 body {
   font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -42,46 +43,22 @@ th {
    border: solid thin black;
 }
 
-a { 
-  color: black;
-  text-decoration: none;
-} 
-
-a:link {
-  color: #CCEB6F;
-  text-decoration: none;
-}
-
-a:visited {
-  color: #00425A;
-}
-
-/*
-a:hover { 
-  color: #44BDAD;
-  text-decoration: underline; 
-}
-
-*/
-
 .navfooter, .navheader { 
-  background-color: #CCEB6F;
+  background-color: #CCCCCC;
 }
-
 
 .navfooter table , 
 .navheader table { 
   padding: 1ex;
   border-spacing: 0;
-  color: #CCEB6F;
 }
 .navfooter table td, 
 .navfooter table th {  
-   background-color: #443;
+   background-color: #ddd;
 }
 .navheader table td, 
 .navheader table th { 
-   background-color: #443;
+   background-color: #ddd;
 } 
 
 .navfooter a:link, 
@@ -89,7 +66,7 @@ a:hover {
 .navfooter a:visited, 
 .navheader a:visited {
   font-weight: bold;
-  color: #CCEB6F;
+  color: #444444;
 }
 
  .chapter, .refentry,
