@@ -571,12 +571,12 @@ public class scancache extends Module implements scancacheInterface {
     /**
      * Returns the headers for a .asis file to be stored for a "PAGE" cache.
      * @param value page content, used to set the Content-length header.
-     * @param mimeType the mimetype of the page. default (if unspecified) is text/html; charset=iso-8859-1
+     * @param mimeType the mimetype of the page. default (if unspecified) is text/html; iso-8859-1
      * @return the page headers as a <code>String</code>
      */
     String getWriteHeaders(String value, String mimeType) {
         if ((mimeType==null) || mimeType.equals("") || mimeType.equals("text/html"))
-            mimeType = "text/html; charset=iso-8859-1";
+            mimeType = "text/html; iso-8859-1";
         String now = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()));
         String expireTime = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()+15000));
         String body="Status: 200 OK\n";
