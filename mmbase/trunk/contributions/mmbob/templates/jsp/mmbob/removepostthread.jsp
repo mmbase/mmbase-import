@@ -33,7 +33,7 @@
 <div class="header">
 </div>
                                                                                               
-<div class="bodypart">
+<div class="bodypart" align="center">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
   <tr><th colspan="3"><mm:write referid="mlg_Delete"/> <mm:write referid="mlg_topic"/>: <mm:node referid="postthreadid">'<mm:field name="subject" />'</mm:node> </th></tr>
