@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.13 2004-03-23 21:42:47 michiel Exp $ 
+ * @version $Id: LocaleTag.java,v 1.14 2005-01-05 18:45:53 michiel Exp $ 
  */
 
 public class LocaleTag extends ContextReferrerTag  {
@@ -69,6 +69,9 @@ public class LocaleTag extends ContextReferrerTag  {
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, locale);
         }
+        // compatibility with jstl fmt tags:
+        // should use the constant, but that would make compile-time dependency.
+        pageContext.setAttribute("javax.servlet.jsp.jstl.fmt.localizationContext", locale.toString());
         return EVAL_BODY;
     }
     public int doAfterBody() throws JspTagException {
