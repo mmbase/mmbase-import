@@ -1,7 +1,3 @@
-/*
-
-*/
-
 package org.mmbase.remote;
 
 import java.lang.*;

@@ -1,12 +1,3 @@
-/*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
 package org.mmbase.remote;
 
 import java.io.*;
@@ -22,10 +13,7 @@ public class ExtendedProperties extends Properties
 	private String 	classname 	= getClass().getName();
 	private boolean debug		= false;
 
-	private void debug( String msg ) {
-		if( debug ) 
-			System.out.println( classname +":"+ msg );
-	}
+	private void debug( String msg ) { if( debug ) System.out.println( classname +":"+ msg ); }
 	
 
 	/**
@@ -46,7 +34,7 @@ public class ExtendedProperties extends Properties
 		try {
 			getProps(filename);  
 		} catch (IOException e) {
-			System.out.println("Failed to load the ExtendedProperties for: "+ filename);	
+			debug("ExtendedProperties("+filename+"): ERROR: Failed to load the ExtendedProperties for: "+ filename);	
 		}
     }
 
@@ -68,7 +56,7 @@ public class ExtendedProperties extends Properties
 		try {
 			getProps(filename);  
 		} catch (IOException e) {
-			System.out.println("Failed to load the ExtendedProperties from: "+ filename);	
+			debug("readProperties("+filename+"): ERROR: Failed to load the ExtendedProperties from: "+ filename);	
 		}
 		ExtendedProperties propsToReturn = new ExtendedProperties();
 		Enumeration e = keys();
@@ -94,7 +82,7 @@ public class ExtendedProperties extends Properties
 		try {
 			save(filename);
 		} catch (IOException ioe) {	
-			System.out.println("Fail to save the ExtendedProperties to: " + filename+" : "+ioe);
+			debug("saveProperties("+filename+","+propsToSave.toString()+"): ERROR: Fail to save the ExtendedProperties to: " + filename+" : "+ioe);
 		}
 	}
 
@@ -335,7 +323,7 @@ public class ExtendedProperties extends Properties
                 	if (line != null) lines= lines + line + "\n";
                 } 
 				catch(Exception e) {
-					System.out.println("EOF!");
+					debug("EOF!");
 				}
              } while (line != null);
 		
@@ -360,7 +348,7 @@ public class ExtendedProperties extends Properties
 		Enumeration names = propertyNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-			System.out.println(name + "=" + getProperty(name));
+			debug("showContents(): " +name + "=" + getProperty(name));
 		}
         
 	}
