@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.90 2003-05-12 13:16:02 pierre Exp $
+  @version $Id: wizard.xsl,v 1.91 2003-05-26 14:54:35 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -51,7 +51,7 @@
       </span>
       <span class="form">
         <nobr>
-          <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if>
+          <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}" target="_blank">[debug]</a><br /></xsl:if>
           <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="form[@id=/wizard/curform]/title" /></xsl:call-template>
         </nobr>
       </span>
@@ -232,7 +232,6 @@
       invalidlist="{/wizard/form[@invalidlist]/@invalidlist}"
       filter_required="{$filter_required}"
       >
-      <xsl:if test="$debug='true'">debug:<textarea class="debug" name="debug">javascript debugging</textarea></xsl:if>
       <input type="hidden" name="curform" value="{/wizard/curform}" />
       <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
       <xsl:call-template name="formwizardargs" />

@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.35 2003-05-26 11:33:43 pierre Exp $
+     * @version  $Id: list.jsp,v 1.36 2003-05-26 14:54:36 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -291,6 +291,7 @@ params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 params.put("creatable",  creatable+"");
+params.put("debug",  ""+listConfig.debug);
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
 if (multilevel) { params.put("objecttype",mainObjectName); }
