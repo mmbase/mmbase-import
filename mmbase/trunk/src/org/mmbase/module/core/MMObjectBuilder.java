@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.177 2002-11-01 08:52:03 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.178 2002-11-01 14:36:19 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -282,7 +282,11 @@ public class MMObjectBuilder extends MMTable {
         }
         if (!created()) {
             log.info("Creating table for builder " + tableName);
-            create();
+            if (!create() ) {
+                // can't create buildertable.
+                // Throw an exception
+                throw new BuilderConfigurationException("Cannot create table for "+getTableName()+".");
+            };
         }
         TypeDef typeDef = mmb.getTypeDef();
         // only deteremine otype if typedef is available,
