@@ -37,11 +37,13 @@ public class FieldInfoTag extends NodeReferrerTag {
     private static final int TYPE_NAME     = 0;
     private static final int TYPE_GUINAME  = 1;
     private static final int TYPE_VALUE    = 2;
+    private static final int TYPE_GUIVALUE    = 3;
 
     // input and useinput produces pieces of HTML
     // very handy if you're creating an editors, but well yes, not very elegant.
-    private static final int TYPE_INPUT    = 3;
-    private static final int TYPE_USEINPUT = 4;
+    private static final int TYPE_INPUT    = 10;
+    private static final int TYPE_USEINPUT = 11;
+    private static final int TYPE_WHEREINPUT = 12;
     
     private int type;   
     private String whichField = null;
@@ -53,10 +55,14 @@ public class FieldInfoTag extends NodeReferrerTag {
             type = TYPE_GUINAME;
         } else if ("value".equals(t)) {
             type = TYPE_VALUE;
+        } else if ("guivalue".equals(t)) {
+            type = TYPE_GUIVALUE;
         } else if ("input".equals(t)) {
             type = TYPE_INPUT;
         } else if ("useinput".equals(t)) {       
             type = TYPE_USEINPUT;
+        } else if ("whereinput".equals(t)) {       
+            type = TYPE_WHEREINPUT;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -124,7 +130,9 @@ public class FieldInfoTag extends NodeReferrerTag {
                         cal.setTime(new Date(((long)node.getIntValue(field.getName()))*1000));
                     }
                 }
-                show =  "<select name=\"" + prefix(field.getName() + "_day") + "\">\n";
+                show = "<input type=\"hidden\" name=\"" + prefix(field.getName()) + "\" value=\"" + cal.getTime().getTime()/1000 + "\" />";
+                // give also present value, this makes it possible to see if user changed this field.
+                show +=  "<select name=\"" + prefix(field.getName() + "_day") + "\">\n";
                 for (int i = 1; i <= 31; i++) {
                     if (cal.get(Calendar.DAY_OF_MONTH) == i) {
                         show += "  <option selected=\"selected\">" + i + "</option>\n";
@@ -250,6 +258,83 @@ public class FieldInfoTag extends NodeReferrerTag {
     }
 
 
+    /**
+     * If you use a form entry to search, then you can use this functions to create the where part.
+     * @param field and this field.
+     */
+
+    private String whereHtmlInput(Field field) throws JspTagException {
+        String show;
+        int type = field.getType();
+        String fieldName = field.getName();       
+        switch(type) {
+        case Field.TYPE_BYTE:
+            throw new JspTagException("Don't know what to do with bytes()");
+        case Field.TYPE_STRING:
+            {
+                String search = getString(prefix(fieldName));
+                if (search == null) {
+                    log.error("parameter " + prefix(fieldName) + " could not be found");
+                    show =  null;
+                    break;
+                }
+                if ("".equals(search)) {
+                    show =  null;
+                    break;
+                }
+                search = search.toUpperCase();
+                show = "( UCASE(" + fieldName + ") LIKE '%" + search + "%')";
+            }
+            break;
+        case Field.TYPE_INTEGER:  
+            if (field.getGUIType().equals("eventtime")) {
+                Calendar cal = Calendar.getInstance();
+                try {
+                    Integer day    = new Integer(getString(prefix(fieldName + "_day")));
+                    Integer month  = new Integer(getString(prefix(fieldName + "_month")));
+                    Integer year   = new Integer(getString(prefix(fieldName + "_year")));
+                    Integer hour   = new Integer(getString(prefix(fieldName + "_hour")));
+                    Integer minute = new Integer(getString(prefix(fieldName + "_minute")));
+                    Integer second = new Integer(getString(prefix(fieldName + "_second")));
+                    int y = year.intValue();
+                    if (y < 1902 || y > 2037) {
+                        throw new JspTagException("Year must be between 1901 and 2038 (now " + y + ")");
+                    }
+                    cal.set(y, month.intValue() - 1, day.intValue(), 
+                            hour.intValue(), minute.intValue(), second.intValue());
+                } catch (java.lang.NumberFormatException e) {
+                    throw new JspTagException("Not a valid number (" + e.toString() + ")");
+                }
+                // check if changed:
+                if (! getString(prefix(fieldName)).equals("" + cal.getTime().getTime() /1000)) { 
+                    show = "(" + fieldName + "=" + (cal.getTime().getTime() / 1000) + ")";
+                } else {
+                    show = null;
+                }
+                break;
+            }
+        case Field.TYPE_FLOAT:
+        case Field.TYPE_DOUBLE:
+        case Field.TYPE_LONG:
+            {
+                String search = getString(prefix(fieldName));
+                if (search == null) {
+                    log.error("parameter " + prefix(fieldName) + " could not be found");
+                    show =  null;
+                    break;
+                }
+                if ("".equals(search)) {
+                    show =  null;
+                    break;
+                }
+                show =  "(" + fieldName + "=" + getString(prefix(fieldName)) + ")";
+            }
+            break;
+        default: log.error("field: " + type );
+            show = null;
+        }
+        return show;
+    }
 
     /**
     * Write the value of the fieldinfo.
@@ -290,11 +375,12 @@ public class FieldInfoTag extends NodeReferrerTag {
         }
         
         // found the field now. Now we can decide what must be shown:
-        String show = "";
+        String show = null;
 
         // set node if necessary:
         switch(type) {
         case TYPE_VALUE:
+        case TYPE_GUIVALUE:
         case TYPE_INPUT:
             if (node == null) { // try to find nodeProvider
                 try {
@@ -320,17 +406,27 @@ public class FieldInfoTag extends NodeReferrerTag {
         case TYPE_VALUE:
             show = node.getStringValue(field.getName());
             break;
+        case TYPE_GUIVALUE:
+            show = node.getStringValue("gui("+field.getName()+")");
+            break;
         case TYPE_INPUT:
             show = htmlInput(node, field);
             break;
         case TYPE_USEINPUT:
             show = useHtmlInput(node, field); 
             break;
+        case TYPE_WHEREINPUT:
+            show = whereHtmlInput(field); 
+            break;
         }
 
-        try {               
-            bodyContent.print(show);
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
+        try {
+            if (show != null) {
+                String body = bodyContent.getString();
+                bodyContent.clearBody();
+                bodyContent.print(show + body);
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            }        
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            
         }        
