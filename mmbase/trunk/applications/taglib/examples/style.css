@@ -12,6 +12,16 @@ textarea {
     width: 100%;    
 }
 
+table {
+	border: solid green 1px;
+    padding: 1px;	
+	width:  100%;
+}
+table td {
+   border: solid lightgray 2px;
+   padding: 3px;
+   with: 100%;
+}
 
 pre {
 	width: 100%;

@@ -6,11 +6,10 @@
 	java.util.Locale.setDefault(utf);
  %><html>
 <head>
-<title>The formatter tag mm:formatter</title>
+ <title>The formatter tag mm:formatter</title>
 <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
 </head>
 <body>
-<cache:cache time="60">
 <%@ include file="menu.jsp"%>
 <mm:import id="node">xmltest</mm:import>
 <mm:cloud>
@@ -57,8 +56,9 @@ Be aware that this examples assume that the body of your news builder is of type
 
 </p>
 <mm:timer>
+<cache:cache time="30">
 <form>
-<table border="1" width="100%">
+<table>
 <!--
 <tr><td colspan="2">Dates. Without this tag, it was not well possible to nicely format them. With this tag, it is easy.</td></tr>
 <tr valign="top">
@@ -84,7 +84,7 @@ Be aware that this examples assume that the body of your news builder is of type
 <tr><td colspan="2">You don't like html? Output it as plain text then. The plain text is `enriched' with newlines and so on.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/userichfieldascii.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><textarea><%@include file="codesamples/userichfieldascii.jsp" %></textarea></td>
+  <td width="50%"><textarea wrap="soft"><%@include file="codesamples/userichfieldascii.jsp" %></textarea></td>
 </tr>
 <tr><td colspan="2">You can also format a whole node in this way.</td></tr>
 <tr valign="top">
@@ -130,10 +130,10 @@ Be aware that this examples assume that the body of your news builder is of type
 -->
 </table>
 </form>
+</cache:cache>
 </mm:timer>
 </mm:node>
 </mm:present>
 </mm:cloud>
-</cache:cache>
 </body>
 </html>

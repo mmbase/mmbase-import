@@ -1,14 +1,10 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-
-
 <mm:cloud>
-
 <html>
-
 <head>
-  <title>Taglib examples</title>
+  <title>Taglib Tips & Tricks</title>
+  <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
 </head>
-
 <body>
 
 <%@ include file="menu.jsp"%>
@@ -22,17 +18,11 @@
 	  the things which should happen if the list is empty.
      </p>
   </li>
-  <li><em>How can I write a field only if another field is
-       empty?</em><p>Use the 'mm:empty' tag in combination with
-       the 'write="true"' attribute. This is valid for all 'writer'
-       tags. For example 
-       <pre>
-&lt;mm:field name="subtitle" write="true" &gt;
-     &lt;mm:isempty&gt;
-         &lt;mm:field name="title" /&gt;
-    &lt;/mm:isempty&gt;
-&lt;/mm:field&gt;
-</pre>
+  <li><em>How can I write a field only if another field is empty?</em>
+       <p>
+       Use the 'mm:empty' tag in combination with
+       the 'write="true"' attribute. This is valid for all 'writer' tags. For example 
+       <pre><mm:formatter format="escapexml"><mm:include page="codesamples/empty.jsp" /></mm:formatter></pre>
    You need the 'write' attribute because it is false on default if the tag has a body.
    </p>
   </li>
