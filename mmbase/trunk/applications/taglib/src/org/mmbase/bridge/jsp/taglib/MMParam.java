@@ -16,11 +16,6 @@ import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
-import org.mmbase.module.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-
 /**
  * @author Daniel Ockeloen
  */
