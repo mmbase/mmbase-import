@@ -64,6 +64,7 @@
   </mm:relatednodescontainer>
 <%
   double progress= (double)nof_tests_passed / (double)nof_tests;
+//  System.err.println("tests_passed="+nof_tests_passed+", nof_tests="+nof_tests+", progress =" +progress);
 %>
 <%=progress%>
 </mm:node>
