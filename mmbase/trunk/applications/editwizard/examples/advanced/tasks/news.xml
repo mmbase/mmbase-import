@@ -23,8 +23,8 @@
 		<field name="title" />
 		<field name="subtitle" />
 		<field name="intro" />		
-		<field name="body" />
-		<field name="date" />
+		<field name="body" ftype="html" />
+		<!-- field name="date" /-->
 
 
 		<list role="related" destination="people" minoccurs="0"  maxoccurs="3">
