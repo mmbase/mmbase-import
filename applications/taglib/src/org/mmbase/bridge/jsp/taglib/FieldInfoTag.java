@@ -24,7 +24,7 @@ import org.mmbase.bridge.Query;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.Arguments;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.module.core.MMObjectBuilder;
 
 
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.71 2003-11-20 16:22:00 pierre Exp $
+ * @version $Id: FieldInfoTag.java,v 1.72 2003-12-18 11:51:49 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -266,11 +266,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
-
-            Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
-            args.set("field", field.getName());
+            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
+            args.set("field",    field.getName());
             args.set("language", locale.getLanguage());
-            args.set("session", sessionName);
+            args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request", pageContext.getRequest());
             show = decode(node.getFunctionValue("gui", args).toString(), node);
@@ -283,14 +282,16 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = htmlInput(node, field, false);
             break;
         case TYPE_USEINPUT:
-            show = useHtmlInput(node, field);
-            fieldProvider.setModified();
+            if (useHtmlInput(node, field)) {
+                fieldProvider.setModified();
+            }
+            show = "";
             break;
         case TYPE_SEARCHINPUT:
             show = htmlInput(node, field, true);
             break;
         case TYPE_USESEARCHINPUT: {
-            NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this), false);
+            QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this), false);
             if (c == null) { // produce a String to use in a constraint attribute of a list (legacy)
                 log.debug("creating string constraint");
                 show = whereHtmlInput(field);
@@ -357,7 +358,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * Applies a form entry.
      */
 
-    private String useHtmlInput(Node node, Field field) throws JspTagException {
+    private boolean useHtmlInput(Node node, Field field) throws JspTagException {
         return getTypeHandler(field.getType()).useHtmlInput(node, field);
     }
 
