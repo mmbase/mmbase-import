@@ -9,14 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.fields;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import java.util.*;
 
 /**
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedProcessor.java,v 1.2 2003-12-09 22:26:16 michiel Exp $
+ * @version $Id: ChainedProcessor.java,v 1.3 2003-12-23 19:58:18 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -29,12 +29,12 @@ public class ChainedProcessor implements Processor {
         return this;
     }
 
-    public Object process(Node node, Object value) {
+    public Object process(Node node, Field field, Object value) {
         
         Iterator i = processors.iterator();
         while (i.hasNext()) {
             Processor proc = (Processor) i.next();
-            value = proc.process(node, value);
+            value = proc.process(node, field, value);
         }
         return value;
     }

@@ -10,18 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.fields;
 
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 
 /**
  * Interface for doing field processing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.2 2003-12-09 22:26:17 michiel Exp $
+ * @version $Id: Processor.java,v 1.3 2003-12-23 19:58:19 michiel Exp $
  * @since MMBase-1.7
  */
 
 public interface Processor {
     
-    Object process(Node node, Object value);
+    Object process(Node node, Field field, Object value);
     // void   commit(Node node);
 }
