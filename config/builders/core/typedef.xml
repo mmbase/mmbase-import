@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="typedef" extends="object" maintainer="mmbase.org" version="0">
-	<classfile>org.mmbase.module.corebuilders.ObjectTypes</classfile>
+	<classfile>org.mmbase.module.corebuilders.TypeDef</classfile>
 
 	<searchage>1000</searchage>
 

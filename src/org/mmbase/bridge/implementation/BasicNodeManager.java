@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.82 2004-10-25 08:08:35 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.83 2004-10-29 11:58:18 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -466,7 +466,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     // overriding behavior of BasicNode
 
     public void commit() {
-        super.commit();  // commit the node - the builder should now be loaded by TypeDef/ObjectTypes
+        super.commit();  // commit the node - the builder should now be loaded by TypeDef
         // rebuild builder reference and fieldlist.
         initManager();
     }
