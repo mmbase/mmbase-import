@@ -9,9 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.util.*;
+import javax.servlet.http.HttpServletResponse;
+
 import org.mmbase.util.scanpage;
 
 /**
@@ -53,6 +52,23 @@ public interface scancacheInterface {
      */
     public String get(String pool,String key,String line,scanpage sp);
 
+	/**
+	 *  getExpireDate.
+	 * @param poolName
+	 * @param key
+	 * @param expireStr
+	 * @return long
+	 */
+	public long getExpireDate(String poolName, String key, String expireStr);
+
+	/**
+	 *  getLastModDate.
+	 * @param poolName
+	 * @param key
+	 * @return long
+	 */
+	public long getLastModDate(String poolName, String key);
+
     /**
      * Retrieve a file from the indicated pool's cache.
      * @param poolname name of the cache pool
@@ -61,7 +77,7 @@ public interface scancacheInterface {
      * @return the cached content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
      */
-    public String getNew(String pool,String key,String line,scanpage sp);
+//    public String getNew(String pool,String key,String line,scanpage sp);
 
     /**
      * Store a file in the indicated pool's cache.
