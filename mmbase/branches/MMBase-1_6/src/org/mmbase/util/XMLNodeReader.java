@@ -150,11 +150,19 @@ public class XMLNodeReader  {
 			    } catch(Exception e) {}
 			    Node n5=n2.getFirstChild();
 			    while (n5!=null) {
-				String key=n5.getNodeName();
-				if (!key.equals("#text")) {
-				    Node n6=n5.getFirstChild();
-				    String value="";
-				    if (n6!=null) value=n6.getNodeValue();
+				if (n5.getNodeType() == n5.ELEMENT_NODE) {
+                                    String key = n5.getNodeName();
+                                    NodeList nl = n5.getChildNodes();
+                                    StringBuffer res = new StringBuffer("");
+                                    for (int i=0; i<nl.getLength(); i++) {
+                                        Node n = nl.item(i);
+                                        if ((n.getNodeType() == n.TEXT_NODE) ||
+                                            (n.getNodeType() == n.CDATA_SECTION_NODE)) {
+                                            res.append(n.getNodeValue().trim());
+                                        }
+                                    }
+                                    String value =  res.toString();
+
 				    int type=bul.getDBType(key);
 				    if (type!=-1) {
 					if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
@@ -210,21 +218,19 @@ public class XMLNodeReader  {
 					    NamedNodeMap nm2=n5.getAttributes();
 					    Node n7=nm2.getNamedItem("file");
 					    newnode.setValue(key,readBytesFile(applicationpath+n7.getNodeValue()));
-					} 
-					else {
+					} else {
 					    log.error("FieldDefs not found for #" + type + " was not known for field with name: '"+key+"' and with value: '"+value+"'");
 					}
 				    }
 				}
-				n5=n5.getNextSibling();
+                                n5 = n5.getNextSibling();
 			    }
 			    nodes.addElement(newnode);
 			}
 		    }
 		    n2=n2.getNextSibling();
 		}
-	    } 
-	    else {
+	    } else {
 		log.error("Could not find builder with name: "+n1.getNodeName()+"'");
 	    }
 	    n1=n1.getNextSibling();
