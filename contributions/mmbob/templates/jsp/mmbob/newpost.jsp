@@ -36,12 +36,12 @@
                                                                                               
 <div class="bodypart" align="center">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <tr><th colspan="3"><mm:write referid="mlg_Add_new_topic" /></th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Add_new_topic" /></th></tr>
   <form action="<mm:url page="postarea.jsp">
 	<mm:param name="forumid" value="$forumid" />
 	<mm:param name="postareaid" value="$postareaid" />
 	</mm:url>" method="post" name="posting">
-	<tr><th><mm:write referid="mlg_Name" /></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.Name" /></th><td colspan="2">
 		<mm:compare referid="posterid" value="-1" inverse="true">
 		<mm:node number="$posterid">
 		<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)
@@ -49,12 +49,12 @@
 		</mm:node>
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
-		<input name="poster" type="hidden" size="32" value="<mm:write referid="mlg_guest" /> " >
-		<mm:write referid="mlg_guest" />	
+		<input name="poster" type="hidden" size="32" value="<mm:write referid="mlg.guest" /> " >
+		<mm:write referid="mlg.guest" />	
 		</mm:compare>
 	</td></tr>
-	<tr><th width="150"><mm:write referid="mlg_Topic" /></th><td colspan="2"><input name="subject" style="width: 100%" ></td></th>
-	<tr><th valign="top"><mm:write referid="mlg_Message" /><center>
+	<tr><th width="150"><mm:write referid="mlg.Topic" /></th><td colspan="2"><input name="subject" style="width: 100%" ></td></th>
+	<tr><th valign="top"><mm:write referid="mlg.Message" /><center>
 
 <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
 <mm:field name="smileysenabled"><mm:compare value="true">
@@ -66,7 +66,7 @@
 </td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="newpost">
-	<center><input type="submit" value="<mm:write referid="mlg_Save" />">
+	<center><input type="submit" value="<mm:write referid="mlg.Save" />">
   	</form>
 	</td>
 	<td>
@@ -77,7 +77,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel" />">
+	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
   	</form>
 	</td>
 	</tr>

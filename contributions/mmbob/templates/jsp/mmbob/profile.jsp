@@ -68,7 +68,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="personal" />
-        </mm:url>"><mm:write referid="mlg_personal"/></a>
+        </mm:url>"><mm:write referid="mlg.personal"/></a>
         </li>
         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
         <mm:field name="contactinfoenabled">
@@ -87,7 +87,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="contact" />
-        </mm:url>"><mm:write referid="mlg_contact"/></a>
+        </mm:url>"><mm:write referid="mlg.contact"/></a>
         </li>
         </mm:compare>
         </mm:field>
@@ -112,7 +112,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="avatar" />
-        </mm:url>"><mm:write referid="mlg_avatar"/></a>
+        </mm:url>"><mm:write referid="mlg.avatar"/></a>
         </li>
 
         </mm:compare>
@@ -141,100 +141,100 @@
         <span class="feedback">
         <mm:import externid="feedback_message" from="session" id="feedback"/>
         <mm:compare referid="feedback" value="true">
-          <mm:write referid="mlg_ProfileUpdated"/>
+          <mm:write referid="mlg.ProfileUpdated"/>
         </mm:compare>
         <mm:compare referid="feedback" value="false">
-          <mm:write referid="mlg_ProfileUpdateFailed"/>
+          <mm:write referid="mlg.ProfileUpdateFailed"/>
         </mm:compare>
         <mm:compare referid="feedback" value="passwordchanged">
-          <mm:write referid="mlg_PasswordChanged"/>
+          <mm:write referid="mlg.PasswordChanged"/>
 <mm:import id="accounttocookie"><mm:field name="account" /></mm:import>
           <mm:write referid="accounttocookie" cookie="caf$forumid"/>
         </mm:compare>
         <mm:compare referid="feedback" value="newpasswordnotequal">
-          <mm:write referid="mlg_Password_notequal"/>
+          <mm:write referid="mlg.Password_notequal"/>
         </mm:compare>
         </span>
         </div>
         <div class="row">
           <input type="hidden" name="action" value="editposter" />
-          <span class="label"><mm:write referid="mlg_Account"/></span>
+          <span class="label"><mm:write referid="mlg.Account"/></span>
           <span class="formw"><mm:field name="account" /></span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Firstname"/></span>
+          <span class="label"><mm:write referid="mlg.Firstname"/></span>
           <span class="formw">
             <input name="newfirstname" type="text" size="25" value="<mm:field name="firstname" />"/>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Lastname"/></span>
+          <span class="label"><mm:write referid="mlg.Lastname"/></span>
           <span class="formw">
             <input name="newlastname" type="text" size="25" value="<mm:field name="lastname" />"/>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Email"/></span>
+          <span class="label"><mm:write referid="mlg.Email"/></span>
           <span class="formw">
             <input name="newemail" type="text" size="25" value="<mm:field name="email" />"/>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Location"/></span>
+          <span class="label"><mm:write referid="mlg.Location"/></span>
           <span class="formw">
             <input name="newlocation" type="text" size="25" value="<mm:field name="location" />"/>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Gender"/></span>
+          <span class="label"><mm:write referid="mlg.Gender"/></span>
           <span class="formw">
 				<mm:field name="gender">
 				<select name="newgender">
 				<mm:compare value="male">
-				<option value="male"><mm:write referid="mlg_Male"/></option>
-				<option value="female"><mm:write referid="mlg_Female"/></option>
+				<option value="male"><mm:write referid="mlg.Male"/></option>
+				<option value="female"><mm:write referid="mlg.Female"/></option>
 				</mm:compare>
 				<mm:compare value="male" inverse="true">
-				<option value="female"><mm:write referid="mlg_Female"/></option>
-				<option value="male"><mm:write referid="mlg_Male"/></option>
+				<option value="female"><mm:write referid="mlg.Female"/></option>
+				<option value="male"><mm:write referid="mlg.Male"/></option>
 				</mm:compare>
 				</select>
 				</mm:field>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_NewPassword"/></span>
+          <span class="label"><mm:write referid="mlg.NewPassword"/></span>
           <span class="formw">
             <input name="newpassword" type="password" size="25"/>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_NewConfirmPassword"/></span>
+          <span class="label"><mm:write referid="mlg.NewConfirmPassword"/></span>
           <span class="formw">
             <input name="newconfirmpassword" type="password" size="25" />
           </span>
         </div>
         <%-- TODO: not yet implemented
           <div class="row">
-          <span class="label"><mm:write referid="mlg_Level"/></span>
+          <span class="label"><mm:write referid="mlg.Level"/></span>
           <span class="formw">
             level123
           </span>
         </div>--%>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Posts"/></span>
+          <span class="label"><mm:write referid="mlg.Posts"/></span>
           <span class="formw">
             <mm:field name="accountpostcount" />
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Member_since"/></span>
+          <span class="label"><mm:write referid="mlg.Member_since"/></span>
           <span class="formw">
             <mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Last_visit"/></span>
+          <span class="label"><mm:write referid="mlg.Last_visit"/></span>
           <span class="formw">
             <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
@@ -246,7 +246,7 @@
         <div class="row">
           <span class="label"></span>
           <span class="formw">
-            <input type="submit" value="<mm:write referid="mlg_Save"/>" />
+            <input type="submit" value="<mm:write referid="mlg.Save"/>" />
           </span>
         </div>
 
@@ -255,7 +255,7 @@
         <mm:field name="contactinfoenabled">
           <mm:compare value="true">
     <mm:compare value="contact" referid="profile">
-        <mm:write referid="mlg_Not_implemented"/>  
+        <mm:write referid="mlg.Not_implemented"/>  
     </mm:compare>
 </mm:compare>
 </mm:field>
@@ -277,7 +277,7 @@
             <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
         <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Current_avatar"/></span>
+          <span class="label"><mm:write referid="mlg.Current_avatar"/></span>
           <span class="formw">
 	    <mm:field name="avatar">
 		<mm:compare value="-1" inverse="true">
@@ -309,12 +309,12 @@
         <mm:field name="avatarsuploadenabled">
           <mm:compare value="true">
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Upload_avatar"/></span>
+          <span class="label"><mm:write referid="mlg.Upload_avatar"/></span>
           <span class="formw">
             <mm:fieldlist nodetype="images" fields="handle">
             <mm:fieldinfo type="input"/>
             </mm:fieldlist>
-            <input type="submit" name="addavatar" value="<mm:write referid="mlg_Upload"/>" />
+            <input type="submit" name="addavatar" value="<mm:write referid="mlg.Upload"/>" />
           </span>
         </div>
           </mm:compare>
@@ -322,9 +322,9 @@
         <mm:field name="avatarsgalleryenabled">
           <mm:compare value="true">
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Select_avatar_from_the_list"/></span>
+          <span class="label"><mm:write referid="mlg.Select_avatar_from_the_list"/></span>
           <span class="formw">
-            <input type="submit" name="selectavatar" value="<mm:write referid="mlg_Select"/>"/>
+            <input type="submit" name="selectavatar" value="<mm:write referid="mlg.Select"/>"/>
           </span>
         </div>
           </mm:compare>
@@ -358,7 +358,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="personal" />
-        </mm:url>"><mm:write referid="mlg_personal"/></a>
+        </mm:url>"><mm:write referid="mlg.personal"/></a>
         </li>
         <mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
         <mm:field name="contactinfoenabled">
@@ -377,7 +377,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="contact" />
-        </mm:url>"><mm:write referid="mlg_contact"/></a>
+        </mm:url>"><mm:write referid="mlg.contact"/></a>
         </li>
 </mm:compare>
 </mm:field>
@@ -400,7 +400,7 @@
         <mm:param name="posterid" value="$profileid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         <mm:param name="profile" value="avatar" />
-        </mm:url>"><mm:write referid="mlg_avatar"/></a>
+        </mm:url>"><mm:write referid="mlg.avatar"/></a>
         </li></mm:compare></mm:field></mm:nodefunction>
       </ul>
     </div>
@@ -413,47 +413,47 @@
           <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
           <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Account"/></span>
+          <span class="label"><mm:write referid="mlg.Account"/></span>
           <span class="formw"><mm:field name="account" /></span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Firstname"/></span>
+          <span class="label"><mm:write referid="mlg.Firstname"/></span>
           <span class="formw"><mm:field name="firstname" /></span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Lastname"/></span>
+          <span class="label"><mm:write referid="mlg.Lastname"/></span>
           <span class="formw"><mm:field name="lastname" /></span>
         </div>
         <%-- TODO: gebruiker moet zelf kiezen of email getoond wordt of niet, voor nu default niet
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Email"/></span>
+          <span class="label"><mm:write referid="mlg.Email"/></span>
           <span class="formw"><mm:field name="email" /></span>
         </div>--%>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Location"/></span>
+          <span class="label"><mm:write referid="mlg.Location"/></span>
           <span class="formw"><mm:field name="location" /></span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Gender"/></span>
+          <span class="label"><mm:write referid="mlg.Gender"/></span>
           <span class="formw"><mm:field name="gender" /></span>
         </div>
         <%-- TODO: not yet implemented
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Level"/></span>
+          <span class="label"><mm:write referid="mlg.Level"/></span>
           <span class="formw">level123</span>
         </div>--%>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Messages"/></span>
+          <span class="label"><mm:write referid="mlg.Messages"/></span>
           <span class="formw"><mm:field name="accountpostcount" /></span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Member_since"/></span>
+          <span class="label"><mm:write referid="mlg.Member_since"/></span>
           <span class="formw">
             <mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
         </div>
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Last_visit"/></span>
+          <span class="label"><mm:write referid="mlg.Last_visit"/></span>
           <span class="formw">
             <mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
           </span>
@@ -483,7 +483,7 @@
             <mm:field name="account"><mm:param name="posterid" value="$_" /></mm:field>
         <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid">
         <div class="row">
-          <span class="label"><mm:write referid="mlg_Avatar"/></span>
+          <span class="label"><mm:write referid="mlg.Avatar"/></span>
           <span class="formw">
 	    <mm:field name="avatar">
 		<mm:compare value="-1" inverse="true">

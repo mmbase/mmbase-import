@@ -54,36 +54,36 @@
         <mm:param name="forumid" value="$forumid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         </mm:url>" method="post">
-			<tr><th width="150" ><mm:write referid="mlg_Account"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.Account"/></th><td>
 				<input name="newaccount" value="" style="width: 100%" />
 			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg_Password"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.Password"/></th><td>
 				<input name="newpassword" style="width: 100%" type="password"/>
 			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg_ConfirmPassword"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.ConfirmPassword"/></th><td>
 				<input name="newconfirmpassword" style="width: 100%" type="password"/>
 			</td></tr>
-			<tr><th><mm:write referid="mlg_Firstname"/></th><td>
+			<tr><th><mm:write referid="mlg.Firstname"/></th><td>
 				<input name="newfirstname" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Lastname"/></th><td>
+			<tr><th><mm:write referid="mlg.Lastname"/></th><td>
 				<input name="newlastname" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Email"/></th><td>
+			<tr><th><mm:write referid="mlg.Email"/></th><td>
 				<input name="newemail" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Location"/></th><td>
+			<tr><th><mm:write referid="mlg.Location"/></th><td>
 				<input name="newlocation" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Gender"/></th><td>
+			<tr><th><mm:write referid="mlg.Gender"/></th><td>
 				<select name="newgender">
-				<option value="male"><mm:write referid="mlg_Male"/>
-				<option value="female"><mm:write referid="mlg_Female"/>
+				<option value="male"><mm:write referid="mlg.Male"/>
+				<option value="female"><mm:write referid="mlg.Female"/>
 				</select>
 			</td></tr>
 	<tr><th colspan="2">
         <input type="hidden" name="action" value="createposter">
-        <center><input type="submit" value="<mm:write referid="mlg_Save"/>">
+        <center><input type="submit" value="<mm:write referid="mlg.Save"/>">
 	</form>
 	</th></tr>
 </table>
@@ -91,41 +91,41 @@
 
 <mm:compare referid="feedback" value="inuse">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
-	<tr><th colspan="2"><mm:write referid="mlg_Account_allready_in_use"/></th></tr>
+	<tr><th colspan="2"><mm:write referid="mlg.Account_allready_in_use"/></th></tr>
  	<form action="<mm:url page="newposter.jsp">
         <mm:param name="forumid" value="$forumid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         </mm:url>" method="post">
-			<tr><th width="150" ><mm:write referid="mlg_Account"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.Account"/></th><td>
 				<input name="newaccount" value="" style="width: 100%" />
 			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg_Password"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.Password"/></th><td>
 				<input name="newpassword" style="width: 100%" type="password"/>
 			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg_ConfirmPassword"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.ConfirmPassword"/></th><td>
 				<input name="newconfirmpassword" style="width: 100%" type="password"/>
 			</td></tr>
-			<tr><th><mm:write referid="mlg_Firstname"/></th><td>
+			<tr><th><mm:write referid="mlg.Firstname"/></th><td>
 				<input name="newfirstname" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Lastname"/></th><td>
+			<tr><th><mm:write referid="mlg.Lastname"/></th><td>
 				<input name="newlastname" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Email"/></th><td>
+			<tr><th><mm:write referid="mlg.Email"/></th><td>
 				<input name="newemail" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Location"/></th><td>
+			<tr><th><mm:write referid="mlg.Location"/></th><td>
 				<input name="newlocation" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Gender"/></th><td>
+			<tr><th><mm:write referid="mlg.Gender"/></th><td>
 				<select name="newgender">
-				<option value="male"><mm:write referid="mlg_Male"/>
-				<option value="female"><mm:write referid="mlg_Female"/>
+				<option value="male"><mm:write referid="mlg.Male"/>
+				<option value="female"><mm:write referid="mlg.Female"/>
 				</select>
 			</td></tr>
 	<tr><th colspan="2">
         <input type="hidden" name="action" value="createposter">
-        <center><input type="submit" value="<mm:write referid="mlg_Save"/>">
+        <center><input type="submit" value="<mm:write referid="mlg.Save"/>">
 	</form>
 	</th></tr>
 </table>
@@ -133,41 +133,41 @@
 
 <mm:compare referid="feedback" value="passwordnotequal">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="50%">
-	<tr><th colspan="2"><mm:write referid="mlg_Password_notequal"/></th></tr>
+	<tr><th colspan="2"><mm:write referid="mlg.Password_notequal"/></th></tr>
  	<form action="<mm:url page="newposter.jsp">
         <mm:param name="forumid" value="$forumid" />
         <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
         </mm:url>" method="post">
-			<tr><th width="150" ><mm:write referid="mlg_Account"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.Account"/></th><td>
 				<input name="newaccount" value="" style="width: 100%" />
 			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg_Password"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.Password"/></th><td>
 				<input name="newpassword" style="width: 100%" type="password"/>
 			</td></tr>
-			<tr><th width="150" ><mm:write referid="mlg_ConfirmPassword"/></th><td>
+			<tr><th width="150" ><mm:write referid="mlg.ConfirmPassword"/></th><td>
 				<input name="newconfirmpassword" style="width: 100%" type="password"/>
 			</td></tr>
-			<tr><th><mm:write referid="mlg_Firstname"/></th><td>
+			<tr><th><mm:write referid="mlg.Firstname"/></th><td>
 				<input name="newfirstname" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Lastname"/></th><td>
+			<tr><th><mm:write referid="mlg.Lastname"/></th><td>
 				<input name="newlastname" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Email"/></th><td>
+			<tr><th><mm:write referid="mlg.Email"/></th><td>
 				<input name="newemail" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Location"/></th><td>
+			<tr><th><mm:write referid="mlg.Location"/></th><td>
 				<input name="newlocation" value="" style="width: 100%" />
 				</td></tr>
-			<tr><th><mm:write referid="mlg_Gender"/></th><td>
+			<tr><th><mm:write referid="mlg.Gender"/></th><td>
 				<select name="newgender">
-				<option value="male"><mm:write referid="mlg_Male"/>
-				<option value="female"><mm:write referid="mlg_Female"/>
+				<option value="male"><mm:write referid="mlg.Male"/>
+				<option value="female"><mm:write referid="mlg.Female"/>
 				</select>
 			</td></tr>
 	<tr><th colspan="2">
         <input type="hidden" name="action" value="createposter">
-        <center><input type="submit" value="<mm:write referid="mlg_Save"/>">
+        <center><input type="submit" value="<mm:write referid="mlg.Save"/>">
 	</form>
 	</th></tr>
 </table>
@@ -177,8 +177,8 @@
 
 <mm:compare referid="feedback" value="ok">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="60%">
-			<tr><th><mm:write referid="mlg_Account_created"/></th></tr>
-			<tr><td><mm:write referid="mlg_Your_account_is_created_you_may"/> <a href="<mm:url page="index.jsp" referids="forumid" />"><mm:write referid="mlg_login"/></a></td><tr>
+			<tr><th><mm:write referid="mlg.Account_created"/></th></tr>
+			<tr><td><mm:write referid="mlg.Your_account_is_created_you_may"/> <a href="<mm:url page="index.jsp" referids="forumid" />"><mm:write referid="mlg.login"/></a></td><tr>
 </table>
 </mm:compare>
 

@@ -34,21 +34,21 @@
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
-  <tr><th colspan="3"><mm:write referid="mlg_Add_new_postarea" /></th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Add_new_postarea" /></th></tr>
 
   <form action="<mm:url page="index.jsp">
 					<mm:param name="forumid" value="$forumid" />
 				</mm:url>" method="post">
-	<tr><th><mm:write referid="mlg_Name" /></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.Name" /></th><td colspan="2">
 	<input name="name" size="70" value="" style="width: 100%">
 	</td></tr>
-	<tr><th><mm:write referid="mlg_Description" /></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.Description" /></th><td colspan="2">
 	<textarea name="description" rows="5" style="width: 100%"></textarea>
 	</td></tr>
 	<input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="newpostarea">
 	<tr><th>&nbsp;</th><td align="middle" >
-	<input type="submit" value="<mm:write referid="mlg_Add" />">
+	<input type="submit" value="<mm:write referid="mlg.Add" />">
   	</form>
 	</td>
 	<td>
@@ -58,7 +58,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel" />">
+	<input type="submit" value="<mm:write referid="mlg.Cancel" />">
   	</form>
 	</td>
 	</tr>

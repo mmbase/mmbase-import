@@ -37,20 +37,20 @@
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
-  <tr><th colspan="3"><mm:write referid="mlg_send"/> <mm:write referid="mlg_private_message" /></th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.send"/> <mm:write referid="mlg.private_message" /></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,postingid" />" method="post">
-	<tr><th><mm:write referid="mlg_To"/></th><td colspan="2">
+	<tr><th><mm:write referid="mlg.To"/></th><td colspan="2">
 		<mm:node number="$postingid">
 		<mm:field name="c_poster" />
 		<input name="to" type="hidden" value="<mm:field name="c_poster" />">
 		<input name="poster" type="hidden" value="<mm:node referid="posterid"><mm:field name="account" /></mm:node>">
 	</td></tr>
-	<tr><th><mm:write referid="mlg_Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>
+	<tr><th><mm:write referid="mlg.Subject"/></th><td colspan="2"><input name="subject" style="width: 100%" value="Re: <mm:field name="subject" />"></td></th>
 	</mm:node>
-	<tr><th><mm:write referid="mlg_Message" /></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
+	<tr><th><mm:write referid="mlg.Message" /></th><td colspan="2"><textarea name="body" rows="20" style="width: 100%"></textarea></td></tr>
 	<tr><th>&nbsp;</th><td>
 	<input type="hidden" name="action" value="newprivatemessage">
-	<center><input type="submit" value="<mm:write referid="mlg_Send"/> <mm:write referid="mlg_message"/>">
+	<center><input type="submit" value="<mm:write referid="mlg.Send"/> <mm:write referid="mlg.message"/>">
   	</form>
 	</td>
 	<td>
@@ -61,7 +61,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>

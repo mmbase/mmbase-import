@@ -46,7 +46,7 @@
 	<table cellpadding="0" width="150">
 	<tr><td>
 	<table cellpadding="0" class="list" cellspacing="0" width="150">
-	<tr><th><mm:write referid="mlg_Folder" /></th></tr>
+	<tr><th><mm:write referid="mlg.Folder" /></th></tr>
 	<mm:node referid="posterid">
 	<mm:related path="posrel,forummessagebox">
 		<mm:node element="forummessagebox">
@@ -67,7 +67,7 @@
 	<tr><td>
 	<form action="" METHOD="POST">
 	<table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
-	<tr><th><mm:write referid="mlg_Add_folder" /></th></tr>
+	<tr><th><mm:write referid="mlg.Add_folder" /></th></tr>
 	<tr><td><input name="newfolder" style="width: 98%" /></td></tr>
 	</table>
 	</form>
@@ -76,8 +76,8 @@
         <table cellpadding="0" class="list" style="margin-top : 20px;" cellspacing="0" width="150">
         <mm:import id="barsize">150</mm:import>
         <mm:nodefunction set="mmbob" name="getQuotaInfo" referids="forumid,posterid,barsize">
-        <tr><th colspan="3"><mm:write referid="mlg_PM_Quota" /></th></tr>
-        <tr><td colspan="3"><mm:write referid="mlg_You_are_using" /> <mm:field name="quotausedpercentage" />% <mm:write referid="mlg_of_your_quota" /></td></tr>
+        <tr><th colspan="3"><mm:write referid="mlg.PM_Quota" /></th></tr>
+        <tr><td colspan="3"><mm:write referid="mlg.You_are_using" /> <mm:field name="quotausedpercentage" />% <mm:write referid="mlg.of_your_quota" /></td></tr>
         <tr><td colspan="3"><img src="images/<mm:field name="quotawarning" />.gif" height="7" width="<mm:field name="quotausedbar" />"></td></tr>
         <tr><td align="left" width="33%">0%</td><td align="middle" width="34%">50%</td><td align="right" width="33%">100%</td></tr>
         </mm:nodefunction>
@@ -90,10 +90,10 @@
 	<table cellpadding="0" class="list" style="margin-top : 2px;" cellspacing="0" width="70%" border="1">
 	<tr><th colspan="2">
 	<mm:write referid="folderaction">
-		<mm:compare referid2="mlg_delete"><mm:write referid="mlg_Delete_message_from" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg_folder" /></mm:compare>
-		<mm:compare referid2="mlg_email"><mm:write referid="mlg_Email_message_to" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg_folder" /></mm:compare>
-		<mm:compare referid2="mlg_move"><mm:write referid="mlg_Move_message_to_different_folder" /></mm:compare>
-		<mm:compare referid2="mlg_forward"><mm:write referid="mlg_Forward_message_to_other_member" /></mm:compare>
+		<mm:compare referid2="mlg.delete"><mm:write referid="mlg.Delete_message_from" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder" /></mm:compare>
+		<mm:compare referid2="mlg.email"><mm:write referid="mlg.Email_message_to" /> <mm:node referid="mailboxid"><mm:field name="name" /></mm:node> <mm:write referid="mlg.folder" /></mm:compare>
+		<mm:compare referid2="mlg.move"><mm:write referid="mlg.Move_message_to_different_folder" /></mm:compare>
+		<mm:compare referid2="mlg.forward"><mm:write referid="mlg.Forward_message_to_other_member" /></mm:compare>
 	</mm:write>
 	</th></tr>
 	<mm:present referid="mailboxid">
@@ -101,30 +101,30 @@
 	<tr>
 	<td width="50%" align="center" colspan="2">
 		<mm:write referid="folderaction">
-		<mm:compare referid2="mlg_delete">
+		<mm:compare referid2="mlg.delete">
 		  <br />
-		  <mm:write referid="mlg_Delete"/> '<b><mm:field name="subject" /></b>'
-		  <mm:write referid="mlg_from_folder"/> '<b><mm:node referid="mailboxid"><mm:field name="name" /></mm:node></b>'.
-                  <mm:write referid="mlg_Are_you_sure"/> 
+		  <mm:write referid="mlg.Delete"/> '<b><mm:field name="subject" /></b>'
+		  <mm:write referid="mlg.from_folder"/> '<b><mm:node referid="mailboxid"><mm:field name="name" /></mm:node></b>'.
+                  <mm:write referid="mlg.Are_you_sure"/> 
 		  <br /><br />
 		</mm:compare>
-		<mm:compare referid2="mlg_move">
+		<mm:compare referid2="mlg.move">
 		  <br />
-		  <mm:write referid="mlg_Move"/> '<b><mm:field name="subject" /></b>'
-		  <mm:write referid="mlg_from_folder"/> '<b><mm:node referid="mailboxid"><mm:field name="name" /></mm:node></b>' ?
-		  <mm:write referid="mlg_to_mailbox"/> **<mm:write referid="mlg_Not_implemented"/>**
+		  <mm:write referid="mlg.Move"/> '<b><mm:field name="subject" /></b>'
+		  <mm:write referid="mlg.from_folder"/> '<b><mm:node referid="mailboxid"><mm:field name="name" /></mm:node></b>' ?
+		  <mm:write referid="mlg.to_mailbox"/> **<mm:write referid="mlg.Not_implemented"/>**
 		  <br /><br />
 		</mm:compare>
-		<mm:compare referid2="mlg_email">
+		<mm:compare referid2="mlg.email">
 		  <br />
-		  <mm:write referid="mlg_Email"/> '<b><mm:field name="subject" /></b>'
-		  <mm:write referid="mlg_to_your_real_email_account"/> '<b><mm:node referid="posterid"><mm:field name="email" /></mm:node></b>' ?
+		  <mm:write referid="mlg.Email"/> '<b><mm:field name="subject" /></b>'
+		  <mm:write referid="mlg.to_your_real_email_account"/> '<b><mm:node referid="posterid"><mm:field name="email" /></mm:node></b>' ?
 		  <br /><br />
 		</mm:compare>
-		<mm:compare referid2="mlg_forward">
+		<mm:compare referid2="mlg.forward">
 		  <br />
-		  <mm:write referid="mlg_Email"/>  '<b><mm:field name="subject" /></b>'
-		  <mm:write referid="mlg_to_your_real_email_account"/> '<b><mm:node referid="posterid"><mm:field name="email" /></mm:node></b>' ?
+		  <mm:write referid="mlg.Email"/>  '<b><mm:field name="subject" /></b>'
+		  <mm:write referid="mlg.to_your_real_email_account"/> '<b><mm:node referid="posterid"><mm:field name="email" /></mm:node></b>' ?
 		<br /><br />
 		</mm:compare>
 		</mm:write>
@@ -136,13 +136,13 @@
 	<center>
 	<input type="hidden" name="messageid" value="<mm:write referid="messageid" />" />
 	<mm:write referid="folderaction">
-	<mm:compare referid2="mlg_delete">
+	<mm:compare referid2="mlg.delete">
 		<input type="hidden" name="action" value="removeprivatemessage" />
-		<input type="submit" value="<mm:write referid="mlg_Ok"/>, <mm:write referid="mlg_delete"/>"> 
+		<input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.delete"/>"> 
 	</mm:compare>
-	<mm:compare referid2="mlg_forward"><input type="submit" value="<mm:write referid="mlg_Ok"/>, <mm:write referid="mlg_forward"/>"> </mm:compare>
-	<mm:compare referid2="mlg_move"><input type="submit" value="<mm:write referid="mlg_Ok"/>, <mm:write referid="mlg_move"/>"> </mm:compare>
-	<mm:compare referid2="mlg_email"><input type="submit" value="<mm:write referid="mlg_Ok"/>, <mm:write referid="mlg_email"/>"> </mm:compare>
+	<mm:compare referid2="mlg.forward"><input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.forward"/>"> </mm:compare>
+	<mm:compare referid2="mlg.move"><input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.move"/>"> </mm:compare>
+	<mm:compare referid2="mlg.email"><input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.email"/>"> </mm:compare>
 	</mm:write>
   	</form>
 	</td>
@@ -150,7 +150,7 @@
   	<form action="<mm:url page="privatemessage.jsp" referids="forumid,mailboxid,messageid" />" method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>

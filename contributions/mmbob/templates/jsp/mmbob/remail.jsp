@@ -47,12 +47,12 @@
                 <mm:createnode id="mail1" type="email">
                         <mm:setfield name="from">type.here@your.emailaddress.com</mm:setfield>
                         <mm:setfield name="to"><mm:write referid="wemail" /></mm:setfield>
-                        <mm:setfield name="subject"><mm:write referid="mlg_Your_account_information_for_the_MMBob_forum"/></mm:setfield>
-                        <mm:setfield name="body"> <mm:write referid="mlg_Your_account_information_for_the_MMBob_forum"/>: <mm:write referid="wforum" /> :
+                        <mm:setfield name="subject"><mm:write referid="mlg.Your_account_information_for_the_MMBob_forum"/></mm:setfield>
+                        <mm:setfield name="body"> <mm:write referid="mlg.Your_account_information_for_the_MMBob_forum"/>: <mm:write referid="wforum" /> :
 
 
-			<mm:write referid="mlg_login_name" />=<mm:write referid="waccount" />
-			<mm:write referid="mlg_password" />=<mm:write referid="wpassword" />
+			<mm:write referid="mlg.login_name" />=<mm:write referid="waccount" />
+			<mm:write referid="mlg.password" />=<mm:write referid="wpassword" />
 			</mm:setfield>
                 </mm:createnode>
 
@@ -91,7 +91,7 @@
 <mm:present referid="mailed">
 <form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
 <tr><th align="left" ><p />
-<mm:write referid="mlg_Login_mail_sent_to" /> : <mm:write referid="wemail" />, <br />
+<mm:write referid="mlg.Login_mail_sent_to" /> : <mm:write referid="wemail" />, <br />
 <%--<mm:write referid="wpassword" /> - <mm:write referid="feedback"/>--%>
 </th></tr>
 <tr><td>
@@ -105,23 +105,23 @@
 <tr><th colspan="3" align="left" >
 <mm:present referid="action">
 <p />
-<center><mm:write referid="mlg_Login_name_not_found" /></center>
+<center><mm:write referid="mlg.Login_name_not_found" /></center>
 </mm:present>
 <p />
-<mm:write referid="mlg_Please_enter_your_login_name" /><p />
-<mm:write referid="mlg_login_name"/> : <input name="wantedaccount" size="15">
+<mm:write referid="mlg.Please_enter_your_login_name" /><p />
+<mm:write referid="mlg.login_name"/> : <input name="wantedaccount" size="15">
 </th></tr>
 <tr><td>
 <input type="hidden" name="action" value="remail">
 <center>
-<input type="submit" value="<mm:write referid="mlg_Ok"/>, <mm:write referid="mlg_send"/>">
+<input type="submit" value="<mm:write referid="mlg.Ok"/>, <mm:write referid="mlg.send"/>">
 </form>
 </td>
 <td>
 <form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
 <p />
 <center>
-<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
 </form>
 </td>
 </tr>
