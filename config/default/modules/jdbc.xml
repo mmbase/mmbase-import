@@ -42,6 +42,7 @@
     - supportclass
     - database
     - connections
+    - probetime
     - host
     - driver
     - port
@@ -153,6 +154,14 @@
     with a new connection.
     -->
     <property name="querys">256</property>
+
+    <!--
+    sometime connections take a long time, every now and then the 
+    database connection pooling has to check/kill queries that take to long
+    probetime is the time in seconds between the checks. Connections that are 
+    running for more then 120 seconds will be killed
+    -->
+    <property name="probetime">30</property>
 
   </properties>
 </module>
