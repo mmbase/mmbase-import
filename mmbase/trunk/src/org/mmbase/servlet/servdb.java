@@ -37,15 +37,15 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servdb
  * @deprecation-used
- * @version 23 Oct 1997, current: $Id: servdb.java,v 1.37 2002-01-07 08:53:41 pierre Exp $
+ * @version $Id: servdb.java,v 1.38 2002-02-26 09:12:03 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
     private static Logger log;
-	/**
-	 * when set to true you can use yourhost/xml.db?objectnumber to get the XML representation of that object
-	 */
-	private boolean provideXML = false;
+    /**
+     * when set to true you can use yourhost/xml.db?objectnumber to get the XML representation of that object
+     */
+    private boolean provideXML = false;
     private		cacheInterface 		cache;
     private		filebuffer 			buffer;
     private		Hashtable 			Roots 		= new Hashtable();
@@ -99,10 +99,16 @@ public class servdb extends JamesServlet {
         }
     }
 
+    /**
+     *
+     * @vpro
+     * @javadoc
+     */
+
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-		Date lastmod;
-		String templine,templine2;
-		int filesize;
+        Date lastmod;
+        String templine,templine2;
+        int filesize;
 
         incRefCount(req);
 
@@ -125,7 +131,6 @@ public class servdb extends JamesServlet {
             cacheline cline=null;
             long nowdate=0;
             int cmd;
-            String fileroot;
             // org.mmbase String mimetype=getContentType();
             String mimetype="image/jpeg";
 
@@ -161,14 +166,6 @@ public class servdb extends JamesServlet {
                 if (ref.length()>70) ref=ref.substring(0,70);
                 // org.mmbase if (stats!=null) stats.countSimpleEvent("Linked="+ref);
             }
-
-
-
-            // org.mmbase fileroot=(String)Roots.get(req.getAcceptor());
-            // org.mmbase if (fileroot==null) fileroot=(String)Roots.get("www");
-
-
-            fileroot="/usr/local/orion/default-site/html/";
 
             if (req_line.indexOf('#')!=-1) {
                 req_line=req_line.substring(0,req_line.indexOf('#')-1);
@@ -439,21 +436,21 @@ public class servdb extends JamesServlet {
                                         // ---
                                         if (req.getRequestURI().indexOf("attachment")!=-1) {
                                             cline.buffer=getAttachment(getParamVector(req));
-											cline.mimetype=getAttachmentMimeType(getParamVector(req));
+                                            cline.mimetype=getAttachmentMimeType(getParamVector(req));
                                             //cline.mimetype="application/x-binary";
                                             mimetype=cline.mimetype;
                                             String savefilename=getAttachmentFileName(getParamVector(req));
                                             if (savefilename!=null) {
-	                                            res.setHeader("Content-Disposition","attachment; filename=\""+savefilename+"\"");
+                                                res.setHeader("Content-Disposition","attachment; filename=\""+savefilename+"\"");
 					    }
                                         }
-									else
-										// flash
-										if (req.getRequestURI().indexOf("flash")!=-1) {
-                                            cline.buffer=getFlash(getParamVector(req));
-											cline.mimetype="application/x-shockwave-flash";
-                                            mimetype=cline.mimetype;
-                                        }
+                                        else
+                                            // flash
+                                            if (req.getRequestURI().indexOf("flash")!=-1) {
+                                                cline.buffer=getFlash(getParamVector(req));
+                                                cline.mimetype="application/x-shockwave-flash";
+                                                mimetype=cline.mimetype;
+                                            }
 
 
                     if (cline.buffer!=null) {
@@ -461,7 +458,7 @@ public class servdb extends JamesServlet {
                         filesize=len;
                     } else {
                         len=0;
-						filesize=0;
+                        filesize=0;
                     }
 
                     if (len!=-1)  {
@@ -539,16 +536,16 @@ public class servdb extends JamesServlet {
     }
 
     /*
-    public void stop(){
-    	if (scan!=null) {
-    		try {
-    			scan.close();
-    		} catch (IOException e) {
-    		}
-    	}
-    	// Should be here not directly above
-    	super.stop();
-}
+      public void stop(){
+      if (scan!=null) {
+      try {
+      scan.close();
+      } catch (IOException e) {
+      }
+      }
+      // Should be here not directly above
+      super.stop();
+      }
     */
 
     public String getServletInfo()  {
@@ -618,8 +615,8 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    *
-    */
+     *
+     */
     public Vector checkSessionJingle(scanpage sp,Vector params,HttpServletResponse res) {
         sessionInfo session=getSession(sp);
         boolean havesession=false,havesbj=false;
@@ -668,8 +665,8 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    *
-    */
+     *
+     */
     public Vector addRAMSpeed(scanpage sp, Vector params,HttpServletResponse res) {
         String wspeed=null,wchannels=null;
         int ispeed=16000;
@@ -708,8 +705,8 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    *
-    */
+     *
+     */
     public byte[] getXML(Vector params) {
         log.debug("getXML(): param="+params);
         String result="";
@@ -746,10 +743,10 @@ public class servdb extends JamesServlet {
                 result="Sorry no valid mmnode so no xml can be given";
             }
         }
-		if(!provideXML) {
-			result="Turn provideXML to true in servdb.java";
-			log.warn("warning: provideXML in servdb.java is turned off");
-		}
+        if(!provideXML) {
+            result="Turn provideXML to true in servdb.java";
+            log.warn("warning: provideXML in servdb.java is turned off");
+        }
         byte[] data=new byte[result.length()];
         result.getBytes(0,result.length(),data,0);
         return(data);
@@ -763,7 +760,7 @@ public class servdb extends JamesServlet {
      * @return Byte array with contents of 'handle' field of attachment builder
      */
     public String getAttachmentFileName(Vector params) {
-	    log.debug("getAttachment(): param="+params);
+        log.debug("getAttachment(): param="+params);
         String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
@@ -771,10 +768,10 @@ public class servdb extends JamesServlet {
             try {
                 node=bul.getNode((String)params.elementAt(0));
 		if (node!=null) {
-			String filename=node.getStringValue("filename");
-			if (filename!=null && !filename.equals("")) {
-				return(filename);
-			}
+                    String filename=node.getStringValue("filename");
+                    if (filename!=null && !filename.equals("")) {
+                        return(filename);
+                    }
 		}
             } catch(Exception e) {
                 log.error("Failed to get attachment node for objectnumber "+(String)params.elementAt(0));
@@ -782,7 +779,7 @@ public class servdb extends JamesServlet {
             }
 	}
 	return(null);
-     }
+    }
 
 
     /**
@@ -792,7 +789,7 @@ public class servdb extends JamesServlet {
      * @return Byte array with contents of 'handle' field of attachment builder
      */
     public byte[] getAttachment(Vector params) {
-	    log.debug("getAttachment(): param="+params);
+        log.debug("getAttachment(): param="+params);
         String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
@@ -838,13 +835,13 @@ public class servdb extends JamesServlet {
             }
 
             if (node!=null && !node.getStringValue("mimetype").equals("")) {
-				log.debug("servdb mimetype = "+node.getStringValue("mimetype"));
+                log.debug("servdb mimetype = "+node.getStringValue("mimetype"));
                 return node.getStringValue("mimetype");
             } else {
-           		//result="Sorry no valid mmnode so no attachment can be given";
-				log.debug("servdb mimetype = application/x-binary");
-				return "application/x-binary";
-			}
+                //result="Sorry no valid mmnode so no attachment can be given";
+                log.debug("servdb mimetype = application/x-binary");
+                return "application/x-binary";
+            }
         } else {
             log.debug("getAttachmentMimeType called with "+params.size()+" arguments, instead of exactly 1");
             return null;
@@ -852,33 +849,33 @@ public class servdb extends JamesServlet {
     }
 
 
-	/**
+    /**
      * Return Flash movie
      * @return Byte array with Flash movie
      */
     public byte[] getFlash(Vector params) {
-		debug("getFlash: param="+params);
-		if (params.size()!=1) {
-			debug("getFlash called with "+params.size()+" arguments, instead of exactly 1");
+        debug("getFlash: param="+params);
+        if (params.size()!=1) {
+            debug("getFlash called with "+params.size()+" arguments, instead of exactly 1");
             return null;
-		}
-		MMObjectBuilder bul=mmbase.getMMObject("flash");
+        }
+        MMObjectBuilder bul=mmbase.getMMObject("flash");
         MMObjectNode node=null;
         try {
-			node=bul.getNode((String)params.elementAt(0));
-		} catch(Exception e) {};
+            node=bul.getNode((String)params.elementAt(0));
+        } catch(Exception e) {};
         if (node!=null) {
-			byte[] data = node.getByteValue("handle");
-			return data;
+            byte[] data = node.getByteValue("handle");
+            return data;
         }
 
-		debug("Failed to get node number "+(String)params.elementAt(0));
-		return null;
+        debug("Failed to get node number "+(String)params.elementAt(0));
+        return null;
     }
 
     /**
-    *
-    */
+     *
+     */
     public byte[] getDTD(Vector params) {
         String result="Test DTD";
         byte[] data=new byte[result.length()];
@@ -887,11 +884,11 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    * try to obtain a decoded param string from the input Vector
-    * format in : s(11212)
-    * format out 11212
-    * on a get with 's'
-    */
+     * try to obtain a decoded param string from the input Vector
+     * format in : s(11212)
+     * format out 11212
+     * on a get with 's'
+     */
     public String getParamValue(String wanted,Vector params) {
         String val=null;
         int pos=-1;
@@ -910,8 +907,8 @@ public class servdb extends JamesServlet {
 
 
     /**
-    *
-    */
+     *
+     */
     Vector checkPostPlaylist(HttpPost poster,scanpage sp, Vector vec) {
         if (sp.req.getMethod().equals("POST")) {
             if (poster.checkPostMultiParameter("only")) {
@@ -931,8 +928,9 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    *
-    */
+     * @vpro
+     * @javadoc
+     */
     private void checkImgMirror(scanpage sp) {
         String host=sp.getAddress();
         if (host!=null && (host.equals("sneezy.omroep.nl") || host.equals("images.vpro.nl")) && mmbase!=null) {
@@ -966,23 +964,23 @@ public class servdb extends JamesServlet {
         }
         return(0);
         /*
-        try {
-        	(new PrintStream(clientsocket.getOutputStream(),true)).print(line);
-    } catch (IOException e) {
-        	log.error("worker -> Write error in worker");
-    }
-        return(0);
+          try {
+          (new PrintStream(clientsocket.getOutputStream(),true)).print(line);
+          } catch (IOException e) {
+          log.error("worker -> Write error in worker");
+          }
+          return(0);
         */
     }
 
     /// -----------------------------------------------------------------------------------------------------
 
     /**
-    *
-    */
+     *
+     */
     public byte[] getRAStream(Vector params,scanpage sp,HttpServletResponse resp) {
 
-		debug("getRAStream("+params+","+sp+","+resp+")");
+        debug("getRAStream("+params+","+sp+","+resp+")");
 
         byte[]	result		= null;
 
@@ -1046,11 +1044,11 @@ public class servdb extends JamesServlet {
                     log.debug("getRAStream(): node("+number+"), speed("+speed+"), channels("+channels+"): found audiopart");
                     url = audioPartsBuilder.getAudiopartUrl( mmbase, sp, number, speed, channels);
                 } else {
-					log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not audiopart!");
-				}
+                    log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: No module("+n.getName()+") found, not audiopart!");
+                }
             } else {
-				 log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: Node not found!");
-			}
+                log.error("getRAStream("+number+","+speed+","+channels+"): ERROR: Node not found!");
+            }
 
             log.debug("getRAStream(): result: I have url("+url+") as result ");
             if( url != null ) {
@@ -1064,8 +1062,8 @@ public class servdb extends JamesServlet {
     // -----------------------------------------------------------------------------------------------------
 
     /**
-    *
-    */
+     *
+     */
     public byte[] getRMStream(Vector params,scanpage sp,HttpServletResponse resp) {
         byte[]	result		= null;
 
@@ -1088,51 +1086,51 @@ public class servdb extends JamesServlet {
         }
 
         if( number != -1 ) {
-			// Following two lines replace the original commented out code
-			// to relieve the pressure on the monstorious properties table
-			// when selecting speed is an issue and the props table is fixed
-			// it can be enabled again
-			speed = 16000;
-			channels = 1;
-			/* Original code ending at: End of...
-            sessionInfo session=getSession(sp);
-            String	auto = getParamValue("a",params);
-            if ( auto!=null && auto.equals("session") ) {
-                // get properties RASPEED and RACHANNELS from user
-                // -----------------------------------------------
-                if (session!=null) {
-                    speed		= getSessionSpeed( session );
-                    channels	= getSessionChannels( session );
-                }
+            // Following two lines replace the original commented out code
+            // to relieve the pressure on the monstorious properties table
+            // when selecting speed is an issue and the props table is fixed
+            // it can be enabled again
+            speed = 16000;
+            channels = 1;
+            /* Original code ending at: End of...
+               sessionInfo session=getSession(sp);
+               String	auto = getParamValue("a",params);
+               if ( auto!=null && auto.equals("session") ) {
+               // get properties RASPEED and RACHANNELS from user
+               // -----------------------------------------------
+               if (session!=null) {
+               speed		= getSessionSpeed( session );
+               channels	= getSessionChannels( session );
+               }
 
-            } else {
-                if( params.size() > 1 )
-                    speed = getnumber("getRMStream()", "speed", (String)params.elementAt(1));
-                if( speed == -1 ) {
-                    speed = getSessionSpeed( session );
-                    if( speed == -1 ) {
-                        log.error("getRMStream(): ERROR: no speed found!");
-                        speed = 16000;
-                    }
-                }
-                if( params.size() > 2 )
-                    channels = getnumber("getRMStream()", "channels", (String)params.elementAt(2));
+               } else {
+               if( params.size() > 1 )
+               speed = getnumber("getRMStream()", "speed", (String)params.elementAt(1));
+               if( speed == -1 ) {
+               speed = getSessionSpeed( session );
+               if( speed == -1 ) {
+               log.error("getRMStream(): ERROR: no speed found!");
+               speed = 16000;
+               }
+               }
+               if( params.size() > 2 )
+               channels = getnumber("getRMStream()", "channels", (String)params.elementAt(2));
 
-                if( channels == -1 ) {
-                    channels = getSessionChannels( session );
-                    if( channels == -1 ) {
-                        log.error("getRMStream(): ERROR: no channels found!");
-                        channels = 1;
-                    }
-                }
-            }
+               if( channels == -1 ) {
+               channels = getSessionChannels( session );
+               if( channels == -1 ) {
+               log.error("getRMStream(): ERROR: no channels found!");
+               channels = 1;
+               }
+               }
+               }
 
-            //  -------------------------------------------------------------------------------------------------------------
-            log.debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
-            //  -------------------------------------------------------------------------------------------------------------
+               //  -------------------------------------------------------------------------------------------------------------
+               log.debug("getRAStream(): number("+number+"), wantedspeed("+speed+"), wantedchannels("+channels+")");
+               //  -------------------------------------------------------------------------------------------------------------
 
-			End of original code
-			*/
+               End of original code
+            */
 
             String url = ((VideoParts)mmbase.getMMObject("videoparts")).getVideopartUrl( mmbase, sp, number, speed, channels);
             log.debug("getRMStream(): result: I have url("+url+") as result ");
@@ -1145,8 +1143,8 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    *
-    */
+     *
+     */
     private int	getSessionSpeed( sessionInfo session ) {
         int		result 	= -1;
         String	sSpeed	= null;
@@ -1178,16 +1176,16 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    *
-    */
+     *
+     */
     private void setSessionSpeed( sessionInfo session, int speed ) {
         sessions.setValue( session,  "SETTING_RASPEED", "" + speed );
     }
 
 
     /**
-    *
-    */
+     *
+     */
     private int	getSessionChannels( sessionInfo session ) {
         int		result 		= -1;
         String	sChannels	=  null;
@@ -1220,16 +1218,16 @@ public class servdb extends JamesServlet {
     }
 
     /**
-    *
-    */
+     *
+     */
     private void setSessionChannels( sessionInfo session, int channels ) {
         sessions.setValue( session,  "SETTING_RASPEED", "" + channels );
     }
 
 
     /**
-    *
-    */
+     *
+     */
     private int getnumber( String method, String var, String number) {
         int result = -1;
 
