@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib.typehandler;
+
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
@@ -21,7 +22,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.27 2004-12-20 17:11:31 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.28 2004-12-22 14:58:45 pierre Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -73,12 +74,12 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String fieldName = field.getName();
         String fieldValue = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
         if (fieldValue == null) {
-            
+
         } else {
             if (! fieldValue.equals(node.getValue(fieldName))) {
                 node.setValue(fieldName,  fieldValue);
                 return true;
-            } 
+            }
         }
         return false;
     }
@@ -135,7 +136,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String value = findString(field);
         if (value != null) {
-            Constraint con = Queries.createConstraint(query, field.getName(), getOperator(), getSearchValue(findString(field)));
+            String fieldName = field.getName();
+            if (query.getSteps().size() > 1) {
+                fieldName = field.getNodeManager().getName()+"."+fieldName;
+            }
+            Constraint con = Queries.createConstraint(query, fieldName, getOperator(), getSearchValue(value));
             Queries.addConstraint(query, con);
             return con;
         } else {
