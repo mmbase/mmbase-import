@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.7 2004-03-24 00:59:02 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.8 2004-09-14 17:53:28 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
@@ -43,10 +43,6 @@ public class  ContextCollector  {
         return contextContainer;
     }
 
-
-    private void arrangeParent() throws JspTagException {
-
-    }
 
     public void doAfterBody() throws JspTagException {        
         ContextContainer parent = contextContainer.getParent();
@@ -88,8 +84,8 @@ public class  ContextCollector  {
 
         }
         public String toString() {
-            String id = parentTag.getId();
-            return "context-collector for tag " + parentTag.getClass() + (id == null ? " (no id)" : " (with id '" + id + "')");
+            String id = ContextCollector.this.parentTag.getId();
+            return "context-collector for tag " + ContextCollector.this.parentTag.getClass() + (id == null ? " (no id)" : " (with id '" + id + "')");
 
     }
     }
