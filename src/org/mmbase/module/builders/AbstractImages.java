@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.4 2002-04-12 08:53:00 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.5 2002-04-12 09:02:10 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends MMObjectBuilder {
@@ -59,7 +59,7 @@ public abstract class AbstractImages extends MMObjectBuilder {
             } else {
                 IMGDB="/img.db?";
             }
-            log.info("Images are served on: "+IMGDB);
+            log.service("Images are served on: "+IMGDB);
         }
         return IMGDB;
     }
