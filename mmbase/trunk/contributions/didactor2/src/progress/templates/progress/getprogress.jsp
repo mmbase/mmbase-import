@@ -34,37 +34,20 @@
       <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="nodetype" value="tests">
 
-<% nof_tests= nof_tests+1;
-%>
-        <mm:import id="passed">false</mm:import>
-        <mm:field id="requiredscore" name="requiredscore" write="false"/>
-
-        <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
-          <mm:constraint field="madetests.score" referid="TESTSCORE_INCOMPLETE" inverse="true"/>
-          <mm:constraint field="madetests.score" referid="TESTSCORE_TBS" inverse="true"/>
-          <mm:constraint field="copybooks.number" referid="copybookNo"/>
-          <mm:relatednodes>
-              <mm:field name="score" id="madetestscore" write="false"/>
-              <%-- if madestestscore larger or equal than requiredscore --%>
-              <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
-                <mm:remove referid="passed"/>
-                <mm:import id="passed">true</mm:import>
-              </mm:islessthan>
-              <mm:remove referid="madetestscore"/>
-
-          </mm:relatednodes>
-        </mm:relatednodescontainer>
-        <mm:compare referid="passed" value="true">
-<%        nof_tests_passed= nof_tests_passed + 1;
-%>
-        </mm:compare>
-        <mm:remove referid="passed"/> 
+            <% nof_tests++; %>
+            <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><mm:treeinclude page="/progress/teststatus.jsp" objectlist="$includePath" referids="$referids"><mm:param name="copybookNo"><mm:write referid="copybookNo"/></mm:param><mm:param name="testNo"><mm:field name="number"/></mm:param></mm:treeinclude></mm:import>
+            <%
+                testStatus = testStatus.trim();
+            %><mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><%= testStatus %></mm:import>
+            <mm:compare referid="teststatus" value="passed">
+                <% nof_tests_passed++; %>
+            </mm:compare>
       </mm:compare>
     </mm:tree>
   </mm:relatednodescontainer>
 <%
   double progress= (double)nof_tests_passed / (double)nof_tests;
-//  System.err.println("tests_passed="+nof_tests_passed+", nof_tests="+nof_tests+", progress =" +progress);
+  System.err.println("tests_passed="+nof_tests_passed+", nof_tests="+nof_tests+", progress =" +progress);
 %>
 <%=progress%>
 </mm:node>
