@@ -392,7 +392,7 @@ public class MMObjectBuilder extends MMTable {
             try {
                 MultiConnection con=mmb.getConnection();
                 Statement stmt=con.createStatement();
-                ResultSet rs=stmt.executeQuery("SELECT number,otype  FROM "+mmb.baseName+"_object;");
+                ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+","+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object;");
                 while(rs.next() && (obj2type.size()<OBJ2TYPE_MAX_SIZE)) {
                     obj2type.put(new Integer(rs.getInt(1)),new Integer(rs.getInt(2)));
                 }
@@ -499,7 +499,7 @@ public class MMObjectBuilder extends MMTable {
                 // first get the otype to select the correct builder
         	MultiConnection con=mmb.getConnection();
                 Statement stmt2=con.createStatement();
-                ResultSet rs=stmt2.executeQuery("SELECT otype FROM "+mmb.baseName+"_object WHERE number="+number);
+                ResultSet rs=stmt2.executeQuery("SELECT otype FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number);
                 if (rs.next()) {
                     otype=rs.getInt(1);
                     // hack hack need a better way
@@ -608,7 +608,7 @@ public class MMObjectBuilder extends MMTable {
 
             con=mmb.getConnection();
             Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE number="+number);
+            ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
             if (rs.next()) {
                 // create a new object and add it to the result vector
                 MMObjectBuilder bu=mmb.getMMObject(bul);
@@ -719,7 +719,7 @@ public class MMObjectBuilder extends MMTable {
     public Vector searchVectorIn(String in) {
         // do the query on the database
         if (in==null || in.equals("")) return(new Vector());
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" where number in ("+in+")";
+        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
 
@@ -764,8 +764,7 @@ public class MMObjectBuilder extends MMTable {
         try {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
-            //	ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where));
-            ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database));
+            ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database));
             Vector results=new Vector();
             Integer number;
             String tmp;
@@ -835,6 +834,9 @@ public class MMObjectBuilder extends MMTable {
             //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
+	
+	// temp mapper hack only works in single order fields
+	sorted=mmb.getDatabase().getAllowedField(sorted);
         String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where+" ORDER BY "+sorted;
         return(basicSearch(query));
     }
@@ -844,10 +846,11 @@ public class MMObjectBuilder extends MMTable {
     * Enumerate all the objects that match the searchkeys
     */
     public Vector searchVectorIn(String where,String sorted,String in) {
+	// temp mapper hack only works in single order fields
+	sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
         if (in!=null && in.equals("")) return(new Vector());
-        //String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted;
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+") ORDER BY "+sorted;
+        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
         return(basicSearch(query));
     }
 
@@ -857,8 +860,7 @@ public class MMObjectBuilder extends MMTable {
     public Vector searchVectorIn(String where,String in) {
         // do the query on the database
         if (in==null || in.equals("")) return(new Vector());
-        //String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+")";
-        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+")";
+        String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return(basicSearch(query));
     }
 
@@ -876,6 +878,8 @@ public class MMObjectBuilder extends MMTable {
             //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
+	// temp mapper hack only works in single order fields
+	sorted=mmb.getDatabase().getAllowedField(sorted);
         if (direction) {
             String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+where+" ORDER BY "+sorted+" ASC";
             return(basicSearch(query));
@@ -889,15 +893,15 @@ public class MMObjectBuilder extends MMTable {
     * Enumerate all the objects that match the searchkeys
     */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
+	// temp mapper hack only works in single order fields
+	sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
         if (in==null || in.equals("")) return(new Vector());
         if (direction) {
-            //String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted+" ASC";
-            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+") ORDER BY "+sorted+" ASC";
+            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
             return(basicSearch(query));
         } else {
-            //String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where)+" AND number in ("+in+") ORDER BY "+sorted+" DESC";
-            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND number in ("+in+") ORDER BY "+sorted+" DESC";
+            String query="SELECT * FROM "+mmb.baseName+"_"+tableName+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
             return(basicSearch(query));
         }
     }
