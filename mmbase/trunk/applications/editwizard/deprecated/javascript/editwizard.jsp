@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.4 2004-03-19 15:05:01 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.5 2004-08-18 11:30:11 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -460,4 +460,13 @@ function doStartUpload(el) {
 function doRefresh() {
     doSendCommand("","");
 }
+
+// forward compatibility with 1.7
+
+function saveScroll() {
+}
+
+function restoreScroll() {
+}
+
 
