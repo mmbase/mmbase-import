@@ -269,7 +269,7 @@ NetComponents can be found at:
   </target>
 
   <target name="lib.compile" description="Create the lib directory"
-          depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation">
+          depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation,get.jdbc">
     <mkdir dir="${compile.lib.dir}"/>
     <copy file="${xalan.jar}"     todir="${compile.lib.dir}" />
     <copy file="${xerces.jar}"    todir="${compile.lib.dir}" />
@@ -281,6 +281,7 @@ NetComponents can be found at:
     <copy file="${junit.jar}"     todir="${compile.lib.dir}" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
+    <copy file="${jdbc.jar}"      todir="${compile.lib.dir}" />
   </target>
 
   
@@ -1185,15 +1186,31 @@ Build-compiler: ${build.compiler}
     <available property="docbook-xsl.expanded"  file="${expand.dir}/${docbook-xsl.version}" />
 
 
+    <!-- JDBC jar -->
+    <property  name="jdbc.url" value="http://java.sun.com/Download3?protocol=HTTP%20download&amp;referer=http://java.sun.com/products/jdbc/download.html&amp;download-name=jdbc2_0-stdext.jar&amp;config-file=jdbc2_0-stdext-bin.config&amp;platform=jar&amp;domain-checked=&amp;" />
+ 
+    <property name="jdbc.jar" value="${download.dir}/jdbc.jar" />
+    <available property="jdbc.present" file="${jdbc.jar}" />
+
+
+
+
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${expand.dir}"/>
   </target>
 
-  <target name="get.servlet" depends="init.get" unless="servlet.present">
-    <get src="${servlet.url}"
-         dest="${download.dir}/${servlet.version}.tar.gz"
+
+  <target name="get.jdbc" depends="init.get" unless="jdbc.present">
+    <get src="${jdbc.url}"
+         dest="${jdbc.jar}"
          verbose="on"/>
+  </target>
+
+  <target name="get.servlet" depends="init.get" unless="servlet.present">
+<get src="${servlet.url}"
+         dest="${download.dir}/${servlet.version}.tar.gz"
+         verbose="on"/>    
   </target>
 
   <target name="expand.servlet" depends="get.servlet" unless="servlet.expanded">
@@ -1332,6 +1349,8 @@ Version: MMBase build ${version}
     <untar src="${expand.dir}/${docbook-xsl.version}.tar"        dest="${expand.dir}"/>
     <delete file="${expand.dir}/${docbook-xsl.version}.tar"/>
   </target>
+
+  
 
 
   <!-- =================================================================== -->
