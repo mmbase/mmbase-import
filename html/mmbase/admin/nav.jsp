@@ -29,21 +29,24 @@
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
     ><span class="<%=("admin".equals(category)) ? "current" : ""%>menuitem">ADMIN</span></a>
     &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=documentation&subcategory=overview" />" target="_top"
+    ><span class="<%=("documentation".equals(category)) ? "current" : ""%>menuitem">DOCUMENTATION</span></a>
+    &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
     ><span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
-	<hr />
-	<% if("about".equals(category)) { %>
+        <hr />
+        <% if("about".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top"
     ><span class="<%=("about".equals(subcategory)) ? "current" : ""%>menuitem">ABOUT</span></a>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=about&subcategory=license" />" target="_top"
     ><span class="<%=("license".equals(subcategory)) ? "current" : ""%>menuitem">LICENSE</span></a>
-	<% } else if("editors".equals(category)) { %>
+        <% } else if("editors".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=editors&subcategory=basic" />" target="_top"
     ><span class="currentmenuitem">BASIC</span></a>
-	<% } else if("admin".equals(category)) { %>
+        <% } else if("admin".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
     ><span class="<%=("servers".equals(subcategory)) ? "current" : ""%>menuitem">SERVERS</span></a>
@@ -59,17 +62,18 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=databases" />" target="_top"
     ><span class="<%=("databases".equals(subcategory)) ? "current" : ""%>menuitem">DATABASES</span></a>
+        <% } else if("documentation".equals(category)) { %>
     &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=admin&subcategory=documentation" />" target="_top"
-    ><span class="<%=("documentation".equals(subcategory)) ? "current" : ""%>menuitem">DOCUMENTATION</span></a>
-	<% } else if("tools".equals(category)) { %>
+    <a href="<mm:url page="default.jsp?category=documentation&subcategory=overview" />" target="_top"
+    ><span class="currentmenuitem">OVERVIEW</span></a>
+        <% } else if("tools".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
     ><span class="<%=("cache".equals(subcategory)) ? "current" : ""%>menuitem">CACHE</span></a>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top"
     ><span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
-	<% } %>
+        <% } %>
 </td>
 </tr>
 </table>
