@@ -20,6 +20,19 @@
 		</function>
 
 
+		<function name="getProjectInfo">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
+			<method>getProjectInfo</method>
+			<param name="name" type="String" description="" />
+			<return type="NodeList">
+				<field name="name" type="String" description="" />
+			</return>
+		</function>
+
+
 		<function name="getProjectPackageTargets">
 			<description>
 			</description>
@@ -86,6 +99,20 @@
 			<param name="target" type="String" description="" />
 			<param name="newname" type="String" description="" />
 			<param name="newvalue" type="String" description="" />
+			<return type="String">
+			</return>
+		</function>
+
+
+		<function name="changeProjectSettings">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
+			<method>changeProjectSettings</method>
+			<param name="project" type="String" description="" />
+			<param name="newname" type="String" description="" />
+			<param name="newpath" type="String" description="" />
 			<return type="String">
 			</return>
 		</function>
@@ -161,6 +188,31 @@
 			<param name="delpackageid" type="String" description="" />
 			<param name="delversion" type="String" description="" />
 			<param name="delversionmode" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="delTarget">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
+			<method>delTarget</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="delProject">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
+			<method>delProject</method>
+			<param name="project" type="String" description="" />
 			<return type="Boolean">
 			</return>
 		</function>
