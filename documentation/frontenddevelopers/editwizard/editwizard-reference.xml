@@ -18,7 +18,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2002-09-02</date>
-		<edition>$Id: editwizard-reference.xml,v 1.12 2003-11-20 12:25:47 pierre Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.13 2003-12-02 14:25:47 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -170,11 +170,11 @@
 					</listitem>
 				</varlistentry>
 				<varlistentry>
-					<term>searchdir</term>
+					<term>searchdirs</term>
 					<listitem>
-						<para>The direction in which relations between nodemanagers should be followed. This parameter is similar to the searchdir attribute of the taglib's &lt;mm:list&gt; tag.</para>
-						<note><para>Available from MMBase 1.6.4 and up</para></note>
-						<programlisting format="linespecific">searchdir=source</programlisting>
+						<para>The direction in which relations between nodemanagers should be followed. This parameter is similar to the searchdirs attribute of the taglib's &lt;mm:listcontainer&gt; tag. It can be a list, in which case the first is for use between the first and second nodemanager, the second is for use between second and third nodemanager. If there are more steps in the nodemanager path then searchdirs, then the searchdir will default to the previous searchdir in the 'searchdirs' list.</para>
+						<note><para>Available from MMBase 1.7.0 and up. In MMBase 1.6.4 and up, only the 'searchdir' parameter was available and only one searchdir could be specified, valid for all steps of the nodepath.</para></note>
+						<programlisting format="linespecific">searchdirs=source,destination</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
