@@ -546,6 +546,9 @@ Change directory to ${build.dir}/orion and run:
       <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
       <exclude name="**/test/bridge/**" unless="junit.in.classpath"/>
       <exclude name="org/mmbase/module/database/support/PostgreSQL71.java" unless="postgresql.in.classpath"/>
+      <exclude name="org/mmbase/module/RemoteMMCI.java"/>
+      <exclude name="org/mmbase/bridge/RemoteContext.java"/>
+      <exclude name="org/mmbase/bridge/remote/**"/>
     </javac>
   </target>
 
