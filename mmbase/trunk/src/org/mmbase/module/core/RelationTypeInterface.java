@@ -66,4 +66,12 @@ public interface RelationTypeInterface extends NodeTypeInterface {
      * @return the destination type
      */
     public NodeTypeInterface getDestinationType();
+
+	/** 
+	 * creates a relation
+	 * @param sourcenode the source node of the relation
+	 * @param destinationnode the destination node of the relation
+	 * @return returns the created relation
+	 */
+	public RelationInterface createRelation(NodeInterface sourcenode, NodeInterface destinationnode);
 }
