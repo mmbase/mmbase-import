@@ -315,6 +315,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (getId() != null) { // write to context.
             getContextTag().register(getId(), cloud);
         }
+        // the surround context tag sometimes also want so server information from the cloud context.
+        getContextTag().setCloudContext(cloud.getCloudContext());
 
 
         return EVAL_BODY_TAG;
