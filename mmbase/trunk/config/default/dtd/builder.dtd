@@ -37,4 +37,5 @@
 <!ATTLIST type state (persistent|virtual|system) #REQUIRED>
 <!ATTLIST type size CDATA #IMPLIED>
 <!ATTLIST type key (true|false) #IMPLIED>
+<!ATTLIST type doctype CDATA #IMPLIED>
 <!ATTLIST type notnull (true|false) #REQUIRED>
