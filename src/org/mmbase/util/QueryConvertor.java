@@ -296,11 +296,6 @@ class DBQuery  extends ParseItem {
                 }
             }
             
-            // Prefix fieldname in alias.
-            if (condition.prefix != null) {
-                field.setAlias(condition.prefix + "." + condition.fieldName);
-            }
-                
             int fieldType = field.getType();
             if (fieldType == FieldDefs.TYPE_STRING 
                 || fieldType == FieldDefs.TYPE_XML) {
