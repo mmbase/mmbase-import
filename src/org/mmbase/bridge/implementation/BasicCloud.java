@@ -364,10 +364,10 @@ public class BasicCloud implements Cloud, Cloneable {
   		    pars+=" FIELDS='"+fields+"'";
   		}
   		if (sorted!=null) {
-  		    pars+=" NODES='"+sorted+"'";
+  		    pars+=" SORTED='"+sorted+"'";
   		}
   		if (direction!=null) {
-  		    pars+=" NODES='"+direction+"'";
+  		    pars+=" DIR='"+direction+"'";
   		}
   		StringTagger tagger= new StringTagger(pars,
   		                    ' ','=',',','\'');
