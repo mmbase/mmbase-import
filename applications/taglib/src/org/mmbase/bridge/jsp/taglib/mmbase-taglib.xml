@@ -829,27 +829,68 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <bodycontent>JSP</bodycontent>
     <info>
       <p>
-      Groups node-tags. Tags inside a context tag can find each other's
-      providing Node. You need this for example when you create a
-      relation.
+      Groups tags, and facilitates communication to the outside
+      world.
       </p>
       <p>
-      In TCP this is called 'create'.
+      Tags inside a context tag supplying the 'id' attribute
+      register themselves in the context.  Other tags can refer to
+      this id. See for example how the createrelation tag works.
       </p>
       <p>
-      A Transaction is a context too, so normally it will suffice to
-      use a transaction.
+      With the import tag you can explicitily put things from outside
+      this context into this context, e.g. from the parameter list or
+      from a parent context.
+      </p>
+      <p>
+      There are several ways to refer to objects in the context.
+      </p>
+      <p>
+       When you are adding a new object then the used attribute is
+      'id'.
+      </p>
+      <p>The 'id' of an 'external' object like a request parameter
+      is referred to as 'externid' (only in the import tag).
+      </p>
+      <p>If you are reusing the same object, for example you have put
+      a node in the context, and are using it again then an attribute
+      'referid' is used. 
+      </p>
+      <p>
+      If some attribute wants to refer to the value of an object in
+      the context, and it is an attribute which can refer to the
+      context, then you can make the attribute's value
+      &lt;context-id;&gt;.&lt;object-id&gt;. 
+      </p>
+      <p>
+      And finally there are some attributes which can only refer. For
+      example if some tag has to live as a child of another tag but
+      you want it to refer not to its direct parent, then there should
+      be an attribute with the name of the parent in which you can put
+      the id of the parent which it has to refer to. For example the
+      field tag has an attribute 'node'. Other tags, like the
+      createrelation tag have attributes like 'source' and
+      'destination' attributes which also simply contain the node
+      id's. Please find the examples.
+      </p>
+      <p>
+      In TCP there is a 'tag' called 'create', which is comparable to
+      'context'.
+      </p>
+      <p>
+      A Cloud (or a transaction) is a context too, so normally it will suffice to
+      use a cloud.
       </p>
     </info>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>type</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
+	<info>
+	The default id for a context is 'context'. If the context is a
+	cloud, then the default id is 'cloud'. This id is used in
+	context referring attributes.
+        </info>
     </attribute>
   </tag>
   <tag>
@@ -862,14 +903,17 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <name>role</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+	<refercontext>true</refercontext>
 	<info>       
+	The role for the new relation.
         </info>
     </attribute>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>       
+	<info>
+	The id of the node which is this relation. 
         </info>
     </attribute>
     <attribute>
@@ -906,12 +950,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
-    Creates a new node
+    Creates a new node.
     </info>
     <attribute>
         <name>nodemanager</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+	<refercontext>true</refercontext>
 	<info>   
          The type (NodeManager name) of the new node.
         </info>
@@ -1062,13 +1107,14 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>number</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
+        <requirednote>If stand alone, either 'number' or 'referid' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
+	<refercontext>true</refercontext>
     </attribute>
     <attribute>
-        <name>parameter</name>
+        <name>referid</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
+	<requirednote>If stand alone, either 'number' or 'referid' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
@@ -1104,6 +1150,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <name>nodemanager</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
     </attribute>
     <attribute>
       <name>id</name>
@@ -1152,10 +1199,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>fieldinfo</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
-    <info>This thing can be used inside a FieldListTag, or directly
-    inside a NodeProvider if you indicate with the field attribute
-    about which field you want to have information. It can have a
-    body, which will be added to the produced value, if this is not null.</info>
+    <info>
+    This thing can be used inside a FieldListTag, or directly inside a
+    NodeProvider if you indicate with the field attribute about which
+    field you want to have information. It can have a body, which will
+    be added to the produced value, if this is not null.
+    </info>
     <attribute>
       <name>type</name>
       <required>true</required>
@@ -1169,18 +1218,43 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <info>The GUI name of the field (can be in other language)</info>
       </possiblevalue>
       <possiblevalue>
-        <value>input</value>         
-        <info>A form entry for the field. This can only be used if the
-        FieldList was in a NodeProvider tag. If the FieldList has an
-        id, the names of the form entries will be prefixed with it.
+        <value>input</value>
+	<info>
+	A form entry for the field. This can only be used if the
+        FieldList was in a NodeProvider tag, of if you have provided
+        the 'nodemanager' attribute. If the FieldList has an id, the
+        names of the form entries will be prefixed with it.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>useinput</value>         
-        <info>If you have create a form with type="input" and this
-        form was submitted, then you can use type="useinput" under a
+        <info>
+	<p>
+	If you have create a form with type="input" and this form was
+        submitted, then you can use type="useinput" under a
         NodeProvider, and it will get the request/post parameter
         produced by "input" and make the right changes to the node.
+	</p>
+	<p>
+	The necessary externid's for this will be implicity imported
+	in the context. You don't have to worry about them.
+	</p>
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>searchinput</value>         
+        <info>
+	A form entry for the field, fit for use for searching. That
+        means that not textareas will be used and such.  
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>usesearchinput</value>         
+        <info>
+	If you have create a form with type="searchinput" and this
+        form was submitted, then you can use this. It will produce a
+        part of a where clause which you can use to construct a whole
+        'where' for the list tag you are going to use.
         </info>
       </possiblevalue>      
       <possiblevalue>
@@ -1188,7 +1262,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <info>The value of this field. Can only be used if in a NodeProviderTag.
         </info>
       </possiblevalue>
-
       <possiblevalue>
         <value>guivalue</value>         
         <info>The guivalue of this field. Can only be used if in a NodeProviderTag.
