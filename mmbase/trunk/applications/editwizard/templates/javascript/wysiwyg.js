@@ -5,7 +5,7 @@
  * (c) Q42, 2001
  *
  * @since    MMBase-1.6
- * @version  $Id: wysiwyg.js,v 1.4 2002-07-05 10:41:54 pierre Exp $
+ * @version  $Id: wysiwyg.js,v 1.5 2002-07-08 10:03:43 michiel Exp $
  * @author   Kars Veling
  */
 
@@ -201,7 +201,7 @@ Wysiwyg.prototype.checkButtons = function () {
 }
 
 Wysiwyg.prototype.createEditBar = function () {
-    var s="<table border="0" cellpadding="0" cellspacing="0"><tr>";
+    var s='<table border="0" cellpadding="0" cellspacing="0"><tr>';
     for (var i=0;i<this.editBarButtons.length;i++) {
         var cmd = this.editBarButtons[i];
         var hint = this.editBarButtonHints[i];
