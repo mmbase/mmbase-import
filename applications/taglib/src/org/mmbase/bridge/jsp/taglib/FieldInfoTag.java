@@ -43,7 +43,8 @@ public class FieldInfoTag extends NodeReferrerTag {
     // very handy if you're creating an editors, but well yes, not very elegant.
     private static final int TYPE_INPUT    = 10;
     private static final int TYPE_USEINPUT = 11;
-    private static final int TYPE_WHEREINPUT = 12;
+    private static final int TYPE_SEARCHINPUT = 12;
+    private static final int TYPE_USESEARCHINPUT = 13;
     
     private int type;   
     private String whichField = null;
@@ -61,8 +62,10 @@ public class FieldInfoTag extends NodeReferrerTag {
             type = TYPE_INPUT;
         } else if ("useinput".equals(t)) {       
             type = TYPE_USEINPUT;
-        } else if ("whereinput".equals(t)) {       
-            type = TYPE_WHEREINPUT;
+        } else if ("searchinput".equals(t)) {       
+            type = TYPE_SEARCHINPUT;
+        } else if ("usesearchinput".equals(t)) {       
+            type = TYPE_USESEARCHINPUT;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -98,7 +101,7 @@ public class FieldInfoTag extends NodeReferrerTag {
      * @param field and this field.
      */
 
-    private String htmlInput(Node node, Field field) {
+    private String htmlInput(Node node, Field field, boolean search) {
         String show;
         int type = field.getType();
         switch(type) {
@@ -106,21 +109,23 @@ public class FieldInfoTag extends NodeReferrerTag {
             show = "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
         case Field.TYPE_STRING:
-            if(field.getMaxLength() > 2048)  {
-                show = "<textarea wrap=\"on\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
-                if (node != null) {
-                    show += node.getStringValue(field.getName());
-                }                    
-                show += "</textarea>";                
-                break;                    
-            }
-            if(field.getMaxLength() > 255 )  {                
-                show = "<textarea wrap=\"on\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
-                if (node != null) {
-                    show += node.getStringValue(field.getName());
-                }                    
-                show += "</textarea>";
-                break;
+            if(! search) {
+                if(field.getMaxLength() > 2048)  {
+                    show = "<textarea wrap=\"on\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">";
+                    if (node != null) {
+                        show += node.getStringValue(field.getName());
+                    }                    
+                    show += "</textarea>";                
+                    break;                    
+                }
+                if(field.getMaxLength() > 255 )  {                
+                    show = "<textarea wrap=\"on\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">"; 
+                    if (node != null) {
+                        show += node.getStringValue(field.getName());
+                    }                    
+                    show += "</textarea>";
+                    break;
+                }
             }
         case Field.TYPE_INTEGER:  
             if (field.getGUIType().equals("eventtime")) {
@@ -307,7 +312,7 @@ public class FieldInfoTag extends NodeReferrerTag {
                 }
                 // check if changed:
                 if (! getContextTag().getString(prefix(fieldName)).equals("" + cal.getTime().getTime() /1000)) { 
-                    show = "(" + fieldName + "=" + (cal.getTime().getTime() / 1000) + ")";
+                    show = "(" + fieldName + ">" + (cal.getTime().getTime() / 1000) + ")";
                 } else {
                     show = null;
                 }
@@ -410,12 +415,15 @@ public class FieldInfoTag extends NodeReferrerTag {
             }
             break;
         case TYPE_INPUT:
-            show = htmlInput(node, field);
+            show = htmlInput(node, field, false);
             break;
         case TYPE_USEINPUT:
             show = useHtmlInput(node, field); 
             break;
-        case TYPE_WHEREINPUT:
+        case TYPE_SEARCHINPUT:
+            show = htmlInput(node, field, true);
+            break;
+        case TYPE_USESEARCHINPUT:
             show = whereHtmlInput(field); 
             break;
         }
