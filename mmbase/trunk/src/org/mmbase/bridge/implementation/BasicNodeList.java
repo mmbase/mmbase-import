@@ -14,62 +14,76 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.16 2002-10-03 12:28:10 pierre Exp $
+ * @version $Id: BasicNodeList.java,v 1.17 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
-    protected BasicCloud cloud;
-    protected NodeManager nodemanager = null;
+    protected Cloud cloud;
+    protected NodeManager nodeManager = null;
 
     BasicNodeList() {
         super();
     }
 
-    BasicNodeList(Collection c, BasicCloud cloud) {
+    BasicNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud=cloud;
     }
 
-    BasicNodeList(Collection c, BasicCloud cloud, NodeManager nodemanager) {
+    BasicNodeList(Collection c, NodeManager nodeManager) {
         super(c);
-        this.nodemanager = nodemanager;
-        this.cloud=cloud;
+        this.nodeManager = nodeManager;
+        this.cloud=nodeManager.getCloud();
     }
 
     /**
      *
      */
-    public Object convert(Object o, int index) {
+    protected Object convert(Object o, int index) {
         if (o instanceof Node) {
             return o;
         }
-        MMObjectNode coreNode = (MMObjectNode) o;
-        MMObjectBuilder coreBuilder = coreNode.getBuilder();
         Node node = null;
-        NodeManager manager = nodemanager;
-        if(manager == null)  {
-            manager = cloud.getNodeManager(coreBuilder.getTableName());
-        }
-        if(coreBuilder instanceof InsRel) {
-            // we are an relation,.. this means we have to create a relation..
-            node = new BasicRelation(coreNode, manager);
+        if (o instanceof String) { // a string indicates a nodemanager by name
+            node = cloud.getNodeManager((String)o);
         } else {
-            // 'normal' node
-            node = new BasicNode(coreNode, manager);
+            MMObjectNode coreNode = (MMObjectNode) o;
+            MMObjectBuilder coreBuilder = coreNode.getBuilder();
+            if (coreBuilder instanceof TypeDef) {
+                // nodemanager node
+                node = new BasicNodeManager(coreNode, cloud);
+            } else if (coreBuilder instanceof RelDef || coreBuilder instanceof TypeRel) {
+                // relationmanager node
+                node = new BasicRelationManager(coreNode, cloud);
+            } else if(coreBuilder instanceof InsRel) {
+                // relation node
+                if(nodeManager == null)  {
+                    node = new BasicRelation(coreNode, cloud);
+                } else {
+                    node = new BasicRelation(coreNode, nodeManager);
+                }
+            } else {
+                // 'normal' node
+                if(nodeManager == null)  {
+                    node = new BasicNode(coreNode, cloud);
+                } else {
+                    node = new BasicNode(coreNode, nodeManager);
+                }
+            }
         }
         set(index, node);
         return node;
     }
 
     protected Object validate(Object o) throws ClassCastException {
-        if (o instanceof MMObjectNode) {
+        if (o instanceof MMObjectNode || o instanceof String) {
             return o;
         } else {
             return (Node)o;

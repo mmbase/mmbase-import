@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.16 2002-10-04 14:39:43 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.17 2002-10-15 15:28:30 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -153,7 +153,7 @@ public class ModuleHandler implements Module, Comparable {
                 } else {
                    tempNodeManager = cloud.getNodeManager(bul.getTableName());
                 }
-                return new BasicNodeList(v,cloud,tempNodeManager);
+                return new BasicNodeList(v,tempNodeManager);
             } catch (Exception e) {
                 String message;
                 message = e.getMessage() + " " + Logging.stackTrace(e);
