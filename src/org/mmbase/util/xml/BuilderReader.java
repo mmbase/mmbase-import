@@ -11,6 +11,7 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
@@ -29,11 +30,11 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.7 2003-08-07 17:54:26 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.8 2004-01-06 12:23:57 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
-    private static Logger log = Logging.getLoggerInstance(BuilderReader.class);
+    private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_BUILDER_1_0 = "-//MMBase//DTD builder config 1.0//EN";
@@ -88,7 +89,7 @@ public class BuilderReader extends XMLBasicReader {
      * The default value is false, as resolving Inheritance is mandatory when loading builders.
      * @since MMbase-1.6
      */
-    private boolean inheritanceResolved= false;
+    private boolean inheritanceResolved = false;
 
 
     /**
@@ -103,12 +104,12 @@ public class BuilderReader extends XMLBasicReader {
     /**
      * Creates an instance by reading a builder configuration (xml) file.
      * @since MMBase-1.6
-     * @param filename path to the builder configuration file to parse
+     * @param fileName path to the builder configuration file to parse
      * @param mmb The MMBase instance. Used to resolve inheritance of builders
      */
-    public BuilderReader(String filename, MMBase mmb) {
-        super(filename, BuilderReader.class);
-        mmbase=mmb;
+    public BuilderReader(String fileName, MMBase mmb) {
+        super(fileName, BuilderReader.class);
+        mmbase = mmb;
         resolveInheritance();
     }
 
@@ -122,7 +123,16 @@ public class BuilderReader extends XMLBasicReader {
     public BuilderReader(String filename) {
         this(filename, null);
         // fake resolving inheritance
-        inheritanceResolved=true;
+        inheritanceResolved = true;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public BuilderReader(InputSource source, MMBase mmb) {
+        super(source, BuilderReader.class);
+        mmbase = mmb;
+        resolveInheritance();
     }
 
     /**
@@ -209,7 +219,7 @@ public class BuilderReader extends XMLBasicReader {
      * @return the search age in days
      */
     public int getSearchAge() {
-        int val=30;
+        int val = 30;
         String sval = getElementValue("builder.searchage");
         if (sval.equals("") && (parentBuilder!=null)) {
             sval=parentBuilder.getSearchAge();
@@ -238,9 +248,9 @@ public class BuilderReader extends XMLBasicReader {
             }
         }
         // is it a full name or inside the org.mmbase.module.builders.* path
-        int pos=val.indexOf('.');
-        if	(pos==-1) {
-            val="org.mmbase.module.builders."+val;
+        int pos = val.indexOf('.');
+        if (pos==-1) {
+            val = "org.mmbase.module.builders."+val;
         }
         return val;
     }
@@ -253,8 +263,8 @@ public class BuilderReader extends XMLBasicReader {
      * @return a Vector of all Fields as FieldDefs
      */
     public Vector getFieldDefs() {
-        Vector results=new Vector();
-        HashMap oldset=new HashMap();
+        Vector results = new Vector();
+        HashMap oldset = new HashMap();
         int pos=1;
         if (parentBuilder!=null) {
             List parentfields = parentBuilder.getFields(FieldDefs.ORDER_CREATE);
@@ -310,7 +320,7 @@ public class BuilderReader extends XMLBasicReader {
      */
     private int getEditorPos(Element elm) {
         try {
-            int val=Integer.parseInt(getElementValue(elm));
+            int val = Integer.parseInt(getElementValue(elm));
             return val;
         } catch(Exception e) {
             return -1;
@@ -416,7 +426,7 @@ public class BuilderReader extends XMLBasicReader {
      */
     private FieldDefs decodeFieldDef(Element field) {
         // create a new FieldDefs we need to fill
-        FieldDefs def=new FieldDefs();
+        FieldDefs def = new FieldDefs();
 
         // DB
         Element db = getElementByPath(field,"field.db");
@@ -555,7 +565,7 @@ public class BuilderReader extends XMLBasicReader {
      * @return the name of the parent builder
      */
     public String getBuilderExtends() {
-        return getElementAttributeValue("builder","extends");
+        return getElementAttributeValue("builder", "extends");
     }
 
     /**
@@ -582,15 +592,55 @@ public class BuilderReader extends XMLBasicReader {
      * @return the name fo the maintainer as a String
      */
     public String getBuilderMaintainer() {
-        String maintainer=getElementAttributeValue("builder","maintainer");
+        String maintainer = getElementAttributeValue("builder","maintainer");
         if (maintainer.equals("")) {
-            if (parentBuilder!=null) {
-                maintainer=parentBuilder.getMaintainer();
+            if (parentBuilder != null) {
+                maintainer = parentBuilder.getMaintainer();
             } else {
-                maintainer="mmbase.org";
+                maintainer = "mmbase.org";
             }
         }
         return maintainer;
     }
+
+    /**
+     * {@inheritDoc}
+     * @since MMBase-1.7
+     */
+    public boolean equals(Object o) {
+        if (o instanceof BuilderReader) {
+            BuilderReader b = (BuilderReader) o;
+            return 
+                getFieldDefs().equals(b.getFieldDefs()) &&
+                getBuilderMaintainer().equals(b.getBuilderMaintainer()) &&
+                getBuilderVersion() == b.getBuilderVersion() &&
+                getBuilderExtends() == b.getBuilderExtends() &&
+                getSingularNames().equals(b.getSingularNames()) && 
+                getPluralNames().equals(b.getPluralNames()) && 
+                getDescriptions().equals(b.getDescriptions()) && 
+                getProperties().equals(b.getProperties()) &&
+                getClassFile().equals(b.getClassFile())                                
+                ;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Whether this FieldDefs object is equal to another for storage purposes (so, ignoring gui and documentation fields)
+     * @since MMBase-1.7
+     */
+    public boolean storageEquals(BuilderReader f) {
+        List otherFields = f.getFieldDefs();
+        List thisFields  = getFieldDefs();
+        if (otherFields.size() != thisFields.size()) return false;
+        for (int i = 0; i < thisFields.size(); i++) {
+            FieldDefs thisField = (FieldDefs) thisFields.get(i);
+            FieldDefs otherField = (FieldDefs) otherFields.get(i);
+            if (! thisField.storageEquals(otherField)) return false;
+        }
+        return true;
+    }
+
 }
 
