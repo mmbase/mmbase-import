@@ -12,17 +12,18 @@ package org.mmbase.storage;
 import java.io.InputStream;
 import java.util.*;
 import org.xml.sax.InputSource;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.FieldDefs;
 
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.storage.util.Scheme;
-import org.mmbase.module.core.MMBase;
 
 /**
  * An abstract implementation of the StorageManagerFactory implements ways for setting and retrieving attributes.
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.9 2003-07-25 14:47:25 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.10 2003-07-28 10:19:20 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -49,10 +50,6 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     // The map with disallowed fieldnames and (if given) alternates
     private Map disallowedFields;
     
-    // The map with alternate fieldnames for disallowed fieldnames.
-    // this is the reverse of the disallowedFields map, but only for disallowed fields with alternate values.
-    private Map alternateFields;
-    
     /**
      * Stores the MMBase reference, and initializes the attribute map.
      * Opens and reads the StorageReader for this factory.
@@ -62,7 +59,6 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
         disallowedFields = new HashMap();
-        alternateFields = new HashMap();
         typeMappings = Collections.synchronizedList(new ArrayList());
         try {
             load();
@@ -70,6 +66,10 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
             // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
             throw new StorageError(se);
         }
+    }
+
+    public MMBase getMMBase() {
+        return mmbase;
     }
 
     /**
@@ -155,12 +155,17 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         return (Scheme)getAttribute(key);
     }
 
-    public void setScheme(Object key, Scheme value) {
-        setAttribute(key,(Scheme)value);
+    public Scheme getScheme(Object key, String defaultPattern) {
+        Scheme scheme = getScheme(key);
+        if (scheme == null) {
+            scheme = new Scheme(this,defaultPattern);
+            setAttribute(key,scheme);
+        }
+        return scheme;
     }
-    
-    public void setScheme(Object key, String value) {
-        setAttribute(key,new Scheme(this,value));
+
+    public void setScheme(Object key, String pattern) {
+        setAttribute(key,new Scheme(this,pattern));
     }
     
     public boolean hasOption(Object key) {
@@ -183,49 +188,49 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     /**
      * Sets the map of disallowed Fields.
      * Unlike setAttributes(), this actually replaces the existing disallowed fields map.
-     * It also craetes a map of alternate fieldnames, used in {@link #unmapField()}
-     * @throw StorageException if the fieldmap contains duplicate alternate names 
      */
-	synchronized protected void setDisallowedFields(Map disallowedFields) throws StorageException {
-        // note: these maps need not be synchronised, as they cannot be changed concurrently 
-        Map alternateFields = new HashMap();
-        for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
-            Map.Entry mapEntry = (Map.Entry)i.next();
-            Object reverseKey = mapEntry.getValue();
-            Object reverseValue = mapEntry.getKey();
-            if (reverseKey != null) {
-                if (alternateFields.containsKey(mapEntry.getValue())) {
-                    throw new StorageException("The disallowed fields map contains duplicate alternate names");
-                } else {
-                    alternateFields.put(reverseKey, reverseValue);
-                }
-            }
-        }
+	protected void setDisallowedFields(Map disallowedFields) {
         this.disallowedFields = new HashMap(disallowedFields);
-        this.alternateFields = alternateFields;
     }
 
-	public String mapField(String name) throws StorageException {
-        if (disallowedFields.containsKey(name)) {
-            String alternateName = (String)disallowedFields.get(name);
-            if (alternateName == null) {
-                throw new StorageException("The name of the field '"+name+"' is disallowed, and no alternate value is available.");
+    /**
+     * Obtains a identifier for an MMBase object.
+     * The default implementation returns the following type of identifiers:
+     * <ul>
+     *  <li>For MMBase: the String '[basename]_object'</li>
+     *  <li>For MMObjectBuilder: the String '[basename]_[builder name]'</li>
+     *  <li>For MMObjectNode: the object number as a Integer</li>
+     *  <li>For FieldDefs: the field name, or the replacement fieldfname (from the disallowedfields map)</li>
+     * </ul>
+     * Note that 'basename' is a property from the mmbase module, set in mmabseroot.xml.<br />
+     * You can override this method if you intend to use different ids.
+     *
+     * @see Storable
+     * @param mmobject the MMBase objecty
+     * @return the storage-specific identifier
+     * @throws StorageException if the object cannot be given a valid identifier
+     */
+    public Object getStorageIdentifier(Object mmobject) throws StorageException {
+        if (mmobject == mmbase) {
+            return mmbase.getBaseName()+"_object";
+        } else if (mmobject instanceof MMObjectBuilder) {
+            return mmbase.getBaseName()+"_"+((MMObjectBuilder)mmobject).getTableName();
+        } else if (mmobject instanceof MMObjectNode) {
+            return ((MMObjectNode)mmobject).getIntegerValue("number");
+        } else if (mmobject instanceof FieldDefs) {
+            String id = ((FieldDefs)mmobject).getDBName();
+            if (disallowedFields.containsKey(id)) {
+                id = (String)disallowedFields.get(id);
+                if (id == null) {
+                    throw new StorageException("The name of the field '"+((FieldDefs)mmobject).getDBName()+"' is disallowed, and no alternate value is available.");
+                }
             }
-            return alternateName;
+            return id;
         } else {
-            return name;
+            throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
         }
     }
-    
-	public String unmapField(String name) throws StorageException {
-        String disallowedName = (String)alternateFields.get(name);
-        if (disallowedName != null) {
-            return disallowedName;
-        } else {
-            return name;
-        }
-    }
-    
+   
     abstract public double getVersion();
     
 	abstract public boolean supportsTransactions();
