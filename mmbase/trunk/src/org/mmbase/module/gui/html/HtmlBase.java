@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.11 2000-03-21 15:42:55 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.12 2000-03-29 10:07:49 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.11  2000/03/21 15:42:55  wwwtech
+	Wilbert changed use of teaser builder to use of typedef builder where possible to get nodes
+	
 	Revision 1.10  2000/03/20 10:40:59  wwwtech
 	Rico: added GETVALUE replace command
 	
@@ -62,7 +65,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.11 2000-03-21 15:42:55 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.12 2000-03-29 10:07:49 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -129,17 +132,6 @@ public class HtmlBase extends ProcessorModule {
 			if (cmd.equals("RELATIONS")) return(doRelations(sp,tagger));
 			if (cmd.equals("MULTILEVEL")) return(doMultiLevel(sp,tagger));
 			if (cmd.equals("MULTI")) return(doMultiLevel(sp,tagger));
-
-			if (cmd.equals("TSEARCH")) {
-				// should be removed soon !
-				Teasers bul=(Teasers)mmb.getMMObject("teasers");
-				if (bul!=null) {
-					return(bul.doTSearch(sp,tagger));
-				} else {
-					debug("getList(): can't use teasers");
-					return(null);
-				}
-			}
 			if (cmd.equals("BUILDER")) return(doBuilder(sp,tagger,tok));
 		}
 		return(null);
@@ -271,7 +263,7 @@ public class HtmlBase extends ProcessorModule {
 			tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
 		} catch(Exception g) {
 			if (bul==null) {
-				debug("doRealations(): ERROR: asking relations on a unkown builder : "+type);
+				debug("doRelations(): ERROR: asking relations on a unkown builder : "+type);
 			} else {
 				debug("doRelations(): ERROR: url("+sp.getUrl()+") : "+g);
 				g.printStackTrace();
