@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.19 2002-07-17 11:28:07 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.20 2002-08-26 14:38:50 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -365,7 +365,7 @@ public class WizardDatabaseConnector {
             // the variable $pos is used to make that distinction
             params.put("pos",createorder+"");
             Node parent=data.getDocumentElement();
-log.info("parent="+parent.toString());
+            if (log.isDebugEnabled()) log.debug("parent="+parent.toString());
             value=Utils.transformAttribute(parent,value,false,params);
             params.remove("pos");
             if (value==null) value="";
