@@ -780,12 +780,18 @@ public class Controller {
      */
     public boolean postReply(String forumid, String postareaid, String postthreadid, String subject, String poster, String body) {
         Forum f = ForumManager.getForum(forumid);
+
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
             if (a != null) {
                 PostThread t = a.getPostThread(postthreadid);
                 if (t != null) {
-                    t.postReply(subject, poster, body);
+                    // nobody may post in closed thread, unless you're a moderator
+                    if (!t.getState().equals("closed") || a.isModerator(poster)) {
+                        t.postReply(subject, poster, body);
+                    } else {
+                        return false;
+                    }
                 }
             }
         }
