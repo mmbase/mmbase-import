@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.15 2003-08-27 21:30:01 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.16 2004-01-08 14:55:09 michiel Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static final Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
@@ -46,26 +46,20 @@ public class VirtualNodeManager extends BasicNodeManager {
             int fieldType = Field.TYPE_UNKNOWN;
             if (value instanceof MMObjectNode) {
                 fieldType = Field.TYPE_NODE;
-            }
-            if (value instanceof String) {
+            } else if (value instanceof String) {
                 fieldType = Field.TYPE_STRING;
-            }
-            if (value instanceof Integer) {
+            } else if (value instanceof Integer) {
                 fieldType = Field.TYPE_INTEGER;
-            }
-            if (value instanceof  byte[]) {
+            } else if (value instanceof  byte[]) {
                 fieldType = Field.TYPE_BYTE;
-            }
-            if (value instanceof  Float) {
+            } else if (value instanceof  Float) {
                 fieldType = Field.TYPE_FLOAT;
-            }
-            if (value instanceof  Double) {
+            } else if (value instanceof  Double) {
                 fieldType = Field.TYPE_DOUBLE;
-            }
-            if (value instanceof  Long) {
+            } else if (value instanceof  Long) {
                 fieldType = Field.TYPE_LONG;
             }
-            FieldDefs fd= new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType,-1, Field.STATE_VIRTUAL);
+            FieldDefs fd = new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType, -1, Field.STATE_VIRTUAL);
             Field ft = new BasicField(fd,this);
             fieldTypes.put(fieldName,ft);
         }
