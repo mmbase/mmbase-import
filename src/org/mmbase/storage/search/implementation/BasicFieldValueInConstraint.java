@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
@@ -41,14 +41,27 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
      * @return This <code>BasicFieldValueInConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
+    // TODO RvM: add javadoc to explain how the values are converted to strings
+    // in order to be added.
     public BasicFieldValueInConstraint addValue(Object value) {
-        // Add value as string. This facilitates comparison of
-        // numerical values of different type.
         BasicStepField.testValue(value, getField());
-        values.add(value.toString());
+        if (value instanceof Number) {
+            // Add value as string. This facilitates comparison of
+            // numerical values of different type.
+            Number numberValue = (Number) value;
+            // Represent integral value as integer, 
+            // other values as floating point.
+            if (numberValue.intValue() == numberValue.doubleValue()) {
+                values.add(Integer.toString(numberValue.intValue()));
+            } else {
+                values.add(numberValue.toString());
+            }
+        } else {
+            values.add(value.toString());
+        }
         return this;
     }
-    
+   
     // javadoc is inherited
     public SortedSet getValues() {
         return Collections.unmodifiableSortedSet(values);
@@ -93,4 +106,5 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
         append(")");
         return sb.toString();
     }
+    
 }
