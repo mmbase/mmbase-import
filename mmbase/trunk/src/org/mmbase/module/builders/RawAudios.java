@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @version $Id: RawAudios.java,v 1.14 2002-01-28 14:35:52 pierre Exp $
+ * @version $Id: RawAudios.java,v 1.15 2002-07-23 13:55:43 vpro Exp $
  */
 public class RawAudios extends MMObjectBuilder {
 
@@ -382,7 +382,10 @@ public class RawAudios extends MMObjectBuilder {
         if (format == SURESTREAM_FORMAT) {
             protName = "rtsp";
         } else if (format == RA_FORMAT) {
-            protName = "pnm";
+			// Don't use pnm for old streams, but use rtsp instead, because of buffering probs
+			// Through rtsp this problem doesn't occur.
+            //protName = "pnm";
+            protName = "rtsp";
         } else {
             protName = "http";
         }
