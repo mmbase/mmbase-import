@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.22 2003-01-21 17:46:24 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.23 2003-01-21 23:04:00 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -83,10 +83,10 @@ public class MediaFragments extends MMObjectBuilder {
      * Would something like this be feasible to translate a List to a Map?
      *
      */
-    protected Map translateURLArguments(List arguments, Map info) {
+    static protected Map translateURLArguments(List arguments, Map info) {
         if (info == null) info = new HashMap();
         if (arguments != null) {
-            if (arguments.size() == 1) info.put("format", arguments.get(0));
+            info.put("format", arguments);
         }
         return info;
     }
@@ -189,6 +189,16 @@ public class MediaFragments extends MMObjectBuilder {
             return "[" + title + "]";
         }        
     }
+
+    public String getGUIIndicator(String field, MMObjectNode node) {
+        if ("start".equals(field) || "stop".equals(field)) {
+            StringBuffer buf = new StringBuffer();
+            FragmentResponseInfo.appendTime(node.getIntValue(field), buf);
+            return buf.toString();
+        }
+        return super.getGUIIndicator(field, node);
+    }
+
     
     /**
      * Retrieves the url with URI information of the mediasource that matches best.
