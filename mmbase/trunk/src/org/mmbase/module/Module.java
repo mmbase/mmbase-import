@@ -25,8 +25,9 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
+ * @author Pierre van Rooden
  *
- * @version $Revision: 1.31 $ $Date: 2001-05-31 09:20:23 $
+ * @version $Revision: 1.32 $ $Date: 2001-05-31 09:30:01 $
  */
 public abstract class Module {
 
@@ -46,6 +47,8 @@ public abstract class Module {
     int    version;
 
     private String className;
+    // startup call.
+    private boolean started = false;
 
     /**
      * variable to synchronize SecurityObj
@@ -67,10 +70,33 @@ public abstract class Module {
     }
 
     /**
-     * Inits the module (startup final step 2).
-     * This is called second on startup, the module is expected
-     * to read the environment variables it needs. Startup threads,
-     * open connections etc.
+     * Starts the module.
+     * This module calls the {@link #init()} of a module exactly once.
+     * In other words, once the init() is called, it does not call it again.
+     * This method is final and cannot be overridden.
+     * It is used to safely intilaize modules during startup, amd allows other modules
+     * to force the 'startup' of another module without risk.
+     */
+    public final synchronized void startModule() {
+        if (started) return;
+        started=true;
+        init();
+    }
+
+    /**
+     * Returns whether the module has started (has been initialized or is in
+     * its initialization fase).
+     */
+    public final boolean hasStarted() {
+        return started;
+    }
+
+    /**
+     * Initializes the module.
+     * Init can be overridden to read the environment variables it needs.
+     * <br />
+     * This method is called by {@link #startModule()}, which makes sure it is not called
+     * more than once. You should not call init() directly, call startModule() instead.
      */
     public abstract void init();
 
@@ -253,6 +279,7 @@ public abstract class Module {
      * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
      * which is set when servscan is loaded.
      * Fixed on 22 December 1999 by daniel & davzev.
+     * XXX: why is this in Module???
      * @param ext A String containing the extension.
      * @return The mimetype.
      */
@@ -295,11 +322,12 @@ public abstract class Module {
         }
         for (Enumeration e=modules.elements();e.hasMoreElements();) {
             Module mod=(Module)e.nextElement();
+            log.info("start module : " + mod);
             if ( log.isDebugEnabled()) {
-                log.debug("startModules(): mod.init(" + mod + ")");
+                log.debug("startModules(): mod.startModule(" + mod + ")");
             }
             try {
-                mod.init();
+                mod.startModule();
             } catch (Exception f) {
                 log.error("startModules(): module(" + mod + ") not found to 'init'!");
                 f.printStackTrace();
@@ -307,7 +335,34 @@ public abstract class Module {
         }
     }
 
+    /**
+     * Retrieves a reference to a Module.
+     * This call does not ensure that the requested module has been initialized.
+     * XXX: return type Object in stead of Module?
+     *
+     * @param name the name of the module to retrieve
+     * @return a refernce to a <code>Module</code>, or <code>null</code> if the
+     *      module does not exist or is inactive.
+     */
     public static Object getModule(String name) {
+        return getModule(name,false);
+    }
+    /**
+     * Retrieves a reference to a Module.
+     * If you set the <code>startOnLoad</code> to <code>true</code>,
+     * this call ensures that the requested module has been initialized by
+     * calling the {@link #startModule()} method.
+     * This is needed if you need to call Module methods from the init() of
+     * another module.
+     *
+     * XXX: return type Object in stead of Module?
+     *
+     * @param name the name of the module to retrieve
+     * @param startOnLoad whetehr to make sure the module has been staretd or not.
+     * @return a reference to a <code>Module</code>, or <code>null</code> if the
+     *      module does not exist or is inactive.
+     */
+    public static Object getModule(String name, boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
         if (modules==null) {
             modules=loadModulesFromDisk();
@@ -321,12 +376,14 @@ public abstract class Module {
         String orgname=name;
         name=name.toLowerCase();
 
-
         // try to obtain the ref to the wanted module
         Object obj=modules.get(name);
         if (obj==null) obj=modules.get(orgname);
 
         if (obj!=null) {
+            // make sure the module is started, as this method could
+            // have been called from the init() of another Module
+            if (startOnLoad) ((Module)obj).startModule();
             return obj;
         } else {
             return null;
