@@ -6,7 +6,7 @@
     <articleinfo>
     <title>MMBase Configuration documentation</title>
     <date>2002-12-04</date>
-    <edition>$Id: configuration.xml,v 1.19 2003-07-27 17:47:50 henk Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.20 2004-01-24 13:42:16 gerard Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -34,13 +34,13 @@
   <section id="webxml">
    <title>Web.xml configuration</title>
     <para>
-      The base of a web application configuration is always the so-called `web.xml'. In a web.xml
+      The base of a web application configuration is always the so-called 'web.xml'. In a web.xml
       the following MMBase specific things could be found.
     </para>
     <section id="contextparameters">
       <title>Context parameters</title>
         <para>
-        The parameter `mmbase.htmlrooturlpath' indicates the context root. It must be specified if
+        The parameter 'mmbase.htmlrooturlpath' indicates the context root. It must be specified if
         MMBase does not succeed to determine it automatically, otherwise some URLs to some servlets
         will be generated incorrectly. Hopefully this option will be deprecated when the servlet
         2.3 api is supported well (and fully) by all important
@@ -48,7 +48,7 @@
         Orion 1.6 it is.        
       </para>
       <para>
-        The parameter `mmbase.config' indicates the MMBase configuration directory. If this
+        The parameter 'mmbase.config' indicates the MMBase configuration directory. If this
         parameter is missing, the configuration is supposed to be in WEB-INF/config (so next
         to web.xml itself).
       </para>
@@ -56,7 +56,7 @@
     <section id="servlets">      
       <title>Servlets</title>
       <para>
-        For MMBase to start up, at least one `MMBaseServlet' must be
+        For MMBase to start up, at least one 'MMBaseServlet' must be
   turned on in your web.xml. The following of those servlets are available.
         <variablelist>
           <varlistentry>
@@ -123,13 +123,13 @@
           <term><classname>org.mmbase.servlet.servscan</classname></term>
           <listitem>
             <para>
-              If you also have turned on the right MMBase `modules',
-              this servlet will provide the `SCAN' template
+              If you also have turned on the right MMBase 'modules',
+              this servlet will provide the 'SCAN' template
               language. For new users it is advised not to use SCAN, but
               to use e.g. JSP (the JSP servlet and servlet-mapping are
               normally shipped with and installed in your application
               server). The SCAN servlet servscan has to be mapped to
-                `*.shtml'.
+                '*.shtml'.
               </para>
             </listitem>
           </varlistentry>
@@ -154,7 +154,7 @@
         configured by the use of references to resources provided by
         the application server. A resource a an instance of a certain
         type which is created and configured and can be referred to by
-        a `resource name'.
+        a 'resource name'.
       </para>
       <para>
         These resources must also be described in web.xml. The actual
@@ -203,7 +203,7 @@
     <servlet-class>org.mmbase.servlet.AttachmentServlet</servlet-class>    
     <init-param>
       <param-name>expire</param-name><!-- Expire time of attachment -->
-      <param-value>10</param-value><!-- 10 minutes -->
+      <param-value>600</param-value><!-- 10 minutes -->
     </init-param>
     <load-on-startup>3</load-on-startup>
   </servlet>
@@ -314,11 +314,11 @@
     <para>
       In older MMBase versions it was required to use this JVM option even when you did
       run it as a (set of) servlet(s), but this is not any longer the case (since MMBase
-      1.4), and use of `-Dmmbase.config' other then in debugging or other `stand-alone'
+      1.4), and use of '-Dmmbase.config' other then in debugging or other 'stand-alone'
       situations is discouraged.
     </para>
     <para>
-      In these older versions of MMBase also the `mmbase.htmlroot' command line option was
+      In these older versions of MMBase also the 'mmbase.htmlroot' command line option was
       needed. It still is supported (though not by JSP), but I can't think of any situation in which
       it would be needed (besides when using a very old MMBase or perhaps a very old application
       server), and I think this option can now be considered fully
@@ -364,7 +364,7 @@
   <section id="builders">
     <title>Builders</title>
     <para>
-      `Builder' is another word for `object-type'. The builder-definitions of your MMBase can be
+      'Builder' is another word for 'object-type'. The builder-definitions of your MMBase can be
       found in config/builders and subdirectories.
     </para>
     <section>
@@ -401,7 +401,7 @@
       In the databases subdirectory of the configuration you find the
       XML's describing the supported databases. In an actual
       installation, all but one can be removed. It must correspond to
-      the `database' property in config/modules/mmbaseroot.xml, if
+      the 'database' property in config/modules/mmbaseroot.xml, if
       this property is present. You can also remove the database
       property from mmbaseroot.xml (I would advice that, because then
       all database configuration is in jdbc.xml), then the
@@ -471,7 +471,7 @@
         </example>
     </para>
     <para>
-      It is also possible to use the `data-sources' of the application
+      It is also possible to use the 'data-sources' of the application
       server. The jdbc.xml then looks like this:
       <example>
         <title>An example jdbc.xml, using data-source</title>        
@@ -552,7 +552,7 @@
                 (the same levels as in the log4j implementation). For
                 Log4jImpl it is a file name, in which the
                 configuration is. This is an XML file according to the
-                `DOMConfigurator' of log4j. The rest of this document
+                'DOMConfigurator' of log4j. The rest of this document
                 will give a short description of how this file looks
                 like.
               </para>
@@ -772,7 +772,7 @@
         validation and auto-generation of documentation -->
       </para>
       <para>
-        Validation of non MMBase specific xml's, like web.xml and `log4j.xml' is left to the
+        Validation of non MMBase specific xml's, like web.xml and 'log4j.xml' is left to the
 applications responsible for them (application server and log4j in these cases).
       </para>
     </section>
