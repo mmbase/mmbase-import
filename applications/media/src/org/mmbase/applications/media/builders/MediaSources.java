@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.24 2003-12-04 18:27:14 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.25 2004-01-19 17:05:56 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -145,8 +145,7 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * resolve the url of the mediasource. (e.g. pnm://www.mmbase.org/test/test.ra)
      *
-     * @param mediafragment the media fragment
-     * @param mediasouce the media source
+     * @param source the media source
      * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
      * @return the url of the media source
      */
@@ -456,7 +455,7 @@ public class MediaSources extends MMObjectBuilder {
 
     /**
      * get all mediaproviders belonging to this mediasource
-     * @param mediasource the mediasource
+     * @param source the mediasource
      * @return All mediaproviders related to the given mediasource
      */
     protected List getProviders(MMObjectNode source) {

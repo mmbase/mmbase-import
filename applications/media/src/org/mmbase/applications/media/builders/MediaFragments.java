@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.29 2003-11-11 15:11:21 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.30 2004-01-19 17:05:56 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -235,7 +235,7 @@ public class MediaFragments extends MMObjectBuilder {
      * Retrieves the url of the mediasource that matches best.
      * (e.g. pnm://www.mmbase.org/music/test.ra) 
      *
-     * @param mediaFragment the media fragment
+     * @param fragment the media fragment
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
      * @return the url of the audio file
      */ 
@@ -333,7 +333,7 @@ public class MediaFragments extends MMObjectBuilder {
      * part. This fragment is not a subfragment itself, and should be
      * linked to the actual sources.
      * 
-     * @param mediafragment sub media fragment
+     * @param fragment sub media fragment
      * @return The parent media fragment or null if it has not.
      */
     public MMObjectNode getRootFragment(MMObjectNode fragment) {
@@ -344,7 +344,7 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * Get all mediasources belonging to this mediafragment
      * (scope  should be protected)
-     * @param mediafragment the mediafragment
+     * @param fragment the mediafragment
      * @return All mediasources related to given mediafragment
      */
     public List getSources(MMObjectNode fragment) {
@@ -363,10 +363,10 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * Removes related media sources. This can be used by automatic recording VWMS's.
      * 
-     * @param mediaFragment The MMObjectNode
+     * @param fragment The MMObjectNode
      */
-    public  void removeSources(MMObjectNode mediafragment) {
-        List ms = getSources(mediafragment);
+    public  void removeSources(MMObjectNode fragment) {
+        List ms = getSources(fragment);
         for (Iterator mediaSources = ms.iterator() ;mediaSources.hasNext();) {
             MMObjectNode source = (MMObjectNode) mediaSources.next();
             source.parent.removeRelations(source);
