@@ -48,8 +48,17 @@ public class UserContext implements org.mmbase.bridge.User {
     /**
      *  Get the unique identifier for this user. This should be unique 
      *  for every different user on the system.
+     *	@return     a unique identifier for this user.     
      */
     public String getIdentifier() {
-	return "nobody";
+	return "anonymous";
     }
+    
+    /**
+     *  Get the rank of this user. 
+     *	@return     the rank of this user.          
+     */
+    public Rank getRank() {
+	return Rank.ANONYMOUS;
+    }    
 }
