@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.253 2004-05-10 17:29:44 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.254 2004-05-18 17:25:48 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -217,6 +217,75 @@ version: $Id: mmbase-taglib.xml,v 1.253 2004-05-10 17:29:44 michiel Exp $
 			then in the body of the list a list item is in the context, and afterwards a 'List', which can
 			normally be reused with the 'referid' of some list.
 		</info>
+		<attribute>
+			<name>comparator</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+        <p>
+          Give the class name of a class that implements the <code>java.util.Comparator</code> interface. Give
+          either a fully qualified name, or a single name. When it is a single name the
+          class must be defined as a static inner class in the jsp (see example)
+        </p>
+			</info>
+			<since>MMBase-1.7</since>
+			<possiblevalue>
+				<value>SHUFFLE</value>
+				<info>
+					For shuffling you don't need to implement a comparator (which is principally
+					possible). This will use Collections.shuffle in stead.
+				</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>REVERSE</value>
+				<info>
+					This pseudo-comparator simply reverses the order of the list (using Collections.reverse).
+				</info>
+			</possiblevalue>
+			<examplevalue>
+				<value>MyCollator</value>
+				<info>
+					If you use a value like this, then it will be supposed that this Comparator is implemented
+					in this jsp. E.g.: <!-- example by Erik van Oosten -->
+					<pre><![CDATA[
+<%!
+  /** 
+   * Comparator to order mmbase nodes on their field named "title".
+   */
+   static private final Collator DUTCH_COLLATOR = Collator.getInstance(new Locale("nl", "NL"));
+   static {
+      // PRIMARY strength ignores differences between &eacute; and e, and between e and E
+      DUTCH_COLLATOR.setStrength(Collator.PRIMARY);
+   }
+
+   static public class DutchCaseInsensitiveCollator implements Comparator {
+      public int compare(Object o1, Object o2) {
+          String title1 = ((org.mmbase.bridge.Node) o1).getStringValue("title");
+          String title2 = ((org.mmbase.bridge.Node) o2).getStringValue("title");
+          return DUTCH_COLLATOR.compare(title1, title2);
+      }
+  }
+%>;
+<mm:listnodescontainer>
+  <!-- make sure the list is not gigantic, when sorting with comparator it happens in memory, not by database! -->
+  <mm:ageconstraint maxage="7" />
+  <mm:listnodes comparator="DutchCaseInsensitiveCollator">
+     ...
+  </mm:listnodes>
+</mm:listnodescontainer>
+]]>
+</pre>
+				</info>
+			</examplevalue>
+			<examplevalue>
+				<value>nl.myorg.OurComparator</value>
+				<info>
+					You can also use a fully qualified class name.
+				</info>
+			</examplevalue>
+
+		</attribute>
+   
 		<see tag="listreferrer" />
 	</taginterface>
 	<taginterface>
@@ -823,45 +892,6 @@ version: $Id: mmbase-taglib.xml,v 1.253 2004-05-10 17:29:44 michiel Exp $
 				destination to source or both).
 			</info>
 		</attribute>
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<info>
-				Applies a java-comparator to sort the list.
-			</info>
-			<since>MMBase-1.7</since>
-			<possiblevalue>
-				<value>SHUFFLE</value>
-				<info>
-					For shuffling you don't need to implement a comparator (which is principally
-					possible). This will use Collections.shuffle in stead.
-				</info>
-			</possiblevalue>
-			<possiblevalue>
-				<value>REVERSE</value>
-				<info>
-					This pseudo-comparator simply reverses the order of the list (using Collections.reverse).
-				</info>
-			</possiblevalue>
-			<examplevalue>
-				<value>MyCollator</value>
-				<info>
-					If you use a value like this, then it will be supposed that this Comparator is implemented
-					in this jsp. E.g.:
-					<pre><![CDATA[
-<%! public class MyCollator extends java.text.RuleBasedCollator("a<c<b") {} %>
-]]>
-				</pre>
-				</info>
-			</examplevalue>
-			<examplevalue>
-				<value>nl.myorganisation.mmbase.util.OurComparator</value>
-				<info>
-					You can also use a fully qualified class name.
-				</info>
-			</examplevalue>
-		</attribute>
 		<example>&lt;mm:list nodes="123" path="mags,news"
 								fields="mags.title,news.number"&gt;
 	&lt;mm:first&gt;magazine list&lt;/mm:first&gt;
@@ -970,13 +1000,6 @@ version: $Id: mmbase-taglib.xml,v 1.253 2004-05-10 17:29:44 michiel Exp $
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="list" attribute="searchdir" />
 		</attribute>
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<see tag="list" attribute="comparator" />
-			<since>MMBase-1.7</since>
-		</attribute>
 		<example>&lt;mm:node number="123"&gt;
 	&lt;mm:related  path="mags,news" fields="mags.title,news.number"&gt;
 		&lt;mm:first&gt;magazine list&lt;/mm:first&gt;
@@ -1061,13 +1084,6 @@ version: $Id: mmbase-taglib.xml,v 1.253 2004-05-10 17:29:44 michiel Exp $
 			<see tag="list" attribute="offset" />
 			<see tag="offset" />
 		</attribute>
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<see tag="list" attribute="comparator" />
-			<since>MMBase-1.7</since>
-		</attribute>
 		<example>&lt;mm:listnodes type="mags"  &gt;
 	&lt;mm:first&gt;magazine list&lt;/mm:first&gt;
 	&lt;mm:field name="title" /&gt;
@@ -1151,39 +1167,6 @@ version: $Id: mmbase-taglib.xml,v 1.253 2004-05-10 17:29:44 michiel Exp $
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<see tag="list" attribute="role" />
-		</attribute>
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<info>
-				Applies a java-comparator to sort the list.
-			</info>
-			<since>MMBase-1.7</since>
-			<possiblevalue>
-				<value>SHUFFLE</value>
-				<info>
-					For shuffling you don't need to implement a comparator (which is principally
-					possible). This will use Collections.shuffle in stead.
-				</info>
-			</possiblevalue>
-			<examplevalue>
-				<value>MyCollator</value>
-				<info>
-					If you use a value like this, then it will be supposed that this Comparator is implemented
-					in this jsp. E.g.:
-					<pre><![CDATA[
-<%! public class MyCollator extends java.text.RuleBasedCollator("a<c<b") {} %>
-]]>
-				</pre>
-				</info>
-			</examplevalue>
-			<examplevalue>
-				<value>nl.myorganisation.mmbase.util.OurComparator</value>
-				<info>
-					You can also use a fully qualified class name.
-				</info>
-			</examplevalue>
 		</attribute>
 		<example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
@@ -1933,12 +1916,6 @@ access the value of title:
 		<see tag="function" />
 		<see tag="functioncontainer" />
 		<see tag="nodelistfunction" />
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<see tag="list" attribute="comparator" />
-		</attribute>
 	</tag>
 
 	<tag>
@@ -1961,12 +1938,6 @@ access the value of title:
 		<see tag="function" />
 		<see tag="functioncontainer" />
 		<see tag="listfunction" />
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<see tag="list" attribute="comparator" />
-		</attribute>
 		<attribute>
 			<name>max</name>
 			<required>false</required>
@@ -2550,13 +2521,6 @@ transaction was commited, following should result anything:
 					Return all fields.
 				</info>
 			</possiblevalue>
-		</attribute>
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<see tag="list" attribute="comparator" />
-			<since>MMBase-1.7</since>
 		</attribute>
 		<attribute>
 			<name>jspvar</name>
@@ -5216,7 +5180,7 @@ The 0 is just counter, which starts at 0 on every page.
 			<info>
 				If the surrounding nodelist container is a list container then the constraint can be on the
 				several elements from the path. With this attribute you must indicate to wich. This is not
-				needed for listnodes container.
+				needed for listnodes and relatednodes containers (and probably would be a 'number' field otherwise).
 			</info>
 			<see tag="listcontainer" />
 			<see tag="listnodescontainer" />
@@ -5471,12 +5435,6 @@ The 0 is just counter, which starts at 0 on every page.
 			<info>
 				This tag can only reuse Lists, so you have to use this attribute.
 			</info>
-		</attribute>
-		<attribute>
-			<name>comparator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<see tag="list" attribute="comparator" />
 		</attribute>
 	</tag>
 
