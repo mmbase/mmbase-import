@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.23 2003-08-20 08:45:05 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.24 2003-12-04 18:27:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -339,8 +339,8 @@ public class MediaSources extends MMObjectBuilder {
                         locale = new Locale((String) args.get(1), "");
                     } 
                     return getFormat(node).getGUIIndicator(locale);
-                } else if ("".equals(args.get(0))) {
-                    return super.executeFunction(node, function, args); // call getGUIIndicoato
+                } else if ("".equals(args.get(0)) || args.get(0) == null) {
+                    return super.executeFunction(node, function, args); // call getGUIIndicator
                 } else {
                     return node.getStringValue((String) args.get(0));
                 }
