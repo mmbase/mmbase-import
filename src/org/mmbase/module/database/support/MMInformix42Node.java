@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.19 $ $Date: 2000-09-08 07:26:29 $
+* @$Revision: 1.20 $ $Date: 2000-10-12 11:38:40 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -193,6 +193,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	*/
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
 		if (debug) debug("Method: insert()");
+
+		if (debug) debug("Inserting node : "+node.toString());
 	
 		int number=node.getIntValue("number");
 		// did the user supply a number allready, ifnot try to obtain one
@@ -316,9 +318,9 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 } else if (type==FieldDefs.TYPE_TEXT) {
                         String tmp=node.getStringValue(key);
                         if (tmp!=null) {
-				setDBText(i, stmt,tmp);
+							setDBText(i, stmt,tmp);
                         } else {
-                                setDBText(i, stmt,"");
+                            setDBText(i, stmt,"");
                         }
                 } else if (type==FieldDefs.TYPE_BYTE) {
                                 setDBByte(i, stmt, node.getByteValue(key));
@@ -358,6 +360,10 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	*/
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
 		try {
+			debug("decodeDBNodeField()");
+			if (node==null) {
+				debug("decodeDBNodeField() ERROR node is null");
+			}
 			
 			fieldname=fieldname.toLowerCase();
 
@@ -370,6 +376,13 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 
 			int type=node.getDBType(prefix+fieldname);
 			
+			if (debug) {
+				debug("Node "+node);
+				debug("Fieldname "+fieldname+" Prefix '"+prefix+"'");
+			}
+
+			debug("1");
+
 			switch (type) {
 			case FieldDefs.TYPE_STRING:
 	
@@ -379,40 +392,50 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				   database extends the string with spaces. 
 				   Therefore I need to trim strings that are stored in nchars?
 				   But i have n't found a way to detect that? So, i'm trimming 
-				   all strings ... */
+				   all strings ...
 
-				String tmp=rs.getString(i).trim();
+					Note by Rico: that's all fine an such, but would
+					it not be handy to test for null before trimming ?
+				
+			    */
+
+				String tmp=rs.getString(i);
 				if (tmp==null) {
 					node.setValue(prefix+fieldname,"");
 				} else {
-					node.setValue(prefix+fieldname,tmp);
+					node.setValue(prefix+fieldname,tmp.trim());
 				}
-				return(node);
+				break;
 			case FieldDefs.TYPE_INTEGER:
 				node.setValue(prefix+fieldname,rs.getInt(i));
-				return(node);
+				break;
 			case FieldDefs.TYPE_LONG:
-                                node.setValue(prefix+fieldname,(Long)rs.getObject(i));
-                                break;
-                        case FieldDefs.TYPE_FLOAT:
-                                // who does this now work ????
-                                //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
-                                node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
-                                break;
-                        case FieldDefs.TYPE_DOUBLE:
-                                node.setValue(prefix+fieldname,(Double)rs.getObject(i));
-                                break;
-                        case FieldDefs.TYPE_BYTE:
-                                node.setValue(prefix+fieldname,"$SHORTED");
-                                break;
+                node.setValue(prefix+fieldname,(Long)rs.getObject(i));
+                break;
+            case FieldDefs.TYPE_FLOAT:
+                // who does this now work ????
+                //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
+                node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
+                break;
+            case FieldDefs.TYPE_DOUBLE:
+                node.setValue(prefix+fieldname,(Double)rs.getObject(i));
+                break;
+            case FieldDefs.TYPE_BYTE:
+                node.setValue(prefix+fieldname,"$SHORTED");
+                break;
 			case FieldDefs.TYPE_TEXT:
 				node.setValue(prefix+fieldname,"$SHORTED");
-				return(node);
+				break;
+			default:
+				debug("decodeDBNodeField(): unknown type="+type+" fieldname="+fieldname);
+				break;
 			}			
+			debug("6");
 		} catch(SQLException e) {
 			debug("mmObject->"+fieldname+" node="+node.getIntValue("number"));
 			e.printStackTrace();
 		}
+		debug("decodeDBNodeField end");
 		return(node);
 	}
 
@@ -652,7 +675,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         *         set text array in database
         */
         public void setDBText(int i, PreparedStatement stmt,String body) {
-		if (debug) debug("Method: setDBText()");
+		if (debug) debug("Method: setDBText(): pos "+i+" body '"+body+"'");
                 byte[] isochars=null;
                 try {
                         isochars=body.getBytes("ISO-8859-1");
