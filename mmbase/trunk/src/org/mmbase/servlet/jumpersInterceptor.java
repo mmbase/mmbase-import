@@ -104,6 +104,11 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
 		return 0;
     }
 
+    public int authorize(Request request, Response response, String reqRoles[]) {
+		return 0;
+	}
+    
+
     public int beforeBody( Request rrequest, Response response ) {
 		return 0;
     }
