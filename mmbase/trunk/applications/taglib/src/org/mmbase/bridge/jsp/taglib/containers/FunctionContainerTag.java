@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import java.util.*;
 import org.mmbase.util.Argument;
@@ -18,94 +19,80 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import java.lang.reflect.*;
+
 /**
- * Function Container can be used around Function (-like) Tags
+cd a * Function Container can be used around Function (-like) Tags
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.2 2003-08-11 15:26:36 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.3 2003-08-12 17:10:21 michiel Exp $
  */
 public class FunctionContainerTag extends ContextReferrerTag implements FunctionContainer {
-
-
     private static Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
 
-    private Argument[] definition;
-    private Object     result;
-    private boolean    resultSet;
     private List       parameters;
+    protected Attribute argumentsDefinition = Attribute.NULL;
         
 
-    // javadoc inherited (from FunctionContainer)
-    public void setDefinition(Argument[] args) throws JspTagException {
-        if (definition != null) {
-            throw new JspTagException("Duplicate definition");
-        }
-        definition = args;
-        parameters = new Arguments(definition);
-    }
-
-
-    // javadoc inherited (from FunctionContainer)
-    public Object getResult() throws JspTagException {
-        if (! resultSet) {
-            throw new JspTagException("No result was set");
-        }
-        return result;
-    }
-
-    // javadoc inherited (from FunctionContainer)
-    public void   setResult(Object result) throws JspTagException {
-        if (! resultSet) {
-            throw new JspTagException("Result was set already");
-        }
-        this.result = result;
-        resultSet = true;
+    /**
+     * Temporary? Using reflection to get the right definition constant in the tag
+     */
+    public void setArgumentsdefinition(String a) throws JspTagException {
+        argumentsDefinition = getAttribute(a);
     }
 
 
     // javadoc inherited (from ParamHandler)
     public void addParameter(String key, Object value) throws JspTagException {
-        parameters.add(new Parameter(key, value));
+        if (parameters instanceof Arguments) {
+            Arguments a = (Arguments) parameters;
+            a.set(key, value);
+        } else {
+            parameters.add(value);
+        }
     }
 
     // javadoc inherited (from FunctionContainer)
     public List  getParameters() {
-        if (definition == null) {
-            List params = new ArrayList();
-            Iterator i = parameters.iterator();
-            while (i.hasNext()) {
-                params.add( ((Parameter) i.next()).value);
-            }
-            return Collections.unmodifiableList(params);
-        } else {
-            Arguments params = new Arguments(definition);
-            Iterator i = parameters.iterator();
-            while (i.hasNext()) {
-                Parameter p = (Parameter) i.next();
-                params.set(p.key, p.value);
-            }
-            return Collections.unmodifiableList(params);
-        }
-    }
-    public String getName() {
-        return "bla";
+        return Collections.unmodifiableList(parameters);
     }
 
-    public int doStartTag() throws JspTagException {        
-        definition = null;
-        resultSet  = false;     
-        parameters = new ArrayList();
+
+    public int doStartTag() throws JspTagException { 
+        if (argumentsDefinition != Attribute.NULL) {
+            Argument[] definition;    
+            String def = argumentsDefinition.getString(this);
+            // find the class it is in.
+            int i = def.lastIndexOf('.');
+            String className = def.substring(0, i);
+            String fieldName = def.substring(i + 1);
+
+            try {
+                Class definingClass = Class.forName(className);
+                Field constant      = definingClass.getField(fieldName);
+                
+                definition = (Argument[]) constant.get(null);
+            } catch (Exception e) {
+                throw new JspTagException(e.toString());
+            }
+            parameters = new Arguments(definition);
+        } else {
+            parameters = new ArrayList();
+        }
         return EVAL_BODY_BUFFERED;
     }
 
-    /**
-     * Because parameters are stored in order and by key/value, we need this container help class
-     */
-    private static class Parameter {
-        Parameter(String k, Object v) { key = k; value = v; }
-        String key;
-        Object value;
+    public int doAfterBody() throws JspTagException {
+        try {
+            if (bodyContent != null) {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            }
+        } catch (java.io.IOException ioe){
+            throw new JspTagException(ioe.toString());
+        } 
+        return SKIP_BODY;        
     }
+
 
 }

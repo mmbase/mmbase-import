@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainer.java,v 1.2 2003-08-11 15:26:36 michiel Exp $
+ * @version $Id: FunctionContainer.java,v 1.3 2003-08-12 17:10:21 michiel Exp $
  */
 public interface FunctionContainer extends ParamHandler, TagIdentifier {
 
@@ -32,6 +32,4 @@ public interface FunctionContainer extends ParamHandler, TagIdentifier {
      * @return Arguments (if there was a definition set)
      */
     List    getParameters();
-
-    String  getName();
 }
