@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.9 2000-06-20 14:32:26 install Exp $
+$Id: MMSQL92Node.java,v 1.10 2000-06-22 12:21:04 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/06/20 14:32:26  install
+Rob: turned off some debug information
+
 Revision 1.8  2000/06/20 09:32:46  wwwtech
 fixed otype first run bug for xml config
 
@@ -77,7 +80,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.9 $ $Date: 2000-06-20 14:32:26 $
+* @$Revision: 1.10 $ $Date: 2000-06-22 12:21:04 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -941,15 +944,14 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		// get the wanted notnull
 		boolean notnull=def.getDBNotNull();
 		if (name.equals("otype")) { 
-			notnull=true;
-			type="INTEGER";
+			//notnull=true;
+			//type="INTEGER";
+			return("otype integer "+parser.getNotNullScheme());
+		} else {
+			String result=name+" "+matchType(type,size,notnull);
+			if (notnull) result+=" "+parser.getNotNullScheme();
+			return(result);
 		}
-
-		System.out.println("BBBB1="+name+" "+type);
-		String result=name+" "+matchType(type,size,notnull);
-		System.out.println("BBBB2="+name+" "+type+" "+result);
-		if (notnull) result+=" "+parser.getNotNullScheme();
-		return(result);
 	}	
 
 	
