@@ -18,6 +18,7 @@ import java.net.*;
 // used for resolving in servlet-environment
 import javax.servlet.ServletContext;
 
+
 // used for resolving in MMBase database
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.builders.Resources;
@@ -95,7 +96,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.9 2004-10-13 11:22:31 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.10 2004-10-13 17:33:10 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -199,7 +200,7 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Initializes the Resourceloader using a servlet-context (makes e.g. resolving relatively to WEB-INF/config possible).
-     * @param servletContext The ServletContext used for determining the mmbase configuration directory. Or <code>null</code>.
+     * @param sc The ServletContext used for determining the mmbase configuration directory. Or <code>null</code>.
      */
     public static void init(ServletContext sc) {
         servletContext = sc;
@@ -270,10 +271,10 @@ public class ResourceLoader extends ClassLoader {
      * Used e.g. when loading builders in MMBase.
      */
     public static String getName(String path) {       
-        int i = path.lastIndexOf("/");
+        int i = path.lastIndexOf('/');
         path = path.substring(i + 1);
 
-        i = path.lastIndexOf(".");
+        i = path.lastIndexOf('.');
         if (i > 0) {
             path = path.substring(0, i);
         }
@@ -285,7 +286,7 @@ public class ResourceLoader extends ClassLoader {
      * Used e.g. when loading builders in MMBase.
      */
     public static String getDirectory(String path) {
-        int i = path.lastIndexOf("/");
+        int i = path.lastIndexOf('/');
         if (i > 0) {
             path = path.substring(0, i);
         } else {
@@ -359,17 +360,9 @@ public class ResourceLoader extends ClassLoader {
      * Instantiates a ResourceLoader for a 'sub directory' of given ResourceLoader
      */
     public ResourceLoader(final ResourceLoader cl, final String context)  {
-        super();
+        super(ResourceLoader.class.getClassLoader());
         this.context = cl.findResource(context + "/");
     }
-
-    
-    public ResourceLoader(final URL context)  {
-        super();
-        this.context = context;
-    }
-
-
 
     /**
      * If name starts with '/' the root resourceloader is used.
@@ -406,6 +399,26 @@ public class ResourceLoader extends ClassLoader {
      * @return A Set of Strings which can be successfully loaded with the resourceloader.
      */
     public Set getResourcePaths(final Pattern pattern, final boolean recursive) {
+        return getResourcePaths(pattern, recursive, false);
+    }
+
+    /**
+     * Returns a set of context strings which can be used to instantiated new ResourceLoaders (resource loaders for directories)
+     * (see {@link #ResourceLoader(ResourceLoader, String)}).
+     * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
+     * @param recursive If true, then also subdirectories are searched.
+     */
+    public Set getResourceContexts(final Pattern pattern, final boolean recursive) {
+        return getResourcePaths(pattern, recursive, true);
+    }
+
+    /**
+     * Used by {@link #getResourcePaths(Pattern, boolean)} and {@link #getResourceContext(Pattern, boolean)}
+     * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
+     * @param recursive If true, then also subdirectories are searched.
+     * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
+     */
+    protected Set getResourcePaths(final Pattern pattern, final boolean recursive, boolean directories) {
         FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     File f = new File(dir, name);
@@ -413,12 +426,13 @@ public class ResourceLoader extends ClassLoader {
                 }
             };
         Set results = new LinkedHashSet(); // a set with fixed iteration order
-        getNodeResourcePaths(pattern, recursive, results);
-        getFileResourcePaths(filter, recursive ? "" : null, results);
-        getServletContextResourcePaths(pattern, recursive ? "" : null, results);
-        getClassLoaderResourcePaths(pattern, results);
+        getNodeResourcePaths(pattern, recursive, results, directories);
+        getFileResourcePaths(filter, recursive ? "" : null, results, directories);
+        getServletContextResourcePaths(pattern, recursive ? "" : null, results, directories);
+        getClassLoaderResourcePaths(pattern, results, directories);
         return results;
     }
+
 
     
     /**
@@ -426,11 +440,9 @@ public class ResourceLoader extends ClassLoader {
      * resource with the given index, which is a simply list of resources. 
      *
      * @param pattern   A Regular expression pattern to which  the file-name must match, or <code>null</code> if no restrictions apply
-     * @param recursive If true, then also subdirectories are searched.
-     * @param index     An index of resources, if this index cannot be loaded, it will be ignored.
      * @return A Set of Strings which can be successfully loaded with the resourceloader.
      */
-    protected Set getClassLoaderResourcePaths(final Pattern pattern, Set results) {
+    protected Set getClassLoaderResourcePaths(final Pattern pattern, final Set results, final boolean directories) {
         InputStream inputStream = getResourceAsStream(INDEX);
         if (inputStream != null) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -441,6 +453,9 @@ public class ResourceLoader extends ClassLoader {
                     if (line.startsWith("#")) continue; // support for comments
                     line = line.trim();
                     if (line.equals("")) continue;     // support for empty lines
+                    if (directories) {
+                        line = getDirectory(line);
+                    }
                     if (pattern == null || pattern.matcher(line).matches()) {
                         results.add(line);
                     }
@@ -457,7 +472,7 @@ public class ResourceLoader extends ClassLoader {
      * Used by {@link #getResourcePaths(Pattern, boolean)}. This is the function which does the
      * recursion for files.
      */
-    protected Set getFileResourcePaths(FilenameFilter filter,  String recursive, Set results) {
+    protected Set getFileResourcePaths(final FilenameFilter filter,  final String recursive, final Set results, final boolean directories) {
         Iterator i = getFiles(recursive == null ? "" : recursive).iterator();
         while (i.hasNext()) {
             File f = (File) i.next();
@@ -465,13 +480,14 @@ public class ResourceLoader extends ClassLoader {
                 File [] files = f.listFiles(filter);
                 if (files == null) continue;
                 for (int j = 0; j < files.length; j++) {
+                    if (files[j].getName().equals("")) continue;
                     if (recursive != null && files[j].isDirectory()) {
-                        getFileResourcePaths(filter, recursive + files[j].getName() + "/", results);
-                    } else {
-                        if (files[j].canRead() && ! files[j].isDirectory()) { 
-                            results.add(recursive + files[j].getName());
-                        }
+                        getFileResourcePaths(filter, recursive + files[j].getName() + "/", results, directories);
+                    } 
+                    if (files[j].canRead() && (directories == files[j].isDirectory())) { 
+                        results.add((recursive == null ? "" : recursive) + files[j].getName());
                     }
+
                 }
             }
         }
@@ -482,7 +498,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Used by {@link #getResourcePaths(Pattern, boolean)}. This performs the database part of the job.
      */
-    protected Set getNodeResourcePaths(final Pattern pattern, boolean recursive, Set results) {
+    protected Set getNodeResourcePaths(final Pattern pattern, final boolean recursive, final Set results, final boolean directories) {
         if (resourceBuilder != null) {
             try {
                 NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
@@ -494,14 +510,27 @@ public class ResourceLoader extends ClassLoader {
                 while (i.hasNext()) {
                     MMObjectNode node = (MMObjectNode) i.next();
                     String url = node.getStringValue(Resources.RESOURCENAME_FIELD);
-                    String subUrl = url.substring(context.getPath().length());
-                    if (! recursive && subUrl.indexOf("/") > 0) {
-                        continue;
+                    String subUrl = url.substring(context.getPath().length() - 1);
+                    int pos = subUrl.indexOf('/');
+
+                    if (directories) {
+                        if (pos < 0) continue; // not a directory
+                        do {
+                            String u = subUrl.substring(0, pos);
+                            if (pattern != null && ! pattern.matcher(u).matches()) {
+                                continue;
+                            }
+                            results.add(u);
+                            pos = subUrl.indexOf('/', pos + 1);
+                        } while (pos > 0 && recursive);
+                    } else {
+                        if (pos > 0 && ! recursive) continue;
+                        if (pattern != null && ! pattern.matcher(subUrl).matches()) {
+                            continue;
+                        }
+                        results.add(subUrl);
                     }
-                    if (pattern != null && ! pattern.matcher(subUrl).matches()) {
-                        continue;
-                    }
-                    results.add(url);
+
                 }
             } catch (SearchQueryException sqe) {
                 log.warn(sqe);
@@ -513,27 +542,29 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Recursing for {@link javax.servlet.ServletContext#getResourcePaths}
      */
-    protected Set getServletContextResourcePaths(Pattern pattern,  String recursive, Set results) {
+    protected Set getServletContextResourcePaths(Pattern pattern,  String recursive, Set results, boolean directories) {
         if (servletContext != null) {
             try {
                 Iterator i = getClassLoaderResources(recursive == null ? "" : recursive).iterator();
                 while (i.hasNext()) {
                     String resourcePath = ((String) i.next());
                     String currentRoot  = resourcePath.substring(0, resourcePath.length() - (recursive == null ? 0 : recursive.length()));
-                    Iterator j = servletContext.getResourcePaths(resourcePath).iterator();
+                    Collection c = servletContext.getResourcePaths(resourcePath);
+                    if (c == null) continue;
+                    Iterator j = c.iterator();
                     while (j.hasNext()) {
                         String newResourcePath = ((String) j.next()).substring(currentRoot.length());
-                        if (newResourcePath.endsWith("/")) {   
+                        boolean isDir = newResourcePath.endsWith("/");
+                        if (isDir) {
                             // subdirs
                             if (recursive != null) {                            
-                                getServletContextResourcePaths(pattern, newResourcePath.substring(0, newResourcePath.length() - 1), results);
-                            } else {
-                                // ignore
-                            }
-                        } else {
-                            if (pattern == null || pattern.matcher(newResourcePath).matches()) {
-                                results.add(newResourcePath);
-                            }
+                                getServletContextResourcePaths(pattern, newResourcePath.substring(0, newResourcePath.length() - 1), results, directories);
+                            } 
+                            if (newResourcePath.equals("/")) continue;
+                        }
+                        if ((pattern == null || pattern.matcher(newResourcePath).matches()) && (directories == isDir)) {
+                            if (isDir) newResourcePath = newResourcePath.substring(0, newResourcePath.length() - 1) ;
+                            results.add(newResourcePath);
                         }
                     }
                 }
@@ -660,7 +691,7 @@ public class ResourceLoader extends ClassLoader {
      * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
      * Resource are actually InputStreams (byte arrays), but often they are quite text-oriented
      * (like e.g. XML's), so this method may be useful.
-     * @see getResourceAsStream(String)
+     * @see #getResourceAsStream(String)
      */
     public Reader getReader(String name) throws IOException {
         try {
@@ -701,8 +732,8 @@ public class ResourceLoader extends ClassLoader {
 
     /**
      * Returns a reader for a given resource. This performs the tricky task of finding the encoding.
-     * @see getReader(String)
-     * @see createResourceAsStream(String)
+     * @see #getReader(String)
+     * @see #createResourceAsStream(String)
      */
     public Writer getWriter(String name) throws IOException {
         OutputStream os = createResourceAsStream(name);
@@ -758,6 +789,15 @@ public class ResourceLoader extends ClassLoader {
         return "" + context.getPath()  + " fileroots:" + fileRoots + " resourceroots: " + resourceRoots + " classloaderroots: " + classLoaderRoots;
     }
 
+    public boolean equals(Object o) {
+        if (o instanceof ResourceLoader) {
+            ResourceLoader rl = (ResourceLoader) o;
+            return rl.context.sameFile(context);            
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * Resolves these abstract mm:-urls to actual things, like Files, MMObjectNodes and 'external' URL's.
@@ -808,7 +848,7 @@ public class ResourceLoader extends ClassLoader {
          * Gets the first File associated with this URL.
          * @param exists    The file must exist (you want to open it for read)
          * @param writeable The file must be writeable (you want to open it for write) The file will be created if not it didn't exists.
-         * @return File or <code>null</code>
+         * @return File or <code>null</code> if no file obeying the parameters exists.
          */
         protected File getResourceFile(boolean exists, boolean writeable) {
             int index = (exists ? 0 : 1) + (writeable ? 0 : 2);
@@ -837,7 +877,7 @@ public class ResourceLoader extends ClassLoader {
 
         /**
          * Gets a URL from ServletContext (if there is one).
-         * @return URL or <code>null</code> if there is not ServletContext, or it does not have this resource.
+         * @return URL or <code>null</code> if there is no ServletContext, or it does not have this resource.
          */
         protected URL getServletContextResource() {
             if (servletContextResource != null) return servletContextResource;
