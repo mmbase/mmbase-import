@@ -253,6 +253,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 		for (int j = 0; j < objectContextList.getLength(); j++) {
 			String id = null, type = null, oMmbaseId = null;
+			String relationSource = null, relationDestination = null;
 			currentObjectContext = null;
 			
 				
@@ -273,6 +274,12 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				//mmbaseId
 				currentObjectArgumentNode = nm2.getNamedItem("mmbaseId");
 				if (currentObjectArgumentNode != null) oMmbaseId = currentObjectArgumentNode.getNodeValue();
+				// source relation
+				currentObjectArgumentNode = nm2.getNamedItem("soure");
+				if (currentObjectArgumentNode != null) relationSource = currentObjectArgumentNode.getNodeValue();
+				// destination relation
+				currentObjectArgumentNode = nm2.getNamedItem("destination");
+				if (currentObjectArgumentNode != null) relationDestination = currentObjectArgumentNode.getNodeValue();
 			}
 			if (id == null) {
 				id = uniqueId();
@@ -283,15 +290,26 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 			if (_debug) debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
 
-			// create object, if no Id create one, remember it's anonymous
 			if (oName.equals("createObject")) {
-					System.out.println("$$$ transactioninfo"+transactionInfo);
 				// check for existence
 				if (transactionInfo.knownObjectContexts.get(id) != null) {
 					throw new TransactionHandlerException(oName + " Object id already exists: " + id);
 				}
 				// actually create and administrate if not anonymous
 				currentObjectContext = tmpObjectManager.createTmpNode(type, userTransactionInfo.user.getName(), id);
+				if (!anonymousObject) {
+					transactionInfo.knownObjectContexts.put(id, currentObjectContext);
+				}
+				// add to tmp cloud
+				transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
+			} 
+			if (oName.equals("createRelation")) {
+				// check for existence
+				if (transactionInfo.knownObjectContexts.get(id) != null) {
+					throw new TransactionHandlerException(oName + " Object id already exists: " + id);
+				}
+				// actually create and administrate if not anonymous
+				currentObjectContext = tmpObjectManager.createTmpRelation(type, userTransactionInfo.user.getName(), relationSource, relationDestination);
 				if (!anonymousObject) {
 					transactionInfo.knownObjectContexts.put(id, currentObjectContext);
 				}

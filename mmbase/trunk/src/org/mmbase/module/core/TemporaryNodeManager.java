@@ -14,9 +14,12 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 /*
-	$Id: TemporaryNodeManager.java,v 1.10 2000-11-08 16:24:13 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.11 2000-11-13 11:09:41 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2000/11/08 16:24:13  vpro
+	Rico: fixed key bussiness
+	
 	Revision 1.9  2000/11/08 16:11:52  vpro
 	Rico: added temporary key method
 	
@@ -50,7 +53,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.10 2000-11-08 16:24:13 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.11 2000-11-13 11:09:41 install Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -62,6 +65,12 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	public TemporaryNodeManager(MMBase mmbase) {
 		this.mmbase=mmbase;
 	}
+
+	public String createTmpRelation(String type, String owner, String relationSource, String relationDestination) {
+		// I wish Rico good luck :-)
+		return ""; 
+	}
+
 
 	public String createTmpNode(String type,String owner,String key) {
 		if (_debug) debug("createTmpNode : type="+type+" owner="+owner+" key="+key);
@@ -175,7 +184,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 					node.setValue(field,value);
 				}
 			} else {
-				debug("Invalid type for field "+field);
+				node.setValue(field,value);
+//				debug("Invalid type for field "+field);
 			}
 		} else {
 			debug("setObjectField(): Can't find node : "+key);
