@@ -330,6 +330,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Prepare for compilation                                             -->
   <!-- =================================================================== -->
   <target name="init.compile" depends="lib">
+    <mkdir dir="${build.dir}/classes"/>
     <available property="dummy" classname="dummy">
       <classpath id="compile">
         <fileset dir="${lib.dir}">
@@ -345,14 +346,20 @@ Change directory to ${build.dir}/orion and run:
   <!-- Compile the source directory                                        -->
   <!-- =================================================================== -->
   <target name="compile" description="Compile the source directory"
+     depends="compile.local,compile.remote">
+  </target>
+  <!-- =================================================================== -->
+  <!-- Compile the source directory (exclude remote)                       -->
+  <!-- =================================================================== -->
+  <target name="compile.local" description="Compile the source directory(exclude remote)"
           depends="init.compile">
-    <mkdir dir="${build.dir}/classes"/>
     <copy todir="${build.dir}/classes">
       <fileset dir="${source-src.dir}">
         <include name="**/*.properties"/>
         <include name="**/LICENSE"/>
       </fileset>
     </copy>
+
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            classpathref="compile"
@@ -361,6 +368,9 @@ Change directory to ${build.dir}/orion and run:
            deprecation="${deprecation}">
       <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
       <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
+      <exclude name="org/mmbase/module/RemoteMMCI.java"/>
+      <exclude name="org/mmbase/bridge/RemoteContext.java"/>
+      <exclude name="org/mmbase/bridge/remote/**"/>
     </javac>
   </target>
 
@@ -1264,7 +1274,7 @@ Change directory to ${build.dir}/orion and run:
                file="${download.dir}/${mysql.version}.jar"/>
     <!-- PostgresSQL -->
     <property name="postgresql.version" value="jdbc7.1-1.2"/>
-    <property name="postgresql.url" value="http://jdbc.postgresql.org/download/${postgresql.version}.jar"/>
+    <property name="postgresql.url" value="http://jdbc.fastcrypt.com/${postgresql.version}.jar"/>
     <property name="postgresql.jar" value="${download.dir}/${postgresql.version}.jar"/>
     <available property="postgresql.present"
                file="${download.dir}/${postgresql.version}.jar"/>
@@ -1310,6 +1320,10 @@ Change directory to ${build.dir}/orion and run:
                file="${download.dir}/${junit.version}.zip"/>
     <available property="junit.expanded"
                file="${expand.dir}/${junit.version}"/>
+    <!-- nanoxml -->
+    <property name="nanoxml.url" value="http://prdownloads.sourceforge.net/nanoxml/nanoxml-lite-2.1.jar"/>
+    <available property="nanoxml.present"
+               file="${lib.dir}/nanoxml-lite.2.1.jar"/>
     <!-- Init actions -->
     <mkdir dir="${download.dir}"/>
     <mkdir dir="${expand.dir}"/>
@@ -1357,6 +1371,13 @@ Change directory to ${build.dir}/orion and run:
     <get src="${hsql.url}"
          dest="${download.dir}/${hsql.version}.zip"
          verbose="on"/>
+  </target>
+
+  <target name="get.nanoxml" depends="init.get" unless="nanoxml.present">
+    <get src="${nanoxml.url}"
+         dest="${download.dir}/nanoxml-lite.2.1.jar"
+         verbose="on"/>
+    <copy todir="${lib.dir}" file="${download.dir}/nanoxml-lite.2.1.jar"/>
   </target>
 
   <target name="get.mysql" depends="init.get" unless="mysql.present">
@@ -1439,4 +1460,81 @@ Change directory to ${build.dir}/orion and run:
     <delete dir="${expand.dir}"/>
   </target>
 
+
+  <!-- =================================================================== -->
+  <!-- (Step 1 for remote) Compile the remote generator classes            -->
+  <!-- =================================================================== -->
+  <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init,get.nanoxml">
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/remote/generator/*.java"/>
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- (Step 2 for remote) Generate the source for the remote classes      -->
+  <!-- =================================================================== -->
+  <target name="generate.remote" description="Generate the source for the remote classes" depends="init,compile.remote.generator">
+    <java classname="org.mmbase.bridge.remote.generator.MMCI" classpathref="compile">
+	<arg value="${source-src.dir}/MMCI.xml"/>
+	<classpath>
+		<pathelement location="${build.dir}/classes"/>
+	</classpath>
+    </java>
+    <mkdir dir="${source-src.dir}/org/mmbase/bridge/remote/implementation"/>
+    <mkdir dir="${source-src.dir}/org/mmbase/bridge/remote/rmi"/>
+    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="compile">
+       <arg value="${source-src.dir}"/>
+       <arg value="${source-src.dir}/MMCI.xml"/>
+	<classpath>
+		<pathelement location="${build.dir}/classes"/>
+	</classpath>
+    </java>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- (Step 3 for remote) Compile the remote classes                      -->
+  <!-- =================================================================== -->
+  <target name="compile.remote" description="Compile the remote classes" depends="init,init.compile,generate.remote">
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/remote/*.java"/>
+           <include name="org/mmbase/bridge/remote/rmi/*.java"/>
+           <include name="org/mmbase/bridge/remote/implementation/*.java"/>
+    </javac>
+    <rmic base="${build.dir}/classes" classpathref="compile">
+    	<include name="org/mmbase/bridge/remote/rmi/*.class"/>
+        <classpath>
+                <pathelement location="${build.dir}/classes"/>
+        </classpath>
+
+    </rmic>
+    <javac srcdir="${source-src.dir}"
+           destdir="${build.dir}/classes"
+           classpathref="compile"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+           <include name="org/mmbase/bridge/RemoteContext.java"/>
+           <include name="org/mmbase/module/RemoteMMCI.java"/>
+    </javac>
+  </target>
+
+  <target name="clean.remote" depends="init">
+    <delete>
+      <fileset dir="${source-src.dir}">
+        <include name="org/mmbase/bridge/remote/*.java"/>
+      </fileset>
+    </delete>
+    <delete dir="${source-src.dir}/org/mmbase/bridge/remote/rmi"/>
+    <delete dir="${source-src.dir}/org/mmbase/bridge/remote/implementation"/>
+  </target>
 </project>
