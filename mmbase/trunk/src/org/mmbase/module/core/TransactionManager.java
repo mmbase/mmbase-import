@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.6 2000-11-24 12:07:30 vpro Exp $
+	$Id: TransactionManager.java,v 1.7 2000-11-24 12:08:38 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/11/24 12:07:30  vpro
+	Rico: increased debug
+	
 	Revision 1.5  2000/11/22 13:11:25  vpro
 	Rico: added deleteObject support
 	
@@ -37,7 +40,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.6 2000-11-24 12:07:30 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.7 2000-11-24 12:08:38 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -217,6 +220,11 @@ public class TransactionManager implements TransactionManagerInterface {
 	private final static int RELATION=4;
 
 	boolean performCommits(Object user,Vector nodes,boolean debug) {
+		if (nodes==null || nodes.size()==0) {
+			debug("performCommits: Empty list of nodes");
+			return(false);
+		}
+
 		MMObjectNode node;
 		MMObjectBuilder bul=mmbase.getMMObject("typedef");
 		boolean okay=false,res=false;
@@ -226,10 +234,6 @@ public class TransactionManager implements TransactionManagerInterface {
 		int i,tmpstate;
 		String username=findUserName(user),exists;
 
-		if (nodes==null || nodes.size()==0) {
-			debug("performCommits: Empty list of nodes");
-			return(false);
-		}
 
 		// Nodes are uncommited by default
 		for (i=0;i<nodes.size();i++) nodestate[i]=UNCOMMITED;
