@@ -31,13 +31,10 @@ public class ModuleProbe implements Runnable {
 
     private static Logger log = Logging.getLoggerInstance(ModuleProbe.class.getName()); 
 
-	Thread kicker = null;
-	String name;
-	String input;
-	int len;
-	Hashtable mods;
+	private Thread kicker = null;
+	private Map mods;
 
-	public ModuleProbe(Hashtable mods) {
+	public ModuleProbe(Map mods) {
 		this.mods=mods;	
 		init();
 	}
@@ -53,6 +50,7 @@ public class ModuleProbe implements Runnable {
 	public void start() {
 		/* Start up the main thread */
 		if (kicker == null) {
+            log.service("Starting main thread of ModuleProbe");
 			kicker = new Thread(this,"ModuleProbe");
 			kicker.start();
 		}
@@ -63,6 +61,7 @@ public class ModuleProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
+        log.service("Stopping main thread of ModuleProbe");
 		kicker.setPriority(Thread.MIN_PRIORITY);  
 		kicker.suspend();
 		kicker.stop();
@@ -73,19 +72,19 @@ public class ModuleProbe implements Runnable {
 	 * admin probe, try's to make a call to all the maintainance calls.
 	 */
 	public void run () {
-		while (kicker!=null) {
+		while (kicker != null) {
 			try {
 				Thread.sleep(60*1000);
 			} catch (InterruptedException e){
 			}
-			if (mods!=null) {
-				for (Enumeration m=mods.keys();m.hasMoreElements();) {
-					String key=(String)m.nextElement();
+			if (mods != null) {
+				for (Iterator i = mods.entrySet().iterator(); i.hasNext();) {
+					Map.Entry entry = (Map.Entry) i.next();
 					try {
-						Module mod=(Module)mods.get(key);
+						Module mod = (Module) entry.getValue();
 						mod.maintainance();
 					} catch(Exception er) {
-						log.error("error on maintainance call : " + key);
+						log.error("error on maintainance call : " + entry.getKey());
 					}		
 				}
 			}
