@@ -51,7 +51,6 @@ public class TransactionHandler
 	private static Hashtable cashUser = new Hashtable();
 	
 	private MMBase mmbase;
-	private UserTransactionInfo user;
 	private TransactionManagerInterface transactionManager;
 	private TemporaryNodeManagerInterface tmpObjectManager;
 	
@@ -154,6 +153,7 @@ public class TransactionHandler
 		TransactionInfo transactionInfo = null;
 
 		for (int i = 0; i < transactionContextList.getLength(); i++) {
+			// XML Parsing part
 			currentTransactionArgumentNode = null;
 			currentTransactionContext = null;
 			String id = null, commit = null, time = null;
@@ -181,6 +181,9 @@ public class TransactionHandler
 					time = currentTransactionArgumentNode.getNodeValue();
 				}
 			}
+			// XML Parsing done
+			
+			// Execution of XML 
 			if (id == null) {
 				anonymousTransaction = true;
 				id = uniqueId();
@@ -192,7 +195,7 @@ public class TransactionHandler
 
 			if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
 		
-			// create transaction
+			// CREATE TRANSACTION
 			if (tName.equals("createTransaction")) {
 				// Check if the transaction already exists.
 				if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
@@ -235,10 +238,13 @@ public class TransactionHandler
 				transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 			} 
 			if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
+			// End execution of XML
 		}
 	}
 
-
+	/**
+	 * Evaluate and execute object methods
+	 */
 	private void evaluateObjects(NodeList objectContextList, UserTransactionInfo userTransactionInfo, String currentTransactionContext, TransactionInfo transactionInfo) 
 		throws TransactionHandlerException {
 		Node currentObjectArgumentNode = null; 
@@ -252,6 +258,7 @@ public class TransactionHandler
 			currentObjectContext = null;
 			
 				
+			// XML thingies
 			objectContext = objectContextList.item(j);
 			String oName = objectContext.getNodeName();
 
@@ -302,7 +309,7 @@ public class TransactionHandler
 					throw new TransactionHandlerException(oName + " no MMbase id: ");
 				}
 				// actually get and administrate if not anonymous
-				currentObjectContext = tmpObjectManager.getObject(oMmbaseId, userTransactionInfo.user.getName() + id);
+				currentObjectContext = tmpObjectManager.getObject(userTransactionInfo.user.getName(),id,oMmbaseId);
 				//get Node succeed?
 				if (!anonymousObject)
 					transactionInfo.knownObjectContexts.put(id, currentObjectContext);
@@ -316,7 +323,7 @@ public class TransactionHandler
 				//delete from temp cloud
 				transactionManager.removeNode(currentTransactionContext, currentObjectContext);
 				// destroy
-				tmpObjectManager.deleteTmpNode(currentObjectContext);
+				tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
 				currentObjectContext = null;
 				transactionInfo.knownObjectContexts.remove(id);
 			}
@@ -372,7 +379,7 @@ public class TransactionHandler
 				if (currentObjectContext == null) {
 					 throw new TransactionHandlerException(oId + " set field " + fieldName + " to " + fieldValue);
 				}
-				tmpObjectManager.setObjectField(currentObjectContext, fieldName, fieldValue);
+				tmpObjectManager.setObjectField(userTransactionInfo.user.getName(),currentObjectContext, fieldName, fieldValue);
 			}
 		}
 	}
