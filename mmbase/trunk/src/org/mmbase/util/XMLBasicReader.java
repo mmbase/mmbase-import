@@ -21,9 +21,13 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author cjr@dds.nl
- * @version $Id: XMLBasicReader.java,v 1.4 2000-08-17 21:16:00 case Exp $
+ *
+ * @version $Id: XMLBasicReader.java,v 1.5 2000-08-18 19:43:45 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2000/08/17 21:16:00  case
+ * cjr: returned value for non-set attributes now is "" (should it be null?)
+ *
  */
 public class XMLBasicReader  {
 
@@ -148,6 +152,22 @@ public class XMLBasicReader  {
         for (int i=0;i<nl.getLength();i++) {
             Node n = nl.item(i);
             if (n.getNodeType() == n.ELEMENT_NODE) {
+                v.addElement(n);
+            }
+        }
+        return v.elements();
+    }
+
+    /**
+     * @param e Element
+     * @return Enumeration of child elements with the given tag
+     */
+    public Enumeration getChildElements(Element e,String tag) {
+        Vector v = new Vector();
+        NodeList nl = e.getChildNodes();
+        for (int i=0;i<nl.getLength();i++) {
+            Node n = nl.item(i);
+            if (n.getNodeType() == n.ELEMENT_NODE && ((Element)n).getTagName().equalsIgnoreCase(tag)) {
                 v.addElement(n);
             }
         }
