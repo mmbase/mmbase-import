@@ -34,7 +34,7 @@ import org.mmbase.module.core.MMBase;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.8 2004-04-02 08:17:36 rob Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8.2.1 2004-04-14 11:13:48 johannes Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -528,6 +528,11 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                2) Combine the OR-Elements
                Nested Looping through the OR-Elements to make unique combinations
             */
+
+            if (unionConstraints.length() > 0) {
+                unionConstraints.insert(0, " AND ");
+            }
+
             Vector combinedElements = new Vector();
             for (int counter = 0; counter < orElements.size(); counter++) {
                 for (int counter2 = counter; counter2 < orElements.size(); counter2++) {
