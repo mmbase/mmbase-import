@@ -30,6 +30,38 @@
 
 </mm:notpresent>
 
+<mm:import id="mayread">false</mm:import>
+<mm:node number="$currentitem">
+    <mm:relatednodes type="portfoliopermissions" max="1">
+        <mm:field name="readrights">
+            <mm:compare value="2">
+                <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
+                    <mm:import id="mayread" reset="true">true</mm:import>
+                </mm:list>
+            </mm:compare>
+             <mm:compare value="3">
+                <di:hasrole role="teacher">
+                    <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+                        <mm:import id="mayread" reset="true">true</mm:import>
+                    </mm:list>
+                </di:hasrole>
+            </mm:compare>
+            <mm:compare value="3">
+                <mm:import id="mayread" reset="true">true</mm:import>
+            </mm:compare>
+            <mm:compare value="4">
+                <mm:import id="mayread" reset="true">true</mm:import>
+            </mm:compare>
+        </mm:field>
+    </mm:relatednodes>
+
+        <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+            <mm:import id="mayread" reset="true">true</mm:import>
+        </mm:list>
+
+</mm:node>
+
+<mm:compare referid="mayread" value="true">
 
 <%-- Check if the back button is pressed --%>
 <mm:present referid="action2">
@@ -37,6 +69,9 @@
 </mm:present>
 
 <mm:notpresent referid="action2">
+
+
+
 
 <%-- check if this is the current user's portfolio --%>
 <mm:import id="mayeditthis">false</mm:import>
@@ -46,13 +81,26 @@
 
 <mm:compare referid="mayeditthis" value="true">
 <%-- edit the content of the object --%>
+<mm:node number="$currentitem">
 <mm:present referid="action1">
-    <mm:node number="$currentitem">
       <mm:fieldlist fields="title?,name?,description?,url?,text?,filename?,handle?">
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
-    </mm:node>
 </mm:present>
+
+<mm:import id="numrelations"><mm:countrelations type="portfoliopermissions"/></mm:import>
+<mm:compare referid="numrelations" value="0">
+    <mm:createnode type="portfoliopermissions" id="permissions"/>
+    <mm:createrelation source="currentitem" destination="permissions" role="related"/>
+</mm:compare>
+
+<mm:relatednodes type="portfoliopermissions" max="1">
+    <mm:fieldlist fields="readrights,allowreactions">
+        <mm:fieldinfo type="useinput" />
+    </mm:fieldlist>
+</mm:relatednodes>
+
+</mm:node>
 </mm:compare>
 
 <mm:import externid="add_message"/>
@@ -134,7 +182,7 @@
     
     
       <mm:node number="$currentitem">
-        <mm:fieldlist fields="title?,name?,description?,url?,text?,filename?,handle?">
+        <mm:fieldlist fields="title?,name?,filename?,url?,handle?,text?,description?">
           <tr>
           <td valign="top"><mm:fieldinfo type="guiname"/></td>
           <td>
@@ -158,9 +206,36 @@
           </td>
           </tr>
         </mm:fieldlist>
-	
-	  </mm:node>
+        
+	<mm:compare referid="mayeditthis" value="true">
+        <mm:relatednodes type="portfoliopermissions" max="1">
+        <mm:field name="readrights">
+        <tr>
+            <td>Leesrechten</td>
+            <td><select name="_readrights">
+                <option value="0" <mm:compare value="0">selected</mm:compare> <mm:compare value="1">selected</mm:compare>>Niet zichtbaar</option>
+                <option value="1" <mm:compare value="1">selected</mm:compare>>Zichtbaar voor studenten uit mijn klassen</option>
+                <option value="2" <mm:compare value="2">selected</mm:compare>>Zichtbaar voor mijn docenten</option>
+                <option value="3" <mm:compare value="3">selected</mm:compare>>Zichtbaar voor iedereen.</option>
+                <option value="4" <mm:compare value="4">selected</mm:compare>>Zichtbaar voor niet-ingelogde (anonieme) gebruikers.</option>
+            </select>
+            </td>
+        </tr>
+        </mm:field>
+        <mm:field name="allowreactions">
+        <tr>
+            <td>Reacties</td>
+            <td><select name="_allowreactions">
+                <option value="0" <mm:compare value="0">selected</mm:compare> <mm:compare value="1">selected</mm:compare>>Geen reacties toestaan</option>
+                <option value="1" <mm:compare value="1">selected</mm:compare>>Reacties toestaan</option>
+                </select>
+            </td>
+        </tr>
+        </mm:field>
+        </mm:relatednodes>
+        </mm:compare>
 
+      </mm:node>
       <input type="hidden" name="currentfolder" value="<mm:write referid="currentfolder"/>"/>
       <input type="hidden" name="currentitem" value="<mm:write referid="currentitem"/>"/>
       <input type="hidden" name="typeof" value="<mm:write referid="typeof"/>"/>
@@ -170,6 +245,14 @@
       </td></tr>
     </form>
 
+
+    
+<mm:node number="$currentitem">
+   <mm:import id="allowreactions">0</mm:import>
+   <mm:relatednodes type="portfoliopermissions" max="1">
+       <mm:import id="allowreactions" reset="true"><mm:field name="allowreactions"/></mm:import>
+   </mm:relatednodes>
+   <mm:compare referid="allowreactions" value="1">
     <tr><td colspan="2">
     <br><br>
     <p>
@@ -177,7 +260,7 @@
     </p>
     </td></tr>
     <tr><td></td><td>
-    <mm:node number="$currentitem">
+       
         <mm:relatednodes type="forummessages" orderby="number" directions="UP">
           <div style="border: solid black 1px; width: 500px; margin-bottom: 0.5em; padding: 0.25em 0.5em 0.25em 0.5em">
             <b><mm:field name="title"/> (<mm:field name="date"><mm:time format="d/M/yyyy"/></mm:field>)</b><br>
@@ -204,7 +287,8 @@
             <input type="submit" value="<fmt:message key="REACT"/>" class="formbutton">
             </td></tr>
         </form>
-    </mm:node>
+    </mm:compare>
+</mm:node>
     </table>
   </div>
 </div>
@@ -212,6 +296,7 @@
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 
 </mm:notpresent>
+</mm:compare>
 </fmt:bundle>
 </mm:cloud>
 </mm:content>

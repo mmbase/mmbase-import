@@ -14,11 +14,16 @@
 <mm:node number="$user" id="my_user">
   <mm:fieldlist fields="initials,firstname,lastname,address,zipcode,city,telephone,description"><mm:fieldinfo type="useinput" /></mm:fieldlist>
 
+<mm:import externid="_handle_size">0</mm:import>
+
 <mm:relatednodes type="images">
   <mm:import id="image_present"/>
-  <mm:fieldlist fields="handle"><mm:fieldinfo type="useinput" /></mm:fieldlist>
+  <mm:isgreaterthan  referid="_handle_size" value="0">
+      <mm:fieldlist fields="handle"><mm:fieldinfo type="useinput" /></mm:fieldlist>
+  </mm:isgreaterthan>
 </mm:relatednodes>
 <mm:present referid="image_present" inverse="true">
+  <mm:isgreaterthan  referid="_handle_size" value="0">=
   <mm:createnode type="images" id="my_image">
     <mm:field name="title">Foto</mm:field>
   </mm:createnode>
@@ -28,7 +33,7 @@
       <mm:fieldlist fields="handle"><mm:fieldinfo type="useinput" /></mm:fieldlist>
     </mm:fieldlist>
   </mm:node>
-
+  </mm:isgreaterthan>
 </mm:present>
 
 
