@@ -5,10 +5,13 @@
 
     <action type="create">
         <object type="valuequestions">
+            <relation destination="$origin" role="posrel" createdir="source"/>
             <field name="layout">0</field>
             <field name="type">0</field>
         </object>
     </action>
+
+    
 
     <action type="load">
         <relation destination="valueanswers" role="posrel" />
