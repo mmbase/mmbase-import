@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.38 2003-07-09 17:35:37 michiel Exp $
+ * @version $Id: Dove.java,v 1.39 2003-08-18 09:12:25 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -89,7 +89,7 @@ public class Dove extends AbstractDove {
 
     /**
      * Utility function, determines whether a field is a data field.
-     * dat fields are persistent (non-virtual) fields.
+     * Data fields are persistent (non-virtual) fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, and rnumber
      * are not excluded; these fields should be handled through the attributes of Element.
      * @param node  the MMBase node that owns the field
