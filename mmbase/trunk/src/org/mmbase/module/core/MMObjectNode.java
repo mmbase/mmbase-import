@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.62 $ $Date: 2002-02-27 13:11:53 $
+ * @version $Revision: 1.63 $ $Date: 2002-03-05 15:57:49 $
  */
 
 public class MMObjectNode {
@@ -442,8 +442,9 @@ public class MMObjectNode {
     }
 
     /**
-     * Get a value of a certain field.
-     * The value is returned as a String. Non-string values are automatically converted to String.
+     * Get a value of a certain field.  The value is returned as a
+     * String. Non-string values are automatically converted to
+     * String. 'null' is converted to an empty string.
      * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>String</code>
      */
