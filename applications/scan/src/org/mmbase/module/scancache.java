@@ -395,9 +395,8 @@ public class scancache extends Module implements scancacheInterface {
 	}
 
 	String getWriteHeaders(String value, String mimeType) {
-		if ((mimeType==null) || mimeType.equals(""))
-			mimeType = "text/html; charset=iso-8859-1";
-		String body="Status: 200 OK\n";
+		if ((mimeType==null) || mimeType.equals("") || mimeType.equals("text/html"))
+			mimeType = "text/html; charset=iso-8859-1";		String body="Status: 200 OK\n";
 		body+="Server: OrionCache\n";
 		body+="Content-type: "+mimeType+"\n";
 		body+="Content-length: "+value.length()+"\n";
