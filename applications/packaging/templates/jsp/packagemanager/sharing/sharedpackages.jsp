@@ -9,6 +9,12 @@
 		<releasenotes><mm:field name="releasenotes" /></releasenotes>
 		<installationnotes><mm:field name="installationnotes" />
 		</installationnotes>
+		<screenshots>
+<mm:field name="screenshots" />
+		</screenshots>
+		<starturls>
+<mm:field name="starturls" />
+		</starturls>
 		<initiators>
 <mm:field name="initiators" />
 		</initiators>
