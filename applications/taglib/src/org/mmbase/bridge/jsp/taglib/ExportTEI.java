@@ -28,42 +28,30 @@ public class ExportTEI extends TagExtraInfo {
     }
 
     public VariableInfo[] getVariableInfo(TagData data) {
-
-        Object declare  = data.getAttribute("declare");
-        int number;
-
-        if ("false".equals(declare)) {
-            number = 0;
-        } else {
-            number = 1;
-        }
-       
-        VariableInfo[] variableInfo =  new VariableInfo[number];
+        VariableInfo[] variableInfo =  new VariableInfo[1];
         
-        if (number > 0) {
-            String typeAttribute    = (String) data.getAttribute("type"); 
-            if (typeAttribute == null) typeAttribute = "Object";
-            
-            String type = "java.lang.Object";
-            
-            if ("Object".equalsIgnoreCase(typeAttribute)) {
-                type = "java.lang.Object";
-            } else if ("String".equalsIgnoreCase(typeAttribute)) {
-                type = "java.lang.String";
-            } else if ("Node".equalsIgnoreCase(typeAttribute)) {
-                type = "org.mmbase.bridge.Node";
-            } else {
-                //type = "java.lang.Object"; 
-                throw new RuntimeException("Unknown type '" + typeAttribute + "'");
-            }
-            
-            String jspvarAttribute  = (String) data.getAttribute("jspvar"); 
-            
-            variableInfo[0] =  new VariableInfo(jspvarAttribute,
-                                                type,
-                                                true,
-                                                VariableInfo.AT_BEGIN);
+        String typeAttribute    = (String) data.getAttribute("type"); 
+        if (typeAttribute == null) typeAttribute = "Object";
+        
+        String type = "java.lang.Object";
+        
+        if ("Object".equalsIgnoreCase(typeAttribute)) {
+            type = "java.lang.Object";
+        } else if ("String".equalsIgnoreCase(typeAttribute)) {
+            type = "java.lang.String";
+        } else if ("Node".equalsIgnoreCase(typeAttribute)) {
+            type = "org.mmbase.bridge.Node";
+        } else {
+            //type = "java.lang.Object"; 
+            throw new RuntimeException("Unknown type '" + typeAttribute + "'");
         }
+        
+        String jspvarAttribute  = (String) data.getAttribute("jspvar"); 
+            
+        variableInfo[0] =  new VariableInfo(jspvarAttribute,
+                                            type,
+                                            true,
+                                            VariableInfo.NESTED);
         return variableInfo;
     }        
 }
