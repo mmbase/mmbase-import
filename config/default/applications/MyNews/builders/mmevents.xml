@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object" >
 
-  <status>active</status>
-  
+  <status>inactive</status>
+
   <classfile>MMEvents</classfile>
-  
+
   <searchage>14</searchage>
   <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Tijd</singular>
     <singular xml:lang="en">Time</singular>
+    <singular xml:lang="nl">Tijd</singular>
     <singular xml:lang="eo">Tempo</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Tijden</plural>
     <plural xml:lang="en">Times</plural>
+    <plural xml:lang="nl">Tijden</plural>
     <plural xml:lang="eo">Tempoj</plural>
   </names>
 
   <!-- <descriptions>
-	small description of the builder for human reading
+    small description of the builder for human reading
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="us">Times used to place objects on a fixed time bar (epoch)</description>
+    <description xml:lang="en">Times used to place objects on a fixed time bar (epoch)</description>
+    <description xml:lang="nl">Tijden voor het plaatsen van object op een tijdas</description>
   </descriptions>
 
   <!-- <properties>
@@ -40,16 +41,16 @@
 
   <!-- <fieldlist>
   defines the different fields in this object, be carefull the order is important
-	once defined keep them in the same order.
-	If you use number and owner (the 2 default fields, please check the docs for this)
+    once defined keep them in the same order.
+    If you use number and owner (the 2 default fields, please check the docs for this)
   -->
   <fieldlist>
     <!-- POS 3 : <field> 'name'  -->
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
         <guitype>string</guitype>
       </gui>
@@ -77,8 +78,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Begin</guiname>
         <guiname xml:lang="en">Start</guiname>
+        <guiname xml:lang="nl">Begin</guiname>
         <guiname xml:lang="eo">Starto</guiname>
         <guitype>eventtime</guitype>
       </gui>
@@ -106,8 +107,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Einde</guiname>
         <guiname xml:lang="en">End</guiname>
+        <guiname xml:lang="nl">Einde</guiname>
         <guiname xml:lang="eo">Fino</guiname>
         <guitype>eventtime</guitype>
       </gui>
@@ -135,8 +136,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Lengte</guiname>
         <guiname xml:lang="en">Length</guiname>
+        <guiname xml:lang="nl">Lengte</guiname>
         <guiname xml:lang="eo">Longo</guiname>
         <guitype>integer</guitype>
       </gui>
