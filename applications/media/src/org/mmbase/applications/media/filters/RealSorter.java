@@ -25,10 +25,10 @@ import java.util.*;
  * between two values (configured in mediasourcefilter.xml).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.1 2003-02-03 17:50:24 michiel Exp $
+ * @version $Id: RealSorter.java,v 1.1 2003-02-05 16:31:38 michiel Exp $
  */
-public class RealComparator extends  ChainComparator {
-    private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
+public class RealSorter extends  ChainSorter {
+    private static Logger log = Logging.getLoggerInstance(RealSorter.class.getName());
 
     public static final String CONFIG_TAG          = "config.realAudio";
     /**
@@ -36,7 +36,7 @@ public class RealComparator extends  ChainComparator {
      * Other possibility: Impelmeent it that if one of both URLComposer are no reals, that they are equal then.
      */
 
-    class RealFormatComparator extends PreferenceComparator {        
+    class RealFormatSorter extends PreferenceSorter {        
         protected int getPreference(URLComposer ri) {           
             if (ri.getFormat() != Format.RM) return 0; 
             return 1;
@@ -47,7 +47,7 @@ public class RealComparator extends  ChainComparator {
      * Sort with speed
      */
 
-    class SpeedComparator extends PreferenceComparator {
+    class SpeedSorter extends PreferenceSorter {
 
         private int minSpeed        = -1;
         private int maxSpeed        = -1;    
@@ -102,7 +102,7 @@ public class RealComparator extends  ChainComparator {
      * Sort with channels 
      */
 
-    class ChannelsComparator extends PreferenceComparator {
+    class ChannelsSorter extends PreferenceSorter {
         private int minChannels     = -1;
         private int maxChannels     = -1;
 
@@ -152,10 +152,10 @@ public class RealComparator extends  ChainComparator {
     }
 
     
-    public  RealComparator() {
-        add(new RealFormatComparator()); // Prefer real?
-        add(new SpeedComparator());
-        add(new ChannelsComparator());
+    public  RealSorter() {
+        add(new RealFormatSorter()); // Prefer real?
+        add(new SpeedSorter());
+        add(new ChannelsSorter());
     }
 
 

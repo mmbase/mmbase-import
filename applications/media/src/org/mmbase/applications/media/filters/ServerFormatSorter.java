@@ -19,20 +19,20 @@ import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
 
 /**
- * A FormatComparator which can be configured with eht filters.xml.
+ * A FormatSorter which can be configured with eht filters.xml.
  *
- * @todo this implementation can be merged with FormatComparator itself, i think.
+ * @todo this implementation can be merged with FormatSorter itself, i think.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatComparator.java,v 1.5 2003-02-05 15:45:06 michiel Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.1 2003-02-05 16:31:39 michiel Exp $
  */
-public class ServerFormatComparator extends  FormatComparator {
-    private static Logger log = Logging.getLoggerInstance(ServerFormatComparator.class.getName());
+public class ServerFormatSorter extends  FormatSorter {
+    private static Logger log = Logging.getLoggerInstance(ServerFormatSorter.class.getName());
 
     public static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".preferredSource";
     public static final String FORMAT_ATT = "format";
 
-    public  ServerFormatComparator() {};
+    public  ServerFormatSorter() {};
 
     public void configure(XMLBasicReader reader, Element el) {
         preferredFormats.clear();
