@@ -16,6 +16,7 @@ import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * The module which provides access to a filesystem residing in
@@ -25,8 +26,7 @@ import org.mmbase.module.core.*;
  */
 public class sessionInfo {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
+    private static Logger log = Logging.getLoggerInstance(sessionInfo.class.getName());
 
 	private String hostname;
 	private String cookie;
@@ -55,7 +55,7 @@ public class sessionInfo {
 		if (isSecure(value)) {
 			return((String)values.put(key,value));
 		} else {
-			System.out.println("ERROR: Illegal input, action blocked");
+			log.error("ERROR: Illegal input, action blocked");
 			return("illegal input,see error log");
 		}
 	}
@@ -65,7 +65,7 @@ public class sessionInfo {
 	*/
 	public void addSetValue(String key,String value) {
 
-		if( debug ) debug("addSetValue("+key+","+value+")");
+		log.debug("addSetValue("+key+","+value+")");
 
 		Vector v=(Vector)setvalues.get(key);
 		if (v==null) {
@@ -75,16 +75,16 @@ public class sessionInfo {
 				v.addElement(value);
 				setvalues.put(key,v);
 			} else {
-				System.out.println("ERROR: Illegal input, action blocked");
+				log.error("ERROR: Illegal input, action blocked");
 			}
-			if( debug ) debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());	
 		} else {
 			if (!v.contains(value)) {
 				v.addElement(value);
-				if( debug ) debug("sessionset="+v.toString());	
+				log.debug("sessionset="+v.toString());	
 			}
 		}
-		if( debug ) debug("addSetValue() -> getSetString("+key+"): " +getSetString(key));
+		log.debug("addSetValue() -> getSetString("+key+"): " +getSetString(key));
 	}
 
 
@@ -93,7 +93,7 @@ public class sessionInfo {
 	*/
 	public void putSetValue(String key,String value) {
 
-		if( debug ) debug("putSetValue("+key+","+value+")");
+		log.debug("putSetValue("+key+","+value+")");
 
 		Vector v=(Vector)setvalues.get(key);
 		if (v==null) {
@@ -103,16 +103,16 @@ public class sessionInfo {
 				v.addElement(value);
 				setvalues.put(key,v);
 			} else {
-				System.out.println("ERROR: Illegal input, action blocked");
+				log.error("ERROR: Illegal input, action blocked");
 			}
-			if( debug ) debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());	
 		} else {
 			if (isSecure(value)) {
 				v.addElement(value);
 			} else {
-				System.out.println("ERROR: Illegal input, action blocked");
+				log.error("ERROR: Illegal input, action blocked");
 			}
-			if( debug ) debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());	
 		}
 	}
 
@@ -125,7 +125,7 @@ public class sessionInfo {
 		if (v!=null) {
 			if (v.contains(value)) {
 				v.removeElement(value);
-				if( debug ) debug("sessionset="+v.toString());	
+				log.debug("sessionset="+v.toString());	
 			}
 		}
 	}
@@ -149,12 +149,12 @@ public class sessionInfo {
 	* delete the values belonging to the key
 	*/
 	public String clearSet(String key) {
-		if( debug ) debug("sessionset="+key);	
+		log.debug("sessionset="+key);	
 		Vector v=(Vector)setvalues.get(key);
 		if (v!=null) {
 			v=new Vector();
 			setvalues.put(key,v);
-			if( debug ) debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());	
 		}
 		return("");
 	}
@@ -166,7 +166,7 @@ public class sessionInfo {
 	*/
 	public String getSetString(String key) {
 
-		if( debug ) debug("getSetString("+key+")");
+		log.debug("getSetString("+key+")");
 
 		Vector v=(Vector)setvalues.get(key);
 		if (v!=null) {
@@ -182,7 +182,7 @@ public class sessionInfo {
 			}
 			return(result);
 		} else {
-			if( debug ) debug("getSetString("+key+"): ERROR: this key is non-existent!");
+			log.error("getSetString("+key+"): ERROR: this key is non-existent!");
 			return(null);
 		}
 	}
@@ -241,28 +241,30 @@ public class sessionInfo {
 		this.hostname=hostname;
 	}
 
-	private void debug( String msg )
-	{
-		System.out.println( "("+this+")"+ classname +": ["+cookie+"] "+ msg );
-	}
-
 	public String toString() {
 		return("sessionInfo="+values.toString());
 	}
 
 
 	private boolean isSecure(String value) {
+
 		Vector words=new Vector();
 		words.addElement("<transaction");
+		words.addElement("<TRANSACTION");
 		words.addElement("<create");
+		words.addElement("<createObject");
 		words.addElement("<delete");
 		words.addElement("<mark");
 		words.addElement("<setField");
+		words.addElement("</setField>");
 		words.addElement("<DO");
 		Enumeration e = words.elements();
 		while (e.hasMoreElements()) {
 			String check=(String)e.nextElement();
-			if (value.indexOf(check)!=-1) return(false);
+			if (value.indexOf(check)!=-1) {
+				log.error(check+" found in session variable");
+				return(false);
+			}
 		}
 		return(true);
 	}
