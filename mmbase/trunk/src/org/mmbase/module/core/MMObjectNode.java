@@ -602,7 +602,7 @@ public class MMObjectNode {
 	{
 		Object o=getValue(fieldName);
 		if (o!=null) {
-			return ""+getValue(fieldName);
+			return ""+o; // getValue(fieldName);
 		} else {
 			return "";
 		}

@@ -1475,8 +1475,9 @@ public class MMObjectBuilder extends MMTable {
         int nested=0;
         Vector v= new Vector();
         int i;
+        log.debug("Fields="+fields);
         for(i = 0; i<fields.length(); i++) {
-            if (fields.charAt(i)==',') {
+            if ((fields.charAt(i)==',') || (fields.charAt(i)==';')){
                 if(nested==0) {
                     v.add(fields.substring(commapos,i).trim());
                     commapos=i+1;
