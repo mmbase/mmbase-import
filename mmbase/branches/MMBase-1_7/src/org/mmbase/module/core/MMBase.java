@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.113.2.5 2004-10-15 11:40:10 michiel Exp $
+ * @version $Id: MMBase.java,v 1.113.2.6 2004-12-07 10:10:19 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -348,6 +348,11 @@ public class MMBase extends ProcessorModule {
         log.debug("Starting JDBC module");
         // retrieve JDBC module and start it
         jdbc = (JDBCInterface) getModule("JDBC", true);
+        if (jdbc == null) {
+            log.fatal("Could not obtain JDBC module. MMBase cannot be started");
+            return;
+        }
+
 
         try {
             MultiConnection con = jdbc.getConnection(jdbc.makeUrl());
