@@ -1,13 +1,12 @@
 /*
- * MMObjectBuilder.java
- *
- * This software is OSI Certified Open Source Software.
- * OSI Certified is a certification mark of the Open Source Initiative.
- *
- * The license (Mozilla version 1.0) can be read at the MMBase site.
- * See http://www.MMBase.org/license
- *
- */
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.module.core;
 
 import java.util.*;
@@ -49,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.120 $ $Date: 2002-03-20 11:06:50 $
+ * @version $Id: MMObjectBuilder.java,v 1.121 2002-03-21 09:54:02 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -105,7 +104,7 @@ public class MMObjectBuilder extends MMTable {
      * If true, debug messages are send to the MMBase log
      * @deprecated : use Logger routines instead
      */
-   public boolean debug=false;
+    public boolean debug=false;
 
     /**
      * Sets debugging on or off
@@ -227,6 +226,11 @@ public class MMObjectBuilder extends MMTable {
     protected Hashtable fields;
 
     /**
+     * Reference to the builder that this builder extends.
+     */
+    private MMObjectBuilder parentBuilder = null;
+
+    /**
      * actual classname
      * @deprecated use getClass.getName()
      */
@@ -269,13 +273,12 @@ public class MMObjectBuilder extends MMTable {
      * @see #create
      */
     public boolean init() {
-        database=mmb.getDatabase();
-
         if (!created()) {
             log.info("init(): Create "+tableName);
             create();
         }
-        if (!tableName.equals("object") && mmb.getTypeDef()!=null) {
+        if (// !tableName.equals("object") &&
+            mmb.getTypeDef()!=null) {
             oType=mmb.getTypeDef().getIntValue(tableName);
             if (oType==-1) {
                 MMObjectNode node=mmb.getTypeDef().getNewNode("system");
@@ -291,7 +294,9 @@ public class MMObjectBuilder extends MMTable {
                 oType=node.insert("system");
             }
         } else {
-            if(!tableName.equals("typedef")) {
+            // warn if typedef was not created
+            // except for the 'object' and 'typedef' basic builders
+            if(!tableName.equals("typedef") && !tableName.equals("object")) {
                 log.warn("init(): for tablename("+tableName+") -> can't get to typeDef");
             }
         }
@@ -347,7 +352,7 @@ public class MMObjectBuilder extends MMTable {
             return n;
         } catch(Exception e) {
             log.error("ERROR INSERT PROBLEM ! Error node="+node);
-            log.error(Logging.stackTrace(e));            
+            log.error(Logging.stackTrace(e));
             // TODO: Research if we _should_ throw an runtime exception, instead of returning -1
             return -1;
         }
@@ -446,6 +451,27 @@ public class MMObjectBuilder extends MMTable {
             }
         }
         return;
+    }
+
+    /**
+     * Returns the builder that this builder extends.
+     *
+     * @since MMBase-1.6
+     * @return the extended (parent) builder, or null if not available
+     */
+    public MMObjectBuilder getParentBuilder() {
+        return parentBuilder;
+    }
+
+    /**
+     * Sets the builder that this builder extends, and registers it in the database layer.
+     * @param parent the extended (parent) builder, or null if not available
+     *
+     * @since MMBase-1.6
+     */
+    public void setParentBuilder(MMObjectBuilder parent) {
+        database.registerParentBuilder(parent,this);
+        parentBuilder=parent;
     }
 
     /**
@@ -1304,7 +1330,6 @@ public class MMObjectBuilder extends MMTable {
                 }
             }
         } catch(Exception e) {
-            // TODO : research if this should throw an exception
             log.error(Logging.stackTrace(e));
         }
         return results;
@@ -1373,7 +1398,7 @@ public class MMObjectBuilder extends MMTable {
      * @return a <code>Vector</code> with the tables fields (FieldDefs)
      */
     public Vector getFields() {
-        Vector	results=new Vector();
+        Vector results=new Vector();
         FieldDefs node;
         for (Enumeration e=fields.elements();e.hasMoreElements();) {
             node=(FieldDefs)e.nextElement();
@@ -1505,7 +1530,7 @@ public class MMObjectBuilder extends MMTable {
         // we get the first field in the object and try to make it
         // to a string we can return
 
-        if (sortedDBLayout.size()>0) {
+        if (sortedDBLayout.size()>2) {
             String fname=(String)sortedDBLayout.elementAt(2);
             String str = node.getStringValue( fname );
             if (str.length()>128) {
@@ -1535,18 +1560,15 @@ public class MMObjectBuilder extends MMTable {
      * @return a vector with FieldDefs
      */
     public Vector getEditFields() {
-        // hack hack
         if (sortedEditFields == null) {
-            sortedEditFields=new Vector();
-            FieldDefs node;
-            for (int i=1;i<20;i++) {
-                for (Enumeration e=fields.elements();e.hasMoreElements();) {
-                    node=(FieldDefs)e.nextElement();
-                    if (node.getGUISearch()==i) sortedEditFields.addElement(node);
-                }
+            sortedEditFields = new Vector();
+            for (Enumeration e=fields.elements();e.hasMoreElements();) {
+                FieldDefs node=(FieldDefs)e.nextElement();
+                if (node.getGUISearch()>-1) sortedEditFields.addElement(node);
             }
+            FieldDefs.sort(sortedEditFields,FieldDefs.ORDER_SEARCH);
         }
-        return sortedEditFields;
+       return sortedEditFields;
     }
 
     /**
@@ -1555,18 +1577,15 @@ public class MMObjectBuilder extends MMTable {
      * @return a vector with FieldDefs
      */
     public Vector getSortedListFields() {
-        // hack hack
         if (sortedListFields == null) {
             sortedListFields = new Vector();
-            FieldDefs node;
-            for (int i=1;i<20;i++) {
-                for (Enumeration e=fields.elements();e.hasMoreElements();) {
-                    node=(FieldDefs)e.nextElement();
-                    if (node.getGUIList()==i) sortedListFields.addElement(node);
-                }
+            for (Enumeration e=fields.elements();e.hasMoreElements();) {
+                FieldDefs node=(FieldDefs)e.nextElement();
+                if (node.getGUIList()>-1) sortedListFields.addElement(node);
             }
+            FieldDefs.sort(sortedListFields,FieldDefs.ORDER_LIST);
         }
-        return (sortedListFields);
+        return sortedListFields;
     }
 
 
@@ -1576,16 +1595,13 @@ public class MMObjectBuilder extends MMTable {
      * @return a vector with FieldDefs
      */
     public Vector getSortedFields() {
-        // hack hack
         if (sortedFields == null) {
             sortedFields = new Vector();
-            FieldDefs node;
-            for (int i=1;i<20;i++) {
-                for (Enumeration e=fields.elements();e.hasMoreElements();) {
-                    node=(FieldDefs)e.nextElement();
-                    if (node.getGUIPos()==i) sortedFields.addElement(node);
-                }
+            for (Enumeration e=fields.elements();e.hasMoreElements();) {
+                FieldDefs node=(FieldDefs)e.nextElement();
+                if (node.getGUIPos()>-1) sortedFields.addElement(node);
             }
+            FieldDefs.sort(sortedFields,FieldDefs.ORDER_EDIT);
         }
         return sortedFields;
     }
@@ -1884,9 +1900,9 @@ public class MMObjectBuilder extends MMTable {
         if (version!=null) nodeNumber+="."+version;
         String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
         if ((matches == null) || (matches.length <= 0))
-    	{
+        {
             return null;
-	    }
+        }
         return path + matches[0] + File.separator;
     }
 
@@ -2200,11 +2216,12 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Set the MMBase object.
+     * Set the MMBase object, and retrieve the database lasyer.
      * @param m the MMBase object to set as owner of this builder
      */
     public void setMMBase(MMBase m) {
-        this.mmb=m;
+        mmb=m;
+        database=mmb.getDatabase();
     }
 
     /**
