@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.26 2003-08-20 09:20:40 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.27 2003-08-20 11:39:33 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -113,6 +113,8 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
         activeConnection = dataSource.getConnection();
+        // set autocommit to true
+        activeConnection.setAutoCommit(true);
         return activeConnection;
     }
 
@@ -1189,7 +1191,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
             String fieldName = (String)factory.getStorageIdentifier("number");
             String fieldDef = fieldName+" "+((TypeMapping)typeMappings.get(found)).type + " NOT NULL";
-            Scheme scheme = new Scheme(factory, "CREATE TABLE {0}_{1} ({2})");
+            Scheme scheme = new Scheme(factory, "CREATE TABLE {0}_{1} ({2}, PRIMARY KEY(number))");
             String query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), fieldDef });
             Statement s = activeConnection.createStatement();
             debug("query:"+query);            
@@ -1199,7 +1201,6 @@ public class DatabaseStorageManager implements StorageManager {
             query = scheme.format(new Object[] { this, factory.getStorageIdentifier("numberTable"), factory.getStorageIdentifier("number"), new Integer(1) });
             debug("query:"+query);            
             s.executeUpdate(query);
-
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
