@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.48 2003-12-03 15:53:46 pierre Exp $
+ * @version $Id: Dove.java,v 1.49 2004-01-07 21:30:54 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -246,8 +246,8 @@ public class Dove extends AbstractDove {
                 } else {
                     data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
                 }
-                data.setAttribute(ELM_SOURCE,      "" + nrel.getValue("snumber"));
-                data.setAttribute(ELM_DESTINATION, "" + nrel.getValue("dnumber"));
+                data.setAttribute(ELM_SOURCE,      "" + nrel.getIntValue("snumber"));
+                data.setAttribute(ELM_DESTINATION, "" + nrel.getIntValue("dnumber"));
 
                 int otherNumber;
                 if (thisNumber == nrel.getIntValue("snumber")) {
@@ -851,8 +851,8 @@ public class Dove extends AbstractDove {
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element re = (Element)me.getValue();
                         re.setAttribute(ELM_NUMBER, n.getStringValue("number"));
-                        re.setAttribute(ELM_SOURCE, n.getStringValue("snumber"));
-                        re.setAttribute(ELM_DESTINATION, n.getStringValue("dnumber"));
+                        re.setAttribute(ELM_SOURCE, "" + n.getIntValue("snumber"));
+                        re.setAttribute(ELM_DESTINATION, "" + n.getIntValue("dnumber"));
                     }
                 } catch (RuntimeException e) {
                     Element err = addContentElement(ERROR, "Transaction failed : " + e.getMessage(), out);
