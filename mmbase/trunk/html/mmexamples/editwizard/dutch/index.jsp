@@ -48,6 +48,7 @@
   <a href="index.jsp?language=en">english</a><br />
   <a href="index.jsp?language=nl">dutch</a><br />
   <a href="index.jsp?language=fr">french</a><br />
+  <a href="index.jsp?language=it">italian</a><br />
   <a href="index.jsp?language=eo">esperanto</a><br />
   <a href="mailto:mihxil@komputilo.org">Offer your help to improve/add support for your language</a><br />
  
