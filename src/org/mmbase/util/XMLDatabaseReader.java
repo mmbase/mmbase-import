@@ -44,6 +44,7 @@ public class XMLDatabaseReader  {
 	    System.out.println("database type-mapping="+getTypeMapping());	
 	    System.out.println("database create="+getCreateScheme());	
 	    System.out.println("database not-null="+getNotNullScheme());	
+	    System.out.println("database disallowed fields="+getDisallowedFields());	
 	    System.out.println("*** END XML CONFIG READER FOR : "+filename);	
 	    */
 	} catch(Exception e) {
@@ -68,6 +69,38 @@ public class XMLDatabaseReader  {
 		}
 	}
 	return(null);
+    }
+
+
+    /**
+    */
+    public Hashtable getDisallowedFields() {
+	Hashtable results=new Hashtable();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("disallowed")) {
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					if (n3.getNodeName().equals("field")) {
+						NamedNodeMap nm=n3.getAttributes();
+						if (nm!=null) {
+							Node n5=nm.getNamedItem("name");
+							String name=n5.getNodeValue();
+							Node n6=nm.getNamedItem("replacement");
+							String replacement=n6.getNodeValue();
+							//System.out.println("DIS="+name+" replacement="+replacement);
+							results.put(name,replacement);
+						}
+					}
+					n3=n3.getNextSibling();
+				}
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(results);
     }
 
 
