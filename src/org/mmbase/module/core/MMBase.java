@@ -135,9 +135,9 @@ public class MMBase extends ProcessorModule  {
     */
     JDBCInterface jdbc;
 
-	/**
-	* MultiRelations virtual builder, used for performing multilevel searches.
-	*/
+    /**
+     * MultiRelations virtual builder, used for performing multilevel searches.
+     */
     MultiRelations MultiRelations;
 
     /**
@@ -177,6 +177,13 @@ public class MMBase extends ProcessorModule  {
 
     // debug routines
     private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+
+    /**
+     * Reference to the cluster builder.
+     * The cluster builder is a version of the multirelations builder
+     * that is used by the MMCI.
+     */
+    private ClusterBuilder clusterBuilder;
 
     /**
      * Reference to the sendmail module. Accessible using getSendMail();
@@ -293,9 +300,11 @@ public class MMBase extends ProcessorModule  {
 
         log.debug("Objects started");
 
-        log.debug("Starting MulteRelations Object");
+        log.debug("Starting MultiRelations Builder");
         MultiRelations = new MultiRelations(this);
-        log.debug("ok");
+
+        log.debug("Starting Cluster Builder");
+        clusterBuilder = new ClusterBuilder(this);
 
 		// weird place needs to rethink (daniel).
         Vwms bul=(Vwms)getMMObject("vwms");
@@ -307,15 +316,14 @@ public class MMBase extends ProcessorModule  {
             bul2.start();
         }
 
-
         String writerpath=getInitParameter("XMLBUILDERWRITERDIR");
         if (writerpath!=null && !writerpath.equals("")) {
             Enumeration t = mmobjs.elements();
             while (t.hasMoreElements()) {
                 MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-                String name=fbul.getTableName();
-                log.debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
-                if (!name.equals("multirelations")) {
+                if (!fbul.isVirtual()) {
+                    String name=fbul.getTableName();
+                    log.debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
                     XMLBuilderWriter.writeXMLFile(writerpath+File.separator+fbul.getTableName()+".xml",fbul);
                 }
             }
@@ -448,6 +456,14 @@ public class MMBase extends ProcessorModule  {
 	public OAlias getOAlias() {
 		return OAlias;
 	}
+
+    /**
+     * Returns a reference to the cluster builder.
+     * @return an instantiation of the <code>ClusterBuilder</code>
+     */
+    public ClusterBuilder getClusterBuilder() {
+        return clusterBuilder;
+    }
 
 	/**
 	 * Get a database connection that is multiplexed and checked.
