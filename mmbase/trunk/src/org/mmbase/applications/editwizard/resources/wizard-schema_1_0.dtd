@@ -10,20 +10,22 @@
 <!ELEMENT task-description ( #PCDATA ) >
 
 <!ELEMENT action ( field | object | relation  | prompt | description )* >
-<!ATTLIST action type NMTOKEN #REQUIRED >
+<!ATTLIST action type NMTOKEN #IMPLIED >
+<!ATTLIST action include CDATA #IMPLIED >
 
 <!ELEMENT lists ( optionlist+ ) >
 
 <!ELEMENT steps ( step+ ) >
 
 <!ELEMENT step EMPTY >
-<!ATTLIST step formschema NMTOKEN #REQUIRED >
+<!ATTLIST step form-schema NMTOKEN #REQUIRED >
 
 <!ELEMENT optionlist ( option* | query ) >
 <!ATTLIST optionlist name NMTOKEN #IMPLIED >
 <!ATTLIST optionlist select NMTOKEN #IMPLIED >
 <!ATTLIST optionlist optionid CDATA #IMPLIED >
 <!ATTLIST optionlist optioncontent CDATA #IMPLIED >
+<!ATTLIST optionlist include CDATA #IMPLIED >
 
 <!ELEMENT option ( #PCDATA ) >
 <!ATTLIST option id CDATA  #REQUIRED >
@@ -34,6 +36,7 @@
 <!ELEMENT form-schema ( title | subtitle | field | fieldset | list)* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
 <!ATTLIST form-schema include CDATA #IMPLIED >
+<!ATTLIST form-schema extends CDATA #IMPLIED >
 
 <!ELEMENT object ( field | relation )* >
 <!ATTLIST object type NMTOKEN #IMPLIED >
