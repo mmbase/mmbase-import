@@ -428,11 +428,6 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	}
 
 
-
-	///
-	// actual code ends here, rest is temporary or for testing
-	//
-	
 	/**
 	 * Dummy User object, this object needs to be replace by
 	 * the real User object (when that is finished)
