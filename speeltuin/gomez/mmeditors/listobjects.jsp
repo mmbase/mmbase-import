@@ -101,7 +101,7 @@
             Node node = nl.getNode(i);
       %>
       <mm:context>
-        <mm:node number="<%=node.getNumber() %>" id="node">
+        <mm:node number="<%= "" + node.getNumber() %>" id="node">
         <tr>
           <td>
             <table>
