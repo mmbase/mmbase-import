@@ -201,12 +201,6 @@ NetComponents can be found at:
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
-    <!-- BugTracker -->
-     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
-      <fileset dir="${source-config.dir}/default/applications/BugTracker/builders">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
     <!-- MyNews -->
      <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
       <fileset dir="${source-config.dir}/default/applications/MyNews/builders">
