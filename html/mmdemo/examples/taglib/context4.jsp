@@ -7,8 +7,8 @@
 Reusing the node of the previous page.
 </p>
 <mm:cloud>
-<mm:import externid="news_node" required="true" />
-<mm:node referid="news_node">
+<mm:import externid="first_news_node" required="true" />
+<mm:node referid="first_news_node">
      <mm:field name="title" />
 </mm:node>
 <hr />
