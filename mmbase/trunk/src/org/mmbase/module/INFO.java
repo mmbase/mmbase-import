@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.14 $ $Date: 2000-05-23 13:29:06 $
+ * @$Revision: 1.15 $ $Date: 2000-05-23 13:46:39 $
  */
 public class INFO extends ProcessorModule {
 
@@ -387,7 +387,7 @@ public class INFO extends ProcessorModule {
 				if (getminutes<10) {
 					return(""+calendar.get(Calendar.HOUR_OF_DAY)+":0"+getminutes);
 				} else {
-					return(""+calendar.get(Calendar.HOUR_OF_DAY)+getminutes);
+					return(""+calendar.get(Calendar.HOUR_OF_DAY)+":"+getminutes);
 				}
 			}
 			
@@ -430,7 +430,7 @@ public class INFO extends ProcessorModule {
 
 			//WEEK
 			if (cmd.equals("WEEK")) return(""+((days/7)+1));
-			if (cmd.equals("WEEK_OF_YEAR")) return(""+calendar.get(Calendar.WEEK_OF_YEAR));
+			if (cmd.equals("WEEKOFYEAR")) return(""+calendar.get(Calendar.WEEK_OF_YEAR));
 			if (cmd.equals("WEEKOFMONTH")) return(""+calendar.get(Calendar.WEEK_OF_MONTH));
 
 			// DAY
