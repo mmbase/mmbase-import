@@ -26,10 +26,10 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.57 2002-07-26 17:14:20 michiel Exp $
+ * @version $Id: Wizard.java,v 1.58 2002-08-12 18:19:42 michiel Exp $
  *
  */
-public class Wizard {
+public class Wizard implements org.mmbase.util.Sizeable {
     // logging
     private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
 
@@ -81,7 +81,7 @@ public class Wizard {
     private  Document data;
     private  Document originalData;
 
-    // not yet committed uploads are stored in there hashmaps
+    // not yet committed uploads are stored in these hashmaps
     private Map binaries;
     private Map binaryNames;
     private Map binaryPaths;
@@ -124,6 +124,26 @@ public class Wizard {
      *
      */
     private List errors;
+
+
+    public int getByteSize() {
+        return getByteSize(new org.mmbase.util.SizeOf());
+    }
+    public int getByteSize(org.mmbase.util.SizeOf sizeof) {
+        return 
+            sizeof.sizeof(preform) +
+            sizeof.sizeof(cloud)   + 
+            sizeof.sizeof(uriResolver) + 
+            sizeof.sizeof(schema) + 
+            sizeof.sizeof(data) + 
+            sizeof.sizeof(originalData) +
+            sizeof.sizeof(binaries) +
+            sizeof.sizeof(binaryNames) +
+            sizeof.sizeof(binaryPaths) +
+            sizeof.sizeof(constraints);
+              
+    }
+    
 
     /**
      * Constructor. Setup initial variables. No connection to mmbase is made yet.
