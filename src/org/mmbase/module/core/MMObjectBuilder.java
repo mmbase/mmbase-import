@@ -1504,6 +1504,13 @@ public class MMObjectBuilder extends MMTable {
     * Executes a function on the field of a node, and returns the result.
     * This method is called by the builder's {@link #getValue} method.
     * Derived builders should override this method to provide additional functions.
+	*
+	* current functions are:<br />
+	* on dates: date, time, timesec, longmonth, month, weekday, shortday, day, year <br />
+	* on text:  wap, html, shorted, uppercase, lowercase <br />
+	* on node:  age() <br />
+	* on numbers: wrap_&lt;int&gt;, currency_euro <br />
+	*
     * @param node the node whos efields are queries
     * @param field the fieldname that is requested
     * @return the result of the 'function', or null if no valid functions could be determined.
@@ -1545,6 +1552,16 @@ public class MMObjectBuilder extends MMTable {
 	        rtn=""+((days*(3600*24))-3600);
             // text convertion  functions
         }
+       
+		// functions that do not require a field 
+		// These are more or like pseudo fields, like the age of a node.
+		// node.getAge("age()"); will work.
+
+		else if (function.equals("age")) {
+			Integer val = new Integer(node.getAge());
+			rtn = val.toString();
+		}
+		// text convertion  functions 
         else if (function.equals("wap")) {
             String val=node.getStringValue(field);
             rtn=getWAP(val);
@@ -1580,8 +1597,8 @@ public class MMObjectBuilder extends MMTable {
             } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
              double val=node.getDoubleValue(field);
-	     NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
-	     rtn=""+nf.format(val);
+			 NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
+			 rtn=""+nf.format(val);
         } else if (function.equals("gui")) {
             String val=null;
             if (field.equals("")) {
