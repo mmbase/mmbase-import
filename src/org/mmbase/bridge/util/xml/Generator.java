@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.w3c.dom.*;
+import org.w3c.dom.Node;
 import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.*;
@@ -21,21 +22,32 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.12 2002-06-14 18:55:21 michiel Exp $
+ * @version $Id: Generator.java,v 1.13 2002-06-24 13:46:57 michiel Exp $
  */
-public class Generator {   
+public class Generator {
+
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
-    private Document tree = null;
+    private Document document = null;
+    private Cloud    cloud    = null;
 
     /**
-     * To use the functionality of this class, instantiate it with
-     * with a DOM Document in which the Elements must be put.
+     * To create documents representing structures from the cloud, it
+     * needs a documentBuilder, to contruct the DOM Document, and the
+     * cloud from which the data to be inserted will come from.    
+     *
+     * @param documentBuilder The DocumentBuilder which will be used to create the Document.
+     * @param cloud           The cloud from which the data will be.
      */
-    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, org.mmbase.bridge.Cloud cloud) {
-        this.tree = documentBuilder.newDocument();
-        Element rootElement = tree.createElement("objects");
-        rootElement.setAttribute("cloud", cloud.getName());    
-        tree.appendChild(rootElement);
+    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, Cloud cloud) {
+        DOMImplementation impl = documentBuilder.getDOMImplementation();        
+        this.document = impl.createDocument(null, "objects", impl.createDocumentType("objects",  "-//MMBase/DTD objects config 1.0//EN", "http://www.mmbase.org/dtd/objects_1_0.dtd"));
+        this.cloud = cloud;
+        //Element rootElement = document.createElement("objects");
+        //document.appendChild(rootElement);
+    }
+    
+    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder) {
+        this(documentBuilder, null);
     }
     
     /**
@@ -43,7 +55,7 @@ public class Generator {
      * @return The document, build with the operations done on the generator class
      */
     public Document getDocument() {
-        return tree;
+        return document;
     }
 
     /**
@@ -57,11 +69,11 @@ public class Generator {
     /**
      * Returns the document as a String.
      * @param ident if the string has to be idented
-     * @ return the xml generated as an string
+     * @return the generated xml as a (formatted) string
      */
     public String toString(boolean ident) {
         try {
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(tree);
+            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(document);
             if(ident) {
                 format.setIndenting(true);
                 format.setPreserveSpace(false);
@@ -70,7 +82,7 @@ public class Generator {
             }
             java.io.StringWriter result = new java.io.StringWriter();
             org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(tree);
+            prettyXML.serialize(document);
             return result.toString();
         }
         catch (Exception e) {
@@ -86,6 +98,11 @@ public class Generator {
      * @param An MMBase bridge Field.
      */
     public void add(org.mmbase.bridge.Node node, Field fieldDefinition) {
+        if (cloud == null) {
+            cloud = node.getCloud();
+            document.getDocumentElement().setAttribute("cloud", cloud.getName());    
+        }
+
         Element object = getNode(node);
 
         // get the field...
@@ -95,11 +112,17 @@ public class Generator {
         }
         // when not found, we are in a strange situation..
         if(field==null) throw new BridgeException("field with name: " + fieldDefinition.getName() + " of node " + node.getNumber() + " with  nodetype: " + fieldDefinition.getNodeManager().getName() + " not found, while it should be in the node skeleton.. xml:\n" + toString(true));        
-        // when it is filled, we can return
-        Attr notfilled = field.getAttributeNode("notfilled");
-        if(notfilled == null) return;
-        // was not filled, so fill it... first clear the not filled attribute
-        field.removeAttributeNode(notfilled);
+        // when it is filled (allready), we can return
+        if(field.getTagName().equals("field")) return;
+
+        // was not filled, so fill it... first remove the unfilled 
+        Element filledField = document.createElement("field");
+
+
+        field.getParentNode().replaceChild(filledField, field);
+        field = filledField;
+        // the name
+        field.setAttribute("name", fieldDefinition.getName());
         // now fill it with the new info...
         // format
         field.setAttribute("format", getFieldFormat(node, fieldDefinition));
@@ -115,10 +138,10 @@ public class Generator {
             break;
             case Field.TYPE_BYTE:
                 org.mmbase.util.transformers.Base64 transformer = new org.mmbase.util.transformers.Base64();
-                field.appendChild(tree.createTextNode(transformer.transform(node.getByteValue(fieldDefinition.getName()))));
+                field.appendChild(document.createTextNode(transformer.transform(node.getByteValue(fieldDefinition.getName()))));
             break;
             default:
-                field.appendChild(tree.createTextNode(node.getStringValue(fieldDefinition.getName())));
+                field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
         }
         // or do we need more?
     }
@@ -140,7 +163,7 @@ public class Generator {
      * @param An MMBase bridge Node.
      */
     public void add(Relation relation) {        
-        add((org.mmbase.bridge.Node)relation);   
+        add((org.mmbase.bridge.Node) relation);   
     }
 
     /**
@@ -164,27 +187,30 @@ public class Generator {
             add(i.nextRelation());
         }
     }
-
+    /**
+     * Creates an Element which represents a bridge.Node with all fields unfilled.
+     */
     private Element getNode(org.mmbase.bridge.Node node) { 
         // MMBASE BUG...
         // we dont know if we have the correct typee...
-        node = node.getCloud().getNode(node.getNumber());
+        node = cloud.getNode(node.getNumber());
         
         // if we are a relation,.. behave like one!
         // why do we find it out now, and not before?       
-             
+                     
         // TODO: reseach!!
         boolean getElementByIdWorks = false;
         Element object = null;
         if(getElementByIdWorks) {
-            object = tree.getElementById("" + node.getNumber());        
-        }
-        else {
+            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
+            
+            object = document.getElementById("" + node.getNumber());
+        } else {
             // TODO: this code should be removed!! but other code doesnt work :(
             // this cant be fast in performance...
             String xpath = "//*[@id='"+node.getNumber()+"']";
             try {
-                object = (Element) org.apache.xpath.XPathAPI.selectSingleNode(tree.getDocumentElement(), xpath);
+                object = (Element) org.apache.xpath.XPathAPI.selectSingleNode(document.getDocumentElement(), xpath);
             }
             catch(javax.xml.transform.TransformerException te) {
                 String msg = "error executing query: '" + xpath + "'";
@@ -192,8 +218,9 @@ public class Generator {
                 log.error(Logging.stackTrace(te));
                 throw new BridgeException(msg);
             }
-        }        
-        if(object != null) return object;
+        }
+
+        if (object != null) return object;
 
         // if it is a realtion... first add source and destination info thingies..
         // can only happen after the node = node.getCloud().getNode(node.getNumber()); thing!
@@ -204,31 +231,37 @@ public class Generator {
         }
         
         // node didnt exist, so we need to create it...
-        object = tree.createElement("object");        
-        // the id...
-        object.setAttribute("id", "" + node.getNumber());
-        // the type...
-        object.setAttribute("type", node.getNodeManager().getName());
+        object = document.createElement("object");        
+        object.setAttribute("id",    "" + node.getNumber());
+        object.setAttribute("type",  node.getNodeManager().getName());
         // and the otype (type as number)
         object.setAttribute("otype", node.getStringValue("otype"));
         
-        // add the fields (empty)
+        // add the fields (empty) 
+        // While still having 'unfilledField's
+        // you know that the node is not yet presented completely.
+
         FieldIterator i = node.getNodeManager().getFields().fieldIterator();
         while(i.hasNext()) {
             Field fieldDefinition = i.nextField();
-            Element field = tree.createElement("field");            
+            Element field = document.createElement("unfilledField");
             // the name
             field.setAttribute("name", fieldDefinition.getName());
-            // that it is not filled yet...
-            field.setAttribute("notfilled", "");            
             // add it to the object
             object.appendChild(field);
         }        
-        tree.getDocumentElement().appendChild(object);
+        document.getDocumentElement().appendChild(object);
         return object;        
     }    
     
-    private org.w3c.dom.Element importDocument(org.w3c.dom.Element fieldElement, Document toImport) {
+
+    /**
+     * Imports an XML document as a value of a field. Can be any XML, so the namespace is set.
+     *
+     * @param fieldElement The Element describing the field
+     * @param toImport     The Document to set as the field's value
+     */
+    private Element importDocument(Element fieldElement, Document toImport) {
         DocumentType dt = toImport.getDoctype();
         String tagName = toImport.getDocumentElement().getTagName();
 
@@ -248,15 +281,15 @@ public class Generator {
         return importElement(fieldElement, toImport.getDocumentElement(), namespace, prefix);
     }
 
-    private org.w3c.dom.Element importElement(org.w3c.dom.Element parent, org.w3c.dom.Element toImport, String namespace, String prefix) {
+    private Element importElement(Element parent, Element toImport, String namespace, String prefix) {
         // first create the Element
         Element current = parent.getOwnerDocument().createElementNS(namespace, prefix + toImport.getTagName());
         // add all the attributs..
-        org.w3c.dom.NamedNodeMap namednodes = toImport.getAttributes();        
+        NamedNodeMap namednodes = toImport.getAttributes();        
         for(int i=0; i < namednodes.getLength(); i++) {
-            org.w3c.dom.Node namesnode = namednodes.item(i);
+            Node namesnode = namednodes.item(i);
             switch(namesnode.getNodeType()) {
-                case org.w3c.dom.Node.ATTRIBUTE_NODE:
+                case Node.ATTRIBUTE_NODE:
                     Attr attr = (Attr)namesnode;
                     if(attr.getNamespaceURI() == null) {
                         String name = attr.getName();
@@ -273,17 +306,17 @@ public class Generator {
                         current.setAttribute(attr.getName(), attr.getValue());
                     }                    
                 break;
-                case org.w3c.dom.Node.CDATA_SECTION_NODE:
-                case org.w3c.dom.Node.COMMENT_NODE:
-                case org.w3c.dom.Node.ELEMENT_NODE:
-                case org.w3c.dom.Node.TEXT_NODE:
-                case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE :
-                case org.w3c.dom.Node.DOCUMENT_NODE:
-                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE:
-                case org.w3c.dom.Node.ENTITY_NODE:
-                case org.w3c.dom.Node.ENTITY_REFERENCE_NODE:
-                case org.w3c.dom.Node.NOTATION_NODE:
-                case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE:
+                case Node.CDATA_SECTION_NODE:
+                case Node.COMMENT_NODE:
+                case Node.ELEMENT_NODE:
+                case Node.TEXT_NODE:
+                case Node.DOCUMENT_FRAGMENT_NODE :
+                case Node.DOCUMENT_NODE:
+                case Node.DOCUMENT_TYPE_NODE:
+                case Node.ENTITY_NODE:
+                case Node.ENTITY_REFERENCE_NODE:
+                case Node.NOTATION_NODE:
+                case Node.PROCESSING_INSTRUCTION_NODE:
                     throw new RuntimeException("type #" + namesnode.getNodeType() +"not implemented is not implemented");
                 default:
                     throw new RuntimeException("type #" + namesnode.getNodeType() + "was unknown!");
@@ -293,34 +326,34 @@ public class Generator {
         parent.appendChild(current);        
         
         // add all the childnodes...
-        org.w3c.dom.Node childnode = toImport.getFirstChild();
+        Node childnode = toImport.getFirstChild();
         while(childnode != null) {
              switch(childnode.getNodeType()) {              
-                case org.w3c.dom.Node.CDATA_SECTION_NODE:
+                case Node.CDATA_SECTION_NODE:
                     // throw new RuntimeException("not implemented");
                     CDATASection cdata = current.getOwnerDocument().createCDATASection(((CDATASection)childnode).getData());
                     current.appendChild(cdata);
                 break;
-                case org.w3c.dom.Node.COMMENT_NODE:
+                case Node.COMMENT_NODE:
                     Comment comment = current.getOwnerDocument().createComment(((Comment)childnode).getData());
                     current.appendChild(comment);
                 break;                    
-                case org.w3c.dom.Node.ELEMENT_NODE:
+                case Node.ELEMENT_NODE:
                     importElement(current, (Element)childnode, namespace, prefix);
                 break;
-                case org.w3c.dom.Node.TEXT_NODE:
+                case Node.TEXT_NODE:
                     Text text = current.getOwnerDocument().createTextNode(((Text)childnode).getData()); 
                     current.appendChild(text);
                 break;
                 
-                case org.w3c.dom.Node.ATTRIBUTE_NODE:
-                case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE :
-                case org.w3c.dom.Node.DOCUMENT_NODE:
-                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE:
-                case org.w3c.dom.Node.ENTITY_NODE:
-                case org.w3c.dom.Node.ENTITY_REFERENCE_NODE:
-                case org.w3c.dom.Node.NOTATION_NODE:
-                case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE:
+                case Node.ATTRIBUTE_NODE:
+                case Node.DOCUMENT_FRAGMENT_NODE :
+                case Node.DOCUMENT_NODE:
+                case Node.DOCUMENT_TYPE_NODE:
+                case Node.ENTITY_NODE:
+                case Node.ENTITY_REFERENCE_NODE:
+                case Node.NOTATION_NODE:
+                case Node.PROCESSING_INSTRUCTION_NODE:
                     throw new RuntimeException("type #" + childnode.getNodeType() +"not implemented is not implemented");
                 default:
                     throw new RuntimeException("type #" + childnode.getNodeType() + "was unknown!");
@@ -370,9 +403,8 @@ public class Generator {
     }
 
     private Element createRelationEntry(Relation relation, org.mmbase.bridge.Node relatedNode) {
-        Element fieldElement = tree.createElement("relation");
+        Element fieldElement = document.createElement("relation");
         // we have to know what the relation type was...
-        Cloud cloud = relation.getCloud();
         org.mmbase.bridge.Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
 
         fieldElement.setAttribute("object", "" + relation.getNumber());
