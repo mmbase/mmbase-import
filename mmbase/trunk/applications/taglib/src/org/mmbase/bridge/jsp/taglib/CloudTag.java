@@ -72,7 +72,10 @@ public class CloudTag extends ContextTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
 
-    public  static String DEFAULT_CLOUD_NAME = "mmbase";   
+    private static String DEFAULT_CLOUD_NAME = "mmbase";   
+    static String DEFAULT_CLOUD_JSPVAR       = "cloud";
+
+    private String jspvar = DEFAULT_CLOUD_JSPVAR;
 
     private static final String REALM = "cloud_realm";
 
@@ -118,6 +121,10 @@ public class CloudTag extends ContextTag implements CloudProvider {
     public void setPwd(String pwd){
         this.pwd = pwd;
     }
+
+    public void setJspvar(String jv) {
+        jspvar = jv;
+    }
     
     public void setAuthenticate(String authenticate) {
         if (! "".equals(authenticate) ) {   // this makes it easier to ignore.
@@ -147,23 +154,6 @@ public class CloudTag extends ContextTag implements CloudProvider {
         cloud = c;
     }
     
-    public void  registerNode(String id, Node n) {        
-        // does nothing.
-    }
-    public void  register(String id, Object n) {        
-        // does nothing.
-    }
-    
-    public Node getNode(String id) throws JspTagException {
-        throw new JspTagException("Cannot get Nodes directly from Cloud (use a context tag)");
-    }
-    public Object getObject(String id) throws JspTagException {
-        throw new JspTagException("Cannot get Objects directly from Cloud (use a context tag)");
-    }
-    public byte[] getBytes(String id) throws JspTagException {
-        throw new JspTagException("Cannot get bytes directly from Cloud (use a context tag)");
-    }
-
     public String getId() {
         String id = super.getId();
         if (id != null) return id;
@@ -244,7 +234,7 @@ public class CloudTag extends ContextTag implements CloudProvider {
               method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
             setAnonymousCloud(cloudName);            
-            pageContext.setAttribute(getId(), cloud);        
+            pageContext.setAttribute(jspvar, cloud);        
             return EVAL_BODY_TAG;
         }
         
@@ -399,7 +389,7 @@ public class CloudTag extends ContextTag implements CloudProvider {
                 session.setAttribute("cloud_" + cloudName, cloud);
             }
         }        
-        pageContext.setAttribute(getId(), cloud);
+        pageContext.setAttribute(jspvar, cloud);
         return EVAL_BODY_TAG;
     }
     
