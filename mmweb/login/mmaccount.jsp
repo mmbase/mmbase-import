@@ -12,22 +12,28 @@
 <div style="margin-left: 50px; margin-right: 50px; margin-top: 50px; margin-bottom: 50px;" align="center">
 <mm:import externid="username" from="parameters" />
 <mm:import externid="referrer"><%= request.getContextPath() %>/dochangeaccount.jsp</mm:import>
-<% if(request.getParameter("reason") != null) { %>
-	<p class="message"> <%= request.getParameter("reason") %> </p>
-	<p>&nbsp;</p>
-<% } %>
+<mm:import externid="reason" />
+<mm:import externid="message" />
+<mm:write referid="reason">
+  <mm:isnotempty>
+     <p class="message"><mm:write /></p>
+  </mm:isnotempty>
+</mm:write>
 
-<form method="post" action="<mm:write referid="referrer" jspvar="r" vartype="string"><%=response.encodeURL(r)%></mm:write>" >
+<form method="post" action="<mm:url page="$referrer" />">
 <table border="0" cellspacing="0" cellpadding="4" class="table-left">
   <tr>
-	<td width="50"><img src="/mmbase/my_editors/img/mmbase-edit-40.gif" alt="my_editors" width="41" height="40" border="0" hspace="4" vspace="4" /></td>
+	<td width="50"><img src="<mm:url page="/mmbase/style/images/edit-32x32.png" />" alt="edit" width="32" height="32" border="0" hspace="4" vspace="4" /></td>
 	<td>
 	  <div class="top-title">mmbase.org</div>
 	</td>
   </tr>
-<% if(request.getParameter("message") != null) { %>
-  <tr><td>&nbsp;</td><td class="name"><b><%= request.getParameter("message") %></b></td></tr>
-<% } %>
+<mm:write referid="message">
+  <mm:isnotempty>
+    <tr><td>&nbsp;</td><td class="name"><b><mm:write /></b></td></tr>
+  </mm:isnotempty>
+</mm:write>
+
   <tr><td>&nbsp;</td><td class="name"><b>Change email</b></td></tr>
   <tr><td class="name" align="right">Email</td><td><input class="mmbase" type="text" name="new_email" /></td></tr>
   <tr><td>&nbsp;</td><td><input type="submit" name="change_email" value="change" /></td></tr>
