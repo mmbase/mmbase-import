@@ -174,12 +174,24 @@
       <glossentry>
         <glossterm>nodemanager</glossterm>
 
-        <glossdef><orderedlist><listitem><para>Java class that contains the
-        functionality of a node.</para></listitem><listitem><para>...</para></listitem></orderedlist><example><title>Example
-        of use in spoken language</title><para>The nodemanager of an image
-        makes it possible to scale images dynamically.</para></example><remark>The
-        term nodemanager is used in when one speaks about the functionality of
-        the bridge.</remark>
+        <glossdef>
+					<orderedlist>
+						<listitem>
+							<para>
+								Java class that contains the functionality of a node.
+								</para>
+						</listitem>
+						<listitem>
+							<para>...</para>
+						</listitem>
+					</orderedlist>
+					<example>
+						<title>Example of use in spoken language</title>
+						<para>
+							The nodemanager of an image makes it possible to scale images dynamically.
+						</para>
+					</example>
+					<remark>The term nodemanager is used in when one speaks about the functionality of the bridge.</remark>
 					<glossseealso>builder</glossseealso>
 					<glossseealso>object type</glossseealso>
 				</glossdef>
@@ -187,12 +199,28 @@
 
       <glossentry>
         <glossterm>object type</glossterm>
-        <glossdef><orderedlist><listitem><para>an object type defines an
-								object in the object cloud</para></listitem><listitem><para>...</para></listitem></orderedlist><example><title>In
-							spoken language</title><para>The object type of the employee object
-							only contains fields which describe the employee, but are not related
-							to its position in departments and projects.</para></example><remark>The
-						term is used when one speaks about information analyses.</remark>
+        <glossdef>
+					<orderedlist>
+						<listitem>
+							<para>
+								An object type defines an object in the object cloud
+							</para>
+						</listitem>
+						<listitem>
+							<para>...</para>
+						</listitem>
+					</orderedlist>
+					<example>
+						<title>In spoken language</title>
+						<para>
+							The object type of the employee object only contains fields which describe the
+							employee, but are not related to its position in departments and
+							projects.
+						</para>
+					</example>
+					<remark>
+						The term is used when one speaks about information analyses.
+					</remark>
 					<glossseealso>builder</glossseealso>
 					<glossseealso>nodemanager</glossseealso>
 				</glossdef>
@@ -200,1009 +228,145 @@
 
       <glossentry>
         <glossterm>role</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+				<glossdef>
+					<para>
+						The name of an reldef object.
+					</para>
+					<glossseealso>reldef</glossseealso>
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>reldef</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+				<glossdef>
+					<para>
+						The builder defining relation roles.						
+					</para>
+					<glossseealso>role</glossseealso>
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>insrel</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>
+					<para>
+						A relation instance. This is special kind of object type which contains relation objects.
+					</para>
+					<glossseealso>builder</glossseealso>
+					<glossseealso>object type</glossseealso>
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>typerel</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>
+					<para />
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>insrel</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
         <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
 
       </glossentry>
 
       <glossentry>
         <glossterm>object</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>					
+					<orderedlist>
+						<listitem>
+							<para>
+								The base builder
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								General term for 'node'.
+							</para>
+						</listitem>
+					</orderedlist>
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>node</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-        <glosssee></glosssee>
+        <glossdef>
+					<para>
+					</para>					
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>cloud</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>
+					<para>
+					</para>					
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>MMBase</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>
+					<para>
+					</para>					
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>bridge</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>
+					<para>
+					</para>					
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>MMBase Cloud Interface</glossterm>
-
         <acronym>MMCI</acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+				<glosssee>bridge</glosssee>
       </glossentry>
 
       <glossentry>
         <glossterm>MMBase Managing Comitee</glossterm>
-
         <acronym>MMC</acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>
+					<para />
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>temporary cloud project</glossterm>
-
         <acronym>TCP</acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
+        <glossdef>
+					<orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark>
+				</glossdef>
       </glossentry>
 
       <glossentry>
         <glossterm>context</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
+        <glossdef>
+					<orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark>
+				</glossdef>
 
 
       </glossentry>
 
       <glossentry>
         <glossterm>unidirectional</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
         <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
       </glossentry>
 
       <glossentry>
         <glossterm>bidirectional</glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
         <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
       </glossentry>
 
       <glossentry>
         <glossterm>tag libary</glossterm>
-
-        <acronym></acronym>
-
         <abbrev>taglib</abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
-
-      </glossentry>
-
-      <glossentry>
-        <glossterm></glossterm>
-
-        <acronym></acronym>
-
-        <abbrev></abbrev>
-
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
-
+        <glossdef>
+					<orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark>
+				</glossdef>
       </glossentry>
     </glosslist>
 		
