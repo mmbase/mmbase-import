@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.47 2002-01-25 10:57:58 pierre Exp $
+ * @version $Id: MMBase.java,v 1.48 2002-02-04 12:54:43 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -505,6 +505,13 @@ public class MMBase extends ProcessorModule  {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Get the JDBC module used by this MMBase.
+     */
+    public JDBCInterface getJDBC() {
+        return jdbc;
     }
 
     /**
