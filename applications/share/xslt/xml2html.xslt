@@ -24,7 +24,7 @@
     />
 
 <xsl:param name="basedir"></xsl:param>
-<xsl:param name="files">taglibdoc</xsl:param>
+<xsl:param name="files">taglib</xsl:param>
 <xsl:variable name="basedirfiles"><xsl:value-of select="$basedir" />/<xsl:value-of select="$files" /></xsl:variable><!-- make sure this directory exists! -->
     
 <!-- some configuration -->
