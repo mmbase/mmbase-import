@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.11 2004-03-16 14:08:41 pierre Exp $
+ * @version $Id: Schemes.java,v 1.12 2004-09-17 09:39:10 michiel Exp $
  */
 public final class Schemes {
 
@@ -380,6 +380,7 @@ public final class Schemes {
      *    <li>{0} the storage manager (StorageManager), or the basename for tables (String)</li>
      *    <li>{1} the (suggested) name of the primary key field ('number') </li>
      *    <li>{2} the value to init the sequence to </li>
+     *    <li>{3} a default 'increment'</li>
      *  </ul>
      */
     public static final String INIT_SEQUENCE = "init-sequence-scheme";
