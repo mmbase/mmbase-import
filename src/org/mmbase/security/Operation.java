@@ -14,7 +14,7 @@ package org.mmbase.security;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.7 2002-06-07 12:56:55 pierre Exp $
+ * @version $Id: Operation.java,v 1.8 2002-08-30 14:05:52 eduard Exp $
  */
 public final class Operation {
     /** int value for the read Operation*/
@@ -64,7 +64,7 @@ public final class Operation {
      */
     private Operation(int level, String description) {
         this.level = level;
-    this.description = description;
+        this.description = description;
     }
 
     /**
@@ -88,4 +88,15 @@ public final class Operation {
 
     /** the description of this operation */
     private String description;
+    
+    /** retrieve a Operation by a given string */
+    public static Operation getOperation(String operationString) {
+        if(READ.toString().equals(operationString)) return READ;
+        if(WRITE.toString().equals(operationString)) return WRITE;
+        if(CREATE.toString().equals(operationString)) return CREATE;
+        if(CHANGE_RELATION.toString().equals(operationString)) return CHANGE_RELATION;
+        if(DELETE.toString().equals(operationString)) return DELETE;
+        if(CHANGECONTEXT.toString().equals(operationString)) return CHANGECONTEXT;
+        throw new org.mmbase.security.SecurityException("Could not find a operation for the operation with name:" + operationString);
+    }
 }
