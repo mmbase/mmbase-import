@@ -28,7 +28,7 @@ import org.mmbase.util.xml.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.75 2003-07-02 06:20:46 keesj Exp $
+ * @version $Id: MMAdmin.java,v 1.76 2003-09-03 19:09:59 nico Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -720,10 +720,11 @@ public class MMAdmin extends ProcessorModule {
                     XMLNodeReader nodereader = new XMLNodeReader(prepath + path, prepath + appname + File.separator, mmb);
                     String exportsource = nodereader.getExportSource();
                     int timestamp = nodereader.getTimeStamp();
-                    Vector importedNodes = new Vector();
+
                     // loop all nodes , and add to syncnodes.
                     for (Enumeration n = nodereader.getNodes(mmb).elements(); n.hasMoreElements();) {
                         MMObjectNode newNode = (MMObjectNode)n.nextElement();
+
                         int exportnumber = newNode.getIntValue("number");
                         String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
                         Enumeration b = syncbul.search(query);
@@ -733,7 +734,7 @@ public class MMAdmin extends ProcessorModule {
                             log.debug("node allready installed : " + exportnumber);
                         } else {
                             newNode.setValue("number", -1);
-                            int localnumber = doKeyMergeNode(newNode, result);
+                            int localnumber = doKeyMergeNode(syncbul, newNode, exportsource, result);
                             if (localnumber != -1) { // this node was not yet imported earlier
                                 MMObjectNode syncnode = syncbul.getNewNode("import");
                                 syncnode.setValue("exportsource", exportsource);
@@ -741,15 +742,22 @@ public class MMAdmin extends ProcessorModule {
                                 syncnode.setValue("timestamp", timestamp);
                                 syncnode.setValue("localnumber", localnumber);
                                 syncnode.insert("import");
+                                
                                 if (localnumber == newNode.getNumber()) {
                                     // && (newNode.parent instanceof Message)) { terrible stuff
                                     
-                                    // determin if there were NODE fields, which need special treatment later.
+                                    // determine if there were NODE fields, which need special treatment later.
                                     List fields = newNode.parent.getFields();
                                     Iterator i = fields.iterator();
                                     while (i.hasNext()) {
                                         FieldDefs def = (FieldDefs) i.next();
-                                        if (def.getDBType() == FieldDefs.TYPE_NODE && ! def.getDBName().equals("number")) {
+
+                                        // Fields with type NODE and notnull=true will be handled
+                                        // by the doKeyMergeNode() method. 
+                                        if (def.getDBType() == FieldDefs.TYPE_NODE 
+                                            && ! def.getDBName().equals("number")
+                                            && ! def.getDBNotNull()) {
+                                               
                                             newNode.values.put("__exportsource", exportsource);
                                             nodeFieldNodes.add(newNode);
                                             break;
@@ -759,23 +767,6 @@ public class MMAdmin extends ProcessorModule {
                             }
                         }
                     }
-
-                    // mm: ????? Why is this????
-                    //     Can someone _please_ at least comment in this kind of terribleness!
-                    /*
-                    for (Enumeration n = importedNodes.elements(); n.hasMoreElements();) {
-                        MMObjectNode importnode = (MMObjectNode)n.nextElement();
-                        int exportnumber = importnode.getIntValue("thread");
-                        int localnumber = -1;
-                        Enumeration b = syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
-                        if (b.hasMoreElements()) {
-                            MMObjectNode n2 = (MMObjectNode)b.nextElement();
-                            localnumber = n2.getIntValue("localnumber");
-                        }
-                        importnode.setValue("thread", localnumber);
-                        importnode.commit();
-                    }
-                    */
                 }
             }
 
@@ -786,32 +777,23 @@ public class MMAdmin extends ProcessorModule {
                 String exportsource = (String) importedNode.values.get("__exportsource");
                 // clean it up
                 importedNode.values.remove("__exportsource");
-
+               
                 List fields = importedNode.parent.getFields();
                 Iterator j = fields.iterator();                
                 while (j.hasNext()) { 
                     FieldDefs def = (FieldDefs) j.next();
                     if (def.getDBType() == FieldDefs.TYPE_NODE && ! (def.getDBName().equals("number"))) {
-                        int exportnumber;
-                        try {
-                            exportnumber = Integer.parseInt((String) importedNode.values.get("__" + def.getDBName()));
-                        } catch (Exception e) {
-                            exportnumber = -1;
-                        }
-
-                        // clean it up (don't know if this is necessary, but don't risc anything!)
-                        importedNode.values.remove("__" + def.getDBName());
-                                                                      
-                        int localNumber = -1;
-                        String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
-                        Enumeration b = syncbul.search(query);
-                        if (b.hasMoreElements()) {
-                            MMObjectNode n2 = (MMObjectNode) b.nextElement();
-                            localNumber = n2.getIntValue("localnumber");
-                        }
-                        importedNode.setValue(def.getDBName(), localNumber);
-                        importedNode.commit();
+                        String fieldName = def.getDBName();
+                       
+                        updateFieldWithTypeNode(
+                           syncbul,
+                           importedNode,
+                           exportsource,
+                           fieldName);
                     }
+                }
+                if (importedNode.isChanged()) {
+                    importedNode.commit();
                 }
             }
  
@@ -824,13 +806,35 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    private int doKeyMergeNode(MMObjectNode newnode, ApplicationResult result) {
+    private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newnode, String exportsource, ApplicationResult result) {
         MMObjectBuilder bul = newnode.parent;
         if (bul != null) {
             String checkQ = "";
             Vector vec = bul.getFields();
             for (Enumeration h = vec.elements(); h.hasMoreElements();) {
                 FieldDefs def = (FieldDefs)h.nextElement();
+                // check for notnull fields with type NODE.
+                if (def.getDBType() == FieldDefs.TYPE_NODE 
+                    && ! def.getDBName().equals("number")
+                    && def.getDBNotNull()) {
+                       
+                    // Dangerous territory here. 
+                    // The node contains a reference to another node.
+                    // The referenced node has to exist when this node is inserted.
+                    // trying to update the node.
+                    updateFieldWithTypeNode(syncbul,
+                                            newnode,
+                                            exportsource,
+                                            def.getDBName());
+                    if (newnode.getIntValue(def.getDBName()) == -1) {
+                       // guess that failed
+                       result.error("Insert of node " + newnode + " failed. A field with type NODE is not allowed to have a null value. " +                                    "The referenced node is not found. Try to reorder the nodes so the referenced node is imported before this one.");
+                       return -1;
+                    }
+                }
+                
+                // generation of key constraint to check if there is a node already present.
+                // if a node is present then we can't insert this one.
                 if (def.isKey()) {
                     int type = def.getDBType();
                     String name = def.getDBName();
@@ -851,6 +855,7 @@ public class MMAdmin extends ProcessorModule {
                     return oldnode.getIntValue("number");
                 }
             }
+            
             int localnumber = newnode.insert("import");
             if (localnumber == -1) {
                 result.error("Insert of node " + newnode + " failed.");
@@ -863,7 +868,40 @@ public class MMAdmin extends ProcessorModule {
         }
     }
 
-    /**
+   /** update the field with the real node number of the referenced node
+    * 
+    * @param syncbul syncnode builder
+    * @param importedNode Node to update
+    * @param exportsource export source of the node to update
+    * @param fieldname name of the field
+    */
+   private void updateFieldWithTypeNode(
+      MMObjectBuilder syncbul,
+      MMObjectNode importedNode,
+      String exportsource,
+      String fieldname) {
+         
+      int exportnumber;
+      try {
+          exportnumber = Integer.parseInt((String) importedNode.values.get("__" + fieldname));
+      } catch (Exception e) {
+          exportnumber = -1;
+      }
+      
+      // clean it up (don't know if this is necessary, but don't risc anything!)
+      importedNode.values.remove("__" + fieldname);
+                                                    
+      int localNumber = -1;
+      String query = "exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'";
+      Enumeration b = syncbul.search(query);
+      if (b.hasMoreElements()) {
+          MMObjectNode n2 = (MMObjectNode) b.nextElement();
+          localNumber = n2.getIntValue("localnumber");
+      }
+      importedNode.setValue(fieldname, localNumber);
+   }
+
+   /**
      * @javadoc
      */
     boolean installRelationSources(Vector ds, ApplicationResult result) {
@@ -1192,6 +1230,7 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      * @deprecated-now not used (?)
      */
+    /*
     private void checkRelation(int snumber, int dnumber, String rname, int dir) {
         InsRel insrel = mmb.getInsRel();
         if (insrel != null) {
@@ -1229,6 +1268,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("can't get insrel builder");
         }
     }
+    */
 
     /**
      * @javadoc
@@ -1510,7 +1550,6 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name = aname;
                     String sname = name.substring(0, name.length() - 4);
-                    XMLDatabaseReader app = new XMLDatabaseReader(path + aname);
                     results.addElement(sname);
 
                     results.addElement("0");
@@ -1974,7 +2013,6 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         if (bul != null && value != null && value.equals("Yes")) {
             FieldDefs def = bul.getField(fieldname);
-            int dbpos = def.getDBPos();
             bul.removeField(fieldname);
             if (mmb.getDatabase().removeField(bul, def.getDBName())) {
                 syncBuilderXML(bul, builder);
