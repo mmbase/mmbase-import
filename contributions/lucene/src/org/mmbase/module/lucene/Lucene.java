@@ -21,12 +21,12 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.1 2004-12-17 12:13:40 pierre Exp $
+ * @version $Id: Lucene.java,v 1.2 2004-12-17 16:01:11 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
     /** Public ID of the Lucene config DTD version 1.0 */
-    public static final String PUBLIC_ID_LUCENE_1_0 = "-//MMBase//DTD lucene config 1.0//EN";
+    public static final String PUBLIC_ID_LUCENE_1_0 = "-//MMBase//DTD luceneindex config 1.0//EN";
     /** DTD resource filename of the Lucene config DTD version 1.0 */
     public static final String DTD_LUCENE_1_0 = "luceneindex_1_0.dtd";
 
@@ -70,13 +70,39 @@ public class Lucene extends Module implements MMBaseObserver {
      protected Function searchFunction = new AbstractFunction("search",
                               new Parameter[] { new Parameter("value",String.class),
                                                 new Parameter("index",String.class),
+                                                new Parameter("offset",Integer.class),
+                                                new Parameter("max",Integer.class),
                                                 Parameter.CLOUD },
                               ReturnType.LIST) {
         public Object getFunctionValue(Parameters arguments) {
             String value = arguments.getString("value");
             String index = arguments.getString("index");
-            if (index == null || index.equals("")) index = defaultIndex;
-            return search(value, index);
+            // offset
+            int offset = 0;
+            Integer offsetParameter = (Integer)arguments.get("offset");
+            if (offsetParameter != null) offset = offsetParameter.intValue();
+            if (offset < 0) offset = 0;
+            // max
+            int max = -1;
+            Integer maxParameter = (Integer)arguments.get("max");
+            if (maxParameter != null) max = maxParameter.intValue();
+            return search(value, index, offset, max);
+        }
+    };
+
+    /**
+     * This function starts a search fro a given string.
+     * This function can be called through the function framework.
+     */
+     protected Function searchSizeFunction = new AbstractFunction("searchsize",
+                              new Parameter[] { new Parameter("value",String.class),
+                                                new Parameter("index",String.class),
+                                                Parameter.CLOUD },
+                              ReturnType.INTEGER) {
+        public Object getFunctionValue(Parameters arguments) {
+            String value = arguments.getString("value");
+            String index = arguments.getString("index");
+            return new Integer(searchSize(value, index));
         }
     };
 
@@ -88,6 +114,7 @@ public class Lucene extends Module implements MMBaseObserver {
         readConfiguration(fullIndexPath);
         addFunction(fullIndexFunction);
         addFunction(searchFunction);
+        addFunction(searchSizeFunction);
         scheduler = new Scheduler();
         log.info("Module Lucene started");
         // fiull index ???
@@ -200,13 +227,21 @@ public class Lucene extends Module implements MMBaseObserver {
         }
     }
 
-    public List search(String value, String indexName) {
+    protected Searcher getSearcher(String indexName) {
+        if (indexName == null || indexName.equals("")) indexName = defaultIndex;
         Searcher searcher = (Searcher)searcherMap.get(indexName);
         if (searcher == null) {
             throw new IllegalArgumentException("Index with name "+indexName+" does not exist.");
-        } else {
-            return searcher.search(value);
         }
+        return searcher;
+    }
+
+    public List search(String value, String indexName, int offset, int max) {
+        return getSearcher(indexName).search(value, offset, max);
+    }
+
+    public int searchSize(String value, String indexName) {
+        return getSearcher(indexName).searchSize(value);
     }
 
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
