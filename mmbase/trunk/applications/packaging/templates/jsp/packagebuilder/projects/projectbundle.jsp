@@ -17,6 +17,8 @@
 <mm:nodelistfunction set="mmpb" name="haveTargetLog" referids="project,target">
         <mm:import id="havelog"><mm:field name="log" /></mm:import>
 	<mm:import id="state"><mm:field name="state" /></mm:import>
+	<mm:import id="createprogressbarvalue"><mm:field name="createprogressbarvalue" /></mm:import>
+	<mm:import id="createsubprogressbarvalue"><mm:field name="createsubprogressbarvalue" /></mm:import>
 </mm:nodelistfunction>
 
 
@@ -34,13 +36,13 @@ When the create is done you can check state and log to see if all went well
 </table>
 <table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
 <tr>
-<td width="10%" style="background-color: #0000aa">&nbsp;</td><td>&nbsp;</td>
+<td width="<mm:write referid="createprogressbarvalue" />%" style="background-color: #0000aa">&nbsp;</td><td>&nbsp;</td>
 </tr>
 </td></tr>
 </table>
 <table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
 <tr>
-<td width="10%" style="background-color: #00aa00">&nbsp;</td><td>&nbsp;</td>
+<td width="<mm:write referid="createsubprogressbarvalue" />%" style="background-color: #00aa00">&nbsp;</td><td>&nbsp;</td>
 </tr>
 </td></tr>
 </table>

@@ -296,6 +296,8 @@ public class Controller {
                 virtual.setValue("installationnotes", t.getInstallationNotes());
                 virtual.setValue("licensename", t.getLicenseName());
                 virtual.setValue("licenseversion", t.getLicenseVersion());
+
+		// get info
             }
         }
         return virtual;
