@@ -44,9 +44,6 @@ public class XMLApplicationWriter  {
 	// write the datasources
 	body+=getDataSources(app);
 
-	// write the datasources
-	body+=getDataSources(app);
-
 	// write the relationsources
 	body+=getRelationSources(app);
 
