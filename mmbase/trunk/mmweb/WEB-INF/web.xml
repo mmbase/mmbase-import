@@ -74,6 +74,11 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
+  <error-page>
+    <error-code>404</error-code>
+    <location>/index.jsp?page=21649</location>
+  </error-page>
+
   <!-- mmbase-taglib, -->
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
