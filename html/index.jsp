@@ -53,7 +53,7 @@
       </p>
     </td>
     <td class="link">
-      <a href="<mm:url page="mmbase/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
+      <a href="<mm:url page="mmbase/admin/" />"><img alt="&gt;" src="mmbase/style/images/next.gif"  /></a>
     </td>
   </tr>  
   
