@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.49 2004-10-25 08:08:38 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.50 2004-11-23 10:29:20 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -117,39 +117,46 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @return A Set with the added entries, which can be used for logging or so, or can be disregarded
      * @since  MMBase-1.6.2
      */
-    protected TypeRelSet addCacheEntry(MMObjectNode typerel, boolean buildersInitialized) {
-        TypeDef typeDef = mmb.getTypeDef();
+    protected TypeRelSet addCacheEntry(MMObjectNode typeRel, boolean buildersInitialized) {
 
         TypeRelSet added = new TypeRelSet(); // store temporary, which will enable nice logging of what happened
 
         // Start to add the actual definition, this is then afterwards again, except if one of the builders could not be found
-        added.add(typerel);
+        added.add(typeRel);
+
+        RelDef reldef = mmb.getRelDef();
+
+        MMObjectNode reldefNode = reldef.getNode(typeRel.getIntValue("rnumber"));
+        if (reldefNode == null) {
+            throw new RuntimeException("Could not find reldef-node for rnumber= " + typeRel.getIntValue("rnumber"));
+        }
 
         boolean bidirectional = (!InsRel.usesdir) ||
-                                (mmb.getRelDef().getNode(typerel.getIntValue("rnumber")).getIntValue("dir") > 1);
+                                (reldefNode.getIntValue("dir") > 1);
 
         inheritance:
         if(buildersInitialized) { // handle inheritance, which is not possible during initialization of MMBase.
 
-            MMObjectBuilder sourceBuilder      = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("snumber")));
-            MMObjectBuilder destinationBuilder = mmb.getBuilder(typeDef.getValue(typerel.getIntValue("dnumber")));
+            TypeDef typeDef = mmb.getTypeDef();
+            MMObjectBuilder sourceBuilder      = mmb.getBuilder(typeDef.getValue(typeRel.getIntValue("snumber")));
+            MMObjectBuilder destinationBuilder = mmb.getBuilder(typeDef.getValue(typeRel.getIntValue("dnumber")));
 
 
             if (sourceBuilder == null) {
                 if (destinationBuilder == null) {
-                    log.warn("Both source and destination of " + typerel + " are not active builders. Cannot follow descendants.");
+                    log.warn("Both source and destination of " + typeRel + " are not active builders. Cannot follow descendants.");
                 } else {
-                    log.warn("The source of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
+                    log.warn("The source of relation type " + typeRel + " is not an active builder. Cannot follow descendants.");
                 }
                 break inheritance;
             }
 
             if (destinationBuilder == null) {
-                log.warn("The destination of relation type " + typerel + " is not an active builder. Cannot follow descendants.");
+                log.warn("The destination of relation type " + typeRel + " is not an active builder. Cannot follow descendants.");
                 break inheritance;
             }
 
-            int rnumber = typerel.getIntValue("rnumber");
+            int rnumber = typeRel.getIntValue("rnumber");
 
             List sources = sourceBuilder.getDescendants();
             sources.add(sourceBuilder);
@@ -182,7 +189,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                 sourceParent=sourceParent.getParentBuilder();
             }
 
-            added.add(typerel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
+            added.add(typeRel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
         }
         typeRelNodes.addAll(added);
         if (bidirectional) inverseTypeRelNodes.addAll(added);
