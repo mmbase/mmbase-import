@@ -1,12 +1,12 @@
 <%@ page errorPage="exception.jsp"
-%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException"
+%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.41 2003-07-03 10:58:53 michiel Exp $
+     * @version  $Id: list.jsp,v 1.42 2003-09-02 20:19:20 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -111,34 +111,53 @@ if (listConfig.wizard != null) {
 
 
 // fire query
-NodeList results;
+NodeList results = null;
 
-// do not list anything if search is forced and no searchvalue given
+int start = listConfig.start;
+int len   = listConfig.pagelength;
+int resultsSize;
+
+Query query = null;
+
+//// do not list anything if search is forced and no searchvalue given
 if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields!=null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();    
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
-    results = cloud.getList(listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints,
-                            listConfig.orderBy,
-                            listConfig.directions, "both",
-                            listConfig.distinct);
+    query = Queries.createQuery(cloud, listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints,
+                                listConfig.orderBy,
+                                listConfig.directions, "both",
+                                listConfig.distinct);
+
 } else {
     log.trace("This is not a multilevel. Getting nodes from type " + listConfig.nodePath);
     NodeManager mgr = cloud.getNodeManager(listConfig.nodePath);
     log.trace("directions: " + listConfig.directions);
-    results = mgr.getList(listConfig.constraints, listConfig.orderBy, listConfig.directions);
+    NodeQuery q = mgr.createQuery();
+    Queries.addConstraints(q, listConfig.constraints);
+    Queries.addSortOrders(q, listConfig.orderBy, listConfig.directions);
+    query = q;
+} 
+
+
+if (query != null) {
+  query.setMaxNumber(len);
+  query.setOffset(start );   
+  results = cloud.getList(query);
 }
+
+resultsSize = Queries.count(query);
+
 
 log.trace("Got " + results.size() + " results");
 
-int start = listConfig.start;
-int len        = listConfig.pagelength;
+
 int maxpages   = listConfig.maxpagecount;
 
-if (start>results.size()-1) start = results.size()-1;
+if (start > resultsSize - 1) start = resultsSize - 1;
 if (start<0) start=0;
-int end = len+start;
-if (end > results.size()) end = results.size();
+int end = len + start;
+if (end > resultsSize) end = resultsSize;
 
 // place all objects
 String s = "<list count=\"" + results.size() + "\" />";
@@ -161,14 +180,15 @@ if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.sub
 NodeManager manager=cloud.getNodeManager(mainManager);
 if (!manager.mayCreateNode()) creatable=false;
 
-for (int i=start; i< end; i++) {
+
+for (int i=0; i < results.size(); i++) {
     Node item = results.getNode(i);
     org.w3c.dom.Node obj;
     if (listConfig.multilevel) {
-        obj = addObject(docel, item.getIntValue(listConfig.mainObjectName+".number"), i+1,
-                                         mainManager, manager.getGUIName(2));
+        obj = addObject(docel, item.getIntValue(listConfig.mainObjectName+".number"), i+1 + start,
+                        mainManager, manager.getGUIName(2));
     } else {
-        obj = addObject(docel, item.getNumber(), i+1, mainManager, manager.getGUIName(2));
+        obj = addObject(docel, item.getNumber(), i+1 + start, mainManager, manager.getGUIName(2));
     }
     for (int j=0; j < listConfig.fieldList.size(); j++) {
         String fieldname = (String)listConfig.fieldList.get(j);
@@ -186,23 +206,23 @@ for (int i=start; i< end; i++) {
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
     }
-    Utils.setAttribute(obj, "mayedit", ""+item.mayWrite());
-    Utils.setAttribute(obj, "maydelete", ""+item.mayDelete());
+    Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
+    Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
 }
 
 
 // place page information
-int pagecount = new Double(Math.floor(results.size() / len)).intValue();
-if (results.size() % len>0) pagecount++;
+int pagecount = new Double(Math.floor(resultsSize / len)).intValue();
+if (resultsSize % len>0) pagecount++;
 int currentpage = new Double(Math.floor((start / len))).intValue();
 
 org.w3c.dom.Node pages = doc.createElement("pages");
 Utils.setAttribute(pages, "count", pagecount+"");
-Utils.setAttribute(pages, "currentpage", (currentpage+1)+ "");
+Utils.setAttribute(pages, "currentpage", (currentpage+1) + "");
 docel.appendChild(pages);
 
 if (pagecount>maxpages) {
-    Utils.setAttribute(pages, "showing", maxpages+"");
+    Utils.setAttribute(pages, "showing", maxpages + "");
 }
 
 for (int i = 0; i<pagecount && i<maxpages; i++) {
