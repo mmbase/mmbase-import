@@ -31,43 +31,12 @@
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
   </th></tr>
-    <mm:fieldlist id="my_form" type="edit">
+    <mm:fieldlist id="my_form" type="edit" fields="owner">
       <tr>
         <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
         <td class="listdata" colspan="2"><mm:fieldinfo type="$showtype" />&nbsp;</td>
       </tr>
     </mm:fieldlist>
-    <mm:maychangecontext>
-	<mm:write referid="this_node" vartype="Node" jspvar="node1">
-    <tr>
-      <td class="data"><em><%=m.getString("change_node.context")%></em> <small>(<%= node1.getContext() %>)</small></td>
-      <td class="listdata" colspan="2">
-      <input type="checkbox" name="_my_form_change_context" /><%=m.getString("change_node.change")%>
-      <select name="_my_form_context"> <%
-	 try{
-	 String context = node1.getContext();
-	 StringIterator possibleContexts = node1.getPossibleContexts().stringIterator();
-	 while (possibleContexts.hasNext()) {
-	     String listContext = possibleContexts.nextString();
-	     if (context.equals(listContext)){
-		 out.println("       <option selected=\"selected\">" + listContext + "</option>");
-	     } else {
-		 out.println("       <option>" + listContext + "</option>");
-	     }
-	 }
-	 } catch (Exception e) {}
-%>    </select>
-     </td></tr>
-     </mm:write>
-	 </mm:maychangecontext>
-   <mm:maychangecontext inverse="true">
-     <tr>
-   	  <mm:write referid="this_node" vartype="Node" jspvar="node1">
-      <td class="data"><em><%=m.getString("change_node.context")%></em></td>
-      <td><small><%= node1.getContext() %></small></td></td>
-      </mm:write>
-     </tr>
-   </mm:maychangecontext>
 <tr>
 <td colspan="3" class="buttons">
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
