@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.33 2003-10-20 11:34:28 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.34 2003-11-19 13:34:28 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -423,7 +423,7 @@ public class WizardDatabaseConnector {
      */
     public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException {
 
-
+        String context = (String)params.get("context");
 
         if (objectDef == null) throw new WizardException("No 'objectDef' given"); // otherwise NPE in getAttribute
 
@@ -455,9 +455,11 @@ public class WizardDatabaseConnector {
             String objectType = Utils.getAttribute(objectDef, "type");
             if (objectType.equals("")) throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
             if (log.isDebugEnabled()) log.debug("Create object of type " + objectType);
-
             // create a new object of the given type
             objectNode = getNew(targetParentNode, objectType);
+            if (context!=null && !context.equals("")) {
+                Utils.setAttribute(objectNode, "context", context);
+            }
             fillObjectFields(data,targetParentNode,objectDef,objectNode,params,createorder);
             relations = Utils.selectNodeList(objectDef, "relation");
         } else {
@@ -508,6 +510,9 @@ public class WizardDatabaseConnector {
             }
 
             Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype,createDir);
+            if (context!=null && !context.equals("")) {
+                Utils.setAttribute(relationNode, "context", context);
+            }
             fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
 
             tagDataNode(relationNode);
@@ -676,7 +681,7 @@ public class WizardDatabaseConnector {
                         Utils.setAttribute(node, "olddestination", olddestination);
                     } else {
                         // it's the same (or at least: the destination is the same)
-                        // now se check if some inside-fields are changed.
+                        // now check if some inside-fields are changed.
                         boolean valueschanged = checkRelationFieldsChanged(orignode, node);
 
                         if (valueschanged) {
