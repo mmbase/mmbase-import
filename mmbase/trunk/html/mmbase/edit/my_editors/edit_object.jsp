@@ -200,6 +200,7 @@ title = "Node not found";
   </tr>
 </table>
 <div style="margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;" align="center">
+<p>&nbsp;</p>
 <p class="message">The node you were looking for <mm:present referid="nr">with number <mm:write referid="nr" /></mm:present> could not be found.</p>
 <p>&nbsp;</p>
 </mm:notpresent>
