@@ -37,6 +37,8 @@ import org.mmbase.module.core.*;
  * The system used is determined by examining whether the builder field has been defined in the builder's configuration (xml) file.
  * See the documentation of the relations project at http://www.mmbase.org for more info.
  * </p>
+ *
+ * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @version 3 jan 2001
@@ -354,13 +356,13 @@ public class RelDef extends MMObjectBuilder {
      * a relation, by name of the relation to use
      * Similar to {@link #getGuessedByName} (but does not make use of dname)
      * Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
-     * @ param name The builder name on which to search for the relation
-     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
+     * @param role The builder name on which to search for the relation
+     * @return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
      *     indicated buildername, the first one found is returned.
      * @deprecated renamed to {@link #getNumberByName} which better explains its use
      */
-    public int getGuessedNumber(String name) {
-        return getNumberByName(name);
+    public int getGuessedNumber(String role) {
+        return getNumberByName(role, false);
     }
 
     /**
@@ -368,60 +370,74 @@ public class RelDef extends MMObjectBuilder {
      * a relationdefinition, by name of the role to use.
      * The name should be either the primary identifying role name (sname),
      * or a combination of sname and dname separated by a slash ("/").
-     * @ param role The role name on which to search
-     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found.
+     * @todo support for searching on dname
+     * @param role The role name on which to search
+     * @return A <code>int</code> value indicating the relation's object number, or -1 if not found.
      */
     public int getNumberByName(String role) {
-        Integer number;
-        number=(Integer)relCache.get(role);
-        if (number==null) {
-            return -1;
-        } else {
-            return number.intValue();
-        }
+        return getNumberByName(role, false);
      }
 
     /**
      * Search the relation definition table for the identifying number of
-     * a relation, by name of the relation to use
+     * a relationdefinition, by name of the role to use.
+     * Initially, this method seraches on either the primary identifying
+     * role name (sname), or a combination of sname and dname separated by a slash ("/").
+     * If this yields no result, and  searchBidirectional is true, the method then searches
+     * on the secondary identifying role name.
+     * The latter is not cached (to avoid conflict and is thus slower).
+     *
+     * @todo support for searching on dname
+     * @param role The role name on which to search
+     * @param searchBidirectional determines whether to also search in sname
+     * @return A <code>int</code> value indicating the relation's object number, or -1 if not found.
+     */
+    public int getNumberByName(String role, boolean searchBidirectional) {
+        Integer number;
+        number=(Integer)relCache.get(role);
+        if (number!=null) {
+            return number.intValue();
+        }
+        if (searchBidirectional) {
+            Enumeration e = search("WHERE dname='" + role + "'");
+            if (e.hasMoreElements()) {
+                return ((MMObjectNode)e.nextElement()).getNumber();
+            }
+        }
+        return -1;
+     }
+
+    /**
+     * Search the relation definition table for the identifying number of
+     * a relation, by name of the relation to use.
      * This function is used by descendants of Insrel to determine a default reference to a 'relation definition' (reldef entry).
      * The 'default' is the relation with the same name as the builder. If no such relation exists, there is no default.
-     * @ param name The builder name on which to search for the relation
-     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
+     * @param role The role name on which to search for the relation
+     * @return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
      *     indicated buildername, the first one found is returned.
      * @deprecated use {@link #getNumberByName} instead
      */
 
-    public int getGuessedByName(String name) {
-        Enumeration e=search("WHERE (sname='"+name+"') OR (dname='"+name+"')");
-        if (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-            return node.getNumber();
-        } else {
-            return -1;
-        }
+    public int getGuessedByName(String role) {
+        return getNumberByName(role,true);
     }
 
     /**
      * Searches for the relation number on the combination of sname and dname.
      * When there's no match found in this order a search with a swapped sname and dname will be done.
      * Note that there is no real assurance that an sname/dname combination must be unique.
-     * @ param sname The first name on which to search for the relation (preferred as the source)
-     * @ param dname The second name on which to search for the relation (preferred as the destination)
-     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
+     * @param sname The first name on which to search for the relation (preferred as the source)
+     * @param dname The second name on which to search for the relation (preferred as the destination)
+     * @return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
      *     indicated names, the first one found is returned.
      * @deprecated use {@link #getNumberByName} instead
      */
     public int getRelNrByName(String sname, String dname) {
-        Enumeration e = search("WHERE sname='" + sname + "' AND dname='" + dname + "'");
-        if (!e.hasMoreElements()) {
-            e = search("WHERE sname='" + dname + "' AND dname='" + sname + "'");
+        int res=getNumberByName(sname+"/"+dname);
+        if (res<-1) {
+            res=getNumberByName(dname+"/"+sname);
         }
-        if (e.hasMoreElements()) {
-            MMObjectNode node = (MMObjectNode)e.nextElement();
-            return node.getNumber();
-        }
-        return -1;
+        return res;
     }
 }
 
