@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Security Framework</title>
     <date>12 February 2003</date>
-    <edition>$Id: security-framework.xml,v 1.9 2003-06-30 13:04:11 johannes Exp $</edition>
+    <edition>$Id: security-framework.xml,v 1.10 2003-07-01 14:36:59 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -75,7 +75,7 @@
       <para>When a user connects to MMBase using an external application (such as the taglibs, a jsp servlet, or the editwizards), that application creates a session to maintain the state of the user. In other words: maintaining state is left to the external application. Security itself does not offer this functionality as it is dependent on the means of communication.</para>
       <para>The application then authenticates the user through a call to the bridge, passing authentication parameters appropriate to the authentication module in use. Various authentication modules may exist - each offering a different way of authentication, and possibly a different measure of reliability or accountability.
       </para>
-      <para>Once authenticated, the security passes a User object back, which contains the information required by the Authorisation module. The bridge encapsulates the user object in the Cloud object, which is passed to the calling application. The application should then take care of storing the cloud in a session.
+      <para>Once authenticated, the security passes a User object back, which contains the information required by the Authorization module. The bridge encapsulates the user object in the Cloud object, which is passed to the calling application. The application should then take care of storing the cloud in a session.
       </para>
       <para>The user object is passed to the security system every time the bridge performs a security-sensitive operation. This is done automatically - a calling application need not perform any additional actions.
       Operations are defined on the MMBase node-level. Any operation on a Node is security-sensitive: each time a node is read, created, written, deleted, or related to, the bridge checks whether the operation is allowed. Depending on context, the bridge then either causes an error or ignores the operation (for instance, when retrieving a list of nodes, the bridge will only return nodes the user may read, ignoring any nodes the user has no access to).
@@ -86,15 +86,15 @@
     </section>
     <section>
       <title>Authentication and Authentication Modules</title>
-      <para>There are various ways to authenticate a user. Name/password logon is one of the most common, but other authentication methods might include certification, IP-filtering, or public keys. Another form of authentication is 'anonymous' access - which allows people to be identified as anonymous users. Advanced systems might use fingerprints or iris scans.</para>
+      <para>There are various ways to authenticate a user. Name/password login is one of the most common, but other authentication methods might include certification, IP-filtering, or public keys. Another form of authentication is 'anonymous' access - which allows people to be identified as anonymous users. Advanced systems might use fingerprints or iris scans.</para>
       <para>The security framework takes this into account by introducing the concept of authentication modules. Each module in a security implementation offers another way to authenticate a user.</para>
       <para>There is currently no specific way to configure modules - the Authentication class deals with this, either by hardcoding the expected modules, or by using a configuration file specified with the <sgmltag class="attribute">url</sgmltag> attribute (such as in the context security system). Future versions of the security framework may include specifics on how to configure authentication modules.</para>
-      <note><para>Authentication systems and authorization systems are originally designed as separate entities. Authentication systems produce User objects, where Authorisation systems use these objects. This would theoretically mean that authentication modules can be used with different authorization systems.</para>
-      <para>Most security systems however use their own implementation of the User object - often so specific information can be retrieved by the authorisation system. As such, in practice, in most security systems authorisation classed depend on the authentication models that come with that system.</para></note>
+      <note><para>Authentication systems and authorization systems are originally designed as separate entities. Authentication systems produce User objects, where Authorization systems use these objects. This would theoretically mean that authentication modules can be used with different authorization systems.</para>
+      <para>Most security systems however use their own implementation of the User object - often so specific information can be retrieved by the authorization system. As such, in practice, in most security systems authorization classed depend on the authentication models that come with that system.</para></note>
     </section>
     <section>
-      <title>Authorisation</title>
-      <para>Authorisation takes place on object level: for each object, the authorisation system determines the rights for a specified user. How these rights are determine dis not specified - a system can actually maintain(and store) rights per user/object, but it is also possible to determine access per object type, or (as is the case with the context security system), by granting user groups access to object groups (generally objects with the same 'context' or 'owner').</para>
+      <title>Authorization</title>
+      <para>Authorization takes place on object level: for each object, the authorization system determines the rights for a specified user. How these rights are determine dis not specified - a system can actually maintain(and store) rights per user/object, but it is also possible to determine access per object type, or (as is the case with the context security system), by granting user groups access to object groups (generally objects with the same 'context' or 'owner').</para>
       <para>Forthcoming...</para>
     </section>
     <section>

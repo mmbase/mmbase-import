@@ -7,7 +7,7 @@
 
     <date>2001</date>
 
-    <edition>$Id: rmmci.xml,v 1.13 2003-06-30 13:29:12 johannes Exp $</edition>
+    <edition>$Id: rmmci.xml,v 1.14 2003-07-01 14:37:00 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -40,8 +40,8 @@
       MMBase and the MMBase Cloud Interface is required. Lets try to do this
       in a few line. MMBase is a object / relation object management system.
       Object instances in MMBase are known as nodes. They Are much like other
-      (java)objects they have data members and behaviour. Each nodes has a
-      type. The type or as mmbase calls it node manager defines what behaviour
+      (java)objects they have data members and behavior. Each nodes has a
+      type. The type or as mmbase calls it node manager defines what behavior
       and data members a node may have. A node manager is a combination of a
       java class and an xml configuration. In java term the node manager with
       nodes is much like a container managed entity bean (but better). A
@@ -341,7 +341,7 @@ public class RemoteCloud_Impl implements Cloud  {
       the admin module).</para>
 
       <para>The communication between MMBase clouds and the RMMCI client is
-      not encrypted, serialised objects are sent over the network. There is
+      not encrypted, serialized objects are sent over the network. There is
       work in progress to use SSL.</para>
     </section>
 
@@ -362,7 +362,7 @@ public class RemoteCloud_Impl implements Cloud  {
     <section>
       <title>java compatibility</title>
 
-      <para>Sun has been very smart and decided that with java 1.4 it was a good idea to change the way objects are serialised.
+      <para>Sun has been very smart and decided that with java 1.4 it was a good idea to change the way objects are serialized.
 	      The result is that rmi will only work if the client and server run the same java version @#$%%^</para>
     </section>
     <section>

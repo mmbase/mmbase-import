@@ -5,7 +5,7 @@
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>December 5, 2002</date>
-		<edition>$Id: documentation.xml,v 1.11 2003-06-30 12:34:26 johannes Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.12 2003-07-01 14:36:58 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -71,7 +71,7 @@
 				<listitem>
 					<para>
 						An author group, with the authors. You can add an affiliation
-						(organisation) and your own name. Please do not add editors, links, or
+						(organization) and your own name. Please do not add editors, links, or
 						other stuff, as it will all be displayed in the documentation header and
 						that may be a bit overkill (maybe we have to override the
 						docbook xsl).
