@@ -22,7 +22,7 @@
         <mm:field name="issue" />
       </td>
       <td>
-        <a href="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template" value="fullview.jsp" /></mm:url>"><img src="<mm:url page="images/arrow-right.gif" />" border="0" align="middle"></a>
+        <a href="<mm:url referids="parameters,$parameters,bugreport"><mm:param name="template" value="fullview.jsp" /></mm:url>"><img src="<mm:url page="images/arrow-right.png" />" border="0" align="middle"></a>
       </td>
     </tr>
   </mm:listnodes>
@@ -37,14 +37,14 @@
 
 		<mm:present referid="user" inverse="true" >
 			<td>
-			 <center><font color="#000000">We have no idea who you are please login !<a href="<mm:url referids="parameters,$parameters" page="$base/changeUser.jsp" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" valign="middle"></a></font>
+			 <center><font color="#000000">We have no idea who you are please login !<a href="<mm:url referids="parameters,$parameters" page="$base/changeUser.jsp" />"><img src="<mm:url page="$base/images/arrow-right.png" />" border="0" valign="middle"></a></font>
 			</td>
 		</mm:present>
 		<mm:present referid="user">
 			<td colspan="1">
 			<br />
 			<mm:node number="$user">
-			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url referids="parameters,$parameters" page="$base/changeUser.jsp" />">change name</a> )<br /> i have a new bug and want to report it</font><a href="<mm:url page="$base/newBug.jsp" referids="parameters,,user" />"><img src="<mm:url page="$base/images/arrow-right.gif" />" border="0" ></a>
+			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url referids="parameters,$parameters" page="$base/changeUser.jsp" />">change name</a> )<br /> i have a new bug and want to report it</font><a href="<mm:url page="$base/newBug.jsp" referids="parameters,,user" />"><img src="<mm:url page="$base/images/arrow-right.png" />" border="0" ></a>
 			</td>
 			</mm:node>
 		</mm:present>

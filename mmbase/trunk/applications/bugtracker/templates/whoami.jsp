@@ -4,7 +4,7 @@
       <td>
         We have no idea who you are please login !
         <a href="<mm:url referids="parameters,$parameters"><mm:param name="template" value="changeUser.jsp" /></mm:url>">
-           <img src="<mm:url page="images/arrow-right.gif" />" border="0" />
+           <img src="<mm:url page="images/arrow-right.png" />" border="0" />
          </a>
        </td>
      </mm:present>
@@ -21,7 +21,7 @@
            <p>
              I have a new bug and want to report it
              <a href="<mm:url referids="parameters,$parameters,user"><mm:param name="template" value="newBug.jsp" /></mm:url>">
-               <img src="<mm:url page="images/arrow-right.gif" />" border="0" >
+               <img src="<mm:url page="images/arrow-right.png" />" border="0" >
              </a>
            </p>
         </td>

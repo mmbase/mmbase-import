@@ -35,7 +35,7 @@
       </mm:present>
       Add comment 
       <a href="<mm:url referids="bugreport"><mm:param name="template" value="addComment.jsp" /><mm:param name="commenttype" value="regular" /></mm:url>">
-        <img src="<mm:url page="images/arrow-right.gif" />" border="0" />
+        <img src="<mm:url page="images/arrow-right.png" />" border="0" />
       </a>
     </td>
   </tr>
