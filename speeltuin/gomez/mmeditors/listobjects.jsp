@@ -4,6 +4,7 @@
       Properties state = (Properties)states.peek();
       String managerName = state.getProperty("manager");
       String role = state.getProperty("role");
+      String search = state.getProperty("search");
       Module mmlanguage = cloud.getCloudContext().getModule("mmlanguage");
   %>
   <mm:import id="nodetype"><%=managerName%></mm:import>
@@ -50,7 +51,27 @@
     ><mm:write 
   /></mm:isnotempty></mm:write
 ></mm:context></mm:import>
-      <mm:listnodes type="$nodetype" max="$max" offset="$offset" constraints="$constraint" id="node" orderby="number" directions="DOWN">
+<%
+ int listsize = 0;
+ int showsize = 0;
+%>
+<mm:write referid="constraint" vartype="String" jspvar="constraints">        
+      <%
+          if (constraints!=null && !constraints.equals("")) {
+            search = constraints;
+            state.put("search",search);
+          }
+          NodeManager manager = cloud.getNodeManager(managerName);
+          NodeList nl = manager.getList(search, "number", "DOWN");
+          listsize = nl.size();
+          showsize = listsize-offset.intValue();
+          if (max.intValue() < showsize) showsize=max.intValue();
+          
+          for (int i = offset.intValue(); i < offset.intValue()+showsize; i++) {
+            Node node = nl.getNode(i);
+      %>
+      <mm:context>
+        <mm:node number="<%=node.getNumber() %>" id="node">
         <tr>
           <td>
             <table>
@@ -67,14 +88,27 @@
           <td><mm:fieldinfo type="name"><mm:field name="gui($_)" /></mm:fieldinfo></td>
         </mm:fieldlist>
         </tr>
-        <mm:last>
+        </mm:node>
+      </mm:context>
+      <% } %>
+</mm:write>      
+      <% if (offset.intValue()>0) { %>
          <tr><td colspan="<mm:write referid="columns" />" >
-            <mm:size jspvar="listsize" vartype="Integer">
-            Weergave <%=offset.intValue()+1%> t/m <%=offset.intValue()+listsize.intValue()%>
-            </mm:size>
+            <a href="<mm:url page="listobjects.jsp" >
+                <mm:param name="offset"><%=offset.intValue()<max.intValue() ? 0 : offset.intValue()-max.intValue()%></mm:param>
+            </mm:url>"><img src="gfx/previous.gif" /></a>
          </td></tr>
-        </mm:last>
-      </mm:listnodes>
+      <% } %>
+         <tr><td colspan="<mm:write referid="columns" />" >
+            Weergave <%=offset.intValue()+1%> t/m <%=offset.intValue()+showsize%> van <%=listsize%>
+         </td></tr>
+      <% if (offset.intValue()+showsize < listsize) { %>
+         <tr><td colspan="<mm:write referid="columns" />" >
+            <a href="<mm:url page="listobjects.jsp" >
+                <mm:param name="offset"><%=offset.intValue()+max.intValue()%></mm:param>
+            </mm:url>"><img src="gfx/next.gif" /></a>
+         </td></tr>
+      <% } %>
      </table>
   </body>
   </mm:cloud>
