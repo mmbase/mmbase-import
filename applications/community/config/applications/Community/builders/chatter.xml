@@ -6,15 +6,15 @@
   <searchage>14</searchage>
   
   <names>
-		<singular xml:lang="en">Chatter</singular>
-		<singular xml:lang="nl">Babbelaar</singular>
-		<plural xml:lang="en">Chatters</plural>
-		<plural xml:lang="nl">Babbeleaars</plural>
+    <singular xml:lang="en">Chatter</singular>
+    <singular xml:lang="nl">Babbelaar</singular>
+    <plural xml:lang="en">Chatters</plural>
+    <plural xml:lang="nl">Babbeleaars</plural>
   </names>
   
   <descriptions>
-		<description xml:lang="en">A user of a community</description>
-		<description xml:lang="nl">Een gebruiker in een gemeenschap</description>
+    <description xml:lang="en">A user of a community</description>
+    <description xml:lang="nl">Een gebruiker in een gemeenschap</description>
   </descriptions>
 
   <fieldlist>
@@ -37,7 +37,7 @@
         <name>username</name>
         <type state="persistent" size="30" notnull="true">STRING</type>
       </db>
-		</field>
+    </field>
     
     <field>
       <descriptions>        
@@ -53,9 +53,9 @@
         <name>password</name>
         <type state="persistent" size="40" notnull="false">STRING</type>
       </db>
-		</field>
+    </field>
     
-</fieldlist>
+  </fieldlist>
 
 </builder>
 
