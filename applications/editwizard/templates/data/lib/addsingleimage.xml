@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-  <list role="posrel" destination="images" ordertype="number" orderby="field[@name='pos']">
-   <title>Related images (ordered)</title>
-		<description>These are the images that are related, ordered by position, to this item.</description>
+  <list role="related" destination="images" maxoccurs="1">
+   <title>Related image</title>
+		<description>These is the images that is related to this item.</description>
     <item displaytype="image">
       <field name="title" ftype="data"/>
 			<field name="description" ftype="data"/>
@@ -22,9 +22,7 @@
 			 <prompt>Add a new image in a separate page</prompt>
 	  </command>
     <action type="create">
-      <relation role="posrel" destinationtype="images">
-        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
-      </relation>
+      <relation role="related" destinationtype="images" />
     </action>
   </list>
 
