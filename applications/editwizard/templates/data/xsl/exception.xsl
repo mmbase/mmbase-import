@@ -7,7 +7,7 @@
 
   @since  MMBase-1.6.4
   @author Pierre van Rooden
-  @version $Id: exception.xsl,v 1.4 2003-06-03 12:23:31 michiel Exp $
+  @version $Id: exception.xsl,v 1.5 2003-06-10 14:41:45 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />   
@@ -39,7 +39,7 @@
           <xsl:if test="$referrer!=''">
             <p><a href="{$rootreferrer}">Return Home.</a></p>
           </xsl:if>
-          <h3 style="color:#ff0000;">Error: <xsl:value-of select="exception" /></h3>
+          <h3 style="color:#ff0000;">Error: <xsl:value-of disable-output-escaping="yes" select="exception" /></h3>
           <h3>Expanded error:</h3>
           <small><pre>
           <xsl:value-of select="stacktrace" />
