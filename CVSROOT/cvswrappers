@@ -23,3 +23,5 @@
 *.gif -k 'b'
 *.jpg -k 'b'
 *.class -k 'b'
+*.o -k 'b'
+*.so -k 'b'
