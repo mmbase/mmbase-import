@@ -43,15 +43,16 @@ public class URLComposer  {
     }
 
     protected URLComposer(MMObjectNode provider, MMObjectNode source, Map info, List cacheExpireObjects) { 
-	if(cacheExpireObjects!=null) {
-        synchronized (cacheExpireObjects) {
+        if(cacheExpireObjects!=null) {
+            synchronized (cacheExpireObjects) {
                 if (!cacheExpireObjects.contains(provider)) {
-                        cacheExpireObjects.add(provider);
+                    cacheExpireObjects.add(provider);
                 }
                 if (!cacheExpireObjects.contains(source)) {
-                        cacheExpireObjects.add(source);
+                    cacheExpireObjects.add(source);
                 }
-	}
+            }
+        }
 
         if (source   == null) throw new RuntimeException("Source may not be null in a URLComposer object");
         if (provider == null) throw new RuntimeException("Provider may not be null in a URLComposer object");
