@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ClusterBuilderTest extends TestCase {
     
@@ -103,6 +103,26 @@ public class ClusterBuilderTest extends TestCase {
         TestSuite suite = new TestSuite(ClusterBuilderTest.class);
         
         return suite;
+    }
+    
+    /** 
+     * Test of TypeRel method getAllowedRelations. 
+     * Tests for bug #5795 or similar bugs.
+     */
+    public void testGetAllowedRelations() {
+       int imagesNr = images.getObjectType();
+       int poolsNr = pools.getObjectType();
+       int relatedNr = mmbase.getRelDef().getNumberByName("related");
+       Enumeration eAllowedRelations = mmbase.getTypeRel().getAllowedRelations(poolsNr, imagesNr);
+       assertTrue(eAllowedRelations.hasMoreElements());
+       MMObjectNode typeRelNode = (MMObjectNode) eAllowedRelations.nextElement();
+       assertTrue(typeRelNode.toString(), 
+         typeRelNode.getIntValue("rnumber") == relatedNr);
+       eAllowedRelations = mmbase.getTypeRel().getAllowedRelations(imagesNr, poolsNr);
+       assertTrue("\nbug #5795 or a similar bug",  eAllowedRelations.hasMoreElements());
+       typeRelNode = (MMObjectNode) eAllowedRelations.nextElement();
+       assertTrue(typeRelNode.toString(), 
+         typeRelNode.getIntValue("rnumber") == relatedNr);
     }
     
     /** Test of testGetClusterNodes method, of class org.mmbase.module.core.ClusterBuilder. */
@@ -521,8 +541,8 @@ public class ClusterBuilderTest extends TestCase {
             == RelationStep.DIRECTIONS_DESTINATION);
         assertTrue(!relation1.getCheckedDirectionality());
         RelationStep relation2 = (RelationStep) stepsByAlias.get("insrel");
-        assertTrue(relation2.getDirectionality()
-            == RelationStep.DIRECTIONS_SOURCE);
+        assertTrue("\nknown to fail starting feb 20th 2003 due to bug 5795",
+            relation2.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
         assertTrue(!relation2.getCheckedDirectionality());
         
         query = new BasicSearchQuery();
