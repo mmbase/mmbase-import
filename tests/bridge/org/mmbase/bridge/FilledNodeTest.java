@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class FilledNodeTest extends NodeTest {
 
-    protected int TEST_TIME = 20*356*24*60*60*1000;
+    protected long TEST_TIME = (long) 20 * 356 * 24 * 60 * 60 * 1000;
     protected Date TEST_DATE = new Date(TEST_TIME);
 
     public FilledNodeTest(String name) {
@@ -236,8 +236,8 @@ public class FilledNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("boolean")) {
                 assertTrue(integer == 1);
             } else if (fieldTypes[i].equals("datetime")) {
-                assertTrue(fieldTypes[i] + "field queried as double did not return " + TEST_TIME/1000 + " but " + integer,
-                        integer == (int)TEST_TIME/1000);
+                assertTrue(fieldTypes[i] + "field queried as double did not return " + TEST_TIME / 1000 + " but " + integer,
+                        integer == (int) (TEST_TIME / 1000));
             } else if (fieldTypes[i].equals("list")) {
                 assertTrue(integer == -1);
             } else {
@@ -310,10 +310,10 @@ public class FilledNodeTest extends NodeTest {
                     String.valueOf(number).equals(string));
             } else if (fieldTypes[i].equals("boolean")) {
                 assertTrue(fieldTypes[i] + "field queried as string did not return " + Boolean.TRUE + " but " + string,
-                    String.valueOf(Boolean.TRUE).equals(string));
+                           String.valueOf(Boolean.TRUE).equals(string));
             } else if (fieldTypes[i].equals("datetime")) {
                 assertTrue(fieldTypes[i] + "field queried as string did not return " + TEST_DATE + " but " + string,
-                    String.valueOf(TEST_DATE).equals(string));
+                           Casting.toString(TEST_DATE).equals(string));
             } else if (fieldTypes[i].equals("list")) {
                 assertTrue(fieldTypes[i] + "field queried as string did not return \"true,true\" but " + string,
                     "true,true".equals(string));
@@ -363,11 +363,11 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(TEST_TIME)+", but " + value,
                             value.getTime()==TEST_TIME);
             } else if (fieldTypes[i].equals("double")) {
-                long time = new Double(Double.MAX_VALUE).longValue()*1000;
+                long time = new Double(Double.MAX_VALUE).longValue() * 1000;
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time)+", but " + value,
                             value.getTime()==time);
             } else if (fieldTypes[i].equals("float")) {
-                long time = new Float(Float.MAX_VALUE).longValue()*1000;
+                long time = new Float(Float.MAX_VALUE).longValue() * 1000;
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time)+", but " + value,
                             value.getTime()==time);
             } else if (fieldTypes[i].equals("int")) {
@@ -375,8 +375,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time)+", but " + value,
                             value.getTime()==time);
             } else if (fieldTypes[i].equals("long")) {
-                long time = Long.MAX_VALUE*1000;
-                assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time)+", but " + value,
+                long time = Long.MAX_VALUE*1000; // oddd..
+                assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(time) + ", but " + value,
                             value.getTime()==time);
             } else {
                 assertTrue(fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
