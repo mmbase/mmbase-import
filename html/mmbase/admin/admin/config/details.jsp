@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@page import="org.mmbase.bridge.*" %>
+<%@page import="org.mmbase.bridge.*" contentType="text/html; charset=UTF-8" %>
 <mm:cloud>
 <% String targettype = request.getParameter("config");
    String target = request.getParameter("target");
