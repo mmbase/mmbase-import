@@ -2,11 +2,12 @@
 %><html>
 <body>
 <%@ include file="menu.jsp"%>
+<mm:context id="context">
 <h1>context</h1>
 <p>
 To use a context, you can use a context tag. But there is one implicit
-context, named 'context'. This page is using this feature. It is a
-pitty that this doesn't work in Orion 1.5.2, because of a bug in it.
+unnamed context, named. This page is not using this feature, because
+we need a named context for a few demonstrations here.
 </p>
 <p>
 To start with, a context is empty, you can put things in it e.g. with
@@ -42,5 +43,6 @@ internally in this page is named 'hoi') must be used in an url:
 <a href='<mm:url page="context2.jsp" referids="hoi">
           <mm:param name="hello">saluton</mm:param>
          </mm:url>'>next page</a>	 
+</mm:context>
 </body>
 </html>
