@@ -148,7 +148,7 @@
 			<name xml:lang="us">Rating</name>
 			<name xml:lang="en">Rating</name>
 			<name xml:lang="nl">Zwaarte</name>
-			<type>string</type>
+			<type>integer</type>
 		</gui>
 		<!-- editor related  -->
 		<editor>
