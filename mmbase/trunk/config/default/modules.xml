@@ -13,6 +13,8 @@
   <mmbaseroot>org.mmbase.module.core.MMBase</mmbaseroot>
   <scanparser>org.mmbase.module.gui.html.scanparser</scanparser>
   <scancache>org.mmbase.module.scancache</scancache>
+  <config>org.mmbase.module.Config</config>
+  <xslconvert>org.mmbase.module.XSLConvert</xslconvert>
 
   <mmbase>org.mmbase.module.gui.html.HtmlBase</mmbase>
   <mmedit>org.mmbase.module.gui.html.MMEdit</mmedit>
@@ -20,7 +22,8 @@
 
   <mmexport>org.mmbase.module.tools.MMExport</mmexport>
   <mmimport>org.mmbase.module.tools.MMImport</mmimport>
-  <mmexamples>org.mmbase.module.tools.MMExamples</mmexamples>
+  <mmadmin>org.mmbase.module.tools.MMAdmin</mmadmin>
+  <!--<mmexamples>org.mmbase.module.tools.MMExamples</mmexamples>-->
   <!-- <mmusers>org.mmbase.module.MMUsers</mmusers> -->
 
   <calc>org.mmbase.module.CALC</calc>
@@ -31,6 +34,4 @@
   <!-- <music>org.mmbase.module.Music</music> -->
   <sendmail>org.mmbase.module.SendMail</sendmail>
   <counter>org.mmbase.module.Counter</counter>
-  <config>org.mmbase.module.Config</config>
-  <xslconvert>org.mmbase.module.XSLConvert</xslconvert>
 </modules>
