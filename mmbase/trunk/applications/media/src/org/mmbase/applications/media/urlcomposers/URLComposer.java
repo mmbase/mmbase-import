@@ -26,7 +26,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.2 2003-02-03 22:50:55 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.3 2003-02-04 12:40:41 michiel Exp $
  */
 
 public class URLComposer  {
@@ -34,7 +34,11 @@ public class URLComposer  {
     protected MMObjectNode  provider;
     protected Map           info;
 
-    public URLComposer(MMObjectNode provider, MMObjectNode source, Map info) {
+    public URLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+        this(provider, source, info); // no frament necessary on default
+    }
+
+    protected URLComposer(MMObjectNode provider, MMObjectNode source, Map info) { 
         if (source   == null) throw new RuntimeException("Source may not be null in a URLComposer object");
         if (provider == null) throw new RuntimeException("Source may not be null in a URLComposer object");
         this.provider = provider;
