@@ -35,7 +35,8 @@ public class Log4jLevel extends Level {
     final static int SERVICE_INT   = 15000;
     final static int TRACE_INT     = 5000;
 
-    // FATAL          (from log4j.Level)
+    // OFF            (from log4j.Level)
+    // FATAL
     // ERROR
     // WARN
     // INFO
@@ -68,7 +69,7 @@ public class Log4jLevel extends Level {
     }
     
     public static Priority[] getAllPossibleLog4jPriorities() {
-        return new Priority[] {FATAL, ERROR, WARN, INFO, SERVICE, DEBUG, TRACE};
+        return new Priority[] {OFF, FATAL, ERROR, WARN, INFO, SERVICE, DEBUG, TRACE};
     }
    
     public static Level toLog4jLevel(String sArg) { // needed?
