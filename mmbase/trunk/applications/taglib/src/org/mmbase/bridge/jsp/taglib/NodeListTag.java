@@ -127,8 +127,8 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     /**
     * @param type a comma separated list of nodeManagers
     **/
-    public void setType(String type){
-        this.typeString = type;
+    public void setType(String type) throws JspTagException {
+        this.typeString = getAttributeValue(type);
     }
     
     /**
@@ -328,7 +328,8 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
         }
         
         
-        if (max != null || offset > 0) { // for the moment max can only be here because
+        if (max != null || offset > 0) { 
+            // for the moment max can only be here because
             //there is no other way to tell the MMCI that a list sould be shorter
             int maxx = (max == null ? nodes.size() - 1 : max.intValue());
             int to = maxx + offset;
@@ -343,14 +344,15 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
             if (offset < 0) {
                 offset = 0;
             }
-            nodes=nodes.subNodeList(offset, to);
+            nodes = nodes.subNodeList(offset, to);
             
-            listSize = nodes.size();
             returnValues = nodes.nodeIterator();
         } else {
-            listSize = nodes.size();
             returnValues = nodes.nodeIterator();
         }
+        
+        listSize = nodes.size();
+
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (returnValues.hasNext())
@@ -427,6 +429,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     }
     
     public boolean isLast(){
+        log.debug("islast");
         return (! returnValues.hasNext());
     }
     
