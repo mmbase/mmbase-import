@@ -25,11 +25,11 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.7 2003-09-23 13:15:27 pierre Exp $
+ * @version $Id: User.java,v 1.8 2003-11-16 14:09:52 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users;
  */
 public class User extends UserContext implements MMBaseObserver {
-    private static Logger log = Logging.getLoggerInstance(User.class);
+    private static final Logger log = Logging.getLoggerInstance(User.class);
     private MMObjectNode node;
     private long key;
 
@@ -82,7 +82,7 @@ public class User extends UserContext implements MMBaseObserver {
      * @javadoc
      */
     boolean isValid() {
-        return (node != null) && Users.getBuilder().isValid(node);
+        return (node == null) || Users.getBuilder().isValid(node);
     }
 
 

@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.24 2003-11-03 13:20:25 michiel Exp $
+ * @version $Id: Contexts.java,v 1.25 2003-11-16 14:09:53 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -173,7 +173,7 @@ public class Contexts extends MMObjectBuilder {
         // admin bypasses security system
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
             log.debug("admin may do everything, besides deleting itself");
-            if (user.getNode().getNumber() == nodeId && operation == Operation.DELETE) return false;
+            if (user.getNode() != null && user.getNode().getNumber() == nodeId && operation == Operation.DELETE) return false;
             return true;
         }
 
@@ -207,7 +207,7 @@ public class Contexts extends MMObjectBuilder {
                     if(user.getRank().getInt() <= Rank.BASICUSER.getInt()) return false;
 
                     // may never unlink/link relation with own rank
-                    if (user.getNode().equals(source)) {
+                    if (user.getNode() != null && user.getNode().equals(source)) {
                         log.debug("May not unlink rank with own user object");
                         return false;
                     }
@@ -274,7 +274,7 @@ public class Contexts extends MMObjectBuilder {
      */
     protected boolean isOwnNode(User user, MMObjectNode node) {
         MMObjectNode userNode = user.getNode();
-        return  (userNode.getBuilder() instanceof Users && userNode.equals(node));
+        return  (userNode != null && userNode.getBuilder() instanceof Users && userNode.equals(node));
     }
 
     /**
