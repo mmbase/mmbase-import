@@ -118,7 +118,7 @@ public class FieldEditor implements CommandHandlerInterface {
 				setEditIMGField(state,command.nextToken(),cmds,sp);
 				return(true);
 			} else if (token.equals("SETFIELDFILE_DISK")) {	
-				log.info"FieldEditor -> FILE DISK DETECTED");
+				log.info("FieldEditor -> FILE DISK DETECTED");
 				setEditDISKField(state,command.nextToken(),cmds,sp);
 				return(true);
 			} else if (token.equals("DUMMY")) {	
