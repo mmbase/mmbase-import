@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.144 2002-06-21 08:10:16 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.145 2002-06-27 14:42:59 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -152,19 +152,6 @@ public class MMObjectBuilder extends MMTable {
     public boolean broadcastChanges=true;
 
     /**
-     * Contains builder fields in order of appearance in search forms
-     */
-    Vector sortedEditFields = null;
-    /**
-     * Contains builder fields in order of appearance in list forms
-     */
-    Vector sortedListFields = null;
-    /**
-     * Contains builder fields in order of appearance in input forms
-     */
-    Vector sortedFields = null;
-
-    /**
      *  Maintainer information for builder registration
      *  Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
      */
@@ -213,6 +200,12 @@ public class MMObjectBuilder extends MMTable {
      * Determines whether a builder is virtual (data is not stored in a database).
      */
     protected boolean virtual=false;
+
+    /**
+     * Contains lists of builder fields in specified order
+     * (ORDER_CREATE, ORDER_EDIT, ORDER_LIST, ORDER_SEARCH)
+     */
+    private HashMap sortedFieldLists = new HashMap();
 
     // Properties of a specific Builder.
     // Specified in the xml builder file with the <properties> tag.
@@ -1455,6 +1448,15 @@ public class MMObjectBuilder extends MMTable {
         return node;
     }
 
+    /**
+     * Clears all field list caches, and recalculates the database field list.
+     */
+    protected void updateFields() {
+        sortedFieldLists = new HashMap();
+        // note: sortedDBLayout is deprectated
+        sortedDBLayout=new Vector();
+        setDBLayout_xml(fields);
+    }
 
     /**
      * Add a field to this builder.
@@ -1463,11 +1465,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void addField(FieldDefs def) {
         fields.put(def.getDBName(),def);
-        sortedEditFields = null;
-        sortedListFields = null;
-        sortedFields = null;
-        sortedDBLayout=new Vector();
-        setDBLayout_xml(fields);
+        updateFields();
     }
 
 
@@ -1486,11 +1484,7 @@ public class MMObjectBuilder extends MMTable {
             int curpos=def.getDBPos();
             if (curpos>=dbpos) def.setDBPos(curpos-1);
         }
-        sortedEditFields = null;
-        sortedListFields = null;
-        sortedFields = null;
-        sortedDBLayout=new Vector();
-        setDBLayout_xml(fields);
+        updateFields();
     }
 
 
@@ -1547,11 +1541,9 @@ public class MMObjectBuilder extends MMTable {
      * @return the display of the node as a <code>String</code>
      */
     public String getGUIIndicator(MMObjectNode node) {
-
         // do the best we can because this method was not implemeted
         // we get the first field in the object and try to make it
         // to a string we can return
-
         if (sortedDBLayout.size()>2) {
             String fname=(String)sortedDBLayout.elementAt(2);
             String str = node.getStringValue( fname );
@@ -1578,69 +1570,78 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Get the field definitions for the editor, sorted according to the specified order.
+     * This method makes an explicit sort (it does not use a cached list).
      * @return a vector with ordered FieldDefs
      */
-    public Vector getFields(int sortorder) {
-        Vector orderedFields = new Vector();
-        for (Enumeration e=fields.elements();e.hasMoreElements();) {
-            FieldDefs node=(FieldDefs)e.nextElement();
-            if ((sortorder==FieldDefs.ORDER_CREATE) ||
-                ((sortorder==FieldDefs.ORDER_EDIT) && (node.getGUIPos()>-1)) ||
-                ((sortorder==FieldDefs.ORDER_SEARCH) && (node.getGUISearch()>-1)) ||
-                ((sortorder==FieldDefs.ORDER_LIST) && (node.getGUIList()>-1))
-               ) orderedFields.addElement(node);
+    public List getFields(int sortorder) {
+        List orderedFields = (List)sortedFieldLists.get(new Integer(sortorder));
+        if (orderedFields==null) {
+            orderedFields = new Vector();
+            for (Iterator i=fields.values().iterator(); i.hasNext();) {
+                FieldDefs node=(FieldDefs)i.next();
+                // include only fields which have been assigned a valid position
+                if (((sortorder==FieldDefs.ORDER_CREATE) && (node.getDBPos()>-1)) ||
+                    ((sortorder==FieldDefs.ORDER_EDIT) && (node.getGUIPos()>-1)) ||
+                    ((sortorder==FieldDefs.ORDER_SEARCH) && (node.getGUISearch()>-1)) ||
+                    ((sortorder==FieldDefs.ORDER_LIST) && (node.getGUIList()>-1))
+                    ) orderedFields.add(node);
+            }
+            FieldDefs.sort(orderedFields,sortorder);
+            sortedFieldLists.put(new Integer(sortorder),orderedFields);
         }
-        FieldDefs.sort(orderedFields,sortorder);
         return orderedFields;
     }
 
     /**
      * Get the field definitions for the editor, sorted according to it's GUISearch property (as set in the builder xml file).
      * Used for creating search-forms.
+     * @deprecated use getFields() with sortorder ORDER_SEARCH
      * @return a vector with FieldDefs
      */
     public Vector getEditFields() {
-        if (sortedEditFields == null) {
-            sortedEditFields = getFields(FieldDefs.ORDER_SEARCH);
-        }
-       return sortedEditFields;
+        return (Vector)getFields(FieldDefs.ORDER_SEARCH);
     }
 
     /**
      * Get the field definitions for the editor, sorted accoring to it's GUIList property (as set in the builder xml file).
      * Used for creating list-forms (tables).
+     * @deprecated use getFields() with sortorder ORDER_LIST
      * @return a vector with FieldDefs
      */
     public Vector getSortedListFields() {
-        if (sortedListFields == null) {
-            sortedListFields = getFields(FieldDefs.ORDER_LIST);
-        }
-        return sortedListFields;
+        return (Vector)getFields(FieldDefs.ORDER_LIST);
     }
 
     /**
      * Get the field definitions for the editor, sorted according to it's GUIPos property (as set in the builder xml file).
      * Used for creating edit-forms.
+     * @deprecated use getFields() with sortorder ORDER_EDIT
      * @return a vector with FieldDefs
      */
     public Vector getSortedFields() {
-        if (sortedFields == null) {
-            sortedFields = getFields(FieldDefs.ORDER_EDIT);
+        return (Vector)getFields(FieldDefs.ORDER_EDIT);
+    }
+
+    /**
+     * Returns the next field as defined by its sortorder, according to the specified order.
+     */
+    public FieldDefs getNextField(String currentfield, int sortorder) {
+        FieldDefs cdef=getField(currentfield);
+        List sortedFields=getFields(sortorder);
+        int pos=sortedFields.indexOf(cdef);
+        if (pos!=-1  && (pos+1)<sortedFields.size()) {
+            return (FieldDefs)sortedFields.get(pos+1);
         }
-        return sortedFields;
+        return null;
     }
 
     /**
      * Returns the next field as defined by its sortorder, according to it's GUIPos property (as set in the builder xml file).
      * Used for moving between fields in an edit-form.
+     * @deprecated use getNextField() with sortorder ORDER_EDIT
      */
     public FieldDefs getNextField(String currentfield) {
-        FieldDefs cdef=getField(currentfield);
-        int pos=sortedFields.indexOf(cdef);
-        if (pos!=-1  && (pos+1)<sortedFields.size()) {
-            return (FieldDefs)sortedFields.elementAt(pos+1);
-        }
-        return null;
+        return getNextField(currentfield,FieldDefs.ORDER_EDIT);
     }
 
     /**
@@ -2216,12 +2217,12 @@ public class MMObjectBuilder extends MMTable {
 
         FieldDefs node;
 
-        Vector orderedfields=getFields(FieldDefs.ORDER_CREATE);
-        for (Enumeration e=orderedfields.elements();e.hasMoreElements();) {
-            node=(FieldDefs)e.nextElement();
+        List orderedfields=getFields(FieldDefs.ORDER_CREATE);
+        for (Iterator i=orderedfields.iterator();i.hasNext();) {
+            node=(FieldDefs)i.next();
             String name=node.getDBName();
             if (name!=null && !name.equals("number") && !name.equals("otype") && !name.equals("owner")) {
-                sortedDBLayout.addElement(name);
+                sortedDBLayout.add(name);
             }
         }
     }
@@ -2679,7 +2680,7 @@ public class MMObjectBuilder extends MMTable {
             def.setParent(this);
             fields.put("otype",def);
         }
-        setDBLayout_xml(fields);
+        updateFields();
     }
 
     /**
