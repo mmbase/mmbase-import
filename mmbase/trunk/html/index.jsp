@@ -59,7 +59,7 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
            and the MMBase editwizards.
 	</td>
 	<td class="link" >
-		<a href="<mm:url page="mmexamples/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+		<a href="<mm:url page="mmexamples/" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
 	</td>
 </tr>
 
@@ -70,7 +70,7 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
            retrieve data form MMBase in your web pages.
 	</td>
 	<td class="link" >
-		<a href="<mm:url page="mmexamples/taglib/whatistaglib.jsp" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+		<a href="<mm:url page="mmexamples/taglib/whatistaglib.jsp" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
 	</td>
 </tr>
 
@@ -81,7 +81,7 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
            These editors are mostly intended for experienced users.
 	</td>
 	<td class="link" >
-		<a href="<mm:url page="mmeditors/jsp/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+		<a href="<mm:url page="mmeditors/jsp/" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
 	</td>
 </tr>
 
@@ -92,7 +92,7 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
            servers, and databases.
 	</td>
 	<td class="link" >
-		<a href="<mm:url page="mmadmin/jsp/" />"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+		<a href="<mm:url page="mmadmin/jsp/" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
 	</td>
 </tr>
 
@@ -102,7 +102,7 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
 	   Link to the MMBase website.
 	</td>
 	<td class="link" >
-		<a href="http://www.mmbase.org"><img src="../mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+		<a href="http://www.mmbase.org"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
 	</td>
 </tr>
 
