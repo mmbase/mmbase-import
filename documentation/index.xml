@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.25 2003-06-23 13:03:40 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.26 2003-06-26 11:52:04 gerard Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -93,10 +93,24 @@
     <title>Information analysts</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="informationanalysts/builders.html" id="builders">Builder configuration file</ulink></para>
+        <para>
+          <ulink url="informationanalysts/builders.html" id="builders">
+            Builder configuration file
+          </ulink>
+          <ulink url="informationanalysts/builders.pdf" id="builders.pdf">
+           (pdf)
+          </ulink>
+        </para>
       </listitem>
       <listitem>
-        <para><ulink url="informationanalysts/relations.html" id="relations">MMBase relations</ulink></para>
+        <para>
+          <ulink url="informationanalysts/relations.html" id="relations">
+            MMBase relations
+          </ulink>
+          <ulink url="informationanalysts/relations.pdf" id="relations.pdf">
+           (pdf)
+          </ulink>
+        </para>
       </listitem>
       <listitem>
         <para>
