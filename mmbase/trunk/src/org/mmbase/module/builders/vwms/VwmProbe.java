@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version 27 Mar 1997 current version $Id: VwmProbe.java,v 1.5 2002-05-03 16:04:46 vpro Exp $
+ * @version 27 Mar 1997 current version $Id: VwmProbe.java,v 1.6 2002-07-29 10:07:51 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class VwmProbe implements Runnable {
@@ -93,18 +93,19 @@ public class VwmProbe implements Runnable {
 					wait(3600*1000);
 				} else {
 					int curTime=(int)((DateSupport.currentTimeMillis()/1000));
-					int timeDifference=anode.getIntValue("wantedtime")-curTime;
+					int timeDifference = anode.getIntValue("wantedtime") - curTime;
 					if (timeDifference<TASK_PICKUP_TIMEDIFFERENCE) {
 						log.service("Difference between curtime and task starttime"
+						        +" (curtime - starttime)"
 						        +" is smaller than "+TASK_PICKUP_TIMEDIFFERENCE
-						        +" seconds, handle Task NOW");
+						        +" seconds, it is "+timeDifference+" handle Task NOW");
 						try {
 //							parent.performTask(anode);
 							pp=new PerformProbe(parent,anode);
 						} catch (RuntimeException e) {
 							log.error("performTask failed "+anode+" : "+e);
 							log.error(e.getMessage());
-		  						log.error(Logging.stackTrace(e));
+		  					log.error(Logging.stackTrace(e));
 						}
 						log.service("Removing task number:"+anode.getIntValue("number")
 						        +" task:"+anode.getStringValue("task"));
