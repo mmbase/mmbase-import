@@ -17,7 +17,7 @@ import org.mmbase.util.scanpage;
  * File cache system interface.
  * System for caching texts (it stores and retrieves strings) by use of a key.
  * While in theory it is possible to cache ANY text, this is mainly used to store pages
- * based on their url.<br>
+ * based on their url.<br />
  * Caching is done in pools. Each pool has its own memory cache and files, and has
  * different ways to handle file caching.
  *
@@ -52,22 +52,22 @@ public interface scancacheInterface {
      */
     public String get(String pool,String key,String line,scanpage sp);
 
-	/**
-	 *  getExpireDate.
-	 * @param poolName
-	 * @param key
-	 * @param expireStr
-	 * @return long
-	 */
-	public long getExpireDate(String poolName, String key, String expireStr);
+        /**
+         *  getExpireDate.
+         * @param poolName
+         * @param key
+         * @param expireStr
+         * @return long
+         */
+        public long getExpireDate(String poolName, String key, String expireStr);
 
-	/**
-	 *  getLastModDate.
-	 * @param poolName
-	 * @param key
-	 * @return long
-	 */
-	public long getLastModDate(String poolName, String key);
+        /**
+         *  getLastModDate.
+         * @param poolName
+         * @param key
+         * @return long
+         */
+        public long getLastModDate(String poolName, String key);
 
     /**
      * Retrieve a file from the indicated pool's cache.

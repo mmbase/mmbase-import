@@ -53,7 +53,7 @@ public class XMLScreenWriter extends XMLBasicReader {
                   + comment_color
                   + "\">&lt;!--"
                   + node.getNodeValue()
-                  + "--&gt;</font><br>\n");
+                  + "--&gt;</font><br />\n");
          }
          else
             if (node.getNodeType() == node.DOCUMENT_NODE) {
@@ -89,7 +89,7 @@ public class XMLScreenWriter extends XMLBasicReader {
                                  + ((DocumentType) node).getSystemId()
                                  + "\"");
                         }
-                        out.write("&gt;</font><br>\n");
+                        out.write("&gt;</font><br />\n");
                      }
                   }
                   else {
@@ -131,7 +131,7 @@ public class XMLScreenWriter extends XMLBasicReader {
                      }
                      NodeList nl = node.getChildNodes();
                      if (!is_end_node) {
-                        out.write("<br>\n");
+                        out.write("<br />\n");
                      }
                      for (int i = 0; i < nl.getLength(); i++) {
                         write(out, nl.item(i), level + 1);
@@ -144,7 +144,7 @@ public class XMLScreenWriter extends XMLBasicReader {
                            + tag_color
                            + "\">&lt;/"
                            + node.getNodeName()
-                           + "&gt;</font><br>\n");
+                           + "&gt;</font><br />\n");
                   }
       }
    }

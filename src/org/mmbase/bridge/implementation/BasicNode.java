@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.82 2003-02-17 09:01:26 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.83 2003-03-07 11:49:11 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -227,10 +227,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * Edit this node.
      * Check whether edits are allowed and prepare a node for edits if needed.
-     * The type of edit is determined by the action specified, and one of:<br>
-     * ACTION_CREATE (create a node),<br>
-     * ACTION_EDIT (edit node, or change aliasses),<br>
-     * ACTION_DELETE (delete node),<br>
+     * The type of edit is determined by the action specified, and one of:<br />
+     * ACTION_CREATE (create a node),<br />
+     * ACTION_EDIT (edit node, or change aliasses),<br />
+     * ACTION_DELETE (delete node),<br />
      * ACTION_COMMIT (commit a node after changes)
      *
      * @param action The action to perform.

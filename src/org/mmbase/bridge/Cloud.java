@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.32 2002-12-02 09:49:21 pierre Exp $
+ * @version $Id: Cloud.java,v 1.33 2003-03-07 11:49:10 pierre Exp $
  */
 public interface Cloud {
 
@@ -444,7 +444,7 @@ public interface Cloud {
      *                      sorted according to the last specified direction
      *                      value.
      * @param searchDir     Determines how directionality affects the search.
-     *                      This is a string with the following possible values:<br>
+     *                      This is a string with the following possible values:<br />
      *                      <code>"both"</code>, which is the default, searches for all
      *                      valid relations through a path, checking full directionality
      *                      of relations where appropriate.

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * This class replaces {@link org.mmbase.module.builders.MultiRelations}.
  * <br />
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
- * which is in turn based on the relations that exist between nodes.<br>
+ * which is in turn based on the relations that exist between nodes.<br />
  * The builder supplies a method to retrieve these virtual nodes: {@link
  * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
  * searchMultiLevelVector()}.
@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.32 2003-03-07 09:31:06 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.33 2003-03-07 11:49:16 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 

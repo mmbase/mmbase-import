@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.40 2002-11-12 16:57:50 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.41 2003-03-07 11:49:18 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -239,7 +239,7 @@ public class JamesServlet extends MMBaseServlet {
      * Needed to determine if user comes from an internal or external host, i.e.
      * when using two streaming servers, one for external users and one for internal users.
      * @javadoc
-     * <br>
+     * <br />
      * @vpro uses VPROProxyName, VPROProxyAddress. Should be made more generic.
      * @param req The HTTP request, which contains hostname as ipaddress
      * @return a string containing the proxy chain. in the format

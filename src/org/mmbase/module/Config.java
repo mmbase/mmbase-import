@@ -51,7 +51,7 @@ import org.mmbase.module.core.*;
  * </pre>
  *
  * @author Cees Roele
- * @version $Id: Config.java,v 1.18 2003-03-07 09:31:04 pierre Exp $
+ * @version $Id: Config.java,v 1.19 2003-03-07 11:49:12 pierre Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -424,7 +424,7 @@ public class Config extends ProcessorModule {
         }
 
         if (argv.length == 1 && argv[0].equalsIgnoreCase("REPORT")) {
-            return report("<br>\n");
+            return report("<br />\n");
         } else if (argv.length != 3) {
             return "$MOD-CONFIG should have three arguments, e.g. $MOD-CONFIG-show-builders-people";
         } else {
@@ -579,25 +579,25 @@ public class Config extends ProcessorModule {
             fatals   = pr.getFatalList().size();
 
             StringBuffer s = new StringBuffer();
-            s.append("warnings = "+warnings+"  errors = "+errors+"   fatal errors = "+fatals+"<br>\n");
+            s.append("warnings = "+warnings+"  errors = "+errors+"   fatal errors = "+fatals+"<br />\n");
             if (warnings > 0) {
                 for (int i=0;i<warnings;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getWarningList().get(i));
-                    s.append("warning at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
+                    s.append("warning at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
                 }
             }
 
             if (errors > 0) {
                 for (int i=0;i<errors;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getErrorList().get(i));
-                    s.append("error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
+                    s.append("error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
                 }
             }
 
             if (fatals > 0) {
                 for (int i=0;i<fatals;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getFatalList().get(i));
-                    s.append("fatal error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
+                    s.append("fatal error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
                 }
             }
 

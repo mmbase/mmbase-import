@@ -31,11 +31,11 @@ import org.mmbase.util.logging.Logging;
  * <li> is used for MMBase xml import (org.mmbase.applications.xmlimporter.TransactionParser).
  * <li> can be used by java classes by directly calling methods
  * </ul>
- * <br>See also the xml description in the tcp 2.0 project.
+ * <br />See also the xml description in the tcp 2.0 project.
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.3 2003-03-07 08:50:03 pierre Exp $
+ * @version $Id: Transaction.java,v 1.4 2003-03-07 11:49:10 pierre Exp $
  */
 public class Transaction implements Runnable {
 

@@ -17,12 +17,12 @@ import org.mmbase.util.logging.*;
  * Class to calculate expressions. It implements a simple LL(1)
  * grammar to calculate simple expressions with the basic
  * operators +,-,*,/ and brackets.
- * <br>
+ * <br />
  * The grammar in EBNF notation:
- * <br>
- * &lt;expr&gt;   -&gt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } <br>
- * &lt;term&gt;   -&gt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } <br>
- * &lt;fact&gt;   -&gt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' <br>
+ * <br />
+ * &lt;expr&gt;   -&gt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } <br />
+ * &lt;term&gt;   -&gt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } <br />
+ * &lt;fact&gt;   -&gt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' <br />
  *
  * @author Arnold Beck
  */
@@ -88,12 +88,12 @@ public class ExprCalc {
                      Token.charAt(i)=='.');i++) { };
                 if (i!=Token.length()) {
                     log.error("ExprCalc-> Error");
-		}
+                }
                 try {
                     MNum=(Double.valueOf(Token)).doubleValue();
                 } catch (NumberFormatException e) {
                     log.debug("ExprCalc-> Error");
-		}
+                }
                 MCode=MC_NUM;
             } else {          // symbol
                 MSymb=Token.charAt(0);
@@ -104,7 +104,7 @@ public class ExprCalc {
     }
 
     /**
-     * expr implements the rule: <br>
+     * expr implements the rule: <br />
      * &lt;expr&gt; -&lt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } .
      */
     private double expr() {
@@ -120,15 +120,15 @@ public class ExprCalc {
         if (MCode==MC_SYMB && MSymb=='('
             ||  MCode==MC_SYMB && MSymb==')'
             ||  MCode==MC_EOT) {
-                
+
         } else {
           log.error("ExprCalc-> Error");
-	   }
+           }
         return tmp;
     }
 
     /**
-     * term implements the rule: <br>
+     * term implements the rule: <br />
      * &lt;term&gt; -&lt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } .
      */
     private double term() {
@@ -147,7 +147,7 @@ public class ExprCalc {
     }
 
     /**
-     * fac implements the rule <br>
+     * fac implements the rule <br />
      * &lt;fact&gt;  -&lt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' .
      */
     private double fac() {
@@ -170,7 +170,7 @@ public class ExprCalc {
             tmp=MNum;
         } else {
             log.error("ExprCalc-> Error");
-	}
+        }
         if (minus) tmp=-tmp;
         return tmp;
     }

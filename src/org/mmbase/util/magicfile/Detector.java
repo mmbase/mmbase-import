@@ -17,36 +17,36 @@ import org.mmbase.util.logging.*;
  * A Detector stores one entry from the magic.xml file, and contains
  * the functionality to determins if a certain byte[] satisfies it.
  *
- * Implementation made on the basis of actual magic file and its manual.<br>
+ * Implementation made on the basis of actual magic file and its manual.<br />
  *
- * TODO:<br>
- * - link the info with mimetypes<br>
- * - add test modifiers<br>
- * - add commandline switches for warning, error and debugging messages<br>
- *<br>
- * Ignored features of magic:<br>
- * - date types<br>
- * - indirect offsets (prefix of '&' in sublevel match or (address+bytes) where offset = value of address plus bytes<br>
- * - AND'ing of type<br>
- *<br>
- * BUGS:<br>
- * - test string isn't read when end of line is reached in absence of a message string<br>
- * <br>
+ * TODO:<br />
+ * - link the info with mimetypes<br />
+ * - add test modifiers<br />
+ * - add commandline switches for warning, error and debugging messages<br />
+ *<br />
+ * Ignored features of magic:<br />
+ * - date types<br />
+ * - indirect offsets (prefix of '&' in sublevel match or (address+bytes) where offset = value of address plus bytes<br />
+ * - AND'ing of type<br />
+ *<br />
+ * BUGS:<br />
+ * - test string isn't read when end of line is reached in absence of a message string<br />
+ * <br />
  *
- * Tested:<br>
- * - .doc<br>
- * - .rtf<br>
- * - .pdf<br>
- * - .sh<br>
- * - .gz<br>
- * - .bz2<br>
- * - .html<br>
- * - .rpm<br>
- * - .wav<br>
- *<br>
- * Not supported by magic file:<br>
- * - StarOffice<br>
- * @version $Id: Detector.java,v 1.4 2003-02-10 23:44:48 nico Exp $
+ * Tested:<br />
+ * - .doc<br />
+ * - .rtf<br />
+ * - .pdf<br />
+ * - .sh<br />
+ * - .gz<br />
+ * - .bz2<br />
+ * - .html<br />
+ * - .rpm<br />
+ * - .wav<br />
+ *<br />
+ * Not supported by magic file:<br />
+ * - StarOffice<br />
+ * @version $Id: Detector.java,v 1.5 2003-03-07 11:49:30 pierre Exp $
  */
 
 public class Detector {
@@ -544,7 +544,7 @@ public class Detector {
    public void toXML(FileWriter f, int level) throws IOException {
       StringBuffer s = new StringBuffer();
       String comparatorEntity;
-      
+
       char[] pad;
       if (level > 0) {
          pad = new char[level * 4];
