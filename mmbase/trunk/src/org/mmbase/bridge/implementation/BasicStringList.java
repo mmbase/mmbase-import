@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of Clouds
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.7 2003-03-04 13:44:37 nico Exp $
+ * @version $Id: BasicStringList.java,v 1.8 2003-03-21 17:45:07 michiel Exp $
  */
 public class BasicStringList extends BasicList implements StringList {
     private static Logger log = Logging.getLoggerInstance(BasicStringList.class.getName());
@@ -41,13 +41,10 @@ public class BasicStringList extends BasicList implements StringList {
     }
 
     public StringIterator stringIterator() {
-    return new BasicStringIterator(this);
+        return new BasicStringIterator();
     }
 
-    public class BasicStringIterator extends BasicIterator implements StringIterator {
-        BasicStringIterator(BasicList list) {
-            super(list);
-        }
+    protected class BasicStringIterator extends BasicIterator implements StringIterator {
 
         public String nextString() {
             return (String)next();

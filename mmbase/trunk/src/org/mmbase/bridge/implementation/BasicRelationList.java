@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.13 2003-03-04 13:44:37 nico Exp $
+ * @version $Id: BasicRelationList.java,v 1.14 2003-03-21 17:45:06 michiel Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
@@ -75,13 +75,10 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
      *
      */
     public RelationIterator relationIterator() {
-        return new BasicRelationIterator(this);
+        return new BasicRelationIterator();
     }
 
-    public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
-        BasicRelationIterator(BasicList list) {
-            super(list);
-        }
+    protected class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
 
         public Relation nextRelation() {
             return (Relation)next();
