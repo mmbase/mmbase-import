@@ -86,6 +86,33 @@
 
       <p><em>With &lt;%@:include (iso-8859-1 page):</em></p>
       <%@include file="atincluded1.jsp" %>
+
+<hr />
+      <h2>Including XML's</h2>
+      <p><em>With mm:include (iso-8859-1 xml):</em></p>
+<pre>
+<mm:include page="included1.xml" escape="text/xml" />
+</pre>
+      <p><em>With mm:include (UTF-8 xml):</em></p>
+<pre>
+<mm:include page="included8.xml" escape="text/xml" />
+</pre>
+      <p><em>With jsp:include (iso-8859-1 xml):</em></p>
+<pre>
+<mm:import id="i1"><jsp:include page="included1.xml"  /></mm:import><mm:write referid="i1" escape="text/xml" />
+</pre>
+      <p><em>With jsp:include (UTF-8 xml):</em></p>
+<pre>
+<mm:import id="i8"><jsp:include page="included8.xml"  /></mm:import><mm:write referid="i8" escape="text/xml" />
+</pre>
+      <p><em>With &lt;%@include (iso-8859-1 xml):</em></p>
+<pre>
+<mm:import id="ai1"><%@include file="included1.xml" %></mm:import><mm:write referid="ai1" escape="text/xml" />
+</pre>
+      <p><em>With jsp:include (UTF-8 xml):</em></p>
+<pre>
+<mm:import id="ai8"><%@include file="included8.xml" %></mm:import><mm:write referid="ai8" escape="text/xml" />
+</pre>
       
       <hr />
       used node: <mm:write referid="node" /> (<mm:field name="number" />)<br />
