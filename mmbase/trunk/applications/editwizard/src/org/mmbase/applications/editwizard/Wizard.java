@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Wizard.java,v 1.7 2002-02-26 14:13:55 pierre Exp $
+ * @version $Id: Wizard.java,v 1.8 2002-02-26 14:24:32 pierre Exp $
  *
  */
 public class Wizard {
@@ -45,7 +45,6 @@ public class Wizard {
     // schema / session data
     private String name;
     private String objectnumber;
-    private String lastCommand;
 
     // the wizard (file) name. Eg.: samples/jumpers will choose the file $path/samples/jumpers.xml
     private String wizardName;
@@ -629,11 +628,11 @@ public class Wizard {
                     if (hash == -1){
                         // Load the entire file.
                         externalPart = externalDocument.getDocumentElement();
-                    }else if (externalId.startsWith("xpointer(")){
+                    } else if (externalId.startsWith("xpointer(")){
                         // Load only part of the file, using an xpointer.
                         String xpath = externalId.substring(9,externalId.length()-1);
                         externalPart = Utils.selectSingleNode(externalDocument, xpath);
-                    }else{
+                    } else {
                         // Load only the node with the given id.
                         externalPart = Utils.selectSingleNode(externalDocument, "//node()[@id='" + externalId + "']");
                     }
@@ -1088,120 +1087,125 @@ public class Wizard {
      *
      */
     public void processCommand(WizardCommand cmd) throws WizardException {
-        // store this command as the last given command. Jsp's can use the field to see what happened over here.
-        lastCommand=cmd.type;
         // processes the given command
-        if (cmd.type.equals("delete-item")) {
-            // delete item!
-            Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + cmd.did + "']");
-            if (datanode != null) {
-                // Ok. delete.
+        switch (cmd.getType()) {
+            case WizardCommand.DELETE_ITEM : {
+                // delete item!
+                // The command parameters is the did of the node to delete.
+                // note that a fid parameter is expected in the command syntax but ignored
+                String did = cmd.getDid();
 
-                // Let op: alle objecten die hierbinnen staan, in een repository geplaatst. Dus,
-                // als een relation wordt verwijderd naar een object, worden automatisch de wijzigingen die evt. in
-                // dat object gemaakt waren, ongedaan gemaakt.
-                Node newrepos = data.createElement("repos");
-
-                NodeList inside_objects = Utils.selectNodeList(datanode, "*");
-                Utils.appendNodeList(inside_objects, newrepos);
-
-                //place repos
-                datanode.getParentNode().appendChild(newrepos);
-
-                //remove relation and inside objects
-                datanode.getParentNode().removeChild(datanode);
-            }
-        }
-        if (cmd.type.equals("move-up") || cmd.type.equals("move-down")) {
-            // This is in fact a SWAP action, not really move up or down.
-            // The command contains the did's of the nodes that are to be swapped.
-
-            // get fieldname to swap (hack: use title for test)
-            Node parentnode=Utils.selectSingleNode(schema, ".//*[@fid='" + cmd.fid + "']");
-            String orderby=Utils.getAttribute(parentnode.getParentNode(),"orderby");
-            log.info("swap "+cmd.did+" and "+cmd.otherdid+" on "+orderby);
-
-            if (orderby != null) {
-                Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + cmd.did + "']/"+orderby);
+                Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
                 if (datanode != null) {
-                    // find other datanode
-                    Node othernode = Utils.selectSingleNode(data, ".//*[@did='" + cmd.otherdid + "']/"+orderby);
+                    // all child objects are added to a repository.
+                    // No idea why. Dutch comments say:
+                    // als een relation wordt verwijderd naar een object, worden automatisch de wijzigingen die evt. in
+                    // dat object gemaakt waren, ongedaan gemaakt.
+                    Node newrepos = data.createElement("repos");
 
-                    // now we gotta swap the value of them nodes.. (must be strings).
+                    NodeList inside_objects = Utils.selectNodeList(datanode, "*");
+                    Utils.appendNodeList(inside_objects, newrepos);
 
-                    String datavalue=Utils.getText(datanode);
-                    String othervalue=Utils.getText(othernode);
-                    Utils.storeText(othernode,datavalue);
-                    Utils.storeText(datanode,othervalue);
+                    //place repos
+                    datanode.getParentNode().appendChild(newrepos);
+
+                    //remove relation and inside objects
+                    datanode.getParentNode().removeChild(datanode);
                 }
+                break;
+            }
+            case WizardCommand.MOVE_UP: ;
+            case WizardCommand.MOVE_DOWN: {
+                // This is in fact a SWAP action (swapping the order-by fieldname), not really move up or down.
+                // The command parameters are the fid of the list in which the item falls (determines order),
+                // and the did's of the nodes that are to be swapped.
+                String fid  = cmd.getFid();
+                String did      = cmd.getDid();
+                String otherdid = cmd.getParameter(2);
 
-/*
-
-
-                // get fieldname to swap (hack: use title for test)
-                Node parentnode=Utils.selectSingleNode(schema, ".//*[@fid='" + cmd.fid + "']");
+                // Step one: get the fieldname to swap
+                // this fieldname is determined by checking the 'orderby' attribute in a list
+                // If there is no orderby attribute, you can't swap (there is no order defined),
+                // so nothing happens.
+                Node parentnode=Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']");
                 String orderby=Utils.getAttribute(parentnode.getParentNode(),"orderby");
-                log.info("swap "+cmd.did+" and "+cmd.otherdid+" on "+orderby);
 
-                // Is het nodig om een temp node te maken?
-                Node tmpnode = datanode.cloneNode(true);
-
-                othernode.getParentNode().insertBefore(tmpnode, othernode);
-                datanode.getParentNode().insertBefore(othernode, datanode);
-                datanode.getParentNode().removeChild(datanode);
-*/
-            }
-        }
-        if (cmd.type.equals("goto-form")) {
-            currentformid = cmd.did;
-        }
-        if (cmd.type.equals("add-item")) {
-            if (cmd.value != null && !cmd.value.equals("")){
-                StringTokenizer ids = new StringTokenizer(cmd.value,"|");
-                while (ids.hasMoreElements()){
-                    Node newObject = addListItem(cmd.fid, cmd.did, ids.nextToken());
-                    Utils.setAttribute(newObject, "displaymode", "search");
-                    // Temporary hack: only images can be shown as summarized.
-                    if (Utils.getAttribute(newObject,"type").equals("images")){
-                        Utils.setAttribute(newObject, "displaymode", "summarize");
+                // step 2: select the nodes and their fieldfs (provide dthey have them)
+                // and swap the values.
+                // when the list is sorted again the order of the nodes will be changed
+                if (orderby != null) {
+                    log.debug("swap "+did+" and "+otherdid+" on "+orderby);
+                    Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']/"+orderby);
+                    if (datanode != null) {
+                        // find other datanode
+                        Node othernode = Utils.selectSingleNode(data, ".//*[@did='" + otherdid + "']/"+orderby);
+                        // now we gotta swap the value of them nodes.. (must be strings).
+                        if (othernode !=null) {
+                            String datavalue=Utils.getText(datanode);
+                            String othervalue=Utils.getText(othernode);
+                            Utils.storeText(othernode,datavalue);
+                            Utils.storeText(datanode,othervalue);
+                        }
                     }
                 }
-            }else{
-//log.warn("add-item:"+cmd.otherdid+":"+cmd.fid+":"+cmd.did);
-                String destinationId = null;
-                if (cmd.otherdid != null && !cmd.otherdid.equals("")){
-                    destinationId = cmd.otherdid;
-                }
-                Node newObject = addListItem(cmd.fid, cmd.did, destinationId);
-                Utils.setAttribute(newObject, "displaymode", "add");
-                // Temporary hack: only images can be shown as summarized.
-                if (Utils.getAttribute(newObject,"type").equals("images")){
-                    Utils.setAttribute(newObject, "displaymode", "summarize");
-                }
+                break;
             }
-        }
-        if (cmd.type.equals("cancel")) {
-            mayBeClosed = true;
-        }
-        if (cmd.type.equals("commit")) {
-            try {
-                Element results = dbconn.firePutCommand(originaldata, data, uploads);
-                NodeList errors = Utils.selectNodeList(results,".//error");
-                if (errors.getLength() > 0){
-                    String errorMessage = "Errors received from MMBase :";
-                    for (int i=0; i<errors.getLength(); i++){
-                        errorMessage = errorMessage + "\n" + Utils.getText(errors.item(i));
-                    }
-                    throw new WizardException(errorMessage);
-                }
+            case WizardCommand.GOTO_FORM: {
+                // The command parameters is the did of the node to delete.
+                // note that a fid parameter is expected in the command syntax but ignored
+                currentformid = cmd.getDid();
+                break;
+            }
+            case WizardCommand.ADD_ITEM : {
+                // The command parameters are the fid of the list in which the item need be added,
+                // the did of the object under which it should be added (the parent node),
+                // and a second id, indicating the object id to add.
+                // The second id can be passed eitehr as a paremeter (the 'otherdid' parameter), in
+                // which case it involves a newly created item, OR as a value, in which case it is an
+                // enumerated list of did's, the result of a search.
+                //
+                String fid = cmd.getFid();
+                String did = cmd.getDid();
+                String value = cmd.getValue();
 
-                // find the (new) objectnumber and store it. Just take the firstone found.
-                String newnumber=Utils.selectSingleNodeText(results,".//object/@number",null);
-                if (newnumber!=null) objectnumber=newnumber;
+                if (value != null && !value.equals("")){
+                    StringTokenizer ids = new StringTokenizer(value,"|");
+                    while (ids.hasMoreElements()){
+                        Node newObject = addListItem(fid, did, ids.nextToken(),false);
+                    }
+                } else {
+                    String otherdid = cmd.getParameter(2);
+                    if (otherdid.equals("")) otherdid=null;
+                    Node newObject = addListItem(fid, did, otherdid, true);
+                }
+                break;
+            }
+            case WizardCommand.CANCEL : {
+                // This command takes no parameters.
                 mayBeClosed = true;
-            } catch (WizardException e) {
-                log.error("could not send PUT command!. Wizardname:"+wizardName+"Exception occured: " + e.getMessage());
-                throw e;
+                break;
+            }
+            case WizardCommand.COMMIT : {
+                // This command takes no parameters.
+                try {
+                    Element results = dbconn.firePutCommand(originaldata, data, uploads);
+                    NodeList errors = Utils.selectNodeList(results,".//error");
+                    if (errors.getLength() > 0){
+                        String errorMessage = "Errors received from MMBase :";
+                        for (int i=0; i<errors.getLength(); i++){
+                            errorMessage = errorMessage + "\n" + Utils.getText(errors.item(i));
+                        }
+                        throw new WizardException(errorMessage);
+                    }
+                    // find the (new) objectnumber and store it. Just take the firstone found.
+                    String newnumber=Utils.selectSingleNodeText(results,".//object/@number",null);
+                    if (newnumber!=null) objectnumber=newnumber;
+                    mayBeClosed = true;
+                } catch (WizardException e) {
+                    log.error("could not send PUT command!. Wizardname:"+wizardName+"Exception occured: " + e.getMessage());
+                    throw e;
+                }
+                break;
             }
         }
     }
@@ -1209,27 +1213,32 @@ public class Wizard {
     /**
      * This method adds a listitem. It is used by the #processCommand method to add new items to a list. (Usually when the
      * add-item command is fired.)
-     * Note: this method can only add new relations and their destinations!. For creating new objects, use WizardDatabaseConnector.createObject.
+     * Note: this method can only add new relations and their destinations!.
+     * For creating new objects, use WizardDatabaseConnector.createObject.
      *
-     * @param       listId  the id of the proper list definition node
+     * @param       listId  the id of the proper list definition node, the list that issued the add command
      * @param       dataId  The did (dataid) of the anchor (parent) where the new node should be created
      * @param       destinationId   The new destination
      */
-    private Node addListItem(String listId, String dataId, String destinationId) throws WizardException{
-        /**
-            This code assumes that you'll always be creating relations.
-                cmd.did - the did of the parent to which a new item is added
-            cmd.fid - the fid of the list that issued the add command
-            cmd.otherid - the dnumber of the to-be-created relation.
-        */
+    private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate) throws WizardException{
         // Determine which list issued the add-item command, so we can get the create code from there.
-
         Node listnode = Utils.selectSingleNode(schema, ".//list[@fid='" + listId + "']");
         Node objectdef=null;
         // Get the 'item' from this list, with displaymode='add'
         // Get (and create a copy of) the object-definition from the action node within that item.
-        objectdef = Utils.selectSingleNode(listnode, "action[@type='create']/relation");
-        if (objectdef==null) objectdef = Utils.selectSingleNode(listnode, "item[@displaymode='add']/action/relation");
+        // action=add is for search command
+        if (!isCreate) {
+            objectdef = Utils.selectSingleNode(listnode, "action[@type='add']/relation");
+        }
+        // action=craete is for craete command
+        // (this should be an 'else', but is supported for 'search' for old xsls)
+        if (objectdef==null)  {
+            objectdef = Utils.selectSingleNode(listnode, "action[@type='create']/relation");
+        }
+        // deprecated code below!, supported for old xsls
+        if (objectdef==null) {
+            objectdef = Utils.selectSingleNode(listnode, "item[@displaymode='add']/action/relation");
+        }
         objectdef = objectdef.cloneNode(true);
         log.debug("Creating object " + objectdef.getNodeName() + " type " + Utils.getAttribute(objectdef,"type"));
         // Put the value from the command in that object-definition.
@@ -1239,15 +1248,21 @@ public class Wizard {
         // We have to add the object to the data, so first determine to which parent it belongs.
         Node parent = Utils.selectSingleNode(data, ".//*[@did='" + dataId + "']");
         // Ask the database to create that object.
-//		log.warn("creating:"+Utils.getXML(objectdef));
-        Node newobject = dbconn.createObject(data,parent, objectdef, variables);
-//		log.warn("created:"+newobject);
-        return newobject;
-    }
+        Node newObject = dbconn.createObject(data,parent, objectdef, variables);
 
-    /**
-     * These methods are used to temporarily store and process uploads
-     */
+        // Temporary hack: only images can be shown as summarized.
+        if (Utils.getAttribute(newObject,"type").equals("images")){
+            Utils.setAttribute(newObject, "displaymode", "summarize");
+        } else {
+            if (isCreate) {
+                Utils.setAttribute(newObject, "displaymode", "add");
+            } else {
+                Utils.setAttribute(newObject, "displaymode", "search");
+            }
+        }
+
+        return newObject;
+    }
 
     /**
      * With this method you can store an upload binary in the wizard.
