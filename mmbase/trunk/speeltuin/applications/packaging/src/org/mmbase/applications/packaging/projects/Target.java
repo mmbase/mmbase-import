@@ -236,7 +236,11 @@ public class Target {
      * @return          Description of the Return Value
      */
     public boolean createPackage(int version) {
-        return creator.createPackage(this, version);
+	boolean result=creator.createPackage(this, version);
+	if (result) {
+		ProviderManager.resetSleepCounter();
+	}
+	return result;
     }
 
 
