@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.10 2000-05-19 11:15:42 wwwtech Exp $
+$Id: AudioParts.java,v 1.11 2000-05-22 13:21:21 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/05/19 11:15:42  wwwtech
+Rico: fixed package name
+
 Revision 1.9  2000/05/18 15:10:28  wwwtech
 Rico: built in number - text translations of both source/class/storage
 
@@ -60,7 +63,7 @@ import nl.vpro.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.10 2000-05-19 11:15:42 wwwtech Exp $
+ * @version $Id: AudioParts.java,v 1.11 2000-05-22 13:21:21 wwwtech Exp $
  * 
  */
 public class AudioParts extends MMObjectBuilder {
@@ -288,7 +291,7 @@ public class AudioParts extends MMObjectBuilder {
 	*/
 
 	/**
-	 * doGetUrl: Retrieve the Url of the audiofile of this AudioParts or cdtracks node.
+	 * doGetUrl: Retrieve the Url of the audiofile of this AudioParts node.
 	 * This method first checks to see if the related RawAudios node uses a SureStream format.
 	 * If so And the file is available, then it builds the Url using RawAudios.getHostname .getFileName
 	 * .getProtocolName and returns it.
@@ -304,7 +307,7 @@ public class AudioParts extends MMObjectBuilder {
 	 * @return A String containing the Url to the audiofile.
 	 */
 	String doGetUrl(scanpage sp, StringTokenizer command) {
-		int apNumber  = 0;  //The value of the AudioParts node or cdtracks node.
+		int apNumber  = 0;  //The value of the AudioParts node .
 		Vector availableRaNodes = new Vector();
 
 		if (command.hasMoreTokens()) {
@@ -475,15 +478,15 @@ public class AudioParts extends MMObjectBuilder {
 	}
 
 	/**
-	 * getSongInfo: Gets the song info for this audiopart/cdtrack number.
-	 * @param apNumber An integer which is either an audiopart number or cdtracks number.
+	 * getSongInfo: Gets the song info for this audiopart number.
+	 * @param apNumber An integer which is either an audiopart number number.
 	 * @return The song info in a RealFormat compliant String.
 	 */
 	String getSongInfo(int apNumber) {
 		String title  = null; // Set title and author string to init value null.
 		String author = null;
 
-		// Get the title info by retrieving the node for this number (which is either an audiopart or a cdtrack!).
+		// Get the title info by retrieving the node for this number (which is either an audiopart ).
 		MMObjectNode node = getNode(apNumber); // check this
 		if (node != null) {
 			title = node.getStringValue("title");

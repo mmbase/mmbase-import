@@ -16,7 +16,7 @@ import java.io.*;
 
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.builders.vwms.*;
+import nl.vpro.mmbase.module.builders.vwms.*;
 import org.mmbase.util.*;
 
 /**
@@ -148,12 +148,6 @@ public class RawAudiosProbe implements Runnable {
 				needbreak=encodeRA(node);
 				break;
 			case 3:
-				if (parent.getMachineName().equals("station")) {
-					int id=node.getIntValue("id");
-					// we want to scan a cdtrack
-					CDTracks bul=(CDTracks)node.parent;	
-					bul.getTrack(id,node);
-				}
 				break;
 			default:
 				System.out.println("RawAudios -> Unknown format "+format);
