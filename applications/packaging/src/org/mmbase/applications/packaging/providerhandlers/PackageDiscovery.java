@@ -92,6 +92,7 @@ public class PackageDiscovery implements Runnable {
             try {
 	        pi.getPackages();
                 PackageManager.removeOfflinePackages(pi);
+                BundleManager.removeOfflineBundles(pi);
             } catch (Exception e) {
                 log.error("Something went wring in package discovery : "+pi.getPath());
                 e.printStackTrace();
