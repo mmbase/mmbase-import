@@ -27,7 +27,7 @@ public interface CommandHandlerInterface {
 	/**
 	 * List commands
 	 */
-	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command);	
+	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws ParseException;	
 
 	/**
 	 * Replace/Trigger commands

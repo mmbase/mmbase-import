@@ -9,11 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import javax.servlet.*;
-import java.lang.Exception;
+import org.mmbase.module.ParseException;
 
 /**
- * This exception gets thrown when the user hasn't logged in yet.
+ * This exception gets thrown when a circular PART is detected.
  */
 public class CircularParseException extends ParseException {
 

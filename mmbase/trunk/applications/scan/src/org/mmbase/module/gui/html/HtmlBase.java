@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.15 2000-03-30 13:11:27 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.16 2000-03-31 13:18:19 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.15  2000/03/30 13:11:27  wwwtech
+	Rico: added license
+	
 	Revision 1.14  2000/03/29 11:06:00  wwwtech
 	Wilbert Removed TSEARCH from replace
 	
@@ -74,7 +77,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.15 2000-03-30 13:11:27 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.16 2000-03-31 13:18:19 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -132,7 +135,7 @@ public class HtmlBase extends ProcessorModule {
 	/**
 	 * Generate a list of values from a command to the processor
 	 */
-	 public Vector  getList(scanpage sp,StringTagger tagger, String value) {
+	 public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
     	String line = Strip.DoubleQuote(value,Strip.BOTH);
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {
@@ -799,7 +802,7 @@ public class HtmlBase extends ProcessorModule {
 		return(machineName);
 	}
 
-	public Vector doMultiLevel(scanpage sp, StringTagger tagger) {
+	public Vector doMultiLevel(scanpage sp, StringTagger tagger) throws MultiLevelParseException {
 		String result=null,fieldname;
 		Object tmp;
 		MMObjectNode node;
@@ -810,11 +813,14 @@ public class HtmlBase extends ProcessorModule {
 		boolean reload=getReload(sp);
 
 		Vector type=tagger.Values("TYPE");
+		if ((type==null) || (type.size()==0)) throw new MultiLevelParseException("No TYPE specified");
 		Vector dbsort=tagger.Values("DBSORT");
 		Vector dbdir=tagger.Values("DBDIR");
 		String where=tagger.Value("WHERE");
 		Vector fields=tagger.Values("FIELDS");
+		if ((fields==null) || (fields.size()==0)) throw new MultiLevelParseException("No FIELDS specified");
 		Vector snodes=tagger.Values("NODE");
+		if ((snodes==null) || (snodes.size()==0)) throw new MultiLevelParseException("No NODE specified. Use NODE=\"-1\" to specify no node");
 		String distinct=tagger.Value("DISTINCT");
 
 		tagger.setValue("ITEMS",""+fields.size());
