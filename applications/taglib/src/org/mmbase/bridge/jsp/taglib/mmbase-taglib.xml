@@ -2200,6 +2200,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Check if node may be changed.
     </info>
+    <see>setfield</see>
   </tag>
   <tag>
     <name>maydelete</name>
@@ -2209,6 +2210,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Check if node may be deleted.
     </info>
+    <see>deletenode</see>
   </tag>
   <tag>
     <name>maycreate</name>
@@ -2216,8 +2218,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateTag</tagclass>
     <info>
-    Check if node may be created.
+      Check if node may be created.
     </info>
+    <see>createnode</see>
     <attribute>
       <name>type</name>
       <required>true</required>
@@ -2230,7 +2233,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateRelationTag</tagclass>
     <info>
     Check if a relation may be created.
-    </info>
+    </info>    
     <attribute>
       <name>role</name>
       <required>true</required>
@@ -2251,7 +2254,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
     <info>
-    This tag will be removed!
+      This tag will be removed!
     </info>
   </tag>
   <tag>
@@ -2262,13 +2265,24 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Check if the context of a node may be changed.
     </info>
+    <see>setcontext</see>
   </tag>
   <tag>
     <name>setcontext</name>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.SetContextTag</tagclass>
     <info>
-      Change the context of a node.
+      <p>
+        Change the context of a node. This has nothing to do with the
+        `contextes' of the taglib, but with security. With every node a
+        `context' is associated (in fact the `owner' field is currently
+        used for this), by which is is determined who may do what to
+        it. 
+      </p>
+      <p>
+        You'll need this if you are creating an editor and want to add
+        the possibility to change the rights on a node.
+      </p>
     </info>
     <attribute>
       <name>name</name>
@@ -2669,7 +2683,10 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-	    The time taglib can be used for all kind of manipulations regarding to times.</info>
+	    The time taglib can be used for all kind of manipulations
+	    regarding to times.
+    </info>
+    <see>locale</see>
     <attribute>
       <name>time</name>
       <required>false</required>
@@ -2742,7 +2759,8 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <info>
       Logs the body or creates a Logger variable in it.  You can log
       to the MMBase log with this. It logs its body on 'service' with
-      within the category 'MMBASE-PAGE', followed by the request URI.
+      within the category 'org.mmbase.PAGE', followed by the file name
+      of the jsp which is executed.
     </info>
     <attribute>
       <name>jspvar</name>
@@ -2760,13 +2778,26 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <see>time</see>
     <tagclass>org.mmbase.bridge.jsp.taglib.LocaleTag</tagclass>
     <info>
-      Sets a locale. Tags living in its body can request the Locale
-      from it, if they need it.
+      <p>
+        Sets a locale. Tags living in its body can request the Locale
+        from it, if they need it. A `locale' is more or less like a
+        `language', but it is a little more. E.g. when formatting a
+        date it is needed to know what the conventions are for the
+        order of the fields, and what kind of characters to use to
+        seperate them. Another example is the formatting of numbers,
+        which is also ruled by 'locale' conventions.
+      </p>
+      <p>
+        See <a href="http://java.sun.com/j2se/1.4/docs/api/java/util/Locale.html">JavaDoc
+        for Locale class</a> (A little technical, but at least you'll
+        find links to possible languages and countries, and another
+        short description of what a Locale actually is).
+      </p>
     </info>
     <attribute>
-       <name>language</name>
-      <required>required</required>
-       <rtexprvalue>true</rtexprvalue>
+      <name>language</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         A two letter language code according to ISO 639.
       </info>
