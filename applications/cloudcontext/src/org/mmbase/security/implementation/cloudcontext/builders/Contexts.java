@@ -11,7 +11,10 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.security.SecurityException;
+import org.mmbase.security.Authorization;
 import java.util.*;
+import org.mmbase.bridge.Query;
+import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.cache.Cache;
@@ -27,34 +30,46 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.8 2003-07-18 13:40:22 michiel Exp $
+ * @version $Id: Contexts.java,v 1.9 2003-08-05 21:26:33 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class);
-    private boolean readall = true;
+    private boolean readAll = true;
 
-    protected static Cache contextCache = new Cache(30) {
+    protected static Cache contextCache = new Cache(30) { // 30 'contexts' (organisations or so)
             public String getName()        { return "CCS:ContextCache"; }
             public String getDescription() { return "Links owner field to Contexts MMObjectNodes"; }
         };
 
+
+    protected static Cache allowingContextsCache = new Cache(200) { // 200 users.
+            public String getName()        { return "CCS:AllowingContextsCache"; }
+            public String getDescription() { return "Links user id to a set of contexts"; }
+        };
+
+    protected static Map  invalidableObjects = new HashMap();
 
     /**
      * @javadoc
      */
     static final String DEFAULT_CONTEXT = "admin";
 
+
+    static final int MAX_CONTEXTS_IN_QUERY = 50;
     /**
      * @javadoc
      */
     public boolean init() {
         String s = (String) getInitParameters().get("readall");
-        readall = "true".equals(s);
+        readAll = "true".equals(s);
 
         contextCache.putCache();
+        allowingContextsCache.putCache();
         CacheInvalidator.getInstance().addCache(contextCache);
+        CacheInvalidator.getInstance().addCache(allowingContextsCache);
+        CacheInvalidator.getInstance().addCache(invalidableObjects);
         mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
 
@@ -118,7 +133,11 @@ public class Contexts extends MMObjectBuilder {
 
         // retrieve the node
         MMObjectNode node       = getNode(nodeId);
-        MMObjectBuilder builder = node.getBuilder();
+
+        MMObjectBuilder builder = null;
+        if (node != null) { // perhaps a node of inactive type
+            builder = node.getBuilder();
+        }
 
         // may never unlink relation with own rank
         if (operation == Operation.DELETE && builder instanceof InsRel) {
@@ -141,10 +160,11 @@ public class Contexts extends MMObjectBuilder {
 
 
         if (node == null) {
-            throw new SecurityException("node #" + nodeId + " not found");
+            log.warn("node #" + nodeId + " not found");
+            return false;
         }
 
-        if (readall && operation == Operation.READ) {
+        if (readAll && operation == Operation.READ) {
             log.debug("Allowing all read operiations, so read on " + nodeId + " is permitted");
             return true;
         }
@@ -168,6 +188,15 @@ public class Contexts extends MMObjectBuilder {
         // retrieve all the groups in which the context of this node is.
 
         MMObjectNode contextNode = getContextNode(node); // the mmbasecontext node associated with this node
+
+        return mayDo(user, contextNode, operation);
+    }
+
+    /**
+     * Returns wether user may do operation on a node with given context. 
+     */
+    protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
+
         Iterator iter = RightsRel.getBuilder().getGroups(contextNode, operation).iterator();        
 
         // now checking if this user is in one of these groups.
@@ -176,23 +205,126 @@ public class Contexts extends MMObjectBuilder {
             log.trace("checking group " + group);
             if(Groups.getBuilder().contains(group, user)) { 
                 if (log.isDebugEnabled()) {
-                    log.debug("May " + operation + " on node: " + nodeId + " of context " + contextNode);
+                    log.debug("User " + user.getIdentifier() + " may " + operation + " according to context " + contextNode);
                 }
                 return true;
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("May not " + operation + " on node: " + nodeId + " of context " + contextNode);
+            log.debug("User " + user.getIdentifier() + " may not " + operation + " according to context " + contextNode);
         }
         return false;
     }
+
+    /**
+     * Returns a Set (of Strings) of all existing contexts
+     */
+    protected SortedSet getAllContexts() {
+        SortedSet all = (SortedSet) invalidableObjects.get("ALL"); 
+        if (all == null) {
+            Enumeration enumeration = search(null);  // list all  Contextes simply..        
+            all = new TreeSet();
+            while (enumeration.hasMoreElements()) {
+                MMObjectNode context = (MMObjectNode) enumeration.nextElement();            
+                all.add(context.getStringValue("name"));
+            }
+            
+            invalidableObjects.put("ALL", all);
+        }
+        return all;
+    }
+
+    /**
+     * Returns a Set (of Strings) of all existing contexts for which the given operation is not allowed for the given user.
+     */
+    protected SortedSet getDisallowingContexts(User user, Operation operation) {
+        if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
+        SortedSet set = new TreeSet();
+        Iterator i = getAllContexts().iterator();
+        while (i.hasNext()) {
+            String context = (String) i.next();
+            MMObjectNode contextNode = getContextNode(context);
+            if (! mayDo(user, contextNode, operation)) {
+                set.add(context);
+            }
+        }
+        return set;
+    }
+
+
+    /**
+     * Implements check function with same arguments of Authorisation security implementation
+     * @see Verify#check(user, query, operation);
+     */
+
+    public Authorization.QueryCheck check(User userContext, Query query, Operation operation) {
+        if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
+            return Authorization.COMPLETE_CHECK;
+        } else {
+            if (operation == Operation.READ && readAll) {
+                return Authorization.COMPLETE_CHECK;
+            } else if (operation == Operation.READ) {
+
+                AllowingContexts ac = (AllowingContexts) allowingContextsCache.get(userContext.getIdentifier());
+                if (ac == null) {
+                    // smart stuff for query-modification
+                    SortedSet disallowing = getDisallowingContexts(userContext, operation);
+                    SortedSet contexts;
+                    boolean   inverse;
+                    if (log.isDebugEnabled()) {
+                        log.debug("disallowing: " + disallowing + " all " + getAllContexts());
+                    }
+
+                    // searching which is 'smallest' disallowing contexts, or allowing contexts.
+                    if (disallowing.size() < (getAllContexts().size() / 2)) {
+                        contexts = disallowing;
+                        inverse = true;
+                    } else {
+                        contexts  = new TreeSet(getAllContexts());
+                        contexts.removeAll(disallowing);
+                        inverse = false;
+                    }
+                    ac = new AllowingContexts(contexts, inverse);
+                    allowingContextsCache.put(userContext.getIdentifier(), ac);
+                }
+                
+                List steps = query.getSteps();
+                if (steps.size() * ac.contexts.size() < MAX_CONTEXTS_IN_QUERY) { 
+                    Iterator i = steps.iterator();
+                    Constraint constraint = null;
+                    while (i.hasNext()) {
+                        Step step = (Step) i.next();
+                        StepField field = query.createStepField(step, "owner");
+                        Constraint newConstraint = query.createConstraint(field, ac.contexts);
+                        if (ac.inverse) query.setInverse(newConstraint, true);
+                        if (constraint == null) {
+                            constraint = newConstraint;
+                        } else {
+                            constraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+                        } 
+                    }
+                    return new Authorization.QueryCheck(true, constraint);
+                } else { // query would grow too large
+                    return Authorization.NO_CHECK;
+                }
+
+            } else {
+                //not checking for READ: never mind, this is only used for read checks any way
+                return Authorization.NO_CHECK;
+            }
+        }
+    }
+
 
     /**
      * @return The MMObjectNode presenting the context of the given node.
      */
     private final MMObjectNode getContextNode(MMObjectNode node)  {
         String s = node.getStringValue("owner");
-        
+        return getContextNode(s);
+
+    }
+    private final MMObjectNode getContextNode(String s) {
         MMObjectNode context = (MMObjectNode) contextCache.get(s);
         if (context == null) {
 
@@ -211,6 +343,8 @@ public class Contexts extends MMObjectBuilder {
         }
         return context;
     }
+
+   
 
     /**
      * Returns this Context node as a String (so the name field)
@@ -265,21 +399,8 @@ public class Contexts extends MMObjectBuilder {
      */
     public Set getPossibleContexts(User user, int nodeId) throws SecurityException {
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
-            log.debug("admin may do everything");
-            Enumeration enumeration = search(null);  // list all (readable) Contextes simply..
-            
-            Set hashSet = new HashSet();
-            while (enumeration.hasMoreElements()) {
-                MMObjectNode context = (MMObjectNode) enumeration.nextElement();
-                if (mayDo(user, context.getNumber(), Operation.READ )) {
-                    hashSet.add(context.getStringValue("name"));
-                } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("context with name:" + context.getStringValue("name") + " could not be added to possible contexes, since we had no read rights");
-                    }
-                }
-            }
-            return hashSet;
+            log.debug("admin may do everything");           
+            return getAllContexts();
         }        
 
         MMObjectNode node = getNode(nodeId);
@@ -312,4 +433,14 @@ public class Contexts extends MMObjectBuilder {
         return n.getStringValue("name");
     }
 
+
+    private static class AllowingContexts {
+        SortedSet contexts;
+        boolean inverse;
+        AllowingContexts(SortedSet c, boolean i) {
+            contexts = c;
+            inverse = i;
+        }
+        
+    }
 }
