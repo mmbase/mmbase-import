@@ -17,7 +17,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * string transformations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessor.java,v 1.4 2003-12-23 19:58:18 michiel Exp $
+ * @version $Id: CharTransformerProcessor.java,v 1.5 2004-02-18 17:25:55 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.util.transformers.CharTransformer
  */
@@ -31,6 +31,7 @@ public class CharTransformerProcessor implements Processor {
     }
 
     public final Object process(Node node, Field field, Object value) {
+        if (value == null) return null; // most CharTransformers would not choke in that, but lets not risque it.
         return charTransformer.transform((String) value);
     }        
 
