@@ -19,9 +19,9 @@ import org.mmbase.util.logging.*;
  * This is a seperated class, since the handling of the byte stream has some difficulties in the standard 
  * JDBC 7.1 drivers
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.27 2003-04-17 14:43:45 michiel Exp $
+ * @version $Id: PostgreSQL71.java,v 1.28 2003-04-17 15:24:19 michiel Exp $
  */
-public class PostgreSQL71 extends PostgreSQL72 {    
+public class PostgreSQL71 extends PostgreSQL {    
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
 
     protected boolean setValuePreparedStatement(PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
