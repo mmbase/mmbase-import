@@ -42,7 +42,6 @@ public class SPartFileFilter implements FilenameFilter {
 			c = name.charAt(pos);
 			if ((c>='0') && (c<='9')) return false;
 		}
-		System.out.println("true");
 		return true;
 	}
 
