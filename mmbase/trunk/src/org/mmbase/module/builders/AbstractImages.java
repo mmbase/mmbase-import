@@ -12,19 +12,19 @@ package org.mmbase.module.builders;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.Arguments;
+import org.mmbase.util.functions.Parameters;
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.21 2003-06-03 10:59:38 kees Exp $
+ * @version $Id: AbstractImages.java,v 1.22 2003-12-17 20:59:37 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
 
-    private static Logger log = Logging.getLoggerInstance(AbstractImages.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractImages.class);
 
     /** 
      * Cache with 'ckey' keys.
@@ -78,16 +78,16 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * An image's gui-indicator is of course some &lt;img src&gt;, but it depends on what kind of image
      * (cached, original) what excactly it must be.
      */
-    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Arguments a);
+    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, Parameters a);
 
     /**
      * Returns GUI Indicator for node
      */
-    protected String getSGUIIndicatorForNode(MMObjectNode node, Arguments a) {
+    protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters a) {
         return getGUIIndicatorWithAlt(node, "*", a); /// Gui indicator of a whole node.
     }
 
-    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
+    protected String getSGUIIndicator(MMObjectNode node, Parameters a) {
         String field = a.getString("field");
         if (field.equals("handle") || field.equals("")) {
             return getSGUIIndicatorForNode(node, a);

@@ -16,6 +16,8 @@ import org.mmbase.servlet.BridgeServlet;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 
 
 /**
@@ -25,27 +27,27 @@ import org.mmbase.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.19 2003-11-10 21:10:51 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.20 2003-12-17 20:59:37 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(AbstractServletBuilder.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractServletBuilder.class);
 
     /**
      * Can be used to construct a List for executeFunction argument
-     * (new Arguments(GUI_ARGUMENTS))
+     * (new Parameters(GUI_ARGUMENTS))
      */
-    public final static Argument[] GUI_ARGUMENTS = { 
-        new Argument.Wrapper(MMObjectBuilder.GUI_ARGUMENTS) // example, does not make too much sense :-)
+    public final static Parameter[] GUI_PARAMETERS = { 
+        new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS) // example, does not make too much sense :-)
     };
 
 
-    public final static Argument[] SERVLETPATH_ARGUMENTS = { 
-        new Argument("session", String.class), // For read-protection
-        new Argument("field",   String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-        new Argument("context", String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-        new Argument("argument", String.class) // Argument to use for the argument, overrides 'field'
+    public final static Parameter[] SERVLETPATH_PARAMETERS = { 
+        new Parameter("session", String.class), // For read-protection
+        new Parameter("field",   String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
+        new Parameter("context", String.class), // Path to the context root, defaults to "/" (but can specify something relative).
+        new Parameter("argument", String.class) // Parameter to use for the argument, overrides 'field'
     };
 
     /**
@@ -154,7 +156,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * they have to implement the 'SGUIIndicators'
      */
 
-    abstract protected String getSGUIIndicator(MMObjectNode node,  Arguments a);
+    abstract protected String getSGUIIndicator(MMObjectNode node,  Parameters a);
 
 
     /**
@@ -170,14 +172,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
     final public String getGUIIndicator(MMObjectNode node) {
-        return getSGUIIndicator(node, new Arguments(GUI_ARGUMENTS));
+        return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS));
     }
     /**
      * This is final, because getSGUIIndicator has to be overridden in stead
      */
 
     final public String getGUIIndicator(String field, MMObjectNode node) { // final, override getSGUIIndicator
-        return getSGUIIndicator(node, new Arguments(GUI_ARGUMENTS).set("field", field));
+        return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
     }
 
 
@@ -194,11 +196,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, function, empty);
-            info.put("servletpath", "" + SERVLETPATH_ARGUMENTS + " Returns the path to a the servlet presenting this node. All arguments are optional");
+            info.put("servletpath", "" + SERVLETPATH_PARAMETERS + " Returns the path to a the servlet presenting this node. All arguments are optional");
             info.put("servletpathof", "(function) Returns the servletpath associated with a certain function");
             info.put("format", "bla bla");
             info.put("mimetype", "Returns the mimetype associated with this object");
-            info.put("gui", "" + GUI_ARGUMENTS + "Gui representation of this object.");
+            info.put("gui", "" + GUI_PARAMETERS + "Gui representation of this object.");
 
             if (args == null || args.size() == 0) {
                 return info;
@@ -209,13 +211,13 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (log.isDebugEnabled()) {
                 log.debug("getting servletpath with args " + args);
             }
-            // wrap the argument List into an 'Arguments', which makes
+            // wrap the argument List into an 'Parameters', which makes
             // it easier to deal with.
-            Arguments a;
-            if (args instanceof Arguments) {
-                a = (Arguments) args;
+            Parameters a;
+            if (args instanceof Parameters) {
+                a = (Parameters) args;
             } else {
-                a = new Arguments(SERVLETPATH_ARGUMENTS, args);
+                a = new Parameters(SERVLETPATH_PARAMETERS, args);
             }
             // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
             String session = a.getString("session");
@@ -243,12 +245,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             } else {
                 servlet.append(getServletPath(context));
             }
+            String fileName = node.getStringValue("filename");            
+            boolean addFileName =   (!servlet.toString().endsWith("?")) &&  (! "".equals(fileName));
+
             if (usesBridgeServlet && ! session.equals("")) {
                 servlet.append("session=" + session + "+");
             }
 
-            String fileName = node.getStringValue("filename");            
-            if (servlet.toString().endsWith("?") ||  "".equals(fileName)) {
+            if (! addFileName) {
                 return servlet.append(argument).toString();
             } else {
                 StringObject fn = new StringObject(fileName);
@@ -270,11 +274,11 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (args == null || args.size() == 0) {
                 return getGUIIndicator(node);
             } else {
-                Arguments a;
-                if (args instanceof Arguments) {
-                    a = (Arguments) args;
+                Parameters a;
+                if (args instanceof Parameters) {
+                    a = (Parameters) args;
                 } else {
-                    a = new Arguments(GUI_ARGUMENTS, args);
+                    a = new Parameters(GUI_PARAMETERS, args);
                 }
                 
                 String  rtn = getSGUIIndicator(node, a);
