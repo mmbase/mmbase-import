@@ -325,6 +325,7 @@ NetComponents can be found at:
       <classpath id="compile.classpath">
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
+          <include name="*.zip"/>
           <exclude name="mmbase.jar"/>
         </fileset>
       </classpath>
@@ -769,6 +770,7 @@ Build-compiler: ${build.compiler}
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
+          <include name="*.zip"/>
         </fileset>
       </classpath>
     </javadoc>
@@ -800,6 +802,7 @@ Build-compiler: ${build.compiler}
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
+          <include name="*.zip"/>
         </fileset>
       </classpath>
     </javadoc>
@@ -1011,6 +1014,7 @@ Build-compiler: ${build.compiler}
       <classpath>
         <fileset dir="${build.dir}/junit/lib">
           <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
         </fileset>
       </classpath>
       <arg value="org.mmbase.test.bridge.AllTests"/>
@@ -1058,6 +1062,7 @@ Build-compiler: ${build.compiler}
         <pathelement location="${build.dir}/apptool/classes"/>
         <fileset dir="${build.dir}/apptool/lib">
           <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
         </fileset>
       </classpath>
     </java>
