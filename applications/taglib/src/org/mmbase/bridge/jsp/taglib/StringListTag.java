@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.5 2003-08-08 13:30:03 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.6 2003-08-08 16:03:48 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -40,6 +40,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     protected int      currentItemIndex= -1;
 
     protected Attribute  max = Attribute.NULL;
+    protected Attribute  comparator = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -71,6 +72,11 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     protected int getMaxNumber() throws JspTagException {
         return max.getInt(this, -1);
     }
+
+    public void setComparator(String c) throws JspTagException {
+        comparator = getAttribute(c);
+    }
+
 
     /**
      * Lists do implement ContextProvider
@@ -126,6 +132,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         } else {
             returnList = getList();
         }
+        ListSorter.sort(returnList, (String) comparator.getValue(this), pageContext);
         iterator = returnList.iterator();
         // if we get a result from the query
         // evaluate the body , else skip the body

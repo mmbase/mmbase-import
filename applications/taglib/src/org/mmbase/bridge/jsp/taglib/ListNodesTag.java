@@ -13,7 +13,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import javax.servlet.jsp.JspTagException;
 
-import java.util.List;
+import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
@@ -28,14 +28,19 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.10 2003-08-01 16:50:58 michiel Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.11 2003-08-08 16:03:48 michiel Exp $ 
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class);
 
     protected Attribute type      = Attribute.NULL;
-    protected Attribute container = Attribute.NULL; // not yet implemented
+    protected Attribute container = Attribute.NULL; 
+
+
+    public void setContainer(String c) throws JspTagException {
+        container = getAttribute(c);
+    }
 
     /**
      * @param type a nodeManager
@@ -65,7 +70,7 @@ public class ListNodesTag extends AbstractNodeListTag {
                 throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given)");
             }            
             nodeManager = getCloud().getNodeManager(type.getString(this));
-            NodeList nodes = nodeManager.getList(constraints.getString(this), orderby.getString(this), directions.getString(this));
+            NodeList nodes = nodeManager.getList(constraints.getString(this), (String) orderby.getValue(this), directions.getString(this));
             return nodes;
         } else {
             NodeQuery query = (NodeQuery) c.getQuery();
@@ -97,7 +102,7 @@ public class ListNodesTag extends AbstractNodeListTag {
             
             NodeList nodes = query.getNodeManager().getList(query);
             return nodes;
-        }
+        }        
     }
 
     /**
@@ -108,7 +113,8 @@ public class ListNodesTag extends AbstractNodeListTag {
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        return setReturnValues(getNodes(), true);
+        NodeList list = getNodes();
+        return setReturnValues(list, true);
 
     }
 
