@@ -293,15 +293,19 @@ builddate=${builddate}
     <!--depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai,jar"-->
 
     <mkdir dir="${release.lib.dir}" />
+    <!--
     <copy file="${xalan.jar}"          tofile="${release.lib.dir}/xalan.renametojar" />
     <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xerces.renametojar" />
     <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
+    -->
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
+    <!--
     <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
     <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
     <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
+    -->
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
 
@@ -689,8 +693,8 @@ Build-compiler: ${build.compiler}
     <delete dir="${webroot.build.dir}" />
     <delete dir="${config.build.dir}" />
     <delete dir="${minconfig.build.dir}" />
-    <delete file="${build.dir}/mmbase/mmbase.war" />
-    <delete file="${build.dir}/mmbase/minimalistic-mmbase.war" />
+    <delete file="${build.dir}/mmbase.war" />
+    <delete file="${build.dir}/minimalistic-mmbase.war" />
   </target>
 
     <!-- =================================================================== -->
@@ -702,10 +706,13 @@ Build-compiler: ${build.compiler}
 
   <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,applications">
 
-    <war warfile="${build.dir}/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
+    <war warfile="${build.dir}/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml" duplicate="preserve">
       <lib dir="${release.lib.dir}" />
       <!-- our file's on the server -->
-      <fileset dir="${build.dir}/mmbase/mmbase-webapp"/>
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp">
+        <exclude name="WEB-INF/web.xml" />
+        <exclude name="WEB-INF/lib/**" />
+      </fileset>
     </war>
   </target>
 
@@ -838,10 +845,9 @@ Build-compiler: ${build.compiler}
 
     <!-- copy the html -->
     <copy todir="${webapp.dir}">
-      <fileset dir="${source-html.dir}"
-               defaultexcludes="yes"
-               excludes="WEB-INF/classes/**"
-               >
+      <fileset dir="${source-html.dir}" defaultexcludes="yes">
+        <exclude name="WEB-INF/classes/**" />
+        <exclude name="mmdocs/**" />
       </fileset>
     </copy>
   </target>
@@ -1048,7 +1054,7 @@ Build-compiler: ${build.compiler}
 
 
   <target name="documentation"
-          depends="jar,documentation.builders,mmcidocs">
+          depends="jar,documentation.builders,mmcidocs" if="build.documentation">
 
 
     <ant dir="${applications.home}" target="install">
