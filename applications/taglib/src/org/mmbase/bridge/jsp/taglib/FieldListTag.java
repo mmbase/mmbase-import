@@ -26,7 +26,7 @@ import org.mmbase.util.StringSplitter;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.39 2004-02-25 14:10:00 pierre Exp $
+ * @version $Id: FieldListTag.java,v 1.40 2004-03-24 00:59:01 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
@@ -158,7 +158,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     *
     **/
     public int doStartTag() throws JspTagException{
-        collector = new ContextCollector(getContextProvider().getContextContainer());
+        collector = new ContextCollector(getContextProvider());
 
         if (getReferid() != null) {
             if (nodeManagerAtt != Attribute.NULL || type != Attribute.NULL) {
@@ -245,7 +245,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
 
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), returnList);
+            getContextProvider().getContextContainer().register(getId(), returnList, false);
         }
         return  EVAL_PAGE;
     }

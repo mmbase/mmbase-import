@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.20 2004-03-16 17:30:16 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.21 2004-03-24 00:59:02 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -341,12 +341,7 @@ public class ContextContainer extends HashMap {
             log.debug("Valid");
             //pageContext.setAttribute(id, n);
             if (check && isRegistered(newId)) {
-                JspTagException e;
-                if(id == null) {
-                    e = new JspTagException("Object with id " + newId + " was already registered in the context without id (root?).");
-                } else {
-                    e = new JspTagException("Object with id " + newId + " was already registered in Context '" + id  + "'.");
-                }
+                JspTagException e = new JspTagException("Object with id " + newId + " was already registered in " + this);
                 if (log.isDebugEnabled()) {
                     log.debug(Logging.stackTrace(e));
                 }
@@ -651,6 +646,14 @@ public class ContextContainer extends HashMap {
         return def;
     }
 
+
+    public String toString() {
+        if (id == null) {
+            return "the context without id (root?)";
+        } else {
+            return "context '" + id  + "'";
+        }
+    }
 
     /**
      * Container class, to store results of 'getPair' function.
