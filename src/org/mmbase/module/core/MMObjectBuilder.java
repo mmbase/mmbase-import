@@ -453,22 +453,24 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Remove the relations of a node.
-    * This routine is faulty! It was written with Informix in mind, and causes inconsistencies in other database systems.
-    * It should be adapted and/or deprecated.
     * @param node The node whose relations to remove.
     */
     public void removeRelations(MMObjectNode node) {
         int number=node.getIntValue("number");
         if (number!=-1) {
-            try {
-                MultiConnection con=mmb.getConnection();
-                Statement stmt=con.createStatement();
-                stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where snumber="+number+" or dnumber="+number);
-                stmt.close();
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            removeRelations(number);
+        }
+    }
+
+    /**
+    * Remove the relations of a node
+    * @param number The number of the node whose relations to remove.
+    */
+    public void removeRelations(int number) {
+        Vector relvector=getRelations_main(number);
+        for (Iterator rels=relvector.iterator(); rels.hasNext(); ) {
+                MMObjectNode node=(MMObjectNode)rels.next();
+                removeNode(node);
         }
     }
 
@@ -499,7 +501,7 @@ public class MMObjectBuilder extends MMTable {
                 // first get the otype to select the correct builder
         	MultiConnection con=mmb.getConnection();
                 Statement stmt2=con.createStatement();
-                ResultSet rs=stmt2.executeQuery("SELECT otype FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number);
+                ResultSet rs=stmt2.executeQuery("SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number);
                 if (rs.next()) {
                     otype=rs.getInt(1);
                     // hack hack need a better way
@@ -754,7 +756,6 @@ public class MMObjectBuilder extends MMTable {
 
         return (new Vector()); // Return an empty Vector
     }
-
 
     /**
     * Enumerate all the objects that match the searchkeys
