@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * "</pre>". (Note: perhaps this last behaviour should be made
  * configurable.
  *
- * @todo 'pre' stuff not yet implemented
+ * @todo 'pre' stuff not yet implemented.
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
@@ -29,12 +29,13 @@ import org.mmbase.util.logging.*;
 
 public class SpaceReducer extends ReaderTransformer implements CharTransformer {
 
-    private static Logger log = Logging.getLoggerInstance(SpaceReducer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 
     public Writer transform(Reader r, Writer w) {
 
-        int space = 0;  // 'open' spaces
-        int nl = 0;     // 'open' newlines
+        int space = 1;  // 'open' spaces
+        int nl    = 1;  // 'open' newlines
+        // we start at 1, rather then 0, because in that way, all leading space is deleted too
         
         StringBuffer indent = new StringBuffer();  // 'open' indentation of white-space
         int l = 0; // number of non-white-space (letter) on the current line
