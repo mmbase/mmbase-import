@@ -59,5 +59,22 @@
                 <type size="127" key="false" state="persistent" notnull="false">STRING</type>
             </db>
         </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guitype/>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>config</name>
+                <type size="127" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
     </fieldlist>
 </builder>
