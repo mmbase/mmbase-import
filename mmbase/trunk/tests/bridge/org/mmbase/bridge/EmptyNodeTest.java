@@ -37,13 +37,9 @@ public class EmptyNodeTest extends NodeTest {
 
     public void testGetValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            if (fieldTypes[i].equals("byte")) {
-                byte[] bytes = (byte[]) node.getValue(fieldTypes[i] + "field");                
-                assertTrue("Empty " + fieldTypes[i] + " field did return null (should be empty byte[])", bytes != null);
-                assertTrue(bytes.length == 0);
-            } else {
-                assertTrue("Empty " + fieldTypes[i] + " field did not return null", node.getValue(fieldTypes[i] + "field") == null);
-            }
+            Object value = node.getValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field did not return null, but " + value + " a " + (value == null ? "" : value.getClass().getName()), 
+                       value == null);
         }
     }
 
@@ -63,7 +59,7 @@ public class EmptyNodeTest extends NodeTest {
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(bytes.length == 0);
             } else {
-                fail();
+                fail("Unknown fieldtype encountered " + fieldTypes[i]);
             }
         }
     }
