@@ -28,7 +28,7 @@
                            
 
                 <!-- Unique index declaration -->
-                <scheme name="create-composite-key-scheme">UNIQUE ({2}) CONSTRAINT {1}_constraint</scheme>
+                <scheme name="create-composite-key-scheme">UNIQUE ({2}) CONSTRAINT {1}_{2}_constraint</scheme>
                 <scheme name="create-foreign-key-scheme">FOREIGN KEY ({2}) REFERENCES {3} ({4}) CONSTRAINT {1}_{2}_foreignkey</scheme>
 
 		<!-- Informix supports extensions and uses row types -->
