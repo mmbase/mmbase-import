@@ -131,7 +131,14 @@ Taglib New Features:
 -------------------------
 Editwizards New Features:
 -------------------------
+[1.7.1]
+- You can now use radiobuttons if you use the ftype 'radio' (like an
+  enum), and checkboxes (for values 1/0) if you use the ftype
+  "checkbox". 
+
+[1.7.0]
 - Multilevel queries can be used to fill optionlists
+
 
 ==========================
 BUG FIXES AND IMPROVEMENTS:
