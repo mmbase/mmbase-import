@@ -282,7 +282,9 @@
         </tr>
       <% } else if (node.hasRelations()) { %>
           <tr>
-            <td class="disabledprompt"><%=mmlanguage.getInfo("GET-remove_object")%></td>
+            <td class="disabledprompt"><%=mmlanguage.getInfo("GET-remove_object")%>
+            (<%=node.countRelations()%> <%=mmlanguage.getInfo("GET-relations")%>)
+            </td>
             <td class="disabledlink">##</td>
           </tr>
       <% } else { %>
