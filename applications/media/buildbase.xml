@@ -31,6 +31,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="project.source.dir" location="." />
   <property name="project.build.dir"  location="./build" />
+  <property name="project.javadoc.packages" value="org.mmbase.*"/>
 
   <property name="build.dir"  location="../../build" /> <!-- mmbase build dir -->
   <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
@@ -127,6 +128,32 @@ Build-compiler: ${build.compiler}
 
   <target name="clean" description="Clean">
     <delete dir="${project.build.dir}" />
+  </target>
+
+
+  <target name="doc" description="Documentation" depends="javadocs">
+  </target>
+
+  <target name="javadocs" description="Documentation" depends="init">
+  <mkdir dir="${project.build.dir}/${project.name}-src/docs"/>
+  <mkdir dir="${build.dir}/${project.name}-src/docs/api"/>
+  <javadoc packagenames="${project.javadoc.packages}"
+    sourcepath="${project.source.dir}"
+    destdir="${project.build.dir}/${project.name}-src/docs/api"
+    author="true"
+    version="true"
+    use="false"
+    noindex="true"
+    windowtitle="${project.name} API"
+    doctitle="${project.name}"
+    maxmemory="100M"
+    bottom="${project.name} build ${version}">
+      <classpath>
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+      </classpath>
+    </javadoc>
   </target>
 
 
