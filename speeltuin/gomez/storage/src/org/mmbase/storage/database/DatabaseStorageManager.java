@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.21 2003-08-04 14:52:59 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.22 2003-08-05 08:30:39 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -398,28 +398,29 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public int create(MMObjectNode node) throws StorageException {
         // assign a new number if the node has not yet been assigned one
-        if (node.getNumber() == -1) {
-            node.setValue("number", createKey());
+        int nodeNumber = node.getNumber();
+        if (nodeNumber == -1) {
+            nodeNumber = createKey();
+            node.setValue("number", nodeNumber);
         }
         MMObjectBuilder builder = node.getBuilder();
         // precommit call, needed to convert or add things before a save
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
-        return create(node,builder);
+        create(node,builder);
+        return nodeNumber;
     }
 
     /**
      * This method inserts a new object in a specific builder, and registers the change.
      * This method makes it easier to implement relational databases, where you may need to update the node
      * in more than one builder.
-     * Override {@link #insert(MMObjectNode)} to call this method for all involved builders if you use
-     * a relational database.
-     * @param node The node to insert
+     * Call this method for all involved builders if you use a relational database.
+     * @param node The node to insert. The node already needs to have a (new) number assigned
      * @param builder the builder to store the node
-     * @return The (new) number for this node
-     * @throws StorageException if an error occurred during commit
+     * @throws StorageException if an error occurred during creation
      */
-    protected int create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    protected void create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // Create a String that represents the fields and values to be used in the insert.
         StringBuffer fieldNames = null;
         StringBuffer fieldValues = null;
@@ -470,7 +471,6 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
         commitChange(node,"n");
-        return node.getNumber();
     }
 
     // javadoc is inherited
@@ -483,14 +483,13 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Commit this node to the specified builder.
+     * Change this node in the specified builder.
      * This method makes it easier to implement relational databses, where you may need to update the node
      * in more than one builder.
-     * Override {@link commit(MMObjectNode)} to call this method for all involved builders if you use
-     * a relational database.
-     * @param node The node to commit
+     * Call this method for all involved builders if you use a relational database.
+     * @param node The node to change
      * @param builder the builder to store the node
-     * @throws StorageException if an error occurred during commit
+     * @throws StorageException if an error occurred during change
      */
     protected void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // Create a String that represents the fields to be used in the commit
@@ -727,8 +726,7 @@ public class DatabaseStorageManager implements StorageManager {
      * Delete a node from a specific builder
      * This method makes it easier to implement relational databses, where you may need to remove the node
      * in more than one builder.
-     * Override {@link #delete(MMObjectNode)} to call this method for all involved builders if you use
-     * a relational database.
+     * Call this method for all involved builders if you use a relational database.
      * @param node The node to delete
      * @throws StorageException if an error occurred during delete
      */
