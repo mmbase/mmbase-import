@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.Arguments;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.UriParser;
 import org.mmbase.module.builders.AbstractServletBuilder;
 import org.mmbase.module.builders.Images;
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.42 2003-11-19 16:57:42 michiel Exp $ 
+ * @version $Id: ImageTag.java,v 1.43 2003-12-17 21:10:04 michiel Exp $ 
  */
 
 public class ImageTag extends FieldTag {
@@ -92,13 +92,13 @@ public class ImageTag extends FieldTag {
             number = node.getStringValue("number");
         } else {
             // the cached image
-            number = node.getFunctionValue("cache", new Arguments(Images.CACHE_ARGUMENTS).set("template", t)).toString();
+            number = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
         }
 
 
         String servletPath;
         {
-            Arguments args = new Arguments(AbstractServletBuilder.SERVLETPATH_ARGUMENTS)
+            Parameters args = new Parameters(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
                 .set("session",  sessionName)
                 .set("context",  UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/"))
                 .set("argument", number)
