@@ -685,7 +685,7 @@ Build-compiler: ${build.compiler}
           depends="war,minimalistic.war"
   />
 
-  <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar">
+  <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,applications">
 
     <war warfile="${build.dir}/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
