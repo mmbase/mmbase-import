@@ -37,14 +37,15 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.3 2002-03-26 09:28:48 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.4 2002-04-02 12:50:53 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public class MMBaseServlet extends  HttpServlet {
     
-    private static Logger log;
-    protected static MMBase mmbase;    
+    private   static Logger log;
+    protected static MMBase mmbase;
+    // private   static String context;
 
 
     // ----------------
@@ -89,6 +90,16 @@ public class MMBaseServlet extends  HttpServlet {
             log = Logging.getLoggerInstance(MMBaseServlet.class.getName());
         }
 
+        /*
+        if (context == null) {
+            try {
+                context = config.getServletContext().getServletContextName(); // only availabe in higher serlvet versions (e.g. not supported by Orion 1.5.4)
+            } catch (Exception e) {
+                log.error("hooi");
+            }
+        }
+        log.info("found context: " + context);
+        */
         log.info("Init of servlet " + config.getServletName() + ".");
         if (mmbase == null) {
             mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");
@@ -96,6 +107,7 @@ public class MMBaseServlet extends  HttpServlet {
                 log.error("Could not find module with name 'MMBASEROOT'!");
             }
         }
+
     }
 
     /**
@@ -207,7 +219,10 @@ public class MMBaseServlet extends  HttpServlet {
         }
     }
    
-
+    public void destroy() {
+        log.info("Servlet " + getServletName() + " is taken out of service");
+        super.destroy();
+    }
 
     /**
      * This class maintains current state information for a running servlet.
