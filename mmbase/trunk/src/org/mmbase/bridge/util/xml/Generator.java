@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.4 2002-04-08 11:31:17 eduard Exp $
+ * @version $Id: Generator.java,v 1.5 2002-04-08 12:10:13 eduard Exp $
  */
 public  class Generator {
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
@@ -75,7 +75,7 @@ public  class Generator {
             // when we are a relation, add relation stuff....
             if(node instanceof Relation) {
                 Relation relation = (Relation) node;
-                nodeElement = addRelationElement(rootElement, node);
+                nodeElement = addNodeElement(rootElement, node);
                 Element sourceElement = addNode(relation.getSource());
                 Element destinationElement = addNode(relation.getDestination());
         
@@ -189,7 +189,7 @@ public  class Generator {
     }
     
     private Element getNodeElement(Element rootElement, Node node) {
-        return getXMLElement(rootElement, "*[@id='" + node.getNumber() + "']");
+        return getXMLElement(rootElement, "object[@id='" + node.getNumber() + "']");
     }
 
     private Element getFieldElement(Element nodeElement, Field field) {
@@ -206,19 +206,7 @@ public  class Generator {
     }
     
     private Element addNodeElement(Element rootElement, Node node) {
-        Element nodeElement = createNodeElement(rootElement, node, "object");
-        rootElement.appendChild(nodeElement);
-        return nodeElement;
-    }
-    
-    private Element addRelationElement(Element rootElement, Node node) {
-        Element relationElement = createNodeElement(rootElement, node, "relation");
-        rootElement.appendChild(relationElement);
-        return relationElement;
-    }
-    
-    private Element createNodeElement(Element rootElement, Node node, String elementName) {        
-        Element nodeElement = tree.createElement(elementName);        
+        Element nodeElement = tree.createElement("object");
         
         // the id...
         org.w3c.dom.Attr attr = tree.createAttribute("id");
@@ -229,11 +217,10 @@ public  class Generator {
         attr = tree.createAttribute("type");
         attr.setValue(node.getNodeManager().getName());
         nodeElement.setAttributeNode(attr);
-        
-        // return the created element
+
+        rootElement.appendChild(nodeElement);
         return nodeElement;
-    }
-    
+    }    
 
     private Element addFieldElement(Element nodeElement, Node node, Field field) {    
         Element fieldElement = tree.createElement("field");
