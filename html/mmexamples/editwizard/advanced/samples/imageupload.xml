@@ -11,7 +11,10 @@
     <field name="description" />
   </action>
 
-  <action type="delete" />
+  <action type="delete">
+    <prompt>Are you really, really, realy sure that you want to remove this image?</prompt>
+ 		<description>Delete image</description>
+  </action>
 
   <steps>
     <step form-schema="step1" />
