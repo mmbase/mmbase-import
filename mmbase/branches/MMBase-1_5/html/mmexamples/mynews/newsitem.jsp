@@ -32,7 +32,7 @@ for the MMBase node --%>
 
   <mm:relatednodes type="images">
    <mm:first>Related images<BR></mm:first>
-    <IMG SRC="/img.db?<mm:field name="number"/>+(200)">
+    <IMG SRC="<mm:image template="s(200)" />">
   </mm:relatednodes>
 
   <mm:relatednodes type="urls">
