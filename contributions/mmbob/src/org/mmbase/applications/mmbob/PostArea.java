@@ -378,7 +378,7 @@ public class PostArea {
      */
     public boolean addModerator(Poster mp) {
         if (isModerator(mp.getAccount())) return true;
-        RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "posters", "areathreadrel");
+        RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "posters", "rolerel");
         if (rm != null) {
             Node rel = rm.createRelation(node, mp.getNode());
             rel.setStringValue("role", "moderator");
@@ -386,7 +386,7 @@ public class PostArea {
             moderators.put(mp.getAccount(), mp);
             moderatorsline = null;
         } else {
-            log.error("Forum can't load relation nodemanager postareas/posters/areathreadrel");
+            log.error("Forum can't load relation nodemanager postareas/posters/rolerel");
             return false;
         }
         return true;
