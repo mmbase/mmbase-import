@@ -21,6 +21,33 @@
       builder-definitions of your MMBase can be found in
       config/builders and subdirectories.
     </para>
+    <sect1>
+      <title>builder.dtd , builders as urls,people,images ... </title>
+      <variablelist>
+        <varlistentry>
+          <term>&lt;builder maintainer="mmbase.org" version="0"&gt;</term>
+          <listitem>
+            <para>
+              This file contains all the settings for one builder
+            </para>
+            <variablelist>
+              <varlistentry>
+                <term>maintainer</term>
+                <listitem>maintainer of the builder defined as a domain</listitem>
+              </varlistentry>
+              <varlistentry>
+                <term>version</term>
+                <listitem>version of the builder</listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+        <varlistentry>          
+          <term>&lt;status&gt;active&lt;/status&gt;</term>
+          <listitem>state of the builder either active or inactive</listitem>
+        </varlistentry>
+      </variablelist>
+    </sect1>
   </chapter>
   <chapter id="databases">
     <title>Databases</title>
