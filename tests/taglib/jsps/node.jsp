@@ -291,10 +291,18 @@ using list tag: <br />
          <mm:field name="title" /> (should be 'Another news article (...)')<br />
        </mm:relatednodes>
      </mm:relatednodescontainer>
+     <mm:relatednodescontainer path="sorted,news" element="news">
+       <mm:constraint field="sorted.pos" value="100" operator="IN" />
+       22 using 'sorted' path (and constraint with operator="IN"): size <mm:size /> (should be 1)<br />
+     </mm:relatednodescontainer>
+     <mm:relatednodescontainer path="sorted,news" element="news">
+       <mm:constraint field="sorted.pos" value="100,101,102" operator="IN" />
+       23 using 'sorted' path (and constraint with operator="IN"): size <mm:size /> (should be 1)<br />
+     </mm:relatednodescontainer>
 
      <mm:field name="number">
        <mm:list nodes="$_"  path="news,sorted,urls" fields="urls.url">
-         22  related url (used list with nodes): <mm:field name="urls.url" /><br />
+         24  related url (used list with nodes): <mm:field name="urls.url" /><br />
        </mm:list>
      </mm:field>
    </mm:node>
