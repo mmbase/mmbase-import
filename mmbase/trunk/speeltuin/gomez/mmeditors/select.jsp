@@ -18,9 +18,6 @@
   <head>
     <title>Editor</title>
     <link rel="stylesheet" href="css/mmeditors.css" type="text/css" />
-    <style>
-<%@include file="css/mmeditors.css" %>
-    </style>
   </head>
   <body>
     <form method="post" action="listobjects.jsp" target="workarea">
