@@ -551,7 +551,11 @@ public class BasicNode implements Node {
 
     public NodeList getRelatedNodes(String type) {
         Vector relvector=new Vector();
-        Enumeration e=getNode().getRelatedNodes(type).elements();
+        Vector nv = getNode().getRelatedNodes(type);
+        if (nv == null) {
+            throw new BridgeException("Could not get related nodes of type '" + type + "', because that is not a known NodeManager");
+        }
+        Enumeration e = nv.elements();
         if (e!=null) {
             while (e.hasMoreElements()) {
                 MMObjectNode mmnode=(MMObjectNode)e.nextElement();
