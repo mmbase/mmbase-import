@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.116 2004-01-20 16:07:44 michiel Exp $
+    @version $Id: wizard.xsl,v 1.117 2004-01-20 21:38:43 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -463,6 +463,7 @@
     <td class="field">
       <xsl:for-each select="field">
         <xsl:call-template name="fieldintern"/>
+        <xsl:text disable-output-escaping="yes"> </xsl:text>
       </xsl:for-each>
     </td>
   </xsl:template>
