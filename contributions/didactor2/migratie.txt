@@ -1,4 +1,13 @@
+
 Migratie issues
+
+2004-11-10
+
+Pagina model is veranderd
+
+alter table mmb_pages add column layout INT(11);
+alter table mmb_pages add column imagelayout INT(11);
+
 
 2004-10-26
 

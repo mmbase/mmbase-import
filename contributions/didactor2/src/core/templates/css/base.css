@@ -783,4 +783,6 @@ a.forumlist:active {
     border-style: inset;
 }
 
-
+.pagetable tr td {
+    vertical-align: top;
+}
