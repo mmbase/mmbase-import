@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.102 $ $Date: 2001-06-15 12:30:56 $
+ * @version $Revision: 1.103 $ $Date: 2001-06-20 11:17:01 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -93,10 +93,10 @@ public class MMObjectBuilder extends MMTable {
     private static Hashtable fieldDefCache=new Hashtable(40);
     // unused
 
-	/**
-	* Logger routine
-	*/
-	private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
+        /**
+        * Logger routine
+        */
+        private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
 
     /**
     * If true, debug messages are send to the MMBase log
@@ -307,9 +307,9 @@ public class MMObjectBuilder extends MMTable {
     * @throws org.mmbase.module.core.InvalidDataException
     *   If the data was unrecoverably invalid (the references did not point to existing objects)
     */
-	public void testValidData(MMObjectNode node) throws InvalidDataException {
-	  return;
-	};
+        public void testValidData(MMObjectNode node) throws InvalidDataException {
+          return;
+        };
 
     /**
     * Insert a new, empty, object of a certain type.
@@ -337,8 +337,8 @@ public class MMObjectBuilder extends MMTable {
             int n;
             n=database.insert(this,owner,node);
             if (n>=0) nodeCache.put(new Integer(n),node);
-	    String alias=node.getAlias();
- 	    if (alias!=null) createAlias(n,alias);	// add alias, if provided
+            String alias=node.getAlias();
+            if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
         } catch(Exception e) {
             log.error("ERROR INSERT PROBLEM ! Error node="+node);
@@ -404,12 +404,12 @@ public class MMObjectBuilder extends MMTable {
     *  @param alias the aliasname to associate with the object
     */
     public void createAlias(int number,String alias) {
-	if (mmb.getOAlias()!=null) {
-		MMObjectNode node=mmb.getOAlias().getNewNode("system");
-		node.setValue("name",alias);
-		node.setValue("destination",number);
-		node.insert("system");
-	}
+        if (mmb.getOAlias()!=null) {
+                MMObjectNode node=mmb.getOAlias().getNewNode("system");
+                node.setValue("name",alias);
+                node.setValue("destination",number);
+                node.insert("system");
+        }
     }
 
     /**
@@ -469,20 +469,20 @@ public class MMObjectBuilder extends MMTable {
     */
     public void removeNode(MMObjectNode node) {
         /*
-        		// check if node.name in nameCache, remove that also.
-        		// --------------------------------------------------
-        		String name = node.getStringValue("name");
-        		if( name != null && !name.equals("")) {
-        			String sNumber = (String)nameCache.get(name);
-        			try {
-        				int number = Integer.parseInt( sNumber );
-        				if( number == node.getNumber()) {
-        					nameCache.remove( name );
-        				}
-        			} catch( NumberFormatException e ) {
-        				log.debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
-        			}
-        		}
+                        // check if node.name in nameCache, remove that also.
+                        // --------------------------------------------------
+                        String name = node.getStringValue("name");
+                        if( name != null && !name.equals("")) {
+                                String sNumber = (String)nameCache.get(name);
+                                try {
+                                        int number = Integer.parseInt( sNumber );
+                                        if( number == node.getNumber()) {
+                                                nameCache.remove( name );
+                                        }
+                                } catch( NumberFormatException e ) {
+                                        log.debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
+                                }
+                        }
         */
 
         // removes the node FROM THIS BUILDER
@@ -541,14 +541,14 @@ public class MMObjectBuilder extends MMTable {
     {
       int otype=-1;
       try {
-      	// first try our mega cache for the convert
-     	if (obj2type!=null) {
-      		Integer tmpv=(Integer)obj2type.get(new Integer(number));
-        	if (tmpv!=null) otype=tmpv.intValue();
-      	}
-	if (otype==-1 || otype==0) {
+        // first try our mega cache for the convert
+        if (obj2type!=null) {
+                Integer tmpv=(Integer)obj2type.get(new Integer(number));
+                if (tmpv!=null) otype=tmpv.intValue();
+        }
+        if (otype==-1 || otype==0) {
                 // first get the otype to select the correct builder
-        	MultiConnection con=mmb.getConnection();
+                MultiConnection con=mmb.getConnection();
                 Statement stmt2=con.createStatement();
                 ResultSet rs=stmt2.executeQuery("SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number);
                 if (rs.next()) {
@@ -560,7 +560,7 @@ public class MMObjectBuilder extends MMTable {
                 }
                 stmt2.close();
                 con.close();
-       	}
+        }
       } catch (SQLException e) {
             // something went wrong print it to the logs
             e.printStackTrace();
@@ -610,7 +610,7 @@ public class MMObjectBuilder extends MMTable {
         } else {
             //otherwise try to see if it can be retrieved by alias name
             if (mmb.getOAlias()!=null) {
-            	node=mmb.getOAlias().getAliasedNode(key);
+                node=mmb.getOAlias().getAliasedNode(key);
             }
         }
         return node;
@@ -635,8 +635,8 @@ public class MMObjectBuilder extends MMTable {
         Integer integerNumber=new Integer(number);
         MMObjectNode node=(MMObjectNode)nodeCache.get(integerNumber);
         if (node!=null) {
-			// added debug for testing cache problems.
-			//log.info("NODE "+number+" IN CACHE, node:"+node);
+                        // added debug for testing cache problems.
+                        //log.info("NODE "+number+" IN CACHE, node:"+node);
 
             // lets add a extra asked counter to make a smart cache
             int c=node.getIntValue("CacheCount");
@@ -644,16 +644,16 @@ public class MMObjectBuilder extends MMTable {
             node.setValue("CacheCount",c);
             return node;
         } // else
-			//log.info("NODE "+number+" NOT IN CACHE");
+                        //log.info("NODE "+number+" NOT IN CACHE");
 
         // do the query on the database
         try {
             String bul="typedef";
 
-	    // retrieve node's objecttype
+            // retrieve node's objecttype
             int bi=getNodeType(number);
             if (bi!=0) {
-            	bul=mmb.getTypeDef().getValue(bi);
+                bul=mmb.getTypeDef().getValue(bi);
              }
             if (bul==null) {
                 log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
@@ -701,131 +701,131 @@ public class MMObjectBuilder extends MMTable {
         }
     }
 
-	/**
-	 * Retrieves a node from database directly (not using nodeCache!) based on it's number (a unique key).
-	 * Implementation is the same as getNode, except not using the nodeCache.
-	 * @param number The number of the node to search for
-	 * @return <code>null</code> if the node does not exist or the key is invalid, or a
-	 *       <code>MMObjectNode</code> containign the contents of the requested node.
-	 */
+        /**
+         * Retrieves a node from database directly (not using nodeCache!) based on it's number (a unique key).
+         * Implementation is the same as getNode, except not using the nodeCache.
+         * @param number The number of the node to search for
+         * @return <code>null</code> if the node does not exist or the key is invalid, or a
+         *       <code>MMObjectNode</code> containign the contents of the requested node.
+         */
     public synchronized MMObjectNode getHardNode(int number) {
-		// test with counting
-		statCount("getnode");
-		if (number==-1) {
-			log.warn(" ("+tableName+") nodenumber == -1");
-			return null;
-		}
+                // test with counting
+                statCount("getnode");
+                if (number==-1) {
+                        log.warn(" ("+tableName+") nodenumber == -1");
+                        return null;
+                }
 
-		// do the query on the database
-		try {
-			MMObjectNode node =null;
-			String bul="typedef";
+                // do the query on the database
+                try {
+                        MMObjectNode node =null;
+                        String bul="typedef";
 
-			// retrieve node's objecttype
-			int bi=getNodeType(number);
-			if (bi!=0)
-				bul=mmb.getTypeDef().getValue(bi);
-			if (bul==null) {
-				log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
-				return null;
-			}
+                        // retrieve node's objecttype
+                        int bi=getNodeType(number);
+                        if (bi!=0)
+                                bul=mmb.getTypeDef().getValue(bi);
+                        if (bul==null) {
+                                log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
+                                return null;
+                        }
 
-			MultiConnection con =null;
-			Statement stmt = null;
-			try {
-				con=mmb.getConnection();
-				stmt=con.createStatement();
-				ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
-				if (rs.next()) {
-					// create a new object and add it to the result vector
-					MMObjectBuilder bu=mmb.getMMObject(bul);
-					if (bu==null) {
-						log.error("getMMObject did not return builder on : "+bul);
-						return null;
-					}
-					node=new MMObjectNode(bu);
-					ResultSetMetaData rd=rs.getMetaData();
-					String fieldname;
-					String fieldtype;
-					for (int i=1;i<=rd.getColumnCount();i++) {
-						fieldname=rd.getColumnName(i);
-						node=database.decodeDBnodeField(node,fieldname,rs,i);
-					}
-					// clear the changed signal
-					node.clearChanged();
-				} else {
-					log.warn("getNode(): Node not found "+number);
-					return null; // not found
-				}
-			} finally {
-				mmb.closeConnection(con,stmt);
-			}
-			// return the results
-			return node;
-		} catch (SQLException e) {
-			// something went wrong print it to the logs
-			e.printStackTrace();
-			return null;
-		}
-	}
+                        MultiConnection con =null;
+                        Statement stmt = null;
+                        try {
+                                con=mmb.getConnection();
+                                stmt=con.createStatement();
+                                ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
+                                if (rs.next()) {
+                                        // create a new object and add it to the result vector
+                                        MMObjectBuilder bu=mmb.getMMObject(bul);
+                                        if (bu==null) {
+                                                log.error("getMMObject did not return builder on : "+bul);
+                                                return null;
+                                        }
+                                        node=new MMObjectNode(bu);
+                                        ResultSetMetaData rd=rs.getMetaData();
+                                        String fieldname;
+                                        String fieldtype;
+                                        for (int i=1;i<=rd.getColumnCount();i++) {
+                                                fieldname=rd.getColumnName(i);
+                                                node=database.decodeDBnodeField(node,fieldname,rs,i);
+                                        }
+                                        // clear the changed signal
+                                        node.clearChanged();
+                                } else {
+                                        log.warn("getNode(): Node not found "+number);
+                                        return null; // not found
+                                }
+                        } finally {
+                                mmb.closeConnection(con,stmt);
+                        }
+                        // return the results
+                        return node;
+                } catch (SQLException e) {
+                        // something went wrong print it to the logs
+                        e.printStackTrace();
+                        return null;
+                }
+        }
 
-	/**
-	 * Create a new temporary node and put it in the temporary _exist
-	 * node space
-	 */
-	public MMObjectNode getNewTmpNode(String owner,String key) {
-		MMObjectNode node=null;
-		node=getNewNode(owner);
-		checkAddTmpField("_number");
-		node.setValue("_number",key);
-		TemporaryNodes.put(key,node);
-		return node;
-	}
+        /**
+         * Create a new temporary node and put it in the temporary _exist
+         * node space
+         */
+        public MMObjectNode getNewTmpNode(String owner,String key) {
+                MMObjectNode node=null;
+                node=getNewNode(owner);
+                checkAddTmpField("_number");
+                node.setValue("_number",key);
+                TemporaryNodes.put(key,node);
+                return node;
+        }
 
     /**
     * Put a Node in the temporary node list
     * @param key  The (temporary) key under which to store the node
     * @param node The node to store
     */
-	public void putTmpNode(String key, MMObjectNode node) {
-		checkAddTmpField("_number");
-		node.setValue("_number",key);
-		TemporaryNodes.put(key,node);
-	}
+        public void putTmpNode(String key, MMObjectNode node) {
+                checkAddTmpField("_number");
+                node.setValue("_number",key);
+                TemporaryNodes.put(key,node);
+        }
 
-	public boolean checkAddTmpField(String field) {
-		boolean rtn=false;
-		if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
-			FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
-			log.debug("checkAddTmpField(): adding tmp field "+field);
-			addField(fd);
-			rtn=true;
-		}
-		return(false);
-	}
+        public boolean checkAddTmpField(String field) {
+                boolean rtn=false;
+                if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
+                        FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
+                        log.debug("checkAddTmpField(): adding tmp field "+field);
+                        addField(fd);
+                        rtn=true;
+                }
+                return(false);
+        }
 
     /**
     * Get nodes from the temporary node space
     * @param key  The (temporary) key to use under which the node is stored
     */
-	public MMObjectNode getTmpNode(String key) {
-		MMObjectNode node=null;
-		node=(MMObjectNode)TemporaryNodes.get(key);
-		if (node==null) {
-			log.debug("getTmpNode(): node not found "+key);
-		}
-		return node;
-	}
+        public MMObjectNode getTmpNode(String key) {
+                MMObjectNode node=null;
+                node=(MMObjectNode)TemporaryNodes.get(key);
+                if (node==null) {
+                        log.debug("getTmpNode(): node not found "+key);
+                }
+                return node;
+        }
 
     /**
     * Remove a node from the temporary node space
     * @param key  The (temporary) key under which the node is stored
     */
-	public void removeTmpNode(String key) {
-		MMObjectNode node;
-		node=(MMObjectNode)TemporaryNodes.remove(key);
-		if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
-	}
+        public void removeTmpNode(String key) {
+                MMObjectNode node;
+                node=(MMObjectNode)TemporaryNodes.remove(key);
+                if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
+        }
 
     /**
     * Count all the objects that match the searchkeys
@@ -1050,8 +1050,8 @@ public class MMObjectBuilder extends MMTable {
             where=QueryConvertor.altaVista2SQL(where,database);
         }
 
-	// temp mapper hack only works in single order fields
-	sorted=mmb.getDatabase().getAllowedField(sorted);
+        // temp mapper hack only works in single order fields
+        sorted=mmb.getDatabase().getAllowedField(sorted);
         String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
         return(basicSearch(query));
     }
@@ -1066,8 +1066,8 @@ public class MMObjectBuilder extends MMTable {
     * @return a vector containing all the objects that apply.
     */
     public Vector searchVectorIn(String where,String sorted,String in) {
-	// temp mapper hack only works in single order fields
-	sorted=mmb.getDatabase().getAllowedField(sorted);
+        // temp mapper hack only works in single order fields
+        sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
         if (in!=null && in.equals("")) return(new Vector());
         String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
@@ -1107,8 +1107,8 @@ public class MMObjectBuilder extends MMTable {
             //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
-	// temp mapper hack only works in single order fields
-	sorted=mmb.getDatabase().getAllowedField(sorted);
+        // temp mapper hack only works in single order fields
+        sorted=mmb.getDatabase().getAllowedField(sorted);
         if (direction) {
             String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
             return(basicSearch(query));
@@ -1194,8 +1194,8 @@ public class MMObjectBuilder extends MMTable {
     * @return a vector containing all the objects that apply.
     */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
-	// temp mapper hack only works in single order fields
-	sorted=mmb.getDatabase().getAllowedField(sorted);
+        // temp mapper hack only works in single order fields
+        sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
         if (in==null || in.equals("")) return(new Vector());
         if (direction) {
@@ -1373,12 +1373,12 @@ public class MMObjectBuilder extends MMTable {
     * @param def the field definiton to add
     */
     public void addField(FieldDefs def) {
-	    fields.put(def.getDBName(),def);
+            fields.put(def.getDBName(),def);
         sortedEditFields = null;
         sortedListFields = null;
         sortedFields = null;
         sortedDBLayout=new Vector();
-    	setDBLayout_xml(fields);
+        setDBLayout_xml(fields);
     }
 
 
@@ -1388,14 +1388,14 @@ public class MMObjectBuilder extends MMTable {
     * @param fieldname the name of the field to remove
     */
     public void removeField(String fieldname) {
-	FieldDefs def=getField(fieldname);
-	int dbpos=def.getDBPos();
+        FieldDefs def=getField(fieldname);
+        int dbpos=def.getDBPos();
         fields.remove(fieldname);
-	// move them all up one place
+        // move them all up one place
         for (Enumeration e=fields.elements();e.hasMoreElements();) {
             def=(FieldDefs)e.nextElement();
-	    int curpos=def.getDBPos();
-	    if (curpos>=dbpos) def.setDBPos(curpos-1);
+            int curpos=def.getDBPos();
+            if (curpos>=dbpos) def.setDBPos(curpos-1);
         }
 
 
@@ -1403,7 +1403,7 @@ public class MMObjectBuilder extends MMTable {
         sortedListFields = null;
         sortedFields = null;
         sortedDBLayout=new Vector();
-    	setDBLayout_xml(fields);
+        setDBLayout_xml(fields);
     }
 
 
@@ -1428,7 +1428,7 @@ public class MMObjectBuilder extends MMTable {
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         if (node==null) {
             log.warn("getDBType(): Can't find fielddef on : "+fieldName+" builder="+tableName);
-			// try { throw new Exception("blah"); } catch (Exception e) { e.printStackTrace(); }
+                        // try { throw new Exception("blah"); } catch (Exception e) { e.printStackTrace(); }
             return FieldDefs.TYPE_UNKNOWN;
         }
         return node.getDBType();
@@ -1619,7 +1619,7 @@ public class MMObjectBuilder extends MMTable {
             val=node.getStringValue(field.substring(4));
             val=getWAP(val);
             rtn=val;
-        } 
+        }
         // end old
         return rtn;
     }
@@ -1654,13 +1654,13 @@ public class MMObjectBuilder extends MMTable {
     * Executes a function on the field of a node, and returns the result.
     * This method is called by the builder's {@link #getValue} method.
     * Derived builders should override this method to provide additional functions.
-	*
-	* current functions are:<br />
-	* on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
-	* on text:  wap, html, shorted, uppercase, lowercase <br />
-	* on node:  age() <br />
-	* on numbers: wrap_&lt;int&gt;, currency_euro <br />
-	*
+        *
+        * current functions are:<br />
+        * on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
+        * on text:  wap, html, shorted, uppercase, lowercase <br />
+        * on node:  age() <br />
+        * on numbers: wrap_&lt;int&gt;, currency_euro <br />
+        *
     * @param node the node whos efields are queries
     * @param field the fieldname that is requested
     * @return the result of the 'function', or null if no valid functions could be determined.
@@ -1703,21 +1703,21 @@ public class MMObjectBuilder extends MMTable {
             rtn=DateSupport.getYear(v);
         } else if (function.equals("thisdaycurtime")) {			//
             int curtime=node.getIntValue(field);
-    	    // gives us the next full day based on time (00:00)
-    	    int days=curtime/(3600*24);
-	        rtn=""+((days*(3600*24))-3600);
+            // gives us the next full day based on time (00:00)
+            int days=curtime/(3600*24);
+                rtn=""+((days*(3600*24))-3600);
             // text convertion  functions
         }
 
-		// functions that do not require a field
-		// These are more or like pseudo fields, like the age of a node.
-		// node.getAge("age()"); will work.
+                // functions that do not require a field
+                // These are more or like pseudo fields, like the age of a node.
+                // node.getAge("age()"); will work.
 
-		else if (function.equals("age")) {
-			Integer val = new Integer(node.getAge());
-			rtn = val.toString();
-		}
-		// text convertion  functions
+                else if (function.equals("age")) {
+                        Integer val = new Integer(node.getAge());
+                        rtn = val.toString();
+                }
+                // text convertion  functions
         else if (function.equals("wap")) {
             String val=node.getStringValue(field);
             rtn=getWAP(val);
@@ -1757,17 +1757,17 @@ public class MMObjectBuilder extends MMTable {
             try {
                 String val=node.getStringValue((String)v.get(0));
                 int len=Integer.parseInt((String)v.get(1));
-		if (v.size()>2) {
-			String filler=(String)v.get(2);
-                	rtn=substring(val,len,filler);
-		} else {
-                	rtn=substring(val,len,null);
-		}
+                if (v.size()>2) {
+                        String filler=(String)v.get(2);
+                        rtn=substring(val,len,filler);
+                } else {
+                        rtn=substring(val,len,null);
+                }
             } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
              double val=node.getDoubleValue(field);
-			 NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
-			 rtn=""+nf.format(val);
+                         NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
+                         rtn=""+nf.format(val);
         } else if (function.equals("gui")) {
             String val=null;
             if (field.equals("")) {
@@ -1812,26 +1812,26 @@ public class MMObjectBuilder extends MMTable {
         return null;
     }
 
-	/**
-	* Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
-	* The system searches in a provided base path for a filename that matches the supplied number/alias of
-	* a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
-	* @param documentRoot the root of the path to search
-	* @param path the subpath of the path to search
-	* @param nodeNumber the numbve ror alias of the node to filter on
-	* @param version the version number (or <code>null</code> if not applicable) to filter on
-	* @return the found path as a <code>String</code>, or <code>null</code> if not found
-	* @deprecated This is a utility method for use with a number of SCAN commands. Since it does not actually require knowledge of the nodes,
-	* this method should be moved to the {@link #org.mmbase.module.gui.html.scanparser} class.
-	*/
-	public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
-		File dir = new File(documentRoot+path);
-		if (version!=null) nodeNumber+="."+version;
-		String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
-		if ((matches == null) || (matches.length <= 0))
-			return null;
-		return path + matches[0] + File.separator;
-	}
+        /**
+        * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
+        * The system searches in a provided base path for a filename that matches the supplied number/alias of
+        * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
+        * @param documentRoot the root of the path to search
+        * @param path the subpath of the path to search
+        * @param nodeNumber the numbve ror alias of the node to filter on
+        * @param version the version number (or <code>null</code> if not applicable) to filter on
+        * @return the found path as a <code>String</code>, or <code>null</code> if not found
+        * @deprecated This is a utility method for use with a number of SCAN commands. Since it does not actually require knowledge of the nodes,
+        * this method should be moved to the {@link #org.mmbase.module.gui.html.scanparser} class.
+        */
+        public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+                File dir = new File(documentRoot+path);
+                if (version!=null) nodeNumber+="."+version;
+                String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
+                if ((matches == null) || (matches.length <= 0))
+                        return null;
+                return path + matches[0] + File.separator;
+        }
 
     /**
     * Gets the number of nodes currently in the cache.
@@ -1897,21 +1897,21 @@ public class MMObjectBuilder extends MMTable {
     */
     /*
     public void setDBText(int i, PreparedStatement stmt,String body) {
-    	byte[] isochars=null;
-    	try {
-    		isochars=body.getBytes("ISO-8859-1");
-    	} catch (Exception e) {
-    		log.debug("setDBText(): String contains odd chars");
-    		e.printStackTrace();
-    	}
-    	try {
-    		ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
-    		stmt.setAsciiStream(i,stream,isochars.length);
-    		stream.close();
-    	} catch (Exception e) {
-    		log.error("setDBText(): Can't set ascii stream");
-    		e.printStackTrace();
-    	}
+        byte[] isochars=null;
+        try {
+                isochars=body.getBytes("ISO-8859-1");
+        } catch (Exception e) {
+                log.debug("setDBText(): String contains odd chars");
+                e.printStackTrace();
+        }
+        try {
+                ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
+                stmt.setAsciiStream(i,stream,isochars.length);
+                stream.close();
+        } catch (Exception e) {
+                log.error("setDBText(): Can't set ascii stream");
+                e.printStackTrace();
+        }
 }
     */
 
@@ -1921,14 +1921,14 @@ public class MMObjectBuilder extends MMTable {
     */
     /*
     public void setDBByte(int i, PreparedStatement stmt,byte[] bytes) {
-    	try {
-    		ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
-    		stmt.setBinaryStream(i,stream,bytes.length);
-    		stream.close();
-    	} catch (Exception e) {
-    		log.error("setDBByte(): Can't set byte stream");
-    		e.printStackTrace();
-    	}
+        try {
+                ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
+                stmt.setBinaryStream(i,stream,bytes.length);
+                stream.close();
+        } catch (Exception e) {
+                log.error("setDBByte(): Can't set byte stream");
+                e.printStackTrace();
+        }
 }
     */
 
@@ -1970,7 +1970,7 @@ public class MMObjectBuilder extends MMTable {
                 }
             } catch (Exception e) {
                 log.error("Not a number");
-				e.printStackTrace();
+                                e.printStackTrace();
             }
         } else if (ctype.equals("r")) {
             try {
@@ -1980,8 +1980,8 @@ public class MMObjectBuilder extends MMTable {
                     node.delRelationsCache();
                 }
             } catch (Exception e) {
-				e.printStackTrace();
-			}
+                                e.printStackTrace();
+                        }
 
         }
 
@@ -2014,7 +2014,7 @@ public class MMObjectBuilder extends MMTable {
                 }
             } catch (Exception e) {
                 log.error("Not a number");
-				e.printStackTrace();
+                                e.printStackTrace();
             }
         } else
         if (ctype.equals("r")) {
@@ -2025,8 +2025,8 @@ public class MMObjectBuilder extends MMTable {
                     node.delRelationsCache();
                 }
             } catch (Exception e) {
-				e.printStackTrace();
-			}
+                                e.printStackTrace();
+                        }
 
         }
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
@@ -2566,7 +2566,19 @@ public class MMObjectBuilder extends MMTable {
     /**
     * Returns a HTML-version of a string.
     * This replaces a number of tokens with HTML sequences.
-    * The output does not match well with the new xhtml standards (ugly html), nor does it replace all tokens.
+    * The default output does not match well with the new xhtml standards (ugly html), nor does it replace all tokens.
+    *
+    * Default replacements can be overridden by setting the builder properties in your <builder>.xml:
+    *
+    * html.alinea
+    * html.endofline
+    *
+    * Example:
+    * <properties>
+    *   <property name="html.alinea"> &lt;br /&gt; &lt;br /&gt;</property>
+    *   <property name="html.endofline"> &lt;br /&gt; </property>
+    * </properties>
+    *
     * @param body text to convert
     * @return the convert text
     */
@@ -2578,10 +2590,25 @@ public class MMObjectBuilder extends MMTable {
             obj.replace(">","&gt;");
             obj.replace("$","&#36;");
 
-            obj.replace("\r\n\r\n","<p> </p>");
-            obj.replace("\n\n","<p> </p>");
-            obj.replace("\r\n","<br />");
-            obj.replace("\n","<br />");
+            String alinea=getInitParameter("html.alinea");
+            String endofline=getInitParameter("html.endofline");
+
+            if (alinea!=null) {
+                obj.replace("\r\n\r\n",alinea);
+                obj.replace("\n\n",alinea);
+            } else {
+                obj.replace("\r\n\r\n","<p> </p>");
+                obj.replace("\n\n","<p> </p>");
+            }
+
+            if (endofline!=null) {
+                obj.replace("\r\n",endofline);
+                obj.replace("\n",endofline);
+            } else {
+                obj.replace("\r\n","<br />");
+                obj.replace("\n","<br />");
+            }
+
             rtn=obj.toString();
         }
         return rtn;
@@ -2609,16 +2636,16 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Returns a URLEncoded-version (MIME x-www-form-urlencoded) of a string.
-	 * This version uses the java.net.URLEncoder class to encode it.
+         * This version uses the java.net.URLEncoder class to encode it.
      * @param body text to convert
      * @return the URLEncoded text
      */
     protected String getURLEncode(String body) {
         String rtn="";
         if (body!=null) {
-			rtn = URLEncoder.encode(body);
+                        rtn = URLEncoder.encode(body);
         }
-		// log.debug("Returning URLEncoded string: "+rtn);
+                // log.debug("Returning URLEncoded string: "+rtn);
         return rtn;
     }
 
@@ -2720,7 +2747,7 @@ public class MMObjectBuilder extends MMTable {
     * @param value value of the property
     */
     public void setInitParameter(String name, String value) {
-    	properties.put(name,value);
+        properties.put(name,value);
     }
 
     /**
@@ -2755,7 +2782,7 @@ public class MMObjectBuilder extends MMTable {
     */
     protected void debug( String msg )
     {
-    	log.debug( classname +":"+ msg );
+        log.debug( classname +":"+ msg );
     }
 
     /**
@@ -2780,14 +2807,14 @@ public class MMObjectBuilder extends MMTable {
      * becomed www.somesite.com
      */
     public String hostname_function(String url) {
-	if (url.startsWith("http://")) {
-		url=url.substring(7);
-	}
-	int pos=url.indexOf("/");
-	if (pos!=-1) {
-		url=url.substring(0,pos);
-	}
-	return(url);
+        if (url.startsWith("http://")) {
+                url=url.substring(7);
+        }
+        int pos=url.indexOf("/");
+        if (pos!=-1) {
+                url=url.substring(0,pos);
+        }
+        return(url);
     }
 
     /**
@@ -2799,53 +2826,53 @@ public class MMObjectBuilder extends MMTable {
     * @return the wrapped tekst
     */
     public String wrap(String text,int width) {
-		StringTokenizer tok;
-		String word;
-		StringBuffer dst=new StringBuffer();
-		int pos;
+                StringTokenizer tok;
+                String word;
+                StringBuffer dst=new StringBuffer();
+                int pos;
 
-		tok=new StringTokenizer(text," \n\r",true);
-		pos=0;
-		while(tok.hasMoreTokens()) {
-			word=tok.nextToken();
-			if (word.equals("\n")) {
-				pos=0;
-			} else if (word.equals(" ")) {
-			    if (pos==0) {
-	                word="";
-			    } else {
-    				pos++;
-	    			if (pos>=width) {
-		    		    word="\n";
-			    		pos=0;
-    				}
-    			}
-			} else {
-				pos+=word.length();
-				if (pos>=width) {
-					dst.append("\n");
-					pos=word.length();
-				}
-			}
-			dst.append(word);
-		}
-		return(dst.toString());
-	}
+                tok=new StringTokenizer(text," \n\r",true);
+                pos=0;
+                while(tok.hasMoreTokens()) {
+                        word=tok.nextToken();
+                        if (word.equals("\n")) {
+                                pos=0;
+                        } else if (word.equals(" ")) {
+                            if (pos==0) {
+                        word="";
+                            } else {
+                                pos++;
+                                if (pos>=width) {
+                                    word="\n";
+                                        pos=0;
+                                }
+                        }
+                        } else {
+                                pos+=word.length();
+                                if (pos>=width) {
+                                        dst.append("\n");
+                                        pos=word.length();
+                                }
+                        }
+                        dst.append(word);
+                }
+                return(dst.toString());
+        }
 
-	private String substring(String value,int len,String filler) {
-		if (filler==null) {
-			if (value.length()>len) {
-				return(value.substring(0,len));
-			} else {
-				return(value);
-			}
-		} else {
-			int len2=filler.length();
-			if ((value.length()+len2)>len) {
-				return(value.substring(0,(len-len2))+filler);
-			} else {
-				return(value);
-			}
-		}
-	}
+        private String substring(String value,int len,String filler) {
+                if (filler==null) {
+                        if (value.length()>len) {
+                                return(value.substring(0,len));
+                        } else {
+                                return(value);
+                        }
+                } else {
+                        int len2=filler.length();
+                        if ((value.length()+len2)>len) {
+                                return(value.substring(0,(len-len2))+filler);
+                        } else {
+                                return(value);
+                        }
+                }
+        }
 }
