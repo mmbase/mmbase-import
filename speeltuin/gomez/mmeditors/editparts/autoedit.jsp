@@ -13,9 +13,6 @@
   <head>
     <title>Editors</title>
     <link rel="stylesheet" href="../css/mmeditors.css" type="text/css" />
-    <style>
-<%@include file="../css/mmeditors.css" %>     
-    </style>
   </head>
 <mm:import externid="action" />  
 <mm:notpresent referid="action">  
