@@ -16,13 +16,12 @@ import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.*;
 import java.util.*;
 
-
 /**
  * A MediaProvider often is a host. One or more 'MediaURLComposers'
  * (or extensions) must be related to it. Those will perform the actual task of creating an URL.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.5 2003-01-03 21:35:44 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.6 2003-01-07 09:06:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {

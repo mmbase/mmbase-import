@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.16 2003-01-03 21:35:43 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.17 2003-01-07 09:06:33 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -50,8 +50,10 @@ public class MediaFragments extends MMObjectBuilder {
 
     // let the compiler check for typo's:
     public static final String FUNCTION_URLS        = "urls";
+    public static final String FUNCTION_URL         = "url";
     public static final String FUNCTION_PARENT      = "parent";    
     public static final String FUNCTION_SUBFRAGMENT = "subfragment";
+    public static final String FUNCTION_AVAILABLE   = "available";
 
     
     // This filter is able to find the best mediasource by a mediafragment.
@@ -60,7 +62,7 @@ public class MediaFragments extends MMObjectBuilder {
     // The media source builder
     private MediaSources      mediaSourceBuilder;
     
-    // Is the mediafragment builders already inited ?
+   // Is the mediafragment builders already inited ?
     // this class is used for several builders (mediafragments and descendants)
 
     private boolean           initDone           = false;
@@ -101,7 +103,7 @@ public class MediaFragments extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new Vector();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
-            info.put("url", "(<format>, <item>) ");
+            info.put("url", "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put("longurl", "(<format>) ");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really MediaURLComposer.ResponseInfo's)");
             info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode of the parent or null");
@@ -114,18 +116,29 @@ public class MediaFragments extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }            
-        } else if (function.equals(FUNCTION_URLS)) {
+        } else if (FUNCTION_URLS.equals(function)) {
             return getURLs(node, args);
-        } else if (function.equals(FUNCTION_SUBFRAGMENT)) {
+        } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
             return new Boolean(isSubFragment(node));
-        } else if (function.equals(FUNCTION_PARENT)) {
+        } else if (FUNCTION_PARENT.equals(function)) {
             return getParentFragment(node);
-        } else if (function.equals("url")) {
-            // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            Map info = new Hashtable();
-            if (args != null && args.size() > 0) info.put("format", (String) args.get(0));
+        } else if (FUNCTION_AVAILABLE.equals(function)) {
+            List pt  = node.getRelatedNodes("publishtimes");
+            if (pt.size() == 0) { 
+                return Boolean.TRUE;
+            } else {
+                MMObjectNode publishtime = (MMObjectNode) pt.get(0);
+                int now   = (int) (System.currentTimeMillis() / 1000);
+                int begin = publishtime.getIntValue("begin");
+                int end   = publishtime.getIntValue("end");
+                Boolean available = Boolean.TRUE;
+                if (begin > 0 && now < begin) available = Boolean.FALSE;
+                if (end   > 0 && now > end)   available = Boolean.FALSE;
+                return available;
+            }
+        } else if (FUNCTION_URL.equals(function)) {
             try {
-                return getURL(node, info);
+                return getURL(node, args);
             } catch (java.net.MalformedURLException e) {
                 return "";
             }
@@ -222,17 +235,30 @@ public class MediaFragments extends MMObjectBuilder {
      * mediasource that matches best.
      *
      * @param mediaFragment the media fragment
-     * @param info extra information (i.e. request, wanted bitrate, etc.)
+     * @param info extra information (i.e. request, wanted bitrate, preferred format)
      * @return the url of the audio file
      */
-    protected URL getURL(MMObjectNode mediaFragment, Map info) throws java.net.MalformedURLException  {
+    protected URL getURL(MMObjectNode fragment, List args) throws java.net.MalformedURLException  {
         log.debug("Getting url of a fragment.");
+        List urls = getURLs(fragment, args);
+
+        // lets try it simple first.
+        if (urls.size() > 0) {
+            if (args.size() > 0) {
+                Collections.sort(urls, new FormatFilter((String) args.get(0)));
+            }
+            return ((MediaURLComposers.ResponseInfo)urls.get(0)).getURL();
+        } else {
+            return new URL(""); //no sources 
+        }
+        /*
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
         if(mediaSource == null) {
             log.error("Cannot determine url");
             return new URL("");
         }
         return mediaSourceBuilder.getURL(mediaSource, info);
+        */
     }
     
     /**
@@ -368,7 +394,28 @@ public class MediaFragments extends MMObjectBuilder {
          return;
      }
      
+    /**
+     * This can sort a list with the requested formats on top.
+     * @author mm
+     */
 
-
+    
+     class FormatFilter implements Comparator {
+         private String wantedFormat;
+         FormatFilter(String f) {
+             wantedFormat = f;
+         }
+         
+         public int compare(Object o1, Object o2) {
+             MediaURLComposers.ResponseInfo ri1  = (MediaURLComposers.ResponseInfo) o1;
+             MediaURLComposers.ResponseInfo ri2  = (MediaURLComposers.ResponseInfo) o2;
+             int result1 = ri1.getSource().getFunctionValue(MediaSources.FUNCTION_FORMAT, null).equals(wantedFormat) ? 1 : -1;
+             int result2 = ri2.getSource().getFunctionValue(MediaSources.FUNCTION_FORMAT, null).equals(wantedFormat) ? 1 : -1;
+ 
+             if (! ri1.isAvailable() ) result1 -= 10;
+             if (! ri2.isAvailable() ) result2 -= 10;
+            return result2 - result1;
+         }
+     }
 
 }
