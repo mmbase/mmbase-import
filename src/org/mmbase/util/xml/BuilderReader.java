@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.3 2003-05-05 11:08:52 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.4 2003-05-22 17:29:20 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
@@ -364,7 +364,7 @@ public class BuilderReader extends XMLBasicReader {
             def.setGUIType(""); // it may not be null.
         }
         // Editor
-        Element editorpos = getElementByPath(field,"field.editor.input");
+        Element editorpos = getElementByPath(field,"field.editor.positions.input");
         if (editorpos != null) {
             int inputPos = getEditorPos(editorpos);
             if (inputPos > -1 && inputPos > maxInputPos) maxInputPos = inputPos;
@@ -372,11 +372,11 @@ public class BuilderReader extends XMLBasicReader {
         } else {
             def.setGUIPos(++maxInputPos);
         }
-        editorpos = getElementByPath(field,"field.editor.list");
+        editorpos = getElementByPath(field,"field.editor.positions.list");
         if (editorpos!=null) {
             def.setGUIList( getEditorPos(editorpos));
         }
-        editorpos = getElementByPath(field,"field.editor.search");
+        editorpos = getElementByPath(field,"field.editor.positions.search");
         if (editorpos != null) {
             int searchPos = getEditorPos(editorpos);
             if (searchPos > -1 && searchPos > maxSearchPos) maxSearchPos = searchPos;
