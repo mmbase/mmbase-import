@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.6 2003-05-17 17:42:01 kees Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.7 2003-06-23 17:16:19 michiel Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -277,11 +277,12 @@ public class DatabaseTransaction implements Transaction {
             stmt = con.prepareStatement(sql);
             stmt.setEscapeProcessing(false); // useful?? not used by prepped statements.
             if (fields != null) {
-                int nroffields = 0;
+                int fieldNumber = 1;
                 for (Iterator f = fields.iterator(); f.hasNext();) {
                     FieldDefs field = (FieldDefs) f.next();
-                    nroffields++;
-                    database.setValuePreparedStatement((PreparedStatement) stmt, node, field.getDBName(), nroffields);
+                    if (database.setValuePreparedStatement((PreparedStatement) stmt, node, field.getDBName(), fieldNumber)) {
+                        ++fieldNumber;
+                    } 
                 }
             }
             ((PreparedStatement) stmt).executeUpdate();
