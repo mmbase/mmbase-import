@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.11 2003-06-17 18:07:38 michiel Exp $
+ * @version $Id: Attribute.java,v 1.12 2003-07-29 15:07:40 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -232,10 +232,10 @@ public class Attribute {
     }
 
     /**
-     * An Part represents one part of an Attribute. 
+     * A Part represents one part of an Attribute. 
      */   
 
-    abstract class Part {
+    static abstract class Part {
         protected Object part;
         abstract protected String getType();
         /**
@@ -246,15 +246,19 @@ public class Attribute {
         }
 
         abstract Object getValue(ContextReferrerTag tag) throws JspTagException;
+
         void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {
-            buffer.append(getValue(tag).toString());
+            Object value = getValue(tag);
+            if (value != null) {
+                buffer.append(value.toString());
+            }
         }
     }
 
     /**
      * A part containing a $-variable.
      */
-    class VariablePart extends Part {
+    static class VariablePart extends Part {
         protected boolean containsVars; //wether the name of variable itself contains variables.
         VariablePart(Attribute a) throws JspTagException { 
             containsVars = a.containsVars();
@@ -288,7 +292,7 @@ public class Attribute {
      * org.mmbase.util.
      */
 
-    class ExpressionPart extends Part {
+    static class ExpressionPart extends Part {
         protected boolean evaluated;
         protected String getEvaluated() {
             return evaluated ? "evaluated" : "not evaluated";
@@ -320,7 +324,7 @@ public class Attribute {
      *
      */
 
-    class StringPart extends Part {
+    static class StringPart extends Part {
         StringPart(String o) {  part = o; }
         protected String getType() { return "String"; }
         Object getValue(ContextReferrerTag tag) throws JspTagException {
