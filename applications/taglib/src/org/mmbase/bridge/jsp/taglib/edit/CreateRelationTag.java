@@ -9,11 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
-import java.io.IOException;
-
 import javax.servlet.jsp.JspTagException;
-
-import javax.servlet.jsp.tagext.BodyContent;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.RelationManager;

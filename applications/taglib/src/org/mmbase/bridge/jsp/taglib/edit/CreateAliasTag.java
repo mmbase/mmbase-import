@@ -15,11 +15,11 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
 /**
-* To call the method addAlias from Node.
+* To call the method createAlias from Node.
 * 
 * @author Michiel Meeuwissen
 */
-public class AddAliasTag extends NodeReferrerTag {    
+public class CreateAliasTag extends NodeReferrerTag {    
 
     private String parameter = null;
 
@@ -43,7 +43,7 @@ public class AddAliasTag extends NodeReferrerTag {
 
         if (alias != null) {
             if (! "".equals(alias)) {
-                node.addAlias(alias);
+                node.createAlias(alias);
             }
         }
         return SKIP_BODY;
