@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.168 2002-10-14 11:34:19 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.169 2002-10-14 17:30:54 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -211,9 +211,10 @@ public class MMObjectBuilder extends MMTable {
      */
     private HashMap sortedFieldLists = new HashMap();
 
-    // Properties of a specific Builder.
-    // Specified in the xml builder file with the <properties> tag.
-    // The use of properties is determined by builder
+    /** Properties of a specific Builder.
+     * Specified in the xml builder file with the <properties> tag.
+     * The use of properties is determined by builder
+     */
     private Hashtable properties = null;
 
     /**
@@ -244,6 +245,17 @@ public class MMObjectBuilder extends MMTable {
      * _really_ need this thing turned into true.
      */
     private static boolean CORRECT_NODE_TYPES = true;
+
+    /**
+     * Maximum number of nodes to return on a query (-1 means no limit, and is also the default)
+     */
+    private int maxNodesFromQuery = -1;
+
+    /**
+     * The string that can be used inside the builder.xml as property, 
+     * to define the maximum number of nodes to return.
+     */
+    private static String  MAX_NODES_FROM_QUERY_PROPERY = "max-nodes-from-query";
 
     /**
      * Constructor.
@@ -318,6 +330,17 @@ public class MMObjectBuilder extends MMTable {
         checkAddTmpField("_number");
         checkAddTmpField("_exists");
 
+	// get property dof maximum number of queries..
+	String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERY);
+	if(property!=null) {
+	    try {
+		maxNodesFromQuery = Integer.parseInt(property);
+		log.service(getTableName()+" returns not more than "+maxNodesFromQuery+" from a query.");
+	    }
+	    catch(NumberFormatException nfe) {
+		log.warn("property:"+MAX_NODES_FROM_QUERY_PROPERY+ " contained an invalid integer value:'" + property +"'("+nfe+")");
+	    }
+	}
         return true;
     }
 
@@ -1458,7 +1481,15 @@ public class MMObjectBuilder extends MMTable {
 	int cachePutCount = 0;
 
         try {
-            while(rs.next()) {
+	    for(int counter=0; rs.next(); counter++) {
+		// check if we are allowed to do this iteration...
+		if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
+		    // to much nodes found...
+		    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
+		    log.error(msg);
+		    throw new RuntimeException(msg);
+		}
+
 		// create the node from the record-set
                 MMObjectNode node = new MMObjectNode(this);
                 ResultSetMetaData rd = rs.getMetaData();
