@@ -24,14 +24,10 @@ import javax.servlet.http.*;
  * files in different formats (mp3, real, etc.)
  *
  * INFO:
- * classification stuff is removed. This was available for audioparts but not
- * for videoparts (that is using a classification relation). Probabaly it is better
- * to use an extra classification object. In the way you use a category object.
+ * The classification stuff is added for backwards compatibility for the VPRO. This is
+ * already depricated and will be removed in new versions.
  *
  * Caching will be handled in caching package, and will be implemented in the end.
- *
- * There is some extra functionality in the old Videopart builder that is not
- * integrated yet in this mediapart builder.
  *
  * Add functionality for mediapart -> mediapart -> raws. This is done in the VPRO
  * audio/video builder by making a source EXCERPT, we will solve this with a relation
@@ -39,6 +35,8 @@ import javax.servlet.http.*;
  *
  * This builder is work in progress,
  * Please if you have more comments add them here.
+ *
+ * @author Rob Vermeulen (VPRO)
  */
 
 public class MediaFragments extends MMObjectBuilder {
@@ -78,7 +76,7 @@ public class MediaFragments extends MMObjectBuilder {
         mediaSourceFilter = new MediaSourceFilter(this, mediaSourceBuilder);
         
         // depricated for downwards compatibility
-        retrieveClassificationInfo();
+        //retrieveClassificationInfo();
         
         return result;
     }
@@ -88,6 +86,7 @@ public class MediaFragments extends MMObjectBuilder {
      * will contain the classification field. This field will contain numbers that are 
      * resolved using the lookup builder. This construction, using classification in 
      * mediafragment, was used for speeding up listings. 
+     * @depricated
      */
     private void retrieveClassificationInfo() {
         
@@ -117,10 +116,17 @@ public class MediaFragments extends MMObjectBuilder {
      * @return the information of the virtual field
      */
     public Object getValue(MMObjectNode node, String field) {
-        if (field.equals("showlength")) {
+        if (field.equals("showurl")) {
+            // hashtable can be filled with speed/channel/ or other info to evalute the url.
+            return getUrl(node, new Hashtable());
+        } else if (field.equals("showurl")) {
+            // hashtable can be filled with speed/channel/ or other info to evalute the url.
+            return getLongUrl(node, new Hashtable());
+        } else if (field.equals("contenttype")) {
+            // hashtable can be filled with speed/channel/ or other info to evalute the url.
+            return getContentType(node, new Hashtable());
+        } else if (field.equals("showlength")) {
             return ""+calculateLength(node);
-        } else if (field.equals("urlresult")) {
-            return getUrl(node.getNumber(), null, null, 0, 0);
         } else {
             return super.getValue( node, field );
         }
@@ -155,24 +161,72 @@ public class MediaFragments extends MMObjectBuilder {
         return(str);
     }
     
+    /**
+     * retrieves the url with URI information of the mediasource that matches best.
+     * (e.g. pnm://www.mmbase.org/test/test.ra?start+10:10.2&title=Ikeol
+     *
+     * @param mediaFragment the media fragment
+     * @param info extra information (i.e. request, wanted bitrate, etc.)
+     * @return the url of the audio file
+     */
+    private String getLongUrl(MMObjectNode mediaFragment, Hashtable info) {
+        log.debug("Getting longurl");
+        MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
+        if(mediaSource==null) {
+            log.error("Cannot determine longurl");
+            return "";
+        }
+        return mediaSourceBuilder.getLongUrl(mediaFragment, mediaSource, info);
+    }
+      
+    /**
+     * retrieves the url (e.g. pnm://www.mmbase.org/music/test.ra) of the 
+     * mediasource that matches best.
+     *
+     * @param mediaFragment the media fragment
+     * @param info extra information (i.e. request, wanted bitrate, etc.)
+     * @return the url of the audio file
+     */
+    private String getUrl(MMObjectNode mediaFragment, Hashtable info) {
+        log.debug("Getting url");
+        MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
+        if(mediaSource==null) {
+            log.error("Cannot determine url");
+            return "";
+        }
+        return mediaSourceBuilder.getUrl(mediaSource, info);
+    }
     
     /**
-     * get an url for the requested media.
-     *
-     * @param mediafragment the number of the media fragment wanted
-     * @param request the HttpServletRequest of the user
-     * @param response the HttpServletResponse of the user
-     * @param wantedspeed the requested speed of the user
-     * @param wantedchannels the request channels of the user
-     * @return the Url for the requested media
+     * Find the most appropriate media source
+     * @param mediafragment a media fragment
+     * @param info additional information provider by a user
+     * @return the most appropriate media source
      */
-    public String getUrl(int mediafragmentnr, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
-        log.debug("Getting url for mediafragment "+mediafragmentnr);
-        // Which MediaSource is the best one to use ?
-        MMObjectNode mediaFragment = getNode(mediafragmentnr);
-        MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, request, wantedspeed, wantedchannels);
-        log.debug("Selected mediasource = "+mediaSource.getNumber());
-        return mediaSourceBuilder.getUrl(mediaFragment, mediaSource, request, response, wantedspeed, wantedchannels);
+    private MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Hashtable info) {
+        
+        MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, info);
+        if(mediaSource==null) {
+            log.error("No matching media source found by media fragment ("+mediaFragment.getIntValue("number")+")");
+        }
+        return mediaSource;
+    }
+    
+    /**
+     * returns the content type of the mediasource that matches best.
+     *
+     * @param mediaFragment the media fragment
+     * @param info extra information (i.e. request, wanted bitrate, etc.)
+     * @return the content type
+     */
+    private String getContentType(MMObjectNode mediaFragment, Hashtable info) {
+        log.debug("Getting content type");
+        MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);        
+        if(mediaSource==null) {
+            log.error("Cannot determine content type");
+            return "";
+        }
+        return mediaSourceBuilder.getContentType(mediaSource);
     }
     
     /**
@@ -226,31 +280,13 @@ public class MediaFragments extends MMObjectBuilder {
         return node.getStringValue(field);
     }
     
-    
-    
-    /**
-     * add rawmedia object
-     */
-    /*
-    public void addRawMedia(RawAudios bul,int id, int status, int format, int speed, int channels) {
-        MMObjectNode node=bul.getNewNode("system");
-        node.setValue("id",id);
-        node.setValue("status",status);
-        node.setValue("format",format);
-        node.setValue("speed",speed);
-        node.setValue("channels",channels);
-        bul.insert("system",node);
-    }
-     */
-    
     /**
      * Removes related media sources.
      * @param number objectnumber of the media fragment.
      * @return true if remove was succesful, false otherwise.
      */
     public boolean removeMediaSources(int number) {
-        
-        return false;
+         return false;
     }
     
     /**

@@ -12,7 +12,7 @@ package org.mmbase.util.media;
 
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.module.core.MMObjectNode;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Though this interface the MediaProviderFilter is able to access filters written
@@ -29,11 +29,9 @@ public interface MediaProviderFilterInterface {
      * mediaproviders.
      * @param mediasource The requested mediasource
      * @param mediaproviders The set of already filtered mediaproviders
-     * @param request The servlet request of the user
-     * @param wantedspeed
-     * @param wantedchannels
+     * @param info information such as: bit rate/ httprequest/ number of channels
      * @return A new set of filtered mediaproviders.
      */
-    public Vector filterMediaProvider(Vector mediaproviders, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels);
+    public Vector filterMediaProvider(Vector mediaproviders, MMObjectNode mediasource, Hashtable info);
 }
 
