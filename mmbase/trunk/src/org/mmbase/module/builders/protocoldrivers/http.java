@@ -16,12 +16,14 @@ import java.io.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.security.MMBaseCop;
+import org.mmbase.module.core.MMBase;
 
 /**
  * This is the http implementation of the ProtocolDriver interface. 
  * It can signal a specific remote builder node using HTTP GET.
  * 
- * @version $Revision: 1.10 $ $Date: 2001-05-08 13:54:46 $ 
+ * @version $Revision: 1.11 $ $Date: 2001-07-02 16:46:54 $ 
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {
@@ -30,12 +32,12 @@ public class http implements ProtocolDriver {
    
 	private String remoteHost;
 	private int remotePort;
-
-	public http() {
-	}
+	
+	MMBase mmbase;
+    private MMBaseCop mmbaseCop = null; // Used to get the shared key we that we send with the request.
 
 	/**
-	 * Initializes remotehost and remoteport.
+	 * Initializes remotehost, remoteport, mmbase root variable and gets the mmbaseCop.
 	 * @param remotHost the remote host.
 	 * @param remotPortt the remote port.
 	 */
@@ -44,6 +46,10 @@ public class http implements ProtocolDriver {
 		        +" remotePort=" + remotePort);
 		this.remoteHost=remoteHost;
 		this.remotePort=remotePort;
+        log.debug("Initializing mmbase root variable.");
+        mmbase = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
+        log.debug("Getting mmbaseCop.");
+        mmbaseCop = mmbase.getMMBaseCop();
 	}
 
 	/**
@@ -96,6 +102,7 @@ public class http implements ProtocolDriver {
 			out.print("GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
+			out.print("sharedSecret: "+mmbaseCop.getSharedSecret()+"\r\n");
 			out.print("\r\n");
 			out.flush();
 			String line=in.readLine();
