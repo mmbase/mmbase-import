@@ -31,14 +31,17 @@ public abstract class ObjectWrapper{
         if (o == null){
             return null;
         }
+	Object retval =  null;
         String className = o.getClass().getName();
-        if (className.indexOf("mmbase") == -1){
-            return o;
-        }
-        Object retval  = null;
-        if (o instanceof RemoteNode){
-            retval =  new RemoteNode_Impl((RemoteNode)o);
-        }
+
+        if (className.indexOf("mmbase") != -1){
+		if (o instanceof RemoteNode){
+		    retval =  new RemoteNode_Impl((RemoteNode)o);
+		}
+	} else {
+		retval =o;
+	}
+	//System.err.println("wrapped " + className + " to " + retval.getClass().getName());
         return retval;
     }
     
@@ -46,11 +49,15 @@ public abstract class ObjectWrapper{
         if (o == null){
             return null;
         }
+	String className = o.getClass().getName();
+	Object retval = null;
         if (o instanceof MappedObject){
-            return ((MappedObject)o).getWrappedObject();
+            retval = ((MappedObject)o).getWrappedObject();
         } else {
-            return o;
+            retval = o;
         }
+	//System.err.println("wrapped "+ className + " to " + retval.getClass().getName());
+	return retval;
     }
     
     public static Object rmiObjectToLocal(Object o) throws RemoteException{
