@@ -19,19 +19,18 @@ import org.mmbase.util.logging.Logging;
  * Class AnonymousLoginModule
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: AnonymousLoginModule.java,v 1.5 2003-03-04 15:29:36 nico Exp $
+ * @version $Id: AnonymousLoginModule.java,v 1.6 2004-12-16 12:14:05 michiel Exp $
  */
 
 public class AnonymousLoginModule implements LoginModule {
-    private static Logger log=Logging.getLoggerInstance(AnonymousLoginModule.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(AnonymousLoginModule.class);
 
     public void load(Map properties) {
         // nah do nothing..
     }
 
     public boolean login(NameContext user, Map loginInfo,  Object[] parameters) {
-        log.info("anonymous login..");
-
+        log.debug("anonymous login..");
         // set the identifier...
         user.setIdentifier("anonymous");
         return true;
