@@ -22,6 +22,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.functions.*;
 
 /**
  * This MMObjectBuilder implementation belongs to the object type
@@ -32,7 +33,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.19 2003-12-01 17:29:41 pierre Exp $
+ * @version $Id: Users.java,v 1.20 2003-12-17 21:03:47 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -46,6 +47,10 @@ public class Users extends MMObjectBuilder {
     public final static String FIELD_DEFAULTCONTEXT    = "defaultcontext";
 
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
+
+    public final static Parameter[] RANK_PARAMETERS = {
+    };
+
 
     protected static Cache rankCache = new Cache(20) {
             public String getName()        { return "CCS:SecurityRank"; }
@@ -143,9 +148,12 @@ public class Users extends MMObjectBuilder {
             Object value = node.values.get(field);
             if (node.getIntValue(FIELD_STATUS) >= 0) {
                 if (originalValue != null && ! originalValue.equals(value)) {
+                    /*
                     node.values.put(field, value);
                     log.warn("Cannot change username (unless account is blocked)");
                     return false; // hmm?
+                    */
+                    log.info("Changing account '" + originalValue + "' to '" + value + "'");
                 }
             }
         } else if(field.equals(FIELD_PASSWORD)) {
@@ -217,7 +225,7 @@ public class Users extends MMObjectBuilder {
     /**
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
      */
-    protected  MMObjectNode getUser(String userName)   {
+    MMObjectNode getUser(String userName)   {
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
@@ -350,6 +358,8 @@ public class Users extends MMObjectBuilder {
             } else {
                 return info.get(args.get(0));
             }
+        }  else if (function.equals("rank")) {
+            return getRank(node);
         } else if (args != null && args.size() > 0) {
             if (function.equals("gui")) {
                 String field = (String) args.get(0);

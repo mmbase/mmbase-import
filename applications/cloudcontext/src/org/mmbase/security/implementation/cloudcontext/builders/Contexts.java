@@ -23,6 +23,8 @@ import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.*;
+import org.mmbase.cache.AggregatedResultCache;
 
 /**
  * Representation of a 'context', which can be read as a valid value of the 'owner' field of any
@@ -32,7 +34,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.27 2003-11-27 08:32:22 pierre Exp $
+ * @version $Id: Contexts.java,v 1.28 2003-12-17 21:03:47 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -45,20 +47,33 @@ public class Contexts extends MMObjectBuilder {
      */
     static final String DEFAULT_CONTEXT = "default";  // default used to be 'admin', but does that make sense?
     static final int DEFAULT_MAX_CONTEXTS_IN_QUERY = 50;
+    public final static Parameter PARAMETER_OPERATION = new Parameter("operation", String.class);
 
-    public final static Argument[] ALLOW_ARGUMENTS = {
-        new Argument("grouporuser", String.class),
-        new Argument("operation", String.class)
+    public final static Parameter[] ALLOWS_PARAMETERS = {
+        new Parameter("grouporuser", String.class),
+        PARAMETER_OPERATION
     };
 
+    public final static Parameter[] PARENTSALLOW_PARAMETERS = ALLOWS_PARAMETERS;
 
-    public final static Argument[] GRANT_ARGUMENTS = {
-        new Argument("grouporuser",  String.class),
-        new Argument("operation", String.class),
-        new Argument("user", org.mmbase.bridge.User.class),
 
+    public final static Parameter[] GRANT_PARAMETERS = {
+        new Parameter("grouporuser",  String.class),
+        PARAMETER_OPERATION,
+        Parameter.USER
     };
 
+    public final static Parameter[] REVOKE_PARAMETERS    = GRANT_PARAMETERS;
+    public final static Parameter[] MAYGRANT_PARAMETERS  = GRANT_PARAMETERS;
+    public final static Parameter[] MAYREVOKE_PARAMETERS = REVOKE_PARAMETERS;
+
+
+    public final static Parameter[] MAY_PARAMETERS = {
+        Parameter.USER,
+        new Parameter("usertocheck",  String.class),
+        PARAMETER_OPERATION
+
+    };
 
 
     protected static Cache contextCache = new Cache(30) { // 30 'contexts' (organisations or so)
@@ -90,7 +105,11 @@ public class Contexts extends MMObjectBuilder {
     protected static OperationsCache operationsCache = new OperationsCache();
 
 
-
+    
+    /* 
+     * Things which must be cleared when some security objects change, can all be collected in this map
+     */
+     
     protected static Map  invalidableObjects = new HashMap();
 
     private boolean readAll = false;
@@ -169,9 +188,42 @@ public class Contexts extends MMObjectBuilder {
             builder = node.getBuilder();
         }
 
+        if (operation == Operation.DELETE) {
+            if (user.getNode() != null && user.getNode().getNumber() == nodeId && operation == Operation.DELETE) return false; // nobody may delete own node
+            if (builder instanceof Contexts) {
+                try {
+                    Users users = Users.getBuilder();
+                    BasicSearchQuery query = new BasicSearchQuery(true);
+                    Step step = query.addStep(users);
+                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(new BasicStepField(step, users.getField("defaultcontext")), new Integer(nodeId));
+                    query.setConstraint(constraint);
+                    BasicAggregatedField baf = query.addAggregatedField((Step) query.getSteps().get(0), users.getField("defaultcontext"), AggregatedField.AGGREGATION_TYPE_COUNT);
+                    baf.setAlias("count");
+
+                    AggregatedResultCache cache = AggregatedResultCache.getCache();
+                    List resultList = (List) cache.get(query);
+                    if (resultList == null) {            
+                        ResultBuilder resultBuilder = new ResultBuilder(mmb, query);
+                        resultList = mmb.getDatabase().getNodes(query, resultBuilder);
+                        cache.put(query, resultList);
+                    }
+
+                    ResultNode result = (ResultNode) resultList.get(0);
+                    int count = result.getIntValue("count");
+                    if (count > 0) return false;
+
+                    // perhaps should also return false if there are still nodes with this context?
+                    // this check is not done in editors, but perhaps it should be bit harder!
+
+                } catch (SearchQueryException sqe) {
+                    // leave to rest of impl.
+                }
+            }
+            
+        }
+
         // admin bypasses security system
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
-            if (user.getNode() != null && user.getNode().getNumber() == nodeId && operation == Operation.DELETE) return false;
             return true;
         }
 
@@ -254,8 +306,8 @@ public class Contexts extends MMObjectBuilder {
                 return true;
             }
             if (operation == Operation.DELETE || operation == Operation.CHANGECONTEXT) {
-                    // may not delete/give away own user.
-                    return false;
+                // may not delete/give away own user.
+                return false;
             }
         }
 
@@ -277,6 +329,7 @@ public class Contexts extends MMObjectBuilder {
     /**
      * Returns wether user may do operation on a node with given context.
      */
+
     protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
 
         return mayDo(user.getNode(), contextNode, operation, true);
@@ -325,9 +378,9 @@ public class Contexts extends MMObjectBuilder {
                     all.add(context.getStringValue("name"));
                 }
 
-                invalidableObjects.put("ALL", all);
+                invalidableObjects.put("ALL", Collections.unmodifiableSortedSet(all));
             } catch (SearchQueryException sqe) {
-                log.error(sqe + Logging.stackTrace(sqe));
+                log.error( Logging.stackTrace(sqe));
             }
         }
         return all;
@@ -339,15 +392,29 @@ public class Contexts extends MMObjectBuilder {
     protected SortedSet getDisallowingContexts(User user, Operation operation) {
         if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
         SortedSet set = new TreeSet();
-        Iterator i = getAllContexts().iterator();
-        while (i.hasNext()) {
-            String context = (String) i.next();
-            MMObjectNode contextNode = getContextNode(context);
-            if (! mayDo(user, contextNode, operation)) {
-                set.add(context);
-            }
+        if (!readAll) { 
+            Iterator i = getAllContexts().iterator();
+            while (i.hasNext()) {
+                String context = (String) i.next();
+                MMObjectNode contextNode = getContextNode(context);
+                if (! mayDo(user, contextNode, operation)) {
+                    set.add(context);
+                }
+            }            
         }
-        return set;
+
+        return Collections.unmodifiableSortedSet(set);
+    }
+
+    protected SortedSet getAllowingContexts(User user, Operation operation) {
+        if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
+        if (readAll) { return getAllContexts(); }
+ 
+        SortedSet set = new TreeSet(getAllContexts());
+        set.removeAll(getDisallowingContexts(user, operation));
+
+        return Collections.unmodifiableSortedSet(set);
+
     }
 
 
@@ -500,8 +567,10 @@ public class Contexts extends MMObjectBuilder {
                             if (source == contextNode.getNumber()) {
                                 found.add(destination);
                             } else {
-                                log.warn("source of " + relation + " was not the same as contextNode " + contextNode + " but " + relation.getNodeValue("snumber"));
-                                log.warn(Logging.stackTrace());
+                                /*
+                                  log.warn("source of " + relation + " was not the same as contextNode " + contextNode + " but " + relation.getNodeValue("snumber"));
+                                  log.warn(Logging.stackTrace());
+                                */
                             }
                         }
                     }
@@ -586,16 +655,21 @@ public class Contexts extends MMObjectBuilder {
         }
 
         /*
-           mm: I think we should trying securing groups as well, to removed this (id did not quit understand it any way)a
+           mm: I think we should try securing groups as well, so removed this (id did not quit understand it any way)
 
-        if (node.getBuilder() instanceof Groups) {
-            node.setValue("owner", "system");
-            node.commit();
-            return node;
+           if (node.getBuilder() instanceof Groups) {
+              node.setValue("owner", "system");
+              node.commit();
+              return node;
         }
         */
-        if (!getPossibleContexts(user, nodeId).contains(context)) {
-            throw new SecurityException("could not set the context from '" + node.getStringValue("owner") + "' to '" + context + "' for node #" + nodeId + "(context name:" + context + " is not a valid context)");
+        if (context == null || context.equals("")) {
+            //|| context.equals("null"))  {  // dirty work around bug in editwizard
+            log.warn("Tried to set context to '" + context + "' WRONG!");
+        } else {
+            if (!getPossibleContexts(user, nodeId).contains(context)) {
+                throw new SecurityException("could not set the context from '" + node.getStringValue("owner") + "' to '" + context + "' for node #" + nodeId + "(context name:" + context + " is not a valid context" + (context == null ? ", but null" : "") + ")");
+            }
         }
         node.setValue("owner", context);
         node.commit();
@@ -607,7 +681,7 @@ public class Contexts extends MMObjectBuilder {
      * @see Verify#getPossibleContexts
      * @todo Perhaps we need a possibleContextCache.
      */
-    public Set getPossibleContexts(User user, int nodeId) throws SecurityException {
+    public SortedSet getPossibleContexts(User user, int nodeId) throws SecurityException {
         if (user.getRank().getInt() >= Rank.ADMIN_INT) {
             // admin may do everything
             return getAllContexts();
@@ -618,35 +692,31 @@ public class Contexts extends MMObjectBuilder {
             throw new SecurityException("node #" + nodeId + " not found");
         }
         if (node.getBuilder() instanceof Groups) {
-            return new HashSet();  // why?
+            return new TreeSet();  // why?
         }
 
-        List possibleContexts;
         if (allContextsPossible) {
-            try {
-                possibleContexts = getNodes(new NodeSearchQuery(this));
-            } catch (SearchQueryException sqe) {
-                throw new SecurityException(sqe);
-            }
-        } else {
-            possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", ClusterBuilder.SEARCH_DESTINATION);
-        }
-
-        Set hashSet = new HashSet();
-        Iterator i = possibleContexts.iterator();
-        while (i.hasNext()) {
-            MMObjectNode context = (MMObjectNode) i.next();
-            if (mayDo(user, context.getNumber(), Operation.READ )) {
-                hashSet.add(context.getStringValue("name"));
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("context with name:" + context.getStringValue("name") + " could not be added to possible contexes, since we had no read rights");
+            return getAllowingContexts(user, Operation.READ);
+        } else {            
+            List possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", ClusterBuilder.SEARCH_DESTINATION);
+            SortedSet set = new TreeSet();
+            Iterator i = possibleContexts.iterator();
+            while (i.hasNext()) {
+                MMObjectNode context = (MMObjectNode) i.next();
+                if (mayDo(user, context.getNumber(), Operation.READ )) {
+                    set.add(context.getStringValue("name"));
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("context with name:" + context.getStringValue("name") + " could not be added to possible contexes, since we had no read rights");
+                    }
                 }
             }
+            return set;
         }
-
-        return hashSet;
     }
+
+
+
 
 
     //********************************************************************************
@@ -723,7 +793,7 @@ public class Contexts extends MMObjectBuilder {
             if (! res) {
                 log.error("Failed to grant " + newRight);
             } else {
-                log.service("Granted " + newRight);
+                log.debug("Granted " + newRight);
             }
             return res;
 
@@ -811,7 +881,7 @@ public class Contexts extends MMObjectBuilder {
         return users.getUser(bridgeUser.getIdentifier());
     }
 
-    protected MMObjectNode getGroupOrUserNode(Arguments a) {
+    protected MMObjectNode getGroupOrUserNode(Parameters a) {
         MMObjectNode groupOrUser = getNode(a.getString("grouporuser"));
         if (groupOrUser == null) throw new IllegalArgumentException("There is no node with id '" + a.get("grouporuser") + "'");
         if (! (groupOrUser.parent instanceof Groups || groupOrUser.parent instanceof Users)) {
@@ -823,15 +893,19 @@ public class Contexts extends MMObjectBuilder {
 
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
+        if (log.isDebugEnabled()) {
+            log.trace("executefunction of contexts " + function + " " + args);
+        }
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, function, empty);
-            info.put("allow",        "" + ALLOW_ARGUMENTS + " Wether operation may be done according to this context");
-            info.put("parentsallow", "" + ALLOW_ARGUMENTS + " Wether operation may be done by members of this group, also because of parents");
-            info.put("grant",        "" + GRANT_ARGUMENTS + " Grant a right");
-            info.put("revoke",       "" + GRANT_ARGUMENTS + " Revoke a right");
-            info.put("maygrant",     "" + GRANT_ARGUMENTS + " Check if user may grant a right");
-            info.put("mayrevoke",    "" + GRANT_ARGUMENTS + " Check if user may revoke a right");
+            info.put("allows",        "" + ALLOWS_PARAMETERS + " Wether operation may be done according to this context");
+            info.put("parentsallow", "" + PARENTSALLOW_PARAMETERS + " Wether operation may be done by members of this group, also because of parents");
+            info.put("grant",        "" + GRANT_PARAMETERS + " Grant a right");
+            info.put("revoke",       "" + REVOKE_PARAMETERS + " Revoke a right");
+            info.put("maygrant",     "" + MAYGRANT_PARAMETERS + " Check if user may grant a right");
+            info.put("mayrevoke",    "" + MAYREVOKE_PARAMETERS + " Check if user may revoke a right");
+            info.put("may",          "" + MAY_PARAMETERS + " Checks a right for another user than yourself");
 
             if (args == null || args.size() == 0) {
                 return info;
@@ -839,48 +913,75 @@ public class Contexts extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (function.equals("allows")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
+            Parameters a = Parameters.get(ALLOWS_PARAMETERS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
             if (allows(node, getNode(a.getString("grouporuser")), Operation.getOperation(a.getString("operation")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            Parameters a = Parameters.get(PARENTSALLOW_PARAMETERS, args);
             if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("grant")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            Parameters a = Parameters.get(GRANT_PARAMETERS, args);
             if (grant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("revoke")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            Parameters a = Parameters.get(REVOKE_PARAMETERS, args);
             if (revoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("maygrant")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            Parameters a = Parameters.get(MAYGRANT_PARAMETERS, args);
             if (mayGrant(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
         } else if (function.equals("mayrevoke")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
+            Parameters a = Parameters.get(MAYREVOKE_PARAMETERS, args);
             if (mayRevoke(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")), getUserNode((org.mmbase.bridge.User) a.get("user")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
+        } else if (function.equals("may")) {
+            Parameters a = Parameters.get(MAY_PARAMETERS, args);
+            MMObjectNode checkingUser = getUserNode((org.mmbase.bridge.User) a.get("user"));
+            if (checkingUser == null) {
+                throw new SecurityException("Self was not supplied");
+            }
+            // find the user first, the check if the current user actually has rights on the object
+            MMObjectNode userToCheck = Users.getBuilder().getNode(a.getString("usertocheck"));
+            if (userToCheck == null) { // the user is null?
+                // I don't know then,
+                // yes perhaps?
+                return Boolean.TRUE;
+            }
 
+            // admin bypasses security system (maydo(mmobjectnode ... does not check for this)
+            if (Users.getBuilder().getRank(checkingUser).getInt() < Rank.ADMIN_INT) {
+                if ((! mayDo(checkingUser, getContextNode(userToCheck), Operation.READ, true))) {
+                    throw new SecurityException("You " + checkingUser + " / " + Users.getBuilder().getRank(checkingUser) + " are not allowed to check user '" + userToCheck + "' of context '" + getContextNode(userToCheck) + "' (you have no read rights on that context)");
+                }
+                
+            }
+            MMObjectNode contextNode = getContextNode(node);
+            
+            if (mayDo(userToCheck, contextNode, Operation.getOperation(a.getString("operation")), true)) {
+                return Boolean.TRUE;
+            } else {
+                return Boolean.FALSE;
+            }
         } else {
             return super.executeFunction(node, function, args);
         }
