@@ -126,6 +126,17 @@ public class CommunityPrc extends ProcessorModule {
 
     /**
      * Execute the commands provided in the form values.
+     * This method returns values which allow the page to
+     * check whether the operation was succesful (MESSAGE-NUMBER or MESSAGE-ERROR).
+     * If the page has a session object, the data is stored in the session
+     * object. This means that SCAN can retrieve the data using the $SESSION
+     * command. If session is not present, the data is stored (added) in the
+     * <code>vars<vars> parameter. This allows a system that uses the MMCI
+     * (such as jsp) to retrieve the value.
+     * <br />
+     * XXX: This is a bit of a sloppy way to pass results, and the actual
+     * mechanics may get changed (formalized) in the future.
+     *
      * @param sp The scanpage (containing http and user info) that calls the function
      * @param cmds the commands to process
      * @param vars variables that were set to be used during processing.
@@ -157,20 +168,48 @@ public class CommunityPrc extends ProcessorModule {
     }
 
     /**
+     * Stores an output parameter as a value.
+     * The limitations of SCAN require the value to be set in a {@link sessionInfo}
+     * variable maintained by the scan servlet.
+     * However, the MMCI does not 'know' sessionInfo, so in those instances
+     * variables are stored in the vars parameter (which is passed back to the
+     * MMCI).
+     * If neither object is supported, no data is returned.
+     */
+    private void setReturnValue(scanpage sp, Hashtable vars, String name, String value) {
+        if (sp.session!=null) {
+            // for SCAN, the data need be stored in a SESSION var
+            if (value==null) {
+                sp.session.removeValue(name);
+            } else {
+                sp.session.setValue(name,value);
+            }
+        } else if (vars!=null) {
+            // otherwise return it in the vars hashtable
+            if (value==null) {
+                vars.remove(name);
+            } else {
+                vars.put(name,value);
+            }
+        }
+    }
+
+    /**
      * Translates the commands for posting a message provided in the form values
      * to a post() call in the message builder.
      * @param cmds the commands to process
      * @param vars variables that were set to be used during processing.
-     * @return <code>true</code> if the post was sucecsful
+     * @return <code>true</code> if the post was successful
      */
     private boolean doPostProcess(scanpage sp, Hashtable cmds, Hashtable vars) {
-        /* Get the MessageThread, Subject and Body from the formvalues.
-         */
+        // Get the MessageThread, Subject and Body from the formvalues.
+        String tmp = (String)cmds.get("MESSAGE-POST");
+        setReturnValue(sp,vars,"MESSAGE-ERROR",null);
         try {
-            int messagethreadnr = Integer.parseInt((String)cmds.get("MESSAGE-POST"));
+            int messagethreadnr = Integer.parseInt(tmp);
             String subject = (String)vars.get("MESSAGE-SUBJECT");
             String body = (String)vars.get("MESSAGE-BODY");
-            String tmp = (String)vars.get("MESSAGE-CHANNEL");
+            tmp = (String)vars.get("MESSAGE-CHANNEL");
             int channel = Integer.parseInt(tmp);
 
             // Get user and chatterName
@@ -180,11 +219,23 @@ public class CommunityPrc extends ProcessorModule {
             String chatterName = (String)vars.get("MESSAGE-CHATTERNAME");
 
             // Let the messagebuilder post the message.
-            if (subject != null)
-                return messageBuilder.post(subject, body, channel, messagethreadnr, user, chatterName)>0;
-            else
-                return messageBuilder.post(body, messagethreadnr, user, chatterName);
+            int result=Message.POST_ERROR_UNKNOWN;
+            if (subject != null) {
+                result=messageBuilder.post(subject, body, channel, messagethreadnr, user, chatterName);
+                setReturnValue(sp,vars,"MESSAGE-NUMBER",""+result);
+            } else {
+                result=messageBuilder.post(body, messagethreadnr, user, chatterName);
+                setReturnValue(sp,vars,"MESSAGE-NUMBER","-1");
+            }
+            if (result<Message.POST_OK) {
+                String err=messageBuilder.getMessageError(result);
+                log.error(result+":"+err);
+                setReturnValue(sp,vars,"MESSAGE-ERROR",err);
+            }
+            return result>=Message.POST_OK;
         } catch (NumberFormatException e) {  // catches erros when parsing integers
+            setReturnValue(sp,vars,"MESSAGE-ERROR",
+                           "Invalid parameter value ( '"+tmp+"' is not a number)");
             return false;
         }
     }
@@ -197,18 +248,30 @@ public class CommunityPrc extends ProcessorModule {
      * @return <code>true</code> if the update was sucecsful
      */
     private boolean doUpdateProcess(scanpage sp, Hashtable cmds, Hashtable vars) {
+        String tmp = (String)cmds.get("MESSAGE-UPDATE");
         try {
             // Get the Subject, Body, number from the formvalues.
-            int number = Integer.parseInt((String)cmds.get("MESSAGE-UPDATE"));
+            int number = Integer.parseInt(tmp);
             String subject = (String)vars.get("MESSAGE-SUBJECT");
             String body = (String)vars.get("MESSAGE-BODY");
             // Get user and chatterName
-            String tmp = (String)vars.get("MESSAGE-CHATTER");
+            tmp = (String)vars.get("MESSAGE-CHATTER");
             int user;
             if (tmp != null) user = Integer.parseInt(tmp); else user = -1;
             String chatterName = (String)vars.get("MESSAGE-CHATTERNAME");
-            return messageBuilder.update(chatterName, user, subject, body, number);
+            log.info("MESSAGE-CHATTERNAME="+chatterName);
+            int result=messageBuilder.update(chatterName, user, subject, body, number);
+            if (result<Message.POST_OK) {
+                String err=messageBuilder.getMessageError(result);
+                log.error(result+":"+err);
+                setReturnValue(sp,vars,"MESSAGE-ERROR",err);
+            } else {
+                setReturnValue(sp,vars,"MESSAGE-NUMBER",""+number);
+            }
+            return result==Message.POST_OK;
         } catch (NumberFormatException e) {  // catches erros when parsing integers
+            setReturnValue(sp,vars,"MESSAGE-ERROR",
+                           "Invalid parameter value ( '"+tmp+"' is not a number)");
             return false;
         }
     }
