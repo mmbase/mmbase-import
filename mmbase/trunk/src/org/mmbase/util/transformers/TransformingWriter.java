@@ -56,7 +56,7 @@ public class TransformingWriter extends PipedWriter {
         try {            
             connect(r);
             thread =  new ChainedCharTransformer.TransformerLink(charTransformer, r, out, false);
-            thread.setDaemon(true);
+            thread.setDaemon(false);
             if (log.isDebugEnabled()) log.debug("instantiated new tread " + thread);
             thread.start();
           
