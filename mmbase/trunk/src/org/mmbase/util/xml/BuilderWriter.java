@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.11 2002-11-25 17:35:26 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.12 2003-02-25 06:38:18 kees Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -61,6 +61,7 @@ public class BuilderWriter extends DocumentWriter  {
     protected void generate() throws DOMException {
         Element root=document.getDocumentElement();
         addComment("builder.configuration",builder.getTableName(),root);
+        root.setAttribute("name",""+builder.getTableName());
         root.setAttribute("maintainer",builder.getMaintainer());
         root.setAttribute("version",""+builder.getVersion());
         MMObjectBuilder parent=null;
