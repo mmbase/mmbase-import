@@ -570,7 +570,7 @@ a.treeNavigation:hover {
 	position: absolute; 
 	z-index: 6;
 	padding: 0.5em 0em 0em 0em;
-	background-color: #E7E7E7;
+	background-color: #ffffff;
 	border-left: 1px solid #888888 }	
 
 .contentBody {
@@ -584,7 +584,7 @@ a.treeNavigation:hover {
 	position: absolute; 
 	z-index: 4;
 	padding: 1em 1em 1em 1em;
-	background-color: #E7E7E7;
+	background-color: #ffffff;
 	border-left: 1px solid #888888 }
 	
 .contentBodywit {
