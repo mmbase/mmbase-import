@@ -68,7 +68,7 @@ public class Urls extends MMObjectBuilder {
 	private boolean nodeChanged(String number,String builder,String ctype) {
         if (builder.equals(tableName)) {
 			int nr = Integer.parseInt(number);
-			debug("Removing "+number+" from jumper cache");
+			//debug("Removing "+number+" from jumper cache");
 			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
 			if (jumpers==null) debug("ERROR: Could not get Jumper builder");
 			else jumpers.delJumpCache(number);
