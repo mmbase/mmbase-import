@@ -13,7 +13,7 @@
 
   <table summary="license information">
     <tr>
-      <th class="header" colspan="2">License Information & Thanks to</th>
+      <th colspan="2">License Information &amp; Thanks to</th>
    </tr>
    <tr>
      <td class="multidata" colspan="2">
@@ -29,11 +29,9 @@
            <li>The MMBase bugtracker - <a href="http://www.mmbase.org/bug" target="_ext">http://www.mmbase.org/bug</a>.</li>
          </ul>
        </p>
-       <p>The MMBase Release Team.</p>
+       <p><i> -- The MMBase Release Team.</i></p>
      </td>
    </tr>
-
-   <tr><td>&nbsp;</td></tr>
 
    <tr class="footer">
      <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
