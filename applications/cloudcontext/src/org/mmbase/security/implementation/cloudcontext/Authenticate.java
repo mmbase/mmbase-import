@@ -17,7 +17,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.FileWatcher;
+import org.mmbase.util.ResourceWatcher;
 
 /**
  * Cloud-based Authentication. Deploy the application to explore the object-model on which this is based.
@@ -29,36 +29,31 @@ import org.mmbase.util.FileWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.7 2004-04-19 16:19:52 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.8 2005-03-01 14:28:03 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
+
+    protected static final String ADMINS_PROPS = "admins.properties";
+
     private long uniqueNumber;
     private long extraAdminsUniqueNumber;
 
-    private static Properties extraAdmins = null;      // Admins to store outside database.
+    private static Properties extraAdmins = new Properties();      // Admins to store outside database.
     protected static Map      loggedInExtraAdmins = new HashMap();
 
-    protected FileWatcher watchAdmins = new FileWatcher() {
-            public void onChange(File f) {
-                readAdmins(f);
-            }
-        };
 
-    protected void readAdmins(File f) {
+    protected void readAdmins(InputStream in) {
         try {
-            extraAdmins = new Properties();
-            loggedInExtraAdmins = new HashMap();
-            if (f.canRead()) {
-                extraAdmins.load(new FileInputStream(f));
-                log.service("Extra admins " + extraAdmins.keySet());
-            } else {
-                log.service("No extra admins (" + f + " can not be read)");
+            extraAdmins.clear();
+            loggedInExtraAdmins.clear();
+            if (in != null) {
+                extraAdmins.load(in);
             }
+            log.service("Extra admins " + extraAdmins.keySet());
             extraAdminsUniqueNumber = System.currentTimeMillis();
-
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (IOException ioe) {
+            log.error(ioe);
         }
     }
 
@@ -77,20 +72,25 @@ public class Authenticate extends Authentication {
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
-            throw new SecurityException(msg);
+           throw new SecurityException(msg);
         }
         if (!users.check()) {
            String msg = "builder mmbaseusers was not configured correctly";
             log.error(msg);
             throw new SecurityException(msg);
         }
-        if (extraAdmins == null) {
-            File admins = new File(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "admins.properties");
-            readAdmins(admins);
-            watchAdmins.add(admins);
-            watchAdmins.setDelay(10*1000);
-            watchAdmins.start();
-        }
+        
+        ResourceWatcher adminsWatcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
+                public void onChange(String res) {
+                    InputStream in = getResourceLoader().getResourceAsStream(res);
+                    readAdmins(in);
+                }
+            };
+        adminsWatcher.add(ADMINS_PROPS);
+        adminsWatcher.onChange(ADMINS_PROPS);
+        adminsWatcher.setDelay(10*1000);
+        adminsWatcher.start();
+
     }
 
     // javadoc inherited
@@ -137,10 +137,10 @@ public class Authenticate extends Authentication {
                 node = users.getUser((String) li.getMap().get("username"));
             }
         } else {
-            throw new SecurityException("login module with name '" + s + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
+            throw new UnknownAuthenticationMethodException("login module with name '" + s + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
         }
         if (node == null)  return null;
-        return new User(node, uniqueNumber);
+        return new User(node, uniqueNumber, s);
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
@@ -169,7 +169,7 @@ public class Authenticate extends Authentication {
         private String userName;
         private long   l;
         LocalAdmin(String user) {
-            super(null, uniqueNumber);
+            super(null, uniqueNumber, "name/password");
             node = new AdminVirtualNode();
             l = extraAdminsUniqueNumber;
             userName = user;
