@@ -790,11 +790,10 @@ Build-compiler: ${build.compiler}
           unless="did.mmcidocs"
     >
     <mkdir dir="${mmdocs.dir}"/>
-    <mkdir dir="${mmdocs.dir}/mmci"/>
-    <mkdir dir="${mmdocs.dir}/mmci/api"/>
+    <mkdir dir="${mmdocs.dir}/javadoc/mmci"/>
     <javadoc packagenames="${mmcidoc.packages}"
              sourcepath="${source-src.dir}"
-             destdir="${mmdocs.dir}/mmci/api"
+             destdir="${mmdocs.dir}/javadoc/mmci"
              author="true"
              version="true"
              use="false"

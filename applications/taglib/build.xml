@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
+<!DOCTYPE project
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
@@ -7,7 +7,7 @@
   <property name="project.name"   value="taglib" />
   <property name="project.package"   value="org/mmbase/bridge/jsp/taglib" />
   <property name="project.comment"   value="The MMBase Taglib implementation" />
-  
+
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
   &base;
 
@@ -18,7 +18,7 @@
   <target name="dependent.install.documentation" depends="dependent.documentation,install.documentation" />
 
 
-  
+
 
   <target name="taglib.tld.check">
     <uptodate property="taglib.tld.uptodate" targetfile="${project.metainf.dir}/taglib.tld" >
@@ -54,7 +54,7 @@
 
   <target name="taglib.doc" description="Make the MMBase taglib taglib documentation"
           depends="init,compile,taglib.doc.check" unless="taglib.doc.uptodate" if="do.documentation">
-    <mkdir dir="${project.build.dir}/documentation/reference"/>
+    <mkdir dir="${project.build.dir}/documentation/frontenddevelopers/taglib/reference"/>
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile.classpath"
           fork="yes"
@@ -64,12 +64,12 @@
       <arg value="file:///${project.source.dir}/src/${source-taglib.xml}" />
       <arg value="-PARAM"/>
       <arg value="basedir"/>
-      <arg value="${project.build.dir}/documentation/reference"/>
+      <arg value="${project.build.dir}/documentation/frontenddevelopers/taglib"/>
       <arg value="-PARAM"/>
       <arg value="files"/>
-      <arg value="taglib" />
+      <arg value="reference" />
       <arg value="-OUT"/>
-      <arg value="${project.build.dir}/documentation/reference/mmbase-taglib.html" />
+      <arg value="${project.build.dir}/documentation/frontenddevelopers/taglib/reference.html" />
       <arg value="-XSL"/>
       <arg value="${share.dir}/xslt/xml2html.xslt" />
     </java>

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet id="xml2html" 
+<xsl:stylesheet id="xml2html"
   version="1.1"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect"
@@ -7,7 +7,7 @@
   xmlns:mm="mmbase-taglib"
   >
 
-  <!-- 
+  <!--
      xalan extension used for xalan:write.
 
        According to xslt 1.1 you could simply use xsl:document, but xalan does not
@@ -25,10 +25,10 @@
     />
 
 <xsl:param name="basedir"></xsl:param>
-<xsl:param name="files">taglib</xsl:param>
+<xsl:param name="files">reference</xsl:param>
 <xsl:variable name="basedirfiles"><xsl:value-of select="$basedir" />/<xsl:value-of select="$files" /></xsl:variable><!-- make sure this directory exists! -->
 
-    
+
 <!-- some configuration -->
 <xsl:variable name="extendscolor">blue</xsl:variable>
 <xsl:variable name="attrcolor">green</xsl:variable>
@@ -36,7 +36,7 @@
 
 <xsl:template name="directories">
   <xsl:param name="dir" />
-  <xsl:choose>  
+  <xsl:choose>
   <xsl:when test="$dir='examples.taglib'">/mmexamples/taglib</xsl:when>
   </xsl:choose>
 </xsl:template>
@@ -48,20 +48,20 @@
 
   <!-- create a seperate file for every tag -->
   <xsl:apply-templates select="tag|taginterface" mode="file" />
-    
+
   <!-- create a toc file -->
-  <!-- xsl:document href="{$basedirfiles}/toc.html"-->
-  <xalan:write file="{$basedirfiles}/toc.html"><!-- xsl:document not supported by xalan.. Sigh..-->
+  <!-- xsl:document href="{$basedir}/toc.html"-->
+  <xalan:write file="{$basedir}/toc.html"><!-- xsl:document not supported by xalan.. Sigh..-->
   <html>
     <head>
       <title>MMBase taglib - Table Of Contents</title>
     </head>
-    <body 
+    <body
       bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
       <h1>MMBase taglib <xsl:value-of select="/taglib/tlibversion" /> documentation</h1>
       <xsl:apply-templates select="info" />
         <xsl:for-each select="/taglib/tagtypes/type">
-          <a href="mmbase-taglib-{@name}.html"><xsl:value-of select="description" /></a><br />
+          <a href="{$files}/mmbase-taglib-{@name}.html"><xsl:value-of select="description" /></a><br />
         </xsl:for-each>
         <hr />
         All 'tags' in seperate files (these are small jsp's, probably will be possible to add working examples): <br />
@@ -69,11 +69,13 @@
         <xsl:apply-templates select="taginterface" mode="toc" >
           <xsl:sort select="name" />
           <xsl:with-param name="file"  select="true()" />
+          <xsl:with-param name="subdir"  select="true()" />
         </xsl:apply-templates><br />
         tags: <br />
         <xsl:apply-templates select="tag" mode="toc" >
           <xsl:sort select="name" />
           <xsl:with-param name="file"  select="true()" />
+          <xsl:with-param name="subdir"  select="true()" />
         </xsl:apply-templates><br />
       </body>
     </html>
@@ -114,14 +116,14 @@
       <title>MMBase taglib <xsl:value-of select="tlibversion" /> documentation</title>
       <xsl:if test="@author"><meta name="Author" value="{@author}"/></xsl:if>
     </head>
-      <body 
+      <body
         bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
         <h1>MMBase taglib <xsl:value-of select="tlibversion" /> documentation</h1>
         <xsl:if test="not($type='all')"><h2><xsl:value-of select="tagtypes/type[@name=$type]/description" /></h2></xsl:if>
       <table width="100%" cellpadding="5">
         <tr>
           <td width="30"></td>
-	    <td>
+      <td>
             <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
           </td>
           <td width="30"></td>
@@ -141,8 +143,8 @@
         <tr>
           <td></td>
           <td>
-            <a name="toc"/>			
-            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="toc" >                
+            <a name="toc"/>
+            <xsl:apply-templates select="taginterface[contains(type, $type) or $type='all']" mode="toc" >
                 <xsl:sort select="name" />
             </xsl:apply-templates><br />
           </td>
@@ -151,7 +153,7 @@
         <tr>
           <td></td>
           <td>
-            <a name="toc"/>			
+            <a name="toc"/>
             <xsl:apply-templates select="tag[contains(type, $type) or $type='all']" mode="toc" >
                 <xsl:sort select="name" />
             </xsl:apply-templates><br />
@@ -197,7 +199,7 @@
             <p>
             This document lists the current tags implemented for MMBase (version <xsl:value-of
             select="/taglib/tlibversion" />)
-	    </p>
+      </p>
       <p>
         Attributes in <font color="{$reqcolor}"><xsl:value-of select="$reqcolor" /></font> are
       required.
@@ -225,12 +227,13 @@
      -->
 <xsl:template name="tagref">
   <xsl:param name="file" select="false()" />
+  <xsl:param name="subdir" select="false()" />
   <xsl:param name="type" select="'all'" />
   <xsl:param name="tag"/>
-  <xsl:param name="attribute" select="''" /> 
-  <xsl:param name="anchor"    select="''" /> 
+  <xsl:param name="attribute" select="''" />
+  <xsl:param name="anchor"    select="''" />
   <xsl:variable name="usefile" select="$file or (not($type='all') and not(/taglib/*[name = $tag]/type and contains(/taglib/*[name = $tag]/type, $type)))" />
-  <xsl:if test="$usefile"><xsl:value-of select="$tag" />.jsp</xsl:if>
+  <xsl:if test="$usefile"><xsl:if test="$subdir"><xsl:value-of select="$files" />/</xsl:if><xsl:value-of select="$tag" />.jsp</xsl:if>
   <xsl:if test="not($attribute='') or not($usefile)">#<xsl:value-of select="$tag" /></xsl:if>
   <xsl:if test="not($anchor='')">#<xsl:value-of select="$anchor" /></xsl:if>
   <xsl:if test="$attribute">.<xsl:value-of select="$attribute" /></xsl:if>
@@ -240,11 +243,12 @@
 <!-- Generates an entry for table of all tags or taginterfaces -->
 <xsl:template match="tag|taginterface" mode="toc">
   <xsl:param name="file" select="false()" />
+  <xsl:param name="subdir" select="false()" />
   <a>
     <xsl:attribute name="href">
       <xsl:call-template name="tagref">
-        <xsl:with-param name="file" select="$file" /><xsl:with-param name="tag"  select="name"  />
-      </xsl:call-template>      
+        <xsl:with-param name="file" select="$file" /><xsl:with-param name="subdir" select="$subdir" /><xsl:with-param name="tag"  select="name"  />
+      </xsl:call-template>
     </xsl:attribute>
    <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
    <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
@@ -279,9 +283,9 @@
            <xsl:with-param name="tag"  select="name"  />
          </xsl:call-template>
        </xsl:attribute>
-       <xsl:value-of select="name" />  
+       <xsl:value-of select="name" />
      </a>
-     <xsl:if test="(position() != last()) or not($testlast)"> | </xsl:if>     
+     <xsl:if test="(position() != last()) or not($testlast)"> | </xsl:if>
    </xsl:if>
 </xsl:template>
 
@@ -323,7 +327,7 @@
       &lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %&gt;
       </xsl:text>
     </head>
-    <body 
+    <body
       bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
      <xsl:text disable-output-escaping="yes">
       &lt;mm:cloud&gt;
@@ -365,7 +369,7 @@
         <xsl:if test="name()='tag'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
         <xsl:if test="name()='taginterface'"><b><font color="{$extendscolor}">`<xsl:value-of select="name"/>' tags</font></b></xsl:if>
         <xsl:apply-templates select="info"/>
-        <xsl:if test="since">         
+        <xsl:if test="since">
          (since: <xsl:value-of select="since" />)
         </xsl:if>
       </td>
@@ -394,7 +398,7 @@
         </td>
       </tr>
     </xsl:if>
-    
+
     <xsl:apply-templates select="extends">
       <xsl:with-param name="file" select="$file" />
       <xsl:with-param name="type" select="$type" />
@@ -408,12 +412,12 @@
           <xsl:apply-templates select="bodycontentinfo"/>
         </td>
       </tr>
-    </xsl:if>       
+    </xsl:if>
     <xsl:if test="name()='taginterface'">
     <tr>
     <td>tags of this type</td><td>
       <xsl:apply-templates
-        select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*" 
+        select="/taglib/*[name()='tag' or name()='taginterface']/extends[.=current()/name]/parent::*"
         mode="tocext" >
         <xsl:with-param name="file" select="$file" />
         <xsl:with-param name="type" select="$type" />
@@ -421,7 +425,7 @@
         <xsl:sort select="name" />
       </xsl:apply-templates>
     </td>
-    </tr>  
+    </tr>
     </xsl:if>
     <xsl:apply-templates select="example[$file or not(include)]">
       <xsl:with-param name="file" select="$file" />
@@ -430,7 +434,7 @@
       <tr>
         <td>more examples</td><td>
         <xsl:if test="$linkexamples">
-      <xsl:for-each select="example/include">      
+      <xsl:for-each select="example/include">
         <a >
           <xsl:attribute name="href">
             <xsl:call-template name="tagref">
@@ -439,11 +443,11 @@
             <xsl:with-param name="anchor">
               <xsl:value-of select="ancestor::tag/name" />.example.<xsl:number level="single" count="example"  />
             </xsl:with-param>
-        </xsl:call-template>          
+        </xsl:call-template>
       </xsl:attribute>
       example <xsl:number level="single" count="example"  />
         </a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-      </xsl:for-each>          
+      </xsl:for-each>
         </xsl:if>
         <xsl:if test="not($linkexamples)">
           There are more examples, but not in this document.<!-- cannot determin the URL in a robust way -->
@@ -458,25 +462,25 @@
 <xsl:template match="example">
   <xsl:param name="file" select="false()" />
    <tr>
-     <xsl:if test="not(include)">      
+     <xsl:if test="not(include)">
      <td width="100" valign="top">
        <a>
          <xsl:attribute name="name">
-           <xsl:value-of select="parent::tag/name" />.example.<xsl:value-of select="position()" />           
+           <xsl:value-of select="parent::tag/name" />.example.<xsl:value-of select="position()" />
          </xsl:attribute>
        </a>
        example <xsl:value-of select="position()" />
      </td>
      <td>
         <pre>
-          <xsl:value-of select="."/>    
+          <xsl:value-of select="."/>
         </pre>
       </td>
     </xsl:if>
     <xsl:if test="include">
       <xsl:if test="$file">
         <xsl:apply-templates select="include" /><!-- should be only one.. -->
-      </xsl:if>     
+      </xsl:if>
     </xsl:if>
    </tr>
 </xsl:template>
@@ -517,16 +521,16 @@
         </xsl:call-template>
       </xsl:attribute>
      <font color="{$extendscolor}"><xsl:value-of select="." /></font></a></xsl:if> attributes</td>
-	  <td>
-	  <xsl:if test="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/attribute">
-      <ul>   	   
+    <td>
+    <xsl:if test="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/attribute">
+      <ul>
        <xsl:apply-templates select="/taglib/*[starts-with(name(), 'tag')]/name[.=current()]/parent::*/attribute"  mode="extends">
          <xsl:with-param name="file" select="$file" />
          <xsl:with-param name="type" select="$type" />
        </xsl:apply-templates>
       </ul>
       </xsl:if>
-	  </td>
+    </td>
    </tr>
    <xsl:apply-templates select="/taglib/*[name()='tag' or name()='taginterface']/name[.=current()]/parent::*/extends" >
       <xsl:with-param name="file" select="$file" />
@@ -544,14 +548,14 @@
       <xsl:with-param name="type" select="$type" />
       <xsl:with-param name="tag"  select="parent::*/name" />
       <xsl:with-param name="attribute"  select="name" />
-    </xsl:call-template>          
+    </xsl:call-template>
   </xsl:attribute>
   <font color="{$attrcolor}"><xsl:value-of select="name" /></font></a></li>
 </xsl:template>
 
 <xsl:template match="attribute" mode="full">
   <xsl:param name="file" select="false()" />
-  <xsl:param name="type" select="'all'" />   
+  <xsl:param name="type" select="'all'" />
   <li>
     <a name="{parent::*/name}.{name}" />
     <xsl:choose>
@@ -570,7 +574,7 @@
             <font color="{$attrcolor}"><xsl:apply-templates select="name"/></font>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:otherwise>      
+      </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="since">
       (since: <xsl:value-of select="since" />)
@@ -580,7 +584,7 @@
       <xsl:apply-templates select="info"/>
       <br />
     </xsl:if>
-    <xsl:if test="see">      
+    <xsl:if test="see">
       see: <xsl:apply-templates select="see">
           <xsl:with-param name="file" select="$file" />
           <xsl:with-param name="type" select="$type" />
@@ -615,12 +619,12 @@
 </xsl:template>
 
 <xsl:template match="info">
-  <xsl:apply-templates select="p|text()|em|a|ul|pre|taglibcontent|document" />  
+  <xsl:apply-templates select="p|text()|em|a|ul|pre|taglibcontent|document" />
 </xsl:template>
 
-<xsl:template match="document">  
+<xsl:template match="document">
   <!-- I hate XSL -->
-  <xsl:if test="@mode = 'escapers'"> 
+  <xsl:if test="@mode = 'escapers'">
     <xsl:apply-templates select="document(@file)" mode="escapers"/>
   </xsl:if>
   <xsl:if test="@mode = 'postprocessors'">
@@ -648,7 +652,7 @@
   <tr>
     <td valign="top"><xsl:value-of select="@id" /></td>
     <td valign="top"><xsl:apply-templates select="info"/></td>
-  </tr>  
+  </tr>
 </xsl:template>
 
 <xsl:template match="taglibcontent" mode="escapers">
@@ -661,7 +665,7 @@
   <table bgcolor="#99ccff" width="100%">
     <tr><th valign="top"><a name="postprocessors" />Postprocessor</th><th></th></tr>
     <xsl:apply-templates select="postprocessor"/>
-  </table>    
+  </table>
 </xsl:template>
 <xsl:template match="taglibcontent" mode="content">
   <table bgcolor="#99ffff" width="100%">
@@ -676,7 +680,7 @@
         <td valign="top"><xsl:value-of select="@defaultescaper" /></td>
         <td valign="top"><xsl:value-of select="@defaultpostprocessor" /></td>
         <td valign="top"><xsl:value-of select="@defaultencoding" /></td>
-      </tr>      
+      </tr>
     </xsl:for-each>
   </table>
 </xsl:template>

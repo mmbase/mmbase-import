@@ -46,6 +46,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
+  <property name="project.javadoc.dir" value="${project.build.dir}/documentation/javadoc/${project.name}" />
 
   <property name="project.extra.path" value="" />
   <property name="project.extra.path2" value="" />
@@ -348,7 +349,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   <target name="javadocs" description="Documentation" depends="init" if="do.javadoc">
   <javadoc packagenames="${project.javadoc.packages}"
     sourcepath="${project.source.dir}/src"
-    destdir="${project.build.dir}/api"
+    destdir="${project.javadoc.dir}"
     author="true"
     version="true"
     use="false"
