@@ -21,29 +21,29 @@
 	  <!-- create scheme
 				 Defines a statement for creating a non-extended table.
 				 Parameters:
-		     {0} the name of the table name to create.
+		     {0} the name of the table to create.
 				 {1} the list of field definitions (seperated by commas)
 		-->
   	<create>CREATE TABLE {0} ({1})</create>
 	  <!-- not-null scheme
 				 Defines the code for creating a non-nullable field
 				 Parameters:
-		     {0} the name of the  field to create.
+		     {0} the name of the field to create.
 				 {1} the field type definitions (i.e. varchar(30))
 				 NOTE: if you ommit this scheme all fields are nullable
 		-->
     <not-null>{0} {1} NOT NULL</not-null>
-	  <!-- not-null scheme
+	  <!-- primary-key scheme
 				 Defines the code for creating a field that is a primary key
-		     {0} the name of the  field to create.
+		     {0} the name of the field to create.
 				 {1} the field type definitions (i.e. int(11))
 				 NOTE: if you ommit this scheme no primary keys are created
 		-->
     <primary-key>{0} {1} NOT NULL, PRIMARY KEY ({0})</primary-key>
-	  <!-- not-null scheme
+	  <!-- key scheme
 				 Defines the code for creating a field that is also a unique secondary key
 				 Parameters:
-		     {0} the name of the  field to create.
+		     {0} the name of the field to create.
 				 {1} the field type definitions (i.e. int(11))
 				 NOTE: if you ommit this scheme no secondary keys are created
 		-->
