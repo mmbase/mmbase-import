@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: list.css,v 1.1 2002-07-18 09:14:47 michiel Exp $
+  @version  $Id: list.css,v 1.2 2002-07-18 13:50:57 michiel Exp $
   
 */
 
@@ -19,6 +19,7 @@ body {
 
 table.list {
  width: 80%;
+ cell-spacing: 0;
 }
 
 td.left {
@@ -31,4 +32,31 @@ td.listcanvas {
    border-width:3; border-color:#CCC; 
    padding:5; 
    width: 100%;
+}
+
+tr.itemrow, 
+tr.itemrow-hover, 
+tr.itemrow td, 
+tr.itemrow-hover td { 
+   cursor:pointer; 
+   cursor:hand; 
+   color:#18248C; 
+   padding: 0;
+   vertical-align: top;
+}
+tr.itemrow-hover td	{
+   /*   background-color: #ff0; */
+   text-decoration:underline;  
+}
+
+/* if permission to edit is lacking, the row is 'disabled' */
+tr.itemrow-disabled td  { 
+  font-weight: normal; 
+  text-decoration : none; 
+  color:#CCCCCC; 
+  cursor:default;
+}
+
+td.deletebutton {
+  padding-right: 10;
 }
