@@ -89,7 +89,7 @@ public class Message extends MMObjectBuilder {
     private Channel channelBuilder;
 
     public TemporaryNodeManager tmpNodeManager = null;
-    private String tOwner = "system";
+    private String messageUser = null;
     // this will be used to genererate keys for temporary nodes used by the community.
     private int tmpNumbers = 0;
     private final String tmpNumberPrefix = "cmt";
@@ -107,6 +107,10 @@ public class Message extends MMObjectBuilder {
         boolean result = super.init();
         channelBuilder = (Channel)mmb.getMMObject("channel");
 
+        messageUser=getInitParameter("postas");
+        if ((messageUser==null) || (messageUser.length()==0)) {
+            messageUser="system";
+        }
         tmpNodeManager = new TemporaryNodeManager(mmb);
         // create relation breaker for maintaining temporary relations
         chatboxMessages = new NodeBreaker(2 * expireTime, tmpNodeManager);
@@ -197,7 +201,7 @@ public class Message extends MMObjectBuilder {
                 return POST_ERROR_NEED_LOGIN;
         }
 
-        MMObjectNode node = getNewNode("system");
+        MMObjectNode node = getNewNode(messageUser);
         node.setValue(F_SUBJECT, subject);
         node.setValue(F_BODY, body);
         node.setValue(F_THREAD, thread);
@@ -218,19 +222,19 @@ public class Message extends MMObjectBuilder {
             setInfoField(node,"name",chatterName);
 //            node.setValue(F_INFO, "name=\"" + chatterName + "\"");
         }
-        int id=insert("system", node);
+        int id=insert(messageUser, node);
         if (chatter > 0) {
-            MMObjectNode chattertomsg=insrel.getNewNode("system");
+            MMObjectNode chattertomsg=insrel.getNewNode(messageUser);
             chattertomsg.setValue("snumber",chatter);
             chattertomsg.setValue("dnumber",id);
             chattertomsg.setValue("rnumber",getCreatorRole());
-            insrel.insert("system",chattertomsg);
+            insrel.insert(messageUser,chattertomsg);
         }
-        MMObjectNode msgtothread=insrel.getNewNode("system");
+        MMObjectNode msgtothread=insrel.getNewNode(messageUser);
         msgtothread.setValue("snumber",id);
         msgtothread.setValue("dnumber",thread);
         msgtothread.setValue("rnumber",getParentChildRole());
-        insrel.insert("system", msgtothread);
+        insrel.insert(messageUser, msgtothread);
         insrel.deleteRelationCache(thread);
         return id;
     }
@@ -276,8 +280,8 @@ public class Message extends MMObjectBuilder {
         }
 
         // Build a temporary message node.
-        String key = tmpNodeManager.createTmpNode("message", tOwner, getNewTemporaryKey());
-        MMObjectNode message = tmpNodeManager.getNode(tOwner, key);
+        String key = tmpNodeManager.createTmpNode("message", messageUser, getNewTemporaryKey());
+        MMObjectNode message = tmpNodeManager.getNode(messageUser, key);
         message.parent=this;
 
         // Set the fields.
@@ -324,20 +328,20 @@ public class Message extends MMObjectBuilder {
          */
         int result=POST_OK;
         try {
-            String tmp = tmpNodeManager.createTmpRelationNode("parent", tOwner, getNewTemporaryKey(), "realchannel", key);
-            tmpNodeManager.setObjectField(tOwner, tmp, "snumber", new Integer(channel));
+            String tmp = tmpNodeManager.createTmpRelationNode("parent", messageUser, getNewTemporaryKey(), "realchannel", key);
+            tmpNodeManager.setObjectField(messageUser, tmp, "snumber", new Integer(channel));
             // add the message relation to the relation breaker
-            chatboxMessages.add(tOwner + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
+            chatboxMessages.add(messageUser + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
         } catch(Exception e) {
             result=POST_ERROR_RELATION_CHANNEL;
         }
         if (chatter!=-1) {
             try {
-                String tmp = tmpNodeManager.createTmpRelationNode("creator", tOwner, getNewTemporaryKey(), "realuser", key);
-                tmpNodeManager.setObjectField(tOwner, tmp, "snumber", (Object)new Integer(chatter));
+                String tmp = tmpNodeManager.createTmpRelationNode("creator", messageUser, getNewTemporaryKey(), "realuser", key);
+                tmpNodeManager.setObjectField(messageUser, tmp, "snumber", (Object)new Integer(chatter));
                 // add the message relation to the relation breaker
-                chatboxMessages.add(tOwner + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
-                MMObjectNode node = tmpNodeManager.getNode(tOwner, tmp);
+                chatboxMessages.add(messageUser + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
+                MMObjectNode node = tmpNodeManager.getNode(messageUser, tmp);
                 if (log.isDebugEnabled()) {
                     log.debug ("just set " + tmp + " snumber to " + node.getIntValue("snumber"));
                 }
@@ -346,7 +350,7 @@ public class Message extends MMObjectBuilder {
             }
         }
         // add the message itself to the relation breaker
-        chatboxMessages.add(tOwner + "_" + key, (new Long(System.currentTimeMillis() + expireTime)).longValue());
+        chatboxMessages.add(messageUser + "_" + key, (new Long(System.currentTimeMillis() + expireTime)).longValue());
         return result;
     }
 
