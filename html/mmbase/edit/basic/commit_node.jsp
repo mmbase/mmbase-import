@@ -13,7 +13,7 @@
 <mm:import externid="ok" />
 <mm:import externid="node_number" />
 
-<mm:import id="redirectTo"><mm:url escapeamps="false"  page="<%=peek(urlStack)%>"><% if (urlStack.size() > 1) { %><mm:param name="nopush" value="url" /><% } %></mm:url></mm:import>
+<mm:url id="redirectTo" write="false"  page="<%=peek(urlStack)%>"><% if (urlStack.size() > 1) { %><mm:param name="nopush" value="url" /><% } %></mm:url>
 
 <mm:present referid="cancel">
     <!-- do nothing,... will be redirected -->
@@ -43,17 +43,17 @@
       <mm:present referid="node">
         <mm:import externid="role_name" />
         <mm:import externid="direction" />
-        <mm:import id="redirectTo"><mm:url escapeamps="false" page="new_relation.jsp" referids="node,role_name,direction,node_type" >
+        <mm:url id="redirectTo" write="false" page="new_relation.jsp" referids="node,role_name,direction,node_type" >
           <mm:param name="create_relation">yes</mm:param>
           <mm:param name="node_number"><mm:field name="number" /></mm:param>
-        </mm:url></mm:import>
+        </mm:url>
       </mm:present>
 
       <mm:notpresent referid="node">
-        <mm:import id="redirectTo"><mm:url escapeamps="false" page="change_node.jsp" >
+        <mm:url id="redirectTo" write="false" page="change_node.jsp" >
           <mm:param name="node_number"><mm:field name="number" /></mm:param>
           <mm:param name="push"><mm:field name="number" /></mm:param>
-        </mm:url></mm:import>
+        </mm:url>
       </mm:notpresent>
         
     </mm:node>
@@ -81,7 +81,7 @@
       </mm:maywrite>       
     </mm:node>
     <mm:remove referid="redirectTo" />
-    <mm:import id="redirectTo"><mm:url escapeamps="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url></mm:import>
+    <mm:url id="redirectTo" write="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url>
 </mm:present>
 </mm:notpresent>
 
@@ -91,7 +91,7 @@
 </head>
 <body>
 <h1><%=m.getString("redirect")%></h1>
-<a href="<mm:url page="$redirectTo" />">
+<a href="<mm:url referid="redirectTo" />">
 <%= m.getString("commit_node.redirect")%></a>
 
 
