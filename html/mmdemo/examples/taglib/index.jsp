@@ -23,13 +23,13 @@ This page should work after building Tomcat or Orion from the build file.
 </p>
 
 <p>
-Here's a simple list of jumpers to see if the MMBase taglib is working:
+Here's a simple list of typedefs to see if the MMBase taglib is working:
 </p>
 
-<mm:listnodes type="jumpers" fields="name,url">
+<mm:listnodes type="typedef" fields="name,description">
  <mm:first><ul></mm:first>
  <li>
-   <mm:field name="name"/> redirects to <mm:field name="url"/>
+   <mm:field name="name"/> is: <mm:field name="description"/>
    <mm:first>(first)</mm:first>
    <mm:last>(last)</mm:last>
    <mm:odd>(odd)</mm:odd>
