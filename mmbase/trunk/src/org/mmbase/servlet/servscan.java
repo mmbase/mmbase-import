@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.31 2002-04-19 11:28:07 pierre Exp $
+ * @version $Id: servscan.java,v 1.32 2002-05-14 12:41:55 eduard Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -60,7 +60,16 @@ public class servscan extends JamesServlet {
         log.info("Init of servlet " + config.getServletName() + ".");
         MMBaseContext.initHtmlRoot();
         parser = (scanparser)getModule("SCANPARSER");
+        if(parser == null) {
+            String msg = "module with name 'scanparser' should be active";
+            log.error(msg);
+            throw new ServletException(msg);
+        }
         sessions = (sessionsInterface)getModule("SESSION");
+        if(sessions == null) {
+            String msg = "module with name 'sessions' is not active";
+            log.warn(msg);
+        }
     }
 
     /**
