@@ -9,8 +9,9 @@
 
   This is an example. It does the following.
 
-  It uses two appenders (both are very slow!). The first one is the regular log file 
-  and the second is used only to log events from the security classes.
+  It uses tree appenders (both are very slow!). The first one is the regular log file 
+  ,the second is used only to log events from the security classes, and the last one logs
+  sql-queries.
 
   Further it is demonstrated how to override logging priorities.
 
@@ -38,6 +39,21 @@
       <param name="ConversionPattern" value="%d %-5p %c{4} %M.%L %x - %m%n" />
     </layout>
   </appender>
+
+  <!-- 
+  Another example: The sqllog appender can be used for
+  'MultiConnection' (see below), to achieve logging of every SQL
+  query, which is handy during debugging
+  -->
+  
+  <appender name="sqllog" class="org.apache.log4j.FileAppender" >
+    <param name="File" value="&logdir;mmbase-sql.log" />
+    <param name="Encoding"   value="UTF-8" />    
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} %m%n" />
+    </layout>
+  </appender>
+
   
   <!-- categories -->
   
@@ -50,6 +66,13 @@
     <level class="&mmlevel;" value ="info" />
     <appender-ref ref="securityfile" />
   </logger>
+
+  <!-- SQL logging -->
+  <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
+    <level class="&mmlevel;" value ="debug" />   
+    <appender-ref ref="sqllog" />
+  </logger>
+
   
   <logger name="STDERR">
     <priority class="&priority;" value ="debug" />	
