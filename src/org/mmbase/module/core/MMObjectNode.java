@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.56 $ $Date: 2002-02-25 14:59:56 $
+ * @version $Revision: 1.57 $ $Date: 2002-02-26 10:53:52 $
  */
 
 public class MMObjectNode {
@@ -270,22 +270,28 @@ public class MMObjectNode {
         // retrieve the original value
         // if number == -1 then we have a new node...
         if(parent != null) {
-            // in case the field is of type XML, it can (must) be validated:
+            // in case the field is of type XML, it can (must) be validated:            
             if(getDBType(fieldName) == FieldDefs.TYPE_XML) {
+                //if(log.isDebugEnabled()) {
+                //    log.debug("found a node with xml field, we need to validate it, and maybe convert it, fieldValue(before validate) = " + fieldValue + " class:'" + fieldValue.getClass().getName() + "'");
+                //}
                 // this function does also conversion of old stuff to xml... 
                 // to keep it backwards compatible
                 fieldValue = validateXML(fieldName, fieldValue);
+                // should always be instance of Element... 
+                //if(log.isDebugEnabled()) {
+                //   log.debug("fieldValue(after validate)= " + fieldValue + " class:'" + fieldValue.getClass().getName() + "'");
+                //}
             }
         } else {
             log.error("parent was null for node with number" + getNumber());
-        }
-        
+        }        
         // check the value also when the parent thing is null
 	Object originalValue = values.get(fieldName);
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
         // process the changed value (?)
-        if (parent!=null) {
+        if (parent != null) {
 	    if(!parent.setValue(this,fieldName, originalValue)) {
 	        // setValue of parent returned false, no update needed...
 	        return false;
@@ -301,54 +307,62 @@ public class MMObjectNode {
      *
      * @return the value of the field as a DOM Element.
      **/
-
     private Element validateXML(String fieldName, Object fieldValue) {
         if (log.isDebugEnabled()) {
-            log.debug("validating" + getNumber() + "field:" + fieldName);
+            log.debug("validating node #" + getNumber() + " field:" + fieldName);
         }
         if (fieldValue instanceof String) {                 
             // Backwards compatibility, if a string is not in XML format (not starting with '<'), then
             // we have a way to convert it to mmxf XML (or something else when we support it).
             if (((String)fieldValue).indexOf("<") != 0) { // not XML, make it XML
-
                 // Depending on the gui type choose conversion....
                 // for the moment only mmxf is supported.
-
-                // MMXF_POOR, this is the rich format we use, it is little less rich then MMXF_RICH...                
                 
+                // MMXF_POOR, this is the rich format we use, it is little less rich then MMXF_RICH...                                
                 fieldValue = org.mmbase.util.Encode.decode("MMXF_POOR", (String) fieldValue);
-
-                if (log.isDebugEnabled()) log.debug("field was not XML, converted to " + fieldValue);
-            }
-        
+                if (log.isDebugEnabled()) { 
+                    log.debug("field was not XML, converted to " + fieldValue);
+                }
+            }        
             /////////////////////////////////////////////
-            // TODO: RE-USE THE PARSER EVERY TIME !    //        
-
-            String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
-            String xmlDocType = "<!DOCTYPE " + parent.getField(fieldName).getGUIType() + ">"; //hmm, going to change this..
-            String completeXML = xmlHeader + "\n" + xmlDocType + "\n" + (String)fieldValue;
+            // TODO: RE-USE THE PARSER EVERY TIME !    //
+            if(parent.getField(fieldName).getGUIType().equals("mmxf")) {
+                String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
+                String xmlDocType = "<!DOCTYPE mmxf PUBLIC \"//MMBase - mmxf//\" \"http://www.mmbase.org/dtd/mmxf.dtd\">";
+                fieldValue = xmlHeader + "\n" + xmlDocType + "\n" + (String) fieldValue;
+            }
+            else {
+                // in future the gui-type will indicate which type of doc-type has to be used. This will be configurable in a config file
+                // till that time, we only accept as guitype 'mmxf', when not, we will put an message in the log
+                log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + ")");            
+            }
+            if (log.isDebugEnabled()) { 
+                log.debug("validating the followin xml: \n" + completeXML);
+            }                        
     	    try {                
+                // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
+                // or ask it from BasicReader ?
                 javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
                 dfactory.setValidating(true);
                 javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
                 documentBuilder.setErrorHandler(new org.mmbase.util.XMLErrorHandler());
                 documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
-                fieldValue = documentBuilder.parse(new java.io.ByteArrayInputStream(completeXML.getBytes(parent.mmb.getEncoding()))).getDocumentElement();
                 // ByteArrayInputStream?
-                // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
+                // Yes, in contradiction to what one would think, XML are bytes, rather then characters.                
+                return documentBuilder.parse(new java.io.ByteArrayInputStream(completeXML.getBytes(parent.mmb.getEncoding()))).getDocumentElement();
             }
             catch(javax.xml.parsers.ParserConfigurationException pce) {
-	        String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+completeXML;
+	        String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+completeXML+"\n" + Logging.stackTrace(pce);
                 log.error(msg);
 	        throw new RuntimeException(msg);
             }
             catch(org.xml.sax.SAXException se) {
-	        String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+completeXML;
+	        String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+completeXML+"\n" + Logging.stackTrace(se);
                 log.error(msg);
 	        throw new RuntimeException(msg);
             }
             catch(java.io.IOException ioe) {
-	        String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+completeXML;
+	        String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+completeXML+"\n" + Logging.stackTrace(ioe);
                 log.error(msg);
 	        throw new RuntimeException(msg);					
             }
@@ -356,7 +370,9 @@ public class MMObjectNode {
             // check if the Element is in concordance with the specified GUIType for this field.
 
             // not yet implemented.
-            throw new RuntimeException("no support for dom.Elements yet");            
+            String msg = "no support for validating dom.Elements yet";
+            log.error(msg);
+            throw new RuntimeException(msg);
             // TODO
 
         } else {
@@ -364,9 +380,7 @@ public class MMObjectNode {
             log.error(msg);
             throw new RuntimeException(msg);
         }
-        return (Element) fieldValue;
     }
-
 
     /**
      * Sets a key/value pair in the main values of this node. The value to set is of type <code>boolean</code>.
@@ -607,7 +621,6 @@ public class MMObjectNode {
      * @see getXMLValue
      */
     public Element getXMLValue(String fieldName, Document tree) {
-
         Object o = getValue(fieldName);
 
         Element field; // the DOM field to be returned.
@@ -644,10 +657,8 @@ public class MMObjectNode {
             // the text
             subField = tree.createTextNode(getStringValue(fieldName));
         }
-        field.appendChild(subField);
-        
+        field.appendChild(subField);        
         return field;
-
     }
 
     /**
@@ -657,27 +668,38 @@ public class MMObjectNode {
      * The format is rather basic. All non XML fields will be converted to 'field's. 
      *
      * @param fieldName the name of the field who's data to return
-     * @return          the field's value as a DOM <code>Element</code>
+     * @return          the field's value as a DOM <code>Element</code> or <code>null</code>
+     * @throws          
      */
     public Element getXMLValue(String fieldName) {
-
         // try to get the value from the values table
         Object o = getValue(fieldName);
-        if (o != null) {
-            if (o instanceof Element) {
-                return (Element) o;
-            } else { // try to make one
-                try {
-                    javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();    	    
-                    javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-                    Document tree = documentBuilder.newDocument();
-                    return getXMLValue(fieldName, tree);
-                } catch (Exception e) {
-                    log.error(e.toString());
-                }
+        if(o == null) {
+            if(log.isDebugEnabled()) {
+                log.debug("object was null");
             }
+            return null;
+        } 
+        if (o instanceof Element) {
+            if(log.isDebugEnabled()) {
+                log.debug("object was instance of Element");
+            }
+            return (Element) o;
+        } 
+        try {
+            if(log.isDebugEnabled()) {
+                log.debug("calling the getXML with an new document");
+            }
+            // validateXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
+            // or ask it from BasicReader ?
+            javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();    	    
+            javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+            Document tree = documentBuilder.newDocument();
+            return getXMLValue(fieldName, tree);
+        } catch(javax.xml.parsers.ParserConfigurationException pce) {
+            log.error(pce);
+            return null;
         }
-        return null;
     }
 
     /**
