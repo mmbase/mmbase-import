@@ -16,7 +16,7 @@ import org.mmbase.applications.dove.Dove;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNew.java,v 1.4.2.1 2003-06-13 13:30:48 vpro Exp $
+ * @version $Id: ConnectorCommandGetNew.java,v 1.4.2.2 2003-08-08 08:13:39 michiel Exp $
  */
 
 public class ConnectorCommandGetNew extends ConnectorCommand {

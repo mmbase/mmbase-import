@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.26.2.11 2003-06-13 13:25:09 vpro Exp $
+ * @version $Id: Config.java,v 1.26.2.12 2003-08-08 08:13:38 michiel Exp $
  */
 
 public class Config {
@@ -507,7 +507,7 @@ public class Config {
             
 
             if (config.language == null) {
-                config.language = getParam("language", org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale().getLanguage());
+                config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the
@@ -552,7 +552,6 @@ public class Config {
                     // Was given relatively, that's easy:
                     refFile = new File(getRealPath(config.backPage)).getParentFile();
                 }
-                
                 if (refFile.exists()) {
                     if (! config.language.equals("")) {
                         File refi18n = new File(refFile, "i18n" + File.separator + config.language);
