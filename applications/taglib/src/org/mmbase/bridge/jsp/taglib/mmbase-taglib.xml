@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.214 2003-11-14 13:11:41 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.215 2003-11-17 10:33:58 keesj Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4736,6 +4736,12 @@ The 0 is just counter, which starts at 0 on every page.
 			<info>
 				The operator to be used in the comparison. Defaults to '='
 			</info>
+			<possiblevalue>
+				<value>EQUAL</value>
+			</possiblevalue>
+			<possiblevalue>
+				<value>=</value>
+			</possiblevalue>
 			<possiblevalue>
 				<value>LESS</value>
 			</possiblevalue>
