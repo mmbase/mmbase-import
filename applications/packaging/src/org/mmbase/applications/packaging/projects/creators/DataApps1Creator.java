@@ -214,27 +214,61 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
     }
 
     private boolean decodeDataFile(Target target,String datafile) {
-	log.info("BLA="+datafile);
         File file = new File(datafile);
         if (file.exists()) {
-		/*
             ExtendedDocumentReader reader = new ExtendedDocumentReader(datafile,DataApps1Package.class);
             if (reader != null) {
                 org.w3c.dom.Node dc=reader.getElementByPath("dataset.selection");
-                NamedNodeMap nm=dc.getAttributes();
-                if (nm!=null) {
-                       org.w3c.dom.Node n3=nm.getNamedItem("type");
-                       if (n3!=null) {
-				String type=n3.getNodeValue();
-				target.setItem("datatype",type);	
-				log.info("SETTING TYPE="+type);
+		if (dc!=null) {
+                	NamedNodeMap nm=dc.getAttributes();
+                	if (nm!=null) {
+                      	        org.w3c.dom.Node n3=nm.getNamedItem("type");
+               	        	if (n3!=null) {
+					String type=n3.getNodeValue();
+					target.setItem("datatype",type);	
+					// this should be in sepr.files 
+					target.setItem("type",type);
+					if (type.equals("depth")) decodeDepthItems(target,reader);
+				}
 			}
 		}
 	    }
-	    */
 	}
 	return true;
     }
+
+    private void decodeDepthItems(Target target,ExtendedDocumentReader reader) {
+
+       	org.w3c.dom.Node n2=reader.getElementByPath("dataset.selection.model");
+	if (n2!=null) {
+       		NamedNodeMap nm=n2.getAttributes();
+	        if (nm!=null) {
+               		org.w3c.dom.Node n3=nm.getNamedItem("name");
+	                if (n3!=null)  target.setItem("depthname",n3.getNodeValue());
+               		n3=nm.getNamedItem("maintainer");
+	                if (n3!=null)  target.setItem("depthmaintainer",n3.getNodeValue());
+               		n3=nm.getNamedItem("version");
+	                if (n3!=null)  target.setItem("depthversion",n3.getNodeValue());
+		} 
+	}
+
+       	n2=reader.getElementByPath("dataset.selection.startnode");
+	if (n2!=null) {
+       		NamedNodeMap nm=n2.getAttributes();
+	        if (nm!=null) {
+               		org.w3c.dom.Node n3=nm.getNamedItem("alias");
+	                if (n3!=null)  target.setItem("depthalias",n3.getNodeValue());
+		} 
+       		n2=reader.getElementByPath("dataset.selection.startnode.builder");
+		if (n2!=null)  target.setItem("depthbuilder",n2.getFirstChild().getNodeValue());
+       		n2=reader.getElementByPath("dataset.selection.startnode.where");
+		if (n2!=null)  target.setItem("depthwhere",n2.getFirstChild().getNodeValue());
+	}
+
+       	n2=reader.getElementByPath("dataset.selection.depth");
+	if (n2!=null)  target.setItem("depth",n2.getFirstChild().getNodeValue());
+   }
+    
 
     private boolean exportDataSet(packageStep step,Target target,String datafile,String datadir) {
   	packageStep substep=step.getNextPackageStep();
@@ -341,6 +375,26 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
   public String getDefaultTargetName() {
         return "data";
   }
+
+    public MMObjectNode getTypeInfo(String project, String target) {
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        Project p = ProjectManager.getProject(project);
+        if (p != null) {
+            Target t = p.getTarget(target);
+            if (t != null) {
+                    virtual.setValue("type", t.getItem("type"));
+                    virtual.setValue("depthname", t.getItem("depthname"));
+                    virtual.setValue("depthmaintainer", t.getItem("depthmaintainer"));
+                    virtual.setValue("depthversion", t.getItem("depthversion"));
+                    virtual.setValue("depthalias", t.getItem("depthalias"));
+                    virtual.setValue("depthbuilder", t.getItem("depthbuilder"));
+                    virtual.setValue("depthwhere", t.getItem("depthwhere"));
+                    virtual.setValue("depthcount", t.getItem("depth"));
+            }
+        }
+        return virtual;
+    }
 
 }
 

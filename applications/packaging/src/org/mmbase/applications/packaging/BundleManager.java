@@ -190,6 +190,22 @@ public class BundleManager {
         return false;
     }
 
+
+    public static boolean upgradeAvailable(BundleInterface b) {
+        try {
+            int newversion = Integer.parseInt(b.getVersion());
+            int oldversion = getInstalledVersion(b.getId());
+	    log.info("NEW VERSION="+newversion+" OLDVERSION="+oldversion);
+	    if (oldversion!=-1 && newversion > oldversion) {
+		return true;
+	    }
+        } catch(Exception e) {
+			log.debug("error while checking if a version of bundle: " + b + " is installed:" + e.getMessage()  , e);
+            return false;
+        }
+        return false;
+    }
+
     public static int getInstalledVersion(String id) throws SearchQueryException {
         // Get the versions builder
         Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
