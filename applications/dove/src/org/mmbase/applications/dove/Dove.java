@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.54 2004-09-23 09:49:49 pierre Exp $
+ * @version $Id: Dove.java,v 1.55 2004-09-24 09:17:36 mark Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -835,6 +835,7 @@ public class Dove extends AbstractDove {
                             if (field.getTagName().equals(FIELD)) {
                                 String fieldname = field.getAttribute(ELM_NAME);
                                 String href = field.getAttribute(ELM_HREF);
+                                String encoding = field.getAttribute(ELM_ENCODING);
                                 if (!href.equals("")) {
                                     // binary data.
                                     Object repval=repository.get(href);
@@ -844,6 +845,10 @@ public class Dove extends AbstractDove {
                                         if(field.getFirstChild()!=null) {
                                             values.put("filename",field.getFirstChild().getNodeValue());
                                         }
+                                    }
+                                } else if (!encoding.equals("")) {
+                                    if (encoding.toLowerCase().equals("base64")) {
+                                        values.put(fieldname, org.mmbase.util.Base64.decodeToBytes(field.getFirstChild().getNodeValue()));
                                     }
                                 } else {
                                     if(field.getFirstChild() == null) {
