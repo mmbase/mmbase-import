@@ -98,6 +98,12 @@ public class ContextAuthentication extends Authentication {
 	    log.info("loaded module with the name:"+moduleName+ " with class:" + className);
 	    loginModules.put(moduleName, module);
 	}
+	// set the reload on 10 seconds, maybe we want to put this inside the security.xml?
+	fileWatcher.setDelay(10 * 1000);
+
+	// add our config file...
+	fileWatcher.add(configFile);	
+
 	log.debug("done loading the modules...");	
     }
 
