@@ -717,9 +717,7 @@ public class servdb extends JamesServlet {
 		if (params.size()==1) {
 			MMObjectNode node=null;
 			try {
-				debug("getXML(): 1 bul="+bul+" node="+node);
 				node=bul.getNode((String)params.elementAt(0));	
-				debug("getXML(): 2 bul="+bul+" node="+node);
 			} catch(Exception e) { }
 			if (node!=null) {
 				result=node.toXML();
