@@ -465,7 +465,6 @@ version=1.7.0-dev
            optimize="${optimize}"
            deprecation="${deprecation}">
       <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
-      <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
       <exclude name="org/mmbase/module/RemoteMMCI.java"/>
       <exclude name="org/mmbase/bridge/ContextProvider.java"/>
       <exclude name="org/mmbase/bridge/RemoteContext.java"/>
