@@ -1,13 +1,13 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud jspvar="cloud" method="http" rank="administrator">
+<mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Cache Monitor</title>
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
-<link rel="stylesheet" type="text/css" href="../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <body class="basic" >
 <!-- <%= cloud.getUser().getIdentifier()%>/<%=  cloud.getUser().getRank()%> -->
@@ -88,7 +88,7 @@
 <tr>
   <td class="data">Show first 500 entry's of the cache</td>
   <td class="navigate">
-    <a href="<mm:url page="cache/showcache.jsp"><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>" ><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page="cache/showcache.jsp"><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>" ><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 
@@ -134,7 +134,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" align="left" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>
