@@ -29,7 +29,7 @@ download and install the request taglib from
 Here's a simple list of jumpers to see if the MMBase taglib is working:
 </p>
 
-<mm:list type="jumpers" fields="name,url">
+<mm:listnodes type="jumpers" fields="name,url">
  <mm:first><ul></mm:first>
  <li>
    <mm:field name="name"/> redirects to <mm:field name="url"/>
@@ -40,7 +40,7 @@ Here's a simple list of jumpers to see if the MMBase taglib is working:
    <mm:changed>(changed)</mm:changed>
  </il>
  <mm:last></ul></mm:last>
-</mm:list>
+</mm:listnodes>
 
 </body>
 
