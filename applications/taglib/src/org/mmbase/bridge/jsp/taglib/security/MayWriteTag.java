@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
- * A very simple tag to check if node may be deleted.
+ * A very simple tag to check if node may be changed.
  *
  * @author Michiel Meeuwissen
  */

@@ -43,8 +43,9 @@ public class MayCreateTag extends CloudReferrerTag implements Condition {
 
     public int doAfterBody() throws JspTagException {
         try{
-            if(bodyContent != null)
+            if(bodyContent != null) {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            }
         } catch(java.io.IOException e){
             throw new JspTagException("IO Error: " + e.getMessage());
         }
