@@ -111,19 +111,42 @@ public class RelDef extends MMObjectBuilder {
 		return(-1);
 	}
 
-    public int getGuessedByName(String buildername) {
-        Enumeration e=search("WHERE sname='"+buildername+"' OR dname='"+buildername+"'");
+	/**
+	 * Searches for the relationnummber by finding a reldef where the sname or dname is equal to buildername.
+	 * It's recommented to use getGuessedByNames instead, because it's possible to have multiple reldefs with
+	 * the same sname or dname.
+	 */
+ 	public int getGuessedByName(String buildername) {
+	        Enumeration e=search("WHERE sname='"+buildername+"' OR dname='"+buildername+"'");
  
-        // *** was: Enumeration e=search("WHERE sname='"+buildername+"' AND dname='"+buildername+"'");
-        // *** doesn't work when you have a different sname/dname.
+	        // *** was: Enumeration e=search("WHERE sname='"+buildername+"' AND dname='"+buildername+"'");
+	        // *** doesn't work when you have a different sname/dname.
+	
+	        if (e.hasMoreElements()) {
+	            MMObjectNode node=(MMObjectNode)e.nextElement();
+	            return(node.getIntValue("number"));
+	        } else {
+	            return(-1);
+        	}
+	}
 
-        if (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-            return(node.getIntValue("number"));
-        } else {
-            return(-1);
-        }
-    }
+	/**
+	 * Searches for the relation number by sname and dname in reldef.
+	 * When there's no match found in this order a search with swapped sname and dname will be done.
+	 * If no match is found the result will be -1.
+	 */
+	public int getGuessedByNames(String sname, String dname)
+	{	Enumeration e = search("WHERE sname='" + sname + "' AND dname='" + dname + "'");
+		if (!e.hasMoreElements()) e = search("WHERE sname='" + dname + "' AND dname='" + sname + "'");
+
+		if (e.hasMoreElements())
+		{
+	            MMObjectNode node = (MMObjectNode)e.nextElement();
+	            return(node.getIntValue("number"));
+	        }         
+
+		return(-1);
+	}
 }
 
 
