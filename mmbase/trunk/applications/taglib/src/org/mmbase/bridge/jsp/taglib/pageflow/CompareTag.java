@@ -70,6 +70,9 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             compare1 = getObject(getReferid());
         }
 
+        if (! (compare1 instanceof Comparable)) {
+            throw new JspTagException("Cannot compare variable of type " + compare1.getClass().getName());
+        }
 
         Object compare2;
         if (value != null) {            
@@ -84,7 +87,11 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         if ((compare1 instanceof Number) && (compare2 instanceof String)) {
             log.debug("found an instance of Number");
             compare1 = new java.math.BigDecimal(compare1.toString());
-            compare2 = new java.math.BigDecimal((String)compare2);
+            if ("".equals(compare2)) { // do something reasonable in IsEmpty
+                compare2=new java.math.BigDecimal(0); 
+            } else {
+                compare2 = new java.math.BigDecimal((String)compare2);
+            }
         } 
 
         // if using 'BigDecimal' then avoid classcastexceptions also if other type is some number.
