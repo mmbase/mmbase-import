@@ -19,8 +19,8 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.util.Encode;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.*;
+
 
 /**
  * Taglibs handler for Node typed fields.
@@ -31,12 +31,12 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.24 2003-12-21 13:27:51 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.25 2003-12-21 13:31:25 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeHandler.class);
+    //private static final Logger log = Logging.getLoggerInstance(NodeHandler.class);
 
     /**
      * Constructor for NodeHandler.
@@ -74,10 +74,8 @@ public class NodeHandler extends AbstractTypeHandler {
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
-        log.info("hoi");
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
         if(tag.getCloud().hasNodeManager(field.getGUIType())) {
-            log.info("Generating list for " + field.getGUIType());
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select name=\"" + prefix(field.getName()) + "\"");
@@ -87,7 +85,6 @@ public class NodeHandler extends AbstractTypeHandler {
             String value = "0";
             if (node != null) value = node.getStringValue(field.getName());
 
-            log.info("node : " + node);
 
             // args for gui function
             List args = new ArrayList();
@@ -99,7 +96,6 @@ public class NodeHandler extends AbstractTypeHandler {
 
             NodeIterator nodes = tag.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
 
-            log.info(" nodes " + tag.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null));
             SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
 
             // If this is the 'builder' field of the reldef builder, we need to filter
