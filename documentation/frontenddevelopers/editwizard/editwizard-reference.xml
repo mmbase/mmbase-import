@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"  [
+  <!ENTITY rf-origin  SYSTEM "reference/origin.sgm">
+  <!ENTITY rf-pos  SYSTEM "reference/pos.sgm">
+  <!ENTITY rf-action  SYSTEM "reference/action.sgm">
+  <!ENTITY rf-action-add  SYSTEM "reference/action-add.sgm">
+  <!ENTITY rf-action-create  SYSTEM "reference/action-create.sgm">
+  <!ENTITY rf-action-delete  SYSTEM "reference/action-delete.sgm">
+  <!ENTITY rf-action-load  SYSTEM "reference/action-load.sgm">
+  <!ENTITY rf-object  SYSTEM "reference/object.sgm">
+  <!ENTITY rf-step  SYSTEM "reference/step.sgm">
+  <!ENTITY rf-steps  SYSTEM "reference/steps.sgm">
+  <!ENTITY rf-form-schema  SYSTEM "reference/form-schema.sgm">
+  <!ENTITY rf-wizard-schema  SYSTEM "reference/wizard-schema.sgm">
+] >
 <article class="specification">
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-reference.xml,v 1.2 2003-05-08 16:03:41 pierre Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.3 2003-05-09 14:29:49 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -100,6 +113,14 @@
 			</variablelist>
 			<variablelist>
 				<title>The following parameters MAY be specified:</title>
+				<varlistentry>
+					<term>sessionkey</term>
+					<listitem>
+						<para>A key that identififies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
+						The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
+						<programlisting format="linespecific">orderby=lastname or  orderby=people.lastname,news.title</programlisting>
+					</listitem>
+				</varlistentry>
 				<varlistentry>
 					<term>orderby</term>
 					<listitem>
@@ -212,6 +233,42 @@
 			<programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=new</programlisting>
 			<para>To create a wizard and use an existing mmbase object as source:</para>
 			<programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=[objectnumber]</programlisting>
+			<variablelist>
+				<title>The following parameters MUST be specified (wizard.jsp does not work if you do not specify them):</title>
+				<varlistentry>
+					<term>wizard</term>
+					<listitem>
+						<para>The wizard to use. This is a relative reference to the xml schema file. Do not specify the ".xml" prefix.</para>
+						<programlisting format="linespecific">wizard=data/simple.xml</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>objectnumber</term>
+					<listitem>
+						<para>The number or alias of the object to edit. The object must exist. You can also supply the keyword 'new', which creates a new object instead of editing an existing one.</para> 
+					</listitem>
+				</varlistentry>
+			</variablelist>
+			<variablelist>
+				<title>The following parameters MAY be specified:</title>
+				<varlistentry>
+					<term>sessionkey</term>
+					<listitem>
+						<para>A key that identififies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
+						The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
+						<programlisting format="linespecific">orderby=lastname or  orderby=people.lastname,news.title</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>origin</term>
+					<listitem>
+						<para>A node alias or number, which will be passed to the underlying editwizard. The value can then be referenced in the editwizard schema using the {$origin} variable.
+						This can be used to create relations to nodes whose 'origin' is determined outside the wizard (i.e. in a complex search or determined through user preferences).
+						</para>
+						<programlisting format="linespecific">origin=my_start_node</programlisting>
+					</listitem>
+				</varlistentry>
+			</variablelist>
 			<example>
 				<title>How to use wizard.jsp to start an editwizard</title>
 				<programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=184</programlisting>
@@ -226,6 +283,10 @@
 			<title>Object structures (Dove)</title>
 			<para>TODO</para>
 		</section>
+		<section id="xpathexpressions">
+			<title>XPath Expressions and Wizard variables</title>
+			<para>TODO</para>
+		</section>
 		<section id="including">
 			<title>Including xml fragments</title>
 			<para>TODO</para>
@@ -237,914 +298,23 @@
 	</section>
 	<section id="syntaxreference">
 		<title>Syntax Reference</title>
-		<section id="action">
-			<title>action</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <action [type="create|delete|load" [ include="filename" | extends="filename" ] /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>The action object defines whether, and what object structures the wizard is to create, load, or delete when the appropriate command is given. Each action is implicitly associated with a certain command. The top-level actions are associated with commands issued from outside, or on startup of the wizard (such as loading the correct objectstructure when you start a wizard to edit data, or a command to delete a certain object from a list).
-				</para>
-		  </formalpara>
-		  <para>
-				Actions in lists define what object structures to create or delete when operations are issued on a list's contents.
-				The content of the action is generally an objectstructure (with the excepton of the top-level delete action), which defines the data that is to be handled.
-				More info can be found in the reference for the individual action types.
-			</para>
-			<formalpara>
-				<title>Required Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>type</term>
-						<listitem>
-							<para>The type of action. Either create, delete, or load.
-							For more info see <link linkend="action-create">action type="create"</link>, <link linkend="action-delete">action type="delete"</link> and <link linkend="action-load">action type="load"</link>
-							</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>extends</term>
-						<listitem>
-							<para>An xml file whose content is to be added to the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term>include</term>
-						<listitem>
-							<para>An xml file whose content is to replace the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para>See the individual types of actions for more details</para>
-			</formalpara>
-			<formalpara>
-				<title>Possible Parents</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="wizard-schema">&lt;wizard-schema&gt;</link></term>
-						<listitem>
-							<para>The wizard schema root (for top-level actions).</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="list">&lt;list&gt;</link></term>
-						<listitem>
-							<para>A list in a form (for list mutation actions).</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Example</title>
-				<para><programlisting format="linespecific"><![CDATA[
-<wizard-schema id="my_wizard">
-	<title>Wizard-Title</title>
+<!-- variables -->	
+&rf-origin;
+&rf-pos;
+<!-- tags -->
+&rf-action;
+&rf-action-add;
+&rf-action-create;
+&rf-action-delete;
+&rf-action-load;
+&rf-form-schema;
+&rf-step;
+&rf-steps;
+&rf-wizard-schema;
 
-	<action type="create" >
-	  <object type="news">
-  		<field name="title">My Title</field>
-		</object>
-	</action>
-	
-	<form-schema id="step1">
-		<field name="title">
-			<prompt>Title</prompt>
-		</field>
-	</form-schema>
-</wizard-schema>
-]]></programlisting></para>
-			</formalpara>
-	  </section>
-
-		<section id="action-create">
-			<title>action type="create"</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <action type="create" [ include="filename" | extends="filename" ] /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>This tag defines how to create a new object or relation. As a top-level tag it defines how to create and initialize a new main object. In a list, it specifies how to create a new relation in that list. Not specifying a create action means the action is not available (i.e. you cannot create a main object in a wizard or a new relation in a list)
-				</para>
-			</formalpara>
-			<para>You define the data to be created by including a (nested) objectstructure in the body of the action tag.</para>
-			<para>Under a top-level tag, you specify an <link linkend="object">object</link> tag, with the type attribute set to the type og object that needs to be created:
-			
-			<programlisting format="linespecific"><![CDATA[
-	<action type="create" >
-	  <object type="news" />
-	</action>
-]]></programlisting>
-			
-			This action creates an (empty, and unrelated) news object.</para>
-			<para>
-			You can make a more complex creation action by specifying fields that you want to initialize (asside from any initialization that is done by MMBase itself), or relations that you want to have made (such as linking to a specific archive):
-			<programlisting format="linespecific"><![CDATA[
-	<action type="create" >
-	  <object type="news" >
-		  <field name="title">My Title</field>
-			<relation role="related" destination="my_news_archive" />
-		</object>
-	</action>
-]]></programlisting>
-			This will initalize the 'title' field of the news object, and relate it to an object (i.e. a pool object) with the alias 'my_news_archive'. There are a limited number of 'variables' that you can use when initializing the action. More info on this can be found in the <link linkend="relation">relation</link> and <link linkend="field">field</link> tag references.
-			</para>
-			<para>Under a list-level tag, you specify a <link linkend="relation">relation</link> tag, with the role and destinationtype attributes set to the type and role of teh realtion to create:
-			
-			<programlisting format="linespecific"><![CDATA[
-	<action type="create" >
-	  <relation role="author" destinationtype="people" />
-	</action>
-]]></programlisting>
-			
-			This action creates a 'author' relation to a people object. In this instance, the wizard expects that the object is supplied by one of the list <link linkend="command">command</link> tags (a search command or a wizard command).</para>
-			<para>
-			You can make a more complex creation action by specifying relation fields that you want to initialize. You can also add an 'object' tag (with initialized fields or even additional relations to create), which prompts the wizard to create the object instead of waiting for the list commands to supply one. You an use this option with the list <link linkend="command-insert">'insert' command</link>.
-			<programlisting format="linespecific"><![CDATA[
-	<action type="create" >
-	  <relation role="author" />
-			<object type="people" >
-				<field name="lastname">Supply lastname here</field>
-			</object>
-		</realtion>
-	</action>
-]]></programlisting>
-			This will create a new 'people' object with ana initialized 'lastname' field, and create a relation to this object. 
-			There are a limited number of 'variables' that you can use when initializing the action. More info on this can be found in the <link linkend="field">field</link> tag reference.
-			</para>
-			<formalpara>
-				<title>Required Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>type</term>
-						<listitem>
-							<para>The type of action, in this case, "create".</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>extends</term>
-						<listitem>
-							<para>An xml file whose content is to be added to the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term>include</term>
-						<listitem>
-							<para>An xml file whose content is to replace the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="object">&lt;object /&gt;</link> (top-level tag)</term>
-						<listitem>
-							<para>Specifies the type of object to create. It may also include additonal field and relation tags for initialization of the object or auto-linking to other objects.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="relation">&lt;relation /&gt;</link> (list-level tag)</term>
-						<listitem>
-							<para>Specifies the type of relation to create in a list. It may also include additonal field and object tags for initialization of the object or creation of new objects to relate to.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Possible Parents</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="wizard-schema">&lt;wizard-schema&gt;</link> (top-level tag)</term>
-						<listitem>
-							<para>The wizard schema root.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="list">&lt;list&gt;</link> (list-level tag)</term>
-						<listitem>
-							<para>A list of realted objects in a form.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Example</title>
-				<para><programlisting format="linespecific"><![CDATA[
-<wizard-schema id="my_wizard">
-	<title>Wizard-Title</title>
-
-	...
-	
-	<action type="create" >
-	  <object type="news" >
-		  <field name="title">My Title</field>
-			<relation role="related" destination="my_news_archive" />
-		</object>
-  </action>
- 
-	<form-schema id="step1">
-		<field name="title">
-			<prompt>Title</prompt>
-		</field>
-	
-		<list role="author" destinationtype="people" >
-		
-			...
-			
-			<action type="create" >
-				<relation role="author" destinationtype="people" />
-			</action>
-		</list>
-	</form-schema>
-	
-</wizard-schema>
-]]></programlisting></para>
-			</formalpara>
-		</section>
-		
-		<section id="action-delete">
-			<title>action type="delete"</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <action type="delete" [ include="filename" | extends="filename" ] /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>This tag defines actions to take when an object is to be removed. there are two possible occurrences of this action: as a top level tag, or as a list-tag.				
-				</para>
-			</formalpara>
-			<para>A top level tag defines an action for when a user issues a delete command from the wizard list page.
-			If you define a delete action, list pages will enable the user to remove an object from the MMBase cloud by showing a delete button or link. Not defining this action means the link does not show (thus, objects cannot be deleted if you do not provide the action). Optional childs of the action are a roll-over help-description for the link in the list, and a prompt for asking confirmation when the command is issued.
-			</para>
-			<note><para>Unlike other actions, the top level delete action does not contain an objectstructure - the object deleted is always the current object and its relations. You cannot, for example, define a structure so that deleting the node will automatically delete any related nodes.</para>
-			</note>
-			<para>A list tag defines an action for when a relation is removed from a list in a form. In general, you need not supply this action - deletes are generally handled automatically. Delete buttons in forms are enabled or disabled by the list tag, not by the delete action. The only time you want to use the delete action in a list is when you want to remove both a relation and the related node. In this case, you can add the delete action, along with the 'additional' objectstructure to delete (besides the relation itself). Currently this 'objectstructure' is only the underlying object, so a delete action will generally look like:
-			<programlisting format="linespecific"><![CDATA[
-<action type="delete">
-  <object />
-</action>
-]]></programlisting>
-			</para> 
-			<formalpara>
-				<title>Required Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>type</term>
-						<listitem>
-							<para>The type of action, in this case, "delete".</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>extends</term>
-						<listitem>
-							<para>An xml file whose content is to be added to the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term>include</term>
-						<listitem>
-							<para>An xml file whose content is to replace the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="description">&lt;description /&gt;</link> (top-level tag)</term>
-						<listitem>
-							<para>Descriptive tekst used as help tekst (often a rollover) for the 'delete' link in the wizard list. Only applicable to the top-level delete action.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="object">&lt;object /&gt;</link> (list-level tag)</term>
-						<listitem>
-							<para>If given, the delete action not only removes the relation, but also the related node. This can be useful if you have one-use only objects, which you like to have cleared when they are unlinked from their 'parent' object.
-							Only applicable to the list-level delete action. Note that unlike other actions, the object child tag cannot itself contain other relations or objects.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="prompt">&lt;prompt /&gt;</link> (top-level tag)</term>
-						<listitem>
-							<para>Tekst to prompt when asking confirmation when the command is issued. This allows you to give specific warnings. Only applicable to the top-level delete action.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Possible Parents</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="wizard-schema">&lt;wizard-schema&gt;</link></term>
-						<listitem>
-							<para>The wizard schema root (for top-level delete actions).</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="list">&lt;list&gt;</link></term>
-						<listitem>
-							<para>A list in a form (for list delete actions).</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Example</title>
-				<para><programlisting format="linespecific"><![CDATA[
-<wizard-schema id="my_wizard">
-	<title>Wizard-Title</title>
-
-	...
-	
-	<action type="delete" >
-	  <prompt>Do you really want to delete this item?</prompt>
-		<description>Click to delete this item</description>
-	</action>
-
-	<form-schema id="step1">
-		<field name="title">
-			<prompt>Title</prompt>
-		</field>
-		
-		<list role="related" destinationtype="sections" >
-	
-    ....
-		
-		<action type="delete">
-		  <object />
-		</action>
-	
-		</list
-		
-	</form-schema>
-</wizard-schema>
-]]></programlisting></para>
-			</formalpara>
-		</section>
-
-		<section id="action-insert">
-			<title>action type="insert"</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <action type="insert" [ include="filename" | extends="filename" ] /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>This tag defines how to create a new relation in a list. It is identical to <link linkend="action-create">action type="create"</link>, but it has preference over 'create' when you use the <link linkend="command-insert">command type="insert"</link> command. This construction allows you to supply two actions for creating relations: one for a 'search' command, and a different one for a 'insert' command.
-				</para>
-			</formalpara>
-			<para>See the <link linkend="action-create">action type="create"</link> and the list <link linkend="command">command</link> tags for more info on the use of this action.</para>
-			<formalpara>
-				<title>Required Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>type</term>
-						<listitem>
-							<para>The type of action, in this case, "insert".</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>extends</term>
-						<listitem>
-							<para>An xml file whose content is to be added to the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term>include</term>
-						<listitem>
-							<para>An xml file whose content is to replace the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="relation">&lt;relation /&gt;</link></term>
-						<listitem>
-							<para>Specifies the type of relation to create in a list. It may also include additonal field and object tags for initialization of the object or creation of new objects to relate to.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Possible Parents</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="list">&lt;list&gt;</link></term>
-						<listitem>
-							<para>A list of realted objects in a form.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Example</title>
-				<para></para>
-			</formalpara>
-		</section>
-
-		<section id="action-load">
-			<title>action type="load"</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <action type="load" [ include="filename" | extends="filename" ] /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>This tag defines actions to take when an object is to be loaded by the wizard for editing. It is a top-level tag and always applies to the main edit object (the object whose number is passed through the objectnumber parameter when calling wizard.jsp).  				
-				</para>
-			</formalpara>
-			<para>By defining a load action, you can command the wizard to load specific fields, and additional (related) objects to be edited.
-			You define the data to be loaded by including a (nested) objectstructure in the body of the action tag. Directly under that tag, you can specify the fields you want to load (using field tags), and the relations from his node that you want to follow and load the data of. Loading a relation also loads the related node. As an example:
-			
-			<programlisting format="linespecific"><![CDATA[
-	<action type="load" >
-	  <field name="title" />
-	  <field name="subtitle" />
-		<relation destinationtype="images" role="posrel" />
-	</action>
-]]></programlisting>
-			
-			This action loads an object's title and subtitle fields, as well as all images that are related to the object through the 'posrel' role.</para>
-			<para>
-			This action loads all the fields of the 'posrel' relation, and those of the related images. If you want to limit the fields that are loaded (for instance to limit the amount of space the wizard uses), you can specify this by expanding the objectstructure as follows:			
-			<programlisting format="linespecific"><![CDATA[
-	<action type="load" >
-	  <field name="title" />
-	  <field name="subtitle" />
-		<relation destinationtype="images" role="posrel" >
-  	  <field name="pos" />
-			<object>
-				<field name="title" />
-			</object
-		</relation>
-	</action>
-]]></programlisting>
-			This will load the 'pos' field of the posrel realtion, and the 'title' field of any related images. You can also continue to nest relations, such as the image related to an author related to a news item. This makes for more complex wizards, so in general you will not go more than one relation deep. 
-			</para>
-			<para>If you do not specify a load action, the wizard by default loads the main object with all its (editable) fields. It will in that case not load any related objects.</para>
-			<note><para>You can only edit fields or list related objects if the wizard has loaded them. If you specify too few fields in your load action, you may not be able to access everything you want to edit. Likewise, specifying too much may make the wizard slow.</para>
-			</note>
-			<formalpara>
-				<title>Required Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>type</term>
-						<listitem>
-							<para>The type of action, in this case, "load".</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>extends</term>
-						<listitem>
-							<para>An xml file whose content is to be added to the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term>include</term>
-						<listitem>
-							<para>An xml file whose content is to replace the action tag at this place in the wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="field">&lt;field /&gt;</link></term>
-						<listitem>
-							<para>If given, the load action only loads those fields for which there are tags defined. If you do not list any field tags, all fields are loaded.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="relation">&lt;relation /&gt;</link></term>
-						<listitem>
-							<para>If given, the load action loads the realtiosna s specified, as well as the objects related to. Relations can contain field and object tags, which can further determine what is loaded by the wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Possible Parents</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="wizard-schema">&lt;wizard-schema&gt;</link></term>
-						<listitem>
-							<para>The wizard schema root.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Example</title>
-				<para><programlisting format="linespecific"><![CDATA[
-<wizard-schema id="my_wizard">
-	<title>Wizard-Title</title>
-
-	...
-	
-	<action type="load" >
-	  <field name="title" />
-	  <field name="subtitle" />
-	  <field name="intro" />
-	  <field name="body" />
-		<relation destinationtype="images" role="posrel"  >
-		  <field name="pos" />
-			<object>
-				<field name="title" />
-			</object
-		</relation>
-		<relation destinationtype="attachments" role="related" >
-		<relation destinationtype="urls" role="related" />
-		<relation destinationtype="people" role="author" >
-			<object>
-				<field name="title" />
-				<relation destinationtype="images" role="related" >
-					<object>
-						<field name="title" />
-					</object
-				</relation>
-			</object
-		</relation>
-  </action>
- 
-	<form-schema id="step1">
-		<field name="title">
-			<prompt>Title</prompt>
-		</field>
-	</form-schema>
-</wizard-schema>
-]]></programlisting></para>
-			</formalpara>
-		</section>
-
-		<section id="step">
-			<title>step</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <step form-schema="form-id" /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>A step in a wizard, defining a form to run. the position of a step in the parent staps tag determines the place of the form in the wizard.
-				</para>
-			</formalpara>
-			<formalpara>
-				<title>Required Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>form-schema</term>
-						<listitem>
-							<para>The id of a form-schema in this wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-			
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="steps">&lt;steps&gt;</link></term>
-						<listitem>
-							<para>Determines the order of forms in a wizard.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			<formalpara>
-				<title>Example</title>
-				<para>See <link linkend="steps">steps</link></para>
-			</formalpara>
-		</section>
-
-		<section id="steps">
-			<title>steps</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <steps /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>A list of step tags, listing the order in which a wizard's forms need to be shown (one step is similar to one form).
-					   If you do not supply a steps tag, the wizard assumes that forms need to be shown in the order in which they are defined in the wizard. You generally do not need a steps tag. 
-				</para>
-			</formalpara>
-			<formalpara>
-				<title>Required Attributes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="step">&lt;step /&gt;</link></term>
-						<listitem>
-							<para>A step detailing a form to show. A steps tag should contain one or more step tags.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para>None</para>
-			</formalpara>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="wizard-schema">&lt;wizard-schema&gt;</link></term>
-						<listitem>
-							<para>The wizard schema root.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			<formalpara>
-				<title>Example</title>
-				<para><programlisting format="linespecific"><![CDATA[
-<wizard-schema id="my_wizard">
-	<title>Wizard-Title</title>
-
-	<steps> 
-		<step form-schema="edit_news" />
-		<step form-schema="add_info" />
-		<step form-schema="publish" />
-	</steps>
-	
-	<form-schema id="edit_news">
-		<field name="firstname">
-			<prompt>Your Firstname</prompt>
-		</field>
-	</form-schema>
-	
-	<form-schema id="add_info">
-	  ...
-	</form-schema>
-	
-	<form-schema id="publish">
-	  ...
-	</form-schema>
-
-</wizard-schema>
-]]></programlisting></para>
-			</formalpara>
-		</section>
-
-		<section id="wizard-schema">
-			<title>wizard-schema</title>
-			<formalpara>
-				<title>Syntax</title>
-				<para><programlisting><![CDATA[ 
-					 <wizard-schema [ id="{wizard_schema_id}" ] /> 
-				]]></programlisting></para>
-			</formalpara>
-			<formalpara>
-				<title>Usage</title>
-				<para>This is the root-node of a wizard. Always use a wizard-node to start a wizard.</para>
-			</formalpara>
-			<formalpara>
-				<title>Required Attributes</title>
-				<para>None</para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Attributes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term>id</term>
-						<listitem>
-							<para>The identifier of the wizard. Not used at this time.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Required Child Nodes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="title">&lt;title /&gt;</link></term>
-						<listitem>
-							<para>Title of the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="form-schema">&lt;form-schema /&gt;</link></term>
-						<listitem>
-							<para>One or more forms for editing</para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Optional Child Nodes</title>
-				<para><variablelist>
-					<varlistentry>
-						<term><link linkend="action-create">&lt;action type="create" /&gt;</link></term>
-						<listitem>
-							<para>Instructions for creating a new node (by default you cannot create a node)</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="action-delete">&lt;action type="delete" /&gt;</link></term>
-						<listitem>
-							<para>Instructions for deleting a node (by default you cannot delete a node)</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="action-load">&lt;action type="load" /&gt;</link></term>
-						<listitem>
-							<para>Instructions for loading data of an node to edit, including possible related nodes (bt default load a node and all its fields)</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="description">&lt;description /&gt;</link></term>
-						<listitem>
-							<para>Description of the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="lists">&lt;lists /&gt;</link></term>
-						<listitem>
-							<para>Define enumerated lists to use in the wizard.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><link linkend="steps">&lt;steps /&gt;</link></term>
-						<listitem>
-							<para>Orders form-schemas in a certain order (default order is the order of forms as defined in the wizard).</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term>&lt;task-description /&gt;</term>
-						<listitem>
-							<para>Description of the wizard. Obsolete. use <link linkend="description">&lt;description /&gt;</link></para>
-						</listitem>
-					</varlistentry>
-				</variablelist></para>
-			</formalpara>
-			<formalpara>
-				<title>Possible Parents</title>
-				<para>None, this is the root element.</para>
-			</formalpara>
-			<formalpara>
-				<title>Example</title>
-				<para><programlisting format="linespecific"><![CDATA[
-<wizard-schema id="my_wizard">
-	<title>Wizard-Title</title>
-	<form-schema id="step1">
-		<field name="firstname">
-			<prompt>Your Firstname</prompt>
-		</field>
-	</form-schema>
-</wizard-schema>
-]]></programlisting></para>
-			</formalpara>
-		</section>
-	</section>
-		
-		
-		
+	  </section>	
 		<section>
 			<title>Syntax reference</title>
-			<variablelist>
-				<title>form-schema</title>
-				<varlistentry>
-					<term>Syntax</term>
-					<listitem>
-						<para>&lt;form-schema /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Usage</term>
-					<listitem>
-						<para>A wizard will always be needing at least one form-schema. In a form-schema one form (or page) of a wizard is defined. If you are using multiple form-schema's, supply id's so that form-schema's can be identified.</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Needed attributes</term>
-					<listitem>
-						<para>None</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible attributes</term>
-					<listitem>
-						<para>id="[form-schema-id]"</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Needed childnodes</term>
-					<listitem>
-						<para>&lt;title /&gt; Place the title of the form-schema here.</para>
-						<para>&lt;field /&gt; or &lt;list /&gt; (See also: field or list)</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible childnodes</term>
-					<listitem>
-						<para>&lt;description /&gt; Here you can place your description of the form-schema.</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Possible parents</term>
-					<listitem>
-						<para>&lt;wizard-schema /&gt;</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term>Example</term>
-					<listitem>
-						<programlisting format="linespecific"><![CDATA[
-<form-schema id="step1">
-	<title>This is a simple Form</title>
-	<field name="intro">
-		<prompt>Enter the Intro-text</prompt>
-	</field>
-</form-schema>
-						]]></programlisting>
-					</listitem>
-				</varlistentry>
-			</variablelist>
 			<variablelist>
 				<title>object (inside action type="create")</title>
 				<varlistentry>

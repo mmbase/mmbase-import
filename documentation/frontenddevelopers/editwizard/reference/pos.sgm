@@ -1,0 +1,9 @@
+<section id="pos">
+	<title>$pos</title>
+	<formalpara>
+		<title>Usage</title>
+		<para>The $pos variable identifies the location of an object to be inserted in a list.</para>
+	</formalpara>
+	<para>TODO</para>
+</section>
+
