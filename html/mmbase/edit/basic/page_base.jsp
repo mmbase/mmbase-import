@@ -22,6 +22,12 @@ response.setDateHeader("Date",  now);
 <!-- first try if it is in the session -->
 <mm:import id="config" externid="mmeditors_config" from="session" />
 
+<mm:import externid="set_liststyle" from="parameters" />
+<mm:present referid="set_liststyle">
+  <mm:remove referid="config" />
+  <mm:write referid="set_liststyle" cookie="mmjspeditors_liststyle" />
+</mm:present>
+
 <!-- if not, fill it with default -->
 <mm:notpresent referid="config">
 <mm:remove referid="config" /><!-- it is not possible to overwrite existing var -->
@@ -29,9 +35,15 @@ response.setDateHeader("Date",  now);
   <mm:import id="page_size">20</mm:import>
   <%-- <mm:import id="hide_search">false</mm:import> --%>
   <mm:import id="style_sheet" externid="mmjspeditors_style" from="cookie">mmbase.css</mm:import>
-  <mm:import id="lang"        externid="mmjspeditors_language"  from="cookie" ><%=ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage()%></mm:import>
-  <mm:import id="method"        externid="mmjspeditors_method"  from="cookie" >loginpage</mm:import>
-  <mm:import id="session"       externid="mmjspeditors_session"  from="cookie" >mmbase_editors_cloud</mm:import>
+  <mm:present referid="set_liststyle">
+    <mm:import id="liststyle"><mm:write referid="set_liststyle" /></mm:import>
+   </mm:present>
+  <mm:notpresent referid="set_liststyle">
+    <mm:import id="liststyle" externid="mmjspeditors_liststyle" from="cookie">short</mm:import>
+  </mm:notpresent>
+  <mm:import id="lang" externid="mmjspeditors_language"  from="cookie" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
+  <mm:import id="method" externid="mmjspeditors_method"  from="cookie" >loginpage</mm:import>
+  <mm:import id="session" externid="mmjspeditors_session"  from="cookie" >mmbase_editors_cloud</mm:import>
 </mm:context>
 <mm:write referid="config" session="mmeditors_config" />
 </mm:notpresent>
@@ -46,7 +58,6 @@ response.setDateHeader("Date",  now);
          response.sendRedirect(response.encodeRedirectURL("."));%>
     </mm:notpresent>
 </mm:present>
-
 
 <% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; %>
