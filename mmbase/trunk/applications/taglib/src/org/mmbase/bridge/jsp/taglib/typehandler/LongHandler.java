@@ -11,9 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.storage.search.Constraint;
 
 
 /**
@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.4 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: LongHandler.java,v 1.5 2003-11-07 14:11:25 michiel Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {
@@ -67,6 +67,13 @@ public class LongHandler extends AbstractTypeHandler {
             return dateHandler.whereHtmlInput(field);
         } 
         return super.whereHtmlInput(field);
+    }       
+
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+        if (field.getGUIType().equals("eventtime")) {
+            return dateHandler.whereHtmlInput(field, query);
+        } 
+        return super.whereHtmlInput(field, query);
     }       
 
 }
