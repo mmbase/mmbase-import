@@ -24,7 +24,8 @@ MMBase running, you must do the following:
    Some details can't autodetect the context in which MMBase is
    running (like gui-functions of images), so it adviced to
    explicitely inform MMBase with the mmbase.htmlrooturlpath context
-   parameter from web.xml.
+   parameter from web.xml (This is not necessary for modern
+   app-servers like Tomcat 4.1)
 
 5. Edit
    <mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
