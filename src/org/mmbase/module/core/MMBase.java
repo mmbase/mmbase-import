@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.63 2002-05-23 14:33:28 eduard Exp $
+ * @version $Id: MMBase.java,v 1.64 2002-06-20 14:11:06 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -47,12 +47,12 @@ public class MMBase extends ProcessorModule  {
      * State of MMBase at the beginning of startup
      * @since MMBase-1.6
      */
-    private static final int STATE_START_UP = -1;
+    private static final int STATE_START_UP  = -1;
     /**
      * State of MMBase before builders are loaded
      * @since MMBase-1.6
      */
-    private static final int STATE_LOAD = 0;
+    private static final int STATE_LOAD       = 0;
     /**
      * State of MMBase before builders are initialized
      * @since MMBase-1.6
@@ -62,16 +62,16 @@ public class MMBase extends ProcessorModule  {
      * State of MMBase after startup is completed
      * @since MMBase-1.6
      */
-    private static final int STATE_UP = 2;
+    private static final int STATE_UP         = 2;
 
-    // debug routines
+    // logging
     private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
 
     /**
      * Defines what 'channel' we are talking to when using multicast.
      * @scope private, non-static
      */
-    public static String multicasthost=null;
+    public static String multicasthost = null;
 
     /**
      * Determines on what port does this multicast talking between nodes take place.
@@ -246,12 +246,14 @@ public class MMBase extends ProcessorModule  {
      *
      * @since MMBase-1.6
      */
-    private String encoding="ISO-8859-1";
+    private String encoding = "ISO-8859-1";
 
     /**
      * MMbase 'up state. Access using getState()
+     *
+     * @since MMBase-1.6
      */
-    private int mmbasestate=STATE_START_UP;
+    private int mmbasestate = STATE_START_UP;
 
     /**
      * The table that indexes builders being loaded.
@@ -261,7 +263,7 @@ public class MMBase extends ProcessorModule  {
      *
      * @since MMBase-1.6
      */
-    private HashMap loading=new HashMap();
+    private Map loading = new HashMap();
 
     /**
      * Constructor to create the MMBase root module.
@@ -276,12 +278,12 @@ public class MMBase extends ProcessorModule  {
      */
     public void init() {
 
-        log.info("\n---\nInit of MMBase");
+        log.info("\n---\nInit of " + org.mmbase.Version.get());
         // is there a basename defined in MMBASE.properties ?
-        String tmp=getInitParameter("BASENAME");
-        if (tmp!=null) {
+        String tmp = getInitParameter("BASENAME");
+        if (tmp != null) {
             // yes then replace the default name (def1)
-            baseName=tmp;
+            baseName = tmp;
         } else {
             log.info("init(): No name defined for mmbase using default (def1)");
         }
@@ -1051,16 +1053,16 @@ public class MMBase extends ProcessorModule  {
      */
     MMObjectBuilder loadBuilder(String builder, String ipath) {
         MMObjectBuilder bul=getMMObject(builder);
-        if (bul!=null) {
-            log.info("Builder '"+builder+"' is already loaded");
+        if (bul != null) {
+            log.debug("Builder '" + builder + "' is already loaded");
             return bul;
         }
-        String path = getBuilderPath(builder,ipath);
-        if (path!=null) {
-            return loadBuilderFromXML(builder,path);
+        String path = getBuilderPath(builder, ipath);
+        if (path != null) {
+            return loadBuilderFromXML(builder, path);
         } else {
-            log.error("Cannot find specified builder "+builder);
-            throw new BuilderConfigurationException("Cannot find specified builder "+builder);
+            log.error("Cannot find specified builder " + builder);
+            throw new BuilderConfigurationException("Cannot find specified builder " + builder);
         }
     }
 
