@@ -2,10 +2,10 @@
   
  This software is OSI Certified Open Source Software.
  OSI Certified is a certification mark of the Open Source Initiative.
- 
+  
  The license (Mozilla version 1.0) can be read at the MMBase site.
  See http://www.MMBase.org/license
- */
+  */
 
 package org.mmbase.module.builders.media;
 
@@ -19,6 +19,8 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBaseContext;
 import javax.servlet.http.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.StringObject;
@@ -42,12 +44,12 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.25 2003-01-21 23:04:00 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.26 2003-01-22 16:30:46 rob Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MediaSources.class.getName());
-
+    
     
     // typo check
     public static final String FUNCTION_URLS        = "urls";
@@ -56,7 +58,7 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_FORMAT      = "format";
     public static final String FUNCTION_CODEC       = "codec";
     public static final String FUNCTION_MIMETYPE    = "mimetype";
-
+    
     
     // Codecs
     public final static int VORBIS_CODEC = 1;
@@ -72,20 +74,20 @@ public class MediaSources extends MMObjectBuilder {
     public final static int MONO   = 1;
     public final static int STEREO = 2;
     
-       
+    
     private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
         public String getName()        { return "mediasource cache"; }
         public String getDescription() { return "If the server gives ram's you can read them, results are stored in this cache."; }
     };
     
     private static Map mimeMapping = null;
-
+    
     public boolean init() {
         boolean result = super.init();
         
-
-        if (mimeMapping == null) {        
-            File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");            
+        
+        if (mimeMapping == null) {
+            File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
             log.service("Reading " + mimeMappingFile);
             XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), getClass());
             mimeMapping = new Hashtable();
@@ -100,12 +102,12 @@ public class MediaSources extends MMObjectBuilder {
                 log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
             }
         }
-               
+        
         return result;
     }
     
     
-    public MediaSources() {       
+    public MediaSources() {
         cache.putCache();
     }
     
@@ -144,8 +146,8 @@ public class MediaSources extends MMObjectBuilder {
         
         return source;
     }
-       
-
+    
+    
     /**
      * resolve the url of the mediasource (e.g. pnm://www.mmbase.org/test/test.ra)
      *
@@ -160,13 +162,13 @@ public class MediaSources extends MMObjectBuilder {
         ResponseInfo ri = (ResponseInfo) urls.get(0);
         return ri.getURL();
     }
-
+    
     /**
      * Resolve the mimetype for a certain media source
      *
      * @param source the media source
      * @return the content type
-     */    
+     */
     String getMimeType(MMObjectNode source) { // package because it is used in URLResolver
         String format = getFormat(source).toString();
         if(format==null || format.equals("")) {
@@ -195,12 +197,12 @@ public class MediaSources extends MMObjectBuilder {
         return mimetype;
     }
     
-
-
+    
+    
     /**
      * Gets the first line of a ram file. This can be needed in smil.
      */
- 
+    
     // to make a rm of a ram.
     /*
     protected String getURLResult(MMObjectNode node, String src) {
@@ -225,7 +227,7 @@ public class MediaSources extends MMObjectBuilder {
         }
         return result;
     }
-    */    
+     */
     /**
      * used in the editors
      */
@@ -247,26 +249,26 @@ public class MediaSources extends MMObjectBuilder {
     public int getChannels(MMObjectNode node) {
         return node.getIntValue("channels");
     }
-
+    
     /**
      * The format field is an integer, this function returns a string-presentation
      */
     protected Format getFormat(MMObjectNode source) {
         return Format.get(source.getIntValue("format"));
     }
-
+    
     /**
      * The codec field is an integer, this function returns a string-presentation
      */
-    protected String getCodec(MMObjectNode source) {        
+    protected String getCodec(MMObjectNode source) {
         return convertNumberToCodec(source.getIntValue("codec"));
     }
-        
+    
     /**
      * Functions.
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("executeFunction  " + function + "(" + args + ") on mediasources " + node);
         }
         if (function.equals("info")) {
@@ -279,19 +281,19 @@ public class MediaSources extends MMObjectBuilder {
             info.put(FUNCTION_CODEC, "() Shorthand for gui(codec)");
             info.put(FUNCTION_MIMETYPE, "() Returns the mime-type for this source");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
-
+            
             if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
-            } 
+            }
         } else if (FUNCTION_URLS.equals(function)) {
             MMObjectNode fragment;
             if (args == null || args.size() == 0) {
                 fragment = null;
             } else if (args.size() == 1) {
                 Object f = args.get(0);
-                if (f instanceof MMObjectNode) { 
+                if (f instanceof MMObjectNode) {
                     fragment = (MMObjectNode) f;
                 } else if (f instanceof org.mmbase.bridge.Node) {
                     fragment = getNode(((org.mmbase.bridge.Node) f).getNumber());
@@ -299,9 +301,9 @@ public class MediaSources extends MMObjectBuilder {
                     fragment = getNode((String) f);
                 } else {
                     throw new IllegalArgumentException("Argument of function " + FUNCTION_URLS + " must be a Node");
-                }                
+                }
             } else {
-                throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");                
+                throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");
             }
             return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null));
         } else if (FUNCTION_URL.equals(function)) {
@@ -309,11 +311,11 @@ public class MediaSources extends MMObjectBuilder {
         } else if (FUNCTION_AVAILABLE.equals(function)) {
             Iterator providers = getProviders(node).iterator();
             while (providers.hasNext()) {
-                // if one of the providers is online, then this source is availabe.                
+                // if one of the providers is online, then this source is availabe.
                 MMObjectNode provider = (MMObjectNode) providers.next();
                 if (provider.getIntValue("state") == MediaProviders.STATE_ON) return Boolean.TRUE;
             }
-            return Boolean.FALSE;            
+            return Boolean.FALSE;
         } else if (FUNCTION_FORMAT.equals(function)) {
             return getFormat(node);
         } else if (FUNCTION_CODEC.equals(function)) {
@@ -329,7 +331,7 @@ public class MediaSources extends MMObjectBuilder {
                         bundle = ResourceBundle.getBundle(STATUS_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
                     } else {
                         bundle = ResourceBundle.getBundle(STATUS_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
-                    }                    
+                    }
                     try {
                         return bundle.getString(val);
                     } catch (java.util.MissingResourceException e) {
@@ -338,9 +340,9 @@ public class MediaSources extends MMObjectBuilder {
                 } else if (args.get(0).equals("channels")) {
                     int val = node.getIntValue("channels");
                     switch(val) {
-                    case MONO:   return "Mono";
-                    case STEREO: return "Stereo";
-                    default:     return "Undefined";
+                        case MONO:   return "Mono";
+                        case STEREO: return "Stereo";
+                        default:     return "Undefined";
                     }
                 } else if (args.get(0).equals("codec")) {
                     return getCodec(node);
@@ -350,9 +352,9 @@ public class MediaSources extends MMObjectBuilder {
                     return super.executeFunction(node, function, args); // call getGUIIndicoato
                 } else {
                     return node.getStringValue((String) args.get(0));
-                }            
-            } 
-        } else { 
+                }
+            }
+        } else {
             String arg = null;
             if (args != null && args.size() > 0) {
                 arg = (String) args.get(0);
@@ -378,23 +380,23 @@ public class MediaSources extends MMObjectBuilder {
     /*
     public void remove() {
     }
-    */
-     
-
+     */
+    
+    
     /**
      * Returns all possible URLs for this source. (A source can be on different providers)
      * @author mm
      */
-
+    
     public List getURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
         List result = new ArrayList();
-
+        
         Iterator i = getProviders(source).iterator();
         while (i.hasNext()) {
             MMObjectNode provider = (MMObjectNode) i.next();
             MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
             List providersurls = bul.getURLs(provider, source, fragment, info);
-            if (providersurls.removeAll(result)) {// avoid duplicates 
+            if (providersurls.removeAll(result)) {// avoid duplicates
                 log.service("removed duplicates");
             }
             result.addAll(providersurls);
@@ -408,7 +410,51 @@ public class MediaSources extends MMObjectBuilder {
         List urls = getURLs(source, fragment, info);
         return MediaSourceFilter.getInstance().filter(urls);
     }
-
+    
+    /**
+     * relates a source with given provider. Only if there is one provider matching.
+     *
+     * @param source the media source.
+     * @param providername the name of the provider that is going to be related.
+     */
+    public void addProvider(MMObjectNode source, String providername) {
+        MMObjectBuilder providers = (MMObjectBuilder) mmb.getMMObject("mediaproviders");
+        
+        NodeSearchQuery query = new NodeSearchQuery(providers);
+        StepField namefield = query.getField(providers.getField("name"));
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(namefield,providername);
+        query.setConstraint(constraint);
+        
+        List providerlist=null;
+        try{
+            providerlist = providers.getNodes(query);
+        } catch (SearchQueryException sqe) {
+            log.error("Exception while querying "+sqe);
+        }
+        
+        if(providerlist.size()==0) {
+            log.error("No media provider found with name "+providername);
+            return;
+        }
+        if(providerlist.size()>1) {
+            log.error("Multiple media providers with name "+providername+" found");
+            return;
+        }
+        MMObjectNode provider = (MMObjectNode)providerlist.get(0);
+        
+        MMObjectNode insrel = mmb.getInsRel().getNewNode("MediaSync");
+        insrel.setValue("snumber", provider.getValue("number"));
+        insrel.setValue("dnumber", source.getValue("number"));
+        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        
+        int ret = insrel.insert("MediaSources");
+        if(ret<0) {
+            log.error("cannot create relation "+insrel);
+        } else {
+            log.debug("relation created "+insrel);
+        }
+    }
+    
     /**
      * get all mediaproviders belonging to this mediasource
      * @param mediasource the mediasource
@@ -417,11 +463,11 @@ public class MediaSources extends MMObjectBuilder {
     protected List getProviders(MMObjectNode source) {
         if (log.isDebugEnabled()) {
             log.debug("mediasource " + source.getStringValue("number"));
-        }        
+        }
         return source.getRelatedNodes("mediaproviders");
     }
     
-
+    
     private void checkFields(MMObjectNode node) {
         if (log.isDebugEnabled()) {
             log.debug("format: " + node.getValue("format"));
@@ -433,31 +479,31 @@ public class MediaSources extends MMObjectBuilder {
                 String extension = url.substring(dot + 1);
                 log.service("format was unset, trying to autodetect by using 'url' field with extension '" + extension);
                 node.setValue("format", Format.get(extension).toInt());
-            }            
+            }
         }
     }
-
+    
     public boolean setValue(MMObjectNode node,String fieldName, Object value) {
         if ("format".equals(fieldName)) {
         }
         return super.setValue(node, fieldName, value);
     }
-
+    
     /**
      * The commit can be used to automaticly fill unfilled fields. For
      * example the format can well be guessed by the URL.
      * @todo which of commit,insert must be overriden?
-     */ 
-
+     */
+    
     public boolean commit(MMObjectNode node) {
-        checkFields(node);     
+        checkFields(node);
         return super.commit(node);
     }
     public int insert(String owner, MMObjectNode node) {
         checkFields(node);
         return super.insert(owner, node);
     }
-
+    
     /*
      * @scope private (and use it in checkFields)
      */
@@ -481,5 +527,5 @@ public class MediaSources extends MMObjectBuilder {
             case DIVX_CODEC: return "divx";
             default: return "Undefined";
         }
-   }
+    }
 }
