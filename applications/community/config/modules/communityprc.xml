@@ -2,5 +2,5 @@
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="mmbase.org" version="1">
 	<status>active</status>
-	<classfile>org.mmbase.module.community.CommunityPrc</classfile>
+	<classfile>org.mmbase.applications.community.modules.CommunityPrc</classfile>
 </module>
