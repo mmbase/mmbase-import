@@ -1,0 +1,52 @@
+<?xml encoding="UTF-8"?>
+<!-- 11 july 2001 -->
+
+<!ELEMENT transactions (create | open | commit | delete)* >
+<!ATTLIST transactions exceptionPage CDATA #IMPLIED>
+<!ATTLIST transactions key CDATA #IMPLIED>
+
+<!-- TRANSACTIONS -->
+<!ELEMENT create (createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)* >
+<!ATTLIST create id CDATA #IMPLIED>
+<!ATTLIST create commit (true | false) "true">
+<!ATTLIST create timeOut CDATA "60">
+
+<!ELEMENT open (createObject | createRelation | openObject | accessObject | deleteObject | markObjectDelete)* >
+<!ATTLIST open id CDATA #REQUIRED>
+<!ATTLIST open commit (true | false) "true">
+
+<!ELEMENT commit (EMPTY) >
+<!ATTLIST commit id CDATA #REQUIRED>
+
+<!ELEMENT delete (EMPTY) >
+<!ATTLIST delete id CDATA #REQUIRED>
+
+<!-- OBJECTS -->
+<!ELEMENT createObject (setField*)>
+<!ATTLIST createObject id CDATA #IMPLIED>
+<!ATTLIST createObject type CDATA #REQUIRED>
+
+<!ELEMENT createRelation (setField*)>
+<!ATTLIST createRelation id CDATA #IMPLIED>
+<!ATTLIST createRelation type CDATA #REQUIRED>
+<!ATTLIST createRelation source CDATA #REQUIRED>
+<!ATTLIST createRelation destination CDATA #REQUIRED>
+
+<!ELEMENT openObject (setField*)>
+<!ATTLIST openObject id CDATA #REQUIRED>
+
+<!ELEMENT deleteObject (EMPTY) >
+<!ATTLIST deleteObject id CDATA #REQUIRED>
+
+<!ELEMENT accessObject (setField*)>
+<!ATTLIST accessObject mmbaseId CDATA #REQUIRED>
+<!ATTLIST accessObject id CDATA  #IMPLIED>
+
+<!ELEMENT markObjectDelete (EMPTY)>
+<!ATTLIST markObjectDelete mmbaseId CDATA #REQUIRED>
+<!ATTLIST markObjectDelete deleteRelations (true | false) "false">
+
+<!-- FIELDS -->
+<!ELEMENT setField #PCDATA >
+<!ATTLIST setField name CDATA #REQUIRED>
+<!ATTLIST setField url CDATA #IMPLIED>
