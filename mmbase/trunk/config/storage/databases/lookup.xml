@@ -35,5 +35,9 @@
   <filter resource="storage/databases/postgresql.xml">
     <driver-class>org.sourceforge.jxdbcon</driver-class>
   </filter>
-
+  
+  <!-- M$ SQL Server -->
+  <filter resource="storage/databases/mssql.xml">
+    <driver-class>com.microsoft.jdbc.sqlserver</driver-class>
+  </filter>
 </database-filters>
