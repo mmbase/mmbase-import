@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.67 2002-09-23 13:53:43 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.68 2002-09-30 12:39:47 michiel Exp $
  */
 public class BasicNode implements Node, SizeMeasurable {
 
@@ -347,6 +347,10 @@ public class BasicNode implements Node, SizeMeasurable {
 
     public String getStringValue(String attribute) {
         return noderef.getStringValue(attribute);
+    }
+
+    public FieldValue getFunctionValue(String functionName, List arguments) {
+        return new BasicFunctionValue(this, noderef, noderef.getFunctionValue(functionName, arguments));
     }
 
     public Document getXMLValue(String fieldName) {
