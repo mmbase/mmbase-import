@@ -51,16 +51,21 @@
   <tr><td>javax.servlet.include.servlet_path</td><td>null</td><td><%=request.getAttribute("javax.servlet.include.servlet_path")%></td></tr>
   <tr><td>org.mmbase.taglib.includeLevel</td><td>null</td><td><%=request.getAttribute("org.mmbase.taglib.includeLevel")%></td></tr>
   <tr><th colspan="3">Standard attributes in an mm:include</th></tr>
-  <tr><td>javax.servlet.include.servlet_path</td><td>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><mm:include page="showattribute.jsp" /></td></tr>
+  <% String dir = new java.net.URL(new java.net.URL("http", "localhost", request.getServletPath()), ".").getFile(); %>
+  <tr><td>javax.servlet.include.servlet_path</td><td><%=dir%>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><mm:include page="showattribute.jsp" /></td></tr>
   <tr><td>org.mmbase.taglib.includeLevel</td><td>1</td><td><td><mm:write request="attribute" value="org.mmbase.taglib.includeLevel" /><mm:include page="showattribute.jsp" /></td></tr>
 
-  <tr><th colspan="3">Standard attributes in an mm:include</th></tr>
-  <tr><td>javax.servlet.include.servlet_path</td><td>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><mm:include page="includeshowattribute.jsp" /></td></tr>
-  <tr><td>org.mmbase.taglib.includeLevel</td><td>2</td><td><td><mm:write request="attribute" value="org.mmbase.taglib.includeLevel" /><mm:include page="includeshowattribute.jsp" /></td></tr>
+  <tr><th colspan="3">Standard attributes in an mm:include (recursive)</th></tr>
+  <tr><td>javax.servlet.include.servlet_path</td><td><%=dir%>includeshowattribute.jsp | <%=dir%>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><mm:include page="includeshowattribute.jsp" /></td></tr>
+  <tr><td>org.mmbase.taglib.includeLevel</td><td>1 | 2</td><td><td><mm:write request="attribute" value="org.mmbase.taglib.includeLevel" /><mm:include page="includeshowattribute.jsp" /></td></tr>
 
   <tr><th colspan="3">Standard attributes in an jsp:include</th></tr>
-  <tr><td>javax.servlet.include.servlet_path</td><td>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><jsp:include page="showattribute.jsp" /></td></tr>
+  <tr><td>javax.servlet.include.servlet_path</td><td><%=dir%>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><jsp:include page="showattribute.jsp" /></td></tr>
   <tr><td>org.mmbase.taglib.includeLevel</td><td>null</td><td><td><mm:write request="attribute" value="org.mmbase.taglib.includeLevel" /><jsp:include page="showattribute.jsp" /></td></tr>
+  <tr><th colspan="3">Standard attributes in an jsp:include (recursive)</th></tr>
+  <tr><td>javax.servlet.include.servlet_path</td><td><%=dir%>includeshowattribute.jsp | <%=dir%>showattribute.jsp</td><td><mm:write request="attribute" value="javax.servlet.include.servlet_path" /><jsp:include page="includeshowattribute.jsp" /></td></tr>
+  <tr><td>org.mmbase.taglib.includeLevel</td><td>null | 1</td><td><td><mm:write request="attribute" value="org.mmbase.taglib.includeLevel" /><jsp:include page="includeshowattribute.jsp" /></td></tr>
+
 </table>  
 </body>
 </html>
