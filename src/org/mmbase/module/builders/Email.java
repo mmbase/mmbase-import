@@ -117,7 +117,8 @@ public class Email extends MMObjectBuilder {
 	*/
 	public int sendMailNode(MMObjectNode node) {
 			String subject=getSubject(node);
-			String to=node.getStringValue("to");
+			//String to=node.getStringValue("to");
+			String to=getTo(node);
 			String from=node.getStringValue("from");
 			String replyto=node.getStringValue("replyto");
 			//String body=node.getStringValue("body");
@@ -148,7 +149,7 @@ public class Email extends MMObjectBuilder {
 			}
 			
 			// send the message to the user defined
-			if (mmb.getSendMail().sendMail(mail)==false) {
+			if (to==null || mmb.getSendMail().sendMail(mail)==false) {
 				System.out.println("Email -> mail failed");
 				node.setValue("mailstatus",STATE_FAILED);
 			} else {
@@ -158,6 +159,62 @@ public class Email extends MMObjectBuilder {
 			return(node.getIntValue("mailstatus"));
 	}
 
+
+	String getTo(MMObjectNode node) {
+		String to=node.getStringValue("to");
+		if (to==null || to.equals("")) {
+			to=getPeoplesEmail(node);
+			String tmp=getUsersEmail(node);	
+			if (tmp!=null) {
+				if (to.equals("")) {
+					to=tmp;
+				} else {
+					to=","+tmp;
+				}
+			}
+		}
+		System.out.println("TO="+to);
+		return(to);
+	}
+
+	String getPeoplesEmail(MMObjectNode node) {
+		// try and find related people
+		String to=null;
+		Vector rels=node.getRelatedNodes("people");
+		if (rels!=null) {
+			Enumeration enum=rels.elements();
+       			while (enum.hasMoreElements()) {
+				MMObjectNode pnode=(MMObjectNode)enum.nextElement();
+				String email=pnode.getStringValue("email");
+				if (to==null || to.equals("")) {
+					to=email;
+				} else {
+					to=","+email;
+				}
+			}
+		}
+		return(to);
+	}
+
+
+	String getUsersEmail(MMObjectNode node) {
+		// try and find related users
+		String to=null;
+		Vector rels=node.getRelatedNodes("users");
+		if (rels!=null) {
+			Enumeration enum=rels.elements();
+       			while (enum.hasMoreElements()) {
+				MMObjectNode pnode=(MMObjectNode)enum.nextElement();
+				String email=pnode.getStringValue("email");
+				if (to==null || to.equals("")) {
+					to=email;
+				} else {
+					to=","+email;
+				}
+			}
+		}
+		return(to);
+	}
 
 	String getSubject(MMObjectNode node) {
 		String subject=node.getStringValue("subject");
