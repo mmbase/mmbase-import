@@ -1,4 +1,5 @@
 <form action="<mm:url referids="parameters,$parameters" />" method="post">
+
 <table class="list">
   <tr class="listsearch">
     <td colspan="3">
@@ -184,7 +185,7 @@
 
 
   <mm:list fields="bugreports.bugid,bugreports.bstatus,bugreports.btype,bugreports.bpriority,bugreports.version,bugreports.fixedin,areas.name,bugreports.issue">
-  <tr>
+  <tr <mm:even>class="even"</mm:even>>
       <td>#<mm:field name="bugreports.bugid" /></td>
       <td>
 	<mm:field name="bugreports.bstatus">

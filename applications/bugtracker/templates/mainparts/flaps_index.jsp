@@ -1,28 +1,26 @@
-<table class="subnav">
-  <tr>
+<ul id="tabnav">
     <!-- overview flap -->	
     <mm:compare referid="flap" value="search" inverse="true">
-      <td><a href="<mm:url referids="parameters,$parameters"><mm:param name="flap" value="search" /></mm:url>">Search</a></td>
+      <li><a href="<mm:url referids="parameters,$parameters"><mm:param name="flap" value="search" /></mm:url>">Search</a></li>
     </mm:compare>
     <mm:compare referid="flap" value="search">
-      <td class="selected">Search</td>
+      <li><a href="#" class="active">Search</a></li>
     </mm:compare>
 
     <!-- comments flap -->
     <mm:compare referid="flap" value="lastchanges" inverse="true">
-       <td><a href="<mm:url referids="parameters,$parameters"><mm:param name="flap" value="lastchanges" /></mm:url>">Last changed</a></td>
+       <li><a href="<mm:url referids="parameters,$parameters"><mm:param name="flap" value="lastchanges" /></mm:url>">Last changed</a></li>
     </mm:compare>
     <mm:compare referid="flap" value="lastchanges">
-       <td class="selected">Last changed</td>
+       <li><a href="#" class="active">Last changed</a></li>
     </mm:compare>
 
 
     <!-- history flap -->
     <mm:compare referid="flap" value="stats" inverse="true">
-      <td><a href="<mm:url referids="parameters,$parameters"><mm:param name="flap" value="stats" /></mm:url>">Statistics</a></td>
+      <li><a href="<mm:url referids="parameters,$parameters"><mm:param name="flap" value="stats" /></mm:url>">Statistics</a></li>
     </mm:compare>
     <mm:compare referid="flap" value="stats">
-      <td class="selected">Statistics</td>
+      <li><a href="#" class="active">Statistics</a></li>
     </mm:compare>
-  </tr>
-</table>
+</ul>

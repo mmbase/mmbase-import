@@ -1,5 +1,5 @@
-<mm:import externid="ca" from="cookie" />
-<mm:import externid="cw" from="cookie" />
+<mm:import externid="ca" from="cookie,session"/>
+<mm:import externid="cw" from="cookie,session" />
 
 <%-- should become
 <mm:present referid="ca">
@@ -14,13 +14,22 @@
 <%-- is --%>
 <mm:present referid="ca">
   <mm:present referid="cw">
-    <mm:listnodes type="users" constraints="account='$ca' and password='$cw'" max="1">
-      <mm:field id="user" name="number" write="false" />
+    <mm:listnodescontainer type="users">
+     <mm:constraint field="account" referid="ca"/>
+     <mm:constraint field="password" referid="cw"/>
+     <mm:maxnumber value="1"/>
+     <mm:listnodes >
+      <mm:field id="user" name="number" write="false" jspvar="user">
+         <% request.setAttribute("user",user); %>
+      </mm:field>
     </mm:listnodes>
+    </mm:listnodescontainer>
   </mm:present>
 </mm:present>
 <mm:present referid="user">
   <mm:list path="users,groups" nodes="$user" constraints="groups.name='BugTrackerCommitors'" max="1">
-    <mm:field id="commitor" write="false" name="users.number" />
+    <mm:field id="commitor" write="false" name="users.number"  jspvar="commitor">
+         <% request.setAttribute("commitor",commitor); %>
+    </mm:field>
   </mm:list>
 </mm:present>

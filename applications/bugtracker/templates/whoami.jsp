@@ -1,3 +1,5 @@
+<mm:context>
+<%@include file="login.jsp" %>
 <table>
   <tr>    
     <mm:present referid="user" inverse="true" >
@@ -29,3 +31,4 @@
     </mm:present>
   </tr>
 </table>
+</mm:context>

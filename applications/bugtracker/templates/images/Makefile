@@ -1,6 +1,6 @@
 SOURCE=arrow.fig
 SOURCE2=arrow.png
-SCALE=-scale 20x20
+SCALE=-transparent white -scale 10x10
 FORMAT=png
 all:
 	fig2dev -L png -b 0 arrow.fig arrow.png
