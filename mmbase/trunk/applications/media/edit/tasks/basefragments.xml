@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
  [
-    <!ENTITY formats SYSTEM "http://michiel.omroep.nl/mm/mediaedit/tasks/parts/formats.xml.jsp" >
-    <!ENTITY itemize SYSTEM  "parts/itemize.xml">
+    <!ENTITY formats SYSTEM "http://michiel.omroep.nl/mm/mediaedit/tasks/parts/formats.xml.jsp"> 
+    <!ENTITY sources SYSTEM "parts/sources.xml" >
+
+
   ]
 >
 <wizard-schema id="media">
-	<title>Media editor</title>
+	<title>Basis clips editor</title>
 
 	<action type="create">
 		<object type="mediafragments">
@@ -19,7 +21,7 @@
 	
 	<action type="load">
 		<relation destination="mediasources"   role="related" />
-		<relation destination="mediafragments" role="posrel" />
+		<relation destination="mediafragments" role="parent" />
 		<relation destination="publishtimes"   role="related" />
 	</action>
 
@@ -30,8 +32,9 @@
 		<field name="title" />
 		<field name="subtitle" />
 		<field name="intro" />
-  </form-schema>
 
-  &itemize;
+		&sources;
+
+  </form-schema>
 
 </wizard-schema>

@@ -32,6 +32,10 @@ textarea {
   background-color : #F0F2F5;
   }
 
+span.realpositionitem input.input {
+    width: 150px;
+}
+
 table {
  width: 100%;
  margin: 0;
