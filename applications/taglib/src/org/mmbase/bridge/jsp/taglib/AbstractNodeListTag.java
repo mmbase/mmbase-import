@@ -191,6 +191,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (constraints != null) {
                 throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
             }
+            if (getReferid().equals(getId())) { // in such a case, don't whine
+                getContextTag().unRegister(getId());
+            }
             return setReturnValues((NodeList) o);
         }
         return NOT_HANDLED;
