@@ -130,7 +130,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 
 			// Send Email if needed.
 			if(!data.equals("")) {
-				Mail mail = new Mail(from,to);
+				Mail mail = new Mail(to,from);
 				mail.setSubject("List of incorrect urls and jumpers");
 				mail.setText(data);
 				sendmail.sendMail(mail);
