@@ -7,11 +7,71 @@
 <wizard-schema id="media">
 	<title>Media editor</title>
 	
+  <action type="delete" />
+
+  <action type="create">
+    <object type="mediafragments">
+    </object>
+  </action>
+
 	<action type="load">
-		<relation destination="mediasources"   role="related" />
-		<relation destination="mediafragments" role="parent" />
+		<relation destination="mediafragments" role="parent"  />
+		<relation destination="mediafragments" role="posrel" />
+		<relation destination="publishtimes"   role="related" />
 	</action>
 
-  &itemize;
+  <form-schema id="publish">
+    <title xml:lang="en">Meta info + Valid time</title>
+    <title xml:lang="nl">Meta info + Geldigheid</title>
+
+    <list role="parent" destination="mediafragments" minoccurs="1" maxoccurs="1" >
+      <title xml:lang="en">Base stream</title>
+      <title xml:lang="nl">Basis stream</title>
+      <item>
+        <field ftype="data" name="title" />
+      </item>
+      <command name="search" nodepath="pools,mediafragments" fields="pools.name,mediafragments.title" orderby="mediafragments.title" age="-1" >
+        <search-filter>
+          <name>Title</name>
+          <search-fields>mediafragments.title</search-fields>
+        </search-filter>
+      </command>
+      <action type="create">
+        <relation destinationtype="mediafragments" role="parent" />
+      </action>
+    </list>
+
+
+    <field name="title" />
+    <field name="body" />
+
+
+    <list role="related" destination="publishtimes" minoccurs="0" maxoccurs="1" hidecommand="delete-item">
+      <title xml:lang="en">Valid time (optional)</title>
+      <title xml:lang="nl">Geldigheid (optioneel)</title>
+      <item>
+        <field name="create"/>
+        <field name="begin"/>
+        <field name="end"/>
+      </item>
+      <action type="create">
+        <relation destinationtype="publishtimes" role="related" >
+          <object type="publishtimes">
+            <field name="create">-1</field>
+            <field name="begin">-1</field>
+            <field name="end">0</field>
+          </object>
+        </relation>
+      </action>
+    </list>
+
+  </form-schema>
+
+  <form-schema id="itemize">  
+    <field ftype="data" name="title" />
+    <title xml:lang="en">Itemization</title>
+    <title xml:lang="nl">Opknippen</title>
+    &itemize;
+  </form-schema>
 
 </wizard-schema>

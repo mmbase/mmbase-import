@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
  [
-    <!ENTITY formats SYSTEM "http://michiel.omroep.nl/mm/mediaedit/tasks/parts/formats.xml.jsp" >
-    <!ENTITY itemize SYSTEM  "parts/itemize.xml">
   ]
 >
 <wizard-schema id="media">
@@ -11,27 +9,21 @@
 	<action type="create">
 		<object type="mediafragments">
 			<field name="title">Don't forget to add a title</field>
-       <relation role="related" destination="{$origin}" />
 		</object>
 	</action>
 	
 	<action type="delete" />
 	
 	<action type="load">
-		<relation destination="mediasources"   role="related" />
-		<relation destination="mediafragments" role="posrel" />
-		<relation destination="publishtimes"   role="related" />
 	</action>
-
-  &formats;
 
 	<form-schema id="basics">
 		<title>Media Editor</title>
 		<field name="title" />
 		<field name="subtitle" />
 		<field name="intro" />
+		<field name="body" />
   </form-schema>
 
-  &itemize;
 
 </wizard-schema>

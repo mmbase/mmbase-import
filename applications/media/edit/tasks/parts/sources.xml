@@ -1,0 +1,19 @@
+
+<list role="related" destination="mediasources" minoccurs="1" >
+  <title>Sources</title>       
+  <title xml:lang="nl">Bronnen</title>       
+  <item>
+    <field name="url">
+      <prompt>Url (relative)</prompt>
+      <prompt xml:lang="nl">Url (relatief)</prompt>
+    </field>
+    <field ftype="enum" name="format">
+      <optionlist select="formats" />
+    </field>
+  </item>
+	<action type="create">
+		<relation  role="related">
+      <object type="mediasources" />
+    </relation>
+	</action>
+</list>

@@ -148,7 +148,9 @@ public class MediaUrlComposer {
         } else if (mimeMapping.containsKey("*/*")) {
             mimetype += mimeMapping.get("*/*");
         }   
-        log.debug("Mimetype for mediasource "+mediasource.getStringValue("number")+" is "+mimetype);
+        if (log.isDebugEnabled()) {
+            log.debug("Mimetype for mediasource "+mediasource.getStringValue("number")+" is "+mimetype);
+        }
         return mimetype;
     }
     
