@@ -31,8 +31,43 @@
    </mm:first>  
    <mm:node element="learnobjects"> 
     <mm:import id="objecttype"><mm:nodeinfo type="type" /></mm:import>
+
+        <mm:import id="mark_error" reset="true"></mm:import>
+        <mm:compare referid="objecttype" value="tests">
+            <mm:field name="questionamount" id="questionamount">
+                <mm:isgreaterthan value="0">
+                    <mm:countrelations type="questions">
+                        <mm:islessthan value="$questionamount">
+                            <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er gesteld moeten worden.</mm:import>
+                        </mm:islessthan>
+                    </mm:countrelations>
+                </mm:isgreaterthan>
+                <mm:field name="requiredscore" id="requiredscore">
+                  <mm:countrelations type="questions">
+                      <mm:islessthan value="$requiredscore">
+                          <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
+                      </mm:islessthan>
+                  </mm:countrelations>
+                  <mm:isgreaterthan referid="questionamount" value="0">
+                      <mm:islessthan referid="questionamount" value="$requiredscore">
+                        <mm:import id="mark_error" reset="true">Er worden minder vragen gesteld dan er goed beantwoord moeten worden.</mm:import>
+                      </mm:islessthan>
+                  </mm:isgreaterthan>
+                </mm:field>
+            </mm:field>
+        </mm:compare>
+        <mm:compare referid="objecttype" value="mcquestions">
+            <mm:import id="mark_error" reset="true">Een multiple-choice vraag moet minstens 1 goed antwoord hebben</mm:import>
+            <mm:relatednodes type="mcanswers" constraints="correct > 0" max="1">
+                <mm:import id="mark_error" reset="true"></mm:import>
+            </mm:relatednodes>
+        </mm:compare>
+        
+ 
+
+    
     <mm:write referid="treeName" />.addItem(
-        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:present referid="pdfurl"><mm:compare referid="objecttype" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present>",
+        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:present referid="pdfurl"><mm:compare referid="objecttype" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty>",
         "<mm:write referid="wizardjsp"/>?wizard=<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />",
         null,
         "bewerk object",

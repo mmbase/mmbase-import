@@ -29,6 +29,7 @@ var imgMenuTee  = "<mm:treefile write="true" page="/education/wizards/gfx/menu_t
 var imgMenuLinkDefault = "<mm:treefile write="true" page="/education/wizards/gfx/menu_link_default.gif" objectlist="" />";
 var imgMenuRoot = "<mm:treefile write="true" page="/education/wizards/gfx/menu_root.gif" objectlist="" />";
 
+
 /******************************************************************************
 * Define the MenuItem object.                                                 *
 ******************************************************************************/
@@ -271,9 +272,14 @@ var MTMCodeFrame = "code", MTMenuFrame = "menu", MTMTableWidth = "100%", MTMenuI
 var MTMUseToolTips = true, MTMEmulateWE, MTMAlwaysLinkIfWE = true, MTMSubsGetPlus = "Submenu", MTMSubsAutoClose;
 var MTMBackground = "", MTMBGColor = "#ffffff", MTMTextColor = "#000000", MTMLinkColor = "#000000", MTMTrackColor = "#ff0000", MTMAhoverColor = "#4D4D4D", MTMSubExpandColor = "#666699", MTMSubClosedColor = "#666699", MTMSubTextColor = "#000000";
 var MTMenuText = "Site contents:", MTMRootIcon = imgMenuRoot, MTMRootColor = "#000000";
-var MTMRootFont = MTMenuFont = "Arial, Helvetica, sans-serif";
-var MTMRootCSSize = MTMenuCSSize = "84%";
-var MTMRootFontSize = MTMenuFontSize = "-1";
+
+var MTMenuFont = "sans-serif";
+var MTMenuFontSize = "10px";
+var MTMenuCSSize = "84%";
+var MTMRootFont = MTMenuFont;
+var MTMRootCSSize = MTMenuCSSize;
+var MTMRootFontSize = MTMenuFontSize;
+
 
 /******************************************************************************
 * Global variables.  Not to be altered unless you know what you're doing.     *
@@ -296,7 +302,7 @@ var MTMExpansion = false;
 
 var MTMNumber = 1;
 var MTMTrackedItem;
-var MTMTrack = false;
+var MTMTrack = true;
 var MTMFrameNames;
 
 var MTMFirstRun = true;
@@ -502,7 +508,7 @@ function MTMDisplayMenu() {
 		MTMFirstRun = false;
 		MTMClickedItem = false;
 		MTMExpansion = false;
-		MTMTrack = false;
+		MTMTrack = true;
 		MTMCookieString = "";
 	}
 MTMUpdating = false;

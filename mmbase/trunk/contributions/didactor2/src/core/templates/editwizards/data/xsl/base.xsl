@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.2 2005-01-04 13:25:05 jdiepenmaat Exp $
+    @version $Id: base.xsl,v 1.3 2005-01-06 14:43:43 jdiepenmaat Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -189,7 +189,9 @@
     the you can overrride this -->
   <xsl:template name="extrastyle" />
   <!-- If you need extra javascript, then you can override this thing -->
-  <xsl:template name="extrajavascript"><script type="text/javascript" src="../../education/wizards/mtmtrack.js"></script></xsl:template>
+  <xsl:template name="extrajavascript">
+     <script type="text/javascript" src="../../education/wizards/mtmtrack.js"></script>
+  </xsl:template>
 
   <!-- If you need a different htmlbody, then you can override this thing -->
   <xsl:template name="htmlbody">

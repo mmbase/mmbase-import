@@ -15,7 +15,14 @@
     <html>
       <head>
         <title>Javascript menu</title>
-        <script type="text/javascript" src="<mm:treefile page="/education/wizards/mtmcode.jsp" objectlist="$includePath" referids="$referids" write="true"/>"></script>
+        <style type="text/css">
+            a {
+                font-size: 8px;
+            }
+        </style>
+ 
+        
+       <script type="text/javascript" src="<mm:treefile page="/education/wizards/mtmcode.jsp" objectlist="$includePath" referids="$referids" write="true"/>"></script>
 
 
 <mm:node number="component.pdf" notfound="skip">
@@ -210,7 +217,34 @@ var edutree<%= treeCount %> = new MTMenu();
 </mm:first>
  <mm:node element="learnobjects">
     <mm:nodeinfo type="type" id="this_node_type">
-  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present>",
+        <mm:import id="mark_error" reset="true"></mm:import>
+        <mm:compare referid="this_node_type" value="tests">
+            <mm:field name="questionamount" id="questionamount">
+                <mm:isgreaterthan value="0">
+                    <mm:countrelations type="questions">
+                        <mm:islessthan value="$questionamount">
+                            <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er gesteld moeten worden.</mm:import>
+                        </mm:islessthan>
+                    </mm:countrelations>
+                </mm:isgreaterthan>
+                <mm:field name="requiredscore" id="requiredscore">
+                  <mm:countrelations type="questions">
+                      <mm:islessthan value="$requiredscore">
+                          <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
+                      </mm:islessthan>
+                  </mm:countrelations>
+                  <mm:isgreaterthan referid="questionamount" value="0">
+                      <mm:islessthan referid="questionamount" value="$requiredscore">
+                        <mm:import id="mark_error" reset="true">Er worden minder vragen gesteld dan er goed beantwoord moeten worden.</mm:import>
+                      </mm:islessthan>
+                  </mm:isgreaterthan>
+                </mm:field>
+            </mm:field>
+        </mm:compare>
+
+
+                   
+  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight:bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty>",
                   "<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />",
                   null,
                   "<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />",
