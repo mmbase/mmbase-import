@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.10 2004-01-12 14:59:52 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.11 2004-02-06 21:15:48 michiel Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -243,12 +243,12 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         }
     }
 
-    public String getAllowedField(String disallowedfield) {
-        String allowedfield = (String)disallowedFields.get(disallowedfield);
-        if (allowedfield != null) {
-            return allowedfield;
+    public String getAllowedField(String disallowedField) {
+        String allowedField = (String) disallowedFields.get(disallowedField);
+        if (allowedField != null) {
+            return allowedField;
         } else {
-            return disallowedfield;
+            return disallowedField;
         }
     }
 
