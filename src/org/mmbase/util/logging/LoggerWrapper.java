@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen 
  * @since  MMBase-1.7
- * @version $Id: LoggerWrapper.java,v 1.1 2003-07-18 14:54:42 michiel Exp $
+ * @version $Id: LoggerWrapper.java,v 1.2 2004-07-26 08:25:03 michiel Exp $
  **/
 
 public  class LoggerWrapper implements Logger {
@@ -54,27 +54,49 @@ public  class LoggerWrapper implements Logger {
     final public void trace   (Object m) {
         log.trace(m);
     }
+    final public void trace   (Object m, Throwable t) {
+        log.trace(m, t);
+    }
     final public void debug   (Object m) {
         log.debug(m);
+    }
+    final public void debug   (Object m, Throwable t) {
+        log.debug(m, t);
     }
 
     final public void service (Object m) {
         log.service(m);
     }
+    final public void service (Object m, Throwable t) {
+        log.service(m, t);
+    }
 
     final public void info    (Object m) {
         log.info(m);
+    }
+    final public void info    (Object m, Throwable t) {
+        log.info(m, t);
     }
 
     final public void warn    (Object m) {
         log.warn(m);
     }
+    final public void warn    (Object m, Throwable t) {
+        log.warn(m, t);
+    }
 
     final public void error   (Object m) {
         log.error(m);
     }
+    final public void error   (Object m, Throwable t) {
+        log.error(m, t);
+    }
+
     final public void fatal   (Object m) {
         log.fatal(m);
+    }
+    final public void fatal   (Object m, Throwable t) {
+        log.fatal(m, t);
     }
 
     final public boolean isDebugEnabled() {
