@@ -28,7 +28,7 @@ public class SetContextTag extends NodeReferrerTag {
         name = getAttributeValue(n);
     }
 
-    public int doAfterBody() throws JspTagException {        
+    public int doEndTag() throws JspTagException {        
         if (name == null) {
             name = bodyContent.getString();
         }
