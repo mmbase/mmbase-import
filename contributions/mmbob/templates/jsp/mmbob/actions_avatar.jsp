@@ -209,7 +209,7 @@
         <mm:param name="avatarset" value="ownset"  />
         <mm:param name="selectedavatar" value="true" />
         <mm:param name="profile" value="$profile" />
-        </mm:url>"><mm:write referid="mlg_own_avatars"/></a>
+        </mm:url>"><mm:write referid="mlg.own_avatars"/></a>
         </li>
         <mm:compare value="otherset" referid="avatarset">
         <li class="selected">
@@ -225,7 +225,7 @@
         <mm:param name="avatarset" value="otherset" />
         <mm:param name="selectedavatar" value="true " />
         <mm:param name="profile" value="$profile" />
-        </mm:url>"><mm:write referid="mlg_other_avatars"/></a>
+        </mm:url>"><mm:write referid="mlg.other_avatars"/></a>
         </li>
       </ul>
     </div>
@@ -244,7 +244,7 @@
                   </mm:import>
                 </mm:notpresent>
                 <mm:import id="headdisplayed">true</mm:import>
-                <span class="label"><mm:write referid="mlg_Select_category"/>:</span>
+                <span class="label"><mm:write referid="mlg.Select_category"/>:</span>
                 <span class="formw">
                   <select name="avatarsets">
               </mm:first>
@@ -267,7 +267,7 @@
                     </mm:notpresent>
                     <mm:notpresent referid="headdisplayed">
                       <mm:import id="headdisplayed">true</mm:import>
-                      <span class="label"><mm:write referid="mlg_Select_category"/>:</span>
+                      <span class="label"><mm:write referid="mlg.Select_category"/>:</span>
                       <span class="formw">
                         <select name="avatarsets">
                     </mm:notpresent>
@@ -286,7 +286,7 @@
       
 
      <mm:notpresent referid="headdisplayed">
-       <span class="label"><mm:write referid="mlg_No_avatars_installed"/></span>
+       <span class="label"><mm:write referid="mlg.No_avatars_installed"/></span>
        
      </mm:notpresent>
 

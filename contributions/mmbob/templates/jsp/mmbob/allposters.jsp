@@ -43,11 +43,11 @@
 
 <mm:node referid="forumid">
   <tr>
-    <th><mm:write referid="mlg_Account" /></th>
-    <th><mm:write referid="mlg_Location" /></th>
-    <th><mm:write referid="mlg_Last_seen" /></th>
+    <th><mm:write referid="mlg.Account" /></th>
+    <th><mm:write referid="mlg.Location" /></th>
+    <th><mm:write referid="mlg.Last_seen" /></th>
     <mm:compare referid="isadministrator" value="true">
-      <th><mm:write referid="mlg_Admin_tasks"/></th>
+      <th><mm:write referid="mlg.Admin_tasks"/></th>
     </mm:compare>
   </tr>
 
@@ -58,13 +58,13 @@
     <td><mm:field name="location" /></td>
     <td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td>
     <mm:compare referid="isadministrator" value="true">
-      <td><a href="removeposter.jsp?forumid=<mm:write referid="forumid" />&removeposterid=<mm:field name="number" />"/><mm:write referid="mlg_Delete"/></a> / 
+      <td><a href="removeposter.jsp?forumid=<mm:write referid="forumid" />&removeposterid=<mm:field name="number" />"/><mm:write referid="mlg.Delete"/></a> / 
       <mm:field name="state">
         <mm:compare value="1" inverse="true"> 
-          <a href="disableposter.jsp?forumid=<mm:write referid="forumid" />&disableposterid=<mm:field name="number" />"/><mm:write referid="mlg_Disable"/></a>
+          <a href="disableposter.jsp?forumid=<mm:write referid="forumid" />&disableposterid=<mm:field name="number" />"/><mm:write referid="mlg.Disable"/></a>
         </mm:compare>
         <mm:compare value="1">
-          <a href="enableposter.jsp?forumid=<mm:write referid="forumid" />&enableposterid=<mm:field name="number" />"/><mm:write referid="mlg_Enable"/></a>
+          <a href="enableposter.jsp?forumid=<mm:write referid="forumid" />&enableposterid=<mm:field name="number" />"/><mm:write referid="mlg.Enable"/></a>
         </mm:compare>
       </mm:field> 
       </td>

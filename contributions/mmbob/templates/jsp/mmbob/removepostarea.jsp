@@ -34,8 +34,8 @@
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%" align="center">
-  <tr><th colspan="3"><mm:write referid="mlg_Delete"/> <mm:write referid="mlg_Area" /> : <mm:node referid="postareaid"><mm:field name="name" /></mm:node> </th></tr>
-   <tr><td colspan="3"><mm:write referid="mlg_Are_you_sure" /></td></tr>
+  <tr><th colspan="3"><mm:write referid="mlg.Delete"/> <mm:write referid="mlg.Area" /> : <mm:node referid="postareaid"><mm:field name="name" /></mm:node> </th></tr>
+   <tr><td colspan="3"><mm:write referid="mlg.Are_you_sure" /></td></tr>
   <tr><td>
   <form action="<mm:url page="index.jsp">
 					<mm:param name="forumid" value="$forumid" />
@@ -45,7 +45,7 @@
 	<input type="hidden" name="action" value="removepostarea">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Yes_delete"/>">
+	<input type="submit" value="<mm:write referid="mlg.Yes_delete"/>">
   	</form>
 	</td>
 	<td>
@@ -56,7 +56,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>

@@ -58,13 +58,13 @@
 					<center><img src="<mm:write referid="image_logo" />" width="60%" ></center>
 					<br />
 					</mm:compare>
-			<b><mm:write referid="mlg_Area_name"/></b> : <mm:field name="name" /> <b><mm:write referid="mlg_Topics"/></b> : <mm:field name="postthreadcount" /> <b><mm:write referid="mlg_Messages"/></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg_Views"/></b> : <mm:field name="viewcount" /><br />
-			<b><mm:write referid="mlg_Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b><mm:write referid="mlg_by"/></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><mm:write referid="mlg_no_messages"/></mm:compare></mm:field><br />
+			<b><mm:write referid="mlg.Area_name"/></b> : <mm:field name="name" /> <b><mm:write referid="mlg.Topics"/></b> : <mm:field name="postthreadcount" /> <b><mm:write referid="mlg.Messages"/></b> : <mm:field name="postcount" /> <b><mm:write referid="mlg.Views"/></b> : <mm:field name="viewcount" /><br />
+			<b><mm:write referid="mlg.Last_posting"/></b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b><mm:write referid="mlg.by"/></b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1"><mm:write referid="mlg.no_messages"/></mm:compare></mm:field><br />
 			<mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
                         <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
 		  </mm:nodefunction>
 	<br />
-	<b><mm:write referid="mlg_Moderators"/></b> :
+	<b><mm:write referid="mlg.Moderators"/></b> :
   		  <mm:nodelistfunction set="mmbob" name="getModerators" referids="forumid,postareaid">
 			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
 		  </mm:nodelistfunction>
@@ -76,13 +76,13 @@
   <tr>
     <th width="15">&nbsp;</th>
     <th width="15">&nbsp;</th>
-    <th><mm:write referid="mlg_topic"/></th>
-    <th><mm:write referid="mlg_author"/></th>
-    <th><mm:write referid="mlg_replies"/></th>
-    <th><mm:write referid="mlg_views"/></th>
-    <th><mm:write referid="mlg_last_posting"/></th>
+    <th><mm:write referid="mlg.topic"/></th>
+    <th><mm:write referid="mlg.author"/></th>
+    <th><mm:write referid="mlg.replies"/></th>
+    <th><mm:write referid="mlg.views"/></th>
+    <th><mm:write referid="mlg.last_posting"/></th>
     <mm:compare referid="ismoderator" value="true">
-      <th><mm:write referid="mlg_moderator"/></th>
+      <th><mm:write referid="mlg.moderator"/></th>
     </mm:compare>
   </tr>
 
@@ -96,7 +96,7 @@
     <td align="left"><mm:field name="viewcount" /></td>
     <td align="left">
       <mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> 
-      <mm:write referid="mlg_by"/>
+      <mm:write referid="mlg.by"/>
       <mm:field name="lastposternumber">
         <mm:compare value="-1" inverse="true">
           <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a>
@@ -117,7 +117,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-right : 30px;" align="right" align="center">
 	<tr>
 	<td>
-	<mm:write referid="mlg_Pages"/> : <mm:write referid="navline" />
+	<mm:write referid="mlg.Pages"/> : <mm:write referid="navline" />
 	</td></tr>
 </table>
 </mm:compare>
@@ -131,13 +131,13 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px; margin-left : 30px" align="left">
 	<tr><td align="left">
 	<br />
-	<mm:write referid="image_state_normal" /> <mm:write referid="mlg_open_topic"/><p />
-	<mm:write referid="image_state_normalnew" /> <mm:write referid="mlg_open_topic_unread"/><p />
-	<mm:write referid="image_state_hot" /> <mm:write referid="mlg_open_topic_popular"/><p />
-	<mm:write referid="image_state_hotnew" /> <mm:write referid="mlg_open_topic_popular_unread"/><p />
-	<mm:write referid="image_state_pinned" /> <mm:write referid="mlg_pinned_topic"/><p />
-	<mm:write referid="image_state_closed" /> <mm:write referid="mlg_closed_topic"/><p />
-	<mm:write referid="image_state_normalme" /> <mm:write referid="mlg_topic_to_which_you_have_contributed"/><p />
+	<mm:write referid="image_state_normal" /> <mm:write referid="mlg.open_topic"/><p />
+	<mm:write referid="image_state_normalnew" /> <mm:write referid="mlg.open_topic_unread"/><p />
+	<mm:write referid="image_state_hot" /> <mm:write referid="mlg.open_topic_popular"/><p />
+	<mm:write referid="image_state_hotnew" /> <mm:write referid="mlg.open_topic_popular_unread"/><p />
+	<mm:write referid="image_state_pinned" /> <mm:write referid="mlg.pinned_topic"/><p />
+	<mm:write referid="image_state_closed" /> <mm:write referid="mlg.closed_topic"/><p />
+	<mm:write referid="image_state_normalme" /> <mm:write referid="mlg.topic_to_which_you_have_contributed"/><p />
 	</td></tr>
 </table>
 <br /><br />
@@ -149,21 +149,21 @@
 <br /><br /><br />
 <mm:compare referid="isadministrator" value="true">
         <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;margin-left : 20px;" width="95%" align="left">
-        <tr><th align="left"><mm:write referid="mlg_Admin_tasks"/></th></tr>
+        <tr><th align="left"><mm:write referid="mlg.Admin_tasks"/></th></tr>
         <td>
         <p />
-  				<a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg_change_area"/></a><br />
+  				<a href="<mm:url page="changepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.change_area"/></a><br />
 
-  				<a href="<mm:url page="removepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg_remove_area"/></a><br />
+  				<a href="<mm:url page="removepostarea.jsp" referids="forumid,postareaid" />"><mm:write referid="mlg.remove_area"/></a><br />
 
   				<a href="<mm:url page="newmoderator.jsp">
 				<mm:param name="forumid" value="$forumid" />
 				<mm:param name="postareaid" value="$postareaid" />
-				</mm:url>"><mm:write referid="mlg_add_moderator"/></a><br />
+				</mm:url>"><mm:write referid="mlg.add_moderator"/></a><br />
   				<a href="<mm:url page="removemoderator.jsp">
 				<mm:param name="forumid" value="$forumid" />
 				<mm:param name="postareaid" value="$postareaid" />
-				</mm:url>"><mm:write referid="mlg_remove_moderator"/></a><br />
+				</mm:url>"><mm:write referid="mlg.remove_moderator"/></a><br />
 	</td></tr>
 </table>
 </mm:compare>

@@ -39,7 +39,7 @@
 <mm:node referid="postingid">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
-  <tr><th width="25%" align="left"><mm:write referid="mlg_Member" /></th><th align="left"><mm:write referid="mlg_Topic"/> : <mm:field name="subject" /></th></tr>
+  <tr><th width="25%" align="left"><mm:write referid="mlg.Member" /></th><th align="left"><mm:write referid="mlg.Topic"/> : <mm:field name="subject" /></th></tr>
   <mm:import id="tdvar">listpaging</mm:import>
   <tr>
     <td class="<mm:write referid="tdvar" />" align="left">
@@ -56,7 +56,7 @@
   </td>
 
   <td class="<mm:write referid="tdvar" />" valign="top" align="left">
-    <mm:field name="edittime"><mm:compare value="-1" inverse="true">** <mm:write referid="mlg_last_time_edited"/> **<mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
+    <mm:field name="edittime"><mm:compare value="-1" inverse="true">** <mm:write referid="mlg.last_time_edited"/> **<mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
 
 
   <mm:import id="tmpid" reset="true"><mm:field name="id"/></mm:import>
@@ -72,7 +72,7 @@
 </mm:node>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="75%" align="center">
-  <tr><th colspan="3" align="center"><mm:write referid="mlg_Are_you_sure"/></th></tr>
+  <tr><th colspan="3" align="center"><mm:write referid="mlg.Are_you_sure"/></th></tr>
   <tr><td>
   <form action="<mm:url page="postarea.jsp">
 					<mm:param name="forumid" value="$forumid" />
@@ -84,7 +84,7 @@
 	<input type="hidden" name="action" value="removepost">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Yes_delete"/>">
+	<input type="submit" value="<mm:write referid="mlg.Yes_delete"/>">
   	</form>
 	</td>
 	<td>
@@ -96,7 +96,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="<mm:write referid="mlg_Cancel"/>">
+	<input type="submit" value="<mm:write referid="mlg.Cancel"/>">
   	</form>
 	</td>
 	</tr>
