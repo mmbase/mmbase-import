@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.59 2002-05-13 14:06:16 eduard Exp $
+ * @version $Id: BasicNode.java,v 1.60 2002-06-04 17:01:46 michiel Exp $
  */
 public class BasicNode implements Node {
 
@@ -673,7 +673,6 @@ public class BasicNode implements Node {
      * @param aliasName the name of the alias (null means all aliases)
      */
     private void deleteAliases(String aliasName) {
-        edit(ACTION_EDIT);
         // A new node cannot have any aliases, except when in a transaction.
         // However, there is no point in adding aliasses to a ndoe you plan to delete,
         // so no attempt has been made to rectify this (cause its not worth all the trouble).
@@ -706,6 +705,7 @@ public class BasicNode implements Node {
     }
 
     public void deleteAlias(String aliasName) {
+        edit(ACTION_EDIT);
         deleteAliases(aliasName);
     }
 
