@@ -2,13 +2,14 @@
     packaging_data_apps1.dtd
 -->
 
-<!ELEMENT packaging_data_apps1 (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,datafile,datadir,packagedepends,initiators,supporters,developers,contacts,publishprovider*)>
+<!ELEMENT packaging_data_apps1 (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,datafile,datadir*,dataexport*,packagedepends,initiators,supporters,developers,contacts,publishprovider*)>
 
 <!ELEMENT lastversion (#PCDATA)>
 <!ELEMENT lastdate (#PCDATA)>
 <!ELEMENT datacreator (#PCDATA)>
 <!ELEMENT datafile (#PCDATA)>
 <!ELEMENT datadir (#PCDATA)>
+<!ELEMENT dataexport (#PCDATA)>
 <!ELEMENT name (#PCDATA)>
 <!ELEMENT maintainer (#PCDATA)>
 
