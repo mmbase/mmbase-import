@@ -3,13 +3,13 @@
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
 >
   <!--
-  wizard.xls
+  wizard.xsl
 
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.31 2002-07-05 10:41:54 pierre Exp $
+  @version $Id: wizard.xsl,v 1.32 2002-07-05 20:38:31 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -151,6 +151,13 @@
 
    <xsl:template name="fieldintern">
       <xsl:choose>
+        <xsl:when test="@ftype='function'">
+          <xsl:if test="@number != ''">
+            <span style="width:400;">
+              <xsl:value-of select="node:function(string(@number), string(value))" disable-output-escaping="yes" />
+              </span>
+            </xsl:if>
+        </xsl:when>
         <xsl:when test="@ftype='data'">
           <span style="width:400;"><xsl:value-of select="value" /></span>
         </xsl:when>
@@ -340,11 +347,11 @@
                   </span>
                 </td>
                 <td width="20"><img src="{$mediadir}nix.gif" width="20" height="1" /></td>
-                <xsl:if test="field[not(@ftype='data')]">
+                <xsl:if test="field[not(@ftype='data' || @ftype='function')]">
                   <!-- another field, not just data, eg. a position editor -->
                   <td colspan="10" valign="top">
                     <table border="0" cellspacing="0" cellpadding="0" width="200" style="width:200">
-                      <xsl:for-each select="field[not(@ftype='data')]">
+                      <xsl:for-each select="field[not(@ftype='data' || @ftype='function')]">
                         <tr>
                           <xsl:apply-templates select="." />
                         </tr>
@@ -481,14 +488,16 @@
 
       <xsl:for-each select="command[@name='add-item']">
         <table border="0" cellspacing="0" cellpadding="0" width="616">
+          <xsl:for-each select="../command[@name='search' or @name='insert']">
           <xsl:choose>
-            <xsl:when test="../command[@name='search']">
-              <xsl:attribute name="style">display:inline; visibility:hidden; position:absolute; top:0; left:0;</xsl:attribute>
+            <xsl:when test="@name='search'">             
+            <xsl:attribute name="style">display:inline; visibility:hidden; position:absolute; top:0; left:0;</xsl:attribute>
             </xsl:when>
             <xsl:otherwise>
               <xsl:attribute name="style">display:inline;</xsl:attribute>
             </xsl:otherwise>
           </xsl:choose>
+          </xsl:for-each>
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
