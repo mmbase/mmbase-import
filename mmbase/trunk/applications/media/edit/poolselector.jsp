@@ -8,12 +8,15 @@
     <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=&amp;" />" language="javascript"><!--help IE--></script>
   </head>
-  <mm:cloud>
+  <mm:cloud jspvar="cloud" method="asis">
   <body class="left">
+    <mm:import id="current">edit</mm:import>
+    <%@include file="submenu.jsp" %>
+    <hr />
    <mm:node number="media.streams">
    <h1><mm:field name="html(name)" /></h1>
    <p><mm:field name="html(description)" /></p>
-   <h1><mm:nodeinfo nodetype="pools" type="guitype" /></h1>   
+   <h1><%=m.getString("category")%></h1>   
     <ul>
     <mm:related path="parent,pools2" orderby="pools2.name">
       <mm:context>
@@ -23,14 +26,7 @@
        </mm:context>
     </mm:related>
     </ul>
-    <hr />
-    <p align="right">
-      <a target="content" href="<mm:url page="help_${config.lang}.jsp" />">Help</a>
-      |      
-      <a href="<mm:url page="search.jsp" />">Search</a>
-      |
-      <a href="<mm:url page="config/?referrer=../poolselector.jsp" />">Config</a>
-    </p>
+
    </mm:node>
   </body>
   </mm:cloud>
