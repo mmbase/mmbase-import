@@ -38,7 +38,6 @@
     <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
     <input type="hidden" name="user" value="new" />
 
-    </mm:node>
    </table>
    </form>
   </mm:cloud>
