@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.User;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
 import java.util.*;
@@ -21,6 +20,7 @@ import java.net.URLConnection;
 import org.mmbase.util.transformers.*;
 
 import org.mmbase.util.*;
+import org.mmbase.security.UserContext;
 
 import org.xml.sax.InputSource;
 import org.w3c.dom.Element;
@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.32 2005-02-07 09:23:15 andre Exp $
+ * @version $Id: ContentTag.java,v 1.33 2005-03-01 16:02:54 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -57,6 +57,7 @@ public class ContentTag extends LocaleTag  {
     private static final Map charTransformers      = new HashMap(); // chartransformer id -> chartransformer instance.
 
     private static final Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
+
 
     static {
         try {
@@ -241,6 +242,12 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
+
+    /*
+    protected int getVersion() {
+        return 1;
+    }
+    */
     
 
     /**
@@ -280,7 +287,7 @@ public class ContentTag extends LocaleTag  {
      * @throws JspTagException if not transformer with given id was configured
      */
 
-    protected static CharTransformer getCharTransformer(String id) throws JspTagException {
+    static CharTransformer getCharTransformer(String id) throws JspTagException {
         if (id.indexOf(',') > 0) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
             // Iterator ids = StringSplitter.split(id).iterator();
@@ -376,7 +383,7 @@ public class ContentTag extends LocaleTag  {
      * the moment it is only checked for 'null'.
      */
 
-    void setUser(User newUser) throws JspTagException {
+    void setUser(UserContext newUser) throws JspTagException {
         //user = newUser;
         if (newUser != null) {
             long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
