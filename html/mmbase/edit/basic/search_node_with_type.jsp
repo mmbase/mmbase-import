@@ -117,7 +117,7 @@
       <td class="navigate">    
       <nobr>  
       <mm:nextbatches max="21">
-       <mm:index>
+       <mm:index offset="1">
        <mm:compare value="21" inverse="true">
        <a href='<mm:url referids="node,node_type,role_name,direction,orderby,search">
        <mm:param name="page"><mm:index /></mm:param>
