@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import java.io.IOException;
+
 import java.util.List;
 
 import javax.servlet.jsp.JspTagException;
@@ -17,10 +17,8 @@ import javax.servlet.jsp.tagext.*;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.59 2003-12-21 13:27:50 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.60 2004-01-14 22:06:14 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -59,67 +57,31 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected Attribute constraints = Attribute.NULL;
 
-    /**
-     * The maximum number of elements in a list.
-     * Setting the list size to conform to this maximum is implementation specific.
-     */
-    protected Attribute  max = Attribute.NULL;
 
-    /**
-     * The offset of the elements that are returned in a list.
-     * Setting the list to conform to this ofsset is implementation specific.
-     */
-    protected Attribute offset = Attribute.NULL;
+    protected NodeListHelper listHelper = new NodeListHelper(this, nodeHelper);
 
 
-    protected Attribute comparator = Attribute.NULL;
+    protected NodeList getReturnList() {
+        return listHelper.getReturnList();
+    }
+    
 
+    public Object getCurrent() {
+        return listHelper.getCurrent();
+    }
 
-    /**
-     * Lists do implement ContextProvider
-     */
-    private   ContextCollector  collector;
-
-    /**
-     * Determines whether a field in {@link #orderby} changed
-     * during iteration.
-     */
-    protected boolean changed = true;
-
-    /**
-     * Data member to hold an iteration of the values to return.
-     * This variable is set in {@link #setReturnValues(NodeList)}, which
-     * should be called from {@link #doStartTag}, and will be used to
-     * fill the return variables for every iteration.
-     */
-    protected NodeIterator nodeIterator;
-    protected NodeList     returnList;
-
-    /**
-     * The current item
-     */
-    protected int currentItemIndex= -1;
-
-    /**
-     * A handle necessary when using the Time Tag;
-     */
-    protected int timerHandle = -1;
-
-    private String previousValue = null; 
 
     public int getIndex() {
-        return currentItemIndex;
+        return listHelper.getIndex();
     }
     public int getIndexOffset() {
-        return 1;
-    }
-    public Object getCurrent() {
-        return getNodeVar();
+        return listHelper.getIndexOffset();
     }
 
     public void remove() {
-        nodeIterator.remove();
+        listHelper.remove();
     }
+
 
     /**
      * Sets the fields to sort on.
@@ -144,7 +106,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setMax(String m) throws JspTagException {
-        max = getAttribute(m);
+        listHelper.setMax(m);
     }
 
     /**
@@ -163,7 +125,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setOffset(String o) throws JspTagException {
-        offset = getAttribute(o);
+        listHelper.setOffset(o);
     }
     /*
     public void setOffset(int o) { // also need with integer argument for Tomcat.
@@ -174,7 +136,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
 
     public void setComparator(String c) throws JspTagException {
-        comparator = getAttribute(c);
+        listHelper.setComparator(c);
     }
 
 
@@ -204,15 +166,15 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected NodesAndTrim getNodesAndTrim(Query query, int more) throws JspTagException {
         NodesAndTrim result = new NodesAndTrim();
-        if (comparator.getString(this).equals("")) {
-            if (max != Attribute.NULL) {
-                int m = max.getInt(this, -1);
+        if (listHelper.getComparator().equals("")) {
+            if (listHelper.getMax() != Attribute.NULL) {
+                int m = listHelper.getMax().getInt(this, -1);
                 if (m != -1) {
                     query.setMaxNumber(m + more);
                 }
             }
-            if (offset != Attribute.NULL) {
-                query.setOffset(offset.getInt(this, 0));
+            if (listHelper.getOffset() != Attribute.NULL) {
+                query.setOffset(listHelper.getOffset().getInt(this, 0));
             }
 
             if (query instanceof NodeQuery) {
@@ -250,22 +212,14 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     // ContextProvider implementation
     public ContextContainer getContextContainer() throws JspTagException {
-        if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector.getContextContainer();
+        return listHelper.getContextContainer();
     }
 
     protected static int NOT_HANDLED = -100;
     protected int doStartTagHelper() throws JspTagException {
         log.debug("doStartTaghelper");
 
-        // make a (temporary) container
-        collector = new ContextCollector(getContextProvider().getContextContainer());
-
-        // serve parent timer tag:
-        TagSupport t = findParentTag(TimerTag.class, null, false);
-        if (t != null) {
-            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
-        }
+        listHelper.doStartTagHelper();
 
         if (getReferid() != null) {
             Object o =  getObject(getReferid());
@@ -275,12 +229,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (orderby != Attribute.NULL) {
                 throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
             }
-            if (offset != Attribute.NULL) {
-                throw new JspTagException("'offset' attribute does not make sense with 'referid' attribute");
-            }
-            if (max != Attribute.NULL) {
-                throw new JspTagException("'max' attribute does not make sense with 'referid' attribute");
-            }
+
             if (directions != Attribute.NULL) {
                 throw new JspTagException("'directions' attribute does not make sense with 'referid' attribute");
             }
@@ -318,45 +267,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param trim if true, trim the list using offset and max
      *        (if false, it is assumed the calling routine already did so)
      * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
-     *  list is empty. THis value should be passed as the result of {@link #doStartTag}.
+     *  list is empty. This value should be passed as the result of {@link #doStartTag}.
      */
     protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-        ListSorter.sort(nodes, (String) comparator.getValue(this), pageContext);
-
-        if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
-            int currentSize = nodes.size();
-
-            int maxi = max.getInt(this, currentSize);
-            int maxx = (maxi > currentSize ? currentSize : maxi);
-
-            int offseti = offset.getInt(this, 0);
-
-            int to = maxx + offseti;
-            if (to >= currentSize) {
-                to = currentSize;
-            }
-            if (offseti >= currentSize) {
-                offseti = currentSize;
-            }
-            if (offseti < 0) {
-                offseti = 0;
-            }
-            nodes = nodes.subNodeList(offseti, to);
-
-        }
-        returnList   = nodes;
-
-        // returnList is know, now we can serve parent formatter tag
-        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
-        if (f != null && f.wantXML()) {
-            f.getGenerator().add(nodes);
-        }
-
-        nodeIterator = returnList.nodeIterator();
-        currentItemIndex= -1;
-        previousValue = null;
-        changed = true;
-
         Query query = (Query) nodes.getProperty(NodeList.QUERY_PROPERTY);
 
         if (query != null) {
@@ -365,89 +278,33 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (ls.size() > 0) {
                 StepField sf= ((SortOrder)ls.get(0)).getField();
                 if (query instanceof NodeQuery) {
-                    returnList.setProperty("orderby", sf.getFieldName());
+                    nodes.setProperty("orderby", sf.getFieldName());
                 } else {
-                    returnList.setProperty("orderby", sf.getStep().getAlias() + '.' + sf.getFieldName());
+                    nodes.setProperty("orderby", sf.getStep().getAlias() + '.' + sf.getFieldName());
                 }
             }
         } else {
-            if (orderby != Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
+            if (orderby != Attribute.NULL) nodes.setProperty("orderby", orderby.getString(this));
         }
 
-        if (nodeIterator.hasNext()) {
-            //doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
-            //return EVAL_BODY_INCLUDE;
-            return EVAL_BODY_BUFFERED;
-        } else {
-            return SKIP_BODY;
-        }
+        return listHelper.setReturnValues(nodes, trim);
     }
 
 
     public int doAfterBody() throws JspTagException {
         log.debug("doafterbody");
         super.doAfterBody();
-        if (getId() != null) {
-            getContextProvider().getContextContainer().unRegister(getId());
-        }
-
-        if (collector != null) { // might occur for some legacy extensions
-            log.debug("copying to collector");
-            collector.doAfterBody();
-        }
-        if (nodeIterator.hasNext()){
-            doInitBody();
-            return EVAL_BODY_AGAIN;
-        } else {
-            log.debug("writing body");
-            if (bodyContent != null) {
-                try {
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                } catch (IOException ioe){
-                    throw new TaglibException(ioe);
-                }
-            }
-            return SKIP_BODY;
-        }
+        return listHelper.doAfterBody();
 
     }
 
     public int doEndTag() throws JspTagException {
-
-        if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), returnList);
-        }
-        TagSupport t = findParentTag(TimerTag.class, null, false);
-        if (t != null) {
-            ((TimerTag)t).haltTimer(timerHandle);
-        }
+        listHelper.doEndTag();
         return  super.doEndTag();
     }
 
     public void doInitBody() throws JspTagException {
-        if (nodeIterator.hasNext()){
-            currentItemIndex ++;
-            Node next = nodeIterator.nextNode();
-            // use order as stored in the nodelist (the property of the tag may not be set
-            // if you use referid to get the result of a prevuious listtag)
-            String listOrder=(String) returnList.getProperty("orderby");
-            if (listOrder != null && ! "".equals(listOrder)) {
-                // then you can also ask if 'changed' the node
-                // look only at first field of sorted for the /moment.
-                String f = (String) StringSplitter.split(listOrder).get(0);
-                String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
-                if (previousValue != null) {
-                    if (value.equals(previousValue)) {
-                        changed = false;
-                    } else {
-                        changed = true;
-                    }
-                }
-                previousValue = value;
-            }
-            setNodeVar(next);
-            fillVars();
-        }
+        listHelper.doInitBody();
     }
 
     /**
@@ -455,11 +312,11 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * true if the field on which you order changed value.
      **/
     public boolean isChanged() {
-        return changed;
+        return listHelper.isChanged();
     }
 
-    public int size(){
-        return returnList.size();
+    public int size() {
+        return listHelper.size();
     }
 
 }
