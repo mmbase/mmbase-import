@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.233 2003-06-14 13:33:31 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.234 2003-06-26 09:13:58 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -437,7 +437,7 @@ public class MMObjectBuilder extends MMTable {
     public int insert(String owner, MMObjectNode node) {
         try {
             int n;
-            n=mmb.getDatabase().insert(this,owner,node);
+            n = mmb.getDatabase().insert(this,owner,node);
             if (n>=0) safeCache(new Integer(n),node);
             String alias = node.getAlias();
             if (alias!=null) createAlias(n,alias);    // add alias, if provided
@@ -446,7 +446,7 @@ public class MMObjectBuilder extends MMTable {
             // do we really wanna catch our exceptions here?
             // the only purpose now to catch them here, is to log
             // failures of inserts..
-                String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
+            String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
             log.error(msg);
             throw e;
         }
@@ -2146,8 +2146,8 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Return a list of field definitions of this table.
-     * @return a <code>Vector</code> with the tables fields (FieldDefs)
+     * Return a copy of the list  of field definitions of this table.
+     * @return A new  <code>Vector</code> with the tables fields (FieldDefs)
      */
     public Vector getFields() {
         return new Vector(fields.values());
@@ -2156,7 +2156,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Return a list of field names of this table.
-     * @return a <code>Vector</code> with the tables field anmes (String)
+     * @return a new <code>Vector</code> with the tables field anmes (String)
      */
     public Vector getFieldNames() {
         return new Vector(fields.keySet());
@@ -2473,7 +2473,7 @@ public class MMObjectBuilder extends MMTable {
                 String name     = field.substring(pos1 + 1, pos2);
                 String function = field.substring(0, pos1);
                 if (log.isDebugEnabled()) {
-                    log.debug("function= " + function + ", fieldname =" + name);
+                    log.debug("function = '" + function + "', fieldname = '" + name + "'");
                 }
                 List a = new ArrayList(); a.add(name);
                 rtn = getFunctionValue(node, function, a);
@@ -2539,7 +2539,7 @@ public class MMObjectBuilder extends MMTable {
     final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
 
         Object rtn = null;
-        if (arguments == null) arguments = new Vector();
+        if (arguments == null) arguments = new ArrayList();
         // for backwards compatibility (calling with string function with more then one argument)
         if (arguments.size() == 1 && arguments.get(0) instanceof String) {
             String arg = (String) arguments.get(0);
@@ -3589,8 +3589,8 @@ public class MMObjectBuilder extends MMTable {
      * @param number number of the object in the table
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
-    public byte[] getShortedByte(String fieldname,int number) {
-        return mmb.getDatabase().getShortedByte(tableName,fieldname,number);
+    public byte[] getShortedByte(String fieldname, int number) {
+        return mmb.getDatabase().getShortedByte(tableName, fieldname, number);
     }
 
     /**
@@ -3786,7 +3786,7 @@ public class MMObjectBuilder extends MMTable {
      *        may be incorrect.
      */
     public void setXMLValues(Vector xmlfields) {
-        fields=new Hashtable();
+        fields = new Hashtable();
 
         Enumeration enum = xmlfields.elements();
         while (enum.hasMoreElements()) {
@@ -3797,7 +3797,9 @@ public class MMObjectBuilder extends MMTable {
         }
 
         // should be TYPE_NODE ???
-        if (fields.get("otype")==null) {
+        if (fields.get("otype") == null) { 
+            // if not defined in XML (legacy?)
+            // It does currently not work if otype is actually defined in object.xml (as a NODE field)
             FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setDBPos(2);
