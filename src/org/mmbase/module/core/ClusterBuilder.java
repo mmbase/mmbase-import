@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.28 2003-01-22 12:31:17 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.29 2003-02-16 15:38:29 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1013,8 +1013,8 @@ public class ClusterBuilder extends VirtualBuilder {
                     // no results possible
                     // terminate, return null!
                     log.warn("There are no relations possible (no typerel specified) between "+
-                               alltables.elementAt(i)+ " and "+
-                               alltables.elementAt(i + 2)+ " using "+
+                               getTableName((String) alltables.elementAt(i)) + " and "+
+                               getTableName((String) alltables.elementAt(i + 2)) + " using "+
                                alltables.elementAt(i + 1)+ " in "+
                                getSearchDirString(searchdir) + " direction(s)"
                                );
