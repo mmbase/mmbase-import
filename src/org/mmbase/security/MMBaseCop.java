@@ -1,5 +1,7 @@
 package org.mmbase.security;
 
+import java.io.File;
+
 import org.mmbase.util.XMLBasicReader;
 
 import org.mmbase.util.logging.Logger;
@@ -35,6 +37,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
     public MMBaseCop(String configPath) throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException {
         super();
 
+        File configFile = new File(configPath);
         log.debug("using: '" + configPath + "' as config file for security");
     	XMLBasicReader reader = new XMLBasicReader(configPath);
 
@@ -64,7 +67,17 @@ public class MMBaseCop extends java.lang.SecurityManager  {
 	    log.error("attribute url could not be found in authentication("+configPath+")");
 	    throw new java.util.NoSuchElementException("url in authentication");
 	}
-      	loadAuthentication(authClass, authUrl);
+        File authFile = new File(authUrl);
+        if (! authFile.isAbsolute()) { // so relative to currently
+            // being parsed file. make it absolute, 
+            log.debug("authentication file was not absolutely given (" + authUrl + ")");
+            authFile = new File(configFile.getParent() + File.separator + authUrl);
+            log.debug("will use: " + authFile.getAbsolutePath());
+            
+        }
+        
+
+      	loadAuthentication(authClass, authFile.getAbsolutePath());
 
       	// load our authorization...
       	String auteClass = reader.getElementAttributeValue(reader.getElementByPath("security.authorization"),"class");
@@ -77,7 +90,16 @@ public class MMBaseCop extends java.lang.SecurityManager  {
 	    log.error("attribute url could not be found in auhotization("+configPath+")");
 	    throw new java.util.NoSuchElementException("url in authorization");
 	}
-      	loadAuthorization(auteClass, auteUrl);
+        // make the url absolute in case it isn't:
+        File auteFile = new File(auteUrl); 
+        if (! auteFile.isAbsolute()) { // so relative to currently
+            // being parsed file. make it absolute, 
+            log.debug("authorization file was not absolutely given (" + auteUrl + ")");
+            auteFile = new File(configFile.getParent() + File.separator + auteUrl);
+            log.debug("will use: " + auteFile.getAbsolutePath());
+            
+        }
+      	loadAuthorization(auteClass, auteFile.getAbsolutePath());
 
         // load the sharedSecret
       	String sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
@@ -119,16 +141,16 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      * @return false if received shared secret not equals your own shared secret
      */
     public boolean checkSharedSecret(String key) {
-		if (sharedSecret!=null) {
-	        if(sharedSecret.equals(key)) {
-	            return true;
-	        } else {
-	            log.error("the shared "+sharedSecret+"!="+key+" secrets don't match.");
-	            return false;
-	        }
-		} else {
-			return(false);
-		}
+        if (sharedSecret!=null) {
+            if(sharedSecret.equals(key)) {
+                return true;
+            } else {
+                log.error("the shared "+sharedSecret+"!="+key+" secrets don't match.");
+                return false;
+            }
+        } else {
+            return(false);
+        }
     }
 
     /**

@@ -27,8 +27,8 @@ public class AuthenticationHandler extends Authentication {
     private HashMap moduleRanks = new HashMap();
 
     protected void load() {
-        log.debug("using: '" + configPath + "' as config file for authentication");
-    	XMLBasicReader reader = new XMLBasicReader(configPath);
+        log.debug("using: '" + configFile.getAbsolutePath() + "' as config file for authentication");
+    	XMLBasicReader reader = new XMLBasicReader(configFile.getAbsolutePath());
 
     	log.debug("Trying to load all loginmodules:");
     	Enumeration list = reader.getChildElements(reader.getElementByPath("authentication"),"loginmodule");
@@ -36,18 +36,18 @@ public class AuthenticationHandler extends Authentication {
 	    Element modTag = (Element)list.nextElement();
 	    String modName = reader.getElementAttributeValue(modTag, "name");
             if(modName.equals("")) {
-    	        log.error("module attribute name was not defined in :" + configPath);
-    	    	throw new SecurityException("module attribute name was not defined in :" + configPath);
+    	        log.error("module attribute name was not defined in :" + configFile);
+    	    	throw new SecurityException("module attribute name was not defined in :" + configFile);
             }
 	    String modClass = reader.getElementAttributeValue(modTag, "class");
             if(modClass.equals("")) {
-    	        log.error("module attribute class was not defined in :" + configPath + " for module: " + modName);
-    	    	throw new SecurityException("module attribute class was not defined in :" + configPath + " for module: " + modName);
+    	        log.error("module attribute class was not defined in :" + configFile + " for module: " + modName);
+    	    	throw new SecurityException("module attribute class was not defined in :" + configFile + " for module: " + modName);
             }
             String modRankString = reader.getElementAttributeValue(modTag, "rank");
             if(modRankString.equals("")) {
-    	        log.error("module attribute rank was not defined in :" + configPath + " for module: " + modName);
-    	    	throw new SecurityException("module attribute rank was not defined in :" + configPath + " for module: " + modName);
+    	        log.error("module attribute rank was not defined in :" + configFile + " for module: " + modName);
+    	    	throw new SecurityException("module attribute rank was not defined in :" + configFile + " for module: " + modName);
             }
             Rank modRank = Rank.getRank(modRankString);
 
@@ -74,6 +74,8 @@ public class AuthenticationHandler extends Authentication {
                 properties.put(propName, propValue);
                 log.debug("\tadding key : " + propName + " with value : " + propValue);
             }
+            properties.put("_parentFile", configFile); 
+            // if module's configuration uses filenames, they probably want to be relative to this one.
             module.load(properties);
     	    modules.put(modName, module);
             moduleRanks.put(modName, modRank);
