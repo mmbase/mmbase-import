@@ -1,3 +1,10 @@
+/*
+ This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+ */
 package org.mmbase.applications.crontab;
 
 /**
@@ -6,16 +13,16 @@ package org.mmbase.applications.crontab;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: JCronJob.java,v 1.4 2004-04-01 22:16:47 michiel Exp $
+ * @version $Id: CronJob.java,v 1.1 2004-05-04 09:00:05 keesj Exp $
  */
 
 
-public interface JCronJob extends Runnable {
+public interface CronJob extends Runnable {
 
     /**
      * If the CronJobs needs some initializing before the first run, then that can be put in this.
      */
-    void init(JCronEntry jCronEntry);
+    void init(CronEntry jCronEntry);
 
     /**
      * If after the last run of the job, there need to be shutdown things, then that can be done here.
