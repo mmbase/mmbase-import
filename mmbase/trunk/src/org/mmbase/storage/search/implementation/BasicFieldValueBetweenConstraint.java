@@ -15,22 +15,22 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.4 2003-03-10 11:50:55 pierre Exp $
+ * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.5 2004-01-30 12:25:49 pierre Exp $
  * @since MMBase-1.7
  */
-public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint 
+public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint
 implements FieldValueBetweenConstraint {
-    
+
     /** The lower limit. */
     private String lowerLimit = null;
-    
+
     /** The upper limit. */
     private String upperLimit = null;
-    
+
     /**
      * Constructor.
      * <p>
-     * Depending on the field type, the limit values must be of type 
+     * Depending on the field type, the limit values must be of type
      * <code>String</code> or <code>Number</code>.
      *
      * @param field The associated field.
@@ -40,16 +40,16 @@ implements FieldValueBetweenConstraint {
      */
     public BasicFieldValueBetweenConstraint(
         StepField field, Object lowerLimit, Object upperLimit) {
-            
+
         super(field);
         setLowerLimit(lowerLimit);
         setUpperLimit(upperLimit);
     }
-    
+
     /**
      * Sets the lower limit property.
      * <p>
-     * Depending on the field type, the value must be of type 
+     * Depending on the field type, the value must be of type
      * <code>String</code> or <code>Number</code>.
      *
      * @param lowerLimit The non-null lower limit property value.
@@ -60,11 +60,11 @@ implements FieldValueBetweenConstraint {
         this.lowerLimit = convertValue(lowerLimit);
         return this;
     }
-    
+
     /**
      * Sets the upper limit property.
      * <p>
-     * Depending on the field type, the value must be of type 
+     * Depending on the field type, the value must be of type
      * <code>String</code> or <code>Number</code>.
      *
      * @param upperLimit The non-null upper limit property value.
@@ -75,17 +75,17 @@ implements FieldValueBetweenConstraint {
         this.upperLimit = convertValue(upperLimit);
         return this;
     }
-    
+
     // javadoc is inherited
     public String getLowerLimit() {
         return lowerLimit;
     }
-    
+
     // javadoc is inherited
     public String getUpperLimit() {
         return upperLimit;
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -105,14 +105,14 @@ implements FieldValueBetweenConstraint {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
-        return 101 * (lowerLimit.hashCode() 
-            + 97 * (upperLimit.hashCode() 
+        return 101 * (lowerLimit.hashCode()
+            + 97 * (upperLimit.hashCode()
                 + 89 * super.hashCode()));
     }
-    
+
     // javadoc is inherited
     public String toString() {
         StringBuffer sb = new StringBuffer("FieldValueBetweenConstraint(inverse:").
@@ -128,10 +128,10 @@ implements FieldValueBetweenConstraint {
         append(")");
         return sb.toString();
     }
-    
+
     /**
-     * Tests type of value, and converts it to a string as required by {@link 
-     * #getLowerLimit() getLowerLimit()} and {@link #getUpperLimit() 
+     * Tests type of value, and converts it to a string as required by {@link
+     * #getLowerLimit() getLowerLimit()} and {@link #getUpperLimit()
      * getUpperLimit()}
      *
      * @param value The value.
@@ -142,12 +142,12 @@ implements FieldValueBetweenConstraint {
      */
     private String convertValue(Object value) {
         String result = null;
-        BasicStepField.testValue(value, getField());
+        value = BasicStepField.testValue(value, getField());
         if (value instanceof Number) {
             // Add value as string. This facilitates comparison of
             // numerical values of different type.
             Number numberValue = (Number) value;
-            // Represent integral value as integer, 
+            // Represent integral value as integer,
             // other values as floating point.
             if (numberValue.intValue() == numberValue.doubleValue()) {
                 result = Integer.toString(numberValue.intValue());

@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.23 2004-01-29 16:00:00 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.24 2004-01-30 12:25:49 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -114,14 +114,10 @@ public class BasicSqlHandler implements SqlHandler {
      * @param fieldType The field type.
      */
     // TODO: elaborate javadoc, add to SqlHandler interface?
-    public void appendFieldValue(StringBuffer sb, Object value,
-            boolean toLowerCase, int fieldType) {
-        if (fieldType == FieldDefs.TYPE_STRING
-        || fieldType == FieldDefs.TYPE_XML) {
-
+    public void appendFieldValue(StringBuffer sb, Object value, boolean toLowerCase, int fieldType) {
+        if (fieldType == FieldDefs.TYPE_STRING || fieldType == FieldDefs.TYPE_XML) {
             // escape single quotes in string
             String stringValue = toSqlString((String) value);
-
             // to lowercase when case insensitive
             if (toLowerCase) {
                 stringValue = stringValue.toLowerCase();
@@ -135,8 +131,7 @@ public class BasicSqlHandler implements SqlHandler {
             // Number values as floating point, and String values as-is.
             if (value instanceof Number) {
                 Number numberValue = (Number) value;
-                if (numberValue.doubleValue()
-                        == numberValue.intValue()) {
+                if (numberValue.doubleValue() == numberValue.intValue()) {
                     // Integral Number value.
                     sb.append(numberValue.intValue());
                 } else {
@@ -210,9 +205,8 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query,
-    SqlHandler firstInChain)
-    throws SearchQueryException {
+    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain)
+        throws SearchQueryException {
 
         // Buffer expressions for included nodes, like
         // "x.number in (...)".
@@ -259,8 +253,7 @@ public class BasicSqlHandler implements SqlHandler {
             String fieldAlias = field.getAlias();
 
             if (field instanceof AggregatedField) {
-                int aggregationType
-                = ((AggregatedField) field).getAggregationType();
+                int aggregationType = ((AggregatedField) field).getAggregationType();
                 if (aggregationType == AggregatedField.AGGREGATION_TYPE_GROUP_BY) {
 
                     // Group by.
@@ -581,8 +574,7 @@ public class BasicSqlHandler implements SqlHandler {
             if (fieldConstraint instanceof FieldValueInConstraint) {
 
                 // Field value-in constraint
-                FieldValueInConstraint valueInConstraint
-                = (FieldValueInConstraint) fieldConstraint;
+                FieldValueInConstraint valueInConstraint = (FieldValueInConstraint) fieldConstraint;
                 Set values = valueInConstraint.getValues();
                 if (values.size() == 0) {
                     throw new IllegalStateException(
@@ -613,8 +605,7 @@ public class BasicSqlHandler implements SqlHandler {
             } else if (fieldConstraint instanceof FieldValueBetweenConstraint) {
 
                 // Field value-between constraint
-                FieldValueBetweenConstraint valueBetweenConstraint
-                = (FieldValueBetweenConstraint) fieldConstraint;
+                FieldValueBetweenConstraint valueBetweenConstraint = (FieldValueBetweenConstraint) fieldConstraint;
                 if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
                     sb.append("LOWER(");
@@ -654,7 +645,6 @@ public class BasicSqlHandler implements SqlHandler {
                     sb.append(")");
                 } else {
                     // case sensitive or case irrelevant
-                    // XXX: MySQL want 'BINARY' for string if the mathing should happen case sensitive
                     appendField(sb, step, fieldName, multipleSteps);
                 }
                 switch (fieldCompareConstraint.getOperator()) {
@@ -696,14 +686,12 @@ public class BasicSqlHandler implements SqlHandler {
                 }
                 if (fieldCompareConstraint instanceof FieldValueConstraint) {
                     // FieldValueConstraint.
-                    FieldValueConstraint fieldValueConstraint
-                    = (FieldValueConstraint) fieldCompareConstraint;
+                    FieldValueConstraint fieldValueConstraint = (FieldValueConstraint) fieldCompareConstraint;
                     Object value = fieldValueConstraint.getValue();
                     appendFieldValue(sb, value, useLower(fieldValueConstraint) && isRelevantCaseInsensitive(fieldValueConstraint), fieldType);
                 } else if (fieldCompareConstraint instanceof CompareFieldsConstraint) {
                     // CompareFieldsConstraint
-                    CompareFieldsConstraint compareFieldsConstraint
-                    = (CompareFieldsConstraint) fieldCompareConstraint;
+                    CompareFieldsConstraint compareFieldsConstraint = (CompareFieldsConstraint) fieldCompareConstraint;
                     StepField field2 = compareFieldsConstraint.getField2();
                     String fieldName2 = field2.getFieldName();
                     Step step2 = field2.getStep();

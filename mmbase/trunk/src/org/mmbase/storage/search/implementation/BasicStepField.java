@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
+import org.mmbase.bridge.Node;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 
@@ -17,81 +19,112 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.7 2003-03-21 14:38:25 kees Exp $
+ * @version $Id: BasicStepField.java,v 1.8 2004-01-30 12:25:49 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
-    
+
     /** Associated field definition. */
     private FieldDefs fieldDefs = null;
-    
+
     /** Associated step. */
     private Step step = null;
-    
+
     /** Alias property. */
     private String alias = null;
-    
+
     /**
-     * Tests if a value is acceptable for comparison with a certain field.
+     * Tests if a value is acceptable for comparison with a certain field, and
+     * returns the value in the best useable form.
+     * For a INTEGER, FLOAT, DOUBLE, or LONG field, the value need be a Number or a
+     * String containing a number, and the method returns teh vaklue as a Number.
+     * For a NODE field, acceptable values are a number, an MMObjectNode, or a bridge
+     * Node object, and the method returns the value as a Number.
+     * A STRING or XML field should have a string value.
+     * A BYTE should be a byte array.
+     *
+     * @todo accept DOM objects for XML fields and aliasses for nodes
      * @param value The value to be tested.
      * @param field The non-null field.
-     * @throws IllegalArgumentException when the value is not acceptable
+     * @return the value in the best useable form for comparison with the field
+     * @throws IllegalStateException if the field type is unknown.
+     * @throws IllegalArgumentException when the value is <code>null</code> or not acceptable
      *         for this field.
      */
     // package visibility!
-    static void testValue(Object value, StepField field) {
+    static Object testValue(Object value, StepField field) {
         int type = field.getType();
-        
+
         // Test for null value.
         if (value == null) {
             throw new IllegalArgumentException("Invalid value for "
             + FieldDefs.getDBTypeDescription(type) + " field: "
             + value);
         }
-        
+
         // Test for compatible type.
         boolean ok = true;
         switch (type) {
-            // Numberical types.
-            case FieldDefs.TYPE_INTEGER:
-	    case FieldDefs.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
-                                      //I'm not shure a byte array is numerical
-            case FieldDefs.TYPE_FLOAT:
-            case FieldDefs.TYPE_DOUBLE:
-            case FieldDefs.TYPE_LONG:
-            case FieldDefs.TYPE_NODE:
-                if (!(value instanceof Number)) {
+            // byte array types
+            case FieldDefs.TYPE_BYTE: //(keesj:) byte in mmbase stands for byte array
+                                      //I'm not sure a byte array is numerical
+                if (!(value instanceof byte[])) {
                     ok = false;
                 }
                 break;
-                
+            // Node type (can also be a number).
+            // XXX TODO: This code does not take into account the use of aliasses
+            case FieldDefs.TYPE_NODE:
+                if (value instanceof MMObjectNode) { // core node as a value
+                    value = new Long(((MMObjectNode)value).getNumber());
+                    break;
+                }
+                if (value instanceof Node) { // bridge node as a value
+                    value = new Long(((Node)value).getNumber());
+                    break;
+                }
+            // Numberical types.
+            case FieldDefs.TYPE_INTEGER:
+            case FieldDefs.TYPE_FLOAT:
+            case FieldDefs.TYPE_DOUBLE:
+            case FieldDefs.TYPE_LONG:
+                if (!(value instanceof Number)) {
+                    // attempt to convert a string to a number
+                    try {
+                       value = Double.valueOf(value.toString());
+                    } catch (NumberFormatException nfe) {
+                        ok = false;
+                    }
+                }
+                break;
                 // String types.
-            case FieldDefs.TYPE_STRING:
             case FieldDefs.TYPE_XML:
+                // XXX TODO: This code does not take into account the use of DOM objects
+            case FieldDefs.TYPE_STRING:
                 if (!(value instanceof String)) {
                     ok = false;
                 }
                 break;
-                
+
             default: // Unknown field type, should not occur.
                 throw new IllegalStateException("Unknown field type: " + type);
         }
-        
         if (!ok) {
             throw new IllegalArgumentException("Invalid value for "
             + FieldDefs.getDBTypeDescription(type) + " field: "
             + value + ", of type " + value.getClass().getName());
         }
+        return value;
     }
-    
+
     /**
-     * Compares two field values for equality. 
+     * Compares two field values for equality.
      * Numerical fields are compared based on their numerical value, as they
      * may be of different type.
      *
-     * @param value1 The first value, either a <code>String</code> 
+     * @param value1 The first value, either a <code>String</code>
      *        or a <code>Number</code>
-     * @param value2 The second value, either a <code>String</code> 
+     * @param value2 The second value, either a <code>String</code>
      *        or a <code>Number</code>
      * @return True if both values represent the same string or numerical value.
      */
@@ -109,7 +142,7 @@ public class BasicStepField implements StepField {
             return (value1 == null? value2 == null: value1.equals(value2));
         }
     }
-    
+
     /**
      * Constructor.
      *
@@ -123,7 +156,7 @@ public class BasicStepField implements StepField {
             "Invalid step value: " + step);
         }
         this.step = step;
-        
+
         if (fieldDefs == null) {
             throw new IllegalArgumentException(
             "Invalid fieldDefs value: " + fieldDefs);
@@ -137,7 +170,7 @@ public class BasicStepField implements StepField {
         }
         this.fieldDefs = fieldDefs;
     }
-    
+
     /**
      * Sets alias property.
      *
@@ -153,7 +186,7 @@ public class BasicStepField implements StepField {
         this.alias = alias;
         return this;
     }
-    
+
     /**
      * Gets the associated fieldDefs.
      *
@@ -162,27 +195,27 @@ public class BasicStepField implements StepField {
     public FieldDefs getFieldDefs() {
         return fieldDefs;
     }
-    
+
     // javadoc is inherited
     public String getFieldName() {
         return fieldDefs.getDBName();
     }
-    
+
     // javadoc is inherited
     public String getAlias() {
         return alias;
     }
-    
+
     // javadoc is inherited
     public Step getStep() {
         return step;
     }
-    
+
     // javadoc in inherited
     public int getType() {
         return fieldDefs.getDBType();
     }
-    
+
     // javadoc is inherited
     public boolean equals(Object obj) {
         if (obj instanceof StepField) {
@@ -194,13 +227,13 @@ public class BasicStepField implements StepField {
             return false;
         }
     }
-    
+
     // javadoc is inherited
     public int hashCode() {
         return (getStep().getAlias() == null?
             47 * getStep().getTableName().hashCode():
             51 * getStep().getAlias().hashCode())
-        + 53 * getFieldName().hashCode() 
+        + 53 * getFieldName().hashCode()
         + (alias == null? 0: 59 * alias.hashCode());
     }
 
@@ -216,16 +249,16 @@ public class BasicStepField implements StepField {
         append(", alias:").append(getAlias()).append(")");
         return sb.toString();
     }
-    
+
     /**
      * Utility method, compares steps by their alias or table name.
-     * Steps are considered equal if their aliases are equal. 
+     * Steps are considered equal if their aliases are equal.
      * When their aliases are <code>null</code>, the steps are considered
      * equal if their tablenames are equal as well.
      * <p>
      * This can be used to verify that both steps refer to the same step
      * in a <code>SearchQuery</code> object.
-     * Note that this differs from the equality defined by their 
+     * Note that this differs from the equality defined by their
      * {@link org.mmbase.storage.search.Step#equals() equals()} method.
      *
      * @param step1 The first step.
@@ -243,5 +276,5 @@ public class BasicStepField implements StepField {
             return alias1.equals(step2.getAlias());
         }
     }
-    
+
 }
