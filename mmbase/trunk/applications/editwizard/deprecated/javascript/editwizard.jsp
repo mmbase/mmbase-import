@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.1 2003-12-19 11:09:05 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.2 2004-02-18 09:55:36 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -155,7 +155,7 @@ function doOnUnLoad_ew() {
 document.writeln('<div id="searchframe" class="searchframe"><iframe onblur="removeModalIFrame();" src="searching.html" id="modaliframe" class="searchframe" scrolling="no"></iframe></div>');
 
 function doSearch(el, cmd, sessionkey) {
-
+    saveHtmlAreas();
     // most of this is probably better to just pass to list.jsp...
 
     var searchfields = document.forms[0].elements["searchfields_" + cmd].value;
@@ -310,10 +310,9 @@ function doSearch(el, cmd, sessionkey) {
 }
 
 function removeModalIFrame() {
-        try {
+    try {
         window.status = "";
-        }
-        catch(e) {}
+    } catch(e) {}
 
     var mif = document.getElementById("modaliframe");
     if (window.frames[0] && window.frames[0].document) window.frames[0].document.location.replace("searching.html");
@@ -334,6 +333,7 @@ function doAdd(s, cmd) {
 }
 
 function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
+    saveHtmlAreas();
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/start-wizard/"+fieldid+"/"+dataid+"/"+objectnumber+"/"+origin+"/";
     fld.value = wizardname;
@@ -341,6 +341,7 @@ function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
 }
 
 function doGotoForm(formid) {
+    saveHtmlAreas();
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/goto-form//"+formid+"//";
     fld.value = "";
