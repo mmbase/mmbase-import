@@ -3,7 +3,7 @@
   Editwizard cascading style sheet.
   
   @author Nico Klasens
-  @version  $Id: list.css,v 1.1 2003-12-19 11:09:42 nico Exp $
+  @version  $Id: list.css,v 1.2 2004-01-20 18:00:51 michiel Exp $
 */
 
 @import url("base.css");
@@ -49,15 +49,16 @@ td.deletebutton {
   width: 1%;
 }
 
+
 .itemrow {
-    cursor: pointer;
-	cursor: hand;
+  cursor: pointer;
+  cursor: hand;
 }
 
 .itemrow-hover {
-    cursor: pointer;
-	cursor: hand;
-	text-decoration: underline; 
+  cursor: pointer;
+  cursor: hand;
+  text-decoration: underline; 
 }
 
 /* if permission to edit is lacking, the row is 'disabled' */

@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.3 2004-01-12 22:06:14 nico Exp $
+  @version  $Id: wizard.css,v 1.4 2004-01-20 18:00:51 michiel Exp $
 */
 @import url("base.css"); cm,
 
@@ -79,16 +79,16 @@ td.itemprefix  {
 }
 
 table.itemrow {
-	border-color: #000;
+  border-color: #000;
 }
 
 table.itemrow-hover {
-	border-color: #000;
-	background-color: #CCC;
+  border-color: #000;
+  background-color: #CCC;
 }
 
 table.fieldscontent  {
-	border-color: #000;
+  border-color: #000;
 }
 
 a.bottombutton:link,
