@@ -22,11 +22,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.15 2002-06-25 17:18:38 michiel Exp $
+ * @version $Id: Generator.java,v 1.16 2002-09-30 12:37:20 michiel Exp $
  */
 public class Generator {
 
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
+
+    private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase/DTD objects config 1.0//EN";
+    private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
     private Document document = null;
     private Cloud    cloud    = null;
 
@@ -40,7 +43,7 @@ public class Generator {
      */
     public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, Cloud cloud) {
         DOMImplementation impl = documentBuilder.getDOMImplementation();        
-        this.document = impl.createDocument(null, "objects", impl.createDocumentType("objects",  "-//MMBase/DTD objects config 1.0//EN", "http://www.mmbase.org/dtd/objects_1_0.dtd"));
+        this.document = impl.createDocument(null, "objects", impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM));
         this.cloud = cloud;
         if (cloud != null) addCloud();
         this.document.getDocumentElement().setAttribute("xmlns", "http://www.mmbase.org/objects");
