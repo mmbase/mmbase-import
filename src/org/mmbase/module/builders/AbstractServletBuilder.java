@@ -16,8 +16,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.Arguments;
 import org.mmbase.util.Argument;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Some builders are associated with a servlet. Think of images and attachments.
@@ -26,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.15 2003-05-19 09:59:12 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.16 2003-06-03 11:00:03 kees Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {

@@ -9,17 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
+import java.util.*;
+
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.cache.Cache;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
-import java.util.*;
-import org.mmbase.util.ExprCalc;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.StringSplitter;
+import org.mmbase.cache.Cache;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * MMBase Taglib attributes can contain $-variables. Parsing of these $-variable is
@@ -27,7 +24,7 @@ import org.mmbase.util.StringSplitter;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.9 2003-05-26 15:17:36 michiel Exp $
+ * @version $Id: Attribute.java,v 1.10 2003-06-03 10:57:50 kees Exp $
  * @since   MMBase-1.7
  */
 

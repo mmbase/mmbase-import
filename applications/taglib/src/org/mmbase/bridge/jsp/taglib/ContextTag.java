@@ -8,15 +8,13 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import javax.servlet.jsp.JspTagException;
+import java.io.IOException;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.logging.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.logging.*;
 
 
 
