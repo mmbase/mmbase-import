@@ -66,9 +66,10 @@ public class MMLanguage extends ProcessorModule {
 
 
 	private String getFromCoreEnglish(String term) {
+		System.out.println(getInitParameter(languagePrefix+"_"+term));
 		String translated=getInitParameter(languagePrefix+"_"+term);
 		if (translated==null || translated.equals("")) {
-			System.out.println("MMLangauge -> could not convert : "+term+" into : "+languagePrefix);
+			System.out.println("MMLanguage -> could not convert : "+term+" into : "+languagePrefix);
 			return(term);
 		} else {
 			return(translated);
