@@ -1,5 +1,5 @@
 <mm:context id="context_search">
-<!-- for selecting next page with listings -->
+<%-- for selecting next page with listings --%>
 <mm:import externid="page" vartype="decimal" from="parameters">0</mm:import>
 
 <mm:import externid="node_type"  required="true" from="parent"/>
@@ -12,12 +12,12 @@
 <mm:import externid="search"     from="parameters" />
 <mm:import externid="maylink"    from="parameters" />
 
-<!-- you can configure 'hide_search' to hide the search functionality -->    
+<%-- you can configure 'hide_search' to hide the search functionality --%>
 <mm:compare referid="config.hide_search" value="false">
 <mm:context>
   <form name="search" method="post" action='<mm:url referids="node,node_type,role_name,direction" />'>
       <table class="search" align="center" width="100%" border="0" cellspacing="1">
-        <!-- search table -->
+        <%-- search table --%>
         <mm:fieldlist id="search_form" nodetype="${node_type}" type="search">
             <tr align="left">
              <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
@@ -40,7 +40,7 @@
 </mm:context>
 </mm:compare>
 
-<!-- ordered to search with form button 'search'. Following are some tricks to get the where right.-->    
+<%-- ordered to search with form button 'search'. Following are some tricks to get the where right.--%>    
 <mm:present referid="search">
   <mm:import externid="_search_form_minage" />
   <mm:import externid="_search_form_maxage" />
