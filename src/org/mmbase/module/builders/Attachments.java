@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.module.builders;
 
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.16 2002-06-30 20:12:23 michiel Exp $ 
+ * @version $Id: Attachments.java,v 1.17 2002-07-04 10:11:25 pierre Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -67,28 +67,24 @@ public class Attachments extends AbstractServletBuilder {
     }
 
     public String getSGUIIndicator(String session, String field, MMObjectNode node) {
-        if (field.equals("handle") || field.equals("title")) {
+        if (field.equals("handle")) {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
 
             String filename = node.getStringValue("filename");
             String title;
 
-            if (field.equals("handle")) {
-                if (filename == null || filename.equals("")) {
-                    title = "[*]";
-                } else {
-                    title = "[" + filename + "]";
-                }
+            if (filename == null || filename.equals("")) {
+                title = "[*]";
             } else {
-                title = node.getStringValue("title");
+                title = "[" + filename + "]";
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
                 return title;
             } else {
                 return "<a href=\"" + getServletPath(filename) + (usesBridgeServlet ? session : "") + num + "\" target=\"extern\">" + title + "</a>";
-            }            
+            }
         }
         return super.getSuperGUIIndicator(field, node);
     }
@@ -108,7 +104,7 @@ public class Attachments extends AbstractServletBuilder {
                 String file_name = sp.poster.getPostParameter("file_name");
                 String file_type = sp.poster.getPostParameter("file_type");
                 String file_size = sp.poster.getPostParameter("file_size");
-              	if (file_name == null) {
+                if (file_name == null) {
                     log.debug("file_name is NULL");
                 } else {
                     log.debug("file_name = "+file_name);
@@ -154,7 +150,7 @@ public class Attachments extends AbstractServletBuilder {
         // Using the bridge (jsp), mimetype is never filled automaticly
         // TODO: fix MagicFile
         log.debug("Setting field " + field + " of node " + node);
-        if(field.equals("handle")) {            
+        if(field.equals("handle")) {
             String mimetype = node.getStringValue("mimetype");
             if (mimetype != null && !mimetype.equals("")) {
                 log.debug("mimetype was set already");
@@ -167,7 +163,7 @@ public class Attachments extends AbstractServletBuilder {
                 log.debug("ATTACHMENT mimetype of file = " + magic.test(handle));
             }
             return true;
-        }        		
-        return super.setValue(node, field);	
-    }	
+        }
+        return super.setValue(node, field);
+    }
 }
