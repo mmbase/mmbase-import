@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.68 2003-03-13 13:26:18 michiel Exp $
+ * @version $Id: Images.java,v 1.69 2003-03-13 13:40:29 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -247,7 +247,7 @@ public class Images extends AbstractImages {
      * not count if it is somewhere between brackets (). Brackets nor
      * +-chars count if they are in quotes (single or double)
      *
-     * @since MMBase-1.6.2
+     * @since MMBase-1.7
      */
     protected static final char NOQUOTING = '-';
     protected List parseTemplate(MMObjectNode node, String template) {
@@ -283,11 +283,12 @@ public class Images extends AbstractImages {
                 buf.append(c);
             }
             if (bracketDepth != 0) log.warn("Unbalanced brackets in " + template);
+            if (quoteState != NOQUOTING) log.warn("Unbalanced quotes in " + template);
 
-            // remove surrounding quotes --> "+contrast" will be changed to +constrast 
-            if (buf.charAt(0) == '\"' && buf.charAt(buf.length() -1) == buf.charAt(0)) {
+            // remove surrounding quotes --> "+contrast" will be changed to +contrast 
+            if ((buf.charAt(0) == '\"' || buf.charAt(0) == '\'') && buf.charAt(buf.length() - 1) == buf.charAt(0)) {
                 buf.deleteCharAt(0);
-                buf.deleteCharAt(buf.length() -1);
+                buf.deleteCharAt(buf.length() - 1);
             }
             if (! buf.toString().equals("")) params.add(buf.toString());
         }
