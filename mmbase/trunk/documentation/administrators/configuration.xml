@@ -3,10 +3,25 @@
 [
 ]>
   <article>
-  <articleinfo>
-    <date>$Id: configuration.xml,v 1.12 2002-10-25 22:10:56 michiel Exp $</date>
-    <title>MMBase configuration documentation</title>
-  </articleinfo>
+	<articleinfo>
+		<title>MMBase Internationalisation and Localisation</title>
+		<date>4 december 2002</date>
+		<edition>$Id: configuration.xml,v 1.13 2002-12-04 21:56:18 michiel Exp $</edition>
+		<authorgroup>
+			<author>
+				<firstname>Michiel</firstname>
+				<surname>Meeuwissen</surname>
+				<affiliation>
+					<orgname>Publieke Omroep</orgname>
+				</affiliation>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+			</para>
+		</legalnotice>
+	</articleinfo>
   <section>
     <title>Introduction</title>
     <para>
@@ -260,7 +275,7 @@
     <res-type>javax.mail.Session</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
-
+            
   <resource-ref>
     <description>
       Datasource for the MMBase Database. This datasource must be
@@ -441,11 +456,6 @@
   <section id="logging">
     <title>Configuring logging</title>
     <para>
-      TODO
-      Logging implementation will change soon a litte
-      We will go to the 'log4j 1.2' manner of doing things, which involves some new code, and
-      use of 'loggers' and 'level' rather then 'categories' and 'priorities'.
-
       This section describes how the logging facilities of MMBase can be
       configured. It will focus on the default configuration, which is based
       on log4j.
@@ -483,7 +493,7 @@
                         This is the advised and default. This implementation is
                         based on the log4j system, and if this one is chosen, the
                         log4j.jar is required. The version of log4j.jar must be
-                        1.1. Probably a 1.2 version will not work.
+                        1.2.
                       </para>
                     </listitem>
                   </varlistentry>
@@ -533,8 +543,8 @@
         set (and categories are ignored). 
       </para>
       <para>
-        In the log4j configuration file, levels are called 'priorities'. At
-        least in version 1.1, perhaps this will be different in next versions.
+        In the log4j configuration file for log4j versions 1.1 and
+        lower  levels are called 'priorities'. 
       </para>
     </section>
     <section> 
@@ -551,17 +561,19 @@
         </para>
       </section>
       <section>
-        <title>Categories</title>
+        <title>Loggers/Categories</title>
         <para>
           A category is chain of string separated by dots, which works a little
           like name-spaces. This means that "A.B.C" is in the "A.B" category, and
-          "A.B" is in the category "A". </para>
+          "A.B" is in the category "A". 
+        </para>
         <para>
           In MMBase it was chosen that categories fall together with Java class
           / package names. So if you want to set logging level for everything
           related with the security implementation you have to set the category
           "org.mmbase.security". All MMBase classes/packages can be found on
-          www.mmbase.org. </para>
+          www.mmbase.org. 
+        </para>
         <para>
           In the MMBase log4j implementation one extra category is defined,
           namely 'STDERR'. Everything which is produced on stderr somewhere in
@@ -571,23 +583,28 @@
         <para>
           'Categories' inherit properties from each other (if nothing is
           overridden, then 'A.B.C' is like 'A.B'), and there is one 'root'
-          category, from which all categories inherit. </para>
-        <para>In the log4j XML configuration file, categories are present as
-          'category' tags. Since the default log4j class for it was overridden
-          the 'class' attribute must be present on each category tag. The value
-          of it can be stored in an XML entity (&amp;logger;). The name of the
-          category is the previously described string, which coincides with Java
-          classes/packages. </para>
+          category, from which all categories inherit. 
+        </para>
+        <para>
+          In the log4j XML configuration file, categories are present
+          as 'logger' tags ('category' in older versions). The name
+          attribute of the logger tag contains the category, the
+          previously described string, which coincides with Java
+          classes/packages.
+        </para>
         <para>
           A special category is 'root', which describes the basic properties of
           all categories. It is described with the 'root' tag. </para>
         <para>
-          The logging 'level' can be set per category by a sub tag of
-          'category', named 'priority'. Also the priority class was overridden by
+          The logging 'level' can be set per category/log by a sub tag of
+          'logger', named 'level'. The level class was overridden by
           MMBase so the 'class' attribute must be present on every
-          occurrence. The actual value is set by the 'value' attribute. </para>
+          occurrence.   The value of this can be stored in an XML
+          entity (&amp;mmlevel;). The actual value is set by the 'value'
+          attribute. 
+        </para>
         <para>
-          The root tag must appear after the category tags. </para>
+          The root tag must appear after the logger tags. </para>
       </section>
       <section>
         <title>Appenders</title>
@@ -633,11 +650,11 @@
             <title>Category</title>
             <programlisting>
               <![CDATA[
-              <category name="org.mmbase.security" class ="&logger;" additivity="false" >
-              <priority class="&priority;" value ="info" />
-              <appender-ref ref="securityfile" />
-            </category>
-              ]]>
+<logger name="org.mmbase.security" additivity="false" >
+    <level class="&mmlevel;" value ="info" />
+    <appender-ref ref="securityfile" />
+</logger>
+]]>
             </programlisting>
           </example>
         </para>
