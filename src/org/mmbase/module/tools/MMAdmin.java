@@ -1131,9 +1131,11 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBSize(i);
 			} catch (Exception e) {}
 		}
+		/*
 		if (mmb.getDatabase().updateTable(bul)) {
 			syncBuilderXML(bul,builder);
 		}
+		*/
 	}
 
 
@@ -1159,9 +1161,11 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBType(FieldDefs.TYPE_LONG);
 			}
 		}
+		/*
 		if (mmb.getDatabase().updateTable(bul)) {
 			syncBuilderXML(bul,builder);
 		}
+		*/
 	}
 
 
@@ -1181,9 +1185,11 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBState(FieldDefs.DBSTATE_SYSTEM);
 			}
 		}
+		/*
 		if (mmb.getDatabase().updateTable(bul)) {
 			syncBuilderXML(bul,builder);
 		}
+		*/
 	}
 
 	public void setBuilderDBKey(Hashtable vars) {
@@ -1224,9 +1230,11 @@ public class MMAdmin extends ProcessorModule {
 				def.setDBNotNull(false);
 			}
 		}
+		/*
 		if (mmb.getDatabase().updateTable(bul)) {
 			syncBuilderXML(bul,builder);
 		}
+		*/
 	}
 
 	public void addBuilderField(Hashtable vars) {
@@ -1295,9 +1303,11 @@ public class MMAdmin extends ProcessorModule {
 			def.setGUIType(value);
 
 			bul.addField(def);
+			/*
 			if (mmb.getDatabase().updateTable(bul)) {
 				syncBuilderXML(bul,builder);
 			}
+			*/
 		}
 	}
 
@@ -1310,11 +1320,13 @@ public class MMAdmin extends ProcessorModule {
 		if (bul!=null && value!=null && value.equals("Yes")) {
 			FieldDefs def=bul.getField(fieldname);
 			bul.removeField(fieldname);
+			/*
 			if (mmb.getDatabase().updateTable(bul)) {
 				syncBuilderXML(bul,builder);
 			} else {
 				bul.addField(def);
 			}
+			*/
 		}
 	}
 
