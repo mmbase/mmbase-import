@@ -77,7 +77,7 @@ several MMBase-checkouts.
   <property name="distro"           value="MMBase ${distro.version}"/>
 
   <!-- documentation related settings -->
-  <property name="build.documentation" value="true" />
+  <property name="build.documentation" value="false" />
   <property name="documentation.home"  value="${source.dir}/documentation" />
   <property name="documentation.builders.language" value="en" />
   <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
