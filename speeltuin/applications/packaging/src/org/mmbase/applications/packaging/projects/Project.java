@@ -59,6 +59,14 @@ public class Project {
 	readTargets();
    }
 
+   public void setName(String name) {
+	this.name=name;
+   }
+
+   public void setPath(String path) {
+	this.path=path;
+   }
+   
    public String getPath() {
 	return path;
    }
