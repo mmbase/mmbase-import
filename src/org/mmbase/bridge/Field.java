@@ -13,7 +13,9 @@ import org.mmbase.module.core.*;
 
 /**
  * This interface represents a node's field type information object.
+ *
  * @author Pierre van Rooden
+ * @author Jaco de Groot
  */
 public interface Field {
 
@@ -30,41 +32,57 @@ public interface Field {
 	public final static int TYPE_DOUBLE = 6;
 	public final static int TYPE_LONG = 7;
 	public final static int TYPE_UNKNOWN = -1;
+
     /**
-     * Gets the NodeManager this field belongs to
-     * @return the <code>NodeType</code> object for this field
+     * Returns the node manager this field belongs to.
+     *
+     * @return  the node manager this field belongs to
      */
     public NodeManager getNodeManager();
 
 	/**
-     * Retrieve the field name (identifying name)
+     * Returns the name of this field.
+     *
+     * @return  the name of this field
      */
     public String getName();
  	
  	/**
-	 * Retrieve the field's GUI type
+	 * Returns the GUI name for the data type this field contains.
+     *
+     * @return  the GUI name for the data type this field contains
 	 */
     public String getGUIType();
  	
  	/**
-	 * Retrieve the field's GUI name
+	 * Returns the GUI name for this field.
+     *
+     * @return  the GUI name for this field
 	 */
     public String getGUIName();
 
 	/**
-	 * Retrieve the field type
+	 * Returns the identifier for the data type this field contains.
+     *
+     * @return  an <code>int</code> wich identifies the type of data this field
+     *          contains
 	 */
 	public int getType();
 
 	/** 
-	 * Retrieve the field state
+	 * Returns this field's state identifier.
+     *
+     * @return  an <code>int</code> wich identifies the state of this field
 	 */
 	public int getState();
-
 	
 	/**
-	* retrieve the size of the field (i.e. the maximum length for a String)
-	*/
+     * Returns the maximum length of data this field can contain.
+     * For example if a field contains characters the size indicates the
+     * maximum number of characters it can contain.
+     *
+     * @return  the maximum length of data this field can contain
+     */
 	public int getSize();
 	
 }
