@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.22 2003-09-23 13:15:27 pierre Exp $
+ * @version $Id: Contexts.java,v 1.23 2003-09-23 13:38:30 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify;
  * @see    org.mmbase.security.Authorization;
  */
@@ -237,6 +237,7 @@ public class Contexts extends MMObjectBuilder {
 
         // if this is a group node, then you may do anything on it, if you are member of the group,
         // and you rank is higher then 'basic user'.
+        /*
         if (builder instanceof Groups) {
             boolean res = Groups.getBuilder().contains(node, user);  // members may see the group
             if (operation != Operation.READ) {
@@ -245,6 +246,7 @@ public class Contexts extends MMObjectBuilder {
                 return res;
             }
         }
+        */
 
         // when it is our user node, and you are this user, you may do anything on it (change password)
         if (builder instanceof Users) {
@@ -559,9 +561,6 @@ public class Contexts extends MMObjectBuilder {
         if (node == null) {
             throw new SecurityException("node #" + nodeId + " not found");
         }
-        if (node.getBuilder() instanceof Groups) {
-            return "unused"; // confusing
-        }
         return getContextNode(node).getStringValue("name");
     }
 
@@ -584,11 +583,16 @@ public class Contexts extends MMObjectBuilder {
         if (node == null) {
             throw new SecurityException("node #" + nodeId + " not found");
         }
+
+        /*
+           mm: I think we should trying securing groups as well, to removed this (id did not quit understand it any way)a
+
         if (node.getBuilder() instanceof Groups) {
             node.setValue("owner", "system");
             node.commit();
             return node;
         }
+        */
         if (!getPossibleContexts(user, nodeId).contains(context)) {
             throw new SecurityException("could not set the context from '" + node.getStringValue("owner") + "' to '" + context + "' for node #" + nodeId + "(context name:" + context + " is not a valid context)");
         }
