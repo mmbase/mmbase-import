@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.13 2003-06-23 14:50:44 michiel Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.14 2003-06-23 17:17:34 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -103,9 +103,12 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @param document the database configuration document
      */
     public void deployDatabaseDocument(XMLDatabaseReader document) {
-        String path=document.getBlobDataDir();
+        String path = document.getBlobDataDir();
         setBinaryFilePath(path);
-        setStoreBinaryAsFile(path!=null && !path.equals(""));
+        setStoreBinaryAsFile(path != null && ! path.equals(""));
+        if (getStoreBinaryAsFile()) {
+            log.service("Byte array blobs will be stored in the directory '" + path + "'");
+        }
         setTypeMap(document.getTypeMapping());
         setFieldNameMap(document.getDisallowedFields());
         setPrimaryKeyScheme(document.getPrimaryKeyScheme());
@@ -151,7 +154,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @param path the file path
      */
     public void setBinaryFilePath(String path) {
-        binaryFilePath=path;
+        binaryFilePath = path;
     }
 
     /**
@@ -767,10 +770,10 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         return result;
     }
 
-
     /**
      * Set a prepared statement field i with value of key from the given node.
      * @throws SQLException if an error occurred while filling in the fields
+     * @return true if actual set a value. false if somewhy this did not happen (stored blob to disk e.g.)
      */
     abstract public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
         throws SQLException;
