@@ -34,9 +34,6 @@
 <tr>
   <td class="linkdata" colspan="2"><a href="<mm:url page="/mmexamples/jsp/my_editors/" />">Alternate Editors (jsp) : http://host:port/mmexamples/jsp/my_editors/</a></td>
 </tr>
-<tr>
-  <td class="linkdata" colspan="2"><a href="<mm:url page="/mmeditors/index.shtml" />" target="editors">The MMBase Editors (SCAN) : http://host:port/mmeditors/index.shtml</a></td>
-</tr>
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
