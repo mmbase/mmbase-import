@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.41 2004-05-24 14:02:43 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.42 2005-03-16 22:15:39 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -82,13 +82,12 @@ if (popup) {
     log.debug("this is not a popup");
 }
 
-
+%><mm:import externid="loginsessionname" from="parameters" ></mm:import><%
 
 String refer = ewconfig.backPage;
 if (log.isDebugEnabled()) log.trace("backpage in root-config is " + refer);
 
 if (request.getParameter("logout") != null) {
-    %><mm:cloud method="logout" /><%
     // what to do if 'logout' is requested?
     // return to the deeped backpage and clear the session.
     log.debug("logout parameter given, clearing session");
@@ -97,7 +96,9 @@ if (request.getParameter("logout") != null) {
     if (! refer.startsWith("http:")) {
         refer = response.encodeRedirectURL(request.getContextPath() + refer);
     }
-    response.sendRedirect(refer);
+   %>
+   <mm:redirect referids="loginsessionname" page="logout.jsp"><mm:param name="refer" value="<%=refer%>" /></mm:redirect>
+  <%
     return;
 }
 ewconfig.sessionKey = sessionKey;
@@ -195,4 +196,4 @@ if (!done) {
 %></mm:log><%
     if (done) return;
 %><mm:import externid="loginmethod" from="parameters">loginpage</mm:import>
-<mm:import externid="loginsessionname" from="parameters" ></mm:import>
+
