@@ -319,13 +319,17 @@ public class WriterHelper  {
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }            
+        release();
+        log.debug("End of deEndTag");
+        return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
+    }
+
+    public void release() {
         overridewrite = null; // for use next time
         hasBody       = false;
         bodyContent   = null;
         pageContext   = null;
         value         = null;
-        log.debug("End of deEndTag");
-        return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
     }
 
     /**

@@ -24,6 +24,9 @@ import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  * A Tag to produce an URL with parameters. This meant to live in a
@@ -31,8 +34,10 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  */
+
 public class UrlTag extends CloudReferrerTag  implements Writer {
 
+    private static Logger log = Logging.getLoggerInstance(UrlTag.class.getName()); 
     protected WriterHelper helper = new WriterHelper();
     // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
 
@@ -68,12 +73,16 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     }
 
     protected void addParameter(String key, Object value) throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("adding parameter " + key + "/" + value);
+        }
         extraParameters.put(key, value);
     }
 
 
 
     public int doStartTag() throws JspTagException {
+        log.debug("starttag");
         extraParameters = new HashMap();
         if (page == null || "".equals(page)) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
@@ -86,8 +95,8 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         String show = page;
         String amp = (writeamp ? "&amp;" : "&");
 
-
         if (show.charAt(0) == '/') { // absolute on servercontex
+            log.debug("'absolute' url");
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             show = req.getContextPath() + show;
         }
@@ -99,6 +108,9 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
             while (i.hasNext()) {
                 String key = (String)i.next();
                 String value = getString(key);
+                if (log.isDebugEnabled()) {
+                    log.debug("adding parameter (with referids) " + key + "/" + value);
+                }
                 show += connector + key + "=" + (value == null ? "" : org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value));
                 connector = amp;
             }
@@ -129,6 +141,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     }
 
     public int doEndTag() throws JspTagException {
+        log.debug("endtag of url tag");
         if (bodyContent != null) bodyContent.clearBody(); // don't show the body.
         helper.setBodyContent(bodyContent);
         if (helper.getJspvar() == null) {
@@ -142,6 +155,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
+        bodyContent = null;
         return helper.doEndTag();
     }
 
