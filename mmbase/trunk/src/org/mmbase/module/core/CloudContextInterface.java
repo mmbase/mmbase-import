@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.module.core;
+import java.util.Enumeration;
 
 /**
  *
