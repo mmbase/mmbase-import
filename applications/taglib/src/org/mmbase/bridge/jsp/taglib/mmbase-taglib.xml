@@ -583,7 +583,10 @@ See mmexamples/taglib for more elaborated examples.
     </attribute>
     <attribute>
       <name>path</name>
-      <required>true</required>
+      <required>false</required>
+      <requirednote>
+          'path' or 'referid' is mandatory.
+      </requirednote>
       <rtexprvalue>true</rtexprvalue>
       <info>
         A comma-separated list of node managers which specifies the path
@@ -828,7 +831,10 @@ See mmexamples/taglib for more elaborated examples.
     </attribute>
     <attribute>
       <name>path</name>
-      <required>true</required>
+      <required>false</required>
+      <requirednote>
+        'path' or 'referid' is mandatory.
+      </requirednote>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="path" />
       <info>
@@ -2597,6 +2603,26 @@ like the parameter list or the session (where ever it is available) --&gt;
     &lt;/mm:node&gt;
     </example>
   </tag>
+  <!-- tag>
+    <name>attachment</name>
+    <extends>nodereferrer</extends>
+    <extends>writer</extends>
+    <extends>contextwriter</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
+    <info>
+      <p>
+        Returns an URL to the attachment servlet. This is a NodeReferrer
+        and consequently has to live as a child of a (attachment) node.
+      </p>
+      <p>
+        Using this tag makes your pages more portable to other system,
+        and hopefully less sensitive for future changes in how the
+        attachment servlet works.
+      </p>
+    </info>
+  </tag -->
   <tag>
     <name>include</name>
     <type>util</type>
