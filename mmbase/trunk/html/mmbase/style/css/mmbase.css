@@ -1,7 +1,7 @@
 /*
  CSS for MMBase
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.5 2004-01-09 20:58:47 michiel Exp $;
+ @version $Id: mmbase.css,v 1.6 2004-02-13 10:22:46 gerard Exp $;
 */
 
 
@@ -50,7 +50,7 @@ th {
   text-align: left;
 }
 
-th.header { 
+th.header,th.navigate { 
   border-top: solid white 2ex;
 }
 
