@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * A Query especially fit for getQuery of NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeQuery.java,v 1.2 2003-07-25 14:23:17 michiel Exp $
+ * @version $Id: NodeQuery.java,v 1.3 2003-07-29 17:05:00 michiel Exp $
  * @since MMBase-1.7
  */
 public interface NodeQuery extends Query {
@@ -27,11 +27,5 @@ public interface NodeQuery extends Query {
 
     NodeManager getNodeManager();
 
-
-    /**
-     * Find the step field with given name
-     */
-
-    StepField getStepField(String fieldName);
 
 }
