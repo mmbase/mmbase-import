@@ -207,6 +207,7 @@ public class JamesServlet extends HttpServlet {
 		String URL=req.getRequestURI();
 		if( req.getQueryString()!=null) 
 			URL +="?"+req.getQueryString();
+		URL+=" "+req.getMethod();
 		synchronized (servletCountLock) {
 			servletCount--;
 			DebugServlet s = (DebugServlet) runningServlets.get(this);
@@ -225,6 +226,7 @@ public class JamesServlet extends HttpServlet {
 		String URL=req.getRequestURI();
 		if(req.getQueryString()!=null)
 			URL+="?"+req.getQueryString();
+		URL+=" "+req.getMethod();
 		int curCount;
 		synchronized (servletCountLock)	{
 			servletCount++; curCount=servletCount; printCount++;
