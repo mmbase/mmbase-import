@@ -164,7 +164,6 @@ title = "Edit " + ntype + " node";
 path1 = null;	// 1st piece of Hans & Gretchel path
 title = "Node not found";
 %>
-<%@ include file="inc_head.jsp" %>
 <p>&nbsp;</p>
 <p class="message">The node you were looking for <mm:present referid="nr">with number <mm:write referid="nr" /></mm:present> could not be found.</p>
 <p>&nbsp;</p>
