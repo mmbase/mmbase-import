@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="aa" maintainer="mmbase.org" version="0" extend="object">
-
-<status>active</status>
-
-<classfile>Dummy</classfile>
-
-<searchage>1000</searchage>
-
+<builder name="aa" maintainer="mmbase.org" version="0" extends="object">
 <names>
 	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="nl">aa</singular>
@@ -30,66 +23,6 @@
 </descriptions>
 
 <fieldlist>
-	<!-- POS 1 : <field> 'number' is a default field (see docs) -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="nl">Object</guiname>
-			<guiname xml:lang="fr">Objet</guiname>
-			<guiname xml:lang="en">Object</guiname>
-			<guiname xml:lang="us">Object</guiname>
-			<guitype>integer</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>-1</input>
-				<!-- position in list area of the editor -->
-				<list>10</list>
-				<!-- position in search area of the editor -->
-				<search>10</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>number</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true" key="true">INTEGER</type>
-		</db>
-	</field>
-
-	<!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="nl">Eigenaar</guiname>
-			<guiname xml:lang="fr">Propri!ire</guiname>
-			<guiname xml:lang="en">Owner</guiname>
-			<guiname xml:lang="us">Owner</guiname>
-			<guitype>string</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>-1</input>
-				<!-- position in list area of the editor -->
-				<list>11</list>
-				<!-- position in search area of the editor -->
-				<search>11</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>owner</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
-		</db>
-	</field>
-
 	<!-- POS 3 : <field> 'name'  -->
 	<field>
 		<!-- gui related -->
