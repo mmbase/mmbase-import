@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.35 2003-11-28 12:23:55 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.36 2003-12-08 12:08:18 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -226,7 +226,7 @@ public class WizardDatabaseConnector {
         if (!cmd.hasError()) {
             // place object in targetNode
             Node objectNode=Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']");
-            // if no destination document si given , do not copy or tag the node, just return it
+            // if no destination document is given , do not copy or tag the node, just return it
             if (document==null ) {
                 return objectNode;
             }
