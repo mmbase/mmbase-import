@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * Avoiding such inconsistencies is the responsibility of the user.
  *
  * @author  Rob van Maris
- * @version $Id: ModifiableQuery.java,v 1.4 2004-04-01 20:57:48 robmaris Exp $
+ * @version $Id: ModifiableQuery.java,v 1.5 2004-05-07 13:23:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class ModifiableQuery implements SearchQuery {
@@ -256,5 +256,58 @@ public class ModifiableQuery implements SearchQuery {
             return query.isAggregating();
         }
     }
+
+
+    /**
+     * {@inheritDoc}
+     * Should correspond to  {@link BasicSearchQuery#equals}
+     */
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof SearchQuery) {
+            SearchQuery query = (SearchQuery) obj;
+            Constraint constraint = getConstraint();
+            return isDistinct() == query.isDistinct()
+                && getMaxNumber() == query.getMaxNumber()
+                && getOffset() == query.getOffset()
+                && getSteps().equals(query.getSteps())
+                && getFields().equals(query.getFields())
+                && getSortOrders().equals(query.getSortOrders())
+                && (constraint == null?
+                    query.getConstraint() == null:
+                    constraint.equals(query.getConstraint()));
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * Should correspond to  {@link BasicSearchQuery#hashCode}
+     */
+    public int hashCode() {
+        Constraint constraint = getConstraint();
+        return (isDistinct()? 0: 101)
+        + getMaxNumber() * 17 + getOffset() * 19
+        + 23 * getSteps().hashCode()
+        + 29 * getFields().hashCode()
+        + 31 * getSortOrders().hashCode()
+        + 37 * (constraint == null ? 0 : constraint.hashCode());
+    }
+
+    // javadoc is inherited
+    public String toString() {
+        return "ModifiableSearchQuery(distinct:" + isDistinct()
+        + ", steps:" + getSteps()
+        + ", fields:" + getFields()
+        + ", constraint:" + getConstraint()
+        + ", sortorders:" + getSortOrders()
+        + ", max:" + getMaxNumber()
+        + ", offset:" + getOffset() + ")";
+    }
+
+
     
 }
