@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -40,6 +40,12 @@ public class BasicQueryHandlerTest extends TestCase {
     /** News builder, used as builder example. */
     private MMObjectBuilder news = null;
     
+    /** 
+     * Typedef builder, used as builder example where we need a number
+     * of nodes (there are > 5 typedef nodes for the core nodetypes). 
+     */
+    private MMObjectBuilder typedef = null;
+    
     /** Insrel builder, used as relation builder example. */
     /** Test nodes, created in setUp, deleted in tearDown. */
     private List testNodes = new ArrayList();
@@ -60,6 +66,7 @@ public class BasicQueryHandlerTest extends TestCase {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
         news = mmbase.getBuilder("news");
+        typedef = mmbase.getBuilder("typedef");
         
         // Disallowed fields map.
         disallowedValues = new HashMap();
@@ -187,6 +194,41 @@ public class BasicQueryHandlerTest extends TestCase {
             assertTrue(!iResultNodes.hasNext());
         }
         
+        // Test for clusternodes using NodeSearchQuery, should still return clusternodes
+        {
+            NodeSearchQuery nodeQuery = new NodeSearchQuery(news);
+            FieldDefs newsTitle = news.getField("title");
+            BasicStepField newsTitleField = nodeQuery.getField(newsTitle);
+            BasicSortOrder sortOrder = nodeQuery.addSortOrder(newsTitleField)
+                .setDirection(SortOrder.ORDER_ASCENDING);
+            FieldDefs newsOwner = news.getField("owner");
+            BasicStepField newsOwnerField = nodeQuery.getField(newsOwner);
+            BasicFieldValueConstraint constraint
+            = new BasicFieldValueConstraint(newsOwnerField, JUNIT_USER);
+            nodeQuery.setConstraint(constraint);
+            List resultNodes = instance.getNodes(nodeQuery, mmbase.getClusterBuilder());
+            Iterator iResultNodes = resultNodes.iterator();
+            Iterator iTestNodes = testNodes.iterator();
+            while (iTestNodes.hasNext()) {
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+                assertTrue(iResultNodes.hasNext());
+                MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
+                assertTrue(resultNode instanceof ClusterNode);
+                assertTrue(resultNode.getBuilder() == mmbase.getClusterBuilder());
+                assertTrue(resultNode.toString(),
+                    resultNode.getStringValue("news.title") != null
+                    && resultNode.getStringValue("news.title").length() > 0);
+                assertTrue(resultNode.getStringValue("news.title").equals(testNode.getStringValue("title")));
+                assertTrue(resultNode.getStringValue("news.body") != null
+                && resultNode.getStringValue("news.body").length() > 0);
+                assertTrue(resultNode.getStringValue("news.body").equals(testNode.getStringValue("body")));
+                assertTrue(resultNode.getStringValue("news.owner") != null
+                && resultNode.getStringValue("news.owner").length() > 0);
+                assertTrue(resultNode.getStringValue("news.owner").equals(testNode.getStringValue("owner")));
+            }
+            assertTrue(!iResultNodes.hasNext());
+        }
+        
         // Test for result nodes.
         {
             query = new BasicSearchQuery();
@@ -285,7 +327,21 @@ public class BasicQueryHandlerTest extends TestCase {
             fail("Query with offset not supported, should throw SearchQueryException.");
         } catch (SearchQueryException e) {}
         
-        // TODO: (later) test whith partial/full support for offset/maxNumber
+//        // Test weak offset support.
+//        query = new NodeSearchQuery(typedef);
+//        List typedefNodes = instance.getNodes(query, typedef);
+//        assertTrue(
+//            "In order to run this test, more than 5 typedef nodes are required.", 
+//            typedefNodes.size() > 5);
+//        
+//        query.setOffset(2);
+//        List resultNodes = instance.getNodes(query, typedef);
+//        assertTrue(resultNodes.size() == typedefNodes.size() - 2);
+//        /*******************************
+//         * hier was ik - RvM 27-11-2003
+//         *******************************/
+//        // TODO: (later) test whith partial/full support for offset/maxNumber
+        
     }
     
     /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
