@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.9 2002-10-25 11:09:40 pierre Exp $
+ * @version $Id: BasicList.java,v 1.10 2003-02-26 10:50:13 pierre Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
@@ -114,6 +114,7 @@ public class BasicList extends ArrayList implements BridgeList  {
 
         public void remove() {
             list.remove(index);
+            index=index-1;
         }
 
         // These have to be implemented with a check if o is of the right type.
