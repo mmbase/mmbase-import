@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="createattachment">
+	<title>Attachment</title>
+
+  <action type="delete">
+    <prompt>Are you sure you want to remove this attachment?</prompt>
+ 		<description>Delete attachment</description>
+  </action>
+
+	<action type="create">
+		<object type="attachments">
+      <field name="mimetype">application/octet-stream</field>
+      <field name="size">0</field>
+		</object>
+	</action>
+
+	<action type="delete" />
+
+	<lists>
+		<optionlist name="mimetypes">
+			<option id="application/octet-stream">Unknown</option>
+			<option id="application/msword">Microsoft Word</option>
+			<option id="application/x-shockwave-flash">Flash</option>
+			<option id="text/rtf">RTF Bestand</option>
+			<option id="application/pdf">Adobe Acrobat PDF</option>
+			<option id="application/ms-excel">Microsoft Excel</option>
+			<option id="application/ms-powerpoint">Powerpoint</option>
+			<option id="text/html">HTML</option>
+			<option id="text/plain">Tekst</option>
+			<option id="text/xml">XML</option>
+		</optionlist>
+	</lists>
+
+	<form-schema>
+		<title>Attachment upload</title>
+		<field name="title" />
+		<field name="description" />
+		<field name="handle"/>
+		<field name="mimetype" ftype="enum" dtrequired="true">
+			<prompt>Type</prompt>
+			<optionlist select="mimetypes" />
+		</field>
+	</form-schema>
+</wizard-schema>
