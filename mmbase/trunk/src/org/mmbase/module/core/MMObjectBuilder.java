@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.244 2003-09-03 13:26:49 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.245 2003-09-04 08:21:39 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3371,6 +3371,13 @@ public class MMObjectBuilder extends MMTable {
         mmb=m;
         // XXX: deprecated
         database=mmb.getDatabase();
+    }
+
+    /**
+     * Return the MMBase object
+     */
+    public MMBase getMMBase() {
+        return mmb;
     }
 
     /**
