@@ -856,14 +856,14 @@ public class Wizard {
 
             // finally, see if we need to place some commands here
             if (nrOfItems > minoccurs && hiddenCommands.indexOf("|delete-item|") == -1){
-               addSingleCommand(newitem,"delete-item", datacontext);
+                addSingleCommand(newitem,"delete-item", datacontext);
             }
             if (dataindex > 0 && hiddenCommands.indexOf("|move-up|") == -1){
-               addSingleCommand(newitem,"move-up", datacontext,
+                addSingleCommand(newitem,"move-up", datacontext,
                                                    (Node)entrylist[dataindex-1].getValue());
             }
-            if (dataindex < nrOfItems-1 && hiddenCommands.indexOf("|move-down|") == -1){
-               addSingleCommand(newitem,"move-down", datacontext,
+            if ((dataindex+1) < entrylist.length && hiddenCommands.indexOf("|move-down|") == -1){
+                addSingleCommand(newitem,"move-down", datacontext,
                                                    (Node)entrylist[dataindex+1].getValue());
             }
         }
