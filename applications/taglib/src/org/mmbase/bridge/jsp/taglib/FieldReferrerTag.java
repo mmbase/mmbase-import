@@ -18,8 +18,13 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
+ * A fieldreferrer tag is a tag which needs (or can use) a 'field' to
+ * operate on. The most evident example is the FieldInfo tag. 
  *
- * @author Michiel Meeuwissen 
+ * Field itself is a FieldReferrer too (it can reuse another one)
+ *
+ * @author Michiel Meeuwissen
+ * @see    FieldInfoTag
  *
  */
 
@@ -51,4 +56,5 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
         return findFieldProvider().getFieldVar();
     }
 
+   
 }
