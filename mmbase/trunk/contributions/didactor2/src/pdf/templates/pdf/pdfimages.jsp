@@ -12,7 +12,7 @@
    <mm:import id="imnum" reset="true"><mm:field name="images.number"/></mm:import>
    <mm:node number="$imnum">
    
-      <td>
+      <td width="100%">
       <mm:field name="title"/>
       <br/>
        <mm:isgreaterthan referid="imwidth" value="0">
@@ -41,7 +41,7 @@
     </mm:compare>
     
     <mm:compare referid="imagelayout" value="1">
-    <td>
+    <td width="100%">
    <mm:related path="sizerel,images" orderby="sizerel.pos">
    <mm:import id="imwidth" reset="true"><mm:field name="sizerel.width"/></mm:import>
    <mm:import id="imheight" reset="true"><mm:field name="sizerel.height"/></mm:import>
