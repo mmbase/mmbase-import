@@ -24,9 +24,9 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.21 2002-10-11 13:03:13 eduard Exp $
+ * @version $Id: PostgreSQL71.java,v 1.22 2002-11-21 09:50:03 robmaris Exp $
  */
-public class PostgreSQL71 implements MMJdbc2NodeInterface  {
+public class PostgreSQL71 extends BaseJdbc2Node implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
     protected MMBase mmb;
 
@@ -54,6 +54,9 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             Object item = iter.next();
             allowed2disallowed.put(disallowed2allowed.get(item), item);
         }
+        
+        // Instantiate and initialize sql handler.
+        super.init(disallowed2allowed, parser);
     }
 
     public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
