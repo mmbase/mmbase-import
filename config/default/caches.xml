@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.7 2002-08-01 18:36:55 michiel Exp $
+  @version $Id: caches.xml,v 1.8 2002-10-30 00:14:13 michiel Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -58,6 +58,7 @@
   <cache name="XSLTResults">
     <status>inactive</status>
     <size>50</size>
+    <maxEntrySize>5000</maxEntrySize>
   </cache>
 
   <!-- ================================================================================
