@@ -60,7 +60,7 @@
                 </td>
                 <td class="data">
                     <%-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder --%>
-                    <%= cloud.getNode(insrelNode.getNumber()).getStringValue("sgui($config.session,)") %>
+                    <%= cloud.getNode(insrelNode.getNumber()).getFunctionValue("gui", null).toString()%>
                 </td>
                 <td class="navigate">
                     <%-- delete the relation node, not sure about the node_type argument! --%>
@@ -85,7 +85,7 @@
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <mm:field name="sgui($config.session,)" />
+                    <mm:nodeinfo type="gui" />
                 </td>
                 <td class="navigate">
                     <%-- edit the related node --%>
@@ -156,7 +156,7 @@
                 </td>
                 <td class="data">
                     <%-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder --%>
-                    <%= cloud.getNode(insrelNode.getNumber()).getStringValue("sgui($config.session,)") %>
+                    <%= cloud.getNode(insrelNode.getNumber()).getFunctionValue("gui", null).toString() %>
                 </td>
                 <td class="navigate">
                     <%-- delete the relation node, not sure about the node_type argument! --%>
@@ -181,7 +181,7 @@
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <mm:field name="sgui($config.session,)" />
+                    <mm:nodeinfo type="gui" />
                 </td>
                 <td class="navigate">
                     <%-- edit the related node --%>
