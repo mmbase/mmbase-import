@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.61 2004-06-11 15:49:05 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.62 2004-07-20 16:01:55 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -1592,7 +1592,7 @@ public class ClusterBuilder extends VirtualBuilder {
             Iterator iSteps= steps.iterator();
             while (iSteps.hasNext() && result == null) {
                 BasicStep step= (BasicStep)iSteps.next();
-                if (step.getTableName().equals(builder.tableName)) {
+                if (step.getTableName().equals(builder.tableName)) {  // should inheritance not be considered?
                     // Found.
                     result = step;
                 }
