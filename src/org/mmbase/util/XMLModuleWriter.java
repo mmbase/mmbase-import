@@ -28,7 +28,7 @@ public class XMLModuleWriter  {
 
     public static boolean writeXMLFile(String filename,Module mod) {
         String header = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"+
-                        "<!DOCTYPE module PUBLIC \"//MMBase - module//\" \"http://www.mmbase.org/dtd/module.dtd\">\n";
+                        "<!DOCTYPE module PUBLIC \"-//MMBase/DTD module config 1.0//EN\" \"http://www.mmbase.org/dtd/module.dtd\">\n";
         //String header = "";
 
         String body=header+"<module maintainer=\""+mod.getMaintainer()+"\" version=\""+mod.getVersion()+"\">\n\n";
@@ -46,20 +46,20 @@ public class XMLModuleWriter  {
         body+="\t<classfile>"+mod.getClassName()+"</classfile>\n\n";
 
         // properties
-		body+="\t<!-- <properties>\n";
-     	body+="\tyou can define properties to be used by the classfile (if used) it uses\n";
-     	body+="\ta key/value system. Its a optional tag.\n";
-		body+="\t-->\n";
-		body+="\t<properties>\n";
+        body+="\t<!-- <properties>\n";
+        body+="\tyou can define properties to be used by the classfile (if used) it uses\n";
+        body+="\ta key/value system. Its a optional tag.\n";
+        body+="\t-->\n";
+        body+="\t<properties>\n";
         Hashtable props=mod.getInitParameters();
         if (props!=null) {
             for (Enumeration e=props.keys();e.hasMoreElements();) {
                 String name=(String)e.nextElement();
-				String value=(String)props.get(name);
-    			body+="\t\t<property name=\""+name+"\">"+value+"</property>\n";
-			}
-	    }
-		body+="\t</properties>\n\n";
+                String value=(String)props.get(name);
+                body+="\t\t<property name=\""+name+"\">"+value+"</property>\n";
+            }
+        }
+        body+="\t</properties>\n\n";
 
         // the end of the builder file
         body+="</module>";
@@ -80,7 +80,7 @@ public class XMLModuleWriter  {
             scan.close();
         } catch(Exception e) {
             log.error(e.getMessage());
-	    log.error(Logging.stackTrace(e));
+        log.error(Logging.stackTrace(e));
         }
         return true;
     }
