@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.47 2003-08-07 17:24:14 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.48 2003-08-08 09:22:54 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -113,7 +113,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int getIndex() {
         return currentItemIndex;
     }
-    public int getOffset() {
+    public int getIndexOffset() {
         return 1;
     }
     public Object getCurrent() {
