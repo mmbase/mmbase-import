@@ -1,3 +1,14 @@
+/*
+ * $Id: Playlists.java,v 1.3 2000-02-24 13:16:13 wwwtech Exp $
+ * 
+ * VPRO (C)
+ * This source file is part of mmbase and is (c) by VPRO until it is being
+ * placed under opensource. This is a private copy ONLY to be used by the
+ * MMBase partners.
+ *
+ * $Log: not supported by cvs2svn $
+ */
+
 package org.mmbase.module;
 
 import java.util.*;
@@ -19,11 +30,7 @@ import org.mmbase.module.database.*;
  * @author Rob Vermeulen
  * @author Rico Jansen
  * 
- * 09 feb 1999, Marcel Maatkamp (marmaa@vpro.nl)
- * 	- added extra start-stop features for cdtracks 
- *	- reprogammed playlist so that best audio-quality gets choosen when optimal is non-existent
- * 
- * @version 18 Jun 1999
+ * @version $Revision: 1.3 $ $Date: 2000-02-24 13:16:13 $
  */
 public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 
@@ -35,7 +42,7 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	private static final int maxRAchannel = 2;
 	private static final int minRAchannel = 1;
 
-    private MMBase mmbase;
+    	private MMBase mmbase;
 	int delaycount=0;
 	boolean flipper=false;
 
@@ -43,30 +50,50 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	Hashtable urlcache=new Hashtable();
 
 	// cache for playlists
+	// -------------------
 	Hashtable listCache=new Hashtable();
 
 	// Vector with dirty playlistItems
+	// -------------------------------
 	Vector dirtyItems = new Vector();
 	Hashtable ItemCache=new Hashtable();
 
-
 	MusicInterface  music;
 
+	
+	/**
+	*
+	*/
 	public void init() {
     		mmbase=(MMBase)getModule("MMBASEROOT");
     		music=(MusicInterface)getModule("MUSIC");
 	}
 	
+	
+	/**
+	*
+	*/
 	public void reload() {
 			init();
 	}
 
+	
+	/**
+	*
+	*/
 	public void onload() {
 	}
 
+	
+	/**
+	*
+	*/
 	public void unload() {
 	}
-
+	
+	/**
+	*
+	*/
 	public void shutdown() {
 	}
  
@@ -82,10 +109,13 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		}
 		return("No command defined");
 	}
-
+	
+	/**
+	*
+	*/
 	public Vector  getList(HttpServletRequest requestInfo,StringTagger tagger, String value) {
-			//System.out.println("Playlist->"+tagger);
-			//System.out.println("Playlist->"+value);
+		//System.out.println("Playlist->"+tagger);
+		//System.out.println("Playlist->"+value);
     		String line = Strip.DoubleQuote(value,Strip.BOTH);
 
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
@@ -108,20 +138,12 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		try {
 		String number=tagger.Value("NODE");
 		String so=tagger.Value("TYPE");
-		//System.out.println("Playlist->"+number+" "+so);
 		if (so==null) so="cdtracks";
 		MMObjectBuilder bul=mmbase.getMMObject("pools");
-		// RICO aliased version
 		MMObjectNode node=getAliasedNode(number);
-//		MMObjectNode node=bul.getNode(number);
-
-		if (debug) debug("doPlaylist( number("+number+"), so("+so+") ): start");	
 
 	   	if (node!=null) 
 		{
-			//debug("doPlayList(): number("+number+")");
-			//debug("doPlayList(): so("+so+")");
-
 			// temp hack !!
 			Vector list;
 			if (so.equals("cdtracks")) {
@@ -141,7 +163,6 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 				b=Integer.parseInt(part.substring(part.indexOf('-')+1,part.length()-1));
 			} catch (Exception e) {
 				a=1; b=1; // Laat de gehele playlist zien.
-				//System.out.println("Playlists -> "+e);
 			}
 			int begin = (a-1)*(int)Math.ceil(playlistsize/(double)b);
 			int end = (a*(int)Math.ceil(playlistsize/(double)b))-1;
@@ -190,8 +211,9 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	}
 
 
-
-
+	/**
+	* 
+	*/
 	public boolean process(HttpServletRequest req, Hashtable cmds,Hashtable vars) {
 		String doProcess = (String)vars.get("DO");
 		if(doProcess==null) System.out.println("Playlists -> No 'PRC-VAR-DO' specified in HTML-page.");
@@ -695,6 +717,10 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		return(data);	
 	}
 
+	
+	/**
+	*
+	*/
 	private Vector getUrls(Vector numbers, int myspeed, int mychan, String info, String fmachine, int maxNumberOfTracks, boolean playRandom, boolean playShuffled, boolean isInternal)
 	{
 		if (debug) debug("getUrls("+numbers.size()+","+myspeed+","+mychan+","+info+","+fmachine+","+maxNumberOfTracks+","+playRandom+")");
@@ -770,6 +796,10 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		return result;	
 	}
 
+	
+	/**
+	*
+	*/
 	private PlaylistItem getBestSpeedOld( Vector playlist, int myspeed, int mychannels )
 	{
 		// debug("getBestSpeed("+playlist.size()+","+myspeed+","+mychannels+"): start");
@@ -819,101 +849,69 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	}
 
 
-	 /**
-     * Vector with numbers only diff in speed and format
-     */
-    private PlaylistItem getBestSpeed( Vector playlist, int myspeed, int mychannels )
-    {
-        // debug("getBestSpeed("+playlist.size()+","+myspeed+","+mychannels+"): start");
-        // myspeed & mychannels reflect optimal choice
-        // pi will always be equal or less
-        // if myspeed or mychannels does not reflect any choice, the most optimal will be choosen
+	/**
+	* Vector with numbers only diff in speed and format
+	*/
+	private PlaylistItem getBestSpeed( Vector playlist, int myspeed, int mychannels )
+	{
+		// debug("getBestSpeed("+playlist.size()+","+myspeed+","+mychannels+"): start");
+		// myspeed & mychannels reflect optimal choice
+		// pi will always be equal or less
+		// if myspeed or mychannels does not reflect any choice, the most optimal will be choosen
 
-        PlaylistItem result = null, current = null, lowest = null;
+		PlaylistItem result = null, current = null, lowest = null;
 
-        //debug("getBestSpeed("+((PlaylistItem)playlist.firstElement()).toString()+","+myspeed+","+mychannels+") : number of choices("+playlist.count()+").");
+        	//debug("getBestSpeed("+((PlaylistItem)playlist.firstElement()).toString()+","+myspeed+","+mychannels+") : number of choices("+playlist.count()+").");
+		for (Enumeration e = playlist.elements(); e.hasMoreElements(); ) {
+			current = (PlaylistItem) e.nextElement();
 
+			if (lowest != null) {
+				if (current.speed < lowest.speed && current.channels == lowest.channels)
+					lowest = current;
+			} else lowest = current;
+	
+			// if none choosen yet, is current item equal or less than my optimum ?
+			// --------------------------------------------------------------------
+			if (result==null) {
+	       	         	if( current.format == 6 ) {
+					result = current;
+				} else if( current.format == 2 ) { 
+					if(current.speed <= myspeed && current.channels == mychannels) { 
+						result = current; 
+					} 
+				}
+			} else {
+       	         		// if one choosen already, is current better than 
+				// choosen one and current equal or less than optimal chioce, choose it
+       		         	// --------------------------------------------------------------------
+				if( result!=null) { 
+					// always use 6 if available 
+					// ------------ ------------ 
+					if( result.format != 6 ) { 
+						if( current.format == 6 ) { 
+							result = current; 
+						} else if( current.format == 2 ) {
+       	                     				if (current.speed >= result.speed && current.speed <= myspeed && current.channels == result.channels) { 
+								result = current; 
+							}
+       	                 			}
+       	             			}
+       	         		}
+			}
+		}  
 
-        for (Enumeration e = playlist.elements(); e.hasMoreElements(); )
-        {
-            current = (PlaylistItem) e.nextElement();
-
-            if (lowest != null)
-            {
-                if (current.speed < lowest.speed && current.channels == lowest.channels)
-                    lowest = current;
-            }
-            else
-                lowest = current;
-
-            // if none choosen yet, is current item equal or less than my optimum ?
-            // --------------------------------------------------------------------
-            if (result==null)
-            {
-                if( current.format == 6 )
-                {
-                    result = current;
-                }
-                else
-                if( current.format == 2 )
-                {
-                    if(current.speed <= myspeed && current.channels == mychannels)
-                    {
-                        result = current;
-                    }
-                }
-            }
-            else
-            {
-                // if one choosen already, is current better than choosen one and current equal or less than optimal chioce, choose it
-                // -------------------------------------------------------------------------------------------------------------------
-                if( result!=null)
-                {
-                    // always use 6 if available
-                    // ------------ ------------
-                    if( result.format != 6 )
-                    {
-                        if( current.format == 6 )
-                        {
-                            result = current;
-                        }
-                        else
-                        if( current.format == 2 )
-                        {
-                            if (current.speed >= result.speed && current.speed <= myspeed && current.channels == result.channels)
-                            {
-                                result = current;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // if no match coud be found, take the lowest one
-        if (result == null)
-            result = lowest;
-
-        if (result == null)
-            debug("getBestSpeed("+playlist+","+myspeed+","+mychannels+"): ERROR: No match could be made !!!");
-
-        if (debug)
-            debug("getBestSpeed("+playlist.size()+","+myspeed+","+mychannels+"): I found speed("+result.speed+") and channels("+result.channels+").")
-;
-
-        return result;
-    }
+		// if no match coud be found, take the lowest one
+		if (result == null) result = lowest;
+		if (result == null) debug("getBestSpeed("+playlist+","+myspeed+","+mychannels+"): ERROR: No match could be made !!!");
+		if (debug) debug("getBestSpeed("+playlist.size()+","+myspeed+","+mychannels+"): I found speed("+result.speed+") and channels("+result.channels+").");
+        	return result;
+	}
 
 	/**
 	 * getBestUrl()
-	 * 	Bepaal url aan de hand van item
+	 * This part will be rewritten to use classes in audiobranche in /util 
 	 */
-	private String getBestUrl( PlaylistItem item, String info, String fmachine, int uspeed, int uchan, boolean isInternal )
-	{
-		/* boe
-		if (debug)
-			debug("getBestUrl("+item.id+"): start, url="+item.url+" speed="+uspeed+" uchan="+uchan);
-		boe */
+	private String getBestUrl( PlaylistItem item, String info, String fmachine, int uspeed, int uchan, boolean isInternal ) {
 		int speed = item.speed;
 
 		if (item.format==2) {
@@ -930,7 +928,8 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		} else if (item.format==6) {
 			speed=96;
 		}
-
+			
+		
 
 		if (item.channels == 0)
 			item.channels = uchan;
@@ -945,58 +944,45 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		if (item.stoptime  != null && !item.stoptime.equals(""))	
 			startstop += "&end=\""+item.stoptime+"\"";
 
-		if (item.url!=null && !item.url.equals(""))
-		{
-			if(item.url.indexOf("streams")!=-1 && !isInternal)
-        	{
-   	       		if( item.format == 2 )
-	            {
-		            // debug("Mirror url from streams.omroep.nl");
-   		         // Mirror to 7072 ipv 7070
-   			             result="pnm://streams.omroep.nl/vpro/"+item.id+"/"+speed+"_"+item.channels+
-   		                     ".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+
-   		                     "\"" + startstop + "\n";
-   			    }
-   		        else
-   		        if( item.format == 6 )
-   		        {
-   		            result="rtsp://streams.omroep.nl/vpro/"+item.id+"/surestream.rm" +
-   		                    "?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+
-   		                    "\"" + startstop + "\n";
-   		        }
-				else
-				{
+		if (item.url!=null && !item.url.equals("")) {
+			if(item.url.indexOf("streams")!=-1 && !isInternal) {
+   	       			if( item.format == 2 ) {
+					// debug("Mirror url from streams.omroep.nl");
+					// Mirror to 7072 ipv 7070
+					result="pnm://streams.omroep.nl/vpro/"+item.id+"/"+speed+"_"+item.channels+ 
+						".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+ 
+						"\"" + startstop + "\n";
+   			    	}
+   		        	else if( item.format == 6 ) {
+   		            		result="rtsp://streams.omroep.nl/vpro/"+item.id+"/surestream.rm" + 
+   		                    		"?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+ 
+   		                    		"\"" + startstop + "\n";
+   		        	} else {
 					debug("getBestUrl("+item.id+"): url="+item.url+" speed="+uspeed+" uchan="+uchan+", format="+item.format+": ERROR: format not valid!");
-   			             result="pnm://streams.omroep.nl/vpro/"+item.id+"/"+speed+"_"+item.channels+
-   		                     ".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+
+   			             result="pnm://streams.omroep.nl/vpro/"+item.id+"/"+speed+"_"+item.channels+ 
+   		                     ".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+ 
    		                     "\"" + startstop + "\n";
 				}
-   		     } else {
-   		        if( item.format == 2 )
-   		        {
-   		            result="pnm://"+fmachine+"/"+item.id+"/"+speed+"_"+item.channels+
-   		                    ".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+
-   		                    "\""+ startstop +"\n";
-   		        }
-   		        else
-   		        if( item.format == 6 )
-   		        {
-   		            result="rtsp://"+fmachine+"/"+item.id+"/surestream.rm" +
-   		                    "?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+
-	   	                    "\"" + startstop + "\n";
-   	        	}	
-				else
-				{
+			} else {
+				if( item.format == 2 ) {
+   		            		result="pnm://"+fmachine+"/"+item.id+"/"+speed+"_"+item.channels+ 
+   		                    	".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+ 
+   		                    	"\""+ startstop +"\n";
+				} else if( item.format == 6 ) {
+					result="rtsp://"+fmachine+"/"+item.id+"/surestream.rm" + 
+					"?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+ 
+					"\"" + startstop + "\n";
+				} else {
 					debug("getBestUrl("+item.id+"): url="+item.url+" speed="+uspeed+" uchan="+uchan+", format="+item.format+": ERROR: format not valid!");
-
-   			             result="pnm://streams.omroep.nl/vpro/"+item.id+"/"+speed+"_"+item.channels+
-   		                     ".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+
+   			             result="pnm://streams.omroep.nl/vpro/"+item.id+"/"+speed+"_"+item.channels+ 
+   		                     ".ra?title=\""+item.title+" ( "+item.group+" )\"&author=\""+item.group+"\"&copyright=\""+info+ 
    		                     "\"" + startstop + "\n";
 				}
 			}
-        }
+        	}
 		else
 			debug("getBestUrl("+item.id+"): url="+item.url+" speed="+uspeed+" uchan="+uchan+", format="+item.format+": ERROR: url not valid!");
+
 		//temp fix daniel to solve server problems at streams.omroep.nl
 /*
 		System.out.println("Checking url="+result);
@@ -1020,13 +1006,13 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		return(result);
 	}
 	
-    /**
-     * Laat de nummers in een vector met breedste spreiding terugkomen
-     * @param frequency frequentie 3 creeert als het ware 3 boxen en laat
-     * de eerste box hiervan 3x horen, de 2e box 2 maal en de 3e eenmaal.
-     * Dit algorithme werkt met een breedste spreiding!
-     */
-    private Vector shuffleFreqq(Vector oldvec, int frequency) {
+	/**
+	* Laat de nummers in een vector met breedste spreiding terugkomen
+	* @param frequency frequentie 3 creeert als het ware 3 boxen en laat
+	* de eerste box hiervan 3x horen, de 2e box 2 maal en de 3e eenmaal.
+	* Dit algorithme werkt met een breedste spreiding!
+	*/
+	private Vector shuffleFreqq(Vector oldvec, int frequency) {
 
 		// startstop b
 		if (oldvec==null)
@@ -1035,36 +1021,34 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 			return oldvec;
 		// startstop e
 
-        if(frequency<=1) return oldvec;
-        Vector newvec = new Vector();
+		if(frequency<=1) return oldvec;
+		Vector newvec = new Vector();
 
-        oldvec=SortedVector.SortVector(oldvec,new PlaylistScoreCompare());
-        int a, b=frequency, playlistsize=oldvec.size();
-        for(a=1;a<=b;a++) {
-            int begin = (a-1)*(int)Math.ceil(playlistsize/(double)b);
-            int end = (a*(int)Math.ceil(playlistsize/(double)b))-1;
-            int times=1; // Welke iteratie is het?
-            int size=newvec.size();
-            int sizeNewBox=(end-begin+1)*(b-a+1);
-            int r=0; // doordat je 1 item insert moet je teller telkens 1 verder staan.
+		oldvec=SortedVector.SortVector(oldvec,new PlaylistScoreCompare());
+		int a, b=frequency, playlistsize=oldvec.size();
+		for(a=1;a<=b;a++) {
+			int begin = (a-1)*(int)Math.ceil(playlistsize/(double)b);
+			int end = (a*(int)Math.ceil(playlistsize/(double)b))-1;
+			int times=1; // Welke iteratie is het?
+			int size=newvec.size();
+			int sizeNewBox=(end-begin+1)*(b-a+1);
+			int r=0; // doordat je 1 item insert moet je teller telkens 1 verder staan.
 
-
-            for (int rep=a; rep<=b;rep++) {
-                for (int index=begin; index<=end; index++) {
-                    try {
-                        //System.out.println("times="+times+" size="+size+" sizeNewBox="+sizeNewBox+" insert="+((int)Math.floor(times*size/sizeNewBox)+r));
-                        newvec.insertElementAt(oldvec.elementAt(index),(int)Math.floor(times*size/sizeNewBox)+r);
-                        times++;
-                        r++;
-                    } catch (Exception e) {
-                        //System.out.println("Playlists shuffleFreq -> "+e);
-                        // Trying to put some last elements into the vector
-                    }
-                }
-            }
-        }
-        return newvec;
-    }
+			for (int rep=a; rep<=b;rep++) {
+				for (int index=begin; index<=end; index++) {
+					try {
+                        			newvec.insertElementAt(oldvec.elementAt(index),(int)Math.floor(times*size/sizeNewBox)+r);
+						times++;
+						r++;
+					} catch (Exception e) {
+                        			//System.out.println("Playlists shuffleFreq -> "+e);
+                        			// Trying to put some last elements into the vector
+					}
+                		}
+            		}
+        	}
+        	return newvec;
+    	}
 
 	/**
 	 * Dit is nog niet echt een mooie oplossing, maarja
@@ -1074,30 +1058,32 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 	 */
 	private Vector shuffleFreq(Vector oldvec, int frequency) {
   		if(frequency<=1) return oldvec;
-    	Vector newvec = new Vector();
-
+		Vector newvec = new Vector();
 		oldvec=SortedVector.SortVector(oldvec,new PlaylistScoreCompare());	
-    	int a, b=frequency, playlistsize=oldvec.size();
-    	for(a=1;a<=b;a++) {
-        	int begin = (a-1)*(int)Math.ceil(playlistsize/(double)b);
-        	int end = (a*(int)Math.ceil(playlistsize/(double)b))-1;
-        	for (int index=begin; index<=end; index++) {
-            	for (int i=1;i<=(b-a+1);i++) {
-                	try {
-                    	newvec.addElement(oldvec.elementAt(index));
-                	} catch (Exception e) {
-                    	// Trying to put some last elements into the vector
-                	}
-            	}
-        	}
-    	}	
-		//Tjatjaa, uit een paar testjes bleek dat 3x voldoende was om dezelfde opeenvolgende items te 'voorkomen'. 
-     	RandomThings.shuffleVector(newvec);
-     	RandomThings.shuffleVector(newvec);
-     	RandomThings.shuffleVector(newvec);
-    	return (newvec);
+    		int a, b=frequency, playlistsize=oldvec.size();
+    		for(a=1;a<=b;a++) {
+        		int begin = (a-1)*(int)Math.ceil(playlistsize/(double)b);
+        		int end = (a*(int)Math.ceil(playlistsize/(double)b))-1;
+        		for (int index=begin; index<=end; index++) {
+            			for (int i=1;i<=(b-a+1);i++) {
+                			try {
+                    				newvec.addElement(oldvec.elementAt(index));
+                			} catch (Exception e) {
+                    				// Trying to put some last elements into the vector
+                			}
+            			}
+        		}
+    		}	
+		//uit een paar testjes bleek dat 3x voldoende was om dezelfde opeenvolgende items te 'voorkomen'. 
+     		RandomThings.shuffleVector(newvec);
+     		RandomThings.shuffleVector(newvec);
+     		RandomThings.shuffleVector(newvec);
+    		return (newvec);
 	}
 
+	/**
+	*
+	*/ 
 	private Vector getPlaylistItems(MMObjectNode node) {
 		Vector res=new Vector();
 		String tmp,startT=null,stopT=null;
@@ -1114,32 +1100,27 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		if (tmp!=null && tmp.length()>0) stopT=tmp;
 		if (debug) debug(" "+startT+" - "+stopT);
 
-        MultiConnection con = mmbase.getConnection();
-        try
-        {
+	        MultiConnection con = mmbase.getConnection();
+		try {
 			String query="select id,speed,channels,url,status,format from vpro4_rawaudios where id="+node.getIntValue("number")+" and status=3 order by id;";
-            Statement       stmt        = con.createStatement();
-            ResultSet       rs          = stmt.executeQuery( query );
-
-            while( rs.next() )
-            {
+			Statement       stmt        = con.createStatement();
+			ResultSet       rs          = stmt.executeQuery( query );
+			while( rs.next() ) {
 				PlaylistItem newi=new PlaylistItem();
-
 				newi.id			=rs.getInt(1);
-				newi.relid=9467; // hacked on vpro
+				newi.relid		=9467; // hacked on vpro
 				newi.score		=0;
 				newi.oldpos		=0;
-				newi.startdate	=0;
+				newi.startdate		=0;
 				newi.title		=node.getStringValue("title");
-				newi.group="vpro";
-				newi.groupId=9468;
+				newi.group		="vpro";
+				newi.groupId		=9468;
 				newi.speed		=rs.getInt(2);
-				newi.channels	=rs.getInt(3);
+				newi.channels		=rs.getInt(3);
 				newi.url		=rs.getString(4);
 				newi.format		=rs.getInt(6);
-				
-				newi.starttime	= startT;
-				newi.stoptime	= stopT;
+				newi.starttime		= startT;
+				newi.stoptime		= stopT;
 				res.addElement(newi);
 			}
 			stmt.close();
