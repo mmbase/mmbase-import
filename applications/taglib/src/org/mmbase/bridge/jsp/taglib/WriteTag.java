@@ -85,10 +85,15 @@ public class WriteTag extends ContextReferrerTag {
                     }
                     if (! (value instanceof java.util.Vector)) {
                         // if a vector is requested, but the value is not a vector,
-                        // make a vector of size 1.
-                        java.util.Vector v = new java.util.Vector();
-                        v.add(value);
-                        value = v;
+                        if (! (value instanceof java.util.Collection)) {
+                            // not even a Collection!
+                            // make a vector of size 1.
+                            java.util.Vector v = new java.util.Vector();
+                            v.add(value);
+                            value = v;
+                        } else {
+                            value = new java.util.Vector((java.util.Collection)value);
+                        }
                     }             
                     
                 } 
