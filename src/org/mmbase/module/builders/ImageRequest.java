@@ -12,9 +12,10 @@ package org.mmbase.module.builders;
 import java.util.List;
 
 /**
- * @javadoc
+ * Defines one Image convert request. 
+ *
  * @author Rico Jansen
- * @version $Id: ImageRequest.java,v 1.3 2002-04-12 08:53:00 pierre Exp $
+ * @version $Id: ImageRequest.java,v 1.4 2004-01-20 20:51:51 michiel Exp $
  */
 public class ImageRequest {
 
@@ -23,12 +24,14 @@ public class ImageRequest {
     private byte[] in;
     private byte[] out;
     private int id;
-    private int count=0;
+    private int count = 0;
+
+    private boolean outputSet = false;
 
     /**
      * @javadoc
      */
-    public ImageRequest(int id,String ckey,List params,byte[] in) {
+    public ImageRequest(int id ,String ckey, List params, byte[] in) {
         this.id=id;
         this.ckey=ckey;
         this.in=in;
@@ -69,7 +72,7 @@ public class ImageRequest {
      * @javadoc
      */
     public synchronized byte[] getOutput() {
-        if (out==null) {
+        if (! outputSet) { // the request is in progress, wait until it is ready.
             count++;
             try {
                 wait();
@@ -83,22 +86,21 @@ public class ImageRequest {
      * @javadoc
      */
     public synchronized void setOutput(byte[] output) {
-        out=output;
-        count=0;
+        out = output;
+        outputSet = true;
+        count = 0;
         notifyAll();
     }
 
     /**
-     * @javadoc
+     * Returns how many request are waiting for the result of this image transformation.
      */
     public int count() {
         return count;
     }
 
-    /**
-     * @javadoc
-     */
+    // javadoc inherited (of Object)
     public String toString() {
-        return("id="+id+" : key="+ckey);
+        return("id=" + id + " : key=" + ckey);
     }
 }
