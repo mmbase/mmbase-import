@@ -4,7 +4,6 @@
 %>
 <mm:cloud>
 <mm:import externid="source"   required="true" />
-<mm:import externid="fragment" required="true" />
 <mm:node number="$source">
 <smil>
   <head>
