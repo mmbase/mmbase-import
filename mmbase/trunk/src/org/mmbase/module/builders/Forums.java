@@ -8,20 +8,6 @@ MMBase partners.
 
 */
 
-/*
-	$Id: Forums.java,v 1.5 2001-02-22 15:24:59 vpro Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.1.1.1  2000/10/31 13:38:19  wwwtech
-	Initial vpro
-	
-	Revision 1.3  2000/03/24 14:33:58  wwwtech
-	Rico: total recompile
-	
-	Revision 1.2  2000/02/24 13:44:23  wwwtech
-	Rico: Total rebuild
-	
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -31,16 +17,16 @@ import org.mmbase.module.ParseException;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: Forums.java,v 1.5 2001-02-22 15:24:59 vpro Exp $
+ * @version $Id: Forums.java,v 1.6 2001-04-02 15:57:32 wwwtech Exp $
  */
 public class Forums extends MMObjectBuilder {
 
-	private String classname = getClass().getName();
-	private boolean debug = true;
+    private static Logger log = Logging.getLoggerInstance(Forums.class.getName());
 
 	/*
 	public Forums(MMBase m) {
@@ -65,11 +51,11 @@ public class Forums extends MMObjectBuilder {
 			Statement stmt=con.createStatement();
 			stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t (title varchar(255) not null"
 				+", intro char(2048) not null) under "+mmb.baseName+"_object_t");
-			debug("create(): Created "+tableName);
+			log.debug("create(): Created "+tableName);
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			debug("create(): ERROR: can't create type "+tableName);
+			log.error("create(): ERROR: can't create type "+tableName);
 			e.printStackTrace();
 		}
 		try {
@@ -80,7 +66,7 @@ public class Forums extends MMObjectBuilder {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			debug("create(): can't create table "+tableName);
+			log.error("create(): can't create table "+tableName);
 			e.printStackTrace();
 		}
 		return(false);
@@ -118,7 +104,7 @@ public class Forums extends MMObjectBuilder {
 		Vector results=new Vector();
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
-			debug("getList("+sp.req.getRequestURI()+"): FORUMS->"+cmd);
+			log.debug("getList("+sp.req.getRequestURI()+"): FORUMS->"+cmd);
 
 			if (cmd.equals("ACTIVEOPINIONS")) {
 				results=getAttachedOpinions("actopi",tagger);
@@ -143,7 +129,7 @@ public class Forums extends MMObjectBuilder {
 //			} else if (cmd.equals("ARGUMENT")) {
 //				results=getArgument(tagger);
 			}
-			System.out.println("getList("+sp.req.getRequestURI()+"): "+cmd+" done");
+			log.debug("getList("+sp.req.getRequestURI()+"): "+cmd+" done");
 		}
 		return(results);
 	}
@@ -264,7 +250,7 @@ public class Forums extends MMObjectBuilder {
 			results.addElement("");
 			results.addElement(""+questionnode.getIntValue("number"));
 		} else {
-			System.out.println("Forums -> No poll for "+anode);
+			log.debug("Forums -> No poll for "+anode);
 			results.addElement("");
 			results.addElement("");
 		}
@@ -290,7 +276,9 @@ public class Forums extends MMObjectBuilder {
 		Vector vec=multirelations.searchMultiLevelVector(anode.getIntValue("number"),fields,"YES",tables,"",ordervec,dirvec);
 
 		if (vec.size()>0) {
-			if (vec.size()!=3) debug("getPollInfo2(): Forums -> More then 3 answers ? "+vec);
+			if (vec.size()!=3) {
+				log.debug("getPollInfo2(): Forums -> More then 3 answers ? "+vec);
+			}
 			for (Enumeration e=vec.elements();e.hasMoreElements();) {
 				node=(MMObjectNode)e.nextElement();
 				atitle=node.getStringValue("answers.title");
@@ -302,7 +290,7 @@ public class Forums extends MMObjectBuilder {
 				} else if (atitle.startsWith("Nog")) {
 					maynode=node;
 				} else {
-					debug("getPollInfo2(): Jerry -> Unknown title "+atitle+" ("+node+") ");
+					log.debug("getPollInfo2(): Jerry -> Unknown title "+atitle+" ("+node+") ");
 				}
 			}
 			calcPercentages(yesnode,nonode,maynode);
@@ -348,7 +336,7 @@ public class Forums extends MMObjectBuilder {
 			npercent=(100.0*n)/sum;
 			mpercent=(100.0*m)/sum;
 		}
-		debug("calcPercentages(): Forums -> calcPercentage "+ypercent+" , "+npercent+" , "+mpercent+" totalvotes "+sum);
+		log.debug("calcPercentages(): Forums -> calcPercentage "+ypercent+" , "+npercent+" , "+mpercent+" totalvotes "+sum);
 		yesnode.setValue("posrel.percentage",""+(int)(ypercent+0.5));
 		nonode.setValue("posrel.percentage",""+(int)(npercent+0.5));
 		maynode.setValue("posrel.percentage",""+(int)(mpercent+0.5));
@@ -427,7 +415,7 @@ public class Forums extends MMObjectBuilder {
 								rnode.commit();
 
 							} else {
-								debug("migrateOpinion(): BitRotter strikes again!!! "+conopi);
+								log.debug("migrateOpinion(): BitRotter strikes again!!! "+conopi);
 							}
 							if (accept) {
 								// Clone conopi and attach to actopi
@@ -444,32 +432,32 @@ public class Forums extends MMObjectBuilder {
 										rnode.setValue("dnumber",actnode.getIntValue("number"));
 										r=rnode.insert("Forums");
 										if (r<0) {
-											debug("migrateOpinion(): can't create relations between "+newcon.getIntValue("number")+" AND "+actnode.getIntValue("number"));
+											log.debug("migrateOpinion(): can't create relations between "+newcon.getIntValue("number")+" AND "+actnode.getIntValue("number"));
 										}
 									} else {
-										System.out.println("migrateOpinion(): can't insert new conopi"+forum+","+conopi);
+										log.warn("migrateOpinion(): can't insert new conopi"+forum+","+conopi);
 									}
 								} else {
 								
-									System.out.println("migrateOpinion(): forum has no relation to actopi "+forum);
+									log.warn("migrateOpinion(): forum has no relation to actopi "+forum);
 								}
 							} else {
-								System.out.println("migrateOpinion(): opinion not put in actopi (rejected opinion) "+go_opi);
+								log.warn("migrateOpinion(): opinion not put in actopi (rejected opinion) "+go_opi);
 
 							}
 						} else {
-							System.out.println("migrateOpinion(): conopi has no relation to proopi "+conopi);
+							log.warn("migrateOpinion(): conopi has no relation to proopi "+conopi);
 						}
 					} else {
-						System.out.println("migrateOpinion(): conopi has no relations ? "+conopi);
+						log.warn("migrateOpinion(): conopi has no relations ? "+conopi);
 					}
 				}
 			} else {
-				System.out.println("migrateOpinion(): No accopi/rejopi to migrate to "+forumnode);
+				log.warn("migrateOpinion(): No accopi/rejopi to migrate to "+forumnode);
 			}
 
 		} else {
-			System.out.println("migrateOpinion(): Can't promote conopi not attached to proopi : "+conopi);
+			log.warn("migrateOpinion(): Can't promote conopi not attached to proopi : "+conopi);
 		}
 	}
 
@@ -516,7 +504,7 @@ public class Forums extends MMObjectBuilder {
 								rnode.commit();
 
 							} else {
-								debug("migrateArgument(): BitRotter strikes again!!! "+conopi);
+								log.debug("migrateArgument(): BitRotter strikes again!!! "+conopi);
 							}
 							if (accept) {
 								// Clone conarg and attach to actarg
@@ -533,32 +521,32 @@ public class Forums extends MMObjectBuilder {
 										rnode.setValue("contexttype",rnode.getIntValue("contexttype"));
 										r=rnode.insert("Forums");
 										if (r<0) {
-											debug("migrateArgument(): can't create relations between "+newcon.getIntValue("number")+" AND "+actnode.getIntValue("number"));
+											log.debug("migrateArgument(): can't create relations between "+newcon.getIntValue("number")+" AND "+actnode.getIntValue("number"));
 										}
 									} else {
-										System.out.println("migrateArgument(): can't insert new conarg"+conopi+","+conarg);
+										log.warn("migrateArgument(): can't insert new conarg"+conopi+","+conarg);
 									}
 								} else {
 								
-									System.out.println("migrateArgument(): conopi has no relation to actarg "+conopi);
+									log.warn("migrateArgument(): conopi has no relation to actarg "+conopi);
 								}
 							} else {
-								System.out.println("migrateArgument(): argument not put in actarg (rejected argument) "+go_arg);
+								log.warn("migrateArgument(): argument not put in actarg (rejected argument) "+go_arg);
 
 							}
 						} else {
-							System.out.println("migrateArgument(): conopi has no relation to proarg "+conopi);
+							log.warn("migrateArgument(): conopi has no relation to proarg "+conopi);
 						}
 					} else {
-						System.out.println("migrateArgument(): conopi has no relations ? "+conopi);
+						log.warn("migrateArgument(): conopi has no relations ? "+conopi);
 					}
 				}
 			} else {
-				System.out.println("migrateArgument(): No accarg/rejarg to migrate to "+connode);
+				log.warn("migrateArgument(): No accarg/rejarg to migrate to "+connode);
 			}
 
 		} else {
-			System.out.println("migrateArgument(): Can't promote conarg not attached to proarg : "+conarg);
+			log.warn("migrateArgument(): Can't promote conarg not attached to proarg : "+conarg);
 		}
 	}
 
