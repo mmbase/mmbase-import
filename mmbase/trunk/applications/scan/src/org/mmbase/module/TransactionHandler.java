@@ -23,8 +23,8 @@ import org.xml.sax.*;
 /**
  * TransactionHandler Module
  *
- * @author  $Author: daniel $ 
- * @version $Revision: 1.5 $ $Date: 2000-10-22 09:57:29 $
+ * @author  John Balder, jbalder@3mps.com 
+ * @version $Revision: 1.6 $ $Date: 2000-10-23 11:56:21 $
  */
  
 public class TransactionHandler 
