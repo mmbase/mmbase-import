@@ -19,6 +19,8 @@ import java.net.URL;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -32,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.31 2004-02-03 15:17:46 pierre Exp $
+ * @version $Id: MediaFragments.java,v 1.31.2.1 2004-11-05 11:54:19 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -53,6 +55,21 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_AVAILABLE   = "available";
     public static final String FUNCTION_FORMAT      = "format";
     public static final String FUNCTION_DURATION    = "duration";
+
+    // parameter definitions (making use of reflection utitility for functions)
+    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", Integer.class), Parameter.REQUEST };
+    public final static Parameter[] FILTEREDURLS_PARAMETERS  = URLS_PARAMETERS;
+    public final static Parameter[] URL_PARAMETERS           = URLS_PARAMETERS;
+    public final static Parameter[] NUDEURL_PARAMETERS       = URLS_PARAMETERS;
+    public final static Parameter[] PARENTS_PARAMETERS       = {};
+    public final static Parameter[] ROOT_PARAMETERS          = {};
+    public final static Parameter[] ISSUBFRAGMENT_PARAMETERS = {};
+    public final static Parameter[] SUBFRAGMENT_SPARAMETERS  = {};
+    public final static Parameter[] AVAILABLE_PARAMETERS     = URLS_PARAMETERS;    
+    public final static Parameter[] FORMAT_PARAMETERS        = URLS_PARAMETERS;
+    public final static Parameter[] DURATION_PARAMETERS      = {};
+
+
 
 
     // This filter is able to find the best mediasource by a mediafragment.
@@ -85,9 +102,20 @@ public class MediaFragments extends MMObjectBuilder {
     static protected Map translateURLArguments(List arguments, Map info) {
         if (info == null) info = new HashMap();
         if (arguments != null) {
-            info.put("format",  arguments);
+            if (arguments instanceof Parameters) {
+                info.putAll(((Parameters) arguments).toMap());                
+            } else {                
+                info.put("format",  arguments);
+            }            
         }
         return info;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaFragments.class, function);
     }
 
     /**
@@ -241,7 +269,7 @@ public class MediaFragments extends MMObjectBuilder {
      */
     protected  String getURL(MMObjectNode fragment, Map info) {
         log.debug("Getting url of a fragment.");
-    String key = URLCache.toKey(fragment, info);
+        String key = URLCache.toKey(fragment, info);
         if(cache.containsKey(key)) {
             String url = (String) cache.get(key);
             if (log.isDebugEnabled()) {
@@ -249,13 +277,13 @@ public class MediaFragments extends MMObjectBuilder {
                 log.debug("Resolved url = " + url);
             }
             return url;
-    } else {
+        } else {
             log.debug("No cache hit, key = " + key);
-    }
-
-    Set cacheExpireObjects = new HashSet();
+        }
+        
+        Set cacheExpireObjects = new HashSet();
         List urls = getFilteredURLs(fragment, info, cacheExpireObjects);
-    String result = "";
+        String result = "";
         if (urls.size() > 0) {
             result = ((URLComposer) urls.get(0)).getURL();
         }
@@ -263,9 +291,9 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("Add to cache, key = " + key);
             log.debug("Resolved url = " + result);
         }
-    // put result in cache
-    cache.put(key, result, cacheExpireObjects);
-    return result;
+        // put result in cache
+        cache.put(key, result, cacheExpireObjects);
+        return result;
     }
 
     protected  String getFormat(MMObjectNode fragment, Map info)   {
@@ -305,6 +333,10 @@ public class MediaFragments extends MMObjectBuilder {
                     log.debug("Yes, found parent of " + fragment.getNumber() + " " + relation.getIntValue("snumber"));
                 }
                 MMObjectNode parent = getNode(relation.getIntValue("snumber"));
+                if (fragments.contains(parent)) {
+                    log.warn("Circular fragment nesting detected " + fragments + " breaking infinite loop");
+                    return false;
+                }
                 fragments.push(parent);
                 return true;
             }
@@ -469,4 +501,30 @@ log.info("store value in seconds: "+val);
         }
         return super.setValue(node,fieldname);
     }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * Stack.contains is used, so make sure equal node are equal.
+     */
+
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {        
+        int n1 = o1.getNumber();
+        int n2 = o2.getNumber();
+        if (n1 > 0 && n2 > 0) { // both 'real' nodes.
+            return n1 == n2;
+        } else {
+            String t1 = o1.getStringValue("_number");
+            String t2 = o2.getStringValue("_number");
+            if (t1 == null) {
+                return n1 == n2 && t2 == null;
+            } else {
+                return n1 == n2 && t1.equals(t2);
+            }
+        }
+
+    }
+
+
 }
