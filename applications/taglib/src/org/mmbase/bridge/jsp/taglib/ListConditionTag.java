@@ -20,17 +20,19 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * This tag can be used inside the list tag, to evaluate the body depending on the index.
+ * This tag can be used inside the list tag. The body will be
+ * evaluated depending on the value of the index of the list.
  *
- * @author Michiel Meeuwissen
- */
+ *
+ * @author Michiel Meeuwissen 
+ **/
+
 public class ListConditionTag extends BodyTagSupport {
 
     private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName()); 
 
-    private String value;
-    private String parentListId;
-    private String type = "LIST";
+    private String  value;
+    private String  parentListId;
     private boolean inverse = false;
 
     public void setValue(String v){
@@ -46,6 +48,7 @@ public class ListConditionTag extends BodyTagSupport {
     }
     
     public int doStartTag() throws JspException{
+        // find the parent list:
         ListTag listTag;
         Class listTagClass;
         try {
@@ -67,39 +70,23 @@ public class ListConditionTag extends BodyTagSupport {
             }
         }
 
-        if ("first".equalsIgnoreCase(value)) {
-            if (listTag.isFirst() != inverse) {
-                return EVAL_BODY_TAG;
-            } else {
-                return SKIP_BODY;
-            }
-        } else if ("last".equalsIgnoreCase(value)) {
-            if (listTag.isLast() != inverse) {
-                return EVAL_BODY_TAG;
-            } else {
-                return SKIP_BODY;
-            }            
+        boolean result;
+        if        ("first".equalsIgnoreCase(value)) {  
+            result = listTag.isFirst() != inverse;
+        } else if ("last".equalsIgnoreCase(value))  {  
+            result = listTag.isLast()  != inverse;
         } else if ("even".equalsIgnoreCase(value)) {
-            if ((listTag.getIndex() % 2 != 0) != inverse) { // not equal 0 because index starts counting at 0 and mortals at 1.
-                return EVAL_BODY_TAG;
-            } else {
-                return SKIP_BODY;
-            }
+            result = (listTag.getIndex() % 2 != 0) != inverse;
         } else if ("odd".equalsIgnoreCase(value)) {
-            if ((listTag.getIndex() % 2 == 0) != inverse) {
-                return EVAL_BODY_TAG;
-            } else {
-                return SKIP_BODY;
-            }
+            result = (listTag.getIndex() % 2 == 0) != inverse;
         } else if ("changed".equalsIgnoreCase(value)) {
-            if (listTag.isChanged() != inverse) {
-                return EVAL_BODY_TAG;
-            }  else {
-                return SKIP_BODY;
-            }
+            result = listTag.isChanged() != inverse;
         } else {
             throw new JspException ("Don't know what do (" + value +")");  
         }
+
+        return result ? EVAL_BODY_TAG : SKIP_BODY;
+
     }
     
     /**
