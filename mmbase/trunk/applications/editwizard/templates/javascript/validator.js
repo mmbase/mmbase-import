@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.17 2003-07-23 14:14:52 michiel Exp $
+ * @version  $Id: validator.js,v 1.18 2003-09-24 11:52:41 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -174,9 +174,37 @@ function validateElement_validator(el, silent) {
             // We don't want -1 = 2 BC, 0 = 1 BC,  -1 = 2 BC but
             //               0 -> error, -1 = 1 BC   1 = 1 AC
             if (year == 0) {
-                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (year may not be 0)");
             }
             if (year < 0 ) year++;
+
+            /* Validation leap-year / february / day */
+            if ((year  % 4 == 0) || (year % 100 == 0) || (year % 400 == 0)) {
+                leap = 1;
+            } else {
+                leap = 0;
+            }		  
+
+            if ((month < 0) || (month > 11)) {
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (wrong month)");
+            }
+
+            if (day < 1) {
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (day < 1)");
+            }
+
+            if (month == 1 && day > 28 + leap) {
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (february has " + 28 + leap + " days)");
+            }
+
+            /* Validation of other months */
+            if ((day > 31) && ((month == 0) || (month == 2) || (month == 4) || (month == 6) || (month == 7) || (month == 9) || (month == 11))) {
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (month has 31 days)");
+            }
+
+            if ((day > 30) && ((month == 1) || (month == 3) || (month == 5) || (month == 8) || (month == 10) )) {
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid (month has 30 days)");
+            }
 
             var date = new Date();
             date.setMonth(month, day);
@@ -185,9 +213,9 @@ function validateElement_validator(el, silent) {
 			
             var ms = date.getTime();
 
-            if (date.getDate() != day) {
-                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
-            } else {
+            {
+
+
                 // checks min/max. note: should use different way to determine outputformat (month)
                 if ((err.length == 0) && (el.ftype != "time") && (el.dtmin != null) && (ms < 1000*el.dtmin)) {
                     var d = new Date();
