@@ -23,7 +23,6 @@ import org.mmbase.servlet.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
-import org.mmbase.module.CounterInterface;
 
 import org.mmbase.util.logging.*;
 
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.58 $ $Date: 2002-07-05 12:13:06 $
+ * @$Revision: 1.59 $ $Date: 2003-01-13 22:26:14 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -54,7 +53,6 @@ public class scanparser extends ProcessorModule {
     private static RandomPlus rnd;
     private static int crcseed;
 
-	private CounterInterface counter = null;
 	private Hashtable pagesprocessing=new Hashtable();
 
 	// needs fix !
@@ -78,7 +76,6 @@ public class scanparser extends ProcessorModule {
         // org.mmbase start();
         sessions=(sessionsInterface)getModule("SESSION");
 		scancache=(scancacheInterface)getModule("SCANCACHE");
-		counter=(CounterInterface)getModule("COUNTER");
 		mmbase=(MMBase)getModule("MMBASEROOT");
 		transactionhandler=(TransactionHandlerInterface)getModule("TRANSACTIONHANDLER");
         // org.mmbase stats=(StatisticsInterface)getModule("STATS");
@@ -419,9 +416,6 @@ public class scanparser extends ProcessorModule {
 		part=finddocmd(body,"<PART ",'>',20,session,sp);
 		body=part;
 
-		// Counter tag
-		part=finddocmd(body,"<COUNTER",'>',21,session,sp);
-		body=part;
 
 		// <TREEPART, TREEFILE
 		part=finddocmd(body,"<TREE",'>',22,session,sp);
@@ -561,9 +555,6 @@ public class scanparser extends ProcessorModule {
 						};
 						newbody.append(partbody);
 						break;
-					case 21: // '<COUNTER'
-						newbody.append(do_counter(body.substring(prepostcmd,postcmd),session,sp));
-						break;
 					case 22: // '<TREEPART, TREEFILE'
 					case 23: // '<LEAFPART, LEAFFILE'
 						partbody=do_smart(body.substring(prepostcmd,postcmd),session,sp, docmd==23);
@@ -590,33 +581,6 @@ public class scanparser extends ProcessorModule {
 		}
 		return(newbody.toString());
 	}
-
-	/**
-	 * do_counter: This method retrieves the counter value for this page.
-	 * It also checks for any $ attribs used in the COUNTER tag.
-	 *
-	 * $param part A string containing the remaining COUNTER part.
-	 * $param session The sessionInfo object.
-	 * $param sp The current scanpage object.
-	 * $return A String containing the counter value.
-	 */
-	private String do_counter( String part, sessionInfo session, scanpage sp ) throws ParseException
-	{
-		String result = null;
-
-		// Scan & Parse all $ attributes used in the tag.
-		String parsedPart = dodollar(part,session,sp);
-
-		if(log.isDebugEnabled())
-			log.debug("do_counter("+parsedPart+"): inserting tag in page.");
-		long time = System.currentTimeMillis();
-		result = counter.getTag(parsedPart, session, sp);
-		if(log.isDebugEnabled())
-			log.debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
-
-		return result;
-	}
-
 
 	private final String do_part(String part2,sessionInfo session,scanpage sp,int markPart) throws ParseException {
 
@@ -2182,174 +2146,4 @@ public class scanparser extends ProcessorModule {
         return((int)crc.getValue());
     }
 }
-/*
-$Id: scanparser.java,v 1.58 2002-07-05 12:13:06 vpro Exp $
 
-$Log: not supported by cvs2svn $
-Revision 1.57  2002/05/14 09:05:10  vpro
-Wilbert: Don't redirect when sp.req null (from calcPage)
-
-Revision 1.56  2002/05/10 10:59:40  vpro
-Wilbert: added <HOST [host[,backendhost]]> tag redirecting to host if not running on host or optional backend host
-
-Revision 1.55  2002/04/22 14:27:30  vpro
-Wilbert: added PARAMY returning for last param
-
-Revision 1.54  2002/01/07 13:27:20  vpro
-davzev: Fixed part caching using cache henk, method handlePartCache,
-Now everything before and after the cache henk will be parsed and returned.
-The bug was that only everything after the cache henk tag was parsed and returned.
-
-Revision 1.53  2001/12/21 15:26:40  vpro
-davzev: Fixed bug in method handlePartCache, that handles the caching of a part.
-
-Revision 1.52  2001/12/14 09:33:23  pierre
-pierre: Cleaning project:
-added @javadoc and @rename tags, and License statement where needed
-
-Revision 1.51  2001/11/26 12:55:29  vpro
-Rico: added some documentation for caclulating timed out pages in the background
-
-Revision 1.50  2001/11/25 18:32:23  vpro
-Rico: req queueing
-
-Revision 1.49  2001/11/25 16:41:55  vpro
-Rico: scanparser sequencer
-
-Revision 1.48  2001/11/25 16:20:30  vpro
-Rico: scanparser sequencer
-
-Revision 1.47  2001/07/16 10:08:09  jaco
-jaco: Moved all configuration stuff to MMBaseContext.
-If needed params not found or incorrect a ServletException with a description isthrown.
-It's now again possible to not redirect System.out and System.err to a file.
-Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
-If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
-
-Revision 1.46  2001/06/23 16:18:57  daniel
-moved inits to MMBaseContext
-
-Revision 1.45  2001/05/17 17:22:14  daniel
-fixed a bug in do_part to allow background generating
-
-Revision 1.44  2001/03/29 22:41:10  daniel
-added page crc support
-
-Revision 1.43  2001/03/12 11:53:41  pierre
-pierre: removed nonsensical debug code
-
-Revision 1.42  2001/03/08 18:43:23  michiel
-added logging
-
-Revision 1.41  2001/02/22 16:29:39  install
-Rob: Fixes bug in parsing TRANSACTION tag, bug solved by Remco van t Veer
-
-Revision 1.40  2001/02/16 09:22:15  pierre
-scanparser : fixed GOTO command
-
-Revision 1.39  2001/02/02 22:37:58  daniel
- changed some debug calls
-
-Revision 1.38  2001/01/04 16:02:35  vpro
-Wilbert: Added ( to start and ) to stop skipping arguments for tree and leafpart
-
-Revision 1.37  2000/12/18 14:42:05  pierre
-pierre: Fixed bug with GOTO withing PART ort TREEPART
-
-Revision 1.36  2000/12/08 13:34:56  pierre
-pierre: fixed use of GOTO in PART and TREEPART. Added optional use of Alias instead of nodenumber to TREEPART (TREEPART ALIAS node+filename)
-
-Revision 1.35  2000/12/06 12:25:36  vpro
-Dirk-Jan: added caching of parts after it mystiriously had disapeared
-
-Revision 1.33  2000/11/23 14:50:43  install
-Rob changed <transaction> tag in <transactions>
-
-Revision 1.32  2000/11/21 16:40:05  vpro
-davzev: Added code to method do_part that forbids parting with filepaths that contain .. parent directory files.
-
-Revision 1.31  2000/11/20 13:37:50  install
-Rob changed TRANSCATION tag to lower case
-
-Revision 1.30  2000/11/19 00:17:51  daniel
-re fixed the constructor to work with mmdemo
-
-Revision 1.29  2000/11/06 13:32:37  vpro
-Rico: Added code from david to support relative parts
-
-Revision 1.28  2000/11/02 11:15:52  install
-Changed evaluation sequence, TRANSACTION will be evaluated before GOTO
-
-Revision 1.27  2000/10/15 22:51:46  gerard
-gerard: added some checks
-submitted by Eduard Witteveen
-
-Revision 1.26  2000/10/13 12:52:39  case
-cjr: added length check on taking substring to fix out of bounds error if no
-other text follows </LIST> tag.
-
-Revision 1.25  2000/10/13 09:38:11  vpro
-Rico: added html-input hooks
-
-Revision 1.24  2000/10/10 12:02:59  vpro
-Rico: scanparser added better part support
-
-Revision 1.23  2000/09/14 09:14:52  install
-Rob made a change for Gerard ;-)
-
-Revision 1.22  2000/09/12 12:22:45  install
-Rob added the connection for the transaction handler <TRANSACTION arg1> arg2 </TRANSACTION>
-
-Revision 1.21  2000/09/08 11:44:19  wwwtech
-Rob added message ERROR in SORTPOS (sortpos counts from 0 .. n)
-
-Revision 1.20  2000/07/22 21:12:20  daniel
-changes mmbase.mode
-
-Revision 1.19  2000/07/22 15:13:49  daniel
-removed some debug
-
-Revision 1.18  2000/07/18 19:00:52  daniel
-add support for mmdemo
-
-Revision 1.17  2000/07/15 23:34:28  daniel
-trimmed some filename seems to give problems on NT
-
-Revision 1.16  2000/07/12 09:18:48  install
-Rob Added active builders support for editors
-
-Revision 1.15  2000/07/12 08:19:41  install
-Rob: added getMimeType methods
-
-Revision 1.14  2000/07/03 08:37:16  vpro
-Wilbert: Added (dollar)PARAMA to retrieve all params (querystring)
-
-Revision 1.13  2000/06/20 14:23:08  install
-Rob: turned debug off
-
-Revision 1.12  2000/05/30 11:35:54  wwwtech
-Wilbert: scanparser (still fake to keep it compilable) passes mimetype to newput2
-
-Revision 1.11  2000/05/23 17:54:02  wwwtech
-- (marcel) changed entries printUrl(sp) to sp.getUrl() (this prints parameters in url also), debugs faulty html-pages more easily
-
-Revision 1.10  2000/03/30 13:11:28  wwwtech
-Rico: added license
-
-Revision 1.9  2000/03/29 10:42:20  wwwtech
-Rob: Licenses changed
-
-Revision 1.8  2000/03/27 15:08:33  wwwtech
-Rico: removed references to PAGE / AREA
-
-Revision 1.7  2000/03/10 14:15:19  wwwtech
-Wilbert: Added  to retrieve number of parameters querystring in method do_param()
-
-Revision 1.6  2000/03/10 12:09:58  wwwtech
-Rico: added circular part detection to scanparser, it is also now possilbe to subclass ParseException and throw that in scanparser for those unholdable situations.
-
-Revision 1.5  2000/03/09 16:39:22  wwwtech
-Davzev added $MOD $PARAM etc... support to method:do_counter().
-
-
-*/
