@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.29 2004-05-12 14:39:29 rob Exp $
+ * @version $Id: MediaSources.java,v 1.30 2004-05-13 16:05:32 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -422,10 +422,10 @@ public class MediaSources extends MMObjectBuilder {
         if (providers.size() == 0) {
             if (defaultProvider != null) {
                 MMObjectNode provider = getNode(defaultProvider);
-                MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
                 if (provider == null) {
                     log.warn("Specified default provider '" + defaultProvider + "' is not an existing node");
                 } else {
+                    MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
                     bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
                 }
             }
