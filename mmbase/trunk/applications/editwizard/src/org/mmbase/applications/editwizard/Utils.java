@@ -37,7 +37,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.11 2002-04-19 20:17:33 michiel Exp $
+ * @version $Id: Utils.java,v 1.12 2002-05-08 08:34:31 michiel Exp $
  */
 public class Utils {
 
@@ -495,6 +495,13 @@ public class Utils {
         }
         //new StreamResult(out), null);
     }
+
+    public static Node transformNode(Node node, String xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
+        DOMResult res = new DOMResult();
+        transformNode(node, uri.resolveToFile(xslFile), uri, res, params);
+        return res.getNode();
+    }
+
 
     /**
      * transforms an attribute. A attributeTemplate is used to place values. with { and } people can place simple xpaths to calculate
