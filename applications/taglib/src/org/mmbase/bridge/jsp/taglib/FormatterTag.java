@@ -45,7 +45,7 @@ import org.mmbase.cache.xslt.*;
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
  */
-public class FormatterTag extends CloudReferrerTag  implements Writer {
+public class FormatterTag extends ContextReferrerTag  implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(FormatterTag.class.getName());
 
@@ -119,6 +119,7 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
             documentBuilder = dfactory.newDocumentBuilder();
             org.xml.sax.ErrorHandler handler = new org.mmbase.util.XMLErrorHandler();
             documentBuilder.setErrorHandler(handler);
+            documentBuilder.setEntityResolver( new org.mmbase.util.XMLEntityResolver());
         }  catch (Exception e) {
             log.error(e.toString());
         }
@@ -235,16 +236,7 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
         }
 
         if ((wants == WANTS_DEFAULT && format < FORMAT_LIMIT_WANTXML) || wants == WANTS_DOM) { // also if format is unset, that means: use xslt
-            CloudProvider cp = findCloudProvider(false);
-            if (cp != null) {
-                xmlGenerator = new Generator(documentBuilder, cp.getCloudVar());     
-            } else {
-                if (wants == WANTS_DOM) { // explicitely wanted DOM, but not possible
-                    throw new JspTagException("Needs a cloud for wants='dom'");   
-                } else {
-                    xmlGenerator = null; // cannot use Bridge DOM functionality
-                }                 
-            } 
+            xmlGenerator = new Generator(documentBuilder);
         } else {
             xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
         }
@@ -450,6 +442,7 @@ public class FormatterTag extends CloudReferrerTag  implements Writer {
             format.setPreserveSpace(false);
             format.setOmitXMLDeclaration(true);
             format.setOmitDocumentType(true);
+            format.setIndent(2); 
             java.io.StringWriter result = new java.io.StringWriter();
             org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
             prettyXML.serialize(doc);
