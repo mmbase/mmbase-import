@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.8 2002-02-22 14:44:02 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.9 2002-03-20 13:16:47 eduard Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
@@ -96,13 +96,6 @@ public class BasicNodeList extends BasicList implements NodeList {
         return new BasicNodeIterator(this);
     }   
      
-    public void toXML(org.w3c.dom.Document tree) {
-	// for all nodes, output the xml...
-	NodeIterator i = nodeIterator();
-	while(i.hasNext()) {
-	    i.nextNode().toXML(tree);    
-	}    	
-    }     
     public class BasicNodeIterator extends BasicIterator implements NodeIterator {
 
         BasicNodeIterator(BasicList list) {
