@@ -5,6 +5,8 @@ package org.mmbase.storage.search;
 /**
  * A constraint specifically for advanced types of  text searches.
  */
+// TODO: needs equals(), hashCode() and toString() methods just like all other constraints.
+// TODO: needs basic implementation
 public interface StringSearchConstraint extends FieldConstraint {
     /**
      * Gets the search type, this specifies how the search is performed. Must be one of:
