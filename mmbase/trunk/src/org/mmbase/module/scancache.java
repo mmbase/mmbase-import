@@ -55,7 +55,7 @@ public class scancache extends Module implements scancacheInterface {
 	public String get(String poolName, String key) {
 		if (debug) debug("poolName="+poolName+" key="+key);
 		if (poolName.equals("HENK")) {
-			String tmp=get(poolName,key,"21600>");
+			String tmp=get(poolName,key,">");
 			return(tmp);
 		} else if (poolName.equals("PAGE")) {
 			return(getPage(poolName,key,""));
@@ -76,7 +76,7 @@ public class scancache extends Module implements scancacheInterface {
 		}
 		*/
 		if (poolName.equals("HENK")) {
-			String tmp=get(poolName,key,"21600>");
+			String tmp=get(poolName,key,">");
 			return(tmp);
 		} else if (poolName.equals("PAGE")) {
 			return(getPage(poolName,key,line));
@@ -85,14 +85,23 @@ public class scancache extends Module implements scancacheInterface {
 		return(null);
 	}
 
-
+	private static int defaultExpireTime = 21600;
+	
 	public String get(String poolName, String key, String line) {
-		String tmp=line.substring(0,line.indexOf('>'));
-
 		// get the interval time
 		// ---------------------
-
-		int interval=Integer.parseInt(tmp);
+		String tmp=line.substring(0,line.indexOf('>')).trim();
+		int interval;
+		if (tmp.equals("")) interval = defaultExpireTime;
+		else if (tmp.toUpperCase().equals("NOEXPIRE")) interval = Integer.MAX_VALUE;
+		else try {
+				 interval = Integer.parseInt(tmp);
+			 }
+			 catch (NumberFormatException n)
+			 {
+				 debug("CACHE "+poolName+": Number format exception for expiration time");
+				 interval = defaultExpireTime;
+			 }
 		int now=(int)(System.currentTimeMillis()/1000);
 
 		LRUHashtable pool=(LRUHashtable)pools.get(poolName);
@@ -396,7 +405,8 @@ public class scancache extends Module implements scancacheInterface {
 
 	String getWriteHeaders(String value, String mimeType) {
 		if ((mimeType==null) || mimeType.equals("") || mimeType.equals("text/html"))
-			mimeType = "text/html; charset=iso-8859-1";		String body="Status: 200 OK\n";
+			mimeType = "text/html; charset=iso-8859-1";
+		String body="Status: 200 OK\n";
 		body+="Server: OrionCache\n";
 		body+="Content-type: "+mimeType+"\n";
 		body+="Content-length: "+value.length()+"\n";
