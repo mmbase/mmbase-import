@@ -9,7 +9,7 @@
   It could define default values, possible values, default sort orders etc etc.
 
   @author Michiel Meeuwissen
-  @version $Id: fieldtypedefinitions.xml,v 1.2 2004-09-17 09:29:26 michiel Exp $
+  @version $Id: fieldtypedefinitions.xml,v 1.3 2004-09-20 11:56:53 pierre Exp $
 -->
 
 <!--
@@ -43,18 +43,6 @@
       <getprocessor>
         <class>org.mmbase.util.transformers.UpperCaser</class>
       </getprocessor>
-    </specialization>
-  </fieldtype>
-
-  <fieldtype id="byte">
-    <commitprocessor>
-      <class>org.mmbase.bridge.util.fields.MimeTypeFinder</class>
-      <class>org.mmbase.bridge.util.fields.FileNameFinder</class>
-    </commitprocessor>
-    <specialization id="concertblocksimporter">
-      <setprocessor>
-        <class>nl.omroep.radio4.ConcertblokkenProcessor</class>
-      </setprocessor>
     </specialization>
   </fieldtype>
 
