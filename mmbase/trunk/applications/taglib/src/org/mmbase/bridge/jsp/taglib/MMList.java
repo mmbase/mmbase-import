@@ -18,7 +18,7 @@ import javax.servlet.jsp.tagext.*;
 import org.mmbase.bridge.*;
 
 /**
- * MMList
+ * MMList, provides functionality for listing objects stored in MMBase
  * @author Kees Jongenburger
  **/
 public class MMList extends MMTaglib
@@ -39,10 +39,10 @@ public class MMList extends MMTaglib
      * exported from the parent tag and the on expored from this tag
      **/
     private String prefixString=null;
-
+    
     public static boolean debug = true;
     
-    //simple method to dump debug data in to System.err
+    //simple method to dump debug data into System.err
     public void debug(String debugdata){
 	System.err.println("MMList:" + debugdata);
     }
@@ -64,8 +64,8 @@ public class MMList extends MMTaglib
     public VariableInfo[] getVariableInfo(TagData data){
 	VariableInfo[] variableInfo =    null;
 	//this method is called /before/ the values are set
-	//so we can not use the datamembers in this class
-	//but the TagData provides the necesary data
+	//so we can not use the data members in this class
+	//but the TagData provides the necessary data
 	//in effect we have to parse the data twice
 	//once here and onces specific attributes are set
 	//maybe this can be done better I do not know
@@ -97,7 +97,6 @@ public class MMList extends MMTaglib
 		variableInfo[j++] = new VariableInfo(prefix + "item"+(i+1),"java.lang.String",true,VariableInfo.NESTED);
 		    
 	    }
-	    //add the Hashtable , name it node to confuse people :)
 	    variableInfo[j++] = new VariableInfo(prefix + "node","org.mmbase.bridge.Node",true,VariableInfo.NESTED);
 	} 
 	return variableInfo;
@@ -137,7 +136,7 @@ public class MMList extends MMTaglib
     }
 
     /**
-     * @param type a comma separated list of nodeTypes
+     * @param type a comma separated list of nodeManagers
      **/
     public void setType(String type){
 	this.typeString = type;
@@ -151,13 +150,16 @@ public class MMList extends MMTaglib
 
     /**
      * @param where the selection query for the object we are looking for
+     * the query has two syntax depending on the amount of node managers
+     * inserted in the type field
      **/
     public void setWhere(String where){
 	this.whereString = where;
     }
 
     /**
-     * @param sorted 
+     * @param sorted A comma separated list of fields on witch the returned 
+     * nodes should be sorted
      **/
     public void setSorted(String sorted){
 	this.sortedString = sorted;
@@ -165,6 +167,7 @@ public class MMList extends MMTaglib
 
     /**
      * @param direction the selection query for the object we are looking for
+     * direction
      **/
     public void setDirection(String direction){
 	this.directionString = direction;
@@ -204,56 +207,56 @@ public class MMList extends MMTaglib
 
 	String action= "none";
 	try {
-		boolean multilevel = (StringSplitter(typeString,",").size() > 1)? true : false;
-		if (multilevel){
-		    action = "multilevel search";
-		    nodes.addAll(getDefaultCloud().search(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct));
-		} else {
-		    boolean hasSearch = (searchWhere == null)? false: true;
-		    boolean hasNode = (nodesString == null)? false: true;
-		    if (hasSearch){
-			if (hasNode){
-			    //first hack, the MMCI does not provide a search on a node
-			    //but this is what we need here, so we expand the query
-			    //to resctrict the search on the node given
-			    searchWhere = "(" + searchWhere +") and ( number = " + nodesString + " )";
-			}
-		    	action = "search relations with start node (" + nodesString + ") using a search";
-			NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
-			boolean direction = ("UP".equals(searchDirection))? true: false;
-			List list = nodeManager.search(searchWhere,null,direction);
-			if (list != null){
-			    nodes.addAll(list);
-			}
-		    } else if (hasNode){
-		    	action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
-			try {
-				Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
-				nodes.addAll(node.getRelatedNodes(typeString));
-			} catch(Exception e) {
-				Node node  = getDefaultCloud().getNode(searchNodes);
-				System.out.println("NODES="+node.getRelatedNodes(typeString));
-				nodes.addAll(node.getRelatedNodes(typeString));
-			}
-		    } else { 
-		    	action = "list all objects of type("+ typeString + ")";
-			NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
-			boolean direction = ("UP".equals(searchDirection))? true: false;
-			List list = nodeManager.search(null,null,direction);
+	    boolean multilevel = (StringSplitter(typeString,",").size() > 1)? true : false;
+	    if (multilevel){
+		action = "multilevel search";
+		nodes.addAll(getDefaultCloud().search(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct));
+	    } else {
+		boolean hasSearch = (searchWhere == null)? false: true;
+		boolean hasNode = (nodesString == null)? false: true;
+		if (hasSearch){
+		    if (hasNode){
+			//first hack, the MMCI does not provide a search on a node
+			//but this is what we need here, so we expand the query
+			//to resctrict the search on the node given
+			searchWhere = "(" + searchWhere +") and ( number = " + nodesString + " )";
+		    }
+		    action = "search relations with start node (" + nodesString + ") using a search";
+		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
+		    boolean direction = ("UP".equals(searchDirection))? true: false;
+		    List list = nodeManager.search(searchWhere,null,direction);
+		    if (list != null){
 			nodes.addAll(list);
 		    }
+		} else if (hasNode){
+		    action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
+		    try {
+			Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
+			nodes.addAll(node.getRelatedNodes(typeString));
+		    } catch(Exception e) {
+			Node node  = getDefaultCloud().getNodeByAlias(searchNodes);
+			System.out.println("NODES="+node.getRelatedNodes(typeString));
+			nodes.addAll(node.getRelatedNodes(typeString));
+		    }
+		} else { 
+		    action = "list all objects of type("+ typeString + ")";
+		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
+		    boolean direction = ("UP".equals(searchDirection))? true: false;
+		    List list = nodeManager.search(null,null,direction);
+		    nodes.addAll(list);
 		}
+	    }
 	} catch (NullPointerException npe){
-		showListError(npe,nodesSearchString,nodeManagers,searchNodes,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct,maxString,action);
+	    showListError(npe,nodesSearchString,nodeManagers,searchNodes,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct,maxString,action);
 	}
-
-
+	
+	
 	if (maxString != null){ // for the moment max can only be here because
 				//there is no other way to tell the MMCI that a list sould be shorter
 	    try {
 		int max = Integer.parseInt(maxString);
 		if (max < nodes.size()){
-				//very bag coding
+		    //very bag coding
 		    returnValues = new Vector(nodes.subList(0,max)).elements();
 		}else {
 		    returnValues = nodes.elements();
@@ -271,11 +274,11 @@ public class MMList extends MMTaglib
 	return SKIP_BODY;
     }
 
-
+    
     public void doInitBody() throws JspException {
 	fillVars();
     }
-
+    
     public int doAfterBody() throws JspException {
 	try {
 	    if (returnValues.hasMoreElements()){
@@ -304,7 +307,7 @@ public class MMList extends MMTaglib
     	    pageContext.setAttribute(getPrefix() + "node" ,node);
 	}
     }
-
+    
 
     /**
      * simple util method to split comma separated values
@@ -330,73 +333,74 @@ public class MMList extends MMTaglib
 	// should be a StringTokenizer have to check mmci how
 	// multinodes are handled
 	if (nodes.startsWith("param(")) {
-		String name=nodes.substring(6,nodes.length()-1);
-		HttpServletRequest req=(HttpServletRequest)pageContext.getRequest();
-		return(req.getParameter(name));
+	    String name=nodes.substring(6,nodes.length()-1);
+	    HttpServletRequest req=(HttpServletRequest)pageContext.getRequest();
+	    return(req.getParameter(name));
 	}
 	return(nodes);
     }
 
 
     private void showListError(Exception npe,String nodesSearchString,String nodeManagers,String searchNodes,String searchFields,String searchWhere, String searchSorted,String searchDirection, boolean searchDistinct,String maxString,String action) throws JspException { 
-		StringBuffer sb = new StringBuffer();
-		sb.append("nodes=" + nodesSearchString);
-		sb.append("\n");
-		sb.append("modeManagers=" + nodeManagers);
-		sb.append("\n");
-		sb.append("searchNodes=" + searchNodes);
-		sb.append("\n");
-		sb.append("searchFields=" + searchFields);
-		sb.append("\n");
-		sb.append("searchWhere=" + searchWhere);
-		sb.append("\n");
-		sb.append("searchSorted=" + searchSorted);
-		sb.append("\n");
-		sb.append("searchDirection=" + searchDirection);
-		sb.append("\n");
-		sb.append("searchDistinct=" + searchDistinct);
-		sb.append("\n");
-		sb.append("max=" + maxString);
-		sb.append("\n");
-		sb.append("Base on the input the taglib did");
-		sb.append("\n");
-		sb.append(action);
-		sb.append("\n");
-		// now do some basic stuff to find the error
-
-		//go to each node in the nodes string and look if they exist
-		if (nodesString != null){
-		Enumeration nodeList = StringSplitter(nodesString,",").elements();
-			while(nodeList.hasMoreElements()){
-			    String nodeString = (String)nodeList.nextElement();
-			    try {
-				int nodeNumber = Integer.parseInt(nodeString);
-				Node node = getDefaultCloud().getNode(nodeNumber);
-				if (node == null){
-					sb.append("ERROR: node(" + nodeString +") does not exist\n");
-				}
-			    } catch (NumberFormatException e){
+	StringBuffer sb = new StringBuffer();
+	sb.append("nodes=" + nodesSearchString);
+	sb.append("\n");
+	sb.append("modeManagers=" + nodeManagers);
+	sb.append("\n");
+	sb.append("searchNodes=" + searchNodes);
+	sb.append("\n");
+	sb.append("searchFields=" + searchFields);
+	sb.append("\n");
+	sb.append("searchWhere=" + searchWhere);
+	sb.append("\n");
+	sb.append("searchSorted=" + searchSorted);
+	sb.append("\n");
+	sb.append("searchDirection=" + searchDirection);
+	sb.append("\n");
+	sb.append("searchDistinct=" + searchDistinct);
+	sb.append("\n");
+	sb.append("max=" + maxString);
+	sb.append("\n");
+	sb.append("Base on the input the taglib did");
+	sb.append("\n");
+	sb.append(action);
+	sb.append("\n");
+	// now do some basic stuff to find the error
+		
+	//go to each node in the nodes string and look if they exist
+	if (nodesString != null){
+	    Enumeration nodeList = StringSplitter(nodesString,",").elements();
+	    while(nodeList.hasMoreElements()){
+		String nodeString = (String)nodeList.nextElement();
+		try {
+		    int nodeNumber = Integer.parseInt(nodeString);
+		    Node node = getDefaultCloud().getNode(nodeNumber);
+		    if (node == null){
+			sb.append("ERROR: node(" + nodeString +") does not exist\n");
+		    }
+		} catch (NumberFormatException e){
 				//the node is probabely a alias
-				Node node = getDefaultCloud().getNode(nodeString);
-				if (node == null){
-					sb.append("ERROR: node with alias("+ nodeString +") does not exist\n");
-				}
-			    }
-			}
+		    Node node = getDefaultCloud().getNodeByAlias(nodeString);
+		    if (node == null){
+			sb.append("ERROR: node with alias("+ nodeString +") does not exist\n");
+		    }
 		}
-		//take a look at the nodeManagers
-		 Enumeration managerList =  StringSplitter(typeString,",").elements();
-		 while(managerList.hasMoreElements()){
-				String managerName = (String)managerList.nextElement();
-				try {//note nodeManager sould  realy not throw a nullPointerException
-					NodeManager nodeManager = getDefaultCloud().getNodeManager(managerName);
-					if (nodeManager == null){
-					sb.append("ERROR: NodeManager with name("+ managerName +") does not exist\n");
-					}
-				} catch (NullPointerException nullpe){
-					sb.append("ERROR: NodeManager with name("+ managerName +") does not exist , nullpointer exception while debuging ARGGGG\n");
-				}
-		 }
-		throw new JspException("MMList error\n" + sb.toString());
+	    }
 	}
+	//take a look at the nodeManagers
+	Enumeration managerList =  StringSplitter(typeString,",").elements();
+	while(managerList.hasMoreElements()){
+	    String managerName = (String)managerList.nextElement();
+	    try {//note nodeManager sould  realy not throw a nullPointerException
+		NodeManager nodeManager = getDefaultCloud().getNodeManager(managerName);
+		if (nodeManager == null){
+		    sb.append("ERROR: NodeManager with name("+ managerName +") does not exist\n");
+		}
+	    } catch (NullPointerException nullpe){
+		sb.append("ERROR: NodeManager with name("+ managerName +") does not exist , nullpointer exception while debuging ARGGGG\n");
+	    }
+	}
+	throw new JspException("MMList error\n" + sb.toString());
+    }
 }
+
