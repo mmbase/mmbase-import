@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.29 2004-01-16 14:43:22 daniel Exp $
+ * @version $Id: BasicNodeList.java,v 1.30 2004-01-16 14:48:11 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
@@ -73,13 +73,14 @@ public class BasicNodeList extends BasicList implements NodeList {
                     node = new BasicRelation(coreNode, nodeManager);
                 }
             } else if (coreBuilder instanceof VirtualBuilder && nodeManager == null) {
-                node = new BasicNode(coreNode, new VirtualNodeManager(coreNode, null));
+                node = new BasicNode(coreNode, new VirtualNodeManager(coreNode, (BasicCloud) cloud));
             } else {
                 // 'normal' node
                 if(nodeManager == null)  {
                     if (cloud == null) {
                         throw new BridgeException("Could not create a Node from object '" + o + "' because this List has no Cloud,");
                         // otherwise init of BasicNode throws NPE.
+                        
                     }
                     node = new BasicNode(coreNode, cloud);
                 } else {
