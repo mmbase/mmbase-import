@@ -35,7 +35,7 @@ public class DidactorChannelLogger implements ChannelLogger {
      * TODO: make this configurable.
      */
     public void log(nl.eo.chat.repository.User user, String text) {
-        Node lognode = getLognode(); 
+        Node lognode = getLognode();
         String ntext = lognode.getStringValue("text");
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         String newline = "[" + df.format(new Date()) + "] <" + user.getNick() + "> " + text + "\n";
@@ -58,7 +58,7 @@ public class DidactorChannelLogger implements ChannelLogger {
             logdate = now;
         }
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");        
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         String formatNow = df.format(now);
         String formatLogdate = df.format(logdate);
 
@@ -69,8 +69,8 @@ public class DidactorChannelLogger implements ChannelLogger {
 
         logdate = now;
 
-        NodeList nl = cloud.getList("" + channelNode.getNumber(), "chatchannels,chatlogs", 
-                            "chatlogs.number,chatlogs.date", "date = '" + formatNow + "'",
+        NodeList nl = cloud.getList("" + channelNode.getNumber(), "chatchannels,chatlogs",
+                            "chatlogs.number,chatlogs.date", "chatlogs.date = '" + formatNow + "'",
                             null, null, null, true);
         if (nl.size() == 0) {
             // No lognodes found, create a new instance
@@ -91,5 +91,5 @@ public class DidactorChannelLogger implements ChannelLogger {
             log.error("There are more than 1 chatlogs for this date! Not logging anything now");
         }
         return null;
-    } 
+    }
 }
