@@ -4,7 +4,7 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.4 $
+   Version: $Revision: 1.5 $
 -->
 <xsl:stylesheet 
   version="1.0"
@@ -15,6 +15,40 @@
 
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/wizard.xsl"/>
+
+<!-- OVERRIDE PROMPTS.XSL
+	The prompts.xsl can not be extended, bacause that will break 
+	the i18n prompts support.
+-->
+
+  <!-- prompts for starting a editwizard -->
+  <xsl:template name="prompt_edit_wizard">
+    <img src="{$mediadir}select.gif" class="imgbutton">
+      <xsl:choose>
+        <xsl:when test="prompt">
+          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img>
+  </xsl:template>
+  
+  <xsl:template name="prompt_add_wizard">
+    <img src="{$mediadir}new.gif" class="imgbutton">
+      <xsl:choose>
+        <xsl:when test="prompt">
+          <xsl:attribute name="alt"><xsl:value-of select="prompt" /></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="alt"><xsl:value-of select="$tooltip_add_wizard" /></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+    </img>
+  </xsl:template>
+
+<!-- END OVERRIDE PROMPTS.XSL -->
 
   <xsl:variable name="BodyOnLoad">preLoadButtons(); doOnLoad_ew(); start_validator();  startHtmlArea();</xsl:variable>
 
@@ -51,6 +85,7 @@
     <img
       id="bottombutton-save"
       onclick="doSave();"
+      titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}"
       enabledsrc="{$mediadir}save.gif"
       disabledsrc="{$mediadir}save_disabled.gif">
       <xsl:if test="@allowsave=&apos;true&apos;">
@@ -71,6 +106,7 @@
   	<img
         id="bottombutton-saveonly"
         onclick="doSaveOnly();"
+        titlesave="{$tooltip_save_only}" titlenosave="{$tooltip_no_save}"
         enabledsrc="{$mediadir}saveonly.gif"
         disabledsrc="{$mediadir}saveonly_disabled.gif">
         <xsl:if test="@allowsave=&apos;true&apos;">
