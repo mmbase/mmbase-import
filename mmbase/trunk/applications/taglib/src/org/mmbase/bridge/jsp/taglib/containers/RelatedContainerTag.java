@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.3 2003-09-03 19:40:04 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.4 2003-10-16 07:25:11 pierre Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements NodeListContainer {
 
@@ -51,7 +51,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements NodeListCont
     }
 
 
-    public int doStartTag() throws JspTagException {        
+    public int doStartTag() throws JspTagException {
         if (path == Attribute.NULL) {
             throw new JspTagException("Path attribute is mandatory");
         }
@@ -64,7 +64,6 @@ public class RelatedContainerTag extends NodeReferrerTag implements NodeListCont
 
         Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
-         
         return EVAL_BODY_BUFFERED;
     }
     // if EVAL_BODY == EVAL_BODY_BUFFERED
@@ -75,8 +74,8 @@ public class RelatedContainerTag extends NodeReferrerTag implements NodeListCont
             }
         } catch (java.io.IOException ioe){
             throw new JspTagException(ioe.toString());
-        } 
-        return SKIP_BODY;        
+        }
+        return SKIP_BODY;
     }
 
 }
