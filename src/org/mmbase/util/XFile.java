@@ -16,7 +16,8 @@ import java.io.File;
  * Eg: the files' modification time will be stored as a moddate long variabele.
  *
  * @author David V van Zeventer
- * @version $Id: XFile.java,v 1.6 2003-03-07 09:31:16 pierre Exp $
+ * @version $Id: XFile.java,v 1.7 2004-05-03 11:32:43 michiel Exp $
+ * @deprecated What's wrong with java.io.File itself? The only difference is that lastmodified gives last-modified not of file now, but of file when this object was created. If that is important, the name (nor javadoc) of this class is not very informative.
  */
 public class XFile {
 
