@@ -14,17 +14,15 @@ import java.sql.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
  */
 public class Jumpers extends MMObjectBuilder {
-
-	public boolean debug = false;
-
+    private static Logger log = Logging.getLoggerInstance(Jumpers.class.getName());
 	LRUHashtable jumpCache = new LRUHashtable(1000);
-
 	
 	private static String jumperNotFoundURL = "/index.html"; 
 
@@ -59,7 +57,7 @@ public class Jumpers extends MMObjectBuilder {
 
 	public void delJumpCache(String key) {
 		if (key!=null) {
-			if (debug) debug("Removing "+key+" from jumper cache");
+			log.debug("Jumper builder - Removing "+key+" from jumper cache");
 			jumpCache.remove(key);
 		}
 	}
@@ -79,13 +77,16 @@ public class Jumpers extends MMObjectBuilder {
 				ikey=-1;
 			}
 			url = (String)jumpCache.get(key);
-			if (debug) {
-				if (url!=null) debug("Cache hit on "+key);
-				else debug("Cache miss on "+key);
+			if (log.isDebugEnabled()) {
+				if (url!=null) { 
+					log.debug("Jumper - Cache hit on "+key);
+				} else {
+					log.debug("Jumper - Cache miss on "+key);
+				}
 			}
 			if (url==null) {
 				// Search jumpers with name;
-				if (debug) debug("Search jumpers with name="+key);
+				log.debug("Search jumpers with name="+key);
 				//Enumeration res=search("WHERE name='"+key+"'");
 				Enumeration res=search("name=='"+key+"'");
 				if (res.hasMoreElements()) {
@@ -95,7 +96,7 @@ public class Jumpers extends MMObjectBuilder {
 			}
 			if (url==null) {
 				// Search jumpers with number (parent);
-				if (debug) debug("Search jumpers with id="+ikey);
+				log.debug("Search jumpers with id="+ikey);
 				if (ikey>=0) {
 					Enumeration res=search("WHERE id="+ikey);
 					if (res.hasMoreElements()) {
@@ -111,7 +112,7 @@ public class Jumpers extends MMObjectBuilder {
 					if (node!=null) {
 						String buln=mmb.getTypeDef().getValue(node.getIntValue("otype"));
 						MMObjectBuilder bul=mmb.getMMObject(buln);
-						if (debug) debug("getUrl through builder with name="+buln+" and id "+ikey);
+						log.debug("getUrl through builder with name="+buln+" and id "+ikey);
 						if (bul!=null) url=bul.getDefaultUrl(ikey);
 					}
 				}
@@ -119,7 +120,7 @@ public class Jumpers extends MMObjectBuilder {
 			if (url!=null && url.length()>0 && !url.equals("null")) {
 				jumpCache.put(key,url);
 			} else {
-				debug("No jumper found for key '"+key+"'");
+				log.debug("No jumper found for key '"+key+"'");
 				url=jumperNotFoundURL;
 			}
 		}
@@ -138,12 +139,8 @@ public class Jumpers extends MMObjectBuilder {
 	}
 
 	public boolean nodeChanged(String number,String builder,String ctype) {
-		if(debug) {
-			System.out.println("JUMPERS="+builder+" no="+number+" "+ctype);
-		}
+		log.debug("Jumpers="+builder+" no="+number+" "+ctype);
 		jumpCache.clear();
 		return(true);
 	}
-
-
 }
