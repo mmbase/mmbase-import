@@ -6,7 +6,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.5 2002-07-19 13:14:23 michiel Exp $
+  @version  $Id: wizard.css,v 1.6 2002-07-23 18:26:59 michiel Exp $
   
 */
 
@@ -70,6 +70,7 @@ div.searchframe {
 		  font-size:11px;
 		}
 		
+/* steps */
 
 td.steps p {
   margin-left: 10%;
@@ -88,8 +89,9 @@ span.other a {
 
 }
 
-.bottombutton				{ font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color:#18248C;  }
-.bottombutton-disabled		{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default; }
+a.bottombutton { font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color:#18248C;  }
+a.bottombutton:hover	    { }
+a.bottombutton-disabled		{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default; }
 
 .tableheader		{ color:#CCCCCC; font-weight:900; }
 .imageupload		{ padding:5px;}
