@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>org.mmbase.module.database</title>
+  </head>
+  <body>
+    <p>
+      The classes and interfaces that arrange the actual connection to JDBC database.
+    </p>
+    <p>
+      It contains the JDBC module, which implements the JDBCInterface and is the main entrypoint when
+      retrieving a connnection to a selected database layer (defined in the support package).
+    </p>
+    <p>
+        It also contains code for the implementation of a connection pool, for use with JDBC2.
+    </p>
+    <p>
+        Finally it contains classes that define the Transaction and Storage interfaces, and exceptions
+        that may be thrown by the support classes. Note that these classes may eventually be moved
+        to a more generic package (i.e. org.mmbase.storage)
+    </p>
+    <!-- version of package description $Id: package.html,v 1.1 2002-04-19 10:11:13 pierre Exp $ -->
+    @see   org.mmbase.module.database.support
+  </body>
+</html>
