@@ -2,16 +2,16 @@
 %><mm:content expires="0" type="text/html">
 <mm:cloud>
 
-<mm:import externid="nodes">default.mags</mm:import>
-<mm:import externid="path" vartype="list">mags,news</mm:import>
-<mm:import externid="fields" vartype="list" />
-<mm:import externid="constraints" />
-<mm:import externid="orderby" />
-<mm:import externid="directions" />
-<mm:import externid="distinct" />
-<mm:import externid="max" />
-<mm:import externid="offset" />
-<mm:import externid="searchdir" />
+<mm:import externid="nodes" from="parameters">default.mags</mm:import>
+<mm:import externid="path" vartype="list" from="parameters">mags,news</mm:import>
+<mm:import externid="fields" vartype="list" from="parameters"/>
+<mm:import externid="constraints" from="parameters"/>
+<mm:import externid="orderby" from="parameters"/>
+<mm:import externid="directions" from="parameters"/>
+<mm:import externid="distinct" from="parameters"/>
+<mm:import externid="max" from="parameters"/>
+<mm:import externid="offset" from="parameters"/>
+<mm:import externid="searchdir" from="parameters"/>
 
 <html>
 
