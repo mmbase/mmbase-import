@@ -49,10 +49,10 @@
         </group>    
     </groups>
     
-    <!-- the contexts of our system -->    	
-    <contexts>
+    <!-- the contexts of our system, the default is the context which is used in case the context name wasnt found. -->    	
+    <contexts default="default">
     	<!-- the name of the context is the same as the value of a owner field -->    	    
-        <context name="system">
+        <context name="admin">
     	    	<!-- for every operation, groups can be granted the rights -->
         	<operation type="create">
     	    	    <!-- this may be one or more groups -->
@@ -78,9 +78,8 @@
 		    This way somekinda workflow can be provided 
 		-->		
 		<possible context="admin"  />
-		<possible context="system" />
         </context>
-        <context name="admin">
+        <context name="default">
         	<operation type="create">
         	    <contains group="users" />
         	</operation>	
@@ -100,7 +99,6 @@
         	    <contains group="administrators" />
         	</operation>
 		<possible context="admin"  />
-		<possible context="system" />		
         </context>
     </contexts>
     
