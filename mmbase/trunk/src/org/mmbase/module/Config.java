@@ -24,9 +24,15 @@ import org.mmbase.util.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $id$
+ * @version $Id: Config.java,v 1.6 2000-08-06 10:00:42 case Exp $
  *
- * $log$
+ * $Log: not supported by cvs2svn $
+ *
+ * TODO:
+ * - Indicate if no DTD is set as no validity checks are done in that case
+ * - Add code for examples
+ * - Add code to check whether database configuration works
+ * - Add code for fault oriented results, rather than directory oriented results
  */
 public class Config extends ProcessorModule {
 
