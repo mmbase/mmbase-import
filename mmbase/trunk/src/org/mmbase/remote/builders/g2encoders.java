@@ -25,6 +25,10 @@ import org.mmbase.service.implementations.*;
  */
 public class g2encoders extends RemoteBuilder {
 
+	private	String	_classname 	= getClass().getName();
+	private boolean _debug = true;
+	private void debug( String msg ) { System.out.println( _classname + ":" + msg ); } 
+
 	private g2encoderInterface impl;
 	private String classname;
 	StringTagger tagger;
@@ -56,7 +60,7 @@ public class g2encoders extends RemoteBuilder {
 		getNode();
 				
 		String state=getStringValue("state");
-		System.out.println("STATE="+state);
+		debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): state("+state+")");
 		if (state.equals("version")) {
 			doVersion();
 		} else if (state.equals("encode")) {
@@ -78,7 +82,7 @@ public class g2encoders extends RemoteBuilder {
 		// signal that we are done
 		setValue("state","waiting");
 		commit();
-		System.out.println("COOOOMMMIT done");
+		debug("doVersion(): commit done");
 	}
 
 	private void doEncode() {
@@ -89,8 +93,10 @@ public class g2encoders extends RemoteBuilder {
 
 		if (impl!=null) {
 			String cmds=getStringValue("info");
+			if( _debug ) debug("doEncode(): starting imp.doEncode("+cmds+")");
 		    setValue("info",impl.doEncode(cmds));	
 		} else {
+			debug("doEncode(): ERROR: cannot encode! No implementation!");
 			setValue("info","result=err reason=nocode");	
 		}
 
@@ -101,12 +107,12 @@ public class g2encoders extends RemoteBuilder {
 
 	void getConfig() {
 		classname=(String)props.get("implementation");
-		System.out.println("impl="+classname);
+		if( _debug ) debug("getConfig(): loading("+classname+")");
 		try {
 			Class newclass=Class.forName(classname);
 			impl = (g2encoderInterface)newclass.newInstance();
 		} catch (Exception f) {
-			System.out.println("g2encoder -> Can't load class : "+classname);
+			debug("getConfig(): ERROR: Can't load class("+classname+")");
 		}
 	}
 
