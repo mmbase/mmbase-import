@@ -78,7 +78,7 @@ public class InfoTag extends  CloudReferrerTag {
                                                                            pageContext.getRequest(),
                 pageContext.getResponse());
         } else if (module != null) {
-            result = findCloudTag().getDefaultCloudContext().getModule(module).getInfo(command,
+            result = getDefaultCloudContext().getModule(module).getInfo(command,
                 pageContext.getRequest(),
                 pageContext.getResponse());
         } else {

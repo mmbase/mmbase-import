@@ -23,6 +23,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import sun.misc.BASE64Decoder;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.LocalContext;
 import org.mmbase.bridge.BridgeException;
@@ -40,7 +41,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 *
 **/
-public class CloudTag extends BodyTagSupport {
+public class CloudTag extends BodyTagSupport implements CloudProvider {
     /*
         keesj: This class is full of ugly authentication code
         we should create an authenticationFactory. An other problem
@@ -119,14 +120,23 @@ public class CloudTag extends BodyTagSupport {
         this.method = m;
     }
     
-    public Cloud getCloud() {
+    public Cloud getCloudVar() {
         return cloud;
     }
 
-    public void setCloud(Cloud c) {
+    public void setCloudVar(Cloud c) {
         cloud = c;
     }
     
+    public void  registerNode(String id, Node n) {        
+        // does nothing.
+    }
+    
+    public Node getNode(String id) throws JspTagException {
+        throw new JspTagException("Cannot get Nodes directly from Cloud (use a group tag)");
+    }
+
+
     /**
     * Deny access to this page.
     *

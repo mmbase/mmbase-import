@@ -554,5 +554,155 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
-
+  <tag>
+    <name>sequence</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.SequenceTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      <p>
+      Groups node-tags. Tags inside a sequence tag can find each other's
+      providing Node. You need this for example when you create a
+      relation.
+      </p>
+      <p>
+      In TCP this is called 'create'.
+      </p>
+      <p>
+      A Transaction is a sequence too, so normally it will suffice to
+      use a transaction.
+      </p>
+    </info>
+  </tag>
+  <tag>
+    <name>createRelation</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.CreateRelationTag</tagclass>
+    <info>
+    Creates a relation between two nodes.
+    </info>
+    <attribute>
+        <name>role</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>       
+        </info>
+    </attribute>
+    <attribute>
+        <name>source</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+         The id of the node which will be on the source side of the relation.
+	</info>
+    </attribute>
+    <attribute>
+        <name>destination</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+         The id of the node which will be on the source side of the relation.
+	</info>
+    </attribute>
+    <example>
+&lt;mm:cloud&gt;
+&lt;mm:transaction id="my_transaction"&gt;
+&lt;mm:createNode type="news" id="my_news"&gt;
+   &lt;mm:setField name="title"&gt;Todays news&lt;/mm:setField&gt;
+   &lt;mm:setField name="subtitle"&gt;There happened a lot today&lt;/mm:setField&gt;
+&lt;/mm:createNode&gt;
+&lt;mm:node number="1808" id="my_author" /&gt;
+&lt;mm:createRelation role="author" source="my_author" destination="my_news" /&gt;
+&lt;/mm:transaction&gt;
+&lt;/mm:cloud&gt;
+    </example>
+  </tag>
+  <tag>
+    <name>createNode</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.CreateNodeTag</tagclass>
+    <info>
+    Creates a new node
+    </info>
+    <attribute>
+        <name>type</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>   
+         The type (NodeManager name) of the new node.
+        </info>
+        <examplevalue>
+          <value>news</value>
+        </examplevalue>
+        <examplevalue>
+          <value>people</value>
+        </examplevalue>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        See the 'id' attribute of the Node tag. 
+      </info>    
+      <examplevalue>
+        <value>a_new_node</value>
+      </examplevalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>setField</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.SetFieldTag</tagclass>
+    <info>
+      Changes the field 'name' from node 'node' (can also be
+      list).
+    </info>
+    <attribute>
+        <name>node</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+          The 'id' of the node or list from which this field must be taken.
+          By default this is the node or list which is enclosing this field.
+        </info>
+    </attribute>
+    <attribute>
+        <name>name</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  The name of the field to set. 
+	</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>transaction</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.TransactionTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+     The transaction tag creates a transaction. A transaction is
+     a sequence too.
+    </info>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The name of the transaction.</info>
+      <examplevalue>
+        <value>my_transaction</value>
+      </examplevalue>
+    </attribute>
+    <attribute>
+      <name>commitOnClose</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+       If the transaction must be committed after the body. The
+       default is true.
+      </info>
+      <possiblevalue>
+        <value>true</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>false</value>
+      </possiblevalue>
+    </attribute>
+  </tag>
 </taglib>
