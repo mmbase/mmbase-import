@@ -7,10 +7,11 @@
 <!-- <mm:time time="now" format=":LONG.LONG" /> user(<%= userFullName %>) -->
 <html>
   <head>
-     <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase-devnews.css" />" />
+     <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase-dev.css" />" />
      <link rel="stylesheet" type="text/css" href="<mm:url page="/css/navi.css" />" />
 <mm:node number="$portal"><mm:related path="posrel,templates">
-     <link rel="stylesheet" type="text/css" href="<mm:field name="templates.url"/>" />
+     <mm:field id="url" name="templates.url" write="false"/> 
+     <link rel="stylesheet" type="text/css" href="<mm:url page="$url"/>" />
 </mm:related></mm:node>
      <link rel="shortcut icon" href="/media/favicon.ico" /> 
      <title>
