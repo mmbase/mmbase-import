@@ -16,11 +16,10 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
-
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.12 2004-05-06 12:34:45 keesj Exp $
+ * @version $Id: Versions.java,v 1.13 2004-07-05 08:03:36 keesj Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -55,11 +54,28 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         Iterator i = getNodes(query).iterator();
 
         if (i.hasNext()) {
-            retval = (MMObjectNode)i.next();
+            retval = (MMObjectNode) i.next();
         }
         //should not happend
         if (i.hasNext()) {
-            log.warn("more than one version was found for " + type+" with name " + name  +" .");
+            StringBuffer sb = new StringBuffer();
+            MMObjectNode curent = retval;
+            sb.append("versions node[number,version,maintainer]:");
+            while (curent != null) {
+                sb.append("[");
+                sb.append(curent.getNumber());
+                sb.append(",");
+                sb.append(curent.getIntValue("version"));
+                sb.append(",");
+                sb.append(curent.getStringValue("maintainer"));
+                sb.append("]");
+                if (i.hasNext()) {
+                    curent = (MMObjectNode) i.next();
+                } else {
+                    curent = null;
+                }
+            }
+            log.warn("more than one version was found for " + type + " with name " + name + " ." + sb.toString());
         }
         return retval;
 
@@ -78,8 +94,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public void setInstalledVersion(String name, String type, String maintainer, int version)
-        throws SearchQueryException {
+    public void setInstalledVersion(String name, String type, String maintainer, int version) throws SearchQueryException {
 
         MMObjectNode node = getVersionNode(name, type);
         if (node == null) {
@@ -99,8 +114,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public void updateInstalledVersion(String name, String type, String maintainer, int version)
-        throws SearchQueryException {
+    public void updateInstalledVersion(String name, String type, String maintainer, int version) throws SearchQueryException {
         setInstalledVersion(name, type, maintainer, version);
     }
 
@@ -117,7 +131,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
             CacheVersionHandlers = parser.getCacheVersions(CacheVersionHandlers);
         }
         for (Enumeration e = CacheVersionHandlers.keys(); e.hasMoreElements();) {
-            String bname = (String)e.nextElement();
+            String bname = (String) e.nextElement();
             mmb.addLocalObserver(bname, this);
             mmb.addRemoteObserver(bname, this);
         }
@@ -130,12 +144,12 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         if (log.isDebugEnabled()) {
             log.debug("Versions -> signal change on " + number + " " + builder + " ctype=" + ctype);
         }
-        Vector subs = (Vector)CacheVersionHandlers.get(builder);
+        Vector subs = (Vector) CacheVersionHandlers.get(builder);
         try {
             int inumber = Integer.parseInt(number);
             if (subs != null) {
                 for (Enumeration e = subs.elements(); e.hasMoreElements();) {
-                    VersionCacheNode cnode = (VersionCacheNode)e.nextElement();
+                    VersionCacheNode cnode = (VersionCacheNode) e.nextElement();
                     cnode.handleChanged(builder, inumber);
                 }
             }
