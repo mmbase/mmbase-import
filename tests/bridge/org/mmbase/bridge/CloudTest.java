@@ -107,6 +107,9 @@ public class CloudTest extends BridgeTest {
         assertTrue(nodeList.size() == nrOfBBNodes + 1);
     }
 
+    /*
+    This test is obsolete, the new API allows these queries
+     
     public void testGetListWithInvalidParameterStartNodes() {
         try {
             NodeList nodeList;
@@ -114,6 +117,7 @@ public class CloudTest extends BridgeTest {
             fail("Should raise a BridgeException, but gave following list: " + nodeList);
         } catch (BridgeException e) {}
     }
+    */
 
     public void testGetListWithNullParameterNodePath() {
         try {
@@ -139,6 +143,8 @@ public class CloudTest extends BridgeTest {
         } catch (BridgeException e) {}
     }
 
+    /*
+    This test is now obsolete, the new API allows these queries
     public void testGetListWithNullParameterFields() {
         try {
             NodeList nodeList;
@@ -147,6 +153,10 @@ public class CloudTest extends BridgeTest {
         } catch (BridgeException e) {}
     }
 
+    */
+    
+    /*
+    This test is now obsolete, the new API allows these queries
     public void testGetListWithEmptyParameterFields() {
         try {
             NodeList nodeList;
@@ -154,7 +164,8 @@ public class CloudTest extends BridgeTest {
             fail("Should raise a BridgeException, but returned: " + nodeList);
         } catch (BridgeException e) {}
     }
-
+    */
+    
     public void testGetListWithInvalidParameterFields() {
         try {
             NodeList nodeList;
