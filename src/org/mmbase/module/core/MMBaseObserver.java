@@ -20,8 +20,9 @@ import java.sql.*;
  * itself as a change listener on Builder to recieve signals if nodes change.
  *
  * @author Daniel Ockeloen
+ * @version $Revision: 1.4 $ $Date: 2001-05-04 13:48:52 $
  */
 public interface MMBaseObserver {
-	public boolean nodeRemoteChanged(String number,String builder,String ctype);
-	public boolean nodeLocalChanged(String number,String builder,String ctype);
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype);
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype);
 }

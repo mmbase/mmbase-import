@@ -19,7 +19,7 @@ import java.io.*;
  * MMBaseMultiCastProbe a thread object started to handle all nofity's needed when
  * one is received.
  *
- * @version 27 Mar 1997
+ * @version $Revision: 1.4 $ $Date: 2001-05-04 13:48:52 $
  * @author Daniel Ockeloen
  */
 public class MMBaseMultiCastProbe implements Runnable {
@@ -27,14 +27,17 @@ public class MMBaseMultiCastProbe implements Runnable {
 	Thread kicker = null;
 	MMBaseMultiCast parent=null;
 	MMObjectBuilder bul=null;
+	String machine; 
 	String id;
 	String tb;
 	String ctype;
 	boolean remote;
 
-	public MMBaseMultiCastProbe(MMBaseMultiCast parent,MMObjectBuilder bul,String id,String tb, String ctype, boolean remote) {
+	public MMBaseMultiCastProbe(MMBaseMultiCast parent,MMObjectBuilder bul,String machine,
+	        String id,String tb,String ctype,boolean remote) {
 		this.parent=parent;
 		this.bul=bul;
+		this.machine=machine;
 		this.id=id;
 		this.tb=tb;
 		this.ctype=ctype;
@@ -73,10 +76,10 @@ public class MMBaseMultiCastProbe implements Runnable {
 	 */
 	public void run() {
 		if (remote) {
-			bul.nodeRemoteChanged(id,tb,ctype);
+			bul.nodeRemoteChanged(machine,id,tb,ctype);
 			parent.checkWaitingNodes(id);	
 		} else {
-			bul.nodeLocalChanged(id,tb,ctype);
+			bul.nodeLocalChanged(machine,id,tb,ctype);
 			parent.checkWaitingNodes(id);	
 		}
 	}
