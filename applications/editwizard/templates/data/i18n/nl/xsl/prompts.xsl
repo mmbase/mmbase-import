@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.6 2003-05-07 12:18:00 pierre Exp $
+  @version $Id: prompts.xsl,v 1.7 2003-11-12 13:57:51 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -43,10 +43,12 @@
 <xsl:template name="prompt_select">selecteer...</xsl:template>
 <!-- up/down button prompts and tooltips -->
 
-<xsl:template name="prompt_up"><img src="{$mediadir}up.gif" border="0" alt="Omhoog"/></xsl:template>
 <xsl:variable name="tooltip_up">Verplaats dit item hoger in the lijst</xsl:variable>
-<xsl:template name="prompt_down"><img src="{$mediadir}down.gif" border="0" alt="Omlaag"/></xsl:template>
+<xsl:template name="prompt_up"><img src="{$mediadir}up.gif" border="0" alt="Omhoog" title="{$tooltip_up}" /></xsl:template>
+
 <xsl:variable name="tooltip_down">Verplaats dit item lager in the lijst</xsl:variable>
+<xsl:template name="prompt_down"><img src="{$mediadir}down.gif" border="0" alt="Omlaag" title="{$tooltip_down}" /></xsl:template>
+
 <!-- new button prompts and tooltips -->
 <xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" alt="Nieuw"/></xsl:template>
 <xsl:variable name="tooltip_new">Voeg een nieuw item toe aan de lijst</xsl:variable>
@@ -59,11 +61,13 @@
 <xsl:template name="prompt_delete_confirmation" >Weet u zeker dat u dit item wilt verwijderen?</xsl:template>
 <!-- save button prompts and tooltips -->
 <xsl:template name="prompt_save">Bewaar</xsl:template>
+<xsl:template name="prompt_save_only">Bewaar&amp;blijf</xsl:template>
 <xsl:variable name="tooltip_save">Bewaar alle wijzigingen.</xsl:variable>
+<xsl:variable name="tooltip_save_only">Bewaar alle wijzigingen, maar ga door met editen.</xsl:variable>
 <xsl:variable name="tooltip_no_save">De wijzigingen kunnen niet worden bewaard, sommige gegevens zijn niet correct ingevoerd.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">Annuleren</xsl:template>
-<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen worden niet bewaard.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste 'bewaar&amp;blijf')worden niet bewaard.</xsl:variable>
 <xsl:variable name="tooltip_no_cancel">Deze taak kan niet worden afgebroken.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
 <xsl:template name="prompt_step"><nobr>Stap <xsl:value-of select="position()" /></nobr></xsl:template>
@@ -107,7 +111,7 @@
 <xsl:variable name="tooltip_logout" >Uitloggen en terug naar de startpagina</xsl:variable>
 <!-- prompts and tooltips for lists -->
 <xsl:template name="prompt_edit_list" >
-<xsl:value-of select="$title" />(<xsl:value-of select="@count" /> items)
+<xsl:value-of select="$title" disable-output-escaping="yes"  />(<xsl:value-of select="@count" /> items)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Dit zijn de items die u kan wijzigen.</xsl:variable>
 <!-- searchlist prompts/tooltips -->

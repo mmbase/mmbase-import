@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.10 2002-07-16 17:37:15 michiel Exp $
+ * @version $Id: WizardCommand.java,v 1.11 2003-11-12 13:54:41 michiel Exp $
  */
 public class WizardCommand {
 
@@ -32,8 +32,9 @@ public class WizardCommand {
     public final static short GOTO_FORM = 4;
     public final static short MOVE_DOWN = 5;
     public final static short MOVE_UP = 6;
-    public final static short START_WIZARD = 7;
-    public final static short UPDATE_ITEM = 8;
+    public final static short SAVE       = 7;
+    public final static short START_WIZARD = 8;
+    public final static short UPDATE_ITEM = 9;
 
     /**
      * Array with the command strings, as they are parsed.
@@ -41,12 +42,11 @@ public class WizardCommand {
      * index in the array.
      */
     private final static String[] COMMANDS =
-    {"add-item", "cancel", "commit", "delete-item", "goto-form", "move-down", "move-up", "start-wizard", "update-item"};
+    {"add-item", "cancel", "commit", "delete-item", "goto-form", "move-down", "move-up", "save", "start-wizard", "update-item"};
 
-    // logging
-    private static Logger log = Logging.getLoggerInstance(WizardCommand.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(WizardCommand.class);
 
-    private String commandname="unknown";
+    private String commandName="unknown";
     private int type = UNKNOWN_COMMAND;
     private List params = null;
 
@@ -71,7 +71,9 @@ public class WizardCommand {
     public WizardCommand(String acommand, String avalue) {
         command = acommand.toLowerCase();
         value = avalue;
-        if (log.isDebugEnabled()) log.debug("command: "+command + " : "+value);
+        if (log.isDebugEnabled()) { 
+            log.debug("command: " + command + " : "+value);
+        }
 
         StringTokenizer st= new StringTokenizer(command,"/",true);
         // skip first token ('cmd') and delimiter
@@ -79,11 +81,11 @@ public class WizardCommand {
         st.nextToken();
 
         // second token is command name (aka type)
-        commandname= st.nextToken();
+        commandName= st.nextToken();
         st.nextToken(); // delimiter
 
         // attempt to determine type from the (ordered) array of known commands.
-        type = Arrays.binarySearch(COMMANDS,commandname);
+        type = Arrays.binarySearch(COMMANDS, commandName);
         if (type<0) type =UNKNOWN_COMMAND;
 
         int paramcount=st.countTokens();
@@ -144,6 +146,10 @@ public class WizardCommand {
      */
     public String getDid() {
         return getParameter(1);
+    }
+
+    public String toString() {
+        return command;
     }
 
 }

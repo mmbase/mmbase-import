@@ -6,7 +6,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.99 2003-10-21 07:51:55 pierre Exp $
+  @version $Id: wizard.xsl,v 1.100 2003-11-12 13:57:52 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -134,12 +134,13 @@
         <hr color="#005A4A" size="1" noshade="true"/>
         <p>
           <!-- cancel -->
-          <xsl:call-template name="cancelbutton"/>
-            -
-
-
+          <xsl:call-template name="cancelbutton"/>            
+          <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
           <!-- commit  -->
           <xsl:call-template name="savebutton"/>
+          <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+          <!-- Saveonly  -->
+          <xsl:call-template name="saveonlybutton"/>
         </p>
         <hr color="#005A4A" size="1" noshade="true"/>
       </td>
@@ -1152,6 +1153,39 @@
         </xsl:otherwise>
       </xsl:choose>
       <xsl:call-template name="prompt_save"/>
+    </a>
+  </xsl:template>
+
+
+  <!-- don't want the save-only button?. Put this in your wizard.xsl extension 
+  <xsl:template name="saveonlybutton">
+    <a id="bottombutton-saveonly" />
+  </xsl:template>
+  -->
+
+  <xsl:template name="saveonlybutton">
+    <a href="javascript:doSaveOnly();" id="bottombutton-saveonly" unselectable="on" titlesave="{$tooltip_save_only}" titlenosave="{$tooltip_no_save}">
+      <xsl:if test="@allowsave='true'">
+        <xsl:attribute name="class">bottombutton</xsl:attribute>
+        <xsl:attribute name="title">
+          <xsl:value-of select="$tooltip_save_only"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@allowsave='false'">
+        <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
+        <xsl:attribute name="title">
+          <xsl:value-of select="$tooltip_no_save"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="step[@valid='false'][not(@form-schema=/wizard/curform)]">
+          <xsl:attribute name="otherforms">invalid</xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="otherforms">valid</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:call-template name="prompt_save_only"/>
     </a>
   </xsl:template>
 
