@@ -35,10 +35,7 @@ import org.mmbase.module.corebuilders.*;
  * - left static main testcode in because the class isn't yet called from mmbase
  *
  */
-public class XMLMMLanguageReader  {
-
-    Document document;
-    DOMParser parser;
+public class XMLMMLanguageReader extends XMLBasicReader {
 
     Hashtable languageList; // Hashtable from languagecode to Hashtables with dictionaries
 
@@ -47,19 +44,11 @@ public class XMLMMLanguageReader  {
 
 
     public XMLMMLanguageReader(String filename) {
+	super(filename);
+
 	dictionary = null;
 
-        try {
-            parser = new DOMParser();
-            parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-            parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-            parser.parse(filename);
-            document = parser.getDocument();
-	    generateFromDOM();
-
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+	generateFromDOM();	
     }
 
 
@@ -69,39 +58,14 @@ public class XMLMMLanguageReader  {
      */
     protected void generateFromDOM() {
 	dictionary = new Hashtable();
-	Node n1=document.getFirstChild();
-	while (n1!=null) {
-	    if (n1.getNodeName().equalsIgnoreCase("mmlanguage")) {
-		NamedNodeMap nm=n1.getAttributes();
-		if (nm!=null) {
-		    Node nattr=nm.getNamedItem("xml:lang");
-		    languagecode = nattr.getNodeValue();
-		    //System.out.println("attribuut xml:lang = "+ nattr.getNodeValue());
-		    
-		    //System.out.println("toplevel: "+n1.getNodeName());
-		    Node n2=n1.getFirstChild();
-		    while (n2!=null) {
-			if (n2.getNodeName().equalsIgnoreCase("dictionary")) {
-			    //System.out.println(n2.getNodeName());
-			    Node n3=n2.getFirstChild();
-			    while (n3!=null) {
-				Node n4 = n3.getFirstChild();
-				if (n4 != null && n4.getNodeType() == n4.TEXT_NODE) {
-				    //System.out.println(n3.getNodeName() + " -> " + n4.getNodeValue());
-				    dictionary.put(n3.getNodeName(),n4.getNodeValue());
-				}
-				n3 = n3.getNextSibling();
-			    }
-			    break;
-			}
-			n2=n2.getNextSibling();
-		    }
-		    break;
-		} else {
-		    // Hm. This is a language file 
-		}
-	    }
-	    n1 = n1.getNextSibling();
+	Element e = document.getDocumentElement();
+	languagecode = getElementAttributeValue(e,"xml:lang");
+	Element d = getElementByPath("mmlanguage.dictionary");
+	Enumeration enum = getChildElements(d);
+	while (enum.hasMoreElements()) {
+	    Element a = (Element)enum.nextElement();
+	    //System.out.println(getElementName(a)+" -> "+getElementValue(a));
+	    dictionary.put(getElementName(a),getElementValue(a));
 	}
 	System.out.println("done");
     }
@@ -133,6 +97,7 @@ public class XMLMMLanguageReader  {
 		System.out.println("file exists");
 		XMLMMLanguageReader reader = new XMLMMLanguageReader(path);
 		//reader.generateLanguageList();
+
 		System.out.println("language = "+reader.getLanguageCode());
 		Hashtable dict = reader.getDictionary();
 		Enumeration enum = dict.keys();
