@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.11 2003-11-10 17:20:31 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.12 2003-11-12 10:15:30 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -90,6 +90,7 @@ public class HandleServlet extends BridgeServlet {
         // - IE can't handle that. (IE sucks!)
 
         // res.setHeader("Content-Disposition", "attachment; filename=\""  + fn + "\"");
+        //res.setHeader("X-MMBase-1", "Not sending Content-Disposition because this might confuse Microsoft Internet Explorer");
         return true;
     }
 
@@ -120,12 +121,12 @@ public class HandleServlet extends BridgeServlet {
      */
     protected boolean setCacheControl(HttpServletResponse res, Node node) {
         if (!node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
-            res.setHeader("Cache-Control", "private,no-store");
-            res.setHeader("Pragma", "no-cache"); // for http 1.0
+            res.setHeader("Cache-Control", "private");
+            // res.setHeader("Pragma", "no-cache"); // for http 1.0 : is frustrating IE when https
+            // we really don't want this to remain in proxy caches, but the http 1.0 way is making IE not work.
             return true;
         } else {
             res.setHeader("Cache-Control", "public");
-            // Cache-Control public is frustrating IE?
             return false;
         }
     }
@@ -164,6 +165,7 @@ public class HandleServlet extends BridgeServlet {
          */
         if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
             bytes = IECompatibleJpegInputStream.process(bytes);
+            // res.setHeader("X-MMBase-2", "This image was filtered, because Microsoft Internet Explorer might crash otherwise");
         }
 
         if (!setContent(res, node, mimeType)) {
