@@ -107,8 +107,9 @@ Install as standalone server with MMBase
 4. Copy the files in mmbase/applications to
    mmbase/mmbase-webapp/WEB-INF/config/applications.
 
-5. Check the MMBase security config to see if anonymous is allowed to create
-   nodes.
+5. Check the MMBase security config to see if the mmbase user, as specified in
+   the jircs properties file with mmbase.username and mmbase.password, is
+   allowed to create nodes.
 
 6. Execute the following command in the Jircs directory:
 
@@ -153,14 +154,16 @@ Install as servlet in a webapp with MMBase
 6. Copy the files in mmbase/applications to
    WEB-INF/config/applications of your MMBase webapp.
 
-7. Check the MMBase security config to see if anonymous is allowed to create
-   nodes.
+7. Check the MMBase security config to see if the mmbase user, as specified in
+   the jircs properties file with mmbase.username and mmbase.password, is
+   allowed to create nodes.
 
 8. Start your webapp.
 
 9. Test your installation using a Flash client connecting to localhost and port
-   5557 or an IRC client connecting to localhost and port 6667. View the log
-   files in the logs directory if you are having problems.
+   5557 or an IRC client connecting to localhost and port 6667 and login with
+   nick chatexample1 and password chatexample1. View the log files in the logs
+   directory if you are having problems.
 
 
 Make the MMBase install work with ohter MMBase installations
