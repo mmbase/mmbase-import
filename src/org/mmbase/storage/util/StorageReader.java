@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.4 2003-09-25 12:53:10 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.5 2004-03-05 14:52:15 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -133,26 +133,28 @@ public class StorageReader extends DocumentReader  {
     }
 
     /**
-     * Attempt to load a SearchQueryHandler class, using the classname as given in the configuration.
-     * @return the SearchQueryHandler class, or null if none was configured
+     * Attempt to obtain a list of SearchQueryHandler classes, using the classname as given in the configuration.
+     *
+     *
+     * @return A List of Class objects, each being the SearchQueryHandler class, or an empty list if none was configured
      * @throws StorageConfigurationException if the class configured is invalid
      */
-    public Class getSearchQueryHandlerClass() throws StorageConfigurationException {
+    public List getSearchQueryHandlerClasses() throws StorageConfigurationException {
         // override if otherwise specified
+        List classes = new ArrayList();
         Element root = document.getDocumentElement();
         NodeList handlerTagList = root.getElementsByTagName("searchqueryhandler");
-        if (handlerTagList.getLength()>0) {
-            Element handlerTag = (Element)handlerTagList.item(0);
+        for(int i=0; i<handlerTagList.getLength(); i++) {
+            Element handlerTag = (Element)handlerTagList.item(i);
             String queryHandlerClassName = handlerTag.getAttribute("classname");
             //  get class
             try {
-                return Class.forName(queryHandlerClassName);
+                classes.add(Class.forName(queryHandlerClassName));
             } catch (ClassNotFoundException cnfe) {
                 throw new StorageConfigurationException(cnfe);
             }
-        } else {
-            return null;
         }
+        return classes;
     }
 
     /**

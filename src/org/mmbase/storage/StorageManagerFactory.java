@@ -14,8 +14,6 @@ import java.util.*;
 import org.xml.sax.InputSource;
 
 import org.mmbase.storage.search.SearchQueryHandler;
-import org.mmbase.storage.search.implementation.database.BasicQueryHandler;
-import org.mmbase.storage.search.implementation.database.SqlHandler;
 import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
@@ -32,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.6 2004-02-05 12:37:18 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.7 2004-03-05 14:52:14 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -77,10 +75,10 @@ public abstract class StorageManagerFactory {
     protected SearchQueryHandler queryHandler;
 
     /**
-     * The query handler class.
+     * The query handler classes.
      * Assign a value to this class if you want to set a default query handler.
      */
-    protected Class queryHandlerClass;
+    protected List queryHandlerClasses = new ArrayList();
 
     /**
      * The default storage factory class.
@@ -160,6 +158,41 @@ public abstract class StorageManagerFactory {
     }
 
     /**
+     * Instantiate a basic handler object using the specified class.
+     * A basic handler can be any type of class and is dependent on the
+     * factory implementation.
+     * For instance, the database factory expects an
+     * org.mmbase.storage.search.implentation.database.SQLHandler class.
+     * @param handlerClass the class to instantuate teh object with
+     * @return the new handler class
+     */
+    abstract protected Object instantiateBasicHandler(Class handlerClass);
+
+    /**
+     * Instantiate a chained handler object using the specified class.
+     * A chained handler can be any type of class and is dependent on the
+     * factory implementation.
+     * For instance, the database factory expects an
+     * org.mmbase.storage.search.implentation.database.ChainedSQLHandler class.
+     * @param handlerClass the class to instantuate teh object with
+     * @param previousHandler a handler thatw a sinstantiated previously.
+     *        this handler should be passed to the new handler class during or
+     *        after constrcution, so the ne whandler can 'chain' any events it cannot
+     *        handle to this class.
+     * @return the new handler class
+     */
+    abstract protected Object instantiateChainedHandler(Class handlerClass, Object previousHandler);
+
+    /**
+     * Instantiate a SearchQueryHandler object using the specified object.
+     * The specified parameter may be an actual SearchQueryHandler object, or it may be a utility class.
+     * For instance, the database factory expects an org.mmbase.storage.search.implentation.database.SQLHandler object,
+     * which is used as a parameter in the construction of the actual SearchQueryHandler class.
+     * @param handlerClass the class to instantuate teh object with
+     */
+    abstract protected SearchQueryHandler instantiateQueryHandler(Object data);
+
+    /**
      * Opens and reads the storage configuration document.
      * Override this method to add additional configuration code before or after the configuration document is read.
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
@@ -167,12 +200,12 @@ public abstract class StorageManagerFactory {
     protected void load() throws StorageException {
         StorageReader reader = getDocumentReader();
         if (reader == null) {
-            if (storageManagerClass == null || queryHandlerClass == null) {
+            if (storageManagerClass == null || queryHandlerClasses.size() == 0) {
                 throw new StorageConfigurationException("No storage reader specified, and no default values available.");
             } else {
                 log.warn("No storage reader specified, continue using default values.");
                 log.debug("Default storage manager : " + storageManagerClass.getName());
-                log.debug("Default query handler : " + queryHandlerClass.getName());
+                log.debug("Default query handler : " + ((Class)queryHandlerClasses.get(0)).getName());
                 return;
             }
         }
@@ -210,42 +243,25 @@ public abstract class StorageManagerFactory {
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
         // need to move this to DatabaseStorageManagerFactory
-        configuredClass = reader.getSearchQueryHandlerClass();
-        if (configuredClass != null) {
-            queryHandlerClass = configuredClass;
-        } else if (queryHandlerClass == null) {
+        List configuredClasses = reader.getSearchQueryHandlerClasses();
+        if (configuredClasses.size() != 0) {
+            queryHandlerClasses = configuredClasses;
+        } else if (queryHandlerClasses.size() == 0) {
             throw new StorageConfigurationException("No SearchQueryHandler class specified, and no default available.");
         }
-        // instantiate handler
-        try {
-            java.lang.reflect.Constructor constructor = queryHandlerClass.getConstructor(new Class[] {Map.class});
-            SqlHandler sqlHandler = (SqlHandler)  constructor.newInstance( new Object[] { disallowedFields } );
-            log.service("Instantiated SqlHandler of type " + queryHandlerClass.getName());
-
-            // Chained handlers, to be implemented later.
-            /*
-            Iterator iHandlers = reader.getChainedHandlerClasses().iterator();
-            while (iHandlers.hasNext()) {
-                Class handlerClass = (Class) iHandlers.next();
-                constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
-                queryHandler = (SearchQueryHandler) constr2.newInstance(new Object[] {queryHandler});
-                log.service("Instantiated chained SearchQueryHandler of type "
-                    + handlerClass.getName());
+        // instantiate handler(s)
+        Iterator iHandlers = reader.getSearchQueryHandlerClasses().iterator();
+        Object handler = null;
+        while (iHandlers.hasNext()) {
+            Class handlerClass = (Class) iHandlers.next();
+            if (handler == null) {
+                handler = instantiateBasicHandler(handlerClass);
+            } else {
+                handler = instantiateChainedHandler(handlerClass, handler);
             }
-            */
-            // initialize query handler.
-            queryHandler = new BasicQueryHandler(sqlHandler);
-
-        } catch (NoSuchMethodException nsme) {
-            throw new StorageConfigurationException(nsme);
-        } catch (java.lang.reflect.InvocationTargetException ite) {
-            throw new StorageConfigurationException(ite);
-        } catch (IllegalAccessException iae) {
-            throw new StorageConfigurationException(iae);
-        } catch (InstantiationException ie) {
-            throw new StorageConfigurationException(ie);
         }
-
+        // initialize query handler.
+        queryHandler = instantiateQueryHandler(handler);
     }
 
     /**
