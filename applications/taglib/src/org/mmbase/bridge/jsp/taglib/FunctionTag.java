@@ -13,10 +13,6 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import org.mmbase.bridge.NotFoundException;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Field;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.Arguments;
@@ -29,7 +25,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.2 2003-06-27 12:58:27 michiel Exp $
+ * @version $Id: FunctionTag.java,v 1.3 2003-07-01 10:37:44 keesj Exp $
  */
 public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler, FunctionContainerReferrer {
 
