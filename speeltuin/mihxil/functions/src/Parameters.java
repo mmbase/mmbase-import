@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.2 2003-11-21 14:58:38 michiel Exp $
+ * @version $Id: Parameters.java,v 1.3 2003-11-21 20:29:52 michiel Exp $
  * @see Parameter
  */
 
@@ -48,13 +48,14 @@ public class Parameters extends AbstractList implements List  {
     /**
      * The contents of this List are stored in this HashMap.
      */
-    private Map backing = new HashMap();
+    protected Map backing = new HashMap();
 
     /**
      * This array maps integers (position in array) to map keys, making it possible to implement
      * List.
      */
-    private   Parameter[] definition;
+    protected  Parameter[] definition = null;
+
 
     /**
      * Constructor, taking an Parameter[] array argument. The Parameter may also be Parameter.Wrapper
@@ -84,6 +85,10 @@ public class Parameters extends AbstractList implements List  {
     }
     
 
+
+    /**
+     * When using reflection, you might need the Parameters as a Class[]. This function provides it.
+     */
     public Class[] toClassArray() {
         Class[] array = new Class[definition.length];
         for (int i = 0; i < definition.length; i++) {
@@ -96,7 +101,7 @@ public class Parameters extends AbstractList implements List  {
      * Adds the definitions to a List. Resolves the Attribute.Wrapper's (recursively).
      * @return List with only simple Parameter's.
      */
-    protected List define(Parameter[] def, List list) {        
+    protected static List define(Parameter[] def, List list) {        
         for (int i = 0; i < def.length; i++) {
             if (def[i] instanceof Parameter.Wrapper) {
                 define(((Parameter.Wrapper) def[i]).arguments, list);
@@ -121,18 +126,14 @@ public class Parameters extends AbstractList implements List  {
     // implementation of (modifiable) List
     public Object set(int i, Object value) {
         Parameter a = definition[i];
-        checkType(a, value);
+        a.checkType(value);
         return backing.put(a.key, value);
     }
 
 
-    protected void checkType(Parameter a, Object value) {
-        if (! a.type.isInstance(value)) {
-            throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + a.type + " (but is " + (value == null ? value : value.getClass()) + ")");
-        }
-    }
-
-
+    /**
+     * 
+     */
     public boolean hasParameter(Parameter arg) {
         for (int i = 0; i < definition.length; i++) {
             Parameter a = definition[i];
@@ -150,12 +151,25 @@ public class Parameters extends AbstractList implements List  {
         for (int i = 0; i < definition.length; i++) {
             Parameter a = definition[i];
             if (a.key.equals(arg)) {
-                checkType(a, value);
+                a.checkType(value);
                 backing.put(arg, value);
                 return this;
             }
         }
         throw new IllegalArgumentException("The argument '" + arg + "' is not defined");
+    }
+
+    public Parameters set(Parameter arg, Object value) {
+        return set(arg.getName(), value);
+    }
+
+    public Parameters setAll(Map map) {
+        Iterator i = map.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            set((String) entry.getKey(), entry.getValue());
+        }
+        return this;
     }
 
     /**

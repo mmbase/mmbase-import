@@ -30,9 +30,9 @@ public class NodeManagerFunction extends NodeFunction {
     }
 
     public Object getFunctionValue(Parameters arguments) {
-        if (NodeList.class.isAssignableFrom(returnType)) {
+        if (NodeList.class.isAssignableFrom(returnType.getType())) {
             return nodeManager.getList(name, arguments.toMap());
-        } else if (String.class.isAssignableFrom(returnType)) {
+        } else if (String.class.isAssignableFrom(returnType.getType())) {
             return nodeManager. getInfo(name);
         } else {
             return super.getFunctionValue(arguments);
