@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.12 2002-05-02 16:25:10 pierre Exp $
+ * @version $Id: Version.java,v 1.13 2002-05-03 08:19:00 michiel Exp $
  */
 public class Version {
    
@@ -45,26 +45,22 @@ public class Version {
     public static int     getMinor()  { return 6; }    
 
     /**
-     * Returns the build date of this MMBase. During the build, this
-     * function is changed hard-coded.
-     *
-     * This code will grow with every build you do (because of
-     * limitations of ant), so perhaps you want to clean up this now
-     * and then.
+     * Returns the build date of this MMBase. During the build, the
+     * value of this is stored in builddate.properties.
      *
      * @since MMBase-1.6
      */
     public static String  getBuildDate() {
-        String resource="";
-        InputStream builddate=Version.class.getResourceAsStream("builddate.properties");
-        if (builddate!=null) {
+        String resource = "";
+        InputStream builddate = Version.class.getResourceAsStream("builddate.properties");
+        if (builddate != null) {
             try {
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(builddate));
-                resource="."+buffer.readLine();
+                resource = "." + buffer.readLine();
                 buffer.close();
             } catch(IOException e) {
-               // error
-               resource=""+e;
+                // error
+                resource = "" + e;
             }
         }
         return resource;
