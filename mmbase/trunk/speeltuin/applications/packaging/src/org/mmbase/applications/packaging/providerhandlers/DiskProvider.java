@@ -90,7 +90,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface,Run
 
 	String realpath=path;
 	if (realpath.indexOf("~import")==0) {
-		realpath=MMBaseContext.getConfigPath()+"/packaging/import/";
+		realpath=getImportPath();
 	}
 	if (realpath.indexOf("~build")==0) {
 		realpath=MMBaseContext.getConfigPath()+"/packaging/build/";
@@ -211,7 +211,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface,Run
        		JarEntry je = jarFile.getJarEntry(packageid+"_"+packageversion+".mmp");
 		try {
 			InputStream in=jarFile.getInputStream(je);	
-			BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(MMBaseContext.getConfigPath()+"/packaging/import/.temp_"+packageid+"_"+packageversion+".mmp"));
+			BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(getImportPath()+".temp_"+packageid+"_"+packageversion+".mmp"));
 			int val;
                    		while ((val = in.read()) != -1) {
                      			out.write(val);
@@ -221,7 +221,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface,Run
 			log.error("can't load : "+path);
 			e.printStackTrace();
 		}
-       		JarFile tmpjarfile = new JarFile(MMBaseContext.getConfigPath()+"/packaging/import/.temp_"+packageid+"_"+packageversion+".mmp");
+       		JarFile tmpjarfile = new JarFile(getImportPath()+".temp_"+packageid+"_"+packageversion+".mmp");
 		return tmpjarfile;
 		} catch(Exception e) {
 			log.error("can't load : "+path);
@@ -231,7 +231,7 @@ public class DiskProvider extends BasicProvider implements ProviderInterface,Run
     }
 
     public JarFile getJarFile(String path,String id,String version) {
-		String realpath=MMBaseContext.getConfigPath()+"/packaging/import/";
+		String realpath=getImportPath();
 		try {
        		JarFile jarFile = new JarFile(path);
 		if (path.endsWith("mmb") && id.indexOf("_bundle_")==-1) {
@@ -338,5 +338,14 @@ public class DiskProvider extends BasicProvider implements ProviderInterface,Run
 		n2=n2.getNextSibling();
 	}
     }
+
+   public String getImportPath() {
+        String path=MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"import"+File.separator;
+        File dir=new File(path);
+        if (!dir.exists()) {
+                dir.mkdir();
+        }
+        return path;
+   }
 
 }
