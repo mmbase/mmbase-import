@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.53 2004-06-17 10:27:09 michiel Exp $
+ * @version $Id: Config.java,v 1.54 2004-08-26 14:11:00 michiel Exp $
  */
 
 public class Config {
@@ -209,6 +209,14 @@ public class Config {
 
         private boolean parsed = false;
 
+        protected static String removeDigits(String complete) {
+            int end = complete.length() - 1;
+            while (Character.isDigit(complete.charAt(end))) {
+                --end;
+            }
+            return complete.substring(0, end + 1);
+        }
+        
         /**
          * Configure a list page. The configuration object passed is updated with information retrieved
          * from the request object with which the configurator was created. The following parameters are accepted:
@@ -412,7 +420,7 @@ public class Config {
                 if (fields == null) {
                     if (cloud != null) {
                         StringBuffer fieldsBuffer = new StringBuffer();
-                        FieldIterator i = cloud.getNodeManager(mainObjectName).
+                        FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {                            
                             fieldsBuffer.append(multilevel ? mainObjectName + "." : "" ).append(i.nextField().getName());
@@ -455,7 +463,7 @@ public class Config {
                 if (search >= SEARCH_YES && searchFields == null) {
                     if (cloud != null) {
                         StringBuffer searchFieldsBuffer = new StringBuffer();
-                        FieldIterator i = cloud.getNodeManager(mainObjectName).
+                        FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
                             Field f = i.nextField();
