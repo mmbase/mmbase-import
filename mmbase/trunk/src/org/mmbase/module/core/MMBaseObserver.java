@@ -15,16 +15,31 @@ package org.mmbase.module.core;
  * itself as a change listener on Builder to recieve signals if nodes change.
  *
  * @author Daniel Ockeloen
- * @version $Id: MMBaseObserver.java,v 1.7 2003-04-03 16:18:39 michiel Exp $
+ * @version $Id: MMBaseObserver.java,v 1.8 2003-05-23 10:58:39 michiel Exp $
  */
 public interface MMBaseObserver {
     /**
-     * @javadoc
+     * Called when a remote node is changed.
+     *
+     * @param machine Name of the machine that changed the node.
+     * @param number  Number of the changed node as a <code>String</code>
+     * @param builder Type of the changed node
+     * @param ctype   command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+     * @return always <code>true</code>
+     * @todo javadoc is copied from MMObjectBuilder, but MMObjectBuilder is not an MMBaseObserver
      */
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype);
 
     /**
-     * @javadoc
+     * Called when a local node is changed.
+     *
+     * @param machine Name of the machine that changed the node.
+     * @param number  Number of the changed node as a <code>String</code>
+     * @param builder Type of the changed node
+     * @param ctype   command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+     * @return always <code>true</code>
+     * @todo javadoc is copied from MMObjectBuilder, but MMObjectBuilder is not an MMBaseObserver
      */
+
     public boolean nodeLocalChanged(String machine, String number, String builder, String ctype);
 }
