@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.35 2000-08-31 21:27:48 gerard Exp $
+$Id: MMSQL92Node.java,v 1.36 2000-10-18 16:39:40 gerard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.35  2000/08/31 21:27:48  gerard
+gerard: fixed broadcast of inserting a new node into the database. If a node is inserted an 'n' (new) must be broadcasted instead of a 'c' (changed).
+
 Revision 1.34  2000/07/25 21:02:53  daniel
 removed Fielddefs database code since well its not in the database anymore
 
@@ -146,13 +149,15 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.35 $ $Date: 2000-08-31 21:27:48 $
+* @$Revision: 1.36 $ $Date: 2000-10-18 16:39:40 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
 	private boolean debug = false;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	//does the database support keys?
+	private boolean keySupported=false;
 	public String name="sql92";
 	XMLDatabaseReader parser;
 	Hashtable typeMapping = new Hashtable();
@@ -878,7 +883,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				}
 			}
 		}
-		result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
+		if (keySupported) {
+			result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+parser.getPrimaryKeyScheme()+" ( number ), "+result+" );";
+		} else {
+			result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
+		}
 
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -900,7 +909,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner VARCHAr(12) not null);");
+			if (keySupported) {
+				stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner VARCHAr(12) not null, "+parser.getPrimaryKeyScheme()+" (number));");
+			} else {
+				stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner VARCHAr(12) not null);");
+			}
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
@@ -922,6 +935,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 		// get the wanted notnull
 		boolean notnull=def.getDBNotNull();
+
+		//get the wanted key
+		boolean iskey=def.isKey();
+
 		if (name.equals("otype")) { 
 			return("otype integer "+parser.getNotNullScheme());
 		} else {
@@ -930,6 +947,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 			String result=name+" "+matchType(type,size,notnull);
 			if (notnull) result+=" "+parser.getNotNullScheme();
+			if (keySupported) {
+				if (iskey) result+=" "+parser.getNotNullScheme()+" ,"+parser.getKeyScheme()+ "("+name+")";
+			} 
+
 			return(result);
 		}
 	}	
