@@ -239,6 +239,22 @@
 	</mm:booleanfunction>
 </mm:compare>
 
+
+<mm:compare value="deltarget" referid="action">
+	<mm:import id="project" externid="name" />
+	<mm:import id="target" externid="bundle" />
+	<mm:notpresent referid="target"><mm:import id="target" externid="package" reset="true" /></mm:notpresent>
+	 <mm:booleanfunction set="mmpb" name="delTarget" referids="project,target">
+	</mm:booleanfunction>
+</mm:compare>
+
+
+<mm:compare value="delproject" referid="action">
+	<mm:import id="project" externid="name" />
+	 <mm:booleanfunction set="mmpb" name="delProject" referids="project">
+	</mm:booleanfunction>
+</mm:compare>
+
 <mm:compare value="addtargetpackage" referid="action">
 	<mm:import id="project" externid="name" />
 	<mm:import id="target" externid="bundle" />
