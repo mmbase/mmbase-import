@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.6 2002-05-27 10:50:09 eduard Exp $
+ * @version $Id: MMMckoiNode.java,v 1.7 2002-06-17 13:12:00 pierre Exp $
  */
 public class MMMckoiNode implements MMJdbc2NodeInterface {
 
@@ -1576,9 +1576,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
             for (Enumeration e=newfields.elements();e.hasMoreElements();) {
                 FieldDefs def=(FieldDefs)e.nextElement();
                 String newname=def.getDBName();
-                int dbpos=def.getDBPos()+1;
-                if (newname.equals("otype")) dbpos=2;
-                if (newname.equals("number")) dbpos=1;
+                int dbpos=def.getDBPos();
 
                 o=oldvalues.get(getAllowedField(newname));
 

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.63 2002-06-08 08:15:16 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.64 2002-06-17 13:12:00 pierre Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -147,7 +147,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs, int i, String prefix) {
         try {
-            // is this fieldname disallowed ? ifso map it back           
+            // is this fieldname disallowed ? ifso map it back
             if (allowed2disallowed.containsKey(fieldname)) {
                 fieldname = (String)allowed2disallowed.get(fieldname);
             }
@@ -1712,9 +1712,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 for (Enumeration e=newfields.elements();e.hasMoreElements();) {
                     FieldDefs def=(FieldDefs)e.nextElement();
                     String newname=def.getDBName();
-                    int dbpos=def.getDBPos()+1;
-                    if (newname.equals("otype")) dbpos=2;
-                    if (newname.equals("number")) dbpos=1;
+                    int dbpos=def.getDBPos();
 
                     o=oldvalues.get(getAllowedField(newname));
 
