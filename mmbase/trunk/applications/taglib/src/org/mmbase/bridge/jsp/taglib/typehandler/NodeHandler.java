@@ -36,7 +36,22 @@ public class NodeHandler extends IntegerHandler {
             String s1 = (String)o1;
             String s2 = (String)o2;
             return s1.toUpperCase().compareTo(s2.toUpperCase());
-        }                                    
+        }
+    }
+
+    // checks whether a node passed refers to a relation builder
+    // (a nodemanager used for creating relations)
+    private boolean isRelationBuilder(Node n) throws JspTagException {
+        try {
+            NodeManager nm=context.getCloud().getNodeManager(n.getStringValue("name"));
+            // not a really good way to check, but it wil work for now
+            // better is to use some property like
+            //    NodeManager.getNodeClass()
+            // which might then return Node, Relation, NodeManager, or RelationManager.
+            return nm.hasField("snumber") && !nm.getName().equals("typerel");
+        } catch (BridgeException e) {
+            return false;
+        }
     }
 
     /**
@@ -53,7 +68,6 @@ public class NodeHandler extends IntegerHandler {
             String value = "0";
             if (node != null) value = node.getStringValue(field.getName());
 
-
             // args for gui function
             List args = new Vector();
             args.add("");
@@ -61,13 +75,23 @@ public class NodeHandler extends IntegerHandler {
             // should actually be added
             //args.add(sessionName);
             //args.add(context.pageContext.getResponse());
-            
 
             NodeIterator nodes = context.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
             SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
+
+            // If this is the 'builder' field of the reldef builder, we need to filter
+            // as we are only interested in insrel-derived builders.
+            // Since there is no facility to filter this, we need to 'hard code' this.
+            // Not so nice, but since it involves a core builder, this may work for now.
+            // possibly in the future we need to define a new typehandler.
+            boolean reldefFilter=field.getName().equals("builder") && field.getNodeManager().getName().equals("reldef");
+
             while(nodes.hasNext()) {
                 Node n = nodes.nextNode();
-                sortedGUIs.put(n.getFunctionValue("gui", args).toString(), "" + n.getNumber());
+                // if this is reldef, filter the 'builder' node
+                if (!reldefFilter || isRelationBuilder(n)) {
+                  sortedGUIs.put(n.getFunctionValue("gui", args).toString(), "" + n.getNumber());
+                }
             }
             Iterator i = sortedGUIs.entrySet().iterator();
             while(i.hasNext()) {
