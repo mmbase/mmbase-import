@@ -40,11 +40,7 @@ public class MMBaseChangeDummy implements MMBaseChangeInterface {
 			return(false);
 		} 
 	
-		try {
-			int iid=Integer.parseInt(id);
-			bul.nodeLocalChanged(iid,tableName,ctype);
-		} catch(Exception e) {
-		}
+		bul.nodeLocalChanged(id,tb,ctype);
 		return(true);
 	}
 

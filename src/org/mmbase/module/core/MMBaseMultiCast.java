@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  */
-public class MMBaseMultiCast implements Runnable {
+public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 
 	Thread kicker = null;
 	MMBase parent=null;
