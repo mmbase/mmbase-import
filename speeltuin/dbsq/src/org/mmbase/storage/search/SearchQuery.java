@@ -10,6 +10,18 @@ import java.util.List;
  */
 public interface SearchQuery {
     /**
+     * Default maxNumber value, corresponds to no maximum.
+     * @see SearchQuery#getMaxNumber 
+     */
+    int DEFAULT_MAX_NUMBER = -1;
+    
+    /**
+     * Default offset value, corresponds to no offset.
+     * @see SearchQuery#getOffset 
+     */
+    int DEFAULT_OFFSET = 0;
+
+    /**
      * Tests if the search request is to return distinct results. In that case duplicate nodes will be removed from the result.
      * <p>
      * This corresponds to the use of "DISTINCT" in SQL SELECT-syntax

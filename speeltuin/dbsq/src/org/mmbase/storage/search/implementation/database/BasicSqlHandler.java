@@ -14,7 +14,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicSqlHandler implements SqlHandler {
     
@@ -63,14 +63,15 @@ public class BasicSqlHandler implements SqlHandler {
     }
     
     /**
-     * Tests if a field constraint is explicitly case insensitive, i.e. the
-     * constraint is set to case insensitive and the field has string type.
+     * Tests if a case sensitivity for a field constraint is false 
+     * and relevant, i.e. the constraint is set to case insensitive and 
+     * the field has string type.
      *
      * @param constraint The constraint.
      * @return true if the constraint is set to case insensitive 
      *         and the field has string type, false otherwise.
      */
-    private static boolean isExplicitCaseInsensitive(
+    private static boolean isRelevantCaseInsensitive(
     FieldConstraint constraint) {
         return !constraint.isCaseSensitive()
         && (constraint.getField().getType() == FieldDefs.TYPE_STRING 
@@ -90,6 +91,8 @@ public class BasicSqlHandler implements SqlHandler {
     }
     
     // javadoc is inherited
+    // TODO: what exception to throw when an unsupported feature is
+    // encountered (currently throws UnsupportedOperationException).
     public String toSql(SearchQuery query, SqlHandler firstInChain)
     throws SearchQueryException {
         // XXX TODO: test table and field aliases for uniqueness.
@@ -102,6 +105,20 @@ public class BasicSqlHandler implements SqlHandler {
         if (query.getFields().isEmpty()) {
             throw new IllegalStateException(
             "Searchquery has no field (at least 1 field is required).");
+        }
+        
+        // Test maxNumber set to default.
+        if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
+            throw new UnsupportedOperationException(
+            "Value of maxNumber other than " 
+            + SearchQuery.DEFAULT_MAX_NUMBER + " not supported.");
+        }
+        
+        // Test offset set to default (= 0).
+        if (query.getOffset() != SearchQuery.DEFAULT_OFFSET) {
+            throw new UnsupportedOperationException(
+            "Value of offset other than " 
+            + SearchQuery.DEFAULT_OFFSET + " not supported.");
         }
         
         // SELECT
@@ -389,7 +406,7 @@ public class BasicSqlHandler implements SqlHandler {
                     "Field value-in constraint specifies no values "
                     + "(at least 1 value is required).");
                 }
-                if (isExplicitCaseInsensitive(fieldConstraint)) {
+                if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
                     sb.append("LOWER(").
                     append(getAllowedValue(tableAlias)).
@@ -397,7 +414,7 @@ public class BasicSqlHandler implements SqlHandler {
                     append(getAllowedValue(fieldName)).
                     append(")");
                 } else {
-                    // case sensitive or case ignored
+                    // case sensitive or case irrelevant
                     sb.append(getAllowedValue(tableAlias)).
                     append(".").
                     append(getAllowedValue(fieldName));
@@ -442,7 +459,7 @@ public class BasicSqlHandler implements SqlHandler {
                 FieldCompareConstraint fieldCompareConstraint
                 = (FieldCompareConstraint) fieldConstraint;
                 sb.append(overallInverse? "NOT ": "");
-                if (isExplicitCaseInsensitive(fieldConstraint)) {
+                if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
                     sb.append("LOWER(").
                     append(getAllowedValue(tableAlias)).
@@ -450,7 +467,7 @@ public class BasicSqlHandler implements SqlHandler {
                     append(getAllowedValue(fieldName)).
                     append(")");
                 } else {
-                    // case sensitive or case ignored
+                    // case sensitive or case irrelevant
                     sb.append(getAllowedValue(tableAlias)).
                     append(".").
                     append(getAllowedValue(fieldName));
@@ -505,7 +522,7 @@ public class BasicSqlHandler implements SqlHandler {
                     StepField field2 = compareFieldsConstraint.getField2();
                     String fieldName2 = field2.getFieldName();
                     String tableAlias2 = field2.getStep().getAlias();
-                if (isExplicitCaseInsensitive(fieldConstraint)) {
+                if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
                     sb.append("LOWER(").
                     append(getAllowedValue(tableAlias2)).
@@ -513,7 +530,7 @@ public class BasicSqlHandler implements SqlHandler {
                     append(getAllowedValue(fieldName2)).
                     append(")");
                 } else {
-                    // case sensitive or case ignored
+                    // case sensitive or case irrelevant
                     sb.append(getAllowedValue(tableAlias2)).
                     append(".").
                     append(getAllowedValue(fieldName2));
@@ -528,8 +545,12 @@ public class BasicSqlHandler implements SqlHandler {
                 "Unknown constraint type: "
                 + constraint.getClass().getName());
             }
-        } else {
+        } else if (constraint instanceof CompositeConstraint) {
             throw new IllegalArgumentException(
+            "Illegal constraint type for this method: "
+            + constraint.getClass().getName());
+        } else {
+            throw new UnsupportedOperationException(
             "Unknown constraint type: "
             + constraint.getClass().getName());
         }
@@ -541,7 +562,7 @@ public class BasicSqlHandler implements SqlHandler {
         int result;
         switch (feature) {
             case SearchQueryHandler.FEATURE_MAX_NUMBER:
-                if (query.getMaxNumber() == -1){
+                if (query.getMaxNumber() == SearchQuery.DEFAULT_MAX_NUMBER){
                     result = SearchQueryHandler.SUPPORT_OPTIMAL;
                 } else {
                     result = SearchQueryHandler.SUPPORT_NONE;
@@ -549,7 +570,7 @@ public class BasicSqlHandler implements SqlHandler {
                 break;
                 
             case SearchQueryHandler.FEATURE_OFFSET:
-                if (query.getOffset() == 0) {
+                if (query.getOffset() == SearchQuery.DEFAULT_OFFSET) {
                     result = SearchQueryHandler.SUPPORT_OPTIMAL;
                 } else {
                     result = SearchQueryHandler.SUPPORT_NONE;

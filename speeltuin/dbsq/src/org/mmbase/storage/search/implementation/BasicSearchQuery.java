@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicSearchQuery implements SearchQuery {
     
@@ -17,10 +17,10 @@ public class BasicSearchQuery implements SearchQuery {
     private boolean distinct = false;
     
     /** MaxNumber property. */
-    private int maxNumber = -1;
+    private int maxNumber = SearchQuery.DEFAULT_MAX_NUMBER;
     
     /** Offset property. */
-    private int offset = 0;
+    private int offset = SearchQuery.DEFAULT_OFFSET;
     
     /** Step list. */
     private List steps = new ArrayList();
