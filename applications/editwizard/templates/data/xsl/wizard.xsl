@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.131 2004-06-03 08:47:38 michiel Exp $
+    @version $Id: wizard.xsl,v 1.132 2004-07-20 11:31:18 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -516,35 +516,6 @@
     </span>
   </xsl:template>
 
-  <!-- used to convert &amp; occurrences in textareas, so it is possible to edit xml  -->
-  <xsl:template name="replace-string">
-      <xsl:param name="text"/>
-      <xsl:param name="replace"/>
-      <xsl:param name="with"/>
-
-      <xsl:choose>
-          <xsl:when test="string-length($replace) = 0">
-              <xsl:value-of disable-output-escaping="yes" select="$text"/>
-          </xsl:when>
-          <xsl:when test="contains($text, $replace)">
-
-              <xsl:variable name="before" select="substring-before($text, $replace)"/>
-              <xsl:variable name="after" select="substring-after($text, $replace)"/>
-
-              <xsl:value-of disable-output-escaping="yes" select="$before"/>
-              <xsl:value-of disable-output-escaping="yes" select="$with"/>
-              <xsl:call-template name="replace-string">
-                  <xsl:with-param name="text" select="$after"/>
-                  <xsl:with-param name="replace" select="$replace"/>
-                  <xsl:with-param name="with" select="$with"/>
-              </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-              <xsl:value-of disable-output-escaping="yes" select="$text"/>
-          </xsl:otherwise>
-      </xsl:choose>
-  </xsl:template>
-
   <!--
     fieldintern is called to draw the values
   -->
@@ -667,20 +638,7 @@
             </xsl:if>
             <xsl:apply-templates select="@*"/>
 
-            <xsl:choose>
-              <xsl:when test="@ftype=&apos;text&apos;">
-                <xsl:call-template name="replace-string">
-                  <xsl:with-param name="text">
-                    <xsl:value-of disable-output-escaping="yes" select="value"/>
-                  </xsl:with-param>
-                  <xsl:with-param name="replace" select="'&amp;'"/>
-                  <xsl:with-param name="with" select="'&amp;amp;'"/>
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of disable-output-escaping="yes" select="value"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="value"/>
           </textarea>
         </span>
       </xsl:when>
@@ -739,7 +697,7 @@
       <xsl:when test="@maywrite!=&apos;false&apos;">
         <div>
           <input type="hidden" name="{@fieldname}" value="{@ftype}" id="{@fieldname}">
-						<xsl:attribute name="new"><xsl:value-of select="value = ''"/></xsl:attribute>
+            <xsl:attribute name="new"><xsl:value-of select="value = ''"/></xsl:attribute>
             <xsl:apply-templates select="@*"/>
           </input>
 
@@ -764,119 +722,119 @@
     </xsl:choose>
   </xsl:template>
 
-	<xsl:template name="gen-option">
-		<xsl:param name="value"/>
-		<xsl:param name="selected"/>
-		<xsl:param name="text"/>
-		<xsl:choose>
-			<xsl:when test="$value = $selected">
-				<option value="{$value}" selected="selected"><xsl:value-of select="$text"/></option>
-			</xsl:when>
-			<xsl:otherwise>
-				<option value="{$value}"><xsl:value-of select="$text"/></option>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-		
-	<xsl:template name="loop-options">
-		<xsl:param name="value">0</xsl:param>
-		<xsl:param name="selected"/>
-		<xsl:param name="end">0</xsl:param>
+  <xsl:template name="gen-option">
+    <xsl:param name="value"/>
+    <xsl:param name="selected"/>
+    <xsl:param name="text"/>
+    <xsl:choose>
+      <xsl:when test="$value = $selected">
+        <option value="{$value}" selected="selected"><xsl:value-of select="$text"/></option>
+      </xsl:when>
+      <xsl:otherwise>
+        <option value="{$value}"><xsl:value-of select="$text"/></option>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value" select="$value" />
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$value" />
-		</xsl:call-template>
+  <xsl:template name="loop-options">
+    <xsl:param name="value">0</xsl:param>
+    <xsl:param name="selected"/>
+    <xsl:param name="end">0</xsl:param>
 
-		<xsl:if test="$value &lt; $end">
-			<xsl:call-template name="loop-options">
-				<xsl:with-param name="value" select="$value + 1" />
-				<xsl:with-param name="selected" select="$selected" />
-				<xsl:with-param name="end" select="$end" />
-			</xsl:call-template>
-		</xsl:if>
-	</xsl:template>
-	
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value" select="$value" />
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$value" />
+    </xsl:call-template>
+
+    <xsl:if test="$value &lt; $end">
+      <xsl:call-template name="loop-options">
+        <xsl:with-param name="value" select="$value + 1" />
+        <xsl:with-param name="selected" select="$selected" />
+        <xsl:with-param name="end" select="$end" />
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template name="optionlist_months">
-		<xsl:param name="selected">1</xsl:param>
+    <xsl:param name="selected">1</xsl:param>
 
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">1</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_january" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">2</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_february" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">3</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_march" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">4</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_april" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">5</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_may" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">6</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_june" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">7</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_july" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">8</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_august" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">9</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_september" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">10</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_october" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">11</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_november" />
-		</xsl:call-template>
-		<xsl:call-template name="gen-option">
-			<xsl:with-param name="value">12</xsl:with-param>
-			<xsl:with-param name="selected" select="$selected" />
-			<xsl:with-param name="text" select="$date_december" />
-		</xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">1</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_january" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">2</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_february" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">3</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_march" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">4</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_april" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">5</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_may" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">6</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_june" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">7</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_july" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">8</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_august" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">9</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_september" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">10</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_october" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">11</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_november" />
+    </xsl:call-template>
+    <xsl:call-template name="gen-option">
+      <xsl:with-param name="value">12</xsl:with-param>
+      <xsl:with-param name="selected" select="$selected" />
+      <xsl:with-param name="text" select="$date_december" />
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template name="ftype-datetime-date">
     <select name="internal_{@fieldname}_day" super="{@fieldname}">
-			<xsl:call-template name="loop-options">
-				<xsl:with-param name="value">1</xsl:with-param>
-				<xsl:with-param name="selected" select="date:getDay(string(value), string($timezone))" />
-				<xsl:with-param name="end" select="31" />
-			</xsl:call-template>
+      <xsl:call-template name="loop-options">
+        <xsl:with-param name="value">1</xsl:with-param>
+        <xsl:with-param name="selected" select="date:getDay(string(value), string($timezone))" />
+        <xsl:with-param name="end" select="31" />
+      </xsl:call-template>
     </select>
     <xsl:value-of select="$time_daymonth"/>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     <select name="internal_{@fieldname}_month" super="{@fieldname}">
       <xsl:call-template name="optionlist_months">
-				<xsl:with-param name="selected" select="date:getMonth(string(value), string($timezone))" />
-			</xsl:call-template>
+        <xsl:with-param name="selected" select="date:getMonth(string(value), string($timezone))" />
+      </xsl:call-template>
     </select>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     <input class="date" name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="{date:getYear(string(value), string($timezone))}" size="5" maxlength="4"/>
@@ -884,28 +842,28 @@
 
   <xsl:template name="ftype-datetime-time">
     <select name="internal_{@fieldname}_hours" super="{@fieldname}">
-			<xsl:call-template name="loop-options">
-				<xsl:with-param name="value">0</xsl:with-param>
-				<xsl:with-param name="selected" select="date:getHours(string(value), string($timezone))" />
-				<xsl:with-param name="end" select="23" />
-			</xsl:call-template>
+      <xsl:call-template name="loop-options">
+        <xsl:with-param name="value">0</xsl:with-param>
+        <xsl:with-param name="selected" select="date:getHours(string(value), string($timezone))" />
+        <xsl:with-param name="end" select="23" />
+      </xsl:call-template>
     </select>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;:&amp;nbsp;</xsl:text>
     <select name="internal_{@fieldname}_minutes" super="{@fieldname}">
-			<xsl:call-template name="loop-options">
-				<xsl:with-param name="value">0</xsl:with-param>
-				<xsl:with-param name="selected" select="date:getMinutes(string(value), string($timezone))" />
-				<xsl:with-param name="end" select="59" />
-			</xsl:call-template>
+      <xsl:call-template name="loop-options">
+        <xsl:with-param name="value">0</xsl:with-param>
+        <xsl:with-param name="selected" select="date:getMinutes(string(value), string($timezone))" />
+        <xsl:with-param name="end" select="59" />
+      </xsl:call-template>
     </select>
     <xsl:if test="@ftype=&apos;duration&apos;">
       <xsl:text disable-output-escaping="yes">&amp;nbsp;:&amp;nbsp;</xsl:text>
       <select name="internal_{@fieldname}_seconds" super="{@fieldname}">
-				<xsl:call-template name="loop-options">
-					<xsl:with-param name="value">0</xsl:with-param>
-					<xsl:with-param name="selected" select="date:getSeconds(string(value), string($timezone))" />
-					<xsl:with-param name="end" select="59" />
-				</xsl:call-template>
+        <xsl:call-template name="loop-options">
+          <xsl:with-param name="value">0</xsl:with-param>
+          <xsl:with-param name="selected" select="date:getSeconds(string(value), string($timezone))" />
+          <xsl:with-param name="end" select="59" />
+        </xsl:call-template>
       </select>
     </xsl:if>
   </xsl:template>
@@ -1021,7 +979,7 @@
     truncate size
   -->
   <xsl:template match="value" mode="line">
-  	<xsl:param name="val" select="."/>
+    <xsl:param name="val" select="."/>
     <span>
       <xsl:call-template name="writeCurrentField">
         <xsl:with-param name="val" select="$val"/>
@@ -1403,7 +1361,7 @@
       <xsl:if test="@displaytype=&apos;video&apos;">
         <span	class="imgbutton"	title="{$tooltip_video}">
           <a href="{$ew_context}/rmstreams.db?{field/@number}">
-            <xsl:call-template name="prompt_video"/> 
+            <xsl:call-template name="prompt_video"/>
          </a>
         </span>
       </xsl:if>
