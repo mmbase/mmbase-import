@@ -4,7 +4,7 @@
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.12 2002-11-08 19:58:44 michiel Exp $
+#  $Id: cvsmail,v 1.13 2002-11-08 20:13:18 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -28,15 +28,19 @@ if ($child = fork()) {
     # mesages are on  STDIN:
     my @message = <stdin>;
     
-    # determin user:    
-    my $cvsuser = $user;
-    {
-	my ($fil, $oldversion, $newversion) = split(",", $files[0]);
-	my $logline =  `$cvs log -r $fil | grep author:`;
-	if ($logline =~ /author: (.*?);/) {
-	    $cvsuser = $1;
-	}
-    }
+    # determin user:
+    
+    my $cvsuser = `whoami`;
+    chomp $cvsuser;
+    
+    #{
+#	my ($fil, $oldversion, $newversion) = split(",", $files[0]);
+#	my $logline =  `$cvs log -r $fil | grep author:`;
+#	if ($logline =~ /author: (.*?);/) {
+#	    $cvsuser = $1;
+#	}
+#    }
+
 
 	
     # mail subject:
@@ -46,6 +50,7 @@ if ($child = fork()) {
     }
 
     # mail message           
+    my $message = "From: $user <$cvsuser\@mmbase.org>\nSubject: $subject\n".join("", @message);
     my $message = "From: $cvsuser <$user\@mmbase.org>\nSubject: $subject\n".join("", @message);
 
 
@@ -53,7 +58,7 @@ if ($child = fork()) {
     my $logfile = new FileHandle(">>$log_filename");
     
     print $logfile "--------------------------------------------------------\n";
-    print $logfile "$cvsuser  ". `date`. "\n";
+    print $logfile "$user  ". `date`. "\n";
     print $logfile $message;
     print $logfile "\n[$files]\n";
     $logfile->close();
