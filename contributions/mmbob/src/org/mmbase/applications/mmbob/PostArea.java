@@ -280,7 +280,7 @@ public class PostArea {
     public String getNavigationLine(String baseurl, int page, int pagesize, String cssclass) {
         int f = parent.getId();
         int a = getId();
-        if (!cssclass.equals("")) {
+        if (cssclass!=null && !cssclass.equals("")) {
             cssclass = " class=\"" + cssclass + "\"";
         }
 
