@@ -4,7 +4,7 @@
 <html>
   <head>
     <% String url = response.encodeURL("search_node.jsp"); %>
-    <meta http-equiv="refresh" content="0; url=<%=url%>">
+    <meta http-equiv="refresh" content="0; url=<%=url%>" />
     <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css" />
     <title>MMBase generic editors</title>
   </head>
