@@ -32,7 +32,7 @@
           <xsl:call-template name="taglib"  />
         </taglib>
       </xsl:otherwise>
-    </xsl:choose>>
+    </xsl:choose>
   </xsl:template>
   
 
