@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.39 2002-08-01 11:29:00 mark Exp $
+ * @version $Id: MMInformix42Node.java,v 1.40 2002-08-01 12:16:55 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -145,15 +145,17 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             }
         }
 
-        //if all fields are inherited the field list can be empty
-        if (fieldList == null) {
-            fieldList = "";
-        }
-
         /* Here, we'll prepare the SQL-Strings we need for creating
          * the table in the database.
          */
-        String sqlCreateRowType = "create row type " + mmb.baseName + "_" + bul.getTableName() + "_t (" + fieldList + ")";
+        String sqlCreateRowType;
+
+        if (fieldList!=null) {
+            sqlCreateRowType = "create row type " + mmb.baseName + "_" + bul.getTableName() + "_t (" + fieldList + ")";
+        } else {
+            sqlCreateRowType = "create row type " + mmb.baseName + "_" + bul.getTableName() + "_t";
+        }
+
         String sqlCreateTable = "create table " + mmb.baseName + "_" + bul.getTableName() + " of type " + mmb.baseName + "_" + bul.getTableName() + "_t";
 
         // Add the inheritance part of the SQL-statement
