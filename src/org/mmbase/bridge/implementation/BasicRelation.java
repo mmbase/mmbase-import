@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.18 2002-02-20 10:41:38 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.19 2002-02-22 15:42:34 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -199,6 +199,72 @@ public class BasicRelation extends BasicNode implements Relation {
      */
     public int hashCode() {
         return getNumber();
+    }
+    
+    
+    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree) {
+    	// a relation exists from 3 things(for now..)
+	
+	// check if we have to do all this crap, this means, if the relation object already there.. no-need to do it???
+	String pathNode = "/objects/object[@id='"+getNumber()+"']";
+	org.w3c.dom.Element relationObject = getXMLElement(tree, pathNode);
+	if(relationObject != null) {
+    	    // TODO : WHEN A RELATION ON A RELATION, this can cause errors !!!
+	    // so check in dest // source if the relation tag is also inserted..
+	    return relationObject;
+	}
+
+	relationObject = super.toXML(tree);
+    	org.w3c.dom.Element sourceObject = getSource().toXML(tree);
+	org.w3c.dom.Element destinationObject = getDestination().toXML(tree);	
+		
+	// <relation role="%role%" object="/objects/object[%relation%]" related="/objects/object[%destinationnumber%]"/>
+	
+	// add the relation header to the source and the destination node, if not already there...
+    	Node reldef = cloud.getNode(getStringValue("rnumber"));
+	    		
+	// create the node's to be inserted..
+    	org.w3c.dom.Element sourceRelation = tree.createElement("relation");
+    	org.w3c.dom.Element destinationRelation = tree.createElement("relation");	
+
+    	// sourceRole
+	String sourceRole = reldef.getStringValue("sname");
+    	org.w3c.dom.Attr attr = tree.createAttribute("role");
+    	attr.setValue(sourceRole);
+	sourceRelation.setAttributeNode(attr);
+	
+	// destRole
+	String destinationRole = reldef.getStringValue("dname");
+    	attr = tree.createAttribute("role");
+    	attr.setValue(destinationRole);
+	destinationRelation.setAttributeNode(attr);
+	
+    	// related	
+	String destinationPath = "" + getDestination().getNumber();
+    	attr = tree.createAttribute("related");
+    	attr.setValue(destinationPath);	
+	sourceRelation.setAttributeNode(attr);
+	
+	// related
+	String sourcePath = "" + getSource().getNumber();
+    	attr = tree.createAttribute("related");
+    	attr.setValue(sourcePath);
+	destinationRelation.setAttributeNode(attr);
+	
+    	// me, me, me
+	String objectPath = "" + getNumber();
+    	attr = tree.createAttribute("object");
+    	attr.setValue(objectPath);	
+	sourceRelation.setAttributeNode(attr);	
+	
+    	attr = tree.createAttribute("object");
+    	attr.setValue(objectPath);	
+        destinationRelation.setAttributeNode(attr);
+	
+    	sourceObject.appendChild(sourceRelation);
+	destinationObject.appendChild(destinationRelation);
+	
+	return relationObject;
     }
 
 }
