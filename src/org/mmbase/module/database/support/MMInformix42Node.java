@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMInformix42Node.java,v 1.5 2000-03-30 13:11:42 wwwtech Exp $
+$Id: MMInformix42Node.java,v 1.6 2000-03-31 15:15:07 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/30 13:11:42  wwwtech
+Rico: added license
+
 Revision 1.4  2000/03/29 10:44:50  wwwtech
 Rob: Licenses changed
 
@@ -36,7 +39,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.5 $ $Date: 2000-03-30 13:11:42 $
+* @$Revision: 1.6 $ $Date: 2000-03-31 15:15:07 $
 */
 public class MMInformix42Node implements MMJdbc2NodeInterface {
 
@@ -394,7 +397,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		int number=getDBKey();
 		if (number==-1) return(-1);
 		try {
-			/* $Id: MMInformix42Node.java,v 1.5 2000-03-30 13:11:42 wwwtech Exp $
+			/* $Id: MMInformix42Node.java,v 1.6 2000-03-31 15:15:07 wwwtech Exp $
 			// Original code, not deleted for savety reasons (will be deleted soon),davzev
 			String tmp="";
 			for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
@@ -421,11 +424,11 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					// debug("Insert: DBState = "+DBState+", skipping key: "+key);
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key);
+					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
 				}
 			}
 
-			/* $Id: MMInformix42Node.java,v 1.5 2000-03-30 13:11:42 wwwtech Exp $
+			/* $Id: MMInformix42Node.java,v 1.6 2000-03-31 15:15:07 wwwtech Exp $
 			// Original code, not deleted for savety reasons (will be deleted soon),davzev
 			MultiConnection con=bul.mmb.getConnection();
 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");
@@ -461,7 +464,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 					// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key);
+					debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
 				}
 			}
 			stmt.executeUpdate();
