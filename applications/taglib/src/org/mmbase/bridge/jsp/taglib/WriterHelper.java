@@ -127,8 +127,15 @@ public class WriterHelper  {
         return jspvar;
     }
 
+    /**
+     * Sets the vartype for this variable (used for jspvar as well as for taglib var).
+     *
+     * Some 'casting' functionality is present here.
+     */
+
     public void setValue(Object v) throws JspTagException {
-        switch (vartype) { // these accept a value == null
+        switch (vartype) { 
+            // these accept a value == null (meaning that there are empty)
         case TYPE_LIST:
             if (v instanceof java.lang.String) {
                 if (! "".equals(value)) {
@@ -159,11 +166,14 @@ public class WriterHelper  {
             }            
             return;
         }
+
+        // other can't be valid and still do something reasonable with 'null'.
         if (v == null) {
             value = null;
             return;
         } 
 
+        // types which cannot accept null;
         switch (vartype) {
         case TYPE_INTEGER:
             if (! (v instanceof Integer)) {
@@ -182,6 +192,7 @@ public class WriterHelper  {
                 value = new Long(v.toString());
                 return;
             }
+            break;
         case TYPE_FLOAT:
             if (! (v instanceof Float)) {
                 value =  new Float(v.toString());
@@ -265,7 +276,8 @@ public class WriterHelper  {
     }
 
     /**
-     *
+     * To be called by subtags. Even if they don't produce output,
+     * they say that the tag had a body.
      */
     public void haveBody() {
         hasBody = true;
