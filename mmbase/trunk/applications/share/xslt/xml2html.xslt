@@ -58,10 +58,22 @@
           <td></td>
           <td>
             <a name="info"/>
-            This document lists the current tags implemented for MMBase.<br/>
-            Attributes in <font color="red">red</font> are required.<br/>
+            <p>
+            This document lists the current tags implemented for MMBase.
+	    </p>
+            <p>Attributes in <font color="red">red</font> are
+            required.
+	    </p>
+	    <p>If an attribute can refer to the context, then the
+	    value of the attribute will be parsed for the occurence of
+	    a dot (.). If it is found then the value of the attribute
+	    will be searched in the context. Before the dot is the id
+	    of the context and after the dot is the identifier of the
+	    value in the context.
+	    </p>	   
+	    <p>
             If a tag definition contains a body section this means that the
-            tag might do something with the content of the body.
+            tag might do something with the content of the body.</p>
           </td>
           <td></td>
         </tr>
@@ -140,7 +152,12 @@
             <font color="green"><xsl:apply-templates select="name"/></font>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:otherwise>
+      </xsl:otherwise>      
+    </xsl:choose>
+    <xsl:choose>
+    <xsl:when test="refercontext='true'">
+      (can refer to context)
+    </xsl:when>
     </xsl:choose>
     <br/>
     <xsl:if test="info">
