@@ -487,7 +487,10 @@ public class ContextTag extends ContextReferrerTag {
         log.debug("Valid");
         //pageContext.setAttribute(id, n);
         if (check && isRegistered(newid)) {
-            String mes = "Object with id " + newid + " was already registered in Context '" + getId() + "'";
+            String mes = "Object with id " + newid + " was already registered in Context '" + getId()  + "'.";
+	    if(getId() == null){
+		mes = "Object with id " + newid + " was already registered in the root context.";
+	    }	       
             log.error(mes);
             throw new JspTagException(mes);
         }
