@@ -24,7 +24,7 @@ import org.mmbase.util.Argument;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.16 2003-06-03 11:00:03 kees Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.17 2003-06-11 13:47:24 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -204,8 +204,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executefunction of abstractservletbuilder");
         if (function.equals("info")) {
-            List empty = new Vector();
-            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            List empty = new ArrayList();
+            Map info = (Map) super.executeFunction(node, function, empty);
             info.put("servletpath", "" + SERVLETPATH_ARGUMENTS + " Returns the path to a the servlet presenting this node. All arguments are optional");
             info.put("servletpathof", "(function) Returns the servletpath associated with a certain function");
             info.put("format", "bla bla");
@@ -232,8 +232,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
             String session = a.getString("session");
 
-
-            String argument = a.getString("argument");
+            String argument = (String) a.get("argument");
            
             if (argument == null) {                                
                 // second argument, which field to use, can for example be 'number' (the default)
@@ -241,6 +240,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 if (fieldName == null) {
                     argument = node.getStringValue("number");
                 } else {
+                    if (log.isDebugEnabled()) log.debug("Getting 'field' '" + fieldName + "'");
                     argument = node.getStringValue(fieldName);
                 }
             }
