@@ -57,7 +57,15 @@
          <td><input type="text" size="30" name="session" value="<mm:write referid="config.session" />" /></td>
      </tr>
      <tr><td><%= m.getString("config.language") %></td>  
-         <td><input type="text" size="30" name="lang" value="<mm:write referid="config.lang" />" /></td>
+         <td><input type="text" size="30" name="lang" value="<mm:write referid="config.lang" />" />
+              <select name="languages" onChange="document.forms['config'].elements['lang'].value = document.forms['config'].elements['languages'].value;">
+           <mm:import id="langs" vartype="list">en,nl,it,es,fr,eo,fy,de</mm:import>
+           <mm:aliaslist referid="langs">
+             <option value="<mm:write />" <mm:compare referid2="config.lang">selected="selected"</mm:compare>><mm:locale language="$_" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></option>
+           </mm:aliaslist>
+         </select>
+         </td>
+
      </tr>
      <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
    </table>
