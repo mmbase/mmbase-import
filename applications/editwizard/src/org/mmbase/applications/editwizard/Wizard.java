@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.32 2002-06-24 12:33:19 pierre Exp $
+ * @version $Id: Wizard.java,v 1.33 2002-06-26 12:08:22 pierre Exp $
  *
  */
 public class Wizard {
@@ -1219,18 +1219,32 @@ public class Wizard {
             String did = cmd.getDid();
             Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
             if (datanode != null) {
-                // all child objects are added to a repository.
-                // No idea why. Dutch comments say:
-                // als een relation wordt verwijderd naar een object, worden automatisch de wijzigingen die evt. in
-                // dat object gemaakt waren, ongedaan gemaakt.
+                // Step one: determine what should eb deleted
+                // if an <action name="delete"> exists, and it has an <object> child,
+                // the object of the relatiosn should be deleted along with the relation
+                // if there is no delete action defined, or object is not a child,
+                // only the relation is deleted
+                String fid  = cmd.getFid();
+                Node itemnode=Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']");
+                Node listnode=itemnode.getParentNode();
+                Node objectdef=Utils.selectSingleNode(listnode, "action[@type='delete']/object");
+
+                Node dataobjectnode = datanode;
+                if (objectdef!=null) {
+                    dataobjectnode = Utils.selectSingleNode(datanode, "object");
+                }
+                // all child objects of the object to be deleted are added to a repository.
+                // these objects are not accessed for editing purposes any more,
+                // but do continue to exist in the tree
+                // This prevents the included objects from being deleted (deletion of
+                // ojects is detected by comparing objects that exist in the original data tree with those
+                // in the result data tree)
+
                 Node newrepos = data.createElement("repos");
-
-                NodeList inside_objects = Utils.selectNodeList(datanode, "*");
+                NodeList inside_objects = Utils.selectNodeList(dataobjectnode, "object|relation");
                 Utils.appendNodeList(inside_objects, newrepos);
-
                 //place repos
                 datanode.getParentNode().appendChild(newrepos);
-
                 //remove relation and inside objects
                 datanode.getParentNode().removeChild(datanode);
             }
