@@ -15,8 +15,6 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.mmbase.util.Arguments;
-import org.mmbase.util.Argument;
 
 /**
  * If this class is used as the class for your builder, then an
@@ -30,7 +28,7 @@ import org.mmbase.util.Argument;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.78 2003-06-05 13:18:46 michiel Exp $
+ * @version $Id: Images.java,v 1.79 2003-06-11 13:51:58 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -110,7 +108,7 @@ public class Images extends AbstractImages {
         // Startup parrallel converters
         ireqprocessors = new ImageRequestProcessor[maxConcurrentRequests];
         log.info("Starting "+maxConcurrentRequests+" Converters");
-        for (int i=0;i < maxConcurrentRequests;i ++) {
+        for (int i=0;i < maxConcurrentRequests; i++) {
             ireqprocessors[i] = new ImageRequestProcessor(bul, imageConverter, imageRequestQueue, imageRequestTable);
         }
         return true;
@@ -124,8 +122,19 @@ public class Images extends AbstractImages {
      * @since MMBase-1.6
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
-        log.debug("executeFunction of images builder");
-        if ("cache".equals(function)) {
+        if (log.isDebugEnabled()) {
+            log.debug("executeFunction " + function + "(" + args + ") of images builder ");
+        }
+        if ("info".equals(function)) {
+            List empty = new ArrayList();
+            Map info = (Map) super.executeFunction(node, function, empty);
+            info.put("cache", "" + CACHE_ARGUMENTS + " The node number of the cached converted image (icaches node)");
+            if (args == null || args.size() == 0) {
+                return info;
+            } else {
+                return info.get(args.get(0));
+            }
+        } else if ("cache".equals(function)) {
             if (args == null || args.size() != 1) 
                 throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
             return new Integer(cacheImage(node, (String) args.get(0)));
@@ -281,6 +290,7 @@ public class Images extends AbstractImages {
     // @author michiel
     protected static final char NOQUOTING = '-';
     protected List parseTemplate(MMObjectNode node, String template) {
+        if (log.isDebugEnabled()) log.debug("parsing " + template);
         List params = new ArrayList();
         params.add("" + node.getNumber());
         if (template != null) {
@@ -288,7 +298,9 @@ public class Images extends AbstractImages {
             char quoteState = NOQUOTING; // can be - (not in quote), ' or ".
             StringBuffer buf = new StringBuffer();
 
-            for (int i = 0; i < template.length(); i++) {
+            int i = 0;
+            while (i < template.length() && template.charAt(i) == '+') i++; // ignoring leading +'es (can sometimes be one)
+            for (; i < template.length(); i++) {
                 char c = template.charAt(i);
                 switch(c) {
                 case '\'': 
@@ -301,8 +313,10 @@ public class Images extends AbstractImages {
                     break;
                 case '(': if (quoteState == NOQUOTING) bracketDepth++; break;
                 case ')': if (quoteState == NOQUOTING) bracketDepth--; break;
-                case '+': 
-                    if (bracketDepth == 0 && quoteState == NOQUOTING) {
+                case '+': // command separator                    
+                    if (bracketDepth == 0  // ignore if between brackets
+                        && quoteState == NOQUOTING // ignore if between quotes
+                        ) {
                         removeSurroundingQuotes(buf);
                         params.add(buf.toString());
                         buf = new StringBuffer();
@@ -482,7 +496,7 @@ public class Images extends AbstractImages {
         // get our hashcode
         String ckey = flattenParameters(params);
         if (log.isDebugEnabled()) {
-            log.debug("getting cached image" + ckey);
+            log.debug("getting cached image " + ckey);
         }
         if(ckey == null) {
             log.debug("getCachedImage: no parameters");
@@ -508,7 +522,7 @@ public class Images extends AbstractImages {
      */
     protected byte[] getOriginalImage(List params) {
         if (log.isServiceEnabled()) {
-            log.service("getting image bytes of " + params);
+            log.service("getting image bytes of " + params + " (" + params.size() + ")");
         }
         if (params==null || params.size() == 0) {
             log.debug("getOriginalImage: no parameters");
