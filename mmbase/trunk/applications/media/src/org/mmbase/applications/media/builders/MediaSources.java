@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.18 2003-07-15 12:26:36 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.19 2003-07-28 08:36:42 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -143,7 +143,7 @@ public class MediaSources extends MMObjectBuilder {
     
     
     /**
-     * resolve the url of the mediasource (e.g. pnm://www.mmbase.org/test/test.ra)
+     * resolve the url of the mediasource. (e.g. pnm://www.mmbase.org/test/test.ra)
      *
      * @param mediafragment the media fragment
      * @param mediasouce the media source
@@ -373,7 +373,6 @@ public class MediaSources extends MMObjectBuilder {
     
     /**
      * Returns all possible URLs for this source. (A source can be on different providers)
-     * @author mm
      */
     
     protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
@@ -392,7 +391,6 @@ public class MediaSources extends MMObjectBuilder {
     }
     /**
      * Returns all URLs for this source, but filtered, with the best ones on top.
-     * @author mm
      */
     protected List getFilteredURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
         List urls = getURLs(source, fragment, info, null, null);
@@ -490,7 +488,7 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * The commit can be used to automaticly fill unfilled fields. For
      * example the format can well be guessed by the URL.
-     * @todo which of commit,insert must be overriden?
+     * (todo: which of commit,insert must be overriden?)
      */
     
     public boolean commit(MMObjectNode node) {
