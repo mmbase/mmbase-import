@@ -9,6 +9,15 @@
 <hr />
 <mm:log jspvar="log">
 <%
+    /**
+     * processuploads.jsp
+     *
+     * @since    MMBase-1.6
+     * @version  $Id: processuploads.jsp,v 1.5 2002-05-28 14:15:15 pierre Exp $
+     * @author   Kars Veling
+     * @author   Pierre van Rooden
+     * @author   Michiel Meeuwissen
+     */
 
 Config.WizardConfig wizardConfig = null;
 if (ewconfig.subObjects.size() > 0) {

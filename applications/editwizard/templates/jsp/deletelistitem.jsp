@@ -5,6 +5,14 @@
 %><%@ page import="org.w3c.dom.Node"
 %><%@ page import="org.mmbase.applications.editwizard.*"
 %><%
+    /**
+     * deletelistitem.jsp
+     *
+     * @since    MMBase-1.6
+     * @version  $Id: deletelistitem.jsp,v 1.5 2002-05-28 14:15:14 pierre Exp $
+     * @author   Pierre van Rooden
+     * @author   Michiel Meeuwissen
+     */
     Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, ewconfig.wizard, null, cloud);
     Node deleteaction = Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']");
     if (deleteaction != null) {

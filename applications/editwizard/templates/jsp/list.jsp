@@ -6,11 +6,13 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.11 2002-05-28 14:02:07 pierre Exp $
+     * @version  $Id: list.jsp,v 1.12 2002-05-28 14:15:14 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
+     * @author   Pierre van Rooden
      */
-    log.trace("list.jsp");
+
+log.trace("list.jsp");
 
 Config.ListConfig listConfig=null; // stores the configuration specific for this list.
 

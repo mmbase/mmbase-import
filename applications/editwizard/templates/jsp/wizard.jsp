@@ -5,9 +5,10 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.7 2002-05-28 11:23:44 pierre Exp $
+     * @version  $Id: wizard.jsp,v 1.8 2002-05-28 14:15:15 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
+     * @author   Pierre van Rooden
      */
 
 Config.WizardConfig wizardConfig = null;

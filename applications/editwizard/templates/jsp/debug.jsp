@@ -5,6 +5,14 @@
 <%@ page import="org.w3c.dom.Document" %>
 <%@ page import="org.w3c.dom.Node" %>
 <%
+    /**
+     * debug.jsp
+     *
+     * @since    MMBase-1.6
+     * @version  $Id: debug.jsp,v 1.4 2002-05-28 14:15:14 pierre Exp $
+     * @author   Kars Veling
+     * @author   Michiel Meeuwissen
+     */
    Document doc = Utils.parseXML("<debugdata/>");
    if (ewconfig.subObjects.size() > 0 && ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
       Config.WizardConfig  wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();

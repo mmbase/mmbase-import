@@ -8,8 +8,9 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.13 2002-05-28 14:02:07 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.14 2002-05-28 14:15:15 pierre Exp $
      * @author   Kars Veling
+     * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
 
