@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.19 2003-04-18 12:21:49 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.20 2003-04-22 13:43:54 kees Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -166,7 +166,7 @@ public class MultiConnection implements Connection {
      * get AutoCommit mode
      */
     public boolean getAutoCommit() throws SQLException {
-        return(con.getAutoCommit());
+        return con.getAutoCommit();
     }
     
     /**
@@ -295,7 +295,7 @@ public class MultiConnection implements Connection {
      */
     public boolean checkSQLError(Exception e) {
         log.error("JDBC CHECK ERROR="+e.toString());
-        return(true);
+        return true;
     }
     
     /**
