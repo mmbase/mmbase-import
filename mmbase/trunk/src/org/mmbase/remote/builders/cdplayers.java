@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: cdplayers.java,v 1.5 2000-11-27 12:35:09 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote.builders;
 
 import java.net.*;
@@ -16,22 +21,17 @@ import java.util.*;
 
 import org.mmbase.remote.*;
 import org.mmbase.service.interfaces.*;
-import org.mmbase.service.implementations.*;
 
 
 /**
- * @version  3 Okt 1999
+ * @version $Revision: 1.5 $ $Date: 2000-11-27 12:35:09 $
  * @author Daniel Ockeloen
  */
 public class cdplayers extends RemoteBuilder {
 
-	private String _classname = getClass().getName();
-	private boolean _debug = true;
-	private void debug( String msg ) { System.out.println( _classname +":"+ msg ); }
-
 	private cdplayerInterface impl;
-	private String classname;
 	StringTagger tagger;
+ 	private boolean debug = true;
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		super.init(con,servicefile);
@@ -50,16 +50,37 @@ public class cdplayers extends RemoteBuilder {
 		}
 	}
 
-	public void nodeRemoteChanged(String nodenr,String buildername,String ctype) {		
-		if( _debug ) debug("nodeRemoteChanged("+nodenr+","+buildername+","+ctype+")");
-		 nodeChanged(nodenr,buildername,ctype);
+	/**
+	 * Called when the service node state was changed on another server, in turn this method calls
+	 * nodeChanged to check out what the new state is.
+	 * @param serviceRef a String with a reference to the service node who's state has been changed.
+	 * @param builderName a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 */
+	public void nodeRemoteChanged(String serviceRef,String builderName,String ctype) {		
+		if( debug ) debug("nodeRemoteChanged("+serviceRef+","+builderName+","+ctype+")");
+		nodeChanged(serviceRef,builderName,ctype);
 	}
 
-	public void nodeLocalChanged(String nodenr,String buildername,String ctype) {		
-		if( _debug ) debug("nodeLocalChanged("+nodenr+","+buildername+","+ctype+")");
-		nodeChanged(nodenr,buildername,ctype);
+	/**
+	 * Called when node was changed on the local side, in turn this routine calls nodeChanged
+	 * to check out what the new state is.
+	 * @param serviceRef a String with a reference to the service node who's state has been changed.
+	 * @param builderName a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 */
+	public void nodeLocalChanged(String serviceRef,String builderName,String ctype) {		
+		// I don't think this method is used though? says davzev
+		if (debug) debug("nodeLocalChanged("+serviceRef+","+builderName+","+ctype+"): Calling nodeChanged");
+		nodeChanged(serviceRef,builderName,ctype);
 	}
 
+	/**
+	 * Check to see what the status of the service node has become and react to it.
+	 * @param serviceRef a String with a reference to the service node who's state has been changed.
+	 * @param builderName a String with the buildername of the node that was changed.
+	 * @param ctype a String with the node change type.
+	 */
 	public void nodeChanged(String nodenr,String buildername,String ctype) {		
 		debug("nodeChanged("+nodenr+","+buildername+","+ctype+")");
 		// get the node
@@ -93,6 +114,7 @@ public class cdplayers extends RemoteBuilder {
 	}
 
 	private void doVersion() {
+
 		setValue("state","busy");
 		commit();
 	
@@ -100,8 +122,9 @@ public class cdplayers extends RemoteBuilder {
 		if (impl!=null) {
 			setValue("info",impl.getVersion());	
 		} else {
-			debug("doVersion(): ERROR: no implementation!");
-			setValue("info","result=err reason=nocode");	
+			String error = "doVersion(): ERROR: no implementation-code for cdplayers installed, look in ./mmbase/service for it!";
+			debug( error );
+			setValue("info",error);	
 		}
 
 		// signal that we are done
@@ -135,12 +158,18 @@ public class cdplayers extends RemoteBuilder {
 
 		if (impl!=null) {
 			String cmds=getStringValue("info");
+			if( debug ) if( debug ) debug ("doRecord(): cmds("+cmds+")");
 			StringTagger tagger=new StringTagger(cmds);
+
 			try {
 				String tmp=tagger.Value("tracknr");
+				if( debug ) debug ("doRecord(): track("+tmp+")");
 				int tracknr=Integer.parseInt(tmp);
+
 				tmp=tagger.Value("id");
+				if( debug ) debug ("doRecord(): id("+tmp+")");
 				int cdid=Integer.parseInt(tmp);
+
 		    	debug("doRecord(): getTrack("+tracknr+" /data/audio/wav/"+cdid+".wav");	
 		    	boolean result=impl.getTrack(tracknr,"/data/audio/wav/"+cdid+".wav");	
 				if (result) {
@@ -172,5 +201,4 @@ public class cdplayers extends RemoteBuilder {
 			debug("getConfig(): ERROR: Can't load class("+classname+")");
 		}
 	}
-
 }
