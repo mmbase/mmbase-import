@@ -48,7 +48,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.28 2003-02-24 20:41:44 kees Exp $
+ * @version $Id: Dove.java,v 1.29 2003-02-25 15:40:18 kees Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -80,7 +80,7 @@ public class Dove extends AbstractDove {
                (!"owner".equals(fname)) && // skip owner/otype/number fields!
                (!"otype".equals(fname)) &&
                (!"number".equals(fname)) &&
-               (!(node instanceof Relation) ||
+               (!(node.isRelation()) ||
                 ((!"snumber".equals(fname)) &&
                  (!"dnumber".equals(fname)) &&
                  (!"rnumber".equals(fname)) &&
