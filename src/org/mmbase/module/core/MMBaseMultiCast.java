@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: MMBaseMultiCast.java,v 1.14 2004-02-06 16:16:40 michiel Exp $
+ * @version $Id: MMBaseMultiCast.java,v 1.15 2004-02-09 13:24:22 pierre Exp $
  */
 public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 
@@ -105,6 +105,7 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"MMBaseMultiCast");
+            kicker.setDaemon(true);
             kicker.start();
             mcs=new MultiCastChangesSender(this,nodesTosend);
             mcr=new MultiCastChangesReceiver(this,nodesTospawn);
