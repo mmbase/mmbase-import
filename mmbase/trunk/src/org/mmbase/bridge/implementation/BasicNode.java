@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public class BasicNode implements Node {    
+public class BasicNode implements Node {
     private static Logger log = Logging.getLoggerInstance(BasicNode.class.getName());
 
     public static final int ACTION_CREATE = 1;   // create a node
@@ -30,7 +30,7 @@ public class BasicNode implements Node {
     public static final int ACTION_DELETE = 3;   // delete node
     public static final int ACTION_LINK = 4;     // add a relation to a node
     public static final int ACTION_COMMIT = 10;   // commit a node after changes
-    
+
     private boolean changed = false;
 
     /**
@@ -230,7 +230,7 @@ public class BasicNode implements Node {
             log.error(message);
             throw new BridgeException(message);
         }
-	changed = true;
+    changed = true;
 
     }
 
@@ -274,7 +274,11 @@ public class BasicNode implements Node {
         if (attribute==null || attribute.equals("number")) return this;
         MMObjectNode noderes=noderef.getNodeValue(attribute);
         if (noderes!=null) {
-            return new BasicNode(noderes,cloud.getNodeManager(noderes.parent.getTableName()));
+            if (noderes.parent instanceof InsRel) {
+                return new BasicRelation(noderes,cloud.getNodeManager(noderes.parent.getTableName()));
+            } else {
+                return new BasicNode(noderes,cloud.getNodeManager(noderes.parent.getTableName()));
+            }
         } else {
             return null;
         }
@@ -324,7 +328,7 @@ public class BasicNode implements Node {
             // invalid nodereference: fix!
             noderef=mmb.getTypeDef().getNode(noderef.getNumber());
         }
-	changed = false;
+    changed = false;
     }
 
     public void cancel() {
@@ -344,7 +348,7 @@ public class BasicNode implements Node {
             }
             temporaryNodeId=-1;
         }
-	changed = false;
+    changed = false;
     }
 
     public void delete() {
@@ -672,7 +676,7 @@ public class BasicNode implements Node {
      * @throws SecurityException    When not the approperate rights (change context)
      */
     public void setContext(String context) {
-    	cloud.setContext(getNumber(), context);
+        cloud.setContext(getNumber(), context);
     }
 
     /**
@@ -683,7 +687,7 @@ public class BasicNode implements Node {
      * @throws SecurityException    When not the approperate rights (read rights)
      */
     public String getContext() {
-    	return cloud.getContext(getNumber());
+        return cloud.getContext(getNumber());
     }
 
     /**
@@ -694,7 +698,7 @@ public class BasicNode implements Node {
      * @throws SecurityException    When not the approperate rights (read rights)
      */
     public StringList getPossibleContexts() {
-    	return new BasicStringList(cloud.getPossibleContexts(getNumber()));
+        return new BasicStringList(cloud.getPossibleContexts(getNumber()));
     }
 
 
@@ -716,24 +720,24 @@ public class BasicNode implements Node {
      *	Reverse the buffers, when changed and not stored...
      */
     protected void finalize() throws BridgeException {
-    	// When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
-	// when not done it results in node-lists with changes which are not performed on the database...
-	// This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
-	// my opinion is that this should happen, as soon as edit-ting starts,..........	
-    	// when still has modifications.....
-    	if(changed) {
-    	    if(!(cloud instanceof Transaction)) {
-	    	// cancel the modifications...
-	    	cancel();
-		// The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the 
-		// proper way. 
-		// Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.		
-		// This since it is not defined when the finalize method is called
-		// To bad only that nobody will ever see this exceptions :(
-		String msg = "after modifications to the node, either the method commit or cancel must be called";
-		log.error(msg);
-    	    	throw new BridgeException(msg);
-	    }	    
-	}
-    }    
+        // When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
+    // when not done it results in node-lists with changes which are not performed on the database...
+    // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
+    // my opinion is that this should happen, as soon as edit-ting starts,..........
+        // when still has modifications.....
+        if(changed) {
+            if(!(cloud instanceof Transaction)) {
+            // cancel the modifications...
+            cancel();
+        // The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the
+        // proper way.
+        // Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.
+        // This since it is not defined when the finalize method is called
+        // To bad only that nobody will ever see this exceptions :(
+        String msg = "after modifications to the node, either the method commit or cancel must be called";
+        log.error(msg);
+                throw new BridgeException(msg);
+        }
+    }
+    }
 }

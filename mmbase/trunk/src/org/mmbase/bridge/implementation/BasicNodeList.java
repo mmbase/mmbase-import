@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.*;
 
 /**
@@ -52,7 +53,12 @@ public class BasicNodeList extends BasicList implements NodeList {
         if (nm==null) {
             nm=cloud.getNodeManager(mmn.parent.getTableName());
         }
-        Node n = new BasicNode(mmn,nm);
+        Node n;
+        if (mmn.parent instanceof InsRel) {
+            n = new BasicRelation(mmn,nm);
+        } else {
+            n = new BasicNode(mmn,nm);
+        }
         set(index, n);
         return n;
     }
@@ -63,7 +69,7 @@ public class BasicNodeList extends BasicList implements NodeList {
     public Node getNode(int index) {
         return (Node)get(index);
     }
-    
+
     /**
      *
      */
@@ -80,21 +86,21 @@ public class BasicNodeList extends BasicList implements NodeList {
            return new BasicNodeList((Collection)nodesVector, cloud);
     }
     */
-    
+
     /**
      *
      */
     public NodeIterator nodeIterator() {
         return new BasicNodeIterator(this);
     };
-    
+
     public class BasicNodeIterator extends BasicIterator implements NodeIterator {
-    
+
         BasicNodeIterator(BasicList list) {
             super(list);
         }
 
-             
+
         public void set(Object o) {
             if (! (o instanceof Node)) {
                 String message;
@@ -113,8 +119,8 @@ public class BasicNodeList extends BasicList implements NodeList {
             }
             list.add(index, o);
         }
-        
-        
+
+
         // for efficiency reasons, we implement the same methods
         // without an 'instanceof' (a simple test program proved that
         // this is quicker)
@@ -124,11 +130,11 @@ public class BasicNodeList extends BasicList implements NodeList {
         public void add(Node n) {
             list.add(index, n);
         }
-            
+
         public Node nextNode() {
             return (Node)next();
         }
-    
+
     }
-    
+
 }
