@@ -9,16 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.flash;
 
-import java.io.*;
+import java.io.CharArrayReader;
 import java.util.*;
 
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-
 import org.mmbase.util.XMLBasicReader;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 
 public class XMLDynamicFlashReader {
 

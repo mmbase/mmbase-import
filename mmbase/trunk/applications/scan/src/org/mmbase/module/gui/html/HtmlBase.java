@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.47 2003-02-21 09:43:23 vpro Exp $
+ * @version $Id: HtmlBase.java,v 1.48 2003-07-07 13:34:22 keesj Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -671,21 +671,21 @@ public class HtmlBase extends ProcessorModule {
         if ((snodes==null) || (snodes.size()==0)) throw new MultiLevelParseException("No NODE specified. Use NODE=\"-1\" to specify no node");
         String distinct=tagger.Value("DISTINCT");
         String searchdirs=tagger.Value("SEARCH");
-        int searchdir = MultiRelations.SEARCH_EITHER;
+        int searchdir = ClusterBuilder.SEARCH_EITHER;
         if (searchdirs!=null) {
             searchdirs = searchdirs.toUpperCase();
             if ("DESTINATION".equals(searchdirs)) {
                 log.debug("DESTINATION");
-                searchdir = MultiRelations.SEARCH_DESTINATION;
+                searchdir = ClusterBuilder.SEARCH_DESTINATION;
             } else if ("SOURCE".equals(searchdirs)) {
                 log.debug("SOURCE");
-                searchdir = MultiRelations.SEARCH_SOURCE;
+                searchdir = ClusterBuilder.SEARCH_SOURCE;
             } else if ("BOTH".equals(searchdirs)) {
                 log.debug("BOTH");
-                searchdir = MultiRelations.SEARCH_BOTH;
+                searchdir = ClusterBuilder.SEARCH_BOTH;
             } else if ("ALL".equals(searchdirs)) {
                 log.debug("ALL");
-                searchdir = MultiRelations.SEARCH_ALL;
+                searchdir =ClusterBuilder.SEARCH_ALL;
             }
         }
         
