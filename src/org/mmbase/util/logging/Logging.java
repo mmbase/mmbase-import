@@ -105,7 +105,7 @@ public class Logging {
                                " : " +
                                e.toString());
             // that doesn't work, so let's try to do it ourselves
-            configfile = "file://" + configurationFile.getAbsolutePath();
+            configfile = "file:///" + configurationFile.getAbsolutePath();
         }                               
          
         //configfile = configfile.replace('/',(System.getProperty("file.separator")).charAt(0));
