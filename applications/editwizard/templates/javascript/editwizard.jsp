@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.39 2004-01-02 15:21:18 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.40 2004-01-05 11:10:47 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -20,9 +20,6 @@ function doOnLoad_ew() {
 
     //set variables
     form = document.forms["form"];
-
-    var firstfield = null;
-    var s="";
 
     //scan form fields
     for (var i=0; i<form.elements.length; i++) {
@@ -362,7 +359,7 @@ function restoreScroll() {
         form = document.forms["form"];
         for (var i=0; i<form.elements.length; i++) {
             var elem = form.elements[i];
-            // find first editible field
+            // find first editable field
             var hidden = elem.getAttribute("type"); //.toLowerCase();
             if (hidden != "hidden") {
                 elem.focus();
