@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,7 +19,6 @@ import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 
-import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.4 2003-08-08 09:22:54 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.5 2003-08-08 13:30:03 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -76,14 +75,13 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     /**
      * Lists do implement ContextProvider
      */
-    protected ContextContainer contextContainer;
-    private   Map              collector;
+    private   ContextCollector collector;
 
 
 
     // ContextProvider implementation
     public ContextContainer getContainer() {
-        return contextContainer;
+        return collector.getContainer();
     }
 
 
@@ -112,8 +110,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
      */
     public int doStartTag() throws JspTagException{
 
-        contextContainer = new ContextContainer(null, getContextProvider().getContainer());
-        collector = new HashMap();
+        collector = new ContextCollector(getContextProvider().getContainer());
 
 
         helper.overrideWrite(false); // default behavior is not to write to page
@@ -141,16 +138,14 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         if (getId() != null) {
             getContextProvider().getContainer().unRegister(getId());
         }
-        helper.doAfterBody();
 
-        collector.putAll(contextContainer);
-        contextContainer.clear();
+        helper.doAfterBody();
+        collector.doAfterBody();
 
         if (iterator.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
-            getContextProvider().getContainer().registerAll(collector);
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());

@@ -20,8 +20,8 @@ import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 
 import org.mmbase.util.StringSplitter;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
+import org.mmbase.bridge.jsp.taglib.util.*;
+
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import org.mmbase.util.logging.Logger;
@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.48 2003-08-08 09:22:54 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.49 2003-08-08 13:30:02 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -80,8 +80,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     /**
      * Lists do implement ContextProvider
      */
-    protected ContextContainer container;
-    private   Map              collector;
+    private   ContextCollector  collector;
 
     /**
      * Determines whether a field in {@link #orderby} changed
@@ -184,8 +183,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     // ContextProvider implementation
     public ContextContainer getContainer() throws JspTagException {
-        if (container == null) return getContextProvider().getContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return container;
+        if (collector == null) return getContextProvider().getContainer(); // to make sure old-style implemntation work (which do not initialize container)
+        return collector.getContainer();
     }
 
 
@@ -195,9 +194,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
         log.debug("doStartTaghelper");
         // make a (temporary) container
-        container = new ContextContainer(null, getContextProvider().getContainer());
-        collector = new HashMap();
-
+        collector = new ContextCollector(getContextProvider().getContainer());
 
         // serve parent timer tag:
         TagSupport t = findParentTag(TimerTag.class, null, false);
@@ -311,10 +308,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             getContextProvider().getContainer().unRegister(getId());
         }
 
-        if (container != null) { // might occur for some legacy extensions
+        if (collector != null) { // might occur for some legacy extensions
             log.debug("copying to collector");
-            collector.putAll(container);
-            container.clear();
+            collector.doAfterBody();
         }
         if (nodeIterator.hasNext()){
             doInitBody();
@@ -333,9 +329,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     }
     public int doEndTag() throws JspTagException {
-
-        log.debug("registering all");
-        getContextProvider().getContainer().registerAll(collector);
 
         if (getId() != null) {
             getContextProvider().getContainer().register(getId(), returnList);

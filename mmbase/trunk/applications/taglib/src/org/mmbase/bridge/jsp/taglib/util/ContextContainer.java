@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.9 2003-08-04 20:19:09 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.10 2003-08-08 13:30:03 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -106,6 +106,13 @@ public class ContextContainer extends HashMap {
 
     public String getId() {
         return id;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    ContextContainer getParent() {        
+        return parent;
     }
 
     /**
@@ -217,7 +224,7 @@ public class ContextContainer extends HashMap {
     }
 
     /**
-     * Like get, but you can explicity indicate if to search 'parent' Contextes as well
+     * Like get, but you can explicity indicate if to search 'parent' Contextes as well.
      */
 
     public Object get(String key, boolean checkParent) throws JspTagException {
@@ -247,6 +254,9 @@ public class ContextContainer extends HashMap {
 
     // utilities, since MMBase-1.7 moved from ContextTag to here.
 
+    /**
+     * @since MMBase-1.7 (here)
+     */
     public Object getObject(String key) throws JspTagException {
         if (! containsKey(key, true)) { // do check parent.
             throw new JspTagException("Object '" + key + "' is not registered. Registered are " + keySet());
@@ -257,6 +267,9 @@ public class ContextContainer extends HashMap {
         return get(key);
     }
 
+    /**
+     * @since MMBase-1.7 (here)
+     */
     public void register(String newid, Object n, boolean check) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + id);
@@ -305,11 +318,17 @@ public class ContextContainer extends HashMap {
         put(newid, n);
     }
 
+    /**
+     * @since MMBase-1.7 (here)
+     */
     public void register(String newid, Object n) throws JspTagException {
         register(newid, n, true);
     }
 
-    public void registerAll(Map map) throws JspTagException {
+    /**
+     * @since MMBase-1.7
+     */
+    void registerAll(Map map) throws JspTagException {
         if (map == null) return;
         Iterator i = map.entrySet().iterator();
         while (i.hasNext()) {
@@ -319,20 +338,40 @@ public class ContextContainer extends HashMap {
         }
         
     }
-
+    /**
+     * @since MMBase-1.7
+     */
+    void unRegisterAll(Map map) throws JspTagException {
+        if (map == null) return;
+        Iterator i = map.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String) i.next();
+            unRegister(key);
+        }
+     
+    }
+    /**
+     * @since MMBase-1.7 (here)
+     */
     public void registerNode(String newid,  org.mmbase.bridge.Node n) throws JspTagException {
         register(newid, n);
     }
-    
+    /**
+     * @since MMBase-1.7 (here)
+     */
     public boolean isRegistered(String key) throws JspTagException {
         return containsKey(key, false); // don't check parent.
     }
-
+    /**
+     * @since MMBase-1.7 (here)
+     */
     public void unRegister(String key) throws JspTagException {
         if (log.isDebugEnabled()) log.debug("removing object '" + key + "' from Context '" + id + "'");
         remove(key);
     }
-
+    /**
+     * @since MMBase-1.7 (here)
+    */
     public void reregister(String id, Object n) throws JspTagException {
         unRegister(id);
         register(id, n);
@@ -534,7 +573,16 @@ public class ContextContainer extends HashMap {
         //    log.warn("Checking presence of unregistered context variable " + key + " in context " + getId());
         //    return false;
         //}
-        return get(key) != null;
+        Object value = get(key);
+
+        if (value == null) {
+            return false;
+        } else {
+            if (value instanceof List) {
+                if (((List) value).size() == 0) return false;
+            }
+            return true;
+        }
     }
 
 
