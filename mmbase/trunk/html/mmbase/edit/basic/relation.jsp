@@ -36,21 +36,6 @@
     <th colspan="3"><%=m.getString("relations.related")%>
     </th>
     <th>
-      <mm:previousbatches max="1">
-        <a href='<mm:url referid="purl">
-        <mm:param name="$externpageid"><mm:index /></mm:param>
-        </mm:url>' >
-        <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
-        </a>
-      </mm:previousbatches>
-      <mm:size id="size" write="false" />
-      <mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset+$size}" />/<mm:write referid="totalsize"  />
-      <mm:nextbatches max="1">
-        <a href='<mm:url referid="purl">
-        <mm:param name="$externpageid"><mm:index /></mm:param>
-        </mm:url>' >
-        <span class="next"></span><span class="alt">[next page -&gt;]</span>
-      </mm:nextbatches>
       <a href='<mm:url page="new_relation.jsp" >
             <mm:param name="node"><mm:field node="this_node" name="number" /></mm:param>
             <mm:param name="node_type"><%= otherManager.getName()%></mm:param>
@@ -59,6 +44,25 @@
             </mm:url>'>
            <span class="create"></span><span class="alt">+</span>
        </a>
+      <mm:previousbatches max="1">
+        <a href='<mm:url referid="purl">
+        <mm:param name="$externpageid"><mm:index /></mm:param>
+        </mm:url>' >
+        <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
+        </a>
+      </mm:previousbatches>
+      <mm:size id="size">
+        <mm:isgreaterthan value="0">
+           <mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset+$size}" />/<mm:write referid="totalsize"  />
+        </mm:isgreaterthan>
+      </mm:size>
+      <mm:nextbatches max="1">
+        <a href='<mm:url referid="purl">
+        <mm:param name="$externpageid"><mm:index /></mm:param>
+        </mm:url>' >
+        <span class="next"></span><span class="alt">[next page -&gt;]</span>
+      </mm:nextbatches>
+
       </th>
 </tr>
 
