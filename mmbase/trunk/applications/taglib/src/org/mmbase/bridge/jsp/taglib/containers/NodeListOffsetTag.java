@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListOffsetTag.java,v 1.1 2003-08-01 11:03:28 michiel Exp $
+ * @version $Id: NodeListOffsetTag.java,v 1.2 2003-08-11 15:26:36 michiel Exp $
  */
 public class NodeListOffsetTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -47,6 +47,7 @@ public class NodeListOffsetTag extends CloudReferrerTag implements NodeListConta
     public int doStartTag() throws JspTagException { 
         NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
+        
         query.setOffset(offset.getInt(this, 0));
         return SKIP_BODY;
     }
