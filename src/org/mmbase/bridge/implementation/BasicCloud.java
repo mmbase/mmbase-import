@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.112 2004-02-24 12:18:14 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.113 2004-05-03 14:55:28 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -157,7 +157,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     // Makes a node or Relation object based on an MMObjectNode
     Node makeNode(MMObjectNode node, String nodeNumber) {
-        NodeManager nm = getNodeManager(node.parent.getTableName());
         int nodenr = node.getNumber();
         if (nodenr == -1) {
             int nodeid = Integer.parseInt(nodeNumber);
