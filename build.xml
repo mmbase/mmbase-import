@@ -25,7 +25,6 @@ The build.dir will have the following sub directory's:
   classes             (compiled MMBase classes)
   download            (default place for the downloaded packages)
   download/extracted  (default place to extract the downloaded packages)
-  junit               (test environment)
   mmbase              (the MMBase binary distribution)
   mmbase-src          (the MMBase source distribution)
 
@@ -275,7 +274,7 @@ version=1.7.0-dev
   </target>
 
   <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation" 
-          depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation,get.jdbc">
+          depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.javamail,expand.javaactivation,get.jdbc">
 
     <mkdir dir="${compile.lib.dir}"/>
     <copy file="${xalan.jar}"     todir="${compile.lib.dir}" />
@@ -286,7 +285,6 @@ version=1.7.0-dev
     <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
     <copy file="${jai_core.jar}"  todir="${compile.lib.dir}" />
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
-    <copy file="${junit.jar}"     todir="${compile.lib.dir}" />
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
     <copy file="${jdbc.jar}"      todir="${compile.lib.dir}" />
@@ -502,16 +500,6 @@ version=1.7.0-dev
     <echo message="Logging capabalities will be very limited."/>
     <echo message="Log4j can be downloaded from http://jakarta.apache.org/log4j/"/>
     <echo message="The Log4j Implementation of MMBase will not compile,"/>
-    <echo message="but MMBase will run without this package."/>
-    <echo message=""/>
-  </target>
-
-  <target name="check.optional.junit" unless="junit.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package JUnit."/>
-    <echo message="You will not be able to run tests."/>
-    <echo message="JUnit can be downloaded from http://www.unit.org/"/>
-    <echo message="The JUnit tests for MMBase will not compile,"/>
     <echo message="but MMBase will run without this package."/>
     <echo message=""/>
   </target>
@@ -929,92 +917,6 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-
-
-  <!-- =================================================================== -->
-  <!-- Build the JUnit test environment                                    -->
-  <!-- =================================================================== -->
-  <target name="junit"
-          description="Build the JUnit test environment"
-          depends="init,lib.release,lib.compile,jar,expand.hsql">
-    <mkdir dir="${build.dir}/junit"/>
-    <mkdir dir="${build.dir}/junit/config"/>
-    <mkdir dir="${build.dir}/junit/lib"/>
-    <copy todir="${build.dir}/junit/config">
-      <fileset dir="${source-config.dir}"/>
-    </copy>
-    <copy todir="${build.dir}/junit/config/builders">
-      <fileset dir="${source-config.dir}/applications/BridgeTest/builders">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    <replace file="${build.dir}/junit/config/applications/BridgeTest.xml">
-      <replacetoken>auto-deploy=&quot;false&quot;</replacetoken>
-      <replacevalue>auto-deploy=&quot;true&quot;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/mmbaseroot.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/junit/config/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
-    </replace>
-    <copy file="${junit.jar}"   todir="${build.dir}/junit/lib"/>
-    <copy file="${servlet.jar}" todir="${build.dir}/junit/lib"/>
-    <copy file="${mmbase.jar}"  todir="${build.dir}/junit/lib"/>
-    <copy file="${hsql.jar}"    todir="${build.dir}/junit/lib"/>
-    <copy file="${xalan.jar}"   todir="${build.dir}/junit/lib"/>
-    <copy file="${xerces.jar}"  todir="${build.dir}/junit/lib"/>
-    <copy file="${jai_codec.jar}" todir="${build.dir}/junit/lib"/>
-    <copy file="${jai_core.jar}"  todir="${build.dir}/junit/lib"/>
-    <copy file="${log4j.jar}"     todir="${build.dir}/junit/lib"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Clean the JUnit test environment                                    -->
-  <!-- =================================================================== -->
-  <target name="clean.junit" description="Clean the JUnit test environment"
-          depends="clean.compile">
-    <delete dir="${build.dir}/junit"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Run the bridgetest classes                                          -->
-  <!-- =================================================================== -->
-  <target name="run.junit" description="Run the bridgetest classes"
-          depends="junit">
-    <java classname="junit.swingui.TestRunner" fork="true">
-      <classpath>
-        <fileset dir="${build.dir}/junit/lib">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-      </classpath>
-      <arg value="org.mmbase.test.bridge.AllTests"/>
-      <sysproperty key="mmbase.config" file="${build.dir}/junit/config"/>
-    </java>
-  </target>
-
-
   <!-- =================================================================== -->
   <!-- Compile the AppTool                                                 -->
   <!-- =================================================================== -->
@@ -1172,14 +1074,6 @@ Build-compiler: ${build.compiler}
                file="${download.dir}/${log4j.fullversion}.tgz"/>
     <available property="log4j.expanded"
                file="${expand.dir}/${log4j.fullversion}"/>
-    <!-- JUnit -->
-    <property name="junit.version" value="junit3.7"/>
-    <property name="junit.url" value="http://download.sourceforge.net/junit/${junit.version}.zip"/>
-    <property name="junit.jar" value="${expand.dir}/${junit.version}/junit.jar"/>
-    <available property="junit.present"
-               file="${download.dir}/${junit.version}.zip"/>
-    <available property="junit.expanded"
-               file="${expand.dir}/${junit.version}"/>
 
     <!-- JSPSmartUpload -->
     <property name="jspsmartupload.file" value="jspSmartUpload" />
@@ -1302,15 +1196,6 @@ Build-compiler: ${build.compiler}
     <delete file="${expand.dir}/${log4j.fullversion}.tar"/>
   </target>
 
-  <target name="get.junit" depends="init.get" unless="junit.present">
-    <get src="${junit.url}"
-         dest="${download.dir}/${junit.version}.zip"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.junit" depends="get.junit" unless="junit.expanded">
-    <unzip src="${download.dir}/${junit.version}.zip" dest="${expand.dir}"/>
-  </target>
 
   <target name="get.hsql" depends="init.get" unless="hsql.present">
     <get src="${hsql.url}"
@@ -1715,10 +1600,10 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target
     name="clean.build"
-    depends="clean.compile,clean.remote,clean.generatedsource,clean.junit,clean.apptool,clean.lib"
+    depends="clean.compile,clean.remote,clean.generatedsource,clean.apptool,clean.lib"
     description="Clean all classes and generated java, safe for every recompilation"
     >
-    <!-- junit,apptool? -->
+    <!-- apptool? -->
   </target>
 
   <!-- this doesn't get clean anywhere else -->
@@ -1732,7 +1617,3 @@ Build-compiler: ${build.compiler}
     description="Clean everything (except for downloading)" />
 
 </project>
-
-
-
-
