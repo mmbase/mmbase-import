@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
+<xsl:stylesheet 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
+  version="1.0"
+>
   <!--
   list.xls
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.23 2002-07-19 18:12:14 michiel Exp $
+  @version $Id: list.xsl,v 1.24 2002-10-29 10:57:37 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
 
-  <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
-  <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
   <xsl:param name="deletable">false</xsl:param>
   <xsl:param name="creatable">true</xsl:param>
 
   <xsl:param name="deleteprompt"><xsl:call-template name="prompt_delete_confirmation" /></xsl:param>
   <xsl:param name="deletedescription"><xsl:value-of select="$tooltip_delete" /></xsl:param>
 
+  <xsl:param name="title"><xsl:value-of select="list/object/@guitype" /></xsl:param>
 
   <!-- ================================================================================
        The following things can be overriden to customize the appearance of list
@@ -38,7 +40,9 @@
   <xsl:template name="title"><!-- The first row of the the body's table -->
     <tr>
       <th colspan="2">
-        <span class="title"><nobr><xsl:value-of select="$title" /></nobr></span>
+        <span class="title"><nobr>
+        <xsl:value-of select="$wizardtitle" />
+        </nobr></span>
       </th>
     </tr>
   </xsl:template>

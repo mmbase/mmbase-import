@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.19 2002-08-21 16:46:04 michiel Exp $
+  @version $Id: base.xsl,v 1.20 2002-10-29 10:57:37 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -51,9 +51,19 @@
   <xsl:param name="cloudkey">cloud_mmbase</xsl:param><!-- name of variable in session in which is the cloud -->
 
   <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
-  
+
   <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
   <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
+  
+  <xsl:variable name="formwizardpage">wizard.jsp<xsl:value-of select="$sessionid" /></xsl:variable>
+  <xsl:template name="formwizardargs">
+    <input type="hidden" name="proceed"    value="true" />
+    <input type="hidden" name="sessionkey" value="{$sessionkey}" />
+    <input type="hidden" name="language"   value="{$language}"   />
+    <input type="hidden" name="debug"      value="{$debug}"      />
+    <input type="hidden" name="popupid"    value="{$popupid}"    />
+  </xsl:template>
+
   <xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
 
   <!--xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$sessionid" />?referrer=<xsl:value-of select="$referrer" />&amp;language=<xsl:value-of select="$language" /></xsl:variable-->
@@ -63,6 +73,13 @@
   
   <xsl:variable name="javascriptdir">../javascript/</xsl:variable>
   <xsl:variable name="mediadir">../media/</xsl:variable>
+
+  <xsl:variable name="wizardtitle">
+    <xsl:call-template name="i18n">
+      <xsl:with-param name="nodes" select="/*/title" />
+      </xsl:call-template>
+    </xsl:variable>
+
 
   <!-- ================================================================================
        General appearance
@@ -93,6 +110,26 @@
     </xsl:if>  
   </xsl:template>
 
-  
+
+
+  <!-- 
+       xml:lang attribute of prompt, description and title tags
+       -->
+  <xsl:template name="i18n">
+    <xsl:param name="nodes" />
+    <xsl:choose>
+      <xsl:when test="$nodes[lang($language)]">       
+        <xsl:value-of select="$nodes[lang($language)]" />
+      </xsl:when>
+      <!-- default to english -->
+      <xsl:when test="$nodes[lang('en')]">
+        <xsl:value-of select="$nodes[lang('en')]" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$nodes[1]" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
 </xsl:stylesheet>
   
