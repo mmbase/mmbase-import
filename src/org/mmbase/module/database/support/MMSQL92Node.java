@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.43 2000-11-20 14:18:33 install Exp $
+$Id: MMSQL92Node.java,v 1.44 2000-11-25 12:43:07 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.43  2000/11/20 14:18:33  install
+Rob removed ugly code line
+
 Revision 1.42  2000/11/19 00:59:54  daniel
 added a check to make sure we start getDBKey at 1
 
@@ -171,7 +174,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.43 $ $Date: 2000-11-20 14:18:33 $
+* @$Revision: 1.44 $ $Date: 2000-11-25 12:43:07 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -185,6 +188,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	Hashtable typeMapping = new Hashtable();
 	Hashtable disallowed2allowed;
 	Hashtable allowed2disallowed;
+	private String numberString;
+	private String otypeString;
+	private String ownerString;
 
 	MMBase mmb;
 
@@ -198,6 +204,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typeMapping=parser.getTypeMapping();
 		disallowed2allowed=parser.getDisallowedFields();
 		allowed2disallowed=getReverseHash(disallowed2allowed);
+		// map the default types
+		mapDefaultFields(disallowed2allowed);
 		// Check if the numbertable exists, if not one will be created. 
 		checkNumberTable();
 	}
@@ -295,7 +303,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		String result="";
 		boolean like=false;
 		char operatorChar = part.charAt(0);
-		//System.out.println("char="+operatorChar);
+		// added mapping daniel, 24 Nov 2000
+		fieldname=getAllowedField(fieldname);
 		String value=part.substring(1);
 		int pos=value.indexOf("*");
 		if (pos!=-1) {
@@ -354,8 +363,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			String result=null;
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			// System.out.println("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
-			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
+			// System.out.println("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
+			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
 			if (rs.next()) {
 				result=getDBText(rs,1);
 			}
@@ -378,7 +387,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			byte[] result=null;
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where number="+number);
+			ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
 			if (rs.next()) {
 				result=getDBByte(rs,1);
 			}
@@ -669,7 +678,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 
 		if (values.length()>0) {
-			values="update "+mmb.baseName+"_"+bul.tableName+" set"+values+" WHERE number="+node.getValue("number");
+			values="update "+mmb.baseName+"_"+bul.tableName+" set"+values+" WHERE "+getNumberString()+"="+node.getValue("number");
 			try {
 				MultiConnection con=mmb.getConnection();
 				PreparedStatement stmt=con.prepareStatement(values);
@@ -726,18 +735,18 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
 		int number=node.getIntValue("number");
 		if(debug) {
-			System.out.println("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
+			System.out.println("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
 			System.out.println("SAVECOPY "+node.toString());
 		}
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {
-			System.out.println("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
+			System.out.println("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
 		} else {
 		if (number!=-1) {
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
-				stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
+				stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
@@ -747,7 +756,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				try {
 					MultiConnection con=mmb.getConnection();
 					Statement stmt=con.createStatement();
-					stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where number="+number);
+					stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where "+getNumberString()+"="+number);
 					stmt.close();
 					con.close();
 				} catch (SQLException e) {
@@ -758,7 +767,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
-				stmt.executeUpdate("delete from "+mmb.baseName+"_object where number="+number);
+				stmt.executeUpdate("delete from "+mmb.baseName+"_object where "+getNumberString()+"="+number);
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
@@ -790,12 +799,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			int number = getDBKeyOld()-1;
 
 	 	 	if (debug) System.out.println("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
-			String createStatement = getMatchCREATE("numberTable")+"( number integer not null);";
+			String createStatement = getMatchCREATE("numberTable")+"( "+getNumberString()+" integer not null);";
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
 				stmt.executeUpdate(createStatement);
-				stmt.executeUpdate("insert into "+mmb.baseName+"_numberTable (number) values("+number+");");
+				stmt.executeUpdate("insert into "+mmb.baseName+"_numberTable ("+getNumberString()+") values("+number+");");
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
@@ -817,8 +826,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			Statement stmt=con.createStatement();
 			// not part of sql92, please find new trick (daniel)
 			//stmt.executeUpdate("lock tables "+mmb.baseName+"_numberTable WRITE;");
-			stmt.executeUpdate("update "+mmb.baseName+"_numberTable set number = number+1");
- 			ResultSet rs=stmt.executeQuery("select number from "+mmb.baseName+"_numberTable;");
+			stmt.executeUpdate("update "+mmb.baseName+"_numberTable set "+getNumberString()+" = "+getNumberString()+"+1");
+ 			ResultSet rs=stmt.executeQuery("select "+getNumberString()+" from "+mmb.baseName+"_numberTable;");
   			while(rs.next()) {
             		    number=rs.getInt(1);
 			}
@@ -839,7 +848,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select max(number) from "+mmb.getBaseName()+"_object");
+			ResultSet rs=stmt.executeQuery("select max("+getNumberString()+") from "+mmb.getBaseName()+"_object");
 			if (rs.next()) {
 				number=rs.getInt(1);
 				number++;
@@ -962,9 +971,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 		if (keySupported) {
-			result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+parser.getPrimaryKeyScheme()+" ( number ), "+result+" );";
+			result=getMatchCREATE(bul.getTableName())+"( "+getNumberString()+" integer not null, "+parser.getPrimaryKeyScheme()+" ( "+getNumberString()+" ), "+result+" );";
 		} else {
-			result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
+			result=getMatchCREATE(bul.getTableName())+"( "+getNumberString()+" integer not null, "+result+" );";
 		}
 
 		try {
@@ -988,9 +997,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			if (keySupported) {
-				stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner VARCHAr(12) not null, "+parser.getPrimaryKeyScheme()+" (number));");
+				stmt.executeUpdate("create table "+baseName+"_object ("+getNumberString()+" integer not null, otype integer not null, owner VARCHAr(12) not null, "+parser.getPrimaryKeyScheme()+" ("+getNumberString()+"));");
 			} else {
-				stmt.executeUpdate("create table "+baseName+"_object (number integer not null, otype integer not null, owner VARCHAr(12) not null);");
+				stmt.executeUpdate("create table "+baseName+"_object ("+getNumberString()+" integer not null, otype integer not null, owner VARCHAr(12) not null);");
 			}
 			stmt.close();
 			con.close();
@@ -1114,4 +1123,35 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
 		return(con);
 	}
+	
+	private void mapDefaultFields(Hashtable disallowed2allowed) {
+		if (disallowed2allowed.containsKey("number")) {
+			numberString=(String)disallowed2allowed.get("number");
+		} else {
+			numberString="number";
+		}
+		if (disallowed2allowed.containsKey("otype")) {
+			otypeString=(String)disallowed2allowed.get("otype");
+		} else {
+			otypeString="otype";
+		}
+		if (disallowed2allowed.containsKey("owner")) {
+			ownerString=(String)disallowed2allowed.get("owner");
+		} else {
+			ownerString="owner";
+		}
+	}
+
+	public String getNumberString() {
+		return(numberString);
+	}
+
+	public String getOTypeString() {
+		return(otypeString);
+	}
+
+	public String getOwnerString() {
+		return(ownerString);
+	}
+
 }
