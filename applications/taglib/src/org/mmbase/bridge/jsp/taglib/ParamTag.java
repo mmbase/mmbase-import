@@ -18,7 +18,7 @@ import javax.servlet.jsp.JspException;
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.1 2003-06-17 16:47:42 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.2 2004-02-18 20:33:27 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag {
@@ -45,7 +45,8 @@ public class ParamTag extends ContextReferrerTag {
         if (value == Attribute.NULL) {
             if (bodyContent != null) {
                 // the value is the body context.      
-                paramHandler.addParameter(name.getString(this), bodyContent.getString());
+                helper.setValue(bodyContent.getString()); // to deal with 'vartype' casting
+                paramHandler.addParameter(name.getString(this), helper.getValue());
                 handled = true;
             }
         }
@@ -54,7 +55,8 @@ public class ParamTag extends ContextReferrerTag {
 
     public int doEndTag() throws JspException {
         if (! handled && value != Attribute.NULL) {
-            paramHandler.addParameter(name.getString(this), value.getString(this));
+            helper.setValue(value.getString(this)); // to deal with 'vartype' casting
+            paramHandler.addParameter(name.getString(this), helper.getValue());
         }
         return SKIP_BODY;
     }
