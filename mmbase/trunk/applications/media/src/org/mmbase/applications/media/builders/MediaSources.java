@@ -21,6 +21,7 @@ import org.mmbase.module.core.MMBaseContext;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -43,14 +44,13 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.27 2004-04-23 08:08:55 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.28 2004-05-04 15:30:47 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MediaSources.class);
-    
-    
-    // typo check
+       
+    // typo checks
     public static final String FUNCTION_URLS           = "urls";
     public static final String FUNCTION_FILTEREDURLS   = "filteredurls";
     public static final String FUNCTION_URL            = "url";
@@ -58,6 +58,20 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_FORMAT         = "format";
     public static final String FUNCTION_CODEC          = "codec";
     public static final String FUNCTION_MIMETYPE       = "mimetype";
+
+    
+    // parameter definitions (making use of reflection utitility for functions)
+    public final static Parameter[] URLS_PARAMETERS         = { new Parameter("node",  org.mmbase.bridge.Node.class), 
+                                                                new Parameter.Wrapper(MediaFragments.URLS_PARAMETERS) };
+    public final static Parameter[] FILTEREDURLS_PARAMETERS = URLS_PARAMETERS;
+    public final static Parameter[] URL_PARAMETERS          = URLS_PARAMETERS;
+    public final static Parameter[] AVAILABLE_PARAMETERS    = {};
+    public final static Parameter[] FORMAT_PARAMETERS       = URLS_PARAMETERS;
+    public final static Parameter[] CODEC_PARAMETERS        = {};
+    public final static Parameter[] MIMETYPE_PARAMETERS     = {};
+
+
+
 
     
     // Status (this should be helped by field-type project (resourcebundle/java-constants))
@@ -78,9 +92,14 @@ public class MediaSources extends MMObjectBuilder {
     }
 
     
-    
+
     private static Map mimeMapping = null;
+
+    private String defaultProvider = null;
     
+    /**
+     * {@inheritDoc}
+     */
     public boolean init() {
         boolean result = super.init();               
         if (mimeMapping == null) {
@@ -105,6 +124,8 @@ public class MediaSources extends MMObjectBuilder {
                 log.service("The file " + mimeMappingFile + " can not be read");
             }
         }
+
+        defaultProvider = getInitParameter("default.provider.alias");
         
         return result;
     }
@@ -137,9 +158,9 @@ public class MediaSources extends MMObjectBuilder {
         
         // creating relation between media source and media fragment
         MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
-        insrel.setValue("snumber", source.getIntValue("number"));
-        insrel.setValue("dnumber", mediafragment.getIntValue("number"));
-        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        insrel.setValue("snumber", mediafragment.getIntValue("number"));
+        insrel.setValue("dnumber", source.getIntValue("number"));
+        insrel.setValue("rnumber", mmb.getRelDef().getNumberByName("related"));
         int ret = insrel.insert(owner);
         if(ret<0) {
             log.error("Cannot create relation between mediafragment and mediasource "+insrel);
@@ -205,7 +226,7 @@ public class MediaSources extends MMObjectBuilder {
      * used in the editors
      */
     public String getGUIIndicator(MMObjectNode source) {
-	return ""+Format.get(source.getIntValue("format"))+"/"+source.getStringValue("bitrate")+"/"+source.getStringValue("channels");
+	return "" + Format.get(source.getIntValue("format")) + "/" + source.getStringValue("bitrate") + "/" + source.getStringValue("channels");
 	/*
         List urls = getFilteredURLs(source, null, null);
         if (urls.size() == 0) return "[could not compose URL]";
@@ -254,9 +275,17 @@ public class MediaSources extends MMObjectBuilder {
     protected Codec getCodec(MMObjectNode source) {
         return Codec.get(source.getIntValue("codec"));
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MediaSources.class, function);
+    }
     
     /**
-     * Functions.
+     * {@inheritDoc}
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
@@ -389,14 +418,28 @@ public class MediaSources extends MMObjectBuilder {
     protected List getURLs(MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
         log.debug("Getting urls for source " + source.getNumber());
-        Iterator i = getProviders(source).iterator();
-        while (i.hasNext()) {
-            MMObjectNode provider = (MMObjectNode) i.next();
-            if (log.isDebugEnabled()) {
-                log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
+        List providers = getProviders(source);
+        if (providers.size() == 0) {
+            if (defaultProvider != null) {
+                MMObjectNode provider = getNode(defaultProvider);
+                MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
+                if (provider == null) {
+                    log.warn("Specified default provider '" + defaultProvider + "' is not an existing node");
+                } else {
+                    bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
+                }
             }
-            MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
-            bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
+            
+        } else {        
+            Iterator i = providers.iterator();
+            while (i.hasNext()) {
+                MMObjectNode provider = (MMObjectNode) i.next();
+                if (log.isDebugEnabled()) {
+                    log.debug("Found provider " + provider.getNumber() + " source: " + source.getNumber());
+                }
+                MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
+                bul.getURLs(provider, source, fragment, info, urls, cacheExpireObjects);
+            }
         }
         return urls;
     }
