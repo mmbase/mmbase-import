@@ -273,7 +273,7 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <!-- Creates the jar file                                                -->
   <!-- =================================================================== -->
-  <target name="jar" depends="clean,compile">
+  <target name="jar" depends="compile">
     <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"/>
     <copy file="${build.dir}/${name}.jar" tofile="${dist.lib}/${name}.jar"/>
   </target>
