@@ -17,18 +17,19 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 
 /**
- * This cache handles multilevel query results from the bridge.
- *
- * This is only for the 'getList' functions of BasicCloud
+ * This cache handles multilevel query results from the bridge, namely only for the 'getList'
+ * functions of BasicCloud
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCache.java,v 1.3 2003-07-14 20:58:41 michiel Exp $
- * @see   org.mmbase.bridge.implementation.BasicCloud
- * @rename  QueryCache. This cache can be more generally used now.
+ * @version $Id: MultilevelCache.java,v 1.4 2003-07-17 17:01:17 michiel Exp $
+ * @see   org.mmbase.bridge.implementation.BasicCloud#getList
+ * @todo  It is odd that this one query cache is called in the bridge implementation and not in the core.
  */
 
-// This used to be implemented in MultilevelCacheHandler, MultilevelCacheEntry and MultilevelSubscribeNode. See CVS history for old implemention.
+// This used to be implemented in MultilevelCacheHandler, MultilevelCacheEntry and
+// MultilevelSubscribeNode (functionality was generalized to 'QueryResultCache'. See CVS history for
+// old implemention.
 
 public class MultilevelCache extends QueryResultCache {
 

@@ -29,17 +29,20 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.18 2003-05-08 06:00:39 kees Exp $
+ * @version $Id: Cache.java,v 1.19 2003-07-17 17:01:16 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
-    private static Logger log = Logging.getLoggerInstance(Cache.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Cache.class);
 
+    /**
+     * All registered caches
+     */
     private static Map caches = new Hashtable();
 
     /**
      * Configures the caches using a config File. There is only one
-     * config file now so the argument is al little overdone, but it
+     * config file now so the argument is a little overdone, but it
      * doesn't harm.
      */
 
@@ -130,7 +133,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
 
     private boolean active = true;
-    protected int     maxEntrySize = -1; // no maximum/ implementation does not support;
+    protected int   maxEntrySize = -1; // no maximum/ implementation does not support;
 
 
 
@@ -171,7 +174,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
     }
 
     /**
-     * This has to be override by Caches which support max entry size.
+     * This has to be overridden by Caches which support max entry size.
      */
 
     protected int getDefaultMaxEntrySize() {
@@ -200,7 +203,10 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
     }
 
     /**
-     * Returns the Cache with a certain name. To be used in combination with getCaches().
+     * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
+     * need a certain cache, you can just as well call the non-static 'getCache' which is normally
+     * in cache singletons.
+     *
      * @see #getCaches
      */
     public static Cache getCache(String name) {
