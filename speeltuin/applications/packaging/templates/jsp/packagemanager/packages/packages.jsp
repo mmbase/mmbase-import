@@ -21,20 +21,20 @@
 </tr>
 <mm:nodelistfunction set="mmpm" name="getPackages">
 <tr>
-		<td>
+		<td align="left">
 			<mm:import id="pid"><mm:field name="id" /></mm:import>
 			<a href="<mm:url page="index.jsp"><mm:param name="main" value="$main" /><mm:param name="sub" value="package" /><mm:param name="id" value="$pid" /></mm:url>"><mm:field name="name" /></a>
 		</td>
-		<td>
+		<td align="left">
 			<mm:field name="type" />	
 		</td>
-		<td>
+		<td align="left">
 			<mm:field name="maintainer" />	
 		</td>
-		<td>
+		<td align="left">
 			<mm:field name="version" />	
 		</td>
-		<td>
+		<td align="left">
 			<mm:field name="state" />	
 		</td>
 		<td width="20">
