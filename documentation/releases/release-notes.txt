@@ -225,6 +225,7 @@ Application bug fixes:
 ---------------------
 
 [1.6.4]
+- #6076 community message does not use NODE type thread field. 
 - #5996 myyahoo/install.jsp shows messy installation notes 
 
 [1.6.3]
