@@ -36,6 +36,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private String element   = null;
     private String contextid = null;
     private Node   node      = null;
+    private boolean unregistered = false;
 
     
     /**
@@ -60,28 +61,29 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         this.number = getAttributeValue(number);
     }
     
-    public void setId(String id) {
-        super.setId(id);
+
+    public void setReferid(String r) throws JspTagException{
+        unregistered = false;
+        super.setReferid(r);
         node = null;
-        try {
-            // try to find if already in context.
-            Object n = getContextTag().getObject(id);
-            if (n instanceof Node) {
-                node = (Node) n;
-            } else if (n instanceof String) {
-                setNumber((String)n);
-            } else {
-                // like to throw an exception..
-            }
-        } catch (JspTagException e) {
-            //could not be found. No problem.
+        // try to find if already in context.
+        log.debug("looking up Node with " + referid + " in context");
+        Object n = getContextTag().getObject(referid);
+        log.debug("found: " + n);
+        if (n instanceof Node) {
+            log.debug("found a Node in Context");
+            node = (Node) n;
+        } else if (n instanceof String) {
+            log.debug("found a Node Number in Context");
+            setNumber((String)n);
+            getContextTag().unRegister(referid); // it will be reregistered, as a real node
+            unregistered = true;
+        } else {
+            throw new JspTagException("Element " + referid + " from context " + contextid + " cannot be converted to node");
         }
     }
 
 
-    public void setContextid(String ci) {
-        this.contextid = ci;
-    }
     /**
      * The element attribute is used to access elements of
      * clusternodes. 
@@ -93,6 +95,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     
     public int doStartTag() throws JspTagException{            
+
+        if (unregistered && id == null) id = referid; // must be reregistered as a node with same id as it had.
         if (node == null) {
             log.debug("node is null");
             if (number != null) { 
@@ -103,18 +107,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 }         
             } else { 
                 // get the node from a parent element.           
-                NodeProvider nodeProvider;
-                try {
-                    log.debug("getting node from parent");
-                    nodeProvider = 
-                        (NodeProvider) findAncestorWithClass((Tag)this,
-                                                             Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider"));
-                } catch (ClassNotFoundException e){
-                    throw new JspTagException("Could not find NodeProvider class");
-                }
-                if (nodeProvider == null) {
-                    throw new JspTagException("Could not find parent NodeProvider (id = " + getId() + ")");
-                }
+                NodeProvider nodeProvider = (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", null); 
                 if (element != null) {
                     node = nodeProvider.getNodeVar().getNodeValue(element);
                 } else {
@@ -123,7 +116,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 
             }
         }
-
         setNodeVar(node);        
         //log.debug("found node " + node.getValue("gui()"));        
         return EVAL_BODY_TAG; 
