@@ -405,6 +405,8 @@ public class BasicCloud implements Cloud, Cloneable {
                 search = MultiRelations.SEARCH_BOTH;
             } else if ("ALL".equals(searchDir)) {
                 search = MultiRelations.SEARCH_ALL;
+            } else if ("EITHER".equals(searchDir)) {
+                search = MultiRelations.SEARCH_EITHER;
             }
         }
 
