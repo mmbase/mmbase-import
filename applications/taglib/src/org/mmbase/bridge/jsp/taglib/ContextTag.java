@@ -476,15 +476,15 @@ public class ContextTag extends ContextReferrerTag {
 
 
     /**
-     * 'present' means ='not null'. 'null' means 'registered, but not present'.
-	 * not registered is not present, of course.
+     * 'present' means 'not null'. 'null' means 'registered, but not present'.
+     *  Not registered is not present, of course.
      */
 
     public boolean isPresent(String key) throws JspTagException {
-        if (! isRegistered(key)) {
-            log.warn("Checking presence of unregistered context variable " + key + " in context " + getId());
-            return false;
-        }
+        //if (! isRegisteredSomewhere(key)) {
+        //    log.warn("Checking presence of unregistered context variable " + key + " in context " + getId());
+        //    return false;
+        //}
         return (container.get(key) != null);
     }
     
