@@ -34,7 +34,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.49 2004-12-24 14:00:18 daniel Exp $
+ * @version $Id: TypeDef.java,v 1.50 2004-12-24 14:20:15 daniel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -90,7 +90,7 @@ public class TypeDef extends MMObjectBuilder {
             }
             defaultDeploy = builderDeployDir;
 	    if (!defaultDeploy.endsWith("/") || !defaultDeploy.endsWith("\\")) {
-		defaultDeploy+=File.separator;
+		defaultDeploy+="/";
 	    }
             log.service("Using '" + defaultDeploy + "' as default deploy dir for our builders.");
         }
