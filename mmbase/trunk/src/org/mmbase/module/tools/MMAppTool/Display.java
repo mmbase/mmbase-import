@@ -25,25 +25,12 @@ public class Display extends Frame implements WindowListener,ActionListener {
 	private String filename;
 
 	public Display(MMAppTool parent) {
-		this.parent=parent;
-		setSize(640,480);
-		bar=createMenus();
-		setMenuBar(bar);
-		setTitle("MMAppTool - Display");
-		can=new AppCanvas(this);
-		add(can);
+		init(parent);
 	}
 
-
 	public Display(MMAppTool parent,String filename) {
-		this.parent=parent;
+		init(parent);
 		this.filename=filename;
-		setSize(640,480);
-		bar=createMenus();
-		setMenuBar(bar);
-		setTitle("MMAppTool - Display");
-		can=new AppCanvas(this);
-
 		XMLApplicationReader app=new XMLApplicationReader(filename);
 		if (can!=null) {
 			can.setApplication(app);
@@ -69,7 +56,19 @@ public class Display extends Frame implements WindowListener,ActionListener {
 				}
 			}
 		}
-		add(can);
+	}
+
+	private void init(MMAppTool parent) {
+		this.parent=parent;
+		setSize(640,480);
+		bar=createMenus();
+		setMenuBar(bar);
+		setTitle("MMAppTool - Display");
+		can=new AppCanvas(this);
+		ScrollPane sp = new ScrollPane();
+		add(sp);
+		sp.add(can);
+		addWindowListener(this);
 	}
 
 	public void windowDeiconified(WindowEvent event) {
@@ -93,8 +92,8 @@ public class Display extends Frame implements WindowListener,ActionListener {
 
 	public void windowClosing(WindowEvent event) {
 		System.out.println("Window Closing");
+		parent.doExit();
 	}
-
 
 	private MenuBar	createMenus() {
 		MenuBar bar=new MenuBar();

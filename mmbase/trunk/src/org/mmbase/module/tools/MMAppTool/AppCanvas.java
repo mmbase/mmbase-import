@@ -71,6 +71,8 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
       }
 
 	public void paint(Graphics g) {
+		int maxX = 0;
+		int maxY = 0;
 		setBackground(getBackGroundColor());
 		if (openbuilder!=null) {
 			openbuilder.paint(g);
@@ -85,8 +87,21 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
 			for (Enumeration e=builders.elements();e.hasMoreElements();) {
 				BuilderOval b=(BuilderOval)e.nextElement();
 				b.paint(g);
+				if (b.getMaxX() > maxX) maxX = b.getMaxX();
+				if (b.getMaxY() > maxY) maxY = b.getMaxY();
 			}
 		} 
+		if (maxX < 680) {
+			maxX = 680;
+		} else {
+			maxX += 5;
+		}
+		if (maxY < 480) {
+			maxY = 480;
+		} else {
+			maxY += 5;
+		}
+		setSize(maxX, maxY);
 	}
 
 	public void setApplication(XMLApplicationReader app) {
