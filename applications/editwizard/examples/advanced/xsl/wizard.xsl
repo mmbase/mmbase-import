@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard wizard.xsl 
 
-  @version   $Id: wizard.xsl,v 1.9 2004-01-21 16:51:03 nico Exp $
+  @version   $Id: wizard.xsl,v 1.10 2004-02-27 14:03:22 gerard Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -25,7 +25,7 @@
  <!-- The first row of the the body's table -->
   <xsl:template name="title">
       <td>        
-        <span class="title"><nobr><a href="{$referrer}" class="tools">Redactietools</a>: 
+        <span class="title"><nobr><a href="{$referrerdir}" class="tools">Redactietools</a>: 
         <span class="titleprompt" ><xsl:value-of select="$title" /></span>
          </nobr></span>
       </td>
