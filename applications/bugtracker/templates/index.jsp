@@ -6,7 +6,7 @@
 %><%@include file="/includes/header.jsp"
 
 %><td colspan="2">
-<mm:include page="/development/bugtracker/main.jsp" />
+<mm:include  page="main.jsp"><mm:param name="base">/development/bugtracker</mm:param></mm:include>
 
 </td>
 <%@include file="/includes/footer.jsp"
