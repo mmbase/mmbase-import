@@ -360,6 +360,12 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public synchronized MMObjectNode getNode(String number) {
 
+		if( number == null )
+		{
+			debug("getNode("+number+"): ERROR: for tablename("+tableName+"): node is null!");
+			return null;
+		}
+
 		// test with counting
 		statCount("getnode");
 		if (number.equals("-1")) {
