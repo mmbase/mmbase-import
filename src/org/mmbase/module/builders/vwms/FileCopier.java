@@ -72,7 +72,7 @@ public class FileCopier implements Runnable {
 	 * Main work loop
 	 */
 	public void doWork() {
-		String sshpath="/usr/local/bin";
+		//String sshpath="/sr/local/bin";
 		aFile2Copy afile;
 	
 		if (debug) debug("Active");
@@ -80,7 +80,7 @@ public class FileCopier implements Runnable {
 			afile=(aFile2Copy)files.get();
 			if (afile!=null) {
 				if (debug) debug("Copying "+afile.srcpath+"/"+afile.filename);
-				SCPcopy scpcopy=new SCPcopy(sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
+				SCPcopy scpcopy=new SCPcopy(afile.sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
 				scpcopy.copy(afile.srcpath,afile.filename);
 			} else {
 				debug("afile is null ?");

@@ -25,12 +25,13 @@ import org.mmbase.module.gui.html.*;
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
 
-	Hashtable properties;
+	//Hashtable properties;
 	boolean first=true;
 	private boolean debug=false;
 	Object syncobj=new Object();
 	Queue files2copy=new Queue(128);
 	FileCopier filecopier=new FileCopier(files2copy);
+	Vector mirrornodes;
 
 	public PageMaster() {
 		debug("ready for action");
@@ -43,7 +44,8 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 		} else {
 			try {
 				Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
-				Enumeration e=bul.search("WHERE service='pages' AND subservice='main' AND status=1 ORDER BY number DESC");
+				//Enumeration e=bul.search("WHERE service='pages' AND subservice='main' AND status=1 ORDER BY number DESC");
+				Enumeration e=bul.search("service=='pages'+subservice=='main'+status=1");
 				int i=0;
 				while (e.hasMoreElements() && i<10) {
 					MMObjectNode node=(MMObjectNode)e.nextElement();
@@ -55,7 +57,8 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 			}	
 			try {
 				Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
-				Enumeration e=bul.search("WHERE service='pages' AND subservice='mirror' AND status=1 ORDER BY number DESC");
+				Enumeration e=bul.search("service=='pages'+subservice=='mirror'+status=1");
+				//Enumeration e=bul.search("WHERE service='pages' AND subservice='mirror' AND status=1 ORDER BY number DESC");
 				int i=0;
 				while (e.hasMoreElements() && i<50) {
 					MMObjectNode node=(MMObjectNode)e.nextElement();
@@ -84,6 +87,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 
 	public boolean fileChange(String service,String subservice,String filename) {
 		debug("frontend change -> "+filename);
+		System.out.println("s="+service+" sub="+subservice+"file="+filename);
 		// jump to correct subhandles based on the subservice
 		if (subservice.equals("main")) {
 			handleMainCheck(service,subservice,filename);
@@ -122,11 +126,17 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 				String dstserver=filenode.getStringValue("mmserver");
 
 				// recover teh correct source/dest properties for this mirror
-				String sshpath=getProperty("sshpath");
-				String dstuser=getProperty(dstserver+":user");
-				String dsthost=getProperty(dstserver+":host");
-				String dstpath=getProperty(dstserver+":path");
-				String srcpath=getProperty("test1:path"); // hoe komen we hierachter ?
+				String sshpath=getProperty("demoserver","sshpath");
+				String srcpath=getProperty("demoserver","path"); // hoe komen we hierachter ?
+				String dstuser=getProperty(dstserver,"user");
+				String dsthost=getProperty(dstserver,"host");
+				String dstpath=getProperty(dstserver,"path");
+
+				System.out.println("sshpath="+sshpath);
+				System.out.println("srcpath="+srcpath);
+				System.out.println("dstuser="+dstuser);
+				System.out.println("dsthost="+dsthost);
+				System.out.println("dstpath="+dstpath);
 /*
 				SCPcopy scpcopy=new SCPcopy(sshpath,dstuser,dsthost,dstpath);
 
@@ -134,7 +144,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 					scpcopy.copy(srcpath,filename);
 				}
 */
-				files2copy.append(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename));
+				files2copy.append(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename,sshpath));
 
 				filenode.setValue("status",3);
 				filenode.commit();
@@ -193,6 +203,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 	}
 
 	public void handleMainCheck(String service,String subservice,String filename) {
+		System.out.println("Reached handleMainCheck");
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='"+subservice+"'");
 		if (e.hasMoreElements()) {
@@ -202,37 +213,32 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 		} else {
 			MMObjectNode mainnode=bul.getNewNode("system");
 			mainnode.setValue("filename",filename);
-			mainnode.setValue("mmserver","test1");
+			mainnode.setValue("mmserver",Vwms.mmb.getMachineName());
 			mainnode.setValue("service",service);
 			mainnode.setValue("subservice",subservice);
 			mainnode.setValue("status",1);
 			mainnode.setValue("filesize",-1);
 			bul.insert("system",mainnode);	
 
-			// hack hack moet ook mirror nodes aanmaken !
-			mainnode=bul.getNewNode("system");
-			mainnode.setValue("filename",filename);
-			mainnode.setValue("mmserver","omroep");
-			mainnode.setValue("service",service);
-			mainnode.setValue("subservice","mirror");
-			mainnode.setValue("status",3);
-			mainnode.setValue("filesize",-1);
-			bul.insert("system",mainnode);	
+			Enumeration f=getMirrorNodes(service).elements();
+			while (f.hasMoreElements()) {
+				MMObjectNode n2=(MMObjectNode)f.nextElement();
+				// hack hack moet ook mirror nodes aanmaken !
+				mainnode=bul.getNewNode("system");
+				mainnode.setValue("filename",filename);
+				mainnode.setValue("mmserver",n2.getStringValue("name"));
+				mainnode.setValue("service",service);
+				mainnode.setValue("subservice","mirror");
+				mainnode.setValue("status",3);
+				mainnode.setValue("filesize",-1);
+				bul.insert("system",mainnode);	
+			}
 		}
 	}
 
-	public String getProperty(String key) {
-		if (properties==null) initProperties();
-		return((String)properties.get(key));
-	}
-
-	private void initProperties() {
-		properties=new Hashtable();
-		properties.put("sshpath","/usr/local/bin");
-		properties.put("omroep:user","vpro");
-		properties.put("omroep:host","vpro.omroep.nl");
-		properties.put("omroep:path","/bigdisk/htdocs");
-		properties.put("test1:path","/usr/local/log/james/scancache/PAGE");
+	public String getProperty(String machine,String key) {
+		MMServers mmservers=(MMServers)Vwms.mmb.getMMObject("mmservers");		
+		return(mmservers.getMMServerProperty(machine,key));
 	}
 
 
@@ -245,5 +251,20 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 			scanpage sp=new scanpage();
 			m.calcPage(url,sp,0);
 		}
+	}
+
+	public Vector getMirrorNodes(String service) {
+		if (mirrornodes!=null) return(mirrornodes);
+		NetFileSrv bul=(NetFileSrv)Vwms.mmb.getMMObject("netfilesrv");		
+		if (bul!=null) {
+			Enumeration e=bul.search("service=='pages'+subservice=='mirror'");
+			if (e.hasMoreElements()) {
+				MMObjectNode n1=(MMObjectNode)e.nextElement();
+				mirrornodes=n1.getRelatedNodes("mmservers");		
+				if (mirrornodes!=null) return(mirrornodes);
+			}
+		}
+		mirrornodes=new Vector();
+		return(mirrornodes);
 	}
 }
