@@ -17,8 +17,8 @@
     <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onChange="validate_validator(event);">
     <xsl:apply-templates select="@*" />
     </input> ms
-    <input type="button" value="get" onClick="document.forms['form'].elements['{@fieldname}'].value = parent.frames['player'].document.embeddedplayer.GetPosition();" />
-    <input type="button" value="set" onClick="parent.frames['player'].document.embeddedplayer.setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
+    <input type="button" value="get" onClick="document.forms['form'].elements['{@fieldname}'].value = getPosition();" />
+    <input type="button" value="set" onClick="setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
     </nobr>
   </span>
   </xsl:template>
@@ -84,10 +84,10 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
   <xsl:template name="mediaitembuttons">
     <xsl:if test="@displaytype='audio'">
-        <a target="player" href="{$referrerdir}audiovideo.jsp?source={@destination}&amp;language={$language}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+        <a target="left" href="{$referrerdir}audiovideo.jsp?source={@destination}&amp;language={$language}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
     </xsl:if>
     <xsl:if test="@displaytype='video'">
-        <a target="player" href="{$referrerdir}audiovideo.jsp?source={@destination}&amp;language={$language}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+        <a target="left" href="{$referrerdir}audiovideo.jsp?source={@destination}&amp;language={$language}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
     </xsl:if>
   </xsl:template>
 
