@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.262 2004-03-03 14:46:49 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.263 2004-03-08 14:40:32 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1240,20 +1240,34 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Defines a virtual field to use for temporary nodes
+     * Defines a virtual field to use for temporary nodes. If the given field-name does not start
+     * with underscore ('_'), wich it usually does, then the field does also get a 'dbpos' (1000) as if it
+     * was actually present in the builder's XML as a virtual field (this is accompanied with a log
+     * message).
+     *
+     * Normally this is used to add 'tmp' fields like _number, _exists and _snumber which are system
+     * fields which are normally invisible.
+     *
      * @param field the name of the temporary field
      * @return true if the field was added, false if it already existed.
      */
     public boolean checkAddTmpField(String field) {
-        boolean rtn=false;
-        if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
-            FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
+        if (getDBState(field) == FieldDefs.DBSTATE_UNKNOWN) { // means that field is not yet defined.
+            FieldDefs fd = new FieldDefs(field, "string", -1, -1, field,FieldDefs.TYPE_STRING, -1, FieldDefs.DBSTATE_VIRTUAL);
+            if (! field.startsWith("_")) {
+                fd.setDBPos(1000);
+                log.service("Added a virtual field '" + field + "' to builder '" + getTableName() + "' because it was not defined in the builder's XML, but the implementation requires it to exist.");
+            } else {
+                log.debug("Adding tmp (virtual) field '" + field + "' to builder '" + getTableName() + "'");
+            }
+
             fd.setParent(this);
-            log.debug("checkAddTmpField(): adding tmp field "+field);
+
             addField(fd);
-            rtn=true;
+            return true;
+        } else {
+            return false;
         }
-        return rtn;
     }
 
     /**
