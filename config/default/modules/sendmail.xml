@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="mmbase.org" version="0">
-
-    <!-- <status>
-    what is the status of this module options : active or inactive
-    -->
     <status>active</status>
 
-    <!-- <classfile>
-    -->
     <classfile>org.mmbase.module.SendMail</classfile>
+    <!-- another option is JMSendMail, MMBase must be compiled with jdk 1.3 -->
+    <!-- classfile>org.mmbase.module.JMSendMail</classfile-->
 
-    <!-- <properties>
-    you can define properties to be used by the classfile (if used) it uses
-    a key/value system. Its a optional tag.
-    -->
     <properties>
+        <!-- for SendMail: -->
         <property name="mailhost">smtp</property>
+        <!-- for JMSendMail (j2ee way). Can also use mailhost, then
+        comment the following two away. And tolerate some warnings in
+        the log :-) -->
+        <property name="context">java:comp/env</property>
+        <property name="datasource">mail/MMBase</property>
     </properties>
 
 </module>
