@@ -24,24 +24,17 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.10 2002-04-17 13:17:36 pierre Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.11 2002-10-03 12:28:11 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
     private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
 
-    VirtualNodeManager(MMObjectBuilder builder, Cloud cloud) {
-        this.cloud=(BasicCloud)cloud;
-        this.builder=builder;
-        for(Iterator i=builder.getFields().iterator(); i.hasNext();){
-            FieldDefs f=(FieldDefs)i.next();
-            Field ft= new BasicField(f,this);
-            fieldTypes.put(ft.getName(),ft);
-        }
+    VirtualNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
+        super(builder,cloud);
     }
 
-    VirtualNodeManager(MMObjectNode node, Cloud cloud) {
-        this.cloud=(BasicCloud)cloud;
-        this.builder=node.parent;
+    VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
+        super(new VirtualBuilder(((BasicCloudContext)cloud.getCloudContext()).mmb), cloud);
         // determine fields and field types
         for (Enumeration e = node.values.keys(); e.hasMoreElements(); ) {
             String fieldName=(String)e.nextElement();
@@ -72,6 +65,26 @@ public class VirtualNodeManager extends BasicNodeManager {
             Field ft = new BasicField(fd,this);
             fieldTypes.put(fieldName,ft);
         }
+    }
+
+
+    /**
+     * Initializes the node.
+     * Sets nodemanager to typedef, and creates a virtual node for this manager.
+     */
+    protected void init() {
+        nodeManager=cloud.getNodeManager("typedef");
+        noderef= new VirtualNode(((BasicCloudContext)cloud.getCloudContext()).mmb.getTypeDef());
+        super.init();
+    }
+
+    /**
+     * Initializes the NodeManager
+     */
+    protected void initManager() {
+        noderef.setValue("name",builder.getTableName());
+        noderef.setValue("description",builder.getDescription());
+        super.initManager();
     }
 
     /**

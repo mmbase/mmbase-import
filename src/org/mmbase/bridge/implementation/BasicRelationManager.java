@@ -23,44 +23,61 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.15 2002-09-06 10:18:44 pierre Exp $
+ * @version $Id: BasicRelationManager.java,v 1.16 2002-10-03 12:28:11 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
 
-    private MMObjectNode typeRelNode = null;
     private MMObjectNode relDefNode = null;
+    private MMObjectNode typeRelNode = null;
     private int snum = 0;
     private int dnum = 0;
-    int roleID  = 0;
+
+    /**
+     * Creates a new Relation manager (for insert).
+     * The type of manager (a strictly constrained manager or a role manager)
+     * is dependend on the type of the passed node (from either the reldef of typerel
+     * builder).
+     * @param node the node on which to base the relation manager
+     * @param cloud the cloud for which to create the manager
+     * @param id the id of the node in the temporary cloud
+     */
+    BasicRelationManager(MMObjectNode node, BasicCloud cloud, int nodeId) {
+        super(node,cloud,nodeId);
+    }
 
     /**
      * Creates a new instance of Relation manager.
      * The type of manager (a strictly constrained manager or a role manager)
-     * is dependend on type the passed node (from either the reldef of typerel
+     * is dependend on the type of the passed node (from either the reldef of typerel
      * builder).
      * @param node the node on which to base the relation manager
      * @param cloud the cloud for which to create the manager
      */
-    BasicRelationManager(MMObjectNode node, Cloud cloud) {
-        RelDef reldef = ((BasicCloudContext)cloud.getCloudContext()).mmb.getRelDef();
-        if (node.parent==reldef) {
-            relDefNode = node;
-            roleID=node.getNumber();
+    BasicRelationManager(MMObjectNode node, BasicCloud cloud) {
+        super(node,cloud);
+    }
+
+    /**
+     * Initializes the NodeManager: determines the MMObjectBuilder from the
+     * passed node (reldef or typerel), and fillls temporary variables to maintain status.
+     */
+    synchronized protected void initManager() {
+        if (noderef.getBuilder() instanceof RelDef) {
+            relDefNode= noderef;
         } else {
-            typeRelNode = node;
-            snum=node.getIntValue("snumber");
-            dnum=node.getIntValue("dnumber");
-            roleID=node.getIntValue("rnumber");
-            relDefNode= reldef.getNode(roleID);
+            typeRelNode = noderef;
+            snum=typeRelNode.getIntValue("snumber");
+            dnum=typeRelNode.getIntValue("dnumber");
+            relDefNode= typeRelNode.getBuilder().getNode(typeRelNode.getIntValue("rnumber"));
         }
-        builder=reldef.getBuilder(relDefNode);
-        init(builder,cloud);
-      }
+        builder=((RelDef)relDefNode.getBuilder()).getBuilder(relDefNode.getNumber());
+        super.initManager();
+    }
 
     public Node createNode() {
         Node relation = super.createNode();
-        ((BasicNode)relation)._setValue("rnumber", new Integer(roleID));
+        ((BasicNode)relation)._setValue("rnumber", new Integer(relDefNode.getIntValue("rnumber")));
         return relation;
     }
 
@@ -112,6 +129,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         return cloud.getNodeManager(nr);
     }
 
+    public Relation createRelation(Node sourceNode, RelationManager relationManager) {
+        return super.createRelation(sourceNode, relationManager);
+    }
+
     public Relation createRelation(Node sourceNode, Node destinationNode) {
         //
         // checks whether all components are part of the same cloud/transaction
@@ -161,22 +182,13 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     /**
      * Compares two relationmanagers, and returns true if they are equal.
-     * This effectively means that both objects are relationmanagers, and they both use to the same builder type
+     * This effectively means that both objects are relationmanagers, and they both have the same number and cloud
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof RelationManager) && (o.hashCode()==hashCode());
-    }
-
-    /**
-     * Returns the relationmanager's hashCode.
-     * This effectively returns the object number of the typerel record
-     */
-    public int hashCode() {
-        if (typeRelNode==null) {
-          return relDefNode.getNumber();
-        }
-        return typeRelNode.getNumber();
+        return (o instanceof RelationManager) &&
+               getNumber()==((RelationManager)o).getNumber() &&
+               cloud.equals(((RelationManager)o).getCloud());
     }
 
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {

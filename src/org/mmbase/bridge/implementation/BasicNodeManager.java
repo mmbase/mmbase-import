@@ -29,13 +29,10 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.35 2002-09-30 12:42:20 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.36 2002-10-03 12:28:10 pierre Exp $
  */
-public class BasicNodeManager implements NodeManager, Comparable {
+public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
-
-    // Cloud for this nodetype
-    protected BasicCloud cloud=null;
 
     // builder on which the type is based
     protected MMObjectBuilder builder=null;
@@ -43,20 +40,59 @@ public class BasicNodeManager implements NodeManager, Comparable {
     // field types
     protected Hashtable fieldTypes = new Hashtable();
 
-    // empty constructor for overriding constructors
-    BasicNodeManager() {
+    /**
+     * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
+     * Normally this is a TypeDef node, but subclasses (i.e. BasicRelationManager)
+     * may use other nodes, such as nodes from RelDef or TypeRel.
+     * The NodeManager that administrates the node itself is requested from the Cloud.
+     * The Nodemanager cannot be used for administartion tasks until it is isnerted (committed) in the Cloud.
+     * @param node the MMObjectNode to base the NodeManager on.
+     * @param Cloud the cloud to which this node belongs
+     * @param id the id of the node in the temporary cloud
+     */
+    BasicNodeManager(MMObjectNode node, BasicCloud cloud, int nodeid) {
+        super(node,cloud.getNodeManager(node.getBuilder().getTableName()), nodeid);
+        // no initialization - for a new node, builder is null.
     }
 
-    // constructor for creating a Manager for specific cloud
-    BasicNodeManager(MMObjectBuilder builder, Cloud cloud) {
-        init(builder, cloud);
+    /**
+     * Instantiates a NodeManager based on a node which either represents or references a builder.
+     * Normally this is a TypeDef node, but subclasses (i.e. BasicRelationManager)
+     * may use other nodes, such as nodes from RelDef or TypeRel.
+     * The NodeManager that administrates the node itself is requested from the Cloud.
+     * @param node the MMObjectNode to base the NodeManager on.
+     * @param Cloud the cloud to which this node belongs
+     */
+    BasicNodeManager(MMObjectNode node, BasicCloud cloud) {
+        super(node,cloud);
+        initManager();
     }
 
-    protected void init(MMObjectBuilder builder, Cloud cloud) {
-        this.cloud=(BasicCloud)cloud;
+    /**
+     * Instantiates a NodeManager based on a builder.
+     * The constructor attempts to retrieve an MMObjectNode (from typedef)
+     * which represents this builder.
+     * @param builder the MMObjectBuidler to base the NodeManager on.
+     * @param Cloud the cloud to which this node belongs
+     */
+    BasicNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
+        super(builder.isVirtual() ? new VirtualNode(((BasicCloudContext)cloud.getCloudContext()).mmb.getTypeDef()) : builder.getNode(builder.oType),cloud);
         this.builder=builder;
-        if (!builder.isVirtual()) {
-            for(Iterator i=builder.getFields().iterator(); i.hasNext();){
+        initManager();
+    }
+
+    /**
+     * Initializes the NodeManager: determines the MMObjectBuilder if it was not already known,
+     * and fills the fields list.
+     */
+    synchronized protected void initManager() {
+        if (builder==null) {
+            builder=((TypeDef)noderef.getBuilder()).getBuilder(noderef);
+        }
+        List fields=builder.getFields();
+        if (fields!=null) {
+            fieldTypes.clear();
+            for(Iterator i=fields.iterator(); i.hasNext();){
                 FieldDefs f=(FieldDefs)i.next();
                 Field ft= new BasicField(f,this);
                 fieldTypes.put(ft.getName(),ft);
@@ -67,7 +103,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
     public Node createNode() {
         // create object as a temporary node
         int id = cloud.uniqueId();
-        String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
+        String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), ""+id);
         // if we are in a transaction, add the node to the transaction;
         if (cloud instanceof BasicTransaction) {
             ((BasicTransaction)cloud).add(currentObjectContext);
@@ -78,59 +114,64 @@ public class BasicNodeManager implements NodeManager, Comparable {
         node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
 
         //node.setValue("owner","bridge");
-        if (builder instanceof InsRel) {
+        if (getMMObjectBuilder() instanceof TypeDef) {
+            return new BasicRelation(node, this, id);
+        } else if (getMMObjectBuilder() instanceof InsRel) {
             return new BasicRelation(node, this, id);
         } else {
             return new BasicNode(node, this, id);
         }
     }
 
-    public Cloud getCloud() {
-        return cloud;
-    }
-
     public String getName() {
-        return builder.getTableName();
+        return getStringValue("name");
     }
 
     public String getGUIName() {
-        Hashtable singularNames=builder.getSingularNames();
-        if (singularNames!=null) {
-            String lang=cloud.getLocale().getLanguage();
-            String tmp=(String)singularNames.get(lang);
-            if (tmp!=null) {
-                return tmp;
+        if (builder!=null) {
+            Hashtable singularNames=builder.getSingularNames();
+            if (singularNames!=null) {
+                String lang=cloud.getLocale().getLanguage();
+                String tmp=(String)singularNames.get(lang);
+                if (tmp!=null) {
+                    return tmp;
+                }
             }
         }
-        return builder.getTableName();
+        return getName();
     }
 
     public String getDescription() {
-        Hashtable descriptions=builder.getDescriptions();
-        if (descriptions!=null) {
-            String lang=cloud.getLocale().getLanguage();
-            String tmp=(String)descriptions.get(lang);
-            if (tmp!=null) {
-                return tmp;
+        if (builder!=null) {
+            Hashtable descriptions=builder.getDescriptions();
+            if (descriptions!=null) {
+                String lang=cloud.getLocale().getLanguage();
+                String tmp=(String)descriptions.get(lang);
+                if (tmp!=null) {
+                    return tmp;
+                }
             }
+            return builder.getDescription();
+        } else {
+            return "";
         }
-        return builder.getDescription();
     }
 
     public FieldList getFields() {
-        return new BasicFieldList(fieldTypes.values(),cloud,this);
+        return new BasicFieldList(fieldTypes.values(),this);
     }
 
     public FieldList getFields(int order) {
-        if (order == ORDER_EDIT) {
-            return new BasicFieldList(builder.getSortedFields(),cloud,this);
-        } else if (order == ORDER_LIST) {
-            return new BasicFieldList(builder.getSortedListFields(),cloud,this);
-        } else if (order == ORDER_SEARCH) {
-            return new BasicFieldList(builder.getEditFields(),cloud,this);
-        } else {
-            return getFields() ;
+        if (builder!=null) {
+            if (order == ORDER_EDIT) {
+                return new BasicFieldList(builder.getSortedFields(),this);
+            } else if (order == ORDER_LIST) {
+                return new BasicFieldList(builder.getSortedListFields(),this);
+            } else if (order == ORDER_SEARCH) {
+                return new BasicFieldList(builder.getEditFields(),this);
+            }
         }
+        return getFields();
     }
 
     public Field getField(String fieldName) {
@@ -139,17 +180,18 @@ public class BasicNodeManager implements NodeManager, Comparable {
     }
 
     public NodeList getList(String constraints, String orderby, String directions) {
+        MMObjectBuilder builder=getMMObjectBuilder();
 
         // begin of check invalid search command
-        org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");        
+        org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
         if(orderby != null) orderby  = encoder.encode(orderby);
         if(directions != null) directions  = encoder.encode(directions);
         if(constraints != null && !cloud.validConstraints(constraints)) {
             throw new BridgeException("invalid contrain:" + constraints);
         }
         // end of check invalid search command
-            
-    
+
+
         String where = null;
         if ((constraints != null) && (!constraints.trim().equals(""))) {
             where=cloud.convertClauseToDBS(constraints);
@@ -178,6 +220,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
     }
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
+        MMObjectBuilder builder=getMMObjectBuilder();
         StringTokenizer tokens= new StringTokenizer(command,"-");
         return builder.replace(BasicCloudContext.getScanPage(req, resp),tokens);
     }
@@ -187,6 +230,7 @@ public class BasicNodeManager implements NodeManager, Comparable {
     }
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
+        MMObjectBuilder builder=getMMObjectBuilder();
         StringTagger params= new StringTagger("");
         if (parameters!=null) {
             for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
@@ -205,9 +249,9 @@ public class BasicNodeManager implements NodeManager, Comparable {
             Vector v=builder.getList(BasicCloudContext.getScanPage(req, resp),params,tokens);
             if (v==null) { v=new Vector(); }
             int items=1;
-            try { 
-                items=Integer.parseInt(params.Value("ITEMS")); 
-            } 
+            try {
+                items=Integer.parseInt(params.Value("ITEMS"));
+            }
             catch (Exception e) {
                 log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
             }
@@ -237,41 +281,40 @@ public class BasicNodeManager implements NodeManager, Comparable {
         }
     }
 
+    public boolean mayCreateNode() {
+        if (builder==null) return false;
+        return cloud.check(Operation.CREATE, builder.oType);
+    }
+
+    MMObjectBuilder getMMObjectBuilder() {
+        if (builder==null) {
+            throw new IllegalStateException("No functional instantiation exists (yet/any more) for this NodeManager.");
+        }
+        return builder;
+    }
+
+    // overriding behavior of BasicNode
+
+    public void commit() {
+        super.commit();  // commit the node - the buidler should now be loaded by TypeDef/ObjectTypes
+        // rebuild builder reference and fieldlist.
+        builder=((TypeDef)getNode().getBuilder()).getBuilder(getNode());
+        init();
+    }
+
+    public void delete(boolean deleteRelations) {
+        super.delete(deleteRelations);
+        builder=null;  // invalidate (builder does not exist any more)
+    }
 
     /**
-     * Compares two nodemanagers, and returns true if they are equal.
-     * This effectively means that both objects are nodemanagers, and they both use to the same builder type
+     * Compares two NodeManagers, and returns true if they are equal.
+     * This effectively means that both objects are nodemanagers, and they both have the same number and cloud
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof NodeManager) && (o.hashCode()==hashCode());
-    };
-
-    /**
-     * Compares two nodemanagers for sorting. It uses the GUIName for
-     * sorting, which makes the sorting alphabetic. This is what you
-     * need when you e.g. try to make an generic editor.
-     *
-     * @param o the object to compare with
-     */
-    public int compareTo(Object o) {
-    if (! (o instanceof NodeManager)) { return -1; }
-    return getGUIName().compareToIgnoreCase(((NodeManager)o).getGUIName());
+        return (o instanceof NodeManager) &&
+               getNumber()==((NodeManager)o).getNumber() &&
+               cloud.equals(((NodeManager)o).getCloud());
     }
-
-    /**
-     * Returns the nodemanager's hashCode.
-     * This effectively returns the buidlers's object type number
-     */
-    public int hashCode() {
-        return builder.oType;
-    }
-
-    public boolean mayCreateNode() {
-        return cloud.check(Operation.CREATE, builder.oType);
-    }
-    
-    MMObjectBuilder getMMObjectBuilder() {
-        return builder;
-    }    
 }

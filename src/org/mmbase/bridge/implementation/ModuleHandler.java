@@ -26,9 +26,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.14 2002-08-14 19:08:07 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.15 2002-10-03 12:28:11 pierre Exp $
  */
-public class ModuleHandler implements Module {
+public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
 
     //removed InvocationHandler because this is jdk1.3, and MMBase requires 1.2
@@ -135,13 +135,13 @@ public class ModuleHandler implements Module {
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
         if (mmbase_module instanceof ProcessorInterface) {
-            Cloud cloud=null;
+            BasicCloud cloud=null;
             if (parameters!=null) {
-                cloud = (Cloud) parameters.get("CLOUD");
+                cloud = (BasicCloud) parameters.get("CLOUD");
             }
             if (cloud==null) {
                 // anonymous access on the cloud....
-                cloud=cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
+                cloud=(BasicCloud)cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
             }
             try {
                 Vector v=((ProcessorInterface)mmbase_module).getNodeList(BasicCloudContext.getScanPage(req, resp),command,parameters);
@@ -168,17 +168,40 @@ public class ModuleHandler implements Module {
     }
 
     /**
+     * Compares this module to the passed object.
+     * Returns 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
+     * and +1 if the object passed is a NodeManager and smaller than this manager.
+     * A module is 'larger' than another module if its name is larger (alphabetically, case sensitive)
+     * than that of the other module. If names are the same, the modules are compared on cloud context.
+     *
+     * @param o the object to compare it with
+     */
+    public int compareTo(Object o) {
+        Module m= (Module)o;
+        int res=getName().compareTo(m.getName());
+        if (res!=0) {
+            return res;
+        } else {
+            int h1=((Cloud)o).getCloudContext().hashCode();
+            int h2=cloudContext.hashCode();
+            if (h1>h2) {
+                return -1;
+            } else if (h1<h2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
      * Compares two modules, and returns true if they are equal.
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof Module) && (o.hashCode()==hashCode());
+        return (o instanceof Module) && 
+               getName().equals(((Module)o).getName()) &&
+               cloudContext.equals(((Module)o).getCloudContext());
     };
 
-    /**
-     * Returns the module's hashCode.
-     */
-    public int hashCode() {
-        return mmbase_module.hashCode();
-    };
 }

@@ -26,9 +26,9 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.68 2002-09-30 12:39:47 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.69 2002-10-03 12:28:10 pierre Exp $
  */
-public class BasicNode implements Node, SizeMeasurable {
+public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public static final int ACTION_CREATE = 1;   // create a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
@@ -86,20 +86,64 @@ public class BasicNode implements Node, SizeMeasurable {
      */
     protected boolean isnew = false;
 
-    public int getByteSize() {
-        return getByteSize(new SizeOf());
-    }
-    public int getByteSize(SizeOf sizeof) {
-        return sizeof.sizeof(noderef);
-    }
-
-    /*
+    /**
      * Instantiates a node, linking it to a specified node manager.
+     * Use this constructor if the node you create uses a NodeManager that is not readily available 
+     * from the cloud (such as a temporary nodemanager for a result list).
+     * @param node the MMObjectNode to base the node on
+     * @param nodeManager the NodeManager to use for administrating this Node
      */
     BasicNode(MMObjectNode node, NodeManager nodeManager) {
         this.nodeManager=nodeManager;
-        cloud=(BasicCloud)nodeManager.getCloud();
         noderef=node;
+        init();
+    }
+
+    /**
+     * Instantiates a node, linking it to a specified cloud
+     * The NodeManager for the node is requested from the Cloud.
+     * @param node the MMObjectNode to base the node on
+     * @param Cloud the cloud to which this node belongs
+     */
+    BasicNode(MMObjectNode node, BasicCloud cloud) {
+        this.cloud=cloud;
+        noderef=node;
+        init();
+    }
+
+    /**
+     * Instantiates a new node (for insert), using a specified nodeManager.
+     * @param node a temporary MMObjectNode that is the base for the node
+     * @param nodeManager the node manager to create the node with
+     * @param id the id of the node in the temporary cloud
+     */
+    BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
+        this.nodeManager=nodeManager;
+        noderef=node;
+        temporaryNodeId=id;
+        isnew=true;
+        init();
+        edit(ACTION_CREATE);
+    }
+
+    /**
+     * Initializes the node.
+     * Determines nodemanager and cloud (depending on information available),
+     * Sets references to MMBase modules and initializes state in case of a transaction.
+     */
+    protected void init() {
+        if (cloud==null) {
+            cloud=(BasicCloud)nodeManager.getCloud();
+        }
+        if (nodeManager==null) {
+            // determine nodemanager, unless the node is the 'typedef' node
+            // (needs to point towards itself)
+            if (noderef.getBuilder().oType!=noderef.getNumber()) {
+                nodeManager=cloud.getNodeManager(noderef.getBuilder().getTableName());
+            } else {
+                nodeManager=(NodeManager)this;
+            }
+        }
         // create shortcut to mmbase
         mmb = ((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb;
         // check whether the node is currently in transaction
@@ -108,18 +152,14 @@ public class BasicNode implements Node, SizeMeasurable {
             temporaryNodeId=noderef.getNumber();
         }
     }
+    
+    
+    public int getByteSize() {
+        return getByteSize(new SizeOf());
+    }
 
-    /*
-     * Instantiates a new node (for insert), using a specified nodeManager.
-     * @param node a temporary MMObjectNode that is the base for the node
-     * @param nodeManager the node manager to create the node with
-     * @param id the id of the node in the temporary cloud
-     */
-    BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
-        this(node, nodeManager);
-        temporaryNodeId=id;
-        edit(ACTION_CREATE);
-        isnew=true;
+    public int getByteSize(SizeOf sizeof) {
+        return sizeof.sizeof(noderef);
     }
 
     /**
@@ -136,7 +176,7 @@ public class BasicNode implements Node, SizeMeasurable {
     }
 
     public Cloud getCloud() {
-        return nodeManager.getCloud();
+        return cloud;
     }
 
     public NodeManager getNodeManager() {
@@ -315,10 +355,10 @@ public class BasicNode implements Node, SizeMeasurable {
         if (attribute==null || attribute.equals("number")) return this;
         MMObjectNode noderes=noderef.getNodeValue(attribute);
         if (noderes!=null) {
-            if (noderes.parent instanceof InsRel) {
-                return new BasicRelation(noderes,cloud.getNodeManager(noderes.parent.getTableName()));
+            if (noderes.getBuilder() instanceof InsRel) {
+                return new BasicRelation(noderes,cloud.getNodeManager(noderes.getBuilder().getTableName()));
             } else {
-                return new BasicNode(noderes,cloud.getNodeManager(noderes.parent.getTableName()));
+                return new BasicNode(noderes,cloud.getNodeManager(noderes.getBuilder().getTableName()));
             }
         } else {
             return null;
@@ -366,7 +406,7 @@ public class BasicNode implements Node, SizeMeasurable {
 
     public void setXMLValue(String fieldName, Document value) {
         // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        org.mmbase.bridge.util.xml.DocumentConverter dc = org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(noderef.parent.getField(fieldName).getDBDocType());
+        org.mmbase.bridge.util.xml.DocumentConverter dc = org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(noderef.getBuilder().getField(fieldName).getDBDocType());
         setValue(fieldName, dc.convert(value, cloud));
     }
 
@@ -384,7 +424,7 @@ public class BasicNode implements Node, SizeMeasurable {
                 cloud.createSecurityInfo(getNumber());
                 isnew=false;
             } else {
-                node.parent.safeCommit(node);
+                node.getBuilder().safeCommit(node);
                 cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
@@ -462,7 +502,7 @@ public class BasicNode implements Node, SizeMeasurable {
                 }
                 MMObjectNode node= getNode();
                 int number=getNumber();
-                node.parent.removeNode(node);
+                node.getBuilder().removeNode(node);
                 cloud.removeSecurityInfo(number);
             }
         }
@@ -508,7 +548,7 @@ public class BasicNode implements Node, SizeMeasurable {
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
                         int number=node.getNumber();
-                        node.parent.removeNode(node);
+                        node.getBuilder().removeNode(node);
                         cloud.removeSecurityInfo(number);
                     }
                 }
@@ -727,7 +767,7 @@ public class BasicNode implements Node, SizeMeasurable {
             log.error(message);
             throw new BridgeException(message);
         } else {
-            if (! getNode().parent.createAlias(getNumber(), aliasName)) {
+            if (! getNode().getBuilder().createAlias(getNumber(), aliasName)) {
                 Node otherNode = cloud.getNode(aliasName);
                 if (otherNode != null) {
                     throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
@@ -779,29 +819,14 @@ public class BasicNode implements Node, SizeMeasurable {
         deleteAliases(aliasName);
     }
 
-    public Relation createRelation(Node destinationNode, RelationManager relationManager) {
-        Relation relation = relationManager.createRelation(this,destinationNode);
-        return relation;
+    public Relation createRelation(Node destinationNode, Node relationManager) {
+        if (relationManager instanceof RelationManager) {
+            Relation relation = relationManager.createRelation(this,destinationNode);
+            return relation;
+        } else {
+            throw new IllegalArgumentException("parameter relationManager should be of type RelationManager");
+        }
     }
-
-
-    /**
-     * Compares two objects, and returns true if they are equal.
-     * This effectively means that both objects are nodes, and they both refer to the same objectnode
-     *
-     * @param o the object to compare it with
-     */
-    public boolean equals(Object o) {
-        return (o instanceof Node) && (o.hashCode()==hashCode());
-    };
-
-    /**
-     * Returns the object's hashCode.
-     * This effectively returns th objectnode's number
-     */
-    public int hashCode() {
-        return getNumber();
-    };
 
     /**
      * set the Context of the current Node
@@ -835,7 +860,6 @@ public class BasicNode implements Node, SizeMeasurable {
     public StringList getPossibleContexts() {
         return new BasicStringList(cloud.getPossibleContexts(getNumber()));
     }
-
 
     public boolean mayWrite() {
         return cloud.check(Operation.WRITE, noderef.getNumber());
@@ -879,4 +903,57 @@ public class BasicNode implements Node, SizeMeasurable {
             }
         }
     }
+
+    /**
+     * Compares this node to the passed object.
+     * Returns 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
+     * and +1 if the object passed is a NodeManager and smaller than this manager.
+     * This is used to sort Nodes.
+     * A node is 'larger' than another node if its GUI() result is larger (alphabetically, case sensitive)
+     * than that of the other node. If the GUI() results are the same, the nodes are compared on number,
+     * and (if needed) on their owning clouds.
+     *
+     * @param o the object to compare it with
+     */
+    public int compareTo(Object o) {
+        Node n= (Node)o;
+        String s1 ="";
+        if (this instanceof NodeManager) {
+            s1=((NodeManager)this).getGUIName();
+        } else {
+            s1=getStringValue("gui()");
+        }
+        String s2 ="";
+        if (n instanceof NodeManager) {
+            s2=((NodeManager)n).getGUIName();
+        } else {
+            s2=n.getStringValue("gui()");
+        }
+        int res=s1.compareTo(s2);
+        if (res!=0) {
+            return res;
+        } else {
+            int n1=getNumber();
+            int n2=n.getNumber();
+            if (n2>n1) {
+                return -1;
+            } else if (n2<n1) {
+                return -1;
+            } else {
+                return ((Comparable)cloud).compareTo(n.getCloud());
+            }
+        }
+    }
+
+    /**
+     * Compares two nodes, and returns true if they are equal.
+     * This effectively means that both objects are nodes, and they both have the same number and cloud
+     * @param o the object to compare it with
+     */
+    public boolean equals(Object o) {
+        return (o instanceof Node) && 
+               getNumber()==((Node)o).getNumber() &&
+               cloud.equals(((Node)o).getCloud());
+    }
+
 }
