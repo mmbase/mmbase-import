@@ -50,7 +50,7 @@
        	    <!-- text (4+n) bytes Most flexible Variable unlimited length
 	    	    Note: Although the type text is not SQL-compliant, many other RDBMS packages have it as well.
     	    	-->
-	    <type-mapping mmbase-type="VARCHAR">TEXT</type-mapping>
+	    <type-mapping mmbase-type="STRING">TEXT</type-mapping>
 	  
        	    <type-mapping mmbase-type="BYTE">OID</type-mapping>
 	</mapping>

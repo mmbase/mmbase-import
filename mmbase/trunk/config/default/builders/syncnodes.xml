@@ -107,7 +107,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="true">VARCHAR</type>
+			<type state="persistent" size="12" notnull="true">STRING</type>
 		</db>
 	</field>
 
@@ -136,7 +136,7 @@
 			<!-- name of the field in the database -->
 			<name>exportsource</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="true">VARCHAR</type>
+			<type state="persistent" size="255" notnull="true">STRING</type>
 		</db>
 	</field>
 

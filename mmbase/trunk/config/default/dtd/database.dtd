@@ -11,7 +11,7 @@
 <!ELEMENT primary-key (#PCDATA)>
 <!ELEMENT mapping (type-mapping+)>
 <!ELEMENT type-mapping (#PCDATA)>
-<!ATTLIST type-mapping mmbase-type (INTEGER|VARCHAR|BYTE) #REQUIRED>
+<!ATTLIST type-mapping mmbase-type (INTEGER|LONG|FLOAT|DOUBLE|STRING||BYTE) #REQUIRED>
 <!ATTLIST type-mapping min-size CDATA #IMPLIED>
 <!ATTLIST type-mapping max-size CDATA #IMPLIED>
 <!ELEMENT disallowed (field*)>

@@ -102,7 +102,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="true">VARCHAR</type>
+			<type state="persistent" size="12" notnull="true">STRING</type>
 		</db>
 	</field>
 
@@ -158,7 +158,7 @@
 			<!-- name of the field in the database -->
 			<name>key</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false">VARCHAR</type>
+			<type state="persistent" size="32" notnull="false">STRING</type>
 		</db>
 	</field>
 
@@ -186,7 +186,7 @@
 			<!-- name of the field in the database -->
 			<name>ptype</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="16" notnull="false">VARCHAR</type>
+			<type state="persistent" size="16" notnull="false">STRING</type>
 		</db>
 	</field>
 
@@ -214,7 +214,7 @@
 			<!-- name of the field in the database -->
 			<name>value</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="true">VARCHAR</type>
+			<type state="persistent" size="255" notnull="true">STRING</type>
 		</db>
 	</field>
 

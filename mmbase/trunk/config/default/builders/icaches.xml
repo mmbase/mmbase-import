@@ -113,7 +113,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" notnull="false">STRING</type>
 		</db>
 	</field>
 
@@ -143,7 +143,7 @@
 			<!-- name of the field in the database -->
 			<name>ckey</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" notnull="false">STRING</type>
 		</db>
 	</field>
 

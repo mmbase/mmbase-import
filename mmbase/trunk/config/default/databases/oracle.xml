@@ -36,8 +36,8 @@
      	  <type-mapping mmbase-type="LONG">long</type-mapping>
      	  <type-mapping mmbase-type="FLOAT">float</type-mapping>
      	  <type-mapping mmbase-type="INTEGER">int</type-mapping>
-       	  <type-mapping mmbase-type="VARCHAR" min-size="1" max-size="255">varchar(size)</type-mapping>
-       	  <type-mapping mmbase-type="VARCHAR" min-size="256" max-size="16777216">clob</type-mapping>
+       	  <type-mapping mmbase-type="STRING" min-size="1" max-size="255">varchar(size)</type-mapping>
+       	  <type-mapping mmbase-type="STRING" min-size="256" max-size="16777216">clob</type-mapping>
        	  <type-mapping mmbase-type="BYTE" min-size="1" max-size="16777216">blob</type-mapping>
 	</mapping>
 	
@@ -49,29 +49,34 @@
 		don't need to be changes when running on a different database.
 	-->
 	<disallowed>
-          <field name="number" replacement="m_number" />
-          <field name="name" replacement="m_name" />
-          <field name="parent" replacement="m_parent" />
-          <field name="type" replacement="m_type" />
-          <field name="data" replacement="m_data" />
-          <field name="key" replacement="m_key" />
-          <field name="keys" replacement="m_keys" />
-          <field name="from" replacement="m_from" />
-          <field name="global" replacement="m_global" />
-          <field name="use" replacement="m_use" />
-          <field name="time" replacement="m_time" />
-          <field name="status" replacement="m_status" />
-          <field name="month" replacement="m_month" />
-          <field name="day" replacement="m_day" />
-          <field name="hour" replacement="m_hour" />
-          <field name="comment" replacement="m_comment" />
-          <field name="hosts" replacement="m_hosts" />
-          <field name="to" replacement="m_to" />
-          <field name="second" replacement="m_second" />
-          <field name="local" replacement="m_local" />
-          <field name="group" replacement="m_group" />
-          <field name="start" replacement="m_start" />
-          <field name="stop" replacement="m_stop" />
-          <field name="status" replacement="m_status" />
+        <field name="body" replacement="m_body" />
+        <field name="comment" replacement="m_comment" />
+        <field name="date" replacement="m_date" />
+        <field name="data" replacement="m_data" />
+        <field name="day" replacement="m_day" />
+        <field name="from" replacement="m_from" />
+        <field name="global" replacement="m_global" />
+        <field name="group" replacement="m_group" />
+        <field name="hosts" replacement="m_hosts" />
+        <field name="hour" replacement="m_hour" />
+        <field name="key" replacement="m_key" />
+        <field name="keys" replacement="m_keys" />
+        <field name="local" replacement="m_local" />
+        <field name="month" replacement="m_month" />
+        <field name="name" replacement="m_name" />
+        <field name="number" replacement="m_number" />
+        <field name="open" replacement="m_open" />
+        <field name="parent" replacement="m_parent" />
+        <field name="second" replacement="m_second" />
+        <field name="session" replacement="m_session" />
+        <field name="size"  replacement="m_size" />
+        <field name="start" replacement="m_start" />
+        <field name="status" replacement="m_status" />
+        <field name="stop" replacement="m_stop" />
+        <field name="time" replacement="m_time" />
+        <field name="to" replacement="m_to" />
+        <field name="type" replacement="m_type" />
+        <field name="use" replacement="m_use" />
+        <field name="year" replacement="m_year" />
 	</disallowed>
 </database>
