@@ -247,19 +247,8 @@ public class StateManager implements CommandHandlerInterface {
 		return(true);
 	}
 
+
 	String createSelectionQuery(Hashtable skeys,MMObjectBuilder bul) {
-		String tmps=createSelectionQuery2(skeys,bul);
-		// log.debug("StateManager-> "+createSelectionQuery2(skeys,bul));
-		if (tmps.equals("MMNODE episodes.title==*oorlog*")) {
-			return("WHERE etx_contains(title,Row('oorlog','SEARCH_TYPE=PROX_SEARCH(5)'))");
-		} else {
-			return(tmps);
-		}
-	}
-
-
-
-	String createSelectionQuery2(Hashtable skeys,MMObjectBuilder bul) {
 		String where="MMNODE ",key,val;
 		String name=bul.getTableName();
 			for (Enumeration h=skeys.keys();h.hasMoreElements();) {
