@@ -9,31 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.jsp.PageContext;
-
-import org.mmbase.bridge.jsp.taglib.ContextTag;
-import org.mmbase.bridge.jsp.taglib.ContentTag;
-import org.mmbase.util.Casting;
-import org.mmbase.util.transformers.CharTransformer;
+import java.util.Map;
 
 /**
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.7 2005-03-15 20:33:25 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.8 2005-03-22 15:02:05 michiel Exp $
  * @since MMBase-1.8
  **/
 
 public class StandaloneContextContainer extends ContextContainer {
 
-    private static final int SCOPE = PageContext.PAGE_SCOPE;
 
     /**
      * A simple map, which besides to itself also registers to page-context.
@@ -47,7 +35,7 @@ public class StandaloneContextContainer extends ContextContainer {
      */
     public StandaloneContextContainer(PageContext pc, String i, ContextContainer p) {
         super(pc, i, p);
-        backing = new BasicBacking();
+        backing = new BasicBacking(pc);
         // values must fall through to PageContext, otherwise you always must prefix by context, even in it.
     }
 
@@ -61,89 +49,6 @@ public class StandaloneContextContainer extends ContextContainer {
     }
 
 
-    /**
-     * A basic implementation for the backing, using a HashMap, but which also writes every entry
-     * (except <code>null</code>) to the pageContext.
-     */
-
-    class BasicBacking extends AbstractMap {
-        protected final Map originalPageContextValues;
-        private final Map b = new HashMap();
-        private final boolean isELIgnored;
-        BasicBacking() {
-            isELIgnored = "true".equals(StandaloneContextContainer.this.pageContext.getServletContext().getInitParameter(ContextTag.ISELIGNORED_PARAM));
-            if (! isELIgnored) {
-                originalPageContextValues = new HashMap();
-            } else {
-                originalPageContextValues = null;
-            }
-        }
-        // contains the values originally in the pageContext, so that they can be restored.
-        public Set entrySet() {
-            return new AbstractSet() {
-                    public int size() {
-                        return b.size();
-                    }
-                    public Iterator iterator() {
-                        return new Iterator() {
-                                Iterator i = b.entrySet().iterator();
-                                Map.Entry last = null;
-                                public boolean hasNext() {
-                                    return i.hasNext();
-                                }
-                                public Object next() {
-                                    last = (Map.Entry) i.next();
-                                    return last;
-                                }
-                                public void remove() {
-                                    i.remove();
-                                    if (! isELIgnored) {
-                                        String key = (String) last.getKey();
-                                        if (! originalPageContextValues.containsKey(key)) {
-                                            originalPageContextValues.put(key, pageContext.getAttribute(key, SCOPE));
-                                        }
-                                        pageContext.removeAttribute(key);
-                                    }
-                                }
-                            };
-                    }
-                };
-        }
-        public Object put(Object key, Object value) {
-            if (! isELIgnored) {
-                if (! originalPageContextValues.containsKey(key)) {
-                    // log.debug("Storing pageContext key " + key);
-                    originalPageContextValues.put((String) key, pageContext.getAttribute((String) key, SCOPE));
-                }
-
-                if (value != null) {
-                    pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
-                } else {
-                    pageContext.removeAttribute((String) key, SCOPE);
-                }
-            }
-            return b.put(key, value);
-        }
-        
-        public void release() {
-            if (originalPageContextValues != null) {
-                //log.debug("Restoring pageContext with " + originalPageContextValues);
-                // restore the pageContext
-                Iterator i = originalPageContextValues.entrySet().iterator();
-                while (i.hasNext()) {
-                    Map.Entry e = (Map.Entry) i.next();
-                    if (e.getValue() == null) {
-                        pageContext.removeAttribute((String) e.getKey(), SCOPE);
-                    } else {
-                        pageContext.setAttribute((String) e.getKey(), e.getValue(), SCOPE);
-                    }
-                }
-                originalPageContextValues.clear();
-            }
-        }
-        
-        
-    } 
 
     protected boolean checkJspVar(String jspvar, String id) {
         return true;
