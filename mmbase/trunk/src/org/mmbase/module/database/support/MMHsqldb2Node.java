@@ -23,14 +23,14 @@ import org.mmbase.util.logging.*;
 *
 * @since MMBase-1.5
 * @author Gerard van Enk
-* @version $Id: MMHsqldb2Node.java,v 1.6 2003-05-02 07:55:03 michiel Exp $
+* @version $Id: MMHsqldb2Node.java,v 1.7 2003-05-02 15:11:40 michiel Exp $
 *  
 */
 public class MMHsqldb2Node extends MMSQL92Node {
     /**
      * Logging instance
      */
-    private static Logger log = Logging.getLoggerInstance(MMSQL92Node.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMHsqldb2Node.class.getName());
     
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
         fieldname = fieldname.toLowerCase();
