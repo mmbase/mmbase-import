@@ -9,11 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.protocoldrivers;
 
+/**
+ * @javadoc
+ * @deprecated-now not used anymore
+ * @author  vpro
+ * @version $Id: ProtocolDriver.java,v 1.5 2004-10-08 11:49:06 pierre Exp $
+ */
 public interface ProtocolDriver {
-	public void init(String host, int port);
-	public boolean commitNode(String nodenr,String tableName,String xml);
-	//public boolean addListener(String buildername,String nodenr,RemoteBuilder serv);
-	public String getProtocol();
-	public String toString();
-	public boolean signalRemoteNode(String number, String builder, String ctype);
+    public void init(String host, int port);
+    public boolean commitNode(String nodenr,String tableName,String xml);
+    //public boolean addListener(String buildername,String nodenr,RemoteBuilder serv);
+    public String getProtocol();
+    public String toString();
+    public boolean signalRemoteNode(String number, String builder, String ctype);
 }
