@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.47.2.6 2004-06-03 08:50:02 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.47.2.7 2004-06-24 12:48:20 mark Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -325,7 +325,7 @@ function resizeEditTable() {
       document.getElementById("editform").style.height = docHeight - (divTop + divButtonsHeight);
       // The div is relative positioned to the surrounding table.
       // +10, because we have a padding of 10 in the css.
-      document.getElementById("commandbuttonbar").style.top = docHeight - (divTop + 10);
+      document.getElementById("commandbuttonbar").style.top = docHeight - (2*divButtonsHeight + 10);
     }
     else {
        var docHeight = getDimensions().windowHeight;
