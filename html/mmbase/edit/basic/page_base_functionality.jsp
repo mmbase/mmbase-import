@@ -1,5 +1,5 @@
 <%-- uncomment this, if your JSP-engine is JSP2.0 (see release-notes) --%><%--@page isELIgnored="true"  
---%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*"
+--%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*,org.mmbase.util.xml.UtilReader"
 %><%!
 
 // stack stuff (for the bread-crumb). Might appear a tag for this sometime.
@@ -76,6 +76,9 @@ if (urlStack == null) {
   <mm:import id="session"     externid="mmjspeditors_session"   from="parameters,cookie,this">mmbase_editors_cloud</mm:import>
   <mm:import externid="batches" from="parameters,this" >30</mm:import>
 </mm:context>
+
+<mm:import id="rank"><%= UtilReader.get("editors.xml").getProperties().getProperty("rank", "basic user")%></mm:import>
+
 
 <mm:write referid="config" session="mmeditors_config" />
 

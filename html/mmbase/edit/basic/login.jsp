@@ -13,6 +13,11 @@
       Failed to log in. Try again.
     </p>
   </mm:compare>
+  <mm:compare referid="reason" value="rank">
+    <p class="failed">
+      Failed to log in, rank too low. Try again with another user name.
+    </p>
+  </mm:compare>
   <table>
     <form method="post" action="<mm:write referid="referrer" />" >
     <tr><td>Name:</td><td><input type="text" name="username"></td></tr>

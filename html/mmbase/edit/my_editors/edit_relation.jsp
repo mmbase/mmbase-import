@@ -1,6 +1,6 @@
 <% String title = "Edit relation"; %>
 <%@ include file="inc_top.jsp" %>
-<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
+<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="$rank">
 <%
 // Twee nieuwe strings 
 // String ntype = "";			// Type of node

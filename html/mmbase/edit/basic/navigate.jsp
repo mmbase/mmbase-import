@@ -1,7 +1,7 @@
 <%@ include file="page_base.jsp"
 %><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
-<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
+<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud" rank="$rank">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
