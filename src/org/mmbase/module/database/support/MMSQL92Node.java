@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.15 2000-06-24 18:42:46 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.16 2000-06-24 23:19:29 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2000/06/24 18:42:46  wwwtech
+Daniel.. added auto convertor for illegal fieldnames
+
 Revision 1.14  2000/06/23 09:52:29  wwwtech
 Daniel. fix for handle BYTE
 
@@ -95,14 +98,13 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.15 $ $Date: 2000-06-24 18:42:46 $
+* @$Revision: 1.16 $ $Date: 2000-06-24 23:19:29 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-	String createString="CREATETABLE_SQL92";
 	public String name="sql92";
 	Hashtable typesmap = new Hashtable();
 	XMLDatabaseReader parser;
@@ -129,21 +131,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typesmap.put("BYTE",new Integer(TYPE_BLOB));
 	}
 
-	public void init(MMBase mmb) {
+	public void init(MMBase mmb,XMLDatabaseReader parser) {
 		this.mmb=mmb;
+		this.parser=parser;
 
-		// start of new code for XML config support
-
-		String path=MMBaseContext.getConfigPath()+("/databases/");
-		if ((new File(path+name+".xml")).exists()) {
-			parser=new XMLDatabaseReader(path+name+".xml");
-			typeMapping=parser.getTypeMapping();
-			disallowed2allowed=parser.getDisallowedFields();
-			allowed2disallowed=getReverseHash(disallowed2allowed);
-		} else {
-			System.out.println("MMSQL92 -> Missing xml driver for database : "+name);
-
-		}
+		typeMapping=parser.getTypeMapping();
+		disallowed2allowed=parser.getDisallowedFields();
+		allowed2disallowed=getReverseHash(disallowed2allowed);
 	}
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i) {
@@ -222,6 +216,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		return(result);
 	}
 
+
 	public String parseFieldPart(String fieldname,String dbtype,String part) {
 		String result="";
 		boolean like=false;
@@ -233,8 +228,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			value=value.substring(pos+1,value.length()-1);
 			like=true;
 		}
-		//System.out.println("fieldname="+fieldname+" type="+dbtype);
+		System.out.println("fieldname="+fieldname+" type="+dbtype);
 		if (dbtype.equals("var") || dbtype.equals("varchar")) {
+		//if (dbtype.equals("var") || dbtype.equals("VARCHAR")) {
 			switch (operatorChar) {
 			case '=':
 			case 'E':
@@ -256,6 +252,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 
 		} else if (dbtype.equals("LONG") || dbtype.equals("int")) {
+		//} else if (dbtype.equals("LONG") || dbtype.equals("INTEGER")) {
 			switch (operatorChar) {
 			case '=':
 			case 'E':
@@ -812,6 +809,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 
 
+
 	/**
 	* set prepared statement field i with value of key from node
 	*/
@@ -839,7 +837,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 	}
-
 
  	/**
  	* insert a new object, normally not used (only subtables are used)
