@@ -9,6 +9,7 @@ Current LIST: <B>&lt;LIST RELATION TYPE="$MOD-MMBASE-FIELD-$SESSION-TYPE^-name^"
 Which fields do you want to see?
 <FORM METHOD=POST ACTION="relation4.shtml">
 <LIST OBJECTS TYPE="fielddef" FIELDS="number,guiname,dbname" WHERE="dbtable==$SESSION-TYPE">
+	<INPUT TYPE="HIDDEN" NAME="SESSION-FIELDS" value="">
 	<INPUT TYPE="CHECKBOX" NAME="SESSION-FIELDS" value="$ITEM3">$ITEM2 ($ITEM3)<BR>
 </LIST>
 <INPUT TYPE="SUBMIT" VALUE="Select fields"></td>
