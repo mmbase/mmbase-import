@@ -51,7 +51,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     public void haveBody() { helper.haveBody(); }
            
     private   Vector  referids = null;
-    private   HashMap extraParameters = null;
+    protected HashMap extraParameters = null;
     protected String  page;
 
     public void setReferids(String r) throws JspTagException {
@@ -62,7 +62,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         page = getAttributeValue(p); 
     }
 
-    void addParameter(String key, Object value) throws JspTagException {
+    protected void addParameter(String key, Object value) throws JspTagException {
         extraParameters.put(key, value);
     }
 
