@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.34 2003-11-05 15:50:59 pierre Exp $
+ * @version $Id: ListTag.java,v 1.35 2003-11-06 09:07:25 pierre Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -175,19 +175,19 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                 throw new JspTagException("fields, path, nodes, distinct and search attributes not supported within a container.");
                 // (some of these could be implemented)
             }
-            Query query = (Query) c.getQuery();
-            Queries.addConstraints(query, (String) constraints.getValue(this));
-            // doesn't work yet (needs NodeQuery)
-            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
 
-            NodeList nodes = getCloud().getList(query);
-            // get orderby value fro mm:changed tag
-            List ls = query.getSortOrders();
-            if (ls.size()>0) {
-                StepField sf= ((SortOrder)ls.get(0)).getField();
-                orderby = getAttribute(sf.getStep().getAlias()+'.'+sf.getFieldName());
+            Query query = (Query) c.getQuery();
+/*
+            if (constraints != Attribute.NULL) {
+                Queries.addConstraints(query, (String) constraints.getValue(this));
             }
-            return setReturnValues(nodes, true);
+            // doesn't work yet (needs NodeQuery)
+            if (orderby != Attribute.NULL) {
+                Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+            }
+*/
+            NodeList nodes = getCloud().getList(query);
+            return setReturnValues(nodes, true, query);
         }
     }
 
