@@ -79,34 +79,34 @@ public class servscan extends JamesServlet {
 		//id=(idInterface)getModule("ID");
 		sessions=(sessionsInterface)getModule("SESSION");
 		// org.mmbase stats=(StatisticsInterface)getModule("STATS");
- 
- 		// Set the servletcontext in class MMBaseContext sothat it can be requested by everyone using
- 		// static method MMBaseContext.getServletContext() added on 23 December 1999 by daniel & davzev.
- 		ServletConfig sc=getServletConfig();
- 		ServletContext sx=sc.getServletContext();
- 		MMBaseContext.setServletContext(sx);
-  	}
- 	
- 	/**
- 	 * Adds DEFAULT_CHARSET to mimetype given by SHTML_CONTENTTYPE for handling
- 	 * of the charset used by the database
- 	 */
- 	private String addCharSet( String mimetype ) {
- 		if (mimetype.equals(SHTML_CONTENTTYPE)) 
- 			return mimetype+"; "+DEFAULT_CHARSET; 
- 		return mimetype;
- 	}
- 	
- 	/**
- 	 * handle_line is called by service to parse the SHTML in body.
- 	 * It can be used by children to do their own parsing. The default
- 	 * implementation calls parser.handle_line (from module scanparser)
- 	 * to do the parsing.
- 	 */
- 	protected String handle_line(String body, sessionInfo session, scanpage sp) {
- 		return parser.handle_line(body, session, sp);
- 	}
-  
+
+		// Set the servletcontext in class MMBaseContext sothat it can be requested by everyone using
+		// static method MMBaseContext.getServletContext() added on 23 December 1999 by daniel & davzev.
+		// Removed on 24 - feb -2000 by Wilbert, done by super.init()
+		// ServletConfig sc=getServletConfig();
+		// ServletContext sx=sc.getServletContext();
+		// MMBaseContext.setServletContext(sx);
+	}
+	
+	/**
+	 * Adds DEFAULT_CHARSET to mimetype given by SHTML_CONTENTTYPE for handling
+	 * of the charset used by the database
+	 */
+	private String addCharSet( String mimetype ) {
+		if (mimetype.equals(SHTML_CONTENTTYPE)) 
+			return mimetype+"; "+DEFAULT_CHARSET; 
+		return mimetype;
+	}
+	
+	/**
+	 * handle_line is called by service to parse the SHTML in body.
+	 * It can be used by children to do their own parsing. The default
+	 * implementation calls parser.handle_line (from module scanparser)
+	 * to do the parsing.
+	 */
+	protected String handle_line(String body, sessionInfo session, scanpage sp) {
+		return parser.handle_line(body, session, sp);
+	}
 
 	/**
 	 * Servlet request service.
@@ -115,13 +115,6 @@ public class servscan extends JamesServlet {
 	public void service(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException {
 
 		try {
-		int len,qw_pos;
-		Object obj;
-		PrintWriter out=null;
-		StringTokenizer tok;
-		String rtn,part,part2,finals,tokje,header;
-		sessionInfo session=null;
-		String name=null;
 		scanpage sp=new scanpage();
 		sp.req_line=req.getRequestURI();
 		sp.querystring=req.getQueryString();
@@ -132,22 +125,14 @@ public class servscan extends JamesServlet {
 		String mimetype=sx.getMimeType(sp.req_line);
 		if (mimetype==null) mimetype="text/html";
 		sp.mimetype=mimetype;
-
-		
 		sp.setReq(req);
-
-		// build env.
-		Hashtable requestEnv = new Hashtable();
-
 
 		String sname=getCookie(sp.req,res);
 		sp.sname=sname;
-		session=sessions.getSession(sp,sname);
+		sessionInfo session=sessions.getSession(sp,sname);
 		sp.session=session;
 
 		doEditorReload(sp,res);
-
-		out=res.getWriter();
 
 		// POST
 		if (req.getMethod().equals("POST")) {
@@ -155,99 +140,76 @@ public class servscan extends JamesServlet {
 		}
 
 		// Generate page
+		PrintWriter out=res.getWriter();
 		do {
 			sp.rstatus=0;
-
 			sp.body=parser.getfile(sp.req_line);
-
-			name=doSecure(sp,res);
-
+			doSecure(sp,res); // name=doSecure(sp,res); but name not used here
 			long stime=handleTime(sp);
 
 			if (handleCache(sp,res,out)) return;
 
-
 			if (sp.body!=null && !sp.body.equals("")) {
-					// Process HTML
-					long oldtime = System.currentTimeMillis();
-					sp.body=parser.handle_line(sp.body,session,sp);
+				long oldtime = System.currentTimeMillis();
+				// Process HTML
+				sp.body = handle_line(sp.body, session, sp);
 
-					// Send data back
-					if (sp.body!=null) {
-						if (sp.rstatus==0) {
-							if (mimetype.equals(SHTML_CONTENTTYPE)) {
-						    	res.setContentType(mimetype+"; "+DEFAULT_CHARSET); 
-							} else {
-								res.setContentType(mimetype);
-							}
-
-							out.println(sp.body);
-							handleCacheSave(sp,res);
-						} else if (sp.rstatus==1) {
-							res.setStatus(302,"OK");
-							if (mimetype.equals(SHTML_CONTENTTYPE)) {
-						    	res.setContentType(mimetype+"; "+DEFAULT_CHARSET); 
-							} else {
-								res.setContentType(mimetype);
-							}
-							res.setHeader("Location",sp.body);
-						} else if (sp.rstatus==2) {
-							sp.req_line=sp.body;	
-							if (sp.req_line.indexOf('\n')!=-1) {
-								sp.req_line=sp.req_line.substring(0,sp.req_line.indexOf('\n'));
-							}
-						} else if (sp.rstatus==4) {
-							String tmp = req.getHeader("If-Modified-Since:");
-							if (tmp!=null && sp.processor!=null) {
-								res.setStatus(304,"Not Modified");
-
-								if (mimetype.equals(SHTML_CONTENTTYPE)) {
-						    		res.setContentType(mimetype+"; "+DEFAULT_CHARSET); 
-								} else {
-									res.setContentType(mimetype);
-								}
-							} else {
-								setHeaders(sp,res,sp.body.length());
-								out.println(sp.body);
-							}
+				// Send data back
+				if (sp.body!=null) {
+					if (sp.rstatus==0) {
+						res.setContentType( addCharSet( mimetype ) ); 
+						out.print(sp.body);
+						handleCacheSave(sp,res);
+					} else if (sp.rstatus==1) {
+						res.setStatus(302,"OK");
+						res.setContentType( addCharSet( mimetype ) ); 
+						res.setHeader("Location",sp.body);
+					} else if (sp.rstatus==2) {
+						sp.req_line=sp.body;	
+						if (sp.req_line.indexOf('\n')!=-1) {
+							sp.req_line=sp.req_line.substring(0,sp.req_line.indexOf('\n'));
 						}
-					} else {
-						sp.body="<TITLE>Servscan</TITLE>handle_line returned null<BR>";
-						setHeaders(sp,res,sp.body.length());
-						out.println(sp.body);
+					} else if (sp.rstatus==4) {
+						String tmp = req.getHeader("If-Modified-Since:");
+						if (tmp!=null && sp.processor!=null) {
+							res.setStatus(304,"Not Modified");
+							res.setContentType( addCharSet(mimetype) ); 
+						} else {
+							setHeaders(sp,res,sp.body.length());
+							out.print(sp.body);
+						}
 					}
 				} else {
-					break;
+					sp.body="<TITLE>Servscan</TITLE>handle_line returned null<BR>";
+					setHeaders(sp,res,sp.body.length());
+					out.print(sp.body);
 				}
+			} else {
+				break;
+			}
 
-				if (stime!=-1) {
-					stime=System.currentTimeMillis()-stime;
-					debug("service(): STIME "+stime+"ms "+(stime/1000)+"sec URI="+req.getRequestURI());
-				}
-			} while (sp.rstatus==2);	
-			// End of page parser
-		if (debug) debug("Checkpoint 7");
-		out.close();
+			if (stime!=-1) {
+				stime=System.currentTimeMillis()-stime;
+				debug("service(): STIME "+stime+"ms "+(stime/1000)+"sec URI="+req.getRequestURI());
+			}
+		} while (sp.rstatus==2);	
+		// End of page parser
+		
 		out.flush();
-		if (debug) debug("Checkpoint 8");
+		out.close();
+		} catch(NotLoggedInException e) {
+			debug( "NotLoggedInException: " + e );
 		} catch(Exception a) {
+			debug( "Exception on page: " + req.getRequestURI() );
 			a.printStackTrace();
 		}
-	}
+	}// service
 
 	private final void setHeaders(scanpage sp,HttpServletResponse res,int len) {
+		res.setContentType( addCharSet(sp.mimetype) );
+		// res.setContentLength(len);
 		// org.mmbase String ac=sp.req.getAcceptor();
 		String ac="";
-
-		//res.setContentType("text/html; charset=iso-8859-1");
-		if (sp.mimetype.equals(SHTML_CONTENTTYPE)) {
-//			debug("setHeaders(): Setting contenttype to: "+sp.mimetype+"; "+DEFAULT_CHARSET); 
-		   	res.setContentType(sp.mimetype+"; "+DEFAULT_CHARSET); 
-		} else {
-//			debug("servscan::service -> Setting contenttype to: "+sp.mimetype); 
-			res.setContentType(sp.mimetype);
-		}
-		//res.setContentLength(len);
 		if (true || ac.equals("film")) {
 			Date d=new Date(); // Note this one IS correct
 			Date d2=new Date(System.currentTimeMillis()-7200000);
@@ -344,7 +306,7 @@ public class servscan extends JamesServlet {
 						if (sp.session!=null) {
 							if (poster.checkPostMultiParameter((String)obj)) {
 								// MULTIPLE SUPPORT
-								// sessions.setValue(sp.session,part.substring(8),poster.getPostMultiParameter((String)obj));
+								sessions.addSetValues(sp.session,part.substring(8),poster.getPostMultiParameter((String)obj));
 							} else {
 								sessions.setValue(sp.session,part.substring(8),poster.getPostParameter((String)obj));
 							}
@@ -414,9 +376,9 @@ public class servscan extends JamesServlet {
 				if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
 					setHeaders(sp,res,rst.length());
 					// org.mmbase res.writeHeaders();
-					out.println(rst);
-					out.close();
+					out.print(rst);
 					out.flush();
+					out.close();
 					debug("handleCache(): cache.hit("+req_line+")");
 					return(true);
 				} else {
@@ -431,9 +393,9 @@ public class servscan extends JamesServlet {
 				if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
 					setHeaders(sp,res,rst.length());
 					// org.mmbase res.writeHeaders();
-					out.println(rst);
-					out.close();
+					out.print(rst);
 					out.flush();
+					out.close();
 					debug("handleCache(): cache.hit("+req_line+")");
 					return(true);
 				} else {
