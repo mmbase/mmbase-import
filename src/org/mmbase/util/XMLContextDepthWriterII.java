@@ -168,7 +168,7 @@ public class XMLContextDepthWriterII  {
         // retrieve the node to export
             int nr = ((Integer)nods.next()).intValue();
             MMObjectNode node = bul.getNode(nr);
-            String name = node.getTableName();
+            String name = node.getName();
             NodeWriter nodeWriter = (NodeWriter)nodeWriters.get(name);
             // export the node if the writer was found
             if (nodeWriter!=null) {
