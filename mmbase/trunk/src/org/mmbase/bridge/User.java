@@ -18,7 +18,7 @@ package org.mmbase.bridge;
  * certain that you will receive the same User interface back !
  *
  * @author Eduard Witteveen
- * @version $Id: User.java,v 1.6 2002-01-31 10:05:09 pierre Exp $
+ * @version $Id: User.java,v 1.7 2003-08-18 09:16:41 michiel Exp $
  */
 public interface User {
 
@@ -41,5 +41,11 @@ public interface User {
      *      	<code>false</code> if the user is expired..
      */
     public boolean isValid();
+
+
+    /**
+     * @since MMBase-1.7
+     */
+    public String getOwnerField();
 
 }
