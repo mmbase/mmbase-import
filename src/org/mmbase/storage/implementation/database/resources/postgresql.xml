@@ -6,7 +6,7 @@
 
 	<storagemanager classname="org.mmbase.storage.implementation.database.DatabaseStorageManager" version="0.1" />
 
-	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.HSqlSqlHandler" />
+	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler" />
 
 	<attributes>
 		<!-- Not sure about this option, so turned it off -->
