@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.28.2.3 2004-08-27 14:17:33 gerard Exp $
+ * @version $Id: Version.java,v 1.28.2.4 2004-08-27 14:21:34 gerard Exp $
  */
 public class Version {
 
@@ -95,7 +95,7 @@ public class Version {
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "rc1";
+        return "yes";
     };
 
     /**
