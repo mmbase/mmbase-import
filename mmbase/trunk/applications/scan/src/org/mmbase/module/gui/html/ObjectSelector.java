@@ -308,6 +308,8 @@ public class ObjectSelector implements CommandHandlerInterface {
 			
 			while (searchResult.hasMoreElements()) {
 				node = (MMObjectNode)searchResult.nextElement();	
+				//System.out.println("ObjectSelector node="+node);
+				//System.out.println("ObjectSelector node.getValue(number)="+node.getValue("number"));
 				result.addElement(node.getValue("number").toString());
 				HTMLString = "";
 		
