@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.60 2002-04-18 14:42:58 pierre Exp $
+ * @version $Id: MMBase.java,v 1.61 2002-04-19 11:48:10 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -599,11 +599,11 @@ public class MMBase extends ProcessorModule  {
             MultiConnection con=database.getConnection(jdbc);
             return con;
         } catch (SQLException e) {
-            log.error("Can't get a JDBC connection (database error)"+e);
+            log.error("Can't get a JDBC connection (database error : " + jdbc + ")" + e);
             log.error(Logging.stackTrace(e));
             return null;
         } catch (Exception e) {
-            log.error("Can't get a JDBC connection (JDBC module error)"+e);
+            log.error("Can't get a JDBC connection (JDBC module error : " + jdbc + ")"+e);
             log.error(Logging.stackTrace(e));
             return null;
         }
