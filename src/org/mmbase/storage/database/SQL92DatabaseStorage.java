@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.14 2003-06-23 17:17:35 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.15 2003-06-24 09:50:51 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -303,8 +303,9 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                     return false;
                 }
                 byte[] value = node.getByteValue(fieldName);
-                writeBytesToFile(file.toString() +  File.separator + node.getNumber() + "." + fieldName, value);
+                writeBytesToFile(stype, fieldName, node.getNumber(), value);
                 return false;
+
             } else {
                 log.debug("Setting byte field");
                 setDBByte(i, stmt, node.getByteValue(fieldName));
@@ -382,12 +383,12 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * 
      * @javadoc
      */
-    public final byte[] getBytes(MMObjectNode node,String fieldname) {
+    public final byte[] getBytes(MMObjectNode node, String fieldName) {
     	//TODO: find you why is this code only here and not in other methods/ 
         if (getStoreBinaryAsFile()) {
-            return readBytesFromFile(getBinaryFilePath()+node.getBuilder().getTableName()+File.separator+node.getNumber()+"."+fieldname);
+            return readBytesFromFile(node.getBuilder().getTableName(), fieldName, node.getNumber());
         } else {
-            return getBytes(getFullTableName(node.getBuilder()),fieldname,node.getNumber());
+            return getBytes(getFullTableName(node.getBuilder()), fieldName, node.getNumber());
         }
     }
 
@@ -827,20 +828,36 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     }
 
     /**
+     * Defines how binary (blob) files must look like.
+     * @param tableName
+     * @param fieldName
+     * @param number
+     * @return The File which should represent the (byte[]) value of field fieldName of node number of table tableName
+     * @since MMBase-1.7
+     */
+
+    protected File getBinaryFile(String tableName, String fieldName, int number) {
+        File dir = new File(getBinaryFilePath(), tableName);
+        return new File(dir, "" + number + "." + fieldName);
+    }
+
+
+    /**
      * Writes a byte array to a file.
      * @param file name the path of the file
      * @param value the value to write
-     * @return true if succesful
+     * @return true if succesful, false otherwise
      */
-    protected boolean writeBytesToFile(String filename,byte[] value) {
-        File sfile = new File(filename);
+    protected boolean writeBytesToFile(String tableName, String fieldName, int number, byte[] value) {
+        File binaryFile = getBinaryFile(tableName, fieldName, number);
         try {
-            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+            DataOutputStream scan = new DataOutputStream(new FileOutputStream(binaryFile));
             scan.write(value);
             scan.flush();
             scan.close();
         } catch(Exception e) {
             log.error(e.toString());
+            return false;
         }
         return true;
     }
@@ -850,14 +867,14 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @param file name the path of the file
      * @return value the value read
      */
-    protected byte[] readBytesFromFile(String filename) {
-        File bfile = new File(filename);
-        int filesize = (int)bfile.length();
-        byte[] buffer=new byte[filesize];
-        if (filesize>0) {
+    protected byte[] readBytesFromFile(String tableName, String fieldName, int number) { 
+        File binaryFile = getBinaryFile(tableName, fieldName, number);
+        int fileSize = (int) binaryFile.length();
+        byte[] buffer = new byte[fileSize];
+        if (fileSize > 0) {
             try {
-                FileInputStream scan = new FileInputStream(bfile);
-                int len=scan.read(buffer,0,filesize);
+                FileInputStream scan = new FileInputStream(binaryFile);
+                int len = scan.read(buffer, 0, fileSize);
                 scan.close();
             } catch(IOException e) {
                 log.error(e.toString());
