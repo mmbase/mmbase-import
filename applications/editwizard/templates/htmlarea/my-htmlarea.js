@@ -167,12 +167,16 @@ function updateValue(editor) {
   if (editor._editMode == "wysiwyg") {
 	if (HTMLArea.is_gecko) {
       // disable design mode before changing innerHTML
-      editor._doc.designMode = "off";
+      try {
+        editor._doc.designMode = "off";
+      } catch(e) {}
 	}
 	editor._doc.body.innerHTML = value;
 	if (HTMLArea.is_gecko) {
       // we need to refresh that info for Moz-1.3a
-      editor._doc.designMode = "on";
+      try {
+        editor._doc.designMode = "on";
+      } catch(e) {}
 	}
   }
 }
