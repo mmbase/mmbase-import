@@ -47,8 +47,6 @@ public class MMAdmin extends ProcessorModule {
 
     MMBase mmb=null;
     MMAdminProbe probe=null;
-    HtmlBase htmlbase=null;
-
     String lastmsg="";
     private boolean restartwanted=false;
     private boolean kioskmode=false;
@@ -60,7 +58,6 @@ public class MMAdmin extends ProcessorModule {
             log.info("*** Server started in kiosk mode ***");
         }
     	mmb=(MMBase)getModule("MMBASEROOT");
-        htmlbase=(HtmlBase)getModule("MMBASE");
         probe = new MMAdminProbe(this);
     }
 
@@ -277,51 +274,32 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("MODULECLASSFILE")) {
                 return ""+getModuleClass(tok.nextToken());
             } else if (cmd.equals("MULTILEVELCACHEHITS")) {
-                if (htmlbase==null)
-                    return "N.A.";
-                else
-                    return(""+MultilevelCacheHandler.getCache("basic").getHits());
+                return(""+MultilevelCacheHandler.getCache("basic").getHits());
             } else if (cmd.equals("MULTILEVELCACHEMISSES")) {
-                if (htmlbase==null)
-                    return "N.A.";
-                else
-                    return(""+MultilevelCacheHandler.getCache("basic").getMisses());
+                return(""+MultilevelCacheHandler.getCache("basic").getMisses());
             } else if (cmd.equals("MULTILEVELCACHEREQUESTS")) {
-                if (htmlbase==null)
-                    return "N.A.";
-                else
-                    return(""+(MultilevelCacheHandler.getCache("basic").getHits()+MultilevelCacheHandler.getCache("basic").getMisses()));
+                return(""+(MultilevelCacheHandler.getCache("basic").getHits()+MultilevelCacheHandler.getCache("basic").getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
-                if (htmlbase==null)
-                    return "N.A.";
-                else
-                    return(""+(MultilevelCacheHandler.getCache("basic").getRatio()*100));
+                return(""+(MultilevelCacheHandler.getCache("basic").getRatio()*100));
             } else if (cmd.equals("MULTILEVELCACHESTATE")) {
-                if (htmlbase==null) {
-                    return "N.A.";
-                } else {
-			if (tok.hasMoreTokens()) {
-				String state=tok.nextToken();
-				if (state.equals("On")) {
-					MultilevelCacheHandler.setState(true);
-					log.info("turned multilevelcache on");
-				} else if (state.equals("Off")) {
-					MultilevelCacheHandler.setState(false);
-					log.info("turned multilevelcache off");
-				} 
-			} else {	
-           	     		if (MultilevelCacheHandler.isActive()) {
-					return("On");
-				} else {
-					return("Off");
-				}
-			}
-		}
+                if (tok.hasMoreTokens()) {
+                    String state=tok.nextToken();
+                    if (state.equalsIgnoreCase("On")) {
+                        MultilevelCacheHandler.setState(true);
+                        log.info("turned multilevelcache on");
+                    } else if (state.equalsIgnoreCase("Off")) {
+                        MultilevelCacheHandler.setState(false);
+                        log.info("turned multilevelcache off");
+                    }
+    			} else {
+                    if (MultilevelCacheHandler.isActive()) {
+                        return("On");
+    				} else {
+	    				return("Off");
+		    		}
+		    	}
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                if (htmlbase==null)
-                    return "N.A.";
-                else
-                    return(""+(MultilevelCacheHandler.getCache("basic").getSize()));
+                return(""+(MultilevelCacheHandler.getCache("basic").getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return(""+MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -1677,38 +1655,36 @@ public class MMAdmin extends ProcessorModule {
 
     public Vector  getMultilevelCacheEntries() {
         Vector results=new Vector();
-        if (htmlbase!=null) {
-            Enumeration res=MultilevelCacheHandler.getCache("basic").getOrderedElements();
-            while (res.hasMoreElements()) {
-                MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
-	        	StringTagger tagger=en.getTagger();
-    		    Vector type=tagger.Values("TYPE");
-    	    	Vector where=tagger.Values("WHERE");
-	    	    Vector dbsort=tagger.Values("DBSORT");
-    	    	Vector dbdir=tagger.Values("DBDIR");
-	    	    Vector fields=tagger.Values("FIELDS");
-    		    results.addElement(""+en.getKey());
-        		results.addElement(""+type);
-	    	    results.addElement(""+fields);
-		        if (where!=null) {
-    			    results.addElement(where.toString());
-    	    	} else {
-	    	    	results.addElement("");
-    	    	}
-	    	    if (dbsort!=null) {
-		    	    results.addElement(dbsort.toString());
-        		} else {
-	    	    	results.addElement("");
-	        	}
-    		    if (dbdir!=null) {
-	    		    results.addElement(dbdir.toString());
-    		    } else {
-	    		    results.addElement("");
-    	    	}
-	    	    results.addElement(tagger.ValuesString("ALL"));
-    		    results.addElement(""+MultilevelCacheHandler.getCache("basic").getCount(en.getKey()));
-            }		
-        }
+        Enumeration res=MultilevelCacheHandler.getCache("basic").getOrderedElements();
+        while (res.hasMoreElements()) {
+            MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
+	        StringTagger tagger=en.getTagger();
+            Vector type=tagger.Values("TYPE");
+    	    Vector where=tagger.Values("WHERE");
+	    	Vector dbsort=tagger.Values("DBSORT");
+    	    Vector dbdir=tagger.Values("DBDIR");
+	    	Vector fields=tagger.Values("FIELDS");
+    		results.addElement(""+en.getKey());
+        	results.addElement(""+type);
+	    	results.addElement(""+fields);
+		    if (where!=null) {
+    		    results.addElement(where.toString());
+    	    } else {
+	    	    results.addElement("");
+    	    }
+	    	if (dbsort!=null) {
+		        results.addElement(dbsort.toString());
+            } else {
+	    	    results.addElement("");
+	        }
+    		if (dbdir!=null) {
+	    	    results.addElement(dbdir.toString());
+    		} else {
+	    	    results.addElement("");
+    	    }
+	    	results.addElement(tagger.ValuesString("ALL"));
+    		results.addElement(""+MultilevelCacheHandler.getCache("basic").getCount(en.getKey()));
+        }		
         return(results);
     }
 
