@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.71 2003-03-31 17:16:27 michiel Exp $
+ * @version $Id: Images.java,v 1.72 2003-04-01 08:41:29 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -138,7 +138,7 @@ public class Images extends AbstractImages {
      * The GUI-indicator of an image-node also needs a res/req object.
      * @since MMBase-1.6
      */
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, HttpServletRequest req,  String sessionName) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, HttpServletRequest req, String sessionName) {
         int num = node.getNumber();
         if (num == -1 ) {   // img.db cannot handle uncommited images..
             return "...";
@@ -157,8 +157,10 @@ public class Images extends AbstractImages {
     }
 
     // javadoc copied from parent
-    protected String getSGUIIndicator(String session, HttpServletResponse res, HttpServletRequest req, MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), res, req, session);
+    protected String getSGUIIndicator(String session, HttpServletResponse res, 
+                                      // HttpServletRequest req, 
+                                      MMObjectNode node) {
+        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), res, null, session);
     }
 
     /**
