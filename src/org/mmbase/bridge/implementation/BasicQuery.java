@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.12 2003-08-04 20:13:45 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.13 2003-08-05 09:07:43 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -293,8 +293,8 @@ public class BasicQuery implements Query  {
         return c;
     }
     
-    public FieldConstraint             makeCaseInsensitive(FieldConstraint c) {
-        ((BasicFieldConstraint) c).setCaseSensitive(true);
+    public FieldConstraint             setCaseSensitive(FieldConstraint c, boolean s) {
+        ((BasicFieldConstraint) c).setCaseSensitive(s);
         return c;
         
     }
