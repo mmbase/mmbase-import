@@ -23,7 +23,7 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.19 2002-11-21 09:50:02 robmaris Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.20 2002-11-28 14:11:51 robmaris Exp $
  */
 public interface MMJdbc2NodeInterface extends SearchQueryHandler {
     /**
@@ -59,8 +59,15 @@ public interface MMJdbc2NodeInterface extends SearchQueryHandler {
      * @javadoc
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
+    
     /**
-     * @javadoc
+     * Converts an MMNODE expression to an SQL expression. Returns the 
+     * result as an SQL where-clause, but with the leading "WHERE " left out.
+     *
+     * @param where The MMNODE expression.
+     * @bul The builder for the type of nodes that is queried.
+     * @return The SQL expression.
+     * @see org.mmbase.module.core.MMObjectBuilder#convertMMNode2SQL(String)
      */
     public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul);
     /**

@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.186 2002-11-27 10:47:54 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.187 2002-11-28 14:11:51 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2749,11 +2749,30 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Converts an MMNODE expression to SQL.
+     * Converts an MMNODE expression to an SQL expression. Returns the 
+     * result as an SQL where-clause (including the leading "WHERE ").
+     * <p>
+     * The syntax of an MMNODE expression is defined as follows:
+     * <ul>
+     * <li><em>MMNODE expression</em>: "MMNODE fieldexpressions"
+     * <li><em>fieldexpressions</em> is one field expression, or several
+     *     field expressions combined with logical operators
+     * <li><em>field expression</em>: "fieldXXvalue"
+     * <li><em>field</em> is a fieldname (may be prefixed as in 
+           "prefix.fieldname")
+     * <li><em>XX</em> is a 2 letter comparison operator: "==" (equal), 
+     *     "=E" (equal), "=N" (not equal), "=G" (greater than),
+     *     "=g" (greater than or equal), "=S" (smaller than),
+     *     "=s" (smaller than or equal).
+     * <li><em>value</em> is a value. The form "*value*" is used to
+     *     represent any string containing "value" when comparing for equality.
+     * <li><em>logical operator</em> is "+" (AND) or "-" (AND NOT).
+     * </ul>
      * MMNODE expressions are resolved by the database support classes.
      * This means that some database-specific expressions can easier be converted.
+     *
      * @param where the MMNODE expression
-     * @return the SQL clause as a <code>String</code>
+     * @return The SQL expression.
      */
     public String convertMMNode2SQL(String where) {
         log.debug("convertMMNode2SQL(): "+where);
