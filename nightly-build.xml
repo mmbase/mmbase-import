@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.20 2004-04-30 22:23:57 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.21 2004-05-01 08:35:26 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -87,10 +87,10 @@
 This is the nightly build ${version}, CVS date: ${date}
 It contains the following:
 README.txt                                  This file
-mmbase-src-<version>.<date>.zip             The source from which this build was made
+mmbase-src-&lt;version&gt;.&lt;date&gt;.zip             The source from which this build was made
 mmbase.jar                                  The mmbase.jar
-mmbase-<version>.<date>.zip                 Todays distro (containing a mmbase web application configured for hsql database)
-mmbase-<version>.<date>-<project>.zip       Several applications, which can be upgraded seperatedly (with some luck)
+mmbase-&lt;version&gt;.&lt;date&gt;.zip                 Todays distro (containing a mmbase web application configured for hsql database)
+mmbase-&lt;version&gt;.&lt;date&gt;-&lt;project&gt;.zip       Several applications, which can be upgraded seperatedly (with some luck)
 dtd                                         The dtd's unpacked from the source directory
 api                                         API-documentation
 mmdocs                                      Other documentation (also in distro)
