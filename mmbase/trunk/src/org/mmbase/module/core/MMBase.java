@@ -524,7 +524,16 @@ public class MMBase extends ProcessorModule  {
 		while (t2.hasMoreElements()) {
 			TypeDef.loadTypeDef(""+t2.nextElement());
 		}
-	
+
+		// check and update versions if needed	
+		Versions ver=(Versions)getMMObject("versions");
+		if (ver!=null) {
+			t2 = mmobjs.keys(); 
+			while (t2.hasMoreElements()) {
+				checkBuilderVersion((String)t2.nextElement(),ver);
+			}
+		}
+
 		return(true);
 	}
 
@@ -652,5 +661,23 @@ public class MMBase extends ProcessorModule  {
 				System.out.println("CheckUserLevel ->  mmmbase.userlevel= not defined as user:group");
 			}
 		}
+	}
+	
+	private boolean checkBuilderVersion(String buildername,Versions ver) {
+		String builderfile=MMBaseContext.getConfigPath()+"/builders/"+buildername+".xml";
+		XMLBuilderReader bapp=new XMLBuilderReader(builderfile);
+		if (bapp!=null) {
+			int version=bapp.getBuilderVersion();
+			String maintainer=bapp.getBuilderMaintainer();
+			int installedversion=ver.getInstalledVersion(buildername,"builder");
+			if (installedversion==-1 || version>installedversion) {
+				if (installedversion==-1) {
+					ver.setInstalledVersion(buildername,"builder",maintainer,version);
+				} else {
+					ver.updateInstalledVersion(buildername,"builder",maintainer,version);
+				}
+			}
+		}
+		return(true);
 	}
 }
