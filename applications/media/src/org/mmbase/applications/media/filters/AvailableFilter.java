@@ -17,9 +17,9 @@ import org.w3c.dom.Element;
 import java.util.List;
 
 /**
- * This can sort a list of URLComposers with the available ones on top.
+ * This removes all URLComposers wich are not available.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableFilter.java,v 1.1 2003-02-05 14:28:49 michiel Exp $
+ * @version $Id: AvailableFilter.java,v 1.2 2003-02-05 14:30:34 michiel Exp $
  */
 public class AvailableFilter implements Filter {
 
