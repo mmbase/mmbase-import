@@ -4,6 +4,7 @@
 <mm:import externid="parentlog">-1</mm:import>
 
 <mm:import externid="mode">packageinfo</mm:import>
+<mm:import externid="newmsg" />
 
 <!-- action check -->
 <mm:import externid="action" />
@@ -17,6 +18,134 @@
 	<mm:import id="havelog"><mm:field name="log" /></mm:import>
 </mm:nodelistfunction>
 
+
+<mm:nodelistfunction set="mmpm" name="getPackageInfo" referids="id,version,provider">
+<mm:import id="state"><mm:field name="state" /></mm:import>
+</mm:nodelistfunction>
+
+<mm:compare referid="state" value="installing">
+
+<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+<tr>
+<th colspan="2">progress on installing</th>
+</tr>
+<tr>
+<td colspan="2">
+When the install is done you can check state and log to see if all went well
+</td>
+</tr>
+</table>
+<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+<mm:nodelistfunction set="mmpm" name="getPackageInfo" referids="id,version,provider">
+<tr>
+<td width="<mm:field name="packageprogressbarvalue" />%" style="background-color: #0000aa">&nbsp;</td><td>&nbsp;</td>
+</tr>
+</mm:nodelistfunction>
+</td></tr>
+</table>
+
+<script language="JavaScript">
+<!--
+
+function doLoad()
+{
+    // the timeout value should be the same as in the "refresh" meta-tag
+    setTimeout( "refresh()", 1000 );
+}
+
+function refresh()
+{
+    window.location.href ='index.jsp?main=<mm:write referid="main" />&sub=<mm:write referid="sub" />&id=<mm:write referid="id" />&version=<mm:write referid="version" />&provider=<mm:write referid="provider" />&newmsg=installed&msgtype=install';
+}
+//-->
+</script>
+</mm:compare>
+
+
+<mm:compare referid="state" value="uninstalling">
+<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+<tr>
+<th colspan="2">progress on uninstalling</th>
+</tr>
+<tr>
+<td colspan="2">
+When the install is done you can check state and log to see if all went well
+</td>
+</tr>
+<tr>
+<td width="44%" style="background-color: #0000aa">&nbsp;</td><td>&nbsp;</td>
+</tr>
+</table>
+<script language="JavaScript">
+<!--
+
+function doLoad()
+{
+    // the timeout value should be the same as in the "refresh" meta-tag
+    setTimeout( "refresh()", 1000 );
+}
+
+function refresh()
+{
+    window.location.href ='index.jsp?main=<mm:write referid="main" />&sub=<mm:write referid="sub" />&id=<mm:write referid="id" />&version=<mm:write referid="version" />&provider=<mm:write referid="provider" />&newmsg=installed&msgtype=uninstall';
+}
+//-->
+</script>
+</mm:compare>
+
+
+<mm:compare referid="state" value="installing" inverse="true">
+<mm:compare referid="state" value="uninstalling" inverse="true">
+<mm:present referid="newmsg">
+	<mm:import externid="msgtype" />
+	<mm:compare referid="msgtype" value="install">
+	<mm:import id="action" reset="true">installlog</mm:import>
+	<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+	<tr>
+	<th colspan="1">Result of installing</th>
+	</tr>
+	<tr>
+	<td colspan="1" align="middle">
+		<br />
+		<b>install complete : <mm:write referid="state" /></b>
+		<br /><br />
+	</tr>
+	<tr></td><td width="100%" style="background-color: #0000aa">&nbsp;</td></tr>
+	<td colspan="1" align="middle">
+		<br />
+		<b>If installed correctly, please read the release and install notes<br />
+		For warnings and errors see below or under the 'show logfile'.<br /><br /></b>
+		<form action="<mm:url page="index.jsp" referids="main,sub,id,provider,version" />" method="post">
+		<center><input type="submit" value="ok"></center>
+		</form>
+	</tr>
+	</table>
+	</mm:compare>
+	<mm:compare referid="msgtype" value="uninstall">
+	<mm:import id="action" reset="true">installlog</mm:import>
+	<table cellpadding="0" cellspacing="0" class="list" align="middle" width="60%">
+	<tr>
+	<th colspan="1">Result of uninstalling</th>
+	</tr>
+	<tr>
+	<td colspan="1" align="middle">
+		<br />
+		<b>uninstall complete : <mm:write referid="state" /></b>
+		<br /><br />
+	</tr>
+	<tr></td><td width="100%" style="background-color: #0000aa">&nbsp;</td></tr>
+	<td colspan="1" align="middle">
+		<br />
+		<b>
+		See log for any problems, read release notes to see if a uninstall really			 removed all parts once installed.<br /><br /></b>
+		<form action="<mm:url page="index.jsp" referids="main,sub,id,provider,version" />" method="post">
+		<center><input type="submit" value="ok"></center>
+		</form>
+	</tr>
+	</table>
+	</mm:compare>
+</mm:present>
+<mm:notpresent referid="newmsg">
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" border="0">
 <tr>
 <td width="50%" align="middle" valign="top">
@@ -45,7 +174,7 @@
 	</th>
 	</tr>
 	  <mm:nodelistfunction set="mmpm" name="getPackageInfo" referids="id,version,provider">
- 	    <tr><th>State</th><td><mm:field name="state" /><mm:import id="state"><mm:field name="state" /></mm:import></td>
+ 	    <tr><th>State</th><td><mm:field name="state" /></td>
                   <mm:write referid="state">
                   <mm:compare value="not installed">  
  	    		<tr><th>Install</th>
@@ -99,7 +228,7 @@
                                         <mm:param name="main" value="$main" />
                                         <mm:param name="sub" value="package" />
                                         <mm:param name="id" value="$id" />
-                                        <mm:param name="mode" value="log" />
+                                        <mm:param name="action" value="installlog" />
                                         <mm:param name="provider"><mm:field name="provider" /></mm:param>
                                         <mm:param name="version"><mm:field name="version" /></mm:param>
                                 </mm:url>"><IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
@@ -237,6 +366,9 @@
 	 </mm:nodelistfunction>
 
 </table>
+</mm:compare>
+</mm:notpresent>
+</mm:compare>
 </mm:compare>
 
 <mm:import id="showlog">false</mm:import>
@@ -383,7 +515,7 @@
 
 </mm:compare>
 
-<mm:compare referid="mode" value="log">
+<mm:compare referid="showlog" value="true">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
 <tr>
 	<th COLSPAN="5" align="left">
