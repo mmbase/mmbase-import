@@ -30,7 +30,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.25 $ $Date: 2000-12-05 11:47:49 $
+ * @$Revision: 1.26 $ $Date: 2000-12-10 15:54:13 $
  */
 public class INFO extends ProcessorModule {
 
@@ -439,7 +439,7 @@ public class INFO extends ProcessorModule {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
 			if (cmd.equals("NAME")) return HttpAuth.getRemoteUser(sp.req);
-			// org.mmbase if (cmd.equals("SESSIONNAME")) return sp.req.getSessionName();
+			if (cmd.equals("SESSIONNAME")) return sp.getSessionName();
 			if (cmd.equals("HOSTNAME")) return sp.req.getRemoteHost();
 			if (cmd.equals("REQUEST_URI")) return sp.req.getRequestURI();
 			if (cmd.equals("SECLEVEL")) return sp.req.getAuthType();
