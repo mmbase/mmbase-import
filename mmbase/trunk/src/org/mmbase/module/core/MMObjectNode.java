@@ -22,6 +22,7 @@ import org.mmbase.storage.search.*;
 import org.w3c.dom.Document;
 
 import org.mmbase.cache.RelatedNodesCache;
+import org.mmbase.cache.RelationsCache;
 import org.mmbase.cache.NodeCache;
 
 /**
@@ -35,7 +36,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.110 2003-09-10 11:11:20 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.111 2003-09-10 18:38:03 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -117,18 +118,22 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public String prefix="";
 
-    // Vector  with the related nodes to this node
-    private Vector relations=null; // possibly filled with insRels
+
+    /**
+     * objectNumber -> List of all relation nodes
+     * @since MMBase-1.7
+     */
+    protected static RelationsCache relationsCache = RelationsCache.getCache();
+    // < MMBase-1.7, every mmobjectnode instance had a cache for relation nodes
+    // private Vector relations=null; // possibly filled with insRels
+
 
     /**
      * Determines whether this node is virtual.
      * A virtual node is not persistent (that is, not stored in a table).
      * @scope private
      */
-    protected boolean virtual=false;
-
-    private static int relation_cache_hits=0;
-    private static int relation_cache_miss=0;
+    protected boolean virtual = false;
 
     /**
      * Alias name of this node.
@@ -138,62 +143,18 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     protected String alias;
 
     // object to sync access to properties
-    private Object properties_sync=new Object();
+    private Object properties_sync = new Object();
 
     /**
      * Main constructor.
      * @param parent the node's parent, an instance of the node's builder.
      */
     public MMObjectNode(MMObjectBuilder parent) {
-        if (parent!=null) {
+        if (parent != null) {
             this.parent=parent;
         } else {
             log.error("MMObjectNode-> contructor called with parent=null");
             throw new NullPointerException("contructor called with parent=null");
-        }
-    }
-
-    /**
-     * A ClusterNode can in certain cases be translated in a real node.
-     * @since MMBase-1.7
-     */
-    public MMObjectNode(MMObjectBuilder parent, ClusterNode node, String stepAlias) {
-        this(parent);
-        if (stepAlias == null) {
-            // that's simple
-            values = node.values;
-        } else {
-            // remove prefixed values (which appear in clusternodes with more then one step, but in a real node, they should not appear)
-            String prefix = stepAlias + '.';
-            int length    = prefix.length();
-            Iterator i = node.values.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String key = (String) entry.getKey();
-                if (key.startsWith(prefix)) {
-                    values.put(key.substring(length), entry.getValue());
-                } else {
-                    if (key.indexOf('.') == -1) {
-                        values.put(key, entry.getValue()); // perhaps a node query
-                    } else {
-                        log.debug("this cannot be  field is not a field of this builder");
-                    }
-
-                }
-            }
-        }
-        // so, this given clusternode can be considered a 'real' node, put this realisation into
-        // nodeCache,  (otherwise it would not make it there, and it will be rerequested often).
-        Integer otype  = (Integer) values.get("otype");
-
-        if (otype != null && otype.intValue() ==  parent.getObjectType()) { // only if it also the right type
-            Integer number = (Integer) values.get("number");
-            if (number != null) {
-                NodeCache cache = NodeCache.getCache();
-                cache.put(number, this);
-            } else {
-                log.warn("Could not find number of wrapped ClusterNode " + node);
-            }
         }
     }
 
@@ -501,7 +462,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public boolean setValue(String fieldName, int type, String value) {
         if (type==FieldDefs.TYPE_UNKNOWN) {
             log.error("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
-            return false;
+           return false;
         }
         switch (type) {
         case FieldDefs.TYPE_XML:
@@ -1027,7 +988,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * This means it will be reloaded from the database/storage on next use.
      */
     public void delRelationsCache() {
-        relations=null;
+        relationsCache.remove(new Integer(getNumber()));
     }
 
     /**
@@ -1061,18 +1022,29 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return An <code>Enumeration</code> containing the nodes
      */
     public Enumeration getRelations() {
-        if (relations==null) {
-            relations = parent.getRelations_main(getNumber());
-            relation_cache_miss++;
-
-        } else {
-            relation_cache_hits++;
-        }
+        List relations = getRelationNodes();
         if (relations != null) {
-            return relations.elements();
+            return Collections.enumeration(relations);
         } else {
             return null;
         }
+    }
+    
+    /**
+     * @since MMBase-1.7
+     * @scope public?
+     */
+    protected List getRelationNodes() {
+        Integer number = new Integer(getNumber());
+        List relations;
+        if (! relationsCache.contains(number)) {
+            relations = parent.getRelations_main(getNumber());
+            relationsCache.put(number, relations);
+
+        } else {            
+            relations = (List) relationsCache.get(number);
+        }
+        return relations;
     }
 
     /**
@@ -1087,12 +1059,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return An <code>int</code> indicating the number of nodes found
      */
     public int getRelationCount() {
-        if (relations==null) {
-            relations=parent.getRelations_main(getNumber());
-            relation_cache_miss++;
-        } else {
-            relation_cache_hits++;
-        }
+        List relations = getRelationNodes();
         if (relations!=null) {
             return relations.size();
         } else {
@@ -1144,14 +1111,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         int count = 0;
         MMObjectBuilder wantedType = parent.mmb.getBuilder(wt);
         if (wantedType != null) {
-            if (relations==null) {
-                relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
-                relation_cache_miss++;
-            } else {
-                relation_cache_hits++;
-            }
-            if (relations!=null) {
-                for(Enumeration e=relations.elements();e.hasMoreElements();) {
+            List relations = getRelationNodes();
+            if (relations != null) {
+                for(Enumeration e= Collections.enumeration(relations); e.hasMoreElements();) {
                     MMObjectNode tnode=(MMObjectNode)e.nextElement();
                     int snumber=tnode.getIntValue("snumber");
                     int nodetype =0;
@@ -1375,7 +1337,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Loop through the virtuals vector, group all same nodes based on parent and fetch the real nodes from those parents
      *
-     * @param Vector of virtual nodes (only type.number and type.otype fields are set)
+     * @param List  of virtual nodes (only type.number and type.otype fields are set)
      * @param type, needed to retreive the otype, which is set in node as type + ".otype"
      * @returns List of real nodes
      *
@@ -1453,11 +1415,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     public static int getRelationCacheHits() {
-        return relation_cache_hits;
+        return relationsCache.getHits();
     }
 
     public static int getRelationCacheMiss() {
-        return relation_cache_miss;
+        return relationsCache.getMisses();
     }
 
     public int getByteSize() {
@@ -1465,7 +1427,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
-        return sizeof.sizeof(values) + sizeof.sizeof(relations);
+        return sizeof.sizeof(values);
     }
 
 
