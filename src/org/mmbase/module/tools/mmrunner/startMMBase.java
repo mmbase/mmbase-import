@@ -19,6 +19,7 @@ public class startMMBase extends Object {
 	static String appserverVersion="Orion 1.4.5";
 	static String cmsVersion="MMBase 1.2.3";
 	static String databaseVersion="Hypersonic 1.4.3";
+	static boolean config=false;
 
 
 	public static void main(String[] args) {
@@ -26,6 +27,10 @@ public class startMMBase extends Object {
 		System.out.println("\nStarting MMBase (runner version "+runnerVersion+")");
 		if (args.length>0) {
 			mode=args[0];
+			if (mode.equals("config")) {
+				config=true;
+				mode="loop";
+			}
 		} else {
 			mode="loop";
 		}
@@ -37,7 +42,7 @@ public class startMMBase extends Object {
            	}
 
 		// detect if this is the first startup
-		if (firstContact(curdir)) {
+		if (firstContact(curdir) || config) {
 			System.out.println("\nDetecting this is first run, need to ask a few questions.");
 			setupMMRunner(curdir);
 		}		
