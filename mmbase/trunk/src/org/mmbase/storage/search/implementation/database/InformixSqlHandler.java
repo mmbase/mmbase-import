@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.15 2004-10-12 09:11:39 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.16 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -47,19 +47,13 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             = Logging.getLoggerInstance(InformixSqlHandler.class.getName());
 
     /**
-     * MMBase instance.
-     */
-    private MMBase mmbase = null;
-
-    /**
      * Constructor.
      *
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *                         to allowed alternatives.
      */
-    public InformixSqlHandler(Map disallowedValues) {
-        super(disallowedValues);
-        mmbase = MMBase.getMMBase();
+    public InformixSqlHandler() {
+        super();
     }
 
     /**

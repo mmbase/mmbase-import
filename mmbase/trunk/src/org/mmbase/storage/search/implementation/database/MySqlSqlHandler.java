@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.8 2004-11-30 14:06:55 pierre Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.9 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -47,11 +47,9 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
      * @param disallowedValues Map mapping disallowed table/fieldnames
      *        to allowed alternatives.
      */
-    public MySqlSqlHandler(Map disallowedValues) {
-        super(disallowedValues);
+    public MySqlSqlHandler() {
+        super();
     }
-
-
 
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {

@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @rename VwmTasks
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.17 2004-10-27 15:42:22 pierre Exp $
+ * @version $Id: Vwmtasks.java,v 1.18 2005-01-25 12:45:18 pierre Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -222,10 +222,10 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
         log.service("Search vwmtasks "+"WHERE changedtime>"+checktime
                 +" AND wantedcpu='"+getMachineName()+"'"
-                +" AND "+mmb.getDatabase().getAllowedField("status")+"="+STATUS_REQUEST);
+                +" AND "+mmb.getStorageManagerFactory().getStorageIdentifier("status")+"="+STATUS_REQUEST);
         Enumeration e = search("WHERE changedtime>"+checktime
                 +" AND wantedcpu='"+getMachineName()+"'"
-                +" AND "+mmb.getDatabase().getAllowedField("status")+"="+STATUS_REQUEST);
+                +" AND "+mmb.getStorageManagerFactory().getStorageIdentifier("status")+"="+STATUS_REQUEST);
 
         for (MMObjectNode node=null; e.hasMoreElements();) {
             node = (MMObjectNode)e.nextElement();

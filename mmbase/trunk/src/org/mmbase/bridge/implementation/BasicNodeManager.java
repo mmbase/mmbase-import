@@ -39,7 +39,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.85 2004-12-20 17:54:44 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.86 2005-01-25 12:45:18 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -302,7 +302,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             List resultList = (List) nodeListCache.get(query);
 
             if (resultList == null) {
-                resultList = mmb.getDatabase().getNodes(query, builder);
+                resultList = mmb.getSearchQueryHandler().getNodes(query, builder);
                 builder.processSearchResults(resultList);
                 nodeListCache.put(query, resultList);
             }

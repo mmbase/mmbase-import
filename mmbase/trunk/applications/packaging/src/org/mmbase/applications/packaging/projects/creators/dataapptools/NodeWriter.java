@@ -70,11 +70,11 @@ public class NodeWriter{
                          cal.get(Calendar.SECOND);
         long timestamp=(htimestamp*1000000)+ltimestamp;
 
-	if (isRelationNode) {
-        	write("<relationset type=\"" + builderName + "\" exportsource=\"mmbase://"+mmb.getHost()+"/"+mmb.getJDBC().getDatabaseName()+"/"+mmb.getBaseName()+"\" timestamp=\""+timestamp+"\">\n");
-	} else {
-        	write("<objectset type=\"" + builderName + "\" exportsource=\"mmbase://"+mmb.getHost()+"/"+mmb.getJDBC().getDatabaseName()+"/"+mmb.getBaseName()+"\" timestamp=\""+timestamp+"\">\n");
-	}
+    if (isRelationNode) {
+            write("<relationset type=\"" + builderName + "\" exportsource=\"mmbase://"+mmb.getHost()+"/"+mmb.getStorageManagerFactory().getCatalog()+"/"+mmb.getBaseName()+"\" timestamp=\""+timestamp+"\">\n");
+    } else {
+            write("<objectset type=\"" + builderName + "\" exportsource=\"mmbase://"+mmb.getHost()+"/"+mmb.getStorageManagerFactory().getCatalog()+"/"+mmb.getBaseName()+"\" timestamp=\""+timestamp+"\">\n");
+    }
         // initialize the nr of nodes written
         nrOfNodes = 0;
     }
@@ -147,11 +147,11 @@ public class NodeWriter{
             }
         }
         // end the node
-	if (isRelationNode) {
-        	write("\t</relation>\n\n");
-	} else {
-        	write("\t</object>\n\n");
-	}
+    if (isRelationNode) {
+            write("\t</relation>\n\n");
+    } else {
+            write("\t</object>\n\n");
+    }
         nrOfNodes++;
     }
 
@@ -160,11 +160,11 @@ public class NodeWriter{
     */
     public void done() {
         // write the footer
-	if (isRelationNode) {
-        	write("</relationset>\n");
-	} else {
-        	write("</objectset>\n");
-	}
+    if (isRelationNode) {
+            write("</relationset>\n");
+    } else {
+            write("</objectset>\n");
+    }
         try {
             log.debug("Closing file " + file);
             fw.close();

@@ -11,7 +11,6 @@ package org.mmbase.module.core;
 
 import java.sql.*;
 
-import org.mmbase.module.database.*;
 import org.mmbase.storage.*;
 import org.mmbase.util.functions.FunctionProvider;
 
@@ -27,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.16 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: MMTable.java,v 1.17 2005-01-25 12:45:19 pierre Exp $
  */
 public class MMTable extends FunctionProvider {
 
@@ -74,35 +73,11 @@ public class MMTable extends FunctionProvider {
      * @return The number of entries in the table.
      */
     public int size() {
-        StorageManagerFactory factory = mmb.getStorageManagerFactory();
-        if (factory!=null) {
-            try {
-                return factory.getStorageManager().size((MMObjectBuilder)this);
-            } catch (StorageException se) {
-                log.error(se.getMessage());
-                return -1;
-            }
-        } else {
-            try {
-                MultiConnection con=mmb.getConnection();
-                Statement stmt=con.createStatement();
-                String query = "SELECT count(*) FROM " + mmb.getBaseName() + "_" + tableName + ";";
-                log.info(query);
-                ResultSet rs=stmt.executeQuery(query);
-                int i=-1;
-                try {
-                    while(rs.next()) {
-                        i=rs.getInt(1);
-                    }
-                } finally {
-                    rs.close();
-                }
-                stmt.close();
-                con.close();
-                return i;
-            } catch (Exception e) {
-                return -1;
-            }
+        try {
+            return mmb.getStorageManager().size((MMObjectBuilder)this);
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            return -1;
         }
     }
 
@@ -113,16 +88,11 @@ public class MMTable extends FunctionProvider {
      * @return <code>true</code> if the table is accessible, <code>false</code> otherwise.
      */
     public boolean created() {
-        StorageManagerFactory factory = mmb.getStorageManagerFactory();
-        if (factory != null) {
-            try {
-                return factory.getStorageManager().exists((MMObjectBuilder)this);
-            } catch (StorageException se) {
-                log.error(se.getMessage() + Logging.stackTrace(se));
-                return false;
-            }
-        } else {
-           return mmb.getDatabase().created(getFullTableName());
+        try {
+            return mmb.getStorageManager().exists((MMObjectBuilder)this);
+        } catch (StorageException se) {
+            log.error(se.getMessage() + Logging.stackTrace(se));
+            return false;
         }
     }
 

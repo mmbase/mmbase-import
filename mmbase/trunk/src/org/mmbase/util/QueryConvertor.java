@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.CompositeConstraint;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldValueConstraint;
@@ -43,27 +43,21 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.25 2004-09-30 14:07:11 pierre Exp $
+ * @version $Id: QueryConvertor.java,v 1.26 2005-01-25 12:45:19 pierre Exp $
  */
 public class QueryConvertor {
 
-    // logger
-    //private static Logger log = Logging.getLoggerInstance(QueryConverter.class.getName());
-
-    /**
-     * Database used to convert invalid fieldnames (i.e.e keywords) to valid ones.
-     */
-    public static MMJdbc2NodeInterface database;
+    static StorageManagerFactory factory = null;
 
     /**
      * Converts query to a SQL "where"-clause.
      * @param query the query to convert
-     * @param db the database to use when converting fieldnames
+     * @param factory the storagemanagerfactory to use when converting fieldnames
      * @deprecated Use {@link #setConstraint setConstraint()} to parse
      *        these expressions.
      */
-    public static String altaVista2SQL(String query,MMJdbc2NodeInterface db) {
-        database=db;
+    public static String altaVista2SQL(String query, StorageManagerFactory smf) {
+        factory = smf;
         return altaVista2SQL(query);
     }
 
@@ -449,8 +443,8 @@ class DBConditionItem extends ParseItem {
             prefix = fieldName.substring(0, prefixPos);
             fieldName = fieldName.substring(prefixPos + 1);
         }
-        if (QueryConvertor.database!=null) {
-            identifier=QueryConvertor.database.getAllowedField(fieldName);
+        if (QueryConvertor.factory != null) {
+            identifier = (String)QueryConvertor.factory.getStorageIdentifier(fieldName);
         } else {
             identifier = fieldName;
         }
@@ -697,13 +691,4 @@ class DBLogicalOperator extends ParseItem {
         }
     }
 }
-
-
-
-
-
-
-
-
-
 

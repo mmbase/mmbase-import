@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: UserBuilder.java,v 1.6 2004-04-19 17:00:33 michiel Exp $
+ * @version $Id: UserBuilder.java,v 1.7 2005-01-25 12:45:19 pierre Exp $
  */
 public class UserBuilder extends MMObjectBuilder {
     private static Logger log=Logging.getLoggerInstance(UserBuilder.class.getName());
@@ -61,7 +61,7 @@ public class UserBuilder extends MMObjectBuilder {
         }
         return true;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -76,7 +76,7 @@ public class UserBuilder extends MMObjectBuilder {
      */
     boolean exists(String username, String password) {
         log.trace("username: '"+username+"' password: '"+password+"'");
-        java.util.Enumeration e = searchWithWhere(" username = '"+username+"' ");
+        java.util.Enumeration e = search("WHERE username = '"+username+"' ");
         while(e.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode) e.nextElement();
             if(password == null || encode(password).equals(node.getStringValue("password"))) {
@@ -90,7 +90,7 @@ public class UserBuilder extends MMObjectBuilder {
         log.trace("username: '"+username+"' --> USERNAME NOT CORRECT");
         return false;
     }
-    
+
     protected String encode(String value) {
         return encoder.encode(value);
     }

@@ -466,26 +466,6 @@ Basics.xml
 
     <echo message="java version: ${ant.java.version}" />
 
-    <available property="informix.in.classpath"
-               classpathref="compile.classpath"
-               classname="com.informix.jdbc.IfxCblob" />
-    <antcall target="check.optional.informix" />
-
-    <available property="oracle.in.classpath"
-               classpathref="compile.classpath"
-               classname="oracle.jdbc.OracleDriver" />
-    <antcall target="check.optional.oracle" />
-
-    <available property="naming.in.classpath"
-      classpathref="compile.classpath"
-      classname="javax.naming.Context" />
-    <antcall target="check.optional.naming" />
-
-    <available property="sqlconnection.in.classpath"
-      classpathref="compile.classpath"
-      classname="javax.sql.DataSource" />
-    <antcall target="check.optional.sqlconnection" />
-
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
@@ -494,11 +474,6 @@ Basics.xml
            source="1.4"
            nowarn="${nowarn}"
            deprecation="${deprecation}">
-      <exclude name="org/mmbase/module/JMSendMail.java" unless="naming.in.classpath" />
-      <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
-      <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
-      <exclude name="org/mmbase/module/database/support/MMOracle.java" unless="oracle.in.classpath" />
-      <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
     <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${builddate}</echo>
@@ -528,38 +503,6 @@ Basics.xml
     <echo message=""/>
   </target>
 
-  <target name="check.optional.oracle" unless="oracle.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package oracle.jdbc."/>
-    <echo message="Oracle support for MMBase will not be compiled,"/>
-    <echo message="but MMBase will run without this package."/>
-    <echo message=""/>
-  </target>
-
-  <target name="check.optional.informix" unless="informix.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package com.informix.jdbc."/>
-    <echo message="Informix support for MMBase will not be compiled,"/>
-    <echo message="but MMBase will run without this package."/>
-    <echo message=""/>
-  </target>
-
-  <target name="check.optional.naming" unless="naming.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package javax.naming."/>
-    <echo message="J2EE database and email support for MMBase will not be compiled,"/>
-    <echo message="but MMBase will run without this package."/>
-    <echo message=""/>
-  </target>
-
-  <target name="check.optional.sqlconnection" unless="sqlconnection.in.classpath">
-    <echo message=""/>
-    <echo message="Warning: Missing optional package javax.sql."/>
-    <echo message="J2EE database detection for MMBase will not be compiled,"/>
-    <echo message="but MMBase will run without this package."/>
-    <echo message=""/>
-  </target>
-
   <!-- =================================================================== -->
   <!-- Clean the compiled classes                                          -->
   <!-- =================================================================== -->
@@ -571,7 +514,6 @@ Basics.xml
   <!-- =================================================================== -->
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
-
 
   <target name="jar.uptodatecheck">
     <uptodate property="jar.uptodate" targetfile="${mmbase.jar}" >

@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.94 2004-12-20 12:14:53 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.95 2005-01-25 12:45:19 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -519,7 +519,7 @@ public class MMAdmin extends ProcessorModule {
 
     }
 
-    
+
     /**
      * @since MMBase-1.8
      */
@@ -613,7 +613,7 @@ public class MMAdmin extends ProcessorModule {
         if (installationSet.contains(applicationName)) {
             return result.error("Circular reference to application with name " + applicationName);
         }
-        
+
         XMLApplicationReader app = getApplicationReader(applicationName);
         Versions ver = (Versions)mmb.getMMObject("versions");
         if (app != null) {
@@ -1171,7 +1171,7 @@ public class MMAdmin extends ProcessorModule {
                     continue;
                 }
 
-                
+
                 // check the presence of typedef (if not present, fail)
                 MMObjectBuilder typeDef = mmb.getTypeDef();
                 if (typeDef == null) {
@@ -1535,7 +1535,7 @@ public class MMAdmin extends ProcessorModule {
      */
     Vector getModulesList() {
         Vector results = new Vector();
-        ResourceLoader moduleLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");        
+        ResourceLoader moduleLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
         // new code checks all the *.xml files in builder dir
 
         Set modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false);
@@ -1543,7 +1543,7 @@ public class MMAdmin extends ProcessorModule {
         while (i.hasNext()) {
             String path = (String) i.next();
             String sname = ResourceLoader.getName(path);
-            XMLModuleReader app =  null;            
+            XMLModuleReader app =  null;
             try {
                 app = new XMLModuleReader(ResourceLoader.getConfigurationRoot().getInputSource("modules/" + path));
             } catch (Throwable t) {
@@ -1929,20 +1929,13 @@ public class MMAdmin extends ProcessorModule {
                 int newSize = Integer.parseInt(value);
                 if (newSize != oldSize) {
                     def.setDBSize(newSize);
-                    StorageManagerFactory factory = mmb.getStorageManagerFactory();
-                    if (factory!=null) {
-                        try {
-                            // make change in storage
-                            factory.getStorageManager().change(def);
-                            syncBuilderXML(bul, builder);
-                        } catch (StorageException se) {
-                            def.setDBSize(oldSize);
-                            throw new RuntimeException(se);
-                        }
-                    } else {
-                        if (mmb.getDatabase().changeField(bul, fieldname)) {
-                            syncBuilderXML(bul, builder);
-                        }
+                    try {
+                        // make change in storage
+                        mmb.getStorageManager().change(def);
+                        syncBuilderXML(bul, builder);
+                    } catch (StorageException se) {
+                        def.setDBSize(oldSize);
+                        throw se;
                     }
                 }
             } catch (NumberFormatException nfe)  {
@@ -1970,20 +1963,13 @@ public class MMAdmin extends ProcessorModule {
             int newType = FieldDefs.getDBTypeId(value);
             if (oldType != newType) {
                 def.setDBType(newType);
-                StorageManagerFactory factory = mmb.getStorageManagerFactory();
-                if (factory!=null) {
-                    try {
-                        // make change in storage
-                        factory.getStorageManager().change(def);
-                        syncBuilderXML(bul, builder);
-                    } catch (StorageException se) {
-                        def.setDBType(oldType);
-                        throw new RuntimeException(se);
-                    }
-                } else {
-                    if (mmb.getDatabase().changeField(bul, fieldname)) {
-                        syncBuilderXML(bul, builder);
-                    }
+                try {
+                    // make change in storage
+                    mmb.getStorageManager().change(def);
+                    syncBuilderXML(bul, builder);
+                } catch (StorageException se) {
+                    def.setDBType(oldType);
+                    throw se;
                 }
             }
         }
@@ -2008,27 +1994,18 @@ public class MMAdmin extends ProcessorModule {
             int newState = FieldDefs.getDBStateId(value);
             if (oldState != newState) {
                 def.setDBState(newState);
-                StorageManagerFactory factory = mmb.getStorageManagerFactory();
-                if (factory!=null) {
-                    // add field if it was not persistent before
-                    if ((newState == FieldDefs.DBSTATE_PERSISTENT || newState == FieldDefs.DBSTATE_SYSTEM) &&
-                        (oldState != FieldDefs.DBSTATE_PERSISTENT && oldState != FieldDefs.DBSTATE_SYSTEM)) {
-                        try {
-                            // make change in storage
-                            factory.getStorageManager().create(def);
-                            // only then add to builder
-                            bul.addField(def);
-                            syncBuilderXML(bul, builder);
-                        } catch (StorageException se) {
-                            def.setDBState(oldState);
-                            throw new RuntimeException(se);
-                        }
-                    }
-                    // TODO:  remove field if no longer persistent ???
-                } else {
-                    // TODO: should be ADD or REMOVE, not CHANGE
-                    if (mmb.getDatabase().changeField(bul, fieldname)) {
+                // add field if it was not persistent before
+                if ((newState == FieldDefs.DBSTATE_PERSISTENT || newState == FieldDefs.DBSTATE_SYSTEM) &&
+                    (oldState != FieldDefs.DBSTATE_PERSISTENT && oldState != FieldDefs.DBSTATE_SYSTEM)) {
+                    try {
+                        // make change in storage
+                        mmb.getStorageManager().create(def);
+                        // only then add to builder
+                        bul.addField(def);
                         syncBuilderXML(bul, builder);
+                    } catch (StorageException se) {
+                        def.setDBState(oldState);
+                        throw se;
                     }
                 }
             }
@@ -2079,20 +2056,13 @@ public class MMAdmin extends ProcessorModule {
             boolean newNotNull = value.equals("true");
             if (oldNotNull != newNotNull) {
                 def.setDBNotNull(newNotNull);
-                StorageManagerFactory factory = mmb.getStorageManagerFactory();
-                if (factory!=null) {
-                    try {
-                        // make change in storage
-                        factory.getStorageManager().change(def);
-                        syncBuilderXML(bul, builder);
-                    } catch (StorageException se) {
-                        def.setDBNotNull(oldNotNull);
-                        throw new RuntimeException(se);
-                    }
-                } else {
-                    if (mmb.getDatabase().changeField(bul, fieldname)) {
-                        syncBuilderXML(bul, builder);
-                    }
+                try {
+                    // make change in storage
+                    mmb.getStorageManager().change(def);
+                    syncBuilderXML(bul, builder);
+                } catch (StorageException se) {
+                    def.setDBNotNull(oldNotNull);
+                    throw se;
                 }
             }
         }
@@ -2151,26 +2121,11 @@ public class MMAdmin extends ProcessorModule {
             value = (String)vars.get("guitype");
             def.setGUIType(value);
 
-            StorageManagerFactory factory = mmb.getStorageManagerFactory();
-            if (factory!=null) {
-                try {
-                    // make change in storage
-                    factory.getStorageManager().create(def);
-                    // only then add to builder
-                    bul.addField(def);
-                    syncBuilderXML(bul, builder);
-                } catch (StorageException se) {
-                    throw new RuntimeException(se);
-                }
-            } else {
-                // for old support classes, need to add field to builder first
-                bul.addField(def);
-                if (mmb.getDatabase().addField(bul, def.getDBName())) {
-                    syncBuilderXML(bul, builder);
-                } else {
-                    log.warn("Could not sync builder XML because addField returned false (tablesizeprotection?)");
-                }
-            }
+            // make change in storage
+            mmb.getStorageManager().create(def);
+            // only then add to builder
+            bul.addField(def);
+            syncBuilderXML(bul, builder);
         } else {
             log.service("Cannot add field to builder " + builder + " because it could not be found");
         }
@@ -2191,26 +2146,11 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getMMObject(builder);
         if (bul != null && value != null && value.equals("Yes")) {
             FieldDefs def = bul.getField(fieldname);
-            StorageManagerFactory factory = mmb.getStorageManagerFactory();
-            if (factory!=null) {
-                try {
-                    // make change in storage
-                    factory.getStorageManager().delete(def);
-                    // only then delete in builder
-                    bul.removeField(fieldname);
-                    syncBuilderXML(bul, builder);
-                } catch (StorageException se) {
-                    throw new RuntimeException(se);
-                }
-            } else {
-                // for old support classes, need to delete field from builder first
-                bul.removeField(fieldname);
-                if (mmb.getDatabase().removeField(bul, def.getDBName())) {
-                    syncBuilderXML(bul, builder);
-                } else {
-                    bul.addField(def);
-                }
-            }
+            // make change in storage
+            mmb.getStorageManager().delete(def);
+            // only then delete in builder
+            bul.removeField(fieldname);
+            syncBuilderXML(bul, builder);
         }
     }
 

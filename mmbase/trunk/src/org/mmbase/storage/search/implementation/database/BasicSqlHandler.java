@@ -17,12 +17,11 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 import java.text.FieldPosition;
 
-
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.42 2004-12-23 17:31:05 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.43 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 
@@ -30,11 +29,21 @@ public class BasicSqlHandler implements SqlHandler {
 
     private static final Logger log = Logging.getLoggerInstance(BasicSqlHandler.class);
 
-    /** MMBase instance. */
-    private MMBase mmbase = null;
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final FieldPosition dontcareFieldPosition = new FieldPosition(SimpleDateFormat.YEAR_FIELD);
 
-    /** Disallowed table/fieldnames mapped to allowed alternatives. */
-    private Map disallowed2Allowed = null;
+    /** MMBase instance. */
+    protected MMBase mmbase;
+
+    /**
+     * Constructor.
+     *
+     * @param disallowedValues Map mapping disallowed table/fieldnames
+     *        to allowed alternatives.
+     */
+    public BasicSqlHandler() {
+        mmbase = MMBase.getMMBase();
+    }
 
     /**
      * Utility method, modifies strings for use in SQL statements.
@@ -87,14 +96,9 @@ public class BasicSqlHandler implements SqlHandler {
      * not always the case, because some database only match case insensitively, in which case it
      * does not make sense to lowercase.
      */
-
     protected boolean useLower(FieldCompareConstraint constraint) {
         return true;
     }
-
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final FieldPosition dontcareFieldPosition = new FieldPosition(SimpleDateFormat.YEAR_FIELD);
 
     protected void appendDateValue(StringBuffer sb, Date value) {
         dateFormat.format(value, sb, dontcareFieldPosition);
@@ -162,20 +166,6 @@ public class BasicSqlHandler implements SqlHandler {
                 // String value.
                 sb.append((String) value);
             }
-        }
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param disallowedValues Map mapping disallowed table/fieldnames
-     *        to allowed alternatives.
-     */
-    public BasicSqlHandler(Map disallowedValues) {
-        mmbase = MMBase.getMMBase();
-        disallowed2Allowed = new HashMap(disallowedValues);
-        if (log.isDebugEnabled()) {
-            log.debug("disallowed2Allowed=" + disallowed2Allowed);
         }
     }
 
@@ -874,21 +864,16 @@ public class BasicSqlHandler implements SqlHandler {
 
     // javadoc is inherited
     public int getSupportLevel(Constraint constraint, SearchQuery query)
-    throws SearchQueryException {
+            throws SearchQueryException {
         return constraint.getBasicSupportLevel();
     }
 
     // javadoc is inherited
     public String getAllowedValue(String value) {
         if (value == null) {
-            throw new IllegalArgumentException(
-            "Invalid value: " + value);
+            throw new IllegalArgumentException("Invalid value: " + value);
         }
-        String allowedValue = (String) disallowed2Allowed.get(value);
-        if (allowedValue == null) {
-            allowedValue = value;
-        }
-        return allowedValue;
+        return (String)mmbase.getStorageManagerFactory().getStorageIdentifier(value);
     }
 
     /**

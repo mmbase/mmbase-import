@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheNode.java,v 1.4 2004-10-08 13:03:44 pierre Exp $
+ * @version $Id: VersionCacheNode.java,v 1.5 2005-01-25 12:45:19 pierre Exp $
  */
 public class VersionCacheNode extends Object {
 
@@ -55,9 +55,7 @@ public class VersionCacheNode extends Object {
                     Vector ordervec = new Vector();
                     Vector dirvec = new Vector();
 
-                    MultiRelations multirelations = (MultiRelations)mmb.getMMObject("multirelations");
-
-                    Vector vec = multirelations.searchMultiLevelVector(nodes,fields,"YES",types,buildername+".number=="+number,ordervec,dirvec);
+                    Vector vec = mmb.getClusterBuilder().searchMultiLevelVector(nodes,fields,"YES",types,buildername+".number=="+number,ordervec,dirvec);
                     if (log.isDebugEnabled()) log.debug("VEC=" + vec);
                     if (vec != null && vec.size() > 0) {
                         dirty = true;
