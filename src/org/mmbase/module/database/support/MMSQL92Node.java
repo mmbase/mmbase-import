@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.48 2001-03-04 15:23:05 daniel Exp $
+$Id: MMSQL92Node.java,v 1.49 2001-03-09 09:12:04 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.48  2001/03/04 15:23:05  daniel
+Added on/off option for tableChanges
+
 Revision 1.47  2001/03/03 23:11:02  daniel
 updated for table changes
 
@@ -34,11 +37,7 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
-
-
-//XercesParser
-import org.apache.xerces.parsers.*;
-import org.xml.sax.*;
+import org.mmbase.util.logging.*;
 
 /**
 * MMSQL92Node implements the MMJdbc2NodeInterface for
@@ -46,14 +45,17 @@ import org.xml.sax.*;
 * needed for mmbase for each database.
 *
 * @author Daniel Ockeloen
-* @version 12 Mar 1997
-* @$Revision: 1.48 $ $Date: 2001-03-04 15:23:05 $
+* @author Pierre van Rooden
+* @version 09 Mar 2001
+* @$Revision: 1.49 $ $Date: 2001-03-09 09:12:04 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    /**
+    * Logging instance
+    */
+	private static Logger log = Logging.getLoggerInstance(MMSQL92Node.class.getName());
+	
 	//does the database support keys?
 	private boolean keySupported=false;
 	public String name="sql92";
@@ -134,8 +136,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 			return (node);
 		} catch(SQLException e) {
-			System.out.println("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
-			e.printStackTrace();	
+			log.error("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
+			log.error(Logging.stackTrace(e));
 		}
 		return(node);
 	}
@@ -151,14 +153,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			if (parser.hasMoreTokens()) {
 				cmd=parser.nextToken();
 			} 
-			//System.out.println("CMD="+cmd+" PART="+part);
 			// do we have a type prefix (example episodes.title==) ?
 			int pos=part.indexOf('.');
 			if (pos!=-1) {
 				part=part.substring(pos+1);
 			}
-			//System.out.println("PART="+part);
-			
 			// remove fieldname  (example title==) ?
 			pos=part.indexOf('=');
 			if (pos!=-1) {
@@ -250,8 +249,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			con.close();
 			return(result);
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : trying to load text");
-			e.printStackTrace();
+			log.error("MMObjectBuilder : trying to load text");
+		    log.error(Logging.stackTrace(e));
 		}
 		return(null);
 	}
@@ -274,8 +273,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				con.close();
 				return(result);
 			} catch (Exception e) {
-				System.out.println("MMObjectBuilder : trying to load bytes");
-				e.printStackTrace();
+			    log.error("MMObjectBuilder : trying to load bytes");
+				log.error(Logging.stackTrace(e));
 			}
 		} else {
 			MMObjectNode tn=mmb.getTypeDef().getNode(number);
@@ -304,8 +303,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			input.readFully(bytes);
 			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> MMMysql byte  exception "+e);
-			e.printStackTrace();
+			log.error("MMObjectBuilder -> MMMysql byte  exception "+e);
+		    log.error(Logging.stackTrace(e));
 		}
 		return(bytes);
 	}
@@ -324,11 +323,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			inp=rs.getAsciiStream(idx);
 			if (inp==null) {
-				//System.out.println("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
+				//log.debug("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
 				 return("");
 			}
 			if (rs.wasNull()) {
-				System.out.println("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
+				log.trace("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
 				return("");
 			}
 			siz=inp.available(); // DIRTY
@@ -339,8 +338,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			str=new String(isochars,"ISO-8859-1");
 			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> MMMysql text  exception "+e);
-			e.printStackTrace();
+			log.error("MMObjectBuilder -> MMMysql text  exception "+e);
+		    log.error(Logging.stackTrace(e));
 			return("");
 		}
 		return(str);
@@ -380,7 +379,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			int DBState = node.getDBState(key);
 			if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 			  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-				if (debug) debug("Insert: DBState = "+DBState+", adding key: "+key);
+				if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", adding key: "+key);
 
 					// hack for blobs to disk
 					int dbtype=node.getDBType(key);
@@ -389,13 +388,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					} else {
 					}
 			} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-				if (debug) debug("Insert: DBState = "+DBState+", skipping key: "+key);
+				if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", skipping key: "+key);
 			} else {
 
                	if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 						fieldAmounts+=",?";
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
+					log.error("Insert: DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
                	}
 			}
 		}
@@ -404,11 +403,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		PreparedStatement stmt=null;
 		try {
             // Prepare the statement using the amount of fields found.
-            if (debug) debug("Insert: Preparing statement "+mmb.baseName+"_"+tableName+" using fieldamount String: "+fieldAmounts);
+            if (log.isDebugEnabled()) log.trace("Insert: Preparing statement "+mmb.baseName+"_"+tableName+" using fieldamount String: "+fieldAmounts);
 			con=bul.mmb.getConnection();
 			stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+tableName+" values("+fieldAmounts+")");
-		} catch(Exception t) {
-			t.printStackTrace();
+		} catch(Exception e) {
+		    log.error(Logging.stackTrace(e));
 		}
 		try {
 			stmt.setEscapeProcessing(false);
@@ -421,17 +420,17 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				int DBState = node.getDBState(key);
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 				  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-					if (debug) debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
+					if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
 					if (setValuePreparedStatement( stmt, node, key, j )) j++;
 
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-					if (debug) debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
+					if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
 				    if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 						setValuePreparedStatement( stmt, node, key, j );
 						j++;
 				    } else {
-						debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+						log.error("Insert: DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
 				    }
 				}
 			}
@@ -440,31 +439,45 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.error("Error on : "+number+" "+owner+" fake");
 			try {
 			stmt.close();
 			con.close();
 			} catch(Exception t2) {}
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 			return(-1);
 		}
 
 		if (node.parent!=null && (node.parent instanceof InsRel) && !tableName.equals("insrel")) {
 			try {
 				con=mmb.getConnection();
-				stmt=con.prepareStatement("insert into "+mmb.baseName+"_insrel values(?,?,?,?,?,?)");
-				stmt.setInt(1,number);
-				stmt.setInt(2,node.getIntValue("otype"));
-				stmt.setString(3,node.getStringValue("owner"));
-				stmt.setInt(4,node.getIntValue("snumber"));
-				stmt.setInt(5,node.getIntValue("dnumber"));
-				stmt.setInt(6,node.getIntValue("rnumber"));
+				// Note : this routine assumes a certain order in which the field in InsRel exist
+				// deviating from that order may cause problems
+				if (InsRel.usesdir) {
+				    // add a dir field if directionality is supported
+    				stmt=con.prepareStatement("insert into "+mmb.baseName+"_insrel values(?,?,?,?,?,?,?)");
+    				stmt.setInt(1,number);
+	    			stmt.setInt(2,node.getIntValue("otype"));
+		    		stmt.setString(3,node.getStringValue("owner"));
+			    	stmt.setInt(4,node.getIntValue("snumber"));
+				    stmt.setInt(5,node.getIntValue("dnumber"));
+    				stmt.setInt(6,node.getIntValue("rnumber"));
+    				stmt.setInt(7,node.getIntValue("dir"));
+                } else {
+    				stmt=con.prepareStatement("insert into "+mmb.baseName+"_insrel values(?,?,?,?,?,?)");
+    				stmt.setInt(1,number);
+	    			stmt.setInt(2,node.getIntValue("otype"));
+		    		stmt.setString(3,node.getStringValue("owner"));
+			    	stmt.setInt(4,node.getIntValue("snumber"));
+				    stmt.setInt(5,node.getIntValue("dnumber"));
+    				stmt.setInt(6,node.getIntValue("rnumber"));
+                }
 				stmt.executeUpdate();
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("Error on : "+number+" "+owner+" fake");
+				log.error("Error on : "+number+" "+owner+" fake");
+		        log.error(Logging.stackTrace(e));
 				return(-1);
 			}
 		}
@@ -480,8 +493,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.error("Error on : "+number+" "+owner+" fake");
+		    log.error(Logging.stackTrace(e));
 			return(-1);
 		}
 
@@ -501,9 +514,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(node.getIntValue("number"),tableName,"n");
 			}
 		}
-		//node.setValue("number",number);
 		node.clearChanged();
-		//System.out.println("INSERTED="+node);
 		return(number);	
 	}
 
@@ -517,17 +528,17 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			isochars=body.getBytes("ISO-8859-1");
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> String contains odd chars");
-			System.out.println(body);
-			e.printStackTrace();
+			log.error("MMObjectBuilder -> String contains odd chars");
+			log.error(body);
+		    log.error(Logging.stackTrace(e));
 		}
 		try {
 			ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
 			stmt.setAsciiStream(i,stream,isochars.length);
 			stream.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : Can't set ascii stream");
-			e.printStackTrace();
+			log.error("MMObjectBuilder : Can't set ascii stream");
+		    log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -541,8 +552,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.setBinaryStream(i,stream,bytes.length);
 			stream.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : Can't set byte stream");
-			e.printStackTrace();
+			log.error("MMObjectBuilder : Can't set byte stream");
+		    log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -604,7 +615,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+		        log.error(Logging.stackTrace(e));
 				return(false);
 			}
 		}
@@ -631,13 +642,13 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	*/
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
 		int number=node.getIntValue("number");
-		if(debug) {
-			System.out.println("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-			System.out.println("SAVECOPY "+node.toString());
+		if(log.isDebugEnabled()) {
+			log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
+			log.trace("SAVECOPY "+node.toString());
 		}
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {
-			System.out.println("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
+			log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
 		} else {
 		if (number!=-1) {
 			try {
@@ -647,7 +658,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+		        log.error(Logging.stackTrace(e));
 			}
 			if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
 				try {
@@ -657,7 +668,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					stmt.close();
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+    		        log.error(Logging.stackTrace(e));
 				}
 			}
 
@@ -668,7 +679,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+		        log.error(Logging.stackTrace(e));
 			}
 		}
 		}
@@ -690,12 +701,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	 * And inserts the DBKey retrieve by getDBKeyOld
 	 */
 	private void checkNumberTable() {
-		if (debug) System.out.println("MMSQL92NODE -> checks if table numberTable exists.");
+		if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> checks if table numberTable exists.");
 		if(!created(mmb.baseName+"_numberTable")) {
 			// We want the current number of object, not next number (that's the -1)
 			int number = getDBKeyOld()-1;
 
-	 	 	if (debug) System.out.println("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
+	 	 	if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> Creating table numberTable and inserting row with number "+number);
 			String createStatement = getMatchCREATE("numberTable")+"( "+getNumberString()+" integer not null);";
 			try {
 				MultiConnection con=mmb.getConnection();
@@ -705,8 +716,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				System.out.println("MMSQL92NODE -> ERROR, Wasn't able to create numberTable table.");
-				e.printStackTrace();
+				log.error("MMSQL92NODE -> Wasn't able to create numberTable table.");
+		        log.error(Logging.stackTrace(e));
 			}
 		}
 	}
@@ -733,10 +744,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
+		    log.error("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
+		    log.error(Logging.stackTrace(e));
 		}
-		if (debug) System.out.println("MMSQL92NODE -> retrieving number "+number+" from the database");
+		if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> retrieving number "+number+" from the database");
 		return (number); 
 	}
 
@@ -755,7 +766,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			if (debug) System.out.println("MMBase -> Error getting a new key number");
+			log.error("MMBase -> Error getting a new key number");
 			return(1);
 		}
 		return(number);
@@ -837,7 +848,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					try {
 						file.mkdirs();
 					} catch(Exception e) {
-						System.out.println("Can't create dir : "+datapath+stype);
+						log.error("Can't create dir : "+datapath+stype);
 					}
 					byte[] value=node.getByteValue(key);
 					saveFile(datapath+stype+"/"+node.getIntValue("number")+"."+key,value);
@@ -903,9 +914,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
-			 System.out.println("XMLCREATE="+result);
-			e.printStackTrace();
+			log.error("can't create table "+tableName);
+			log.error("XMLCREATE="+result);
+		    log.error(Logging.stackTrace(e));
 			return(false);
 		}
 		return(true);
@@ -931,9 +942,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
-			 System.out.println("XMLCREATE="+result);
-			e.printStackTrace();
+			log.error("can't create table "+tableName);
+			log.error("XMLCREATE="+result);
+		    log.error(Logging.stackTrace(e));
 			return(false);
 		}
 		return(true);
@@ -942,45 +953,45 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	public boolean addField(MMObjectBuilder bul,String fieldname) {
 		if (tableSizeProtection(bul)) return(false);
 
-		System.out.println("Starting a addField : "+bul.getTableName()+" field="+fieldname);
+		log.info("Starting a addField : "+bul.getTableName()+" field="+fieldname);
 		String tableName=bul.getTableName();
 		if (create_real(bul,tableName+"_tmp")) {
-			System.out.println("created tmp  table : "+tableName+"_tmp");
+			log.info("created tmp  table : "+tableName+"_tmp");
 			copyJDBCTable(tableName,tableName+"_tmp",bul);
 			if (checkJDBCTable(tableName,tableName+"_tmp",bul,fieldname,true)) {
-				System.out.println("checked tmp table passed");
+				log.info("checked tmp table passed");
 			} else {
-				System.out.println("ERROR: checked tmp table failed");
+				log.error("checked tmp table failed");
 				drop_real(bul,tableName+"_tmp");
 				return(false);
 			}
 		} else {
-			System.out.println("ERROR: tmp create table failed");
+			log.error("tmp create table failed");
 			return(false);
 		}
 		if (drop(bul)) {
-			System.out.println("drop of old table done : "+bul.getTableName());
+			log.info("drop of old table done : "+bul.getTableName());
 			if (create(bul)) {
-				System.out.println("create of new table done : "+bul.getTableName());
+				log.info("create of new table done : "+bul.getTableName());
 				copyJDBCTable(tableName+"_tmp",tableName,bul);
 				if (checkJDBCTable(tableName+"_tmp",tableName,bul)) {
 					if (drop_real(bul,tableName+"_tmp")) {
-						System.out.println("dropping tmp  table : "+tableName+"_tmp");
+						log.info("dropping tmp  table : "+tableName+"_tmp");
 					} else {
-						System.out.println("ERROR: tmp table  drop failed");
+						log.error("tmp table  drop failed");
 						return(false);
 					} 
 				} else {
-					System.out.println("ERROR: checked new table failed");
+					log.error("checked new table failed");
 					return(false);
 				}
 				return(true);
 			} else {
-				System.out.println("ERROR: create of new table failed : "+bul.getTableName());
+				log.error("create of new table failed : "+bul.getTableName());
 				return(false);
 			}
 		}  else {
-			System.out.println("ERROR: drop of old table failed : "+bul.getTableName());
+			log.error("drop of old table failed : "+bul.getTableName());
 			return(false);
 		}
 	}
@@ -988,46 +999,46 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	public boolean removeField(MMObjectBuilder bul,String fieldname) {
 		if (tableSizeProtection(bul)) return(false);
 
-		System.out.println("Starting a removefield : "+bul.getTableName()+" field="+fieldname);
+		log.info("Starting a removefield : "+bul.getTableName()+" field="+fieldname);
 
 		String tableName=bul.getTableName();
 		if (create_real(bul,tableName+"_tmp")) {
-			System.out.println("created tmp  table : "+tableName+"_tmp");
+			log.info("created tmp  table : "+tableName+"_tmp");
 			copyJDBCTable(tableName,tableName+"_tmp",bul);
 			if (checkJDBCTable(tableName,tableName+"_tmp",bul,fieldname,false)) {
-				System.out.println("checked tmp table passed");
+				log.info("checked tmp table passed");
 			} else {
-				System.out.println("ERROR: checked tmp table failed");
+				log.error("checked tmp table failed");
 				drop_real(bul,tableName+"_tmp");
 				return(false);
 			}
 		} else {
-			System.out.println("ERROR: tmp create table failed");
+			log.error("tmp create table failed");
 			return(false);
 		}
 		if (drop(bul)) {
-			System.out.println("drop of old table done : "+bul.getTableName());
+			log.info("drop of old table done : "+bul.getTableName());
 			if (create(bul)) {
-				System.out.println("create of new table done : "+bul.getTableName());
+				log.info("create of new table done : "+bul.getTableName());
 				copyJDBCTable(tableName+"_tmp",tableName,bul);
 				if (checkJDBCTable(tableName+"_tmp",tableName,bul)) {
 					if (drop_real(bul,tableName+"_tmp")) {
-						System.out.println("dropping tmp  table : "+tableName+"_tmp");
+						log.info("dropping tmp  table : "+tableName+"_tmp");
 					} else {
-						System.out.println("ERROR: tmp table  drop failed");
+						log.error("tmp table  drop failed");
 						return(false);
 					} 
 				} else {
-					System.out.println("ERROR: checked new table failed");
+					log.error("checked new table failed");
 					return(false);
 				}
 				return(true);
 			} else {
-				System.out.println("ERROR: create of new table failed : "+bul.getTableName());
+				log.error("create of new table failed : "+bul.getTableName());
 				return(false);
 			}
 		}  else {
-			System.out.println("ERROR: drop of old table failed : "+bul.getTableName());
+			log.error("drop of old table failed : "+bul.getTableName());
 			return(false);
 		}
 	}
@@ -1035,45 +1046,45 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	public boolean changeField(MMObjectBuilder bul,String fieldname) {
 		if (tableSizeProtection(bul)) return(false);
 
-		System.out.println("Starting a changeField : "+bul.getTableName()+" field="+fieldname);
+		log.info("Starting a changeField : "+bul.getTableName()+" field="+fieldname);
 		String tableName=bul.getTableName();
 		if (create_real(bul,tableName+"_tmp")) {
-			System.out.println("created tmp  table : "+tableName+"_tmp");
+			log.info("created tmp  table : "+tableName+"_tmp");
 			copyJDBCTable(tableName,tableName+"_tmp",bul);
 			if (checkJDBCTable(tableName,tableName+"_tmp",bul)) {
-				System.out.println("checked tmp table passed");
+				log.info("checked tmp table passed");
 			} else {
-				System.out.println("ERROR: checked tmp table failed");
+				log.error("checked tmp table failed");
 				drop_real(bul,tableName+"_tmp");
 				return(false);
 			}
 		} else {
-			System.out.println("ERROR: tmp create table failed");
+			log.error("tmp create table failed");
 			return(false);
 		}
 		if (drop(bul)) {
-			System.out.println("drop of old table done : "+bul.getTableName());
+			log.info("drop of old table done : "+bul.getTableName());
 			if (create(bul)) {
-				System.out.println("create of new table done : "+bul.getTableName());
+				log.info("create of new table done : "+bul.getTableName());
 				copyJDBCTable(tableName+"_tmp",tableName,bul);
 				if (checkJDBCTable(tableName+"_tmp",tableName,bul)) {
 					if (drop_real(bul,tableName+"_tmp")) {
-						System.out.println("dropping tmp  table : "+tableName+"_tmp");
+						log.info("dropping tmp  table : "+tableName+"_tmp");
 					} else {
-						System.out.println("ERROR: tmp table  drop failed");
+						log.error("tmp table  drop failed");
 						return(false);
 					} 
 				} else {
-					System.out.println("ERROR: checked new table failed");
+					log.error("checked new table failed");
 					return(false);
 				}
 				return(true);
 			} else {
-				System.out.println("ERROR: create of new table failed : "+bul.getTableName());
+				log.error("create of new table failed : "+bul.getTableName());
 				return(false);
 			}
 		}  else {
-			System.out.println("ERROR: drop of old table failed : "+bul.getTableName());
+			log.error("drop of old table failed : "+bul.getTableName());
 			return(false);
 		}
 	}
@@ -1096,8 +1107,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+baseName+"_object");
-			e.printStackTrace();
+			log.error("can't create table "+baseName+"_object");
+		    log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
@@ -1142,7 +1153,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			if (typs!=null) {
 				for (Enumeration e=typs.maps.elements();e.hasMoreElements();) {
 					 dTypeInfo typ = (dTypeInfo)e.nextElement();
-					 //System.out.println("WWW="+size+" "+typ.minSize+" "+typ.maxSize+typ.dbType+" "+typs.maps.size());
 					// needs smart mapping code
 					if (size==-1) {
 						result=typ.dbType;
@@ -1255,7 +1265,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+		    log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
@@ -1270,7 +1280,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		int len=scan.read(buffer,0,filesize);
 		scan.close();
 	} catch(FileNotFoundException e) {
-		System.out.println("error getfile : "+filename);
+		log.error("error getfile : "+filename);
  	} catch(IOException e) {}
 	return(buffer);
     }
@@ -1308,7 +1318,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		con.close();
 		
 		if (size1!=size2) {
-			System.out.println("ERROR: tmp table have same number of rows !!!");
+			log.error("tmp table have same number of rows !!!");
 		}
 
 
@@ -1334,18 +1344,18 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 		if (ignorefield==null) {
 			if (colsize1!=colsize2) {
-				System.out.println("ERROR: tmp table have same number of cols !!!");
+				log.error("tmp table have same number of cols !!!");
 				return(false);
 			}
 		} else {
 			if (add) {
 				if (colsize1!=(colsize2-1)) {
-					System.out.println("ERROR: tmp table should have one more cols then org !!!");
+					log.error("tmp table should have one more cols then org !!!");
 					return(false);
 				}
 			} else {
 				if (colsize1!=(colsize2+1)) {
-					System.out.println("ERROR: tmp table should have one less cols then org !!!");
+					log.error("tmp table should have one less cols then org !!!");
 					return(false);
 				}
 			}
@@ -1390,15 +1400,15 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					Object value1=values1.get(key1);	
 					Object value2=values2.get(key1);	
 					/*
-					System.out.println("SET1="+value1.toString());
-					System.out.println("SET2="+value2.toString());
+					log.debug("SET1="+value1.toString());
+					log.debug("SET2="+value2.toString());
 					*/
 					if (!(value1.toString()).equals((value2.toString()))) {
-						System.out.println("ERROR: data check error on field : "+key1);
+						log.error("data check error on field : "+key1);
 						return(false);
 					}
 				} else {
-					// System.out.println("IGNORED="+key1);
+					// log.debug("IGNORED="+key1);
 				}
 			}
 
@@ -1408,14 +1418,14 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		stmt.close();
 		con.close();
 	} catch(SQLException e) {
-		e.printStackTrace();	
+	    log.error(Logging.stackTrace(e));
 		return(false);
 	}
 	return(true);
     }
 
     private boolean copyJDBCTable(String tablename,String tmptable,MMObjectBuilder bul) {
-	System.out.println("Starting JBDC copy to temp table");
+	log.info("Starting JBDC copy to temp table");
 	try {
 		MultiConnection con=mmb.getConnection();
 		Statement stmt=con.createStatement();
@@ -1499,7 +1509,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		stmt.close();
 		con.close();
 	} catch(SQLException e) {
-		e.printStackTrace();	
+	    log.error(Logging.stackTrace(e));
 		return(false);
 	}
 	return(true);
@@ -1508,11 +1518,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     public boolean tableSizeProtection(MMObjectBuilder bul) {
 		int size=bul.size();
 		if (size>parser.getMaxDropSize()) {
-			System.out.println("ERROR: Database table changed not allowed on : "+bul.getTableName());
-			System.out.println("ERROR: check <maxdropsize> in your database.xml");
-			System.out.println("ERROR: defined max is : "+parser.getMaxDropSize()+" table was : "+size);
-	
-
+			log.debug("Database table changed not allowed on : "+bul.getTableName());
+			log.debug("check <maxdropsize> in your database.xml");
+			log.debug("defined max is : "+parser.getMaxDropSize()+" table was : "+size);
 			return(true);
 		}
 		return(false);
