@@ -21,10 +21,12 @@ import org.mmbase.util.logging.*;
 /**
  * Module providing mail functionality based on JavaMail, mail-resources.
  *
+ * @application Mail
+ * @deprecated use the Mail application code instead
  * @author Case Roole
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: JMSendMail.java,v 1.10 2004-06-10 09:16:12 pierre Exp $
+ * @version $Id: JMSendMail.java,v 1.11 2004-10-04 11:30:31 pierre Exp $
  */
 public class JMSendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(JMSendMail.class);
