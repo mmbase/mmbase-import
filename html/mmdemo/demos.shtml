@@ -1,0 +1,123 @@
+<HTML>
+<HEAD>
+<TITLE>MMbase index page</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+
+<TABLE width=97% cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN=3>
+		<FONT COLOR="#000000">
+		<B>MMBase demos</B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A" COLSPAN=3>
+			<BR>
+			Welcome to MMbase the quick unzip & go version of the MMBase Content management system.<BR><BR>
+			This is a full working MMBase setup that comes with several simple applications auto-deployed. Its goal is allow people to use MMBase within minutes of downloading the system and see what its all about. Its also handy to test applications without using your production machines/setups. 
+<BR><BR>
+			The MMbase Team.
+			<BR><BR>
+		<CENTER>
+			<INPUT TYPE="hidden" VALUE="" NAME="dummy">
+			<INPUT TYPE="SUBMIT" VALUE="OK">
+		</CENTER>
+		</TD>
+</TR>
+
+<TR>
+	<TD>
+	</TD>
+</TR>
+<TR>
+	<TD WIDTH="50"><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Name demo</B>
+	</TD>
+	<TD BGCOLOR="42BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Description</B>
+	</TD>
+	<TD BGCOLOR="42BDAD" WIDTH="14">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=1>
+	&nbsp;			
+	</TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD BGCOLOR="#00425A">
+		 Tutorial
+	</TD>
+	<TD BGCOLOR="#00425A">
+		Online mmbase tutorial, learn mmbase by example
+	</TD>
+	<TD BGCOLOR="#44BDAD" WIDTH="14">
+		<A HREF="demos_tutorial.shtml"><IMG SRC="images/pijl.gif" BORDER="0" ALIGN="left"></A>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD></TD>
+	<TD BGCOLOR="#00425A">
+		 MyYahoo
+	</TD>
+	<TD BGCOLOR="#00425A">
+		 Small example of a yahoo like topic/url system
+	</TD>
+	<TD BGCOLOR="#44BDAD" WIDTH="14">
+		<A HREF="demos_yahoo.shtml"><IMG SRC="images/pijl.gif" BORDER="0" ALIGN="left"></A>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD></TD>
+	<TD BGCOLOR="#00425A">
+		 MyNews
+	</TD>
+	<TD BGCOLOR="#00425A">
+		 Small example of a news/magazine system
+	</TD>
+	<TD BGCOLOR="#44BDAD" WIDTH="14">
+		<A HREF="demos_mynews.shtml"><IMG SRC="images/pijl.gif" BORDER="0" ALIGN="left"></A>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD></TD>
+	<TD BGCOLOR="#00425A">
+		MyPage
+	</TD>
+	<TD BGCOLOR="#00425A">
+		Examples of a personelized website
+	</TD>
+	<TD BGCOLOR="#44BDAD" WIDTH="14">
+		<A HREF="demos_mypage.shtml"><IMG SRC="images/pijl.gif" BORDER="0" ALIGN="left"></A>
+	</TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD BGCOLOR="#00425A">
+		 BugTracker
+	</TD>
+	<TD BGCOLOR="#00425A">
+		A application to track bugs in mmbase.
+	</TD>
+	<TD BGCOLOR="#44BDAD" WIDTH="14">
+		<A HREF="demos_bugtracker.shtml"><IMG SRC="images/pijl.gif" BORDER="0" ALIGN="left"></A>
+	</TD>
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>
