@@ -635,7 +635,7 @@ Change directory to ${build.dir}/orion and run:
     <!-- =================================================================== -->
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
-    <target name="war" description="Create a MMBase war-file" depends="jar,war.config,war.webroot,expand.hsqldb">
+    <target name="war" description="Create a MMBase war-file" depends="web,jar,war.config,war.webroot,expand.hsqldb">
         <!-- copy the hsqldb file explicit, war clause doesnt accept the ${hsqldb.jar}  -->
         <copy file="${hsqldb.jar}" tofile="${build.dir}/mmbase/lib/hsqldb.jar"/>
         
