@@ -379,7 +379,7 @@ public class BasicNode implements Node {
 	 * Removes the Node
 	 */
 	public void remove() {
-	    remove(false);
+	    remove(true);
 	};
 
 	private void remove(boolean removeRelations) {
