@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.114 2004-01-19 10:06:46 michiel Exp $
+    @version $Id: wizard.xsl,v 1.115 2004-01-20 15:01:59 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -642,59 +642,30 @@
 
   <xsl:template name="ftype-text">
     <span>
-      <xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text>
-      <xsl:value-of select="@fieldname"/>
-      <xsl:text>" id="</xsl:text>
-      <xsl:value-of select="@fieldname"/>
-      <xsl:text>" dttype="</xsl:text>
-      <xsl:value-of select="@dttype"/>
-      <xsl:text>" ftype="</xsl:text>
-      <xsl:value-of select="@ftype"/>
-      <xsl:text>" dtminlength="</xsl:text>
-      <xsl:value-of select="@dtminlength"/>
-      <xsl:text>" dtmaxlength="</xsl:text>
-      <xsl:value-of select="@dtmaxlength"/>
-      <xsl:text>" class="input" wrap="soft" fdatapath="</xsl:text>
-      <xsl:value-of select="@fdatapath"/>
-      <xsl:text>"</xsl:text>
-      <xsl:choose>
-        <xsl:when test="@cols">
-          <xsl:text>cols="</xsl:text>
-          <xsl:value-of select="@cols"/>
-          <xsl:text>"</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>cols="80"</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:choose>
-        <xsl:when test="@rows">
-          <xsl:text>rows="</xsl:text>
-          <xsl:value-of select="@rows"/>
-          <xsl:text>"</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>rows="10"</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:apply-templates select="@*"/>
-      <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-      <xsl:choose>
-        <xsl:when test="@ftype='text'">
-          <xsl:call-template name="replace-string">
-            <xsl:with-param name="text">
-              <xsl:value-of disable-output-escaping="yes" select="value"/>
-            </xsl:with-param>
-            <xsl:with-param name="replace" select="'&amp;'"/>
-            <xsl:with-param name="with" select="'&amp;amp;'"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of disable-output-escaping="yes" select="value"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text disable-output-escaping="yes">&lt;/textarea></xsl:text>
-      <xsl:apply-templates select="postfix"/>
+      <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
+        <xsl:if test="not(@cols)">
+          <xsl:attribute name="cols">80</xsl:attribute>
+        </xsl:if>
+        <xsl:if test="not(@rows)">
+          <xsl:attribute name="rows">10</xsl:attribute>
+        </xsl:if>
+        <xsl:apply-templates select="@*"/>
+
+        <xsl:choose>
+          <xsl:when test="@ftype='text'">
+            <xsl:call-template name="replace-string">
+              <xsl:with-param name="text">
+                <xsl:value-of disable-output-escaping="yes" select="value"/>
+              </xsl:with-param>
+              <xsl:with-param name="replace" select="'&amp;'"/>
+              <xsl:with-param name="with" select="'&amp;amp;'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of disable-output-escaping="yes" select="value"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </textarea>
     </span>
   </xsl:template>
 
