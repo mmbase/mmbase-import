@@ -20,73 +20,74 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: PropertiesProbe.java,v 1.9 2004-06-15 21:10:34 robmaris Exp $
+ * @sql
+ * @version $Id: PropertiesProbe.java,v 1.10 2004-11-09 09:06:03 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
 
-    private static Logger log = Logging.getLoggerInstance(PropertiesProbe.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(PropertiesProbe.class.getName());
 
-	Thread kicker = null;
-	Properties parent=null;
+    Thread kicker = null;
+    Properties parent=null;
 
-	public PropertiesProbe(Properties parent) {
-		this.parent=parent;
-		init();
-	}
+    public PropertiesProbe(Properties parent) {
+        this.parent=parent;
+        init();
+    }
 
-	public void init() {
-		this.start();	
-	}
+    public void init() {
+        this.start();
+    }
 
 
-	/**
-	 * Starts the admin Thread.
-	 */
-	public void start() {
-		/* Start up the main thread */
-		if (kicker == null) {
-			kicker = new Thread(this,"cdplayer");
-			kicker.setDaemon(true);
-			kicker.start();
-		}
-	}
-	
-	/**
-	 * Stops the admin Thread.
-	 */
-	public void stop() {
-		/* Stop thread */
-		kicker.interrupt();
-		kicker = null;
-	}
+    /**
+     * Starts the admin Thread.
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            kicker = new Thread(this,"cdplayer");
+            kicker.setDaemon(true);
+            kicker.start();
+        }
+    }
 
-	/**
-	 */
-	public void run () {
-		while (kicker!=null) {
-			try {
-				doWork();
-			} catch(Exception e) {
-			}	
-		}
-	}
+    /**
+     * Stops the admin Thread.
+     */
+    public void stop() {
+        /* Stop thread */
+        kicker.interrupt();
+        kicker = null;
+    }
 
-	/**
-	 */
-	public void doWork() {  
-		while (kicker!=null) {
-			try {Thread.sleep(10000);} catch (InterruptedException e){ return ;}
-			if (parent.getMachineName().equals("test1")) doExpire();
-		}
-	}
+    /**
+     */
+    public void run () {
+        while (kicker!=null) {
+            try {
+                doWork();
+            } catch(Exception e) {
+            }
+        }
+    }
 
-	private void doExpire() {
-		try {
-			MultiConnection con=parent.mmb.getConnection();
-			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select "+parent.mmb.getDatabase().getAllowedField("parent")+" from "+parent.mmb.baseName+"_"+parent.tableName+" where "+parent.mmb.getDatabase().getAllowedField("key")+"='LASTVISIT' AND value<10536");
-			int max=0;
+    /**
+     */
+    public void doWork() {
+        while (kicker!=null) {
+            try {Thread.sleep(10000);} catch (InterruptedException e){ return ;}
+            if (parent.getMachineName().equals("test1")) doExpire();
+        }
+    }
+
+    private void doExpire() {
+        try {
+            MultiConnection con=parent.mmb.getConnection();
+            Statement stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery("select "+parent.mmb.getDatabase().getAllowedField("parent")+" from "+parent.mmb.baseName+"_"+parent.tableName+" where "+parent.mmb.getDatabase().getAllowedField("key")+"='LASTVISIT' AND value<10536");
+            int max=0;
             try {
                 while (rs.next() && max<1000) {
                     int number=rs.getInt(1);
@@ -98,32 +99,32 @@ public class PropertiesProbe implements Runnable {
             } finally {
                 rs.close();
             }
-			stmt.close();
-			con.close();
-		} catch (Exception e) {}
-	}
+            stmt.close();
+            con.close();
+        } catch (Exception e) {}
+    }
 
 
-	private void deleteProperties(int id) {
-		try {
-			MultiConnection con=parent.mmb.getConnection();
-			Statement stmt=con.createStatement();
-			stmt.executeUpdate("delete from "+parent.mmb.baseName+"_"+parent.tableName+" where parent="+id);
-			stmt.close();
-			con.close();
-		} catch (Exception e) {}
-	}
+    private void deleteProperties(int id) {
+        try {
+            MultiConnection con=parent.mmb.getConnection();
+            Statement stmt=con.createStatement();
+            stmt.executeUpdate("delete from "+parent.mmb.baseName+"_"+parent.tableName+" where parent="+id);
+            stmt.close();
+            con.close();
+        } catch (Exception e) {}
+    }
 
 
-	private void deleteUser(int id) {
-		try {
-			MultiConnection con=parent.mmb.getConnection();
-			Statement stmt=con.createStatement();
-			stmt.executeUpdate("delete from "+parent.mmb.baseName+"_users where number="+id);
-			stmt.close();
-			con.close();
-		} catch (Exception e) {}
-	}
+    private void deleteUser(int id) {
+        try {
+            MultiConnection con=parent.mmb.getConnection();
+            Statement stmt=con.createStatement();
+            stmt.executeUpdate("delete from "+parent.mmb.baseName+"_users where number="+id);
+            stmt.close();
+            con.close();
+        } catch (Exception e) {}
+    }
 
 
 }
