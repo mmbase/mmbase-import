@@ -330,6 +330,9 @@ public class WriterHelper  {
         bodyContent   = null;
         pageContext   = null;
         value         = null;
+        jspvar        = null;
+        write         = null;
+        vartype       = TYPE_UNSET:
     }
 
     /**
