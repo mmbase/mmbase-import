@@ -32,15 +32,13 @@
 <body>
 
 <div class="header">
-  <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
-  <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                                        
 <div class="bodypart">
 
 <mm:include page="path.jsp?type=$pathtype" />
 <mm:node referid="forumid">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%" align="center" align="center">
 	<tr><th><mm:write referid="mlg_Administrators" /></th><th><mm:write referid="mlg_Location" /></th><th><mm:write referid="mlg_Last_seen" /></th></tr>
 	<mm:related path="rolerel,posters" constraints="rolerel.role like '%administrato%'">
 	<mm:node element="posters">
@@ -51,7 +49,7 @@
 </table>
 
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="90%" align="center">
 	<tr><th><mm:write referid="mlg_Moderators" /></th><th><mm:write referid="mlg_Location" /></th><th><mm:write referid="mlg_Last_seen" /></th></tr>
 	<mm:related path="postareas">
 	<mm:node element="postareas">
@@ -70,8 +68,6 @@
                                                                                                        
 </div>                                                                                                        
 <div class="footer">
-  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
-  <jsp:include page="<%=footerpath%>"/>
 </div>
                                                                                                        
 </body>

@@ -30,8 +30,6 @@
 <!-- end action check -->
 
 <div class="header">
-  <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
-  <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                               
 <div class="bodypart">
@@ -41,7 +39,7 @@
 </mm:nodefunction>
 
 <mm:include page="path.jsp?type=$pathtype" />
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%" align="center">
 
 <mm:node referid="forumid">
   <tr>
@@ -79,8 +77,6 @@
 </div>
 
 <div class="footer">
-  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
-  <jsp:include page="<%=footerpath%>"/>
 </div>
 
 </mm:locale>

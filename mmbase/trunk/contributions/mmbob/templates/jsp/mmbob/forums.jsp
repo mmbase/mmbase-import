@@ -19,12 +19,11 @@
 <body>
 
 <div class="header">
-  <%@ include file="header.jsp" %>
 </div>
                                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
    <tr><th>Forum naam</th><th>berichten</th><th>views</th><th>gebruikers</th></tr>
   <mm:nodelistfunction set="mmbob" name="getForums">
 			<tr>
@@ -35,7 +34,7 @@
 			</tr>
   </mm:nodelistfunction>
 </table>
-	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+	<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
 	<tr><th align="left">Administratie Functies</th></tr>
 	<td>
 	<p />
@@ -49,7 +48,6 @@
 </div>
                                                                                                               
 <div class="footer">
-  <%@ include file="footer.jsp" %>
 </div>
 
 </body>

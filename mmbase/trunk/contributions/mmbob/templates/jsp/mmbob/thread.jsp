@@ -62,8 +62,6 @@
 <%@ include file="loadtranslations.jsp" %>
 
 <div class="header">
-  <mm:import id="headerpath" jspvar="headerpath"><mm:write referid="theme_header" /></mm:import>
-  <jsp:include page="<%=headerpath%>"/>
 </div>
                                                                                                               
 <div class="bodypart">
@@ -93,14 +91,11 @@
 		  <mm:first>
 			<tr><th width="25%" align="left"><mm:write referid="mlg_Member"/></th><th align="left"><mm:write referid="mlg_Topic"/>: <mm:field name="subject" /></th></tr>
 		  </mm:first>
-		  <mm:remove referid="tdvar" />
-		  <mm:even><mm:import id="tdvar"></mm:import></mm:even>
-		  <mm:odd><mm:import id="tdvar">listpaging</mm:import></mm:odd>
 			<tr>
-			<td class="<mm:write referid="tdvar" />" align="left">
+			<td class="<mm:field name="tdvar" />" align="left">
 			<mm:field name="posttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field>
 			</td>
-			<td class="<mm:write referid="tdvar" />" align="right">
+			<td class="<mm:field name="tdvar" />" align="right">
 			<mm:remove referid="postingid" />
 			<mm:remove referid="toid" />
 			<mm:import id="toid"><mm:field name="posterid" /></mm:import>
@@ -159,7 +154,7 @@
 			</td>
 			</tr>
 			<tr>
-			<td class="<mm:write referid="tdvar" />" valign="top" align="left">
+			<td class="<mm:field name="tdvar" />" valign="top" align="left">
                         <p>
                         <mm:field name="guest">
                         <mm:compare value="true">
@@ -191,27 +186,10 @@
 			<br /><br /><br /><br /><br />
                         </p>
 			</td>
-			<td class="<mm:write referid="tdvar" />" valign="top" align="left">
+			<td class="<mm:field name="tdvar" />" valign="top" align="left">
 			<mm:field name="edittime"><mm:compare value="-1" inverse="true"><mm:write referid="mlg_last_time_edited"/> : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
            
-            <mm:node referid="postingid">
-
-            <mm:even> 
-              <mm:formatter xslt="xslt/posting2xhtmlDark.xslt">
-                <mm:function referids="imagecontext,themeid" name="escapesmilies">
-                <mm:write/>
-                </mm:function>
-              </mm:formatter>
-            </mm:even>
-            <mm:odd>
-               <mm:formatter xslt="xslt/posting2xhtmlLight.xslt">
-                <mm:function referids="imagecontext,themeid" name="escapesmilies">
-                <mm:write/>
-                </mm:function>
-              </mm:formatter>
-            </mm:odd> 
-
-            </mm:node>
+            <mm:field name="body" />
 
 			<br /><br /><br /><br /><br />
 			</td>
@@ -264,8 +242,6 @@
 </div>
 
 <div class="footer">
-  <mm:import id="footerpath" jspvar="footerpath"><mm:write referid="theme_footer" /></mm:import>
-  <jsp:include page="<%=footerpath%>"/>
 </div>
 
 </mm:locale>
