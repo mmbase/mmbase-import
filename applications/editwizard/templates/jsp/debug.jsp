@@ -9,27 +9,15 @@
 
 <%
 
-	Enumeration names = session.getAttributeNames();
-	
-	Document doc = Utils.parseXML("<debugdata/>");
-	
-	String name=null;
-	while (names.hasMoreElements()) {
-		name = (String)names.nextElement();
-		if (name.indexOf("Wizard_")==0) {
-			// a wizard instance!
-			Wizard wiz = (Wizard) session.getValue(name);
-			if (wiz!=null) {
-				add(doc, wiz.data, name.substring(7));
-				add(doc, wiz.schema, name.substring(7));
-				add(doc, wiz.preform, name.substring(7));
-			}
-		}
-	}
-	
-	Utils.transformNode(doc, settings_basedir + "/xsl/debug.xsl", out);
+    Document doc = Utils.parseXML("<debugdata/>");	
+   if (ewconfig.subObjects.size() > 0 && ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
+      Config.WizardConfig  wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();
+      add(doc, wizardConfig.wiz.getData(),    ewconfig.wizard);
+      add(doc, wizardConfig.wiz.getSchema(),  ewconfig.wizard);
+      add(doc, wizardConfig. wiz.getPreform(), ewconfig.wizard);
+   }	
+   Utils.transformNode(doc, "xsl/debug.xsl", ewconfig.uriResolver, out,  null);
 %>
-
 <%!
 	public void add(Document dest, Document src, String name) {
 	
