@@ -30,12 +30,12 @@ public interface MMJdbc2NodeInterface {
 	public String getDBText(ResultSet rs,int idx);
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node);
 	public int fielddefInsert(String baseName,int oType, String owner, MMObjectNode node);
-	public boolean create(MMObjectBuilder bul,String tableName);
 	public boolean commit(MMObjectBuilder bul,MMObjectNode node);
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node);
 	public int getDBKey();
 	public void init(MMBase mmb);
 	public void setDBByte(int i, PreparedStatement stmt,byte[] bytes);
 	public boolean created(String tableName);
-	public boolean createXML(MMObjectBuilder bul);
+	public boolean create(MMObjectBuilder bul);
+	public boolean createObjectTable(String baseName);
 }
