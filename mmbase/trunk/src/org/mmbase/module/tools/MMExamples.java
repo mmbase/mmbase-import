@@ -96,7 +96,7 @@ public class MMExamples extends ProcessorModule {
 		if ((String)vars.get("NAME-BasicAuth")!=null) installApplication("BasicAuth");
 	}
 
-	private void installApplication(String applicationname) {
+	private boolean installApplication(String applicationname) {
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
 		if (app!=null) {
@@ -107,20 +107,26 @@ public class MMExamples extends ProcessorModule {
 							if (installRelationSources(app.getRelationSources())) {
 							} else {
 								System.out.println("Application installer stopped : can't install relationsources");
+								return(false);
 							}
 						} else {
 							System.out.println("Application installer stopped : can't install datasources");
+							return(false);
 						}
 					} else {
 						System.out.println("Application installer stopped : can't install allowed relations");
+						return(false);
 					}
 				} else {
 					System.out.println("Application installer stopped : can't install reldefs");
+					return(false);
 				}
 			} else {
 				System.out.println("Application installer stopped : not all needed builders present");
+				return(false);
 			}
 		}
+		return(true);
 	}
 
 	boolean installDataSources(Vector ds) {
@@ -425,6 +431,11 @@ public class MMExamples extends ProcessorModule {
 
 
 	public void probeCall() {
+		Versions ver=(Versions)mmb.getMMObject("versions");
+		if (ver==null) {
+			System.out.println("Versions builder not installed, Can't auto deploy apps");
+			return;
+		}
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		// new code checks all the *.xml files in builder dir
         	File bdir = new File(path);
@@ -435,8 +446,28 @@ public class MMExamples extends ProcessorModule {
 				if (aname.endsWith(".xml")) {
 					XMLApplicationReader app=new XMLApplicationReader(path+aname);
 					if (app!=null && app.getApplicationAutoDeploy()) {
-						System.out.println("Auto deploy application : "+aname);
-						installApplication(aname.substring(0,aname.length()-4));
+						String name=app.getApplicationName();
+						String maintainer=app.getApplicationMaintainer();
+						int version=app.getApplicationVersion();
+						int installedversion=ver.getInstalledVersion(name,"application");
+					
+						//System.out.println("name="+name+" maintainer="+maintainer+" version="+version+" installed version="+installedversion);
+						if (installedversion==-1 || version>installedversion) {
+							if (installedversion==-1) {
+								System.out.println("Auto deploy application : "+aname);
+							} else {	
+								System.out.println("Auto deploy application : "+aname+" new version from "+installedversion+" to "+version);
+							}
+							if (installApplication(aname.substring(0,aname.length()-4))) {
+								if (installedversion==-1) {
+									ver.setInstalledVersion(name,"application",maintainer,version);
+								} else {
+									ver.updateInstalledVersion(name,"application",maintainer,version);
+								}
+							} else {
+								System.out.println("Problem installing application : "+name);
+							}
+						}
 
 					}
 				}
