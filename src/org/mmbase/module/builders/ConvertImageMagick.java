@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.18 2002-01-03 13:33:40 pierre Exp $
+	$Id: ConvertImageMagick.java,v 1.19 2002-01-16 18:24:24 eduard Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.18  2002/01/03 13:33:40  pierre
+	pierre: bugfix: Windows hung on ImageMagick initialization test
+	
 	Revision 1.17  2001/12/13 14:23:22  eduard
 	eduard: removed a few obsolete System.err.println() thingies, and added startup check. This way during startup converter will be tested, and error produced which could be used to detect failure.
 	
@@ -76,7 +79,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.18 2002-01-03 13:33:40 pierre Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.19 2002-01-16 18:24:24 eduard Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -389,10 +392,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
 			log.debug("Done converting"); 
 			image=imagestream.toByteArray();
 			log.debug("Returning Image"); 
+            log.info("converted image(#"+pict.length+" bytes) with options '"+cmd+"' to '"+format+"'-image(#"+image.length+" bytes)('"+command+"')");
 		} catch (Exception e) {
 			log.error("Failure converting image "+cmd+" "+format);
 			log.error("Message : "+e.getMessage());
 		}
-		return(image);
+		return image;
 	}
 }
