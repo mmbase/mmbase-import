@@ -36,6 +36,16 @@
         <description xml:lang="eo">Tipo MMServilo difinas la nodon en MMBase-aro</description>
     </descriptions>
 
+  <properties>
+    <!-- 
+    Interval (in seconds) beteen updates in mmservers
+    table. Defaults to 60 seconds. 
+    You can safely set it higher if you have only one server (and spare
+    some SQL-queries)    -->
+    <property name="ProbeInterval">60</property>
+  </properties>
+
+
     <!-- <fieldlist>
         defines the different fields in this object, be carefull the order is important
         once defined keep them in the same order.
