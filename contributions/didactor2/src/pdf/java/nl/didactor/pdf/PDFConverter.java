@@ -23,7 +23,7 @@ public class PDFConverter {
     {
        try {
             Document pdf = new Document();
-            pdf.setMargins(50f,50f,100f,50f);
+            pdf.setMargins(50f,50f,110f,50f);
             PdfWriter writer = PdfWriter.getInstance(pdf, out);
 
             pdf.setFooter(footer());
@@ -52,7 +52,7 @@ public class PDFConverter {
                     new Chunk( 
                         Image.getInstance( headerImage ),
                         310.0f,
-                        -10.0f
+                        -34.0f
                     )
                 ),
                 false
