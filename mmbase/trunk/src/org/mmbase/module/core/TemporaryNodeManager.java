@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.24 2001-08-24 07:31:34 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.25 2001-09-10 08:24:38 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -121,7 +121,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         node=bul.getTmpNode(getTmpKey(owner,key));
         if (node==null) {
             log.debug("getObject not tmp node found " + key);
-            node=bul.getNode(dbkey);
+            node=bul.getHardNode(dbkey);
             if (node==null) {
                 log.warn("Node not found in database " + dbkey);
             } else {
