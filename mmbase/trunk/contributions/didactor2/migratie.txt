@@ -3,6 +3,25 @@ Migratie issues
 
 2004-11-26
 
+  bugfix: het was mogelijk om meerdere people objecten aan te maken met dezelfde
+  username. op dat moment kan je niet meer inloggen met die username. dit is nu
+  opgelost.
+
+  Cleanup code:
+  
+  de volgende code verwijderd de nieuwste "dubbele" usernames als er meer dan 1 is.
+  bij deze accounts moeten dan nieuwe usernames aangemaakt worden:
+
+    update mmb_people join mmb_people as mmb_people2 on mmb_people2.username =
+    mmb_people.username set mmb_people.username="" where mmb_people.username != "" 
+    and mmb_people2.number < mmb_people.number;
+
+  Dit is NIET op te lossen dmv van de editors: de people builder verbiedt het
+  aanpassen van eenmaal aangemaakte usernames.
+
+
+2004-11-26
+
 in de web.xml moet voor sites die de PDF functionaliteit gebruiken de parameter
 internalUrl gezet worden:
 
