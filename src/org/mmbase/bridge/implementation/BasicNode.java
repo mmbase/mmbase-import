@@ -18,38 +18,42 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
- *
+ * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
 public class BasicNode implements Node {
-    private static Logger log = Logging.getLoggerInstance(BasicNode.class.getName());
-
     public static final int ACTION_CREATE = 1;   // create a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
     public static final int ACTION_DELETE = 3;   // delete node
     public static final int ACTION_LINK = 4;     // add a relation to a node
     public static final int ACTION_COMMIT = 10;   // commit a node after changes
 
+    private static Logger log = Logging.getLoggerInstance(BasicNode.class.getName());
+
     private boolean changed = false;
 
     /**
      * Reference to the NodeManager
+     * @scope private
      */
     protected NodeManager nodeManager;
 
     /**
      * Reference to the Cloud.
+     * @scope private
      */
     protected BasicCloud cloud;
 
     /**
      * Reference to MMBase root.
+     * @scope private
      */
     protected MMBase mmb;
 
     /**
      * Reference to actual MMObjectNode object.
+     * @scope private
      */
     protected MMObjectNode noderef;
 
@@ -57,17 +61,20 @@ public class BasicNode implements Node {
      * Temporary node ID.
      * this is necessary since there is otherwise no sure (and quick) way to determine
      * whether a node is in 'edit' mode (i.e. has a temporary node).
+     * @scope private
      */
     protected int temporaryNodeId=-1;
 
     /**
      * The account this node is edited under.
      * This is needed to check whether people have not switched users during an edit.
+     * @scope private
      */
     protected String account=null;
 
     /**
      * Determines whether this node was created for insert.
+     * @scope private
      */
     protected boolean isnew = false;
 
@@ -100,6 +107,9 @@ public class BasicNode implements Node {
         isnew=true;
     }
 
+    /**
+     * @javadoc
+     */
     protected MMObjectNode getNode() {
         if (noderef==null) {
             String message;
@@ -213,6 +223,10 @@ public class BasicNode implements Node {
         }
     }
 
+    /**
+     * @todo setting certain specific fields (i.e. snumber) should be directed to a dedicated
+     *       method such as setSource(), where applicable.
+     */
     public void setValue(String attribute, Object value) {
         edit(ACTION_EDIT);
         if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
@@ -328,7 +342,7 @@ public class BasicNode implements Node {
             // invalid nodereference: fix!
             noderef=mmb.getTypeDef().getNode(noderef.getNumber());
         }
-    changed = false;
+        changed = false;
     }
 
     public void cancel() {
@@ -466,10 +480,16 @@ public class BasicNode implements Node {
         return getRelations(-1,-1);
     };
 
+    /**
+     * @javadoc
+     */
     private RelationList getRelations(int role) {
         return getRelations(role,-1);
     };
 
+    /**
+     * @javadoc
+     */
     private RelationList getRelations(int role, int otype) {
         InsRel relbuilder=mmb.getInsRel();
         Vector relvector=new Vector();
@@ -717,27 +737,27 @@ public class BasicNode implements Node {
     }
 
     /**
-     *	Reverse the buffers, when changed and not stored...
+     * Reverse the buffers, when changed and not stored...
      */
     protected void finalize() throws BridgeException {
-        // When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
-    // when not done it results in node-lists with changes which are not performed on the database...
-    // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
-    // my opinion is that this should happen, as soon as edit-ting starts,..........
+        // When not committed or cancelled, and the buffer has changed, the changes must be reversed.
+        // when not done it results in node-lists with changes which are not performed on the database...
+        // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
+        // my opinion is that this should happen, as soon as edit-ting starts,..........
         // when still has modifications.....
         if(changed) {
             if(!(cloud instanceof Transaction)) {
-            // cancel the modifications...
-            cancel();
-        // The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the
-        // proper way.
-        // Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.
-        // This since it is not defined when the finalize method is called
-        // To bad only that nobody will ever see this exceptions :(
-        String msg = "after modifications to the node, either the method commit or cancel must be called";
-        log.error(msg);
+                // cancel the modifications...
+                cancel();
+                // The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the
+                // proper way.
+                // Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.
+                // This since it is not defined when the finalize method is called
+                // To bad only that nobody will ever see this exceptions :(
+                String msg = "after modifications to the node, either the method commit or cancel must be called";
+                log.error(msg);
                 throw new BridgeException(msg);
+            }
         }
-    }
     }
 }
