@@ -15,11 +15,11 @@ import javax.servlet.ServletException;
 /**
  * Used in combo with MMBaseStartThread, which uses the methods of this interface to inform its starter about the results.
  * 
- * @version $Id: MMBaseStarter.java,v 1.1 2004-02-24 11:53:20 michiel Exp $
+ * @version $Id: MMBaseStarter.java,v 1.2 2005-02-11 12:36:05 michiel Exp $
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
-interface MMBaseStarter {
+public interface MMBaseStarter {
 
     /**
      * Returns the currently set MMBase object.
