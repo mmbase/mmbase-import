@@ -4,7 +4,7 @@
 	 <articleinfo>
 		<title>Documentation Overview</title>
 		<date>3 december 2002</date>
-		<edition>$Id: index.xml,v 1.4 2002-12-05 14:52:17 michiel Exp $</edition>
+		<edition>$Id: index.xml,v 1.5 2002-12-05 15:18:51 michiel Exp $</edition>
 		<legalnotice>
 			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
 			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -105,7 +105,7 @@
 				<para>MMBase taglib reference (<ulink url="reference/taglib/toc.html">JSP</ulink> <ulink url="reference/mmbase-taglib.html">HTML</ulink>)</para>
 			</listitem>
 			<listitem>
-				<para>MMBase community taglib reference (<ulink url="reference/community-taglib/toc.html">JSP</ulink> <ulink url="reference/mmcommunity-taglib/mmcommunity-taglib.html">HTML</ulink>)</para>
+				<para>MMBase community taglib reference (<ulink url="reference/community-taglib/toc.html">JSP</ulink> <ulink url="reference/mmcommunity-taglib.html">HTML</ulink>)</para>
 			</listitem>
 			<listitem>
 				<para><ulink url="templaters/builders/index.html">MMBase standard builders</ulink></para>
