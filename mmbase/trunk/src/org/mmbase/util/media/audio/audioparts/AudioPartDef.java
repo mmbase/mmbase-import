@@ -15,6 +15,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.media.audio.audioparts;
 
 import	java.util.*; 
+import java.net.URLEncoder;
 
 import	org.mmbase.module.core.*;
 import	org.mmbase.util.*;
@@ -210,6 +211,8 @@ public class AudioPartDef
 
 			if( title != null && !title.equals("") ) {
 				//result += "?title=\""+title+"\"";
+				//Our realplayer can't handle url encoded string.
+				//result += "?title="+MediaUtils.plusToProcent20(URLEncoder.encode(title)); //URLEncode value.
 				result += "?title="+title;
 			} else {
 				//result += "?title=\"\"";
