@@ -1,12 +1,16 @@
 /*
 
+$Id: MMServers.java,v 1.2 2000-02-24 14:03:24 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
+
 package org.mmbase.module.builders;
 
 import java.sql.*;
@@ -19,15 +23,19 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.protocoldrivers.*;
 
-
 /**
+ * @author  $Author: wwwtech $
+ * @version $Revision: 1.2 $ $Date: 2000-02-24 14:03:24 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
+
+	private String  classname = getClass().getName();
+	private boolean debug	  = false;
+	private void	debug(String msg){System.out.println(classname+":"+msg);}
 
 	private String javastr;
 	private String osstr;
 	private String host;
-	private static boolean debug=false;
 	private Vector possibleServices=new Vector();
 
 	Hashtable name2driver;
@@ -81,7 +89,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 		boolean imoke=false;
 		String machineName=mmb.getMachineName();
 		host=mmb.getHost();
-		if (debug) System.out.println("MMServers -> machine="+machineName);
+		if (debug) debug("probeCall(): machine="+machineName);
 		Enumeration e=search("");
 		while (e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
@@ -102,7 +110,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 		boolean state=true;
 		String tmphost=node.getStringValue("host");
 		if (!tmphost.equals(host)) {
-			System.out.println("MMServers-> Running on a new HOST possible problem");
+			debug("MMServers-> Running on a new HOST possible problem");
 		}
 		node.setValue("state",1);
 		node.setValue("atime",(int)(System.currentTimeMillis()/1000));
@@ -143,13 +151,12 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 			Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),type);
 			while (e.hasMoreElements()) {
 				MMObjectNode node2=(MMObjectNode)e.nextElement();
-				System.out.println("DOWNNODE="+node2);
+				debug("setServicesDown(): downnode("+node2+")");
 				node2.parent.removeRelations(node2);
 				node2.parent.removeNode(node2);
 			
 				//node2.setValue("state","down");
 				//node2.commit();
-				
 			}		
 		}
 	}
@@ -213,9 +220,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 						pd.init(host,port);
 						url2driver.put(url,pd);
 						name2driver.put(name,pd);
-						System.out.println("Started Protocol Driver ="+pd);
+						debug("startProtocolDrivers(): started driver("+pd+")");
 					} catch (Exception f) {
-						System.out.println("MMServers -> Can't load class : "+protocol);
+						debug("startProtocolDrivers(): ERROR: Can't load protocolclass("+protocol+")");
 						//f.printStackTrace();
 					}
 				}
