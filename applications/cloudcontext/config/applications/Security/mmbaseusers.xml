@@ -4,14 +4,14 @@
 		<status>1</status>
 		<username>admin</username>
 		<defaultcontext>1000</defaultcontext>
-		<password>admin2k</password>
+		<password>4bf82f899b3783075c2c5598d71e6ff3</password><!-- admin2k -->
 	</node>
 
 	<node number="777" owner="admin">
 		<status>0</status>
 		<username>foo</username>
 		<defaultcontext>1000</defaultcontext>
-		<password>bar</password>
+		<password>37b51d194a7513e45b56f6524f2d51f2</password><!-- bar -->
 	</node>
 
 
