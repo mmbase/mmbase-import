@@ -42,6 +42,10 @@ public class Argument {
         return false;
     }
 
+    public String toString() {
+        return type + " " + key;
+    }
+
 
     /** 
      * An Argument.Wrapper wraps one Argument around an Argument[]
@@ -54,6 +58,10 @@ public class Argument {
         public Wrapper(Argument[] arg) {
             key = "[ARRAYWRAPPER]";
             arguments = arg;
+        }
+        
+        public String toString() {
+            return "WRAPPED" + Arrays.asList(arguments).toString();
         }
     }
 
