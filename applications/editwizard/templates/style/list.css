@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: list.css,v 1.3 2002-07-18 14:50:03 michiel Exp $
+  @version  $Id: list.css,v 1.4 2002-07-18 16:20:29 michiel Exp $
   
 */
 
@@ -62,5 +62,20 @@ tr.itemrow-disabled td  {
 }
 
 td.deletebutton {
-  padding-right: 10;
+  width: 10;
+}
+
+td.number {
+  text-align: right;
+  width: 6ex;
+}
+
+th {
+   text-align: left;
+    color:#CCCCCC; 
+	font-weight:900; 
+}
+
+th.number {
+   text-align: center;
 }
