@@ -872,5 +872,14 @@ public class Target {
     public void addRelatedTargetsCreate(Target t) {
 	creator.addRelatedTargetsCreate(t);
     }
+
+    public int getProgressBarValue() {
+        return creator.getProgressBarValue();
+    }
+
+    public int getSubProgressBarValue() {
+        return creator.getSubProgressBarValue();
+    }
+	
 }
 

@@ -46,6 +46,11 @@ public class BasicCreator implements CreatorInterface,Runnable {
     private ArrayList packagesteps;
     private packageStep projectstep;
     ArrayList relatedtargetcreate =  new  ArrayList();
+    private float progressbar = 0;
+    private float progressstep = 1;
+    private float subprogressbar = 0;
+    private float subprogressstep = 1;
+    
 
     public BasicCreator() {
     }
@@ -964,6 +969,84 @@ public class BasicCreator implements CreatorInterface,Runnable {
   public void addRelatedTargetsCreate(Target t) {
       relatedtargetcreate.add(t);
   }
+
+    /**
+     *  Sets the progressBar attribute of the BasicPackage object
+     *
+     * @param  stepcount  The new progressBar value
+     */
+    public void setProgressBar(int stepcount) {
+        progressbar = 1;
+        progressstep = 100 / (float) stepcount;
+    }
+
+
+    /**
+     *  Sets the progressBar attribute of the BasicPackage object
+     *
+     * @param  stepcount  The new progressBar value
+     */
+    public void setSubProgressBar(int substepcount) {
+        subprogressbar = 1;
+        subprogressstep = 100 / (float) substepcount;
+    }
+
+
+    /**
+     *  Description of the Method
+     */
+    public void increaseProgressBar() {
+        increaseProgressBar(1);
+    }
+
+
+    /**
+     *  Description of the Method
+     */
+    public void increaseSubProgressBar() {
+        increaseSubProgressBar(1);
+    }
+
+
+    /**
+     *  Description of the Method
+     *
+     * @param  stepcount  Description of the Parameter
+     */
+    public void increaseProgressBar(int stepcount) {
+        progressbar += (stepcount * progressstep);
+    }
+
+
+    /**
+     *  Description of the Method
+     *
+     * @param  stepcount  Description of the Parameter
+     */
+    public void increaseSubProgressBar(int substepcount) {
+        subprogressbar += (substepcount * subprogressstep);
+    }
+
+
+    /**
+     *  Gets the progressBarValue attribute of the BasicPackage object
+     *
+     * @return    The progressBarValue value
+     */
+    public int getProgressBarValue() {
+        return (int) progressbar;
+    }
+
+
+    /**
+     *  Gets the progressBarValue attribute of the BasicPackage object
+     *
+     * @return    The progressBarValue value
+     */
+    public int getSubProgressBarValue() {
+        return (int) subprogressbar;
+    }
+
 
 
 }
