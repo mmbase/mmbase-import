@@ -6,14 +6,6 @@
 		The first filter where all the rules apply, will be selected.
 	-->
 
-	<!-- the new oracle implementation -->
-	<filter resource="/org/mmbase/storage/implementation/database/resources/oracle-with-views.xml">
-		<database-product-name>Oracle</database-product-name>
-		<driver-class>oracle.jdbc.driver.OracleConnection</driver-class>
-		<driver-major-version>9</driver-major-version>
-		<driver-minor-version condition="from">2</driver-minor-version>
-	</filter>
-
 	<!-- left over jdbc-drivers for mysql -->
 	<filter resource="/org/mmbase/storage/implementation/database/resources/mysql.xml">
 		<driver-class>org.gjt.mm.mysql.</driver-class>
