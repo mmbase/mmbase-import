@@ -42,8 +42,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Project title</description>
+          <description xml:lang="nl">Projekttitel</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -75,8 +75,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Project subtitle</description>
+          <description xml:lang="nl">Projekt subtitel</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -108,8 +108,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Introduction text</description>
+          <description xml:lang="nl">Introduktietekst</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -141,8 +141,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Project description</description>
+          <description xml:lang="nl">Project omschrijving</description>
         </descriptions>
         <!-- gui related -->
         <gui>
