@@ -41,7 +41,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.19 2003-01-07 09:06:33 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.20 2003-01-07 10:30:09 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -378,7 +378,6 @@ public class MediaSources extends MMObjectBuilder {
         return node.getStringValue("url");
     }
     
-    /*
     public int getSpeed(MMObjectNode node) {
         return node.getIntValue("speed");
     }
@@ -386,7 +385,7 @@ public class MediaSources extends MMObjectBuilder {
     public int getChannels(MMObjectNode node) {
         return node.getIntValue("channels");
     }
-    */
+
     /**
      * The format field is an integer, this function returns a string-presentation
      */
@@ -621,7 +620,7 @@ public class MediaSources extends MMObjectBuilder {
     /*
      * @scope private (and use it in checkFields)
      */
-    protected static int convertFormatToNumber(String format) {
+    public static int convertFormatToNumber(String format) {
         format = format.toLowerCase();
         for (int i = 0; i < formats.length; i++) {
             if(format.equals(formats[i])) return i+1;
