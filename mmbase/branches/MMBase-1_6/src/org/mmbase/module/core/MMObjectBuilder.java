@@ -3530,7 +3530,7 @@ public class MMObjectBuilder extends MMTable {
                     sb.append(",");
                 }
 
-                sb.append(database.getAllowedField(def.getDBName()));
+                sb.append(getFullTableName() + "." + database.getAllowedField(def.getDBName()));
                 first = false;
             }
         }
