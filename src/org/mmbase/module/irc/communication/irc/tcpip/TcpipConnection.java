@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width:4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -16,10 +16,12 @@ import java.util.*;
 
 import org.mmbase.module.irc.communication.*;
 
-public 	class 		TcpipConnection 
-		extends		Thread
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+public 	class TcpipConnection extends Thread
 {
-	private String classname = getClass().getName();
+    private static Logger log = Logging.getLoggerInstance(TcpipConnection.class.getName());
 
 //  -----------------------------------------------------------------
 	private	Socket						socket		= null;
@@ -44,8 +46,6 @@ public 	class 		TcpipConnection
 
 	String						receivedline= null;
 //  -----------------------------------------------------------------
-	boolean						debug		= false;
-//  -----------------------------------------------------------------
 
 	public TcpipConnection( )
 	{
@@ -67,24 +67,26 @@ public 	class 		TcpipConnection
 
 	public void run()
 	{
-		//debug("run(): start");
+		//log.debug("run(): start");
 		while( doit )
 		{
 			if( isconnected() )
 			{
-				if( debug ) debug("run(): received(), doit("+doit+"), isconnected("+isconnected()+")");
+				if (log.isDebugEnabled()) {
+                    log.debug("run(): received(), doit("+doit+"), isconnected("+isconnected()+")");
+                }
 				received();
 			}
 			else
 			{
-				debug("disconnected, reconnect()!");
+				log.info("disconnected, reconnect()!");
 				try
 				{
 					sleep( 1000 );
 				}
 				catch(InterruptedException e )
 				{
-					debug("run(): Interrupted(): " + e.toString());
+                    log.info("run(): Interrupted(): " + e.toString());
 				}
 				reconnect();	
 			}
@@ -130,20 +132,20 @@ public 	class 		TcpipConnection
 			// macintoshes do not know a ...
 			catch( ConnectException e3 )
 			{
-				debug("connect( hostname("+hostname+"), port("+port+"): ERROR: Could not connect, refused! " + e3.toString() );
+				log.debug("connect( hostname("+hostname+"), port("+port+"): ERROR: Could not connect, refused! " + e3.toString() );
 			}
 			*/
 			catch( UnknownHostException e )
 			{
-				debug("connect( hostname("+hostname+"), port("+port+"): ERROR: Host not found! " + e.toString() );
+				log.error("connect( hostname("+hostname+"), port("+port+"): Host not found! " + e.toString() );
 			}
 			catch( IOException e2 )
 			{
-				debug("connect( hostname("+hostname+"), port("+port+"): ERROR: Could not connect! " + e2.toString() );
+				log.error("connect( hostname("+hostname+"), port("+port+"): Could not connect! " + e2.toString() );
 			}
 			catch( Exception e3 )
 			{
-				debug("connect( hostname("+hostname+"), port("+port+"): ERROR: Could not connect! " + e3.toString() );
+				log.error("connect( hostname("+hostname+"), port("+port+"): Could not connect! " + e3.toString() );
 			}
 			
 			if( !isconnected() )
@@ -151,28 +153,28 @@ public 	class 		TcpipConnection
 				tries++;
 				try
 				{
-					debug("connect(): not connected after " + tries +" time(s), waiting for 10 secs to retry!");
+					log.warn("connect(): not connected after " + tries +" time(s), waiting for 10 secs to retry!");
 					sleepfor( 10000 );
 				}
 				catch( InterruptedException e )
 				{
-					debug("connect(): interrupted!" + e.toString() );
+					log.warn("connect(): interrupted!" + e.toString() );
 				}
 			}
 		}
 		if( !isconnected() )
-			debug( "connect(): giving up after "+maxtries+" times to connect.");
+			log.warn( "connect(): giving up after "+maxtries+" times to connect.");
 		return result;
 	}
 
 	public boolean reconnect()
 	{
-		debug("reconnect(): start");
+		log.info("reconnect(): start");
 
 		boolean result = false;
 		int tries = 0, maxtries = 10;
 
-		debug("reconnect(): stopping threads");
+		log.info("reconnect(): stopping threads");
 		haltit();
 
 		while( !isconnected() && tries < maxtries )
@@ -184,12 +186,12 @@ public 	class 		TcpipConnection
 			}
 			catch( InterruptedException e )
 			{
-				debug("reconnect(): Interrupted!: " + e.toString() );
+				log.warn("reconnect(): Interrupted!: " + e.toString() );
 			}
 				
 			try
 			{
-		debug("reconnect(): starting connection");
+		log.debug("reconnect(): starting connection");
 				this.socket 	= new Socket( servername, port );
 				this.in			= new DataInputStream(  socket.getInputStream() );
 				this.out		= new DataOutputStream( socket.getOutputStream() );
@@ -213,20 +215,20 @@ public 	class 		TcpipConnection
 			/*
 			catch( ConnectException e3 )
 			{
-				debug("reconnect( hostname("+hostname+"), port("+port+"): ERROR: Connection refused! " + e3.toString() );
+				log.error("reconnect( hostname("+hostname+"), port("+port+"): Connection refused! " + e3.toString() );
 			}
 			*/
 			catch( UnknownHostException e ) 
 			{
-				debug("reconnect( hostname("+hostname+"), port("+port+"): ERROR: Host not found! " + e.toString() );
+				log.error("reconnect( hostname("+hostname+"), port("+port+"): Host not found! " + e.toString() );
 			}
 			catch( IOException e2 )
 			{
-				debug("reconnect( hostname("+hostname+"), port("+port+"): ERROR: Could not connect! " + e2.toString() );
+				log.error("reconnect( hostname("+hostname+"), port("+port+"): Could not connect! " + e2.toString() );
 			}
 			catch( Exception e3 )
 			{
-				debug("reconnect( hostname("+hostname+"), port("+port+"): ERROR: Could not connect! " + e3.toString() );
+				log.error("reconnect( hostname("+hostname+"), port("+port+"): Could not connect! " + e3.toString() );
 			}	
 
 			if( !isconnected() )
@@ -234,12 +236,12 @@ public 	class 		TcpipConnection
 				tries++;
 				try
 				{
-					debug("reconnect(): could not connect for " + tries +" time(s), wait for 10 secs before retrying!");	
+					log.warn("reconnect(): could not connect for " + tries +" time(s), wait for 10 secs before retrying!");	
 					sleepfor( 10000 );
 				}
 				catch( InterruptedException e )
 				{
-					debug("reconnect(): Interrupted! " + e.toString() );
+					log.warn("reconnect(): Interrupted! " + e.toString() );
 				}
 			}
 		}
@@ -274,7 +276,9 @@ public 	class 		TcpipConnection
 	public void write( String s )
 		throws IOException 
 	{
-		if( debug ) debug("write("+s+")");
+		if (log.isDebugEnabled()) {
+            log.debug("write("+s+")");
+        }
 		out.writeBytes( s );
 		out.flush();
 	}
@@ -284,12 +288,14 @@ public 	class 		TcpipConnection
 	 */
 	public void send()
 	{
-		if( debug ) debug("send()");
+		if (log.isDebugEnabled()) {
+            log.debug("send()");
+        }
 		try
 		{
 			if( sendline != null )
 			{
-				debug("send(): Saw a reconnect, resending("+sendline+")!");
+				log.info("send(): Saw a reconnect, resending("+sendline+")!");
 				write( sendline );
 				sendline = null;
 			}
@@ -300,10 +306,12 @@ public 	class 		TcpipConnection
 			}
 			catch( InterruptedException e )
 			{
-				debug("send(): Interrupted! " + e.toString() );
+				log.warn("send(): Interrupted! " + e.toString() );
 			}
 
-			if( debug ) debug("send(): sendbufsize("+sendbuf.size()+")");
+			if (log.isDebugEnabled()) {
+                log.debug("send(): sendbufsize("+sendbuf.size()+")");
+            }
 	
 			while( !sendbuf.isEmpty() )
 			{
@@ -317,7 +325,7 @@ public 	class 		TcpipConnection
 		{
 			connected = false;
 			haltit();
-			debug( "send(): Could not send("+sendline+"), signalling reconnect! " + e.toString() );
+			log.error( "send(): Could not send("+sendline+"), signalling reconnect! " + e.toString() );
 		}
 	}
 
@@ -355,14 +363,14 @@ public 	class 		TcpipConnection
 				//if( receiveline.equals("") )
 				{
 					receivebuf.addElement( receiveline );
-					//debug("receive("+receiveline+")");
+					//log.debug("receive("+receiveline+")");
 					receiveline = null;
 					receivebuf.mynotify();
 				}
 			}
 			else
 			{
-				debug("receive("+receiveline+"): Got null, reconnect()!");
+				log.warn("receive("+receiveline+"): Got null, reconnect()!");
 				connected = false;
 				haltit();
 			}
@@ -371,7 +379,7 @@ public 	class 		TcpipConnection
 		{
 			connected = false;
 			haltit();
-			debug("receive(): Could not receive("+receiveline+"), signalling reconnect! " + e.toString() );
+			log.error("receive(): Could not receive("+receiveline+"), signalling reconnect! " + e.toString() );
 		}
 	}
 
@@ -386,17 +394,19 @@ public 	class 		TcpipConnection
 		}
 		catch( InterruptedException e )
 		{
-			debug("received(): Interrupted! " + e.toString() );
+			log.warn("received(): Interrupted! " + e.toString() );
 		}
 
-		if( debug ) debug("receive(): receivebuf.size("+receivebuf.size()+")");
+		if (log.isDebugEnabled()) {
+            log.debug("receive(): receivebuf.size("+receivebuf.size()+")");
+        }
 
 		Enumeration e = receivebuf.elements();
 		while( e.hasMoreElements() )
 		{
 			receivedline = (String) e.nextElement();
 			receivebuf.removeElement( receivedline );
-			// debug("received(): pushing("+receivedline+")");
+			// log.debug("received(): pushing("+receivedline+")");
 			receive( receivedline );
 		}
 	/**
@@ -408,7 +418,9 @@ public 	class 		TcpipConnection
 
 			receivedline = (String) receivebuf.firstElement();
 			receivebuf.removeElement( receivedline );
-			if (debug) debug("received(): pushing line("+receivedline+")");
+			if (log.isDebugeEnabled()) {
+                 log.debug("received(): pushing line("+receivedline+")");
+            }
 			receive( receivedline );
 		}
 	*/
@@ -461,12 +473,12 @@ public 	class 		TcpipConnection
 		boolean result = false;
 		if( s == null )
 		{
-			debug( method+"(): ERROR: string("+name+") is null!");
+			log.error( method+"(): string("+name+") is null!");
 		}
 		else
 		if( s.equals("") )
 		{
-			debug( method+"(): ERROR: string("+name+") is empty!");
+			log.error( method+"(): string("+name+") is empty!");
 		}
 		else
 			result = true;
@@ -480,12 +492,12 @@ public 	class 		TcpipConnection
 
 		if( s == null )
 		{
-			debug( method+"(): ERROR: string("+name+") is null!");
+			log.error( method+"(): string("+name+") is null!");
 		}
 		else
 		if( s.equals("") )
 		{
-			debug( method+"(): ERROR: string("+name+") is empty!");
+			log.error( method+"(): string("+name+") is empty!");
 		}
 		else
 		{
@@ -496,7 +508,7 @@ public 	class 		TcpipConnection
 			}
 			catch( NumberFormatException e )
 			{
-				debug( method+"(): ERROR: string("+name+") is not a number!");
+				log.error( method+"(): string("+name+") is not a number!");
 			}
 		}
 
@@ -509,12 +521,12 @@ public 	class 		TcpipConnection
 
 		if( s == null )
 		{
-			debug( method+"(): ERROR: string("+name+") is null!");
+			log.error( method+"(): string("+name+") is null!");
 		}
 		else
 		if( s.equals("") )
 		{
-			debug( method+"(): ERROR: string("+name+") is empty!");
+			log.error( method+"(): string("+name+") is empty!");
 		}
 		else
 		{
@@ -524,15 +536,10 @@ public 	class 		TcpipConnection
 			}
 			catch( NumberFormatException e )
 			{
-				debug( method+"(): ERROR: string("+name+") is not a number!");
+				log.error( method+"(): string("+name+") is not a number!");
 			}
 		}
 		return result;
-	}
-
-	private void debug( String msg )
-	{
-		System.out.println( classname +":"+ msg );
 	}
 
 	/**
@@ -544,7 +551,7 @@ public 	class 		TcpipConnection
 			tcpipcon.startit();
 		}
 		else
-			System.out.println("Could not connect!");
+			log.warn("Could not connect!");
 	}
 	*/
 }

@@ -10,24 +10,21 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.irc.communication.irc.tcpip;
 
-public 	class 	TcpipSendThread
-		extends	TcpipThread
-{
-	private String classname = getClass().getName();
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
-	public TcpipSendThread( TcpipConnection con )
-	{
-		super( con );
-		setName("TcpipSendThread");
-	}
+public class TcpipSendThread extends TcpipThread {
+    private static Logger log = Logging.getLoggerInstance(TcpipSendThread.class.getName());
+    
+    public TcpipSendThread( TcpipConnection con )
+    {
+        super( con );
+        setName("TcpipSendThread");
+    }
+    
+    public void performAction()
+    {
+        tcpipcon.send();	
+    }
 
-	public void performAction()
-	{
-		tcpipcon.send();	
-	}
-
-	private	void debug( String msg )
-	{
-		System.out.println( classname +":"+ msg );
-	}
 }
