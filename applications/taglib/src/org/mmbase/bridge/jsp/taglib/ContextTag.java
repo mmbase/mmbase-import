@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.62 2003-09-10 11:16:07 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.63 2003-11-20 11:11:05 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -51,14 +51,20 @@ import org.mmbase.util.logging.*;
 public class ContextTag extends ContextReferrerTag implements ContextProvider {
     private static final Logger log = Logging.getLoggerInstance(ContextTag.class);
 
-    static String CONTEXTTAG_KEY = "__context";
-    public static String DEFAULTENCODING_KEY = "__defaultencoding";
+    static final String CONTEXTTAG_KEY = "__context";
+    public static final String DEFAULTENCODING_KEY = "__defaultencoding";
 
     private ContextContainer container = null;
     private ContextProvider  parent = null;
     private boolean    searchedParent = false;
 
     private CloudContext cloudContext;
+
+    private Attribute referid = Attribute.NULL;
+
+    public void setReferid(String r) throws JspTagException {
+        referid = getAttribute(r);
+    }
 
     /**
      * This context can also serve as a 'cloudcontext'.
@@ -90,13 +96,26 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         log.debug("Start tag of ContextTag");
         parent = null;
         searchedParent = false;
-        createContainer(getContextProvider().getContextContainer());
+
+        if (referid != Attribute.NULL) {
+            Object o = getObject(referid.getString(this));
+            if ("".equals(o)) { // that means, lets ignore it.
+                createContainer(getContextProvider().getContextContainer());
+            } else {
+                if (! (o instanceof ContextContainer)) {
+                    throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
+                }
+                container = (ContextContainer)  o;
+            }
+        } else {
+            createContainer(getContextProvider().getContextContainer());
+        }
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
             if (log.isDebugEnabled()) {
-                log.debug("registering container " + getId() + " with context " + getContextProvider().getContextContainer().getId());
+                log.debug("registering container " + container + " " + getId() + " with context " + getContextProvider().getContextContainer().getId());
             }
-            getContextProvider().getContextContainer().register(getId(), container);
+            getContextProvider().getContextContainer().register(getId(), container, referid == Attribute.NULL);
         }
         log.debug("out");
         // return EVAL_BODY_INCLUDE; does not work in orion 1.6, tomcat < 4.1.19
@@ -108,7 +127,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             try {
                 parent = getContextProvider();
             } catch (JspTagException e) {
-                throw new TaglibException("Could not find parent context!", e);
+                throw new TaglibException("Could not find parent context!" + e.getMessage(), e);
             }
             searchedParent = true;
         }
