@@ -5,7 +5,7 @@
 	<articleinfo>
 		<title>MMBase installation on Apache Tomcat</title>
 		<date>2002-12-05</date>
-		<edition>$Id: install-tomcat.xml,v 1.12 2004-02-11 22:00:30 michiel Exp $</edition>
+		<edition>$Id: install-tomcat.xml,v 1.13 2004-02-11 22:02:45 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -29,7 +29,7 @@
 	<section id="intro">
 		<title>Introduction</title>
 		<para>
-			This document applies to MMBase 1.6 and
+			This document applies to MMBase 1.7 and
 			<ulink url="http://jakarta.apache.org/tomcat">Tomcat</ulink> 4.1.12 (or higher). In earlier Tomcat
 			4.1 versions are bugs which make some MMBase jsp-pages not even compile. The taglib
 			implementation of Tomcat 4.0 is very slow, so we strongly advice to go for the latest Tomcat
@@ -42,9 +42,9 @@
 		</para>
 		<para>
 			So <ulink url="http://jakarta.apache.org/site/binindex.html">download</ulink> a binary Tomcat
-			4.1 or 5.0, and install it (i.e. unpack it somewhere). You also need jdk 1.3 or jdk 1.4
-			installed (think of the JAVA_HOME environment variable if necessary). MMBase 1.6.5 is
-			available for both jdk 1.3 and 1.4, but the 1.7 release of MMBase will require jdk 1.4. Make
+			4.1 or 5.0, and install it (i.e. unpack it somewhere). You also need jdk 1.4
+			installed (think of the JAVA_HOME environment variable if necessary). MMBase 1.6.5 was
+			available for both jdk 1.3 and 1.4, but the 1.7 release of MMBase requires jdk 1.4. Make
 			sure the current working directory and the 'conf', 'logs', 'temp' and 'work' of the tomcat
 			installation are writable for the user who is going to run it (and the rest is readable at
 			least)
