@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.2 2002-03-30 08:36:37 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.3 2002-03-30 16:32:43 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -76,7 +76,7 @@ public class TemplateCache extends Cache {
         return "XSLTemplates";
     }
     public String getDescription() {
-        return "A cache for XSL Templates";
+        return "XSL Templates";
     }
 
     /**
