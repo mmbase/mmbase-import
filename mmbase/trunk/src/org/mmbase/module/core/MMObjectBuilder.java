@@ -1552,7 +1552,7 @@ public class MMObjectBuilder extends MMTable {
             int type=node.getDBType(key);
             if (type==FieldDefs.TYPE_INTEGER) {
                 body+="<"+key+">"+node.getIntValue(key)+"</"+key+">\n";
-            } else if (type==FieldDefs.TYPE_TEXT) {
+            } else if (type==FieldDefs.TYPE_STRING) {
                 body+="<"+key+">"+node.getStringValue(key)+"</"+key+">\n";
             } else if (type==FieldDefs.TYPE_BYTE) {
                 body+="<"+key+">"+node.getByteValue(key)+"</"+key+">\n";

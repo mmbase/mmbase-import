@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.24 $ $Date: 2000-10-31 15:24:33 $
+* @$Revision: 1.25 $ $Date: 2000-11-07 14:28:55 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -356,7 +356,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                         stmt.setDouble(i, node.getDoubleValue(key));
                 } else if (type==FieldDefs.TYPE_LONG) {
                         stmt.setLong(i, node.getLongValue(key));
-                } else if (type==FieldDefs.TYPE_TEXT) {
+                } else if (type==FieldDefs.TYPE_STRING) {
                         String tmp=node.getStringValue(key);
                         if (tmp!=null) {
 							setDBText(i, stmt,tmp);
@@ -456,9 +456,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
             case FieldDefs.TYPE_BYTE:
                 node.setValue(prefix+fieldname,"$SHORTED");
                 break;
-			case FieldDefs.TYPE_TEXT:
-				node.setValue(prefix+fieldname,"$SHORTED");
-				break;
 			default:
 				debug("decodeDBNodeField(): unknown type="+type+" builder="+node.getTableName()+" fieldname="+fieldname);
 				break;
@@ -876,47 +873,45 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* Method: getDBKey()
 	*
 	*/
-	/* Commented out because it doesn't work very well. getDBKey() is not overridden, MMSQL92node is used
-        public synchronized int getDBKey() {
-		if (debug) debug("Method: getDBKey()");
-                // get a new key
+	public synchronized int getDBKey() {
+		// get a new key
 
-                if (currentdbkey!=-1) {
-                        currentdbkey++;
-                        if (currentdbkey<=currentdbkeyhigh) {
-                                if (debug) debug("GETDBKEY="+currentdbkey);
-                                return(currentdbkey);
-                        }
-                }
-            int number=-1; // not 100% sure if function returns 1 first time
-                while (number==-1) {
-                        try {
-                                MultiConnection con=mmb.getConnection();
-                                Statement stmt=con.createStatement();
-                                ResultSet rs=stmt.executeQuery("execute function fetchrelkey(10)");
-                                while (rs.next()) {
-                                        number=rs.getInt(1);
-                                }
-                                stmt.close();
-                                con.close();
-                        } catch (SQLException e) {
-                                debug("getDBKey(): ERROR: while getting a new key number");
-                                e.printStackTrace();
-                                try {
-                                        Thread.sleep(2000);
-                                } catch (InterruptedException re){
-                                        debug("getDBKey(): Waiting 2 seconds to allow database to unlock fetchrelkey()");
-                                }
-                                debug("getDBKey(): got key("+currentdbkey+")");
-                                return(-1);
-                        }
-                }
-                currentdbkey=number; // zeg 10
-                currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
-                if (debug) debug("getDBKey(): got key("+currentdbkey+")");
-                return(number);
-        }
-	*/
+		if (currentdbkey!=-1) {
+			currentdbkey++;
+			if (currentdbkey<=currentdbkeyhigh) {
+				if (debug) debug("GETDBKEY="+currentdbkey);
+				return(currentdbkey);
+			}
+		}
+	    int number=-1; // not 100% sure if function returns 1 first time
+		while (number==-1) {
+			try {
+				MultiConnection con=mmb.getConnection();
+				Statement stmt=con.createStatement();
+				ResultSet rs=stmt.executeQuery("execute function fetchrelkey(10)");
+				while (rs.next()) {
+					number=rs.getInt(1);
+				}
+				stmt.close();
+				con.close();
+			} catch (SQLException e) {
+				debug("getDBKey(): ERROR: while getting a new key number");
+				e.printStackTrace();
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException re){
+					debug("getDBKey(): Waiting 2 seconds to allow databvase to unlock fetchrelkey()");
+				}
+				debug("getDBKey(): got key("+currentdbkey+")");
+				return(-1);
+			}
+		}
+		currentdbkey=number; // zeg 10
+		currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
+		debug("getDBKey(): got key("+currentdbkey+")");
+		return(number);
+	}
+
 	/*
 	* Method: getAllNames()
 	*

@@ -250,7 +250,6 @@ public class XMLDatabaseReader  {
 							if (tmp.equals("VARCHAR")) mmbasetype=FieldDefs.TYPE_STRING;
 							if (tmp.equals("STRING")) mmbasetype=FieldDefs.TYPE_STRING;
 							if (tmp.equals("INTEGER")) mmbasetype=FieldDefs.TYPE_INTEGER;
-							if (tmp.equals("TEXT")) mmbasetype=FieldDefs.TYPE_TEXT;
 							if (tmp.equals("BYTE")) mmbasetype=FieldDefs.TYPE_BYTE;
 							if (tmp.equals("FLOAT")) mmbasetype=FieldDefs.TYPE_FLOAT;
 							if (tmp.equals("DOUBLE")) mmbasetype=FieldDefs.TYPE_DOUBLE;
