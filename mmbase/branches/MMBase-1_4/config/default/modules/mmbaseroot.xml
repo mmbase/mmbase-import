@@ -101,7 +101,7 @@
 		editors can be found in /config/modules/mmlanguage.xml. The gui information of a builder
 		is provided by the builder itself (e.g. /config/builders/urls.xml).
   	    -->
-       <property name="language">en</property>
+       <property name="language">us</property>
 
 	</properties>
 </module>
