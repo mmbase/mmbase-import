@@ -16,49 +16,15 @@ import org.mmbase.util.FileWatcher;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 /**
- *  This class is a empty implementation of the Authorization, it will only
- *  return that operations are valid. To make your own implementation of
- *  authorization, you have to extend this class.
- * @javadoc
+ * This class is a empty implementation of the Authorization, it will only
+ * return that operations are valid. To make your own implementation of
+ * authorization, you have to extend this class.
+ *
  * @author Eduard Witteveen
- * @version $Id: Authorization.java,v 1.14 2003-06-16 17:23:23 michiel Exp $
+ * @version $Id: Authorization.java,v 1.15 2003-07-09 07:25:05 michiel Exp $
  */
-public abstract class Authorization {
-    private static Logger log=Logging.getLoggerInstance(Authorization.class.getName());
-
-    /** The SecurityManager, who created this instance */
-    protected MMBaseCop manager;
-
-    /** The absolute file which is the config file */
-    protected File configFile;
-
-    /** The file watcher */
-    protected FileWatcher fileWatcher;
-
-    /**
-     *	The method which sets the settings of this class. This method is
-     *	shouldn't be overrided.
-     *	This class will set the member variables of this class and then
-     *	call the member function load();
-     *	@param manager The class that created this instance.
-     *	@param fileWatcher checks the files
-     *	@param configPath The url which contains the config information for.
-     *	    the authorization.
-     */
-    public final void load(MMBaseCop manager, FileWatcher fileWatcher, String configPath) {
-        log.debug("Calling load() with as config file:" + configPath);
-        this.manager = manager;
-    this.fileWatcher = fileWatcher;
-    if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
-    load();
-    }
-
-    /**
-     *	This method could be overrided by an extending class.
-     *	It should set the settings for this class, and when needed
-     *	retrieve them from the file at location configPath.
-     */
-    protected abstract void load();
+public abstract class Authorization extends Configurable {
+    private static Logger log = Logging.getLoggerInstance(Authorization.class);
 
     /**
      *	This method could be overrided by an extending class.
@@ -74,19 +40,18 @@ public abstract class Authorization {
     public abstract void create(UserContext user, int nodeid);
 
     /**
-     *	This method could be overrided by an extending class.
+     *	This method should be overrided by an extending class.
      *	It has to be called, when a Node has been changed.
      *	This way, the authentication can generate log information
      *	for this object, which can be used for accountability
-     *	@param user The UserContext, containing the information
-     *	    about the user.
+     *	@param user The UserContext, containing the information about the user.
      *	@param nodeid The id of the MMObjectNode, which has just been changed
      *	    in the cloud.
      */
     public abstract void update(UserContext user, int nodeid);
 
     /**
-     *	This method could be overrided by an extending class.
+     *	This method should be overrided by an extending class.
      *	It has to be called, when a Node has been removed from
      *	the cloud.
      *	This way, the authentication can generate log information
@@ -100,7 +65,7 @@ public abstract class Authorization {
     public abstract void remove(UserContext user, int nodeid);
 
     /**
-     *	This method could be overrided by an extending class.
+     *	This method should be overrided by an extending class.
      *	This method checks if an operation is permitted on a certain node done
      *	by a certain user.
      *	@param user The UserContext, containing the information the user.
@@ -130,7 +95,7 @@ public abstract class Authorization {
     }
 
     /**
-     * This method could be overrided by an extending class.
+     * This method should be overrided by an extending class.
      * This method checks if the creation of a certain relation or changing
      * the source or destination of a certain relation done by a certain
      * user is permitted.
