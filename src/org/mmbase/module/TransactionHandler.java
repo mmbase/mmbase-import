@@ -223,7 +223,7 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 				//do for all field contexts (setField)
 				fieldContextList = objectContext.getChildNodes();
 				for (int k = 0; k < fieldContextList.getLength(); k++) {
-					String fieldName = null, fieldValue = null;
+					String fieldName = null, fieldValue = "";
 					
 					Node fieldContext = fieldContextList.item(k);
 					if (fieldContext.getNodeName().equals("#text")) continue;
@@ -231,10 +231,13 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 					NamedNodeMap nm3 = fieldContext.getAttributes();
 					if (nm3 != null) {
 							currentObjectArgumentNode = nm3.getNamedItem("par");
-							if (currentObjectArgumentNode != null)
+							if (currentObjectArgumentNode != null) {
 								fieldName = currentObjectArgumentNode.getNodeValue();
+							}
 							Node setFieldValue = fieldContext.getFirstChild();
-                            fieldValue = setFieldValue.getNodeValue();
+							if(setFieldValue!=null) {
+								fieldValue = setFieldValue.getNodeValue();
+							}
                             if (_debug) System.out.println("setFieldValue = "+setFieldValue);
 							executeFieldContext(oId, fieldName, fieldValue);
 					}
