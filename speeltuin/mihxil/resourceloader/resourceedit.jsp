@@ -274,7 +274,7 @@
        <table>
          <tr><th>URL</th><th>read</th><th>write</th><th></th></tr>
          <% 
-            List urls = resourceLoader.findResourceList(resource);
+            List urls = resourceLoader.findResourceList(resource.equals("") ? "&lt;new resource name&gt;" : resource);
             ListIterator i = urls.listIterator();
             int read = 0;
             int write = 0;
@@ -286,7 +286,7 @@
               }
               read++; write++;
             }
-            if (write >= urls.size()) write--;
+            if (write >= urls.size()) write--; // in case resource does not yet exist
             while(i.hasPrevious()) {
               URL u = (URL) i.previous();
               URLConnection uc = u.openConnection();
