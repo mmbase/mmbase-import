@@ -40,7 +40,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static Upload upload = null;
-	private static String version="2.3.4";
+	private static String version="2.3.5";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -464,7 +464,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					continue;
 				} else {
 				if (oName.equals("markObjectDelete")) {
-					debug("markObjectDelete , an object may not have any relations",0);
+					debug("markObjectDelete , if an object has any relations markObjectDelete will fail.",0);
 					if (oMmbaseId==null) { 
 						throw new TransactionHandlerException(oName + " no mmbaseId specified");
 					}
@@ -473,7 +473,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 					transactionManager.deleteObject(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 					// destroy
-					tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
+					//tmpObjectManager.deleteTmpNode(userTransactionInfo.user.getName(),currentObjectContext);
 					if(transactionInfo.knownObjectContexts.containsKey(id)) {
 						transactionInfo.knownObjectContexts.remove(id);
 					}
