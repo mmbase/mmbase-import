@@ -24,7 +24,7 @@
 		<td COLSPAN="8">
 		<br />
 		<center>This is a temporary package overview for the MMBase. In time it will be replaced with the package manager from the apps2 project (not done yet).<br /><br /> As a result this page is maintained by hand.
-		So if your package is not on this list and you feel it should be or you have extra<br /> information on your package mail me at daniel@submarine.nl and ill update the list.
+		So if your package is not on this list and you feel it should be or you have extra<br /> information on your package mail me at daniel@mmbase.org and ill update the list.
 		<br />
 		<br />
 		</td>
