@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.15 2002-07-25 14:47:40 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.16 2002-08-01 07:50:18 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -231,7 +231,7 @@ public class ObjectTypes extends TypeDef {
     public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
         Object newValue = node.values.get(fieldname);
         // the field with the name 'name' may not be changed.....
-        if(originalValue !=null && !originalValue.equals(newValue)) {
+        if(originalValue != null && !originalValue.equals(newValue)) {
             if(fieldname.equals("name")) {
 		// restore the original value...
                 node.values.put(fieldname,originalValue);
@@ -384,11 +384,11 @@ public class ObjectTypes extends TypeDef {
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
-            log.service("gonna save builderconfig to file:" + file);            
+            log.service("gonna save builderconfig to file:" + file);
             transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
         }
         catch(javax.xml.transform.TransformerException te) {
-            throw new RuntimeException("failure saving configuration to disk : " + te.toString());
+            throw new RuntimeException("failure saving configuration to disk : " + te.toString() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement());
             // storing the builder failed!
         }
         return file;
