@@ -37,7 +37,9 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * The formatter can reformat its body. It usually uses XSL for this.
- * 
+ *
+ *
+ * @since  MMBase-1.6 
  * @author Michiel Meeuwissen
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
@@ -237,8 +239,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         String body = bodyContent.getString().trim();
         bodyContent.clearBody(); // should not be shown itself.
 
-        if(body.trim().length() > 0) {
-            throw new JspTagException ("The body of the formatter cannot contain anything, except from taglibs.");
+        if(wantXML() && doc.getDocumentElement() != null && body.length() > 0) {
+            throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body.");
         }
 /*        if (wantXML()) {
             if (log.isDebugEnabled()) log.debug("bodycontent:>" + body + "<");
