@@ -15,6 +15,8 @@ import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
+import sun.misc.BASE64Decoder;
+
 import org.mmbase.bridge.*;
 
 /**
@@ -30,13 +32,16 @@ public class MMCloud extends MMTaglib implements BodyTag{
 
     public static boolean debug = true;
     private String authenticate = "PropertiesLogon";
-    private String logon = null;
+
+    private String method = null; // how to log on.
+    private String logon = null;  
     private String pwd = null;
     private String cache = null;
     private String expire = "";
     String request_line = null;
     private HttpSession session;
-    private HttpServletRequest request;
+    private HttpServletRequest  request;
+    private HttpServletResponse response;
 
     
     //simple method to dump debug data into System.err
@@ -81,37 +86,111 @@ public class MMCloud extends MMTaglib implements BodyTag{
     public void setAuthenticate(String authenticate){
         this.authenticate = authenticate;
     }
+    public void setMethod(String m){
+        this.method = m;
+    }
 
     public void setCache(String cache){
         this.cache = cache;
     }
 
+
+    /**
+     * Deny access to this page
+     */    
+    private boolean deny(HttpServletResponse res) {
+        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        debug("Not logged on.");
+        res.setHeader("WWW-Authenticate", "Basic realm=\"www\"");
+        return false; 
+    }
+
+
     /**
      *  Check name and retrieve cloud
      **/
     public int doStartTag() throws JspException{
-        session=(HttpSession)pageContext.getSession();
-        request=(HttpServletRequest)pageContext.getRequest();
-	    Cloud cloud = (Cloud)session.getValue("cloud_"+cloudName);
-	    if (cloud==null) {
-    	    cloud=getDefaultCloudContext().getCloud(cloudName);
-    	    if (cloud==null) {
-        	    return SKIP_BODY;
+        session  = (HttpSession)pageContext.getSession();
+        request  = (HttpServletRequest)pageContext.getRequest();
+        response = (HttpServletResponse)pageContext.getResponse();
+        Cloud cloud = (Cloud)session.getAttribute("cloud_"+cloudName);
+
+        if (cloud != null && (logon != null || method != null)) { // check if logged on as the right one
+
+            if (method != null) { // we need to know if cloud was logged on at all
+                
+            }
+
+            if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
+                debug("logged on, but as wrong user, logging out first.");
+                cloud = null;
+                session.setAttribute("cloud_" + cloudName, null);
+            }
+        }
+
+        if (cloud == null) {
+            debug("no cloud found. Loggin in...");
+            // check how to log on:
+            if ("http".equals(method)) {
+                debug("with http");
+                // find logon, password with http authentication       
+                String username = null;
+                String password = null;
+                try {
+                    BASE64Decoder dec    = new BASE64Decoder();
+                    String mime_line     = request.getHeader("Authorization"); 
+                    if (mime_line != null) {
+                        String user_password = new String(dec.decodeBuffer(mime_line.substring(6))); 
+                        StringTokenizer t    = new StringTokenizer(user_password, ":"); 
+                        if (t.countTokens() == 2) {
+                            username = t.nextToken(); 
+                            password = t.nextToken(); 
+                        }
+                    }		
+                } catch (Exception e) {			
+                    debug("oooops" + e);
+                }
+                // Authenticate user 
+                debug("u " + username + " p " + password);
+                if (logon != null) { // if there was a username specified as well, it must be the same
+                    debug("http with username");
+                    if (! logon.equals(username)) {
+                        debug("username not correct");
+                        logon = null;
+                        deny(response);
+                    }
+                } else {
+                    debug("http without username");
+                    logon = username;
+                }
+                pwd = password;
+            } 
+            
+            if (logon != null) {
+                debug("Username found. logging in");
+                User user = getDefaultCloudContext().getNewUser();
+                user.put("username", logon);
+                user.put("password", pwd);
+                cloud = getDefaultCloudContext().getCloud(cloudName, "name/password", user);
+            } else { 
+                cloud = getDefaultCloudContext().getCloud(cloudName);
+            }
+            if (cloud == null) { // stil null, give it up then...
+                debug ("Could not create Cloud, denying access");
+                deny(response);
+                return SKIP_BODY;
     	    } else {
-    	        session.putValue("cloud_"+cloudName,cloud);
+    	        session.setAttribute("cloud_"+cloudName,cloud);
     	    }
         }
-//        if ((logon!=null) && (!logon.equals(cloud.getUserName()))) {
-//            cloud.logon(authenticate,new Object[] {logon,pwd});
-//        }
         setPageCloud(cloud);
-        if (cache!=null) {
+        if (cache!=null) { // cache spul
             Module cacher = getDefaultCloudContext().getModule("scancache");
             if (cacher instanceof CacheModule) {
                 try {
                     // caching of cloud=part of page
                     request_line = request.getRequestURI();
-                    String reload = (String)session.getValue("reload");
+                    String reload = (String)session.getAttribute("reload");
                     String rst=((CacheModule)cacher).get(cache,request_line,expire+">");
 	                if (rst!=null && !("Y".equals(reload))) {
 	                    pageContext.getOut().write(rst);
