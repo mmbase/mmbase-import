@@ -39,8 +39,9 @@ public class TransactionHandler
 	
 	private boolean _debug=true;
 	private void debug( String msg, int indent) {
+		System.out.print("TR: ");
 		for (int i = 1; i < indent; i++) System.out.print("\t");
-		System.out.println( msg );
+		System.out.println(msg);
 	}
 
 	// hashtable used to cache per user for thread safety
@@ -79,10 +80,8 @@ public class TransactionHandler
 	 */
 	public void handleTransaction(String template, sessionInfo session, scanpage sp) {
 			
-		if (_debug) debug(" >>>>handleTransaction in TransactionHandler ", 0);
+		if (_debug) debug("Received template is:", 0);
 		if (_debug) debug(template, 0);
-		//if (_debug) debug(session.toString(), 0);
-		//if (_debug) debug(sp.toString(), 0);
 		
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(template));
@@ -131,7 +130,7 @@ public class TransactionHandler
 			transactionContextList = docRootElement.getChildNodes();
 			for (int i = 0; i < transactionContextList.getLength(); i++) {
 				String id = null, commit = null, time = null;
-				boolean noId = true;
+				//boolean noId = true;
 				currentTransactionArgumentNode = null;
 
 				transactionContext = transactionContextList.item(i);
@@ -147,10 +146,12 @@ public class TransactionHandler
 						id = currentTransactionArgumentNode.getNodeValue();
 					}
 					if (id == null) {
-						noId = true;
+						//noId = true;
+						userTransactionInfo.anonymousTransaction = true;
 						id = uniqueId();
 					} else {
-						noId = false;
+						//noId = false;
+						userTransactionInfo.anonymousTransaction = false;
 					}
 					//commitOnClose
 					currentTransactionArgumentNode = nm.getNamedItem("commitOnClose");
@@ -171,7 +172,7 @@ public class TransactionHandler
 			NodeList objectContextList = transactionContext.getChildNodes();
 			for (int j = 0; j < objectContextList.getLength(); j++) {
 				String oId = null, oType = null, oMmbaseId = null;
-				boolean noOId = true;
+				//boolean noOId = true;
 				currentObjectArgumentNode = null;
 				
 				objectContext = objectContextList.item(j);
@@ -186,10 +187,12 @@ public class TransactionHandler
 					currentObjectArgumentNode = nm2.getNamedItem("id");
 					if (currentObjectArgumentNode != null) oId = currentObjectArgumentNode.getNodeValue();
 					if (oId == null) {
-						noOId = true;
+						//noOId = true;
 						oId = uniqueId();
+						userTransactionInfo.anonymousObject = true;
 					} else {
-						noOId = false;
+						//noOId = false;
+						userTransactionInfo.anonymousObject = false;
 					}
 					//type
 					currentObjectArgumentNode = nm2.getNamedItem("type");
@@ -218,7 +221,6 @@ public class TransactionHandler
 							if(setFieldValue!=null) {
 								fieldValue = setFieldValue.getNodeValue();
 							}
-                            if (_debug) System.out.println("setFieldValue = "+setFieldValue);
 							executeFieldContext(oId, fieldName, fieldValue, userTransactionInfo);
 					}
 				}
@@ -233,7 +235,7 @@ public class TransactionHandler
 			System.out.println(t);
 			System.out.println("parsing stopped");
 		}
-	System.out.println("exciting parse method");
+	if (_debug) debug("exiting parse method",0);
 	}
 	
 	private UserTransactionInfo userInfo(String user) {
@@ -245,6 +247,8 @@ public class TransactionHandler
 			uti.transactionManager = new TransactionManager(mmbase);
 			uti.tmpObjectManager = new TemporaryNodeManager(mmbase);
 			uti.user = new User(user);
+		} else {
+			if (_debug) debug("UserTransactionInfo already known for user "+user,0);
 		}
 		return ((UserTransactionInfo) cashUser.get(user));
 	}
@@ -255,15 +259,8 @@ public class TransactionHandler
 			
 		if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
 		
-		// create transaction, if no Id create one, remember it's anonymous
+		// create transaction
 		if (tName.equals("createTransaction")) {
-			if (id == null) {
-				id = uniqueId();
-				userTransactionInfo.anonymousTransaction = true;
-			}
-			else {
-				userTransactionInfo.anonymousTransaction = false;
-			}
 			// check for existence
 			if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
 				throw new TransactionHandlerException(tName + " transaction id already exists: " + id);
@@ -296,7 +293,6 @@ public class TransactionHandler
 			userTransactionInfo.currentTransactionContext = null;
 			userTransactionInfo.knownTransactionContexts.remove(id);
 		} // end deleteTransaction
-		
 	} 
 	
 	private void initObjectContext(String oName, String id, String type, String oMmbaseId, UserTransactionInfo userTransactionInfo)
@@ -308,13 +304,6 @@ public class TransactionHandler
 				new TransactionHandlerException(oName + " id " + id + " : not in tansaction context");
 		// create object, if no Id create one, remember it's anonymous
 		if (oName.equals("createObject")) {
-			if (id == null) {
-				id = uniqueId();
-				userTransactionInfo.anonymousObject = true;
-			}
-			else {
-				userTransactionInfo.anonymousObject = false;
-			}
 			// check for existence
 			if (userTransactionInfo.knownObjectContexts.get(id) != null) {
 				throw new TransactionHandlerException(oName + " Object id already exists: " + id);
@@ -446,7 +435,15 @@ public class TransactionHandler
 	}
 	
 
+	/**	
+ 	 * create unique number
+	 */
 	private synchronized String uniqueId() {
+		try {
+			Thread.sleep(1); // A bit paranoid, but just to be sure that not two threads steal the same millisecond.
+		} catch (Exception e) {
+			debug("What's the reason I may not sleep?",0);
+		}
 		return "ID"+java.lang.System.currentTimeMillis();
 	}
 
