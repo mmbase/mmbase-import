@@ -1,0 +1,296 @@
+<!-- ===========================================================================
+
+Applications build file
+
+================= -->
+<project name="MMBase" default="all" basedir=".">
+
+	<!-- =================================================================== -->
+	<!-- Init                                                                -->
+	<!-- =================================================================== -->
+	<!-- Read customized values if available -->
+	<property file="build.properties" />
+	<property name="build.compiler" value="classic" />
+	<property name="optimize" value="on" />
+	<property name="debug" value="off" />
+	<property name="deprecation" value="on" />
+
+	<property name="project.source.dir" location="." />
+	<property name="project.build.postfix" value="" />
+	<property name="project.build.dir"  location="./build${project.build.postfix}" />
+	<property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
+	<property name="project.javadoc.packages" value="org.mmbase.*"/>
+	<property name="project.documentation.dir" value="${project.source.dir}/documentation" />
+
+
+	<property name="source.dir"   location="../../../mmbase" />
+	<property name="build.dir"    value="${source.dir}/build" /><!-- mmbase build dir -->
+	<property name="download.dir" value="${build.dir}/download" />
+	<property name="expand.dir"   value="${download.dir}/expanded" />
+	<property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+	<property name="mmbase.config" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+	<property name="documentation.home" value="../../documentation" />
+	<property name="build.documentation" value="true" />
+
+	<property name="share.dir"    location="../share" />
+
+	<property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
+	<property name="jdbc.jar" value="${build.dir}/lib/jdbc.jar"/>
+	<property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
+	<property name="project.name" value="a-mmbase-project" />
+	<property name="project.jar.name" value="mmbase-${project.name}" />
+	<property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" />
+	<!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
+
+	<property name="tests.source.dir"   location="../../tests" />
+	<property name="tests.build.dir" value="${tests.source.dir}/build" />
+	<property name="tests.work.dir"    value="${tests.source.dir}/work" />
+
+	<property name="tests.lib"       value="${tests.build.dir}/lib" />
+	<property name="mmbasetest.jar"  value="${tests.lib}/mmbasetest.jar" />
+	<property name="ui.class" value="junit.textui.TestRunner" />
+
+	<property name="test.class"   value="${project.name}test.Test" />
+	<property name="test.arg"     value="" />
+
+	<property name="project.jar.dir" value="${project.build.dir}" />
+	<property name="project.zip.dir" value="${project.build.dir}" />
+	<property name="project.jar" value="${project.jar.dir}/${project.jar.name}.jar"/>
+	<property name="project.zip" value="${project.zip.dir}/${project.jar.name}.zip"/>
+
+
+	<target name="init" depends="">
+		<available property="src.available"           file="${project.source.dir}/src"/>
+		<available property="documentation.available" file="${project.source.dir}/documentation" />
+
+		<condition property="do.documentation">
+			 <equals arg1="${build.documentation}" arg2="true" />
+		</condition>
+		<tstamp/>
+		<mkdir dir="${project.build.dir}"/>
+		<property name="name" value="${project.name}"/>
+		<property name="version" value="${DSTAMP}"/>
+		<property name="distro"  value="1.7.0"/>
+	</target>
+
+
+
+
+
+	<!-- =================================================================== -->
+	<!-- Create the project's jar file                                       -->
+	<!-- =================================================================== -->
+
+	<target name="jar.uptodatecheck" depends="init" if="src.available">
+		<uptodate property="jar.uptodate" targetfile="${project.jar}" >
+			<srcfiles dir="${project.source.dir}" includes="src/**"  />
+		</uptodate>
+	</target>
+
+	<target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
+		<echo message="${project.jar} is up-to-date" />
+	</target>
+
+	<target name="jar" description="Create the MMBase project jar file"
+		depends="jar.check" unless="jar.uptodate" if="src.available">
+
+	<antcall target="compile" />
+	<echo message="Copying ${mmbase.classes} to ${project.build.dir}/classes" />
+	<copy todir="${project.build.dir}/classes">
+		<fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
+	</copy>
+	<mkdir dir="${project.metainf.dir}" />
+
+		<echo file="${project.build.dir}/manifest.mf">
+Name: org/mmbase
+Vendor: MMBase community
+URL: http://${project.name}.mmbase.org
+Comment: The MMBase Content Managment System
+Version: ${distro}.${version}
+Distribution: ${distro}
+Build-by: ${ant.version}
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
+</echo>
+		<echo message="creating jar" />
+		<jar jarfile="${project.jar}"
+				 basedir="${project.build.dir}/classes"
+			 includes="**"
+		manifest="${project.build.dir}/manifest.mf" >
+		<metainf dir="${project.metainf.dir}" includes="**" />
+		</jar>
+
+	</target>
+
+	<target name="package.uptodatecheck" depends="init">
+		<uptodate property="package.uptodate" targetfile="${project.zip}" >
+			<srcfiles dir="${project.source.dir}" excludes="build/**"  />
+		</uptodate>
+	</target>
+
+	<target name="package.check" depends="package.uptodatecheck" if="package.uptodate">
+		<echo message="${project.zip} is up-to-date" />
+	</target>
+
+	<target name="package.documentation"  if="do.documentation" unless="package.uptodate">
+		<antcall target="documentation" />
+	</target>
+
+	<target name="package" depends="package.check,package.documentation" unless="package.uptodate">
+		<antcall target="jar" />
+
+		<echo file="${project.build.dir}/README-PACKAGE.txt">
+This is the '${project.name}' package of MMBase.
+
+It can contain:
+
+web-app/WEB-INF/lib:     Libraries which can be copied to your WEB-INF/lib
+web-app/WEB-INF/config:  Needed configuration (example only). Needes to be merged with existitn config.
+web-app/WEB-INF/web.xml: Example web.xml.
+README-PACKAGE.txt:      This file
+README.txt:              More specific read-worthy stuff.
+src:                     The source codes.
+doc:                     documentation
+web-app/*                All kind of templates. They problably can (need?) to be put in a location in your web-app you like best.
+
+</echo>
+
+	<zip zipfile="${project.zip}">
+		<zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="web-app/WEB-INF/lib" />
+		<zipfileset dir="${project.source.dir}" includes="config/**" prefix="web-app/WEB-INF" />
+		<zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="documentation" />
+		<zipfileset dir="${project.build.dir}"  includes="documentation/**" />
+		<zipfileset dir="${project.source.dir}" includes="documentation/**" prefix="src" />
+		<fileset dir="${project.build.dir}" includes="README-PACKAGE.txt"/>
+		<fileset dir="${project.source.dir}">
+			<patternset id="root.package.files" >
+				<include name="src/**"/>
+			</patternset>
+		</fileset>
+		<!-- the rest are templates -->
+		<zipfileset dir="${project.source.dir}" prefix="web-app">
+			<patternset id="web-app.package.files" >
+				<include name="**"/>
+				<exclude name="*.xml" />
+				<exclude name="config/**" />
+				<exclude name="documentation/**" />
+				<exclude name="src/**" />
+				<exclude name="build/**" />
+				<exclude name="build${project.build.postfix}/**" />
+			</patternset>
+		</zipfileset>
+	</zip>
+	</target>
+
+
+	<target name="compile" description="Compile the source directory"
+					depends="init" if="src.available">
+
+		<mkdir dir="${project.build.dir}/classes"/>
+		<echo message="java version: ${ant.java.version}" />
+
+		<echo message="copying to ${project.build.dir}" />
+
+		<copy todir="${project.build.dir}/classes" includeEmptyDirs="false" >
+			<fileset dir="${project.source.dir}/src">
+				<include name="**/*.properties"/>
+				<include name="**/*.dtd"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+
+		<echo message="compiling" />
+
+		<javac srcdir ="${project.source.dir}/src"
+					 destdir="${project.build.dir}/classes"
+					 debug="${debug}"
+					 optimize="${optimize}"
+					 deprecation="${deprecation}"
+					 excludes="${compile.excludes}"
+
+			>
+			<classpath id="compile.classpath">
+				<pathelement path="${mmbase.jar}" />
+				<pathelement path="${servlet.jar}" />
+				<pathelement path="${xalan.jar}" />
+				<pathelement path="${jdbc.jar}" />
+				<pathelement path="${project.build.dir}/classes" />
+			</classpath>
+			<include name="**/*.java"/>
+		</javac>
+	</target>
+
+
+	<target name="clean" description="Clean">
+		<delete dir="${project.build.dir}" />
+	</target>
+
+
+	<target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf">
+	</target>
+
+	<target name="documentation.html" depends="init" if="documentation.available">
+		<ant dir="${documentation.home}" target="documentation.html">
+			<property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
+			<property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
+		</ant>
+	</target>
+
+	<target name="documentation.pdf" depends="init" if="documentation.available">
+		<ant dir="${documentation.home}" target="documentation.pdf">
+			<property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
+			<property name="documentation.temp.dir"       value="${project.build.dir}/temp" />
+			<property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
+		</ant>
+	</target>
+
+	<target name="javadocs" description="Documentation" depends="init" if="src.available">
+	<javadoc packagenames="${project.javadoc.packages}"
+		sourcepath="${project.source.dir}/src"
+		destdir="${project.build.dir}/api"
+		author="true"
+		version="true"
+		use="false"
+		noindex="true"
+		windowtitle="${project.name} API"
+		doctitle="${project.name}"
+		maxmemory="100M"
+		bottom="${project.name} build ${version}">
+			<classpath>
+				<pathelement path="${mmbase.jar}" />
+				<pathelement path="${servlet.jar}" />
+				<pathelement path="${jdbc.jar}" />
+				<pathelement path="${project.build.dir}/classes" />
+			</classpath>
+		</javadoc>
+	</target>
+
+
+	<target name="test" depends="jar">
+		<ant dir="${tests.source.dir}"   target="jar" />
+		<java classname="${test.class}"
+			classpathref="run.classpath"
+			fork="true"
+			failonerror="yes">
+			<jvmarg value="-Dmmbase.config=${mmbase.config}" />
+			<arg    value="${test.arg}" />
+			<classpath id="run.classpath">
+				<fileset dir="${build.dir}/lib">
+					<include name="servlet.jar"/>
+					<include name="jdbc.jar"/>
+				</fileset>
+				<fileset dir="${project.build.dir}">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
+					<include name="*.jar"/>
+					<include name="*.zip"/>
+				</fileset>
+				<fileset dir="${tests.lib}">
+					<include name="*.jar"/>
+					<include name="*.zip"/>
+				</fileset>
+			</classpath>
+		</java>
+	</target>
+</project>

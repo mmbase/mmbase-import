@@ -10,14 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 /**
- * This exception gets thrown when an error occurred in the configuration of a StorageFactory.
+ * This exception gets thrown when an error occurred in the configuration of a StorageFactory or a
+ * storage manager.
  * This can occur when configuration files are inaccesible, a wrong file format is used, or attributes
  * are missing.
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageConfigurationException.java,v 1.1 2003-07-21 09:31:02 pierre Exp $
+ * @version $Id: StorageConfigurationException.java,v 1.2 2003-07-21 13:21:54 pierre Exp $
  */
-public class StorageConfigurationException extends StorageFactoryException {
+public class StorageConfigurationException extends StorageException {
 
     /**
      * Constructs a <code>StorageConfigurationException</code> with <code>null</code> as its

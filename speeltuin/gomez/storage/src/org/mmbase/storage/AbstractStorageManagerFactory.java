@@ -20,52 +20,52 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.1 2003-07-21 09:31:01 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.2 2003-07-21 13:21:54 pierre Exp $
  */
-public class AbstractStorageManagerFactory implements StorageManagerFactory {
+public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
     /**
      * A reference to the MMBase module
      */
     protected MMBase mmbase;
     // the map with configuration data
-    private Map attributes; 
+    private Map attributes;
 
     /**
-     * Stores the MMBase reference, and initializes the attribute map.  
+     * Stores the MMBase reference, and initializes the attribute map.
      */
-	public init(MMBase mmbase) {
+    public void init(MMBase mmbase) throws StorageConfigurationException, StorageInaccessibleException {
         this.mmbase = mmbase;
-        attributes = Collections.SynchronisedMap(new HashMap());
+        attributes = Collections.synchronizedMap(new HashMap());
     }
 
-	abstract public StorageManager getStorageManager();
+    abstract public StorageManager getStorageManager() throws StorageException;
 
     public Map getAttributes() {
-        return Collections.UnmodifiableMap(attributes);
+        return Collections.unmodifiableMap(attributes);
     }
 
-	public void setAttributes(Map attributes) {
-        this.attributes.setAll(attributes);
+    public void setAttributes(Map attributes) {
+        this.attributes.putAll(attributes);
     }
 
-	public Object getAttribute(Object key) {
+    public Object getAttribute(Object key) {
         return attributes.get(key);
     }
 
-	public void setAttribute(Object key, Object value) {
-        attributes.set(key,value);
+    public void setAttribute(Object key, Object value) {
+        attributes.put(key,value);
     }
-    
-	public boolean hasOption(Object key) {
+
+    public boolean hasOption(Object key) {
         Object o = getAttribute(key);
-        return (o instanceof Boolean) && o.booleanValue();
+        return (o instanceof Boolean) && ((Boolean)o).booleanValue();
     }
-	
-	public void setOption(Object key, boolean value) {
+
+    public void setOption(Object key, boolean value) {
         setAttribute(key,new Boolean(value));
     }
-    
-	abstract public int getVersion();
+
+    abstract public double getVersion();
 
 }
