@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen 
-  @version: $Id: 2xhtml.xslt,v 1.9 2002-07-03 11:59:18 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.10 2002-10-14 16:00:35 eduard Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1" 
@@ -55,7 +55,6 @@
     <xsl:apply-templates />
   </xsl:template>
 
-
   <!-- how to present a nodes that are related to paragraphs. -->
   <xsl:template match="object" mode="concise">
     <xsl:choose>
@@ -63,7 +62,7 @@
         <img src="{node:function(., 'servletpath(,cache(s(100x100)))')}" alt="{./field[@name='description']}" align="right" />          
       </xsl:when>
       <xsl:when test="@type='urls'">
-        <br /><a href="{field[@name='url']}"><xsl:value-of select="field[@name='description']" /></a>
+        <a href="{field[@name='url']}"><xsl:value-of select="field[@name='description']" /></a><br />
       </xsl:when>
     </xsl:choose>
   </xsl:template>
@@ -105,7 +104,7 @@
   
   
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="p|a"> 
+  <xsl:template match="section|p|a"> 
     <xsl:copy>
      
       <!-- store the 'relation' nodes for convenience in $rels:-->
@@ -129,12 +128,12 @@
 
 
   <!-- A paragraph can handle images and urls links -->
-  <xsl:template match="p" mode="sub">
+  <xsl:template match="section|p" mode="sub">
     <xsl:param name="relatednodes" />
     <xsl:apply-templates  select="$relatednodes[@type='images']"  mode="concise" />	
     <xsl:apply-templates />
     <xsl:if test="count($relatednodes[@type='urls']) &gt; 0">
-      <br />---<xsl:apply-templates  select="$relatednodes[@type='urls']"  mode="concise" />
+      <small><xsl:apply-templates  select="$relatednodes[@type='urls']"  mode="concise" /></small>
     </xsl:if>
   </xsl:template>
   
