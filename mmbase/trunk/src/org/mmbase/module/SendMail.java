@@ -14,67 +14,62 @@ import java.net.*;
 import java.util.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
- * This module gives mail functionality 
+ * This module provides mail functionality
  *
  * @author Rob Vermeulen
- * @version $Revision: 1.6 $ $Date: 2001-02-05 15:02:44 $
  */
 public class SendMail extends Module implements SendMailInterface {
-	private String 		 classname 	= getClass().getName();
-	private boolean		 debug 		= false;
-   	private DataInputStream  in		= null;
-   	private DataOutputStream out		= null;
-	private Socket 		 connect	= null;
-	private String		 mailhost 	= "";
-
-	private void		 debug(String msg){ System.out.println(classname+":"+msg); }
+    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+   	private DataInputStream in = null;
+   	private DataOutputStream out = null;
+	private Socket connect = null;
+	private String mailhost = "";
 
 	public void reload() {
-        	mailhost=getInitParameter("mailhost");
+       	mailhost=getInitParameter("mailhost");
 	}
 
-	public void unload() {
-	}
+	public void unload() { }
 	
-	public void onload() {
-	}
+	public void onload() { }
 	
-	public void shutdown() {
-	}
+	public void shutdown() { }
 	
 	public void init() {
-        	mailhost=getInitParameter("mailhost");
-		if( debug ) debug("init(): SendMail -> mailhost "+mailhost);
+       	mailhost=getInitParameter("mailhost");
+		log.info("Module SendMail started (mailhost="+mailhost+")";
 	}
 
 	/** 
 	 * Connect to the mailhost
 	 */
 	private boolean connect(String host, int port) { 
+		log.service("SendMail connected to host="+host+", port="+port+")");
 		String result="";
 
         try {
             connect=new Socket(host,port);
 		} catch (Exception e) { 
-			debug("connect("+host+","+port+"): ERROR: while connecting: "+e);
+			log.error("SendMail cannot connect to host="+host+", port="+port+")."+e);
 			return false;
 		}
         try {
            out=new DataOutputStream(connect.getOutputStream());
         } catch (IOException e) { 	
-			debug("connect("+host+","+port+"): ERROR: while getting outputstream: "+e);
+			log.error("Sendmail cannot get outputstream." +e);
 			return false;}
         try {
            in=new DataInputStream(connect.getInputStream());
         } catch (IOException e) { 
-			debug("connect("+host+","+port+"): ERROR: while getting inputstream: "+e);
+			log.error("SendMail cannot get inputstream."+e);
 			return false;}
 		try {
         		result = in.readLine();
 		} catch (Exception e) { 
-			debug("connect("+host+","+port+"): ERROR: while reading response:"+e);
+			log.error("SendMail cannot read response."+e);
 			return false;
 		}
 		/** Is anwser 220 **/
@@ -86,11 +81,12 @@ public class SendMail extends Module implements SendMailInterface {
   	 * Send mail
 	 */	
 	public synchronized boolean sendMail(String from, String to, String data) {
+		log.service("SendMail sending mail to "+to);
 		String anwser="";
 
 		/** Connect to mail-host **/	
 		if (!connect(mailhost,25)) {
-			debug("sendMail(): ERROR: from("+from+"), to("+to+"), data("+data+"): Cannot connect to mailhost("+mailhost+")!");
+			log.error("SendMail cannot connect to mailhost host="+host+", port"+port+", data"+data);
 			return false;
 		}
 
@@ -98,7 +94,6 @@ public class SendMail extends Module implements SendMailInterface {
 			out.writeBytes("MAIL FROM:<"+from+">\r\n");
 			out.flush();
             anwser = in.readLine();
-			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 
 			StringTokenizer tok = new StringTokenizer(to,",\n\r");
@@ -108,27 +103,24 @@ public class SendMail extends Module implements SendMailInterface {
 			}
 			out.flush();
             		anwser = in.readLine();
-			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 			
 			out.writeBytes("DATA\r\n");
 			out.flush();
             anwser = in.readLine();
-			//debug(anwser);
         	if(anwser.indexOf("354")!=0)  return false;
 				
 			out.writeBytes(data+"\r\n");
 			out.writeBytes("\r\n.\r\n");
 			out.flush();
             anwser = in.readLine();
-			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 			
 			out.writeBytes("QUIT\r\n");
 			out.flush();
 			in.close();
-        }   catch (Exception e) {
-            debug("sendMail("+from+","+to+","+data.length()+"): ERROR: "+e);
+        } catch (Exception e) {
+            log.error("SendMail error sending "+from+","+to+","+data.length()+") "+e);
             return false;
         }
 		return true;
@@ -173,8 +165,8 @@ public class SendMail extends Module implements SendMailInterface {
             anwser = in.readLine();
             if(anwser.indexOf("250")!=0)  return "Error";
  
-        }   catch (Exception e) {
-            debug("verify("+name+"): ERROR: "+e);
+        } catch (Exception e) {
+            log.error("Sendmail verify error on: "+name+". "+e);
             return "Error";
         }
 		anwser=anwser.substring(4);
@@ -201,8 +193,8 @@ public class SendMail extends Module implements SendMailInterface {
 				}
 				if(anwser.indexOf("-")!=3) break;
 			}
-        }   catch (Exception e) {
-            debug("expand("+name+"): ERROR: "+e);
+        } catch (Exception e) {
+            log.error("Sendmail expand error on:"+name+". "+e);
             return new Vector();
         }
         return ret;
