@@ -79,7 +79,34 @@ public class servscan extends JamesServlet {
 		//id=(idInterface)getModule("ID");
 		sessions=(sessionsInterface)getModule("SESSION");
 		// org.mmbase stats=(StatisticsInterface)getModule("STATS");
-	}
+ 
+ 		// Set the servletcontext in class MMBaseContext sothat it can be requested by everyone using
+ 		// static method MMBaseContext.getServletContext() added on 23 December 1999 by daniel & davzev.
+ 		ServletConfig sc=getServletConfig();
+ 		ServletContext sx=sc.getServletContext();
+ 		MMBaseContext.setServletContext(sx);
+  	}
+ 	
+ 	/**
+ 	 * Adds DEFAULT_CHARSET to mimetype given by SHTML_CONTENTTYPE for handling
+ 	 * of the charset used by the database
+ 	 */
+ 	private String addCharSet( String mimetype ) {
+ 		if (mimetype.equals(SHTML_CONTENTTYPE)) 
+ 			return mimetype+"; "+DEFAULT_CHARSET; 
+ 		return mimetype;
+ 	}
+ 	
+ 	/**
+ 	 * handle_line is called by service to parse the SHTML in body.
+ 	 * It can be used by children to do their own parsing. The default
+ 	 * implementation calls parser.handle_line (from module scanparser)
+ 	 * to do the parsing.
+ 	 */
+ 	protected String handle_line(String body, sessionInfo session, scanpage sp) {
+ 		return parser.handle_line(body, session, sp);
+ 	}
+  
 
 	/**
 	 * Servlet request service.
