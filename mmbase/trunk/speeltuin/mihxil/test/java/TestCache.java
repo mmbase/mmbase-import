@@ -94,6 +94,16 @@ public class TestCache {
             
         }
         show("Should 'f'");
+
+
+        System.out.println("Getting random values from cache, should follow now errors:");
+        Random rnd = new Random();
+        for(int i = 0; i < 10000; i ++) {
+            String test = "" + (char) rnd.nextInt(256);
+            if (! test.toUpperCase().equals(cache.get(test))) {
+                System.out.println("ERROR");
+            }
+        }
        
      
         
