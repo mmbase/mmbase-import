@@ -17,8 +17,8 @@
 <article class="specification">
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
-		<date>2 september 2002</date>
-		<edition>$Id: editwizard-reference.xml,v 1.8 2003-06-12 17:23:04 pierre Exp $</edition>
+		<date>2 September 2002</date>
+		<edition>$Id: editwizard-reference.xml,v 1.9 2003-06-30 11:41:45 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -57,14 +57,14 @@
 		<para>This reference describes the wizard pages and how to call them from a html or jsp page.</para>
 		<section>
 			<title>General - wizard definition schemas</title>
-			<para>The editwizards need a xml file with a definition of the wizard to operate.			By default, those are found in the subdirectory /editwizard/data/, but it is possible to place your definitions, as well as the wizard stylesheets (whichd efine layout) elsewhere.</para>
+			<para>The editwizards need a xml file with a definition of the wizard to operate.			By default, those are found in the subdirectory /editwizard/data/, but it is possible to place your definitions, as well as the wizard stylesheets (which define layout) elsewhere.</para>
 			<para>When the wizards search for a requested file (a wizard xsl stylesheet or a wizard xml schema), they look for the referenced file in the following order:
 			</para>
 			<variablelist>
 				<varlistentry>
-					<term>The referer page directory</term>
+					<term>The referrer page directory</term>
 					<listitem>
-						<para>You call the editwizard scripts (list.jsp and wizxard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referer page.</para>
+						<para>You call the editwizard scripts (list.jsp and wizard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referrer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referrer page.</para>
 						<para>Example: if the file requested is data/my_wizard.xml, and the referencing page is /myeditors/index.jsp, the system first checks for the file /myeditors/data/my_wizard.xml.
 						</para>
 					</listitem>
@@ -72,9 +72,9 @@
 				<varlistentry>
 					<term>The editwizard home directory</term>
 					<listitem>
-						<para>The editwizard home is the directory that contains the ditwizard basic stylesheets, data library, and jsp pages. It is one directory lower than the location of the list.jsp and  wizard.jsp files. In the standard distribution, this location is /mmapps/editwizard/ (the list.jsp and wizard.jsp are located in /mmapps/editwizard/jsp/), but you can place the wizards wherever you like.
+						<para>The editwizard home is the directory that contains the editwizard basic stylesheets, data library, and jsp pages. It is one directory lower than the location of the list.jsp and  wizard.jsp files. In the standard distribution, this location is /mmapps/editwizard/ (the list.jsp and wizard.jsp are located in /mmapps/editwizard/jsp/), but you can place the wizards wherever you like.
 						</para>
-						<para>Example: if the file requested is data/my_wizard.xml, and the editwizard home is in mmapps/ediwtizard/, the system checks for the file /mmapps/editwizard/data/my_wizard.xml.
+						<para>Example: if the file requested is data/my_wizard.xml, and the editwizard home is in mmapps/editwizard/, the system checks for the file /mmapps/editwizard/data/my_wizard.xml.
 						</para>
 					</listitem>
 				</varlistentry>
@@ -110,7 +110,7 @@
 					<term>fields</term>
 					<listitem>
 						<para>The fields to show in the list. If you query only one nodetype (see nodepath), you can use simple field names. Otherwise, you need to preface the fieldnames with the name of the objecttype they belong to.
-						If the first field listed is a number field, teh objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						If the first field listed is a number field, the objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
 						<note><para>In 1.6.3 and lower, field is mandatory. In 1.6.4 and up, if fields is not specified, the wizard uses the default 'list' fields specified by MMBase.</para></note>
 						<programlisting format="linespecific">fields=news.title,people.firstname,people.lastname</programlisting>
 					</listitem>
@@ -127,7 +127,7 @@
 					<listitem>
 						<para>The name of the main node type in a node path. The main node type designates the element in a list that you want to edit. By default, the wizard takes the last name in a node path as the main node type.</para>
 						<para>For instance, in the node path 'mags,news,publishtimes', the main node type recognized automatically will be 'publishtimes' - but it is more likely that we desire to edit the news element in this list. In this case, you can point out to the wizard to use the 'news' element of the list instead.</para>
-						<note><para>Available from MMBase 1.6.4 and up. Prior to 1.6.4, you can designate the main node type by adding the number field of that node type to the fields parameter (i.e: 'news.number,news.title,publistimes.date').
+						<note><para>Available from MMBase 1.6.4 and up. Prior to 1.6.4, you can designate the main node type by adding the number field of that node type to the fields parameter (i.e: 'news.number,news.title,publishtimes.date').
 						This method still works in 1.6.4, but is discouraged as it is confusing.
 						</para></note>
 						<programlisting format="linespecific">main=news</programlisting>
@@ -173,7 +173,7 @@
 				<varlistentry>
 					<term>constraints</term>
 					<listitem>
-						<para>A SQL-like constraint, used to filter the list. If you use fieldnames in a constraint, surround it with brackets ([]). This allows MMAbse to recognize the fields and optimize the query. This parameter is similar to the constraints attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						<para>A SQL-like constraint, used to filter the list. If you use fieldnames in a constraint, surround it with brackets ([]). This allows MMBase to recognize the fields and optimize the query. This parameter is similar to the constraints attribute of the taglib's &lt;mm:list&gt; tag.</para>
 						<programlisting format="linespecific">constraints=[news.title] like '%Brasil%'</programlisting>
 					</listitem>
 				</varlistentry>
@@ -202,7 +202,7 @@
 					<term>start</term>
 					<listitem>
 						<para>The number of the item in the list where to start listing.
-							This value is used to skip to a certain page when brosing a large list.
+							This value is used to skip to a certain page when browsing a large list.
 							Default is 0.</para>
 						<programlisting format="linespecific">age=31</programlisting>
 					</listitem>
@@ -226,9 +226,9 @@
 				<varlistentry>
 					<term>realsearchfield</term>
 					<listitem>
-						<para>The actual field on which to search. Normally, searches are done on the fields mentioned in the searchfields parameter (used to craete teh serach box ina  alist page). Sometimes, you want to search on a field other than those listed in searchfield (such as 'number' or 'owner'). In that case, use this parameter to specify the field.
+						<para>The actual field on which to search. Normally, searches are done on the fields mentioned in the searchfields parameter (used to create the search box in  a list page). Sometimes, you want to search on a field other than those listed in searchfield (such as 'number' or 'owner'). In that case, use this parameter to specify the field.
 						</para>
-						<note><para>This parameter is set by the system when a user submits a search- you will hardly ever use it yourself. If you want to add additional constraints, use the 'constraints' parameter. If you specify a constraints parameter, that constraint is combined in further searches with the search parameters given by a user. If you use realsearchfield to specify a constraint, that information is only valid for teh first serach - it will be replaced when a user submits his search.</para></note>
+						<note><para>This parameter is set by the system when a user submits a search- you will hardly ever use it yourself. If you want to add additional constraints, use the 'constraints' parameter. If you specify a constraints parameter, that constraint is combined in further searches with the search parameters given by a user. If you use realsearchfield to specify a constraint, that information is only valid for the first seraph - it will be replaced when a user submits his search.</para></note>
 						<note><para>Available from MMBase 1.6.4 and up</para></note>
 						<programlisting format="linespecific">searchfields=news.title,news.subtitle</programlisting>
 					</listitem>
@@ -244,7 +244,7 @@
 					<term>searchtype</term>
 					<listitem>
 						<para>Determines what type of search is used to filter on the searchfields, using the specified search value.  This is only valid if you also specify the searchfields parameter.</para>
-						<para>Allowed values are 'string', 'like', 'equalto', 'greaterthan', 'lessthan', 'notgreaterthan', and 'notlessthan'. use 'string' to compare the search value to the field using an exact match. Use 'like' to make a pattern search using the specified searchvalue. Use the other values to compare teh feild to numeric values or dates. I.e. using 'greaterthan' selects all fields whose (numeric) value is greater than the specified (numeric) value.
+						<para>Allowed values are 'string', 'like', 'equalto', 'greaterthan', 'lessthan', 'notgreaterthan', and 'notlessthan'. use 'string' to compare the search value to the field using an exact match. Use 'like' to make a pattern search using the specified searchvalue. Use the other values to compare the field to numeric values or dates. I.e. using 'greaterthan' selects all fields whose (numeric) value is greater than the specified (numeric) value.
 						</para>
 						<programlisting format="linespecific">searchtype=like</programlisting>
 					</listitem>
@@ -253,10 +253,10 @@
 					<term>search</term>
 					<listitem>
 						<para>The search parameter specified when the list should show a search box, and whether searching is mandatory. There are four possible values:</para>
-						<para><emphasis>false</emphasis> turns searching off. If other parameters such as searchfields and serachvalue are given, the search is performed using those parameters but a serachbox is not displayed.</para>
+						<para><emphasis>false</emphasis> turns searching off. If other parameters such as searchfields and searchvalue are given, the search is performed using those parameters but a searchbox is not displayed.</para>
 						<para><emphasis>true</emphasis> turns searching on, displaying a searchbox on top of the list, using defaults for parameters such as searchfields, if these are not specified.</para>
-						<para><emphasis>force</emphasis> is like TRUE, but searching (and showing a resultlist) is not performed until a serachvalue is specified. If no searchvalue is given, only the searchbox is displayed - no results are shown.</para>
-						<para><emphasis>auto</emphasis> makes searcing depdnend on teh presence of teh searcgfields parameter. If the searchfields parameter is given, a searchbox is shown. Otherwise, it is not. AUTO is the default value</para>
+						<para><emphasis>force</emphasis> is like TRUE, but searching (and showing a resultlist) is not performed until a searchvalue is specified. If no searchvalue is given, only the searchbox is displayed - no results are shown.</para>
+						<para><emphasis>auto</emphasis> makes searching dependent on the presence of the searchfields parameter. If the searchfields parameter is given, a searchbox is shown. Otherwise, it is not. AUTO is the default value</para>
 						<note><para>Available from MMBase 1.6.4 and up</para></note>
 						<programlisting format="linespecific">search=true</programlisting>
 					</listitem>
@@ -366,8 +366,8 @@
 				<varlistentry>
 					<term>popupid</term>
 					<listitem>
-						<para>This parameter is passed by the system, you never pass it yourself. It is used to identify a 'popup' wizard. A popup wizard is a sub-wizard for the main wizard that, unlike an 'inline' sub-wizard, opens in a separate browser window. Because of this, it needs to seperately maintain its status (identified by the popupid). Once the task of a popup wizard ends, it's window is closed, and the parent wizard is refreshed.</para>
-						<note><para>You never pass this parameter by hand. They are provided by the &lt;command name="startwizard"&gt; and &lt;field ftype="startwizard"&gt; tags in a wizard schema. However, you migth need to pass the parameter in links if you override xsl stylesheets, and if you want to use the debug.jsp page to view a popup wizard's debug data, you need to know the value of this parameter.
+						<para>This parameter is passed by the system, you never pass it yourself. It is used to identify a 'popup' wizard. A popup wizard is a sub-wizard for the main wizard that, unlike an 'inline' sub-wizard, opens in a separate browser window. Because of this, it needs to separately maintain its status (identified by the popupid). Once the task of a popup wizard ends, it's window is closed, and the parent wizard is refreshed.</para>
+						<note><para>You never pass this parameter by hand. They are provided by the &lt;command name="startwizard"&gt; and &lt;field ftype="startwizard"&gt; tags in a wizard schema. However, you might need to pass the parameter in links if you override xsl stylesheets, and if you want to use the debug.jsp page to view a popup wizard's debug data, you need to know the value of this parameter.
 						</para></note>
 						<programlisting format="linespecific">popupid=my_id</programlisting>
 					</listitem>
@@ -404,8 +404,8 @@
 		<section>
 			<title>debug.jsp</title>
 			<para>When you are debugging your wizard code, it can be useful to know what data is read and parsed by the wizard. The debug.jsp page gives access to three xml trees that are used by the current running wizard.</para>
-			<para>The data tree shows the xml that contains the data used by the wizrad, including any changes made by the user. It can be useful to see if data is loaded (or changed) as expected. It can also be useful to determine xpaths when you plan to use these in your wizard: if you use an xpath in your wizard xml file, it access the data xml.</para>
-			<para>The wizard lists the fully expanded wizard schema file (including any inclusions and extensions). Note that this xml also contains some additonal navigational information related to the current form, and does not fully follow the wizard dtd.</para>
+			<para>The data tree shows the xml that contains the data used by the wizard, including any changes made by the user. It can be useful to see if data is loaded (or changed) as expected. It can also be useful to determine xpaths when you plan to use these in your wizard: if you use an xpath in your wizard xml file, it access the data xml.</para>
+			<para>The wizard lists the fully expanded wizard schema file (including any inclusions and extensions). Note that this xml also contains some additional navigational information related to the current form, and does not fully follow the wizard dtd.</para>
 			<para>The wizard-schema combines the data and wizard xmlks into one xml tree. This tree is what is passed to the xsl-transformers, and is used to create the form that is sent to the end-user. Use this form to see if data loaded is actually used, and if you want to override the default xsl files.</para>
 			<variablelist>
 				<title>The following parameters MAY be specified:</title>
