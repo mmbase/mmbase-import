@@ -22,11 +22,11 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.6 2003-11-16 14:05:15 michiel Exp $
+ * @version $Id: Configurable.java,v 1.7 2004-03-26 15:48:26 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
-    private static Logger log = Logging.getLoggerInstance(Authentication.class);
+    private static final Logger log = Logging.getLoggerInstance(Configurable.class);
 
     /**
      * The SecurityManager, which created this instance

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.14 2004-03-10 14:08:14 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.15 2004-03-26 15:48:26 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -282,18 +282,12 @@ public class MMBaseCopConfig {
             Object o = classType.newInstance();
             result = (Authentication) o;
             result.load(cop, watcher, configUrl);
-        }
-        catch(java.lang.ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-            throw new SecurityException(cnfe.toString());
-        }
-        catch(java.lang.IllegalAccessException iae) {
-            iae.printStackTrace();
-            throw new SecurityException(iae.toString());
-        }
-        catch(java.lang.InstantiationException ie) {
-            ie.printStackTrace();
-            throw new SecurityException(ie.toString());
+        } catch(ClassNotFoundException cnfe) {
+            throw new SecurityException(cnfe);
+        } catch(IllegalAccessException iae) {
+            throw new SecurityException(iae);
+        } catch(InstantiationException ie) {
+            throw new SecurityException(ie);
         }
         return result;
     }

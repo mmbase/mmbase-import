@@ -13,7 +13,7 @@ package org.mmbase.security;
  * Thrown by the security classes to indicate a security violation/malfunction.
  * 
  * @author Eduard Witteveen
- * @version $Id: SecurityException.java,v 1.6 2003-08-29 09:38:24 pierre Exp $
+ * @version $Id: SecurityException.java,v 1.7 2004-03-26 15:48:26 michiel Exp $
  */
 public class SecurityException extends java.lang.SecurityException {
 
@@ -29,7 +29,7 @@ public class SecurityException extends java.lang.SecurityException {
 
     //javadoc is inherited
     public SecurityException(Throwable cause) {
-        super();
+        super(cause.getClass().getName() + ": " + cause.getMessage());
         initCause(cause);
     }
 
