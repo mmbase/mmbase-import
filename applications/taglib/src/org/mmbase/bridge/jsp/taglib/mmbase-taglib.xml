@@ -39,11 +39,11 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.176 2003-07-23 17:46:57 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.177 2003-07-25 18:16:52 michiel Exp $
 
 -->
 <taglib author="MMBase community">
-  <tlibversion>1.0.1</tlibversion>
+  <tlibversion>1.1.0</tlibversion>
   <jspversion>1.1</jspversion>
   <shortname>mmbase</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
@@ -4079,12 +4079,20 @@ The 0 is just counter, which starts at 0 on every page.
     </info>
   </tag>
   <tag>
-    <name>listcontainer</name>
-    <see tag="function" />
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListContainerTag</tagclass>
+    <name>listnodescontainer</name>
+    <see tag="nodelist" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
     <info>
       Surrounds a (node) list tag, provides a query object, and can contain the result.
     </info>
+    <attribute>
+      <name>type</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
   </tag>
   <tag>
     <name>constraint</name>
@@ -4103,6 +4111,14 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
     <attribute>
       <name>value</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>operator</name>
       <required>true</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
