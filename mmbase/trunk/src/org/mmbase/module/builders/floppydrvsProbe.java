@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -18,6 +18,9 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * admin module, keeps track of all the worker pools
  * and adds/kills workers if needed (depending on
@@ -28,6 +31,8 @@ import org.mmbase.util.*;
  * @author David V van Zeventer
  */
 public class floppydrvsProbe implements Runnable {
+
+    static Logger log = Logging.getLoggerInstance(floppydrvsProbe.class.getName()); 
 
 	Thread kicker = null;
 	floppydrvs parent=null;
@@ -79,7 +84,9 @@ public class floppydrvsProbe implements Runnable {
 		StringTagger tagger=new StringTagger(info);
 
 		if (state.equals("getdir")) {
-			System.out.println("FloppyDrivesProbe:run(): state='getdir' !!!");
+            if (log.isDebugEnabled()) {
+                log.debug("run(): state='getdir' !!!");
+            }
 			try {
 				// set node busy while getting dir
 				node.setValue("state","busy");
@@ -91,14 +98,16 @@ public class floppydrvsProbe implements Runnable {
 				node.commit();			
 			}catch (GetDirFailedException gdfe){
 				String Exc = "GetDirFailedException ->";
-				System.out.println("FloppyDrivesProbe:run():"+Exc+gdfe.errval+"  "+gdfe.explanation);
+                if (log.isDebugEnabled()) {
+                    log.debug("run():"+Exc+gdfe.errval+"  "+gdfe.explanation);
+                }
 				node.setValue("state","error");
 				node.setValue("info",Exc+gdfe.errval+"  "+gdfe.explanation+"\n\r");
 				node.commit();
 			}
 		} 
         	else if (state.equals("copy")) {
-			System.out.println("FloppyDrivesProbe:run(): state='copy' !!!!");
+                log.debug("run(): state='copy' !!!!");
                         try {
 				try {   
 					// set node busy while copying
@@ -106,12 +115,11 @@ public class floppydrvsProbe implements Runnable {
                                 	node.commit();
 
                                 	String srcfile=tagger.Value("srcfile");
-                                	System.out.println("DEBUG4='"+srcfile+"'");
+                                	log.debug("DEBUG4='"+srcfile+"'");
                                 	String number=tagger.Value("id");  //Get AudioParts node id
-                                	System.out.println("DEBUG5='"+number+"'");
+                                	log.debug("DEBUG5='"+number+"'");
                                 	int inumber=Integer.parseInt(number);
-
-                                	System.out.println("DECODE="+srcfile+" "+number);
+                                	log.debug("DECODE="+srcfile+" "+number);
                                 	String dstfile="/data/audio/wav/"+number+".wav";
                                 	MMObjectNode rnode=addRawAudio(inumber,2,3,441000,2);  //Add RawAudio obj to file
 					parent.copy(srcfile,dstfile);
@@ -127,7 +135,7 @@ public class floppydrvsProbe implements Runnable {
 					node.commit();
 				}catch (CopyFailedException cfe){
 					String Exc = "CopyFailedException ->";
-					System.out.println("FloppyDrivesProbe:run():"+Exc+cfe.errval+"  "+cfe.explanation);
+					log.error("run():"+Exc+cfe.errval+"  "+cfe.explanation);
 					node.setValue("state","error");
 					node.setValue("info",Exc+cfe.errval+" "+cfe.explanation+"\n\r");
 					node.commit();

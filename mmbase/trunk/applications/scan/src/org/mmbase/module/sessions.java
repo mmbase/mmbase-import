@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -20,6 +20,9 @@ import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * CLEARSET-NAME : This command clears the session variable called NAME
  * ADDSET-NAME-VALUE : This command adds VALUE to the SESSION variable set called NAME, no duplicates are allowed
@@ -33,13 +36,12 @@ import org.mmbase.module.builders.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.21 2001-03-29 14:56:03 install Exp $
+ * @version $Id: sessions.java,v 1.22 2001-04-10 20:23:50 michiel Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
-	private String classname = getClass().getName();
-	private boolean debug=false;
-	
+    private static Logger log = Logging.getLoggerInstance(sessions.class.getName()); 
+
 	Hashtable sessions = new Hashtable();
     private MMBase mmbase;
 	MMObjectBuilder props,users;
@@ -58,7 +60,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	}
 	
 	public sessionInfo getSession(scanpage sp,String wanted) {
-		if (debug) debug("getSession(): wanted=" + wanted);
+		if (log.isDebugEnabled()) {
+            log.debug("getSession(): wanted=" + wanted);
+        }
 		if (sessions!=null && wanted!=null) {
 			sessionInfo session=(sessionInfo)sessions.get(wanted);
 			if (session==null) {
@@ -92,16 +96,16 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			if(wanted!=null) {
 				if (sessions.containsKey(wanted)) {
 					sessions.remove(wanted);
-					debug("forgetSession("+wanted+"): Who? Don't know 'm .. sorry!");
-				} else debug("forgetSession("+wanted+"): WARNING: This key not found in session!");
-			} else debug("forgetSession("+wanted+"): ERROR: wanted to forget a null!");
-		} else debug("forgetSession("+wanted+"): ERROR: sessions is null!");
+					log.info("forgetSession(" + wanted + "): Who? Don't know 'm .. sorry!");
+				} else log.warn("forgetSession(" + wanted + "): This key not found in session!");
+			} else log.error("forgetSession(" + wanted + "): wanted to forget a null!");
+		} else log.error("forgetSession(" + wanted + "): sessions is null!");
 	}
 	
 	public String getValue(sessionInfo session,String wanted) {
 
 		if (session==null) {
-			debug("getValue("+wanted+"): ERROR: session is null!");
+			log.error("getValue("+wanted+"): session is null!");
 			return(null);
 		}
 
@@ -126,7 +130,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		if (session!=null) {
 			return(session.setValue(key,value));
 		} else {
-			debug("setValue("+key+","+value+"): ERROR: sessions is null!");
+			log.error("setValue("+key+","+value+"): sessions is null!");
 			return(null);
 		}
 	}
@@ -148,7 +152,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			}
 		}
 		else
-			debug("addSetValues("+key+","+values+"): ERROR: sessions is null!");
+			log.error("addSetValues("+key+","+values+"): sessions is null!");
 	}
 
     /**
@@ -163,7 +167,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		if (session!=null) {
 			session.addSetValue(key,value);
 		} else {
-			debug("addSetValue("+key+","+value+"): ERROR: sessions is null!");
+			log.error("addSetValue("+key+","+value+"): sessions is null!");
 		}
 	}
 	
@@ -179,7 +183,8 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 				addSetValue( session, key, tok.nextToken());	
 			}
 		} else {
-			debug("setValueFromNode("+key+","+ptype+","+value+"): ERROR: ptype("+ptype+") neither 'string' nor 'vector'!");
+			log.error("setValueFromNode(" + key + "," + ptype + "," +
+                      value + "): ptype("+ptype+") neither 'string' nor 'vector'!");
 		}
 	}
 
@@ -204,7 +209,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 					props=mmbase.getMMObject("properties");
 					// MOET ANDERS
 					Enumeration res=props.search("WHERE "+mmbase.getDatabase().getAllowedField("key")+"='SID' AND "+mmbase.getDatabase().getAllowedField("value")+"='"+sid+"'");
-					if( debug ) debug("loadProperties(): got SID("+sid+")"); 
+					if (log.isDebugEnabled()) {
+                        log.debug("loadProperties(): got SID(" + sid + ")"); 
+                    }
 					if (res.hasMoreElements()) {
 						MMObjectNode snode = (MMObjectNode)res.nextElement();
 						int id=snode.getIntValue("parent");
@@ -214,8 +221,8 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							setValueFromNode( session, (MMObjectNode)res.nextElement() );
 						}
 					}
-          		} else debug("loadProperties(): mmbase is null!");
-            } else debug("loadProperties(): session is null!");
+          		} else log.error("loadProperties(): mmbase is null!");
+            } else log.error("loadProperties(): session is null!");
 		} catch (Exception e) {
 			//	e.printStackTrace();
 		}
@@ -245,8 +252,8 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							setValueFromNode( session, (MMObjectNode)res.nextElement() );
 						}
 					}					
-          		} else debug("loadProperties(): mmbase is null!");
-            } else debug("loadProperties(): session is null!");
+          		} else log.error("loadProperties(): mmbase is null!");
+            } else log.error("loadProperties(): session is null!");
 		} catch (Exception e) {
 			//	e.printStackTrace();
 		}
@@ -268,7 +275,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 
 		if (mmbase==null) 
 		{
-			debug("saveValue("+session+","+key+"): ERROR: mmbase is null!");
+			log.error("saveValue(" + session + "," + key + "): mmbase is null!");
 			return(null);
 		}
 
@@ -293,7 +300,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 
 					// does the sid have any properties?
 					if (props==null || users==null) {
-						debug("Can't Save: One of the needed builders is not loaded either users or properties");
+						log.warn("Can't Save: One of the needed builders is not loaded either users or properties");
 					} else {
 						Enumeration res=props.search("key=='SID'+value=='"+sid+"'");
 						if (res.hasMoreElements()) {
@@ -311,7 +318,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							}
 							else
 							{
-								debug("saveValue("+key+"): WARNING: node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
+								log.warn("saveValue(" + key + "): node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
 							}
 	
 						} else {
@@ -319,7 +326,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							// Server has given a cookie, but *now* we create a new user & properties
 							// ----------------------------------------------------------------------
 	
-							debug("saveValue("+key+"): This is a new user("+sid+"), making database entry..");
+                            if (log.isServiceEnabled()) {
+                                log.service("saveValue(" + key + "): This is a new user(" + sid + "), making database entry..");
+                            }
 		
 							node = users.getNewNode ("system");
 							if( node != null ) 
@@ -338,8 +347,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 								props.insert("system", snode); 
 								session.setNode(node);
 							}
-							else
-								debug("saveValue("+session+","+key+"): ERROR: No node("+id+") could be created for this user("+sid+")!");
+							else {
+								log.error("saveValue(" + session + "," + key + "): No node(" + id + ") could be created for this user(" + sid + ")!");
+                            }
 						}
 					}
 				} else {
@@ -365,9 +375,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							value=session.getValue(key);
 							if( value==null )
 							{
-								debug("saveValue("+key+"): value("+value+") is null!");
-								debug(" - values(" + session.values +")" );
-								debug(" - setvalues(" + session.setvalues +")" );
+								log.warn("saveValue("+key+"): value("+value+") is null!");
+								log.warn(" - values(" + session.values +")" );
+								log.warn(" - setvalues(" + session.setvalues +")" );
 							}
 							snode.setValue ("ptype","string");
 						} else {
@@ -385,15 +395,15 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 				}
 				else
 				{
-					debug("saveValue("+session+","+key+"): ERROR: no node("+node+") found for user("+sid+")!");
+					log.error("saveValue("+session+","+key+"): no node("+node+") found for user("+sid+")!");
 					return(null);
 				}
 			} else {
-				debug("saveValue("+session+","+key+"): ERROR: key is null!");
+			    log.error("saveValue("+session+","+key+"): key is null!");
 				return(null);
 			}
 		} else {
-			debug("saveValue("+session+","+key+"): ERROR: session is null!");
+			log.error("saveValue("+session+","+key+"): session is null!");
 			return(null);
 		}
 	}
@@ -402,7 +412,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	public String saveValueNew(sessionInfo session,String key) {
 		if (mmbase==null) 
 		{
-			debug("saveValue("+session+","+key+"): ERROR: mmbase is null!");
+			log.error("saveValue("+session+","+key+"): mmbase is null!");
 			return(null);
 		}
 
@@ -425,7 +435,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 
 					// does the sid have any properties?
 					if (props==null || users==null) {
-						debug("Can't Save: One of the needed builders is not loaded either users or properties");
+						log.warn("Can't Save: One of the needed builders is not loaded either users or properties");
 					} else {
 						id=users.getNumber(sid);
 						// get use the new way !
@@ -437,7 +447,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							}
 							else
 							{
-								debug("saveValue("+key+"): WARNING: node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
+								log.warn("saveValue("+key+"): node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
 							}
 	
 						} else {
@@ -471,9 +481,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							value=session.getValue(key);
 							if( value==null )
 							{
-								debug("saveValue("+key+"): value("+value+") is null!");
-								debug(" - values(" + session.values +")" );
-								debug(" - setvalues(" + session.setvalues +")" );
+								log.warn("saveValue("+key+"): value("+value+") is null!");
+								log.warn(" - values(" + session.values +")" );
+								log.warn(" - setvalues(" + session.setvalues +")" );
 							}
 							snode.setValue ("ptype","string");
 						} else {
@@ -491,15 +501,15 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 				}
 				else
 				{
-					debug("saveValue("+session+","+key+"): ERROR: no node("+node+") found for user("+sid+")!");
+					log.error("saveValue("+session+","+key+"): no node("+node+") found for user("+sid+")!");
 					return(null);
 				}
 			} else {
-				debug("saveValue("+session+","+key+"): ERROR: key is null!");
+				log.error("saveValue("+session+","+key+"): key is null!");
 				return(null);
 			}
 		} else {
-			debug("saveValue("+session+","+key+"): ERROR: session is null!");
+			log.error("saveValue("+session+","+key+"): session is null!");
 			return(null);
 		}
 	}
@@ -571,9 +581,11 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			if (cmd.equals("SETCOUNT")) 		return(getSetCount(sp,tok));
 			if (cmd.equals("AVGSET")) 		return(getAvgSet(sp,tok));
 			
-			debug("replace("+cmds+"): WARNING: Unknown command("+cmd+")!");
+			log.warn("replace(" + cmds + "): Unknown command(" + cmd + ")!");
 		}
-		return( classname +"replace(): ERROR: No command defined");
+		return( this.getClass().getName() +"replace(): ERROR: No command defined");
+        // michiel: I did not explore for which this return value is used. 
+        // the function is public, so I don't like to change the return value.
 	}
 
 
@@ -673,7 +685,9 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	public Vector doGetSet(scanpage sp, StringTokenizer tok) {
 		Vector results=new Vector();
 		String line=getSetString(sp,tok);
-		if(debug) debug("doGetSet(): SESSION LINE="+line);
+		if(log.isDebugEnabled()) {
+            log.debug("doGetSet(): SESSION LINE="+line);
+        }
 		if (line!=null) {
 			StringTokenizer tok2 = new StringTokenizer(line,",\n\r");
 			while (tok2.hasMoreTokens()) {
@@ -764,9 +778,6 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		}
 	}
 
-	private void debug( String msg ) {
-		System.out.println( classname +":"+ msg );
-	}
 
 	/**
 	 * the XML reader will correct the escaped characters again.
