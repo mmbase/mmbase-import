@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.141 2004-12-03 15:48:33 pierre Exp $
+    @version $Id: wizard.xsl,v 1.142 2005-01-30 17:02:52 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -676,7 +676,7 @@
           <xsl:for-each select="optionlist/option">
             <option value="{@id}">
               <xsl:if test="@selected=&apos;true&apos;">
-                <xsl:attribute name="selected">true</xsl:attribute>
+                <xsl:attribute name="selected">selected</xsl:attribute>
               </xsl:if>
               <xsl:choose>
                 <xsl:when test="prompt">
