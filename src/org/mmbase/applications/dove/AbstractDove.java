@@ -11,20 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.bridge.LocalContext;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.CloudContext;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.implementation.BasicCloud;
-import org.mmbase.bridge.implementation.BasicCloudContext;
-import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.module.corebuilders.*;
-
-import org.mmbase.security.UserContext;
-import org.mmbase.security.MMBaseCop;
+import org.mmbase.bridge.Cloud;
 
 
 /**
@@ -58,14 +47,14 @@ import org.mmbase.security.MMBaseCop;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.9 2002-10-31 08:23:19 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.9.2.1 2003-06-02 12:20:56 vpro Exp $
  */
 
 public abstract class AbstractDove {
 
     // dtds
-    public static final String DOCTYPE_REQUEST  = "http://www.mmbase.org/dtd/doverequest_1_0.dtd";
-    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doveresponse_1_0.dtd";
+    public static final String DOCTYPE_REQUEST  = "http://www.mmbase.org/dtd/doverequest_1_1.dtd";
+    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doveresponse_1_1.dtd";
 
     // keywords used for tags
     public static final String REQUEST = "request";
@@ -115,11 +104,16 @@ public abstract class AbstractDove {
     public static final String ELM_DESTINATIONTYPE = "destinationtype";
     public static final String ELM_SOURCETYPE = "sourcetype";
     public static final String ELM_SEARCHDIR = "searchdir";
+    public static final String ELM_CREATEDIR = "createdir";
     public static final String ELM_LANG = "xml:lang";
     public static final String ELM_XPATH = "xpath";
     public static final String ELM_WHERE = "where";
+    public static final String ELM_ORDERBY = "orderby";
+    public static final String ELM_DIRECTIONS = "directions";
     public static final String ELM_SOURCE = "source";
     public static final String ELM_HREF = "href";
+    public static final String ELM_MAYWRITE = "maywrite";
+    public static final String ELM_MAYDELETE = "maydelete";
 
     // values
     public static final String IS_PARSER = "parser";
