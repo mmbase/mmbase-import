@@ -43,6 +43,7 @@ public class SetFieldTag extends FieldTag {
             String newValue = bodyContent.getString();
             getNodeVar().setValue(fieldName, convert(newValue));
         }
+        findNodeProvider().setModified();
         
         return SKIP_BODY;
     }   
