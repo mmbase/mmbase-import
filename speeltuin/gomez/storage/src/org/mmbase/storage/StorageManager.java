@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.11 2003-08-01 08:09:53 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.12 2003-08-01 11:56:21 pierre Exp $
  */
 public interface StorageManager {
 
@@ -70,7 +70,7 @@ public interface StorageManager {
      * This method should work with multiple mmbases
      * @return unique number
      */
-    public int createKey();
+    public int createKey() throws StorageException;
 
     /**
      * Retrieve a large text for a specified object field.
@@ -153,7 +153,7 @@ public interface StorageManager {
      * @return <code>true</code> if the storage element exists, false if it doesn't
      * @throws StorageException if an error occurred while querying the storage
      */
-    public boolean created(MMObjectBuilder builder) throws StorageException;
+    public boolean exists(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Determine if the basic storage elements exist
@@ -161,7 +161,7 @@ public interface StorageManager {
      * @return <code>true</code> if basic storage elements exist
      * @throws StorageException if an error occurred while querying the storage
      */
-    public boolean created() throws StorageException;
+    public boolean exists() throws StorageException;
 
     /**
      * Return the number of objects of a builder in the storage
@@ -181,40 +181,35 @@ public interface StorageManager {
     /**
      * Drops the storage of this builder.
      * @param builder the builder whose storage to drop
-     * @return <code>true</code> if succesful
      */
-    public boolean drop(MMObjectBuilder builder);
+    public void drop(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Adds a field to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to add
-     * @return <code>true</code> if succesful
      */
-    public boolean addField(MMObjectBuilder builder,String fieldname);
+    public void addField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
 
     /**
      * Deletes a field from the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to delete
-     * @return <code>true</code> if succesful
      */
-    public boolean removeField(MMObjectBuilder builder,String fieldname);
+    public void removeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
 
     /**
      * Changes a field to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to change
-     * @return <code>true</code> if succesful
      */
-    public boolean changeField(MMObjectBuilder builder,String fieldname);
+    public void changeField(MMObjectBuilder builder, FieldDefs field) throws StorageException;
 
     /**
      * Changes the storage of a builder to match its new configuration.
      * @param builder the builder whose storage to change
-     * @return <code>true</code> if succesful
      */
-    public boolean updateStorage(MMObjectBuilder builder);
+    public void updateStorage(MMObjectBuilder builder) throws StorageException;
 
 }
 
