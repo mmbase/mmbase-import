@@ -1,7 +1,7 @@
 SOURCE=arrow.fig
 SOURCE2=arrow.png
 SCALE=-scale 20x20
-FORMAT=gif
+FORMAT=png
 all:
 	fig2dev -L png -b 0 arrow.fig arrow.png
 	convert $(SCALE) $(SOURCE2) arrow-right.$(FORMAT)
