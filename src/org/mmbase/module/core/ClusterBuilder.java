@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18 2002-10-23 08:13:48 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18.2.1 2003-02-16 15:31:02 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -427,7 +427,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 } else {
                     query="select "+distinct+" "+select+" from "+stables+" "+order;
                 }
-                log.debug("Query "+query);
+                if (log.isDebugEnabled()) log.debug("Query "+query);
 
                 ResultSet rs=stmt.executeQuery(query);
                 ClusterNode node;
@@ -879,6 +879,8 @@ public class ClusterBuilder extends VirtualBuilder {
 
             boolean desttosrc = false; // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
             boolean srctodest = false; // And from 'destination' to 'source'.
+
+
             { // determine desttosrc and srctodest
 
                 // the typedef number of the source-type
@@ -948,8 +950,8 @@ public class ClusterBuilder extends VirtualBuilder {
                     // no results possible
                     // terminate, return null!
                     log.warn("There are no relations possible (no typerel specified) between "+
-                               alltables.elementAt(i)+ " and "+
-                               alltables.elementAt(i + 2)+ " using "+
+                               getTableName((String) alltables.elementAt(i)) + " and "+
+                               getTableName((String) alltables.elementAt(i + 2)) + " using "+
                                alltables.elementAt(i + 1)+ " in "+
                                getSearchDirString(searchdir) + " direction(s)"
                                );
