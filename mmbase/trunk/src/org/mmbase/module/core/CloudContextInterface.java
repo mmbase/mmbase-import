@@ -31,7 +31,7 @@ public interface CloudContextInterface {
 	 * @param modulename name of the module
 	 * @return the requested module
 	 */
-	public ModuleInterface getModules(String modulename);
+	public ModuleInterface getModule(String modulename);
 
 	/**
 	 * Retrieves all clouds within this context
@@ -50,7 +50,6 @@ public interface CloudContextInterface {
 	 * Retrieve a remote CloudContext
 	 * @param cloudcontextUrl place of the remote CloudContext
 	 * @return remote CloudContext
-	 *
-	 * public CloudContext getCloudContext(String cloudcontextUrl);
 	 */
+	public CloudContext getCloudContext(String cloudcontextUrl);
 }
