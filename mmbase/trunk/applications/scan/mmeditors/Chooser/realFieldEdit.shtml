@@ -74,7 +74,7 @@
       <TD BGCOLOR="#000000" WIDTH="190">
       
       <FONT COLOR="#FFFFFF" SIZE="2" FACE="arial,helvetica">$ITEM7
-		<PART /mmeditors/Chooser/showRelation.shtml?$ITEM5+$ITEM2></FONT>	 
+		<PART /mmeditors/Chooser/showRelation.shtml?$ITEM6+$ITEM3></FONT>	 
 	  </TD>
       <TD BGCOLOR="#FFFFFF" WIDTH="500">
       <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">$ITEM5</FONT>
