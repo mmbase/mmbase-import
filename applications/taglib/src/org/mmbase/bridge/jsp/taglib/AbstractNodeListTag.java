@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.43 2003-06-18 11:48:10 michiel Exp $ 
+ * @version $Id: AbstractNodeListTag.java,v 1.44 2003-06-18 12:15:00 michiel Exp $ 
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -301,10 +301,11 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             getContextProvider().getContainer().unRegister(getId());
         }
 
-        log.debug("copying to collector");
-        collector.putAll(container);
-        container.clear();
-                
+        if (container != null) { // might occur for some legacy extensions
+            log.debug("copying to collector");
+            collector.putAll(container);
+            container.clear();
+        }
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
