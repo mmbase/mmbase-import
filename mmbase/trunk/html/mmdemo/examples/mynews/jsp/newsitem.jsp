@@ -12,7 +12,13 @@ for the MMBase node --%>
   for fields of this magazine --%>
   <TITLE><mm:field  name="title"/></TITLE>
  </HEAD>
- <BODY>
+<BODY BACKGROUND="../images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+<CENTER>
+  <TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
+  <TR>
+  <TD WIDTH="30"></TD>
+  <TD>
+  
   <%-- use the title field again --%>
   <H1><mm:field  name="title"/></H1>
 
@@ -32,6 +38,10 @@ for the MMBase node --%>
    <mm:first>Related urls<BR></mm:first>
    <A HREF="<mm:field name="url"/>"><mm:field name="description"/></A><BR>
   </mm:related>
+  </TD>
+  </TR>
+  </TABLE>
+</CENTER>
  </BODY>
 </HTML>
 </mm:node>
