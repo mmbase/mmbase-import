@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.10 2002-11-23 00:28:00 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.11 2002-11-23 01:05:50 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -74,7 +74,7 @@
            <input type="hidden" name="orderby" value="videofragments.title,videofragments2.title" />
           <input type="hidden" name="directions" value="down" />
           <input type="hidden" name="distinct" value="true" />
-        </form><a href="javascript:document.forms['clippingvideo'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a><a href="<mm:url referids="referrer,language" page="${jsps}wizard.jsp">
+        </form><a href="javascript:document.forms['clippingvideo'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a><a href="<mm:url referids="referrer,origin,language" page="${jsps}wizard.jsp">
             <mm:param name="wizard">tasks/itemizevideo</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" /></a></td></tr>
@@ -125,7 +125,7 @@
           <input type="hidden" name="directions" value="down" />
           <input type="hidden" name="distinct" value="true" />
         </form><a href="javascript:document.forms['clippingaudio'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a>
-               <a href="<mm:url referids="referrer,language" page="${jsps}wizard.jsp">
+               <a href="<mm:url referids="referrer,language,origin" page="${jsps}wizard.jsp">
             <mm:param name="wizard">tasks/itemizeaudio</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" /></a></td></tr>
