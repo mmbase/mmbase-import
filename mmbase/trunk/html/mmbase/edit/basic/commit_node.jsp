@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp" 
-%><mm:cloud method="http" sessionname="$SESSION" jspvar="cloud">
+%><mm:cloud method="asis" sessionname="$config.session"  jspvar="cloud">
 <title><%=m.getString("commit_node.commit")%></title>
 <mm:context id="commit_node">
 <mm:import externid="node_type" required="true" />
