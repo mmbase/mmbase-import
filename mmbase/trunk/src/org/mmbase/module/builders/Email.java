@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 import java.sql.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.gui.html.*;
 import org.mmbase.util.*;
@@ -20,68 +21,100 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version 10 Dec 2000
+ * @version 15 May 2001
  *
- * this is a dummy/hack to be replaced by a full Email
- * object system now being developed at submarine.nl. It
- * now just does very basic mail to allow the new users 
- * system to use it.
+ * email builder, keeps and manages a queue of emails
+ * that need to be send by the SendMail module.
+ * It allows for emailing on time, repeat mail, stats
+ * and using urls as input for subject and body.
  */
 public class Email extends MMObjectBuilder {
 
-
+	// logger 
         private static Logger log = Logging.getLoggerInstance(Email.class.getName());
+
+	// sendprobe, maintains the queue using a wait/notify setup.
 	private EmailSendProbe sendprobe;
+
+	// The state a email can be in
 	public final static int STATE_UNKNOWN=-1;
 	public final static int STATE_WAITING=0;
 	public final static int STATE_DELIVERED=1;
 	public final static int STATE_FAILED=2;
 	public final static int STATE_SPAMGARDE=3;
-	public final static int STATE_UNDERWAY=4;
+	public final static int STATE_QUEUED=4;
 
+
+	// The type of supported emails
 	public final static int TYPE_ONESHOT=1;
 	public final static int TYPE_REPEATMAIL=2;
 	public final static int TYPE_ONESHOTKEEP=3;
+
+	// if oneshot types of mails are used we check for dups
 	private Vector dubcheck=new Vector(100);
 
+	// number of emails send sofar since startup
+	private int numberofmailsend=0;
+
+	// ref to sessions module needed to parse pages
+	private static sessionsInterface sessions=null;
+
+
+	/**
+	* init
+	*/
 	public boolean init() {
 		super.init ();
+		
+		// start the EmailSendProbe
 		sendprobe=new EmailSendProbe(this);
+
+		// obtain the session module
+		sessions=(sessionsInterface)mmb.getModule("SESSION");
+
 		return (true);
 	}
 
+
 	/**
-	* this message has changed so lets see if we need to do
-	* something.
+	* insert new email object
 	*/
-	public boolean nodeChanged(String machine,String number,String builder,String ctype) {
-		// check the type of change on the object
-		if (ctype.equals("d")) {
-			return(true);
+        public int insert(String owner, MMObjectNode node) {
+		// extra check to make sure we insert with a
+		// a time, if -1 it will change it to the
+		// current time.
+		int i=node.getIntValue("mailtime");
+		if (i==-1) {
+			// set value to current time+2
+			// the +2 is give the queue some time to react
+			node.setValue("mailtime",((int)((DateSupport.currentTimeMillis()/1000))+2)); 
 		}
 
-		// its a object so lets check if we should mail
-		// not sure if we can signal it on changes too. Since
-		// that means we will 'recheck' them alot
-		MMObjectNode node=getNode(number);
+		// insert it into the database
+		int number=super.insert(owner,node);
 
-
-		// if they tell us they are busy we will trust them
-		// and ignore in a positive way.
+		// get the mailstatus to see if we need to queue it
 		int mailstatus=node.getIntValue("mailstatus");
-		if (mailstatus==STATE_UNDERWAY) {
-			return(true);
-		}
 
-		// if status is unknown or waiting lets mail or schedule
-		// the task for mailing
+		// is it waiting ?
 		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
-			sendprobe.putTask(node);	
-		} else {
-			checkMailNode(node);
+			// check if we need to queue this mail, it does
+			// this by checking if it needs to be put into
+			// STATE_QUEUED mode
+			int ttime=(int)((DateSupport.currentTimeMillis()/1000)); 
+			ttime=node.getIntValue("mailtime")-ttime;
+
+			// ttime hold the time in seconds until we want
+			// to be mailed
+			if (ttime<(sendprobe.maxtasktime)) {
+				// the time is smaller than the queue
+				// time so try to queue it
+				sendprobe.putTask(node);	
+			}
 		}
-		return(true);
+		return(number);
 	}
+
 
 	/**
 	* check the message object, now if state is 1 (oneshot)
@@ -90,14 +123,13 @@ public class Email extends MMObjectBuilder {
 	public void checkOneShotMail(MMObjectNode node) {
 		// just to make sure lets recheck state
 		int mailstatus=node.getIntValue("mailstatus");
-		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
+		if (mailstatus==STATE_QUEUED) {
 			// so lets send this node as email
 			sendMailNode(node);
-		}
-
-		// if mail is delivered then remove it
-		if (mailstatus==STATE_DELIVERED) {
-				removeNode(node);
+		
+			// sincer its oneshot remove it from
+			// mmbase
+			removeNode(node);
 		} 
 		
 	}
@@ -123,11 +155,13 @@ public class Email extends MMObjectBuilder {
 	public void checkRepeatMail(MMObjectNode node) {
 		// just to make sure lets recheck state
 		int mailstatus=node.getIntValue("mailstatus");
-		if (mailstatus==STATE_UNKNOWN || mailstatus==STATE_WAITING) {
+		if (mailstatus==STATE_QUEUED) {
 			// so lets send this node as email
 			mailstatus=sendMailNode(node);
-		// is mail delivered ifso update it for next mail event
-		} else if (mailstatus==STATE_DELIVERED) {
+
+			// if something goes wrong put the
+			// email in failed state
+			if (mailstatus==STATE_FAILED) return;
 
 			// get the mailtime, so we can calc the new
 			// mailtime.
@@ -146,13 +180,21 @@ public class Email extends MMObjectBuilder {
 			// if we allready passed the time or repeattime
 			// is less then 60 seconds we ignore as a spam
 			// guard
-			if (repeattime>59 && nowtime<proposedtime) {
+			//if (repeattime>59 && nowtime<proposedtime) {
+			if (repeattime>59) {
 				// set the new proposed time
 				node.setValue("mailtime",proposedtime);
 				// signal that we are ready again
 				node.setValue("mailstatus",STATE_WAITING);
 				// commit to the cloud
 				node.commit();
+
+				// well try putting it in the queue
+				int ttime=(int)((DateSupport.currentTimeMillis()/1000)); 
+				int ntime=node.getIntValue("mailtime");
+				if (ntime<(ttime+sendprobe.maxtasktime)) {
+					sendprobe.putTask(node);
+				}
 			} else {
 				// spam guard triggered
 				node.setValue("mailstatus",STATE_SPAMGARDE);
@@ -166,35 +208,46 @@ public class Email extends MMObjectBuilder {
 	/**
 	*/
 	public int sendMailNode(MMObjectNode node) {
+			// perform the dup check
 			String ckey=""+node.getIntValue("number");
-			if (dubcheck.contains(ckey)) {
-				System.out.println("DUB KILLED");
-				return(-1);
-			} else {
-				dubcheck.addElement(ckey);
-				if (dubcheck.size()>100) {
-					dubcheck.removeElementAt(0);
+
+			// don't perform a dup check
+			if (node.getIntValue("mailtype")!=TYPE_REPEATMAIL) {
+				if (dubcheck.contains(ckey)) {
+					log.debug("Email -> dup killed id="+ckey);
+					return(-1);
+				} else {
+					// put the id in the dup checker
+					dubcheck.addElement(ckey);
+					if (dubcheck.size()>100) {
+						dubcheck.removeElementAt(0);
+					}
 				}
 			}
 
 
-			// first set Node underway
-			node.setValue("mailstatus",STATE_UNDERWAY);
-
-			// commit to the cloud so the others in
-			// the cluster know we are busy
-			node.commit();
-
+			// get subject of the mail (including url based)
 			String subject=getSubject(node);
+
+			// get To of the mail
 			String to=getTo(node);
+
+			// get From of the mail
 			String from=node.getStringValue("from");
+
+			// get ReplyTo of the mail
 			String replyto=node.getStringValue("replyto");
+
+			// get Body of the mail (including url based)
 			String body=getBody(node);
 	
 			// now if a url is defined it overrides the body
 			// it will then send the webpage defined by the
 			// url as the body !! (only  local url's are
 			// now supported that use html or shtml
+			// ** this is a second way todo it (see getBody)
+			// ** im unclear why i did this but we need to
+			// ** keep it for legacy reasons now
 			String url=node.getStringValue("bodyurl");
 			if (url!=null && !url.equals("")) {
 				// get the page
@@ -202,13 +255,25 @@ public class Email extends MMObjectBuilder {
 				if (tmpbody!=null) body=tmpbody;
 			}
 
+			// check if we have multiple to's
 			StringTokenizer tok = new StringTokenizer(to,",\n\r");
 			while (tok.hasMoreTokens()) {
+				// get the next todo
 				String to_one=tok.nextToken();
+	
+				// create new (sendmail) object
 				Mail mail=new Mail(to_one,from);
+			
+				// set the subject
 				mail.setSubject(subject);
+			
+				// set default date
 				mail.setDate();
+
+				// set the reply header if defined
 				if (replyto!=null && !replyto.equals("")) mail.setReplyTo(replyto); 
+
+				// fill the body
 				mail.setText(body);
 	
 				// little trick if it seems valid html page set
@@ -217,27 +282,54 @@ public class Email extends MMObjectBuilder {
 					mail.setHeader("Mime-Version","1.0");
 					mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
 				}
-			
+		
+				// is the don't mail tag set ? this allows
+				// a generated body to signal it doesn't
+				// want to be mailed since for some reason
+				// invalid (for example there is no news for
+				// you
 				if (body.indexOf("<DONTMAIL>")==-1) {	
-					// send the message to the user defined
+					// if the subject contains 'fakemail'
+					// perform all actions butt don't really
+					// mail. This is done for testing
+					if (subject!=null && subject.indexOf("fakemail")!=-1) {
+						// add one to the sendmail counter
+						numberofmailsend++;
+						System.out.println("FAKE SEND");
+						node.setValue("mailstatus",STATE_DELIVERED);
+					} else {
 					if (to==null || mmb.getSendMail().sendMail(mail)==false) {
 						log.debug("Email -> mail failed");
 						node.setValue("mailstatus",STATE_FAILED);
+						// add one to the sendmail counter
+						numberofmailsend++;
 					} else {
+						// add one to the sendmail counter
+						numberofmailsend++;
 						log.debug("Email -> mail send");
 						node.setValue("mailstatus",STATE_DELIVERED);
+					}
 					}
 				} else { 
 					log.debug("Don't mail tag found");
 				}
 			}
+			// set the new mailedtime, that can be used by admins
+			// to see when it was mailed vs the requested mail
+			// time
 			node.setValue("mailedtime",(int)(System.currentTimeMillis()/1000));
+
+			// commit the changes to the cloud
 			node.commit();
 
 			return(node.getIntValue("mailstatus"));
 	}
 
 
+	/**
+	* get the To header if its not set directly
+	* try to obtain it from related objects.
+	*/
 	String getTo(MMObjectNode node) {
 		String to=node.getStringValue("to");
 		if (to==null || to.equals("")) {
@@ -251,10 +343,12 @@ public class Email extends MMObjectBuilder {
 				}
 			}
 		}
-		//System.out.println("TO="+to);
 		return(to);
 	}
 
+	/**
+	* get the email addresses of related people
+	*/
 	String getPeoplesEmail(MMObjectNode node) {
 		// try and find related people
 		String to=null;
@@ -275,6 +369,9 @@ public class Email extends MMObjectBuilder {
 	}
 
 
+	/**
+	* get the email addresses of related people
+	*/
 	String getUsersEmail(MMObjectNode node) {
 		// try and find related users
 		String to=null;
@@ -294,6 +391,9 @@ public class Email extends MMObjectBuilder {
 		return(to);
 	}
 
+	/**
+	* get the subject, obtain it by url/getPage if needed
+	*/
 	String getSubject(MMObjectNode node) {
 		String subject=node.getStringValue("subject");
 		if (subject!=null) {
@@ -313,7 +413,9 @@ public class Email extends MMObjectBuilder {
 		}
 	}
 
-
+	/**
+	* get the body, obtain it by url/getPage if needed
+	*/
 	String getBody(MMObjectNode node) {
 		String body=node.getStringValue("body");
 		if (body!=null) {
@@ -334,15 +436,12 @@ public class Email extends MMObjectBuilder {
 	}
 
 	/**
-	* check the message object, now if state is 1 (oneshot)
-	* it mails and removed itself from the cloud when done
+	* check the message object
 	*/
 	public void checkMailNode(MMObjectNode node) {
 
-		// get the message object from the cloud
-		// MMObjectNode node=getNode(number);	
-
-		// obtain all the needed fields from the object
+		// get the mailtype and call method based on
+		// it.
 		int mailtype=node.getIntValue("mailtype");
 		switch(mailtype) {
 			case TYPE_ONESHOT :
@@ -358,23 +457,6 @@ public class Email extends MMObjectBuilder {
 	}
 
 
-	/**
-	* local change reroute to nodeChange
-	*/
-	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-		super.nodeLocalChanged(machine,number,builder,ctype);
-		return(nodeChanged(machine,number,builder,ctype));
-	}
-
-
-	/**
-	* remote change reroute to nodeChange
-	*/
-	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-		super.nodeRemoteChanged(machine,number,builder,ctype);
-		return(nodeChanged(machine,number,builder,ctype));
-	}
-	
 
 	/**
 	* getPage, using the scanparser (remember this is a hack to be
@@ -387,17 +469,135 @@ public class Email extends MMObjectBuilder {
 			// found module, create a empty
 			// context since we don't have a user
 			scanpage sp=new scanpage();
+
+			// setup a session so we can use sessions
+
+			String sname="emailuser";
+			sp.sname=sname;
+			sessionInfo session=sessions.getSession(sp,sname);
+			sp.session=session;
+
 			// get the page and return it
 			return(m.calcPage(url,sp,0));
 		}
 		return(null);
 	}
 
-	public boolean performTask(MMObjectNode node) {
+	/**
+	* performTask, called by the email probe if a email object
+	* needs to be handled (mostly because its mail time has passed).
+	*/	
+	public synchronized boolean performTask(MMObjectNode node) {
 		checkMailNode(node);
 		return(true);
 	}
 
 
+	/**
+	* some stat calls used by the email admin tool
+	*/
+	public String replace(scanpage sp, StringTokenizer tok) {
+		if (tok.hasMoreTokens()) {
+			String cmd=tok.nextToken();	
+			if (cmd.equals("DBQUEUED")) return(""+getNumberOfQueued());
+			else if (cmd.equals("MEMTASKS")) return(""+getNumberOfTasks());
+			else if (cmd.equals("MAXMEMTASKS")) return(""+getMaxNumberOfTasks());
+			else if (cmd.equals("DBQUEUEDTIME")) return(""+getMaxQueuedTime());
+			else if (cmd.equals("DBQUEUEPROBETIME")) return(""+getQueueProbeTime());
+			else if (cmd.equals("NUMBEROFMAILSEND")) return(""+numberofmailsend);
+		}
+		return(null);
+	}
+
+
+	/**
+	* some list commands for the email admin tool
+	*/
+	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+		if (tok.hasMoreTokens()) {
+			String cmd=tok.nextToken();	
+			if (cmd.equals("MEMTASKS")) return(getMemTasks());
+		}
+		return(null);
+	}
+
+	/**
+	* enum the tasks in memory for the admin tool
+	*/	
+	public Vector getMemTasks() {
+		Vector results=new Vector();
+		Enumeration enum=sendprobe.tasks.elements();
+       		while (enum.hasMoreElements()) {
+			MMObjectNode node=(MMObjectNode)enum.nextElement();
+			results.addElement(""+node.getIntValue("number"));
+			int ntime=node.getIntValue("mailtime");
+			int ttime=(int)((DateSupport.currentTimeMillis()/1000)); 
+			results.addElement(""+(ntime-ttime));
+			results.addElement(node.getStringValue("to"));
+			results.addElement(node.getStringValue("from"));
+			results.addElement(node.getStringValue("subject"));
+		}
+		return(results);
+	}
+
+	/**
+	* return the number of queued messages
+	*/
+	public int getNumberOfQueued() {
+		if (sendprobe!=null) {
+			return(sendprobe.dbqueued);
+		} else {
+			return(-1);
+		}
+	}
+
+
+	/**
+	* return the max time of queued messages
+	*/
+	public int getMaxQueuedTime() {
+		if (sendprobe!=null) {
+			return(sendprobe.maxtasktime);
+		} else {
+			return(-1);
+		}
+	}
+
+	/**
+	* return the time interval we check the
+	* database for queued messages
+	*/
+	public int getQueueProbeTime() {
+		if (sendprobe!=null) {
+			return(sendprobe.queueprobetime);
+		} else {
+			return(-1);
+		}
+	}
+
+
+	/**
+	* return the number of tasks
+	*/
+	public int getNumberOfTasks() {
+		if (sendprobe!=null) {
+			return(sendprobe.tasks.size());
+		} else {
+			return(-1);
+		}
+	}
+
+
+	/**
+	* return the maximum number of tasks we 
+	* queue in memory
+	*/
+	public int getMaxNumberOfTasks() {
+		if (sendprobe!=null) {
+			return(sendprobe.internalqueuesize);
+		} else {
+			return(-1);
+		}
+	}
 
 }

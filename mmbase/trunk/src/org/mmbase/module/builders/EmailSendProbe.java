@@ -19,38 +19,74 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * admin module, keeps track of all the worker pools
- * and adds/kills workers if needed (depending on
- * there load and info from the config module).
+ * Email send probe, keeps a queue of queued messages
+ * and uses a wait/nofity on its internal thread as 
+ * a way to block until the next event or notify of
+ * a possible queue change.
  *
- * @version 27 Mar 1997
+ * @version 15 May 2001
  * @author Daniel Ockeloen
  */
 public class EmailSendProbe implements Runnable {
 
     private static Logger log = Logging.getLoggerInstance(EmailSendProbe.class.getName());
+	// The internal thread it wait/notify's on
 	Thread kicker = null;
+	
+	// parent ref. we need to be able to call back on a action (perform call)
 	Email parent=null;
-	SortedVector tasks= new SortedVector(new MMObjectCompare("mailtime"));
 
-	// Active Node
+	// Sorted list of the memory queued email objects
+	public SortedVector tasks= new SortedVector(new MMObjectCompare("mailtime"));
+
+	// we also need a probe to fill the memory queue every x time
+	EmailQueueProbe queueprobe=null;
+
+	// the (default) size of the memory queue
+	public int internalqueuesize=500;
+
+	// the maximum age of queued messages
+	public int maxtasktime=60*60;
+
+	// number of queued messages in the database
+	// only valid after first run
+	public int dbqueued=-1;
+
+	// time interval we check the database for 
+	// both putting messages in queue mode and
+	// filling the memory queue
+	public int queueprobetime=5*60;
+
+	// Active Node, as in the first node in the queue
+	// if we are not in running mode we are probably
+	// blocked on this nodes mailtime
 	MMObjectNode anode=null;
 
+	/**
+	* construct the probe 
+	*/
 	public EmailSendProbe(Email parent) {
 		this.parent=parent;
 		init();
+		// start a second probe that calls us back 
+		// every x seconds to update the queue
+		queueprobe=new EmailQueueProbe(this,queueprobetime);
 	}
 
+
+	/**
+	* init/start the probe
+	*/
 	public void init() {
 		this.start();	
 	}
 
 
 	/**
-	 * Starts the admin Thread.
+	 * Starts the thread
 	 */
 	public void start() {
-		/* Start up the main thread */
+		// Start up the main thread 
 		if (kicker == null) {
 			kicker = new Thread(this,"emailsendprobe");
 			kicker.start();
@@ -61,7 +97,7 @@ public class EmailSendProbe implements Runnable {
 	 * Stops the admin Thread.
 	 */
 	public void stop() {
-		/* Stop thread */
+		// stop the thread
 		kicker.setPriority(Thread.MIN_PRIORITY);  
 		kicker.suspend();
 		kicker.stop();
@@ -69,33 +105,66 @@ public class EmailSendProbe implements Runnable {
 	}
 
 	/**
-	 * blocked on the first task in the queue
+	 * blocks on the first task in the queue
+	 * 
+	 * this is the core of the queue, the idea is that
+	 * we block on the first node that needs to be mailed
+	 * do a wait on it until its ready. If no node is found
+	 * we block for a hour. if we reach a time we perform
+	 * a call on our parent and remove ourselfs from the queue
 	 */
 	public synchronized void run() {
+		// this is a lowlevel thingie
 		kicker.setPriority(Thread.MIN_PRIORITY+1);  
 		while (kicker!=null) {
+				// try to select a new first node
 				if (tasks.size()>0) {
 					anode=(MMObjectNode)tasks.elementAt(0);
 				} else {
 					anode=null;
 				}
+
+				// we might be interupted to we need to catch
 				try {
+					// nothing in the queue wait alot then
 					if (anode==null) {
 						// so no task in the future wait a long time then
 						wait(3600*1000);
 					} else {
+						// get the current time
 						int ttime=(int)((DateSupport.currentTimeMillis()/1000)); 
-						ttime=anode.getIntValue("mailtime")-ttime;
-						if (ttime<3) {
+						// het the wanted time
+						int ntime=anode.getIntValue("mailtime");
+						// are we ready or do we need to wait some more ?
+						if (ttime>=ntime) {
 							// time has come handle this task now !
 							try {
+								// remove node from the queue
+								tasks.removeElement(anode);
+								// call our parent
 								parent.performTask(anode);
+				
 							} catch (Exception e) {
 								log.error("emailsendprobe : performTask failed"+anode);
+								tasks.removeElement(anode);
+								// oke set node on error
+								anode.setValue("mailstate",parent.STATE_FAILED);
+								anode.commit();
 							}
-							tasks.removeElement(anode);
+				
+							// if its empty check for queued
+							// in the database
+							if (tasks.size()==0) {
+								checkQueue();
+							}
 						} else {
-							wait(ttime*1000);
+							// figure out how long we need to wait
+							int sleeptime=ntime-ttime;
+							// check for 0 to not fall in the wait(0) trap (see specs)
+							if (sleeptime!=0) {
+								// wait for that amount of time
+								wait(sleeptime*1000);
+							}
 						}
 					}
 				} catch (InterruptedException e){}
@@ -103,12 +172,22 @@ public class EmailSendProbe implements Runnable {
 	}
 
 	public synchronized boolean putTask(MMObjectNode node) {
-		boolean res;
+		if (node.getIntValue("mailstatus")!=parent.STATE_QUEUED) {
+			node.setValue("mailstatus",parent.STATE_QUEUED);	
+			node.commit();
+		}
+		
+		if (node.getIntValue("mailstatus")==parent.STATE_SPAMGARDE) {
+			return(true);
+		}
+
 		if (!containsTask(node)) {
-			tasks.addSorted(node);
-			res=true;
+			if (tasks.size()<internalqueuesize) {
+				tasks.addSorted(node);
+			} else {
+			}
 		} else {
-			res=replaceTask(node);
+			replaceTask(node);
 		}
 		// is the active node
 		if (tasks.size()==0 || node==tasks.elementAt(0)) {
@@ -142,5 +221,21 @@ public class EmailSendProbe implements Runnable {
 			}
 		}
 		return(false);
+	}
+
+	public synchronized void checkQueue() {
+		int ttime=(int)((DateSupport.currentTimeMillis()/1000)); 
+
+		// get the events for the next 5 min so we can place them
+		// in the queue if needed
+		Enumeration e=parent.search("mailtime=S"+(ttime+maxtasktime),"mailtime",true);
+		dbqueued=0;
+		while (e.hasMoreElements()) {
+			MMObjectNode qnode=(MMObjectNode)e.nextElement();
+			if (!containsTask(qnode)) {
+				putTask(qnode);
+			}
+			dbqueued++;
+		}
 	}
 }
