@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.41 2001-07-06 13:54:20 michiel Exp $
+ * @version $Id: Images.java,v 1.42 2001-09-12 14:49:37 eduard Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -354,5 +354,50 @@ public class Images extends MMObjectBuilder {
             devices.addElement(name);
         }
     }    
+    
+    /**
+     * Override the MMObjectBuilder commit, to invalidate the Image Cache AFTER a modifation to the 
+     * image node.
+     * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
+     * Use only to commit changes - for adding node, use {@link #insert}.
+     * @param node The node to be committed
+     * @return The committed node.
+     */
+    public boolean commit(MMObjectNode node) {
+    	// look if we need to invalidate the image cache...
+    	boolean imageCacheInvalid = node.getChanged().contains("handle");	
+	// do the commit
+    	if(super.commit(node)) {
+	    // when cache is invalide, invalidate
+	    if(imageCacheInvalid) {
+	    	invalidateImageCache(node);
+	    }
+	    return true;	    
+	}
+	return false;
+    }
+
+    /**
+     * Override the MMObjectBuilder removeNode, to invalidate the Image Cache AFTER a delete-ion of the 
+     * image node.
+     * Remove a node from the cloud.
+     * @param node The node to remove.
+     */
+    public void removeNode(MMObjectNode node) {
+        super.removeNode(node);
+    	invalidateImageCache(node);
+    }
+    
+    /**
+     * Invalidate the Image Cache, if there is one, for a specific ImageNode
+     * @param node The image node, which is the original
+     */
+    private void invalidateImageCache(MMObjectNode node) {
+    	ImageCaches icache = (ImageCaches) mmb.getMMObject("icaches");
+	if(icache != null) {
+	    // we have a icache that is active...
+	    icache.invalidate(node);
+	}
+    }
 }
         
