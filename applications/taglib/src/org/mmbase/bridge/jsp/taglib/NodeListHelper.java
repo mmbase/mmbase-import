@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.8 2005-01-04 16:58:52 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.9 2005-01-05 20:49:36 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -145,7 +145,10 @@ public class NodeListHelper implements ListProvider {
 
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return thisTag.getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector.getContextContainer();
+        return collector;
+    }
+    public PageContext getPageContext() throws JspTagException {
+        return thisTag.getPageContext();
     }
 
     public int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
@@ -254,9 +257,9 @@ public class NodeListHelper implements ListProvider {
         // clean vars which will be reset in doStartTag (so it is possible with tag reuse). These
         // can be gc-ed then.
         if (collector != null) {
-            collector.getContextContainer().release();
+            collector.release();
+            collector = null;
         }
-        collector = null;
         nodeIterator = null;
         returnList = null;
         previousValue = null;
