@@ -18,12 +18,12 @@ import java.util.*;
 
 /**
  * Queries a Tree from MMBase. A Tree is presented as a List of MultiLevel results (ClusterNodes),
- * combined with a smart iterator which iterates through the elements these lists as if it was one
+ * combined with a smart iterator which iterates through the elements of these lists as if it was one
  * list ordered as a Tree.
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.8 2004-06-17 11:35:50 johannes Exp $
+ * @version $Id: TreeList.java,v 1.9 2004-07-23 14:43:57 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -39,7 +39,8 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
     protected int topQuery = 0;
     protected int numberOfSteps;
-    private int size;
+    private   int size;
+    private boolean needsSizeCheck = false;
 
     protected boolean foundEnd = false;
 
@@ -66,7 +67,32 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
     // javadoc inherited
     public int size() {
+        sizeCheck();
         return size;
+    }
+
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    protected void sizeCheck() {
+        if (needsSizeCheck) {
+            int count;
+            List result = (List) results.get(topQuery);
+            if (result != null) {  // not quit sure that this can hapen
+                count = result.size();
+            } else {
+                Query newQuery = (Query) queries.get(topQuery);
+                newQuery.markUsed();
+                count = Queries.count(newQuery);
+            }
+
+            if (count == 0) {
+                foundEnd = true;
+            }
+            size += count;
+            needsSizeCheck = false;
+        }
     }
 
     /**
@@ -74,13 +100,16 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
      * relationStep longer than the longest one until now.
      * This new relationStep is returned, which can be used to create new constraints.
      *
-     * @return null if not relationstep is added because that would not increase the number of results.
+     * @return null if no relationstep is added because that would not increase the number of results.
      */
 
     public RelationStep grow(NodeManager nodeManager, String role, String searchDir) {
 
-        if (foundEnd)
+        sizeCheck();
+        if (foundEnd) {
             return null;
+        }
+        needsSizeCheck = true;
 
         NodeQuery lastQuery = (NodeQuery)queries.get(topQuery);
         NodeQuery newQuery = (NodeQuery)lastQuery.cloneWithoutFields();
@@ -104,23 +133,19 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         Iterator i = newQuery.getSteps().iterator();
         while (i.hasNext()) {
             Step s = (Step)i.next();
-            if (!i.hasNext())
+            if (!i.hasNext()) {
                 break; // skip the last step (already added as node-step)
+            }
             newQuery.addField(s, cloud.getNodeManager(s.getTableName()).getField("number"));
-            if (i.hasNext())
+            if (i.hasNext()) {
                 i.next(); // skip relation steps;
+            }
         }
 
         queries.add(newQuery);
         results.add(null); // determin when needed
         topQuery++;
 
-        // add the fields..
-        int count = Queries.count(newQuery);
-        if (count == 0) {
-            foundEnd = true;
-        }
-        size += count;
         return step;
 
     }
@@ -265,7 +290,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
         /**
          * Uses the new 'next' node of the iterator with the given index.
-         * This means that it become the previous node and that a new 'next' node will be determined
+         * This means that it becomes the previous node and that a new 'next' node will be determined
          */
         protected final void useNext(int index) {
             Node node = nextNodes.getNode(index);
@@ -321,7 +346,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
                if (! [|||] contained by [ * ]) current--
          </pre>
          
-         Everytime next is called, the last used node is compare with the next node of the
+         Everytime next is called, the last used node is compared with the next node of the
          next iterator (the arrow int the above scheme). If the last used node is 'contained' by
          this next node, then this next node of the next iterator will be 'next()' otherwise current
          is decreased by one and next is called recursively. This means that the next node is always
