@@ -9,11 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
  
-// import the needed packages
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+
+import org.mmbase.util.logging.*;
 
 /**
  * Performance Servlet is used for 2 reasons as a basic Servlet test to see if
@@ -21,6 +22,7 @@ import javax.servlet.http.*;
  * we are running on (very basic test).
  */
 public class performance extends JamesServlet {
+    static Logger log = Logging.getLoggerInstance(performance.class.getName());
 	
 	public void init() { }
 
@@ -50,10 +52,10 @@ public class performance extends JamesServlet {
 		out.println("intloop = "+time+"<BR>");
 		time=string();
 		out.println("stringloop = "+time+"<BR>");
-		System.out.println("Perftime = "+time);
 		out.println("methodloop = "+method()+"<BR>");
 		out.println("</BODY>");
 		out.println("</HTML>");
+		log.debug("performance servlet - Perftime = "+time);
 	}
 
 	 private long intloop() {
