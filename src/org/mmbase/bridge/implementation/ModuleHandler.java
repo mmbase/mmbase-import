@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.20 2003-03-04 13:44:36 nico Exp $
+ * @version $Id: ModuleHandler.java,v 1.21 2003-03-06 13:53:58 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -156,7 +156,7 @@ public class ModuleHandler implements Module, Comparable {
             } catch (Exception e) {
                 String message = e.getMessage() + " " + Logging.stackTrace(e);
                 log.error(message);
-                throw new BridgeException(message);
+                throw new BridgeException(message,e);
             }
         } else {
             throw new BridgeException("getList() is not supported by this module.");
