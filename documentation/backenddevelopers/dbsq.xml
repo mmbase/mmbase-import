@@ -7,7 +7,7 @@
 
     <date>5 December 2002</date>
 
-    <edition>$Id: dbsq.xml,v 1.8 2003-06-27 14:43:34 pierre Exp $</edition>
+    <edition>$Id: dbsq.xml,v 1.9 2003-06-30 11:17:38 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -33,7 +33,7 @@
   <section>
     <title>Background</title>
 
-    <para>The database search queries project was started to adress the
+    <para>The database search queries project was started to address the
     following needs:</para>
 
     <itemizedlist>
@@ -151,7 +151,7 @@
         </listitem>
 
         <listitem>
-          <para><classname>Step</classname>: a query step, generalizes the
+          <para><classname>Step</classname>: a query step, generalises the
           notion of a table</para>
         </listitem>
 
@@ -394,7 +394,7 @@ public interface SearchQueryHandler {
 </programlisting>
 
       <para>Method <methodname>getNodes()</methodname> executes the search,
-      and returns the result as a list of nodes of the type correspondig to
+      and returns the result as a list of nodes of the type corresponding to
       the specified builder. I.e. either real nodes (<classname>MMObjectNode</classname>
       instances), clusternodes (<classname>ClusterNode</classname> instances)
       or resultnodes (<classname>ResultNode</classname> instances). More on
@@ -422,7 +422,7 @@ public interface SearchQueryHandler {
     throws SearchQueryException;
 </programlisting>
 
-      <para>This method takes as argument one of these constaints:</para>
+      <para>This method takes as argument one of these constraints:</para>
 
       <programlisting>    public final static int FEATURE_MAX_NUMBER = 1;
     public final static int FEATURE_OFFSET = 2;
@@ -469,7 +469,7 @@ public interface SearchQueryHandler {
           <classname>ResultBuilder</classname> is specified.</para>
 
           <para>Resultnodes are able to represent the results of arbitrary
-          search queryies without the restrictions of real or clusternodes. In
+          search queries without the restrictions of real or clusternodes. In
           particular: field aliases can be used to rename the fields in the
           result, results can be grouped/aggregated, and aggregate functions
           like <command><methodname>COUNT</methodname></command>,
@@ -569,7 +569,7 @@ public interface SearchQueryHandler {
         FROM
             &#60;basename&#62;_pools pools,
             &#60;basename&#62;_insrel insrel,
-            &#60;baename&#62;_images images
+            &#60;basename&#62;_images images
         WHERE (pools.number = insrel.snumber
         AND images.number = insrel.dnumber)
 </screen>
@@ -615,7 +615,7 @@ public interface SearchQueryHandler {
         FROM
             &#60;basename&#62;_pools pools0,
             &#60;basename&#62;_insrel insrel,
-            &#60;baename&#62;_images images3
+            &#60;basename&#62;_images images3
         WHERE (pools0.number = insrel.snumber
         AND images3.number = insrel.dnumber)
 </programlisting></para>
@@ -739,17 +739,17 @@ import org.mmbase.storage.search.implementation.database.*;
  * Sample code demonstrating basic usage of the &#60;code&#62;SearchQuery&#60;/code&#62;
  * interfaces.
  * &#60;p&#62;
- * Requires the folowing builders to be active: &#60;code&#62;builders&#60;/code&#62; and
+ * Requires the following builders to be active: &#60;code&#62;builders&#60;/code&#62; and
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since MMBase-1.7
  */
 public class QuerySampleCode {
 
     /**
-     * Demo application, writes resulting SQL strings to Sytem.out.
+     * Demo application, writes resulting SQL strings to System.out.
      * &#60;br&#62;
      * Requires one commandline argument: the path to the MMBase config directory.
      * @param args Commandline arguments.
@@ -923,7 +923,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * &#60;code&#62;pools&#60;/code&#62;.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
@@ -1001,7 +1001,7 @@ public class QueryHandlerSampleCode {
         FROM
             &#60;basename&#62;_pools pools,
             &#60;basename&#62;_insrel insrel,
-            &#60;baename&#62;_images images
+            &#60;basename&#62;_images images
         WHERE (pools.number = insrel.snumber
         AND images.number = insrel.dnumber)
  */
@@ -1043,7 +1043,7 @@ public class QueryHandlerSampleCode {
         FROM
             &#60;basename&#62;_pools pools0,
             &#60;basename&#62;_insrel insrel,
-            &#60;baename&#62;_images images3
+            &#60;basename&#62;_images images3
         WHERE (pools0.number = insrel.snumber
         AND images3.number = insrel.dnumber)
  */
