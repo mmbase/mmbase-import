@@ -33,6 +33,7 @@ public class MMList extends MMTaglib
     private String directionString=null;
     private String distinctString=null;
     private String maxString=null;
+    private int    offset   =0;
 
     /**
      * used when nesting tags to make a differance between the variables
@@ -198,6 +199,13 @@ public class MMList extends MMTaglib
     public void setMax(String max){
 	this.maxString = max;
     }
+
+    /** 
+     * @param offset
+     **/
+    public void setOffset(int o) {
+	offset = o;
+    }
     
     /**
      *
@@ -231,21 +239,27 @@ public class MMList extends MMTaglib
 			//first hack, the MMCI does not provide a search on a node
 			//but this is what we need here, so we expand the query
 			//to resctrict the search on the node given
-			searchWhere = "(" + searchWhere +") and ( number = " + nodesString + " )";
+			searchWhere = "(" + searchWhere +") and ( number = " + getDefaultCloud().getNode(nodesString).getNumber() + " )";
 		    }
 		    action = "search relations with start node (" + nodesString + ") using a search";
+		    debug(action);
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
 //		    boolean direction = ("UP".equals(searchDirection))? true: false;
 //		    nodes= nodeManager.getList(searchWhere,null,direction);
 		    nodes= nodeManager.getList(searchWhere,searchSorted,searchDirection);
 		} else if (hasNode){
 		    action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
+		    debug(action);
+
 		    try {
-			    Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
-			    nodes= node.getRelatedNodes(typeString);
+			Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
+			nodes= node.getRelatedNodes(typeString);
+			// but now the sort-criteria are ignored!
+			
+			
 		    } catch(Exception e) {
 			Node node  = getDefaultCloud().getNodeByAlias(searchNodes);
-			System.out.println("NODES="+node.getRelatedNodes(typeString));
+			debug("NODES="+node.getRelatedNodes(typeString));
 			nodes= node.getRelatedNodes(typeString);
 		    }
 		} else { 
@@ -257,24 +271,32 @@ public class MMList extends MMTaglib
 		}
 	    }
 	} catch (NullPointerException npe){
-	    showListError(npe,nodesSearchString,nodeManagers,searchNodes,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct,maxString,action);
+	    showListError(npe, nodesSearchString, nodeManagers, searchNodes, searchFields, searchWhere, searchSorted,searchDirection,searchDistinct,maxString,action);
 	}
 	
 	
-	if (maxString != null){ // for the moment max can only be here because
+	if (maxString != null || offset > 0) { // for the moment max can only be here because
 				//there is no other way to tell the MMCI that a list sould be shorter
 	    try {
-		int max = Integer.parseInt(maxString);
-		if (max < nodes.size()){
-		    nodes=nodes.subNodeList(0,max);
-	 	    listSize = nodes.size();
-		    returnValues = nodes.nodeIterator();
-		}else {
-	 	    listSize = nodes.size();
-		    returnValues = nodes.nodeIterator();
-		}
+		int max = (maxString == null ? nodes.size() - 1 : Integer.parseInt(maxString));                
+                int to = max + offset;
+
+                listSize = nodes.size();
+                if (to >= listSize) {
+                    to = listSize - 1;
+                }
+                if (offset >= listSize) {
+                    offset = listSize - 1;
+                }
+                if (offset < 0) {
+                    offset = 0;
+                }
+                nodes=nodes.subNodeList(offset, to);
+
+                returnValues = nodes.nodeIterator();
 	    } catch (NumberFormatException e){
-		throw new JspException ("MAX Field in tag is no a number");
+		throw new JspException ("MAX Field in tag is not a number");
+                // isn't this a little ugly?
 	    }
 	} else {
 	    listSize = nodes.size();
