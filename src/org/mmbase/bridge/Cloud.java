@@ -19,7 +19,7 @@ import org.mmbase.storage.search.SearchQuery;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.38 2003-07-25 20:44:30 michiel Exp $
+ * @version $Id: Cloud.java,v 1.39 2003-07-29 15:05:48 michiel Exp $
  */
 public interface Cloud {
 
@@ -212,8 +212,22 @@ public interface Cloud {
      * @return                       the requested relation manager
      * @throws NotFoundException     if the specified relation manager could not be found
      */
-    public RelationManager getRelationManager(String sourceManagerName,
-            String destinationManagerName, String roleName) throws NotFoundException;
+    public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException;
+
+
+    /**
+     * Returns the specified relation manager.
+     *
+     * @param sourceManager          the node manager of the source node
+     * @param destinationManager     the node manager of the destination node
+     * @param roleName               name of the role
+     * @return                       the requested relation manager
+     * @throws NotFoundException     if the specified relation manager could not be found
+     * @since MMBase-1.7
+     */
+    public RelationManager getRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) throws NotFoundException;
+
+
 
     /**
      * Returns whether the specified relation manager exists.
@@ -224,6 +238,19 @@ public interface Cloud {
      * @return                       <code>true</code> if the specified relation manager could not be found
      */
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
+
+
+    /**
+     * Returns whether the specified relation manager exists.
+     *
+     * @param sourceManage          name of the node manager of the source node
+     * @param destinationManager    name of the node manager of the destination node
+     * @param roleName               name of the role
+     * @return                       <code>true</code> if the specified relation manager could not be found
+     * @since MMBase-1.7
+     */
+    public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName);
+
 
     /**
      * Returns the specified relation manager.
