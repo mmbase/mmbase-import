@@ -23,7 +23,7 @@
 <tr>
 
 		<th COLSPAN="8">
-		 MMBase Package Manager - version 0.72
+		 MMBase Package Manager - version 0.74 (1.8)
 		</th>
 </tr>
 </table>
