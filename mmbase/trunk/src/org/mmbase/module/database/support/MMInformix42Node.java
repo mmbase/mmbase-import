@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
 * @author Mark Huijser
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.31 $ $Date: 2001-04-19 15:04:27 $
+* @$Revision: 1.32 $ $Date: 2001-06-11 12:33:47 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -774,6 +774,84 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         * Method: commit
         *         commit this node to the database
         */
+	/* begin copy old method overiding new one, stolen from MMSQL92Node.java,v 1.50 2001/04/20 08:33:25, which has now mutliple table support */
+	public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
+		//  precommit call, needed to convert or add things before a save
+		bul.preCommit(node);
+		// commit the object
+		String values="";
+		String key;
+		// create the prepared statement
+		for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
+				key=(String)e.nextElement();
+				// a extra check should be added to filter temp values
+				// like properties
+				
+				// is this key disallowed ? ifso map it back
+				if (disallowed2allowed.containsKey(key)) {
+					key=(String)disallowed2allowed.get(key);
+				}
+
+				// check if its the first time for the ',';
+				if (values.equals("")) {
+					values+=" "+key+"=?";
+				} else {
+					values+=", "+key+"=?";
+				}
+		}
+
+		if (values.length()>0) {
+			values="update "+mmb.baseName+"_"+bul.tableName+" set"+values+" WHERE "+getNumberString()+"="+node.getValue("number");
+			try {
+				MultiConnection con=mmb.getConnection();
+				PreparedStatement stmt=con.prepareStatement(values);
+				int type;int i=1;
+				for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
+						key=(String)e.nextElement();
+						type=node.getDBType(key);
+						if (type==FieldDefs.TYPE_INTEGER) {
+							stmt.setInt(i,node.getIntValue(key));
+						} else if (type==FieldDefs.TYPE_FLOAT) {
+							stmt.setFloat(i,node.getFloatValue(key));
+						} else if (type==FieldDefs.TYPE_DOUBLE) {
+							stmt.setDouble(i,node.getDoubleValue(key));
+						} else if (type==FieldDefs.TYPE_LONG) {
+							stmt.setLong(i,node.getLongValue(key));
+						} else if (type==FieldDefs.TYPE_STRING) {
+							setDBText(i,stmt,node.getStringValue(key));
+						} else if (type==FieldDefs.TYPE_BYTE) {
+							setDBByte(i,stmt,node.getByteValue(key));
+						} else {
+							stmt.setString(i,node.getStringValue(key));
+						}
+						i++;
+				}
+				stmt.executeUpdate();
+				stmt.close();
+				con.close();
+			} catch (SQLException e) {
+		        log.error(Logging.stackTrace(e));
+				return(false);
+			}
+		}
+
+		node.clearChanged();
+		if (bul.broadcastChanges) {
+			if (bul instanceof InsRel) {
+				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+				// figure out tables to send the changed relations
+				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
+				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
+				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
+				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+			} else {
+				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+			}
+		}
+		return(true);
+	}
+	/* end copy old method overiding new one, stolen from MMSQL92Node.java,v 1.50 2001/04/20 08:33:25, which has now mutliple table support */	
+	
         /* removed to compile for new version, daniel
         public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
                 if (log.isDebugEnabled()) log.trace("Method: commit()");
