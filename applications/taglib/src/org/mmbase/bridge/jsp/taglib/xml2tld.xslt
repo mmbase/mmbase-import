@@ -15,39 +15,64 @@
 <xsl:comment> a tag library descriptor </xsl:comment>
 
 <taglib>
-<xsl:comment> after this the default space is
+  <xsl:comment> after this the default space is
 	"http://java.sun.com/j2ee/dtds/jsptaglibrary_1_2.dtd"
-</xsl:comment>
+  </xsl:comment>
 
-  <tlibversion><xsl:value-of select="tlibversion"/></tlibversion>
-  
-  <jspversion><xsl:value-of select="jspversion"/></jspversion>
-  
-  <shortname><xsl:value-of select="shortname"/></shortname>
-  <uri><xsl:value-of select="uri"/></uri>
-  <info><xsl:value-of select="info"/></info>
+  <xsl:if test="tlibversion">
+    <tlibversion><xsl:value-of select="tlibversion"/></tlibversion>
+  </xsl:if>
+  <xsl:if test="jspversion">
+    <jspversion><xsl:value-of select="jspversion"/></jspversion>
+  </xsl:if>
+  <xsl:if test="shortname">
+    <shortname><xsl:value-of select="shortname"/></shortname>
+  </xsl:if>
+  <xsl:if test="uri">
+    <uri><xsl:value-of select="uri"/></uri>
+  </xsl:if>
+  <xsl:if test="info">
+    <info><xsl:value-of select="info"/></info>
+  </xsl:if>
   <xsl:apply-templates select="tag"/>
+
 </taglib>
 </xsl:template>
 
 <xsl:template match="tag">
   <tag>
-    <name><xsl:value-of select="name"/></name>
-    <tagclass><xsl:value-of select="tagclass"/></tagclass>
-    <teiclass><xsl:value-of select="teiclass"/></teiclass>
-    <bodycontent><xsl:value-of select="bodycontent"/></bodycontent>
-    <info>
-	<xsl:value-of select="info"/>
-    </info>
-    <xsl:apply-templates select="attribute"/>
+     <xsl:if test="name">
+       <name><xsl:value-of select="name"/></name>
+     </xsl:if>
+     <xsl:if test="tagclass">
+       <tagclass><xsl:value-of select="tagclass"/></tagclass>
+     </xsl:if>
+     <xsl:if test="teiclass">
+        <teiclass><xsl:value-of select="teiclass"/></teiclass>
+     </xsl:if>
+     <xsl:if test="bodycontent">
+        <bodycontent><xsl:value-of select="bodycontent"/></bodycontent>
+     </xsl:if>
+     <xsl:if test="info">
+        <info>
+	  <xsl:value-of select="info"/>
+	</info>
+     </xsl:if>      
+     <xsl:apply-templates select="attribute"/>
   </tag>
 </xsl:template>
 
 <xsl:template match="attribute">
-    <attribute>
-      <name><xsl:value-of select="name"/></name>
-      <required><xsl:value-of select="required"/></required>
-      <rtexprvalue><xsl:value-of select="rtexprvalue"/></rtexprvalue>
+    <attribute>      
+      <xsl:if test="name">
+        <name><xsl:value-of select="name"/></name>
+      </xsl:if>
+      <xsl:if test="required">
+        <required><xsl:value-of select="required"/></required>
+      </xsl:if>
+      <xsl:if test="rtexprvalue">
+        <rtexprvalue><xsl:value-of select="rtexprvalue"/></rtexprvalue>
+      </xsl:if>
     </attribute>
 </xsl:template>
 
