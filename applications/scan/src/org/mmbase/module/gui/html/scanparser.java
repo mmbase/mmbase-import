@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Scanparser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.65 2003-07-03 13:15:11 pierre Exp $
+ * @version $Id: scanparser.java,v 1.66 2004-03-15 14:30:08 rob Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -590,11 +590,11 @@ public class scanparser extends ProcessorModule {
         part = part.trim();
         log.debug("Using part ["+part+"]");
         int i=part.indexOf(' ');
-        String params=null;
+        String params="";
         if (i!=-1) {
             params=part.substring(i+1);
         } else {
-            log.error("["+part +"] syntax wrong for COUNTER tag.");
+            log.debug("["+part +"] no arguments are given.");
         }
 
         result = counter.getTag(params, session, sp);
