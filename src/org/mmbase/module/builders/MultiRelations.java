@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: MultiRelations.java,v 1.2 2000-02-24 14:33:49 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.3 2000-03-08 14:16:46 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/02/24 14:33:49  wwwtech
+	Rico: changed out.println by debug
+	
 */
 package org.mmbase.module.builders;
 
@@ -26,7 +29,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.2 2000-02-24 14:33:49 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.3 2000-03-08 14:16:46 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -89,6 +92,12 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 		return(null);
 	}
+
+
+	/**
+	 * Old LIST MULTI stuff 
+	 */
+
 
 	String getSelectString(Vector fields,String a,String b,String c,String d,String e) {
 		String result="";
@@ -159,9 +168,42 @@ public class MultiRelations extends MMObjectBuilder {
 		return(result.toString());
 	}
 
+	Vector getFields(String a,String b,String c,String d,String e) {
+		Vector result=new Vector();
+		// map out a
+		MMObjectBuilder bul=mmb.getMMObject(a);
+		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
+			result.addElement(a+"."+(String)r.nextElement());
+		}
+		// map out b
+		bul=mmb.getMMObject(b);
+		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
+			result.addElement(b+"."+(String)r.nextElement());
+		}
+		// map out c
+		bul=mmb.getMMObject(c);
+		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
+			result.addElement(c+"."+(String)r.nextElement());
+		}
+		// map out d
+		bul=mmb.getMMObject(d);
+		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
+			result.addElement(d+"."+(String)r.nextElement());
+		}
+		// map out e
+		bul=mmb.getMMObject(e);
+		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
+			result.addElement(e+"."+(String)r.nextElement());
+		}
+		return(result);
+	}
 
-	// Is used by MultiLevel;
-	public Vector getSelectTypes(Vector rfields) {
+	/**
+	 * End of old stuff
+	 */
+
+
+	private Vector getSelectTypes(Vector rfields) {
 		Vector result=new Vector();
 		String val;
 		int pos;
@@ -201,41 +243,6 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 		return(null);
 	}
-
-
-
-	Vector getFields(String a,String b,String c,String d,String e) {
-		Vector result=new Vector();
-		// map out a
-		MMObjectBuilder bul=mmb.getMMObject(a);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(a+"."+(String)r.nextElement());
-		}
-		// map out b
-		bul=mmb.getMMObject(b);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(b+"."+(String)r.nextElement());
-		}
-		// map out c
-		bul=mmb.getMMObject(c);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(c+"."+(String)r.nextElement());
-		}
-		// map out d
-		bul=mmb.getMMObject(d);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(d+"."+(String)r.nextElement());
-		}
-		// map out e
-		bul=mmb.getMMObject(e);
-		for (Enumeration r=bul.getFieldNames().elements();r.hasMoreElements();) {
-			result.addElement(e+"."+(String)r.nextElement());
-		}
-		return(result);
-	}
-
-
-	// NEW multi level search code RICO
 
 	/**
 	* Enumerate all the objects that match the searchkeys
@@ -356,7 +363,7 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 	}
 
-	public Vector getAllTables(Vector tables) {
+	private Vector getAllTables(Vector tables) {
 		Vector alltables=new Vector();
 		boolean lastrel=false,isRel;
 		boolean first=true;
@@ -422,7 +429,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(str);
 	}
 
-	public Vector getFields(Vector tables) {
+	private Vector getFields(Vector tables) {
 		Vector v=new Vector();
 		for (Enumeration e=tables.elements();e.hasMoreElements();) {
 			getFields(v,Strip.DoubleQuote((String)e.nextElement(),Strip.BOTH));
@@ -430,12 +437,12 @@ public class MultiRelations extends MMObjectBuilder {
 		return(v);
 	}
 
-	public Vector getFields(String table) {
+	private Vector getFields(String table) {
 		Vector result=new Vector();
 		return(getFields(result,table));
 	}
 
-	Vector getFields(Vector v,String table) {
+	private Vector getFields(Vector v,String table) {
 		if (v==null) v=new Vector();
 
 		MMObjectBuilder bul=mmb.getMMObject(table);
@@ -445,7 +452,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(v);
 	}
 
-	String getSelectString(Vector alltables,Vector rfields) {
+	private String getSelectString(Vector alltables,Vector rfields) {
 		String result="";
 		String val,table,field;
 		int pos,idx,x,y;
@@ -479,7 +486,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(result);
 	}
 
-	String getOrderString(Vector alltables,Vector orders,Vector direction) {
+	private String getOrderString(Vector alltables,Vector orders,Vector direction) {
 		StringBuffer result=new StringBuffer();
 		String val,table,field,dir;
 		int pos,idx,opos;
@@ -522,8 +529,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(result.toString());
 	}
 
-	// Adapt for numbers
-	String getWhereConvert(Vector alltables,String where,Vector tables) {
+	private String getWhereConvert(Vector alltables,String where,Vector tables) {
 		StringObject result=new StringObject(where);
 		String atable,table;
 		int i=0,x,y,idx;
@@ -550,12 +556,17 @@ public class MultiRelations extends MMObjectBuilder {
 			}
 			// not 100% safe
 			if (idx<0) idx=0;
-			result.replace(atable+".",""+idx2char(idx)+".");
+			result.replace(" "+atable+"."," "+idx2char(idx)+".");
+			result.replace("="+atable+".","="+idx2char(idx)+".");
+			result.replace("<"+atable+".","<"+idx2char(idx)+".");
+			result.replace(">"+atable+".",">"+idx2char(idx)+".");
+			result.replace("-"+atable+".","-"+idx2char(idx)+".");
+			result.replace("+"+atable+".","+"+idx2char(idx)+".");
 		}
 		return(result.toString());
 	}
 
-	String getTableString(Vector alltables) {
+	private String getTableString(Vector alltables) {
 		StringBuffer result=new StringBuffer("");
 		String val;
 		int idx=0;
@@ -570,7 +581,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(result.toString());
 	}
 
-	public String getRelationString(Vector alltables) {
+	private String getRelationString(Vector alltables) {
 		StringBuffer result=new StringBuffer("");
 		int siz;
 		String src,rel,dst;
@@ -603,7 +614,7 @@ public class MultiRelations extends MMObjectBuilder {
 		return(result.toString());
 	}
 
-	public String idx2char(int idx) {
+	private String idx2char(int idx) {
 		return(""+new Character((char)('a'+idx)));
 	}
 
