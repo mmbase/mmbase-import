@@ -12,6 +12,7 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.module.core.*;
 
+import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -41,12 +42,12 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.31 2003-11-10 21:20:07 michiel Exp $
+ * @version $Id: RelDef.java,v 1.32 2004-01-13 19:27:07 michiel Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(RelDef.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(RelDef.class);
 
     /** Value of "dir" field indicating unidirectional relations. */
     public final static int DIR_UNIDIRECTIONAL = 1;
@@ -61,10 +62,10 @@ public class RelDef extends MMObjectBuilder {
     public static boolean usesbuilder = false;
 
     // cache of relation definitions
-    private Hashtable relCache = new Hashtable();
+    private Map relCache = new HashMap();
 
     // cache of valid relationbuilders
-    private Hashtable relBuilderCache=null;
+    private  Map relBuilderCache = null;
 
     /**
      *  Contruct the builder
@@ -79,7 +80,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public boolean init() {
        super.init();
-       usesbuilder = getField("builder")!=null;
+       usesbuilder = getField("builder") != null;
        return readCache();
     }
 
@@ -115,10 +116,14 @@ public class RelDef extends MMObjectBuilder {
         // add insrel (default behavior)
         relCache.put("insrel", new Integer(-1));
         // add relation definiation names
-        for (Enumeration e = search(null); e.hasMoreElements();) {
-            MMObjectNode n= (MMObjectNode)e.nextElement();
-            addToCache(n);
-         }
+        try {
+            for (Iterator i = getNodes(new NodeSearchQuery(this)).iterator(); i.hasNext();) {
+                MMObjectNode n = (MMObjectNode) i.next();
+                addToCache(n);
+            }
+        } catch (org.mmbase.storage.search.SearchQueryException sqe) {
+            log.error("Error while reading reldef cache" + sqe.getMessage());
+        }
         return true;
     }
 
@@ -348,16 +353,16 @@ public class RelDef extends MMObjectBuilder {
     }
 
     // Retrieves the relationbuildercache (initializes a new cache if the old one is empty)
-    private Hashtable getRelBuilderCache() {
+    private Map getRelBuilderCache() {
         // first make sure the buildercache is loaded
-        if (relBuilderCache==null) {
-            relBuilderCache=new Hashtable();
+        if (relBuilderCache == null) {
+            relBuilderCache = new HashMap();
             // add all builders that descend from InsRel
             Enumeration buls = mmb.mmobjs.elements();
             while (buls.hasMoreElements()) {
-                MMObjectBuilder fbul=(MMObjectBuilder)buls.nextElement();
+                MMObjectBuilder fbul = (MMObjectBuilder)buls.nextElement();
                 if (fbul instanceof InsRel) {
-                    relBuilderCache.put(new Integer(fbul.oType),fbul);
+                    relBuilderCache.put(new Integer(fbul.oType), fbul);
                 }
             }
         }
@@ -372,17 +377,17 @@ public class RelDef extends MMObjectBuilder {
 
     public boolean isRelationBuilder(int number) {
         Object ob;
-        ob=getRelBuilderCache().get(new Integer(number));
-        return ob!=null;
+        ob = getRelBuilderCache().get(new Integer(number));
+        return ob != null;
     }
 
     /**
      * Returns a list of builders currently implementing a relation node.
-     * @return an <code>Iteration</code> containing the builders (as otype)
+     * @return an <code>Enumeration</code> containing the builders (as otype)
      */
 
     public Enumeration getRelationBuilders() {
-        return getRelBuilderCache().elements();
+        return Collections.enumeration(getRelBuilderCache().values());
     }
 
     /**
