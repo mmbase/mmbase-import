@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class FunctionSetCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(FunctionSetCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(FunctionSetCreator.class);
 
 
     public static final String DTD_PACKAGING_FUNCTION_SET_1_0 = "packaging_function_set_1_0.dtd";

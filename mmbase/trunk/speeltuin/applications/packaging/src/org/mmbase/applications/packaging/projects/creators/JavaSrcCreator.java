@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class JavaSrcCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(JavaSrcCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(JavaSrcCreator.class);
 
 
     public static final String DTD_PACKAGING_JAVA_SRC_1_0 = "packaging_java_src_1_0.dtd";
@@ -133,8 +133,8 @@ public class JavaSrcCreator extends BasicCreator implements CreatorInterface {
   }
 
    public void setDefaults(Target target) {
-        target.setItem("basedir","build/");
-        target.setItem("include","java");
+        target.setItem("basedir","src/");
+        target.setItem("include","*");
         target.setItem("exclude","CVS");
    }
 

@@ -43,7 +43,7 @@ public class ShareServlet extends BridgeServlet {
 
     public void init() throws ServletException {
         super.init();
-        log = Logging.getLoggerInstance(ShareServlet.class.getName());
+        log = Logging.getLoggerInstance(ShareServlet.class);
 	packagepath=getInitParameter("packagepath");
     }
 

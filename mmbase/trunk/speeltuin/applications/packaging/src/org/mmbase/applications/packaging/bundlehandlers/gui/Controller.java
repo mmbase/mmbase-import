@@ -35,7 +35,7 @@ import org.mmbase.module.core.*;
  */
 public class Controller {
 
-	private static Logger log = Logging.getLoggerInstance(Controller.class.getName());
+	private static Logger log = Logging.getLoggerInstance(Controller.class);
 	private static Cloud cloud;
        	NodeManager manager;
 	CloudContext context;

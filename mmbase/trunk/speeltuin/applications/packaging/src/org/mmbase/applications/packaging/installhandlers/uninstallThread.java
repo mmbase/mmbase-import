@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
 public class uninstallThread implements Runnable {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(uninstallThread.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(uninstallThread.class); 
 
     // Thread
     Thread kicker = null;

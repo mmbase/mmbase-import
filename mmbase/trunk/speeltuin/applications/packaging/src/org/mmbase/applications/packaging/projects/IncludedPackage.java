@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
 public class IncludedPackage {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(IncludedPackage.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(IncludedPackage.class); 
 
    String name;
    String type;

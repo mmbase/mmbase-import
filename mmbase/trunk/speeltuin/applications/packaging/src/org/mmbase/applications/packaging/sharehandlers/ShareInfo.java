@@ -37,7 +37,7 @@ public class ShareInfo {
     private Hashtable groups =  new Hashtable();
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(ShareInfo.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ShareInfo.class); 
 
    public ShareInfo() {
    }

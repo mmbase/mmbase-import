@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
 public class ShareUser {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(ShareUser.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ShareUser.class); 
 
    private String name;
    private String password;

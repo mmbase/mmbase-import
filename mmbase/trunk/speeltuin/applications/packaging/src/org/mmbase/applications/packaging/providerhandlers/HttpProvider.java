@@ -34,7 +34,7 @@ import org.xml.sax.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class HttpProvider extends BasicProvider implements ProviderInterface,Runnable {
-    private static Logger log = Logging.getLoggerInstance(HttpProvider.class.getName());
+    private static Logger log = Logging.getLoggerInstance(HttpProvider.class);
     
     private String name;
     private String method;

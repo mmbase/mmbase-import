@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class UninstallManager {
-    private static Logger log = Logging.getLoggerInstance(UninstallManager.class.getName());
+    private static Logger log = Logging.getLoggerInstance(UninstallManager.class);
 
     // is the uninstall manager active (for dependencies reasons)
     private static boolean active=false;

@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class DisplayThemeCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(DisplayThemeCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DisplayThemeCreator.class);
 
 
     public static final String DTD_PACKAGING_DISPLAY_THEME_1_0 = "packaging_display_theme_1_0.dtd";

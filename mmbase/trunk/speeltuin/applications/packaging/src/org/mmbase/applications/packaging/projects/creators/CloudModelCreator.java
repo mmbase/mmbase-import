@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 public class CloudModelCreator extends BasicCreator implements CreatorInterface {
 
 
-    private static Logger log = Logging.getLoggerInstance(CloudModelCreator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(CloudModelCreator.class);
 
 
     public static final String DTD_PACKAGING_CLOUD_MODEL_1_0 = "packaging_cloud_model_1_0.dtd";
