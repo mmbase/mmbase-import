@@ -3,6 +3,7 @@
 	version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+ <xsl:output method="xml" omit-xml-declaration="yes"  />
 <!-- main entry point -->
 <xsl:template match="taglib">
   <html>
@@ -21,7 +22,7 @@
         </tr>
         <tr>
           <td></td>
-          <td><xsl:value-of select="info"/></td>
+          <td><xsl:apply-templates select="info"/></td>
           <td></td>
         </tr>
         <tr>
@@ -97,7 +98,7 @@
       <td colspan="2">
         <b>&lt;<xsl:value-of select="name"/>&gt;</b>
         <p>
-        <xsl:value-of select="info"/>
+        <xsl:apply-templates select="info"/>
         </p>
       </td>
     </tr>
@@ -114,7 +115,7 @@
         <td width="100" valign="top">body</td>
         <td>
           <xsl:value-of select="bodycontent"/>
-          <br/>
+          <br />
           <xsl:apply-templates select="bodycontentinfo"/>
         </td>
       </tr>
@@ -152,14 +153,9 @@
         </xsl:choose>
       </xsl:otherwise>      
     </xsl:choose>
-    <xsl:choose>
-    <xsl:when test="refercontext='true'">
-      (can refer to context)
-    </xsl:when>
-    </xsl:choose>
-    <br/>
+    <br />
     <xsl:if test="info">
-      <xsl:value-of select="info"/>
+      <xsl:apply-templates select="info"/>
     </xsl:if>
     <xsl:if test="possiblevalue">
       <table bgcolor="#99ccff">
@@ -177,15 +173,25 @@
 <xsl:template match="possiblevalue">
   <tr>
     <td valign="top"><b><xsl:value-of select="value"/></b></td>
-    <td valign="top"><xsl:value-of select="info"/></td>
+    <td valign="top"><xsl:apply-templates select="info"/></td>
   </tr>
 </xsl:template>
 
 <xsl:template match="examplevalue">
   <tr>
     <td valign="top"><b><xsl:value-of select="value"/></b></td>
-    <td valign="top"><xsl:value-of select="info"/></td>
+    <td valign="top"><xsl:apply-templates select="info"/></td>
   </tr>
+</xsl:template>
+
+<xsl:template match="info">
+  <xsl:apply-templates select="p|text()" />  
+</xsl:template>
+<xsl:template match="p">
+  <xsl:copy-of select="." />
+</xsl:template>
+<xsl:template match="text()">
+  <xsl:copy-of select="." />
 </xsl:template>
 
 </xsl:stylesheet>
