@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder maintainer="mmbase.org" version="0">
+<builder maintainer="mmbase.org" version="0" extends="object">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
