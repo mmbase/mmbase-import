@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Casting;
 
 
 /**
@@ -41,7 +42,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.14 2004-01-08 15:20:26 pierre Exp $
+ * @version $Id: ClusterNode.java,v 1.15 2004-06-18 12:36:54 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -247,11 +248,8 @@ public class ClusterNode extends VirtualNode {
     public String getStringValue(String fieldName) {
 
         // try to get the value from the values table
-        String tmp = "";
-        Object o = getValue(fieldName);
-        if (o != null) {
-            tmp = "" + o;
-        }
+        String tmp =  Casting.toString(getValue(fieldName));
+
         // check if the object is shorted
         if (tmp.indexOf("$SHORTED")==0) {
             log.debug("getStringValue(): node=" + this + " -- fieldName " + fieldName);
