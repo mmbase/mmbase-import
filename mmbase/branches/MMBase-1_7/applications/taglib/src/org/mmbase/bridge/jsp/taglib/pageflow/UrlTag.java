@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.62.2.3 2004-07-05 17:20:03 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.62.2.4 2005-03-14 18:02:44 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -144,11 +144,11 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         } else {
             show.append(getPage());
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-            if (show.toString().equals("")) {
-                
+            if (show.toString().equals("")) {                
                 String thisPage = null;
                 String requestURI = req.getRequestURI();
-                if (requestURI.endsWith("/")) {
+
+                if (requestURI.endsWith("/")) { // request looks like a directory
                     thisPage = ".";
                 } else {
                     thisPage = new File(requestURI).getName();
@@ -160,7 +160,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             if (doMakeRelative()) { 
                 makeRelative(show);
             } else {
-                if (show.charAt(0) == '/') { // absolute on servletcontex
+                if (show.charAt(0) == '/') { // absolute on servletcontext
                     show.insert(0, req.getContextPath());
                 }
             }
@@ -188,7 +188,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             connector = amp;
         }
         if (encode) {
-            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse) pageContext.getResponse();
             return response.encodeURL(show.toString());
         } else {
             return show.toString();
