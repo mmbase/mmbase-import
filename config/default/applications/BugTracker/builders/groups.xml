@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder maintainer="mmbase.org" version="0" extends="object">
-<!-- @version $Id: groups.xml,v 1.4 2002-06-20 07:12:28 pierre Exp $ -->
+<!-- @version $Id: groups.xml,v 1.5 2002-06-20 09:18:40 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
-<status>inactive</status>
+<status>active</status>
 
 <searchage>90</searchage>
 
