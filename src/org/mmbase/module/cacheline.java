@@ -37,7 +37,8 @@ public class cacheline {
 	public String toString()
 	{
 		// String result = "";
-		return mimetype+","+lastmod+","+filesize+","+buffer.length+", "+buffer.toString();
+		String s = new String(buffer);
+		return mimetype+","+lastmod+","+filesize+","+buffer.length+", "+s;
 	}
 }
 
