@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.5 2002-11-12 22:36:58 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.6 2003-02-28 08:45:00 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -33,6 +33,7 @@
   <property name="sourcepackage.path" value="${destination.dir}/mmbase-src.zip"/>
   <property name="libpackage.path"    value="${destination.dir}/mmbase-lib.zip"/>
   <property name="jarpackage.path"    value="${destination.dir}/mmbase.jar"/>
+  <property name="rmmcipackage.path"    value="${destination.dir}/rmmci.jar"/>
   <property name="warpackage.file"    value="${destination.dir}/mmbase.war"/>
   <property name="minwarpackage.file" value="${destination.dir}/minimalistic-mmbase.war"/>
 
@@ -143,6 +144,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <target name="storebuild" depends="build.jar">
 
     <copy file="${mmbase.release.lib.dir}/mmbase.jar" tofile="${jarpackage.path}"/>
+    <copy file="${mmbase.release.lib.dir}/rmmci.jar"  tofile="${rmmcipackage.path}"/>
 
     <!-- the libs we used -->
     <zip zipfile="${libpackage.path}" basedir="${mmbase.compile.lib.dir}">
@@ -159,13 +161,13 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     -->
     <copy todir="${destination.dir}">
     	<fileset dir="${build.dir}">
-	  <include name="**/*.zip"/>	  
-        </fileset>
+        <include name="**/*.zip"/>	  
+      </fileset>
     </copy>
 
     <!-- mmdocs -->
     <copy todir="${destination.dir}/mmdocs">
-	<fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs" />
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp/mmdocs" />
     </copy>
   </target>       
   
