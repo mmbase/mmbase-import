@@ -7,6 +7,7 @@
     <singular xml:lang="en">Bug Report</singular>
     <plural xml:lang="nl">Bugrapporten</plural>
     <plural xml:lang="en">Bug Reports</plural>
+  </names>
   <descriptions>
     <description xml:lang="nl">Bug tracking systeem</description>
     <description xml:lang="en">Bug tracking system</description>
@@ -32,7 +33,6 @@
       <gui>
         <guiname xml:lang="nl">Versie</guiname>
         <guiname xml:lang="en">Version</guiname>
-        <guiname xml:lang="us">Version</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
