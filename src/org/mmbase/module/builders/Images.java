@@ -29,14 +29,17 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.63 2002-10-25 18:48:15 michiel Exp $
+ * @version $Id: Images.java,v 1.64 2002-11-01 13:51:10 pierre Exp $
  */
 public class Images extends AbstractImages {
+
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
+
+    protected String defaultImageType = "jpg";
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
-    private org.mmbase.cache.Cache templateCacheNumberCache = new org.mmbase.cache.Cache(500) {  
+    private org.mmbase.cache.Cache templateCacheNumberCache = new org.mmbase.cache.Cache(500) {
         public String getName()        { return "CkeyNumberCache"; }
         public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
         };
@@ -76,6 +79,10 @@ public class Images extends AbstractImages {
             catch (NumberFormatException e) {
                 itmp=2;
             } MaxConcurrentRequests=itmp;
+        }
+        tmp = getInitParameter("DefaultImageType");
+        if (tmp!=null) {
+            defaultImageType = tmp;
         }
 
         imageconvert=loadImageConverter(ImageConvertClass);
@@ -130,7 +137,7 @@ public class Images extends AbstractImages {
             return "...";
         }
         // NOTE that this has to be configurable instead of static like this
-        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");       
+        String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
         List args = new Vector();
         args.add("s(100x60)");
         String imageThumb = servlet + executeFunction(node, "cache", args);
@@ -189,9 +196,9 @@ public class Images extends AbstractImages {
     }
 
     /**
-     * Will return "jpg" as default type, or one of the strings in params, must contain the following "f(type)" where type will be returned
+    * Will return {@link #defaultImageType} as default type, or one of the strings in params, must contain the following "f(type)" where type will be returned
      * @param params a <code>List</code> of <code>String</code>s, which could contain the "f(type)" string
-     * @return "jpg" by default, or the first occurence of "f(type)"
+     * @return {@link #defaultImageType} by default, or the first occurence of "f(type)"
      *
      *
      */
@@ -216,7 +223,7 @@ public class Images extends AbstractImages {
                 }
             }
         }
-        if (format==null) format="jpg";
+        if (format==null) format=defaultImageType;
         String mimetype=mmb.getMimeType(format);
         log.debug("getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
         return mimetype;
@@ -225,19 +232,20 @@ public class Images extends AbstractImages {
 
     /**
      * Returns the image format.
-     *
+     * If the node is not an icache node, but e.g. an images node, then
+     * it will return either the node's 'itype' field, or
+     * (if that field is empty) the default image format, which is {@link #defaultImageType}.
      * @since MMBase-1.6
      */
     protected String getImageFormat(MMObjectNode node) {
         String format = node.getStringValue("itype");
-        if (format == null || format.equals("")) format = "jpg";
+        if (format == null || format.equals("")) format = defaultImageType;
         return format;
     }
 
 
     /**
      * Explicity cache this image with the given template and return the cached node number.
-     *
      * Called by the cache() function.
      *
      * @since MMBase-1.6
@@ -530,16 +538,57 @@ public class Images extends AbstractImages {
     }
 
     /**
+     * Determines the image type of an object and stores the content in the itype field.
+     * @param owner The administrator creating the node
+     * @param node The object to change
+     */
+    protected void determineImageType(MMObjectNode node) {
+        String itype="";
+        try {
+            MagicFile magicFile = MagicFile.getInstance();
+            String mimetype=magicFile.getMimeType(node.getByteValue("handle"));
+            if (!mimetype.equals(MagicFile.FAILED)) {
+                // determine itype
+                if (mimetype.startsWith("image/")) {
+                    itype=mimetype.substring(6);
+                    log.info("set itype to "+itype);
+                } else {
+                    log.warn("Mimetype "+mimetype+" is not an image type");
+                }
+            } else {
+                log.warn(MagicFile.FAILED);
+            }
+        } catch (Exception e) {
+            log.warn("Error while determining image mimetype : "+Logging.stackTrace(e));
+        }
+        node.setValue("itype",itype);
+    }
+
+    /**
+     * Insert a new object (content provided) in the cloud.
+     * This method attempts to determine the image type of the object.
+     * @param owner The administrator creating the node
+     * @param node The object to insert. The object need be of the same type as the current builder.
+     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
+     */
+    public int insert(String owner, MMObjectNode node) {
+        determineImageType(node);
+        return super.insert(owner, node);
+    }
+
+    /**
      * Override the MMObjectBuilder commit, to invalidate the Image Cache AFTER a modifation to the
      * image node.
-     * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
-     * Use only to commit changes - for adding node, use {@link #insert}.
+     * This method attempts to determine the image type of the object.
      * @param node The node to be committed
      * @return The committed node.
      */
     public boolean commit(MMObjectNode node) {
         // look if we need to invalidate the image cache...
         boolean imageCacheInvalid = node.getChanged().contains("handle");
+        if(imageCacheInvalid) {
+            determineImageType(node);
+        }
         // do the commit
         if(super.commit(node)) {
             // when cache is invalide, invalidate

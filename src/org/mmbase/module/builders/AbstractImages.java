@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.14 2002-10-25 18:48:14 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.15 2002-11-01 13:51:10 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -60,15 +60,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
 
     /**
      * Returns the format of the image. Like 'jpg' or 'gif'.
-     */ 
+     */
     abstract protected String getImageFormat(MMObjectNode node);
 
     /**
-     * Determine the MIME type of this image node. If the node is not
-     * an icache node, but e.g. an images node, then it will return
-     * the default mime format, which is 'jpg'. This should be done
-     * better, since there is a field itype in the images table.
-     *
+     * Determine the MIME type of this image node, based on the image format.
      */
     public String getImageMimeType(MMObjectNode node) {
         return mmb.getMimeType(getImageFormat(node));
