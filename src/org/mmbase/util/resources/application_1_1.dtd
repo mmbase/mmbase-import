@@ -11,6 +11,9 @@
 <!ELEMENT requirements (requires*)>
 <!ELEMENT requires (#PCDATA)>
 <!ATTLIST requires name CDATA #REQUIRED>
+<!ATTLIST requires maintainer CDATA #IMPLIED>
+<!ATTLIST requires version CDATA #IMPLIED>
+<!ATTLIST requires type CDATA #IMPLIED>
 
 <!ELEMENT neededbuilderlist (builder*)>
 <!ELEMENT builder (#PCDATA)>
