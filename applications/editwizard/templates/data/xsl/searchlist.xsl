@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.8 2002-05-28 14:02:06 pierre Exp $
+  @version $Id: searchlist.xsl,v 1.9 2002-07-05 11:57:30 michiel Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -219,7 +219,7 @@
   </xsl:template>
 
   <xsl:template match="field">
-    <xsl:value-of select="." /><xsl:text> </xsl:text>
+    <xsl:value-of select="." disable-output-escaping="yes" /><xsl:text> </xsl:text>
   </xsl:template>
 
 
