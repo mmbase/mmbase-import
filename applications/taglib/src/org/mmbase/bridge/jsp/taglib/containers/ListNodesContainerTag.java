@@ -23,16 +23,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.3 2003-07-26 14:50:48 pierre Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.4 2003-07-29 17:08:09 michiel Exp $
  */
 public class ListNodesContainerTag extends CloudReferrerTag implements NodeListContainer {
 
 
     private static Logger log = Logging.getLoggerInstance(ListNodesContainerTag.class);
 
-    private NodeList   result    = null;
     private NodeQuery   query     = null;
-
     private Attribute nodeManager = Attribute.NULL;
 
 
@@ -45,22 +43,6 @@ public class ListNodesContainerTag extends CloudReferrerTag implements NodeListC
         return query;
     }
 
-
-    // javadoc inherited (from NodeListContainer)
-    public void   setResult(NodeList result) throws JspTagException {
-        if (result != null) {
-            throw new JspTagException("Result was set already");
-        }
-        this.result = result;
-    }
-
-
-    public NodeList  getResult() throws JspTagException {
-        if (result == null) {
-            throw new JspTagException("No result available yet");
-        }
-        return result;
-    }
 
 
     public int doStartTag() throws JspTagException {        
