@@ -26,12 +26,12 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.15 $ $Date: 2000-07-20 08:13:30 $
+* @$Revision: 1.16 $ $Date: 2000-08-10 14:14:50 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = false;
+	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +": "+ msg ); }
 
 	private int currentdbkey=-1;
@@ -191,7 +191,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	*         @param node The current node that's to be inserted.
 	*         @return The DBKey number for this node, or -1 if an error occurs.
 	*/
-	/* removed to compile by overriding for new version, daniel
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
 		if (debug) debug("Method: insert()");
 	
@@ -297,45 +296,41 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		if (debug) debug("INSERTED="+node);
 		return(number);
 	}
-	*/
 
 	/**
 	* Method : setValuePreparedStatement
 	*          set prepared statement field i with value of key from node
 	*/
-	/* removed by overriding for new version, Daniel
 	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
 		if (debug) debug("Method: setValuePreparedStatement()");
 
-		// Get the mmbase type for this field
-		String type = node.getDBType(key);
-		
-		if (type.equals("int") || type.equals("integer")) {
-		        if (debug) debug("preparing int/integer value: "+node.getIntValue(key));
-			stmt.setInt(i, node.getIntValue(key));
-		} else if (type.equals("text") || type.equals("clob") || type.equals("varchar")) {
-			String tmp=node.getStringValue(key);
-			if (debug) debug("preparing text/clob/varchar value: "+tmp);
-			if (tmp!=null) {
+		int type = node.getDBType(key);
+                if (type==FieldDefs.TYPE_INTEGER) {
+                        stmt.setInt(i, node.getIntValue(key));
+                } else if (type==FieldDefs.TYPE_FLOAT) {
+                        stmt.setFloat(i, node.getFloatValue(key));
+                } else if (type==FieldDefs.TYPE_DOUBLE) {
+                        stmt.setDouble(i, node.getDoubleValue(key));
+                } else if (type==FieldDefs.TYPE_LONG) {
+                        stmt.setLong(i, node.getLongValue(key));
+                } else if (type==FieldDefs.TYPE_TEXT) {
+                        String tmp=node.getStringValue(key);
+                        if (tmp!=null) {
 				setDBText(i, stmt,tmp);
-			} else {
-				setDBText(i, stmt,"");
-			}
-		} else if (type.equals("byte")) {
-			if (debug) debug("preparing byte value: "+node.getByteValue(key));		
-			setDBByte(i, stmt, node.getByteValue(key));
-		} else {
-			String tmp=node.getStringValue(key);
-			if (debug) debug("preparing some  other type value, and using setString to get this thing into the database.");
-			
-			if (tmp!=null) {
-				stmt.setString(i, tmp);
-			} else {
-				stmt.setString(i, "");
-			}
-		}
-	}
-	*/
+                        } else {
+                                setDBText(i, stmt,"");
+                        }
+                } else if (type==FieldDefs.TYPE_BYTE) {
+                                setDBByte(i, stmt, node.getByteValue(key));
+                } else {
+                        String tmp=node.getStringValue(key);
+                        if (tmp!=null) {
+                                stmt.setString(i, tmp);
+                        } else {
+                                stmt.setString(i, "");
+                        }
+                }
+        }
 
 	/*
 	* Method: decodeDBnodeField
@@ -771,6 +766,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* Method: getDBKey()
 	*
 	*/
+	/*
         public synchronized int getDBKey() {
 		if (debug) debug("Method: getDBKey()");
                 // get a new key
@@ -808,9 +804,10 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 currentdbkey=number; // zeg 10
                 currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
                 if (debug) debug("getDBKey(): got key("+currentdbkey+")");
+		System.out.println("DBKEY="+number);
                 return(number);
         }
-
+	*/
 	/*
 	* Method: getAllNames()
 	*
