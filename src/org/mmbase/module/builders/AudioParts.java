@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.23 2001-06-05 15:32:13 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.24 2001-06-13 11:53:27 vpro Exp $
  * 
  */
 public class AudioParts extends MediaParts {
@@ -187,7 +187,8 @@ public class AudioParts extends MediaParts {
 		return(rtn);
 	}
 
-	private String getAudioSourceString(int source) {
+	protected String getAudioSourceString(int source) {
+		log.debug("Getting audio source from ORG, source:"+source);
 		String rtn="";
 
 		switch(source) {
