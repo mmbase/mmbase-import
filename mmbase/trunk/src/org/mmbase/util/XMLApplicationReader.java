@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.19 2003-04-10 13:51:37 pierre Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.20 2004-05-06 12:34:32 keesj Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
 
@@ -45,7 +45,8 @@ public class XMLApplicationReader extends XMLBasicReader {
 
     /**
      * Register the Public Ids for DTDs used by XMLApplicationReader
-     * This method is called by XMLEntityResolver.
+     * This method is called by XMLEntityResolve
+     * @since MMBase-1.7
      */
     public static void registerPublicIDs() {
         // various builder dtd versions
@@ -102,6 +103,7 @@ public class XMLApplicationReader extends XMLBasicReader {
 
     /**
      * Get the applicationlist required by this application
+     * @since MMBase-1.7
      */
     public List getRequirements() {
         List results=new Vector();

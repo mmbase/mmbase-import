@@ -23,6 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris
  * @see org.mmbase.util.XMLContextDepthWriterII
+ * @since MMBase-1.7
  */
 public class XMLFullBackupWriter extends XMLContextDepthWriterII {
 

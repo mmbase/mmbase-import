@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 * This is a flexible Properties version, it can handle saving of Properties with
 * the comments that will stay in your file.   
 * @author Jan van Oosterom
-* @version $Id: XMLProperties.java,v 1.5 2003-07-07 13:35:21 keesj Exp $
+* @version $Id: XMLProperties.java,v 1.6 2004-05-06 12:34:31 keesj Exp $
 */
 public class XMLProperties extends Properties implements ContentHandler {
     private static Logger log = Logging.getLoggerInstance(XMLProperties.class);
@@ -162,6 +162,7 @@ public class XMLProperties extends Properties implements ContentHandler {
      * @param path Full path to XML file
      *
      * @return Hashtable with the key/value pairs or an empty Hashtable if something went wrong.
+     * @since MMBase-1.7
      */
     public static XMLProperties getPropertiesFromXML(String file) {
         XMLProperties xmlProperties = new XMLProperties();

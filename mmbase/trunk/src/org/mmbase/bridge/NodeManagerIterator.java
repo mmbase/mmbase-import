@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeManagerIterator.java,v 1.6 2003-03-04 13:44:41 nico Exp $
+ * @version $Id: NodeManagerIterator.java,v 1.7 2004-05-06 12:34:41 keesj Exp $
  */
 public interface NodeManagerIterator extends NodeIterator {
 
@@ -25,6 +25,7 @@ public interface NodeManagerIterator extends NodeIterator {
 
     /**
      * Returns the previous element in the iterator as a NodeManager
+     * @since MMBase-1.7
      */
     public NodeManager previousNodeManager();
 

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * HttpPost handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.26 2003-12-03 12:29:46 keesj Exp $
+ * @version $Id: HttpPost.java,v 1.27 2004-05-06 12:34:30 keesj Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -251,6 +251,7 @@ public class HttpPost {
 
     /**
      * @return true if the post was posted to a file (not in memory)
+     * @since MMBase-1.7
      **/
     public boolean isPostedToFile() {
         return isPostedToDisk;

@@ -21,7 +21,8 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.1 2004-01-08 11:08:06 pierre Exp $
+ * @version $Id: VirtualReferrerBuilder.java,v 1.2 2004-05-06 12:34:37 keesj Exp $
+ * @since MMBase-1.7
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {
 

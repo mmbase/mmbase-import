@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.28 2004-02-19 17:32:10 michiel Exp $
+ * @version $Id: Logging.java,v 1.29 2004-05-06 12:34:48 keesj Exp $
  */
 
 
@@ -274,6 +274,7 @@ public class Logging {
      * Returns the stacktrace of the current call. This can be used to get a stacktrace
      * when no exception was thrown and my help determine the root cause of an error message
      * (what class called the method that gave the error message.
+     * @since MMBase-1.7
      *
      **/
     public static String stackTrace() {
