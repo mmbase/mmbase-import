@@ -72,6 +72,7 @@
 <!ATTLIST command objectnumber NMTOKEN #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
 <!ATTLIST command orderby CDATA #IMPLIED >
+<!ATTLIST command directions CDATA #IMPLIED >
 <!ATTLIST command command NMTOKEN #IMPLIED >
 <!ATTLIST command startnodes CDATA #IMPLIED >
 <!ATTLIST command origin CDATA #IMPLIED >
