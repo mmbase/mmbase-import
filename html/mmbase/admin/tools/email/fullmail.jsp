@@ -1,13 +1,13 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Timed Email Queue Monitor</title>
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <body class="basic" >
 
@@ -15,7 +15,7 @@
 
 <mm:node number="<%=request.getParameter("msg")%>" id="msg">
 <tr>
-  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0</th>
+  <th class="header" colspan="4">Dynamic &amp; Timed Email System - Queue Monitor - v1.0</th>
 </tr>
 <tr>
   <td class="multidata" colspan="4">Full email content</td>
@@ -91,7 +91,7 @@
 </mm:node>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../email.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../email.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" >Return to Email Monitor</td>
 </tr>
 </table>

@@ -2,14 +2,14 @@
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="org.mmbase.cache.Cache" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Cache Monitor, Multi Level Cache</title>
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <mm:import externid="cache" jspvar="cacheName" vartype="String"
 required="true" />
@@ -51,7 +51,7 @@ required="true" />
 <tr><td>&nbsp;</td></tr>
 <% } %>
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../cache.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../cache.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Cache Monitor</td>
 </tr>
 </table>
