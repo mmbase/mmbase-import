@@ -17,7 +17,7 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageError.java,v 1.3 2003-08-29 09:36:54 pierre Exp $
+ * @version $Id: StorageError.java,v 1.4 2003-11-18 14:58:33 michiel Exp $
  */
 public class StorageError extends Error {
 
@@ -33,12 +33,12 @@ public class StorageError extends Error {
 
     //javadoc is inherited
     public StorageError(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     //javadoc is inherited
     public StorageError(String message, Throwable cause) {
-        super(message,cause);
+        super(message, cause);
     }
 
 }
