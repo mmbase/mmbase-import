@@ -26,10 +26,12 @@
         <tr>
           <td class="editfield">
             <form method="get" action="<mm:url page="autoedit.jsp" />" target="contentarea">
+              <p class="editfield">
               <mm:field name="$field">
                 <mm:fieldinfo type="input" />
               </mm:field>
-              <input type="hidden" name="field" value="<mm:write referid="field" />" />
+              </p>
+              <input type="hidden" name="field" value="<mm:write referid="field" />" /> 
               <input type="image" class="button" name="action" value="commit" src="../gfx/btn.red.gif" /> <%=mmlanguage.getInfo("GET-ok")%>
             </form>
           </td>
