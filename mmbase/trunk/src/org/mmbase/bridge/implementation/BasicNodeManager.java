@@ -54,7 +54,7 @@ public class BasicNodeManager implements NodeManager {
         if (!builder.tableName.equals("multirelations")) {
     	    for(Iterator i=builder.getFields().iterator(); i.hasNext();){
 	            FieldDefs f=(FieldDefs)i.next();
-	            FieldType ft= new BasicFieldType(f,this);
+	            Field ft= new BasicField(f,this);
 	            fieldTypes.put(ft.getName(),ft);
     	    }
         }
