@@ -2,7 +2,7 @@
     packaging_bundle_basic.dtd
 -->
 
-<!ELEMENT packaging_bundle_basic (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,initiators,supporters,developers,contacts,neededpackages)>
+<!ELEMENT packaging_bundle_basic (lastversion,lastdate,name,maintainer,description,license,releasenotes,installationnotes,initiators,supporters,developers,contacts,neededpackages,publishprovider*)>
 
 <!ELEMENT lastversion (#PCDATA)>
 <!ELEMENT lastdate (#PCDATA)>
@@ -51,3 +51,7 @@
 <!ATTLIST package version CDATA #IMPLIED>
 <!ATTLIST package included CDATA #IMPLIED>
 
+<!ELEMENT publishprovider (#PCDATA)>
+<!ATTLIST publishprovider active CDATA #IMPLIED>
+<!ATTLIST publishprivider name CDATA #IMPLIED>
+<!ATTLIST publishprivider sharepassword CDATA #IMPLIED>

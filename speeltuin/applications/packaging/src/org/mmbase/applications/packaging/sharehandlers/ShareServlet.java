@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.servlet.*;
 import org.mmbase.applications.packaging.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
@@ -113,6 +115,29 @@ public class ShareServlet extends BridgeServlet {
                     log.error(Logging.stackTrace(e));
                 }
             }
+        }
+    }
+
+    public synchronized void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	HttpPost post =  new HttpPost(req);
+
+        String filename = post.getPostParameter("filename");
+        String account = post.getPostParameter("account");
+        String password = post.getPostParameter("password");
+        String sharepassword = post.getPostParameter("sharepassword");
+
+        byte[] bytes = post.getPostParameterBytes("handle");
+
+        String path=MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"import"+File.separator;
+
+        File file = new File(path+filename);
+        try {
+            DataOutputStream f = new DataOutputStream(new FileOutputStream(file));
+            f.write(bytes);
+            f.flush();
+            f.close();
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
         }
     }
 

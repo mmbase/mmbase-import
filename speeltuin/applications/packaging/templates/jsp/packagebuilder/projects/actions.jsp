@@ -15,9 +15,27 @@
 	<mm:import externid="createnew" vartype="list" />
 	<mm:import externid="latest" vartype="list" />
 	<mm:import externid="newversion" />
-	 <mm:booleanfunction set="mmpb" name="packageTarget" referids="project,target,newversion,latest,createnew">
+	<mm:import externid="publishprovider" />
+	<mm:import externid="publishstate" />
+	<mm:import externid="publishsharepassword" />
+	 <mm:booleanfunction set="mmpb" name="packageTarget" referids="project,target,newversion,latest,createnew,publishprovider,publishstate,publishsharepassword">
 	</mm:booleanfunction>
 	</mm:functioncontainer>
+</mm:compare>
+
+
+<mm:compare value="publishmodeon" referid="action">
+	<mm:import id="project" externid="name" />
+	<mm:import id="target" externid="target" />
+	<mm:import externid="publishprovider" />
+	<mm:import externid="publishsharepassword" />
+	 <mm:booleanfunction set="mmpb" name="setPublishModeOn" referids="project,target,publishprovider,publishsharepassword" />
+</mm:compare>
+
+<mm:compare value="publishmodeoff" referid="action">
+	<mm:import id="project" externid="name" />
+	<mm:import id="target" externid="target" />
+	 <mm:booleanfunction set="mmpb" name="setPublishModeOff" referids="project,target" />
 </mm:compare>
 
 <mm:compare value="setincludedversion" referid="action">

@@ -13,6 +13,9 @@ import java.io.*;
 
 import org.mmbase.applications.packaging.*;
 import org.mmbase.applications.packaging.projects.creators.*;
+import org.mmbase.applications.packaging.providerhandlers.*;
+import org.mmbase.applications.packaging.bundlehandlers.*;
+import org.mmbase.applications.packaging.packagehandlers.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logging;
@@ -35,6 +38,9 @@ public class Target {
     String path;
     String basedir = "";
     String type;
+    String publishprovider;
+    String publishsharepassword;
+    boolean publishstate;
     boolean isbundle;
     HashMap items = new HashMap();
     XMLBasicReader reader;
@@ -770,5 +776,69 @@ public class Target {
 	return id;
     }
 
+    public void setPublishProvider(String publishprovider) {
+	this.publishprovider = publishprovider;
+    }
+
+    public void setPublishState(boolean publishstate) {
+	this.publishstate = publishstate;
+    }
+
+    public void setPublishSharePassword(String publishsharepassword) {
+	this.publishsharepassword = publishsharepassword;
+    }
+
+    public boolean getPublishState() {
+	return publishstate;
+    }
+
+    public String getPublishProvider() {
+	return publishprovider;
+    }
+
+    public String getPublishSharePassword() {
+	return publishsharepassword;
+    }
+
+    public boolean publish(int version) {
+	if (isBundle()) {
+		BundleInterface b = BundleManager.getBundle(getId(),""+version);
+		while (b==null) {
+			// again this is done because it might take the provider
+			// discovery system a few seconds before it detects the
+			// new package even if we made it ourselfs.
+			try {
+				Thread.sleep(1000);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			b = BundleManager.getBundle(getId(),""+version);
+		}
+		ProviderInterface o=ProviderManager.getProvider(publishprovider);
+		if (o != null && b !=null) {
+			boolean result = o.publish(b,getPublishSharePassword());
+			return result;
+		}
+	} else if (!isBundle()) {
+		PackageInterface p = PackageManager.getPackage(getId(),""+version);
+		while (p==null) {
+			// again this is done because it might take the provider
+			// discovery system a few seconds before it detects the
+			// new package even if we made it ourselfs.
+			try {
+				Thread.sleep(1000);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			p = PackageManager.getPackage(getId(),""+version);
+		}
+		ProviderInterface o=ProviderManager.getProvider(publishprovider);
+		if (o != null && p !=null) {
+			boolean result = o.publish(p,getPublishSharePassword());
+			return result;
+		}
+	}
+	return false; 
+    }
 }
 

@@ -108,8 +108,6 @@ public class FunctionSetCreator extends BasicCreator implements CreatorInterface
             e.printStackTrace();
         }
 
-        step = getNextPackageStep();
-        step.setUserFeedBack("function/set packager ended : " + getErrorCount() + " errors and " + getWarningCount() + " warnings");
 
         // update the build file to reflect the last build, should only be done if no errors
         if (getErrorCount() == 0) {
@@ -120,6 +118,23 @@ public class FunctionSetCreator extends BasicCreator implements CreatorInterface
                 target.save();
             }
         }
+
+	// do we need to send this to a publish provider ?
+	if (target.getPublishState()) {
+                ProviderManager.resetSleepCounter();
+        	step=getNextPackageStep();
+        	step.setUserFeedBack("publishing to provider : "+target.getPublishProvider());
+        	step=getNextPackageStep();
+        	step.setUserFeedBack("sending file : "+target.getId()+" ...");
+		if (target.publish(newversion)) {
+        		step.setUserFeedBack("sending file : "+target.getId()+" ... done");
+		} else {
+        		step.setUserFeedBack("sending file : "+target.getId()+" ... failed");
+		}
+	}
+
+        step = getNextPackageStep();
+        step.setUserFeedBack("function/set packager ended : " + getErrorCount() + " errors and " + getWarningCount() + " warnings");
         return true;
     }
 
@@ -154,6 +169,13 @@ public class FunctionSetCreator extends BasicCreator implements CreatorInterface
         body += getRelatedPeopleXML("supporters", "supporter", target);
         body += getRelatedPeopleXML("developers", "developer", target);
         body += getRelatedPeopleXML("contacts", "contact", target);
+	if (target.getPublishProvider()!=null) {
+		if (target.getPublishState()) {
+			body+="\t<publishprovider name=\""+target.getPublishProvider()+"\" state=\"active\" sharepassword=\""+target.getPublishSharePassword()+"\" />\n";
+		} else {
+			body+="\t<publishprovider name=\""+target.getPublishProvider()+"\" state=\"inactive\" sharepassword=\""+target.getPublishSharePassword()+"\" />\n";
+		}
+	}
         body += getDefaultXMLFooter(target);
         return body;
     }

@@ -96,6 +96,7 @@ public class BundleVersionContainer  {
         BundleInterface winner = null;
         Iterator e = bundles.values().iterator();
         while (e.hasNext()) {
+	    log.info("getBundle");
             BundleInterface b = (BundleInterface)e.next();
             if (winner == null) {
                 winner = b;

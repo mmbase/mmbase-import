@@ -428,5 +428,152 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
         }
         return path;
     }
+
+
+    public boolean publish(PackageInterface pack,String sharepassword) {
+	// should be general code for all types once all is in
+	String filename=pack.getId()+"_"+pack.getVersion()+".mmp";
+
+	String posturl = getPath();
+	if (posturl.startsWith("http://")) {
+		posturl = posturl.substring(7);
+	}
+	int pos=posturl.indexOf("/");
+	if (pos!=-1) {
+		posturl = posturl.substring(0,pos);
+	}
+	posturl = "http://"+posturl + "/mmbase/mmpm/upload/package.mmp";
+        try {
+ 	    String boundary =  "*5433***3243";
+    
+            // Send data
+	    URL url = new URL(posturl);
+	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+   	    conn.setDoInput(true);
+       	    conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+
+	   DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"filename\"\r\n\r\n");
+	   out.writeBytes(filename+"\r\n");
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"account\"\r\n\r\n");
+	   out.writeBytes(account+"\r\n");
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"password\"\r\n\r\n");
+	   out.writeBytes(password+"\r\n");
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"sharepassword\"\r\n\r\n");
+	   out.writeBytes(sharepassword+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
+
+            try {
+                InputStream in = pack.getJarStream();
+                int val;
+                while ((val = in.read()) != -1) {
+                    out.write(val);
+                }
+            } catch (Exception e) {
+                log.error("can't load : " + path);
+                e.printStackTrace();
+            }
+	    out.writeBytes("\r\n");	
+	    out.writeBytes("--"+boundary+"--\r\n");
+	    out.flush();
+	    out.close();
+    
+            // Get the response
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = rd.readLine()) != null) {
+                // Process line...
+            }
+            rd.close();
+        } catch (Exception e) {
+		log.error("Publish upload problem to : "+posturl);
+        }
+	return true;
+    }
+
+    public boolean publish(BundleInterface bundle,String sharepassword) {
+	// should be general code for all types once all is in
+	String filename=bundle.getId()+"_"+bundle.getVersion()+".mmb";
+
+	String posturl = getPath();
+	if (posturl.startsWith("http://")) {
+		posturl = posturl.substring(7);
+	}
+	int pos=posturl.indexOf("/");
+	if (pos!=-1) {
+		posturl = posturl.substring(0,pos);
+	}
+	posturl = "http://"+posturl + "/mmbase/mmpm/upload/package.mmp";
+        try {
+ 	    String boundary =  "*5433***3243";
+    
+            // Send data
+	    URL url = new URL(posturl);
+	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+   	    conn.setDoInput(true);
+       	    conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+
+	   DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"filename\"\r\n\r\n");
+	   out.writeBytes(filename+"\r\n");
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"account\"\r\n\r\n");
+	   out.writeBytes(account+"\r\n");
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"password\"\r\n\r\n");
+	   out.writeBytes(password+"\r\n");
+
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"sharepassword\"\r\n\r\n");
+	   out.writeBytes(sharepassword+"\r\n");
+	   out.writeBytes("--"+boundary+"\r\n");
+   	   out.writeBytes("Content-Disposition: form-data; name=\"handle\"; filename=\"" +"testname" +"\"\r\n\r\n");
+
+            try {
+                InputStream in = bundle.getJarStream();
+                int val;
+                while ((val = in.read()) != -1) {
+                    out.write(val);
+                }
+            } catch (Exception e) {
+                log.error("can't load : " + path);
+                e.printStackTrace();
+            }
+	    out.writeBytes("\r\n");	
+	    out.writeBytes("--"+boundary+"--\r\n");
+	    out.flush();
+	    out.close();
+    
+            // Get the response
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = rd.readLine()) != null) {
+                // Process line...
+            }
+            rd.close();
+        } catch (Exception e) {
+		log.error("Publish upload problem to : "+posturl);
+        }
+	return true;
+    }
 }
 

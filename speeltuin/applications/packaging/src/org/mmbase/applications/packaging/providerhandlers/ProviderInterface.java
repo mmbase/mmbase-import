@@ -9,6 +9,8 @@ package org.mmbase.applications.packaging.providerhandlers;
 import java.util.jar.*;
 import java.io.*;
 import org.mmbase.applications.packaging.packagehandlers.*;
+import org.mmbase.applications.packaging.bundlehandlers.*;
+import org.mmbase.applications.packaging.providerhandlers.*;
 
 /**
  * Interface for all the provider handlers
@@ -203,5 +205,9 @@ public interface ProviderInterface {
      * @param  path        Description of the Parameter
      */
     public void init(String name, String method, String maintainer, String path);
+
+    public boolean publish(BundleInterface bundle,String sharepassword);
+
+    public boolean publish(PackageInterface p,String sharepassword);
 }
 

@@ -62,6 +62,14 @@
 	   <IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
         </td>
       </tr> 
+        <tr><th>Publish Mode</th>
+         <td>
+           <A HREF="<mm:url page="index.jsp" referids="main,sub,name,package">
+	    <mm:param name="mode" value="publishview" />
+	   </mm:url>">
+	   <IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
+        </td>
+      </tr> 
       <mm:compare referid="havelog" value="true">  
     		<tr><th>View log</th>
 		<td>
@@ -97,16 +105,44 @@
 
 <mm:write referid="mode">
 <mm:compare value="createview">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="40%">  
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="80%">  
 <mm:compare referid="syntaxerrors" value="false">
 <mm:nodefunction set="mmpb" name="getProjectTargetInfo" referids="project,target">
 <form action="<mm:url page="index.jsp" referids="main,sub,name,target,package"><mm:param name="mode" value="log" /></mm:url>" method="post">
 <tr>    
-        <th colspan="2">Create a new version of this package </th>
-</tr><td height="25">Last created version </td><td> <mm:field name="lastversion" /> (<mm:field name="lastdate" />)</td></tr>
-<tr><td>New Version</td><td><input name="newversion" size="4" value="<mm:field name="nextversion" />"></td></tr>
+        <th colspan="4">Create a new version of this package </th>
+</tr><td height="25" colspan="2">Last created version </td><td colspan="2"> <mm:field name="lastversion" /> (<mm:field name="lastdate" />)</td></tr>
+<tr><td colspan="2">New Version</td><td colspan="2"><input name="newversion" size="4" value="<mm:field name="nextversion" />"></td></tr>
+	<mm:field name="publishprovider">
+	<mm:compare value="" inverse="true">
+	<td height="25" colspan="2">Publish server 
+		<select name="publishprovider">
+			<mm:import id="tmpfield"><mm:field name="publishprovider" /></mm:import>
+			<mm:nodelistfunction set="mmpm" name="getProviders">
+			<mm:field name="method">
+			<mm:compare value="disk" inverse="true">
+			<option <mm:field name="name"><mm:compare referid2="tmpfield">selected</mm:compare></mm:field> value="<mm:field name="name" />"><mm:field name="name" />
+			</mm:compare>
+			</mm:field>
+			</mm:nodelistfunction>
+		</select></td><td>
+	<select name="publishstate">
+		<mm:field name="publishstate">
+		<mm:compare value="true">
+		<option value="true" selected>active
+		<option value="false">inactive
+		</mm:compare>
+		<mm:compare value="false">
+		<option value="true">active
+		<option value="false" selected>inactive
+		</mm:compare>
+		</mm:field>
+	</select></td>
+	<td>sharepassword : <input type="password" name="publishsharepassword" value="<mm:field name="publishsharepassword" />" /></td></tr>
+	</mm:compare>
+	</mm:field>
 	<input type="hidden" name="action" value="packagetarget" />
-<tr><td colspan="2" height="30"><center><input type="submit" value="create new version"></center></td></tr>
+<tr><td colspan="4" height="30"><center><input type="submit" value="create new version"></center></td></tr>
 </td>
 </form>
 </mm:nodefunction>
@@ -190,6 +226,35 @@
 		  </td>
 		  </mm:nodelistfunction>
 		  </tr>
+</table>
+</mm:compare>
+<mm:compare value="publishview">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="50%">  
+<tr>    
+<form action="<mm:url page="index.jsp" referids="main,sub,name,package,target"><mm:param name="mode" value="none" /></mm:url>" method="post">
+        <th colspan="2">Allow publishing of this package </th>
+	<tr>
+		<td>Provider : <select name="publishprovider">
+		<mm:nodelistfunction set="mmpm" name="getProviders">
+		<mm:field name="method">
+		<mm:compare value="disk" inverse="true">
+		<option value="<mm:field name="name" />"><mm:field name="name" />
+		</mm:compare>
+		</mm:field>
+		</mm:nodelistfunction>
+		</select>
+		</td>
+		<td><input type="password" name="publishsharepassword" /></td>
+	</tr>
+	<input type="hidden" name="action" value="publishmodeon" />
+<tr><td height="30"><center><input type="submit" value="On"></center></td>
+	</form>
+	<form action="<mm:url page="index.jsp" referids="main,sub,name,package,target"><mm:param name="mode" value="none" /></mm:url>" method="post">
+	<input type="hidden" name="action" value="publishmodeoff" />
+	<td <center><input type="submit" value="Off"></center></td>
+	</form>
+	</tr>
+</td>
 </table>
 </mm:compare>
 <mm:compare value="packageinfo">
