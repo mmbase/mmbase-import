@@ -3,10 +3,15 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
     <div class="applicationMenubarCockpit" style="white-space: nowrap">
-    	<div class="menuItemApplicationMenubar">
-			<a title="<fmt:message key="LOGOUT" />" href="<mm:url page="/logout.jsp" />" class="menubar"><fmt:message key="LOGOUT" /></a>
-    	</div>
-		
+
+                    
+        <div class="menuItemApplicationMenubar">
+        <mm:node number="$user">
+            <a title="<fmt:message key="LOGOUT" />" href="<mm:url page="/logout.jsp" />" class="menubar"><fmt:message key="LOGOUT" /> <mm:field name="firstname"/> <mm:field name="lastname"/></a>
+        </mm:node>
+    </div>
+
+	
 		<div class="menuSeperatorApplicationMenubar"></div>
 		
 		<div class="menuItemApplicationMenubar">
