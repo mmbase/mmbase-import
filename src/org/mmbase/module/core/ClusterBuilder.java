@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.13 2002-10-08 13:58:34 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.14 2002-10-08 14:14:08 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -808,7 +808,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
     // get a reference to the number field in a table
     private String numberOf(String table) {
-        return table+"."+mmb.getDatabase().getNumberString();
+        return table + "." + mmb.getDatabase().getNumberString();
     };
 
     /**
@@ -881,35 +881,38 @@ public class ClusterBuilder extends VirtualBuilder {
                 }
             }
 
-            // check for directionality if supported
-            String dirstring;
-            if (InsRel.usesdir && (searchdir != SEARCH_ALL)) {
-                dirstring = " AND " + idx2char(i + 1) + ".dir <> 1";
-            } else {
-                dirstring = "";
-            }
-
             if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
                 desttosrc = false;
             }
+
+            String relChar    = idx2char(i + 1);
             if (desttosrc) {
+                // check for directionality if supported
+                String dirstring;
+                if (InsRel.usesdir && (searchdir != SEARCH_ALL)) {
+                    dirstring = " AND " + idx2char(i + 1) + ".dir <> 1";
+                } else {
+                    dirstring = "";
+                }                
                 // there is a typed relation from destination to src
                 if (srctodest) {
+                    String sourceNumber = numberOf(idx2char(i));
+                    String destNumber   = numberOf(idx2char(i + 2));
                     // there is ALSO a typed relation from src to destination - make a more complex query
                     result.append(
-                           "(("+ numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".snumber AND "+
-                                 numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".dnumber ) OR ("+
-                                 numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".dnumber AND "+
-                                 numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".snumber" + dirstring + "))");
+                           "(("+ sourceNumber     + "=" + relChar + ".snumber AND "+
+                                 destNumber       + "=" + relChar + ".dnumber ) OR ("+
+                                 sourceNumber     + "=" + relChar + ".dnumber AND "+
+                                 destNumber       + "=" + relChar + ".snumber" + dirstring + "))");
                 } else {
                     // there is ONLY a typed relation from destination to src - optimized query
-                    result.append(numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".dnumber AND "+
-                                  numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".snumber" + dirstring);
+                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".dnumber AND "+
+                                  numberOf(idx2char(i + 2)) + "=" + relChar + ".snumber" + dirstring);
                 }
             } else {
                 // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                result.append(numberOf(idx2char(i))     + "=" + idx2char(i + 1) + ".snumber AND "+
-                              numberOf(idx2char(i + 2)) + "=" + idx2char(i + 1) + ".dnumber");
+                result.append(numberOf(idx2char(i))     + "=" + relChar + ".snumber AND "+
+                              numberOf(idx2char(i + 2)) + "=" + relChar + ".dnumber");
             }
 
         }
@@ -922,6 +925,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * This is used to map the tables in a List to alternate names (using their index in the list).
      * @param idx the index
      * @return the one-letter name as a <code>String</code>
+     * XXX: So, why does this not return simply a 'char'?
      */
     protected String idx2char(int idx) {
         return ""+new Character((char)('a'+idx));
