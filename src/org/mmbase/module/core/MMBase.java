@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.58 2002-04-18 14:06:28 pierre Exp $
+ * @version $Id: MMBase.java,v 1.59 2002-04-18 14:31:35 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1071,8 +1071,6 @@ public class MMBase extends ProcessorModule  {
                 bul.setXmlConfig(true);
                 bul.setMMBase(this);
                 bul.setTableName(objectname);
-                // XXX: setClassName is deprecated
-                bul.setClassName(classname);
 
                 // register the parent builder, if applicable
                 MMObjectBuilder parent=parser.getParentBuilder();

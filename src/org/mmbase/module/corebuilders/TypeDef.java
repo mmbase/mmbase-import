@@ -214,7 +214,6 @@ public class TypeDef extends MMObjectBuilder {
             bul.setMMBase(mmb);
             bul.setTableName(objectname);
             bul.setDescription(description);
-            bul.setClassName(classname);
             bul.init();
             mmb.mmobjs.put(objectname,bul);
         } catch (Exception e) {

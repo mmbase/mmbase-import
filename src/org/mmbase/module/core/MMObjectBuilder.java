@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.133 2002-04-18 07:50:46 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.134 2002-04-18 14:31:36 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -146,13 +146,6 @@ public class MMObjectBuilder extends MMTable {
      * Default value is 31. Can be changed with the &lt;searchage&gt; tag in the xml builder file.
      */
     public String searchAge="31";
-
-    /**
-     * The classname as specified in the builder xml file
-     * mainly for use in export
-     * @deprecated use getClass.getName()
-     */
-    public String className="onbekend";
 
     /**
      * Detemines whether the cache need be refreshed?
@@ -2443,19 +2436,11 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Set classname of the builder
-     * @deprecated don't use
-     */
-    public void setClassName(String d) {
-        this.className=d;
-    }
-
-    /**
      * Returns the classname of this builder
      * @deprecated don't use
      */
     public String getClassName() {
-        return className;
+        return this.getClass().getName();
     }
 
     /**
