@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMServersProbe.java,v 1.7 2000-07-22 21:38:35 daniel Exp $
+$Id: MMServersProbe.java,v 1.8 2001-04-10 12:20:38 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/07/22 21:38:35  daniel
+needed a or not a and :)
+
 Revision 1.6  2000/07/22 21:30:20  daniel
 small startup fix
 
@@ -39,15 +42,16 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.7 $ $Date: 2000-07-22 21:38:35 $ 
+ * @version0 $Revision: 1.8 $ $Date: 2001-04-10 12:20:38 $ 
  */
 public class MMServersProbe implements Runnable {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
+    private static Logger log = Logging.getLoggerInstance(MMServersProbe.class.getName()); 
 
 	Thread kicker = null;
 	MMServers parent=null;
@@ -93,8 +97,7 @@ public class MMServersProbe implements Runnable {
 			try {
 				doWork();
 			} catch(Exception e) {
-				debug("run(): ERROR: Exception in mmservers thread!");
-				e.printStackTrace();
+				log.error("Exception in mmservers thread!" + Logging.stackTrace(e));
 			}
 		}
 	}

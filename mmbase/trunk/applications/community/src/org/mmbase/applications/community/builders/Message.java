@@ -1,3 +1,14 @@
+/*  -*- tab-width: 4; -*-
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+
+
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -19,15 +30,18 @@ import org.mmbase.module.core.TemporaryNodeManager;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.community.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Dirk-Jan Hoekstra
  * @version 19 Jan 2001
  */
 
-public class Message extends MMObjectBuilder
-{ 
+public class Message extends MMObjectBuilder {
+
+    private static Logger log = Logging.getLoggerInstance(Message.class.getName()); 
 	private String classname = getClass().getName();
-	private final boolean debug = true;
 	private Channel channelBuilder;
 	private int relationNumberParentChild;
 	private int relationNumberCreator;
@@ -48,18 +62,17 @@ public class Message extends MMObjectBuilder
 	{
 	}
 
-	private void error(String err)
-	{	debug("ERROR: " + err);
-	}
 
-	public boolean init()
-	{	boolean result = super.init();
+	public boolean init() {   
+        boolean result = super.init();
 		RelDef reldef = ((RelDef)mmb.getMMObject("reldef"));
 		relationNumberParentChild = reldef.getRelNrByName("parent", "child");
 		relationNumberCreator = reldef.getRelNrByName("creator", "subject");
 		relationRelated = reldef.getRelNrByName("related", "related");
-		debug("init(): relationNumberParentChild=" + relationNumberParentChild);
-		debug("init(): relationNumberCreator=" + relationNumberCreator);
+        if (log.isDebugEnabled()) {
+            log.debug("init(): relationNumberParentChild=" + relationNumberParentChild);
+            log.debug("init(): relationNumberCreator=" + relationNumberCreator);
+        }
 		tmpNodeManager = new TemporaryNodeManager(mmb);
 	/*	transactionManager = new TransactionManager(mmb, tmpNodeManager);
 		try
@@ -87,14 +100,14 @@ public class Message extends MMObjectBuilder
 	public int post(String subject, String body, int channel, int thread, int chatter, String chatterName)
 	{ 
 		if (body.length() > maxBodySize)
-		{	error("post(): body size exceeds 2024Kb");
+		{	log.error("post(): body size exceeds 2024Kb");
 			return -1;
 		}
 
 		if (chatterName != null)
 		{	chatter = -1;
 			if (chatterName.length() == 0)
-			{	error("post(): CHATTERNAME must be larger than 0 tokens");
+			{	log.error("post(): CHATTERNAME must be larger than 0 tokens");
 				return -1;
 			}
 		}		
@@ -104,7 +117,8 @@ public class Message extends MMObjectBuilder
 		node.setValue("body", body);
 		node.setValue("thread", thread);
 		if (channelBuilder == null) channelBuilder = (Channel)mmb.getMMObject("channel");
-		debug("post(): channel=" + channel);
+        log.service("post(): channel=" + channel);
+        
 		node.setValue("sequence", channelBuilder.getNewSequence(channelBuilder.getNode(channel)));
 		/*
 		 * Make the relation with the MessageTread in which this Message get listed.
@@ -113,7 +127,9 @@ public class Message extends MMObjectBuilder
 		 * work correct after a insert, delete all cached relations of the parent
 		 * messagethread so the search will be done on the database.
 		 */
-		if (debug) debug("post(): make relation message with thread and chatter");
+		if (log.isDebugEnabled()) {
+            log.debug("post(): make relation message with thread and chatter");
+        }
 		InsRel insrel = mmb.getInsRel();
 		int id;
 		if (chatter > 0)
@@ -138,7 +154,7 @@ public class Message extends MMObjectBuilder
 	 */
 	public void post(String body, int channel, int chatter)
 	{	if (body.length() > maxBodySize)
-		{	error("post(): body size exceeds " + maxBodySize + "Kb");
+		{	log.error("post(): body size exceeds " + maxBodySize + "Kb");
 			return;
 		}
 
@@ -171,16 +187,19 @@ public class Message extends MMObjectBuilder
 			tmpNodeManager.setObjectField(tOwner, tmp, "snumber", new Integer(channel));			
 		}
 		catch(Exception e)
-		{	error("post(): Could create temporary relations between message and channel.\n" + e);
+		{	log.error("post(): Could create temporary relations between message and channel.\n" + e);
 		}
 		try
-		{	String tmp = tmpNodeManager.createTmpRelationNode("creator", tOwner, getNewTemporaryKey(), "realuser", key);
+		{	
+            String tmp = tmpNodeManager.createTmpRelationNode("creator", tOwner, getNewTemporaryKey(), "realuser", key);
 			tmpNodeManager.setObjectField(tOwner, tmp, "snumber", (Object)new Integer(chatter));
 			MMObjectNode node = tmpNodeManager.getNode(tOwner, tmp);
-			debug ("just set " + tmp + " snumber to " + node.getIntValue("snumber"));			
+            if (log.isDebugEnabled()) {
+                log.debug ("just set " + tmp + " snumber to " + node.getIntValue("snumber"));			
+            }
 		}
 		catch(Exception e)
-		{	error("post(): Could create temporary relations between between message and user.\n" + e);
+		{	log.error("post(): Could create temporary relations between between message and user.\n" + e);
 		}
 
 
@@ -220,7 +239,7 @@ public class Message extends MMObjectBuilder
 	   * POST: Make the changes on the node.
 	   */	
 		if (body.length() > maxBodySize)
-		{	error("update(): body size exceeds 2024Kb");
+		{	log.error("update(): body size exceeds 2024Kb");
 			return false;
 		}
 	
@@ -326,7 +345,7 @@ public class Message extends MMObjectBuilder
 		if ((listheadItemNr >= 0) && (listtailItemNr >= 0))		
 			addListTags(result, listheadItemNr, listtailItemNr, depthItemNr, fields.size(), openTag, closeTag);
 		else
-			if ((listheadItemNr >= 0) || (listtailItemNr >= 0)) error("getListMessages(): Listhead and listtail only work when used together."); 
+			if ((listheadItemNr >= 0) || (listtailItemNr >= 0)) log.error("getListMessages(): Listhead and listtail only work when used together."); 
 		return result;
 	}	
 
@@ -570,20 +589,21 @@ public class Message extends MMObjectBuilder
 	   *       nodes will be deleted and the node itself will be removed.
 	   */
 
-		debug("removeNode(): node="+node.getValue("number"));
+		log.service("removeNode(): node=" + node.getValue("number"));
 
 		if (otypeMsg < 0) otypeMsg = mmb.TypeDef.getIntValue("message");
 		
 		/* Make sure we got a Message node, else abort the remove operation.
 		 */
 		if (node.getIntValue("otype") != otypeMsg)
-		{	debug("removeNode(" + node.getValue("number") + ") aborted because it isn't a Message!" + " It's a " + node.getName());
+		{	
+            log.info("removeNode(" + node.getValue("number") + ") aborted because it isn't a Message!" + " It's a " + node.getName());
 						
 			try {
 				throw new Exception("test");
 			} catch (Exception e) { 
-				debug("Stacktrace "+e);
-				e.printStackTrace();
+				log.error("Stacktrace " + e);
+                log.error(Logging.stackTrace(e));
 			}
 		
 			return;
@@ -600,7 +620,7 @@ public class Message extends MMObjectBuilder
 				if (recursive)
 					removeNode(relmsg, true);
 				else
-				{	error("Can't delete Message " + node.getValue("number") + " because it has child Messages.");
+				{	log.error("Can't delete Message " + node.getValue("number") + " because it has child Messages.");
 					return;
 				}
 			}		 	
@@ -613,7 +633,9 @@ public class Message extends MMObjectBuilder
 		insrel.deleteRelationCache(node.getIntValue("number"));
 		insrel.deleteRelationCache(node.getIntValue("thread"));
 		Enumeration messages = mmb.getInsRel().getRelated(node.getIntValue("number"), otypeChannel);
-		if (messages.hasMoreElements()) debug("he you should have removed them!"); 
+		if (messages.hasMoreElements()) {
+            log.error("he you should have removed them!"); 
+        }
 
 		/* Now it's possible to remove the node itself.
 		 */
@@ -706,14 +728,14 @@ public class Message extends MMObjectBuilder
 		/* The first thing we expect is a message number.
 		 */
 		if (!tok.hasMoreElements())
-		{	error("replace(): message number expected after $MOD-BUILDER-message-.");
+		{	log.error("replace(): message number expected after $MOD-BUILDER-message-.");
 			return "";
 		}
 		String tmp = tok.nextToken();
 		MMObjectNode message = getNode(tmp);
 		//tmp = tmp.substring(tmp.indexOf("_") + 1);
 		if (message == null) message = (MMObjectNode)TemporaryNodes.get(tmp.trim());	
-		if (message == null) error ("didn't got a message node, what is this " + tmp + "?");
+		if (message == null) log.error("didn't got a message node, what is this " + tmp + "?");
 		
 		if (tok.hasMoreElements())
 		{	String cmd = tok.nextToken();

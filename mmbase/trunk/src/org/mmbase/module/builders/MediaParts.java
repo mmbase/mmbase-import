@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -9,11 +9,14 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.2  2001/02/01 16:05:12  vpro
+Davzev: Added removeRaws to automatically delete rawaudio/videos when audio/videoparts are deleted, implemented through nodeLocalChanged signals
+
 Revision 1.1  2000/12/14 16:19:22  vpro
 davzev: Created MediaParts builder (no table version yet, only java), AudioParts and VideoParts now extend MediaParts.
 
 
-$Id: MediaParts.java,v 1.2 2001-02-01 16:05:12 vpro Exp $
+$Id: MediaParts.java,v 1.3 2001-04-10 12:20:38 michiel Exp $
 */
 package org.mmbase.module.builders;
 
@@ -22,6 +25,9 @@ import java.util.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /*
 import org.mmbase.module.gui.html.*;
@@ -50,12 +56,12 @@ import org.mmbase.module.builders.*;
  * immediately.
  * 
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.2 2001-02-01 16:05:12 vpro Exp $
+ * @version $Id: MediaParts.java,v 1.3 2001-04-10 12:20:38 michiel Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
-	// Debugging variables
-	private String classname = getClass().getName();
-	private boolean debug = true;
+
+
+    private static Logger log = Logging.getLoggerInstance(MediaParts.class.getName()); 
 
 	// Define LRU Cache for video urls.
 	public static LRUHashtable urlCache = new LRUHashtable(1024);
@@ -70,7 +76,7 @@ public abstract class MediaParts extends MMObjectBuilder {
 	public boolean init() {
 		super.init();
 		String propValue = getInitParameter("UrlCaching");
-		if (debug) debug("init(): Builder property UrlCaching="+propValue);
+		log.debug("init(): Builder property UrlCaching=" + propValue);
 		if (propValue!=null)
 			urlCaching = (Boolean.valueOf(propValue)).booleanValue();
 		return true;
@@ -85,7 +91,9 @@ public abstract class MediaParts extends MMObjectBuilder {
     */
     public boolean nodeLocalChanged(String number,String builder,String ctype) {
         super.nodeLocalChanged(number,builder,ctype);
-		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+") ctype:"+ctype);	
+		if (log.isDebugEnabled()) {
+            log.debug("nodeLocalChanged(" + number + "," + builder + "," + ctype + ") ctype:" + ctype);	
+        }
 		if (ctype.equals("c"))
 			removeFromUrlCache(number);
 		if (ctype.equals("d")) {
@@ -93,9 +101,9 @@ public abstract class MediaParts extends MMObjectBuilder {
 				int num=Integer.parseInt(number);
 				boolean success = removeRaws(num);
 				if (!success) 
-					debug("ERROR: removeRaws was not succesful!");
+                    log.error("removeRaws was not succesful!");
 			} catch (NumberFormatException nfe) {
-				debug("nodeLocalChanged: ERROR: number value("+number+") is not an integer."); 
+				log.error("nodeLocalChanged: number value(" + number + ") is not an integer."); 
 				nfe.printStackTrace();
 			}
 		}
@@ -111,7 +119,9 @@ public abstract class MediaParts extends MMObjectBuilder {
     */
     public boolean nodeRemoteChanged(String number,String builder,String ctype) {
 		super.nodeRemoteChanged(number,builder,ctype);
-		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+") ctype:"+ctype);	
+		if (log.isDebugEnabled()) {
+            log.debug("nodeRemoteChanged(" + number + "," + builder + "," + ctype + ") ctype:" + ctype);	
+        }
 		if (ctype.equals("c"))
 			removeFromUrlCache(number);
         return true;
@@ -125,12 +135,14 @@ public abstract class MediaParts extends MMObjectBuilder {
 		int key;
 		try {
 			key = Integer.parseInt(number);
-			if (debug) debug("removeFromUrlCache("+number+") Removing entries with "+key+" and "+(-1*key)+" from urlCache");
+			if (log.isDebugEnabled()) {
+                log.debug("removeFromUrlCache(" + number + ") Removing entries with " + key + " and " + (-1*key) + " from urlCache");
+            }
 			urlCache.remove(new Integer(key));
 			urlCache.remove(new Integer(-1*key)); //Also remove internal requests entries.
 		} catch(NumberFormatException nfe) {
-			debug("removeFromUrlCache("+number+") Invalid number value:"+number);
-			nfe.printStackTrace();
+			log.error("removeFromUrlCache(" + number + ") Invalid number value:" + number);
+            log.error(Logging.stackTrace(nfe));
 		}	
 	}
 
@@ -146,13 +158,17 @@ public abstract class MediaParts extends MMObjectBuilder {
 		MMObjectNode typedefNode = getNode(node.getIntValue("otype"));
 		
 		if (typedefNode.getStringValue("name").equals("audioparts")) {
-			if (debug) debug("removeRaws: Deleting all rawaudios where id="+number);
+			if (log.isDebugEnabled()) {
+                log.debug("removeRaws: Deleting all rawaudios where id=" + number);
+            }
 			builder = mmb.getMMObject("rawaudios");
 		} else if (typedefNode.getStringValue("name").equals("videoparts")) {
-			if (debug) debug("removeRaws: Deleting all rawaudios where id="+number);
+			if (log.isDebugEnabled()) {
+                log.debug("removeRaws: Deleting all rawaudios where id=" + number);
+            }
 			builder = mmb.getMMObject("rawvideos");
 		} else {
-			debug("removeRaws: ERROR: Can't delete raws since number:"+number+" is not an audio/videopart but a "+typedefNode.getStringValue("name"));
+			log.error("removeRaws: Can't delete raws since number:" + number + " is not an audio/videopart but a " + typedefNode.getStringValue("name"));
 			return false;
 		}
 
@@ -160,7 +176,9 @@ public abstract class MediaParts extends MMObjectBuilder {
 		MMObjectNode rawNode = null;
 		while (e.hasMoreElements()) {
 			rawNode = (MMObjectNode)e.nextElement();
-			if (debug) debug("removeRaws: Removing rawobject "+rawNode.getIntValue("number"));
+			if (log.isDebugEnabled()) {
+                debug("removeRaws: Removing rawobject " + rawNode.getIntValue("number"));
+            }
 			builder.removeNode(rawNode);
 		}
 		return true;
@@ -191,14 +209,18 @@ public abstract class MediaParts extends MMObjectBuilder {
 						url = getUrlFromCache(sp,number,userSpeed,userChannels);
 					else
 						url = getUrl(sp,number,userSpeed,userChannels);
-					debug("replace: GETURL returns: "+url); 
+					if (log.isDebugEnabled()) {
+                        log.debug("replace: GETURL returns: " + url); 
+                    }
 					return url;
-				} else {
-					debug("getUrl: ERROR: No objectnumber defined.");
+				} else {                    
+                    log.error("getUrl: No objectnumber defined.");         
 					return null;
 				}
             } else if (token.equals("GETURLNOCACHE")) {
-				if (debug) debug("replace: Command is GETURLNOCACHE getting url directly.");
+				if (log.isDebugEnabled()) {
+                    log.debug("replace: Command is GETURLNOCACHE getting url directly.");
+                }
 				int number=0;
 				int userSpeed=getMinSpeed();
 				int userChannels=getMinChannels();
@@ -208,18 +230,20 @@ public abstract class MediaParts extends MMObjectBuilder {
 				if (number!=-1) {
 					String url = null;
 					url = getUrl(sp,number,userSpeed,userChannels);
-					debug("replace: GETURLNOCACHE returns: "+url); 
+					if(log.isDebugEnabled()) {
+                        log.debug("replace: GETURLNOCACHE returns: " + url); 
+                    }
 					return url;
 				} else {
-					debug("getUrl: ERROR: No objectnumber defined.");
+					log.error("getUrl: No objectnumber defined.");
 					return null;
 				}
             } else {
-				debug("replace: ERROR: Unknown command: "+token);
+				log.error("replace: Unknown command: "+token);
 				return("ERROR: Unknown command: "+token);
 			}
         }
-  		debug("replace: No command defined.");
+  		log.info("replace: No command defined.");
   		return("No command defined, says the VideoParts builder.");
     }
 	
@@ -242,14 +266,16 @@ public abstract class MediaParts extends MMObjectBuilder {
 		url = (String) urlCache.get(new Integer(key));
 		if (url == null) {
 			// NOT IN CACHE retrieving & putting in cache now and returning.
-			debug("getUrlFromCache: MISS for KEY: "+key);
+			log.info("getUrlFromCache: MISS for KEY: " + key);
 			url =  getUrl(sp,number,userSpeed,userChannels);
-			if (url==null) {
-				debug("getUrlFromCache: doGetUrl returns null, no cache put returning null");
+			if (url == null) {
+				log.debug("getUrlFromCache: doGetUrl returns null, no cache put returning null");
 				return null;
 			} else if (url.charAt(0)=='r') {
 					urlCache.put(new Integer(key),url);
-					if (debug) debug("getUrlFromCache: Cached VALUE: "+url+", KEY:"+key);
+					if (log.isDebugEnabled()) {
+                        log.debug("getUrlFromCache: Cached VALUE: " + url + ", KEY:" + key);
+                    }
 					return url;
 			} else if (url.charAt(0)=='p') {
 					int pos = 0;
@@ -257,15 +283,19 @@ public abstract class MediaParts extends MMObjectBuilder {
 					pos = url.indexOf(".ra");
 					String cachedUrl = ""+urlsb.replace((pos-4),pos,"%%_%");
 					urlCache.put(new Integer(key),cachedUrl);
-					if (debug) debug("getUrlFromCache: Cached VALUE: "+cachedUrl+", KEY:"+key);
+					if (log.isDebugEnabled()) {
+                        log.debug("getUrlFromCache: Cached VALUE: " + cachedUrl + ", KEY:" + key);
+                    }
 					return url; //Return original result url from method doGetUrl.
 			} else {
-				debug("getUrlFromCache: Invalid Url string: "+url+" , returning null");
+				log.info("getUrlFromCache: Invalid Url string: " + url + " , returning null");
 				return null;
 			}
 		} else if (url.startsWith("r")) {
 			// IN CACHE and object is RealPlayer format G2 or higher.
-			debug("getUrlFromCache : HIT Returning entry: "+url);
+			if (log.isDebugEnabled()) {
+                log.debug("getUrlFromCache : HIT Returning entry: " + url);
+            }
 			return url;		
 		} else if (url.startsWith("p")) {
 			// IN CACHE and object is RealPlayer format RA5 or lower.
@@ -281,10 +311,12 @@ public abstract class MediaParts extends MMObjectBuilder {
 			pos = url.indexOf(delim);
 			urlsb.setCharAt(pos,(""+userChannels).charAt(0));
 			url = ""+urlsb;
-			debug("getUrlFromCache : HIT Returning entry: "+url);
+            if (log.isDebugEnabled()) {
+                log.debug("getUrlFromCache : HIT Returning entry: " + url);
+            }
 			return url;
 		} else {
-			debug("getUrlFromCache: Invalid UrlCache entry: "+url+" , returning null");
+			log.info("getUrlFromCache: Invalid UrlCache entry: " + url + " , returning null");
 			return null;
 		}
 	}
@@ -332,8 +364,8 @@ public abstract class MediaParts extends MMObjectBuilder {
 		try {
 			return Integer.parseInt(number);
 		} catch(NumberFormatException nfe) {
-			debug("getNumberParam: Invalid number value:"+number);
-			nfe.printStackTrace();
+			log.error("getNumberParam: Invalid number value:" + number);
+			log.error(Logging.stackTrace(nfe));
 			return -1;
 		}
 	}
@@ -346,8 +378,8 @@ public abstract class MediaParts extends MMObjectBuilder {
 		try {
 			return Integer.parseInt(speed);
 		} catch(NumberFormatException nfe) {
-			debug("getSpeedParam: Invalid speed value:"+speed+" using default "+getMinSpeed());
-			nfe.printStackTrace();
+			log.error("getSpeedParam: Invalid speed value:" + speed + " using default " + getMinSpeed());
+			log.error(Logging.stackTrace(nfe));
 			return getMinSpeed();
 		}
 	}
@@ -360,8 +392,8 @@ public abstract class MediaParts extends MMObjectBuilder {
 		try {
 			return Integer.parseInt(channels);
 		} catch(NumberFormatException nfe) {
-			debug("getChannelsParam: Invalid channels value:"+channels+" using default "+getMinChannels());
-			nfe.printStackTrace();
+			log.error("getChannelsParam: Invalid channels value:" + channels+" using default " + getMinChannels());
+			log.error(Logging.stackTrace(nfe));
 			return getMinChannels();
 		}
 	}
