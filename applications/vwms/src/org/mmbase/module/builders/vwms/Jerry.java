@@ -187,7 +187,7 @@ private Hashtable dirtyQuestions=new Hashtable();
 	private boolean createNewOpinionPoll(MMObjectNode conopinode) {
 		PosRel posrel=(PosRel)Vwms.mmb.getMMObject("posrel");		
 		// create the question
-			Question questions=(Question)Vwms.mmb.getMMObject("questions");		
+			MMObjectBuilder questions=Vwms.mmb.getMMObject("questions");		
 			MMObjectNode qnode=questions.getNewNode("VWM Jerry");
 			qnode.setValue("title","Mee Eens ?");
 			int qnum=questions.insert("VWM Jerry",qnode);
@@ -217,61 +217,6 @@ private Hashtable dirtyQuestions=new Hashtable();
  
 		return(true);
 	}
-
-	private boolean createNewOpinionPollOld(MMObjectNode conopinode) {
-		PosRel posrel=(PosRel)Vwms.mmb.getMMObject("posrel");		
-		// create the question
-			Question questions=(Question)Vwms.mmb.getMMObject("questions");		
-			MMObjectNode qnode=questions.getNewNode("VWM Jerry");
-			qnode.setValue("title","Mee Eens ?");
-			int qnum=questions.insert("VWM Jerry",qnode);
-
-		// first create the 3 anwers (no/yes/noideayet)
-			MMObjectBuilder answers=Vwms.mmb.getMMObject("answers");		
-
-			/*
-			MMObjectNode anode=answers.getNewNode("VWM Jerry");
-			anode.setValue("title","Mee Eens");
-			int anum=answers.insert("VWM Jerry",anode);
-			*/
-		// attach anwser to the question
-			if (qnum!=-1) {
-				int rnum=posrel.insert("VWM Jerry",2088659,qnum,0);
-				if (rnum==-1) System.out.println("VWM Jerry : error -1 insrel (quesion to answers)");
-			}
-
-			/*
-			anode=answers.getNewNode("VWM Jerry");
-			anode.setValue("title","Oneens");
-			anum=answers.insert("VWM Jerry",anode);
-			*/
-		// attach anwsers to the question
-			if (qnum!=-1) {
-				int rnum=posrel.insert("VWM Jerry",2088657,qnum,0);
-				if (rnum==-1) System.out.println("VWM Jerry : error -1 insrel (quesion to answers)");
-			}
-			
-			/*
-			anode=answers.getNewNode("VWM Jerry");
-			anode.setValue("title","Nog geen idee");
-			anum=answers.insert("VWM Jerry",anode);
-			*/
-		// attach anwsers to the question
-			if (qnum!=-1) {
-				int rnum=posrel.insert("VWM Jerry",2088655,qnum,0);
-				if (rnum==-1) System.out.println("VWM Jerry : error -1 insrel (quesion to answers)");
-			}
-
-
-		// attach question to the conopi
-			if (qnum!=-1) {
-				int rnum=Vwms.mmb.getInsRel().insert("VWM Jerry",conopinode.getIntValue("number"),qnum,14);
-				if (rnum==-1) System.out.println("VWM Jerry : error -1 insrel (quesion to answers)");
-			}
- 
-		return(true);
-	}
-
 
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
 		return(nodeChanged(number,builder,ctype));
@@ -329,7 +274,7 @@ private Hashtable dirtyQuestions=new Hashtable();
 		if (dirtyQuestions.size()>0) {
 			Hashtable cd;
 			String qkey;
-			Question questions=(Question)Vwms.mmb.getMMObject("questions");		
+			MMObjectBuilder questions=Vwms.mmb.getMMObject("questions");		
 			MultiRelations multirel=(MultiRelations)Vwms.mmb.getMMObject("multirelations");
 			MMObjectNode qnode;
 
