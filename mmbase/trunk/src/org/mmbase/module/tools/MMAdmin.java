@@ -16,8 +16,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.xml.BuilderWriter;
 import org.mmbase.util.xml.ModuleWriter;
 import org.mmbase.module.*;
-import org.mmbase.cache.MultilevelCacheHandler;
-import org.mmbase.cache.MultilevelCacheEntry;
+import org.mmbase.cache.MultilevelCache;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.builders.Message; // dependency, needs to be removed
@@ -33,18 +32,21 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.67 2003-04-23 08:15:07 kees Exp $
+ * @version $Id: MMAdmin.java,v 1.68 2003-05-01 14:07:26 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     
     // logging routines
     private static Logger log = Logging.getLoggerInstance(MMAdmin.class.getName());
     
+
+    // true: ready (probeCall was called)
+    private boolean state = false;
     /**
      * reference to MMBase
      * @scope private
      */
-    MMBase mmb=null;
+    MMBase mmb = null;
     /**
      * @javadoc
      * @scope private
@@ -79,7 +81,7 @@ public class MMAdmin extends ProcessorModule {
             kioskmode=true;
             log.info("*** Server started in kiosk mode ***");
         }
-        mmb=(MMBase)getModule("MMBASEROOT");
+        mmb = (MMBase) getModule("MMBASEROOT");
         probe = new MMAdminProbe(this);
     }
     
@@ -320,32 +322,32 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("MODULECLASSFILE")) {
                 return ""+getModuleClass(tok.nextToken());
             } else if (cmd.equals("MULTILEVELCACHEHITS")) {
-                return(""+MultilevelCacheHandler.getCache().getHits());
+                return(""+MultilevelCache.getCache().getHits());
             } else if (cmd.equals("MULTILEVELCACHEMISSES")) {
-                return(""+MultilevelCacheHandler.getCache().getMisses());
+                return(""+MultilevelCache.getCache().getMisses());
             } else if (cmd.equals("MULTILEVELCACHEREQUESTS")) {
-                return(""+(MultilevelCacheHandler.getCache().getHits()+MultilevelCacheHandler.getCache().getMisses()));
+                return(""+(MultilevelCache.getCache().getHits()+MultilevelCache.getCache().getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
-                return(""+(MultilevelCacheHandler.getCache().getRatio()*100));
+                return(""+(MultilevelCache.getCache().getRatio()*100));
             } else if (cmd.equals("MULTILEVELCACHESTATE")) {
                 if (tok.hasMoreTokens()) {
                     String state=tok.nextToken();
                     if (state.equalsIgnoreCase("On")) {
-                        MultilevelCacheHandler.getCache().setActive(true);
+                        MultilevelCache.getCache().setActive(true);
                         log.info("turned multilevelcache on");
                     } else if (state.equalsIgnoreCase("Off")) {
-                        MultilevelCacheHandler.getCache().setActive(false);
+                        MultilevelCache.getCache().setActive(false);
                         log.info("turned multilevelcache off");
                     }
                 } else {
-                    if (MultilevelCacheHandler.getCache().isActive()) {
+                    if (MultilevelCache.getCache().isActive()) {
                         return "On";
                     } else {
                         return "Off";
                     }
                 }
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                return(""+(MultilevelCacheHandler.getCache().getSize()));
+                return(""+(MultilevelCache.getCache().getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return(""+MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -1121,15 +1123,16 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public void probeCall() {
+        
         if (restartwanted) {
             System.exit(0);
         }
-        Versions ver=(Versions)mmb.getMMObject("versions");
-        if (ver==null) {
+        Versions ver = (Versions)mmb.getMMObject("versions");
+        if (ver == null) {
             log.warn("Versions builder not installed, Can't auto deploy apps");
             return;
         }
-        String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
+        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
         if (bdir.isDirectory()) {
@@ -1140,13 +1143,24 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     ApplicationResult result= new ApplicationResult(this);
                     if (!installApplication(aname.substring(0,aname.length()-4),-1,null,result,new HashSet(),true)) {
-                        log.error("Problem installing application : "+aname);
+                        log.error("Problem installing application : " + aname);
                     }
                 }
             }
         }
+        state = true;
     }
     
+    /**
+     * Wether MMAdmin module was completely initialized (applications auto-deployed and so on).
+     * @since MMBase-1.7
+     */
+
+    public boolean getState() {
+        return state;
+    }
+
+
     /**
      * @javadoc
      */
@@ -1879,10 +1893,11 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     public Vector  getMultilevelCacheEntries() {
-        Vector results=new Vector();
-        Enumeration res=MultilevelCacheHandler.getCache().getOrderedElements();
-        while (res.hasMoreElements()) {
-            MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
+        Vector results = new Vector();
+        Iterator res = MultilevelCache.getCache().getOrderedEntries().iterator();
+        while (res.hasNext()) {
+            Map.Entry entry = (Map.Entry) res.next();
+            /*
             StringTagger tagger=en.getTagger();
             Vector type=tagger.Values("TYPE");
             Vector where=tagger.Values("WHERE");
@@ -1908,7 +1923,9 @@ public class MMAdmin extends ProcessorModule {
                 results.addElement("");
             }
             results.addElement(tagger.ValuesString("ALL"));
-            results.addElement(""+MultilevelCacheHandler.getCache().getCount(en.getKey()));
+            */
+            results.add(entry.getKey());
+            results.addElement(""+MultilevelCache.getCache().getCount(entry.getKey()));
         }
         return results;
     }
