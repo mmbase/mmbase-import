@@ -29,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.1 2003-07-23 14:11:35 pierre Exp $
+ * @version $Id: TypeMapping.java,v 1.2 2003-07-24 10:11:04 pierre Exp $
  */
 public class TypeMapping implements Comparable {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(StorageReader.class);
+    private static Logger log = Logging.getLoggerInstance(TypeMapping.class);
 
     /**
      * The expression this type should translate to.

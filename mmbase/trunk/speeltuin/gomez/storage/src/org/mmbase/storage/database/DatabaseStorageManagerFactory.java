@@ -11,6 +11,7 @@ package org.mmbase.storage;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -28,18 +29,18 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * A storage manager factory for database storages.
- * This factory sets up a datasource for connecting to the database.
- * If you specify the datasource URI in the 'dataource' property in mmbaseroot.xml configuration file,
- * the factory attempts to obtain the datasource from the appplication server. If this fails, or no datasource URI is given,
- * It attempts to use the connectivity offered by the JDBC Module,w hcih si then warpped in a datasource.
- * Note that if you provide a datasource you should make the JDBC Module inactive to prevent the module from
+ * This factory sets up a data source for connecting to the database.
+ * If you specify the data source URI in the 'dataource' property in mmbaseroot.xml configuration file,
+ * the factory attempts to obtain the data source from the appplication server. If this fails, or no data source URI is given,
+ * It attempts to use the connectivity offered by the JDBC Module,w hcih si then warpped in a data source.
+ * Note that if you provide a data source you should make the JDBC Module inactive to prevent the module from
  * interfering with the storage layer.
  * @todo backward compatibility with the old supportclasses should be done by creating a separate Factory
  * (LegacyStorageManagerFactory ?).
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.3 2003-07-23 11:19:47 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.4 2003-07-24 10:11:04 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -47,42 +48,83 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
     /**
-     * The datasource in use by this factory.
-     * The datasource is retrieved either from the application server, or by wrapping the JDBC Module in a generic datasource.
+     * The data source in use by this factory.
+     * The data source is retrieved either from the application server, or by wrapping the JDBC Module in a generic data source.
      */
-    protected DataSource datasource;
+    protected DataSource dataSource;
 
+    /**
+     * The transaction isolation level available for this storage.
+     * Default TRANSACTION_NONE (no transaction support).
+     * The actual value is determined from the database metadata.
+     */
+    protected int transactionIsolation = Connection.TRANSACTION_NONE;
+
+    /**
+     * Whether transactions and rollback are supported by this database
+     */
+    protected boolean supportsTransactions = false;
+    
     public double getVersion() {
         return 0.1;
     }
 
+	public boolean supportsTransactions() {
+        return supportsTransactions;
+    }
+
     /**
      * Opens and reads the storage configuration document.
-     * Obtain a datasource to the storage, and load configuration attributes.
+     * Obtain a data source to the storage, and load configuration attributes.
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
     protected void load() throws StorageException {
         // get the Datasource for the database to use
-        // the datasource uri (i.e. 'jdbc/xa/MMBase' )
+        // the data source uri (i.e. 'jdbc/xa/MMBase' )
         // is stored in the mmbaseroot module configuration file
-        String datasourceURI = mmbase.getInitParameter("datasource");
-        if (datasourceURI != null) {
+        String dataSourceURI = mmbase.getInitParameter("datasource");
+        if (dataSourceURI != null) {
             try {
                 Context jndiCntx = new InitialContext();
-                datasource = (DataSource)jndiCntx.lookup(datasourceURI);
+                dataSource = (DataSource)jndiCntx.lookup(dataSourceURI);
             } catch(NamingException ne) {
-                log.warn("Datasource '"+datasourceURI+"' nota available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
+                log.warn("Datasource '"+dataSourceURI+"' nota available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
             }
         }
-        if (datasource == null) {
-            // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
-            // This datasource should only be needed in cases were MMBase runs without application server.
-            datasource = new GenericDataSource(mmbase);
+        if (dataSource == null) {
+            // if no data source is provided, try to obtain the generic data source (which uses JDBC Module)
+            // This data source should only be needed in cases were MMBase runs without application server.
+            dataSource = new GenericDataSource(mmbase);
         }
-        // test the datasource
-        // perhaps this should be tried a few times?
+        // store the data source as an attribute
+        setAttribute("database.dataSource", dataSource);
+
+        // test the data source and retrieves options, 
+        // which are stored as options in the factory's attribute
+        // this allows for easy retrieveal of database options
         try {
-            Connection con = datasource.getConnection();
+            Connection con = dataSource.getConnection();
+            DatabaseMetaData metaData = con.getMetaData();
+            // set transaction options
+            supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
+            setOption("database.dataDefinitionCausesTransactionCommit", metaData.dataDefinitionCausesTransactionCommit());
+            setOption("database.dataDefinitionIgnoredInTransactions", metaData.dataDefinitionIgnoredInTransactions());
+            setOption("database.supportsDataManipulationTransactionsOnly", metaData.supportsDataManipulationTransactionsOnly());
+            setOption("database.supportsDataDefinitionAndDataManipulationTransactions", metaData.supportsDataDefinitionAndDataManipulationTransactions());
+            // determine transactionlevels
+            if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
+                transactionIsolation = Connection.TRANSACTION_SERIALIZABLE;
+            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
+                transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
+            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_UNCOMMITTED)) {
+                transactionIsolation = Connection.TRANSACTION_READ_UNCOMMITTED;
+            } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
+                transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
+            }                 
+            setAttribute("database.transactionIsolationLevel", new Integer(transactionIsolation));
+            // alter table support options
+            setOption("database.supportsAlterTableWithAddColumn",metaData.supportsAlterTableWithAddColumn());
+            setOption("database.supportsAlterTableWithDropColumn",metaData.supportsAlterTableWithDropColumn());
             con.close();
         } catch (SQLException se) {
             throw new StorageInaccessibleException(se);
@@ -95,7 +137,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
      * Locates and opens the storage configuration document.
      * The configuration document to open is dependent on the storage type and version.
      * You can explicitly set this type in mmbasreoot (using the storage property), or let
-     * MMBase determine it using information gained from the datasource, and the lookup.xml file
+     * MMBase determine it using information gained from the data source, and the lookup.xml file
      * in the database configuration directory
      * @todo configuration path should be retrieved from the MMBase instance, rather than directly from the (static)
      * MMBaseContext class.
@@ -120,8 +162,8 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
                 // otherwise, search for supported drivers using the lookup xml
                 DatabaseLookup lookup = new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
                 try {
-                    databaseConfig = lookup.getDatabaseConfig(datasource.getConnection());
-                } catch (java.sql.SQLException sqle) {
+                    databaseConfig = lookup.getDatabaseConfig(dataSource.getConnection());
+                } catch (SQLException sqle) {
                     throw new StorageInaccessibleException(sqle);
                 }
             } else {
@@ -133,15 +175,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             return new StorageReader(databaseConfig.getPath());
         }
     }
-
-    /**
-     * Returns the datasource that provides access to the storage.
-     * @return a DataSource instance, or <code>null</code> if none is (yet) available
-     */
-    public DataSource getDataSource() {
-        return datasource;
-    }
-
+    
 }
 
 

@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.5 2003-07-23 14:34:57 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.6 2003-07-24 10:11:04 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -119,5 +119,11 @@ public interface StorageManagerFactory {
      */
 	public Map getDisallowedFields();
 
+    /**
+     * Returns whether transactions, and specifically rollback, is supported in the storage layer.
+     * @return  <code>true</code> if trasnactions are supported
+     */
+	public boolean supportsTransactions();
+    
 }
 
