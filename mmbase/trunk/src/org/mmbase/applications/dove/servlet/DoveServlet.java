@@ -11,19 +11,25 @@ package org.mmbase.applications.dove.servlet;
 
 import java.io.*;
 import java.util.*;
-import java.lang.reflect.*;
-import javax.servlet.*;
+
 import javax.servlet.http.*;
+import javax.servlet.*;
+
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.*;
-import javax.xml.parsers.*;
-import org.apache.xerces.parsers.*;
-import org.apache.xml.serialize.*;
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-import org.mmbase.util.*;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xml.serialize.XMLSerializer;
+import org.apache.xml.serialize.OutputFormat;
+import org.mmbase.util.XMLEntityResolver;
+
+
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.dove.*;
-import org.mmbase.servlet.*;
+import org.mmbase.servlet.MMBaseServlet;
 
 /**
  * This servlet routes RPC requests (represented in xml) to the intended method of
@@ -31,18 +37,21 @@ import org.mmbase.servlet.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.3 2002-02-27 16:54:21 pierre Exp $
+ * @version $Id: DoveServlet.java,v 1.4 2002-06-26 11:44:55 michiel Exp $
  */
-public class DoveServlet extends JamesServlet {
+public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
 
     //logger
-    private static Logger log = Logging.getLoggerInstance(DoveServlet.class.getName());
+    private static Logger log;
 
+    public void init() throws ServletException {
+        log = Logging.getLoggerInstance(DoveServlet.class.getName());
+    }
     /**
      * Handles a request using the GET method.
      * No communication is handled through GET - this method is for testing whether the servlet is online.
-     * @param req the HHTP Request object
-     * @param res the HHTP Response object
+     * @param req the HTTP Request object
+     * @param res the HTTP Response object
      */
     public void doGet (HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
@@ -71,8 +80,8 @@ public class DoveServlet extends JamesServlet {
      * <br />
      * XXX: We have not yet established how we will use session-info and usercontext.
      *
-     * @param req the HHTP Request object
-     * @param res the HHTP Response object
+     * @param req the HTTP Request object
+     * @param res the HTTP Response object
      */
     public void doPost (HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
@@ -96,12 +105,12 @@ public class DoveServlet extends JamesServlet {
             parser.setErrorHandler(errorhandler);
 
 
-            // Right now we read conmtent from parameters
-            // Maybe we want teh xml to eb directly in the body?
+            // Right now we read content from parameters
+            // Maybe we want the xml to be directly in the body?
             // Depends on how the editors will post.
             String s = req.getParameter("xml");
-            log.info("received : "+s);
-            StringBufferInputStream sin= new StringBufferInputStream(s);
+            log.service("received : "+s);
+            StringReader sin= new StringReader(s);
             InputSource in = new InputSource(sin);
 
 // alternate code when not using parameters:
@@ -120,9 +129,9 @@ public class DoveServlet extends JamesServlet {
                     Document doc = docBuilder.newDocument();
                     Element rootout =doc.createElement(Dove.RESPONSE);
                     doc.appendChild(rootout);
-                    Dove birdy=new Dove(doc);
-                    birdy.doRequest(rootin,rootout);
-                    res.setStatus(200,"OK");
+                    Dove birdy = new Dove(doc);
+                    birdy.doRequest(rootin, rootout);
+                    res.setStatus(HttpServletResponse.SC_OK);
                     if (plain) {
                         res.setContentType("text/plain");
                     } else {
@@ -150,13 +159,13 @@ public class DoveServlet extends JamesServlet {
             errortype="server";
         }
         ServletOutputStream out = res.getOutputStream();
-        res.setStatus(200,"OK");
+        res.setStatus(HttpServletResponse.SC_OK);
         if (plain) {
             res.setContentType("text/plain");
         } else {
             res.setContentType("text/xml");
         }
-        out.println("<response><error type=\""+errortype+"\">"+error+"</error></response>");
+        out.println("<response><error type=\"" + errortype + "\">" + error + "</error></response>");
         out.flush();
     }
 
