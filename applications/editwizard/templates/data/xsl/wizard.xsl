@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.39 2002-07-15 15:40:31 michiel Exp $
+  @version $Id: wizard.xsl,v 1.40 2002-07-15 15:47:49 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -656,7 +656,7 @@
            Create the '*' (add) buttons.
            -->
       <xsl:for-each select="command[@name='add-item']">
-        <xsl:if test="../command[@name='search' or @name='insert'] and not(command[@name='startwizard'])">
+        <xsl:if test="not(../command[@name='startwizard'] and not(../command[@name='search' or @name='insert']))">
           <!-- if there is a start-wizard command and not 'search' or 'insert' command then do not add an extra 'add' button (will be added by 'startwizard' -->
           <table border="0" cellspacing="0" cellpadding="0" width="616"><!-- @bad-constant -->
           <xsl:for-each select="../command[@name='search' or @name='insert']">
