@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd" [
-         <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
-         <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" [
+         <!ENTITY mmlevel "org.mmbase.util.logging.log4j.Log4jLevel" >
 ]>
 
 <!-- 
@@ -17,45 +16,45 @@
 <!-- usefull if the log-file is on a very slow device (for example -->
 <!-- somewhere else on the network.                                -->
 <!-- But for the sake of the example it is nice, isn't it?         -->
-<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+  <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
     <appender-ref ref="fastfile" />
-</appender>
-
-<appender name="fastfile" class="org.apache.log4j.FileAppender">
+  </appender>
+  
+  <appender name="fastfile" class="org.apache.log4j.FileAppender">
     <param name="File"   value="/tmp/mmlog4j.log" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
-         <param name="ConversionPattern" value="%d{ISO8601} %p - %m%n" />
+      <param name="ConversionPattern" value="%d{ISO8601} %p - %m%n" />
     </layout>
-</appender>
-
-<!-- another example, logging in xml: -->
-<appender name="xmlfile" class="org.apache.log4j.FileAppender">
+  </appender>
+  
+  <!-- another example, logging in xml: -->
+  <appender name="xmlfile" class="org.apache.log4j.FileAppender">
     <param name="File"   value="/tmp/mmlog4j.log" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.xml.XMLLayout" /> 
-</appender>
+  </appender>
+  
 
 
+  <!-- categories -->
+  <!-- base category for all MMBase classes -->
+  <logger name="org.mmbase">
+    <!-- nothing special -->
+  </logger>
+    
+  <logger name="org.mmbase.security">
+    <level class="&mmlevel;" value ="debug" />
+  </logger>
+  
+  <logger name="STDERR">
+    <level class="&mmlevel;" value ="debug" />	
+  </logger>
+  
 
-<!-- categories -->
-<!-- base category for all MMBase classes -->
-<category name="org.mmbase" class ="&logger;">
-<!-- nothing special -->
-</category>
-
-<category name="org.mmbase.security" class ="&logger;">
-  <priority class="&priority;" value ="debug" />
-</category>
-
-<category name="STDERR" class ="&logger;">
-    <priority class="&priority;" value ="debug" />	
-</category>
-
-
-<root>
-    <priority class="&priority;" value ="info" />
+  <root>
+    <level class="&mmlevel;" value ="info" />
    	<appender-ref ref="ASYNC" />
-</root>
+  </root>
 
 </log4j:configuration>
