@@ -1,6 +1,8 @@
 package org.mmbase.security.implementation;
 
 import java.util.HashMap;
+import java.io.File;
+
 import org.mmbase.util.ExtendedProperties;
 
 import org.mmbase.util.logging.Logger;
@@ -16,6 +18,7 @@ public class FileLoginModule implements LoginModule {
 
     public void load(HashMap properties) {
         String passwordFile = (String)properties.get("file");
+
         if (passwordFile == null || passwordFile.equals("")) {
             configFile = org.mmbase.module.core.MMBaseContext.getConfigPath() + java.io.File.separator + "accounts.properties";
             log.warn("property file not specified, now using as config file :" + configFile);
@@ -25,7 +28,14 @@ public class FileLoginModule implements LoginModule {
 
         log.debug("trying to load file login modules with password file:"  + configFile);
 
-        java.io.File file = new java.io.File(configFile);
+        File file = new File(configFile);
+
+        if (! file.isAbsolute()) {
+            File   parentFile   = (File) properties.get("_parentFile");
+            file = new File(parentFile.getParent() + File.separator + configFile);
+            log.debug("" + configFile + " is not absolute. Trying " + file.getAbsolutePath());            
+        }
+
         if ( !file.exists() ) {
             log.error("file: '"+configFile+"' did not exist.");
             throw new org.mmbase.security.SecurityException("file: '"+configFile+"' did not exist.");

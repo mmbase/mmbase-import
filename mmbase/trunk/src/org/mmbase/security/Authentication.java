@@ -1,6 +1,7 @@
 package org.mmbase.security;
 
 import java.util.HashMap;
+import java.io.File;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -17,7 +18,7 @@ public class Authentication {
     protected MMBaseCop manager;
     
     /** The url where the configfile is located */      
-    protected String configPath;
+    protected File configFile;
 
     /** 
      *	The method which sets the settings of this class. This method is 
@@ -31,7 +32,7 @@ public class Authentication {
     public final void load(MMBaseCop manager, String configPath) {
     	log.debug("Calling load() with configPath:" + configPath);
      	this.manager = manager;
-	this.configPath = configPath;
+	this.configFile = new File(configPath);
 	load();
     }
 
