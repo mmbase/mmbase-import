@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.40 $ $Date: 2002-10-10 17:20:42 $
+ * @version $Id: Module.java,v 1.41 2002-11-21 13:48:21 pierre Exp $
  */
 public abstract class Module {
 
@@ -38,9 +38,7 @@ public abstract class Module {
 
     Object SecurityObj;
     String moduleName=null;
-    //protected final Hashtable state=new Hashtable();
     Hashtable state=new Hashtable();
-    // org.mmbase private UsersInterface users;
     Hashtable mimetypes;
     Hashtable properties;
     String maintainer;
@@ -147,41 +145,14 @@ public abstract class Module {
     /**
      * Returns one propertyvalue to the subclass.
      */
-    /* daniel, org.mmbase needs fix
-    */
     protected String getProperty(String name, String var) {
-        //return Environment.getProperty(this,name,var);
         return "";
     }
-
-    /* daniel, org.mmbase
-       protected Object removeProperty(String propertytable, String key) {
-        return Environment.removeProperty(this,propertytable,key);
-    }
-    */
-
-    /**
-     * Adds a property to the propertytabel
-     */
-    /* daniel, org.mmbase
-    protected String putProperty(String propertytable, String key, String value) {
-        return (String)Environment.putProperty(this,propertytable,key,value);
-    }
-    */
-
-    /**
-     * Adds a property to the propertytabel
-     */
-    /* daniel, org.mmbase
-    protected String putInitProperty(String key, String value) {
-        return (String)Environment.putProperty(this,"module/"+moduleName,key,value);
-    }
-    */
 
     /**
      * Gets own modules properties
      */
-       public Hashtable getInitParameters() {
+    public Hashtable getInitParameters() {
         return properties;
     }
 
@@ -198,61 +169,6 @@ public abstract class Module {
             return modules.values().iterator();
         }
     }
-
-
-    /**
-     *    Get user Module property
-     */
-    /* daniel, org.mmbase
-    protected final String getUserModuleProperty(String userName,String name,int type) {
-        if (users!=null && userName!=null) {
-            return users.getModuleProperty(moduleName,userName,name,type);
-        } else {
-            return null;
-        }
-    }
-    */
-
-    /**
-     *    Get user Module property
-     */
-    /* daniel, org.mmbase
-    protected final String getUserModuleProperty(String userName,String name) {
-        return getUserModuleProperty(userName,name,1);
-    }
-    */
-
-    /**
-     *    Get user Module property
-     */
-    /* daniel, org.mmbase
-    protected final boolean setUserModuleProperty(String userName,String name,String value, int type) {
-        if (users!=null && userName!=null) {
-            return users.setModuleProperty(moduleName,userName,name,value,type);
-        } else {
-            return false;
-        }
-    }
-    */
-
-    /**
-     *    Get user Module property
-     */
-    /* daniel, org.mmbase
-    protected final boolean setUserModuleProperty(String userName,String name,String value) {
-        return setUserModuleProperty(userName,name,value,1);
-    }
-    */
-
-    /**
-     * getName
-     */
-    /* daniel, org.mmbase
-    protected final String getName(Object asker) {
-        return Environment.getName(asker);
-    }
-    */
-
 
     /**
      *  Returns the name of the module
@@ -297,13 +213,9 @@ public abstract class Module {
         return mimetype;
     }
 
-
-
     public static synchronized final void startModules() {
         // call the onload to get properties
         log.service("Starting modules " + modules.keySet());
-
-    
         for (Iterator i = modules.values().iterator(); i.hasNext();) {
             Module mod = (Module)i.next();
             if( log.isDebugEnabled() ) {
@@ -363,7 +275,7 @@ public abstract class Module {
      *      module does not exist or is inactive.
      */
     synchronized public static Object getModule(String name, boolean startOnLoad) {
-        // are the modules loaded yet ? if not load them       
+        // are the modules loaded yet ? if not load them
         if (modules == null) {
             log.service("Loading MMBase modules...");
             modules = loadModulesFromDisk();
@@ -406,7 +318,6 @@ public abstract class Module {
     public int getVersion() {
         return version;
     }
-
 
     /**
      * set classname of the builder
