@@ -29,6 +29,8 @@ import org.mmbase.module.corebuilders.InsRel;
 public class MMInformix42Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
+	private boolean debug = true;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	MMBase mmb;
 	static Vector nameCache=null;
@@ -371,10 +373,8 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 	* insert a new object, normally not used (only subtables are used)
 	*/
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
-		System.out.println("WWWW1");	
 		int number=getDBKey();
 		if (number==-1) return(-1);
-		System.out.println("WWWW2");	
 		try {
 			String tmp="";
 			for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
@@ -384,7 +384,6 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 					tmp+=",?";
 				}
 			}
-			System.out.println("WWWW3");	
 			MultiConnection con=bul.mmb.getConnection();
 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");
 			stmt.setInt(1,number);
@@ -411,7 +410,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		return(number);	
 	}
 
-
+	
 	/**
 	* set text array in database
 	*/
@@ -420,7 +419,7 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		try {
 			isochars=body.getBytes("ISO-8859-1");
 		} catch (Exception e) {
-			debug("getDBText(): String contains odd chars");
+			debug("setDBText(): String contains odd chars");
 			debug(body);
 			e.printStackTrace();
 		}
@@ -429,11 +428,10 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			stmt.setAsciiStream(i,stream,isochars.length);
 			stream.close();
 		} catch (Exception e) {
-			debug("getDBText(): Can't set ascii stream");
+			debug("setDBText(): Can't set ascii stream");
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	* set byte array in database
@@ -467,8 +465,8 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			}
 		} else if (type.equals("byte")) {	
 				setDBByte(i, stmt, node.getByteValue(key));
-		} else { 
-			String tmp=node.getStringValue(key);
+		} else {
+  			String tmp=node.getStringValue(key);
 			if (tmp!=null) {
 				stmt.setString(i, tmp);
 			} else {
@@ -523,19 +521,23 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		node.clearChanged();
 		if (bul.broadcastChanges) {
 			if (bul instanceof InsRel) {
-				debug("commit(): Changed=insrel");
-				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+				int num = node.getIntValue("number");
+				debug("commit(): changed(insrel,"+bul.tableName+","+num+")");
+				mmb.mmc.changedNode(num,bul.tableName,"c");
+
 				// figure out tables to send the changed relations
+				// -----------------------------------------------
 				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
 				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
 				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			} else {
-				debug("commit(): Changed=object ("+bul.tableName+")");
+				int num = node.getIntValue("number");
+				debug("commit(): changed("+bul.tableName+","+num+")");
 				if (mmb!=null && mmb.mmc!=null) {
-					mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+					mmb.mmc.changedNode(num,bul.tableName,"c");
 				} else {
-					debug("commit(): can't send change mmb or mmb.mmc is null");
+					debug("commit(): can't send change("+bul.tableName+","+num+"), mmb or mmb.mmc is null");
 				}
 			}
 		}
@@ -547,24 +549,28 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 	* removeNode
 	*/
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
+		java.util.Date d=new java.util.Date();
 		int number=node.getIntValue("number");
-		debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
-		debug("SAVECOPY "+node.toString());
+		debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
+		debug("removeNode(): SAVECOPY "+node.toString());
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {
-			debug("removeNode(): PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
+			debug("removeNode("+bul.tableName+","+number+"): PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
 		} else {
-		if (number!=-1) {
-			try {
-				MultiConnection con=mmb.getConnection();
-				Statement stmt=con.createStatement();
-				stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
-				stmt.close();
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			if (number!=-1) {
+				try {
+					MultiConnection con=mmb.getConnection();
+					Statement stmt=con.createStatement();
+					stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number);
+					stmt.close();
+					con.close();
+				} catch (SQLException e) {
+					debug("removeNode("+bul.tableName+","+number+"): ERROR: ");
+					e.printStackTrace();
+				}
 			}
-		}
+			else
+				debug("removeNode("+bul.tableName+","+number+"): ERROR: number not valid(-1)!");
 		}
 		if (bul.broadcastChanges) {
 			mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"d");
@@ -574,6 +580,8 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			}
+			else
+				debug("removeNode("+bul.tableName+","+number+"): WARNING: want to remove it, but not an insrel (not implemented).");
 		}
 
 	}
@@ -590,30 +598,30 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		}
 	    int number=-1; // not 100% sure if function returns 1 first time
 		while (number==-1) {
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("execute function fetchrelkey(10)");
-			while (rs.next()) {
-				number=rs.getInt(1);
-			}
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			debug("MMBase -> Error getting a new key number");
-			e.printStackTrace();
 			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException re){
-				debug("MMBase -> Waiting 2 seconds to allow databvase to unlock fetchrelkey()");
+				MultiConnection con=mmb.getConnection();
+				Statement stmt=con.createStatement();
+				ResultSet rs=stmt.executeQuery("execute function fetchrelkey(10)");
+				while (rs.next()) {
+					number=rs.getInt(1);
+				}
+				stmt.close();
+				con.close();
+			} catch (SQLException e) {
+				debug("getDBKey(): ERROR: while getting a new key number");
+				e.printStackTrace();
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException re){
+					debug("getDBKey(): Waiting 2 seconds to allow databvase to unlock fetchrelkey()");
+				}
+				debug("getDBKey(): got key("+currentdbkey+")");
+				return(-1);
 			}
-			debug("GETDBKEY="+currentdbkey);
-			return(-1);
-		}
 		}
 		currentdbkey=number; // zeg 10
 		currentdbkeyhigh=(number+9); // zeg 19 dus indien hoger dan nieuw
-		debug("GETDBKEY="+currentdbkey);
+		debug("getDBKey(): got key("+currentdbkey+")");
 		return(number);
 	}
 
@@ -625,10 +633,10 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			return(true);
 		} else {
 			if (tableName.length()>0) {
-				debug("MMTable -> Not Found '"+tableName+"'");
+				debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
 				return(false);
 			} else {
-				debug("MMTable -> Not Found '"+tableName+"'");
+				debug("created("+tableName+"): ERROR: Not Found '"+tableName+"'");
 				return(true);
 			}
 		}
@@ -641,8 +649,11 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("SELECT tabname FROM systables where tabid>99;");
+			String s;
 			while (rs.next()) {
-				results.addElement(rs.getString(1));
+				s = rs.getString(1);
+				if (s!=null) s = s.trim();
+				results.addElement(s);
 			}	
 			stmt.close();
 			con.close();
@@ -651,10 +662,5 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 			//e.printStackTrace();
 			return(results);
 		}
-	}
-
-	private void debug( String msg )
-	{
-		System.out.println( classname +":"+ msg );
 	}
 }
