@@ -94,6 +94,14 @@ public class Project {
 		path="packaging"+File.separator+getName()+"_"+name+".xml";
 		path=path.replace(' ','_');
 	}
+
+	// check if the dirs are created, if not create them
+	String dirsp=basedir+path.substring(0,path.lastIndexOf(File.separator));
+	File dirs=new File(dirsp);
+	if (!dirs.exists()) {
+		dirs.mkdirs();
+	}
+
         Target t=new Target(name);
 	t.setBundle(true);
 	t.setBaseDir(basedir);
@@ -116,6 +124,12 @@ public class Project {
 	if (path.equals("") || path.equals("[auto]")) {
 		path="packaging"+File.separator+getName()+"_"+name+".xml";
 		path=path.replace(' ','_');
+	}
+	// check if the dirs are created, if not create them
+	String dirsp=basedir+path.substring(0,path.lastIndexOf(File.separator));
+	File dirs=new File(dirsp);
+	if (!dirs.exists()) {
+		dirs.mkdirs();
 	}
 	Target t=new Target(name);
 	t.setPath(path);
