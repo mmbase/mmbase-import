@@ -4,7 +4,15 @@
 <%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList"%>
 <%
 
-    String directory = getServletContext().getRealPath("/education/files");
+//    String directory = getServletContext().getRealPath("/education/files");
+
+    String directory = getServletContext().getInitParameter("filemanagementBaseDirectory");
+    String baseUrl = getServletContext().getInitParameter("filemanagementBaseUrl");
+    
+    if (directory == null || baseUrl == null) {
+        throw new ServletException("Please set filemanagementBaseDirectory and filemanagementBaseUrl parameters in web.xml");
+    }
+    
     boolean uploadOK = false;
 
     if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload"))) {

@@ -84,5 +84,6 @@
     <replace file="${build.config.dir}/chat/chat.properties"
              token="$${chat.engine.logfile}"
              value="${chat.engine.logfile}"/>
+
   </target>
 </project>
