@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.1 2003-11-30 19:53:51 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.2 2003-12-01 09:30:45 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -76,9 +76,10 @@ function doHelp() {
 	try {
 		var str=document.getElementById("help_text").innerHTML;
 
-		w.document.writeln('<html><head></head><body>');
+		w.document.writeln('<html><head>');
 		w.document.writeln('<link rel="stylesheet" href="../style/layout/help.css">');
 		w.document.writeln('<link rel="stylesheet" href="../style/color/help.css">');
+		w.document.writeln('</head><body>');
 		w.document.writeln(str);
 		w.document.writeln('</body></html>');
 	} catch (e) {
