@@ -84,7 +84,16 @@ one or more examplevalue tags is you want to give some example values.
       <name>fields</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>Comma-separated list of fields that should be made available in the page. The fields are selected from attributes of the corresponding  node managers defined in type. If the type fields contains more elements eg type=&quot;mags,news&quot; then it is required to append a prefix to each field listed eg fields=&quot;mags.title,news.title&quot;.In the jsp page the values are available in form of Strings eg mags.title is available as mags_title and can be accessed using &lt;%= mags_title &gt;.</info>
+      <info>
+        Comma-separated list of fields that should be made available in the
+        page. The fields are selected from attributes of the corresponding node
+        managers defined in type. If the type fields contains more elements e.g.
+        type=&quot;mags,news&quot; then it is required to append a prefix to
+        each field listed e.g. fields=&quot;mags.title,news.title&quot;. In the
+        jsp page the values are available in form of Strings e.g. mags.title is
+        available as mags_title and can be accessed using
+        &lt;%= mags_title %&gt;.
+      </info>
     </attribute>
     <attribute>
       <name>where</name>
@@ -858,18 +867,37 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <name>type</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>What kind of fields must be listed</info>
+      <info>
+        The type of fields that should be returned. If not specified, all
+        fields are returned.
+      </info>
       <possiblevalue>
         <value>create</value>
+        <info>
+          Defined in NodeManager from the bridge classes, but not used in
+          BasicNodeManager. Currently it does nothing special.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>edit</value>
+        <info>
+          Return only those fields that should appear in the input area of the
+          editor.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>list</value>
+        <info>
+          Return only those fields that should appear in the list area of the
+          editor.
+        </info>
       </possiblevalue>
       <possiblevalue>
         <value>search</value>
+        <info>
+          Return only those fields that should appear in the search area of the
+          editor.
+        </info>
       </possiblevalue>
     </attribute>
   </tag>
