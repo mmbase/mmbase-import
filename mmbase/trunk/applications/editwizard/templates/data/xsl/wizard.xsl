@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.137 2004-09-15 08:23:58 pierre Exp $
+    @version $Id: wizard.xsl,v 1.138 2004-09-23 09:51:13 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -882,7 +882,7 @@
           <div class="imageupload">
             <div>
               <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="image" >
-                <xsl:if test="@dtrequired=&apos;true&apos; and starts-with(@number, &apos;n&apos;)">
+                <xsl:if test="@dtrequired=&apos;true&apos; and @size=0">
                   <xsl:attribute name="dtrequired">true</xsl:attribute>
                 </xsl:if>
               </input>
@@ -890,7 +890,7 @@
                 <xsl:call-template name="prompt_image_upload"/>
               </a>
               <br/>
-              <xsl:if test="not(starts-with(@number, &apos;n&apos;))">
+              <xsl:if test="@size != 0">
                 <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
                 <br/>
               </xsl:if>
@@ -943,15 +943,18 @@
         <xsl:choose>
           <xsl:when test="not(upload)">
             <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="file" >
-              <xsl:if test="@dtrequired=&apos;true&apos; and starts-with(@number, &apos;n&apos;)">
+              <xsl:if test="@dtrequired=&apos;true&apos; and @size=0">
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
-            <xsl:call-template name="prompt_no_file"/>
-            <br/>
-            <xsl:if test="not(starts-with(@number, &apos;n&apos;))">
+            <xsl:if test="@size = 0">
+              <xsl:call-template name="prompt_no_file"/>
+              <br/>
+            </xsl:if>
+            <xsl:if test="@size != 0">
               <a target="_blank" href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
-                <xsl:call-template name="prompt_do_download"/>
+                <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+                <xsl:call-template name="prompt_do_download"/> (<xsl:value-of select="round(@size div 100) div 10"/> K)
               </a>
               <br/>
             </xsl:if>
@@ -970,6 +973,7 @@
             <a target="_blank" href="file://{upload/path}">
               <xsl:call-template name="prompt_do_download"/>
             </a>
+            <br/>
           </xsl:otherwise>
         </xsl:choose>
         <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">

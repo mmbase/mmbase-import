@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.53 2004-05-27 08:43:04 johannes Exp $
+ * @version $Id: Dove.java,v 1.54 2004-09-23 09:49:49 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -127,33 +127,45 @@ public class Dove extends AbstractDove {
         out.setAttribute(ELM_MAYWRITE, "" + nd.mayWrite());
         out.setAttribute(ELM_MAYDELETE, "" + nd.mayDelete());
         // load fields
-        Element field=getFirstElement(in, FIELD);
-        if (field==null) {
-            for (FieldIterator i=nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
-                Field f=i.nextField();
-                String fname=f.getName();
+        Element field = getFirstElement(in, FIELD);
+        if (field == null) {
+            for (FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
+                Field f = i.nextField();
+                String fname = f.getName();
                 if (isDataField(nm,f)) {
                     String val="";
-                    if (nm.getField(fname).getType()!=Field.TYPE_BYTE) {
-                        val=nd.getStringValue(fname);
+                    if (f.getType() != Field.TYPE_BYTE) {
+                        val = nd.getStringValue(fname);
                     }
                     Element fel=addContentElement(FIELD,val,out);
                     fel.setAttribute(ELM_NAME,fname);
+                    if (f.getType() == Field.TYPE_BYTE) {
+                        int byteSize = 0;
+                        byte[] bytes = nd.getByteValue(fname);
+                        if (bytes != null) byteSize = bytes.length;
+                        fel.setAttribute(ELM_SIZE, ""+byteSize);
+                    }
                 }
             }
         } else {
-            while (field!=null) { // select all child tags, should be 'field'
-                String fname=(String)field.getAttribute(ELM_NAME);
-                if ((fname==null) || (fname.equals(""))) {
+            while (field != null) { // select all child tags, should be 'field'
+                String fname = (String)field.getAttribute(ELM_NAME);
+                if ((fname == null) || (fname.equals(""))) {
                     Element err = addContentElement(ERROR,"name required for field",out);
                     err.setAttribute(ELM_TYPE,IS_PARSER);
                 } else if (isDataField(nm,fname)) {
-                    String val="";
-                    if (nm.getField(fname).getType()!=Field.TYPE_BYTE) {
-                        val=nd.getStringValue(fname);
+                    String val = "";
+                    if (nm.getField(fname).getType() != Field.TYPE_BYTE) {
+                        val = nd.getStringValue(fname);
                     }
                     Element fel=addContentElement(FIELD,val,out);
                     fel.setAttribute(ELM_NAME,fname);
+                    if (nm.getField(fname).getType() == Field.TYPE_BYTE) {
+                        int byteSize = 0;
+                        byte[] bytes = nd.getByteValue(fname);
+                        if (bytes != null) byteSize = bytes.length;
+                        fel.setAttribute(ELM_SIZE, ""+byteSize);
+                    }
                 } else {
                     Element err = addContentElement(ERROR,"field with name "+fname+" does not exist",out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
@@ -724,7 +736,7 @@ public class Dove extends AbstractDove {
                                     if (!fields.equals(""))
                                         fields += ",";
                                     fields += fname;
-                                    field = getNextElement(field, FIELD);    
+                                    field = getNextElement(field, FIELD);
                                 }
                                 i = cloud.getList("", nodepath, fields, where, orderby, directions, null, true).nodeIterator();
                             }
