@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.3.2.10 2005-02-21 14:40:31 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.3.2.11 2005-03-11 12:06:01 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -150,15 +150,15 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * Gets the response object which this wrapper is wrapping. You might need this when giving a
+     * Gets the response object which this wrapper is wrapping. You might need this when giving a
      * redirect or so.
      * @since MMBase-1.7.1
      */
     public HttpServletResponse getHttpServletResponse() {
         //return (HttpServletResponse) getResponse(); // shoudl work, I think, but doesn't
         HttpServletResponse response = wrappedResponse;
-        while (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
-            response = ((GenericResponseWrapper) response).wrappedResponse;
+        while (response instanceof HttpServletResponseWrapper) { // if this happens in an 'mm:included' page.
+            response = (HttpServletResponse) ((HttpServletResponseWrapper) response).getResponse();
         } 
         return response;
     }
@@ -232,6 +232,15 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         writer = new PrintWriter(string);
         return writer;
     }
+
+    public void flushBuffer() throws IOException {
+        log.debug("Flushing buffer for Generic ResponseWrapper");
+        if (writer != null) writer.flush();
+        if (outputStream != null) outputStream.flush();
+        super.flushBuffer();
+        
+    }
+    
 
 
     /**
