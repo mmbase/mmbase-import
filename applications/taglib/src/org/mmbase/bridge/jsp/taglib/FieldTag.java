@@ -53,6 +53,10 @@ public class FieldTag extends NodeReferrerTag {
     protected String convert (String s) throws JspTagException { // virtual
         return s;
     }
+
+    protected Node getNode() throws JspTagException {
+        return findNodeProvider().getNodeVar();
+    }
     
     /**
     * write the value of the field.
@@ -60,7 +64,7 @@ public class FieldTag extends NodeReferrerTag {
     public int doAfterBody() throws JspTagException {
         
         // firstly, search the node:
-        node = findNodeProvider().getNodeVar();
+        node = getNode();
         
         if (node == null) {
             throw new JspTagException ("Did not find node in the parent node provider");
@@ -70,8 +74,17 @@ public class FieldTag extends NodeReferrerTag {
         
         if (name != null) { // name not null, head perhaps.
             log.trace("using name " + name );
-            show = "" + node.getValue(name);
-            show = convert(show);
+            Field f = node.getNodeManager().getField(name);
+            if (f == null) {
+                show = node.getStringValue(name);
+            } else {
+                if (f.getType() == Field.TYPE_BYTE) {
+                    show = "" + org.mmbase.util.Encode.encode("BASE64", node.getByteValue(name));
+                } else {    
+                    show = node.getStringValue(name);
+                    show = convert(show);
+                }
+            }
             if (head != null) {
                 throw new JspTagException ("Could not indicate both  'name' and 'head' attribute");  
             }
