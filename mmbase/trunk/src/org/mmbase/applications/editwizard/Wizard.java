@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.11 2002-03-01 15:27:54 pierre Exp $
+ * @version $Id: Wizard.java,v 1.12 2002-03-04 11:05:33 pierre Exp $
  *
  */
 public class Wizard {
@@ -267,30 +267,30 @@ public class Wizard {
             String[] ids = processFormName(name);
             if (ids!=null) {
                 String formEncoding = req.getCharacterEncoding();
-                     if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
-                     String result;
-                    if (formEncoding == null) {
-                         log.debug("request did not mention coding");
-                         // The form encoding was not known, so probable the local was used or ISO-8859-1
-                         // lets make sure it is right:
-                         try {
-                             if (cloud != null) {
-                                 log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
-                                 result = new String(req.getParameter(name).getBytes(),
-                                                     cloud.getCloudContext().getDefaultCharacterEncoding());
-                             } else { // no cloud? I don't know how to get default char encoding then.
-                                 // suppose it utf-8
-                                 log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
-                                 result = new String(req.getParameter(name).getBytes(), "UTF-8");
-                             }
-                         } catch (java.io.UnsupportedEncodingException e) {
-                             log.warn(e.toString());
-                             result = req.getParameter(name);
+                if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
+                String result;
+                if (formEncoding == null) {
+                   log.debug("request did not mention coding");
+                   // The form encoding was not known, so probable the local was used or ISO-8859-1
+                   // lets make sure it is right:
+                   try {
+                      if (cloud != null) {
+                         log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
+                         result = new String(req.getParameter(name).getBytes(),
+                                             cloud.getCloudContext().getDefaultCharacterEncoding());
+                         } else { // no cloud? I don't know how to get default char encoding then.
+                            // suppose it utf-8
+                            log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
+                            result = new String(req.getParameter(name).getBytes(), "UTF-8");
                          }
-                    } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
-                         result = req.getParameter(name);
-                     }
-                    storeValue(ids[0], ids[1], result);
+                   } catch (java.io.UnsupportedEncodingException e) {
+                       log.warn(e.toString());
+                       result = req.getParameter(name);
+                   }
+                } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
+                   result = req.getParameter(name);
+                }
+                storeValue(ids[0], ids[1], result);
             }
         }
     }
@@ -980,7 +980,7 @@ public class Wizard {
 
     /**
      * Puts the given value in the right datanode (given by did), depending on the type
-     * of the form field. If the operation fails... System.out is notified.
+     * of the form field.
      *
      * - text,line: the value is stored as text in the datanode.
      * - relation: the value is assumed to be the destination number (dnumber) of the relation.
@@ -998,20 +998,17 @@ public class Wizard {
 
         if (datanode == null){
             // Nothing.
-        }else if (ftype.equals("text") || ftype.equals("line") || ftype.equals("date") || ftype.equals("html")) {
-            Utils.storeText(datanode, value);
-            ok = true;
-        }else if (ftype.equals("upload")) {
+        } else if (ftype.equals("upload")) {
+            // uploads are stored differently
             if (getUpload(did)!=null) {
-            Utils.setAttribute(datanode, "href", did);
+                Utils.setAttribute(datanode, "href", did);
                 Utils.storeText(datanode,"YES");
             }
             ok = true;
-        }else if (ftype.equals("enum")) {
+        } else {  // default behavior: store content as text
             Utils.storeText(datanode, value);
             ok = true;
         }
-
 
         if (!ok) {
             log.warn("Unable to store value for field with ftype " + ftype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName);
@@ -1373,7 +1370,7 @@ public class Wizard {
             // - int
             // - long
             //
-            // Dove returns the following Non-XML Schema conformant typs:
+            // Dove returns the following Non-XML Schema conformant types:
             // - binary (minLength, maxLength)
             // - datetime
             //
@@ -1455,7 +1452,7 @@ public class Wizard {
             try {
                 con = dbconn.getConstraints(objecttype);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
                 return null;
             }
 
