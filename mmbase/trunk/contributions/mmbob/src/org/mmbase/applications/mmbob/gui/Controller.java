@@ -80,6 +80,8 @@ public class Controller {
                     virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
                     virtual.setValue("lastposternumber",area.getLastPosterNumber());
                     virtual.setValue("lastpostnumber",area.getLastPostNumber());
+	            virtual.setValue("guestreadmodetype", area.getGuestReadModeType());
+       	     	    virtual.setValue("guestwritemodetype", area.getGuestWriteModeType());
                     list.add(virtual);
 
                     if (activeid != -1) {
@@ -258,7 +260,7 @@ public class Controller {
             }
         }
         long end = System.currentTimeMillis();
-        log.info("getPostings "+(end-start)+"ms");
+        //log.info("getPostings "+(end-start)+"ms");
 
         return list;
     }
@@ -440,7 +442,6 @@ public class Controller {
         if (f != null) {
             if (posterid != -1) {
                 Poster po = f.getPoster(posterid);
-		log.info("PO="+po+" id="+posterid);
 		virtual.setValue("quotareached",po.isQuotaReached());
 		int t=po.getQuotaNumber();
 		int u=po.getQuotaUsedNumber();
@@ -458,7 +459,6 @@ public class Controller {
 		virtual.setValue("quotaunusednumber",t-u);
 		virtual.setValue("quotausedbar",ub);
 
-		log.info("U="+u+" FSW="+ForumManager.getQuotaSoftWarning()+" FW="+ForumManager.getQuotaWarning());
 		if (u>ForumManager.getQuotaSoftWarning()) {
 			if (u>ForumManager.getQuotaWarning()) {
 				virtual.setValue("quotawarning","red");
@@ -483,17 +483,14 @@ public class Controller {
      * @return (virtual) MMObjectNode representing info for the given poster
      */
     public MMObjectNode getMailboxInfo(String id, int posterid,String mailboxid) {
-	log.info("id="+id+" mailbox="+mailboxid+" posterid="+posterid);
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
         Forum f = ForumManager.getForum(id);
         if (f != null) {
             if (posterid != -1) {
                 Poster po = f.getPoster(posterid);
-		log.info("PO="+po);
 		if (po != null ) {
 			Mailbox mb=po.getMailbox(mailboxid);
-			log.info("mb="+mb+" mailbox="+mailboxid);
 			if (mb != null) {
 				virtual.setValue("messagecount",mb.getMessageCount());
 				virtual.setValue("messageunreadcount",mb.getMessageUnreadCount());
@@ -515,7 +512,6 @@ public class Controller {
      * @return signal given 
      */
     public boolean signalMailboxChange(String id, int posterid,String mailboxid) {
-	log.info("signal id="+id+" mailbox="+mailboxid+" posterid="+posterid);
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
         MMObjectNode virtual = builder.getNewNode("admin");
         Forum f = ForumManager.getForum(id);
@@ -665,6 +661,8 @@ public class Controller {
             virtual.setValue("lastposter", a.getLastPoster());
             virtual.setValue("lastposttime", a.getLastPostTime());
             virtual.setValue("lastsubject", a.getLastSubject());
+            virtual.setValue("guestreadmodetype", a.getGuestReadModeType());
+            virtual.setValue("guestwritemodetype", a.getGuestWriteModeType());
             virtual.setValue("navline", a.getNavigationLine(baseurl, page, pagesize, cssclass));
             virtual.setValue("pagecount", a.getPageCount(pagesize));
             if (activeid != -1) {
@@ -993,8 +991,6 @@ public class Controller {
      * @return Feedback regarding the success of this action
      */
     public boolean editPostThread(String forumid, String postareaid, String postthreadid, int activeid, String mood, String state, String type) {
-        //log.info("F="+forumid+" A="+postareaid+" T="+postthreadid);
-        // log.info("M="+mood+" S="+state+" T="+type);
         Forum f = ForumManager.getForum(forumid);
         if (f != null) {
             PostArea a = f.getPostArea(postareaid);
