@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.48 2002-05-06 15:28:22 eduard Exp $
+ * @version $Id: MMAdmin.java,v 1.49 2002-05-24 06:15:40 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1720,6 +1720,8 @@ public class MMAdmin extends ProcessorModule {
             def.setDBName(value);
             def.setGUIName("en",value);
 
+            log.service("Adding field " + value);
+
             value=(String)vars.get("mmbasetype");
             def.setDBType(value);
 
@@ -1736,15 +1738,21 @@ public class MMAdmin extends ProcessorModule {
             try {
                 int i=Integer.parseInt(value);
                 def.setDBSize(i);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.debug("dbsize had invalid value, not setting size");
+            }
 
             value=(String)vars.get("guitype");
             def.setGUIType(value);
 
             bul.addField(def);
-            if (mmb.getDatabase().addField(bul,def.getDBName())) {
+            if (mmb.getDatabase().addField(bul, def.getDBName())) { 
                 syncBuilderXML(bul,builder);
+            } else {
+                log.warn("Could not sync builder XML because addField returned false (tablesizeprotection?)");
             }
+        } else {
+            log.service("Cannot add field to builder " + builder + " because it could not be found");
         }
     }
 
@@ -1776,8 +1784,9 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    public void syncBuilderXML(MMObjectBuilder bul,String builder) {
-        String savepath=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator+builder+".xml";
+    public void syncBuilderXML(MMObjectBuilder bul,String builder) {        
+        String savepath=MMBaseContext.getConfigPath()+File.separator + "builders" + File.separator + builder + ".xml";
+        log.service("Syncing builder xml (" + savepath + ") for builder " + builder);
         try {
             BuilderWriter builderOut=new BuilderWriter(bul);
             builderOut.setIncludeComments(false);
