@@ -13,7 +13,7 @@ public class Authorization {
     private static Logger log=Logging.getLoggerInstance(Authorization.class.getName()); 
     
     /** The SecurityManager, who created this instance */
-    protected SecurityManager manager;
+    protected MMBaseCop manager;
 
     /** The url where the configfile is located */    
     protected String configUrl;
@@ -27,7 +27,7 @@ public class Authorization {
      *	@param configUrl The url which contains the config information for.     
      *	    the authorization.
      */        
-    public final void load(SecurityManager manager, String configUrl) {
+    public final void load(MMBaseCop manager, String configUrl) {
     	log.debug("Calling load() with configUrl:" + configUrl);    
     	this.manager = manager;
     	this.configUrl = configUrl;
