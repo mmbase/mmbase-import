@@ -43,81 +43,39 @@
   </mm:present>
 
 <noframes>
-<body class="basic">
-<table summary="navigation">
+  <body class="basic">
+    <table summary="navigation">
+      <tr><td class="data"><img src="../style/logo.gif" border="0" alt="MMBase" /></td></tr>      
 
-<tr>
-  <td class="data"><img src="../style/logo.gif" border="0" alt="MMBase">
-</tr>
+      <tr><th class="header">About MMBase</th></tr>
+      <tr><td class="data"><a href="<mm:url page="/mmbase/mpl-1.0.html" />">License</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="about/about.jsp" />">About</a></td></tr>
 
-<tr><td>&nbsp;</td></tr>
 
-<tr>
-  <th class="header">About MMBase</td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="/mmbase/mpl-1.0.html" />">License</a></td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="about/about.jsp" />">About</a></td>
-</tr>
+      <tr><th class="header">Demos</th></tr>
+      <tr><td class="data"><a href="<mm:url page="/mmexamples/" />">Demos</a></td></tr>
 
-<tr><td>&nbsp;</td></tr>
 
-<tr>
-  <th class="header">Demos</td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="/mmexamples/" />">Demos</a></td>
-</tr>
+      <tr><th class="header">Editors</th></tr>
+      <tr>
+         <td class="data"><a href="<mm:url page="editors/basic.jsp" />">Generic</a></td>
+         <td class="data"><a href="<mm:url page="editors/specific.jsp" />">Specific</a></td>
+      </tr>
 
-<tr><td>&nbsp;</td></tr>
 
-<tr>
-  <th class="header">Editors</td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="editors/basic.jsp" />">Generic</a></td>
-  <td class="data"><a href="<mm:url page="editors/specific.jsp" />">Specific</a></td>
-</tr>
+      <tr><th class="header">Administration</th></tr>
+      <tr><td class="data"><a href="<mm:url page="admin/servers.jsp" />">Servers</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="admin/builders.jsp" />">Builders</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="admin/applications.jsp" />">Applications</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="admin/modules.jsp" />">Modules</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="admin/databases.jsp" />">Databases</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="admin/documentation.jsp" />">Documentation</a></td></tr>
 
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-  <th class="header">Administration</td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="admin/servers.jsp" />">Servers</a></td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="admin/builders.jsp" />">Builders</a></td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="admin/applications.jsp" />">Applications</a></td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="admin/modules.jsp" />">Modules</a></td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="admin/databases.jsp" />">Databases</a></td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="admin/documentation.jsp" />">Documentation</a></td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-  <th class="header">Tools</td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="tools/cache.jsp" />">Cache Monitor</a></td>
-</tr>
-<tr>
-  <td class="data"><a href="<mm:url page="tools/email.jsp" />">Email Queue Monitor</a></td>
-</tr>
-</table>
-</body>
+      <tr><th class="header">Tools</th></tr>
+      <tr><td class="data"><a href="<mm:url page="tools/cache.jsp" />">Cache Monitor</a></td></tr>
+      <tr><td class="data"><a href="<mm:url page="tools/email.jsp" />">Email Queue Monitor</a></td></tr>
+    </table>
+  </body>
 </noframes>
 
 </html>
