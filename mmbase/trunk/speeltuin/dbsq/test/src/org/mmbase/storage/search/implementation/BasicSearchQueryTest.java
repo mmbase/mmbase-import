@@ -11,14 +11,17 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSearchQueryTest extends TestCase {
     
-    /** Test instance. */
-    private BasicSearchQuery instance;
+    /** Test instance (non-aggregating). */
+    private BasicSearchQuery instance1;
     
-    /** MMBase instance. */
+    /** Test instance (aggregating). */
+    private BasicSearchQuery instance2;
+    
+    /** MMBase instance1. */
     private MMBase mmbase = null;
     
     /** Images builder, used as builder example. */
@@ -47,7 +50,8 @@ public class BasicSearchQueryTest extends TestCase {
         images = mmbase.getBuilder("images");
         insrel = mmbase.getInsRel();
         pools = mmbase.getBuilder("pools");
-        instance = new BasicSearchQuery();
+        instance1 = new BasicSearchQuery();
+        instance2 = new BasicSearchQuery(true);
     }
     
     /**
@@ -58,23 +62,23 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test of setDistinct method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testSetDistinct() {
         // Default is false.
-        assert(!instance.isDistinct());
+        assert(!instance1.isDistinct());
         
-        instance.setDistinct(true);
-        assert(instance.isDistinct());
+        instance1.setDistinct(true);
+        assert(instance1.isDistinct());
     }
     
     /** Test of setMaxNumber method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testSetMaxNumber() {
         // Default is max integer value.
-        assert(instance.getMaxNumber() == -1);
+        assert(instance1.getMaxNumber() == -1);
         
-        instance.setMaxNumber(12345);
-        assert(instance.getMaxNumber() == 12345);
+        instance1.setMaxNumber(12345);
+        assert(instance1.getMaxNumber() == 12345);
         
         // Value less than -1, should throw IllegalArgumentException.
         try {
-            instance.setMaxNumber(-2);
+            instance1.setMaxNumber(-2);
             fail("Value less than -1, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
     }
@@ -82,34 +86,34 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test of setOffset method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testSetOffset() {
         // Default is zero.
-        assert(instance.getOffset() == 0);
+        assert(instance1.getOffset() == 0);
         
         // Invalid offset, should throw IllegalArgumentException.
         try {
-            instance.setOffset(-789);
+            instance1.setOffset(-789);
             fail("Invalid offset, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        instance.setOffset(123456);
-        assert(instance.getOffset() == 123456);
+        instance1.setOffset(123456);
+        assert(instance1.getOffset() == 123456);
     }
     
     /** Test of addStep method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testAddStep() {
         // Null argument, should throw IllegalArgumentException
         try {
-            instance.addStep(null);
+            instance1.addStep(null);
             fail("Null argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        List steps = instance.getSteps();
+        List steps = instance1.getSteps();
         assert(steps.size() == 0);
-        Step step0 = instance.addStep(images);
-        steps = instance.getSteps();
+        Step step0 = instance1.addStep(images);
+        steps = instance1.getSteps();
         assert(steps.size() == 1);
         assert(steps.get(0) == step0);
-        Step step1 = instance.addStep(images);
-        steps = instance.getSteps();
+        Step step1 = instance1.addStep(images);
+        steps = instance1.getSteps();
         assert(steps.size() == 2);
         assert(steps.get(0) == step0);
         assert(steps.get(1) == step1);
@@ -119,28 +123,28 @@ public class BasicSearchQueryTest extends TestCase {
     public void testAddRelationStep() {
         // No previous step, should throw IllegalStateException
         try {
-            instance.addRelationStep(insrel, images);
+            instance1.addRelationStep(insrel, images);
             fail("No previous step, should throw IllegalStateException");
         } catch (IllegalStateException e) {}
         
-        instance.addStep(images);
+        instance1.addStep(images);
         
         // Null builder argument, should throw IllegalArgumentException
         try {
-            instance.addRelationStep(null, images);
+            instance1.addRelationStep(null, images);
             fail("Null builder argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
         // Null nextBuilder argument, should throw IllegalArgumentException
         try {
-            instance.addRelationStep(insrel, null);
+            instance1.addRelationStep(insrel, null);
             fail("Null nextBuilder argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        List steps = instance.getSteps();
+        List steps = instance1.getSteps();
         assert(steps.size() == 1);
-        RelationStep relationStep = instance.addRelationStep(insrel, images);
-        steps = instance.getSteps();
+        RelationStep relationStep = instance1.addRelationStep(insrel, images);
+        steps = instance1.getSteps();
         assert(steps.size() == 3);
         assert(steps.get(1) == relationStep);
         Step next = relationStep.getNext();
@@ -149,57 +153,116 @@ public class BasicSearchQueryTest extends TestCase {
     
     /** Test of addField method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testAddField() {
-        Step step = instance.addStep(images);
-        FieldDefs fieldDefs0 = images.getField("title");
-        FieldDefs fieldDefs1 = images.getField("description");
+        Step step = instance1.addStep(images);
+        FieldDefs imagesTitle = images.getField("title");
+        FieldDefs imagesDescription = images.getField("description");
         
         // Null step argument, should throw IllegalArgumentException
         try {
-            instance.addField(null, fieldDefs0);
+            instance1.addField(null, imagesTitle);
             fail("Null step argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
         // Null fieldDefs argument, should throw IllegalArgumentException
         try {
-            instance.addField(step, null);
+            instance1.addField(step, null);
             fail("Null fieldDefs argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        List fields = instance.getFields();
+        List fields = instance1.getFields();
         assert(fields.size() == 0);
-        StepField field0 = instance.addField(step, fieldDefs0);
-        fields = instance.getFields();
+        StepField field0 = instance1.addField(step, imagesTitle);
+        fields = instance1.getFields();
         assert(fields.size() == 1);
         assert(fields.indexOf(field0) == 0);
-        StepField field1 = instance.addField(step,fieldDefs1);
-        fields = instance.getFields();
+        StepField field1 = instance1.addField(step,imagesDescription);
+        fields = instance1.getFields();
         assert(fields.size() == 2);
         assert(fields.indexOf(field0) == 0);
         assert(fields.indexOf(field1) == 1);
+        
+        // Aggregating query:
+        step = instance2.addStep(images);
+        try {
+            // Adding non-aggregatedg step to aggregating query, should throw UnsupportedOperationException.
+            instance2.addField(step, imagesTitle);
+            fail("Adding non-aggregated step to aggregating query, should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {}
+    }
+    
+    /** Test of addAggregatedField method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
+    public void testAddAggregatedField() {
+        Step step = instance2.addStep(images);
+        FieldDefs imagesTitle = images.getField("title");
+        FieldDefs imagesDescription = images.getField("description");
+        
+        // Null step argument, should throw IllegalArgumentException
+        try {
+            instance2.addAggregatedField(
+            null, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT);
+            fail("Null step argument, should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {}
+        
+        // Null fieldDefs argument, should throw IllegalArgumentException
+        try {
+            instance2.addAggregatedField(
+            step, null, AggregatedField.AGGREGATION_TYPE_COUNT);
+            fail("Null fieldDefs argument, should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {}
+        
+        // Invalid aggregation type argument, should throw IllegalArgumentException
+        try {
+            instance2.addAggregatedField(
+            step, imagesTitle, 0);
+            fail("Invalid aggregation type argument, should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {}
+        
+        List fields = instance2.getFields();
+        assert(fields.size() == 0);
+        StepField field0 = instance2.addAggregatedField(
+        step, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT);
+        fields = instance2.getFields();
+        assert(fields.size() == 1);
+        assert(fields.indexOf(field0) == 0);
+        StepField field1 = instance2.addAggregatedField(
+        step,imagesDescription, AggregatedField.AGGREGATION_TYPE_COUNT);
+        fields = instance2.getFields();
+        assert(fields.size() == 2);
+        assert(fields.indexOf(field0) == 0);
+        assert(fields.indexOf(field1) == 1);
+        
+        // Non-aggregating query:
+        step = instance1.addStep(images);
+        try {
+            // Adding aggregated step to non-aggregating query, should throw UnsupportedOperationException.
+            instance1.addAggregatedField(
+            step, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT);
+            fail("Adding aggregated step to non-aggregating query, should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {}
     }
     
     /** Test of addSortOrder method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testAddSortOrder() {
         // Null step argument, should throw IllegalArgumentException
         try {
-            instance.addSortOrder(null);
+            instance1.addSortOrder(null);
             fail("Null step argument, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        Step step = instance.addStep(images);
-        FieldDefs fieldDefs0 = images.getField("title");
-        FieldDefs fieldDefs1 = images.getField("description");
-        StepField field0 = instance.addField(step, fieldDefs0);
-        StepField field1 = instance.addField(step, fieldDefs1);
+        Step step = instance1.addStep(images);
+        FieldDefs imagesTitle = images.getField("title");
+        FieldDefs imagesDescription = images.getField("description");
+        StepField field0 = instance1.addField(step, imagesTitle);
+        StepField field1 = instance1.addField(step, imagesDescription);
         
-        List sortOrders = instance.getSortOrders();
+        List sortOrders = instance1.getSortOrders();
         assert(sortOrders.size() == 0);
-        SortOrder sortOrder0 = instance.addSortOrder(field0);
-        sortOrders = instance.getSortOrders();
+        SortOrder sortOrder0 = instance1.addSortOrder(field0);
+        sortOrders = instance1.getSortOrders();
         assert(sortOrders.size() == 1);
         assert(sortOrders.indexOf(sortOrder0) == 0);
-        SortOrder sortOrder1 = instance.addSortOrder(field1);
-        sortOrders = instance.getSortOrders();
+        SortOrder sortOrder1 = instance1.addSortOrder(field1);
+        sortOrders = instance1.getSortOrders();
         assert(sortOrders.size() == 2);
         assert(sortOrders.indexOf(sortOrder0) == 0);
         assert(sortOrders.indexOf(sortOrder1) == 1);
@@ -208,15 +271,15 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test of setConstraint method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testSetConstraint() {
         // Default is null.
-        assert(instance.getConstraint() == null);
+        assert(instance1.getConstraint() == null);
         
         BasicConstraint constraint = new BasicConstraint();
-        instance.setConstraint(constraint);
-        assert(instance.getConstraint() == constraint);
+        instance1.setConstraint(constraint);
+        assert(instance1.getConstraint() == constraint);
         
         // Null value allowed.
-        instance.setConstraint(null);
-        assert(instance.getConstraint() == null);
+        instance1.setConstraint(null);
+        assert(instance1.getConstraint() == null);
    }
     
     /** Test of isDistinct method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
@@ -230,7 +293,7 @@ public class BasicSearchQueryTest extends TestCase {
         // See:
         testAddSortOrder();
         
-        List sortOrders = instance.getSortOrders();
+        List sortOrders = instance1.getSortOrders();
         Object item = sortOrders.get(0);
         
         // List returned must be unmodifiable.
@@ -249,7 +312,7 @@ public class BasicSearchQueryTest extends TestCase {
         // See:
         testAddStep();
         
-        List steps = instance.getSteps();
+        List steps = instance1.getSteps();
         Object item = steps.get(0);
         
         // List returned must be unmodifiable.
@@ -268,7 +331,7 @@ public class BasicSearchQueryTest extends TestCase {
         // See:
         testAddField();
         
-        List fields = instance.getFields();
+        List fields = instance1.getFields();
         Object item = fields.get(0);
         
         // List returned must be unmodifiable.
@@ -313,43 +376,43 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
     public void testToString() {
         
-        BasicStep step1 = instance.addStep(images);
-        BasicStepField field1a = instance.addField(step1, images.getField("title"));
-        instance.setConstraint(new BasicFieldNullConstraint(field1a));
-        instance.addSortOrder(field1a);
+        BasicStep step1 = instance1.addStep(images);
+        BasicStepField field1a = instance1.addField(step1, images.getField("title"));
+        instance1.setConstraint(new BasicFieldNullConstraint(field1a));
+        instance1.addSortOrder(field1a);
 
-        assert(instance.toString(),
-        instance.toString().equals(
-        "SearchQuery(distinct:" + instance.isDistinct()
-        + ", steps:" + instance.getSteps()
-        + ", fields:" + instance.getFields()
-        + ", constraint:" + instance.getConstraint()
-        + ", sortorders:" + instance.getSortOrders()
-        + ", max:" + instance.getMaxNumber()
-        + ", offset:" + instance.getOffset() + ")"));
+        assert(instance1.toString(),
+        instance1.toString().equals(
+        "SearchQuery(distinct:" + instance1.isDistinct()
+        + ", steps:" + instance1.getSteps()
+        + ", fields:" + instance1.getFields()
+        + ", constraint:" + instance1.getConstraint()
+        + ", sortorders:" + instance1.getSortOrders()
+        + ", max:" + instance1.getMaxNumber()
+        + ", offset:" + instance1.getOffset() + ")"));
 
-        instance.setDistinct(true);
-        assert(instance.toString(),
-        instance.toString().equals(
-        "SearchQuery(distinct:" + instance.isDistinct()
-        + ", steps:" + instance.getSteps()
-        + ", fields:" + instance.getFields()
-        + ", constraint:" + instance.getConstraint()
-        + ", sortorders:" + instance.getSortOrders()
-        + ", max:" + instance.getMaxNumber()
-        + ", offset:" + instance.getOffset() + ")"));
+        instance1.setDistinct(true);
+        assert(instance1.toString(),
+        instance1.toString().equals(
+        "SearchQuery(distinct:" + instance1.isDistinct()
+        + ", steps:" + instance1.getSteps()
+        + ", fields:" + instance1.getFields()
+        + ", constraint:" + instance1.getConstraint()
+        + ", sortorders:" + instance1.getSortOrders()
+        + ", max:" + instance1.getMaxNumber()
+        + ", offset:" + instance1.getOffset() + ")"));
 
-        instance.setMaxNumber(100);
-        instance.setOffset(50);
-        assert(instance.toString(),
-        instance.toString().equals(
-        "SearchQuery(distinct:" + instance.isDistinct()
-        + ", steps:" + instance.getSteps()
-        + ", fields:" + instance.getFields()
-        + ", constraint:" + instance.getConstraint()
-        + ", sortorders:" + instance.getSortOrders()
-        + ", max:" + instance.getMaxNumber()
-        + ", offset:" + instance.getOffset() + ")"));
+        instance1.setMaxNumber(100);
+        instance1.setOffset(50);
+        assert(instance1.toString(),
+        instance1.toString().equals(
+        "SearchQuery(distinct:" + instance1.isDistinct()
+        + ", steps:" + instance1.getSteps()
+        + ", fields:" + instance1.getFields()
+        + ", constraint:" + instance1.getConstraint()
+        + ", sortorders:" + instance1.getSortOrders()
+        + ", max:" + instance1.getMaxNumber()
+        + ", offset:" + instance1.getOffset() + ")"));
     }
     
     public static Test suite() {

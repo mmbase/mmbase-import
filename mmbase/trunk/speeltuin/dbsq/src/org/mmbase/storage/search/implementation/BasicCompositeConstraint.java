@@ -7,7 +7,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicCompositeConstraint extends BasicConstraint
 implements CompositeConstraint {
@@ -103,7 +103,7 @@ implements CompositeConstraint {
     
     // javadoc is inherited
     public int hashCode() {
-        return (isInverse()? 0: 107) 
+        return super.hashCode() 
         + 109 * logicalOperator
         + 71 * childs.hashCode();
     }

@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DatabaseSuite extends TestCase {
     
@@ -39,7 +39,7 @@ public class DatabaseSuite extends TestCase {
         suite.addTest(org.mmbase.storage.search.implementation.database.ChainedSqlHandlerTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.database.InformixSqlHandlerTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.database.MySqlSqlHandlerTest.suite());
-        suite.addTest(org.mmbase.storage.search.implementation.database.VtsSqlHandlerTest.suite());
+        suite.addTest(org.mmbase.storage.search.implementation.database.vts.VtsSuite.suite());
         //:JUNIT--
         //This value MUST ALWAYS be returned from this function.
         return suite;

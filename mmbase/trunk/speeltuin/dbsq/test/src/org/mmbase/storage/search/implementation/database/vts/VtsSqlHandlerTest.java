@@ -1,4 +1,4 @@
-package org.mmbase.storage.search.implementation.database;
+package org.mmbase.storage.search.implementation.database.vts;
 
 import junit.framework.*;
 import org.mmbase.module.core.*;
@@ -7,9 +7,18 @@ import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import java.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.storage.search.implementation.database.*;
+import java.io.*;
+import org.mmbase.module.database.support.*;
+import org.mmbase.util.logging.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 /**
  * JUnit tests.
+ * 
+ * Requires a vtsindices configuration file specifying vtsindices
+ * on images.title and pools.name.
  *
  * @author Rob van Maris
  * @version $Revision: 1.1 $
@@ -25,10 +34,13 @@ public class VtsSqlHandlerTest extends TestCase {
     private MMObjectBuilder pools = null;
     private FieldDefs imagesDescription = null;
     private FieldDefs imagesTitle = null;
+    private FieldDefs poolsName = null;
     private BasicSearchQuery query = null;
-    private BasicStep step1 = null;
-    private StepField field1 = null;
-    private StepField field2 = null;
+    private BasicStep imagesStep = null;
+    private BasicStep poolsStep = null;
+    private StepField imagesDescriptionField = null;
+    private StepField imagesTitleField = null;
+    private StepField poolsNameField = null;
     private BasicStringSearchConstraint constraint1 = null;
     private BasicStringSearchConstraint constraint2 = null;
     private BasicCompositeConstraint composite = null;
@@ -52,17 +64,20 @@ public class VtsSqlHandlerTest extends TestCase {
         pools = mmbase.getBuilder("pools");
         imagesDescription = images.getField("description");
         imagesTitle = images.getField("title");
+        poolsName = pools.getField("name");
         query = new BasicSearchQuery();
         query.setMaxNumber(100);
         query.setOffset(1);
-        step1 = query.addStep(images);
-        field1 = query.addField(step1, imagesDescription);
-        field2 = query.addField(step1, imagesTitle);
+        imagesStep = query.addStep(images);
+        poolsStep = query.addStep(pools);
+        imagesDescriptionField = query.addField(imagesStep, imagesDescription);
+        imagesTitleField = query.addField(imagesStep, imagesTitle);
+        poolsNameField = query.addField(poolsStep, poolsName);
         // TODO (later): simulate VTS indices on these fields.
-        constraint1 = new BasicStringSearchConstraint(field1, 
+        constraint1 = new BasicStringSearchConstraint(poolsNameField, 
         StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED, 
         StringSearchConstraint.MATCH_TYPE_LITERAL, "sdj kjjo kjoje");
-        constraint2 = new BasicStringSearchConstraint(field2, 
+        constraint2 = new BasicStringSearchConstraint(imagesTitleField, 
         StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED, 
         StringSearchConstraint.MATCH_TYPE_LITERAL, "jdkdk keijc");
         query.setConstraint(constraint1);
@@ -114,18 +129,19 @@ public class VtsSqlHandlerTest extends TestCase {
     
     /** Test of hasVtsIndex method, of class org.mmbase.storage.search.implementation.database.VtsSqlHandler. */
     public void testHasVtsIndex() {
-        // TODO (later): implement
+        assert(!instance.hasVtsIndex(imagesDescriptionField));
+        assert(instance.hasVtsIndex(imagesTitleField));
     }
     
     /** Test of hasAdditionalConstraints method, of class org.mmbase.storage.search.implementation.database.VtsSqlHandler. */
     public void testHasAdditionalConstraints() {
         assert(!instance.hasAdditionalConstraints(query));
         
-        step1.addNode(1);
+        imagesStep.addNode(1);
         assert(instance.hasAdditionalConstraints(query));
         
         query = new BasicSearchQuery();
-        step1= query.addStep(images);
+        imagesStep= query.addStep(images);
         assert(!instance.hasAdditionalConstraints(query));
         
         query.addRelationStep(insrel, pools);
@@ -144,6 +160,32 @@ public class VtsSqlHandlerTest extends TestCase {
         composite.addChild(constraint2);
         assert(instance.containsOtherStringSearchConstraints(composite, constraint1));
         assert(instance.containsOtherStringSearchConstraints(composite, constraint2));
+    }
+    
+    /** Test of toBuilderField method, of class org.mmbase.storage.search.implementation.database.vts.VtsSqlHandler. */
+    public void testToBuilderField() {
+        String prefix = mmbase.getBaseName() + "_";
+        
+        try {
+            // Basename without prefix, should throw IllegalArgumentException.
+            VtsSqlHandler.toBuilderField("images", "title");
+            fail("Basename without prefix, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+        
+        try {
+            // Unknown builder name, should throw IllegalArgumentException.
+            VtsSqlHandler.toBuilderField(prefix + "sqk749", "title");
+            fail("Unknown builder name, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+            
+        try {
+            // Unknown field name, should throw IllegalArgumentException.
+            VtsSqlHandler.toBuilderField(prefix + "images", "sqk749");
+            fail("Unknown field name, should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+        
+        assert(VtsSqlHandler.toBuilderField(prefix + "images", "title").
+            equals("images.title"));
     }
     
     public static Test suite() {

@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ImplementationSuite extends TestCase {
     
@@ -34,6 +34,7 @@ public class ImplementationSuite extends TestCase {
         //Do NOT change lines enclosed by the --JUNIT: and :JUNIT-- tags.
         
         TestSuite suite = new TestSuite("ImplementationSuite");
+        suite.addTest(org.mmbase.storage.search.implementation.BasicAggregatedFieldTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicCompareFieldsConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicCompositeConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicConstraintTest.suite());

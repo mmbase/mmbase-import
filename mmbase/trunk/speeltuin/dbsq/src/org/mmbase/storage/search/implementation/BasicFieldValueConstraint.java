@@ -7,7 +7,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicFieldValueConstraint extends BasicFieldCompareConstraint
 implements FieldValueConstraint {
@@ -52,8 +52,8 @@ implements FieldValueConstraint {
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getTableName().equals(
-                    constraint.getField().getStep().getTableName())
+                && getField().getStep().getAlias().equals(
+                    constraint.getField().getStep().getAlias())
                 && getOperator() == constraint.getOperator()
                 && (value == null? constraint.value == null: value.equals(constraint.value));
         } else {
@@ -63,11 +63,7 @@ implements FieldValueConstraint {
     
     // javadoc is inherited
     public int hashCode() {
-        return (isInverse()? 0: 107)
-        + (isCaseSensitive()? 0: 73)
-        + 79 * getField().getFieldName().hashCode()
-        + 83 * getField().getStep().getTableName().hashCode()
-        + 113 * getOperator()
+        return super.hashCode()
         + (value == null? 0: value.hashCode());
     }
 

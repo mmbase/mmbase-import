@@ -1,9 +1,11 @@
-package org.mmbase.storage.search.implementation.database;
+package org.mmbase.storage.search.implementation.database.vts;
 
 import junit.framework.*;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.storage.search.*;
-import java.util.List;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 /**
  * JUnit tests.
@@ -11,9 +13,9 @@ import java.util.List;
  * @author Rob van Maris
  * @version $Revision: 1.1 $
  */
-public class VtsQueryHandlerTest extends TestCase {
+public class VtsIndexCreatorTest extends TestCase {
     
-    public VtsQueryHandlerTest(java.lang.String testName) {
+    public VtsIndexCreatorTest(java.lang.String testName) {
         super(testName);
     }
     
@@ -32,7 +34,7 @@ public class VtsQueryHandlerTest extends TestCase {
     public void tearDown() throws Exception {}
     
     public static Test suite() {
-        TestSuite suite = new TestSuite(VtsQueryHandlerTest.class);
+        TestSuite suite = new TestSuite(VtsIndexCreatorTest.class);
         
         return suite;
     }
