@@ -64,6 +64,7 @@ public class Encode {
             register("org.mmbase.util.transformers.Xml");
             register("org.mmbase.util.transformers.Url");
             register("org.mmbase.util.transformers.Sql");
+            register("org.mmbase.util.transformers.XmlField");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             System.err.println(e.toString());
@@ -255,6 +256,11 @@ public class Encode {
      * @author Michiel Meeuwissen
      */
     public static void  main(String[] argv) {        
+        try {
+            org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false); 
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
         String coding = null;
         boolean decode = false;
         String string = null;
