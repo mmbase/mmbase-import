@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.8 2002-06-21 08:10:16 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.9 2002-07-05 12:56:18 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -332,6 +332,8 @@ public class ClusterBuilder extends VirtualBuilder {
                     // not very neat... but it works
                     sidx=alltables.indexOf(basenode.parent.tableName);
                     if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
+                    // if we can't find the real parent assume object
+                    if (sidx<0) sidx=alltables.indexOf("object");
                     if (sidx<0) sidx=0;
                 } else {
                     sidx=0;
@@ -839,11 +841,20 @@ public class ClusterBuilder extends VirtualBuilder {
                 desttosrc=(searchdir!=SEARCH_DESTINATION) && typerel.reldefCorrect(ro,so,rnum.intValue());
             } else {
                 MMObjectNode typenode;
+                // get basic object builder
+                // if it exists, you can use 'object' in nodepaths
+                int rootnr=mmb.getRootType();
                 for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
                     // get the allowed relation definitions
                     typenode = (MMObjectNode)e.nextElement();
-                    desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("snumber")==ro);
-                    srctodest= (searchdir!=SEARCH_SOURCE) && (srctodest || typenode.getIntValue("snumber")==so);
+                    desttosrc= (searchdir!=SEARCH_DESTINATION) &&
+                               (desttosrc ||
+                                (ro==rootnr) || // ignore root 'object' type
+                                typenode.getIntValue("snumber")==ro);
+                    srctodest= (searchdir!=SEARCH_SOURCE) &&
+                               (srctodest ||
+                               (so==rootnr) || // ignore root 'object' type
+                                typenode.getIntValue("snumber")==so);
                     if (desttosrc && srctodest) break;
                 }
             }

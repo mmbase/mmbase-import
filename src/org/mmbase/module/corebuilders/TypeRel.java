@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeRel.java,v 1.26 2002-05-06 09:05:55 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.27 2002-07-05 12:56:19 pierre Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -69,7 +69,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Enable memory based TypeRel querying or not.
-	 * default on, can be switched to off in typerel.xml
+         * default on, can be switched to off in typerel.xml
      */
     private boolean memTableActive=true;
 
@@ -105,21 +105,21 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             val=Integer.parseInt(str);
             art_Cache_Size=val;
         }
-		artCache=new LRUHashtable(art_Cache_Size);
+        artCache=new LRUHashtable(art_Cache_Size);
 
         str=getInitParameter("reldef_cache_size");
         if (str!=null && str.length()>0) {
             val=Integer.parseInt(str);
             reldef_Cache_Size=val;
         }
-		relDefCorrectCache=new Hashtable(reldef_Cache_Size);
+        relDefCorrectCache=new Hashtable(reldef_Cache_Size);
 
         str=getInitParameter("reltype_cache_size");
         if (str!=null && str.length()>0) {
             val=Integer.parseInt(str);
             reltype_Cache_Size=val;
         }
-		relationTypes=new Hashtable(reltype_Cache_Size);
+        relationTypes=new Hashtable(reltype_Cache_Size);
 
         str=getInitParameter("reltype_cache_active");
         if (str!=null && str.length()>0) {
@@ -147,7 +147,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     private void readRelationTypes() {
         Enumeration alltypes;
         MMObjectNode reltype;
-        
+
         log.debug("Reading in relation types");
         // Find all typerel nodes
         alltypes=search("");
@@ -292,6 +292,17 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *  @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
     public Enumeration getAllowedRelations(int snum, int dnum) {
+        // determine whether one of the given numbers is 'object'
+        // if so, ignore that type as a filter
+        // needed by Clusterbuilder to manage nodepaths that use object
+        // XXX:Todo: should be done better (i.e. return lists of otypes)
+        int rootnr=mmb.getRootType();
+        if (snum==rootnr) {
+            return getAllowedRelations(dnum);
+        }
+        if (dnum==rootnr) {
+            return getAllowedRelations(snum);
+        }
         Enumeration e,f;
         // long l1,l2;
 
@@ -486,6 +497,14 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @return A <code>boolean</code> indicating success when the relation exists, failure if it does not.
      */
     public boolean reldefCorrect(int n1,int n2, int r) {
+        // determine whether one of the specified types is 'object'
+        // if so, assume the reldef to be correct
+        // needed for Clusterbuilderpaths that use 'object' in nodepath
+        // XXX: todo: should be done more generic (i.e. determine all nodetypes).
+        int rootnr=mmb.getRootType();
+        if ((n1==rootnr) || (n2==rootnr)) {
+            return true;
+        }
         // do the query on the database
         Boolean b=(Boolean)relDefCorrectCache.get(""+n1+" "+n2+" "+r);
         if (b!=null) {
@@ -534,7 +553,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Watch for changes on relation types and adjust our memory table accordingly
-	 * @todo Should update artCache en relDefCorrectCache as wel 
+         * @todo Should update artCache en relDefCorrectCache as wel
      */
     public boolean nodeChanged(String machine,String number,String builder,String ctype) {
         log.debug("Seeing change on "+number+" : "+ctype);
@@ -555,7 +574,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     * Remove a relation type from the internal table 
+     * Remove a relation type from the internal table
      */
     private void removeRelationType(int number) {
         Hashtable level2;
@@ -620,7 +639,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
     /**
      * Add a relation type to our internal table
-     * This is a callthrough to the real function 
+     * This is a callthrough to the real function
      */
     private void addRelationType(int number) {
         MMObjectNode node;
@@ -678,7 +697,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         Hashtable level2;
         Vector reltypes;
 
-        // Find 2nd level table 
+        // Find 2nd level table
         level2=(Hashtable)relationTypes.get(lev1);
         if (level2==null) {
             level2=new Hashtable();
