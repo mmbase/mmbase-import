@@ -192,17 +192,20 @@ public class XMLBuilderWriter  {
 			body+="\t\t\t<!-- name of the field in the database -->\n";
 			body+="\t\t\t<name>"+def.getDBName()+"</name>\n";
 			body+="\t\t\t<!-- MMBase datatype and demands on it -->\n";
-			String tmpt=def.getDBType();
+			int tmpti=def.getDBType();
 			String tmps="persistent";
 			int tmpsi=def.getDBState();
+			String tmpt=null;
 			if (tmpsi==FieldDefs.DBSTATE_PERSISTENT) tmps="persistent";
 			if (tmpsi==FieldDefs.DBSTATE_VIRTUAL) tmps="virtual";
 			if (tmpsi==FieldDefs.DBSTATE_SYSTEM) tmps="system";
 
-			// weird extra code to map to old types
-			if (tmpt.equals("varchar")) tmpt="VARCHAR";
-			if (tmpt.equals("int")) tmpt="INTEGER";
-			// end of weird map
+			if (tmpti==FieldDefs.TYPE_STRING) tmpt="STRING";
+			if (tmpti==FieldDefs.TYPE_INTEGER) tmpt="INTEGER";
+			if (tmpti==FieldDefs.TYPE_LONG) tmpt="LONG";
+			if (tmpti==FieldDefs.TYPE_DOUBLE) tmpt="DOUBLE";
+			if (tmpti==FieldDefs.TYPE_FLOAT) tmpt="FLOAT";
+			if (tmpti==FieldDefs.TYPE_BYTE) tmpt="BYTE";
 
 			int size=def.getDBSize();
 
