@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.24 2002-08-12 20:48:46 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.25 2002-08-14 18:16:54 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -95,7 +95,8 @@
 
         // which parameter to use to configure a wizard page
         public void config(Config.WizardConfig c) {
-            c.wizard      = getParam("wizard", c.wizard);
+            c.wizard           = getParam("wizard", c.wizard);
+            c.popupId          = getParam("popupid",  "");
             if (c.wizard != null && c.wizard.startsWith("/")) {
                 c.wizard = "file://" + getRequest().getRealPath(c.wizard);
             }
@@ -108,6 +109,10 @@
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
 Configurator configurator; // Fills the ewconfig if necessary.
 
+String popupId = "";  // default means: 'this is not a popup'
+boolean popup = false;  
+
+
 %><% boolean done=false;
      Object closedObject=null;
 %><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
@@ -118,7 +123,7 @@ response.addHeader("Cache-Control","no-cache");
 response.addHeader("Pragma","no-cache");
 
 // Set session timeout
-session.setMaxInactiveInterval(60 * 60 ); // 1 hour;
+session.setMaxInactiveInterval(1 * 60 * 60); // 1 hour;
 
 // and make every page expired ASAP.
 String now = org.mmbase.util.RFC1123.makeDate(new Date());
@@ -133,11 +138,12 @@ log.trace("done setting headers");
 String sessionKey = request.getParameter("sessionkey");
 if (sessionKey == null) sessionKey = "editwizard";
 
+
 // proceed with the current wizard only if explicitly stated,
 // or if this page is a debug page
 
-boolean proceed = "true".equals(request.getParameter("proceed")) ||
-                  (request.getRequestURI().endsWith("debug.jsp"));
+boolean proceed = "true".equals(request.getParameter("proceed")) || (request.getRequestURI().endsWith("debug.jsp"));
+
 
 // Look if there is already a configuration in the session.
 Object configObject = session.getAttribute(sessionKey);
@@ -158,8 +164,19 @@ if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) {
 }
 
 
+popupId = request.getParameter("popupid");
+if (popupId == null) popupId = "";
+popup = ! "".equals(popupId);
+if (popup) {
+    log.debug("this is a popup");
+} else {
+    log.debug("this is not a popup");
+}
+
+
+
 String refer = ewconfig.backPage;
-log.trace("backpage in config is " + refer);
+if (log.isDebugEnabled()) log.trace("backpage in root-config is " + refer);
 
 if (request.getParameter("logout") != null) {
     %><mm:cloud method="logout" /><%
@@ -180,56 +197,52 @@ configurator = new Configurator(request, response, ewconfig);
 // removing top page from the session
 if (request.getParameter("remove") != null) {
 
-    log.debug("Removing top object requested from " + configurator.getBackPage());
-
-    if(ewconfig.subObjects.size() > 0) {
-        // remove popupwizard
-        // pass the result of the popupwizard to the calling wizard
-        // (how do we do this ???)
-        log.debug("subObjects " + ewconfig.subObjects);
-        closedObject = ewconfig.subObjects.pop();
-    }
-
-    if (ewconfig.subObjects.size() == 0) {
-        //if (request.getParameter("popup") != null) {
-        if (sessionKey.indexOf("|popup") > 0) {
-
-            log.debug("a separate running popup, so remove sessiondata");
-            session.removeAttribute(sessionKey);
+    if (log.isDebugEnabled()) log.debug("Removing top object requested from " + configurator.getBackPage());
+    if(! ewconfig.subObjects.empty()) {    
+        if (! popup) { // remove inline             
+            log.debug("popping one of subObjects " + ewconfig.subObjects);
+            closedObject = ewconfig.subObjects.pop();
+        } else { //popup
+            log.debug("a separate running popup, so remove sessiondata for " + popupId);
+            Config.SubConfig top = (Config.SubConfig) ewconfig.subObjects.peek();
+            Stack stack =  (Stack) top.popups.get(popupId);
+            closedObject = stack.pop();
+            if (stack.size() == 0) { 
+                top.popups.remove(popupId);        
+                log.debug("going to close this window"); 
 %>
 <html>
 <script language="javascript">
  try { // Mac IE doesn't always support window.opener.
 <%
-            if (closedObject instanceof Config.WizardConfig &&
-                ((Config.WizardConfig)closedObject).wiz.committed()) {
-                    // XXXX I find all this stuff in wizard.jsp too. Why??
-
-
-                log.debug("Closed was a Wizard (commited)");
-                String sendCmd="";
-                String objnr="";
-                Config.WizardConfig inlineWiz=(Config.WizardConfig)closedObject;
-                // we move from a inline sub-wizard to a parent wizard...
-                // with an inline popupwizard we should like to pass the newly created or updated
-                // item to the 'lower' wizard.
-                objnr=inlineWiz.objectNumber;
-                if ("new".equals(objnr)) {
-                    // obtain new object number
-                    objnr=inlineWiz.wiz.getObjectNumber();
-                    if (log.isDebugEnabled()) log.debug("Objectnumber was 'new', now " + objnr);
-                    String parentFid = inlineWiz.parentFid;
-                    if ((parentFid!=null) && (!parentFid.equals(""))) {
-                        log.debug("Settings. Sending an add-item command ");
-                        String parentDid = inlineWiz.parentDid;
-                        sendCmd="cmd/add-item/"+parentFid+"/"+parentDid+"//";
-                    }
-                } else {
-                    if (log.isDebugEnabled()) log.debug("Aha, this was existing, send an 'update-item' cmd for object " + objnr);
-                    sendCmd="cmd/update-item////";
-                }
-                if (log.isDebugEnabled()) log.debug("Sending command " + sendCmd + " , " + objnr);
-%>
+ if (closedObject instanceof Config.WizardConfig && ((Config.WizardConfig) closedObject).wiz.committed()) {
+   // XXXX I find all this stuff in wizard.jsp too. Why??
+   
+   
+   log.debug("A popup was closed (commited)");
+   String sendCmd = "";
+   String objnr = "";
+   Config.WizardConfig popupWiz= (Config.WizardConfig) closedObject;
+   // we move from a popup sub-wizard to a parent wizard...
+   // with an inline popupwizard we should like to pass the newly created or updated
+   // item to the 'lower' wizard.
+   objnr=popupWiz.objectNumber;
+   if ("new".equals(objnr)) {
+     // obtain new object number
+     objnr=popupWiz.wiz.getObjectNumber();
+     if (log.isDebugEnabled()) log.debug("Objectnumber was 'new', now " + objnr);
+     String parentFid = popupWiz.parentFid;
+     if ((parentFid!=null) && (!parentFid.equals(""))) {
+       log.debug("Settings. Sending an add-item command ");
+       String parentDid = popupWiz.parentDid;
+       sendCmd="cmd/add-item/"+parentFid+"/"+parentDid+"//";
+     }
+   } else {
+     if (log.isDebugEnabled()) log.debug("Aha, this was existing, send an 'update-item' cmd for object " + objnr);
+     sendCmd="cmd/update-item////";
+   }
+   if (log.isDebugEnabled()) log.debug("Sending command " + sendCmd + " , " + objnr);
+   %>
    window.opener.doSendCommand("<%=sendCmd%>","<%=objnr%>");
 <%          } %>
  } catch (e) {}
@@ -237,13 +250,18 @@ if (request.getParameter("remove") != null) {
 </script>
 </html>
 <%
-        } else {
-            if (! refer.startsWith("http:")) {
-                refer = response.encodeURL(request.getContextPath() + refer);
+            done = true;
             }
-            log.debug("Redirecting to " + refer);
-            response.sendRedirect(refer);
+        } // popup
+    } // not subObject empty
+
+    if (ewconfig.subObjects.empty()) { // it _is_ empty? Then we are ready.
+        log.debug("last object cleared, redirecting");
+        if (! refer.startsWith("http:")) {
+            refer = response.encodeURL(request.getContextPath() + refer);
         }
+        log.debug("Redirecting to " + refer);
+        response.sendRedirect(refer);
         done = true;
     } else if (ewconfig.subObjects.peek() instanceof Config.ListConfig) {
         log.debug("Redirecting to list");
@@ -254,12 +272,13 @@ if (request.getParameter("remove") != null) {
 
 
 if (!done) {
-    log.debug("Stack "            + ewconfig.subObjects);
-    log.debug("URIResolver "      + ewconfig.uriResolver.getPrefixPath());
-
+    if (log.isDebugEnabled()) {
+        log.debug("Stack "            + ewconfig.subObjects);
+        log.debug("URIResolver "      + ewconfig.uriResolver.getPrefixPath());
+    }
     log.service("end of settings.jsp");// meaning that the rest of the list/wizard page will be done (those include setting.jsp).
 }
 %></mm:log><%
     if (done) return;
-%>
+%><mm:import externid="loginmethod" from="parameters">loginpage</mm:import>
 
