@@ -45,6 +45,7 @@
 </mm:context>
 <%-- /mm:compare --%>
 
+<mm:write id="offset" value="${+$page*$config.page_size}" vartype="integer"  write="false" />
 
 <mm:listnodescontainer type="$node_type">
 
@@ -62,6 +63,11 @@
 
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
 
+<mm:size id="totalsize" write="false" />
+
+ <mm:offset    value="${+$page*$config.page_size}"  />
+ <mm:maxnumber value="$config.page_size" />  
+
 <a name="searchresult" />
 <table width="100%" class="list"><!-- list table -->      
   <tr align="left"><!-- header -->
@@ -69,12 +75,9 @@
     <mm:fieldlist nodetype="$node_type" type="list">
          <th><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small> </th>
     </mm:fieldlist>
-    <th colspan="2">size: <mm:size /></th><!-- X and -> collum -->
+    <mm:size id="size" write="false" />
+    <th colspan="2"><mm:write vartype="integer" value="${+$offset + 1}" /> to <mm:write vartype="integer" value="${+$offset + $size}" /> of  <mm:write referid="totalsize"  /></th><!-- X and -> collum -->
   </tr>
-
- <mm:maxnumber value="$config.page_size" />
- <mm:offset    value="${+$page*$config.page_size}"  />
-  
 
 <mm:listnodes id="node_number" directions="DOWN"  orderby="number" jspvar="sn">
   <tr>
