@@ -1,6 +1,6 @@
    <PROCESSOR MMBASE>
    <ul>
-    <LIST RELATIONS NODE="$PARAM1" TYPE="channel" FIELDS="number,html(name),gui(state),gui(maxusers)">
+    <LIST RELATIONS NODE="$PARAM1" TYPE="channel" FIELDS="number,html(title),gui(state),gui(maxusers)">
      <li>
         <LIF $MOD-communityprc-CHANNEL-$ITEM1-ISOPEN^==open>
             <a href="forum/forum.shtml?$ITEM1"><strong>$ITEM2</strong></a> is open<br />
