@@ -105,7 +105,7 @@
 <%= m.getString("commit_node.redirect")%></a>
 
 <mm:write referid="redirectTo" jspvar="redirect" vartype="string">
-<jsp:forward page="<%=redirect%>" />
+<% response.sendRedirect(redirect); %>
 </mm:write>
 
 </mm:context>
