@@ -1,8 +1,10 @@
 <%@ include file="page_base.jsp"
 %><mm:import externid="username" from="parameters" />
+<mm:locale language="$config.lang">
 <mm:cloud method="http" logon="$username" sessionname="${SESSION}" jspvar="cloud">
 <mm:write referid="style" />
-<title>Search a node</title>
+
+<title><%=m.getString("search_node.search")%></title>
 </head>
 <mm:context id="edit">
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
@@ -10,14 +12,14 @@
 <body class="basic" <mm:present referid="node_type"><mm:compare referid="config.hide_search" value="false"> onLoad="document.search.elements[0].focus();"</mm:compare></mm:present>>
     <table summary="node editors" width="100%" cellspacing="1" cellpadding="0" border="0">
     	<tr align="left">
-    	    <th width="20%">Node Type</th>
+    	    <th width="20%"><%=m.getString("search_node.search")%></th>
     	    <mm:present referid="node_type">
-    	    	<th width="80%">Nodes of type <mm:nodeinfo nodetype="$node_type" type="guitype" />
+    	    	<th width="80%"><%=m.getString("search_node.type")%> <mm:nodeinfo nodetype="$node_type" type="guitype" />
                                               (<mm:nodeinfo nodetype="$node_type" type="type" />)
 				</th>
     	    </mm:present>		
     	    <mm:notpresent referid="node_type">
-    	    	<th width="80%">No node type selected</th>
+    	    	<th width="80%"><%=m.getString("search_node.nonodes")%></th>
     	    </mm:notpresent>		
     	</tr>
     	<tr valign="top">
@@ -54,7 +56,7 @@
                     <!-- quick search by number/alias: -->
     	    	    <form method="post" action="<mm:url page="change_node.jsp"/>">
     	    	    	<tr>
-			    <td class="data">alias: <input type="text" size="5" name="node_number" /></td>
+			    <td class="data"><%=m.getString("alias")%>: <input type="text" size="5" name="node_number" /></td>
 			    <td colspan="2" class="navigate"><input type="submit"  name="change" value="&gt;" /></td>
 			</tr>
     	    	    </form>
@@ -69,7 +71,7 @@
                <mm:maycreate type="$node_type">
               	    	<table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
 	      	    	    <tr>
-	      	    	    	<td class="data">Create a new object of type <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
+	      	    	    	<td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
 	      	    	    	<td class="navigate">
 	      	    	    	    <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
                     	    		<img src="images/create.gif" alt="[create]" border="0" width="20" height="20" align="right" />
@@ -81,7 +83,7 @@
               <mm:maycreate type="${node_type}" inverse="true">
               	    	<table width="100%">
 	      	    	    <tr>
-			    	<td class="data">May not create a new object of type <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
+			    	<td class="data"><%= m.getString("search_node.maynotcreate")%> <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
 	      	    	    	<td class="navigate">&nbsp;</td>        
 	      	    	    </tr>
               	    	</table> 
@@ -94,3 +96,4 @@
 </mm:context>
 <%@ include file="foot.jsp"  %>
 </mm:cloud>
+</mm:locale>

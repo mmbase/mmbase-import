@@ -9,7 +9,7 @@
 
 <mm:notpresent referid="create_relation">
    <mm:write referid="style" />
-   <title>New relation</title>
+   <title><%=m.getString("new_relation.new")%></title>
    </head>
    <body class="basic" onLoad="document.search.elements[0].focus();">
    <mm:import externid="to_page"><mm:url referids="role_name,node_type,node">
@@ -20,8 +20,8 @@
    <mm:node referid="node" jspvar="node">
   
      <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
-     <tr><th>Create relation</th></tr>
-     <tr><th>from node: <mm:field name="gui()" /></th></tr>
+     <tr><th><%=m.getString("new_relation.new")%></th></tr>
+     <tr><th><%=m.getString("new_relation.from")%>: <mm:field name="gui()" /></th></tr>
      <tr><td>
      <%@ include file="search_node_with_type.jsp" %>   
      </td></tr>
@@ -33,7 +33,7 @@
 
 
 <mm:present referid="create_relation">
-   <title>Creating relation</title>
+   <title><%=m.getString("new_relation.new")%></title>
 
    <mm:import externid="annotate_relation" />
    <mm:import externid="node_number" required="true"/>
@@ -78,7 +78,7 @@
 	   </head>
        <body class="basic">
        <h1>Redirecting</h1>
-       <a href="<mm:url page="${redirectTo}" />">Redirecting to node page</a>
+       <a href="<mm:url page="${redirectTo}" />"><%=m.getString("new_relation.redirect")%></a>
      </mm:notpresent>
 
     </mm:node>
@@ -97,7 +97,7 @@
 	</head>
     <body>
     <h1>Redirecting</h1>
-    <a href="<mm:url page="${redirectTo}" />">Redirecting to node page</a>
+    <a href="<mm:url page="${redirectTo}" />"><%=m.getString("new_relation.redirect")%></a>
   </mm:present>
 
   </mm:node>
