@@ -10,6 +10,8 @@ installation.txt            Instructions for installing MMBase
 readme.txt                  General info about the MMBase distro
 release-notes.txt           Releasenotes for this distro (contains
                             changes/bugfixes/know issues)
+upgrade.txt                 Instructions for upgrading existing MMBase
+                            installations
 build.properties            Build properties for ant, you may
                             add your own properties
 build.properties.default    Default build properties for ant
@@ -34,7 +36,7 @@ config/                     MMBase config dir
   magic.xml                 File with information about mimetypes
   modules/                  All modules that can be used, including
                             core modules and optional modules. Not all
-			    modules are activated by default 
+                            modules are activated by default  
   security/                 Configuration for the security
   utils/                    All config related to org.mmbase.util-classes 
     httppost.xml            Config related to upload files (max size,
