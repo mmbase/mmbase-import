@@ -254,10 +254,13 @@ public class scancache extends Module implements scancacheInterface {
 	                if (((now-then)-interval)<0) {
 	                    return value;
 	                } else {
-	                    log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
-						// RICO signal page-processor
-						signalProcessor(sp,key);
-	                    return value;
+						// Don't handle flasvar
+						if (key.indexOf(".flashvar")<0) {
+							log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
+							// RICO signal page-processor
+							signalProcessor(sp,key);
+							return value;
+						} else return null;
 	                }
 	            } catch(Exception e) {}
 			}
@@ -266,6 +269,8 @@ public class scancache extends Module implements scancacheInterface {
         fileInfo fileinfo=loadFile(poolName,key);
         if (fileinfo!=null && fileinfo.value!=null) {
             if (((now-fileinfo.time)-interval)>0) {
+				if (key.indexOf(".flashvar")>=0) // Don't handle flashvar;
+					return null;
                 log.debug("get("+poolName+","+key+","+line+"): Diskfile expired for file("+fileinfo.time+"), now("+now+") and interval("+interval+") , return old version ");
 				// RICO signal page-processor
 				signalProcessor(sp,key);
@@ -596,7 +601,9 @@ public class scancache extends Module implements scancacheInterface {
         body+="Content-length: "+value.length()+"\n";
         body+="Expires: "+expireTime+"\n";
         body+="Date: "+now+"\n";
-        body+="Cache-Control: no-cache\n";
+		// Internet explorer refuses to see resulting page as HTML
+		// when cache control header added to .asis file 
+        // body+="Cache-Control: no-cache\n";
         body+="Pragma: no-cache\n";
         body+="Last-Modified: "+now+"\n\n";
         return body;
