@@ -523,6 +523,9 @@ public class scanparser extends ProcessorModule {
 	{
 		String result = null;
 
+		/*
+			String parsedPart = dodollar(part2,session,sp);
+		*/
 		if( debug ) debug("do_counter("+part+"): inserting tag in page.");
 		long time = System.currentTimeMillis();
 		result = counter.getTag( part, session, sp );
@@ -1677,6 +1680,7 @@ public class scanparser extends ProcessorModule {
 			if (sp.body.indexOf("<CACHE PAGE")!=-1) {
 				wantCache="PAGE";
 			}
+			sp.wantCache=wantCache;
 			// end cache
 			// unlike include we need to map this ourselfs before including it
 			// in this page !!
