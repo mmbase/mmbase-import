@@ -205,7 +205,7 @@
 		<method>changeForum</method>
 		<param name="forumid" type="String" description="MMBase node number of the forum" />
 		<param name="name" type="String" description="New name for this forum" />
-		<param name="language" type="String" description="New language of this forum" />
+		<param name="newlang" type="String" description="New language of this forum" />
 		<param name="description" type="String" description="New description of this forum" />
 		<return type="Node"> 
 		</return> 
