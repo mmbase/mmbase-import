@@ -15,22 +15,17 @@
 
 	<form-schema id="basics">
 		<title>Source Editor</title>
-    <field name="url" />
-    <field name="format" ftype="enum">
-      <optionlist select="formats" />
-    </field>
-    <field name="codec" />
-    <field name="bitrate" />
-    <field name="channels" />
-    <field name="state" />
-    <field name="filesize" />
-    &extrafields;
     <list role="related" destination="mediaproviders" minoccurs="1">
     <title>Media provider</title>
     <title xml:lang="en">Stream server</title>
     <title xml:lang="nl">Stream server</title>
     <item>
       <field name="name" ftype="data" />
+      <fieldset>
+        <field name="protocol" ftype="data"><postfix>://</postfix></field>
+        <field name="host" ftype="data" />
+        <field name="rootpath" ftype="data" />
+      </fieldset>
     </item>
     <command name="search" nodepath="mediaproviders" fields="host,name,info" orderby="name" age="-1" >
       <search-filter>
@@ -46,6 +41,16 @@
       <relation destinationtype="mediaproviders" role="related" />
     </action>
   </list>
+    <field name="url" />
+    <field name="format" ftype="enum">
+      <optionlist select="formats" />
+    </field>
+    <field name="codec" />
+    <field name="bitrate" />
+    <field name="channels" />
+    <field name="state" />
+    <field name="filesize" />
+    &extrafields;
   </form-schema>
 
   <!--   itemize; -->
