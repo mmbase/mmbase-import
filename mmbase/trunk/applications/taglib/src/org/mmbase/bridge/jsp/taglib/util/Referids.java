@@ -10,19 +10,18 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.util;
 
-import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.jsp.taglib.TaglibException;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-import javax.servlet.jsp.PageContext;
 import java.util.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+import javax.servlet.jsp.JspTagException;
+
+import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.util.logging.*;
 
 /**
  * A helper class to implement referids attribute.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Referids.java,v 1.1 2004-01-20 23:15:50 michiel Exp $
+ * @version $Id: Referids.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
  * @since MMBase-1.7
  */
 public class  Referids  {

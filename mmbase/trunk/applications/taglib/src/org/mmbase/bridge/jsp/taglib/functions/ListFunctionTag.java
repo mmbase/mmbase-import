@@ -9,27 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.functions;
 
-import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.util.*;
-import org.mmbase.bridge.jsp.taglib.containers.*;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-import org.mmbase.util.functions.Parameters;
-
-import java.util.*;
 import java.io.IOException;
-import javax.servlet.http.*;
+import java.util.*;
+
+import javax.servlet.jsp.*;
+
+import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
+import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A function tag for functions returning a list. The result is iterated.
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.1 2004-01-16 20:21:11 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.2 2004-02-11 20:40:12 keesj Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer {
 

@@ -9,12 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.tree;
 
-import org.mmbase.bridge.jsp.taglib.*;
 
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: DepthProvider.java,v 1.1 2003-12-24 00:47:54 michiel Exp $
+ * @version $Id: DepthProvider.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
  */
 public interface DepthProvider {
 

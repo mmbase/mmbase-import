@@ -9,17 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import javax.servlet.jsp.JspTagException;
-
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.TagIdentifier;
+import org.mmbase.bridge.NodeQuery;
 
 /**
  * A NodeQuery Container can be used around node-list Tags. Basicly, it adminstrates a NodeQuery object.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeQueryContainer.java,v 1.1 2003-12-18 09:05:45 michiel Exp $
+ * @version $Id: NodeQueryContainer.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
  */
 public interface NodeQueryContainer extends QueryContainer {
 

@@ -11,16 +11,16 @@ package org.mmbase.bridge.jsp.taglib.containers;
 
 import java.util.List;
 
-import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.util.functions.*;
 import javax.servlet.jsp.JspTagException;
+
+import org.mmbase.bridge.jsp.taglib.*;
 
 /**
  * Function Container can be used around Function (-like) Tags
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainer.java,v 1.5 2003-12-18 09:05:41 michiel Exp $
+ * @version $Id: FunctionContainer.java,v 1.6 2004-02-11 20:40:14 keesj Exp $
  */
 public interface FunctionContainer extends ParamHandler, TagIdentifier, FunctionContainerOrNodeProvider {
 

@@ -10,11 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util;
 
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
+import java.util.Iterator;
 
-import java.util.*;
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Queries a Tree from MMBase. A Tree is presented as a List of MultiLevel results (ClusterNodes),
@@ -23,7 +22,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.1 2003-12-18 20:24:16 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.2 2004-02-11 20:43:22 keesj Exp $
  * @since   MMBase-1.7
  */
 

@@ -9,18 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import org.mmbase.bridge.*;
-
 import java.io.IOException;
-import java.io.File;
-
 import java.util.regex.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.*;
 
 /**
  * BridgeServlet is an MMBaseServlet with a bridge Cloud in it. Extending from this makes it easy to
@@ -36,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.15 2004-01-16 12:55:03 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.16 2004-02-11 20:43:23 keesj Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */

@@ -12,18 +12,17 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Alias as constraint.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.1 2003-12-18 09:05:45 michiel Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 

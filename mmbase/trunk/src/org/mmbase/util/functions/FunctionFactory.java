@@ -9,11 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import org.mmbase.util.logging.*;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 import org.mmbase.bridge.*;
-import java.lang.reflect.*;
-import java.lang.reflect.Field;
-import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A way to instantiate function objects. A hand full a 'getFunction' methods are
@@ -21,7 +21,7 @@ import java.util.*;
  * (putting them in WEB-INF/classes should do the trick).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.2 2004-01-14 18:32:38 michiel Exp $
+ * @version $Id: FunctionFactory.java,v 1.3 2004-02-11 20:43:21 keesj Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {

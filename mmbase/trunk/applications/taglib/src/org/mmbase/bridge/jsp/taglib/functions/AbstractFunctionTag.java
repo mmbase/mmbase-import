@@ -10,18 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.functions;
 
 
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.Iterator;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Referids;
-import org.mmbase.util.logging.*;
+import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.util.functions.*;
-import java.lang.reflect.*;
+import org.mmbase.util.logging.*;
 
 
 
@@ -36,7 +34,7 @@ import java.lang.reflect.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.4 2004-02-09 17:59:43 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.5 2004-02-11 20:40:13 keesj Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 

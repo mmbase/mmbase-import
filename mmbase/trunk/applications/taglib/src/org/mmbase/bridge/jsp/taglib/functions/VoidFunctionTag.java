@@ -9,11 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.functions;
 
-import javax.servlet.jsp.*;
+import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.functions.Function;
 
 /**
  * If you want to completely ignore the result of a function (only interested in the side effect),
@@ -21,7 +19,7 @@ import org.mmbase.util.functions.Function;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: VoidFunctionTag.java,v 1.1 2004-01-16 20:21:12 michiel Exp $
+ * @version $Id: VoidFunctionTag.java,v 1.2 2004-02-11 20:40:12 keesj Exp $
  */
 public class VoidFunctionTag extends AbstractFunctionTag implements FunctionContainerReferrer {
     public int doStartTag() throws JspTagException {             

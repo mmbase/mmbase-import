@@ -11,20 +11,14 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
+import org.mmbase.cache.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.gui.html.EditState;
-
-import org.mmbase.util.Casting;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-import org.mmbase.storage.search.*;
 import org.mmbase.security.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.util.Casting;
+import org.mmbase.util.logging.*;
 import org.w3c.dom.Document;
-
-import org.mmbase.cache.RelatedNodesCache;
-import org.mmbase.cache.RelationsCache;
-import org.mmbase.cache.NodeCache;
 
 /**
  * MMObjectNode is the core of the MMBase system.
@@ -37,7 +31,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.117 2004-01-08 15:03:56 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.118 2004-02-11 20:43:21 keesj Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {

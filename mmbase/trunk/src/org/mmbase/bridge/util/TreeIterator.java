@@ -10,15 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util;
 
-import org.mmbase.bridge.*;
-
-import java.util.*;
+import org.mmbase.bridge.NodeIterator;
 
 /**
  * A specialized iterator for 'TreeLists'
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeIterator.java,v 1.1 2003-12-18 12:17:12 michiel Exp $
+ * @version $Id: TreeIterator.java,v 1.2 2004-02-11 20:43:22 keesj Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.bridge.util.TreeList
  */

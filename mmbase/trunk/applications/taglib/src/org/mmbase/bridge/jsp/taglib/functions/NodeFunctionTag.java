@@ -9,21 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.functions;
 
+import java.io.IOException;
+
 import javax.servlet.jsp.JspTagException;
+
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.*;
-
-import java.io.IOException;
 
 
 /**
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.1 2004-01-16 20:21:11 michiel Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.2 2004-02-11 20:40:12 keesj Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
