@@ -5,8 +5,8 @@
   <article>
     <articleinfo>
     <title>MMBase Configuration documentation</title>
-    <date>4 december 2002</date>
-    <edition>$Id: configuration.xml,v 1.17 2003-03-11 17:01:21 michiel Exp $</edition>
+    <date>4 December 2002</date>
+    <edition>$Id: configuration.xml,v 1.18 2003-06-30 13:04:10 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -41,7 +41,7 @@
       <title>Context parameters</title>
         <para>
         The parameter `mmbase.htmlrooturlpath' indicates the context root. It must be specified if
-        MMBase does not succeed to determine it automaticly, otherwise some url's to some servlets
+        MMBase does not succeed to determine it automatically, otherwise some URLs to some servlets
         will be generated incorrectly. Hopefully this option will be deprecated when the servlet
         2.3 api is supported well (and fully) by all important
         application servers. For Tomcat 4.1 it is not necessary, for
@@ -87,7 +87,7 @@
             <listitem>
               <para>
                 This servlet looks a lot like ImageServlet, but it is
-                focussed on 'attachments' nodes, which besides a 'handle'
+                focused on 'attachments' nodes, which besides a 'handle'
                 also store a 'mimetype' field and a 'filename' field. It
                 has the 'expire' property just like ImageServlet. Map it
                 e.g. to /attachments/* or /attachment.db.
@@ -106,8 +106,8 @@
               <para>
                 When it is used as an 'imageservlet' it also can
                 accept the 'transformation' template to generate a
-                'icache' node from a orginal image node on the URL. This
-                can be handy, but also opens a vulnarability to your
+                'icache' node from a original image node on the URL. This
+                can be handy, but also opens a vulnerability to your
                 site.              
               </para>
               <para>
@@ -125,7 +125,7 @@
             <para>
               If you also have turned on the right MMBase `modules',
               this servlet will provide the `SCAN' template
-              language. For new users it is adviced not to use SCAN, but
+              language. For new users it is advised not to use SCAN, but
               to use e.g. JSP (the JSP servlet and servlet-mapping are
               normally shipped with and installed in your application
               server). The SCAN servlet servscan has to be mapped to
@@ -264,7 +264,7 @@
 
   <!-- 
     The 'Open Symphony' cache tags can e.g. cache your page partially. It uses expire-times or can
-    be invalidated programaticly.  See http://www.opensymphony.com
+    be invalidated programatically.  See http://www.opensymphony.com
   -->
   <taglib>
     <taglib-uri>oscache</taglib-uri>
@@ -320,7 +320,7 @@
     <para>
       In these older versions of MMBase also the `mmbase.htmlroot' command line option was
       needed. It still is supported (though not by JSP), but I can't think of any situation in which
-      it would be needed (besided when using a very old MMBase or perhaps a very old application
+      it would be needed (besides when using a very old MMBase or perhaps a very old application
       server), and I think this option can now be considered fully
       deprecated. --> perhaps in junit tests?
     </para>
@@ -399,14 +399,14 @@
     <title>Databases</title>
     <para>
       In the databases subdirectory of the configuration you find the
-      xml's describing the supported databases. In an actual
+      XML's describing the supported databases. In an actual
       installation, all but one can be removed. It must correspond to
       the `database' property in config/modules/mmbaseroot.xml, if
       this property is present. You can also remove the database
       property from mmbaseroot.xml (I would advice that, because then
       all database configuration is in jdbc.xml), then the
-      'lookup.xml' file will be used to determin the right database
-      configuration XML (so perhaps it is better te leave them) using
+      'lookup.xml' file will be used to determine the right database
+      configuration XML (so perhaps it is better to leave them) using
       the available driver.
     </para>
     <para>
@@ -439,7 +439,7 @@
      which drives are known to work.
     </para>
     <para>
-      The file in which is configurated which driver MMBase must use
+      The file in which is configured which driver MMBase must use
      is config/modules/jdbc.xml. Also other information for this
      driver can be found. Here you
       can configure the username/password for access to the database. The database name itself,
@@ -455,7 +455,7 @@
   <properties>  
     <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
     <property name="driver">com.mysql.jdbc.Driver</property>
-    <propertyn ame="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
+    <property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
     <property name="user">mmbase</property>
     <property name="password">mypassword</property>
     <property name="database">mmbase_db</property>
@@ -781,7 +781,7 @@ applications responsible for them (application server and log4j in these cases).
       <para>
         Entities are an XML concept. They work a little like constants. In the examples log4j XML
         configuration files, they are used to store some information in a centralized
-        way. (classnames, log directories). Entities can be reqognized by the &amp;-sign.
+        way. (classnames, log directories). Entities can be recognized by the &amp;-sign.
       </para>
     </section>
   </appendix>
