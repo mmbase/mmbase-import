@@ -1,75 +1,103 @@
-body.basic { background-image: url("../images/background.gif");
-       background-color: white;
-       background-repeat: repeat-y;
-       margin-top: 1em;
-       margin-left:4em;
-       color: #42BDAD; }
+/*
+ CSS for MMBase documentation
+ @author Michiel Meeuwissen
+ @version $Id: mmbase.css,v 1.6 2002-12-06 16:07:40 pierre Exp $;
+*/
 
-body.navigationbar {
-    background-color: #00425A;
-    color: white;
-    margin-top: 0em;
-    margin-left: 0em;
+
+body {
+     font-family: Verdana, Arial, Helvetica, sans-serif;
+     background-color: white;
+     margin-left: 3%;
+     margin-right: 3%;
+     padding-left: 0pt;
+     padding-right: 0pt;
 }
 
-form  { margin: 0em; }
 
-a:link { color: white; }
-a:visited { color: #42BDAD; }
-a:active { color: yellow; }
-
-table   { width : 93%; }
-
-td { vertical-align : top;
-     horizontal-align : left;
-     border-width: 1;
+table {
+         font-size: 9pt;
+         width: 100%;
+         border-bottom: none;
+         border-top: none;
+         border-left: solid thin white;
+         border-right: none;
+         border-collapse:separate;
+         border-spacing: 1pt;
 }
-
+td {
+    padding: 3pt;
+}
 th {
-   background-color: #42BDAD;
-   color: black;
-   font-weight:bold
+    background-color: #ddd;
+    text-align: left;
 }
+
+tr.footer td {
+   border-top: solid thin black;
+   border-left: none;
+   border-right: none;
+   border-collapse:collapse;
+}
+
+.title,
+.subtitle {
+   color: navy
+ }
 
 textarea.small {
      height: 6em;
 }
 textarea.big   {
-	 height: 15em;
+         height: 15em;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:link {
+  color: blue;
+}
+
+a:visited {
+  color: purple;
+}
+
+a:hover { // color: red;
+          // text-decoration: underline;
+        }
+
 .data {
-     background-color: #00425A;
-     color: #42BDAD;
+    border-bottom: solid thin #ddd;
 }
 .navigate {
-    background-color: #42BDAD;
-    color: #00425A;
+    text-align: center;
+    border-bottom: solid thin #ddd;
 }
 .linkdata {
-     background-color: #00425A;
-     color: white;
-     text-align: center
+    text-align: center;
+    border-bottom: solid thin #ddd;
 }
 .multidata  {
-     background-color: #00425A;
-     color: #42BDAD;
-     padding-top: 1em;
+   background-color: #ddd;
+   padding: 5pt;
+   margin: 5pt;
+   border: solid thin black;
 }
 
 .currentmenuitem {
-    font-family: arial, verdana, helvetica, geneva;
-    font-size: medium;
-    font-weight:bold;
-    color: white;
-    text-decoration: none
-}
-.menuitem {
-    font-family: arial, verdana, helvetica, geneva;
-    font-size: medium;
-    font-weight:bold;
-    color: #42BDAD;
-    text-decoration: none
+  color: navy;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: right;
+  text-weight: bold;
 }
 
+.menuitem {
+  color: black;
+  font-size: 1em;
+  text-align: right;
+  text-weight: bold;
+}
 

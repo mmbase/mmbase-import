@@ -32,7 +32,7 @@
 
 <noframes>
 <body class="basic">
-<table summary="navigation" width="93%" cellspacing="1" cellpadding="3" border="0">
+<table summary="navigation">
 
 <tr>
   <td class="data"><img src="images/logo.gif" border="0" alt="MMBase">
@@ -40,7 +40,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
   <th class="header">About MMBase</td>
 </tr>
 <tr>
@@ -52,7 +52,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
   <th class="header">Demos</td>
 </tr>
 <tr>
@@ -61,7 +61,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
   <th class="header">Editors</td>
 </tr>
 <tr>
@@ -70,7 +70,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
   <th class="header">Administration</td>
 </tr>
 <tr>
@@ -94,7 +94,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr align="left">
+<tr>
   <th class="header">Tools</td>
 </tr>
 <tr>

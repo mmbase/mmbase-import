@@ -15,21 +15,21 @@
 required="true" />
 <body class="basic" >
 
-<table summary="applications" width="93%" cellspacing="1" cellpadding="3" border="0">
+<table summary="applications">
 <%
 
  Cache cache = Cache.getCache(cacheName);
  if (cache != null) {
 %>
 
-<tr align="left">
+<tr>
   <th class="header" colspan="4">Cache Monitor - v1.0</th>
 </tr>
 <tr>
   <td class="multidata" colspan="4"><%= cache.getDescription() %> Cache - first 500 entries</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
   <th class="header">Position</th>
   <th class="header">Count</th>
   <th class="header">Key</th>
@@ -50,8 +50,8 @@ required="true" />
 <% } %>
 <tr><td>&nbsp;</td></tr>
 <% } %>
-<tr>
-<td class="navigate"><a href="<mm:url page="../cache.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../cache.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Cache Monitor</td>
 </tr>
 </table>

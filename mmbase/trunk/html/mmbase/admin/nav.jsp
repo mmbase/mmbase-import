@@ -46,6 +46,10 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=editors&subcategory=basic" />" target="_top"
     ><span class="currentmenuitem">BASIC</span></a>
+        <% } else if("examples".equals(category)) { %>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=examples" />" target="_top"
+    ><span class="currentmenuitem">MMBASE DEMOS</span></a>
         <% } else if("admin".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"

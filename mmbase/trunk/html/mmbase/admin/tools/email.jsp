@@ -11,7 +11,7 @@
 </head>
 <body class="basic" >
 
-<table summary="email test" width="93%" cellspacing="1" cellpadding="3" border="0">
+<table summary="email test">
 
 <%
     NodeManager email=null;
@@ -20,7 +20,7 @@
     } catch (NotFoundException e) {}
 %>
 
-<tr align="left">
+<tr>
   <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0</th>
 </tr>
 <% if (email==null) { %>
@@ -61,7 +61,7 @@
 <tr>
   <td class="data" colspan="3">Show first 500 entry's of the queue</td>
   <td class="navigate">
-    <a href="<mm:url page="email/emailqueue.jsp" />" ><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+    <a href="<mm:url page="email/emailqueue.jsp" />" ><img src="../images/search.gif" alt="view" border="0" /></a>
   </td>
 </tr>
 
@@ -69,8 +69,8 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to home page</td>
 </tr>
 </table>

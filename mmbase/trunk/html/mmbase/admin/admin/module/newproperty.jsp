@@ -11,13 +11,13 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="module property data" width="93%" cellspacing="1" cellpadding="3">
+<table summary="module property data">
 
 <form action="<mm:url page="actions.jsp" />" method="POST">
-<tr align="left">
+<tr>
   <th class="header">Property</th>
   <th class="header">Value</th>
-  <th class="header">Change</th>
+  <th class="navigate">Create</th>
 </tr>
 <tr>
  <td class="data"><input type="text" name="property" value="" /></td>
@@ -27,15 +27,15 @@
 <td class="linkdata">
     <input type="hidden" name="module" value="<%=module%>" />
     <input type="hidden" name="cmd" value="MODULE-SETPROPERTY" />
-    <input type="submit" value="Change" />
+    <input type="image" src="../../images/create.gif" alt="Create" border="0"  />
 </td>
 </tr>
 </form>
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>"/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>"/>"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Module Administration</td>
 </tr>
 </table>

@@ -27,8 +27,8 @@
     }
 %>
 
-<table summary="module results" width="93%" cellspacing="1" cellpadding="3" >
-<tr align="left">
+<table summary="module results">
+<tr>
   <th class="header" colspan="5" >Results of your action on module <%=module%></th>
 </tr>
 <tr>
@@ -37,8 +37,8 @@
   </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>"/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>"/>"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Module Administration</td>
 </tr>
 

@@ -9,8 +9,8 @@
 </head>
 <body class="basic" >
 
-<table summary="license information" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
+<table summary="license information">
+<tr>
   <th class="header" colspan="2">MMBase Basic Editors</th>
 </tr>
 <tr>
@@ -25,7 +25,7 @@
   </p>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
   <th class="header" colspan="2">URL</th>
 </tr>
 <tr>
@@ -39,8 +39,8 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>
