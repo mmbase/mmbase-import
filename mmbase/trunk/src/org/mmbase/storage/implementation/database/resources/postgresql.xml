@@ -9,8 +9,10 @@
 	<searchqueryhandler classname="org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler" />
 
 	<attributes>
-		<!-- Not sure about this option, so turned it off -->
-		<option name="database-supports-blob" value="false" />
+		<!-- Postgresql is a hell when is comes to blobs, so store as file instead of in the database-->
+		<option name="database-stores-binary-as-file" />
+		<!-- No file path, then use webdir -->
+		<attribute name="database-binary-file-path" ></attribute>
 
 		<!-- Foreignkeys don't work well under postgresql -->
 		<scheme name="create-foreign-key-scheme" />
@@ -37,7 +39,6 @@
 		<type-mapping name="NODE" type="INTEGER" />
 		<type-mapping name="STRING" type="TEXT" />
 		<type-mapping name="XML" type="TEXT" />
-		<type-mapping name="BYTE" type="OID" /> <!-- or bytea  in 72-->
 	</type-mappings>
 
 	<!-- Postgresql disallowed -->

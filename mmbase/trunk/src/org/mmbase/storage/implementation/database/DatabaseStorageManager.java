@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.28 2003-09-22 09:39:29 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.29 2003-09-25 12:53:10 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -379,8 +379,13 @@ public class DatabaseStorageManager implements StorageManager {
      * @return The File where to store or read the binary data
      */
     protected File getBinaryFile(MMObjectNode node, String fieldName) {
-        File dir = new File((String)factory.getAttribute(Attributes.BINARY_FILE_PATH)
-                          + File.separator + factory.getCatalog(), node.getBuilder().getFullTableName());
+        String basePath = (String)factory.getAttribute(Attributes.BINARY_FILE_PATH);
+        if (basePath == null || basePath.equals("")) {
+            basePath = MMBaseContext.getServletContext().getRealPath("/WEB-INF/data");
+        } else if (!basePath.startsWith("/")) {
+            basePath = MMBaseContext.getServletContext().getRealPath("/") + File.separator + basePath;
+        }
+        File dir = new File(basePath + File.separator + factory.getCatalog(), node.getBuilder().getFullTableName());
         dir.mkdirs();
         return new File(dir, "" + node.getNumber() + "." + fieldName);
     }
@@ -1413,12 +1418,14 @@ public class DatabaseStorageManager implements StorageManager {
             List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
             for (Iterator i = builderFields.iterator(); i.hasNext();) {
                 FieldDefs field = (FieldDefs)i.next();
-                if (field.inStorage()) {
+                if (field.inStorage()  &&
+                    (field.getDBType() != FieldDefs.TYPE_BYTE ||
+                    !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
                     pos++;
                     Object id = field.getStorageIdentifier();
                     Map colInfo = (Map)columns.get(id);
                     if ((colInfo == null)) {
-                        log.error("VERIFY: Field " + field.getDBName() + " does NOT exist in storage! Field will be ignored.");
+                        log.error("VERIFY: Field " + field.getDBName() + " does NOT exist in storage! Field will be concidered virtual.");
                         // set field to virtual so it will not be stored -
                         // prevents future queries or statements from failing
                         field.setDBState(FieldDefs.DBSTATE_VIRTUAL);
