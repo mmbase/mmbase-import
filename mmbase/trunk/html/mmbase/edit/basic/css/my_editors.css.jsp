@@ -4,7 +4,7 @@
 <mm:import id="myeditors">/mmexamples/jsp/my_editors/img/</mm:import>
 @import url(base.css);
 
-span.select:before   { content: url(<mm:url page="${myeditors}mmbase-search.gif" />);  }
+span.select:before   { content: url(<mm:url page="${myeditors}mmbase-right.gif" />);  }
 span.create:before   { content: url(<mm:url page="${myeditors}mmbase-new.gif" />);    }
 span.change:before   { content: url(<mm:url page="${myeditors}mmbase-edit.gif" />);   }
 span.delete:before   { content: url(<mm:url page="${myeditors}mmbase-delete.gif" />); }
@@ -16,7 +16,7 @@ body.basic {
 	margin: 0px;
 	font-family: "Lucida Grande", Helvetica, sans-serif;
 	font-size: 12;
-	background-color: #fff;
+  background-color: #EFEFEF;
 }
 
 body.basic:before {
@@ -25,7 +25,6 @@ body.basic:before {
 	font-weight: bold;
 	color: #660000;
   width: 100%;
-  background-color: #EFEFEF;
   content: url(<mm:url page="${myeditors}mmbase-edit-40.gif" />) "   jsp-editors";
 }
 
@@ -33,6 +32,7 @@ body.navigationbar {
   background-color: #00425A;  
 }
 
+input.search:after  { content: url(<mm:url page="${myeditors}mmbase-search.gif" />);  }
 
 a:link
 {
@@ -58,8 +58,9 @@ span.alt {
 
 
 table   { 
+    background-color: #fff;
 		width : 100%; 
-        float: center;
+    float: center;
 }
 
 
