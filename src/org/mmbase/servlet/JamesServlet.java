@@ -7,53 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-$Id: JamesServlet.java,v 1.21 2001-03-02 16:10:57 michiel Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.20  2001/02/20 18:19:11  michiel
-Initialisation of logging facilities.
-
-Revision 1.19  2000/07/22 21:25:23  daniel
-changes mmbase.mode
-
-Revision 1.18  2000/07/18 18:58:59  daniel
-add support for mmdemo
-
-Revision 1.17  2000/06/21 14:41:51  wwwtech
-rob
-
-Revision 1.16  2000/06/20 14:44:06  install
-Rob
-
-Revision 1.15  2000/05/25 12:55:05  wwwtech
-Wilbert: Add and use of static support method getRequestURL
-
-Revision 1.14  2000/05/25 10:46:32  wwwtech
-Wilbert: minor optimalisation of methods inc & decRefCount()
-
-Revision 1.13  2000/05/22 09:24:56  wwwtech
-Rob: fixed debug methods and variables (Bug submitted by Gerard van Enk)
-
-Revision 1.12  2000/05/12 15:10:11  wwwtech
-- (marcel) set debg to false
-
-Revision 1.11  2000/05/11 11:18:12  wwwtech
-- (marcel) Added extra feature in getCookie to determine why certain browsers dont honor domain-wide cookies
-
-Revision 1.10  2000/05/10 13:26:05  wwwtech
-- (marcel) Made displaying of address when new cookie is requested more advanced, because we use a proxy (which would turn up every time as the requesting host
-
-Revision 1.9  2000/05/10 13:08:42  wwwtech
-- (marcel) Replaced System.out's with debug and added computer-address in output when new cookie is requested to identify improper use of our service
-
-Revision 1.8  2000/05/04 10:01:34  wwwtech
-Davzev: Changed error log in method getCookie, for the Properties=null situation.
-
-Revision 1.7  2000/05/01 14:21:06  wwwtech
-davzev: Changed implementation of method getCookie. It now returns a cookie with name: MMBase_Ident instead of James_Ident. Any James_Ident cookies that were stored in the Properties table will get a new value: MMBase_Ident/cur-time-in-millis. New cookies either get an implicit domain (from httpheader) or an explicit domain depending on the COOKIEDOMAIN value in the configfile MMBASEROOT.properties.
-
-*/
 package org.mmbase.servlet;
 
 // import the needed packages
@@ -75,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.21 2001-03-02 16:10:57 michiel Exp $
+* @version $Id: JamesServlet.java,v 1.22 2001-03-26 14:05:27 install Exp $
 */
 
 class DebugServlet {
@@ -99,7 +52,6 @@ class DebugServlet {
 }
 	
 public class JamesServlet extends HttpServlet {
-    //protected String classname = getClass().getName();
 	// org.mmbase
 
 	static String outputfile=null;
