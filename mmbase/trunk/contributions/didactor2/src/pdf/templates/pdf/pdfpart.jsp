@@ -48,11 +48,11 @@
         //
         // remove some of the annoying html that messes up the PDFs
         // 
-        text = text.replaceAll("</?(font|style)[^>]*>","");
+        text = text.replaceAll("</?(font|style|div|span)[^>]*>","");
         text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
         text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
         text = text.replaceAll("<br>","<br/>");
-        
+        text = text.replaceAll("<\\/?\\s*personname\\s*\\/>","");
 /*        if (nodeType.equals("pages") && "2".equals(layout)) {
             text = text.replaceAll("<table[^>]*>","<table border='1' cellpadding='4' width='50%' align='left'>");
         }
@@ -66,12 +66,12 @@
         text = text.replaceAll("<p\\s*>\\s*</p>\\s*","");
         text = text.replaceFirst("\\A\\s*","");
         text = text.replaceFirst("\\s*\\z","");
-        if (!text.startsWith("<p>")) {
-            text = "<p>"+text;
-        }
-        if (!text.endsWith("</p>")) {
-            text = text+"</p>";
-        }
+//        if (!text.startsWith("<p>")) {
+//            text = "<p>"+text;
+//        }
+//        if (!text.endsWith("</p>")) {
+//            text = text+"</p>";
+//        }
 
         text = text.replaceAll("<p>\\s*<table","<table");
         text = text.replaceAll("</table>\\s*</p>","</table>");
