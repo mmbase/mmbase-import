@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="videosources" maintainer="mediaproject.mmbase.org" version="0" extends="mediasources">
+<builder name="videosources" extends="mediasources">
   <status>active</status>
 
   <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
@@ -31,7 +31,7 @@
       </gui>
       <editor>
         <positions>
-          <list>10</list>
+          <input>10</input><list>10</list><search>10</search>
         </positions>
       </editor>
       <db>
@@ -41,6 +41,7 @@
     </field>
 
 
+    <!-- <field> 'height'  -->
     <field>
       <descriptions>
         <description xml:lang="en">Height in pixels</description>
@@ -53,7 +54,7 @@
       </gui>
       <editor>
         <positions>
-          <list>11</list>
+          <input>11</input><list>11</list><search>11</search>
         </positions>
       </editor>
       <db>
@@ -62,6 +63,7 @@
       </db>
     </field>
 
+    <!-- <field> 'width'  -->
     <field>
       <descriptions>
         <description xml:lang="en">Width in pixels</description>
@@ -74,7 +76,7 @@
       </gui>
       <editor>
         <positions>
-          <list>12</list>
+          <input>12</input><list>12</list><search>12</search>
         </positions>
       </editor>
       <db>

@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.38 2004-04-15 10:55:00 michiel Exp $
+ * @version $Id: Utils.java,v 1.37.2.1 2004-04-15 10:55:39 michiel Exp $
  */
 
 public class Utils {

@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.118 2004-07-16 11:23:58 pierre Exp $
+ * @version $Id: MMBase.java,v 1.113.2.3 2004-07-16 11:23:34 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 

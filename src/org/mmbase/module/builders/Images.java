@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.97 2004-08-26 12:10:38 michiel Exp $
+ * @version $Id: Images.java,v 1.94.2.2 2004-08-26 12:18:26 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -47,12 +47,6 @@ public class Images extends AbstractImages {
     public final static Parameter[] CACHE_PARAMETERS = {
         new Parameter("template",  String.class)
     };
-
-
-    public final static Parameter[] CACHEDNODE_PARAMETERS = CACHE_PARAMETERS;
-    public final static Parameter[] HEIGHT_PARAMETERS = CACHE_PARAMETERS;
-    public final static Parameter[] WIDTH_PARAMETERS = CACHE_PARAMETERS;
-
 
     public final static Parameter[] GUI_PARAMETERS = {
         new Parameter.Wrapper(MMObjectBuilder.GUI_PARAMETERS),
@@ -84,7 +78,6 @@ public class Images extends AbstractImages {
     protected Queue imageRequestQueue     = new Queue(maxRequests);
     protected Hashtable imageRequestTable = new Hashtable(maxRequests);
     protected ImageRequestProcessor ireqprocessors[];
-
 
     /**
      * Read configurations (imageConvertClass, maxConcurrentRequest),
@@ -120,26 +113,18 @@ public class Images extends AbstractImages {
         ImageConvertInterface imageConverter = loadImageConverter(imageConvertClass);
         imageConverter.init(imageConvertParams);
 
-        ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
-        if(imageCaches == null) {
+        ImageCaches bul = (ImageCaches) mmb.getMMObject("icaches");
+        if(bul == null) {
             throw new RuntimeException("builder with name 'icaches' wasn't loaded");
         }
         // Startup parrallel converters
         ireqprocessors = new ImageRequestProcessor[maxConcurrentRequests];
         log.info("Starting " + maxConcurrentRequests + " Converters");
         for (int i = 0; i < maxConcurrentRequests; i++) {
-            ireqprocessors[i] = new ImageRequestProcessor(imageCaches, imageConverter, imageRequestQueue, imageRequestTable);
+            ireqprocessors[i] = new ImageRequestProcessor(bul, imageConverter, imageRequestQueue, imageRequestTable);
         }
         return true;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Parameter[] getParameterDefinition(String function) {
-        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(Images.class, function);
-    }
-
 
     /**
      * The executeFunction of this builder adds the 'cache' function.
@@ -166,23 +151,6 @@ public class Images extends AbstractImages {
                 throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
             }
             return new Integer(cacheImage(node, (String) args.get(0)));
-        } else if ("cachednode".equals(function)) {
-            if (args == null || args.size() != 1) {
-                throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
-            }
-            try {
-                return getNode(cacheImage(node, (String) args.get(0)));
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                log.error(Logging.stackTrace(e));
-                return null;
-            }
-        } else if ("height".equals(function) || "width".equals(function)) {
-            if (args.size() == 0) {
-                return super.executeFunction(node, function, args);
-            } else {
-                return super.executeFunction(getNode(cacheImage(node, (String) args.get(0))), function, args);
-            }
         } else {
             return super.executeFunction(node, function, args);
         }
@@ -208,7 +176,7 @@ public class Images extends AbstractImages {
 
 
         StringBuffer servlet = new StringBuffer();
-        HttpServletRequest req = (HttpServletRequest) args.get(Parameter.REQUEST);
+        HttpServletRequest req = (HttpServletRequest) args.get("request");
         if (req != null) {
             servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
         } else {
@@ -218,23 +186,17 @@ public class Images extends AbstractImages {
         String template = (String) args.get("template");
         if (template == null) template = ImageCaches.GUI_IMAGETEMPLATE;
         List cacheArgs =  new Parameters(CACHE_PARAMETERS).set("template", template);
-        MMObjectNode icache = (MMObjectNode) executeFunction(node, "cachednode", cacheArgs);
-
-        String imageThumb = servlet.toString() + (icache != null ? "" + icache.getNumber() : "");
-
+        String imageThumb = servlet.toString() + executeFunction(node, "cache", cacheArgs);
         servlet.append(node.getNumber());
         String image;
-        HttpServletResponse res = (HttpServletResponse) args.get(Parameter.RESPONSE);
+        HttpServletResponse res = (HttpServletResponse) args.get("response");
         if (res != null) {
             imageThumb = res.encodeURL(imageThumb);
             image      = res.encodeURL(servlet.toString());
         } else {
             image = servlet.toString();
         }
-        return
-            "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" " + 
-            //"heigth=\"" + getHeight(icache) + "\" with=\"" + getWidth(icache) + "\" " + 
-            "border=\"0\" alt=\"" + title + "\" /></a>";
+        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
     // javadoc copied from parent
@@ -409,9 +371,7 @@ public class Images extends AbstractImages {
         String cacheKey = "" + node.getNumber() + template;
         Integer i = (Integer) templateCacheNumberCache.get(cacheKey);
         if (i != null) {
-            if (log.isDebugEnabled()) { 
-                log.debug("found image in cache " + i + " for " + cacheKey);
-            }            
+            if (log.isDebugEnabled()) log.debug("found image in cache " + i);
             return i.intValue();
         }
 
@@ -445,7 +405,7 @@ public class Images extends AbstractImages {
             // Templates and ckeys are not excactly the same, but
             // well, this function is only used in servdb.
             Integer cachedNodeNumber = (Integer) templateCacheNumberCache.get(ckey);
-            if (cachedNodeNumber == null  && templateCacheNumberCache.isActive()) {
+            if (cachedNodeNumber == null ) {
                 templateCacheNumberCache.put(ckey, new Integer(data.number));
             }
             return data.number;
@@ -487,7 +447,6 @@ public class Images extends AbstractImages {
      *
      * @param params The name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer}
-     * @since MMBase-1.7
      */
     public ByteFieldContainer getImageContainer(List params) {
         ByteFieldContainer data = getCachedImageContainer(params);
@@ -545,7 +504,6 @@ public class Images extends AbstractImages {
      * representing the picture..
      * @param params a <code>List</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer} object
-     * @since MMBase-1.7
      */
     protected ByteFieldContainer getCachedImageContainer(List params) {
         // get a connection to the cache module
@@ -581,7 +539,6 @@ public class Images extends AbstractImages {
      *                containing the name/id of the picture, followed by operations,
      *                which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer} object
-     * @since MMBase-1.7
      */
     protected ByteFieldContainer createCachedImageContainer(List params) {
         if (log.isServiceEnabled()) {
@@ -782,7 +739,7 @@ public class Images extends AbstractImages {
     }
 
     /**
-     * Override the MMObjectBuilder removeNode, to invalidate the Image Cache AFTER a deletion of the
+     * Override the MMObjectBuilder removeNode, to invalidate the Image Cache AFTER a delete-ion of the
      * image node.
      * Remove a node from the cloud.
      * @param node The node to remove.
@@ -791,7 +748,20 @@ public class Images extends AbstractImages {
         invalidateImageCache(node);
         templateCacheNumberCache.remove(node.getNumber());
         super.removeNode(node);
-    }    
+    }
+
+    /**
+     * Invalidate the Image Cache, if there is one, for a specific ImageNode
+     * @param node The image node, which is the original
+     */
+    private void invalidateImageCache(MMObjectNode node) {
+        ImageCaches icache = (ImageCaches) mmb.getMMObject("icaches");
+        if(icache != null) {
+            // we have a icache that is active...
+            icache.invalidate(node);
+        }
+    }
+
 
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
         if (log.isDebugEnabled()) {            
@@ -810,19 +780,7 @@ public class Images extends AbstractImages {
         invalidateTemplateCacheNumberCache(image.getNumber());
         return super.nodeRemoteChanged(machine, number, builder, ctype);        
     }
-    
-    
-    /**
-     * Invalidate the Image Cache, if there is one, for a specific ImageNode
-     * @param node The image node, which is the original
-     */
-    private void invalidateImageCache(MMObjectNode node) {
-        ImageCaches icache = (ImageCaches) mmb.getMMObject("icaches");
-        if(icache != null) {
-            // we have a icache that is active...
-            icache.invalidate(node);
-        }
-    }
+
 
     /**
      * @javadoc

@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.54 2004-06-24 12:59:01 mark Exp $
+ * @version  $Id: editwizard.jsp,v 1.47.2.7 2004-06-24 12:48:20 mark Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens

@@ -41,9 +41,8 @@ public class Sql extends ConfigurableReaderTransformer implements CharTransforme
      * in a SQL query.
      * @param str the string to escape
      * @return the escaped string
-     * @since MMBase-1.7
      */
-    public static Writer singleQuote(Reader r, Writer w) {
+    static public Writer singleQuote(Reader r, Writer w) {
         try {
             while (true) {
                 int c = r.read();

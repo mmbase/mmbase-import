@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.9 2004-06-08 12:29:59 johannes Exp $
+ * @version $Id: TreeHelper.java,v 1.8.2.1 2004-06-08 12:28:54 johannes Exp $
  */
 
 public class TreeHelper {

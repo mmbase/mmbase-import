@@ -20,6 +20,8 @@ import org.mmbase.cache.Cache;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.functions.*;
 
 /**
@@ -31,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.30 2004-08-10 10:41:09 keesj Exp $
+ * @version $Id: Users.java,v 1.27.2.1 2004-08-10 10:52:19 keesj Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -68,7 +70,7 @@ public class Users extends MMObjectBuilder {
     // javadoc inherited
     public boolean init() {
         rankCache.putCache();
-		userCache.putCache();
+        userCache.putCache();
         CacheInvalidator.getInstance().addCache(rankCache);
         CacheInvalidator.getInstance().addCache(userCache);
         mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
@@ -123,18 +125,14 @@ public class Users extends MMObjectBuilder {
             } else {
                 List ranks =  userNode.getRelatedNodes("mmbaseranks", RelationStep.DIRECTIONS_DESTINATION);
                 if (ranks.size() > 1) {
-                    log.warn("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
+                    throw new SecurityException("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
                 }
-                rank = Rank.ANONYMOUS;
                 if (ranks.size() == 0) {
                     log.debug("No ranks related to this user");
+                    rank = Rank.ANONYMOUS;
                 } else {
-                    Iterator i = ranks.iterator();
-                    while (i.hasNext()) {
-                        Ranks rankBuilder = Ranks.getBuilder();
-                        Rank r = rankBuilder.getRank((MMObjectNode) i.next());
-                        if (r.compareTo(rank) > 0) rank = r; // choose the highest  one
-                    }
+                    Ranks rankBuilder = Ranks.getBuilder();
+                    rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
                 }
             }
             rankCache.put(userNode, rank);
@@ -183,7 +181,7 @@ public class Users extends MMObjectBuilder {
      * @return the authenticated user, or null
      * @throws SecurityException
      */
-    public MMObjectNode getUser(String userName, String password)  {
+    public MMObjectNode getUser(String userName, String password)   {
         if (log.isDebugEnabled()) {
             log.debug("username: '" + userName + "' password: '" + password + "'");
         }
@@ -245,7 +243,7 @@ public class Users extends MMObjectBuilder {
     /**
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
      */
-    public MMObjectNode getUser(String userName)  {
+    MMObjectNode getUser(String userName)   {
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
@@ -253,7 +251,6 @@ public class Users extends MMObjectBuilder {
             Constraint cons = new BasicFieldValueConstraint(sf, userName);
             nsq.setConstraint(cons);
             nsq.addSortOrder(nsq.getField(getField("number")));
-            SearchQueryException e = null;
             try {
                 Iterator i = getNodes(nsq).iterator();
                 if(i.hasNext()) {
@@ -264,16 +261,13 @@ public class Users extends MMObjectBuilder {
                     log.warn("Found more users with username '" + userName + "'");
                 }
             } catch (SearchQueryException sqe) {
-                e = sqe; // even if database down 'extra admins' can log on.
+                log.error(sqe + Logging.stackTrace(sqe));
             }
             if (user == null) {
                 User admin =  Authenticate.getLoggedInExtraAdmin(userName);
                 if (admin != null) {
                     user = admin.getNode();
                 }
-            }
-            if (user == null && e != null) {
-                throw new SecurityException(e);
             }
             userCache.put(userName, user);
         }
@@ -400,19 +394,11 @@ public class Users extends MMObjectBuilder {
                     // THIS KIND OF STUFF SHOULD BE AVAILEBLE IN MMOBJECTBUILDER.
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
-                    Parameters pars = Parameters.get(GUI_PARAMETERS, args);
-                    Locale locale = (Locale) pars.get(Parameter.LOCALE);
-                    if (locale == null) {
-                        String lang = (String) pars.get(Parameter.LANGUAGE);
-                        if (lang != null){
-                            locale = new Locale(lang, "");
-                        }
+                    if (args.size() > 1) {
+                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
+                    } else {
+                        bundle = ResourceBundle.getBundle(STATUS_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
                     }
-                    if (locale == null) {
-                        locale = mmb.getLocale();
-                    }
-                    bundle = ResourceBundle.getBundle(STATUS_RESOURCE,  locale, getClass().getClassLoader());
-
                     try {
                         return bundle.getString(val);
                     } catch (MissingResourceException e) {

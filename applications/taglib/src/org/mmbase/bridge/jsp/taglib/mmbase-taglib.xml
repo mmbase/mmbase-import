@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.271 2004-07-29 18:58:08 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.248.2.15 2004-07-29 18:58:41 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5453,43 +5453,6 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
     </attribute>
   </tag>
-  <tag>
-    <name>typeconstraint</name>
-    <type>mmbase.list</type>
-    <extends>querycontainerreferrer</extends>
-    <see tag="listnodescontainer" />
-    <see tag="listcontainer" />
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryTypeConstraintTag</tagclass>
-    <info>
-      Pinpoints one of the elements to a certain type, which can be useful in some cases.
-    </info>
-    <since>MMBase-1.8</since>
-    <attribute>
-      <name>element</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-      </info>
-      <see tag="listcontainer" />
-      <see tag="listnodescontainer" />
-    </attribute>
-    <attribute>
-      <name>name</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        A list of nodemanager names.
-      </info>
-    </attribute>
-    <attribute>
-      <name>inverse</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        Inverses the constraint. So adds a NOT.
-      </info>
-    </attribute>
-  </tag>
 
   <tag>
     <name>maxnumber</name>
@@ -6032,81 +5995,6 @@ The 0 is just counter, which starts at 0 on every page.
     </info>
     <see type="tree" />
     <since>MMBase-1.7</since>
-  </tag>
-
-  <tag>
-    <name>cloudinfo</name>
-    <extends>writer</extends>
-    <extends>cloudreferrer</extends>
-    <extends>contextwriter</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.CloudInfoTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
-    <info>
-      The nodeinfo tag can be used inside a CloudProvider tag, to get certain information about the
-      cloud.     
-    </info>
-    <since>MMBase-1.8</since>
-    <attribute>
-      <name>type</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <possiblevalue>
-        <value>name</value>
-        <info>The name of the cloud (Usually just 'mmbase')</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>user</value>
-        <info>The identifier of the user of this cloud. You can show who is logged in by this.</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>rank</value>
-        <info>The rank of the user of this cloud</info>
-        <see tag="hasrank" />
-      </possiblevalue>
-    </attribute>
-    <example><![CDATA[
-      You are <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
-      <mm:hasrank value="administrator">
-        You are administrator !!
-      </mm:hasrank>
-      <mm:hasrank minvalue="administrator" inverse="true">
-        You are not administrator!
-      </mm:hasrank> 
-        Cloud: <mm:cloudinfo type="name" />
-]]></example>
-  </tag>
-  <tag>
-    <name>hasrank</name>
-    <extends>condition</extends>
-    <extends>cloudreferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.security.HasRankTag</tagclass>
-    <info>
-      Checks for a certain rank. You can use this to hide certain parts of your page if the rank of
-      the user is too low or too high. 
-    </info>
-    <see tag="cloudinfo" />
-    <since>MMBase-1.8</since>
-    <attribute>
-      <name>value</name>
-      <required>false</required>
-      <info>
-        Checks for precisely one certain rank.
-      </info>
-    </attribute>
-    <attribute>
-      <name>minvalue</name>
-      <required>false</required>
-      <info>
-        A minimal value for the rank. If it is 'anonymous' then this is no limitiation, because anonymous is the lowest possible rank.
-      </info>
-    </attribute>
-    <attribute>
-      <name>maxvalue</name>
-      <required>false</required>
-      <info>
-        A maximal value for the rank. If it is 'administrator' then this is no limitiation, because admistrator is the highest possible rank.
-      </info>
-    </attribute>
   </tag>
 
   <!-- 

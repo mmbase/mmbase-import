@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 
 import java.net.URL;
 import org.mmbase.util.XMLBasicReader;
-import org.mmbase.util.FileWatcher;
 import org.xml.sax.InputSource;
 
 /** 
@@ -59,7 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.31 2004-08-04 15:09:22 michiel Exp $
+ * @version $Id: Logging.java,v 1.28 2004-02-19 17:32:10 michiel Exp $
  */
 
 
@@ -76,19 +75,6 @@ public class Logging {
      * @since MMBase-1.7
      */
     public final static String PAGE_CATEGORY = "org.mmbase.PAGE";      
-
-    /**
-     * @since MMBase-1.8
-     */
-    private static FileWatcher fileWatcher = new FileWatcher(true) {
-            public void onChange(File f) {
-                configure(f.getAbsolutePath());
-            }
-        };
-    static {
-        fileWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
-        fileWatcher.start();
-    }
 
     private Logging() {
         // this class has no instances.
@@ -109,7 +95,10 @@ public class Logging {
         if (configfile == null) {
             log.info("No configfile given, default configuration will be used.");
             return;
-        } 
+        }  
+        if (configured == true) {
+            log.warn("Reconfiguring logging. This is not really possible (most static instances are unreachable");
+        }
 
        // There is a problem when dtd's for the various modules are on a remote
         // machine and this machine is down. Log4j will hang without an error and if
@@ -124,10 +113,6 @@ public class Logging {
 
         configurationFile = new File(configfile);
         configurationFile = configurationFile.getAbsoluteFile();
-
-        if (! fileWatcher.contains(configurationFile)) {
-            fileWatcher.add(configurationFile);
-        }
         
         if (! configurationFile.exists() || 
             ! configurationFile.isFile() ||
@@ -153,9 +138,7 @@ public class Logging {
         String configuration = "stderr,debug";                        // default
         try { // to read the XML configuration file            
            String claz = reader.getElementValue("logging.class");
-            if (claz != null) {
-                classToUse = claz;
-            }
+            if (claz != null) classToUse = claz;
             String config = reader.getElementValue("logging.configuration");
             if (config != null) configuration = config;
         } catch (Exception e) {
@@ -171,12 +154,6 @@ public class Logging {
         Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             logClass = Class.forName(classToUse);
-            if (configured == true) {
-                if (! logClassCopy.equals(logClass)) {
-                    log.warn("Tried to change logging implementation from " + logClassCopy + " to " + logClass + ". This is not really possible (most static instances are unreachable). Trying anyway as requested, if this gives strange results, you might need to restart.");
-                }
-            }
-
         } catch (ClassNotFoundException e) {
             log.error("Could not find class " + classToUse);
             log.error(e.toString());
@@ -190,7 +167,6 @@ public class Logging {
         configureClass(configuration);
         configured = true;
         log.service("Logging configured");
-        log.debug("Now watching " + fileWatcher.getFiles());
         log.debug("Replacing wrappers " + LoggerWrapper.getWrappers());
         Iterator wrappers = LoggerWrapper.getWrappers().iterator();
         while (wrappers.hasNext()) {
@@ -212,7 +188,7 @@ public class Logging {
             Method conf = logClass.getMethod("configure", new Class[] { String.class } ); 
             conf.invoke(null, new String[] { configuration } );    
         } catch (NoSuchMethodException e) {
-            log.debug("Could not find configure method in " + logClass.getName());
+            //System.err.println("Could not find configure method in " + logClass.getName());
             // okay, simply don't configure
         } catch (java.lang.reflect.InvocationTargetException e) {
             System.err.println("Invocation Exception while configuration class. " + e.getMessage());
@@ -298,7 +274,6 @@ public class Logging {
      * Returns the stacktrace of the current call. This can be used to get a stacktrace
      * when no exception was thrown and my help determine the root cause of an error message
      * (what class called the method that gave the error message.
-     * @since MMBase-1.7
      *
      **/
     public static String stackTrace() {

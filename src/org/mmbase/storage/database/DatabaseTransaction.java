@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.10 2004-06-15 21:26:24 robmaris Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.9.2.1 2004-06-15 21:38:36 robmaris Exp $
  */
 public class DatabaseTransaction implements Transaction {
 

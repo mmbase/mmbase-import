@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.13 2004-06-15 21:27:07 robmaris Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.12.2.1 2004-06-15 21:38:37 robmaris Exp $
  * @todo This function contains a lot of methods which do not seem
  *       specific for a 'relational' database. They should perhaps be moved
  *        to 'abstract' databasestorage

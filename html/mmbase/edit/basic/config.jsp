@@ -4,14 +4,12 @@
 
 <title><%= m.getString("config.config") %></title>
 </head>
-<mm:content language="$config.lang" country="$config.country" expires="0">
 <body class="basic">
 
   <mm:context referid="config" id="config">
     <mm:write cookie="mmjspeditors_style"     referid="style_sheet" />
     <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
     <mm:write cookie="mmjspeditors_language"  referid="lang"         />
-    <mm:write cookie="mmjspeditors_country"   referid="country"         />
     <mm:write cookie="mmjspeditors_method"    referid="method"       />
     <mm:write cookie="mmjspeditors_session"   referid="session"      />
     <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
@@ -77,11 +75,7 @@
         <td><input type="text" size="30" name="mmjspeditors_session" value="<mm:write referid="config.session" />" /></td>
       </tr>
       <tr>
-        <td>
-          <mm:write referid="config.lang">
-            <mm:compare value="en" inverse="true">language/</mm:compare>
-          </mm:write>
-          <%= m.getString("config.language") %></td>  
+        <td><%= m.getString("config.language") %></td>  
         <td>
           <input type="text" size="30" name="mmjspeditors_language" value="<mm:write referid="config.lang" />" />
           <select name="languages" onChange="document.forms['config'].elements['mmjspeditors_language'].value = document.forms['config'].elements['languages'].value;">
@@ -95,26 +89,13 @@
           </select>
         </td>        
       </tr>
-      <tr>
-        <td><%= m.getString("config.country") %></td>  
-        <td>
-          <input type="text" size="30" name="mmjspeditors_country" value="<mm:write referid="config.country" />" />
-          <select name="countries" onChange="document.forms['config'].elements['mmjspeditors_country'].value = document.forms['config'].elements['countries'].value;">
-            <mm:import id="countries" vartype="list">NL,BE,US,GB,CA,ES,DE,FR,CN,JP</mm:import>
-            <mm:aliaslist referid="countries">
-              <option value="<mm:write />" <mm:compare referid2="config.country"><mm:import id="foundcountry" />selected="selected"</mm:compare>><mm:locale language="$config.lang" country="$_" jspvar="loc"><%= loc.getDisplayCountry(loc)%></mm:locale></option>
-            </mm:aliaslist>
-            <mm:notpresent referid="foundcountry">
-              <option value="<mm:write referid="config.country" />" selected="selected"><mm:locale language="$config.lang" country="$config.country" jspvar="loc"><%= loc.getDisplayCountry(loc)%></mm:locale></option>
-            </mm:notpresent>
-          </select>
-        </td>        
-      </tr>
       <input type="hidden" name="configsubmitted" value="yes" />
       <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
     </table>
   </form>
-  <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
-    <%@ include file="foot.jsp"  %>      
-  </mm:cloud>
-</mm:content>
+  
+  <mm:locale language="$config.lang">
+    <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+      <%@ include file="foot.jsp"  %>      
+    </mm:cloud>
+  </mm:locale>

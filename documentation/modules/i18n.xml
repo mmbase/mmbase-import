@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Internationalization and Localization</title>
 		<date>2002-10-19</date>
-		<edition>$Id: i18n.xml,v 1.9 2004-07-12 16:32:14 michiel Exp $</edition>
+		<edition>$Id: i18n.xml,v 1.8 2003-07-27 17:47:54 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -89,23 +89,6 @@
 			might want to use a tool to do the escaping for you though if you try to type a language of
 			which most characters are not in ISO-8859-1 (e.g. Greek, Russian and most Asian languages).
 		</para>
-    <section id="images">
-      <title>Non-ascii in Images</title>
-      <para>
-        Usually the 'convert' tool of imagemagick is used to resize, turn or otherwise convert
-        MMBase images. It is also possible in this way to add text to existing Images. 
-      </para>
-      <para>
-        The java strings are then fed to the 'convert' tool by a runtime call. The convert-tool
-        expects the string to be encoded according to UTF-8. It is not possible to tell this to
-        Runtime.exec, neither is it clear how you should inform Java about this.
-      </para>
-      <para>
-        The current implementation works, also for non-ascii characters, if the java environment is
-        configured for UTF-8. In Linux this is the case if e.g. the LC_ALL environment variable is
-        set to "en_US.UTF-8" or "nl_NL.UTF-8" or so.
-      </para>
-    </section>
 	</section>
 	<section id="translations">
 		<title>Localization - Translations</title>

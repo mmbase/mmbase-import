@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.127 2004-05-27 08:43:04 johannes Exp $
+ * @version $Id: Wizard.java,v 1.121.2.6 2004-05-27 08:32:11 johannes Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -613,7 +613,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
         }
     }
-    
+
     /** 
      * @return Calendar with timezone parameter
      */
@@ -631,7 +631,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return Calendar.getInstance();
         }
     }
-    
+   
     private String buildDate(ServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
@@ -646,7 +646,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return "";
         }
     }
-    
+
     private String buildDatetime(ServletRequest req, String name) {
         try {
             int day = Integer.parseInt(req.getParameter("internal_" + name + "_day"));
@@ -681,6 +681,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     }
 
     
+
     /**
      * This method is used to determine what form is the sequential next, previous, first etc.
      * You can use the parameter to indicate what you want to know:

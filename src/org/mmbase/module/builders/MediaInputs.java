@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MediaInputs.java,v 1.7 2004-06-15 21:05:53 robmaris Exp $
+ * @version $Id: MediaInputs.java,v 1.6.2.1 2004-06-15 21:06:59 robmaris Exp $
  */
 public class MediaInputs extends MMObjectBuilder {
 

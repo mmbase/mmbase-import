@@ -32,10 +32,9 @@ Applications build file
   </target>
 
   <target name="all16" depends="init,media,bugtracker,email" />
-  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,scan" />
 
   <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all"   depends="init,all17" />
+  <target name="all" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,scan" />
 
 
   <target name="jars" depends="all">
@@ -85,7 +84,7 @@ Applications build file
 
   <target name="editwizard" depends="dove,mmbase">
      <ant dir="editwizard" target="dependent.package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />       
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
      </ant>
   </target>
 

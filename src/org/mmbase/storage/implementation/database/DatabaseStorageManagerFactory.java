@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.15 2004-07-29 19:43:55 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.13.2.2 2004-07-29 19:44:42 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 

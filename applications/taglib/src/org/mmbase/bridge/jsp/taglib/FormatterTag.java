@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.40 2004-06-30 17:51:53 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.37.2.3 2004-07-05 17:19:58 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 

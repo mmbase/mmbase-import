@@ -62,9 +62,11 @@
 		<type-mapping name="BYTE" min-size="1" max-size="16777216" type="BLOB" />
 	</type-mappings>
 
-	<!-- disallowed fields
+	<!-- Hypersonic disallowed fields
+			 This is a sample
 	-->
 	<disallowed-fields >
+		<disallowed-field name="type" replacement="typ" />
 		<disallowed-field name="database" replacement="dtbs" />
 		<disallowed-field name="max" replacement="mmmax" />
 		<disallowed-field name="count" replacement="mmcount" />

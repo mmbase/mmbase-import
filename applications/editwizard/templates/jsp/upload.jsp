@@ -1,11 +1,9 @@
-<%@ include file="settings.jsp" %>
-<mm:content type="text/html" expires="0" language="en">
-<%
+<%@ include file="settings.jsp" %><%
     /**
      * upload.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: upload.jsp,v 1.10 2004-05-24 14:02:44 michiel Exp $
+     * @version  $Id: upload.jsp,v 1.9 2003-08-27 12:30:21 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -57,4 +55,3 @@ if (did==null) {
 </div>
 </body>
 </html>
-</mm:content>

@@ -19,7 +19,7 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.13 2004-07-05 08:03:36 keesj Exp $
+ * @version $Id: Versions.java,v 1.10.2.2 2004-07-05 07:59:38 keesj Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 

@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.60 2004-07-23 14:57:01 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.3 2004-07-23 19:41:09 michiel Exp $
  * @see ContextTag
  */
 
@@ -460,7 +460,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
 
     /**
-     * @since MMBase-1.8
+     * @since MMBase-1.7.1
      */
     public Locale getLocale() throws JspTagException {
         LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92WithViews.java,v 1.8 2004-06-15 21:24:54 robmaris Exp $
+ * @version $Id: Sql92WithViews.java,v 1.6.2.1 2004-06-15 21:38:36 robmaris Exp $
  * @since MMBase-1.7
  */
 public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInterface {

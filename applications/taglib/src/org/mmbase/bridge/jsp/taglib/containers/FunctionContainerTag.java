@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.12 2004-06-30 17:51:54 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.11.2.1 2004-07-05 17:20:00 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);

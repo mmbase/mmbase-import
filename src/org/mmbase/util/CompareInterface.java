@@ -13,7 +13,6 @@ package org.mmbase.util;
  * Interface for comparing objects so trhey can get sorted.
  * Used by SortedVector.
  * @see SortedVector
- * @deprecated This is the same as java.util.Comparator
  */
 
 public interface CompareInterface

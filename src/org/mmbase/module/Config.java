@@ -50,7 +50,7 @@ import org.w3c.dom.Document;
  * </pre>
  *
  * @author Cees Roele
- * @version $Id: Config.java,v 1.24 2004-07-30 18:04:30 michiel Exp $
+ * @version $Id: Config.java,v 1.23.2.1 2004-07-30 18:04:53 michiel Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />

@@ -9,12 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
-import java.io.IOException;
+import java.io.*;
 
-import javax.servlet.ServletException;
+import org.mmbase.module.builders.*;
+import org.mmbase.module.core.*;
+
+import javax.servlet.*;
 import javax.servlet.http.*;
-
-import org.mmbase.module.builders.Jumpers;
 import org.mmbase.util.logging.*;
 
 /**
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servjumpers
  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.20 2004-05-06 12:34:39 keesj Exp $
+ * @version $Id: servjumpers.java,v 1.18 2004-03-03 15:18:32 michiel Exp $
  * @see    JumpersFilter
  */
 public class servjumpers extends JamesServlet {
@@ -69,7 +70,6 @@ public class servjumpers extends JamesServlet {
      * Retrieve an alternate url based on a jumper key.
      * @param key the jumper key (original url specified)
      * @return the alternate yurl, or <code>null</code> if no url was found.
-     * @since MMBase-1.7
      */
     protected String getUrl(String key) {
         String url = null;

@@ -35,14 +35,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.20 2004-05-03 12:48:59 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.19 2003-07-18 14:56:53 michiel Exp $
  *
  */
 public class XSLTransformer {
-    private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
+    // logger
+    private static Logger log = Logging.getLoggerInstance(XSLTransformer.class.getName());
     /**
      * Empty constructor
-     * @deprecated All methods are static.
      */
     public XSLTransformer() {}
 
@@ -53,7 +53,7 @@ public class XSLTransformer {
      * @param xslPath Path to XSL file
      * @return String with converted XML document
      */
-    public static String transform(String xmlPath, String xslPath) {
+    public String transform(String xmlPath, String xslPath) {
 	return transform(xmlPath,xslPath,false);
     }
 
@@ -71,7 +71,7 @@ public class XSLTransformer {
      *
      *
      */
-    public static  String transform(String xmlPath, String xslPath, boolean cutXML) {
+    public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
             StringWriter res = new StringWriter();
             transform(new File(xmlPath), new File(xslPath), new StreamResult(res), null, true);
@@ -96,10 +96,10 @@ public class XSLTransformer {
      * @since MMBase-1.6
      **/
 
-    public static void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         transform(xml, xslFile, result, params, true);
     }
-    public static void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
 
         if (log.isDebugEnabled()) {
             Runtime rt = Runtime.getRuntime();
@@ -150,7 +150,7 @@ public class XSLTransformer {
      *
      * @since MMBase-1.6
      */
-    public static void transform(File xmlFile, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(File xmlFile, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         // create the input xml.
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -179,7 +179,7 @@ public class XSLTransformer {
      * @since MMBase-1.6
      */
 
-    public static void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(File xmlDir, File xslFile, File resultDir, boolean recurse, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         if (! xmlDir.isDirectory()) {
             throw  new TransformerException("" + xmlDir + " is not a directory");
         }
@@ -251,6 +251,7 @@ public class XSLTransformer {
      * Invocation of the class from the commandline for testing/building
      */
     public static void main(String[] argv) {
+        XSLTransformer t = new XSLTransformer();
         // log.setLevel(org.mmbase.util.logging.Level.DEBUG);
         if (argv.length < 2) {
             log.info("Use with two arguments: xslt-file xml-inputfile [xml-outputfile]");
@@ -292,7 +293,7 @@ public class XSLTransformer {
                 log.info("Transforming directory " + in);
                 long start = System.currentTimeMillis();
                 try {
-                    transform(in, new File(argv[0]), new File(argv[2]), true, params, true);
+                    t.transform(in, new File(argv[0]), new File(argv[2]), true, params, true);
                 } catch (Exception e) {
                     log.error("Error: " + e.toString());
                 }
@@ -303,13 +304,13 @@ public class XSLTransformer {
                     try {
                         FileOutputStream stream = new FileOutputStream(argv[2]);
                         Writer f = new OutputStreamWriter(stream,"utf-8");
-                        transform(new File(argv[1]), new File(argv[0]), new StreamResult(f), params, true);
+                        t.transform(new File(argv[1]), new File(argv[0]), new StreamResult(f), params, true);
                         f.close();
                     } catch (Exception e) {
                         log.error("Error: " + e.toString());
                     }
                 } else {
-                    String s= transform(argv[1], argv[0], false);
+                    String s=t.transform(argv[1], argv[0], false);
                     log.info(s);
                 }
             }

@@ -1,17 +1,41 @@
 <center>
 <table cellspacing="0" cellpadding="0" class="list" width="85%">
-<form action="<mm:url referid="parameters,$parameters" page="/index.jsp?flap=mysettings" />" method="post">
+<form action="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=mysettings" method="post">
 
-<tr><th>Setting</th><th>Current Value</th></tr>
+<tr>
+		<th>
+			 Setting
+		</th>
+		<th>
+			 Current Value
+		</th>
+</tr>
 <mm:node referid="user">
-<tr> 
-   <th>Firstname</th><td><input name="firstname" value="<mm:field name="firstname" />" size="32" /></td>
-</tr>
 <tr>
- <th>Lastname</th><td><input name="lastname" value="<mm:field name="lastname" />" size="32" /></td>
+		<th>
+			Firstname
+		</th>
+		<td>
+			<input name="firstname" value="<mm:field name="firstname" />" size="32">
+		</td>
 </tr>
+
 <tr>
-  <th>email</th><td><input name="email" value="<mm:field name="email" />" size="32" />
+		<th>
+			Lastname	
+		</th>
+		<td>
+			<input name="lastname" value="<mm:field name="lastname" />" size="32">
+		</td>
+</tr>
+
+
+<tr>
+		<th>
+			email	
+		</th>
+		<td>
+			<input name="email" value="<mm:field name="email" />" size="32">
 		</td>
 </tr>
 
@@ -36,7 +60,7 @@
 			 Areas
 		</th>
 </tr>
-<form action="<mm:url referids="parameters,$parameters" page"/index.jsp?flap=mysettings" />" method="post">
+<form action="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=mysettings" method="post">
 <tr>
 		<th>
 			Remove Area

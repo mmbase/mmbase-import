@@ -36,7 +36,7 @@
     <h1>Cloud explicit login (wrong password)</h1>
     <p>
       <% try { %>
-      <mm:cloud logon="foo" pwd="wrong password" method="sessionlogon">
+      <mm:cloud logon="foo" pwd="wrong password">
         Should not see this.
       </mm:cloud>
       Should not see this.
@@ -47,7 +47,7 @@
     <h1>Cloud explicit login (with foo/bar)</h1>
     <p>
       <% try { %>
-      <mm:cloud logon="foo" pwd="bar" method="sessionlogon">
+      <mm:cloud logon="foo" pwd="bar">
         Should see this.
       </mm:cloud>
       <% } catch (Exception e) { %>

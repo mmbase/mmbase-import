@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.82 2004-06-15 21:20:36 robmaris Exp $
+ * @version $Id: MMSQL92Node.java,v 1.81.2.1 2004-06-15 21:38:34 robmaris Exp $
  */
 public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
 

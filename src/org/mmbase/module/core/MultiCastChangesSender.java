@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesSender.java,v 1.10 2004-07-16 11:23:58 pierre Exp $
+ * @version $Id: MultiCastChangesSender.java,v 1.8.2.2 2004-07-16 11:23:35 pierre Exp $
  */
 public class MultiCastChangesSender implements Runnable {
 

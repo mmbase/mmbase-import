@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.37 2004-06-15 21:09:10 robmaris Exp $
+ * @version $Id: MultiRelations.java,v 1.36.2.1 2004-06-15 21:09:56 robmaris Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {

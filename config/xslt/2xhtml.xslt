@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.7 2004-06-30 16:19:35 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.6.2.1 2004-06-30 16:20:28 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  

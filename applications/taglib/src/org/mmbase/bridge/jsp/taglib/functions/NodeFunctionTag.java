@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.4 2004-07-26 20:18:03 nico Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.2.2.2 2004-07-26 20:12:21 nico Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 

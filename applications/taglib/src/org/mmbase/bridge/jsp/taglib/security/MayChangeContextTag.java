@@ -17,14 +17,14 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be linked to.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayChangeContextTag.java,v 1.6 2004-07-19 15:25:53 michiel Exp $
+ * @version $Id: MayChangeContextTag.java,v 1.5 2003-06-06 10:03:31 pierre Exp $
  */
 
 public class MayChangeContextTag extends MayWriteTag implements Condition {
 
     public int doStartTag() throws JspTagException {
         if ((getNode().mayChangeContext()) != getInverse()) {
-            return EVAL_BODY;
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }

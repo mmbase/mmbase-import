@@ -114,7 +114,7 @@ several MMBase-checkouts.
     </condition>
     <tstamp/>
     <mkdir dir="${build.dir}"/>
-    <property name="name"      value="mmbase"/>
+    <property name="name" value="mmbase"/>
     <property name="builddate" value="${DSTAMP}"/>
   </target>
 
@@ -244,7 +244,8 @@ builddate=${builddate}
   <!-- =================================================================== -->
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
-  <target name="bindist"  description="Create the binary distribution" depends="lib.release,web,applications">
+  <target name="bindist"  description="Create the binary distribution"
+          depends="lib.release,web,applications">
 
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
@@ -725,10 +726,6 @@ Build-compiler: ${build.compiler}
           depends="init,lib.compile"
           unless="did.javadocs"
     >
-    <antcall target="download">
-      <param name="sourcefile" value="${j2se-javadoc.loc}/package-list" />
-      <param name="destfile"   value="${download.dir}/package-list" />
-    </antcall>
     <mkdir dir="${build.dir}/mmbase-src/docs"/>
     <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
@@ -742,7 +739,6 @@ Build-compiler: ${build.compiler}
              maxmemory="100M"
              source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
-      <link offline="true" packagelistLoc="${download.dir}" href="${j2se-javadoc.loc}" />
       <fileset dir="${source.dir}" defaultexcludes="yes">
         <include name="src/**/*.java" />
         <include name="applications/*/src/**/*.java" />
@@ -797,7 +793,6 @@ Build-compiler: ${build.compiler}
              noindex="true"
              windowtitle="MMBase MMCI API"
              doctitle="MMBase"
-             source="1.4"
              maxmemory="100M"
              bottom="MMBase build ${distro.version}.${builddate}">
       <classpath>
@@ -1093,10 +1088,6 @@ Build-compiler: ${build.compiler}
   <target name="documentation" 
           depends="jar,documentation.builders,mmcidocs">
 
-
-    <ant dir="${applications.home}" target="install">
-      <property name="build.documentation" value="true" />
-    </ant>
     <ant dir="${documentation.home}" target="documentation">
       <property name="mmbase.default.dir" value=".." />
       <property name="download.dir" value="${download.dir}" />

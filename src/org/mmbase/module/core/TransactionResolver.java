@@ -15,71 +15,85 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.15 2004-06-23 12:30:33 pierre Exp $
+ * @version $Id: TransactionResolver.java,v 1.13 2002-04-17 13:17:43 pierre Exp $
  */
 public class TransactionResolver {
     private static Logger log = Logging.getLoggerInstance(TransactionResolver.class.getName());
     private MMBase mmbase;
 
     public TransactionResolver(MMBase mmbase) {
-        this.mmbase = mmbase;
+        this.mmbase=mmbase;
     }
 
-    public boolean resolve(Collection nodes) throws TransactionManagerException {
-        Map numbers = new HashMap();
-        Map nnodes = new HashMap();
-        boolean success = true;
+    public boolean resolve(Vector nodes)
+        throws TransactionManagerException {
+        return resolve(nodes,false);
+    }
 
-        // Find all unique keys and store them in a map to remap them later
+    public boolean resolve(Vector nodes,boolean debug)
+        throws TransactionManagerException {
+        Hashtable numbers=new Hashtable();
+        Hashtable nnodes=new Hashtable();
+        MMObjectNode node;
+        Integer neg=new Integer(-1),num;
+        MMObjectBuilder bul;
+        FieldDefs fd;
+        String field,tmpfield,key,exists;
+        int state,number,ikey,dbtype,tmpstate;
+        Vector v;
+        boolean rtn=true;
+
+        // Find all unique keys and store them in a hashtable to remap them later
         // Also store the nodes with which fields uses them.
-        for (Iterator i = nodes.iterator(); i.hasNext();) {
-            MMObjectNode node = (MMObjectNode)i.next();
-            MMObjectBuilder bul = mmbase.getMMObject(node.getName());
-            log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
+        for (Enumeration e=nodes.elements();e.hasMoreElements();) {
+            node=(MMObjectNode)e.nextElement();
+            bul=mmbase.getMMObject(node.getName());
+            log.debug("TransactionResolver - builder "+node.getName()+" builder "+bul);
             for (Enumeration f=bul.getFields().elements();f.hasMoreElements();) {
-                FieldDefs fd = (FieldDefs)f.nextElement();
-                int dbtype = fd.getDBType();
-                log.debug("TransactionResolver - type " + dbtype + "," + fd.getDBName() + "," + fd.getDBState());
-                if ((dbtype == FieldDefs.TYPE_INTEGER)||
-                    (dbtype == FieldDefs.TYPE_NODE)) {
-                    int state = fd.getDBState();
-                    if (state == FieldDefs.DBSTATE_PERSISTENT || state == FieldDefs.DBSTATE_SYSTEM) {
+                fd=(FieldDefs)f.nextElement();
+                dbtype=fd.getDBType();
+                log.debug("TransactionResolver - type "+dbtype+","+fd.getDBName()+","+fd.getDBState());
+                if ((dbtype==FieldDefs.TYPE_INTEGER)||
+                    (dbtype==FieldDefs.TYPE_NODE)) {
+                    state=fd.getDBState();
+                    if (state==FieldDefs.DBSTATE_PERSISTENT || state==FieldDefs.DBSTATE_SYSTEM) {
                         // Database field of type integer
-                        String field = fd.getDBName();
-                        String tmpfield = "_" + field;
-                        if (node.getDBState(tmpfield) == FieldDefs.DBSTATE_VIRTUAL) {
-                            int ikey = node.getIntValue(field);
-                            if (ikey < 0) {
+                        field=fd.getDBName();
+                        tmpfield="_"+field;
+                        tmpstate=node.getDBState(tmpfield);
+                        if (tmpstate==FieldDefs.DBSTATE_VIRTUAL) {
+                            ikey=node.getIntValue(field);
+                            if (ikey<0) {
                                 // Key is not set
-                                String key = node.getStringValue(tmpfield);
+                                key=node.getStringValue(tmpfield);
                                 if (key!=null) {
-                                    log.debug("TransactionResolver - key,field " + field + " - " + key);
+                                    log.debug("TransactionResolver - key,field "+field+" - "+key);
                                     // keep fieldnumber key
-                                    if (!numbers.containsKey(key)) numbers.put(key,new Integer(-1));
+                                    if (!numbers.containsKey(key)) numbers.put(key,neg);
                                     // keep node + field to change
-                                    Collection changedFields = (Collection)nnodes.get(node);
-                                    if (changedFields!=null) {
-                                        changedFields.add(field);
+                                    v=(Vector)nnodes.get(node);
+                                    if (v!=null) {
+                                        v.addElement(field);
                                     } else {
-                                        changedFields=new ArrayList();
-                                        changedFields.add(field);
-                                        nnodes.put(node,changedFields);
+                                        v=new Vector();
+                                        v.addElement(field);
+                                        nnodes.put(node,v);
                                     }
                                 } else {
-                                    log.debug("TransactionResolver - Can't find key for field " + tmpfield + " node "+node+" (warning)");
+                                    log.debug("TransactionResolver - Can't find key for field "+tmpfield+" node "+node+" (warning)");
                                 }
                                 if (field.equals("number")) node.setValue("_exists",TransactionManager.EXISTS_NO);
                             } else {
                                 // Key is already set
-                                log.debug("TransactionResolver - Key for value " + field + " is already set "+ikey);
+                                log.debug("TransactionResolver - Key for value "+field+" is already set "+ikey);
                                 // Mark it as existing
                                 if (field.equals("number")) {
                                     // test for remove here
-                                    String exists=node.getStringValue("_exists");
-                                    if (exists == null || !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
+                                    exists=node.getStringValue("_exists");
+                                    if (exists==null || !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
                                         node.setValue("_exists",TransactionManager.EXISTS_YES);
                                     }
-                                    String key=node.getStringValue(tmpfield);
+                                    key=node.getStringValue(tmpfield);
                                     if (key!=null) {
                                         numbers.put( key, new Integer(ikey));
                                     } else {
@@ -98,51 +112,60 @@ public class TransactionResolver {
         log.debug("TransactionResolver - nnodes "+nnodes);
 
         // Get the numbers
-        for (Iterator i = numbers.entrySet().iterator(); i.hasNext();) {
-            Map.Entry numberEntry = (Map.Entry)i.next();
-            Object key = numberEntry.getKey();
-            Integer num = (Integer)numberEntry.getValue();
-            if (num.intValue() == -1) {
-                numbers.put(key, new Integer(mmbase.getDBKey()));
+        number=0;
+        for (Enumeration e=numbers.keys();e.hasMoreElements();) {
+            key=(String)e.nextElement();
+            num=(Integer)numbers.get(key);
+            if (num.intValue()==neg.intValue()) {
+                if (debug) {
+                    number++; // get real number later
+                } else {
+                    number=mmbase.getDBKey();
+                }
+                numbers.put(key,new Integer(number));
             }
         }
+        log.debug("TransactionResolver - numbers "+numbers);
 
         // put numbers in the right place
-        for (Iterator i = nnodes.entrySet().iterator(); i.hasNext();) {
-            Map.Entry nnodeEntry = (Map.Entry)i.next();
-            MMObjectNode node = (MMObjectNode)nnodeEntry.getKey();
-            Collection changedFields = (Collection)nnodeEntry.getValue();
-            for (Iterator j = changedFields.iterator(); j.hasNext();) {
-                String field = (String)j.next();
-                String tmpfield = "_"+field;
-                String key = node.getStringValue(tmpfield);
-                int number = ((Integer)numbers.get(key)).intValue();
-                node.setValue(field, number);
+        for (Enumeration e=nnodes.keys();e.hasMoreElements();) {
+            node=(MMObjectNode)e.nextElement();
+            v=(Vector)nnodes.get(node);
+            for (Enumeration f=v.elements();f.hasMoreElements();) {
+                field=(String)f.nextElement();
+                log.debug("TransactionResolver - Field "+field);
+                tmpfield="_"+field;
+                key=node.getStringValue(tmpfield);
+                log.debug("TransactionResolver - Key "+key);
+                number=((Integer)numbers.get(key)).intValue();
+                log.debug("TransactionResolver - Number "+number);
+                node.setValue(field,number);
             }
         }
 
-        for (Iterator i = nodes.iterator(); i.hasNext();) {
-            MMObjectNode node = (MMObjectNode)i.next();
-            MMObjectBuilder bul=mmbase.getMMObject(node.getName());
-            for (Iterator j = bul.getFields().iterator();j.hasNext();) {
-                FieldDefs fd = (FieldDefs)j.next();
-                int dbtype = fd.getDBType();
-                if ((dbtype == FieldDefs.TYPE_INTEGER)||
-                    (dbtype == FieldDefs.TYPE_NODE)) {
-                    String field = fd.getDBName();
-                    int number = node.getIntValue(field);
-                    if (number == -1) {
-                        String tmpfield = "_"+field;
-                        if (node.getDBState(tmpfield) == 0) {
-                            String key = node.getStringValue(tmpfield);
-                            if (key != null && key.length() > 0) {
-                                success = false;
+        // Verify resolving stage
+        for (Enumeration e=nodes.elements();e.hasMoreElements();) {
+            node=(MMObjectNode)e.nextElement();
+            bul=mmbase.getMMObject(node.getName());
+            for (Enumeration f=bul.getFields().elements();f.hasMoreElements();) {
+                fd=(FieldDefs)f.nextElement();
+                dbtype=fd.getDBType();
+                if ((dbtype==FieldDefs.TYPE_INTEGER)||
+                    (dbtype==FieldDefs.TYPE_NODE)) {
+                    field=fd.getDBName();
+                    number=node.getIntValue(field);
+                    if (number==-1) {
+                        tmpfield="_"+field;
+                        if (node.getDBState(tmpfield)==0) {
+                            key=node.getStringValue(tmpfield);
+                            if (key!=null && key.length()>0) {
+                                rtn=false;
                             }
                         }
                     }
                 }
             }
         }
-        return success;
+        return rtn;
     }
 }

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.5 2004-05-06 12:34:42 keesj Exp $
+ * @version $Id: DocumentWriter.java,v 1.4 2003-08-18 16:50:53 pierre Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -77,7 +77,6 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Constructs the document by reading it from a file.
      * @param path the path to the file from which to read the document
-     * @since MMBase-1.7
      */
     public DocumentWriter(String path) {
         super(path);
@@ -91,7 +90,6 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param path the path to the file from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
-     * @since MMBase-1.7
      */
     public DocumentWriter(String path, boolean validating, Class resolveBase) {
         super(path, validating, resolveBase);
@@ -101,7 +99,6 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Constructs the document by reading it from a source.
      * @param source the input source from which to read the document
-     * @since MMBase-1.7
      */
     public DocumentWriter(InputSource source) {
         super(source);
@@ -115,7 +112,6 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param source the input source from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
-     * @since MMBase-1.7
      */
     public DocumentWriter(InputSource source, boolean validating, Class resolveBase) {
         super(source, validating, resolveBase);

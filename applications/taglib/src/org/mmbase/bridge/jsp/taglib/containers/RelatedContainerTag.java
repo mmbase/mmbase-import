@@ -22,7 +22,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.12 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.8.2.4 2004-07-26 20:12:19 nico Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMOracle.java,v 1.20 2004-06-16 08:29:32 michiel Exp $
+ * @version $Id: MMOracle.java,v 1.18.2.2 2004-06-16 08:30:18 michiel Exp $
  */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 

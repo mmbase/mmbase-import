@@ -19,7 +19,7 @@ import java.net.MalformedURLException;
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.6 2004-07-13 18:38:31 nico Exp $
+ * @version $Id: RemoteContext.java,v 1.5.2.1 2004-07-13 18:38:14 nico Exp $
  * @since MMBase-1.5
  */
 public class RemoteContext {

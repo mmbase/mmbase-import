@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.21 2004-07-26 20:18:02 nico Exp $ 
+ * @version $Id: TransactionTag.java,v 1.19.2.2 2004-07-26 20:12:22 nico Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {

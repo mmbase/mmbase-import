@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.9 2004-07-26 20:18:03 nico Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.5.2.3 2004-07-26 20:12:20 nico Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
@@ -160,13 +160,10 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         if (p.hasParameter(Parameter.REQUEST)) {
             p.set(Parameter.REQUEST, pageContext.getRequest());
         }
-        { // locale paramters
-            java.util.Locale locale = getLocale();
-            if (p.hasParameter(Parameter.LANGUAGE)) {
-                p.set(Parameter.LANGUAGE, locale.getLanguage());
-            }
-            if (p.hasParameter(Parameter.LOCALE)) {
-                p.set(Parameter.LOCALE, locale);
+        if (p.hasParameter(Parameter.LANGUAGE)) {
+            LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
+            if (localeTag != null) {
+                p.set(Parameter.LANGUAGE, localeTag.getLocale().getLanguage());
             }
         }
         if (p.hasParameter(Parameter.CLOUD)) {

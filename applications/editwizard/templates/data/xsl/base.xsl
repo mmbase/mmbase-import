@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.33 2004-06-03 08:47:38 michiel Exp $
+    @version $Id: base.xsl,v 1.28.2.5 2004-06-03 08:49:59 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 

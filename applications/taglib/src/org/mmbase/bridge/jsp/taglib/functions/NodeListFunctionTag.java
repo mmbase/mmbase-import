@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.5 2004-07-26 20:18:03 nico Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.3.2.2 2004-07-26 20:12:20 nico Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
     //cannot extend AbstractNodeList because we extend AbstractFunctionTag alreeady. Sigh, stupid java.

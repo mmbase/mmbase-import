@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.68 2004-07-26 16:56:53 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.9 2004-08-26 12:40:33 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -667,20 +667,76 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), fieldValues.toString()});
                 getActiveConnection();
-                PreparedStatement ps = activeConnection.prepareStatement(query);
-                for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
-                    FieldDefs field = (FieldDefs)fields.get(fieldNumber);
-                    setValue(ps, fieldNumber + 1, node, field);
-                }
-                logQuery(query);
-                ps.executeUpdate();
-                ps.close();
+                executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
                 throw new StorageException(se);
             } finally {
                 releaseActiveConnection();
             }
         }
+    }
+
+
+    /**
+     * Executes an update query for given node and fields. It will close the connection which are no
+     * good, which it determins by trying "SELECT 1" after failure. If that happens, the connection
+     * is explicitely closed (in case the driver has not done that), which will render is unusable
+     * and at least GenericDataSource will automaticly try to get new ones.
+     *
+     * @throws SQLException If something wrong with the query, or the database is down or could not be contacted.
+     * @since MMBase-1.7.1
+     */
+    protected void executeUpdateCheckConnection(String query, MMObjectNode node,  List fields) throws SQLException {
+        try {
+            executeUpdate(query, node, fields);
+        } catch (SQLException sqe) {
+            while (true) {
+                Statement s = null;                
+                ResultSet rs = null;                
+                try {
+                    s = activeConnection.createStatement();
+                    rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
+                } catch (SQLException isqe) {
+                    // so, connection must be broken.
+                    log.service("Found broken connection, closing it");
+                    if (activeConnection instanceof org.mmbase.module.database.MultiConnection) {
+                        ((org.mmbase.module.database.MultiConnection) activeConnection).realclose();
+                    } else {
+                        activeConnection.close();
+                    }
+                    getActiveConnection();
+                    if (activeConnection.isClosed()) {
+                        // don't know if that can happen, but if it happens, this would perhaps avoid an infinite loop (and exception will get thrown in stead)
+                        break;
+                    }
+                    continue; 
+                } finally {
+                    if (s != null) s.close();                    
+                    if (rs != null) rs.close();                    
+                }
+                break;
+            }
+            executeUpdate(query, node, fields);
+        }
+    }
+
+    /**
+     * Executes an update query for given node and fields.  This is wrapped in a function because it
+     * is repeatedly called in {@link #executeUpdateCheckConnection} which in turn is called from
+     * several spots in this class.
+     *
+     * @since MMBase-1.7.1
+     */
+    protected void executeUpdate(String query, MMObjectNode node, List fields) throws SQLException {
+        PreparedStatement ps = activeConnection.prepareStatement(query);
+        for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
+            FieldDefs field = (FieldDefs)fields.get(fieldNumber);
+            setValue(ps, fieldNumber + 1, node, field);
+        }
+        logQuery(query);
+        ps.executeUpdate();
+        ps.close();
+        
     }
 
     // javadoc is inherited
@@ -737,14 +793,7 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 String query = scheme.format(new Object[] { this, builder, setFields.toString(), builder.getField("number"), node });
                 getActiveConnection();
-                PreparedStatement ps = activeConnection.prepareStatement(query);
-                for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
-                    FieldDefs field = (FieldDefs)fields.get(fieldNumber);
-                    setValue(ps, fieldNumber + 1, node, field);
-                }
-                logQuery(query);
-                ps.executeUpdate();
-                ps.close();
+                executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
                 throw new StorageException(se);
             } finally {

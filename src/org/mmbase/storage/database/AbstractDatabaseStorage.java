@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.18 2004-06-15 21:25:42 robmaris Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.16.2.1 2004-06-15 21:38:36 robmaris Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 

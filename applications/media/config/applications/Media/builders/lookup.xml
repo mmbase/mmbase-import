@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="lookup" maintainer="mediaproject.mmbase.org" version="0" extends="object">
-
-
-  <!-- VPRO legacy? -->
+<builder name="lookup" maintainer="mmbase.org" version="0" extends="object">
+  
   <status>inactive</status>
   
   <searchage>200</searchage>

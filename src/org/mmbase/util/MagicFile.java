@@ -20,7 +20,7 @@ import org.mmbase.util.magicfile.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.13 2004-05-26 09:02:08 michiel Exp $
+ * @version $Id: MagicFile.java,v 1.12.2.1 2004-05-26 09:02:25 michiel Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);

@@ -9,14 +9,13 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.21 2004-05-01 08:35:26 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.19.2.7 2004-05-26 13:28:22 michiel Exp $
    @since    MMBase-1.6
    
 -->
 <project name="project naam" default="full" basedir=".">
   <property file="build.properties" />
-  <property name="version" value="0.0.1" /> <!-- use an argument -Dversion -->
-
+  <property name="version"  value="0.0.1" />      <!-- use an argument -Dversion, can be a formatted date or so -->
 
 
   <!-- nightly build -->
@@ -38,7 +37,10 @@
   <property name="minwarpackage.file" value="${destination.dir}/minimalistic-mmbase.war"/>
 
   <!-- Make build for this time -->
-  <property name="date" value="now" />
+  <property name="date"       value="now" />   <!-- use an argument -Ddate -->
+  <property name="revision"   value="" />      <!-- use an argument -Drevision -->
+
+  <property name="cvsversion" value="-r ${revision} -D ${date}" />
   
         
   <!-- ================================================================================
@@ -49,10 +51,13 @@
 
   <property name="cvsroot" value=":pserver:guest@www.mmbase.org:/usr/local/cvs" />
   <property name="checkoutcommand" value="checkout -D ${date} all" />
-  <property name="updatecommand" value="-q update -d -P  -D ${date} " />
+  <property name="updatecommand" value="-q update -d -P " />
 
   <target name="init.cvs">
     <available property="checkout.available" file="${source.dir}"/>
+    <condition property="cvs.byrevision">
+      <not><equals arg1="" arg2="${revision}" /></not>
+    </condition>
   </target>
 
   <target name="checkout" depends="init.cvs" unless="checkout.available">
@@ -68,11 +73,23 @@
       />
   </target>
 
-  <target name="cvs" depends="checkout" unless="just.checked.out">
+
+  <target name="cvs.revision" if="cvs.byrevision">
     <cvs cvsRoot="${cvsroot}"
-      command="${updatecommand}"
+      command="${updatecommand} -r ${revision}"
       dest="${source.dir}"
       />
+  </target>
+  <target name="cvs.date"  unless="cvs.byrevision">
+    <cvs cvsRoot="${cvsroot}"
+      command="${updatecommand} -D ${date} -r MMBase-1_7"
+      dest="${source.dir}"
+      />
+  </target>
+
+  <target name="cvs" depends="checkout" unless="just.checked.out">
+    <antcall target="cvs.revision" />
+    <antcall target="cvs.date" />
   </target>
 
   <target name="cvs.clean" depends="init.cvs" if="checkout.available">

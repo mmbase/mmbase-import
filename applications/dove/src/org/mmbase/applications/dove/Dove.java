@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.53 2004-05-27 08:43:04 johannes Exp $
+ * @version $Id: Dove.java,v 1.52.2.1 2004-05-27 08:32:10 johannes Exp $
  */
 
 public class Dove extends AbstractDove {

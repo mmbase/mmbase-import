@@ -24,12 +24,12 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.12 2004-07-26 20:17:59 nico Exp $
+ * @version $Id: LeafFileTag.java,v 1.9.2.2 2004-07-26 20:12:18 nico Exp $
  */
 
 public class LeafFileTag extends UrlTag {
     
-    private static final Logger log = Logging.getLoggerInstance(LeafFileTag.class);
+    private static final Logger log = Logging.getLoggerInstance(LeafFileTag.class.getName());
     protected Attribute  objectList = Attribute.NULL;
     protected TreeHelper th = new TreeHelper();
 

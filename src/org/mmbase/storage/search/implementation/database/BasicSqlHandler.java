@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.36 2004-07-21 11:39:15 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.32.2.3 2004-07-21 11:36:13 pierre Exp $
  * @since MMBase-1.7
  */
 

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @verson $Id: EmailHandler.java,v 1.12 2004-04-21 13:32:23 daniel Exp $
+ * @verson $Id: EmailHandler.java,v 1.8.2.1 2004-06-01 13:44:19 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -202,23 +202,16 @@ public class EmailHandler {
 
                StringTokenizer tokenizer = new StringTokenizer(contentType, "; ");
                while (tokenizer.hasMoreTokens()) {
-                  String value = tokenizer.nextToken();
-                  if (value.startsWith("charset=")) {
-                      // charset overrides the defaults for the mimetypes
-                      encoding = value.substring(8);
-                  }
-                  if (value.equals("text/xml")) {
-                      // default encoding for text/xml
-                      encoding = "utf-8";
-                  }
-                  if (value.equals("text/html")) {
-                      // default encoding for text/html
-                      encoding = "ISO-8859-1";
-                  }
-                  if (value.equals("text/plain")) {
-                      // default encoding for text/plain
-                      encoding = "ISO-8859-1";
-                  }
+                   String value = tokenizer.nextToken();
+                   if (value.startsWith("charset=")) {
+                       // charset overrides the defaults for the mimetypes
+                       encoding = value.substring(8);
+                   } else if (value.equals("text/xml")) {
+                       // default encoding for text/xml
+                       encoding = "utf-8";
+                   } 
+                   // default encoding for text/html en text/plain is ISO-8859-1
+
                }
             }
             BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream(), encoding));

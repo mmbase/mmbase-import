@@ -1,9 +1,15 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%>>  <%@include file="parameters.jsp" %>
-  <%@include file="login.jsp" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<HTML>
+<HEAD>
+   <TITLE>MMBase Bugtracker</TITLE>
+   <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+</HEAD>
 <mm:cloud>
 <mm:import externid="bugreport" />
-<form action="executes/addSubmitter.jsp?bugreport=<mm:write referid="bugreport" />" METHOD="POST">
+<BODY BACKGROUND="images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+
+<FORM ACTION="executes/addSubmitter.jsp?bugreport=<mm:write referid="bugreport" />" METHOD="POST">
 <TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
 <TR>
 	<TD WIDTH="50"><IMG SRC="images/trans.gif" WIDTH="50" HEIGHT="1"></TD>

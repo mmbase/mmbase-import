@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.4 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -240,13 +240,10 @@ public class BasicSqlHandlerTest extends TestCase {
         "SELECT m_title AS m_imageTitle,"
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_number=123 "
+        + "WHERE m_number IN (123) "
         + "AND (m_title='abd' AND m_number=123) "
         + "ORDER BY m_title ASC"));
-  
-
-
-     
+        
         // Add second node to node constraint.
         step1.addNode(456);
         strSql = instance.toSql(query, instance);
@@ -459,7 +456,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "insrel.rnumber,"
         + "news.m_title "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "news news "
-        + "WHERE m_i.m_number IN (123,456) AND insrel.m_number=789 "
+        + "WHERE m_i.m_number IN (123,456) AND insrel.m_number IN (789) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
@@ -642,7 +639,7 @@ public class BasicSqlHandlerTest extends TestCase {
         "m_title AS m_imageTitle,"
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "WHERE m_number=123 "
+        + "WHERE m_number IN (123) "
         + "AND (m_title='abd' AND m_number=123) "
         + "ORDER BY m_title ASC"));
         
@@ -798,7 +795,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "insrel.rnumber,"
         + "news.m_title "
         + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "news news "
-        + "WHERE m_i.m_number IN (123,456) AND insrel.m_number=789 "
+        + "WHERE m_i.m_number IN (123,456) AND insrel.m_number IN (789) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
@@ -947,13 +944,13 @@ public class BasicSqlHandlerTest extends TestCase {
         constraint2.addValue("AsDf");   // Add first value.
         instance.appendConstraintToSql(sb, constraint2, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "m_images.m_title='AsDf'"));
+        "m_images.m_title IN ('AsDf')"));
 
         sb.setLength(0);
         constraint2.setCaseSensitive(false);   // Case insensiteve
         instance.appendConstraintToSql(sb, constraint2, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "LOWER(m_images.m_title)='asdf'"));
+        "LOWER(m_images.m_title) IN ('asdf')"));
 
         sb.setLength(0);
         constraint2.addValue("qWeR");   // Add second value.
@@ -1031,7 +1028,7 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendConstraintToSql(sb, constraint3, query, false, false);
         
         assertTrue(sb.toString(), sb.toString().equals(
-        "m_images.m_number=1234"));
+        "m_images.m_number IN (1234)"));
 
         sb.setLength(0);
         constraint3.addValue(new Integer(5678));   // Add second value.
@@ -1210,7 +1207,7 @@ public class BasicSqlHandlerTest extends TestCase {
         constraint7.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint7, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_number>=9876)"));
+        "NOT m_images.m_number>=9876"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint7, query, true, false);
@@ -1272,7 +1269,7 @@ public class BasicSqlHandlerTest extends TestCase {
         constraint8.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint8, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_number>=news.m_number)"));
+        "NOT m_images.m_number>=news.m_number"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint8, query, true, false);
@@ -1310,7 +1307,7 @@ public class BasicSqlHandlerTest extends TestCase {
         constraint9.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint9, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_title>news.m_title)"));
+        "NOT m_images.m_title>news.m_title"));
 
         sb.setLength(0);
         instance.appendConstraintToSql(sb, constraint9, query, true, false);
@@ -1478,7 +1475,7 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_number>news.m_number)"));
+        "NOT m_images.m_number>news.m_number"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
@@ -1497,7 +1494,7 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_number>news.m_number) AND NOT (m_images.m_number>9876)"));
+        "NOT m_images.m_number>news.m_number AND NOT m_images.m_number>9876"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
@@ -1515,20 +1512,20 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, true, instance);
          assertTrue(sb.toString(), sb.toString().equals(
-        "(NOT (m_images.m_number>news.m_number) AND NOT (m_images.m_number>9876))"));
+        "(NOT m_images.m_number>news.m_number AND NOT m_images.m_number>9876)"));
         
         sb.setLength(0);
         constraint1.setInverse(false); // Set second child not inverse.
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, false, instance);
          assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876"));
+        "NOT m_images.m_number>news.m_number AND m_images.m_number>9876"));
         
         sb.setLength(0);
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, true, false, instance);
         assertTrue(sb.toString(), sb.toString().equals(
-        "m_images.m_number>news.m_number OR NOT (m_images.m_number>9876)"));
+        "m_images.m_number>news.m_number OR NOT m_images.m_number>9876"));
         
         // Composite with compositeConstraint as childs.
         sb.setLength(0);
@@ -1538,7 +1535,7 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendCompositeConstraintToSql(
             sb, composite2, query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876"));
+        "NOT m_images.m_number>news.m_number AND m_images.m_number>9876"));
         
         // Composite with compositeConstraint as childs.
         sb.setLength(0);
@@ -1546,8 +1543,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendCompositeConstraintToSql(
             sb, composite2, query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equals(
-        "(NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876) AND "
-        + "(NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876)"));
+        "(NOT m_images.m_number>news.m_number AND m_images.m_number>9876) AND "
+        + "(NOT m_images.m_number>news.m_number AND m_images.m_number>9876)"));
     }
     
     /** Test of appendFieldValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */

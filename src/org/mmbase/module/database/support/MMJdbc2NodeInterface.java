@@ -25,7 +25,7 @@ import org.mmbase.util.XMLDatabaseReader;
  *             StorageManager implementation.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.27 2004-07-23 08:55:02 pierre Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.26.2.1 2004-07-23 08:54:23 pierre Exp $
  */
 public interface MMJdbc2NodeInterface extends SearchQueryHandler {
     /**

@@ -24,18 +24,20 @@ import org.mmbase.util.logging.Logging;
 public class MultiPoolHandler {
     private static final Logger log = Logging.getLoggerInstance(MultiPoolHandler.class);
     private int maxConnections;
-    private int maxQueries;
+    private int maxQuerys;
     private Map pools = new Hashtable();
-    private DatabaseSupport databaseSupport;
+    private DatabaseSupport databasesupport;
 
-    public MultiPoolHandler(DatabaseSupport databaseSupport, int maxConnections) {
-        this(databaseSupport, maxConnections, 500);
+    public MultiPoolHandler(DatabaseSupport databasesupport, int maxConnections) {
+	this.maxConnections=maxConnections;
+	this.maxQuerys=500;
+	this.databasesupport=databasesupport;
     }
 
-    public MultiPoolHandler(DatabaseSupport databaseSupport, int maxConnections,int maxQueries) {
-	this.maxConnections = maxConnections;
-	this.maxQueries     = maxQueries;
-	this.databaseSupport= databaseSupport;
+    public MultiPoolHandler(DatabaseSupport databasesupport,int maxConnections,int maxQuerys) {
+	this.maxConnections=maxConnections;
+	this.maxQuerys=maxQuerys;
+	this.databasesupport=databasesupport;
     }
 
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
@@ -43,9 +45,8 @@ public class MultiPoolHandler {
 	if (pool != null) {
 	    return pool.getFree();
 	} else {
-            log.service("No multipool present, creating one now");
             synchronized(pools) {
-                pool = new MultiPool(databaseSupport, url, name, password, maxConnections, maxQueries);
+                pool = new MultiPool(databasesupport, url, name, password, maxConnections, maxQuerys);
                 if (pools.put(url + "," + name + "," + password, pool) != null) {
                     log.error("Replaced an old MultiPool!? " + Logging.stackTrace());
                 }
@@ -95,10 +96,10 @@ public class MultiPoolHandler {
     }
 
     public void setMaxQuerys(int max) {
-	maxQueries = max;
+	maxQuerys = max;
     }
 
     public int getMaxQuerys() {
-	return maxQueries;
+	return maxQuerys;
     }
 }

@@ -27,7 +27,7 @@ import org.mmbase.util.functions.Parameter;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.21 2004-05-26 09:04:24 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.20.2.1 2004-05-26 09:04:43 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.32 2004-05-27 13:07:38 michiel Exp $
+ * @version $Id: Attachments.java,v 1.30.2.2 2004-05-27 13:07:58 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);

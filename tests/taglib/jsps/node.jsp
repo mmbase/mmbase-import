@@ -51,9 +51,7 @@
 <h3>field-function wrap, html</h3>
 <mm:node referid="node">
   <mm:field name="html(wrap(title, 10))" />
-  <mm:field name="wrap(title, 10)" escape="p" />
-  <pre><mm:field name="wrap(title,10)" /></pre>
-  <mm:field name="info()" />
+   <mm:field name="info()" />
 </mm:node>
 
 
@@ -293,31 +291,6 @@ using list tag: <br />
          <mm:field name="title" /> (should be 'Another news article (...)')<br />
        </mm:relatednodes>
      </mm:relatednodescontainer>
-     <mm:relatednodescontainer path="sorted,news" element="news">
-       <mm:constraint field="sorted.pos" value="100" operator="IN" />
-       22 using 'sorted' path (and constraint with operator="IN"): size <mm:size /> (should be 1)<br />
-     </mm:relatednodescontainer>
-     <mm:relatednodescontainer path="sorted,news" element="news">
-       <mm:constraint field="sorted.pos" value="100,101,102" operator="IN" />
-       23 using 'sorted' path (and constraint with operator="IN"): size <mm:size /> (should be 1)<br />
-     </mm:relatednodescontainer>
-
-     <mm:field name="number">
-       <mm:list nodes="$_"  path="news,sorted,urls" fields="urls.url">
-         24  related url (used list with nodes): <mm:field name="urls.url" /><br />
-       </mm:list>
-     </mm:field>
-
-     <mm:relatednodes role="sorted" type="news" constraints="title LIKE '%Another%' and sorted.pos=100">
-       25 using containts attribute: <mm:field name="title" /> (Another node..)  size <mm:size /> (should be 1)<br />
-     </mm:relatednodes>
-
-     <mm:relatednodes path="sorted,news" orderby="sorted.pos" element="news" searchdirs="destination">
-       26 using path/element on mm:relatednodes <mm:size /> (should be 1)<br />
-     </mm:relatednodes>
-
-     Last number should be 26 (and no number should be missing).
-     <hr />
    </mm:node>
 </mm:list>
 
@@ -328,7 +301,6 @@ using list tag: <br />
    listnodescontainer: size <mm:size /> (should be 1) <br />
    <mm:listnodes>
     1 url: <mm:field name="url" /><br />
-    <mm:field id="urlnumber" name="number" write="false" />
    </mm:listnodes>
 </mm:listnodescontainer>
 
@@ -337,64 +309,9 @@ using list tag: <br />
    <mm:constraint field="urls.url" value="$url" />
    listnodescontainer: size <mm:size /> (should be 2) <br />
    <mm:listnodes>
-    2.<mm:index /> news: <mm:field name="title" /><br />
+    1 news: <mm:field name="title" /><br />
    </mm:listnodes>
 </mm:listnodescontainer>
-
-<mm:listnodescontainer path="urls,news" element="news" nodes="$urlnumber">
-   listnodescontainer with nodes=: size <mm:size /> (should be 2) <br />
-   <mm:listnodes>
-    3.<mm:index /> news: <mm:field name="title" /><br />
-   </mm:listnodes>
-</mm:listnodescontainer>
-<mm:listnodescontainer path="news,urls" element="news" nodes="urls.$urlnumber">
-   listnodescontainer with nodes=: size <mm:size /> (should be 2) <br />
-   <mm:listnodes>
-    4.<mm:index /> news: <mm:field name="title" /><br />
-   </mm:listnodes>
-</mm:listnodescontainer>
-
-<mm:listnodescontainer path="news,object" element="news" nodes="$urlnumber">
-   listnodescontainer with nodes=: size <mm:size /> (should be 2) <br />
-   <mm:listnodes>
-    5.<mm:index /> news: <mm:field name="title" /><br />
-   </mm:listnodes>
-</mm:listnodescontainer>
-
-mm:listnodes with path/element (should show twice the article):<br />
-<mm:listnodes path="news,urls" element="news">
-  6 news: <mm:field name="title" /><br />
-</mm:listnodes>
-
-<mm:listcontainer path="news,object"  nodes="$urlnumber" searchdirs="destination">
-   listcontainer with searchdirs=destination: size <mm:size /> (should be 2) <br />
-   <mm:list>
-    7.<mm:index /> news: <mm:field name="news.title" /><br />
-   </mm:list>
-</mm:listcontainer>
-
-<mm:listcontainer path="news,object"  nodes="$urlnumber" searchdirs="source">
-  8. listnodescontainer with searchdirs=source: size <mm:size /> (should be 0) <br />
-   <mm:list>
-      SHOULD NOT SEE 8.<mm:index /> news: <mm:field name="news.title" /><br />
-   </mm:list>
-</mm:listcontainer>
-
-<mm:listcontainer path="news,object"   nodes="$urlnumber" searchdirs="both">
-  9. listnodescontainer with searchdirs=both: size <mm:size /> (should be 2) <br />
-   <mm:list>
-       9.<mm:index /> news: <mm:field name="news.title" /><br />
-   </mm:list>
-</mm:listcontainer>
-
-<mm:listcontainer path="news,object"  nodes="$urlnumber" searchdirs="all">
-  10. listnodescontainer with searchdirs=all: size <mm:size /> (should be 2) <br />
-   <mm:list>
-       10.<mm:index /> news: <mm:field name="news.title" /><br />
-   </mm:list>
-</mm:listcontainer>
-
-<br />
 
 <mm:log>mm:list</mm:log>
 <em>Using mm:distinct on mm:listcontainer</em><br />
@@ -403,7 +320,7 @@ mm:listnodes with path/element (should show twice the article):<br />
   <mm:distinct />
   listcontainer: size <mm:size /> (should be 1) <br />
   Should follow the url:<br />
-  <mm:list nodes="-1" fields="urls.number,urls.url">
+  <mm:list fields="urls.number,urls.url">
     <mm:index /> url: <mm:field name="urls.url" /><br />
   </mm:list>
 </mm:listcontainer>
@@ -436,12 +353,10 @@ mm:listnodes with path/element (should show twice the article):<br />
 
 
 
-
-
 <mm:log>mm:list with one element</mm:log>
 
 <h3>List-tag with only one element</h3>
-<mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" constraints="news.number > 10/10">
+<mm:list nodes="$nodenumber" path="news" fields="news.title" jspvar="node" >
 cd 
    <em>all the following should have values</em>:<br />
    news.title:    <mm:field name="news.title" />   <br />

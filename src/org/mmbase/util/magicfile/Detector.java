@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.8 2004-05-06 12:34:38 keesj Exp $
+ * @version $Id: Detector.java,v 1.7 2004-03-10 19:54:58 michiel Exp $
  */
 
 public class Detector {
@@ -432,7 +432,6 @@ public class Detector {
 
     /**
      * @return Original unprocessed input line
-     * @since MMBase-1.7
      */
     public String getRawInput() {
         return rawinput;

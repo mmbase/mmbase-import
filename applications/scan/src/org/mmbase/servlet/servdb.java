@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.55 2004-08-06 08:50:15 marcel Exp $
+ * @version $Id: servdb.java,v 1.54.2.1 2004-08-06 08:39:33 marcel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -274,7 +274,8 @@ public class servdb extends JamesServlet {
                             mimetype=cline.mimetype;
                         }
 
-                        if (mimetype.equals("image/jpeg") || mimetype.equals("image/jpg"))
+                        // bugfix #6558 - fix for broken IE images in scan
+                        if (mimetype.equals("image/jpeg") || mimetype.equals("image/jpg")) 
                             cline.buffer = IECompatibleJpegInputStream.process(cline.buffer);
 
                         if (log.isDebugEnabled()) log.debug("servdb::service(img): The contenttype for this image is: "+mimetype);

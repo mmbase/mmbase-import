@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.26 2004-07-29 17:12:40 michiel Exp $
+ * @version $Id: Query.java,v 1.23.2.1 2004-07-29 17:13:12 michiel Exp $
  * @since MMBase-1.7
  * @see    org.mmbase.bridge.util.Queries
  */

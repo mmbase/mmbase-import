@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.53 2004-07-30 16:52:28 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.51.2.2 2004-07-30 17:08:12 michiel Exp $
  */
 public class MultiPool {
 
@@ -38,9 +38,6 @@ public class MultiPool {
     private DatabaseSupport databaseSupport;
 
     private boolean doReconnect  = true;
-
-    private long    maxLifeTime  = 120000;
-    private long    maxZeroTime  = maxLifeTime / 4;
 
     /**
      * @javadoc
@@ -63,23 +60,6 @@ public class MultiPool {
         this.databaseSupport = databaseSupport;
         log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, " + (doReconnect ? "which will be refreshed after " + this.maxQueries + " queries"  : "which will not be refreshed"));
         createPool();
-    }
-
-    /**
-     * Set the time in ms how long a query may live before it is killed.
-     * @since MMBase-1.8
-     */
-    void setMaxLifeTime(long maxLifeTime) {
-        this.maxLifeTime = maxLifeTime;
-        maxZeroTime = maxLifeTime / 4;
-    }
-
-    /**
-     * Gets the time in ms how long a query may live before it is killed.
-     * @since MMBase-1.8
-     */
-    long getMaxLifeTime() {
-        return maxLifeTime;
     }
 
     /**
@@ -172,6 +152,7 @@ public class MultiPool {
         return new MultiConnection(this, con);
     }
 
+
     /**
      * Tries to fix this multi-connection if it is broken (e.g. if database restarted).
      * @since MMBase-1.7.1
@@ -185,6 +166,7 @@ public class MultiPool {
         databaseSupport.initConnection(multiCon.con);
         
     }
+
 
     protected void finalize() {
         shutdown();
@@ -259,7 +241,7 @@ public class MultiPool {
             //          so nothing can edit them without having acquired the lock on semaphore.
 
 
-            long nowTime = System.currentTimeMillis();
+            int nowTime = (int) (System.currentTimeMillis() / 1000);
 
             for (Iterator i = busyPool.iterator(); i.hasNext();) {
                 MultiConnection con = (MultiConnection) i.next();
@@ -298,17 +280,17 @@ public class MultiPool {
                     continue;
                 }
 
-                long diff = nowTime - con.getStartTimeMillis();
+                int diff = nowTime - con.getStartTime();
 
-                if (log.isDebugEnabled()) {
-                    if (diff > 5000 || diff > maxZeroTime) {  // don't log too often                     
+                if (diff > 5) {
+                    if (log.isDebugEnabled()) {
                         log.debug("Checking a busy connection " + con + " time = " + diff + " seconds");
                     }
                 }
 
-                if (diff < maxZeroTime) {
+                if (diff < 30) {
                     // ok, just wait
-                } else if (diff < maxLifeTime) {
+                } else if (diff < 120) {
                     // between 30 and 120 we putback 'zero' connections
                     if (con.lastSql == null || con.lastSql.length() == 0) {
                         log.warn("null connection putBack " + Logging.stackTrace());
@@ -319,7 +301,7 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newCon = null;
-                    log.warn("WILL KILL SQL. It took already " + (diff / 1000) + " seconds, which is too long. ID=" + con.hashCode() + " SQL: " + con.lastSql);
+                    log.warn("WILL KILL SQL. It took already " + diff + " seconds, which is too long. ID=" + con.hashCode() + " SQL: " + con.lastSql);
                     try {
                         // get a new connection to replace this one
                         newCon = getMultiConnection();
@@ -382,9 +364,7 @@ public class MultiPool {
                 totalConnections++;
                 if (conMax == 0) { // could happen during shut down of MMBase
                     try {
-                        con = getMultiConnection(); // hm....
-                        con.claim();
-                        return con;
+                        return getMultiConnection(); // hm....
                     } catch (SQLException sqe) {
                         return null; // will probably cause NPE's but well
                     }

@@ -1,12 +1,12 @@
 <%@ page errorPage="exception.jsp"
-%><%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
+%><%@ include file="settings.jsp"%><mm:locale language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.50 2004-08-24 09:24:52 michiel Exp $
+     * @version  $Id: list.jsp,v 1.47.2.1 2004-05-02 15:03:16 nico Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -224,12 +224,14 @@ for (int i=0; i < results.size(); i++) {
         }
         addField(obj, field.getGUIName(), value, field.getGUIType());
     }
+
     if (listConfig.multilevel) {
         item=item.getNodeValue(listConfig.mainObjectName);
     }
     Utils.setAttribute(obj, "mayedit",   "" + item.mayWrite());
     Utils.setAttribute(obj, "maydelete", "" + item.mayDelete());
 }
+
 
 // place page information
 int pagecount = new Double(Math.floor(resultsSize / len)).intValue();
@@ -307,4 +309,4 @@ private org.w3c.dom.Node addField(org.w3c.dom.Node el, String name, String value
     el.appendChild(n);
     return n;
 }
-%></mm:log></mm:cloud></mm:content>
+%></mm:log></mm:cloud></mm:locale>

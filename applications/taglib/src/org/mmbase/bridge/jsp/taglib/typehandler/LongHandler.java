@@ -23,7 +23,7 @@ import org.mmbase.storage.search.Constraint;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.8 2004-05-26 21:58:21 michiel Exp $
+ * @version $Id: LongHandler.java,v 1.7.2.1 2004-05-26 21:58:54 michiel Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {

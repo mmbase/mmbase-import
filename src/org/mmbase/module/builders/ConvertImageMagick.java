@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.57 2004-07-12 16:22:07 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.55.2.2 2004-07-12 16:22:43 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static final Logger log = Logging.getLoggerInstance(ConvertImageMagick.class);

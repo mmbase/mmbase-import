@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.15 2004-07-26 20:17:59 nico Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.11.2.4 2004-07-26 20:12:14 nico Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {

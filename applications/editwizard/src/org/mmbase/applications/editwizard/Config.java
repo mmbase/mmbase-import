@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.54 2004-08-26 14:11:00 michiel Exp $
+ * @version $Id: Config.java,v 1.49.2.4 2004-08-26 14:11:20 michiel Exp $
  */
 
 public class Config {

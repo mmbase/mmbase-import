@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.5 2004-07-29 17:19:12 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.2.2.3 2004-07-29 17:19:42 michiel Exp $
  * @since   MMBase-1.7
  */
 

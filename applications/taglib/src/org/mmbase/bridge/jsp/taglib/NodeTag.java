@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.56 2004-07-26 20:17:58 nico Exp $
+ * @version $Id: NodeTag.java,v 1.53.2.3 2004-07-26 20:12:16 nico Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {

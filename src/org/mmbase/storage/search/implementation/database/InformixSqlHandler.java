@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.13 2004-08-23 12:44:49 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8.2.5 2004-08-23 12:42:15 mark Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {

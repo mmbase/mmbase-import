@@ -46,13 +46,10 @@
 <p>
   <a href="<mm:url page="session.jsp" />">session stuff</a>
 </p>
-
 <p>
   <a href="<mm:url page="listcontainer.jsp" />">mm:listcontainer</a>
 </p>
-<p>
-  <a href="<mm:url page="url.jsp" />">mm:url</a>
-</p>
+
 <p>
   <a href="<mm:url page="vars.jsp" />">more vars</a>
 </p>

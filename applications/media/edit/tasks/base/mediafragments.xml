@@ -14,14 +14,14 @@
 	<action type="delete" />
 	
 	<action type="load">
-    <relation destination="&type;sources" role="related">
+    <relation destination="&type;sources"   role="related">
       <object>
         <relation destination="mediaproviders"   role="related">
           <object />
         </relation>
       </object>
     </relation>
-		<!-- relation destination="&type;fragments" role="parent" /-->
+		<relation destination="&type;fragments" role="parent" />
 	</action>
       
 

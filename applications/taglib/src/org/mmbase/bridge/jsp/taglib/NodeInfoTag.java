@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.30 2004-07-26 20:17:59 nico Exp $ 
+ * @version $Id: NodeInfoTag.java,v 1.27.2.2 2004-07-26 20:12:15 nico Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -112,7 +112,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             }
             Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-            args.set("locale",   getLocale());
+            args.set("language", getCloudVar().getLocale().getLanguage());
             args.set("session",  sessionName);
             args.set("response", pageContext.getResponse());
             args.set("request",  pageContext.getRequest());

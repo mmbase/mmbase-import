@@ -250,13 +250,7 @@
    <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
   </a>
    <xsl:if test="since='MMBase-1.7'">
-     (new)
-   </xsl:if>
-   <xsl:if test="since='MMBase-1.7.1'">
-     (newer!)
-   </xsl:if>
-   <xsl:if test="since='MMBase-1.8'">
-     (newest!!)
+     (new!)
    </xsl:if>
   <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
@@ -665,13 +659,9 @@
 </xsl:template>
 <xsl:template match="taglibcontent" mode="content">
   <table bgcolor="#99ffff" width="100%">
-    <tr><th>Id</th><th valign="top"><a name="contenttypes" />Content-Type</th><th valign="top">Default escaper</th><th valign="top">Default postprocessor</th><th valign="top">Default encoding</th></tr>
+    <tr><th valign="top"><a name="contenttypes" />Content-Type</th><th valign="top">Default escaper</th><th valign="top">Default postprocessor</th><th valign="top">Default encoding</th></tr>
     <xsl:for-each select="content">
       <tr>
-        <td valign="top">
-          <xsl:if test="@id"><xsl:value-of select="@id" /></xsl:if>
-          <xsl:if test="not(@id)"><xsl:value-of select="@type" /></xsl:if>
-        </td>
         <td valign="top"><xsl:value-of select="@type" /></td>
         <td valign="top"><xsl:value-of select="@defaultescaper" /></td>
         <td valign="top"><xsl:value-of select="@defaultpostprocessor" /></td>

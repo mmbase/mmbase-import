@@ -15,8 +15,7 @@ package org.mmbase.util;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: StringCompare.java,v 1.6 2004-05-03 11:25:26 michiel Exp $
- * @deprecated Should implement java.util.Comparator, or should not exist, because this is java.lang.String's 'natural' order.
+ * @version $Id: StringCompare.java,v 1.5 2003-03-10 11:51:13 pierre Exp $
  */
 public class StringCompare implements CompareInterface {
 

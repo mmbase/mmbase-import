@@ -17,7 +17,7 @@ import javax.servlet.jsp.*;
  * Adds an extra parameter to the parent URL tag.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.3 2004-06-30 17:51:54 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.2.2.1 2004-07-05 17:19:59 michiel Exp $
  */
 
 public class ParamTag extends ContextReferrerTag {

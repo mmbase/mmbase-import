@@ -37,7 +37,7 @@ import javax.servlet.http.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.86 2004-06-01 15:33:52 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.83.2.2 2004-06-01 15:36:50 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);

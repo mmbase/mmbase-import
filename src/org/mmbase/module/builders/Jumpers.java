@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.25 2004-06-02 17:02:57 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.24.2.1 2004-06-02 17:12:59 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 

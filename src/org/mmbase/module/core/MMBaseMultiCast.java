@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: MMBaseMultiCast.java,v 1.18 2004-07-16 11:23:58 pierre Exp $
+ * @version $Id: MMBaseMultiCast.java,v 1.16.2.2 2004-07-16 11:23:35 pierre Exp $
  */
 public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 
