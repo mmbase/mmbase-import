@@ -28,7 +28,7 @@ public abstract class NodeTest extends BridgeTest {
     }
 
     abstract public void testGetValue();
-    
+
     public void testGetValueCache() {
         // Test if the first call doesn't make MMBase cache an incorrect value.
         testGetValue();
@@ -208,7 +208,7 @@ public abstract class NodeTest extends BridgeTest {
     }
 
     public void testCreateAlias() {
-        node.createAlias("node_alias");       
+        node.createAlias("node_alias");
         node.commit();
         // look it up again
         boolean found = false;
@@ -216,15 +216,15 @@ public abstract class NodeTest extends BridgeTest {
         while (i.hasNext()) {
             String alias = (String)i.next();
             if ("node_alias".equals(alias)) found = true;
-        }        
+        }
         assertTrue(found);
     }
 
-    protected String getOtherContext(Node n) {        
+    protected String getOtherContext(Node n) {
         String context = n.getContext();
         StringIterator possibleContexts = n.getPossibleContexts().stringIterator();
         while (possibleContexts.hasNext()) {
-            String listContext = possibleContexts.nextString();              
+            String listContext = possibleContexts.nextString();
             if (! context.equals(listContext)){
                 return listContext;
             }
@@ -232,21 +232,21 @@ public abstract class NodeTest extends BridgeTest {
         return context;
     }
 
-    
+
     public void testSetContext() {
         String context = node.getContext();
         String otherContext = getOtherContext(node);
-     
+
         if (otherContext.equals(context)) {
             otherContext = context + "other";
-            System.err.println(this.getClass().getName() + " TESTWARNING testSetContext: Could not find other context than " + context + ", setting to '" + otherContext + "'");
+            System.err.println("Could not find other context than " + context + ", setting to '" + otherContext + "'");
         }
-        
+
         // set context to something different:
         node.setContext(otherContext);
-        
+
         // now, the new context must be equal to otherContext
-        assertTrue("KNOWN - bug #6168:", otherContext.equals(node.getContext()));
+        assertTrue("KNOWN - bug #6186:", otherContext.equals(node.getContext()));
     }
 
 }
