@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.26 2002-02-27 10:39:14 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.27 2002-03-05 15:32:24 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -38,8 +38,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
     // Currently only ImageMagick works, this are the default value's
     private static String converterRoot    = "/usr/local/";
     private static String converterCommand = "bin/convert";
-    private static int colorizeHexScale    = 100;
-
+    private static int colorizeHexScale    = 100
+;
     /**
      * This function initalises this class
      * @param params a <code>Hashtable</code> of <code>String</string>s containing informationn, this should contina the key's
@@ -209,7 +209,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
     private Vector getConvertCommands(Vector params) {
         StringBuffer cmdstr = new StringBuffer();
         Vector cmds = new Vector();
-        String key, cmd, type;
+        String key, type;
+        String cmd;
         int pos, pos2;
         Enumeration t = params.elements();
         if (t.hasMoreElements()) t.nextElement(); // first element is the number, ignore it.
@@ -219,7 +220,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             pos2=key.lastIndexOf(')');
             if (pos != -1 && pos2 != -1) {
                 type = key.substring(0,pos).toLowerCase();
-                cmd  = org.mmbase.util.Encode.decode("escape_url_param", key.substring(pos+1, pos2));
+                cmd  = key.substring(pos+1, pos2);
                 if (log.isDebugEnabled()) {
                     log.debug("getCommands(): type=" + type + " cmd=" + cmd);
                 }
@@ -248,7 +249,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         cmd = r+"/"+g+"/"+b;
                     }
                 } else if (type.equals("gamma")) {
-                    StringTokenizer tok = new StringTokenizer(cmd,",/");
+                    StringTokenizer tok = new StringTokenizer(cmd, ",/");
                     String r=tok.nextToken();
                     String g=tok.nextToken();
                     String b=tok.nextToken();
@@ -265,10 +266,22 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     // rather sucks, because we have to maintain manually which options accept a color
                     cmd = color(cmd);
                 } else if (type.equals("text")) {
-                    int firstcomma = cmd.indexOf(',');
-                    int secondcomma = cmd.indexOf(',', firstcomma);
+                    int firstcomma  = cmd.indexOf(',');
+                    int secondcomma = cmd.indexOf(',', firstcomma + 1);
                     type = "draw";
-                    cmd = "text " + cmd.substring(0, secondcomma) + " " + cmd.substring(secondcomma +1).replace('\'', '"');
+                    try {
+                        cmd = "text " + cmd.substring(0, secondcomma) + " " + ((String)cmd).substring(secondcomma +1 ).replace('\'', '"');
+                        cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1");
+                        // convert needs UTF-8, but Runtime seemingly always writes ISO-8859-1, so we
+                        // are going to lie here.
+                        
+                        // even the value of this doesn't seem to matter
+                        if (log.isDebugEnabled()) {
+                            log.debug("file.encoding: " + java.lang.System.getProperty("file.encoding"));
+                        } 
+                    } catch (java.io.UnsupportedEncodingException e) {
+                        log.error(e.toString());
+                    }
                 } else if (type.equals("font")) {
                     if (cmd.startsWith("mm:")) {
                         // recognize MMBase config dir, so that it is easy to put the fonts there.
@@ -278,7 +291,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     type = "draw";
                     cmd  = "circle " + cmd;
                 } else if (type.equals("part")) {
-                    StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
+                    StringTokenizer tok = new StringTokenizer(cmd, "x,\n\r");
                     try {
                         int x1=Integer.parseInt(tok.nextToken());
                         int y1=Integer.parseInt(tok.nextToken());
@@ -290,7 +303,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                         log.error(e.toString());
                     }
                 } else if (type.equals("roll")) {
-                    StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
+                    StringTokenizer tok = new StringTokenizer(cmd, "x,\n\r");
                     String str;
                     int x=Integer.parseInt(tok.nextToken());
                     int y=Integer.parseInt(tok.nextToken());
@@ -302,7 +315,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 } else if (type.equals("f")) { // format was already dealt with
                     continue; // ignore this one.
                 }
-
+                if (log.isDebugEnabled()) log.debug("adding -" + type + " " + cmd);
                 // all other things are recognized as well..
                 cmds.add("-" + type); 
                 cmds.add(cmd);
@@ -356,7 +369,6 @@ public class ConvertImageMagick implements ImageConvertInterface {
             int size=0;
             byte[] inputbuffer=new byte[2048];
             while((size=in.read(inputbuffer))>0) {
-                log.debug("copying "+size+" bytes from stream ");
                 imagestream.write(inputbuffer,0,size);
             }
             log.debug("retrieved all information");
