@@ -1,4 +1,4 @@
-/*
+/* 
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -25,7 +25,7 @@ import org.mmbase.module.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.9 2000-06-05 16:16:08 wwwtech Exp $
+ * @version $Id: scanpage.java,v 1.10 2000-06-16 16:05:52 rob Exp $
  */
 public class scanpage {
 	public ProcessorInterface processor;
