@@ -5,7 +5,7 @@ span.select {
 }
 
 span.select:after {
-  content: url(../images/transparent.png); /* makes it work in Mozilla */
+  content: url(../images/select.gif); /* makes it work in Mozilla */
 }
 
 span.create {
