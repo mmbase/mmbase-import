@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.13 2004-01-14 22:03:19 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.14 2004-03-23 21:42:46 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -132,9 +132,11 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (iterator.hasNext()) {
-            return EVAL_BODY_BUFFERED;
+            setNext();
+            return EVAL_BODY;
+        } else {
+            return SKIP_BODY;
         }
-        return SKIP_BODY;
     }
 
     public int doAfterBody() throws JspException {
@@ -147,14 +149,16 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         collector.doAfterBody();
 
         if (iterator.hasNext()){
-            doInitBody();
+            setNext();
             return EVAL_BODY_AGAIN;
         } else {
-            if (bodyContent != null) {
-                try {
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                } catch (IOException ioe){
-                    throw new TaglibException(ioe);
+            if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+                if (bodyContent != null) {
+                    try {
+                        bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                    } catch (IOException ioe){
+                        throw new TaglibException(ioe);
+                    }
                 }
             }
             return SKIP_BODY;
@@ -167,15 +171,11 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         return  EVAL_PAGE;
     }
 
-
-    public void doInitBody() throws JspTagException {
-        if (iterator.hasNext()){
-            currentItemIndex ++;
-            helper.setValue("" + iterator.next());
-            if (getId() != null) {
-                getContextProvider().getContextContainer().register(getId(), helper.getValue());
-            }
-
+    protected void setNext() throws JspTagException {
+        currentItemIndex++;
+        helper.setValue("" + iterator.next());
+        if (getId() != null) {
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
     }
 }

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.52 2004-01-16 18:18:11 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.53 2004-03-23 21:42:46 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -197,8 +197,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         return EVAL_BODY_BUFFERED;
     }
 
-    public void doInitBody() throws JspTagException { // in case it is called, do nothing.
-    }
 
     /**
      * this method writes the content of the body back to the jsp page

@@ -21,11 +21,11 @@ import org.mmbase.util.logging.Logging;
  * Provides Locale (language, country) information  to its body. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.12 2003-09-10 11:16:08 michiel Exp $ 
+ * @version $Id: LocaleTag.java,v 1.13 2004-03-23 21:42:47 michiel Exp $ 
  */
 
 public class LocaleTag extends ContextReferrerTag  {
-    private static final Logger log = Logging.getLoggerInstance(LocaleTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(LocaleTag.class);
 
     private Attribute language = Attribute.NULL;
     private Attribute country =  Attribute.NULL;
@@ -48,7 +48,9 @@ public class LocaleTag extends ContextReferrerTag  {
      * Child tags can call this function to obtain the Locale they must use.
      */
     public Locale getLocale() {
-        if (log.isDebugEnabled()) log.debug("lang: " + locale.getLanguage() + " country: " + locale.getCountry());
+        if (log.isDebugEnabled()) { 
+            log.debug("lang: " + locale.getLanguage() + " country: " + locale.getCountry());
+        }
         return locale;
     }
 
@@ -67,15 +69,17 @@ public class LocaleTag extends ContextReferrerTag  {
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, locale);
         }
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY;
     }
     public int doAfterBody() throws JspTagException {
-        if (bodyContent != null) {
-            try {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch (IOException ioe){
-                throw new TaglibException(ioe);
-            }        
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            if (bodyContent != null) {
+                try {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                } catch (IOException ioe){
+                    throw new TaglibException(ioe);
+                }        
+            }
         }
         return SKIP_BODY;
     }
