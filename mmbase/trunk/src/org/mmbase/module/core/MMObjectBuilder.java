@@ -63,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.255 2004-01-06 10:51:20 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.256 2004-01-06 19:49:51 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -77,6 +77,12 @@ public class MMObjectBuilder extends MMTable {
     public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     public final static String DEFAULT_EOL = "<br />";
 
+    
+    /**
+     * Parameters for the GUI function
+     * @since MMBase-1.7
+     */
+     
     public final static Parameter[] GUI_PARAMETERS = {
         new Parameter("field",    String.class),
         Parameter.LANGUAGE, // should add Locale
@@ -86,6 +92,13 @@ public class MMObjectBuilder extends MMTable {
     //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
     };
+
+    /**
+     * Parameters for the age function
+     * @since MMBase-1.7
+     */
+
+    public final static Parameter[] AGE_PARAMETERS = {};
 
     /**
      * The cache that contains the last X types of all requested objects
