@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.95 2003-07-18 22:12:51 keesj Exp $
+ * @version $Id: MMBase.java,v 1.96 2003-08-20 09:17:55 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -223,7 +223,7 @@ public class MMBase extends ProcessorModule {
      * Reference to the Root builder (the most basic builder, aka 'object').
      * This can be null (does not exist) in older systems
      */
-    private MMObjectBuilder root;
+    private MMObjectBuilder rootBuilder;
 
     /**
      * Base url for the location of the DTDs. obtained using getDTDBase()
@@ -476,15 +476,15 @@ public class MMBase extends ProcessorModule {
         // database=getDatabase();
         getDatabase();
 
-        MMObjectBuilder objekt = null;
+        rootBuilder = null;
         try {
-            objekt = loadBuilder("object");
+            rootBuilder = loadBuilder("object");
         } catch (BuilderConfigurationException e) {
             // object builder was not defined -
             // builder is optional, so this is not an error
         }
-        if (objekt != null) {
-            objekt.init();
+        if (rootBuilder != null) {
+            rootBuilder.init();
         } else {
             database.createObjectTable(baseName);
         }
@@ -615,7 +615,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase1,6
      */
     public MMObjectBuilder getRootBuilder() {
-        return root;
+        return rootBuilder;
     }
 
     /**
@@ -624,10 +624,10 @@ public class MMBase extends ProcessorModule {
      * @since MMBase1,6
      */
     public int getRootType() {
-        if (root == null) {
+        if (rootBuilder == null) {
             return -1;
         } else {
-            return root.oType;
+            return rootBuilder.oType;
         }
     }
 
@@ -1001,10 +1001,6 @@ public class MMBase extends ProcessorModule {
         // new code checks all the *.xml files in builder dir, recursively
         String path = "";
         loadBuilders(path);
-
-        // determine Object builder
-        // Note: can be null
-        root = getMMObject("object");
 
         log.debug("Starting MultiRelations Builder");
         MultiRelations = new MultiRelations(this);
