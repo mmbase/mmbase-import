@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.6 2000-11-14 11:41:57 eduard Exp $
+	$Id: ConvertImageMagick.java,v 1.7 2001-01-26 14:58:08 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/11/14 11:41:57  eduard
+	Eduard: Added a check in init(Hashtable params) to check if the ConverterRoot and ConverterCommand are existing,.. furhermore added some documentation
+	
 	Revision 1.5  2000/10/04 13:36:47  vpro
 	Rico: added fix for transparancy parameters
 	
@@ -39,12 +42,12 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.6 2000-11-14 11:41:57 eduard Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.7 2001-01-26 14:58:08 install Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = false;
+	private boolean debug = true;
 	private void debug(String msg) { System.out.println(classname+":"+msg); }
 
 	// Currenctly only ImageMagick works, this are the default value's
@@ -133,6 +136,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
 				if (debug) debug("getCommands(): type="+type+" cmd="+cmd);
 				if (type.equals("s")) {
 					cmds.addElement("-geometry "+cmd);
+				} else if (type.equals("quality")) {
+					cmds.addElement("-quality "+cmd);
+				} else if (type.equals("region")) {
+					cmds.addElement("-region "+cmd);
+				} else if (type.equals("spread")) {
+					cmds.addElement("-spread "+cmd);
 				} else if (type.equals("r")) {
 					cmds.addElement("-rotate "+cmd);
 				} else if (type.equals("c")) {
