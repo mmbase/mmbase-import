@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.41 2001-05-17 17:28:41 daniel Exp $
+	$Id: HtmlBase.java,v 1.42 2001-05-20 22:35:43 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.41  2001/05/17 17:28:41  daniel
+	changes LRU to new multilevel cache
+	
 	Revision 1.40  2001/05/11 12:10:38  vpro
 	Davzev: Added replace command FIELDLENGTH to determine the length of a field value.
 	If value is null, then FIELDLENGTH returns 0, otherwise it returns the value.length().
@@ -155,7 +158,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.41 2001-05-17 17:28:41 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.42 2001-05-20 22:35:43 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -922,7 +925,8 @@ public class HtmlBase extends ProcessorModule {
 		hash=calcHashMultiLevel(tagger);
 		results=(Vector)multilevel_cache.get(hash);
 	
-		if (results==null || reload) {
+		//if (results==null || reload) {
+		if (results==null) {
 			if (cachedebug) {
 				if (reload) {
 					log.debug("doMultiLevel cache RELOAD "+hash);
@@ -963,7 +967,7 @@ public class HtmlBase extends ProcessorModule {
 				}
 			}
 	
-			multilevel_cache.put(hash,results,type);
+			multilevel_cache.put(hash,results,type,tagger);
 			long end=(long)System.currentTimeMillis();
 			len=(end-begin);
 			if (len>200) {
@@ -1181,6 +1185,10 @@ public class HtmlBase extends ProcessorModule {
 		} else {
 			return("30");
 		}	
+	}
+
+	public MultilevelCacheHandler getMultilevelCacheHandler() {
+		return(multilevel_cache);
 	}
 
 }

@@ -11,6 +11,7 @@ package org.mmbase.module.gui.html;
 
 import java.lang.*;
 import java.util.*;
+import org.mmbase.util.*;
 
 /**
  * This object subscribes itself to builder changes
@@ -23,11 +24,13 @@ public class MultilevelCacheEntry {
 	MultilevelCacheHandler han;
 	Object cachedobject;
 	public Object hash;
+	StringTagger tagger;
 
-	public MultilevelCacheEntry(MultilevelCacheHandler han,Object hash,Object o) {
+	public MultilevelCacheEntry(MultilevelCacheHandler han,Object hash,Object o,StringTagger tagger) {
 		this.han=han;
 		this.hash=hash;
 		this.cachedobject=o;
+		this.tagger=tagger;
 	}
 
 	public void addListener(MultilevelSubscribeNode parent) {
@@ -46,5 +49,13 @@ public class MultilevelCacheEntry {
 
 	public Object getObject() {
 		return(cachedobject);
+	}
+
+	public Object getKey() {
+		return(hash);	
+	}
+
+	public StringTagger getTagger() {
+		return(tagger);	
 	}
 }
