@@ -41,7 +41,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		if (bul!=null) {
 			bul.setCheckService(tableName);
 		}else
-			if( debug ) debug("setTableName("+tableName+"): ERROR: mmbase not found!");
+			if( debug ) debug("setTableName("+tableName+"): ERROR: mmservers not found!");
 		
 	}
 
