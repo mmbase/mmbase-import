@@ -70,6 +70,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
     private int type = TYPE_UNSET;
 
+    private String sessionName = "cloud_mmbase,";
+
     public void setType(String t) throws JspTagException {
         t = getAttributeValue(t);
         if ("name".equals(t)) {
@@ -108,6 +110,15 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         FieldProvider fieldProvider = findFieldProvider();
 
         field = ((FieldProvider) fieldProvider).getFieldVar();
+
+        /* perhaps 'getSessionName' should be added to CloudProvider
+         * EXPERIMENTAL 
+         */
+        CloudTag ct = null;
+        ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
+        if (ct != null) {
+            sessionName = ct.getSessionName() + ",";
+        }
 
         // found the field now. Now we can decide what must be shown:
         String show = null;
@@ -148,7 +159,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
             }
-            show = decode(node.getStringValue("gui("+field.getName()+")"), node);
+            show = decode(node.getStringValue("sgui(" + sessionName + field.getName() + ")"), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
             }
@@ -229,7 +240,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         }
         switch(type) {
         case Field.TYPE_BYTE:
-            show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
+            show = (node != null ? node.getStringValue("sgui(" + sessionName + ")") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
         case Field.TYPE_XML:
             if(! search) {
@@ -313,7 +324,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                         show += "selected=\"selected\"";
                     }
                     show += "value=\""+tmp.getNumber()+"\">";
-                    show += Encode.encode("ESCAPE_XML", tmp.getStringValue("gui()"));
+                    show += Encode.encode("ESCAPE_XML", tmp.getStringValue("sgui(" + sessionName + ")"));
                     show += "</option>\n";
                 }
                 show += "</select>";
