@@ -4,7 +4,7 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.2 $
+   Version: $Revision: 1.3 $
 -->
 <xsl:stylesheet 
   version="1.0"
@@ -37,6 +37,8 @@
 						<nobr>
 							<!-- cancel -->
 							<xsl:call-template name="cancelbutton" />
+							<!-- saveonly  -->
+							<xsl:call-template name="saveonlybutton" />
 							<!-- commit  -->
 							<xsl:call-template name="savebutton" />
 						</nobr>
@@ -64,6 +66,27 @@
       </xsl:if>
     </img>
   </xsl:template>
+
+  <xsl:template name="saveonlybutton">
+  	<img
+        id="bottombutton-saveonly"
+        onclick="doSaveOnly();"
+        enabledsrc="{$mediadir}saveonly.gif"
+        disabledsrc="{$mediadir}saveonly_disabled.gif">
+        <xsl:if test="@allowsave=&apos;true&apos;">
+          <xsl:attribute name="class">bottombutton</xsl:attribute>
+          <xsl:attribute name="src"><xsl:value-of select="$mediadir" />saveonly.gif</xsl:attribute>
+          <xsl:attribute name="title"><xsl:value-of select="$tooltip_save_only" /></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="@allowsave=&apos;false&apos;">
+		  <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
+          <xsl:attribute name="src"><xsl:value-of select="$mediadir" />saveonly_disabled.gif</xsl:attribute>
+          <xsl:attribute name="title"><xsl:value-of select="$tooltip_no_save" /></xsl:attribute>
+          <xsl:attribute name="disabled" />
+        </xsl:if>
+    </img>  
+  </xsl:template>
+
 
   <xsl:template name="cancelbutton">
     <img
