@@ -94,9 +94,6 @@ several MMBase-checkouts.
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
   <property name="source-src.dir"       location="${source.dir}/src"/>
   <property name="generated-source-src.dir"       location="${build.dir}/src"/>
-  <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
-  <property name="xml2tld"              value="org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
-  <property name="xml2html"             value="org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
   <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
   <property name="mmdocs.dir"           value="${webapp.dir}/mmdocs"/>
   <property name="reference.dir"        value="${webapp.dir}/mmdocs/reference"/>
@@ -411,7 +408,7 @@ builddate=${builddate}
 
 
   <target name="build"   description="Compile and generate tld's"
-     depends="taglib.tld,compile" >
+     depends="compile" >
   </target>
 
 
@@ -550,10 +547,7 @@ builddate=${builddate}
   <target name="jar" description="Create the MMBase jar file"
           depends="init,jar.check" unless="jar.uptodate">
     <antcall target="compile" />
-    <antcall target="taglib.tld" />
     <antcall target="resources" />
-    <copy file="${web.dir}/mmbase-taglib.tld"
-          tofile="${web.dir}/taglib.tld" />
 
     <manifest file="${build.dir}/manifest.mf">
       <attribute name="Main-Class" value="org.mmbase.Version" />
@@ -574,14 +568,9 @@ builddate=${builddate}
       <fileset dir="${build.dir}/classes"
                includes="org/mmbase/**" />
       <fileset dir="${source-html.dir}/WEB-INF/classes/" />
-      <metainf dir="${web.dir}" includes="taglib.tld" />
     </jar>
 
     <delete file="${build.dir}/manifest.mf" />
-    <delete file="${web.dir}/taglib.tld" />
-    <!-- don't delete these, because multiple tld's inside a jar, -->
-    <!-- can cause problems on certain servlet-engines -->
-    <!--<delete file="${web.dir}/mmbase-taglib.tld" />-->
     
     <!-- still copy mmbase.jar to relase dir for backward compatibility-->
     <copy file="${mmbase.jar}"       todir="${release.lib.dir}" />
@@ -797,7 +786,7 @@ Build-compiler: ${build.compiler}
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
   <target name="web" description="Make the things which must appear in the web-servers html directory"
-         depends="init.compile,taglib.tld">
+         depends="init.compile">
 
     <antcall target="web.documentation" />
 
@@ -825,70 +814,6 @@ Build-compiler: ${build.compiler}
     <antcall target="documentation" />
   </target>
 
-  <target name="taglib.tld.check">
-    <uptodate property="taglib.tld.uptodate" targetfile="${web.dir}/mmbase-taglib.tld" >
-      <srcfiles dir="${source-src.dir}" includes="${source-taglib.xml},${xml2tld}" />
-    </uptodate>
-  </target>
-
-
-  <target name="taglib.tld" description="Make the MMBase taglib  tld"
-          depends="init.compile,taglib.tld.check" unless="taglib.tld.uptodate">
-    <mkdir dir="${web.dir}"/>
-    <!-- create the mmbase-taglib tld: -->
-    <java classname="org.apache.xalan.xslt.Process"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="yes">
-      <arg value="-XML"/>
-      <arg value="-DIAG"/>
-      <arg value="-IN"/>
-      <arg value="file:///${source-src.dir}/${source-taglib.xml}" />
-      <arg value="-OUT"/>
-      <arg value="${web.dir}/mmbase-taglib.tld"/>
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/${xml2tld}" />
-    </java>
-  </target>
-
-  <target name="taglib.doc.check">
-    <uptodate property="taglib.doc.uptodate" targetfile="${reference.dir}/mmbase-taglib.html" >
-      <srcfiles dir="${source-src.dir}" includes="${source-taglib.xml},${xml2html}" />
-    </uptodate>
-  </target>
-
-  <target name="taglib.doc" description="Make the MMBase taglib documentation"
-          depends="init.compile,taglib.doc.check" unless="taglib.doc.uptodate">
-    <mkdir dir="${reference.dir}/taglib"/>
-    <!-- and its documentation: -->
-    <java classname="org.apache.xalan.xslt.Process"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="yes">
-      <arg value="-EDUMP"/>
-      <arg value="-DIAG"/>
-      <arg value="-PARAM"/>
-      <arg value="basedir"/>
-      <arg value="${reference.dir}"/>
-      <arg value="-PARAM"/>
-      <arg value="files"/>
-      <arg value="taglib" />
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/${xml2html}" />
-      <arg value="-IN"/>
-      <arg value="file:///${source-src.dir}/${source-taglib.xml}" />
-      <arg value="-OUT"/>
-      <arg value="${reference.dir}/mmbase-taglib.html"/>
-    </java>
-
-    <!-- sucks, but at least repairs a broken link for now: -->
-    <!-- taglib-groups.html must be generated from the xml -->
-    <copy todir="${reference.dir}/taglib">
-      <fileset dir="${source-src.dir}/org/mmbase/bridge/jsp/taglib">
-        <include name="*.html"/>
-      </fileset>
-    </copy>
-  </target>
 
   <!-- =================================================================== -->
   <!-- Compile the AppTool                                                 -->
@@ -1247,7 +1172,7 @@ Build-compiler: ${build.compiler}
 
 
   <target name="documentation" 
-          depends="jar,taglib.doc,documentation.builders,mmcidocs">
+          depends="jar,documentation.builders,mmcidocs">
 
     <ant dir="${documentation.home}" target="documentation">
       <property name="mmbase.default.dir" value=".." />
