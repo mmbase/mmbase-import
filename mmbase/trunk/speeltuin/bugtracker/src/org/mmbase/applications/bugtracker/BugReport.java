@@ -16,7 +16,6 @@ package org.mmbase.applications.bugtracker;
  * @mmbase-nodemanager-field description STRING
  *
  * @mmbase-nodemanager-name bugstatusrel
- * @mmbase-nodemanager-classfile InsRel
  * @mmbase-nodemanager-extends insrel
  * @mmbase-nodemanager-field date INTEGER
  *
