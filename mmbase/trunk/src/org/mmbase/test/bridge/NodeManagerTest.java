@@ -13,6 +13,11 @@ package org.mmbase.test.bridge;
 import junit.framework.*;
 import org.mmbase.bridge.*;
 
+/**
+ * Test class <code>NodeManager</code> from the bridge package.
+ *
+ * @author Jaco de Groot
+ */
 public class NodeManagerTest extends TestCase {
     Cloud cloud;
     Node node;

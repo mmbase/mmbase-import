@@ -13,6 +13,13 @@ package org.mmbase.test.bridge;
 import junit.framework.*;
 import org.mmbase.bridge.*;
 
+/**
+ * Test class <code>Node</code> from the bridge package. The tests are done on
+ * an empty node.
+ *
+ * @author Jaco de Groot
+ * @author Michiel Meeuwissen
+ */
 public class EmptyNodeTest extends NodeTest {
 
     public EmptyNodeTest(String name) {

@@ -402,14 +402,6 @@ public class BasicCloud implements Cloud, Cloneable {
 
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
-            boolean distinct) {
-
-        return getList(startNodes,nodePath,fields,constraints,orderby,
-                      directions,null,distinct);
-    }
-
-    public NodeList getList(String startNodes, String nodePath, String fields,
-            String constraints, String orderby, String directions,
             String searchDir, boolean distinct) {
 
         String sdistinct="";

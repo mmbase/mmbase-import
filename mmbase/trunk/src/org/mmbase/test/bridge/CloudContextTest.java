@@ -13,6 +13,11 @@ package org.mmbase.test.bridge;
 import junit.framework.*;
 import org.mmbase.bridge.*;
 
+/**
+ * Test class <code>CloudContext</code> from the bridge package.
+ *
+ * @author Jaco de Groot
+ */
 public class CloudContextTest extends TestCase {
 
     public CloudContextTest(String name) {
