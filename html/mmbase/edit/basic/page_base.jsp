@@ -35,6 +35,18 @@ response.setDateHeader("Date",  now);
 </mm:context>
 <mm:write referid="config" session="mmeditors_config" />
 </mm:notpresent>
+<mm:present referid="config">
+    <!--
+     not possible to 'repare' a context (not possible to write in non-current context bug #4707
+     Throw the whole thing away if something wrong;
+    -->
+    <mm:notpresent referid="config.lang">
+      <% session.removeAttribute("mmeditors.config");
+         response.sendRedirect(response.encodeRedirectURL("."));%>
+    </mm:notpresent>
+</mm:present>
+
+
 
 <% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; %>
