@@ -44,7 +44,7 @@ public class SetInfoTag extends NodeReferrerTag {
         if (key == null) { // name not null
             throw new JspTagException ("Should use 'key' attribute");
         }
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     /**

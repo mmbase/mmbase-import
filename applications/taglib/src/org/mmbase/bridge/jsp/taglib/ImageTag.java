@@ -76,7 +76,7 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspTagException {

@@ -15,15 +15,15 @@ import javax.servlet.jsp.JspTagException;
 
 /**
 * A very simple tag to check if node may be linked to.
-* 
+*
 * @deprecated  As of 20020123, replaced by {@link MayCreateRelationTag}
 * @author Michiel Meeuwissen
 */
 public class MayLinkTag extends MayWriteTag implements Condition {
-               
+
     public int doStartTag() throws JspTagException {
         if ((getNode().mayLink()) != inverse) {
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }

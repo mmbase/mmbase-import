@@ -216,7 +216,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
         }
 
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public int doEndTag() throws JspTagException {

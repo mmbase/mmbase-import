@@ -45,7 +45,7 @@ public class PostTag extends AbstractNodeProviderTag implements BodyTag {
         // create a temporary message node that holds the new data
         Node node = new MessageNode(getCloud());
         setNodeVar(node);
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public void doInitBody() throws JspTagException {
