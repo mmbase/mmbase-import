@@ -5,7 +5,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.13 2003-11-12 13:57:51 michiel Exp $
+  @version $Id: prompts.xsl,v 1.14 2003-11-16 14:24:01 michiel Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -55,14 +55,14 @@
 <xsl:variable name="tooltip_delete">Delete this item</xsl:variable>
 <xsl:template name="prompt_delete_confirmation" >Are you sure you want to delete this item?</xsl:template>
 <!-- save button prompts and tooltips -->
-<xsl:template name="prompt_save">save</xsl:template>
-<xsl:template name="prompt_save_only">save&amp;continue</xsl:template>
+<xsl:template name="prompt_save">save&amp;close</xsl:template>
+<xsl:template name="prompt_save_only">save</xsl:template>
 <xsl:variable name="tooltip_save">Store all changes.</xsl:variable>
 <xsl:variable name="tooltip_save_only">Store all changes (but continue editing).</xsl:variable>
 <xsl:variable name="tooltip_no_save">The changes cannot be saved, since some data is not filled in correctly.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">cancel</xsl:template>
-<xsl:variable name="tooltip_cancel">Cancel this task, changes (made since last 'save&amp;continue') will NOT be saved.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Cancel this task, changes (made since last 'save') will NOT be saved.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
 <xsl:template name="prompt_step">step <xsl:value-of select="position()" /></xsl:template>
 <xsl:variable name="tooltip_step_not_valid" > is NOT valid. Click here to correct the errors.</xsl:variable>

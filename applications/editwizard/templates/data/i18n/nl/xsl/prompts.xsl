@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.7 2003-11-12 13:57:51 michiel Exp $
+  @version $Id: prompts.xsl,v 1.8 2003-11-16 14:24:00 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -60,14 +60,14 @@
 <xsl:variable name="tooltip_delete">Verwijder dit item</xsl:variable>
 <xsl:template name="prompt_delete_confirmation" >Weet u zeker dat u dit item wilt verwijderen?</xsl:template>
 <!-- save button prompts and tooltips -->
-<xsl:template name="prompt_save">Bewaar</xsl:template>
-<xsl:template name="prompt_save_only">Bewaar&amp;blijf</xsl:template>
+<xsl:template name="prompt_save">Opslaan&amp;beëindigen</xsl:template>
+<xsl:template name="prompt_save_only">Opslaan</xsl:template>
 <xsl:variable name="tooltip_save">Bewaar alle wijzigingen.</xsl:variable>
 <xsl:variable name="tooltip_save_only">Bewaar alle wijzigingen, maar ga door met editen.</xsl:variable>
 <xsl:variable name="tooltip_no_save">De wijzigingen kunnen niet worden bewaard, sommige gegevens zijn niet correct ingevoerd.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">Annuleren</xsl:template>
-<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste 'bewaar&amp;blijf')worden niet bewaard.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste 'opslaan')worden niet bewaard.</xsl:variable>
 <xsl:variable name="tooltip_no_cancel">Deze taak kan niet worden afgebroken.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
 <xsl:template name="prompt_step"><nobr>Stap <xsl:value-of select="position()" /></nobr></xsl:template>
