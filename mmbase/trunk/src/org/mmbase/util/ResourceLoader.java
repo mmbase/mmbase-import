@@ -93,7 +93,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.4 2004-11-18 22:28:17 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.5 2004-11-19 20:01:46 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -506,12 +506,6 @@ public class ResourceLoader extends ClassLoader {
      * @param directories getResourceContext supplies <code>true</code> getResourcePaths supplies <code>false</code>
      */
     protected Set getResourcePaths(final Pattern pattern, final boolean recursive, boolean directories) {
-        FilenameFilter filter = new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    File f = new File(dir, name);
-                    return pattern == null || (f.isDirectory() && recursive) || pattern.matcher(f.toString()).matches();
-                }
-            };
         Set results = new LinkedHashSet(); // a set with fixed iteration order
         Iterator i = roots.iterator();
         while (i.hasNext()) {
@@ -797,7 +791,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     public String toString() {
-        return "" + context.getPath() + " in "  + roots;
+        return "" + context.getPath() + (log.isDebugEnabled() ? " resolving in "  + roots : "");
     }
 
     public boolean equals(Object o) {
@@ -862,7 +856,7 @@ public class ResourceLoader extends ClassLoader {
         }
 
         public File getFile(String name) {
-            String fileName = fileRoot + ResourceLoader.this.context.getPath() + name;
+            String fileName = fileRoot + ResourceLoader.this.context.getPath() + (name == null ? "" : name);
             if (! File.separator.equals("/")) { // windows compatibility
                 fileName = fileName.replace('/', File.separator.charAt(0)); // er
             }
@@ -892,10 +886,7 @@ public class ResourceLoader extends ClassLoader {
                         return pattern == null || (f.isDirectory() && recursive != null) || pattern.matcher(f.toString()).matches();
                     }
                 };
-            File f = getFile(ResourceLoader.this.context.getPath());
-            if (recursive != null) {
-                f =  new File(f, recursive);
-            }
+            File f = getFile(recursive);
 
             if (f.isDirectory()) { // should always be true
                 File [] files = f.listFiles(filter);
@@ -1542,7 +1533,7 @@ public class ResourceLoader extends ClassLoader {
         }
         try {
             if (argv.length == 0) {
-                System.err.println("useage: java [-Dmmbase.config=<config dir>|-Dmmbase.htmlroot=<some other dir>] " + ResourceLoader.class.getName() + " [<sub directory>] <resource-name>");
+                System.err.println("useage: java [-Dmmbase.config=<config dir>|-Dmmbase.htmlroot=<some other dir>] " + ResourceLoader.class.getName() + " [<sub directory>] [<resource-name>|*|**]");
                 return;
             }
             String arg = argv[0];
@@ -1550,23 +1541,31 @@ public class ResourceLoader extends ClassLoader {
                 resourceLoader = getConfigurationRoot().getChildResourceLoader(argv[0]);
                 arg = argv[1];
             }
-            InputStream resource = resourceLoader.getResourceAsStream(arg);
-            if (resource == null) {
-                System.out.println("No such resource " + arg + " for " + resourceLoader.findResource(arg) + ". Creating now.");
-                PrintWriter writer = new PrintWriter(resourceLoader.createResourceAsStream(arg));
-                writer.println("TEST");
-                writer.close();
-                return;
+            if (arg.equals("*") || arg.equals("**")) {
+                Iterator i = resourceLoader.getResourcePaths(Pattern.compile(".*"), arg.equals("**")).iterator();
+                while (i.hasNext()) {
+                    System.out.println("" + i.next());
+                }
+            } else {
+                InputStream resource = resourceLoader.getResourceAsStream(arg);
+                if (resource == null) {
+                    System.out.println("No such resource " + arg + " for " + resourceLoader.findResource(arg) + ". Creating now.");
+                    PrintWriter writer = new PrintWriter(resourceLoader.createResourceAsStream(arg));
+                    writer.println("TEST");
+                    writer.close();
+                    return;
+                }
+                System.out.println("-------------------- resolved " + arg + " with " + resourceLoader + ": ");
+                
+                BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
+                
+                while(true) {
+                    String line = reader.readLine();
+                    if (line == null) break;
+                    System.out.println(line);
+                }
             }
-            System.out.println("-------------------- resolved " + arg + " with " + resourceLoader + ": ");
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(resource));
-
-            while(true) {
-                String line = reader.readLine();
-                if (line == null) break;
-                System.out.println(line);
-            }
         } catch (Exception mfeu) {
             System.err.println(mfeu.getMessage() + Logging.stackTrace(mfeu));
         }
