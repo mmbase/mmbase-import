@@ -35,14 +35,16 @@ public class MediaSourceFilter {
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
     
     private MediaFragment mediaFragmentBuilder = null;
+    private MediaSource mediaSourceBuilder = null;
     
     private static final int MINSPEED        = 16000;
     private static final int MAXSPEED        = 96000;
     private static final int MINCHANNELS     = 1;
     private static final int MAXCHANNELS     = 2;
         
-    public MediaSourceFilter (MediaFragment mf) {
+    public MediaSourceFilter (MediaFragment mf, MediaSource ms) {
         mediaFragmentBuilder = mf;
+        mediaSourceBuilder = ms;
     }
     
     /**
@@ -76,11 +78,12 @@ public class MediaSourceFilter {
             log.warn("mediaFragment "+mediaFragment.getStringValue("title")+" does not have media sources");
         }
         
+        
         MMObjectNode bestR5 = null;
         while(mediaSources.hasMoreElements()) {
             MMObjectNode mediaSource = (MMObjectNode) mediaSources.nextElement();
             
-            /*
+            
             // Is the MediaSource ready for use ?
             if( mediaSource.getIntValue("status") == MediaSource.DONE ) {
                 
@@ -89,21 +92,21 @@ public class MediaSourceFilter {
                     return mediaSource;
                     // Take the best R5 stream.
                 } else if( mediaSource.getIntValue("format") == MediaSource.RA_FORMAT ) {
-                    if(mediaSource.getSpeed() <= wantedspeed && mediaSource.getChannels() <= wantedchannels) {
+                    if(mediaSourceBuilder.getSpeed(mediaSource) <= wantedspeed && mediaSourceBuilder.getChannels(mediaSource) <= wantedchannels) {
                         if(bestR5==null) {
                             bestR5 = mediaSource;
                         } else {
-                            if(bestR5.getChannels() < mediaSource.getChannels()) {
+                            if(mediaSourceBuilder.getChannels(bestR5) < mediaSourceBuilder.getChannels(mediaSource)) {
                                 bestR5 = mediaSource;
                             }
-                            if(bestR5.getSpeed() < mediaSource.getSpeed && bestR5.getChannels() == mediaSource.getChannels()) {
+                            if(mediaSourceBuilder.getSpeed(bestR5) < mediaSourceBuilder.getSpeed(mediaSource) && mediaSourceBuilder.getChannels(bestR5) == mediaSourceBuilder.getChannels(mediaSource)) {
                                 bestR5 = mediaSource;
                             }
                         }
                     }
                 }
             }
-            */
+            
         }
         // did we find a R5 stream ?
         if( bestR5 != null ) {

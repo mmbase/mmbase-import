@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
  */
-package speeltuin.media.org.mmbase.module.builders.media;
+package org.mmbase.module.builders.media;
 
 import java.util.*;
 import org.mmbase.module.core.*;
@@ -19,10 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * The MediaParts object specifies a piece of media. This can be audio, or video.
- * A mediapart contains a title, descriptionn of the media and also information about
- * the source. A mediapart will have relations with rawmedias which are the actual
- * mediafragments in different formats (mp3, real, etc.)
+ * The MediaFragment object specifies a piece of media. This can be audio, or video.
+ * A mediafragment contains a title, description of the media and also information about
+ * the source. A mediapart will have relations with mediasources which are the actual
+ * files in different formats (mp3, real, etc.)
  *
  * INFO:
  * classification stuff is removed. This was available for audioparts but not
@@ -65,19 +65,31 @@ public class MediaFragment extends MMObjectBuilder {
     private final static int STORAGE_MONO_NOBACKUP=4;
     
     // This filter is able to find the best mediasource by a mediafragment.
-    private MediaSourceFilter mediaSourceFilter = new MediaSourceFilter(this);
+    private MediaSourceFilter mediaSourceFilter = null;
     
     // The media source builder
     private MediaSource mediaSourceBuilder = null;
     
     public MediaFragment() {
+     
+    }
+    
+     public boolean init() {
+        boolean result = super.init();
+        
+         
         // Retrieve a reference to the MediaSource builder
-        mediaSourceBuilder = (MediaSource) mmb.getMMObject("mediasources");
+        // Audiosources and videosources are using the mediasources funtionality.
+        mediaSourceBuilder = (MediaSource) mmb.getMMObject("audiosources");
         if(mediaSourceBuilder==null) {
             log.error("Builder mediasources is not loaded.");
         } else {
             log.debug("The builder mediasources is retrieved.");
         }
+        
+        mediaSourceFilter = new MediaSourceFilter(this, mediaSourceBuilder);
+        
+        return result;
     }
     
     /**
@@ -87,17 +99,23 @@ public class MediaFragment extends MMObjectBuilder {
      * @return the information of the virtual field
      */
     public Object getValue(MMObjectNode node, String field) {
-        if (field.equals("showsource")) {
+                if (field.equals("showsource")) {
             return getSourceString(node.getIntValue("source"));
         } else if (field.equals("showclass")) {
             // Maybe implement this to be backwards compatible.
             return null;
         } else if (field.equals("length")) {
-            // also convenient.
-            return null;
+            return calculateLength(node);
+        } else if (field.equals("urlresult")) {
+            return getUrl(node.getNumber(), null, 0, 0);        
         } else {
             return super.getValue( node, field );
         }
+    }
+    
+    private String calculateLength(MMObjectNode node) {
+        return null;
+        
     }
     
     /**
@@ -110,19 +128,7 @@ public class MediaFragment extends MMObjectBuilder {
         return(str);
     }
     
-    /**
-     * get the url
-     * @dependency scanpage (SCAN)
-     * @param sp the scanpage
-     * @param number the audiopart object number
-     * @param speed the user speed value
-     * @param channels the user channels value
-     * @return a String with url to a audiopart.
-     */
-    public String doGetUrl(scanpage sp,int number,int userSpeed,int userChannels){
-        return ""; //getAudiopartUrl(mmb,sp,number,userSpeed,userChannels);
-    }
-    
+       
     /**
      * get an url for the requested media.
      *
@@ -132,10 +138,12 @@ public class MediaFragment extends MMObjectBuilder {
      * @param wantedchannels the request channels of the user
      * @return the Url for the requested media
      */
-    private String getUrl(int mediafragmentnr, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+    public String getUrl(int mediafragmentnr, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+        log.debug("Getting url for mediafragment "+mediafragmentnr);
         // Which MediaSource is the best one to use ?
         MMObjectNode mediaFragment = getNode(mediafragmentnr);
         MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, request, wantedspeed, wantedchannels);
+        log.debug("Selected mediasource = "+mediaSource.getNumber());
         return mediaSourceBuilder.getUrl(mediaFragment, mediaSource, request, wantedspeed, wantedchannels);
     }
     
@@ -177,10 +185,19 @@ public class MediaFragment extends MMObjectBuilder {
      * @return All mediasources related to given mediafragment
      */
     public Vector getMediaSources(MMObjectNode mediafragment) {
-        if(isSubFragment(mediafragment)) {
+        log.debug("Get mediasources mediafragment "+mediafragment.getNumber());
+        while(isSubFragment(mediafragment)) {
+            log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
             mediafragment = getParentFragment(mediafragment);
         }
-        return mediafragment.getRelatedNodes("mediasources");
+        Vector audiosources = mediafragment.getRelatedNodes("audiosources");
+        Vector videosources = mediafragment.getRelatedNodes("videosources");
+        log.debug("Mediafragment contains "+audiosources.size()+" audiosources"+
+                " and "+videosources.size()+" videosources");
+        
+        // Just put audiosources and videosources together.
+        videosources.addAll(audiosources);
+        return videosources;
     }
     
     /**
@@ -201,7 +218,7 @@ public class MediaFragment extends MMObjectBuilder {
             
         } else if (field.equals("class")) {
             return ""; //(getClassificationString(node.getIntValue("class")));
-        }
+        } 
         return(null);
     }
     
