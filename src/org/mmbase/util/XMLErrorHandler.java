@@ -13,7 +13,6 @@ import java.io.*;
 import java.util.*;
 
 import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.7 $ $Date: 2002-10-07 17:20:58 $
+ * @version $Revision: 1.8 $ $Date: 2002-12-03 21:24:28 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {

@@ -26,13 +26,14 @@ import org.mmbase.util.logging.Logging;
  * Class XMLParseResult
  * 
  * @javadoc
+ * @duplicate Same code appears in module/Config
  */
 
 class XMLParseResult {
 
     private static Logger log = Logging.getLoggerInstance(XMLParseResult.class.getName()); 
     
-    Vector warningList, errorList, fatalList,resultList;
+    List warningList, errorList, fatalList,resultList;
     boolean hasDTD;
     String dtdpath;
     
@@ -71,9 +72,9 @@ class XMLParseResult {
 	    ErrorStruct err = new ErrorStruct("fatal error",0,0,e.getMessage());
 	    
 	    fatalList = new Vector();
-	    fatalList.addElement(err);
+	    fatalList.add(err);
 	    resultList = new Vector();
-	    resultList.addElement(err);
+	    resultList.add(err);
 	    
 	    if (log.isDebugEnabled()) {
 		log.debug("ParseResult error: "+e.getMessage());
@@ -81,19 +82,19 @@ class XMLParseResult {
 	}
     }
     
-    public Vector getResultList() {
+    public List getResultList() {
 	return resultList;
     }
     
-    public Vector getWarningList() {
+    public List getWarningList() {
 	return warningList;
     }
     
-    public Vector getErrorList() {
+    public List getErrorList() {
 	return errorList;
     }
     
-    public Vector getFatalList() {
+    public List getFatalList() {
 	return fatalList;
     }
     

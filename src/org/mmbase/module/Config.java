@@ -19,6 +19,7 @@ import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -57,9 +58,19 @@ import org.mmbase.module.core.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.14 2001-07-16 10:08:07 jaco Exp $
+ * @version $Id: Config.java,v 1.15 2002-12-03 21:24:26 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.14.6.1  2002/12/03 21:22:31  michiel
+ * fixes for bugs #4249, #3713 and #4393 plus a little cleaning in the process. All related to DTD resolving / XML validation
+ *
+ * Revision 1.14  2001/07/16 10:08:07  jaco
+ * jaco: Moved all configuration stuff to MMBaseContext.
+ * If needed params not found or incorrect a ServletException with a description isthrown.
+ * It's now again possible to not redirect System.out and System.err to a file.
+ * Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
+ * If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
+ *
  * Revision 1.13  2001/06/23 16:42:38  daniel
  * changed init to MMBaseContect
  *
@@ -87,76 +98,70 @@ import org.mmbase.module.core.*;
  * - Add code for examples
  * - Add code to check whether database configuration works
  * - Add code for fault oriented results, rather than directory oriented results
+
+ * - Remove xerces specific code.
  */
 public class Config extends ProcessorModule {
-	// debug routines
-	private static Logger log = Logging.getLoggerInstance(Config.class.getName());
+    // debug routines
+    private static Logger log = Logging.getLoggerInstance(Config.class.getName());
     private String classname = getClass().getName();
     private String configpath;
 
 
     class ParseResult {
 
-        Vector warningList, errorList, fatalList,resultList;
+        List warningList, errorList, fatalList,resultList;
         boolean hasDTD;
         String dtdpath;
 
         public ParseResult(String path) {
+            log.service("Parsing " + path + " for validity");
             hasDTD = false;
             dtdpath = null;
             try {
 
-                DOMParser parser = new DOMParser();
-                parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-                parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-
+                XMLEntityResolver resolver        = new XMLEntityResolver();
                 XMLCheckErrorHandler errorHandler = new XMLCheckErrorHandler();
-                parser.setErrorHandler(errorHandler);
-
-                //use own entityResolver for converting the dtd's url to a local file
-                XMLEntityResolver resolver = new XMLEntityResolver();
-                parser.setEntityResolver((EntityResolver)resolver);
-
-                parser.parse(path);
-                hasDTD = resolver.hasDTD();
+                DocumentBuilder db = XMLBasicReader.getDocumentBuilder(true, errorHandler, resolver);
+                Document document = db.parse(path);
+           
+                hasDTD  = resolver.hasDTD();
                 dtdpath = resolver.getDTDPath();
 
-                Document document = parser.getDocument();
-
                 warningList = errorHandler.getWarningList();
-                errorList = errorHandler.getErrorList();
-                fatalList = errorHandler.getFatalList();
+                errorList   = errorHandler.getErrorList();
+                fatalList   = errorHandler.getFatalList();
 
                 resultList = errorHandler.getResultList();
 
             } catch (Exception e) {
                 warningList = new Vector();
-                errorList = new Vector();
+                errorList   = new Vector();
 
-                ErrorStruct err = new ErrorStruct("fatal error",0,0,e.getMessage());
+                ErrorStruct err = new ErrorStruct("fatal error", 0, 0, e.getMessage());
 
                 fatalList = new Vector();
-                fatalList.addElement(err);
+                fatalList.add(err);
                 resultList = new Vector();
-                resultList.addElement(err);
+                resultList.add(err);
 
-                log.warn("ParseResult error: "+e.getMessage());
+                log.warn("ParseResult error: " + e.getMessage());
             }
         }
 
-        public Vector getResultList() {
+        public List getResultList() {
             return resultList;
         }
 
-        public Vector getWarningList() {
+        public List getWarningList() {
             return warningList;
         }
 
-        public Vector getErrorList() {
+        public List getErrorList() {
             return errorList;
         }
 
-        public Vector getFatalList() {
+        public List getFatalList() {
             return fatalList;
         }
 
@@ -178,7 +183,7 @@ public class Config extends ProcessorModule {
      * @param path Relative path to database mapping file
      *
      * @return Whether a database mapping file is for the active DBMS
-     *
+     * @aaargh!
      */
     public boolean databaseIsActive(String path) {
         XMLProperties xmlReader = new XMLProperties();
@@ -204,7 +209,7 @@ public class Config extends ProcessorModule {
         Hashtable mods = null;
 
         // load the
-        String filename=mmbaseconfig+File.separator+"modules"+File.separator+"mmbaseroot.xml";
+        String filename = mmbaseconfig + File.separator + "modules" + File.separator + "mmbaseroot.xml";
         // filename=filename.replace('/',File.separator)
         // filename=filename.replace('\\',File.separator)
         // check if there's a xml-configuration file
@@ -450,7 +455,7 @@ public class Config extends ProcessorModule {
 
 
     /**
-     *	Handle a $MOD command
+     *  Handle a $MOD command
      */
     public String replace(scanpage sp, String cmds) {
         String[] dirlist;
@@ -519,7 +524,7 @@ public class Config extends ProcessorModule {
             return 0;
         } else {
             for (int i=0; i<pr.getResultList().size();i++) {
-                ErrorStruct err = (ErrorStruct)pr.getResultList().elementAt(i);
+                ErrorStruct err = (ErrorStruct)pr.getResultList().get(i);
             }
             return (pr.getResultList().size() == 0) ? 1 : -1;
         }
@@ -549,27 +554,26 @@ public class Config extends ProcessorModule {
 
 
     protected String annotateXML(String path) {
-        if (checkXMLOk(path)>=0) {
-            return checkXML(path);
-        } else {
+        //if (checkXMLOk(path)>=0) {
+        //    return checkXML(path);
+        //} else {
             // XXX Stupid, now I'm parsing the darned file again!
             ParseResult pr = new ParseResult(path);
-            Vector v = pr.getResultList();
             StringBuffer res = new StringBuffer();
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(path));
                 String line;
                 int lineno = 0;
                 int j = 0;
-                ErrorStruct err = (ErrorStruct)pr.getResultList().elementAt(j++);
+                ErrorStruct err = (ErrorStruct) pr.getResultList().get(j++);
 
                 int nextLine = err.getLineNumber();
                 StringBuffer marker;
                 res.append("<PRE>");
                 if (nextLine == 0) {
-                    res.append("<font color=red>"+err.getMessage()+"</font>\n");
-                    if (j < pr.getResultList().size()-1) {
-                        err = (ErrorStruct)pr.getResultList().elementAt(j++);
+                    res.append("<font color='red'>"+err.getMessage()+"</font>\n");
+                    if (j < pr.getResultList().size() - 1) {
+                        err = (ErrorStruct) pr.getResultList().get(j++);
                         nextLine = err.getLineNumber();
                     } else {
                         nextLine = -1;
@@ -580,14 +584,14 @@ public class Config extends ProcessorModule {
                     line = reader.readLine();
                     if (lineno == nextLine) {
                         marker = new StringBuffer();
-                        for (int i=0;i<err.getColumnNumber();i++) {
+                        for (int i=0;i<err.getColumnNumber(); i++) {
                             marker.append(' ');
                         }
-                        marker.append("<font color=red>^</font>\n");
+                        marker.append("<font color='red'>^</font>\n");
                         if (err != null) {
-                            res.append(htmlEntities(line)+"\n"+marker+"<font color=red>line: "+nextLine+"  column: "+err.getColumnNumber()+"\n"+err.getMessage()+"</font>\n");
+                            res.append(htmlEntities(line)+"\n"+marker+"<font color='red'>line: "+nextLine+"  column: "+err.getColumnNumber()+"\n"+err.getMessage()+"</font>\n");
                             if (j < pr.getResultList().size()-1) {
-                                err = (ErrorStruct)pr.getResultList().elementAt(j++);
+                                err = (ErrorStruct)pr.getResultList().get(j++);
                                 nextLine = err.getLineNumber();
                             } else {
                                 nextLine = -1;
@@ -604,42 +608,40 @@ public class Config extends ProcessorModule {
                 res.append("IOException while annotating file: "+e.getMessage());
             }
             return res.toString();
-        }
+            //}
     }
 
 
     protected String checkXML(String path) {
-        Document document;
-        DOMParser parser;
-
+       
         ParseResult pr = new ParseResult(path);
         if (pr.getResultList().size() == 0) {
             return "Checked ok";
         } else {
             int warnings, errors, fatals;
             warnings = pr.getWarningList().size();
-            errors = pr.getErrorList().size();
-            fatals = pr.getFatalList().size();
+            errors   = pr.getErrorList().size();
+            fatals   = pr.getFatalList().size();
 
             StringBuffer s = new StringBuffer();
             s.append("warnings = "+warnings+"  errors = "+errors+"   fatal errors = "+fatals+"<br>\n");
             if (warnings > 0) {
                 for (int i=0;i<warnings;i++) {
-                    ErrorStruct es = (ErrorStruct)(pr.getWarningList().elementAt(i));
+                    ErrorStruct es = (ErrorStruct)(pr.getWarningList().get(i));
                     s.append("warning at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
                 }
             }
 
             if (errors > 0) {
                 for (int i=0;i<errors;i++) {
-                    ErrorStruct es = (ErrorStruct)(pr.getFatalList().elementAt(i));
+                    ErrorStruct es = (ErrorStruct)(pr.getErrorList().get(i));
                     s.append("error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
                 }
             }
 
             if (fatals > 0) {
                 for (int i=0;i<fatals;i++) {
-                    ErrorStruct es = (ErrorStruct)(pr.getFatalList().elementAt(i));
+                    ErrorStruct es = (ErrorStruct)(pr.getFatalList().get(i));
                     s.append("fatal error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
                 }
             }
