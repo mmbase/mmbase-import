@@ -20,13 +20,6 @@ to have the following sub directory's:
   html            (the MMBase CVS html module)
   src/org/mmbase  (the MMBase CVS mmbase module)
 
-But is is also possible to specify different places for these directory's by
-using the following properties in the build.properties file:
-
-  source-config.dir
-  source-html.dir
-  source-src.dir
-
 The build.dir will have the following sub directory's:
 
   classes             (compiled MMBase classes)
@@ -37,6 +30,12 @@ The build.dir will have the following sub directory's:
   mmbase-src          (the MMBase source distribution)
   tomcat              (the Tomcat distribution adjusted to run MMBase)
   orion               (the Orion distribution adjusted to run MMBase)
+
+
+Compiler
+========
+
+Change the property build.compiler to 'modern' for JDK1.3 or to 'jikes' for Jikes.
 
 
 Ant
@@ -92,15 +91,11 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <!-- Read customized values if available -->
   <property file="build.properties"/>
-  <!-- Default values -->
+  <!-- Default values for properties that can be customized -->
   <property name="source.dir" location="../../../.."/>
-  <property name="source-config.dir" location="${source.dir}/config"/>
-  <property name="source-html.dir" location="${source.dir}/html"/>
-  <property name="source-src.dir" location="${source.dir}/src"/>
   <property name="build.dir" value="${source.dir}/build"/>
-  <property name="lib.dir" value="${build.dir}/mmbase/lib"/>
-  <property name="web.dir" value="${build.dir}/mmbase/web"/>
-  <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
+  <property name="download.dir" value="${build.dir}/download"/>
+  <property name="expand.dir" value="${download.dir}/expanded"/>
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
   <property name="deprecation" value="off"/>
@@ -108,8 +103,14 @@ Change directory to ${build.dir}/orion and run:
   <property name="database.name" value="install"/>
   <property name="database.user" value="mmuser"/>
   <property name="database.password" value="mmpassword"/>
+  <!-- Don't change the following properties unless you know what you're doing -->
   <property name="mmbase.jar" value="${build.dir}/mmbase/lib/mmbase.jar"/>
-  <target name="init">
+  <property name="source-config.dir" location="${source.dir}/config"/>
+  <property name="source-html.dir" location="${source.dir}/html"/>
+  <property name="source-src.dir" location="${source.dir}/src"/>
+  <property name="lib.dir" value="${build.dir}/mmbase/lib"/>
+  <property name="web.dir" value="${build.dir}/mmbase/web"/>
+  <target name="init" depends="check.dir.all">
     <tstamp/>
     <mkdir dir="${build.dir}"/>
     <property name="name" value="mmbase"/>
@@ -254,6 +255,10 @@ Change directory to ${build.dir}/orion and run:
   <!-- Check the directory structure                                       -->
   <!-- =================================================================== -->
   <target name="init.check.dir">
+    <available property="dir.config.present"
+               file="${source-config.dir}"/>
+    <available property="dir.html.present"
+               file="${source-html.dir}"/>
     <available property="dir.src.present"
                file="${source-src.dir}"/>
     <available property="dir.org.present"
@@ -262,32 +267,53 @@ Change directory to ${build.dir}/orion and run:
                file="${source-src.dir}/org/mmbase"/>
   </target>
 
+  <target name="check.dir.config" depends="init.check.dir"
+          unless="dir.config.present">
+    <property name="source.dir.invalid" value="config"/>
+  </target>
+
+  <target name="check.dir.html" depends="init.check.dir"
+          unless="dir.html.present">
+    <property name="source.dir.invalid" value="html"/>
+  </target>
+
   <target name="check.dir.src" depends="init.check.dir"
           unless="dir.src.present">
-    <echo message=""/>
-    <echo message="Ant expects a src directory in ${source.dir}"/>
-    <echo message=""/>
-    <fail message="Invalid directory structure"/>
+    <property name="source.dir.invalid" value="src"/>
   </target>
 
   <target name="check.dir.org" depends="init.check.dir"
           unless="dir.org.present">
-    <echo message=""/>
-    <echo message="Ant expects a org directory in ${source-src.dir}"/>
-    <echo message=""/>
-    <fail message="Invalid directory structure"/>
+    <property name="source.dir.invalid" value="org"/>
   </target>
 
   <target name="check.dir.mmbase" depends="init.check.dir"
           unless="dir.mmbase.present">
-    <echo message=""/>
-    <echo message="Ant expects a mmbase directory in ${source-src.dir}/org"/>
-    <echo message=""/>
-    <fail message="Invalid directory structure"/>
+    <property name="source.dir.invalid" value="mmbase"/>
   </target>
 
   <target name="check.dir.all"
-          depends="check.dir.src,check.dir.org,check.dir.mmbase"/>
+          depends="check.dir.config,check.dir.html,check.dir.src,check.dir.org,
+                   check.dir.mmbase" if="source.dir.invalid">
+    <echo message=""/>
+    <echo message="Source directory to build from doesn't contain the needed"/>
+    <echo message="directory's or the source.dir property is pointing to the"/>
+    <echo message="wrong directory. The source.dir property is pointing to:"/>
+    <echo message=""/>
+    <echo message="  ${source.dir}"/>
+    <echo message=""/>
+    <echo message="And should have the following sub directory's:"/>
+    <echo message=""/>
+    <echo message="  config          (the MMBase CVS config module)"/>
+    <echo message="  html            (the MMBase CVS html module)"/>
+    <echo message="  src/org/mmbase  (the MMBase CVS mmbase module)"/>
+    <echo message=""/>
+    <echo message="Directory that could not be found:"/>
+    <echo message=""/>
+    <echo message="  ${source.dir.invalid}"/>
+    <echo message=""/>
+    <fail message="Invalid directory structure"/>
+  </target>
 
 
   <!-- =================================================================== -->
@@ -309,7 +335,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Compile the source directory                                        -->
   <!-- =================================================================== -->
   <target name="compile" description="Compile the source directory"
-          depends="init.compile,check.dir.all">
+          depends="init.compile">
     <mkdir dir="${build.dir}/classes"/>
     <copy todir="${build.dir}/classes">
       <fileset dir="${source-src.dir}">
@@ -458,7 +484,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="compile.cust"
           description="Compile a customized set, dependent on the system classpath"
-          depends="init.compile.cust,check.package.all,check.dir.all">
+          depends="init.compile.cust,check.package.all">
     <mkdir dir="${build.dir}/classes"/>
     <copy todir="${build.dir}/classes">
       <fileset dir="${source-src.dir}">
@@ -881,9 +907,6 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
-  <property name="download.dir" value="${build.dir}/download"/>
-  <property name="expand.dir" value="${download.dir}/expanded"/>
-
   <target name="init.get">
     <!-- Servlet -->
     <property name="servlet.version" value="jakarta-servletapi-3.2"/>
