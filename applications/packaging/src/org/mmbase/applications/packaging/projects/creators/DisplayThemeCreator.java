@@ -135,7 +135,7 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
         	step.setUserFeedBack("publishing to provider : "+target.getPublishProvider());
         	step=getNextPackageStep();
         	step.setUserFeedBack("sending file : "+target.getId()+" ...");
-		if (target.publish(newversion)) {
+		if (target.publish(newversion,step)) {
         		step.setUserFeedBack("sending file : "+target.getId()+" ... done");
 		} else {
         		step.setUserFeedBack("sending file : "+target.getId()+" ... failed");

@@ -124,7 +124,7 @@ public class FunctionSetCreator extends BasicCreator implements CreatorInterface
         	step.setUserFeedBack("publishing to provider : "+target.getPublishProvider());
         	step=getNextPackageStep();
         	step.setUserFeedBack("sending file : "+target.getId()+" ...");
-		if (target.publish(newversion)) {
+		if (target.publish(newversion,step)) {
         		step.setUserFeedBack("sending file : "+target.getId()+" ... done");
 		} else {
         		step.setUserFeedBack("sending file : "+target.getId()+" ... failed");
