@@ -40,9 +40,9 @@ String node_gui = "";
 
 		<form method="post" action="<mm:url referids="nr" />">
 		<table border="0" cellspacing="0" cellpadding="4" class="table-form">
-		<tr>
-		  <td bgcolor="#CCCCCC" align="right" class="title-s">Delete node</td>
-		  <td bgcolor="#CCCCCC" class="title-s"><b><%= node_gui %></b> (<%= node_type %>)</td>
+		<tr bgcolor="#CCCCCC">
+	  	  <td align="center" class="title-s"># <mm:write referid="nr" /></td>
+		  <td class="title-s">Delete node of type <b><%= node_gui %></b> (<%= node_type %>)</td>
 		</tr>
 		<mm:fieldlist type="list">
 			<tr valign="top">
