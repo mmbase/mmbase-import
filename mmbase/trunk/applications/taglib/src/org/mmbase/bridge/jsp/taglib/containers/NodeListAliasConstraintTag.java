@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -22,11 +23,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAliasConstraintTag.java,v 1.1 2003-12-02 10:12:27 michiel Exp $
+ * @version $Id: NodeListAliasConstraintTag.java,v 1.2 2003-12-09 20:12:58 michiel Exp $
  */
 public class NodeListAliasConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeListAliasConstraintTag.class);
+    // private static final Logger log = Logging.getLoggerInstance(NodeListAliasConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
@@ -66,7 +67,9 @@ public class NodeListAliasConstraintTag extends CloudReferrerTag implements Node
         Query query = c.getQuery();
 
         Step step = query.getStep(element.getString(this));
-        
+        if (step == null) {
+            throw new JspTagException("No element '" + element.getString(this) + "' in path '" + query.getSteps() + "'");
+        }
         StepField stepField = query.createStepField(step, "number");
 
         Constraint newConstraint = null;
@@ -84,7 +87,7 @@ public class NodeListAliasConstraintTag extends CloudReferrerTag implements Node
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {
-                newConstraint = NodeListConstraintTag.addConstraintToQuery(query, newConstraint);
+                newConstraint = Queries.addConstraint(query, newConstraint);
             }
         }
 
