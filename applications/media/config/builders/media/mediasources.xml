@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder extends="object">
-<status>active</status>
+  <status>active</status>
+  
+  <classfile>org.mmbase.module.builders.media.MediaSources</classfile>
 
-<classfile>org.mmbase.module.builders.media.MediaSources</classfile>
-
-<searchage>14</searchage>
-
-<names>
-	<singular xml:lang="en">Media source</singular>
-	<singular xml:lang="nl">Mediabron</singular>
-
-	<plural xml:lang="en">Media sources</plural>
-	<plural xml:lang="nl">Mediabronnen</plural>
-</names>
-
-<descriptions>
-	<description xml:lang="en">Descriptions of the physical media file</description>
-	<description xml:lang="nl">Beschrijving van het daadwerkelijke media bestand</description>
-</descriptions>
-
-<fieldlist>
-	<!-- POS 3 : <field> 'format'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="en">Format</guiname>
-			<guiname xml:lang="nl">Formaat</guiname>
-			<guitype>integer</guitype>
-		</gui>
-		<!-- editor related  -->
+  <searchage>14</searchage>
+  
+  <names>
+    <singular xml:lang="en">Media source</singular>
+    <singular xml:lang="nl">Mediabron</singular>
+    
+    <plural xml:lang="en">Media sources</plural>
+    <plural xml:lang="nl">Mediabronnen</plural>
+  </names>
+  
+  <descriptions>
+    <description xml:lang="en">Descriptions of the physical media file</description>
+    <description xml:lang="nl">Beschrijving van het daadwerkelijke media bestand</description>
+  </descriptions>
+  
+  <fieldlist>
+    <!-- POS 3 : <field> 'format'  -->
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">Format</guiname>
+        <guiname xml:lang="nl">Formaat</guiname>
+        <guitype>org.mmbase.module.builders.media.resources.formats</guitype>
+      </gui>
+      <!-- editor related  -->
 		<editor>
 			<positions>
 				<!-- position in the input area of the editor -->
@@ -111,7 +111,7 @@
 		<gui>
 			<guiname xml:lang="en">Channels</guiname>
 			<guiname xml:lang="nl">Kanalen</guiname>
-			<guitype>integer</guitype>
+			<guitype>org.mmbase.module.builders.media.resources.channels</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -167,7 +167,7 @@
 		<gui>
 			<guiname xml:lang="en">State</guiname>
 			<guiname xml:lang="nl">Toestand</guiname>
-			<guitype>integer</guitype>
+			<guitype>org.mmbase.module.builders.media.resources.states</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
