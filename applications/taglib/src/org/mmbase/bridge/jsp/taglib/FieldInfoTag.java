@@ -163,9 +163,10 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             }
             
             List args = new Vector();
-            args.add(sessionName);
             args.add(field.getName());
-            show = decode(node.getFunctionValue("sgui", args).toString(), node);
+            args.add(sessionName);
+            args.add(node.getCloud().getLocale().getLanguage());
+            show = decode(node.getFunctionValue("gui", args).toString(), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
             }
@@ -251,7 +252,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             args.add(sessionName);
             args.add("");
             show = new StringBuffer(
-                (node != null ? node.getFunctionValue("sgui", args).toString() : "") + 
+                (node != null ? node.getFunctionValue("gui", args).toString() : "") + 
                 "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />");
             break;
         }
@@ -340,7 +341,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                         show.append("selected=\"selected\"");
                     }
                     show.append("value=\""+tmp.getNumber()+"\">");
-                    show.append(Encode.encode("ESCAPE_XML", tmp.getFunctionValue("sgui", args).toString()));
+                    show.append(Encode.encode("ESCAPE_XML", tmp.getFunctionValue("gui", args).toString()));
                     show.append("</option>\n");
                 }
                 show.append("</select>");
@@ -358,25 +359,24 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     value = node.getIntValue(field.getName());
                 }
                 // list all node managers.
-                org.mmbase.bridge.Cloud cloud = getCloud();
-                org.mmbase.bridge.NodeManager typedef = cloud.getNodeManager("typedef");
-                org.mmbase.bridge.NodeIterator i = typedef.getList(null, "name", null).nodeIterator();
-                //java.util.Collections.sort(l);
+                org.mmbase.bridge.NodeManagerIterator i = getCloud().getNodeManagers().nodeManagerIterator();
+                if (log.isDebugEnabled()) {
+                    log.debug("language: " + getCloud().getLocale().getLanguage());
+                }
+                   
                 while (i.hasNext()) {
-                    Node nmNode = i.nextNode();
-                    try {
-                        org.mmbase.bridge.NodeManager nm = cloud.getNodeManager(nmNode.getStringValue("name"));
-                        int listvalue = nmNode.getNumber();
-                        show.append("<option value=\"").append(listvalue).append("\"");
-                        if (node != null) {
-                            if (listvalue == value) {
-                                show.append(" selected=\"selected\"");
-                            }
+                    org.mmbase.bridge.NodeManager nm = i.nextNodeManager();
+                    //int listvalue = nm.getNumber(); // TODO getNumber
+                    String listvalue = nm.getName();
+                    show.append("<option value=\"").append(listvalue).append("\""); 
+                    if (node != null) {
+                        /*
+                        if (listvalue == value) {
+                            show.append(" selected=\"selected\"");
                         }
-                        show.append(">").append(nm.getGUIName()).append("</option>\n");
-                    } catch (org.mmbase.bridge.BridgeException e) {
-                        // ignore possible errors.
+                        */
                     }
+                    show.append(">").append(nm.getGUIName()).append("</option>\n");
                 }
                 show.append("</select>");
                 if (search) {
