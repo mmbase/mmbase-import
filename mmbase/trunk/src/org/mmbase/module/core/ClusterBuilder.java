@@ -30,14 +30,16 @@ import org.mmbase.util.logging.Logging;
  * <br />
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
  * which is in turn based on the relations that exist between nodes.<br>
- * The builder supplies a method to retrieve these virtual nodes, {@link #searchMultiLevelVector}.
+ * The builder supplies a method to retrieve these virtual nodes: {@link 
+ * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int) 
+ * searchMultiLevelVector()}.
  * Other public methods in this builder function to handle the requests for data obtained from this particular node.
  * Individual nodes in a 'cluster' node can be retrieved by calling the getNodeValue() method, with the builder name
  * of the needed node as parameter value.
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.20 2002-11-27 13:03:38 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.21 2002-12-05 15:59:12 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -304,9 +306,13 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
+     * @param searchDir Specifies in which direction relations are to be 
+     *      followed, this must be one of the values defined by this class.
      * @return a <code>Vector</code> containing all matching nodes
      */
-    public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction,
+    public Vector searchMultiLevelVector(
+            Vector snodes,Vector fields,String pdistinct,
+            Vector tables,String where, Vector orderVec,Vector direction,
                                          int searchdir) {
         String stables,relstring,select,order,basenodestring,distinct;
         Vector alltables,selectTypes;
