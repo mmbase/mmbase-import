@@ -299,9 +299,10 @@ public class Casting {
      * @return the field's value as an <code>Integer</code>
      */
     static public Integer toInteger(Object i) {
-        int res = -1;
         if (i instanceof Integer) {
             return (Integer)i;
+        } else if (i instanceof Date) {
+            return new Integer((int) (((Date)i).getTime() / 1000));
         }
         return new Integer(toInt(i));
     }
@@ -322,6 +323,8 @@ public class Casting {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
             res = ((Number)i).longValue();
+        } else if (i instanceof Date) {
+            res = ((Date)i).getTime() / 1000;
         } else if (i != null) {
             //keesj:
             //TODO:add Node and MMObjectNode
@@ -372,6 +375,9 @@ public class Casting {
      */
 
     static public java.util.Date toDate(Object i) {
+        if (i instanceof java.util.Date) {
+            return (java.util.Date) i;
+        }
         long date = -1;
         if (i instanceof Integer) {
             date = ((Integer)i).longValue();
