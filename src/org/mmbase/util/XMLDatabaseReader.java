@@ -29,6 +29,35 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     // logger
     private static Logger log = Logging.getLoggerInstance(XMLDatabaseReader.class.getName());
 
+    /** Public ID of the Database DTD version 1.0 */
+    public static final String PUBLIC_ID_DATABASE_1_0 = "-//MMBase//DTD database config 1.0//EN";
+    private static final String PUBLIC_ID_DATABASE_1_0_FAULT = "-//MMBase/DTD database config 1.0//EN";
+    /** Public ID of the Database DTD version 1.1 */
+    public static final String PUBLIC_ID_DATABASE_1_1 = "-//MMBase//DTD database config 1.1//EN";
+
+    /** DTD resource filename of the Database DTD version 1.0 */
+    public static final String DTD_DATABASE_1_0 = "database_1_0.dtd";
+    /** DTD resource filename of the Database DTD version 1.1 */
+    public static final String DTD_DATABASE_1_1 = "database_1_1.dtd";
+
+    /** Public ID of the most recent Database DTD */
+    public static final String PUBLIC_ID_DATABASE = PUBLIC_ID_DATABASE_1_1;
+    /** DTD resource filename of the most Database DTD */
+    public static final String DTD_DATABASE = DTD_DATABASE_1_1;
+
+    /**
+     * Register the Public Ids for DTDs used by XMLDatabaseReader
+     * This method is called by XMLEntityResolver.
+     */
+    public static void registerPublicIDs() {
+        // various builder dtd versions
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_0, DTD_DATABASE_1_0, XMLDatabaseReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_1, DTD_DATABASE_1_1, XMLDatabaseReader.class);
+
+        // legacy public IDs (wrong, don't use these)
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_0_FAULT, DTD_DATABASE_1_0, XMLDatabaseReader.class);
+    }
+
     /**
      * Constructor
      * @param path the filename
@@ -36,17 +65,17 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     public XMLDatabaseReader(String path) {
         super(path, XMLDatabaseReader.class);
     }
-    
+
     /**
      * Constructor.
      *
      * @param Inputsource to the xml document.
      * @since MMBase-1.7
-     */ 
+     */
     public XMLDatabaseReader(InputSource source) {
         super(source, XMLDatabaseReader.class);
     }
-    
+
     /**
      * Returns the name of the database.
      * @return the name as a string
@@ -62,9 +91,9 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     public String getMMBaseDatabaseDriver() {
         return getElementValue("database.mmbasedriver");
     }
-    
+
     /**
-     * Returns the sql handler class to be used, this is a class implementing the 
+     * Returns the sql handler class to be used, this is a class implementing the
      * {@link org.mmbase.storage.search.implementation.database.SqlHandler
      * SqlHandler} interface.
      *
@@ -74,7 +103,7 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     public String getSqlHandler() {
         return getElementValue("database.sqlhandler");
     }
-    
+
     /**
      * Returns names of the chained handlers to use, these are classes extending
      * {@link org.mmbase.storage.search.implementation.database.ChainedSqlHandler
@@ -85,7 +114,7 @@ public class XMLDatabaseReader extends XMLBasicReader  {
      */
     public List getChainedSqlHandlers() {
         List result = new ArrayList();
-        Enumeration eElements 
+        Enumeration eElements
             = getChildElements("database", "chainedsqlhandler");
         while (eElements.hasMoreElements()) {
             Element el = (Element) eElements.nextElement();
