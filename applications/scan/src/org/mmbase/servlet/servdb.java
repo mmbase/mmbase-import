@@ -41,7 +41,7 @@ public class servdb extends JamesServlet {
 
     //  ---------------------------------------------------
     //private String 	classname 	= getClass().getName();
-    private	boolean	debug		= false;
+    private	boolean	debug		= true;
     //private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
     //  ---------------------------------------------------
 
@@ -820,12 +820,14 @@ public class servdb extends JamesServlet {
                 return null;
             }
 
-            if (node!=null) {
+            if (node!=null && !node.getStringValue("mimetype").equals("")) {
+				debug("servdb mimetype = "+node.getStringValue("mimetype"));
                 return node.getStringValue("mimetype");
             } else {
-                //result="Sorry no valid mmnode so no attachment can be given";
-		return "application/x-binary";
-            }
+           		//result="Sorry no valid mmnode so no attachment can be given";
+				debug("servdb mimetype = application/x-binary");
+				return "application/x-binary";
+			}
         } else {
             if (debug) debug("getAttachmentMimeType called with "+params.size()+" arguments, instead of exactly 1");
             return null;
