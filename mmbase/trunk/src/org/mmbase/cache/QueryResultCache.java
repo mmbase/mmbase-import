@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.4 2004-02-20 18:24:19 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.5 2004-02-24 15:41:48 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -39,7 +39,7 @@ abstract public class QueryResultCache extends Cache {
     /**
      * Need reference to all existing these caches, to be able to invalidate them.
      */
-    private static Set queryCaches = new HashSet();
+    private static final Map queryCaches = new HashMap();
 
     /**
      * Explicitely invalidates all Query caches for a certain builder. This is used in
@@ -49,17 +49,18 @@ abstract public class QueryResultCache extends Cache {
      * @return number of entries invalidated
      */
     public static  int invalidateAll(MMObjectBuilder builder) {
-   
+        
         int result = 0;
         while (builder != null) {
             String tn = builder.getTableName();
-            Iterator i = queryCaches.iterator();
+            Iterator i = queryCaches.entrySet().iterator();
             while (i.hasNext()) {
-                QueryResultCache cache = (QueryResultCache) i.next();
-                    Observer observer = (Observer) cache.observers.get(tn);
-                    if (observer != null) {
-                        result += observer.nodeChanged();
-                    }
+                Map.Entry entry = (Map.Entry) i.next();
+                QueryResultCache cache = (QueryResultCache) entry.getValue();
+                Observer observer = (Observer) cache.observers.get(tn);
+                if (observer != null) {
+                    result += observer.nodeChanged();
+                }
             }
             builder = builder.getParentBuilder();
         }
@@ -78,7 +79,9 @@ abstract public class QueryResultCache extends Cache {
      QueryResultCache(int size) {
         super(size);
         log.info("Instantiated a " + this.getClass().getName()); // should happend limited number of times
-        queryCaches.add(this);
+        if (queryCaches.put(this.getName(), this) != null) {
+            log.error("" + queryCaches  + "already containing " + this + "!!");
+        }
     }
   
 
@@ -140,6 +143,10 @@ abstract public class QueryResultCache extends Cache {
             }
             o.observe(query);
         }
+    }
+
+    public String toString() {
+        return this.getClass().getName() + " " + getName();
     }
 
 
@@ -215,8 +222,8 @@ abstract public class QueryResultCache extends Cache {
         // javadoc inherited (from MMBaseObserver)
         public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
             // local changes are solved in MMObjectBuilder itself.
-            // return nodeChanged() > 0; //machine, number, builder, ctype);
-            return true;
+            //return nodeChanged() > 0; //machine, number, builder, ctype);
+             return true;
 
         }
         
@@ -234,6 +241,10 @@ abstract public class QueryResultCache extends Cache {
          */
         protected synchronized boolean stopObserving(Object key) {            
             return cacheKeys.remove(key);
+        }
+
+        public String toString() {
+            return "Observer  " + super.toString() + " watching " + cacheKeys.size() + " keys"; 
         }
     }
         
