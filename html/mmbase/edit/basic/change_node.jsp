@@ -14,11 +14,12 @@
 
 <mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="node">
 
-<% if (urlStack.size() == 0) {
-    push(urlStack, "home", "search_node.jsp?node_type=" + node.getNodeManager().getName());
+<% 
+   if (urlStack.size() == 0) {
+      push(urlStack, "home", "search_node.jsp?node_type=" + node.getNodeManager().getName());
    }
    if (urlStack.size() == 1) {
-       push(urlStack, "" + node.getNumber(), request);
+       push(urlStack, "" + node.getNumber(), "change_node.jsp?node_number=" + node.getNumber());
    }
  %>
 
