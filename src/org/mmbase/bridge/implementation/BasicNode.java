@@ -22,9 +22,9 @@ import java.util.*;
  */
 public class BasicNode implements Node {
 
-    public static final int ACTION_ADD = 1;      // add a node
+    public static final int ACTION_CREATE = 1;   // create a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
-    public static final int ACTION_REMOVE = 3;   // remove node
+    public static final int ACTION_DELETE = 3;   // delete node
     public static final int ACTION_LINK = 4;     // add a relation to a node
     public static final int ACTION_COMMIT = 10;   // commit a node after changes
 
@@ -91,7 +91,7 @@ public class BasicNode implements Node {
     BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
         this(node, nodeManager);
         temporaryNodeId=id;
-        edit(ACTION_ADD);
+        edit(ACTION_CREATE);
         isnew=true;
     }
 
@@ -131,9 +131,9 @@ public class BasicNode implements Node {
      * Edit this node.
      * Check whether edits are allowed and prepare a node for edits if needed.
      * The type of edit is determined by the action specified, and one of:<br>
-     * ACTION_ADD (add a node),<br>
+     * ACTION_CREATE (create a node),<br>
      * ACTION_EDIT (edit node, or change aliasses),<br>
-     * ACTION_REMOVE (remove node),<br>
+     * ACTION_DELETE (delete node),<br>
      * ACTION_LINK (add a relation),<br>
      * ACTION_COMMIT (commit a node after changes)
      *
@@ -151,8 +151,8 @@ public class BasicNode implements Node {
 
         int realnumber=noderef.getNumber();
         if (realnumber!=-1) {
-            if (action==ACTION_REMOVE) {
-                cloud.assert(Operation.REMOVE,realnumber);
+            if (action==ACTION_DELETE) {
+                cloud.assert(Operation.DELETE,realnumber);
             }
             if (action==ACTION_LINK) {
                 cloud.assert(Operation.LINK,realnumber);
@@ -170,7 +170,7 @@ public class BasicNode implements Node {
             }
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
-            if (action == ACTION_ADD) {
+            if (action == ACTION_CREATE) {
                 throw new BasicBridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
             }
 
@@ -180,7 +180,7 @@ public class BasicNode implements Node {
             // XXX: If you edit a node outside a transaction, but do not commit or cancel the edits,
             // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
             if ((action == ACTION_EDIT) ||
-                ((action == ACTION_REMOVE) && (nodeManager instanceof BasicTransaction))) {
+                ((action == ACTION_DELETE) && (nodeManager instanceof BasicTransaction))) {
                 int id = getNumber();
                 String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+id, ""+id);
                 if (cloud instanceof BasicTransaction) {
@@ -320,7 +320,7 @@ public class BasicNode implements Node {
     };
 
     private void delete(boolean deleteRelations) {
-        edit(ACTION_REMOVE);
+        edit(ACTION_DELETE);
         if (isnew) {
             // remove a temporary node (no true instantion yet, no relations)
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);

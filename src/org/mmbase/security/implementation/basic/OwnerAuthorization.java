@@ -102,7 +102,7 @@ public class OwnerAuthorization extends Authorization {
             	permitted = true;
             	break;
             // same rights as writing, no break
-	    case Operation.REMOVE_INT:
+	    case Operation.DELETE_INT:
             // dont think so when we are anonymous...
             case Operation.WRITE_INT:
             case Operation.CHANGECONTEXT_INT:
