@@ -21,6 +21,7 @@ import javax.servlet.http.*;
 
 import org.mmbase.util.FileWatcher;
 import org.mmbase.util.StringObject;
+import org.mmbase.util.XMLBasicReader;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,6 +29,7 @@ import org.mmbase.util.media.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 /**
@@ -142,12 +144,10 @@ public class MediaSources extends MMObjectBuilder {
     }
     
     
-    public MediaSources() {
-        
-        /*
+    public MediaSources() {       
         cache.putCache();
         log.debug("static init");
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "mediaservers.xml");
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath() + File.separator + "/media", "mediaservers.xml");
         if (! configFile.exists()) {
             log.warn("Configuration file for mediasources " + configFile + " does not exist");
         }
@@ -155,7 +155,6 @@ public class MediaSources extends MMObjectBuilder {
         configWatcher.add(configFile);
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
-         */
     }
     
     /**
@@ -165,59 +164,33 @@ public class MediaSources extends MMObjectBuilder {
     
     private void readConfiguration(File configFile) {
         servers      = new HashMap();
-        descriptions = new HashMap();
-        try {
-            log.debug("reading " + configFile);
-            DOMParser parser = new DOMParser();
-            parser.parse(configFile.toString());
-            
-            Document doc = parser.getDocument();
-            org.w3c.dom.Node n = doc.getFirstChild();
-            while (n != null) {
-                if (n.getNodeName().equals("mediaservers")) {
-                    NamedNodeMap map1= n.getAttributes();
-                    defaultServer = map1.getNamedItem("default").getNodeValue();
-                    
-                    org.w3c.dom.Node n2 = n.getFirstChild();
-                    while (n2 != null) {
-                        if (n2.getNodeName().equals("server")) {
-                            NamedNodeMap map= n2.getAttributes();
-                            String id      = map.getNamedItem("id").getNodeValue();
-                            
-                            descriptions.put(id, map.getNamedItem("description").getNodeValue());
-                            servers.put(id, n2.getFirstChild().getNodeValue());;
-                            // check:
-                            StringObject s = new StringObject((String)servers.get(id));
-                            if (s.indexOf("%s", 0) < 0 ) {
-                                throw new RuntimeException("No %s in servert");
-                            }
-                            
-                            if (log.isDebugEnabled()) {
-                                log.info("found script in configuration file mediaservers.xml. Id: " + id + " source: " + servers.get(id));
-                            }
-                        }
-                        n2 = n2.getNextSibling();
-                    }
-                }
-                n = n.getNextSibling();
-            }
-        } catch (org.xml.sax.SAXException e) {
-            String message = "Error reading mediaservers.xml " + e.toString();
-            throw new RuntimeException(message);
-        } catch (java.io.IOException e) {
-            throw new RuntimeException("Error reading mediaservers.xml " + e.toString());
+        descriptions = new HashMap();       
+        log.debug("reading " + configFile);
+        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
+        
+        for (Enumeration e = reader.getChildElements("mediaservers","server");e.hasMoreElements();) {
+            Element server = (Element) e.nextElement();
+            String id            = reader.getElementAttributeValue(server, "id");
+            String description   = reader.getElementAttributeValue(server, "description");
+            String s             = reader.getElementValue(server);
+            descriptions.put(id, description);
+            servers.put     (id, s);
         }
+        
     }
-    
-    
-    
+        
     
     /**
      * Resolves the url
+     * Deze heb ik gemaakt?
+
      */
     protected String getURL(MMObjectNode node, String srv) {
         if (srv == null || srv.equals("")) srv = defaultServer;
         log.debug("Getting URL for node " + node + " and server " + srv);
+        if (servers == null) {
+            throw new RuntimeException("Servers where not initialized");
+        }
         String serverTemplate = (String) servers.get(srv); // not yet decided how to do anything else then default
         if (serverTemplate == null) {
             throw new RuntimeException("No server with id = " + serverTemplate + " is not defined");
@@ -228,11 +201,41 @@ public class MediaSources extends MMObjectBuilder {
         if (log.isDebugEnabled()) log.debug("new url: " + serverObj.toString() + " with " + node.getStringValue("url"));
         return  serverObj.toString();
     }
-    
+
+
+
+    /**
+     * resolve the url of the mediasource (e.g. pnm://www.mmbase.org/test/test.ra)
+     *
+     * @param mediafragment the media fragment
+     * @param mediasouce the media source
+     * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
+     * @return the url of the media source
+     */
+    public String getUrl(MMObjectNode mediasource, Map info) {
+        log.debug("Getting url");
+        
+        // Find the provider for the url
+        MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, info);
+        if(mediaProvider==null) {
+            log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
+            return null;
+        }
+        
+        log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
+        // Get the protocol and the hostinfomation of the provider.
+        String providerinfo = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl")+ mediaProvider.getStringValue("rootpath");
+        return providerinfo+mediaUrlComposer.getURL(mediasource, info);
+    }
+
+
+
+
     /**
      * Gets the first line of a ram file. This can be needed in smil.
      */
     protected String getURLResult(MMObjectNode node, String src) {
+        log.debug("Getting URL-Result voor src " + src);
         String url = getURL(node, src);
         String result = (String) cache.get(url);
         if (result == null) {
@@ -279,7 +282,19 @@ public class MediaSources extends MMObjectBuilder {
         if (log.isDebugEnabled()) { 
             log.debug("executeFunction  " + function + "(" + args + ") on" + node);
         }
-        if (args.size() >= 1) {
+        if (function.equals("info")) {
+            List empty = new Vector();
+            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
+            info.put("absoluteurl", "(<??>)");
+            info.put("urlresult", "(<??>) ");
+            info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
+
+            if (args == null || args.size() == 0) {
+                return info;
+            } else {
+                return info.get(args.get(0));
+            }            
+        } else if (args != null && args.size() > 0) {
             if (function.equals("gui")) {
                 if (args.get(0).equals("state")) {
                     String val = node.getStringValue("state");
@@ -316,6 +331,7 @@ public class MediaSources extends MMObjectBuilder {
                 return getURLResult(node, (String) args.get(0));
             }
         }
+        log.debug("Function not matched in mediasources");
         return super.executeFunction(node, function, args);
     }
     
@@ -351,31 +367,7 @@ public class MediaSources extends MMObjectBuilder {
         
         return url+uri;
     }
-    
-    /**
-     * resolve the url of the mediasource (e.g. pnm://www.mmbase.org/test/test.ra)
-     *
-     * @param mediafragment the media fragment
-     * @param mediasouce the media source
-     * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
-     * @return the url of the media source
-     */
-    public String getUrl(MMObjectNode mediasource, Map info) {
-        log.debug("Getting url");
         
-        // Find the provider for the url
-        MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, info);
-        if(mediaProvider==null) {
-            log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
-            return null;
-        }
-        
-        log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
-        // Get the protocol and the hostinfomation of the provider.
-        String providerinfo = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl")+ mediaProvider.getStringValue("rootpath");
-        return providerinfo+mediaUrlComposer.getUrl(mediasource, info);
-    }
-    
     /**
      * resolve the content type of the mediasource
      *

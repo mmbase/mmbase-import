@@ -3,7 +3,7 @@
 <!-- Author: Michiel Meeuwissen -->
 
 <!-- omroep.nl specific. -->
-<!ELEMENT mediaservers (server)>
+<!ELEMENT mediaservers (server*)>
 <!ATTLIST mediaservers
   default        CDATA   #REQUIRED
 >
