@@ -8,7 +8,8 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.111 2004-01-13 17:13:28 michiel Exp $
+    @author Martijn Houtman
+    @version $Id: wizard.xsl,v 1.112 2004-01-14 14:35:28 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -209,14 +210,14 @@
   <xsl:template name="bodyform">
     <tr class="formcanvas">
       <td>
-        <form name="form" method="post" action="{$formwizardpage}" id="{/wizard/curform}" 
-        	message_pattern="{$message_pattern}" message_required="{$message_required}" 
-        	message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}" 
-        	message_min="{$message_min}" message_max="{$message_max}" message_mindate="{$message_mindate}" 
-        	message_maxdate="{$message_maxdate}" message_dateformat="{$message_dateformat}" 
-        	message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}" 
-        	message_listtooshort="{$message_listtooshort}"
-        	invalidlist="{/wizard/form[@invalidlist]/@invalidlist}" filter_required="{$filter_required}">
+        <form name="form" method="post" action="{$formwizardpage}" id="{/wizard/curform}"
+          message_pattern="{$message_pattern}" message_required="{$message_required}"
+          message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}"
+          message_min="{$message_min}" message_max="{$message_max}" message_mindate="{$message_mindate}"
+          message_maxdate="{$message_maxdate}" message_dateformat="{$message_dateformat}"
+          message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}"
+          message_listtooshort="{$message_listtooshort}"
+          invalidlist="{/wizard/form[@invalidlist]/@invalidlist}" filter_required="{$filter_required}">
           <xsl:choose>
             <xsl:when test="/*/step[@valid='false'][not(@form-schema=/wizard/curform)]">
               <xsl:attribute name="otherforms">invalid</xsl:attribute>
@@ -225,7 +226,7 @@
               <xsl:attribute name="otherforms">valid</xsl:attribute>
             </xsl:otherwise>
           </xsl:choose>
-        	
+
           <input type="hidden" name="curform" value="{/wizard/curform}"/>
           <input type="hidden" name="cmd" value="" id="hiddencmdfield"/>
 
@@ -250,7 +251,7 @@
       </table>
     </div>
     <div id="commandbuttonbar" class="buttonscontent">
-    	<xsl:for-each select="/*/steps-validator">
+      <xsl:for-each select="/*/steps-validator">
         <xsl:call-template name="buttons"/>
       </xsl:for-each>
     </div>
@@ -511,6 +512,35 @@
     </span>
   </xsl:template>
 
+  <!-- used to convert &amp; occurrences in textareas, so it is possible to edit xml  -->
+  <xsl:template name="replace-string">
+      <xsl:param name="text"/>
+      <xsl:param name="replace"/>
+      <xsl:param name="with"/>
+
+      <xsl:choose>
+          <xsl:when test="string-length($replace) = 0">
+              <xsl:value-of disable-output-escaping="yes" select="$text"/>
+          </xsl:when>
+          <xsl:when test="contains($text, $replace)">
+
+              <xsl:variable name="before" select="substring-before($text, $replace)"/>
+              <xsl:variable name="after" select="substring-after($text, $replace)"/>
+
+              <xsl:value-of disable-output-escaping="yes" select="$before"/>
+              <xsl:value-of disable-output-escaping="yes" select="$with"/>
+              <xsl:call-template name="replace-string">
+                  <xsl:with-param name="text" select="$after"/>
+                  <xsl:with-param name="replace" select="$replace"/>
+                  <xsl:with-param name="with" select="$with"/>
+              </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+              <xsl:value-of disable-output-escaping="yes" select="$text"/>
+          </xsl:otherwise>
+      </xsl:choose>
+  </xsl:template>
+
   <!--
     fieldintern is called to draw the values
   -->
@@ -644,8 +674,21 @@
         </xsl:otherwise>
       </xsl:choose>
       <xsl:apply-templates select="@*"/>
-      <xsl:text disable-output-escaping="yes">></xsl:text>
-      <xsl:value-of disable-output-escaping="yes" select="value"/>
+      <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@ftype='text'">
+          <xsl:call-template name="replace-string">
+            <xsl:with-param name="text">
+              <xsl:value-of disable-output-escaping="yes" select="value"/>
+            </xsl:with-param>
+            <xsl:with-param name="replace" select="'&amp;'"/>
+            <xsl:with-param name="with" select="'&amp;amp;'"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of disable-output-escaping="yes" select="value"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text disable-output-escaping="yes">&lt;/textarea></xsl:text>
       <xsl:apply-templates select="postfix"/>
     </span>
