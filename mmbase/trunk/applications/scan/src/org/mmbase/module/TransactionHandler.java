@@ -38,7 +38,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	private static boolean _debug = true;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
-	private static String version = "0.8";
+	private String version="2.3.1";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -63,7 +63,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 * initialize the transactionhandler
 	 */
 	public void init(){
-		if (_debug) debug(">> init TransactionHandler Module version = "+version, 0);
+		if (_debug) debug(">> init TransactionHandler Module version " + version, 0);
 		mmbase=(MMBase)getModule("MMBASEROOT");
 		tmpObjectManager = new TemporaryNodeManager(mmbase);
 		transactionManager = new TransactionManager(mmbase,tmpObjectManager);
@@ -240,7 +240,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 			try {			
 				// CREATE TRANSACTION
-				if (tName.equals("createTransaction")) {
+				if (tName.equals("createTransaction") || tName.equals("create")) {
 					// Check if the transaction already exists.
 					if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
 						throw new TransactionHandlerException(tName + " transaction already exists id = " + id);
@@ -254,7 +254,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					}
 				} 
 
-				if (tName.equals("openTransaction")) { 
+				if (tName.equals("openTransaction") || tName.equals("open")) { 
 					// TIMEOUT ADJUSTMENT IS NOT ACCORDING TO THE MANUAL
 					// Check if the transaction exists.
 					if (userTransactionInfo.knownTransactionContexts.get(id) == null) {
@@ -264,14 +264,14 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					transactionInfo = (TransactionInfo)userTransactionInfo.knownTransactionContexts.get(id);
 					currentTransactionContext = transactionInfo.transactionContext;
 				}
-				if (tName.equals("commitTransaction")) { 
+				if (tName.equals("commitTransaction") || tName.equals("commit")) { 
 					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 					// destroy transaction information
 					transactionInfo.stop();	
 					// continue with next transaction command.
 					continue;
 				}
-				if (tName.equals("deleteTransaction")) {
+				if (tName.equals("deleteTransaction") || tName.equals("delete")) {
 					// cancel real transaction
 					transactionManager.cancel(userTransactionInfo.user, id);
 					// get transaction information object
@@ -293,7 +293,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				// ENDING TRANSACTION		
 				//if (tName.equals("deleteTransaction")) // this is done above
 				//if (tName.equals("commitTransaction")) // this is done above
-				if (tName.equals("createTransaction") || tName.equals("openTransaction")) {
+				if (tName.equals("createTransaction") || tName.equals("openTransaction") ||
+						 tName.equals("create") || tName.equals("open")) {
 					if(commit.equals("true")) {
 						transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
 						transactionInfo.stop();	
@@ -398,7 +399,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					// add to tmp cloud
 					transactionManager.addNode(currentTransactionContext, userTransactionInfo.user.getName(),currentObjectContext);
 				} 
-				if (oName.equals("copyObject")) {
+				if (oName.equals("accessObject")) {
 					// check for existence
 					if (transactionInfo.knownObjectContexts.get(id) != null) {
 						throw new TransactionHandlerException(oName + " Object id already exists: " + id);
@@ -666,7 +667,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     	}
 
 		public String toString() {
-			return "TranactionInfo => transactionContext="+transactionContext+" id="+id+" timeout="+timeout+".";	
+			return "TransactionInfo => transactionContext="+transactionContext+" id="+id+" timeout="+timeout+".";	
 		}
 	}
 }
