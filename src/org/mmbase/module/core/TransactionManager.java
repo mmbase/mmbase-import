@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.3 2000-10-13 11:47:26 vpro Exp $
+	$Id: TransactionManager.java,v 1.4 2000-11-08 16:24:13 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/10/13 11:47:26  vpro
+	Rico: made it working
+	
 	Revision 1.2  2000/10/13 11:41:34  vpro
 	Rico: made it working
 	
@@ -28,20 +31,22 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.3 2000-10-13 11:47:26 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.4 2000-11-08 16:24:13 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
 	private boolean _debug=true;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
+	private TemporaryNodeManagerInterface tmpNodeManager;
 	private Object usermanager;
 	private MMBase mmbase;
 	protected Hashtable transactions=new Hashtable();
 	protected TransactionResolver trs;
 
-	public TransactionManager(MMBase mmbase) {
+	public TransactionManager(MMBase mmbase,TemporaryNodeManagerInterface tmpn) {
 		this.mmbase=mmbase;
+		this.tmpNodeManager=tmpn;
 		trs=new TransactionResolver(mmbase);
 		// Probably this is going to be retrieved from mmbase
 		// so findUserName can actually do something
@@ -57,12 +62,12 @@ public class TransactionManager implements TransactionManagerInterface {
 		return(transactionname);
 	}
 
-	public String addNode(String transactionname,String tmpnumber) {
+	public String addNode(String transactionname,String owner,String tmpnumber) {
 		MMObjectNode node;
 		Vector v;
 
 		v=(Vector)transactions.get(transactionname);
-		node=findNode(tmpnumber);
+		node=tmpNodeManager.getNode(owner,tmpnumber);
 		if (node!=null) {
 			if (v==null) {
 				v=new Vector();
@@ -83,12 +88,12 @@ public class TransactionManager implements TransactionManagerInterface {
 		return(tmpnumber);
 	}
 
-	public String removeNode(String transactionname,String tmpnumber) {
+	public String removeNode(String transactionname,String owner,String tmpnumber) {
 		MMObjectNode node;
 		Vector v;
 
 		v=(Vector)transactions.get(transactionname);
-		node=findNode(tmpnumber);
+		node=tmpNodeManager.getNode(owner,tmpnumber);
 		if (node!=null) {
 			if (v!=null) {
 				int n;
@@ -297,14 +302,4 @@ public class TransactionManager implements TransactionManagerInterface {
 		return(rtn);
 	}
 
-	protected MMObjectNode findNode(String key) {
-		MMObjectBuilder bul=mmbase.getMMObject("typedef");
-		MMObjectNode node;
-		node=bul.getTmpNode(key);
-		// fallback to normal nodes
-		if (node==null) {
-			bul.getNode(key);
-		}
-		return(node);
-	}
 }
