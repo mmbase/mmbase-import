@@ -24,7 +24,7 @@ import java.util.*;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.28 2003-12-24 11:21:33 nico Exp $
+ * @version $Id: CompareTag.java,v 1.29 2004-01-16 20:16:58 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -79,6 +79,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
         if (compare1 instanceof Boolean) {
             compare1 = compare1.toString();
+        } else if (compare1 instanceof List) {
+            compare1 = org.mmbase.util.Casting.toString(compare1);
         }
 
         if (! (compare1 instanceof Comparable)) {
