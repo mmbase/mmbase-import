@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.53 2004-02-17 09:50:46 keesj Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.54 2004-02-19 14:19:40 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -289,7 +289,7 @@ public class DatabaseStorageManager implements StorageManager {
      * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
      * i.e by using clobs or streams.
-    
+
      * @param result the resultset to retrieve the text from
      * @param index the index of the text in the resultset
      * @param field the (MMBase) fieldtype. This value can be null
@@ -910,6 +910,10 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void delete(MMObjectNode node) throws StorageException {
+        // determine parent
+        if (node.hasRelations()) {
+            throw new StorageException("cannot delete node " + node.getNumber() + ", it still has relations");
+        }
         delete(node, node.getBuilder());
         commitChange(node, "d");
     }
@@ -923,10 +927,6 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during delete
      */
     protected void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
-        // determine parent
-        if (node.hasRelations()) {
-            throw new StorageException("cannot delete node " + node.getNumber() + ", it still has relations");
-        }
         try {
             Scheme scheme = factory.getScheme(Schemes.DELETE_NODE, Schemes.DELETE_NODE_DEFAULT);
             String query = scheme.format(new Object[] { this, builder, builder.getField("number"), node });
