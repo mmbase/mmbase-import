@@ -206,6 +206,23 @@
 	</TD>
 </TR>
 
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Temporary node cache size</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-TEMPORARYNODECACHESIZE^</B></FONT>
+	</TD>
+</TR>
+
 </TABLE>
 </BODY>
 </HTML>

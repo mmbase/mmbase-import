@@ -111,6 +111,16 @@
 </tr>
 
 <tr><td>&nbsp;</td></tr>
+<tr align="left">
+  <th class="header">Temporary Node Cache Property</th>
+  <th class="header">Value</th>
+</tr>
+<tr>
+  <td class="data">Size</td>
+  <td class="data"><%=mmAdmin.getInfo("TEMPORARYNODECACHESIZE",request,response)%></td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
 
 <tr>
 <td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
