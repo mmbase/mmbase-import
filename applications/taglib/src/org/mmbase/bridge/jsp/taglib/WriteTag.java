@@ -80,7 +80,7 @@ public class WriteTag extends ContextReferrerTag implements Writer {
             if (getReferid() != null) {
                 throw new JspTagException("Cannot specify the 'value' atribute and the 'referid' attribute at the same time");
             }
-            return value.getString(this);
+            return value.getValue(this);
         }
 
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
