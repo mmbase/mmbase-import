@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.2 2002-05-07 13:35:57 michiel Exp $
+    @version  $Id: index.jsp,v 1.1 2002-05-08 10:50:38 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -37,7 +37,7 @@
 <form>
    <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->     
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%></mm:import>
-  <mm:import id="jsps">../jsp/</mm:import>
+  <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
 	<h1>Editwizard Examples</h1>
 
   <!-- check if the MyNews application was installed -->
@@ -68,7 +68,7 @@
            <mm:param name="title">Images</mm:param>
            <mm:param name="wizard">samples/imageupload</mm:param>
            <mm:param name="nodepath">images</mm:param>
-           <mm:param name="fields">title</mm:param>
+           <mm:param name="fields">title,owner</mm:param>
            <mm:param name="orderby">title</mm:param>
            </mm:url>" 
            onClick="return openListImages(this);">    
