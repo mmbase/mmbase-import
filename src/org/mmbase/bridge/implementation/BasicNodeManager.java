@@ -36,7 +36,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.75 2004-02-26 22:07:20 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.76 2004-03-02 12:25:22 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -129,17 +129,17 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             for(Iterator i = fields.iterator(); i.hasNext();){
                 FieldDefs f = (FieldDefs) i.next();
                 Field ft = new BasicField(f,this);
-                fieldTypes.put(ft.getName(),ft);
-                if (f.getDBType() != FieldDefs.TYPE_BYTE && f.getDBPos()>0) {
-                    // ( f.getDBState() == FieldDefs.DBSTATE_PERSISTENT || f.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
-                    queryFields.add(new BasicField(f, this));
+                if (f.getDBPos()>0) {
+                    fieldTypes.put(ft.getName(),ft);
+                    if (f.getDBType() != FieldDefs.TYPE_BYTE &&
+                       (f.getDBState() == FieldDefs.DBSTATE_PERSISTENT || f.getDBState() == FieldDefs.DBSTATE_SYSTEM)) {
+                        queryFields.add(new BasicField(f, this));
+                    }
                 }
             }
         }
 
     }
-
-
 
     protected Set getQueryFields() {
         return queryFields;
@@ -285,7 +285,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
             BasicNodeList resultNodeList;
 
-            if (query.getNodeManager() instanceof RelationManager) {                
+            if (query.getNodeManager() instanceof RelationManager) {
                 resultNodeList = new BasicRelationList(resultList, cloud);
             } else {
                 resultNodeList = new BasicNodeList(resultList, cloud);
