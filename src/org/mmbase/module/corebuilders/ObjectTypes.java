@@ -30,7 +30,7 @@ import org.mmbase.util.xml.BuilderReader;
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.30 2004-01-06 12:51:08 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.31 2004-01-08 15:03:57 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -67,7 +67,7 @@ public class ObjectTypes extends TypeDef {
                 log.warn("Could not create directory: " + defaultDeploy + ", new node-types cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
             }   else if (!defaultDeploy.canWrite()) {
-                // check if we may write in the specified dir                
+                // check if we may write in the specified dir
                 log.error("Could not write in directory: " + defaultDeploy + ", new node-typess cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
             }
@@ -96,17 +96,17 @@ public class ObjectTypes extends TypeDef {
         if (log.isDebugEnabled()) {
             log.debug("node:" + node + " field: " + field);
         }
-
         // return the Document from the config file..
         if (field.equals("config")) {
             // first check if we already have a value in node fields...
             Object o = super.getValue(node, field);
-            if (o != null)
+            if (o != null) {
                 return o;
-
+            }
             // otherwise, open the file to return it...
-            if (log.isDebugEnabled())
-                log.debug("retrieving the document for node #" + node.getNumber());
+            if (log.isDebugEnabled()) {
+               log.debug("retrieving the document for node #" + node.getNumber());
+            }
             try {
                 // method node.getStringValue("name") should work, since getStringValue("path") checked it already...
                 File file = new File(getBuilderFilePath(node));
@@ -140,7 +140,6 @@ public class ObjectTypes extends TypeDef {
             // would be logical to log this in SERVICE but the same occurance is logged on INFO already in MMObjectBuilder.init()
             log.debug("Insert of builder-node with name '" + node.getStringValue("name") + "'");
         }
-
         // look if we can store to file, if it aint there yet...
         File file = new File(getBuilderFilePath(node));
         if (!file.exists()) {
@@ -150,7 +149,6 @@ public class ObjectTypes extends TypeDef {
             // first store our config....
             storeBuilderFile(node);
         }
-
         // TODO: more generic code?
         // try if it still not here...HACK HACK
         if (getIntValue(node.getStringValue("name")) > 0) {
@@ -158,10 +156,8 @@ public class ObjectTypes extends TypeDef {
             // can happen, when an other thread was here first in multi-threaded
             return getIntValue(node.getStringValue("name"));
         }
-
         // now save our node...
         int result = super.insert(owner, node);
-
         // load our builder
         loadBuilder(node);
         return result;
@@ -175,42 +171,35 @@ public class ObjectTypes extends TypeDef {
      */
     public boolean commit(MMObjectNode node) {
         log.info("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-
         // in future make it also possible to change active / not active... als builder merging, first make this work!
         // TODO: merging code!
         MMObjectBuilder builder = getBuilder(node);
-
-
         BuilderReader originalBuilderXml = new BuilderReader(getBuilderFilePath(node), getMMBase());
         BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(
-                                                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                                                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                                                  "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
                                                  "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
                                                  node.getStringValue("config"))), getMMBase());
-
-
-        boolean equal = originalBuilderXml.equals(newBuilderXml);
-
-
-        boolean result = super.commit(node);
-
-        if (! equal) {
-            // first save our config,...
-            storeBuilderFile(node);        
-
-            // unload the builder...
-            builder = unloadBuilder(node);
-            
-            if (! originalBuilderXml.storageEquals(newBuilderXml)) {
-                // apply changes on the database..
-                deleteBuilderTable(builder);
+        boolean success= super.commit(node);
+        if (!originalBuilderXml.equals(newBuilderXml)) {
+            try {
+                // unload the builder...
+                builder = unloadBuilder(node);
+                // attempt to apply changes to the database
+                // by dropping the buildertable
+                if (! originalBuilderXml.storageEquals(newBuilderXml)) {
+                    builder.delete();
+                }
+                // finally save our new config.
+                storeBuilderFile(node);
+            } finally {
+                // clear config, so it will be refreshed later on
+                node.storeValue("config",null);
+                // load the builder again.. (will possibly create a new table)
+                loadBuilder(node);
             }
-            
-            // load the builder again.. (will create a new table also)
-            loadBuilder(node);
-        } 
-
-        return result;
+        }
+        return success;
     }
 
     private void testBuilderInUse(MMObjectBuilder builder) {
@@ -247,22 +236,16 @@ public class ObjectTypes extends TypeDef {
         if (builder != null && builder.size() > 0) {
             throw new RuntimeException("Cannot delete node which represents a builder, (otherwise information could get lost..)");
         }
-
         testBuilderInUse(builder);
-
         builder = unloadBuilder(node);
-
         // now that the builder cannot be started again (since config is now really missing)
-        if (!deleteBuilderTable(builder))
-            throw new RuntimeException("Could not delete builder table");
-
+        builder.delete();
         // try to delete the configuration file first!.....
         if (!deleteBuilderFile(node)) {
             // delete-ing failed, reload the builder again...
             loadBuilder(node);
             throw new RuntimeException("Could not delete builder config");
         }
-
         super.removeNode(node);
     }
 
@@ -309,7 +292,6 @@ public class ObjectTypes extends TypeDef {
     protected String getBuilderFilePath(MMObjectNode node) {
         // call our code above, to get our path...
         String path = getBuilderPath(node);
-
         // do we have a path?
         if (path == null) {
             log.error("field 'path' was empty.");
@@ -341,7 +323,6 @@ public class ObjectTypes extends TypeDef {
             log.error("field 'name' was empty.");
             return null;
         }
-
         // first request the url from the active builder....
         MMObjectBuilder builder = getBuilder(node);
         if (builder != null) {
@@ -402,7 +383,6 @@ public class ObjectTypes extends TypeDef {
         if (log.isDebugEnabled()) {
             log.debug("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
-
         org.w3c.dom.Document doc = node.getXMLValue("config");
         if (doc == null) {
             throw new RuntimeException("Field config was null! Could not save the file");
@@ -463,19 +443,13 @@ public class ObjectTypes extends TypeDef {
             //make a string from the XML
             TransformerFactory tfactory = TransformerFactory.newInstance();
             Transformer serializer = tfactory.newTransformer();
-            // serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-            // serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-
             // maybe some better code?
             StringWriter asw = new StringWriter();
             serializer.transform(new DOMSource(a), new StreamResult(asw));
-
             StringWriter bsw = new StringWriter();
             serializer.transform(new DOMSource(b), new StreamResult(bsw));
-
             // compare the 2 document-strings
             return asw.toString().equals(bsw.toString());
-
         } catch (TransformerConfigurationException tce) {
             String message = tce.toString() + " " + Logging.stackTrace(tce);
             log.error(message);
@@ -499,22 +473,6 @@ public class ObjectTypes extends TypeDef {
             mmb.unloadBuilder(builder);
         }
         return builder;
-    }
-
-    /**
-     */
-    protected boolean deleteBuilderTable(MMObjectBuilder builder) {
-        if (log.isDebugEnabled()) {
-            log.debug("Delete table of builder '" + builder + "'");
-        }
-
-        // well, since the whole thing doesnt exist anymore, now also drop the table, to clean the system a little bit...
-        try {
-            return builder.drop();
-        } catch (Exception e) {
-            log.fatal("please report this error: " + e);
-            return false;
-        }
     }
 
     /**
