@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.31 2003-07-14 08:29:38 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.32 2003-07-14 09:01:57 pierre Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -457,9 +457,7 @@ public class WriterHelper extends BodyTagSupport {
         hasBody       = false;
         bodyContent   = null;
         pageContext   = null;
-        jspvar        = null;
         value         = null;
-        vartype       = TYPE_UNSET;
         write         = Attribute.NULL;
     }
 
