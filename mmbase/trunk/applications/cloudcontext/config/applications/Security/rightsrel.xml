@@ -47,9 +47,12 @@
 
   <!-- imagesmodule -->
 	<node number="701" owner="admin" snumber="1001" dnumber="600" rtype="grants" dir="bidirectional">
-		<operation>all</operation>
+		<operation>delete</operation>
 	</node>
-	<node number="712" owner="admin" snumber="1002" dnumber="470" rtype="grants" dir="bidirectional">
+	<node number="701" owner="admin" snumber="1001" dnumber="468" rtype="grants" dir="bidirectional">
+		<operation>delete</operation>
+	</node>
+	<node number="712" owner="admin" snumber="1001" dnumber="470" rtype="grants" dir="bidirectional">
 		<operation>read</operation>
 	</node>
 
