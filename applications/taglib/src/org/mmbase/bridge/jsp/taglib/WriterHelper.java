@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.64 2005-03-16 13:37:18 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.65 2005-03-22 15:33:49 michiel Exp $
  */
 
 public class WriterHelper {
@@ -278,7 +278,11 @@ public class WriterHelper {
                 // these accept a value == null (meaning that they are empty)
                 case TYPE_LIST:
                     if (! (v instanceof List)) {
-                        v = Casting.toList(v);
+                        if ("".equals(v)) {
+                            v = new ArrayList();
+                        } else {
+                            v = Casting.toList(v);
+                        }
                     }
                     break;
                 case TYPE_VECTOR: // I think the type Vector should be deprecated?
