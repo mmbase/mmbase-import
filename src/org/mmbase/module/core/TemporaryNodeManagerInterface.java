@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManagerInterface.java,v 1.5 2000-11-08 14:24:46 vpro Exp $
+	$Id: TemporaryNodeManagerInterface.java,v 1.6 2000-11-08 16:11:52 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/11/08 14:24:46  vpro
+	Rico: fixed getObject
+	
 	Revision 1.4  2000/11/08 13:24:19  vpro
 	Rico: included owner in operations
 	
@@ -34,7 +37,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManagerInterface.java,v 1.5 2000-11-08 14:24:46 vpro Exp $
+ * @version $Id: TemporaryNodeManagerInterface.java,v 1.6 2000-11-08 16:11:52 vpro Exp $
  */
 public interface TemporaryNodeManagerInterface {
 	public String createTmpNode(String type,String owner,String key);
@@ -44,4 +47,5 @@ public interface TemporaryNodeManagerInterface {
 	public String setObjectField(String owner,String key,String field,Object value);
 	public String getObjectFieldAsString(String owner,String key,String field);
 	public Object getObjectField(String owner,String key,String field);
+	public String getTmpKey(String owner,String key);
 }
