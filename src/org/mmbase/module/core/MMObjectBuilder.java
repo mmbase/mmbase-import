@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.231 2003-05-23 16:49:42 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.232 2003-06-13 12:08:54 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -618,11 +618,40 @@ public class MMObjectBuilder extends MMTable {
             throw new RuntimeException("Builder with name:" + getTableName() + "("+oType+") is not the actual builder.");
         }
 
+        removeSyncNodes(node);
+
         // removes the node FROM THIS BUILDER
         // seems not a very logical call, as node.parent is the node's actual builder,
         // which may - possibly - be very different from the current builder
-        mmb.getDatabase().removeNode(this,node);
+        mmb.getDatabase().removeNode(this, node);
     }
+
+    /**
+     * Removes the syncnodes to this node. This is logical, but also needed to maintain database
+     * integrety.
+     *
+     * @since MMBase-1.7
+     */
+    protected void removeSyncNodes(MMObjectNode node) {
+        try {
+            MMObjectBuilder syncnodes = mmb.getBuilder("syncnodes");
+            NodeSearchQuery query = new NodeSearchQuery(syncnodes);
+            Object numericalValue = new Integer(node.getNumber());
+            BasicStepField field = query.getField(syncnodes.getField("localnumber"));
+            BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(field,
+                                                                                 numericalValue);
+            query.setConstraint(constraint);
+            Iterator syncs = syncnodes.getNodes(query).iterator();
+            while (syncs.hasNext()) {
+                MMObjectNode syncnode = (MMObjectNode) syncs.next();
+                syncnode.parent.removeNode(syncnode);
+                log.service("Removed syncnode " + syncnode);
+            }
+        } catch (SearchQueryException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * Remove the relations of a node.
@@ -630,7 +659,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public void removeRelations(MMObjectNode node) {
         Vector relsv=getRelations_main(node.getNumber());
-        if (relsv!=null) {
+        if (relsv != null) {
             for(Enumeration rels=relsv.elements(); rels.hasMoreElements(); ) {
                 // get the relation node
                 MMObjectNode relnode=(MMObjectNode)rels.nextElement();
