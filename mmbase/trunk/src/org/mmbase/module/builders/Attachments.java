@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.13 2002-06-28 22:58:12 michiel Exp $ 
+ * @version $Id: Attachments.java,v 1.14 2002-06-29 14:29:05 michiel Exp $ 
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -67,21 +67,29 @@ public class Attachments extends AbstractServletBuilder {
     }
 
     public String getGUIIndicator(String field, MMObjectNode node) {
-        if (field.equals("handle")) {
+        if (field.equals("handle") || field.equals("title")) {
             int num  = node.getIntValue("number");
-            int size = node.getIntValue("size");
+            //int size = node.getIntValue("size");
 
-            String mimeType = node.getStringValue("mimetype");
             String filename = node.getStringValue("filename");
 
-            if (filename == null) {
-                filename = "*";                
+
+            String title;
+
+            if (field.equals("handle")) {
+                if (filename == null || filename.equals("")) {
+                    title = "[*]";
+                } else {
+                    title = "[" + filename + "]";
+                }
+            } else {
+                title = node.getStringValue("title");
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
-                return "[" + filename + "]";
+                return title;
             } else {
-                return "<a href=\"" + getServletPath(filename) + num + "\" target=\"extern\">[" + filename + "]</a>";
+                return "<a href=\"" + getServletPath(filename) + num + "\" target=\"extern\">" + title + "</a>";
             }            
         }
         return super.getGUIIndicator(field, node);
@@ -147,7 +155,7 @@ public class Attachments extends AbstractServletBuilder {
         // does not seem to work...
         // Using the bridge (jsp), mimetype is never filled automaticly
         // TODO: fix MagicFile
-        log.service("Setting field " + field + " of node " + node);
+        log.debug("Setting field " + field + " of node " + node);
         if(field.equals("handle")) {            
             String mimetype = node.getStringValue("mimetype");
             if (mimetype != null && !mimetype.equals("")) {
