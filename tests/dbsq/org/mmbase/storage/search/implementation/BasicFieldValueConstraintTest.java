@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldValueConstraintTest extends TestCase {
     
@@ -144,10 +144,13 @@ public class BasicFieldValueConstraintTest extends TestCase {
     
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */
     public void testToString() {
-        assertTrue(instance1.toString(),
-        instance1.toString().equals("FieldValueConstraint(inverse:"
+        String fieldname = instance1.getField().getAlias();
+        if (fieldname == null) {
+            fieldname = instance1.getField().getFieldName();
+        }
+        assertTrue(instance1.toString().equals("FieldValueConstraint(inverse:"
         + instance1.isInverse() + ", field:"
-        + instance1.getField().getAlias() + ", casesensitive:"
+        + fieldname + ", casesensitive:"
         + instance1.isCaseSensitive() + ", operator:"
         + instance1.getOperator() + ", value:"
         + instance1.getValue() + ")"));
@@ -157,7 +160,7 @@ public class BasicFieldValueConstraintTest extends TestCase {
         assertTrue(instance1.toString(),
         instance1.toString().equals("FieldValueConstraint(inverse:"
         + instance1.isInverse() + ", field:"
-        + instance1.getField().getAlias() + ", casesensitive:"
+        + fieldname + ", casesensitive:"
         + instance1.isCaseSensitive() + ", operator:"
         + instance1.getOperator() + ", value:"
         + instance1.getValue() + ")"));
