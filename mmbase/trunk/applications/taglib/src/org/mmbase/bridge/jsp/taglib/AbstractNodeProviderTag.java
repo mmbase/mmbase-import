@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * A base class for tags which provide a node (And some fields). The
+ * A base class for tags which provide a node. The
  * general attributes for a NodeProvider are
  * <ul>
  * <li> id: The identifier. Used as a key for the Context. If this
@@ -43,7 +43,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class.getName());
     
     private   Node   node;        
-    protected String fields = "";
     private   String jspvar = null;
     private   boolean  modified = false;
     
