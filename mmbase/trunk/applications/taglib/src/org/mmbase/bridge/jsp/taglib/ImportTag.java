@@ -23,14 +23,14 @@ import org.mmbase.util.logging.Logging;
 /**
 * The importtag puts things in the context. It can find them from the
 * environment or from its body.
-* 
-* @author Michiel Meeuwissen 
+*
+* @author Michiel Meeuwissen
 * @see    ContextTag
 */
 
 public class ImportTag extends WriteTag {
 
-    private static Logger log = Logging.getLoggerInstance(ImportTag.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(ImportTag.class.getName());
 
     protected boolean required     = false;
     protected int     from         = ContextTag.LOCATION_NOTSET;
@@ -38,14 +38,14 @@ public class ImportTag extends WriteTag {
     protected String externid      = null;
 
     private   boolean found = false;
-    
+
 
     /**
      * Release all allocated resources.
      */
-    public void release() {   
+    public void release() {
         log.debug("releasing" );
-        super.release();       
+        super.release();
         externid = null;
         id = null;
     }
@@ -61,7 +61,7 @@ public class ImportTag extends WriteTag {
     /**
      * If 'required' then the variable must be available in the
      * external source, otherwise exception.
-     * 
+     *
      */
     public void setRequired(boolean b) {
         required = b;
@@ -82,11 +82,11 @@ public class ImportTag extends WriteTag {
             log.trace("Externid was given " + externid);
             if (id == null) {
                 log.trace("No id was given, using externid ");
-                id = externid;                    
+                id = externid;
             } else {
                 log.trace("An id was given (" + id + ")");
             }
-                    
+
             if (from == ContextTag.LOCATION_NOTSET) {
                 found = (getContextTag().findAndRegister(externid, id) != null);
             } else {
@@ -95,27 +95,28 @@ public class ImportTag extends WriteTag {
 
             if (! found && required) {
                 throw new JspTagException("Required parameter '" + externid + "' not found in " + ContextTag.locationToString(from));
-            } 
+            }
             if (found) {
                 value = getObject(id);
                 if (log.isDebugEnabled()) {
                     log.debug("found value for " + id + " " + value);
                 }
             }
-        } 
+        }
         if (found) {
             helper.setValue(value);
             if (id != null) {
                 getContextTag().reregister(id, helper.getValue());
             }
-            return SKIP_BODY;        
+            return SKIP_BODY;
         } else {
+            helper.setValue(null);
             return EVAL_BODY_AGAIN;
         }
 
     }
 
-    public int doEndTag() throws JspTagException {  
+    public int doEndTag() throws JspTagException {
         if (externid != null) {
             if (! found ) {
                 if (log.isDebugEnabled()) log.debug("External Id " + externid + " not found");
@@ -128,7 +129,7 @@ public class ImportTag extends WriteTag {
                     helper.setValue(body);
                     getContextTag().reregister(id, helper.getValue());
                     found = true;
-                }                
+                }
             }
         } else { // get value from the body of the tag.
             helper.setValue(bodyContent != null ? bodyContent.getString() : "");
