@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.12 2002-08-14 21:02:28 michiel Exp $
+  @version $Id: searchlist.xsl,v 1.13 2002-09-06 13:09:42 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -213,7 +213,7 @@
             function browseTo(start) {
                 selected = buildSelectedList();
                 var href = listpage;
-                href += "&start="+start+"&selected="+selected+"&cmd="+cmd;
+                 href += "&popupid=search&template=xsl/searchlist.xsl&start="+start+"&selected="+selected+"&cmd="+cmd;
 
                 document.location.replace(href);
                 return false;
