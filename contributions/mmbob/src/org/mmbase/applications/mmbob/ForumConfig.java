@@ -31,18 +31,27 @@ import org.mmbase.storage.search.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class ForumConfig {
-   private static Logger log = Logging.getLoggerInstance(ForumConfig.class);
-   private HashMap fieldaliases=new HashMap();
-   private HashMap subs=new HashMap();
-   private String defaultaccount, defaultpassword;
-   private String accountcreationtype,accountremovaltype;
-   private String loginmodetype,logoutmodetype;
-   private String guestreadmodetype,guestwritemodetype;
-   private String id="unkown";
+    private static Logger log = Logging.getLoggerInstance(ForumConfig.class);
+    private HashMap fieldaliases=new HashMap();
+    private HashMap subs=new HashMap();
+    private String defaultaccount, defaultpassword;
+    private String accountcreationtype,accountremovaltype;
+    private String loginmodetype,logoutmodetype;
+    private String guestreadmodetype,guestwritemodetype;
+    private String id="unkown";
 
-   private int quotamax = 100;
-   private int quotasoftwarning = 60;
-   private int quotawarning = 80;
+    private String avatarsUploadEnabled = "true";
+    private String avatarsGalleryEnabled = "true";
+
+    private String contactInfoEnabled = "true";
+    private String smileysEnabled = "true";
+    private String privateMessagesEnabled = "true";
+    private int postingsPerPage = -1;
+
+
+    private int quotamax = 100;
+    private int quotasoftwarning = 60;
+    private int quotawarning = 80;
 
     public ForumConfig(XMLBasicReader reader,Element n) {
 	decodeConfig(reader,n);
@@ -80,6 +89,31 @@ public class ForumConfig {
                         guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
                         guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
 
+
+                        contactInfoEnabled = getAttributeValue(reader,n,"contactinfo","enable");
+                        smileysEnabled = getAttributeValue(reader,n,"smileys","enable");
+                        privateMessagesEnabled = getAttributeValue(reader,n,"privateMessages","enable");
+                        String inttemp = getAttributeValue(reader,n,"postingsperpage","value");
+                        if (inttemp != null) {
+                            postingsPerPage = (Integer.valueOf(inttemp)).intValue();
+                        }
+
+                        for(Enumeration ns2=reader.getChildElements(n,"avatars");ns2.hasMoreElements(); ) {
+                            Element n2=(Element)ns2.nextElement();
+                            org.w3c.dom.NodeList avatarsList = n2.getElementsByTagName("upload");
+                            if (avatarsList.getLength() > 0) {
+                                Element uploadNode = (Element)avatarsList.item(0);
+                                avatarsUploadEnabled = uploadNode.getAttribute("enable");
+                            }
+                            avatarsList = n2.getElementsByTagName("gallery");
+                            if (avatarsList.getLength() > 0) {
+                                Element galleryNode = (Element)avatarsList.item(0);
+                                avatarsGalleryEnabled =galleryNode.getAttribute("enable");
+                            }
+                            
+                        }
+
+
                         for (Enumeration ns2 = reader.getChildElements(n, "generatedata"); ns2.hasMoreElements();) {
                             Element n2 = (Element) ns2.nextElement();
                             nm = n2.getAttributes();
@@ -87,7 +121,7 @@ public class ForumConfig {
                                 String role = null;
                                 String dfile = null;
                                 String tokenizer = null;
-                                n3 = nm.getNamedItem("role");
+                               n3 = nm.getNamedItem("role");
                                 if (n3 != null) {
                                     role = n3.getNodeValue();
                                 }
@@ -300,5 +334,29 @@ public class ForumConfig {
    public String getGuestWriteModeType() {
         return guestwritemodetype;
    }
+
+    public String getAvatarsUploadEnabled() {
+        return avatarsUploadEnabled;
+    }
+
+    public String getAvatarsGalleryEnabled() {
+        return avatarsGalleryEnabled;
+    }
+
+    public String getContactInfoEnabled() {
+        return contactInfoEnabled;
+    }
+
+    public String getSmileysEnabled() {
+        return smileysEnabled;
+    }
+
+    public String getPrivateMessagesEnabled() {
+        return privateMessagesEnabled;
+    }
+
+    public int getPostingsPerPage() {
+        return postingsPerPage;
+    }
 
 }

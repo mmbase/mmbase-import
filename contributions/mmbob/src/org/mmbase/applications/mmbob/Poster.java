@@ -34,7 +34,7 @@ public class Poster {
     private int id, postcount, sessionstart, lastsessionend, state;
     private int quotanumber,quotaused;
     private int avatar = 0;
-    private String firstname, lastname, email, level, location, gender;
+    private String firstname, lastname, email, level, location, gender, password;
     private Node node;
     private Forum parent;
     private HashMap mailboxes;
@@ -212,6 +212,13 @@ public class Poster {
         return getAliased("password");
    }
 
+   public void setPassword(String password) {
+       org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
+       log.debug("going to md5 this password: " + password);
+       this.password = md5.transform(password);
+       log.debug("result of the md5: " + this.password);
+   }
+
 
     /**
      * get the lastname of the poster
@@ -358,6 +365,7 @@ public class Poster {
         node.setValue("email", email);
         node.setValue("gender", gender);
         node.setValue("location", location);
+        node.setValue("password",password);
         readImages();
         ForumManager.syncNode(node, ForumManager.FASTSYNC);
     }
@@ -409,9 +417,27 @@ public class Poster {
      * @return <code>true</code> if this method is called
      */
     public boolean remove() {
+        log.debug("going to remove poster: " + node.getNumber());
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),"lastposternumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastposternumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"),"lastposternumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postings"),"posternumber");
         node.delete(true);
         parent.childRemoved(this);
         return true;
+    }
+
+    private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
+        //check if nodenumber is somewhere referenced as a foreignkey
+        NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
+        log.debug("found: " + nodeList);
+        NodeIterator it = nodeList.nodeIterator();
+        Node tempNode;
+        while (it.hasNext()) {
+            tempNode = (Node)it.next();
+            tempNode.setValue(fieldname,"");
+            tempNode.commit();
+        }
     }
 
     /**

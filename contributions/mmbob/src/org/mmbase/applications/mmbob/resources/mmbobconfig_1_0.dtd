@@ -4,12 +4,12 @@
 
 <!ELEMENT mmbobconfig (forums*)>
 
-<!ELEMENT forums (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,forum*)>
+<!ELEMENT forums (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,avatars*,contactinfo?,smileys?,privatemessages?,postingsperpage?,forum*)>
 <!ATTLIST forums account CDATA #IMPLIED>
 <!ATTLIST forums password CDATA #IMPLIED>
 <!ATTLIST forums language CDATA #IMPLIED>
 
-<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postarea*)>
+<!ELEMENT forum (generatedata*,accountcreation*,accountremoval*,loginmode*,logoutmode*,guestreadmode*,guestwritemode*,postarea*,avatars*,contactinfo?,smileys?,privatemessages?,postingsperpage?)>
 <!ATTLIST forum id CDATA #IMPLIED>
 <!ATTLIST forum account CDATA #IMPLIED>
 <!ATTLIST forum password CDATA #IMPLIED>
@@ -27,6 +27,7 @@
 <!ATTLIST generatedata file CDATA #IMPLIED>
 <!ATTLIST generatedata tokenizer CDATA #IMPLIED>
 
+<!ELEMENT quota (#PCDATA)>
 <!ATTLIST quota tokenizer CDATA #IMPLIED>
 <!ATTLIST quota max CDATA #IMPLIED>
 <!ATTLIST quota softwarning CDATA #IMPLIED>
@@ -55,5 +56,26 @@
 <!ELEMENT guestreadmode (#PCDATA)>
 <!ATTLIST guestreadmode type CDATA #IMPLIED>
 
+<!ELEMENT avatars (upload*,gallery*)>
+<!ELEMENT upload EMPTY>
+<!ATTLIST upload enable (false|true) #IMPLIED>
+
+<!ELEMENT contactinfo EMPTY>
+<!ATTLIST contactinfo enable (false|true) #IMPLIED>
+
+<!ELEMENT smileys EMPTY>
+<!ATTLIST smileys enable (false|true) #IMPLIED>
+
+<!ELEMENT privatemessages EMPTY>
+<!ATTLIST privatemessages enable (false|true) #IMPLIED>
+
+<!ELEMENT postingsperpage EMPTY>
+<!ATTLIST postingsperpage value CDATA #IMPLIED>
+
+<!ELEMENT gallery EMPTY>
+<!ATTLIST gallery enable (false|true) #IMPLIED>
+
+
 <!ELEMENT guestwritemode (#PCDATA)>
 <!ATTLIST guestwritemode type CDATA #IMPLIED>
+
