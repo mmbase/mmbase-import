@@ -123,6 +123,8 @@ public class MMAdmin extends ProcessorModule {
 			} else if (token.equals("APPTOOL")) {
 				String appname=(String)cmds.get(cmdline);
 				startAppTool(appname);
+			} else if (token.equals("BUILDER")) {
+				doBuilderPosts(tok.nextToken(),cmds,vars);
 			} else if (token.equals("BUILDERSAVE")) {
 				String buildername=(String)cmds.get(cmdline);
 				String savepath=(String)vars.get("PATH");
@@ -952,5 +954,104 @@ public class MMAdmin extends ProcessorModule {
 			}
 		}
 		return("");
+	}
+
+
+	public void doBuilderPosts(String command,Hashtable cmds,Hashtable vars) {
+		if (command.equals("SETGUINAME")) {
+			setBuilderGuiName(vars);
+		} else if (command.equals("SETGUITYPE")) {
+			setBuilderGuiType(vars);
+		} else if (command.equals("SETEDITORINPUT")) {
+			setBuilderEditorInput(vars);
+		} else if (command.equals("SETEDITORLIST")) {
+			setBuilderEditorList(vars);
+		} else if (command.equals("SETEDITORSEARCH")) {
+			setBuilderEditorSearch(vars);
+		}
+	}
+
+	public void setBuilderGuiName(Hashtable vars) {
+		String builder=(String)vars.get("BUILDER");
+		String fieldname=(String)vars.get("FIELDNAME");
+		String country=(String)vars.get("COUNTRY");
+		String value=(String)vars.get("VALUE");
+		
+		MMObjectBuilder bul=mmb.getMMObject(builder);
+		FieldDefs def=bul.getField(fieldname);
+		if (def!=null) {
+			def.setGUIName(country,value);
+		}
+		syncBuilderXML(bul,builder);
+	}
+
+
+	public void setBuilderGuiType(Hashtable vars) {
+		String builder=(String)vars.get("BUILDER");
+		String fieldname=(String)vars.get("FIELDNAME");
+		String value=(String)vars.get("VALUE");
+		
+		MMObjectBuilder bul=mmb.getMMObject(builder);
+		FieldDefs def=bul.getField(fieldname);
+		if (def!=null) {
+			def.setGUIType(value);
+		}
+		syncBuilderXML(bul,builder);
+	}
+
+
+	public void setBuilderEditorInput(Hashtable vars) {
+		String builder=(String)vars.get("BUILDER");
+		String fieldname=(String)vars.get("FIELDNAME");
+		String value=(String)vars.get("VALUE");
+		
+		MMObjectBuilder bul=mmb.getMMObject(builder);
+		FieldDefs def=bul.getField(fieldname);
+		if (def!=null) {
+			try {
+				int i=Integer.parseInt(value);
+				def.setGUIPos(i);
+			} catch (Exception e) {}
+		}
+		syncBuilderXML(bul,builder);
+	}
+
+
+	public void setBuilderEditorList(Hashtable vars) {
+		String builder=(String)vars.get("BUILDER");
+		String fieldname=(String)vars.get("FIELDNAME");
+		String value=(String)vars.get("VALUE");
+		
+		MMObjectBuilder bul=mmb.getMMObject(builder);
+		FieldDefs def=bul.getField(fieldname);
+		if (def!=null) {
+			try {
+				int i=Integer.parseInt(value);
+				def.setGUIList(i);
+			} catch (Exception e) {}
+		}
+		syncBuilderXML(bul,builder);
+	}
+
+
+	public void setBuilderEditorSearch(Hashtable vars) {
+		String builder=(String)vars.get("BUILDER");
+		String fieldname=(String)vars.get("FIELDNAME");
+		String value=(String)vars.get("VALUE");
+		
+		MMObjectBuilder bul=mmb.getMMObject(builder);
+		FieldDefs def=bul.getField(fieldname);
+		if (def!=null) {
+			try {
+				int i=Integer.parseInt(value);
+				def.setGUISearch(i);
+			} catch (Exception e) {}
+		}
+		syncBuilderXML(bul,builder);
+	}
+
+	public void syncBuilderXML(MMObjectBuilder bul,String builder) {
+		String savepath=MMBaseContext.getConfigPath()+("/builders/"+builder+".xml");
+		XMLBuilderWriter.writeXMLFile(savepath,bul);
 	}
 }
