@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.32 2003-08-26 13:50:54 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.33 2003-10-20 11:34:28 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -85,15 +85,7 @@ public class WizardDatabaseConnector {
      */
     private void loadRelations(Node object, String objectnumber, Node loadaction) throws WizardException {
         // loads relations using the loadaction rules
-        if ((org.mmbase.Version.getMajor()==1) && (org.mmbase.Version.getMinor()==5)) {
-            // backward compatibilty: The Dove included with MMBase 1.5 does not
-            // auto-load objects in relations.
-            // This code is included only for the separate wizard release and is deprecated
-            loadRelations15(object,objectnumber,loadaction);
-            return;
-        }
-        // MMBase 1.6 code and beyond
-        NodeList reldefs = Utils.selectNodeList(loadaction, "relation");
+        NodeList reldefs = Utils.selectNodeList(loadaction, ".//relation");
         // complete reldefs: add empty <object> tag where there is none.
         for (int i=0; i<reldefs.getLength(); i++) {
             Node rel = reldefs.item(i);
@@ -106,40 +98,6 @@ public class WizardDatabaseConnector {
         }
         // load relations (automatically loads related objects and 'deep' relations)
         if (reldefs.getLength()>0) getRelations(object, objectnumber, reldefs);
-    }
-
-    /**
-     * This method loads relations from MMBase and stores the result in the given object node.
-     * @deprecated This code is for backward compatibilty: The Dove included with MMBase 1.5 does not
-     *              auto-load objects in relations. This code is included only for the separate wizard release.
-     *
-     * @param       object          The objectNode where the results should be appended to.
-     * @param       objectnumber    The objectnumber of the parentobject from where the relations should originate.
-     * @param       loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
-     * @throws WizardException if loading the realtions fails
-     */
-    private void loadRelations15(Node object, String objectnumber, Node loadaction) throws WizardException {
-        NodeList reldefs = Utils.selectNodeList(loadaction, "relation");
-        if (reldefs.getLength()>0) getRelations(object, objectnumber, reldefs);
-
-        // load objects to which relations are pointing
-        // uses a bit odd syntax (relation directly under relation).
-        NodeList loadactionrestrictionfields = Utils.selectNodeList(loadaction, "field");
-        NodeList rels = Utils.selectNodeList(object, "relation");
-        for (int i=0; i<rels.getLength(); i++) {
-            Node rel = rels.item(i);
-            String relatedobject = Utils.getAttribute(rel, "destination", "");
-            Node loadedobj = getData(rel, relatedobject, loadactionrestrictionfields);
-
-            // object loaded. Check to see if we need to follow more relations...
-            // find corresponding loadaction settings...
-            String reldestination=Utils.getAttribute(loadedobj, "type");
-            Node deeprels = Utils.selectSingleNode(loadaction, "relation[@destination='"+reldestination+"']/object[relation/@destination]");
-            if (deeprels!=null) {
-                // yep. we should carry on loading! (Recurse!)
-                loadRelations(loadedobj, Utils.getAttribute(loadedobj,"number"), deeprels);
-            }
-        }
     }
 
     /**
@@ -480,8 +438,8 @@ public class WizardDatabaseConnector {
                 firstobject = createObject(data, targetParentNode, objectdefs.item(i), params);
             }
             log.debug("This is an action");  // no relations to add here..
-            return firstobject;        
-        } 
+            return firstobject;
+        }
 
         NodeList relations;
         Node objectNode;
@@ -494,7 +452,7 @@ public class WizardDatabaseConnector {
             }
             relations = Utils.selectNodeList(objectDef, ".");
         } else if (nodeName.equals("object")) {
-            String objectType = Utils.getAttribute(objectDef, "type");            
+            String objectType = Utils.getAttribute(objectDef, "type");
             if (objectType.equals("")) throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
             if (log.isDebugEnabled()) log.debug("Create object of type " + objectType);
 
