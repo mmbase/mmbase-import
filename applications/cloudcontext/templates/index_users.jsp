@@ -46,7 +46,6 @@
             <mm:include  page="$extrauserlink" />
           </mm:present>
         </th>
-        <th><%=getPrompt(m,"rank")%></th>
         <mm:fieldlist nodetype="$nodetype"  fields="$fields">
           <th>
             <a title="order" href='<mm:url referids="search,parameters,$parameters" ><mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
@@ -66,6 +65,7 @@
             </mm:url>' ><mm:fieldinfo type="guiname" /></a>
           </th>
         </mm:fieldlist>
+        <th><%=getPrompt(m,"rank")%></th>
         <th><a title="order" href='<mm:url referids="search,parameters,$parameters"><mm:param name="orderby">number</mm:param>
           <mm:compare referid="orderby" value="number">
             <mm:write referid="directions">
@@ -89,15 +89,14 @@
             <mm:include referids="user" page="$extrauserlink" />
           </mm:present>
         </td>
+        <mm:fieldlist fields="$fields">
+          <td><mm:fieldinfo type="guivalue" /></td>
+        </mm:fieldlist>
         <td>
           <mm:relatednodes type="mmbaseranks" role="rank">
             <mm:nodeinfo type="gui" />
           </mm:relatednodes>
         </td>
-        <mm:fieldlist fields="$fields">
-          <td><mm:fieldinfo type="guivalue" /></td>
-        </mm:fieldlist>
-
         <td class="commands">
           <mm:maywrite>
             <a href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
