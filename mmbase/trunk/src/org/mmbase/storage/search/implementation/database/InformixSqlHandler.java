@@ -9,11 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.*;
-
-import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import java.util.*;
 
 /**
  * The Informix query handler, implements {@link
@@ -34,7 +35,7 @@ import org.mmbase.module.core.MMBase;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.10 2004-04-27 10:07:54 rob Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.11 2004-05-14 12:37:39 mark Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -272,8 +273,12 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
         log.trace("Base field part of query : "+sb);
 
-        // vector needed to save OR-Elements for migration to UNION-query
+        // vector needed to save OR-Elements (Searchdir=BOTH) for migration to UNION-query
         Vector orElements = new Vector();
+
+        // needed to save AND-Elements from relationString for migration to UNION-query
+        StringBuffer andElements = new StringBuffer();
+
         boolean relationalConstraintInBothDirections = false;
 
         // Tables
@@ -350,6 +355,24 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                             appendField(sbRelations, relationStep, "dir", multipleSteps);
                             sbRelations.append("<>1");
                         }
+
+                        // Also Gather the "And"-elements
+                        if (andElements.length()>0) {
+                            andElements.append(" AND ");
+                        }
+                        appendField(andElements, previousStep, "number", multipleSteps);
+                        andElements.append("=");
+                        appendField(andElements, relationStep, "dnumber", multipleSteps);
+                        andElements.append(" AND ");
+                        appendField(andElements, nextStep, "number", multipleSteps);
+                        andElements.append("=");
+                        appendField(andElements, relationStep, "snumber", multipleSteps);
+                        if (relationStep.getCheckedDirectionality()) {
+                            andElements.append(" AND ");
+                            appendField(andElements, relationStep, "dir", multipleSteps);
+                            andElements.append("<>1");
+                        }
+
                         break;
 
                     case RelationStep.DIRECTIONS_DESTINATION:
@@ -361,13 +384,26 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         appendField(sbRelations, nextStep, "number", multipleSteps);
                         sbRelations.append("=");
                         appendField(sbRelations, relationStep, "dnumber", multipleSteps);
+
+                        // Also Gather the "And"-elements
+                        if (andElements.length()>0) {
+                            andElements.append(" AND ");
+                        }
+
+                        appendField(andElements, previousStep, "number", multipleSteps);
+                        andElements.append("=");
+                        appendField(andElements, relationStep, "snumber", multipleSteps);
+                        andElements.append(" AND ");
+                        appendField(andElements, nextStep, "number", multipleSteps);
+                        andElements.append("=");
+                        appendField(andElements, relationStep, "dnumber", multipleSteps);
+
                         break;
 
                     case RelationStep.DIRECTIONS_BOTH:
 
                         // set to true
                         relationalConstraintInBothDirections = true;
-
 
                         if (relationStep.getRole() != null) {
                             sbRelations.append("(((");
@@ -504,7 +540,17 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 Constraint constraint = query.getConstraint();
                 if (sbConstraints.length() > 0) {
                     // Combine constraints.
-                    unionConstraints.append(" AND ");
+                    // if sbConstraints allready ends with " AND " before adding " AND "
+                    log.info("sbConstraints:"+sbConstraints);
+                    log.info("sbConstraints.length:"+sbConstraints.length());
+
+                    // have to check if the constraint end with "AND ", sometimes it's not :-(
+                    if (sbConstraints.length()>=4) {
+                        if (!sbConstraints.substring(sbConstraints.length()-4,sbConstraints.length()).equals("AND ")) {
+                            unionConstraints.append(" AND ");
+                        }
+                    }
+
                     if (constraint instanceof CompositeConstraint) {
                         appendCompositeConstraintToSql(
                                 unionConstraints, (CompositeConstraint) constraint,
@@ -580,6 +626,18 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 if (teller != 1) {
                     unionRelationConstraints.append(" UNION ").append(baseQuery);
                 }
+
+                // Make sure the unionRelationConstraint ends with " AND "
+                if (unionRelationConstraints.length()>=4) {
+                    if (!unionRelationConstraints.substring(unionRelationConstraints.length()-4,unionRelationConstraints.length()).equals("AND ")) {
+                        unionRelationConstraints.append(" AND ");
+                    }
+                }
+
+                if (andElements.length()>0) {
+                    unionRelationConstraints.append(andElements).append(" AND ");
+                }
+
                 unionRelationConstraints.append(" " + combinedElement + " ");
                 log.trace("Union relation constraint "+teller+" : "+unionRelationConstraints);
                 teller++;
@@ -634,6 +692,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         if (field.equals(orderByField.toString())) {
                             // match found
                             sb.append((i + 1) + " ");
+                            // prevent that the field is listed twice in this order-by
+                            i=query.getFields().size();
                         }
                     }
 
@@ -659,7 +719,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
             log.debug("Completed generation of UNION query:" + sb.toString());
         } else {
-            // if no OR it it does this
+            // if no OR it does this
             sbConstraints.append(sbRelations); // Constraints by relations.
             if (query.getConstraint() != null) {
                 Constraint constraint = query.getConstraint();
