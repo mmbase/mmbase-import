@@ -55,7 +55,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.294 2005-03-16 19:20:11 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.295 2005-03-29 14:52:17 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1881,8 +1881,8 @@ public class MMObjectBuilder extends MMTable {
 
             // log warning, except for virtual builders
             if (!virtual) { // should getDBType not be overridden in Virtual Builder then?
-                log.warn("getDBType(): Can't find fielddef on field '"+fieldName+"' of builder "+tableName);
-                log.debug(Logging.stackTrace(new Throwable()));
+                log.warn("getDBType(): Can't find fielddef on field '" + fieldName + "' of builder " + tableName);
+                log.debug(Logging.stackTrace());
             }
             return FieldDefs.TYPE_UNKNOWN;
         }
@@ -2571,6 +2571,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Gets the number of nodes currently in the cache.
      * @return the number of nodes in the cache
+     * @deprecated Can be asked from the cache.
      */
     public int getCacheSize() {
         return nodeCache.size();
@@ -2580,6 +2581,7 @@ public class MMObjectBuilder extends MMTable {
      * Return the number of nodes in the cache of one objecttype.
      * @param type the object type to count
      * @return the number of nodes of that type in the cache
+     * @deprecated Has nothing to to with MMObjectBuilder. Should perhaps be moved to a utility class.
      */
     public int getCacheSize(String type) {
         int i=mmb.getTypeDef().getIntValue(type);
@@ -2593,6 +2595,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Get the numbers of the nodes cached (will be removed).
+     * @deprecated
      */
     public String getCacheNumbers() {
         StringBuffer results = new StringBuffer();
@@ -2608,7 +2611,7 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Delete the nodes cache.
+     * Clears the nodes cache.
      */
     public void deleteNodeCache() {
         nodeCache.clear();
@@ -3278,16 +3281,24 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Get text from a blob field.
-     * The text is cut if it is to long.
+     * @deprecated
+     */
+    public String getShortedText(String fieldName, int number) {
+        if (number < 0) return null; // capture calls from temporary nodes
+        return getShortedText(fieldName, getNode(number));
+    }
+    /**
+     * Get text from a blob field. This function is called to 'load' a field into the node, because
+     * it was not loaded together with the node, because it is supposed to be too big.
      * @param fieldName name of the field
      * @param number number of the object in the table
-     * @return a <code>String</code> containing the contents of a field as text
+     * @return a <code>String</code> containing the complate contents of a field as text.
+     * @since MMBase-1.8
      */
-    public String getShortedText(String fieldName,int number) {
-        if (number < 0) return null; // capture calls from temporary nodes
+    protected String getShortedText(String fieldName, MMObjectNode node) {
+        if (node.getNumber() < 0) return null; // capture calls from temporary nodes
         try {
-            return mmb.getStorageManager().getStringValue(getNode(number), getField(fieldName));
+            return mmb.getStorageManager().getStringValue(node, getField(fieldName));
         } catch (StorageException se) {
             log.error(se.getMessage());
             log.error(Logging.stackTrace(se));
@@ -3296,16 +3307,24 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Get binary data of a blob field.
-     * The data is cut if it is to long.
-     * @param fieldName name of the field
-     * @param number number of the object in the table
-     * @return an array of <code>byte</code> containing the contents of a field as text
+     * @deprecated
      */
     public byte[] getShortedByte(String fieldName, int number) {
         if (number < 0) return null; // capture calls from temporary nodes
+        return getShortedByte(fieldName, getNode(number));
+    }
+    /**
+     * Get binary data of a blob field. This function is called to 'load' a field into the node, because
+     * it was not loaded together with the node, because it is supposed to be too big.
+     * @param fieldName name of the field
+     * @param number number of the object in the table
+     * @return an array of <code>byte</code> containing the complete contents of the field.
+     * @since MMBase-1.8
+     */
+    protected byte[] getShortedByte(String fieldName, MMObjectNode node) {
+        if (node.getNumber() < 0) return null; // capture calls from temporary nodes
         try {
-            return mmb.getStorageManager().getBinaryValue(getNode(number), getField(fieldName));
+            return mmb.getStorageManager().getBinaryValue(node, getField(fieldName));
         } catch (StorageException se) {
             log.error(se.getMessage());
             log.error(Logging.stackTrace(se));
@@ -3317,7 +3336,7 @@ public class MMObjectBuilder extends MMTable {
      * Returns the number of the node with the specified name.
      * Tests whether a builder table is created.
       * Should be moved to MMTable.
-     * @return <code>true</code> if the table exists, <code>false</code> otherwise
+      * @deprecated-now unused, and makes no sense
      */
     public String getNumberFromName(String name) {
         String number = null;
@@ -3354,7 +3373,7 @@ public class MMObjectBuilder extends MMTable {
      * @param fieldName the fieldname that is changed
      * @return <code>true</code> if the call was handled.
      */
-    public boolean setValue(MMObjectNode node,String fieldName) {
+    public boolean setValue(MMObjectNode node, String fieldName) {
         return true;
     }
 
