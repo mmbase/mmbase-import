@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version 10 May 2001
+ * @version 11 May 2001
  */
 
 public class MMObjectNode {
@@ -136,7 +136,7 @@ public class MMObjectNode {
     }
 
     /**
-     * Once an insert is done in the editor this method is called.
+     * Once an insert is done in the editors, this method is called.
      * @param ed Contains the current edit state (editor info). The main function of this object is to pass
      *        'settings' and 'parameters' - value pairs that have been set during the edit process.
      * @return An <code>int</code> value. It's meaning is undefined.
@@ -177,7 +177,7 @@ public class MMObjectNode {
             while (e.hasMoreElements()) {
                 String key=(String)e.nextElement();
                 int dbtype=getDBType(key);
-                String value=""+retrieveValue(key);
+                String value=""+values.get(key);  // XXX:should be retrieveValue ?
                 if (result.equals("")) {
                     result=key+"="+dbtype+":'"+value+"'";
                 } else {
@@ -195,7 +195,6 @@ public class MMObjectNode {
      * @return the contents of the node as a xml-formatted string.
      */
     public String toXML() {
-
         // call is implemented by its builder so
         // call the builder with this node
         if (parent!=null) {
@@ -281,7 +280,6 @@ public class MMObjectNode {
      *  @param fieldValue the value to assign
      *  @return <code>false</code> if the value is not of the indicated type, <code>true</code> otherwise
      */
-
     public boolean setValue(String fieldName, int type, String value)
     // WH: This one will be moved/replaced soon...
     // Testing of db types will be moved to the DB specific classes
@@ -291,7 +289,7 @@ public class MMObjectNode {
     {
         if (type==FieldDefs.TYPE_UNKNOWN) {
             log.error("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
-            return true;
+            return false;
         }
         switch (type) {
             case FieldDefs.TYPE_STRING:
@@ -380,9 +378,7 @@ public class MMObjectNode {
         // this are used for functions for example
         // its implemented per builder so lets give this
         // request to our builder
-
         if (o==null) return parent.getValue(this,fieldname);
-
 
         // return the found object
         return o;
@@ -397,8 +393,6 @@ public class MMObjectNode {
     public String getStringValue(String fieldname) {
 
         // try to get the value from the values table
-        // it might be using a prefix to allow multilevel
-        // nodes to work (if not duplicate can not be stored)
         String tmp = "";
         Object o=getValue(fieldname);
         if (o!=null) {
@@ -408,7 +402,6 @@ public class MMObjectNode {
                 tmp=""+o;
             }
         }
-//        String tmp=(String)retrieveValue(prefix+fieldname);
 
         // check if the object is shorted, shorted means that
         // because the value can be a large text/blob object its
@@ -419,7 +412,6 @@ public class MMObjectNode {
         // because every blob/text mapping is a extra request to the
         // database
         if (tmp.indexOf("$SHORTED")==0) {
-//        if (tmp!=null && tmp.indexOf("$SHORTED")==0) {
 
             log.debug("getStringValue(): node="+this+" -- fieldname "+fieldname);
             // obtain the database type so we can check if what
@@ -431,11 +423,13 @@ public class MMObjectNode {
             // check if for known mapped types
             if (type==FieldDefs.TYPE_STRING) {
                 MMObjectBuilder bul;
-                String tmptable="";
 
                 int number=getNumber();
                 // check if its in a multilevel node (than we have no node number and
+                // XXX:Not needed, since checking takes place in MultiRelations!
+                // Can be dropped
                 if (prefix!=null && prefix.length()>0) {
+                    String tmptable="";
                     int pos=prefix.indexOf('.');
                     if (pos!=-1) {
                         tmptable=prefix.substring(0,pos);
@@ -460,7 +454,6 @@ public class MMObjectNode {
                 if (tmp2!=null) {
                     // store the unmapped value (replacing the $SHORTED text)
                     storeValue(prefix+fieldname,tmp2);
-
                     // return the found and now unmapped value
                     return tmp2;
                 } else {
@@ -474,17 +467,19 @@ public class MMObjectNode {
     }
 
     /**
-     * Get a value of a certain field.
+     * Get a binary value of a certain field.
      * @param fieldname the name of the field who's data to return
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */
     public byte[] getByteValue(String fieldname) {
 
-
         // try to get the value from the values table
         // it might be using a prefix to allow multilevel
         // nodes to work (if not duplicate can not be stored)
-        Object obj=retrieveValue(prefix+fieldname);
+
+        // call below also allows for byte[] type of
+        // formatting functons.
+        Object obj=getValue(fieldname);
 
         // well same as with strings we only unmap byte values when
         // we really use them since they mean a extra request to the
@@ -529,15 +524,16 @@ public class MMObjectNode {
      */
     public int getIntValue(String fieldname) {
         Object i=getValue(fieldname);
-        return (i instanceof Number) ? ((Number)i).intValue() : -1;
-
-/*        Integer i=(Integer)retrieveValue(prefix+fieldname);
-        if (i!=null) {
-            return i.intValue();
-        } else {
-            return -1;
+        int res=-1;
+        if (i instanceof Number) {
+            res=((Number)i).intValue();
+        } else if (i!=null) {
+            try {
+              res=Integer.parseInt(""+i);
+            } catch (NumberFormatException e) {}
         }
-*/    }
+        return res;
+    }
 
 
     /**
@@ -549,19 +545,16 @@ public class MMObjectNode {
      */
     public Integer getIntegerValue(String fieldname) {
         Object i=getValue(fieldname);
+        int res=-1;
         if (i instanceof Number) {
-            return (i instanceof Integer) ? (Integer)i : new Integer(((Number)i).intValue());
-        } else
-            return new Integer(-1);
-
-/*        Integer i=(Integer)retrieveValue(prefix+fieldname);
-        if (i!=null) {
-            return i;
-        } else {
-            return new Integer(-1);
+            res=((Number)i).intValue();
+        } else if (i!=null) {
+            try {
+              res=Integer.parseInt(""+i);
+            } catch (NumberFormatException e) {}
         }
-*/    }
-
+        return new Integer(res);
+    }
 
     /**
      * Get a value of a certain field.
@@ -572,14 +565,16 @@ public class MMObjectNode {
      */
     public long getLongValue(String fieldname) {
         Object i=getValue(fieldname);
-        return (i instanceof Number) ? ((Number)i).longValue() : -1;
-/*        Long i=(Long)retrieveValue(prefix+fieldname);
-        if (i!=null) {
-            return i.longValue();
-        } else {
-            return -1;
+        long res =-1;
+        if (i instanceof Number) {
+            res=((Number)i).longValue();
+        } else if (i!=null) {
+            try {
+              res=Long.parseLong(""+i);
+            } catch (NumberFormatException e) {}
         }
-*/    }
+        return res;
+    }
 
 
     /**
@@ -591,14 +586,17 @@ public class MMObjectNode {
      */
     public float getFloatValue(String fieldname) {
         Object i=getValue(fieldname);
-        return (i instanceof Number) ? ((Number)i).floatValue() : -1;
-/*        Float i=(Float)retrieveValue(prefix+fieldname);
-        if (i!=null) {
-            return i.floatValue();
-        } else {
-            return -1;
+        float res =-1;
+        if (i instanceof Number) {
+            res=((Number)i).floatValue();
+        } else if (i!=null) {
+
+            try {
+              res=Float.parseFloat(""+i);
+            } catch (NumberFormatException e) {}
         }
-*/    }
+        return res;
+    }
 
 
     /**
@@ -610,14 +608,16 @@ public class MMObjectNode {
      */
     public double getDoubleValue(String fieldname) {
         Object i=getValue(fieldname);
-        return (i instanceof Number) ? ((Number)i).doubleValue() : -1;
-/*        Double i=(Double)retrieveValue(prefix+fieldname);
-        if (i!=null) {
-            return i.doubleValue();
-        } else {
-            return -1;
+        double res =-1;
+        if (i instanceof Number) {
+            res=((Number)i).doubleValue();
+        } else if (i!=null) {
+            try {
+              res=Double.parseDouble(""+i);
+            } catch (NumberFormatException e) {}
         }
-*/    }
+        return res;
+    }
 
     /**
      * Get a value of a certain field and return is in string form (regardless of actual type).
