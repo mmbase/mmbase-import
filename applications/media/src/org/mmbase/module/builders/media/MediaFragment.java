@@ -31,9 +31,6 @@ import javax.servlet.http.HttpServletRequest;
  *
  * Caching will be handled in caching package, and will be implemented in the end.
  *
- * The mediapart will have start and stoptimes. We will implement a getValue that
- * can calculate the length of the mediapart.
- *
  * There is some extra functionality in the old Videopart builder that is not
  * integrated yet in this mediapart builder.
  *
@@ -104,8 +101,8 @@ public class MediaFragment extends MMObjectBuilder {
         } else if (field.equals("showclass")) {
             // Maybe implement this to be backwards compatible.
             return null;
-        } else if (field.equals("length")) {
-            return calculateLength(node);
+        } else if (field.equals("showlength")) {
+            return ""+calculateLength(node);
         } else if (field.equals("urlresult")) {
             return getUrl(node.getNumber(), null, 0, 0);        
         } else {
@@ -113,8 +110,26 @@ public class MediaFragment extends MMObjectBuilder {
         }
     }
     
-    private String calculateLength(MMObjectNode node) {
-        return null;
+    /**
+     * calculate the length of a mediafragment
+     * @param node the mediafragment
+     * @return length in milliseconds
+     */
+    private long calculateLength(MMObjectNode node) {
+        long start = node.getLongValue("start");
+        long stop = node.getLongValue("stop");
+        long length = node.getLongValue("length");
+        
+        
+        if(stop!=0) {
+            return stop-start;
+        } else if(length!=0) {
+            return length-start;
+        } 
+        
+        log.debug("length cannot be evaluated, no stoptime and no length");
+                                
+        return 0;
         
     }
     
@@ -146,14 +161,7 @@ public class MediaFragment extends MMObjectBuilder {
         log.debug("Selected mediasource = "+mediaSource.getNumber());
         return mediaSourceBuilder.getUrl(mediaFragment, mediaSource, request, wantedspeed, wantedchannels);
     }
-    
-    /**
-     * which is the mediasource we want to return.
-     */
-    private MMObjectNode findBestMediaSource(int userSpeed, int userChannels) {
-        return null;
-    }
-    
+        
     /**
      * if a mediafragment is coupled to another mediafragment instead of being directly
      * coupled to mediasources, the mediafragment is a subfragment.
