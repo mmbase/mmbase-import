@@ -129,6 +129,9 @@
 <mm:import id="keyword" reset="true">Email</mm:import><mm:import id="mlg_Email"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Account</mm:import><mm:import id="mlg_Account"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Password</mm:import><mm:import id="mlg_Password"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import> 
+<mm:import id="keyword" reset="true">ConfirmPassword</mm:import><mm:import id="mlg_ConfirmPassword"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import> 
+<mm:import id="keyword" reset="true">NewPassword</mm:import><mm:import id="mlg_NewPassword"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import> 
+<mm:import id="keyword" reset="true">NewConfirmPassword</mm:import><mm:import id="mlg_NewConfirmPassword"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import> 
 <mm:import id="keyword" reset="true">Male</mm:import><mm:import id="mlg_Male"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Female</mm:import><mm:import id="mlg_Female"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Save</mm:import><mm:import id="mlg_Save"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
@@ -146,6 +149,7 @@
 <mm:import id="keyword" reset="true">No_avatars_installed</mm:import><mm:import id="mlg_No_avatars_installed"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
 <mm:import id="keyword" reset="true">Account_allready_in_use</mm:import><mm:import id="mlg_Account_allready_in_use"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">Password_notequal</mm:import><mm:import id="mlg_Password_notequal"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Account_created</mm:import><mm:import id="mlg_Account_created"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Your_account_is_created_you_may</mm:import><mm:import id="mlg_Your_account_is_created_you_may"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
@@ -244,4 +248,8 @@
 <mm:import id="keyword" reset="true">Account_disabled</mm:import><mm:import id="mlg_Account_disabled"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Account_not_found</mm:import><mm:import id="mlg_Account_not_found"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">Wrong_password</mm:import><mm:import id="mlg_Wrong_password"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+
+<mm:import id="keyword" reset="true">ProfileUpdated</mm:import><mm:import id="mlg_ProfileUpdated"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">ProfileUpdateFailed</mm:import><mm:import id="mlg_ProfileUpdateFailed"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">PasswordChanged</mm:import><mm:import id="mlg_PasswordChanged"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 

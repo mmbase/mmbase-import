@@ -28,11 +28,24 @@
 		<mm:import id="wforum"><mm:field name="name" /></mm:import>
        		<mm:relatednodes type="posters" constraints="(account='$wantedaccount')" max="1">
 		<mm:import id="wemail"><mm:field name="email" /></mm:import>
+		<mm:import id="posterid" reset="true"><mm:field name="number" /></mm:import>
+		<mm:import id="email"><mm:field name="email" /></mm:import>
+
 		<mm:import id="waccount"><mm:field name="account" /></mm:import>
-		<mm:import id="wpassword"><mm:field name="password" /></mm:import>
+                
+                <mm:import id="firstname"><mm:field name="firstname" /></mm:import>
+                <mm:import id="lastname"><mm:field name="lastname" /></mm:import>
+                <mm:import id="gender"><mm:field name="gender" /></mm:import>
+                <mm:import id="location"><mm:field name="location" /></mm:import>
+                <% String newPassword =
+                Integer.toHexString(
+                    (int)(Math.random() * 0xfffffff)); %>
+		<mm:import id="wpassword"><%=newPassword %></mm:import>
+                <mm:import id="newpassword"><mm:write referid="wpassword"/></mm:import>
+               <mm:import id="newconfirmpassword"><mm:write referid="wpassword"/></mm:import>
                 <!--  create the email node -->
                 <mm:createnode id="mail1" type="email">
-                        <mm:setfield name="from">daniel@xs4all.nl</mm:setfield>
+                        <mm:setfield name="from">danel@xs4all.nl</mm:setfield>
                         <mm:setfield name="to"><mm:write referid="wemail" /></mm:setfield>
                         <mm:setfield name="subject"><mm:write referid="mlg_Your_account_information_for_the_MMBob_forum"/></mm:setfield>
                         <mm:setfield name="body"> <mm:write referid="mlg_Your_account_information_for_the_MMBob_forum"/>: <mm:write referid="wforum" /> :
@@ -50,6 +63,15 @@
 		<mm:import id="mailed">true</mm:import>
                 </mm:relatednodes>
 	</mm:node>
+ 
+        <%-- setting new password into poster --%>
+	<mm:import id="feedback"><mm:function set="mmbob" name="editPoster" referids="forumid,posterid,firstname,lastname,email,gender,location,newpassword,newconfirmpassword"/></mm:import>
+
+
+
+
+
+
 </mm:compare>
 </mm:present>
 <!-- end action check -->
@@ -71,7 +93,7 @@
 <form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
 <tr><th align="left" ><p />
 <mm:write referid="mlg_Login_mail_sent_to" /> : <mm:write referid="wemail" />, <br />
-
+<%--<mm:write referid="wpassword" /> - <mm:write referid="feedback"/>--%>
 </th></tr>
 <tr><td>
 <center>

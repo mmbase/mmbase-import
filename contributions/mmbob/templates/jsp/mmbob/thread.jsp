@@ -20,6 +20,17 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
+<mm:nodefunction set="mmbob" name="getForumConfig" referids="forumid,posterid">
+  <mm:field name="postingsperpage" id="pagesize" write="false"/>
+</mm:nodefunction>
+
+<mm:write referid="pagesize"/>
+
+<mm:notpresent referid="pagesize">
+<mm:import id="pagesize">20</mm:import>
+</mm:notpresent>
+
+
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
@@ -67,7 +78,7 @@
 </table>
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" align="center" align="center">
 	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
-   	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
+   	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
 			(<mm:field name="pagecount" />) 
 			<mm:field name="navline" />
 			<mm:import id="lastpage"><mm:field name="lastpage" /></mm:import>
@@ -77,7 +88,7 @@
 </table>
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%" align="center">
-  		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page">
+  		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page,pagesize">
 		  <mm:first>
 			<tr><th width="25%" align="left"><mm:write referid="mlg_Member"/></th><th align="left"><mm:write referid="mlg_Topic"/>: <mm:field name="subject" /></th></tr>
 		  </mm:first>
@@ -159,7 +170,8 @@
                         </a>
                         <p />
 
-			<mm:write referid="mlg_Level"/> : <mm:field name="level" /><br />
+			<%-- TODO: not yet implemented
+                        <mm:write referid="mlg_Level"/> : <mm:field name="level" /><br />--%>
 			<mm:write referid="mlg_Posts"/> : <mm:field name="accountpostcount" /><br />
 			<mm:write referid="mlg_Gender"/> : <mm:field name="gender" /><br />
 			<mm:write referid="mlg_Location"/> : <mm:field name="location" /><br />
@@ -201,7 +213,7 @@
 
 <table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%" align="center">
 	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
-   	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
+   	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page,pagesize">
 			<mm:field name="navline" />
 		  </mm:nodefunction>
 	  </b>

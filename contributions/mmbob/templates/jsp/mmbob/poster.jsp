@@ -58,7 +58,8 @@
 		<tr><th><mm:write referid="mlg_Firstname" /></th><td><mm:field name="firstname" /></td></tr>
 		<tr><th><mm:write referid="mlg_Lastname" /></th><td><mm:field name="lastname" /></td></tr>
 		<tr><th><mm:write referid="mlg_Email" /></th><td><mm:field name="email" /></td></tr>
-		<tr><th><mm:write referid="mlg_Level" /></th><td><mm:field name="level" /></td></tr>
+		<%-- TODO: not yet implemented 
+                <tr><th><mm:write referid="mlg_Level" /></th><td><mm:field name="level" /></td></tr>--%>
 		<tr><th><mm:write referid="mlg_Gender" /></th><td><mm:field name="gender" /></td></tr>
 		<tr><th><mm:write referid="mlg_Messages" /></th><td><mm:field name="postcount" /></td></tr>
 		<tr><th><mm:write referid="mlg_Location" /></th><td><mm:field name="location" /></td></tr>
@@ -102,7 +103,8 @@
 			</select>
 			</mm:field>
 		</td></tr>
-		<tr><th><mm:write referid="mlg_Level" /></th><td><mm:field name="level" /></td></tr>
+		<%-- TODO: not yet implemented 
+                <tr><th><mm:write referid="mlg_Level" /></th><td><mm:field name="level" /></td></tr>--%>
 		<tr><th><mm:write referid="mlg_Messages" /></th><td><mm:field name="postcount" /></td></tr
 		<tr><th><mm:write referid="mlg_Member_since" /></th><td><mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
 		<tr><th><mm:write referid="mlg_Last_seen" /></th><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
