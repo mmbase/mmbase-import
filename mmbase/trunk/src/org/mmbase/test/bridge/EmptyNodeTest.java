@@ -28,7 +28,7 @@ public class EmptyNodeTest extends NodeTest {
 
     public void tearDown() {
         // Remove test node.
-        node.remove();
+        node.delete();
     }
 
     public void testGetValue() {

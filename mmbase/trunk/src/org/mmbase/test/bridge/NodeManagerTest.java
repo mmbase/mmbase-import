@@ -39,7 +39,7 @@ public class NodeManagerTest extends TestCase {
 
     public void tearDown() {
         // Remove test node.
-        node.remove();
+        node.delete();
     }
 
     public void testGetList() {
