@@ -31,11 +31,12 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.88 2004-02-11 14:43:19 gerard Exp $
+ * @version $Id: Images.java,v 1.89 2004-02-13 15:32:03 michiel Exp $
  */
 public class Images extends AbstractImages {
 
     private static final Logger log = Logging.getLoggerInstance(Images.class);
+
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
@@ -95,30 +96,33 @@ public class Images extends AbstractImages {
         if (tmp != null) imageConvertClass = tmp;
         getImageConvertParams(getInitParameters());
         tmp = getInitParameter("MaxConcurrentRequests");
-        if (tmp!=null) {
+        if (tmp != null) {
             try {
-                itmp=Integer.parseInt(tmp);
+                itmp = Integer.parseInt(tmp);
             }
             catch (NumberFormatException e) {
-                itmp=2;
-            } maxConcurrentRequests=itmp;
+                itmp = 2;
+            } 
+            maxConcurrentRequests = itmp;
         }
+
         tmp = getInitParameter("DefaultImageType");
-        if (tmp!=null) {
+
+        if (tmp != null) {
             defaultImageType = tmp;
         }
 
         ImageConvertInterface imageConverter = loadImageConverter(imageConvertClass);
         imageConverter.init(imageConvertParams);
 
-        ImageCaches bul = (ImageCaches)mmb.getMMObject("icaches");
-        if(bul==null) {
-            throw new RuntimeException("builder with name 'icaches' wasnt loaded");
+        ImageCaches bul = (ImageCaches) mmb.getMMObject("icaches");
+        if(bul == null) {
+            throw new RuntimeException("builder with name 'icaches' wasn't loaded");
         }
         // Startup parrallel converters
         ireqprocessors = new ImageRequestProcessor[maxConcurrentRequests];
-        log.info("Starting "+maxConcurrentRequests+" Converters");
-        for (int i=0;i < maxConcurrentRequests; i++) {
+        log.info("Starting " + maxConcurrentRequests + " Converters");
+        for (int i = 0; i < maxConcurrentRequests; i++) {
             ireqprocessors[i] = new ImageRequestProcessor(bul, imageConverter, imageRequestQueue, imageRequestTable);
         }
         return true;
@@ -713,7 +717,7 @@ public class Images extends AbstractImages {
         }
         // do the commit
         if(super.commit(node)) {
-            // when cache is invalide, invalidate
+            // when cache is invalid, invalidate
             if(imageCacheInvalid) {
                 invalidateImageCache(node);
                 templateCacheNumberCache.remove(node.getNumber());
@@ -752,6 +756,13 @@ public class Images extends AbstractImages {
      */
     void invalidateTemplateCacheNumberCache(int number) {
         templateCacheNumberCache.remove(number);
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    void invalidateTemplateCacheNumberCache(String ckey) {
+        templateCacheNumberCache.remove(ckey);
     }
 }
 

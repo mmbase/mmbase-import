@@ -26,11 +26,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.35 2004-02-06 14:26:03 pierre Exp $
+ * @version $Id: ImageCaches.java,v 1.36 2004-02-13 15:32:03 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
-    private static Logger log = Logging.getLoggerInstance(ImageCaches.class);
+    private static final Logger log = Logging.getLoggerInstance(ImageCaches.class);
 
     static final String GUI_IMAGETEMPLATE = "s(100x60)";
 
@@ -286,6 +286,14 @@ public class ImageCaches extends AbstractImages {
     public String getImageMimeType(List params) {
         return getImageMimeType(getNode("" + params.get(0)));
     }
+
+    public int insert(String owner, MMObjectNode node) {      
+        int res = super.insert(owner, node);
+        // just te make sure, make sure there is no such thing with this ckey cached
+        ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache(node.getStringValue("ckey"));
+        return res;
+    }
+
 
 
 }
