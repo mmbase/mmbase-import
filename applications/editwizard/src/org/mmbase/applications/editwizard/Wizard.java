@@ -30,25 +30,28 @@ import org.mmbase.util.FileWatcher;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.92 2003-07-03 11:57:13 nico Exp $
+ * @version $Id: Wizard.java,v 1.93 2003-07-07 09:33:09 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
     // logging
-    private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Wizard.class);
 
     // File -> Document (resolved includes/shortcuts)
     private static WizardSchemaCache wizardSchemaCache;
+
+
     private static NodeCache nodeCache;
     private static FieldDataCache fieldDataCache;
    
     static {
         wizardSchemaCache = new WizardSchemaCache();
         wizardSchemaCache.putCache();
-        nodeCache = new NodeCache();
+        nodeCache         = new NodeCache();
         nodeCache.putCache();
-        fieldDataCache = new FieldDataCache();
+        fieldDataCache    = new FieldDataCache();
         fieldDataCache.putCache();
+        fieldDataCache.setActive(false);
     }
     // Some of these variables are placed public, for debugging reasons.
     private Document preform;
@@ -175,8 +178,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param dataid the objectnumber
      * @param cloud the Cloud to use
      */
-    public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud)
-        throws WizardException {
+    public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud) throws WizardException {
         Config.WizardConfig wizardConfig = new Config.WizardConfig();
         wizardConfig.objectNumber = dataid;
         wizardConfig.wizard = wizardname;
@@ -191,13 +193,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      * @param cloud the Cloud to use
      */
-    public Wizard(String context, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)
-        throws WizardException {
+    public Wizard(String context, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
         initialize(context, uri, wizardConfig, cloud);
     }
 
-    private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)
-        throws WizardException {
+    private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException {
 
         context = c;
         uriResolver = uri;
@@ -773,8 +773,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param       data    Points to the datacontext node which should be used for this form.
      */
     public void createPreHtmlForm(Node form, Node formdef, Node data) throws WizardException {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.trace("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + data);
+        }
         // select all fields on first level
         NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|list|command");
 
@@ -2295,7 +2296,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          super(100);
       }
       
-      public String getName() {
+       public String getName() {
          return "FieldDataCache";
       }
       
