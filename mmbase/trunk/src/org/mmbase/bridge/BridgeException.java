@@ -18,7 +18,7 @@ package org.mmbase.bridge;
  * initCause() and getCause();
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeException.java,v 1.10 2003-08-26 08:05:48 pierre Exp $
+ * @version $Id: BridgeException.java,v 1.11 2003-08-26 08:17:36 pierre Exp $
  */
 public class BridgeException extends RuntimeException {
 
@@ -52,7 +52,10 @@ public class BridgeException extends RuntimeException {
      * @since  MMBase-1.6
      */
     public BridgeException(Throwable cause) {
-        super(cause);
+        super(cause==null ? null : org.mmbase.util.logging.Logging.stackTrace(cause));
+        initCause(cause);
+        // 1.4 code:
+        // super(cause);
     }
 
     /**
@@ -65,6 +68,42 @@ public class BridgeException extends RuntimeException {
      * @since  MMBase-1.6
      */
     public BridgeException(String message, Throwable cause) {
-        super(message, cause);
+        super(message);
+        initCause(cause);
+        // 1.4 code:
+        // super(message,cause);
     }
+
+    /**
+     * Sets the cause of the exception.
+     *
+     * @return the cause of the error
+     * @since  MMBase-1.6
+     */
+    public Throwable initCause(Throwable cause) {
+        if (cause==this) {
+          throw new IllegalArgumentException("A throwable cannot be its own cause"); 
+        }
+        if (this.cause!=null) {
+          throw new IllegalStateException("A cause can be set at most once"); 
+        }
+        this.cause=cause;
+        return cause;
+        // 1.4 code:
+        // return super.initCause(cause);
+    }
+
+    /**
+     * Returns the cause of the exception.
+     *
+     * @return the cause of the exception
+     * @since  MMBase-1.6
+     */
+    public Throwable getCause() {
+        return cause;
+        // 1.4 code:
+        // return super.getCause();
+    }
+
+    
 }
