@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.11 2003-08-12 10:34:41 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.12 2003-08-12 15:02:59 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -89,7 +89,7 @@ public class ContextContainer extends HashMap {
 
 
     private String id;
-    private ContextContainer parent;
+    protected ContextContainer parent;
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -255,8 +255,12 @@ public class ContextContainer extends HashMap {
     /**
      * @since MMBase-1.7
      */
-    Set myKeySet() {
-        return super.keySet();
+    Set keySet(boolean checkParent) {
+        if (checkParent) {
+            return keySet();
+        } else {
+            return super.keySet();
+        }
     }
 
     // utilities, since MMBase-1.7 moved from ContextTag to here.
@@ -348,9 +352,9 @@ public class ContextContainer extends HashMap {
     /**
      * @since MMBase-1.7
      */
-    void unRegisterAll(Map map) throws JspTagException {
-        if (map == null) return;
-        Iterator i = map.keySet().iterator();
+    void unRegisterAll(Set set) throws JspTagException {
+        if (set == null) return;
+        Iterator i = set.iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
             unRegister(key);

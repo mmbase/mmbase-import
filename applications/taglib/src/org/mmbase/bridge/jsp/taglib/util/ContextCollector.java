@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.3 2003-08-12 10:34:41 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.4 2003-08-12 15:02:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
@@ -29,7 +29,7 @@ public class  ContextCollector  {
     private Map              collector;
 
     public ContextCollector(ContextContainer parent) {
-        contextContainer = new ContextContainer(null, parent);
+        contextContainer = new Container(parent);
         collector        = new HashMap();
     }
 
@@ -41,7 +41,7 @@ public class  ContextCollector  {
 
         ContextContainer parent = contextContainer.getParent();
 
-        Iterator keySet = contextContainer.myKeySet().iterator();
+        Iterator keySet = contextContainer.keySet(false).iterator();
         while(keySet.hasNext()) {
             String key = (String) keySet.next();
             if (collector.containsKey(key)) {
@@ -54,11 +54,19 @@ public class  ContextCollector  {
         // remember what was ours:
         collector.putAll(contextContainer);       
 
-        // ane make the container ready for the next iteration
+        // and make the container ready for the next iteration
         contextContainer.clear();
 
     }
 
-    
+    private class Container extends ContextContainer {
+        Container(ContextContainer parent) {
+            super(null, parent);
+        }
+        public void unRegister(String key) throws JspTagException {
+            super.unRegister(key);
+            parent.unRegister(key);
+        }
+    }
 
 }
