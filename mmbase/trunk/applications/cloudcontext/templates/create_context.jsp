@@ -5,7 +5,7 @@
 <mm:content language="$language">
 <mm:import id="url">create_context.jsp</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
-<h1><%=m.getString("create_context")%></h1>
+<h1><%=getPrompt(m,"create_context")%></h1>
 <%@include file="you.div.jsp" %>
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_context.jsp</mm:param></mm:url>" method="post">
 <table>
@@ -13,7 +13,7 @@
     <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
     <input type="hidden" name="context" value="new" />
   </mm:fieldlist>
-    <tr><td>&nbsp;</td><td><input type="submit" name="create" value="<%=m.getString("submit")%>" /></td></tr>
+    <tr><td>&nbsp;</td><td><input type="submit" name="create" value="<%=getPrompt(m,"submit")%>" /></td></tr>
 </table>
 </form>
 </mm:cloud>
