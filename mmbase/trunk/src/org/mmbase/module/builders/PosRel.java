@@ -23,25 +23,7 @@ import org.mmbase.util.*;
  */
 public class PosRel extends InsRel {
 
-	int relnumber=-1;
-
 	public PosRel() {
-	}
-
-	/**
-	* setDefaults for a node
-	*/
-	public void setDefaults(MMObjectNode node) {
-		if (relnumber==-1) {
-			RelDef bul=(RelDef)mmb.getMMObject("reldef");
-			if (bul!=null) {
-				relnumber=bul.getGuessedByName(tableName);
-				if (relnumber==-1) System.out.println("PosRel-> Can not guess name");
-			} else {
-				System.out.println("PosRel-> Can not reach RelDef");
-			}
-		}
-		node.setValue("rnumber",relnumber);
 	}
 
 }
