@@ -31,7 +31,7 @@ import java.util.*;
  * @see   Config
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
-    private static Logger log = Logging.getLoggerInstance(RamURLComposer.class);
+    private static final Logger log = Logging.getLoggerInstance(RamURLComposer.class);
     
     protected  Format          format;
     

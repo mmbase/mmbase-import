@@ -37,7 +37,7 @@ import java.lang.reflect.*;
 
 public class URLComposerFactory  {
     
-    private static Logger log = Logging.getLoggerInstance(URLComposerFactory.class);
+    private static final Logger log = Logging.getLoggerInstance(URLComposerFactory.class);
     
     // XML tags:
     private static final String MAIN_TAG     = "urlcomposers";
@@ -159,7 +159,7 @@ public class URLComposerFactory  {
                     log.debug("Adding for format " + format + " urlcomposer " + clazz);
                     urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
                 } catch (ClassNotFoundException ex) {
-                    log.error("Cannot load urlcomposer " + clazz);
+                    log.error("Cannot load urlcomposer " + clazz + " because " + ex.getMessage());
                 }
             }
             
