@@ -20,6 +20,13 @@ import org.w3c.dom.traversal.*;
 
 import org.mmbase.util.*;
 
+/**
+ * @author Case Roole, cjr@dds.nl
+ * 
+ * $Id: AbstractReport.java,v 1.2 2000-10-07 17:06:07 case Exp $
+ *
+ * $Log: not supported by cvs2svn $
+ */
 public abstract class AbstractReport implements ReportInterface {
     protected String mode,encoding;
     protected Hashtable specialChars;
@@ -234,9 +241,9 @@ public abstract class AbstractReport implements ReportInterface {
 	    configpath=System.getProperty("mmbase.config");
 	}
         //configpath = System.getProperty("mmbase.config");
-        if (configpath.endsWith(File.separator)) {
-            configpath = configpath.substring(0,configpath.length()-1);
-        }
+	if (configpath != null && configpath.endsWith(File.separator)) {
+	    configpath = configpath.substring(0,configpath.length()-1);
+	}
 	return configpath;
     }
 }

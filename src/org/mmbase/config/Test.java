@@ -17,19 +17,21 @@ public class Test {
 	String res = "";
 
 	String[] reportKeys = new String[]{
+	    "jvmoptions",
 	    "java",
 	    "database",
 	    "builders",
 	    "languages"
 	};
 	Hashtable reportClasses = new Hashtable();
+	reportClasses.put("jvmoptions","org.mmbase.config.JVMOptionsReport");
 	reportClasses.put("java","org.mmbase.config.JavaReport");
 	reportClasses.put("database","org.mmbase.config.DatabaseReport");
 	reportClasses.put("builders","org.mmbase.config.BuilderReport");
 	reportClasses.put("languages","org.mmbase.config.LanguagesReport");
 
 	
-
+	System.out.println("MMBASE CONFIGURATION REPORT:\n------\n");
 	for (int i=0;i<reportKeys.length;i++) {
 	    try {
 		Class c = Class.forName((String)reportClasses.get(reportKeys[i]));
@@ -43,7 +45,14 @@ public class Test {
 		res = res + "ERROR: failed to load " + reportClasses.get(reportKeys[i]) + ": " + ignore.getMessage() + eol;
 	    }
 	}
-	System.out.println("REPORT:\n------\n\n");
 	System.out.println(res);
     }
 }
+
+
+
+
+
+
+
+
