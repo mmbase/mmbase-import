@@ -767,7 +767,7 @@ Build-compiler: ${build.compiler}
         </fileset>
       </classpath>
     </javadoc>
-    <available property="did.javadocs" />
+    <property name="did.javadocs" value="true" />
   </target>
 
 
