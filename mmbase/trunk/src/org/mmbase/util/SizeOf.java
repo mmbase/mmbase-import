@@ -104,7 +104,7 @@ public class SizeOf {
     }
 
     private int sizeof(javax.servlet.http.HttpSession session) {
-        log.debug("sizeof HttpSerssion");
+        log.debug("sizeof HttpSession");
         int len = size_inst(session, session.getClass());
         Enumeration e = session.getAttributeNames();
         while (e.hasMoreElements()) {
