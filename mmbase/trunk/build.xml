@@ -254,14 +254,13 @@ builddate=${builddate}
   <target
     name="lib.release"
     description="Create the lib directory"
-    depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jspsmartupload,expand.jai">
+    depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai">
 
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
     <copy file="${xerces.jar}"         todir="${release.lib.dir}" />
     <copy file="${xml-apis.jar}"       todir="${release.lib.dir}" />
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
-    <copy file="${jspsmartupload.jar}" todir="${release.lib.dir}" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
     <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
@@ -1121,13 +1120,6 @@ Build-compiler: ${build.compiler}
     <available property="log4j.expanded"
                file="${expand.dir}/${log4j.fullversion}"/>
 
-    <!-- JSPSmartUpload -->
-    <property name="jspsmartupload.file" value="jspSmartUpload" />
-    <property name="jspsmartupload.url" value="http://www.jspsmart.com/liblocal/download/EN/${jspsmartupload.file}.tar.gz" />
-    <property name="jspsmartupload.jar" value="${expand.dir}/jspsmartupload/jspsmartupload.jar" />
-    <available property="jspsmartupload.present" file="${download.dir}/${jspsmartupload.file}.tar.gz" />
-    <available property="jspsmartupload.expanded" file="${jspsmartupload.jar}" />
-
     <!-- Docbook XSL -->
     <property name="docbook-xsl.version" value="docbook-xsl-1.60.1"  />
     <property name="docbook-xsl.file" value="${docbook-xsl.version}.tar.gz"  />
@@ -1253,30 +1245,6 @@ Build-compiler: ${build.compiler}
     <mkdir dir="${expand.dir}/${hsql.version}"/>
     <unzip src="${download.dir}/${hsql.version}.zip" dest="${expand.dir}/${hsql.version}"/>
   </target>
-
-  <!-- Jsp Smartupload is necessary for the editwizards -->
-  <target name="get.jspsmartupload" depends="init.get" unless="jspsmartupload.present">
-    <get src="${jspsmartupload.url}"
-         dest="${download.dir}/${jspsmartupload.file}.tar.gz"
-         verbose="on" />
-  </target>
-
-  <target name="expand.jspsmartupload" depends="get.jspsmartupload" unless="jspsmartupload.expanded">
-    <mkdir dir="${expand.dir}/jspsmartupload" />
-    <gunzip src="${download.dir}/${jspsmartupload.file}.tar.gz" dest="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar"/>
-    <untar src="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar" dest="${expand.dir}/jspsmartupload"/>
-
-    <echo file="${expand.dir}/jspsmartupload/manifest.mf">
-Name: com/jspsmart/upload
-Version: MMBase build ${version}.${builddate}
-</echo>
-    <jar jarfile="${expand.dir}/jspsmartupload/jspsmartupload.jar"
-         basedir="${expand.dir}/jspsmartupload/jspsmartupload/Web-inf/classes"
-       includes="com/**"
-       manifest="${expand.dir}/jspsmartupload/manifest.mf" >
-    </jar>
-  </target>
-
 
   <target name="get.docbook-xsl" depends="init,init.get" unless="docbook-xsl.present">
     <get src="${docbook-xsl.url}"
