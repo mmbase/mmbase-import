@@ -16,7 +16,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
@@ -63,8 +63,8 @@ public class QueryHandlerSampleCode {
 /* 
  Query equivalent to:
         SELECT * FROM <basename>_pools pools
- Result: real nodes with these fields: 
-         number, otype, owner, name, description      
+ Returns: 
+    real nodes with these fields: number, otype, owner, name, description      
  */
         System.out.println("Query: " + sqlHandler.toSql(query1, sqlHandler));
         
@@ -110,6 +110,11 @@ public class QueryHandlerSampleCode {
             System.out.println("Clusternode: " + node);
         }
 
+/*
+ Returns: 
+        clusternodes with these fields: pools.number, insrel.number, images.number      
+ */ 
+
         // EXAMPLE 3: query retrieving clusternodes using table aliases.
         BasicSearchQuery query3 = new BasicSearchQuery();
         BasicStep step3a = query3.addStep(pools);
@@ -148,8 +153,8 @@ public class QueryHandlerSampleCode {
         }
 
 /*
- Result: clusternodes with these fields: 
-         pools0.number, insrel.number, images3.number      
+ Returns: 
+        clusternodes with these fields: pools0.number, insrel.number, images3.number      
  */ 
         
         // EXAMPLE 4: query retrieving resultnodes.
@@ -167,7 +172,7 @@ public class QueryHandlerSampleCode {
             pools.name as field2,
             pools.description as field3
         FROM 
-            <basename>_pools pools, 
+            <basename>_pools pools
  */
         System.out.println("Query: " + sqlHandler.toSql(query4, sqlHandler));
 
@@ -180,11 +185,11 @@ public class QueryHandlerSampleCode {
         }
 
 /*
- Result: resultnodes with these fields: 
-         field1, field2, field3      
+ Returns: 
+        resultnodes with these fields: field1, field2, field3      
  */ 
 
-        // EXAMPLE 5: aggregating query retrieving resultnodes.
+        // EXAMPLE 5: query retrieving aggregated resultnodes.
         BasicSearchQuery query5 = new BasicSearchQuery(true);
         BasicStep step5a = query5.addStep(pools);
         // Add some aggregated fields with field aliases.
@@ -202,7 +207,7 @@ public class QueryHandlerSampleCode {
             MIN(pools.number) as min_number,
             MAX(pools.number) as max_number
         FROM 
-            <basename>_pools pools, 
+            <basename>_pools pools
  */
         System.out.println("Query: " + sqlHandler.toSql(query5, sqlHandler));
 
@@ -215,8 +220,8 @@ public class QueryHandlerSampleCode {
         }
 
 /*
- Result: resultnode with these fields: 
-         count, min_number, max_number      
+ Returns: 
+        a resultnode with these fields: count, min_number, max_number      
  */ 
 
         System.exit(0);

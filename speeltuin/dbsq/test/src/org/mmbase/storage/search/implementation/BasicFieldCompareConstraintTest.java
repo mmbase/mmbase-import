@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicFieldCompareConstraintTest extends TestCase {
     
@@ -74,8 +74,8 @@ public class BasicFieldCompareConstraintTest extends TestCase {
     /** Test of setOperator method, of class org.mmbase.storage.search.implementation.BasicFieldCompareConstraint. */
     public void testSetOperator() {
         // Default is EQUAL.
-        assert(instance1.getOperator() == FieldValueConstraint.EQUAL);
-        assert(instance2.getOperator() == FieldValueConstraint.EQUAL);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.EQUAL);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.EQUAL);
         
         // Invalid operator value, should throw IllegalArgumentException.
         try {
@@ -88,19 +88,19 @@ public class BasicFieldCompareConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         instance1.setOperator(FieldValueConstraint.LESS);
-        assert(instance1.getOperator() == FieldValueConstraint.LESS);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.LESS);
         instance2.setOperator(FieldValueConstraint.LESS);
-        assert(instance2.getOperator() == FieldValueConstraint.LESS);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.LESS);
         instance1.setOperator(FieldValueConstraint.EQUAL);
-        assert(instance1.getOperator() == FieldValueConstraint.EQUAL);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.EQUAL);
         instance2.setOperator(FieldValueConstraint.EQUAL);
-        assert(instance2.getOperator() == FieldValueConstraint.EQUAL);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.EQUAL);
         instance1.setOperator(FieldValueConstraint.GREATER);
-        assert(instance1.getOperator() == FieldValueConstraint.GREATER);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.GREATER);
         instance2.setOperator(FieldValueConstraint.GREATER);
-        assert(instance2.getOperator() == FieldValueConstraint.GREATER);
+        assertTrue(instance2.getOperator() == FieldValueConstraint.GREATER);
         instance1.setOperator(FieldValueConstraint.LIKE);
-        assert(instance1.getOperator() == FieldValueConstraint.LIKE);
+        assertTrue(instance1.getOperator() == FieldValueConstraint.LIKE);
         try {
             // Like operator for integer type field, should throw IllegalArgumentException.
             instance2.setOperator(FieldValueConstraint.LIKE);
@@ -117,7 +117,7 @@ public class BasicFieldCompareConstraintTest extends TestCase {
     /** Test of getBasicSupportLevel method. */
     public void testGetBasicSupportLevel() {
         // Returns SUPPORT_OPTIMAL.
-        assert(instance1.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
+        assertTrue(instance1.getBasicSupportLevel() == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicFieldCompareConstraint. */

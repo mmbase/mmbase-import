@@ -11,7 +11,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicRelationStepTest extends TestCase {
     
@@ -65,7 +65,7 @@ public class BasicRelationStepTest extends TestCase {
     /** Test of setDirectionality method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
     public void testSetDirectionality() {
        // Default is RelationStep.DIRECTIONS_BOTH.
-       assert(instance.getDirectionality() == RelationStep.DIRECTIONS_BOTH);
+       assertTrue(instance.getDirectionality() == RelationStep.DIRECTIONS_BOTH);
        
         // Invalid value, should throw IllegalArgumentException.
        try {
@@ -74,10 +74,10 @@ public class BasicRelationStepTest extends TestCase {
         } catch (IllegalArgumentException e) {}
        
        instance.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-       assert(instance.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
+       assertTrue(instance.getDirectionality() == RelationStep.DIRECTIONS_SOURCE);
        
        instance.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-       assert(instance.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
+       assertTrue(instance.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
     }
     
     /** Test of getDirectionality method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
@@ -89,15 +89,15 @@ public class BasicRelationStepTest extends TestCase {
     /** Test of getPrevious method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
     public void testGetPrevious() {
         Step step1 = instance.getPrevious();
-        assert(step1 != null);
-        assert(step1.equals(previous));
+        assertTrue(step1 != null);
+        assertTrue(step1.equals(previous));
     }
     
     /** Test of getNext method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
     public void testGetNext() {
         Step step2 = instance.getNext();
-        assert(next != null);
-        assert(step2.equals(next));
+        assertTrue(next != null);
+        assertTrue(step2.equals(next));
     }
     
     /** Test of equals method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
@@ -113,7 +113,7 @@ public class BasicRelationStepTest extends TestCase {
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
     public void testToString() {
         // With default alias.
-        assert(instance.toString(), 
+        assertTrue(instance.toString(), 
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
@@ -121,7 +121,7 @@ public class BasicRelationStepTest extends TestCase {
         
         // With test alias.
         instance.setAlias(TEST_ALIAS);
-        assert(instance.toString(), 
+        assertTrue(instance.toString(), 
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 
@@ -130,7 +130,7 @@ public class BasicRelationStepTest extends TestCase {
         // With nodes.
         instance.addNode(123);
         instance.addNode(3456);
-        assert(instance.toString(), 
+        assertTrue(instance.toString(), 
         instance.toString().equals("RelationStep(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 
         + instance.getNodes() + ", dir:" 

@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class BasicAggregatedFieldTest extends TestCase {
     
@@ -59,10 +59,10 @@ public class BasicAggregatedFieldTest extends TestCase {
     
     /** Test of setAggregationType method, of class org.mmbase.storage.search.implementation.BasicAggregatedField. */
     public void testSetAggregationType() {
-        assert(instance.getAggregationType() 
+        assertTrue(instance.getAggregationType() 
         == AggregatedField.AGGREGATION_TYPE_MAX);
         instance.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
-        assert(instance.getAggregationType() 
+        assertTrue(instance.getAggregationType() 
         == AggregatedField.AGGREGATION_TYPE_GROUP_BY);
         
         try {
@@ -92,7 +92,7 @@ public class BasicAggregatedFieldTest extends TestCase {
     
     /** Test of toString method, of class org.mmbase.storage.search.implementation.BasicAggregatedField. */
     public void testToString() {
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals(
         "AggregatedField(step:" + instance.getStep().getAlias()
         + ", fieldname:" + instance.getFieldName()
@@ -100,7 +100,7 @@ public class BasicAggregatedFieldTest extends TestCase {
         + ", aggregationtype:" + instance.getAggregationType() + ")"));
         
         instance.setAlias("kjeiejk");
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals(
         "AggregatedField(step:" + instance.getStep().getAlias()
         + ", fieldname:" + instance.getFieldName()
@@ -108,7 +108,7 @@ public class BasicAggregatedFieldTest extends TestCase {
         + ", aggregationtype:" + instance.getAggregationType() + ")"));
         
         instance.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
-        assert(instance.toString(),
+        assertTrue(instance.toString(),
         instance.toString().equals(
         "AggregatedField(step:" + instance.getStep().getAlias()
         + ", fieldname:" + instance.getFieldName()
