@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<insrel exportsource="mmbase://127.0.0.1/install/b1" timestamp="20000602143030">
+	<node number="1086" owner="admin" snumber="722" dnumber="1085" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="1084" owner="admin" snumber="724" dnumber="1075" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="1083" owner="admin" snumber="728" dnumber="1082" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="1081" owner="admin" snumber="728" dnumber="1075" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="1080" owner="admin" snumber="726" dnumber="1079" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="1078" owner="admin" snumber="726" dnumber="1075" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="1077" owner="admin" snumber="730" dnumber="1075" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="1076" owner="admin" snumber="734" dnumber="1075" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="762" owner="system" snumber="722" dnumber="734" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="758" owner="system" snumber="722" dnumber="730" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="756" owner="system" snumber="722" dnumber="728" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="754" owner="system" snumber="722" dnumber="726" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="752" owner="system" snumber="724" dnumber="740" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="750" owner="system" snumber="724" dnumber="738" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+	<node number="746" owner="system" snumber="722" dnumber="724" rtype="related">
+		<_number>null</_number>
+		<_snumber>null</_snumber>
+		<_dnumber>null</_dnumber>
+	</node>
+
+</insrel>

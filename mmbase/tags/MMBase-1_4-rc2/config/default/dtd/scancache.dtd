@@ -1,0 +1,7 @@
+<!--
+      scancache.dtd
+        - DTD for MMBase scancache module
+-->
+<!ELEMENT scancache (status,CacheRoot)>
+<!ELEMENT status (#PCDATA)>
+<!ELEMENT CacheRoot (#PCDATA)>

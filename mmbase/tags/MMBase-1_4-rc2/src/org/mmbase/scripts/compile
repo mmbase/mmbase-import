@@ -1,0 +1,18 @@
+#!/usr/local/bin/bash
+
+MMBASEpath=/usr/local/install/src/org/mmbase
+LOGpath=/usr/local/install/src/org/mmbase/log
+
+# find all java files
+find $MMBASEpath -name '*.java' -print > j
+
+# remove the cruft files
+grep -v cruft j > j2
+
+# compile files
+javac `cat j2` 2> $LOGpath/compile.log 
+
+# remove temp files
+rm j
+rm j2
+
