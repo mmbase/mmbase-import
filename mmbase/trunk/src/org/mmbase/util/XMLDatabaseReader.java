@@ -153,6 +153,54 @@ public class XMLDatabaseReader  {
 	return(null);
     }
 
+    /**
+    */
+    public String getPrimaryKeyScheme() {
+	Hashtable table=new Hashtable();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("scheme")) {
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					if (n3.getNodeName().equals("primary-key")) {
+						Node n4=n3.getFirstChild();
+		    				return(n4.getNodeValue());
+					}
+					n3=n3.getNextSibling();
+				}
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(null);
+    }
+
+    /**
+    */
+    public String getKeyScheme() {
+	Hashtable table=new Hashtable();
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		Node n2=n1.getFirstChild();
+		while (n2!=null) {
+			if (n2.getNodeName().equals("scheme")) {
+				Node n3=n2.getFirstChild();
+				while (n3!=null) {
+					if (n3.getNodeName().equals("key")) {
+						Node n4=n3.getFirstChild();
+		    				return(n4.getNodeValue());
+					}
+					n3=n3.getNextSibling();
+				}
+			}
+			n2=n2.getNextSibling();
+		}
+	}
+	return(null);
+    }
+
 
     /**
     */
