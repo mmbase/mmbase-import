@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.31.2.1 2004-05-02 15:03:12 nico Exp $
+ * @version  $Id: validator.js,v 1.31.2.2 2004-06-16 10:29:26 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -189,12 +189,20 @@ Validator.prototype.validateElement = function (el, silent) {
 
     // determine datatype
     var dttype = el.getAttribute("dttype");
-    switch (dttype) {
+    var ftype = el.getAttribute("ftype");
+    if (ftype=="enum") {
+        err += validateEnum(el, form, v);
+    } else switch (dttype) {
         case "string":
             err += validateString(el, form, v);
             break;
+        case "long":;
         case "int":
             err += validateInt(el, form, v);
+            break;
+        case "float":;
+        case "double":
+            err += validateFloat(el, form, v);
             break;
         case "enum":
             err += validateEnum(el, form, v);
@@ -224,37 +232,40 @@ function requiresValidation(element) {
         return true;
     }
 
-        required = element.getAttribute("dtrequired");
+    required = element.getAttribute("dtrequired");
     if (!isEmpty(required) && (required == "true")) {
         return true;
     }
 
-    var required = false;
+    var validationRequired = false;
 
     // determine datatype
     var dttype = element.getAttribute("dttype");
     switch (dttype) {
         case "string":
-            required = !isEmpty(element.getAttribute("dtminlength")) ||
+            validationRequired = !isEmpty(element.getAttribute("dtminlength")) ||
                        !isEmpty(element.getAttribute("dtmaxlength"));
             break;
-        case "int":
-            required = !isEmpty(element.getAttribute("dtmin")) ||
+        case "int":;
+        case "long":;
+        case "float":;
+        case "double":
+            validationRequired = !isEmpty(element.getAttribute("dtmin")) ||
                        !isEmpty(element.getAttribute("dtmax"));
             break;
         case "datetime":
         // Validation should always happen because the hidden date field
         // will be updated when the input boxes are valid.
-                required = true;
+                validationRequired = true;
             break;
         case "enum":
             break;
         default:
-            required = requiresUnknown(element, form);
+            validationRequired = requiresUnknown(element, form);
             break;
     }
 
-        return required;
+        return validationRequired;
 }
 
 function requiresUnknown(el, form) {
@@ -266,6 +277,12 @@ function requiresUnknown(el, form) {
 //********************************
 
 function validateString(el, form, v) {
+    required = el.getAttribute("dtrequired");
+    if (!isEmpty(required) && (required == "true")) {
+        if (v=="")
+            return getToolTipValue(form,'message_required',
+                   "value is required");
+    }
     minlength = el.getAttribute("dtminlength");
     if (!isEmpty(minlength) && (v.length < minlength)) {
         return getToolTipValue(form,'message_minlength', "value must be at least {0} characters", minlength);
@@ -278,6 +295,12 @@ function validateString(el, form, v) {
 }
 
 function validateInt(el, form, v) {
+    required = el.getAttribute("dtrequired");
+    if (!isEmpty(required) && (required == "true")) {
+        if (v=="")
+            return getToolTipValue(form,'message_required',
+                   "value is required");
+    }
     if (isNaN(v) || parseInt(v) == null) {
        return "value '" + v + "' is not a valid integer number";
     }
@@ -295,8 +318,32 @@ function validateInt(el, form, v) {
     return "";
 }
 
+function validateFloat(el, form, v) {
+    required = el.getAttribute("dtrequired");
+    if (!isEmpty(required) && (required == "true")) {
+        if (v=="")
+            return getToolTipValue(form,'message_required',
+                   "value is required");
+    }
+    if (isNaN(v) || parseFloat(v) == null) {
+       return "value '" + v + "' is not a valid number";
+    }
+    else {
+        minvalue = el.getAttribute("dtmin");
+        if (!isEmpty(minvalue) && (parseFloat(v) < minvalue))
+           return getToolTipValue(form,'message_min',
+                   "value must be at least {0}", minvalue);
+
+        maxvalue = el.getAttribute("dtmax");
+        if (!isEmpty(maxvalue) && (parseFloat(v) > maxvalue))
+            return getToolTipValue(form,'message_max',
+                   "value must be at most {0}", maxvalue);
+    }
+    return "";
+}
+
 function validateEnum(el, form, v) {
-        required = el.getAttribute("dtrequired");
+    required = el.getAttribute("dtrequired");
     if (!isEmpty(required) && (required == "true")) {
         if (el.options[el.selectedIndex].value == "-")
             return getToolTipValue(form,'message_required',
@@ -384,11 +431,11 @@ function validateDatetime(el, form, v) {
             if (date.getDate() != day) {
                 errormsg += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
             } else {
-        	  // Validation on min and max values in milliseconds from the epoch (1 january 1970) could
-        	  // lead to invalid fields on the client when they are valid on the server or the other way around.
-        	  // The server could be in a different timezone and have a different milliseconds from the epoch with
-        	  // the same day, month, year values. For example a dutch client will have a difference of 3600000 
-        	  // or 7200000 from a UTC server.
+                  // Validation on min and max values in milliseconds from the epoch (1 january 1970) could
+                  // lead to invalid fields on the client when they are valid on the server or the other way around.
+                  // The server could be in a different timezone and have a different milliseconds from the epoch with
+                  // the same day, month, year values. For example a dutch client will have a difference of 3600000
+                  // or 7200000 from a UTC server.
                 minvalue = el.getAttribute("dtmin");
                 // checks min/max. note: should use different way to determine outputformat (month)
                 if ((ftype != "time") && (ftype != "duration") && (!isEmpty(minvalue)) && (ms < 1000*minvalue)) {
