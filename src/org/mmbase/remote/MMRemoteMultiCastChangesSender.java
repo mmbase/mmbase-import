@@ -14,8 +14,8 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
  * MultiCastChangesSender is a thread object sending the nodes found in the
@@ -24,9 +24,14 @@ import org.mmbase.util.logging.Logging;
  * @version 12-May-1999
  * @author Rico Jansen
  */
-public class MMRemoteMultiCastChangesSender implements Runnable {
+public class MMRemoteMultiCastChangesSender implements Runnable { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = MMRemoteMultiCastChangesSender.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCastChangesSender.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(MMRemoteMultiCastChangesSender.class.getName());
 
     Thread kicker = null;
     MMRemoteMultiCast parent=null;
@@ -77,13 +82,13 @@ public class MMRemoteMultiCastChangesSender implements Runnable {
                 ms = new MulticastSocket();
                 ms.joinGroup(ia);
             } catch(Exception e) {
-                log.error("run(): " + e.toString());
-                log.error(Logging.stackTrace(e));
+                /*log.error*/__debug("run(): " + e.toString());
+                /*log.error*/e.printStackTrace();
             }
             doWork();
         } catch (Exception e) {
-            log.error("run(): " + e.toString());
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("run(): " + e.toString());
+            /*log.error*/e.printStackTrace();
         }
     }
 
@@ -94,7 +99,7 @@ public class MMRemoteMultiCastChangesSender implements Runnable {
         try {
             while(kicker!=null) {
                 chars=(String)nodesTosend.get();
-                log.info("run():sending("+chars+")");
+                /*log.info*/__debug("run():sending("+chars+")");
                 parent.incount++;
                 data = new byte[chars.length()];
                 chars.getBytes(0,chars.length(), data, 0);        
@@ -102,13 +107,13 @@ public class MMRemoteMultiCastChangesSender implements Runnable {
                 try {
                     ms.send(dp, (byte)1);
                 } catch (IOException e) {
-                    log.error("doWork(): Can't send message!" + e.toString());
-                    log.error(Logging.stackTrace(e));
+                    /*log.error*/__debug("doWork(): Can't send message!" + e.toString());
+                    /*log.error*/e.printStackTrace();
                 }
             }
         } catch(Exception e) {
-            log.error("doWork(): " + e.toString());
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("doWork(): " + e.toString());
+            /*log.error*/e.printStackTrace();
         }
     }
 }

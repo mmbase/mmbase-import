@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: startRemoteBuilders.java,v 1.12 2001-04-13 13:47:06 michiel Exp $
+$Id: startRemoteBuilders.java,v 1.13 2001-04-20 14:15:49 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2001/04/13 13:47:06  michiel
+michiel: new logging system, indentation
+
 Revision 1.11  2001/03/30 10:59:54  install
 Rob: added warning
 
@@ -34,8 +37,8 @@ import java.lang.*;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
  * server wrapper, Read parameters , start and stop daemon 
@@ -45,12 +48,17 @@ import org.mmbase.util.logging.Logging;
  * example : java org.mmbase.startRemoteBuilders /tmp/cdrom1.cfg
  * </PRE>
  *
- * @version $Revision: 1.12 $ $Date: 2001-04-13 13:47:06 $
+ * @version $Revision: 1.13 $ $Date: 2001-04-20 14:15:49 $
  * @author Daniel Ockeloen
  */
-public class startRemoteBuilders {
+public class startRemoteBuilders { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = startRemoteBuilders.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(startRemoteBuilders.class.getName());
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(startRemoteBuilders.class.getName());
 
     private static String sharedSecret = "NOKEYUSED";
 
@@ -107,36 +115,36 @@ public class startRemoteBuilders {
                     port=Integer.parseInt(tmp.substring(pos+1));
                 } catch(Exception e) {}
             }
-            log.debug("main(): Prot="+protocol);
-            log.debug("main(): Host="+host);
-            log.debug("main(): Port="+port);
-            log.debug("main(): Key ="+sharedSecret);
+            /*log.debug*/__debug("main(): Prot="+protocol);
+            /*log.debug*/__debug("main(): Host="+host);
+            /*log.debug*/__debug("main(): Port="+port);
+            /*log.debug*/__debug("main(): Key ="+sharedSecret);
             
             String name=(String)servprops.get("name");
             if (protocol.equals("multicast")) {    
-                log.debug("main(): starting multicast sender/receiver");
+                /*log.debug*/__debug("main(): starting multicast sender/receiver");
                 con=(MMProtocolDriver)new MMRemoteMultiCast(name,host,port);
             } else if (protocol.equals("http")) {    
-                log.debug("main(): starting http sender/receiver");
+                /*log.debug*/__debug("main(): starting http sender/receiver");
                 con=(MMProtocolDriver)new MMHttpAcceptor(name,host,port);
             }
 
-            log.debug("main(): starting check probe");
+            /*log.debug*/__debug("main(): starting check probe");
             //String number=(String)servprops.get("number");
             probe=new MMRemoteProbe(runningServices,con,name);
     
 
-            log.debug("main(): starting services");
+            /*log.debug*/__debug("main(): starting services");
             int numberofparams=args.length;
             for (int i=1;i<args.length;i++) {
                 String servicefile=args[i];
                 ExtendedProperties Reader=new ExtendedProperties();
                 Hashtable props = Reader.readProperties(servicefile);
                 String buildername=(String)props.get("buildername");
-                log.debug("main(): name="+buildername);
+                /*log.debug*/__debug("main(): name="+buildername);
                 try {
                     Class newclass=Class.forName("org.mmbase.remote.builders."+buildername);
-                    log.debug("main(): startRemoteBuilders -> Loaded load class : "+newclass);
+                    /*log.debug*/__debug("main(): startRemoteBuilders -> Loaded load class : "+newclass);
                     RemoteBuilder serv = (RemoteBuilder)newclass.newInstance();
                     if (serv!=null) {
                         serv.init(con,servicefile);
@@ -146,7 +154,7 @@ public class startRemoteBuilders {
                     e.printStackTrace();
                 }
             }
-            log.debug("main(): Running");
+            /*log.debug*/__debug("main(): Running");
         }
 
 
@@ -164,7 +172,7 @@ public class startRemoteBuilders {
        /**
         * Close down the daemon and return to OS.
         */
-        log.debug("main(): Stopping services");
+        /*log.debug*/__debug("main(): Stopping services");
     }
 
 
@@ -219,8 +227,8 @@ public class startRemoteBuilders {
                 connect.close();
             } catch(Exception e) {}
         } catch(Exception e) {
-            log.error("postXML(): connecting to object host : "+e);
-            log.error(Logging.stackTrace(e));
+            /*log.error*/__debug("postXML(): connecting to object host : "+e);
+            /*log.error*/e.printStackTrace();
         }    
     }
 
@@ -234,7 +242,7 @@ public class startRemoteBuilders {
         if(sharedSecret.equals(key)) {
             return true;
         } else {
-            log.error("ERROR, the shared "+sharedSecret+"!="+key+" secrets don't match.");    
+            /*log.error*/__debug("ERROR, the shared "+sharedSecret+"!="+key+" secrets don't match.");    
             return false;
         }
     }

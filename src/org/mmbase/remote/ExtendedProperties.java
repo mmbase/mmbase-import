@@ -12,8 +12,8 @@ package org.mmbase.remote;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+//import org.mmbase.util.logging.Logger;
+//import org.mmbase.util.logging.Logging;
 
 /**
 * This is a flexible Properties version, it can handle saving of Properties with
@@ -21,9 +21,14 @@ import org.mmbase.util.logging.Logging;
 * @author Jan van Oosterom
 * @version 28-Oct-1996
 */
-public class ExtendedProperties extends Properties {
+public class ExtendedProperties extends Properties { 
+    //Logging removed automaticly by Michiel, and replace with __-methods
+    private static String __classname = ExtendedProperties.class.getName();
 
-    private static Logger log = Logging.getLoggerInstance(ExtendedProperties.class.getName()); 
+
+    boolean __debug = false;
+    private static void __debug(String s) { System.out.println(__classname + ":" + s); }
+    //private static Logger log = Logging.getLoggerInstance(ExtendedProperties.class.getName()); 
 
 	/**
 	* the prefix of the comment in the Properties file.
@@ -43,7 +48,7 @@ public class ExtendedProperties extends Properties {
 		try {
 			getProps(filename);  
 		} catch (IOException e) {
-			log.error("ExtendedProperties("+filename+"): Failed to load the ExtendedProperties for: "+ filename);	
+			/*log.error*/__debug("ExtendedProperties("+filename+"): Failed to load the ExtendedProperties for: "+ filename);	
 		}
     }
 
@@ -65,7 +70,7 @@ public class ExtendedProperties extends Properties {
 		try {
 			getProps(filename);  
 		} catch (IOException e) {
-			log.error("readProperties("+filename+"): Failed to load the ExtendedProperties from: "+ filename);	
+			/*log.error*/__debug("readProperties("+filename+"): Failed to load the ExtendedProperties from: "+ filename);	
 		}
 		ExtendedProperties propsToReturn = new ExtendedProperties();
 		Enumeration e = keys();
@@ -91,7 +96,7 @@ public class ExtendedProperties extends Properties {
 		try {
 			save(filename);
 		} catch (IOException ioe) {	
-			log.error("saveProperties("+filename+","+propsToSave.toString()+"): Fail to save the ExtendedProperties to: " + filename+" : "+ioe);
+			/*log.error*/__debug("saveProperties("+filename+","+propsToSave.toString()+"): Fail to save the ExtendedProperties to: " + filename+" : "+ioe);
 		}
 	}
 
@@ -113,7 +118,7 @@ public class ExtendedProperties extends Properties {
 		} else {
 			//whichProp is not available in this Property list
 			// ROB UIT GEZET
-			//log.debug("ExtendedProperties.getParsedProperty: " + whichProp + " not found." );
+			///*log.debug*/__debug("ExtendedProperties.getParsedProperty: " + whichProp + " not found." );
 			return null;
 		}	
 	}	
@@ -130,7 +135,7 @@ public class ExtendedProperties extends Properties {
         	bufferedInputStream.close();
 		} catch (FileNotFoundException e ) {
 			// ROB UIT GEZET
-			//log.debug("ExtendedProperties:: file " + filename + " niet gevonden");
+			///*log.debug*/__debug("ExtendedProperties:: file " + filename + " niet gevonden");
 		}
     }
 	
@@ -332,7 +337,7 @@ public class ExtendedProperties extends Properties {
                 	if (line != null) lines= lines + line + "\n";
                 } 
 				catch(Exception e) {
-					log.debug("EOF!");
+					/*log.debug*/__debug("EOF!");
 				}
              } while (line != null);
 		
@@ -357,8 +362,8 @@ public class ExtendedProperties extends Properties {
 		Enumeration names = propertyNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-            if (log.isDebugEnabled()) {
-                log.debug("showContents(): " +name + "=" + getProperty(name));
+            if (__debug) {
+                /*log.debug*/__debug("showContents(): " +name + "=" + getProperty(name));
             }
 		}
         
