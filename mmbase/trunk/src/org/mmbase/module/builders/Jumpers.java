@@ -21,6 +21,9 @@ import org.mmbase.util.*;
  */
 public class Jumpers extends MMObjectBuilder {
 
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 
 	LRUHashtable jumpCache = new LRUHashtable(1000);
 
@@ -47,46 +50,64 @@ public class Jumpers extends MMObjectBuilder {
 		jumpCache.remove(key);
 	}
 
-
+	private static String jumperNotFoundURL = "/index.html"; 
+											 
 	public String getJump(String key) {
-
 		String url = null;
-		if (key.equals("")) return("/index.html");
-		url = (String)jumpCache.get(key);
-		if (url != null && !url.equals("null")) return (url);
+		MMObjectNode node;
+		int ikey;
 
-		Enumeration res=search("name=E'"+key+"'");
-		if (res.hasMoreElements()) {
-			MMObjectNode node=(MMObjectNode)res.nextElement();	
-			url=node.getStringValue("url");
-			jumpCache.put(key,url);
-			return(url);
+		if (key.equals("")) {
+			url=jumperNotFoundURL;
 		} else {
-			jumpCache.put(key,"null");	
-		}				
-
-		// do jumper
-		try {
-			int t=Integer.parseInt(key);
-			Enumeration res2=search("id=E"+key);
-			if (res2.hasMoreElements()) {
-				// so it has a direct url
-				MMObjectNode node=(MMObjectNode)res2.nextElement();	
-				url=node.getStringValue("url");
-			} else {
-				// no direct url call its builder
-				MMObjectNode node=getNode(key);
-				if (node!=null) {
-					String buln=mmb.getTypeDef().getValue(node.getIntValue("otype"));
-					MMObjectBuilder bul2=mmb.getMMObject(buln);
-					if (bul2!=null) url=bul2.getDefaultUrl(Integer.parseInt(key));
-					jumpCache.put(key,url);
-					return(url);
+			try {
+				ikey=Integer.parseInt(key);
+			} catch (NumberFormatException e) {
+				ikey=-1;
+			}
+			url = (String)jumpCache.get(key);
+			if (url!=null) debug("Cache hit on "+key);
+			else debug("Cache miss on "+key);
+			if (url==null) {
+				// Search jumpers with name;
+				debug("Search jumpers with name="+key);
+				Enumeration res=search("WHERE name='"+key+"'");
+				if (res.hasMoreElements()) {
+					node=(MMObjectNode)res.nextElement();	
+					url=node.getStringValue("url");
 				}
 			}
-		} catch (Exception e) {
+			if (url==null) {
+				// Search jumpers with number (parent);
+				debug("Search jumpers with id="+ikey);
+				if (ikey>=0) {
+					Enumeration res=search("WHERE id="+ikey);
+					if (res.hasMoreElements()) {
+						node=(MMObjectNode)res.nextElement();	
+						url=node.getStringValue("url");
+					}
+				}
+			}
+			if (url==null) {
+				// no direct url call its builder
+				if (ikey>=0) {
+					node=getNode(ikey);
+					if (node!=null) {
+						String buln=mmb.getTypeDef().getValue(node.getIntValue("otype"));
+						MMObjectBuilder bul=mmb.getMMObject(buln);
+						debug("getUrl through builder with name="+buln+" and id "+ikey);
+						if (bul!=null) url=bul.getDefaultUrl(ikey);
+					}
+				}
+			}
+			if (url!=null && url.length()>0 && !url.equals("null")) {
+				jumpCache.put(key,url);
+			} else {
+				debug("No jumper found for key '"+key+"'");
+				url=jumperNotFoundURL;
+			}
 		}
-		return (null);		
+		return (url);		
 	}
 
 
