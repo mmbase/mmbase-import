@@ -22,7 +22,7 @@
       }
       if(hsetAllowedChildren.contains("learnblocks")){
          %>
-            <%= treeName %>.addItem("niewe leerblok",
+            <%= treeName %>.addItem("nieuwe leerblok",
                                      "<mm:write referid="wizardjsp"/>?wizard=learnblocks&objectnumber=new&origin=<mm:field name="number"/>",
                                      null,
                                      "",
