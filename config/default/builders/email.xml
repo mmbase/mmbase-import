@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder maintainer="mmbase.org" version="0">
-
+<builder maintainer="mmbase.org" version="0" extends="object">
+<!-- @version $Id: email.xml,v 1.5 2002-06-07 14:54:31 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -29,14 +29,11 @@
 >-->
 <names>
     <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Email</singular>
-    <singular xml:lang="en">Email</singular>
-    <singular xml:lang="us">Email</singular>
+    <singular xml:lang="en">Email message</singular>
+    <singular xml:lang="nl">Email boodschap</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Email</plural>
-    <plural xml:lang="fr">Email</plural>
-    <plural xml:lang="en">Email</plural>
-    <plural xml:lang="us">Email</plural>
+    <plural xml:lang="en">Email messages</plural>
+    <plural xml:lang="nl">Email boodschappen</plural>
 </names>
 
 <!-- <descriptions>
@@ -44,9 +41,8 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Email buffer (test)</description>
-    <description xml:lang="en">Email buffer</description>
-    <description xml:lang="us">EMail buffer</description>
+    <description xml:lang="en">Email messages to send out</description>
+    <description xml:lang="nl">Email boodschappen om te versturen</description>
 </descriptions>
 
 <!-- <fieldlist>
@@ -55,73 +51,12 @@
     If you use number and owner (the 2 default fields, please check the docs for this)
 -->
 <fieldlist>
-    <!-- POS 1 : <field> 'number' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="nl">Object</guiname>
-            <guiname xml:lang="fr">Objet</guiname>
-            <guiname xml:lang="en">Object</guiname>
-            <guiname xml:lang="us">Object</guiname>
-            <guitype>integer</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>10</list>
-                <!-- position in search area of the editor -->
-                <search>10</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>number</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" notnull="true" key="true">INTEGER</type>
-        </db>
-    </field>
-
-    <!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="nl">Eigenaar</guiname>
-            <guiname xml:lang="fr">Propri!ire</guiname>
-            <guiname xml:lang="en">Owner</guiname>
-            <guiname xml:lang="us">Owner</guiname>
-            <guitype>string</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>11</list>
-                <!-- position in search area of the editor -->
-                <search>11</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>owner</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="12" notnull="true" key="false">STRING</type>
-        </db>
-    </field>
-
     <!-- POS 3 : <field> 'subject'  -->
     <field>
         <!-- gui related -->
         <gui>
+            <guiname xml:lang="en">Onderwerp</guiname>
             <guiname xml:lang="nl">Subject</guiname>
-            <guiname xml:lang="en">Subject</guiname>
-            <guiname xml:lang="us">Subject</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -148,9 +83,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">From</guiname>
             <guiname xml:lang="en">From</guiname>
-            <guiname xml:lang="us">From</guiname>
+            <guiname xml:lang="nl">Van</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -177,9 +111,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">To</guiname>
             <guiname xml:lang="en">To</guiname>
-            <guiname xml:lang="us">To</guiname>
+            <guiname xml:lang="nl">Naar</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -206,9 +139,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">ReplyTo</guiname>
-            <guiname xml:lang="en">ReplyTo</guiname>
-            <guiname xml:lang="us">ReplyTo</guiname>
+            <guiname xml:lang="en">Reply To</guiname>
+            <guiname xml:lang="nl">Antwoord Naar</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -236,9 +168,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">BodyUrl</guiname>
-            <guiname xml:lang="en">BodyUrl</guiname>
-            <guiname xml:lang="us">BodyUrl</guiname>
+            <guiname xml:lang="en">Body Url</guiname>
+            <guiname xml:lang="nl">Tekst Url</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -266,9 +197,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">Body</guiname>
             <guiname xml:lang="en">Body</guiname>
-            <guiname xml:lang="us">Body</guiname>
+            <guiname xml:lang="nl">Tekst</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -296,9 +226,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">MailType</guiname>
-            <guiname xml:lang="en">MailType</guiname>
-            <guiname xml:lang="us">MailType</guiname>
+            <guiname xml:lang="en">Type</guiname>
+            <guiname xml:lang="nl">Type</guiname>
             <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -326,9 +255,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">MailStatus</guiname>
-            <guiname xml:lang="en">MailStatus</guiname>
-            <guiname xml:lang="us">MailStatus</guiname>
+            <guiname xml:lang="en">State</guiname>
+            <guiname xml:lang="nl">Status</guiname>
             <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -356,9 +284,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">MailTime</guiname>
-            <guiname xml:lang="en">MailTime</guiname>
-            <guiname xml:lang="us">MailTime</guiname>
+            <guiname xml:lang="en">Send Time</guiname>
+            <guiname xml:lang="nl">Verzendtijd</guiname>
             <guitype>eventtime</guitype>
         </gui>
         <!-- editor related  -->
@@ -386,9 +313,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">BuildTime</guiname>
-            <guiname xml:lang="en">BuildTime</guiname>
-            <guiname xml:lang="us">BuildTime</guiname>
+            <guiname xml:lang="en">Build Time</guiname>
+            <guiname xml:lang="nl">Bouwtijd</guiname>
             <guitype>eventtime</guitype>
         </gui>
         <!-- editor related  -->
@@ -416,9 +342,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">RepeatTime</guiname>
-            <guiname xml:lang="en">RepeatTime</guiname>
-            <guiname xml:lang="us">RepeatTime</guiname>
+            <guiname xml:lang="en">Repeat Time</guiname>
+            <guiname xml:lang="nl">Herhaaltijd</guiname>
             <guitype>eventtime</guitype>
         </gui>
         <!-- editor related  -->
@@ -445,9 +370,8 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="nl">LastMailed</guiname>
-            <guiname xml:lang="en">LastMailed</guiname>
-            <guiname xml:lang="us">LastMailed</guiname>
+            <guiname xml:lang="en">Last Mailed</guiname>
+            <guiname xml:lang="nl">Laatst Verstuurd</guiname>
             <guitype>eventtime</guitype>
         </gui>
         <!-- editor related  -->

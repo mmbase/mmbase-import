@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_0.dtd">
-<builder>
-
+<builder maintainer="mmbase.org" version="0" extends="object">
+<!-- @version $Id: channel.xml,v 1.6 2002-06-07 14:54:31 pierre Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -18,7 +18,7 @@
 
         long name : nl.vpro.mmbase.module.builders.Urls will start that class
 -->
-<classfile>org.mmbase.module.builders.Channel</classfile>
+<classfile>Channel</classfile>
 
 <searchage>14</searchage>
 
@@ -29,11 +29,9 @@
 >-->
 <names>
     <!-- singles per language  as defined by RFC xxx -->
-    <singular xml:lang="us">Channel</singular>
     <singular xml:lang="en">Channel</singular>
     <singular xml:lang="nl">Kanaal</singular>
     <!-- multiple per language  as defined by RFC xxx -->
-    <plural xml:lang="us">Channels</plural>
     <plural xml:lang="en">Channels</plural>
     <plural xml:lang="nl">Kanalen</plural>
 </names>
@@ -43,9 +41,8 @@
 -->
 <descriptions>
 <!-- descriptions per language  as defined by RFC xxx -->
-    <description xml:lang="us">A channel of a community</description>
     <description xml:lang="en">A channel of a community</description>
-    <description xml:lang="nl">A channel of a community</description>
+    <description xml:lang="nl">Een kanaal binnen een gemeenschap</description>
 </descriptions>
 
 <properties>
@@ -58,69 +55,10 @@
     If you use number and owner (the 2 default fields, please check the docs for this)
 -->
 <fieldlist>
-    <!-- POS 1 : <field> 'number' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Object</guiname>
-            <guiname xml:lang="en">Object</guiname>
-            <guiname xml:lang="nl">Object</guiname>
-            <guitype>integer</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>10</list>
-                <!-- position in search area of the editor -->
-                <search>10</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>number</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" notnull="true">INTEGER</type>
-        </db>
-    </field>
-
-    <!-- POS 2 : <field> 'owner' is a default field (see docs) -->
-    <field>
-        <!-- gui related -->
-        <gui>
-            <guiname xml:lang="us">Owner</guiname>
-            <guiname xml:lang="en">Owner</guiname>
-            <guiname xml:lang="us">Eigenaar</guiname>
-            <guitype>string</guitype>
-        </gui>
-        <!-- editor related  -->
-        <editor>
-            <positions>
-                <!-- position in the input area of the editor -->
-                <input>-1</input>
-                <!-- position in list area of the editor -->
-                <list>11</list>
-                <!-- position in search area of the editor -->
-                <search>11</search>
-            </positions>
-        </editor>
-        <!-- database related  -->
-        <db>
-            <!-- name of the field in the database -->
-            <name>owner</name>
-            <!-- MMBase datatype and demands on it -->
-            <type state="persistent" size="12" notnull="true">STRING</type>
-        </db>
-    </field>
-
     <!-- POS 3 : <field> 'name'  -->
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Name</guiname>
             <guiname xml:lang="en">Name</guiname>
             <guiname xml:lang="nl">Naam</guiname>
             <guitype>string</guitype>
@@ -149,7 +87,6 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Subtitle</guiname>
             <guiname xml:lang="en">Subtitle</guiname>
             <guiname xml:lang="nl">Subtitel</guiname>
             <guitype>string</guitype>
@@ -178,7 +115,6 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Intro</guiname>
             <guiname xml:lang="en">Intro</guiname>
             <guiname xml:lang="nl">Intro</guiname>
             <guitype>field</guitype>
@@ -207,8 +143,7 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Body</guiname>
-            <guiname xml:lang="en">Body</guiname>
+            <guiname xml:lang="en">Description</guiname>
             <guiname xml:lang="nl">Beschrijving</guiname>
             <guitype>field</guitype>
         </gui>
@@ -236,7 +171,6 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Session</guiname>
             <guiname xml:lang="en">Session</guiname>
             <guiname xml:lang="nl">Sessie</guiname>
             <guitype>integer</guitype>
@@ -265,8 +199,7 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Login</guiname>
-            <guiname xml:lang="en">Login</guiname>
+            <guiname xml:lang="en">Logon</guiname>
             <guiname xml:lang="nl">Login</guiname>
             <guitype>channellogin</guitype>
         </gui>
@@ -294,7 +227,6 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Open</guiname>
             <guiname xml:lang="en">Open</guiname>
             <guiname xml:lang="nl">Open</guiname>
             <guitype>channelopen</guitype>
@@ -323,7 +255,6 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Highest sequence</guiname>
             <guiname xml:lang="en">Highest sequence</guiname>
             <guiname xml:lang="nl">Hoogste volgordenr</guiname>
             <guitype>integer</guitype>
@@ -352,7 +283,6 @@
     <field>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="us">Maximum users</guiname>
             <guiname xml:lang="en">Maximum users</guiname>
             <guiname xml:lang="nl">Maximum gebruikers</guiname>
             <guitype>integer</guitype>
