@@ -9,15 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.gui.html.EditState;
@@ -39,11 +31,11 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.103 2003-05-08 11:15:43 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.104 2003-05-23 15:42:11 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
-    private static Logger log = Logging.getLoggerInstance(MMObjectNode.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMObjectNode.class);
     
     /**
      * Holds the name - value pairs of this node (the node's fields).
@@ -55,7 +47,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * Note: To avoid synchronisation conflicts, we can't really change the type until the property is made private.
      * @scope private
      */
-    public Hashtable values=new Hashtable();
+    public Hashtable values = new Hashtable();
+
+    /**
+     * You cannot store real 'null's in a hashtable, so this constant can be used for this.
+     * @since MMBase-1.7
+     */
+    public final static Object VALUE_NULL = new Object() {
+            public String toString() { return "[FIELD VALUE NULL]"; }
+        };
+
+    // private Map values = Collections.synchronizedMap(new HashMap());
 
     /**
      * Holds the 'extra' name-value pairs (the node's properties)
@@ -226,21 +228,25 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @since MMBase-1.6.2
      */
     String defaultToString() {
-        StringBuffer result=new StringBuffer("prefix='"+prefix+"'");
-    try {
-        Enumeration e=values.keys();
-        while (e.hasMoreElements()) {
-        String key=(String)e.nextElement();
-        int dbtype=getDBType(key);
-        String value=""+values.get(key);  // XXX:should be retrieveValue ?
-        if (result.equals("")) {
-            result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
-        } else {
-            result.append(","+key+"="+dbtype+":'"+value+"'");
-        }
-        }
-    } catch(Exception e) {}
-    return result.toString();
+        StringBuffer result = new StringBuffer("prefix='" + prefix + "'");
+        try {
+            Set entrySet = values.entrySet();
+            synchronized(values) {
+                Iterator i = entrySet.iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    String key = (String) entry.getKey();
+                    int dbtype = getDBType(key);
+                    String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
+                    if (result.equals("")) {
+                        result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
+                    } else {
+                        result.append(","+key+"="+dbtype+":'"+value+"'");
+                    }
+                }
+            }
+        } catch(Exception e) {}
+        return result.toString();
     }
 
     /**
@@ -834,19 +840,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return always <code>true</code>
      */
     public boolean clearChanged() {
-        changed=new Vector();
+        changed = new Vector();
         return true;
     }
 
-    /**
-     * Return the values of this node as a hashtable (name-value pair).
-     * Note that this is a direct reference. Changes will affect the node.
-     * Used by various export routines.
-     * @return the values as a <code>Hashtable</code>
-     */
-    public Hashtable getValues() {
-        return values;
-    }
 
     /**
      * Deletes the propertie cache for this node.
@@ -857,6 +854,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             properties=null;
         }
     }
+
+    public Hashtable getValues() {
+        return values;
+    }
+    
+
 
     /**
      * Return a the properties for this node.
@@ -1186,7 +1189,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.error("This type("+type+") is not a valid buildername!");
         }
 
-        log.debug("related("+parent.getTableName()+"("+getNumber()+")) = size("+result.size()+")");
+        if (log.isDebugEnabled()) {
+            log.debug("related("+parent.getTableName()+"("+getNumber()+")) = size("+result.size()+")");
+        }
         return result;
     }
 
@@ -1306,8 +1311,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             vnode.add("" + getNumber());
 
             // retrieve the related nodes (these are virtual)
-//            Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,where,ordered,directions,search_type);
-            Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,null,null,null,search_type);
+//          Vector v = clusterBuilder.searchMultiLevelVector(vnode, fields,"NO", tables, where, ordered,directions,search_type);
+            Vector v = clusterBuilder.searchMultiLevelVector(vnode, fields,"NO", tables, null,  null,   null,      search_type);
 
             if(v == null) v = new Vector();
             result = new Vector(getRealNodes(v, type + "2"));
