@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
  */
 /*
-$Id: JDBC.java,v 1.22 2001-10-04 08:25:07 pierre Exp $
+$Id: JDBC.java,v 1.23 2001-10-18 14:52:52 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.22  2001/10/04 08:25:07  pierre
+pierre: connection information is not an error
+
 Revision 1.21  2001/10/02 14:13:33  vpro
 marcel: added extra line for proper registration of McKoi's database
 
@@ -80,7 +83,7 @@ import org.mmbase.util.logging.*;
  * JDBC Module the module that provides you access to the loaded JDBC interfaces
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @version $Id: JDBC.java,v 1.22 2001-10-04 08:25:07 pierre Exp $
+ * @version $Id: JDBC.java,v 1.23 2001-10-18 14:52:52 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -207,14 +210,14 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         defaultpassword=getInitParameter("password");
         databasesupportclass=getInitParameter("supportclass");
 
-
-        log.service("JDBCdriver="+JDBCdriver +
+        /*
+        log.trace("JDBCdriver="+JDBCdriver +
                   "\nJDBCurl="+JDBCurl +
                   "\nJDBChost="+JDBChost +
                   "\ndefaultname="+defaultname +
                   "\ndefaultpassword="+defaultpassword +
                   "\ndatabasesupportclass="+databasesupportclass);
-
+        */
 
         if (defaultname==null) {
             defaultname="wwwtech";
