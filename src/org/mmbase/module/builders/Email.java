@@ -27,6 +27,15 @@ import org.mmbase.util.*;
  */
 public class Email extends MMObjectBuilder {
 
+	private EmailSendProbe sendprobe;
+
+
+	public boolean init() {
+		super.init ();
+		sendprobe=new EmailSendProbe(this);
+		return (true);
+	}
+
 	/**
 	* this message has changed so lets see if we need to do
 	* something.
@@ -35,7 +44,9 @@ public class Email extends MMObjectBuilder {
 		// check the type of change on the object
 		if (ctype.equals("n")) {
 			// its a new object so lets check if we should mail
-			checkNewMailNode(number);
+			//checkNewMailNode(number);
+			MMObjectNode node=getNode(number);
+			sendprobe.putTask(node);	
 		}
 		return(true);
 	}
@@ -44,10 +55,10 @@ public class Email extends MMObjectBuilder {
 	* check the message object, now if state is 1 (oneshot)
 	* it mails and removed itself from the cloud when done
 	*/
-	public void checkNewMailNode(String number) {
+	public void checkNewMailNode(MMObjectNode node) {
 
 		// get the message object from the cloud
-		MMObjectNode node=getNode(number);	
+		// MMObjectNode node=getNode(number);	
 
 		// obtain all the needed fields from the object
 		int mailtype=node.getIntValue("mailtype");
@@ -89,10 +100,13 @@ public class Email extends MMObjectBuilder {
 			// send the message to the user defined
 			if (mmb.getSendMail().sendMail(mail)==false) {
 				System.out.println("Email -> mail failed");
+			} else {
+				System.out.println("Email -> mail send to : "+to);
 			}
 		
 			// remove message from the cloud
 			removeNode(node);
+		} else if (mailtype==2) {
 		}
 	}
 
@@ -131,4 +145,13 @@ public class Email extends MMObjectBuilder {
 		}
 		return(null);
 	}
+
+	public boolean performTask(MMObjectNode node) {
+		System.out.println("GOT perform="+node);
+		checkNewMailNode(node);
+		return(true);
+	}
+
+
+
 }
