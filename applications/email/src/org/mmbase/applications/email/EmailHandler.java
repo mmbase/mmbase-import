@@ -33,9 +33,8 @@ import org.mmbase.util.logging.Logging;
 public class EmailHandler {
 
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(EmailHandler.class.getName());
-
+    private static final Logger log = Logging.getLoggerInstance(EmailHandler.class);
+    
 
     /**
      * @javadoc
@@ -59,7 +58,7 @@ public class EmailHandler {
         String osubject=subject;
 
         // get To of the mail (to field + related users + related users in groups
-    Vector toUsers = getAttachedUsers(node);
+        Vector toUsers = getAttachedUsers(node);
 
         // get From of the mail
         String from=node.getStringValue("from");
@@ -72,46 +71,46 @@ public class EmailHandler {
         String obody=body;
 
         // loop all the users we need to mail
-    Enumeration e=toUsers.elements();
+        Enumeration e = toUsers.elements();
         while (e.hasMoreElements()) {
 
             // get the next user we need to email
-            String to_one=(String)e.nextElement();
+            String to_one = (String)e.nextElement();
 
-        // mmbase number of the user
-        String to_number=null;
-
-        // parse the to field ( format mmbasenumber,emailadr )
-        int pos=to_one.indexOf(",");
-        if (pos!=-1) {
-        to_number=to_one.substring(0,pos);
-        to_one=to_one.substring(pos+1);
-        }
-
-
-        // if the body starts with a url call that url
-        if (obody.indexOf("http://")==0) {
-        body=getUrlExtern(obody,"",to_number);
-
-        // convert html to plain text unless a the html tag is found
-        if (body.indexOf("<html>")==-1 && body.indexOf("<HTML>")==-1) {
-            //body=html2plain(body);
-        }
-        }
-
-        // if the subject starts with a url call that url
-        if (osubject.indexOf("http://")==0) {
-        subject=getUrlExtern(osubject,"",to_number);
-        subject=stripToOneLine(subject);
-        }
-
-
+            // mmbase number of the user
+            String to_number = null;
+            
+            // parse the to field ( format mmbasenumber,emailadr )
+            int pos=to_one.indexOf(",");
+            if (pos!=-1) {
+                to_number=to_one.substring(0,pos);
+                to_one=to_one.substring(pos+1);
+            }
+            
+            
+            // if the body starts with a url call that url
+            if (obody.indexOf("http://") == 0) {
+                body = getUrlExtern(obody,"",to_number);
+                
+                // convert html to plain text unless a the html tag is found
+                if (body.indexOf("<html>")==-1 && body.indexOf("<HTML>")==-1) {
+                    //body=html2plain(body);
+                }
+            }
+            
+            // if the subject starts with a url call that url
+            if (osubject.indexOf("http://")==0) {
+                subject=getUrlExtern(osubject,"",to_number);
+                subject=stripToOneLine(subject);
+            }
+            
+            
             // create new (sendmail) object
             Mail mail=new Mail(to_one,from);
-
+            
             // set the subject
             mail.setSubject(subject);
-
+            
             // set default date
             mail.setDate();
 
@@ -123,9 +122,9 @@ public class EmailHandler {
 
             // little trick if it seems valid html page set
             // the headers for html mail
-             if (body.indexOf("<HTML>")!=-1 && body.indexOf("</HTML>")!=-1) {
-                mail.setHeader("Mime-Version","1.0");
-                mail.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
+            if (body.indexOf("<HTML>") != -1 && body.indexOf("</HTML>")!=-1) {
+                 mail.setHeader("Mime-Version", "1.0");
+                 mail.setHeader("Content-Type", "text/html; charset=\"ISO-8859-1\"");
             }
 
             // is the don't mail tag set ? this allows
@@ -162,11 +161,11 @@ public class EmailHandler {
         // set the new mailedtime, that can be used by admins
         // to see when it was mailed vs the requested mail
         // time
-        node.setValue("mailedtime",(int)(System.currentTimeMillis()/1000));
+        node.setValue("mailedtime", (int)(System.currentTimeMillis()/1000));
 
         // commit the changes to the cloud
-    node.commit();
-        return (node);
+        node.commit();
+        return node;
     }
 
 
@@ -175,9 +174,11 @@ public class EmailHandler {
      * try to obtain it from related objects.
      */
     private static Vector getTo(MMObjectNode node) {
-    Vector toUsers=new Vector();
-        String to=node.getStringValue("to");
-    if (to!=null) toUsers.addElement(to);
+        Vector toUsers = new Vector();
+        String to = node.getStringValue("to");
+        if (to != null) {
+            toUsers.addElement(to);
+        }
         return toUsers;
     }
 
@@ -187,43 +188,43 @@ public class EmailHandler {
      * get the email addresses of related people
      */
     private static Vector getAttachedUsers(MMObjectNode node) {
-    Vector toList=getTo(node);
-    toList=getAttachedUsers(node,toList);
-
+        Vector toList = getTo(node);
+        toList=getAttachedUsers(node,toList);
+        
         Vector rels=node.getRelatedNodes("groups");
         if (rels!=null) {
             Enumeration enumeration=rels.elements();
             while (enumeration.hasMoreElements()) {
                 MMObjectNode pnode=(MMObjectNode)enumeration.nextElement();
-        toList=getAttachedUsers(pnode,toList);
+                toList=getAttachedUsers(pnode,toList);
+            }
         }
+        
+        
+        if (toList.size()>0) {
+            return toList;
+        } else {
+            return null;
         }
-
-
-    if (toList.size()>0) {
-        return(toList);
-    } else {
-        return(null);
     }
-    }
-
+    
     /**
      * get the email addresses of related people
      */
     private static Vector getAttachedUsers(MMObjectNode node,Vector toList) {
         // try and find related users
-        Vector rels=node.getRelatedNodes("users");
-        if (rels!=null) {
+        Vector rels = node.getRelatedNodes("users");
+        if (rels != null) {
             Enumeration enumeration=rels.elements();
-                while (enumeration.hasMoreElements()) {
+            while (enumeration.hasMoreElements()) {
                 MMObjectNode pnode=(MMObjectNode)enumeration.nextElement();
                 String to=""+pnode.getNumber()+","+pnode.getStringValue("email");
-        if (!toList.contains(to)) {
-            toList.addElement(to);
-        }
+                if (!toList.contains(to)) {
+                    toList.addElement(to);
+                }
             }
         }
-        return(toList);
+        return toList;
     }
 
 
@@ -231,13 +232,15 @@ public class EmailHandler {
 
     private static String getUrlExtern(String absoluteUrl,String params,String usernumber) {
         try {
-            if (usernumber!=null) params+="&usernumber="+usernumber;
-            String prefix="?";
-            if (absoluteUrl.indexOf("?")!=-1) {
-                prefix="&";
+            if (usernumber != null) {
+                params += "&usernumber=" + usernumber;
             }
-                    URL includeURL = new URL(absoluteUrl+prefix+params);
-                    HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
+            String prefix = "?";
+            if (absoluteUrl.indexOf("?") != -1) {
+                prefix = "&";
+            }
+            URL includeURL = new URL(absoluteUrl + prefix + params);
+            HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
             int buffersize = 10240;
             char[] buffer = new char[buffersize];
@@ -253,16 +256,16 @@ public class EmailHandler {
             // this is weird needs to be checked
             //e.printStackTrace();
         }
-        return("");
+        return "";
     }
 
     private static String stripToOneLine(String input) {
-        String result="";
-            StringTokenizer tok = new StringTokenizer(input,",\n\r");
-            while (tok.hasMoreTokens()) {
-                    result+=tok.nextToken();
+        StringBuffer result = new StringBuffer();
+        StringTokenizer tok = new StringTokenizer(input,",\n\r");
+        while (tok.hasMoreTokens()) {
+            result.append(tok.nextToken());
         }
-        return result;
+        return result.toString();
     }
 
 
@@ -273,49 +276,47 @@ public class EmailHandler {
     */
     private static String html2plain(String input) {
         // define the result string
-        String result="";
+        StringBuffer result = new StringBuffer();
 
         // setup a tokenizer on all returns and linefeeds so
         // we can remove them
-            StringTokenizer tok = new StringTokenizer(input,"\n\r");
-            while (tok.hasMoreTokens()) {
+        StringTokenizer tok = new StringTokenizer(input,"\n\r");
+        while (tok.hasMoreTokens()) {
             // add the content part stripped of its return/linefeed
-                    result+=tok.nextToken();
+            result.append(tok.nextToken());
         }
-
+        
         // now use the html br and p tags to insert
         // the wanted returns
-                StringObject obj=new StringObject(result);
-                obj.replace("<br/>","\n");
-                obj.replace("<br />","\n");
-                obj.replace("<BR/>","\n");
-                obj.replace("<BR />","\n");
-                obj.replace("<br>","\n");
-                obj.replace("<BR>","\n");
-                obj.replace("<p>","\n\n");
-                obj.replace("<p/>","\n\n");
-                obj.replace("<p />","\n\n");
-                obj.replace("<P>","\n\n");
-        result=obj.toString();
+        StringObject obj = new StringObject(result.toString());
+        obj.replace("<br/>","\n");
+        obj.replace("<br />","\n");
+        obj.replace("<BR/>","\n");
+        obj.replace("<BR />","\n");
+        obj.replace("<br>","\n");
+        obj.replace("<BR>","\n");
+        obj.replace("<p>","\n\n");
+        obj.replace("<p/>","\n\n");
+        obj.replace("<p />","\n\n");
+        obj.replace("<P>","\n\n");
 
+        
         // return the coverted body
-        return result;
+        return obj.toString();
     }
 
     private static boolean sendMail(Mail mail) {
-          boolean result=true;
-
-          // get mail text to see if we have a mime msg
-          String text=mail.text;
-          if (text.indexOf("<multipart")==-1) {
-                result=EmailBuilder.getSendMail().sendMail(mail);
-          } else {
-
-        MimeMultipart mmpart=MimeMessageGenerator.getMimeMultipart(text);
-
-                result=((SendMail)EmailBuilder.getSendMail()).sendMultiPartMail(mail,mmpart);
-              }
-          return result;
+        boolean result=true;
+        
+        // get mail text to see if we have a mime msg
+        String text = mail.text;
+        if (text.indexOf("<multipart") == -1) {
+            result = EmailBuilder.getSendMail().sendMail(mail);
+        } else {            
+            MimeMultipart mmpart=MimeMessageGenerator.getMimeMultipart(text);            
+            result = ((SendMail)EmailBuilder.getSendMail()).sendMultiPartMail(mail,mmpart);
+        }
+        return result;
     }
 
 }
