@@ -32,7 +32,8 @@ import org.xml.sax.*;
  */
 public class ProviderManager {
     private static Logger log = Logging.getLoggerInstance(ProviderManager.class);
-    private static boolean state=false;
+    private static boolean state = false;
+    private static PackageDiscovery packagediscovery = null;
     
     // Contains all providers key=provider value=reference to provider
     private static HashMap providers = null;
@@ -65,6 +66,7 @@ public class ProviderManager {
         if (!isRunning()) {
             readProviderHandlers();
             readProviders();
+            packagediscovery = new PackageDiscovery();
             state=true;
         }
     }
@@ -81,6 +83,10 @@ public class ProviderManager {
         if (providers == null) init();
         return providers.values().iterator();
     }
+
+    public static void resetSleepCounter() {
+        packagediscovery.resetSleepCounter();
+    } 
 
 
 

@@ -53,6 +53,9 @@ public class Controller {
 
 
     public List getBundles() {
+        // signal action to for package discovery
+        ProviderManager.resetSleepCounter();
+
         // get the current best bundles
         Iterator bundles = BundleManager.getBundles();
 

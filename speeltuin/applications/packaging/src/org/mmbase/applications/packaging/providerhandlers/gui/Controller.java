@@ -178,6 +178,9 @@ public class Controller {
      * @return    The providers value
      */
     public List getProviders() {
+        // signal action to for package discovery
+        ProviderManager.resetSleepCounter();
+
         // get the current providers
         Iterator providers = ProviderManager.getProviders();
 

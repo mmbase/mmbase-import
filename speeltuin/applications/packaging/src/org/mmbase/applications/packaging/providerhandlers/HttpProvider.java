@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author     Daniel Ockeloen (MMBased)
  * @created    July 20, 2004
  */
-public class HttpProvider extends BasicProvider implements ProviderInterface, Runnable {
+public class HttpProvider extends BasicProvider implements ProviderInterface {
     private static Logger log = Logging.getLoggerInstance(HttpProvider.class);
 
     private String name;
@@ -38,7 +38,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface, Ru
     private String maintainer;
     private String account = "guest";
     private String password = "guest";
-    private Thread kicker;
 
     /**
      * DTD resource filename of the sharedpackages DTD version 1.0
@@ -100,7 +99,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface, Ru
             n2 = n2.getNextSibling();
         }
         baseScore = 2000;
-        start();
     }
 
 
@@ -117,29 +115,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface, Ru
         // this.account=account;
         // this.password=password;
         baseScore = 2000;
-        start();
-    }
-
-
-    /**
-     * Starts the main Thread.
-     */
-    public void start() {
-        /*
-         *  Start up the main thread
-         */
-        if (kicker == null) {
-            kicker = new Thread(this, "http provider thread");
-            kicker.start();
-        }
-    }
-
-
-    /**
-     *  Description of the Method
-     */
-    public void stop() {
-        kicker = null;
     }
 
 
@@ -358,47 +333,11 @@ public class HttpProvider extends BasicProvider implements ProviderInterface, Ru
 
 
     /**
-     * Main loop, exception protected
-     */
-    public void run() {
-        kicker.setPriority(Thread.MIN_PRIORITY + 1);
-        while (kicker != null) {
-            try {
-                doWork();
-            } catch (Exception e) {
-                log.error("run(): ERROR: Exception in http provider thread!");
-                log.error(Logging.stackTrace(e));
-            }
-        }
-    }
-
-
-    /**
-     * Main work loop
-     */
-    public void doWork() {
-        kicker.setPriority(Thread.MIN_PRIORITY + 1);
-
-        try {
-            Thread.sleep(2 * 1000);
-        } catch (InterruptedException e) {}
-        while (kicker != null) {
-            getPackages();
-            PackageManager.removeOfflinePackages(this);
-            try {
-                Thread.sleep(10 * 1000);
-            } catch (InterruptedException e) {}
-        }
-    }
-
-
-    /**
      *  Description of the Method
      *
      * @return    Description of the Return Value
      */
     public boolean close() {
-        stop();
         return super.close();
     }
 

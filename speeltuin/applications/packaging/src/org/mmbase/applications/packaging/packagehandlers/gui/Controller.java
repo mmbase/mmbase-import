@@ -88,6 +88,9 @@ public class Controller {
      * @return    The packages value
      */
     public List getPackages() {
+        // signal action to for package discovery
+        ProviderManager.resetSleepCounter();
+
         // get the current best packages
         Iterator packages = PackageManager.getPackages();
 
