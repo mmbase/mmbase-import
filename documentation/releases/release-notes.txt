@@ -275,6 +275,9 @@ MMCI Bug Fixes:
 ----------------
 
 [1.6.4]
+- #6126 transaction.getName() does not return correct name   	
+- #6099 directions attribute permit nonsensical values.  	
+- #6083 cannot check rights on newly created node  	
 - #6001 Cannot call 'equals' on deleted node
 
 [1.6.3]
