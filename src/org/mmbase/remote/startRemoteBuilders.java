@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: startRemoteBuilders.java,v 1.10 2001-03-29 13:02:54 install Exp $
+$Id: startRemoteBuilders.java,v 1.11 2001-03-30 10:59:54 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2001/03/29 13:02:54  install
+Rob: added a shared secret mechanism to authenticate our own remoteBuilders
+
 Revision 1.9  2000/12/22 13:57:19  vpro
 Davzev: Changed debug method initialization for application
 
@@ -36,7 +39,7 @@ import java.util.*;
  * example : java org.mmbase.startRemoteBuilders /tmp/cdrom1.cfg
  * </PRE>
  *
- * @version $Revision: 1.10 $ $Date: 2001-03-29 13:02:54 $
+ * @version $Revision: 1.11 $ $Date: 2001-03-30 10:59:54 $
  * @author Daniel Ockeloen
  */
 public class startRemoteBuilders {
@@ -44,7 +47,7 @@ public class startRemoteBuilders {
 	private static String classname = startRemoteBuilders.class.getName();
 	private static boolean debug = true;
 	private static void debug(String msg) {System.out.println(classname +":"+ msg );}
-	private static String sharedSecret = "";
+	private static String sharedSecret = "NOKEYUSED";
 
 	static Vector runningServices=new Vector();
 
@@ -75,7 +78,11 @@ public class startRemoteBuilders {
 			// Set the shared Secret
 			// This key is shared by remoteBuilders and the MMBase system 
 			// to be able to authenticate each other.
-			sharedSecret=(String)servprops.get("sharedsecret");
+			if(servprops.containsKey("sharedsecret")) {
+				sharedSecret=(String)servprops.get("sharedsecret");
+			} else {
+				System.out.println("warning, please set the sharedsecret in server.properties");
+			}
 
 			// decode protocol url
 			String tmp=(String)servprops.get("connection");
