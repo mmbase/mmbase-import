@@ -1,6 +1,14 @@
 
 Migratie issues
 
+2004-01-26
+
+ alter table mmb_attachments modify column title varchar(255);
+ alter table mmb_people modify column email varchar(255);
+ alter table mmb_contacts modify column email varchar(255);
+ 
+
+
 2004-12-01
 
 De portfolio component is verder uitgebreid en af gemaakt. Gebruikers hebben nu

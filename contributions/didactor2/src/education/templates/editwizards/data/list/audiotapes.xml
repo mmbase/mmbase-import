@@ -12,7 +12,8 @@
         <field name="url" ftype="data">
             <prompt>URL</prompt>
         </field>
-    </item>
+        <field wizardname="audiotapes" ftype="startwizard" />
+   </item>
 
     <command name="startwizard" inline="true" wizardname="audiotapes" objectnumber="new" />
 

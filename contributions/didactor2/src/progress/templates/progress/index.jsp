@@ -6,6 +6,10 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
+<di:hasrole role="student">
+    <jsp:forward page="student.jsp"/>
+</di:hasrole>
+
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title>Voortgang</title>
@@ -44,13 +48,13 @@
 <th></th>
     <mm:node number="progresstextbackground">
     <th>
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Voortgang')+rotate(90)"/>">
+        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,10,'Voortgang')+rotate(90)"/>">
     </th>
      <th>
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Keer ingelogd')+rotate(90)"/>">
+        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,10,'Keer ingelogd')+rotate(90)"/>">
     </th>
       <th>
-        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Tijd ingelogd')+rotate(90)"/>">
+        <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,10,'Tijd ingelogd')+rotate(90)"/>">
     </th>
     </mm:node>
     
@@ -59,7 +63,10 @@
     <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
       <mm:import id="nodetype" reset="true"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="nodetype" value="tests">
-         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'<mm:field name="name"/>')+rotate(90)</mm:import>
+        <mm:field name="name" jspvar="name" vartype="String">
+            <% name = name.replaceAll("\\s+"," "); %>
+         <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,10,'<%= name %>')+rotate(90)</mm:import>
+         </mm:field>
          <mm:node number="progresstextbackground">
          <th><img src="<mm:image template="$template"/>"></th>
          </mm:node>
