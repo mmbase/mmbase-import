@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.182 2002-11-20 12:52:04 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.183 2002-11-21 14:58:21 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1899,9 +1899,14 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-     * Get the field definitions for the editor, sorted according to the specified order.
+     * Gets the field definitions for the editor, sorted according 
+     * to the specified order, and excluding the fields that have
+     * not been assigned a valid position (valid is >= 0).
      * This method makes an explicit sort (it does not use a cached list).
-     * @return a vector with ordered FieldDefs
+     *
+     * @param sortorder One of the sortorders defined in 
+     *        {@link org.mmbase.module.corebuilders.FieldDefs FieldDefs}
+     * @return The ordered list of field definitions.
      */
     public List getFields(int sortorder) {
         List orderedFields = (List)sortedFieldLists.get(new Integer(sortorder));
