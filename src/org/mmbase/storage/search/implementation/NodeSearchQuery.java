@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * that retrieves nodes of one specified nodetype.
  * <p>
  * The constructor creates the query with all persistent fields belonging to 
- * the specified nodetype. 
+ * the specified nodetype excluding byte[] type fields. 
  * Use {@link #getField(FieldDefs) getField()} to retrieve each of these fields. 
  * <p>
  * Once an instance is constructed, it is not possible to add more fields/steps.
@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.6 2003-03-10 11:50:58 pierre Exp $
+ * @version $Id: NodeSearchQuery.java,v 1.7 2003-03-21 14:29:10 kees Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -53,23 +53,26 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     public NodeSearchQuery(MMObjectBuilder builder) {
         if (builder == null) {
             throw new IllegalArgumentException(
-                "Invalid builder value: " + builder);
+					       "Invalid builder value: " + builder);
         }
         if (builder instanceof VirtualBuilder) {
             throw new IllegalArgumentException(
-                "Invalid builder type, because this is a virtual builder: "
-                + builder.getClass().getName());
+					       "Invalid builder type, because this is a virtual builder: "
+					       + builder.getClass().getName());
         }
         this.builder = builder;
         Step step = super.addStep(builder);
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-            if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
-                BasicStepField stepField = super.addField(step, field);
-                stepFields.put(field, stepField);
-            }
+	    if (field.getDBType() != FieldDefs.TYPE_BYTE 
+		&& (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT 
+		    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM
+		    )
+		) {
+		BasicStepField stepField = super.addField(step, field);
+		stepFields.put(field, stepField);
+	    }
         }
     }
     
