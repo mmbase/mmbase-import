@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.43 2004-01-21 08:33:15 johannes Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.44 2004-01-22 19:14:39 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -234,7 +234,7 @@ public class DatabaseStorageManager implements StorageManager {
                 result.close();
                 return keynr;
             } else {
-				result.close();
+                result.close();
                 s.close();
                 throw new StorageException("The sequence table is empty.");
             }
@@ -341,7 +341,7 @@ public class DatabaseStorageManager implements StorageManager {
                     s.close();
                     return retval;
                 } else {
-					s.close();
+                    s.close();
                     throw new StorageException("Node with number " + node.getNumber() + " not found.");
                 }
             } catch (SQLException se) {
@@ -446,7 +446,7 @@ public class DatabaseStorageManager implements StorageManager {
                 } else {
                     log.error("The file '" + binaryFile + "' can not be read, " + desc);
                 }
-                return null; 
+                return null;
             }
             int fileSize = (int)binaryFile.length();
             byte[] buffer = new byte[fileSize];
@@ -459,7 +459,7 @@ public class DatabaseStorageManager implements StorageManager {
         } catch (IOException ie) {
             throw new StorageException(ie);
         }
-        //TODO: find you why is this code only here and not in other methods/ 
+        //TODO: find you why is this code only here and not in other methods/
     }
 
     // javadoc is inherited
@@ -1462,9 +1462,11 @@ public class DatabaseStorageManager implements StorageManager {
                         log.error("VERIFY: no parent builder defined in storage for builder " + builder.getTableName());
                     }
                 } catch (java.lang.AbstractMethodError ae) {
-                    // ignore: the method is not implemented by the JDBC Driver, (i.e. postgresql)
-                    // so no results can be retrieved
-                    log.debug("VERIFY: Driver does not fully implement the 3.0 API, skipping inheritance consistency tests.");
+                    // ignore: the method is not implemented by the JDBC Driver
+                    log.debug("VERIFY: Driver does not fully implement the JDBC 3.0 API, skipping inheritance consistency tests for " + tableName);
+                } catch (java.lang.UnsupportedOperationException uoe) {
+                    // ignore: the operation is not supported by the JDBC Driver
+                    log.debug("VERIFY: Driver does not support all JDBC 3.0 methods, skipping inheritance consistency tests for " + tableName);
                 }
             }
             ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
@@ -1553,8 +1555,8 @@ public class DatabaseStorageManager implements StorageManager {
                 log.warn("VERIFY: Column '" + column + "' for builder '" + builder.getTableName() + "' in Storage but not defined!");
             }
         } catch (Exception e) {
-            log.error("Error during check of table. Asuming it correct." + e.getMessage() + Logging.stackTrace(e));
-            //throw new StorageException(e.getMessage(), e);
+            log.error("Error during check of table (Assume table is correct.):" + e.getMessage());
+            log.error(Logging.stackTrace(e));
         } finally {
             releaseActiveConnection();
         }
