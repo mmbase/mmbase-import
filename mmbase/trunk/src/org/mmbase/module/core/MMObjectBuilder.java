@@ -314,6 +314,22 @@ public class MMObjectBuilder extends MMTable {
 	* removeNode
 	*/
 	public void removeNode(MMObjectNode node) {
+/*
+		// check if node.name in nameCache, remove that also.
+		// --------------------------------------------------
+		String name = node.getStringValue("name");
+		if( name != null && !name.equals("")) {
+			String sNumber = (String)nameCache.get(name);
+			try {
+				int number = Integer.parseInt( sNumber );	
+				if( number == node.getIntValue("number")) {
+					nameCache.remove( name );	
+				} 
+			} catch( NumberFormatException e ) {
+				debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
+			}
+		}
+*/
 		database.removeNode(this,node);
 	}
 
@@ -326,7 +342,6 @@ public class MMObjectBuilder extends MMTable {
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
-				stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where snumber="+number+" or dnumber="+number);
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
@@ -960,6 +975,10 @@ public class MMObjectBuilder extends MMTable {
 			String val=node.getStringValue(field.substring(5));
 			val=getHTML(val);
 			return(val);
+		} else if (field.indexOf("wap_")==0) {
+			String val=node.getStringValue(field.substring(5));
+			val=getWAP(val);
+			return val;
 		} 
 		return(null);
 	}
@@ -996,6 +1015,22 @@ public class MMObjectBuilder extends MMTable {
 		}
 		return(rtn);
 	}
+
+	public String getWAP( String body ) {
+		String result = "";
+		if( body != null ) {
+			StringObject obj=new StringObject(body);
+
+			obj.replace("\"","&#34;");
+			obj.replace("&","&#38;#38;");
+			obj.replace("'","&#39;");
+			obj.replace("<","&#38;#60;");
+			obj.replace(">","&#62;");
+			result = obj.toString();
+		}
+		return result;
+	}
+	
 
 	/**
 	* support routine to return shorter strings (will be removed)
@@ -1561,18 +1596,19 @@ public class MMObjectBuilder extends MMTable {
 
 
 	public String getNumberFromName(String name) {
-		String number=(String)nameCache.get(name);
-		if (number!=null) {
-			return(number);	
-		} else {
+		String number = null;
+
+		//String number=(String)nameCache.get(name);
+		//if (number!=null) {
+		//	return(number);	
+		//} else {
 			Enumeration e=search("WHERE name='"+name+"'");
             if (e.hasMoreElements()) {
               	MMObjectNode node=(MMObjectNode)e.nextElement();
 				number=""+node.getIntValue("number");
-				nameCache.put(name,number);
+				//nameCache.put(name,number);
 			}
-	
-		}
+		//}
 		return(number);
 	}
 
