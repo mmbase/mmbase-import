@@ -13,13 +13,14 @@
 			<field name="lastname"  ftype="string">Doe</field>
 		</object>
 	</action>
+ 
 	
 	<form-schema id="personals">
 		<title>Personal information</title>
-		<field name="firstname" ftype="string" xdttype="html">
+		<field name="firstname" ftype="string"> <!-- xdttype="html" -->
 			<prompt>First name</prompt>
 		</field>
-		<field name="lastname" ftype="string" xdttype="html">
+		<field name="lastname" ftype="string"> <!--  xdttype="html"-->
 			<prompt>Last name</prompt>
 		</field>
 
