@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.5 2002-07-02 21:17:36 michiel Exp $
+ * @version  $Id: validator.js,v 1.6 2002-07-05 10:41:54 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -60,14 +60,10 @@ function validateElement_validator(el, silent) {
                            "the value {0} does not match the required pattern", v);
     }
 
+    // determine datatype
     var dttype = el.getAttribute("dttype");
-    if (dttype==null || dttype=="") {
-        // use ftype if dttype is not given. Useful for uploads, enums, dates
-        dttype = el.getAttribute("ftype");
-    }
     switch (dttype) {
         case "string":
-        case "html":
             minlength=el.getAttribute("dtminlength");
             if ((minlength!=null) && (minlength!="") && (v.length < 1*minlength))
                 err += getToolTipValue(form,'message_minlength',
@@ -88,8 +84,6 @@ function validateElement_validator(el, silent) {
                            "value must be at most {0}", el.dtmax);
             }
             break;
-        case "date":
-            break;
         case "enum":
             if ((el.getAttribute("dtrequired")!=null) && (el.getAttribute("dtrequired")=="true")) {
                 if (el.options[el.selectedIndex].value == "-")
@@ -97,18 +91,9 @@ function validateElement_validator(el, silent) {
                            "value is required; please select a value");
             }
             break;
-        case "date":
-        case "year":
-        case "month":
-        case "day":
-        case "hour":
-        case "minutes":
-            id = el.getAttribute("name").substring(el.name.indexOf("_")+1, el.name.lastIndexOf("_"));
-            var dateel = document.getElementById(id);
-
+        case "datetime":
             var months = new Array("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
-            //alert(dateel.getAttribute("dttype"));
-            if ((dateel.getAttribute("dttype") == "datetime") || (dateel.getAttribute("dttype") == "date")) {
+            if ((el.getAttribute("ftype") == "datetime") || (el.getAttribute("ftype") == "date")) {
                 var month = months[form.elements["internal_" + id + "_month"].selectedIndex];
                 var day = form.elements["internal_" + id + "_day"].selectedIndex+1;
                 var year = form.elements["internal_" + id + "_year"].value;
@@ -117,7 +102,7 @@ function validateElement_validator(el, silent) {
                 var day = 1;
                 var year = 1970;
             }
-            if ((dateel.getAttribute("dttype") == "datetime") || (dateel.getAttribute("dttype") == "time")) {
+            if ((el.getAttribute("ftype") == "datetime") || (el.getAttribute("ftype") == "time")) {
                 var hours = form.elements["internal_" + id + "_hours"].value;
                 var minutes = form.elements["internal_" + id + "_minutes"].value;
             } else {
@@ -136,14 +121,14 @@ function validateElement_validator(el, silent) {
                        "date/time format is invalid");
             } else {
                 // checks min/max. note: should use different way to determine outputformat (month)
-                if ((err.length == 0) && (dateel.dttype != "time") && (dateel.dtmin != null) && (ms < 1000*dateel.dtmin)) {
+                if ((err.length == 0) && (el.ftype != "time") && (el.dtmin != null) && (ms < 1000*el.dtmin)) {
                     var d = new Date();
                     d.setTime(1000*dateel.dtmin);
                     err += getToolTipValue(form,"message_datemin",
                            "date must be at least {0}",
                            d.getDate() + " " + months[d.getMonth()] + " " + d.getUTCFullYear());
                 }
-                if ((err.length == 0) && (dateel.dttype != "time") && (dateel.dtmax != null) && (ms > 1000*dateel.dtmax)) {
+                if ((err.length == 0) && (el.dttype != "time") && (el.dtmax != null) && (ms > 1000*el.dtmax)) {
                     var d = new Date();
                     d.setTime(1000*dateel.dtmax);
                     err += getToolTipValue(form,"message_datemax",
@@ -154,10 +139,6 @@ function validateElement_validator(el, silent) {
             if (err.length == 0) {
                 form.elements[id].value = Math.round(ms/1000); // - (60*d.getTimezoneOffset()));
             }
-            break;
-
-        case "binary":
-            alert(el.outerHTML);
             break;
     }
 
@@ -190,9 +171,9 @@ function doValidateForm() {
     var invalid=false;
     form = document.forms["form"];
 
-	if (form.getAttribute("invalidlist")!="") {
-	   invalid = true;
-    }	
+        if (form.getAttribute("invalidlist")!="") {
+           invalid = true;
+    }
 
     for (var i=0; i<form.elements.length; i++) {
         var elem = form.elements[i];
