@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.20 $ $Date: 2000-12-27 19:55:24 $
+ * @version $Revision: 1.21 $ $Date: 2000-12-27 22:08:22 $
  */
 public abstract class Module {
 
@@ -48,6 +48,7 @@ public abstract class Module {
 	static ModuleProbe mprobe;
 	static boolean debug=false;
 	public static boolean xmlinstalled=false;
+	private String className;
 	String maintainer;
 	int    version;	
 
@@ -154,9 +155,8 @@ public abstract class Module {
 	/**
 	 * Gets own modules properties
 	 */
-   	protected Hashtable getInitParameters() {
-		return(null);
-		//org.mmabse return(Environment.getProperties(this,"module/"+moduleName));
+   	public Hashtable getInitParameters() {
+		return(properties);
 	}
 
 
@@ -411,5 +411,20 @@ public abstract class Module {
 	public int getVersion() {
 		return(version);
 	}
+
+
+    /**
+    * set classname of the builder
+    */
+    public void setClassName(String d) {
+        this.className=d;
+    }
+
+    /**
+    * return classname of this builder
+    */
+    public String getClassName() {
+        return className;
+    }
 
 }
