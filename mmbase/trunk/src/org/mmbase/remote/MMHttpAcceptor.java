@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.12 2000-12-20 16:31:45 vpro Exp $
+$Id: MMHttpAcceptor.java,v 1.13 2001-03-26 13:00:12 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/12/20 16:31:45  vpro
+Davzev: added changed some debug stuff
+
 Revision 1.11  2000/12/19 17:10:54  vpro
 Davzev: Still managed to add some debug and comment
 
@@ -33,7 +36,7 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.12 $ $Date: 2000-12-20 16:31:45 $
+ * @version $Revision: 1.13 $ $Date: 2001-03-26 13:00:12 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
@@ -223,7 +226,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	 * @return true, always
 	 */
 	public boolean addListener(String buildername,String nodename,RemoteBuilder serv) {
- 		if (debug) debug("addListerer("+buildername+","+nodename+","+serv+"): Adding remote builder ref to listeners hashtable key:"+nodename);
+ 		if (debug) debug("addListener("+buildername+","+nodename+","+serv+"): Adding remote builder ref to listeners hashtable key:"+nodename);
 		listeners.put(nodename,serv);	
 		return(true);
 	}
@@ -269,7 +272,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 						if (debug) debug("getNode("+nodename+","+tableName+"): Saving XML data as Hashtable with key value pairs");
 						serv.gotXMLValues(xml);
 					} catch(Exception e) {
-	 					debug("getNode("+nodename+","+tableName+"): ERROR: while connecting to host("+remoteHost+","+remotePort+"): ");
+	 					debug("getNode("+nodename+","+tableName+"): ERROR: while reading XML data from header.");
 						e.printStackTrace();
 					}
 				} else {
