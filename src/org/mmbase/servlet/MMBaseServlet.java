@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.29.2.2 2004-11-08 12:40:39 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.29.2.3 2004-11-09 12:12:02 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -87,9 +87,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     /** 
      * Boolean indicating whether MMBase has been started. Used by {@link #checkInited}, set to true {@link #by setMMBase}.
-     * @since MMBase-1.7
+     * @since MMBase-1.7.2
      */
-    private boolean mmbaseInited = false;
+    private static boolean mmbaseInited = false;
 
     /**
      * If MMBase has not been started, a 503 is given, with this value for the 'Retry-After' header.
@@ -148,6 +148,9 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * @since MMBase-1.7
      */
     public void setMMBase(MMBase mmb) {
+        if (! mmbaseInited) {
+            log.info("MMBase servlets are ready to receive requests");            
+        }
         mmbase = mmb;
         mmbaseInited = true;
     }
