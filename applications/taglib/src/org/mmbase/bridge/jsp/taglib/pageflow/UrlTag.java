@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.io.StringWriter;
 import java.io.StringReader;
 import org.mmbase.bridge.jsp.taglib.*;
@@ -32,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.45 2003-08-06 14:33:17 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.46 2003-08-07 09:34:34 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -42,7 +40,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     private static CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
     private   Attribute referids = Attribute.NULL;
-    protected Map extraParameters = null;
+    protected List extraParameters = null;
     protected Attribute  page = Attribute.NULL;
     private   Attribute escapeAmps = Attribute.NULL;
 
@@ -62,14 +60,14 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
         }
-        extraParameters.put(key, value);
+        extraParameters.add(new Param(key, value));
     }
 
 
 
     public int doStartTag() throws JspTagException {        
         log.debug("starttag");
-        extraParameters = new HashMap();
+        extraParameters = new ArrayList();
         helper.setTag(this);
         helper.useEscaper(false);
         return EVAL_BODY_BUFFERED;
@@ -128,12 +126,12 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         }
 
         {
-            Iterator i = extraParameters.entrySet().iterator();
+            Iterator i = extraParameters.iterator();
             while (i.hasNext()) {
-                Map.Entry map  = (Map.Entry) i.next();
-                if (map.getValue() == null) continue;
-                show.append(connector).append(map.getKey()).append("=");
-                paramEscaper.transform(new StringReader(map.getValue().toString()), w);
+                Param param  = (Param) i.next();
+                if (param.value == null) continue;
+                show.append(connector).append(param.key).append('=');
+                paramEscaper.transform(new StringReader(param.value.toString()), w);
                 connector = amp;
             }
         }
@@ -178,6 +176,17 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         }
         bodyContent = null;
         return helper.doEndTag();
+    }
+
+
+    protected static class Param {
+        String key;
+        Object value;
+        Param(String k, Object v) {
+            key = k ; value = v;
+        }
+        public String getKey() { return key; }
+        public Object  getValue() { return value; }
     }
 
 }
