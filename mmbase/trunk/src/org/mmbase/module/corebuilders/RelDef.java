@@ -30,6 +30,16 @@ public class RelDef extends MMObjectBuilder {
 	/**
 	*  Contruct the table
 	*/
+	public RelDef() {
+	}
+
+	public boolean init() {
+		super.init();
+		readCache();
+		return(true);
+	}
+	
+	/*
 	public RelDef(MMBase m) {
 		this.mmb=m;
 		this.tableName="reldef";
@@ -37,6 +47,7 @@ public class RelDef extends MMObjectBuilder {
 		m.mmobjs.put(tableName,this);
 		readCache();
 	}
+	*/
 
 	private boolean readCache() {
 		try {
