@@ -24,7 +24,7 @@
         params.put("sessionid",  request.getSession().getId());
         params.put("sessionkey", sessionKey);
         
-        java.io.File template = ewConfig.uriResolver.resolveToFile("xsl/exception.xsl");
+        java.net.URL template = ewConfig.uriResolver.resolveToURL("xsl/exception.xsl", null);
     
         String message = exception.getMessage();
         if (message == null) {
@@ -49,7 +49,7 @@
     
         Utils.transformNode(doc, template, ewConfig.uriResolver, out, params);
    } catch (Exception e) {
-        out.println("The following error occurred: "+exception);  
+        out.println("<pre>The following error occurred: " + exception + org.mmbase.util.logging.Logging.stackTrace(exception) + "</pre>");  
    }
 %>
 
