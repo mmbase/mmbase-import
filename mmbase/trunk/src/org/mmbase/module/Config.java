@@ -33,7 +33,6 @@ public class Config extends ProcessorModule {
     private String classname = getClass().getName();
     private String configpath;
 
-	/*
     class ParseResult {
 	
 	Vector warningList, errorList, fatalList,resultList;
@@ -47,7 +46,7 @@ public class Config extends ProcessorModule {
 		XMLCheckErrorHandler errorHandler = new XMLCheckErrorHandler();
 		parser.setErrorHandler(errorHandler);
 		
-		--use own entityResolver for converting the dtd's url to a local file
+		//use own entityResolver for converting the dtd's url to a local file
 		EntityResolver resolver = new XMLEntityResolver();
 		parser.setEntityResolver(resolver);
 		
@@ -83,21 +82,17 @@ public class Config extends ProcessorModule {
 	    return fatalList;
 	}
     }
-   */
 
-   /*
     public boolean builderIsActive(String path) {
 	XMLBuilderReader reader = new XMLBuilderReader(path);
 	return reader.getStatus().equalsIgnoreCase("active");
     }
-    */
 
-    /*
     public boolean databaseIsActive(String path) {
 	XMLProperties xmlReader = new XMLProperties();
 	SAXParser parser = new SAXParser();
-	-- Telling the parser it must not use some features
-	-- we're not using right now as dtd-validation and namespaces
+	// Telling the parser it must not use some features
+	// we're not using right now as dtd-validation and namespaces
 	try {
 	    parser.setFeature("http://xml.org/sax/features/validation",false);
 	    parser.setFeature("http://xml.org/sax/features/namespaces",false);
@@ -108,19 +103,19 @@ public class Config extends ProcessorModule {
 	    debug("Config::databaseIsActive(): failed because parser didn't recognized feature");
 	    ex.printStackTrace();
 	}
-	--create new ContentHandler and let the parser use it
+		// create new ContentHandler and let the parser use it
 	xmlReader = new XMLProperties();
 	parser.setContentHandler(xmlReader);
 
-	-- get us a (normal) propertie reader	
+	// get us a (normal) propertie reader	
 	Hashtable mods = null;		
 
-	-- load the 
+	// load the 
 	String filename=mmbaseconfig+"/modules/mmbaseroot.xml";
-	-- filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
-	-- filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
+	// filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
+	// filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
 
-	-- check if there's a xml-configuration file
+	// check if there's a xml-configuration file
 	try {
 	    parser.parse(new InputSource(filename));
 	    mods = xmlReader.getProperties();
@@ -130,12 +125,10 @@ public class Config extends ProcessorModule {
 	String curdb = (String)mods.get("DATABASE");
 	return path.indexOf(curdb) > 0;
     }
-    */
 
     /**
      * Implement a FilenameFilter for xml files
      */
-    /*
     public class XMLFilenameFilter implements FilenameFilter {
 	public boolean accept(File directory, String name) {
 	    if (name.endsWith(".xml")) {
@@ -145,16 +138,13 @@ public class Config extends ProcessorModule {
 	    }
 	}
     }
-    */
 
-    /*
     public void init() {
 	configpath = System.getProperty("mmbase.config");
 	if (configpath.endsWith(File.separator)) {
 	    configpath = configpath.substring(0,configpath.length()-1);
 	}
    }
-   */
 
     
     public void reload() {
@@ -179,7 +169,6 @@ public class Config extends ProcessorModule {
     /**
      * Generate a list of values from a command to the processor
      */
-    /*
     public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
 	Vector v = new Vector();
 
@@ -197,7 +186,7 @@ public class Config extends ProcessorModule {
 	    if (argv[0].equalsIgnoreCase("show")) {
 		if (argv.length == 1) {
 		    if (category == null || category.equals("")) {
-			-- Show main configuration file categories
+			// Show main configuration file categories
 			return listConfigDirectories(configpath);
 		    } else {
 			Vector item1List = listDirectory(configpath+File.separator+category);
@@ -240,13 +229,12 @@ public class Config extends ProcessorModule {
 	    return null;
 	}
     }
-    */
+
 
     /**
      * @param path Path to root of configuration files
      * @return Vector containing the names of the main configuration directories
      */
-    /*
     public Vector listConfigDirectories(String path) {
 	Vector v = new Vector();
 	File dir = new File(path);
@@ -259,7 +247,6 @@ public class Config extends ProcessorModule {
 	}
 	return v;
     }
-    */
 
     /**
      * Retrieve all xml files in a directory
@@ -268,7 +255,6 @@ public class Config extends ProcessorModule {
      * @return String array containing the names of the xml files in the directory
      *
      */
-    /*
     protected Vector listDirectory(String path) throws IOException {
 	File dir = new File(path);
 	if (!dir.isDirectory()) {
@@ -282,7 +268,6 @@ public class Config extends ProcessorModule {
 	    return v;
 	}
     }
-    */
     
     /**
      * Execute the commands provided in the form values
@@ -297,7 +282,6 @@ public class Config extends ProcessorModule {
     /**
      *	Handle a $MOD command
      */
-    /*
     public String replace(scanpage sp, String cmds) {
 	String[] dirlist;
 
@@ -326,7 +310,6 @@ public class Config extends ProcessorModule {
 	}
 	return "dummy";
     }
-    */
     
     public String getModuleInfo() {
 	return("Analysis of mmbase configuration, cjr@dds.nl");
@@ -343,7 +326,6 @@ public class Config extends ProcessorModule {
      * @param path Path to the builder file
      * @return Prettified version of the XML file as a string
      */
-    /*
     protected String prettyPrintXML(String path) {
 	XMLScreenWriter screen = new XMLScreenWriter(path);
 	StringWriter out = new StringWriter();
@@ -354,9 +336,7 @@ public class Config extends ProcessorModule {
 	    return "Config::prettyPrintXML("+path+"), IOException: "+e.getMessage();
 	}
     }
-    */
 
-    /*
     protected boolean checkXMLOk(String path) {
 	ParseResult pr = new ParseResult(path);
 	for (int i=0; i<pr.getResultList().size();i++) {
@@ -364,12 +344,10 @@ public class Config extends ProcessorModule {
 	}
 	return (pr.getResultList().size() == 0);
     }
-    */
 
     /**
      * @return String with '<' and '>' converted to respectively &lt; and &gt;
      */
-    /*
     protected String htmlEntities(String s) {
 	StringBuffer res = new StringBuffer();
 	char c;
@@ -383,14 +361,13 @@ public class Config extends ProcessorModule {
 	}
 	return res.toString();
     }
-    */
 
-    /*
+
     protected String annotateXML(String path) {
 	if (checkXMLOk(path)) {
 	    return checkXML(path);
 	} else {
-	    -- XXX Stupid, now I'm parsing the darned file again!
+	    // XXX Stupid, now I'm parsing the darned file again!
 	    ParseResult pr = new ParseResult(path);
 	    Vector v = pr.getResultList();
 	    StringBuffer res = new StringBuffer();
@@ -428,9 +405,8 @@ public class Config extends ProcessorModule {
 	    return res.toString();
 	}
     }
-    */
 
-    /*
+
     protected String checkXML(String path) {
 	Document document;
 	DOMParser parser;
@@ -470,7 +446,6 @@ public class Config extends ProcessorModule {
 	    return s.toString();
 	}
     }
-    */
 }
 
 
