@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryPreviousBatchesTag.java,v 1.4 2004-03-08 17:15:46 michiel Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.5 2004-05-25 11:28:13 michiel Exp $
  */
 public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
     private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
@@ -77,14 +77,18 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         }
 
 
-        int maxTotalSize = maxtotal.getInt(this, -1);
+        int maxTotalSize = maxtotal.getInt(this, -1); 
 
-        int maxSize;
+        int maxSize; // the size of this list.
+
         if (maxTotalSize > 0) {
-            int totalSize = Queries.count(query);
-            maxSize = maxTotalSize / 2; 
-            int numberOfNextBatches = (totalSize - offset)/ maxNumber; 
-            int availableForNext = (maxTotalSize + 1) / 2; // nextbatches plus current batch
+            maxSize = maxTotalSize / 2;              // first guess
+
+            int totalSize = Queries.count(query);    
+            int nextSize  = totalSize - offset - maxNumber;
+            int numberOfNextBatches = nextSize/ maxNumber;         // number of complete pages
+            if (nextSize % maxNumber > 0) numberOfNextBatches++;   // last page may be incomplete
+            int availableForNext = (maxTotalSize - 1) / 2; //   // == maxSize in QueryNextBatches
             if (numberOfNextBatches < availableForNext) { // nextbatches will not use all
                 maxSize += (availableForNext - numberOfNextBatches);
             }
