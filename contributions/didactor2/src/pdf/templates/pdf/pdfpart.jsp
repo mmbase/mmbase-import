@@ -51,6 +51,7 @@
         text = text.replaceAll("</?(font|style)[^>]*>","");
         text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
         text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
+        text = text.replaceAll("<br>","<br/>");
         
 /*        if (nodeType.equals("pages") && "2".equals(layout)) {
             text = text.replaceAll("<table[^>]*>","<table border='1' cellpadding='4' width='50%' align='left'>");
@@ -82,32 +83,38 @@
     </mm:compare>
 
     <mm:compare referid="node_type" value="pages">
-        <mm:field name="imagelayout" id="imagelayout" write="false"/>
 
-
-        <mm:compare referid="layout" value="0">
-        <%= text %>
-        <%@include file="pdfimages.jsp"%>
-        </mm:compare>
-        <mm:compare referid="layout" value="1">
-        <%@include file="pdfimages.jsp"%>
-        <%= text %>
-        </mm:compare>
-        <mm:compare referid="layout" value="2">
-        <table width="100%" height="100%"><tr>
-        <td width="100%" valign="top"><%= text %></td><td>
-        <%@include file="pdfimages.jsp"%>
-        </td>
-        </tr>
-        </table>
-        </mm:compare>
-        <mm:compare referid="layout" value="3">
-        <table width="100%" height="100%"><tr><td>
-        <%@include file="pdfimages.jsp"%></td>
-        <td width="100%" valign="top"><%= text %></td>
-        </tr>
-        </table>
-        </mm:compare>
+        <mm:countrelations type="images">
+            <mm:isgreaterthan value="0">
+                <mm:field name="imagelayout" id="imagelayout" write="false"/>
+                <mm:compare referid="layout" value="0">
+                <%= text %>
+                <%@include file="pdfimages.jsp"%>
+                </mm:compare>
+                <mm:compare referid="layout" value="1">
+                <%@include file="pdfimages.jsp"%>
+                <%= text %>
+                </mm:compare>
+                <mm:compare referid="layout" value="2">
+                <table width="100%" ><tr>
+                <td width="100%" valign="top"><%= text %></td><td>
+                <%@include file="pdfimages.jsp"%>
+                </td>
+                </tr>
+                </table>
+                </mm:compare>
+                <mm:compare referid="layout" value="3">
+                <table width="100%" ><tr><td>
+                <%@include file="pdfimages.jsp"%></td>
+                <td width="100%" valign="top"><%= text %></td>
+                </tr>
+                </table>
+                </mm:compare>
+            </mm:isgreaterthan>
+            <mm:islessthan value="1">
+                <%= text %>
+            </mm:islessthan>
+        </mm:countrelations>
 
        
         <mm:relatednodes type="attachments">
