@@ -273,6 +273,8 @@ NetComponents can be found at:
     <copy file="${jai_core.jar}"  todir="${compile.lib.dir}" />
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
     <copy file="${junit.jar}"     todir="${compile.lib.dir}" />
+    <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
+    <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
   </target>
 
   
@@ -1002,15 +1004,37 @@ Distribution: ${distro}
                file="${download.dir}/${xalan.version}-bin.tar.gz"/>
     <available property="xalan.expanded"
                file="${expand.dir}/${xalan.fullversion}"/>
+
+    <property name="sun.download" value="http://java.sun.com/Download5?protocol=HTTP%20download&amp;platform=zip&amp;domain-checked=&amp;document=download&amp;mirror=http&amp;referer=" />
     <!-- JAI -->
     <property name="jai.version" value="jai1_0_2-lib-solaris"/>
-    <property name="jai.url" value="http://java.sun.com/Download3?protocol=HTTP%20download&amp;referer=http://java.sun.com/products/java-media/jai/downloads/download-1_0_2.html&amp;download-name=jai1_0_2-lib-solaris.tar.gz&amp;config-file=jai1_0_2.config&amp;platform=solaris&amp;domain-checked="/>
+    <property name="jai.url" value="${sun.download}http://java.sun.com/products/java-media/jai/downloads/download-1_0_2.html&amp;download-name=jai1_0_2-lib-solaris.tar.gz&amp;config-file=jai1_0_2.config"/>
     <property name="jai_codec.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_codec.jar"/>
     <property name="jai_core.jar" value="${expand.dir}/${jai.version}/jre/lib/ext/jai_core.jar"/>
     <available property="jai.present"
                file="${download.dir}/${jai.version}.tar.gz"/>
     <available property="jai.expanded"
       file="${expand.dir}/${jai.version}"/>
+
+    <!-- mail.jar -->
+    <property name="javamail_version" value="javamail-1_3"/>
+    <property name="javamail.version" value="javamail-1.3"/>
+    <property name="javamail.url" value="${sun.download}http://java.sun.com/products/javamail/&amp;download-name=${mail_version}.zip&amp;config-file=${javamail_version}.config"/>
+    <property name="javamail.jar" value="${expand.dir}/${javamail.version}/mail.jar" />
+
+    <available property="javamail.present"  file="${download.dir}/${javamail_version}.zip"/>
+    <available property="javamail.expanded" file="${expand.dir}/${javamail.version}"/>
+
+
+    <!-- activation.jar -->
+    <property name="javaactivation_version" value="jaf-1_0_2"/>
+    <property name="javaactivation.version" value="jaf-1.0.2"/>
+    <property name="javaactivation.url" value="${sun.download}http://java.sun.com/products/javabeans/glasgow/jaf.html&amp;download-name=${javaactivation_version}.zip&amp;config-file=${javaactivation_version}.config"/>
+    <property name="javaactivation.jar" value="${expand.dir}/${javaactivation.version}/activation.jar" />
+
+    <available property="javaactivation.present"  file="${download.dir}/${javaactivation_version}.zip"/>
+    <available property="javaactivation.expanded" file="${expand.dir}/${javaactivation.version}"/>
+
     <!-- Log4j -->
     <property name="log4j.version" value="1.2.6" />
     <!--property name="log4j.version" value="1.1.3" /--> 
@@ -1102,6 +1126,26 @@ Distribution: ${distro}
     <gunzip src="${download.dir}/${jai.version}.tar.gz" dest="${expand.dir}/${jai.version}"/>
     <untar src="${expand.dir}/${jai.version}/${jai.version}.tar" dest="${expand.dir}/${jai.version}"/>
     <delete file="${expand.dir}/${jai.version}/${jai.version}.tar"/>
+  </target>
+
+  <target name="get.javamail" depends="init.get" unless="javamail.present">
+    <get src="${javamail.url}"
+         dest="${download.dir}/${javamail_version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.javamail" depends="get.javamail" unless="javamail.expanded">
+    <unzip src="${download.dir}/${javamail_version}.zip" dest="${expand.dir}"/>
+  </target>
+
+  <target name="get.javaactivation" depends="init.get" unless="javaactivation.present">
+    <get src="${javaactivation.url}"
+         dest="${download.dir}/${javaactivation_version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.javaactivation" depends="get.javaactivation" unless="javaactivation.expanded">
+    <unzip src="${download.dir}/${javaactivation_version}.zip" dest="${expand.dir}"/>
   </target>
 
   <target name="get.log4j" depends="init.get" unless="log4j.present">
