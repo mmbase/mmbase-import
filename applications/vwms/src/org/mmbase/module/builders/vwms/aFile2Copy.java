@@ -21,4 +21,8 @@ public class aFile2Copy {
 		this.srcpath=srcpath;
 		this.filename=filename;
 	}
+
+	public int hashCode() {
+		return((srcpath+filename).hashCode());
+	}
 }

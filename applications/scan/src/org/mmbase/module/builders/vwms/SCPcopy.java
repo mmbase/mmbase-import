@@ -16,7 +16,7 @@ Execute exec=new Execute();
 String thisserver;
 String dstpath,dstuser,dsthost;
 String sshpath;
-private static final boolean debug=true;
+private static final boolean debug=false;
 
 	public SCPcopy() {
 		setSSHpath("/usr/local/bin");
@@ -79,7 +79,7 @@ private static final boolean debug=true;
 		String res;
 
 		res=exec.execute(sshpath+"/ssh -q -l "+dstuser+" "+dsthost+" mkdir "+path+"");
-		System.out.println("SCPcopy -> mkdir "+path+" : "+res);
+		if (debug) System.out.println("SCPcopy -> mkdir "+path+" : "+res);
 		rtn=res.length()<=0;
 		return(rtn);
 	}
@@ -121,7 +121,7 @@ private static final boolean debug=true;
 			res=exec.execute(sshpath+"/scp -B -A -q "+src+" "+dstuser+"@"+dsthost+":\""+dst+"\"");
 		}
 
-		if (debug) System.out.println("SCPcopy -> copy "+src+"->"+dst+" : "+res);
+		System.out.println("SCPcopy -> copy "+src+"->"+dst+" : "+res);
 		rtn=res.length()<=0;
 		return (rtn);
 	}
