@@ -15,7 +15,7 @@ import org.mmbase.util.functions.*;
  * This interface represents information about the authentication implemtentation.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: AuthenticationData.java,v 1.3 2005-03-16 16:05:33 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.4 2005-03-17 18:26:21 michiel Exp $
  * @since MMBase-1.8
  */
 public interface  AuthenticationData {
@@ -23,17 +23,51 @@ public interface  AuthenticationData {
     static final int METHOD_UNSET     = -1;
 
     // general methods
+    /**
+     * Requests an 'anonymous' cloud, with a user with no credentials. This can only be used if the
+     * security implementation provides the 'anonymous' authentication application.
+     */
     static final int METHOD_ANONYMOUS       = 0;
+    /**
+     * Delegates authentication completely to the authentication implementation. When using http, request and response
+     * objects are added to the credentials which can be used for user-interaction. 
+     */
     static final int METHOD_DELEGATE        = 1;
+    /**
+     * Logon with given credentials (only Strings), and don't store this any where (except for the current 'page').
+     */
     static final int METHOD_PAGELOGON       = 2;
 
 
     // http methods
+    /**
+     * Use Http 'Basic' authentication. This only provides username / password and is not very safe,
+     * because http basic authentication sends those unencrypted.
+     */
     static final int METHOD_HTTP            = 100;
+    /**
+     * Use the authenticated user which is stored in the session, or if no such user can be found,
+     * try to supply 'anonymous'.
+     */
     static final int METHOD_ASIS            = 101;
+    /**
+     * Remove the authenticated user from the session, and otherwise invalidate the user if
+     * necessary (e.g. notify an authentication service).
+     */
     static final int METHOD_LOGOUT          = 102;
+    /**
+     * Use a dedicated 'login' jsp, to log in.
+     */
     static final int METHOD_LOGINPAGE       = 103;
+    /**
+     * Delegates authentication comletely to the authentication implementation {@see
+     * #METHOD_DELEGATE}, but stores the authenticated in the session then. A second request with
+     * this method will simply use the session.
+     */
     static final int METHOD_SESSIONDELEGATE = 104;
+    /**
+     * Logon with given credentials (only Strings), and don't store this in the session.
+     */
     static final int METHOD_SESSIONLOGON    = 105;
 
 
