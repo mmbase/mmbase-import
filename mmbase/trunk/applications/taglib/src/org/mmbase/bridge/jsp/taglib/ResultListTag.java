@@ -26,11 +26,12 @@ import org.mmbase.util.logging.Logging;
  * ResultListTag, provides functionality for obtaining a list using a nodemanager command
  *
  * @author Pierre van Rooden
- * @version $Id: ResultListTag.java,v 1.1 2003-10-30 14:05:03 pierre Exp $
+ * @version $Id: ResultListTag.java,v 1.2 2003-11-06 17:55:00 michiel Exp $
+ * @todo compare with functioncontainer/functioncontainerreferrers
  */
 
 public class ResultListTag extends AbstractNodeListTag {
-    private static final Logger log = Logging.getLoggerInstance(ListTag.class);
+    private static final Logger log = Logging.getLoggerInstance(ResultListTag.class);
 
     protected Attribute command    = Attribute.NULL;
     protected Attribute nodemanager = Attribute.NULL;
