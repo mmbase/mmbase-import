@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.49 2004-01-07 21:30:54 michiel Exp $
+ * @version $Id: Dove.java,v 1.50 2004-01-07 21:41:39 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -301,11 +301,11 @@ public class Dove extends AbstractDove {
                     data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
                     data.setAttribute(ELM_ROLE, nrel.getRelationManager().getForwardRole());
                     if (thisNumber==nrel.getIntValue("snumber")) {
-                        data.setAttribute(ELM_SOURCE, ""+nrel.getValue("snumber"));
-                        data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("dnumber"));
+                        data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("snumber"));
+                        data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("dnumber"));
                     } else {
-                        data.setAttribute(ELM_SOURCE, ""+nrel.getValue("dnumber"));
-                        data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("snumber"));
+                        data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("dnumber"));
+                        data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("snumber"));
                     }
                     out.appendChild(data);
                     getDataNode(null,data,nrel);
