@@ -35,8 +35,9 @@ public class AllTests {
         suite.addTestSuite(CloudContextTest.class);
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(EmptyNodeTestTransaction.class);
+        suite.addTestSuite(EmptiedNodeTest.class);
         suite.addTestSuite(EmptyNotNullNodeTest.class); // are failing
-        //suite.addTestSuite(EmptyNotNullNodeTestTransaction.class);
+        //suite.addTestSuite(EmptyNotNullNodeTestTransaction.class); // would fail too
         suite.addTestSuite(FilledNodeTest.class); 
         suite.addTestSuite(FilledNodeTestTransaction.class);
         suite.addTestSuite(NodeManagerTest.class);
