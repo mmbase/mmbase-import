@@ -5,9 +5,19 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %></head>
 <body>
+
+   <script>
+      function check_passwords()
+      {
+         if((document.getElementById("loginUsername").value.length == 0) && (document.getElementById("loginPassword").value.length == 0)) return false;
+            else return true;
+      }
+   </script>
+
+
   <mm:import externid="reason">please</mm:import>
   <mm:import externid="referrer" required="true" />
-     <form method="post" action="<mm:write referid="referrer" />" >
+     <form method="post" action="<mm:write referid="referrer" />" onSubmit="return(check_passwords())>
     <table class="body">
     <tr><th colspan="2">Login</th></tr>
   <mm:compare referid="reason" value="failed">

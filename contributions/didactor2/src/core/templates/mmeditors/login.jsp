@@ -1,9 +1,19 @@
-<%@ include file="page_base.jsp"  
+<%@ include file="page_base.jsp"
 %><mm:content type="text/html" language="$config.lang" expires="0">
 <mm:write referid="style" escape="none" />
 <title>Login</title>
 </head>
 <body class="basic">
+
+  <script>
+     function check_passwords()
+     {
+        if((document.getElementById("loginUsername").value.length == 0) && (document.getElementById("loginPassword").value.length == 0)) return false;
+           else return true;
+     }
+  </script>
+
+
   <h2>Login</h2>
   <mm:import externid="reason">please</mm:import>
   <mm:import externid="referrer">search_node.jsp</mm:import>
@@ -13,7 +23,7 @@
     </p>
   </mm:compare>
   <table>
-    <form method="post" action="<mm:write referid="referrer" />" >
+    <form method="post" action="<mm:write referid="referrer" />" onSubmit="return(check_passwords())">
     <tr><td>Name:</td><td><input type="text" name="username"></td></tr>
     <tr><td>Password</td><td><input type="password" name="password"></td></tr>
     <tr><td>Authenticate:</td><td><input type="text" name="authenticate" value="name/password"></td></tr>
