@@ -32,7 +32,7 @@ span.select {
 }
 
 span.select:after {
-  content: url(../images/select.gif); /* makes it work in Mozilla */
+  content: url(../images/transparent.png); /* makes it work in Mozilla */
 }
 
 span.create {
@@ -50,7 +50,7 @@ span.change {
 }
 
 span.change:before {
-  content: url(../images/select.gif); /* makes it work in Mozilla */
+  content: url(../images/transparent.png); /* makes it work in Mozilla */
 }
 
 span.delete {
@@ -59,7 +59,7 @@ span.delete {
 }
 
 span.delete:before {
-  content: url(../images/delete.gif); /* makes it work in Mozilla */
+  content: url(../images/transparent.png); /* makes it work in Mozilla */
 }
 
 span.previous {
