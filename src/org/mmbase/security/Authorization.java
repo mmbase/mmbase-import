@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.bridge.Query;
+import org.mmbase.storage.search.Constraint;
 import java.util.Set;
 
 import org.mmbase.util.logging.Logger;
@@ -18,7 +20,8 @@ import org.mmbase.util.logging.Logging;
  * authorization, you have to extend this class, and implement the abstract methods.
  *
  * @author Eduard Witteveen
- * @version $Id: Authorization.java,v 1.16 2003-07-09 10:03:11 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: Authorization.java,v 1.17 2003-08-05 19:05:21 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
     private static Logger log = Logging.getLoggerInstance(Authorization.class);
@@ -162,4 +165,66 @@ public abstract class Authorization extends Configurable {
      *	@exception org.mmbase.SecurityException maybe
      */
     public abstract Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException ;
+
+
+    /**
+     * Checks rights on a query. This means that the query will be changed (if possible) to return
+     * only checked results for the given user. Of course, this will normally only be implemented for the
+     * 'READ' operation.
+     *
+     * @param user The UserContext, for which the query must be considered
+     * @param query The query to be adapted.
+     * @return true of the query now will certainly give only readable results, false if 'check' still has to be called on every individual result.
+     * 
+     * @since MMBase-1.7
+     */
+
+    public QueryCheck check(UserContext user, Query query, Operation operation) {
+        return NO_CHECK;
+    }
+
+        
+    /**
+     * Constant which can be used as a result for the check query function. It means: 'No extra
+     * contraints to be added, and the query's result will have to be postprocessed for security.
+     *
+     * @since MMBase-1.7
+     */
+    protected static QueryCheck NO_CHECK       = new QueryCheck(false, null);
+
+    /**
+     * Constant which can be used as a result for the check query function. It means: 'No extra
+     * contraints to be added, but the query's result will <em>not</em> have to be postprocessed for
+     * security. This means that there are no restrictions on the given operation at all (normally:
+     * 'read' is permit to everybody).
+     *
+     * @since MMBase-1.7
+     */
+    protected  static QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
+
+
+    /**
+     * Defines the result of a security check on a query. Such a result has two members: A
+     * 'Constraint' which has to be added to the query and a boolean which sais if the query (with
+     * the given Constraint) has now been fully checked and that it's result does not need further
+     * postprocessing.
+     *
+     * @since MMBase-1.7
+     */
+    
+    public static class QueryCheck {
+        Constraint constraint;
+        boolean    check;
+        QueryCheck(boolean ch, Constraint co) {
+            check = ch; constraint = co;
+        }
+        public boolean isChecked() {
+            return check;
+        }
+        public Constraint getConstraint() {
+            return constraint;
+        }
+                
+        
+    }
 }
