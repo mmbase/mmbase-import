@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext;
 
+import java.util.*;
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBaseObserver;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.4 2003-07-14 21:17:19 michiel Exp $
+ * @version $Id: User.java,v 1.5 2003-08-11 13:31:14 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users; 
  */
 public class User extends UserContext implements MMBaseObserver {
@@ -36,8 +37,6 @@ public class User extends UserContext implements MMBaseObserver {
      * @javadoc
      */
     User(MMObjectNode mmobjectnode, long l) {
-        node = null;
-        key = 0L;
         node = mmobjectnode;
         key = l;
         Users.getBuilder().addLocalObserver(this);
@@ -93,6 +92,11 @@ public class User extends UserContext implements MMBaseObserver {
         if (!(object instanceof MMObjectNode)) return super.equals(object);
         MMObjectNode otherNode = (MMObjectNode) object;
         return (otherNode != null) && (node.getNumber() == otherNode.getNumber());
+    }
+
+   
+    public SortedSet getGroups() {
+        return Groups.getBuilder().getGroups(node.getNumber());
     }
 
 
