@@ -13,96 +13,141 @@ import java.lang.*;
 import java.util.*;
 
 /**
- * This mail-object gives persons the functionality to create mail 
+ * This mail-object gives persons the functionality to create mail
  * and send it with the SendMail-module.
  *
  * @author Rob Vermeulen
  * @version 31 December 1996
  */
 public class Mail {
-	public String to = "";
-	public String from = "";
-	public String text = "";
-	public Hashtable headers = new Hashtable(); 
 
-	public Mail(String to, String from) {
-		this.to=to;
-		this.from=from;
-	}
+    /**
+     * All the mail headers defined for this mail object.
+     */
+    public Hashtable headers = new Hashtable();
 
-	public void setText(String text) {
-		this.text=text;
-	}
+    /**
+     * The recipient of the mail
+     */
+    public String to = "";
+    /**
+     * The sender of the mail
+     */
+    public String from = "";
+    /**
+     * The message body text
+     */
+    public String text = "";
 
-	/**
-	 * Sets the subject of the mail
-	 */
-	public void setSubject(String subject) {
-		headers.put("Subject",subject);
-	}
+    /**
+     * Create a Mail object.
+     * The parameters define recipient and sender, but this does not create any mail headers.
+     * @param to the recipient of teh mail
+     * @param from teh sender of the mail
+     */
+    public Mail(String to, String from) {
+        this.to=to;
+        this.from=from;
+    }
 
-	/**
-	 * Sets the time of the mail
-	 */ 
-	public void setDate() {
-		Date d=new Date();
-		headers.put("Date",RFC1123.makeDate(d));
-	}
+    /**
+     * Set the mail message text.
+     */
+    public void setText(String text) {
+        this.text=text;
+    }
 
-	/** 
-	 * Sets given time to the mail
-	 */
-	public void setDate(String date) {
-		headers.put("Date",date);
-	}
+    /**
+     * Sets the subject of the mail
+     */
+    public void setSubject(String subject) {
+        headers.put("Subject",subject);
+    }
 
-	/** 
-	 * tells the mail from who the mail is comming
-	 */
-	public void setFrom(String from) {
-		headers.put("From",from);
-	}
+    /**
+     * Sets the time of the mail
+     */
+    public void setDate() {
+        Date d=new Date();
+        headers.put("Date",RFC1123.makeDate(d));
+    }
 
-	/**
-	 * tells the mail for who the mail is
-	 */
-	public void setTo(String to) { 
-		headers.put("To",to);
-	}
+    /**
+     * Sets given time to the mail
+     */
+    public void setDate(String date) {
+        headers.put("Date",date);
+    }
 
-	/** 
-	 * sends the message to all persons mentioned in the CC list. 
-	 * Recipients of the message can see the names of the other recipients.
-	 */ 
-	public void setCc(String cc) {
-		headers.put("CC",cc);
-	}
+    /**
+     * Tells the mail from who the mail is coming.
+     * Does not alter the {@link #from} field.
+     */
+    public void setFrom(String from) {
+        headers.put("From",from);
+    }
 
-	/** 
-	 * sends the message to all persons mentioned in the BCC list. 
-	 * Recipients of the message cannot see the names of the other recipients.
-	 */ 
-	public void setBcc(String bcc) {
-		headers.put("BCC",bcc);
-	}
-	public void setComment(String comment) {
-		headers.put("Comment",comment);
-	}
-	
-	public void setReplyTo(String reply) {
-		headers.put("Reply-to",reply);
-	}
+    /**
+     * Tells the mail for who the mail is.
+     * Does not alter the {@link #to} field.
+     */
+    public void setTo(String to) {
+        headers.put("To",to);
+    }
 
-	public String setHeader(String header,String value) {
-		return((String)headers.put(header,value));
-	}
+    /**
+     * Sends the message to all persons mentioned in the CC list.
+     * Recipients of the message can see the names of the other recipients.
+     */
+    public void setCc(String cc) {
+        headers.put("CC",cc);
+    }
 
-	public String getHeader(String header) {
-		return((String)headers.get(header));
-	}
+    /**
+     * Sends the message to all persons mentioned in the BCC list.
+     * Recipients of the message cannot see the names of the other recipients.
+     */
+    public void setBcc(String bcc) {
+        headers.put("BCC",bcc);
+    }
 
-	public String toString() {
-		return("Mail -> Headers : "+headers+"\nText :\n"+text+"\n-");
-	}
+    /**
+     * Adds a comment to the mail.
+     */
+    public void setComment(String comment) {
+        headers.put("Comment",comment);
+    }
+
+    /**
+     * Sets the Reply-to address
+     */
+    public void setReplyTo(String reply) {
+        headers.put("Reply-to",reply);
+    }
+
+    /**
+     * Sets a mail header to a fixed value
+     * @return the old value of the header (<Code>null</code> if not earlier defined)
+     */
+    public String setHeader(String header,String value) {
+        return (String)headers.put(header,value);
+    }
+
+    /**
+     * Retrieves the value of a mail header.
+     * @return the value of the header (<Code>null</code> if not defined)
+     */
+    public String getHeader(String header) {
+        return (String)headers.get(header);
+    }
+
+    /**
+     * Returns a description of the mail object.
+     * Includes headers and message text.
+     * @return the mail description
+     */
+    public String toString() {
+        return "Mail -> Headers : "+headers+"\nText :\n"+text+"\n-";
+    }
 }
-	
+

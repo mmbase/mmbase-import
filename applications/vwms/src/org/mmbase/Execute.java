@@ -117,6 +117,6 @@ public class Execute {
      */
     public static void main(String args[]) {
         Execute execute = new Execute();
-        System.out.println(execute.execute(args[0]));
+        log.info(execute.execute(args[0]));
     }
 }
