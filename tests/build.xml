@@ -17,8 +17,8 @@
   <property name="tests.source.dir"   value="." />
   <property name="tests.build.dir" value="${tests.source.dir}/build" />
 
-  <property name="tests.lib" value="${tests.source.dir}/build/lib" />
-
+  <property name="tests.lib"       value="${tests.build.dir}/lib" />
+  <property name="mmbasetest.jar"  value="${tests.lib}/mmbasetest.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
 
 
@@ -45,7 +45,6 @@
           <include name="*.jar"/>
           <include name="*.zip"/>
         </fileset>
-        <pathelement location="${tests.build.dir}/classes"/>
       </classpath>
     </available>  
   </target>
@@ -169,19 +168,57 @@
 
     <echo message="compiling" />
 
-    <javac srcdir ="${tests.source.dir}"
-           destdir="${tests.build.dir}/classes"
-           debug="true"
-           optimize="false"
-           classpathref="compile.classpath"
-           deprecation="true"
+    <javac 
+      destdir="${tests.build.dir}/classes"
+      debug="true"
+      optimize="false"
+      classpathref="compile.classpath"
+      deprecation="true"
       >
+      <src path="${tests.source.dir}/bridge"/>
+      <src path="${tests.source.dir}/typerel"/>
+      <src path="${tests.source.dir}/convertimage"/>
       <include name="**/*.java"/>
     </javac>
   </target>
 
 
-  <target name="run.typerel" depends="compile,init">
+  <target name="jar.uptodatecheck">
+    <uptodate property="jar.uptodate" targetfile="${mmbasetest.jar}" >
+      <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build" />
+    </uptodate>   
+  </target>
+
+  <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
+    <echo message="${mmbasetest.jar} is up-to-date" />
+  </target>
+    
+
+  <target name="jar" description="Create the MMBase testjar file"
+          depends="jar.check" unless="jar.uptodate">
+    <antcall target="compile" />
+
+    <echo file="${tests.build.dir}/manifest.mf">
+Name: org/mmbase
+Vendor: MMBase Community
+URL: http://www.mmbase.org
+Comment: The MMBase Content Managment System Tests
+Build-by: ${ant.version}
+Build-java-version: ${ant.java.version}
+Build-compiler: ${build.compiler}
+</echo>
+    <jar jarfile="${mmbasetest.jar}"
+         basedir="${tests.build.dir}/classes"
+       includes="org/mmbase/**"
+       update="false"
+       manifest="${tests.build.dir}/manifest.mf" >
+    </jar>
+
+    <delete file="${tests.build.dir}/manifest.mf" />
+  </target>
+
+
+  <target name="run.typerel" depends="jar,init">
     <java 
       classname="${ui.class}"
       fork="true"
@@ -191,7 +228,7 @@
     </java>
   </target>
 
-  <target name="run.bridge" depends="compile,init">
+  <target name="run.bridge" depends="jar,init">
     <java 
       classname="${ui.class}"
       fork="true"
@@ -202,7 +239,7 @@
   </target>
 
 
-  <target name="run.convertimage" depends="compile,init">
+  <target name="run.convertimage" depends="jar,init">
     <java 
       classname="${ui.class}"
       fork="true"
