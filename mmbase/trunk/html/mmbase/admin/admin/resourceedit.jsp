@@ -23,7 +23,7 @@
 %>
   <form method="post" name="resource" action="<mm:url />">
 <table style="padding: 0">
-  <mm:cloud method="http"  >
+  <mm:cloud rank="administrator">
   <mm:import externid="dirs" />
   <mm:write referid="dirs" jspvar="dir" vartype="String">
     <mm:isnotempty>
