@@ -91,7 +91,7 @@ public class BasicNode implements Node {
     BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
         this(node, nodeManager);
         temporaryNodeId=id;
-        Edit(ACTION_ADD);
+        edit(ACTION_ADD);
         isnew=true;
     }
 
@@ -139,7 +139,7 @@ public class BasicNode implements Node {
      *
      * @param action The action to perform.
      */
-    protected void Edit(int action) {
+    protected void edit(int action) {
         if (account==null) {
             account = cloud.getAccount();
         } else if (account != cloud.getAccount()) {
@@ -166,7 +166,7 @@ public class BasicNode implements Node {
         if (temporaryNodeId==-1) {
             // when committing a temporary node id must exist (otherwise fail).
             if (action == ACTION_COMMIT) {
-                throw new BasicBridgeException("This node cannot be comitted (not changed).");
+                // throw new BasicBridgeException("This node cannot be comitted (not changed).");
             }
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
@@ -195,17 +195,17 @@ public class BasicNode implements Node {
     }
 
     public void setValue(String attribute, Object value) {
-        Edit(ACTION_EDIT);
+        edit(ACTION_EDIT);               
         if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
             //|| "snumber".equals(attribute) || "dnumber".equals(attribute) || "rnumber".equals(attribute)
             ) {
-            throw new BasicBridgeException("Not allowed to change field "
-                                           + attribute);
-        }
+            throw new BasicBridgeException("Not allowed to change field " + attribute);
+        }        
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
             throw new BasicBridgeException("Can't change unknown field " + attribute);
         }
+        
     }
 
     public void setBooleanValue(String attribute, boolean value) {
@@ -269,13 +269,13 @@ public class BasicNode implements Node {
     }
 
     public void commit() {
-        Edit(ACTION_COMMIT);
+        edit(ACTION_COMMIT);
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
             MMObjectNode node= getNode();
             if (isnew) {
-                //                node.insert(cloud.getUserName());
-                node.insert("bridge");
+                node.insert(cloud.getUser().getIdentifier());
+                //node.insert("bridge");
                 cloud.createSecurityInfo(getNumber());
                 isnew=false;
             } else {
@@ -289,7 +289,7 @@ public class BasicNode implements Node {
     };
 
     public void cancel() {
-        Edit(ACTION_COMMIT);
+        edit(ACTION_COMMIT);
         // when in a transaction, let the transaction cancel
         if (cloud instanceof Transaction) {
             ((Transaction)cloud).cancel();
@@ -311,7 +311,7 @@ public class BasicNode implements Node {
     };
 
     private void remove(boolean removeRelations) {
-        Edit(ACTION_REMOVE);
+        edit(ACTION_REMOVE);
         if (isnew) {
             // remove a temporary node (no true instantion yet, no relations)
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
@@ -395,7 +395,7 @@ public class BasicNode implements Node {
 
     public void removeRelations(String type) {
         RelDef reldef=mmb.getRelDef();
-        int rType=reldef.getGuessedNumber(type);
+        int rType=reldef.getNumberByName(type);
         if (rType==-1) {
             throw new BasicBridgeException("Cannot find relation type.");
         } else {
@@ -425,8 +425,7 @@ public class BasicNode implements Node {
     };
 
     public RelationList getRelations(String type) {
-        Vector relvector=new Vector();
-        int rType=mmb.getRelDef().getGuessedNumber(type);
+        int rType=mmb.getRelDef().getNumberByName(type);
         if (rType==-1) {
             throw new BasicBridgeException("Relation type "+type+" does not exist.");
         } else {
@@ -491,7 +490,7 @@ public class BasicNode implements Node {
     };
 
     public void addAlias(String aliasName) {
-        Edit(ACTION_EDIT);
+        edit(ACTION_EDIT);             
         if (cloud instanceof Transaction) {
             NodeManager aliasManager=cloud.getNodeManager("oalias");
             Node aliasNode=aliasManager.createNode();
@@ -503,7 +502,7 @@ public class BasicNode implements Node {
             throw new BasicBridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
             getNode().parent.createAlias(getNumber(),aliasName);
-        }
+        }        
     }
 
     /*
@@ -511,7 +510,7 @@ public class BasicNode implements Node {
      * @param aliasName the name of the alias (null means all aliases)
      */
     private void deleteAliases(String aliasName) {
-        Edit(ACTION_EDIT);
+        edit(ACTION_EDIT);
         // A new node cannot have any aliases, except when in a transaction.
         // However, there is no point in adding aliasses to a ndoe you plan to delete,
         // so no attempt has been made to rectify this (cause its not worth all the trouble).
