@@ -3,8 +3,8 @@
 <head>
 <title>Media editor</title>
 </head>
-<frameset cols="2,*" frameborder="0" border="0">
-        <frame src="" name="player">
+<frameset cols="350,*" frameborder="0" border="0">
+        <frame src="placeholder.jsp"  name="player" scroll="no">
         <frame src="entrancepage.jsp" name="content">
 </frameset>
 </html>
