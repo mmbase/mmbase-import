@@ -52,20 +52,20 @@ public abstract class FileWatcher extends Thread {
     static Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
 
     private class FileEntry {
-    	static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
+    	// static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
     	private long lastModified; 
     	private File file;
 	
 	public FileEntry(File file) {
 	    if(file == null) {
 	    	String msg = "file was null";
-	    	log.error(msg);
+	    	// log.error(msg);
 	    	throw new RuntimeException(msg);	    
 	    }
 	    
     	    if(!file.exists()) {
 	    	String msg = "file :"  + file.getAbsolutePath() + " did not exist";
-	    	log.error(msg);
+	    	// log.error(msg);
 	    	throw new RuntimeException(msg);	    
 	    }
 	    this.file = file;
