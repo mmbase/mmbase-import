@@ -356,6 +356,29 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         return "Access "+(hit+miss)+ " Ratio "+getRatio()+" Size "+size()+" Puts "+puts;
     }
 
+    public Enumeration getOrderedElements() {
+	return(getOrderedElements(-1));
+    }
+
+    public Enumeration getOrderedElements(int maxnumber) {
+	Vector results=new Vector();
+	LRUentry current=root.next;
+	if (maxnumber!=-1) {
+		int i=0;
+        	while (current!=null && current!=dangling && i<maxnumber) {
+			results.addElement(current.value);	
+			current=current.next;
+			i+=1;
+		}
+	} else {
+        	while (current!=null && current!=dangling) {
+			results.addElement(current.value);	
+			current=current.next;
+		}
+	}
+	return(results.elements());
+    }
+
 }
 
 /**
