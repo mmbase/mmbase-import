@@ -11,13 +11,12 @@ package org.mmbase.module.gui.html;
 
 import java.util.*;
 
-import javax.servlet.http.*;
-
-import org.mmbase.util.*;
 import org.mmbase.module.ParseException;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
-import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.corebuilders.FieldDefs;
+
+import org.mmbase.util.*;
 
 /**
  * The ObjectSelector class offers the functionality to search for objects
@@ -26,6 +25,7 @@ import org.mmbase.module.corebuilders.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
+ * @version $Id: ObjectSelector.java,v 1.12 2002-07-06 13:14:47 pierre Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -40,6 +40,7 @@ public class ObjectSelector implements CommandHandlerInterface {
 
     /**
      * General List pages coming from MMEdit.
+     * @javadoc
      */
     public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
         String token;
@@ -70,15 +71,12 @@ public class ObjectSelector implements CommandHandlerInterface {
                 return getObjectRelations3(state,args);
             }
         }
-
         result.addElement("List not defined (ObjectSelector)");
-        return (result);
+        return result;
     }
 
-
-
     /**
-     *
+     * @javadoc
      */
     Vector getObjectFields(EditState ed) {
         String language=ed.getLanguage();
@@ -94,7 +92,7 @@ public class ObjectSelector implements CommandHandlerInterface {
                 DBName=def.getDBName();
                 if (!DBName.equals("owner") && !DBName.equals("number") && !DBName.equals("otype")) {
                     val=obj.getGUIIndicator(DBName,node);
-                    if (val==null) val = node.getValueAsString( DBName );
+                    if (val==null) val = node.getStringValue( DBName );
                     else if (val.equals("null")) val="";
                     results.addElement(DBName);
                     results.addElement(val);
@@ -108,17 +106,16 @@ public class ObjectSelector implements CommandHandlerInterface {
                 }
             }
         }
-        return(results);
+        return results;
     }
 
-
     /**
+     * @javadoc
      */
     Vector getObjectRelations2(EditState ed) {
         Vector results=new Vector();
         MMObjectBuilder obj=ed.getBuilder();
         MMObjectNode node=ed.getEditNode();
-
 
         if (node!=null && node.getIntValue("number")!=-1) {
             FieldDefs def;
@@ -129,18 +126,15 @@ public class ObjectSelector implements CommandHandlerInterface {
             for (;e.hasMoreElements();) {
                 rel=(MMObjectNode)e.nextElement();
                 MMObjectNode rdn=stateMngr.mmBase.getRelDef().getNode(rel.getIntValue("rnumber"));
-                // am i the source of the desitination of the relation ?
+                // Am I the source of the desitination of the relation ?
                 if (rel.getIntValue("snumber")==ed.getEditNodeNumber()) {
                     MMObjectNode other=obj.getNode(rel.getIntValue("dnumber"));
-//					other=stateMngr.mmBase.castNode(other);
-//					other=stateMngr.mmBase.castNode(other);
                     results.addElement(""+rel.getIntValue("number"));
                     results.addElement(stateMngr.mmBase.getTypeDef().getValue(rel.getIntValue("otype")));
                     results.addElement(stateMngr.mmBase.getTypeDef().getValue(other.getIntValue("otype")));
                     results.addElement(""+other.getGUIIndicator());
                 } else {
                     MMObjectNode other=obj.getNode(rel.getIntValue("snumber"));
-//					other=stateMngr.mmBase.castNode(other);
                     results.addElement(""+rel.getIntValue("number"));
                     results.addElement(stateMngr.mmBase.getTypeDef().getValue(rel.getIntValue("otype")));
                     results.addElement(stateMngr.mmBase.getTypeDef().getValue(other.getIntValue("otype")));
@@ -148,55 +142,58 @@ public class ObjectSelector implements CommandHandlerInterface {
                 }
             }
         }
-        return(results);
-    }
-
-    Vector getAllowedBuilders(String user) {
-        Vector allowed=null;
-        if (stateMngr.mmBase.getAuthType().equals("basic")) {
-        allowed=new Vector();
-        MultiRelations multirel=(MultiRelations)stateMngr.mmBase.getMMObject("multirelations");
-        Vector tables=new Vector();
-        tables.addElement("typedef");
-        // bug bug, daniel (9 aug) tables.addElement("authrel");
-        tables.addElement("insrel");
-        tables.addElement("people");
-        Vector fields=new Vector();
-        fields.addElement("typedef.name");
-        fields.addElement("people.account");
-        Vector ordervec=new Vector();
-        Vector dirvec=new Vector();
-        dirvec.addElement("UP");
-
-        Vector vec=multirel.searchMultiLevelVector(-1,fields,"NO",tables,"people.account=E'"+user+"'",ordervec,dirvec);
-        for (Enumeration h=vec.elements();h.hasMoreElements();)	{
-            MMObjectNode node=(MMObjectNode)h.nextElement();
-            String builder=node.getStringValue("typedef.name");
-            allowed.addElement(builder);
-        }
-        }
-        return(allowed);
+        return results;
     }
 
     /**
-    * Retrieves a list of existing relations and allowed relation types to a specific node.
-    * Represented by a vector of strings, in which each set of 8 consequetive strings
-    * represets either an existing relation or a relationtype to be used for creating a new one.<br>
-    * The strings represent, in order:<br>
-    * 1 - The builder name of the type linked to (i.e. people) <br>
-    * 2 - The builder name of the relation (i.e. insrel) if an existing relation, otherwise the builder name of the typed linked to <br>
-    * 3 - The number of the relation node if an existing relation, otehrwise the number of the current (edited) node <br>
-    * 4 - Empty when an existing realtion. Otherwise it is either the name of the relation defintiton for a typed relation, or,
-    *     when more than one relationtype exists for this node type, the value "multiple" <br>
-    * 5 - GUI name for the node linked to. (empty when a relation type)<br>
-    * 6 - "insEditor" if this is an existing node, "addeditor" if this is a rel;ation type. <br>
-    * 7 - GUI name of the linked-to node's builder (language dependent) <br>
-    * 8 - The gui name of the relation definition for this relation (appropriate for direction, empty when a relation type). <br>
-    * @param ed the EditState object that governs this edit
-    * @args the arguments to this command. The only argument available is "USER". If set, a crude authorization is checked which allows
-    *       or disallows access to relations to specific node types.
-    * @return a <code>Vector</code> of <code>String</code>
-    */
+     * @javadoc
+     */
+    Vector getAllowedBuilders(String user) {
+        Vector allowed=null;
+        if (stateMngr.mmBase.getAuthType().equals("basic")) {
+            allowed=new Vector();
+            MultiRelations multirel=(MultiRelations)stateMngr.mmBase.getMMObject("multirelations");
+            Vector tables=new Vector();
+            tables.addElement("typedef");
+            // bug bug, daniel (9 aug) tables.addElement("authrel");
+            tables.addElement("insrel");
+            tables.addElement("people");
+            Vector fields=new Vector();
+            fields.addElement("typedef.name");
+            fields.addElement("people.account");
+            Vector ordervec=new Vector();
+            Vector dirvec=new Vector();
+            dirvec.addElement("UP");
+
+            Vector vec=multirel.searchMultiLevelVector(-1,fields,"NO",tables,"people.account=E'"+user+"'",ordervec,dirvec);
+            for (Enumeration h=vec.elements();h.hasMoreElements();)	{
+                MMObjectNode node=(MMObjectNode)h.nextElement();
+                String builder=node.getStringValue("typedef.name");
+                allowed.addElement(builder);
+            }
+        }
+        return allowed;
+    }
+
+    /**
+     * Retrieves a list of existing relations and allowed relation types to a specific node.
+     * Represented by a vector of strings, in which each set of 8 consequetive strings
+     * represets either an existing relation or a relationtype to be used for creating a new one.<br>
+     * The strings represent, in order:<br>
+     * 1 - The builder name of the type linked to (i.e. people) <br>
+     * 2 - The builder name of the relation (i.e. insrel) if an existing relation, otherwise the builder name of the typed linked to <br>
+     * 3 - The number of the relation node if an existing relation, otehrwise the number of the current (edited) node <br>
+     * 4 - Empty when an existing realtion. Otherwise it is either the name of the relation defintiton for a typed relation, or,
+     *     when more than one relationtype exists for this node type, the value "multiple" <br>
+     * 5 - GUI name for the node linked to. (empty when a relation type)<br>
+     * 6 - "insEditor" if this is an existing node, "addeditor" if this is a rel;ation type. <br>
+     * 7 - GUI name of the linked-to node's builder (language dependent) <br>
+     * 8 - The gui name of the relation definition for this relation (appropriate for direction, empty when a relation type). <br>
+     * @param ed the EditState object that governs this edit
+     * @args the arguments to this command. The only argument available is "USER". If set, a crude authorization is checked which allows
+     *       or disallows access to relations to specific node types.
+     * @return a <code>Vector</code> of <code>String</code>
+     */
     Vector getObjectRelations3(EditState ed,StringTagger args) {
         Vector results=new Vector();
         MMObjectBuilder obj=ed.getBuilder();
@@ -265,11 +262,11 @@ public class ObjectSelector implements CommandHandlerInterface {
                 }
             }
         }
-        return(results);
+        return results;
     }
 
-
     /**
+     * @javadoc
      */
     Vector getObjectRelations(EditState ed) {
         Vector results=new Vector();
@@ -281,7 +278,6 @@ public class ObjectSelector implements CommandHandlerInterface {
             Object o;
 
             // find all the typeRel that are allowed
-
             Enumeration e=stateMngr.mmBase.getTypeRel().getAllowedRelations(node);
             MMObjectNode trn;
             MMObjectNode rdn;
@@ -304,9 +300,8 @@ public class ObjectSelector implements CommandHandlerInterface {
                 }
             }
         }
-        return(results);
+        return results;
     }
-
 
     /**
      * Builds a list of HTML Table rows to display a table of found values.
@@ -359,8 +354,7 @@ public class ObjectSelector implements CommandHandlerInterface {
                 result.addElement(""+vals.size());
             }
         }
-
-        return (result);
+        return result;
     }
 
     /**
@@ -380,14 +374,14 @@ public class ObjectSelector implements CommandHandlerInterface {
             }
         }
 
-        return (result);
+        return result;
     }
 
     /**
      * General proces pages coming from MMEdit.
      */
     public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
-        return (false);
+        return false;
     }
 
     /**
@@ -399,14 +393,14 @@ public class ObjectSelector implements CommandHandlerInterface {
         // Waardes uit de values lezen en met setQueryString() aan
         // de userstate geven
 
-        return (true);
+        return true;
     }
 
     /**
      * General replace/trigger pages coming from MMEdit.
      */
     public String replace(scanpage sp, StringTokenizer cmds) {
-        return ("Command not defined (ObjectSelector)");
+        return "Command not defined (ObjectSelector)";
         // bedoeld voor het clearen van de serachvalues
     }
 
