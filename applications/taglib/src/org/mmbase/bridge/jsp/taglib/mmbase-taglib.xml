@@ -2689,7 +2689,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <required>required</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A two letter language code.
+        A two letter language code according to ISO 639.
       </info>
       <examplevalue>
         <value>nl</value>
@@ -2703,13 +2703,13 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        A two letter country code.
+        A two letter country code according to ISO 3166.
       </info>
       <examplevalue>
         <value>BE</value>
       </examplevalue>
       <examplevalue>
-        <value>UK</value>
+        <value>GB</value>
       </examplevalue>
     </attribute>
    </tag>
