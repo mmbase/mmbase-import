@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
-%><%@ include file="../config/read.jsp" 
+%><%@ include file="readconfig.jsp" 
 %><%
     response.setHeader("Content-Type", "application/smil");
 %><mm:import externid="fragment" required="true"  />
@@ -17,8 +17,9 @@
   </head>
   <body>
     <par>
-       <seq><!-- beetje opleuken met plaatjes -->
-       <mm:listnodes id="image" type="images" orderby="number" directions="DOWN" offset="0" max="10" ><% 
+       <mm:listnodes id="image" type="images" orderby="number" directions="DOWN" offset="0" max="10" >
+          <mm:first><seq></mm:first><%-- beetje opleuken met plaatjes --%>
+<% 
          for (int i = 0; i < 360; i += 90) { 
          %><par> <!-- <mm:field name="number" /><%="." + i %> -->
          <img         
@@ -41,9 +42,9 @@
                  alt="hoi"
                  region="plaatje1" />
           </par>
+       </seq>
          </mm:last> 
          </mm:listnodes>
-       </seq>
        <!-- the actual interesting things happen here -->
        <mm:context>
        <mm:node id="fragment"  number="$fragment">
@@ -51,12 +52,12 @@
        <seq id="fragment">
           <mm:context>
           <mm:relatednodes type="$actualtype" directions="destination" role="previous">
-             <video src="<mm:field name="url(rm)" />" region="filmpje" />
+             <video src="<mm:field name="nudeurl(rm)" />" region="filmpje" />
              <textstream src='<mm:url referids="fragment" page="fragmentdescription.rt.jsp" />' region="filmtext" />
           </mm:relatednodes>
           </mm:context>
           <par>
-            <video src="<mm:field name="url(rm)" />" region="filmpje" />
+            <video src="<mm:field name="nudeurl(rm)" />" region="filmpje" />
             <textstream src='<mm:url referids="fragment" page="fragmentdescription.rt.jsp" />' region="filmtext" />
           </par>
        </seq>
