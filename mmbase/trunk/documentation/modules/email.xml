@@ -7,7 +7,7 @@
 
     <date>2003-07-14</date>
 
-    <edition>$Id: email.xml,v 1.2 2003-07-27 17:47:54 henk Exp $</edition>
+    <edition>$Id: email.xml,v 1.3 2003-08-29 13:11:47 keesj Exp $</edition>
 
     <authorgroup>
       <author>
@@ -39,7 +39,7 @@
       </listitem>
 
       <listitem>
-        <para>the builder: config\applications\MyUsers\builders\email.xml</para>
+							<para>the builder: config/applications/MyUsers/builders/email.xml</para>
       </listitem>
     </itemizedlist>
   </section>
