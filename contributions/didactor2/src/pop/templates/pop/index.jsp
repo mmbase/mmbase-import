@@ -1,8 +1,11 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%@page import="java.util.*" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 <%@include file="/shared/setImports.jsp" %>
+<fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title>POP</title>
@@ -11,70 +14,77 @@
 <!-- TODO where are the different roles described -->
 <!-- TODO different things to do with different roles? -->
 
-<div class="rows">
+<% boolean isEmpty = true; 
+   String msgString = "";
+%>
 
-<div class="navigationbar">
-  <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_pop.gif" objectlist="$includePath" />" width="25" height="13" border="0" alt="persoonlijk ontwikkelings plan" /> Persoonlijk ontwikkelings plan
-  </div>		
-</div>
+<%@ include file="getids.jsp" %>
 
 <di:hasrole role="student">
-<div class="folders">
-  <div class="folderHeader">
-    P.O.P.
-  </div>
-  <div class="folderBody">
-     <mm:node number="$user">
-     	<mm:relatedcontainer path="classrel,classes,educations">
-     	  <mm:related>
-            <div class="educationId">
-              <mm:field name="educations.name"/>
-            </div>
-          </mm:related>
-     	</mm:relatedcontainer>
-     </mm:node>
+<%@ include file="leftpanel.jsp" %>
 
-  </div>
-</div>
-
+<%-- right section --%>
 <div class="mainContent">
-  <div class="contentHeader">
+<mm:compare referid="currentfolder" value="-1">
+  <div class="contentHeader">Competenties <mm:compare referid="currentprofile" value="-1" inverse="true"
+      ><mm:node number="$currentprofile"><mm:field name="name"/></mm:node></mm:compare>
   </div>
-  <div class="contentBodywit">
-    <mm:node number="$user">
-      <mm:relatedcontainer path="classrel,classes,educations">
-        <di:table>
-          <di:row>
-            <di:headercell sortfield="educations.name" default="true">Titel opleiding</di:headercell>
-            <di:headercell>Intake</di:headercell>
-            <di:headercell>Gestart</di:headercell>
-            <di:headercell>Voortgang</di:headercell>
-            <di:headercell>&nbsp;</di:headercell>
-          </di:row>
-
-          <mm:related>
-            <di:row>
-              <di:cell>
-                <a href="<mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids">
-                           <mm:param name="education"><mm:field name="educations.number" /></mm:param>
-                         </mm:treefile>">
-                 <mm:field name="educations.name" />
-                </a>
-              </di:cell>
-              <di:cell>vinkje</di:cell>
-              <di:cell>vinkje</di:cell>
-              <di:cell>leafinclude progressbar</di:cell>
-              <di:cell>verder/start</di:cell>
-            </di:row>
-          </mm:related>
-        </di:table>
-      </mm:relatedcontainer>
-    </mm:node>
+  <%@ include file="todo.jsp" %>
+  <mm:compare referid="command" value="continue">
+    <mm:remove referid="command"/>
+    <mm:import id="command">editcomp</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="savecomp">
+    <%@ include file="savecomp.jsp" %>
+    <% msgString = "Uw zelfbeoordeling is aangemaakt"; %>
+    <mm:remove referid="command"/>
+    <mm:import id="command">no</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="sendinvite">
+    <%@ include file="sendinvite.jsp" %>
+    <% msgString = "De uitnodiging voor een beoordeling over deze competentie is verstuurd"; %>
+    <mm:remove referid="command"/>
+    <mm:import id="command">editcomp</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="invite">
+    <%@ include file="invite.jsp" %>
+    <mm:remove referid="command"/>
+    <mm:import id="command">-1</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="getinvite">
+    <%@ include file="getinvite.jsp" %>
+    <mm:remove referid="command"/>
+    <mm:import id="command">-1</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="sendfeedback">
+    <%@ include file="sendfeedback.jsp" %>
+    <mm:remove referid="command"/>
+    <mm:import id="command">no</mm:import>
+  </mm:compare>
+  <mm:compare referid="command" value="editcomp">
+    <jsp:include page="compedit.jsp">
+      <jsp:param name="msg" value="<%= msgString %>"/>
+    </jsp:include>
+  </mm:compare>
+  <mm:compare referid="command" value="no">
+    <jsp:include page="comptable.jsp">
+      <jsp:param name="msg" value="<%= msgString %>"/>
+    </jsp:include>
+  </mm:compare>
+</mm:compare>
+<mm:compare referid="currentfolder" value="2">
+  <div class="contentHeader">Persoonlijke taken</div>
+  <%@ include file="todo.jsp" %>
+  <mm:compare referid="command" value="-1" inverse="true">
+    <jsp:include page="todolist.jsp">
+      <jsp:param name="msg" value="<%= msgString %>"/>
+    </jsp:include>
+  </mm:compare>
+</mm:compare>
   </div>
-</div>
 </div>
 </di:hasrole>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+</fmt:bundle>
 </mm:cloud>
 </mm:content>
