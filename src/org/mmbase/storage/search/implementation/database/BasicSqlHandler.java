@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -588,6 +588,31 @@ public class BasicSqlHandler implements SqlHandler {
                     }
                 }
                 sb.append(")");
+                
+            } else if (fieldConstraint instanceof FieldValueBetweenConstraint) {
+                
+                // Field value-between constraint
+                FieldValueBetweenConstraint valueBetweenConstraint
+                = (FieldValueBetweenConstraint) fieldConstraint;
+                if (isRelevantCaseInsensitive(fieldConstraint)) {
+                    // case insensitive
+                    sb.append("LOWER(").
+                    append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName)).
+                    append(")");
+                } else {
+                    // case sensitive or case irrelevant
+                    sb.append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName));
+                }
+                sb.append(overallInverse? " NOT BETWEEN ": " BETWEEN ");
+                appendFieldValue(sb, valueBetweenConstraint.getLowerLimit(),
+                    !fieldConstraint.isCaseSensitive(), fieldType);
+                sb.append(" AND ");
+                appendFieldValue(sb, valueBetweenConstraint.getUpperLimit(),
+                    !fieldConstraint.isCaseSensitive(), fieldType);
                 
             } else if (fieldConstraint instanceof FieldNullConstraint) {
                 
