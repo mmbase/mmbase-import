@@ -42,15 +42,15 @@ public class MediaUrlComposer {
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
     
     // MediaFragment builder
-    private static MediaFragment mediaFragmentBuilder = null;
+    private static MediaFragments mediaFragmentBuilder = null;
     
     // MediaSource builder
-    private static MediaSource mediaSourceBuilder = null;
+    private static MediaSources mediaSourceBuilder = null;
     
     /**
      * construct the MediaProviderFilter
      */
-    public MediaUrlComposer(MediaFragment mf, MediaSource ms) {
+    public MediaUrlComposer(MediaFragments mf, MediaSources ms) {
         mediaFragmentBuilder = mf;
         mediaSourceBuilder = ms;
     }
