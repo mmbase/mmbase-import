@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.44 2002-07-08 09:59:50 pierre Exp $
+ * @version $Id: Wizard.java,v 1.45 2002-07-08 14:57:11 pierre Exp $
  *
  */
 public class Wizard {
@@ -260,7 +260,7 @@ public class Wizard {
 
         // store variables so that these can be used in the wizard schema
         variables.put("wizardname", wizardname);
-        if (dataId != null) variables.put("objectNumber", dataId);
+        if (dataId != null) variables.put("objectnumber", dataId);
         // TODO: dataId == null only means that this wizard object is being abused in list.jsp
         //       should not allow this kind of hackery.
 
@@ -1066,9 +1066,9 @@ public class Wizard {
 
         // resolve special attributes
         if (ftype.equals("startwizard")) {
-            String objectNumber = Utils.getAttribute(newfield,"objectNumber", "new");
+            String objectNumber = Utils.getAttribute(newfield,"objectnumber", "new");
             objectNumber = Utils.transformAttribute(datanode, objectNumber);
-            Utils.setAttribute(newfield, "objectNumber", objectNumber);
+            Utils.setAttribute(newfield, "objectnumber", objectNumber);
         }
 
         // binary type needs special processing
