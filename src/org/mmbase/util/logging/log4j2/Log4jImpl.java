@@ -89,7 +89,11 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         }
         System.out.println("Parsing " + configurationFile.getAbsolutePath());
         DOMConfigurator.configureAndWatch(configurationFile.getAbsolutePath(), 10000); // check every 10 seconds if configuration changed
-        System.setErr(new LoggerStream((Log4jImpl) getInstance("STDERR")));
+        Log4jImpl err = (Log4jImpl) getInstance("STDERR");
+        // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
+        if(err.getLevel() != Log4jLevel.FATAL) {
+            System.setErr(new LoggerStream(err));
+        }
     }
 
     public static File getConfigurationFile() {
@@ -187,8 +191,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
         private Logger log;
 
-        private int checkCount = 0; 
-        // needed to avoid infinite
+        private int checkCount = 0;         // needed to avoid infinite
         // recursion in some errorneos situations.
 
         LoggerStream (Log4jImpl l) throws IllegalArgumentException {
@@ -204,10 +207,10 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             super(System.out);
         }
         // simply overriding all methods that possibly could be used (forgotten some still)
-        public void print   (char[] s) { log.trace("2"); log.warn(new String(s)); } 
-        public void print   (String s) { log.trace("3"); log.warn(s); }  
-        public void print   (Object s) { log.trace("4"); log.warn(s.toString()); }
-        public void println (char[] s) { log.trace("5"); log.warn(new String(s)); }
+        public void print   (char[] s) { log.warn(new String(s)); } 
+        public void print   (String s) { log.warn(s); }  
+        public void print   (Object s) { log.warn(s.toString()); }
+        public void println (char[] s) { log.warn(new String(s)); }
         public void println (String s) { 
             // if something goes wrong log4j write to standard error
             // we don't want to go in an infinite loop then, if LoggerStream is stderr too.            
@@ -222,9 +225,6 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         public void println (Object s) { 
             // it seems that exception are written to log in this way, so we can check 
             // if s is an exception, in which case we want to log with FATAL.
-            if (log.isDebugEnabled()) { 
-                log.trace("7 " + s.getClass().toString());
-            }
             if (Exception.class.isAssignableFrom(s.getClass())) {
                 log.fatal(s.toString()); // uncaught exception, that's a fatal error
             } else {
