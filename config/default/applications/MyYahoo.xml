@@ -2,46 +2,47 @@
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="MyYahoo" maintainer="mmbase.org" version="1" auto-deploy="false">
 
-	<neededbuilderlist>
-	  <builder maintainer="mmbase.org" version="12">pools</builder>
-	  <builder maintainer="mmbase.org" version="11">urls</builder>
-	  <builder maintainer="mmbase.org" version="12">jumpers</builder>
-	</neededbuilderlist>	
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="0">pools</builder>
+    <builder maintainer="mmbase.org" version="0">urls</builder>
+    <builder maintainer="mmbase.org" version="0">jumpers</builder>
+  </neededbuilderlist>	
 
-	<neededreldeflist>
-	  <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
-	</neededreldeflist>
+  <neededreldeflist>
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel"/>
+  </neededreldeflist>
 
-	<allowedrelationlist>
-	  <relation from="pools" to="pools" type="related" />
-	  <relation from="pools" to="urls" type="related" />
-	  <relation from="pools" to="jumpers" type="related" />
-	</allowedrelationlist>
+  <allowedrelationlist>
+    <relation from="pools" to="pools" type="related" />
+    <relation from="pools" to="urls" type="related" />
+    <relation from="pools" to="jumpers" type="related" />
+  </allowedrelationlist>
 
-	<datasourcelist>
-	  <datasource builder="pools" path="MyYahoo/pools.xml" />
-	  <datasource builder="urls" path="MyYahoo/urls.xml" />
-	  <datasource builder="jumpers" path="MyYahoo/jumpers.xml" />
-	</datasourcelist>
+  <datasourcelist>
+    <datasource builder="pools" path="MyYahoo/pools.xml" />
+    <datasource builder="urls" path="MyYahoo/urls.xml" />
+    <datasource builder="jumpers" path="MyYahoo/jumpers.xml" />
+  </datasourcelist>
 
-	<relationsourcelist>
-	  <relationsource builder="insrel" path="MyYahoo/insrel.xml" />	
-	</relationsourcelist>
+  <relationsourcelist>
+    <relationsource builder="insrel" path="MyYahoo/insrel.xml" />	
+  </relationsourcelist>
 
-	<contextsourcelist>
-		<contextsource path="MyYahoo/backup.xml" type="depth" goal="backup"/>
-	</contextsourcelist>
+  <contextsourcelist>
+    <contextsource path="MyYahoo/backup.xml" type="depth" goal="backup"/>
+  </contextsourcelist>
 
 
-	<description>
-		MyYahoo is a small application to show you how easy it is to create 
-		a program something like the topic/url/search kind of interface first
-		shown on yahoo.
-	</description>
+  <description>
+  MyYahoo is a small application to show you how easy it is to create
+  a program something like the topic/url/search kind of interface
+  first shown on yahoo. It depends on the resources application,
+  please install that one before installing this one.
+  </description>
 
-	<install-notice>
-		This will be dispayed when the application is installed using the
-		install tool. In this case it will tell you to do /yahoo to see the
-		MyYahoo application in action.
-	</install-notice>
+  <install-notice>
+  Example urls/topics/etc are installed, see the mmexamples page for
+  the example pages.
+  </install-notice>
+
 </application>
