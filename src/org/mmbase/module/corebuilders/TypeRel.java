@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.39 2003-03-18 14:25:26 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.40 2003-03-21 12:35:05 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -448,18 +448,23 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         return 127 * o.getIntValue("snumber");
     }
 
+
     public String toString(MMObjectNode n) {
         try {
-            String source      = mmb.getTypeDef().getValue(n.getIntValue("snumber"));
-            String destination = mmb.getTypeDef().getValue(n.getIntValue("dnumber"));
-            MMObjectNode role  = mmb.getRelDef().getNode(n.getIntValue("rnumber"));
+            int snumber = n.getIntValue("snumber");
+            int dnumber = n.getIntValue("dnumber");
+            int rnumber = n.getIntValue("rnumber");
+            
+            // unfilled should only happen during creation of the node.
+            String source      = snumber > -1 ? mmb.getTypeDef().getValue(snumber) : "[unfilled]";
+            String destination = dnumber > -1 ? mmb.getTypeDef().getValue(dnumber) : "[unfilled]";
+            MMObjectNode role  = rnumber > -1 ? mmb.getRelDef().getNode(rnumber) : null;
             return source + "->"+ destination + " (" + (role != null ? role.getStringValue("sname")  : "???" ) +")";
         } catch (Exception e) {
             log.warn(e);
         }
         return "typerel-node";
     }
-
 
     /**
      * Of course, virtual typerel nodes need a virtual typerel
