@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.10 2003-08-04 20:19:09 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.11 2003-08-04 20:26:36 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -213,27 +213,26 @@ public class IntegerHandler extends AbstractTypeHandler {
         return null;
     }
 
-    public String whereHtmlInput(Field field, Query query) throws JspTagException {
+    public void whereHtmlInput(Field field, Query query) throws JspTagException {
         String guiType = field.getGUIType();
         String fieldName = field.getName();
         if (guiType.equals("eventtime")) {
-            return dateHandler.whereHtmlInput(field, query);
+            dateHandler.whereHtmlInput(field, query);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
             if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
-                return null;
             } else {
-                return super.whereHtmlInput(field, query);
+                super.whereHtmlInput(field, query);
             }
         } else if (guiType.equals("integer") || guiType.equals("")) {
-            return super.whereHtmlInput(field, query);
+            super.whereHtmlInput(field, query);
         } else {
             EnumHandler eh = new EnumHandler(context, guiType);
             if (eh.isAvailable()) {
-                return eh.whereHtmlInput(field, query);
+                eh.whereHtmlInput(field, query);
             }
         }
-        return null;
+
     }
 
     private class IntegerDateHandler extends DateHandler {
