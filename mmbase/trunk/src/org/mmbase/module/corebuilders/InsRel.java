@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.37 2003-09-02 20:24:19 michiel Exp $
+ * @version $Id: InsRel.java,v 1.38 2003-09-25 16:05:31 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -105,21 +105,25 @@ public class InsRel extends MMObjectBuilder {
     }
 
     /**
-     * Fixes a relation node.
-     * Determines the source and destination numbers, and checks the object types against the types specified in
-     * the relation definition ( {@link TypeRel} ).
-     * If the types differ, the source and destination are likely mis-aligned, and
-     * are swapped to produce a correct relation node.
+     * Fixes a relation node.  Determines the source and destination numbers, and checks the object
+     * types against the types specified in the relation definition ( {@link TypeRel} ).  If the
+     * types differ, the source and destination are likely mis-aligned, and if the relation in the
+     * other direction is indeed allowed, then they are swapped to produce a correct relation node.
+     *
      * @param node The node to fix
+     * @return     The node again
      */
     private MMObjectNode alignRelNode(MMObjectNode node) {
         int snumber=getNodeType(node.getIntValue("snumber"));
         int dnumber=getNodeType(node.getIntValue("dnumber"));
         int rnumber = node.getIntValue("rnumber");
-        if (!mmb.getTypeRel().reldefCorrect(snumber,dnumber,rnumber)) {
+        TypeRel typeRel = mmb.getTypeRel();
+        if (  (!typeRel.reldefCorrect(snumber, dnumber, rnumber))
+            && typeRel.reldefCorrect(dnumber, snumber, rnumber) 
+              ) {
             dnumber= node.getIntValue("snumber");
-            node.setValue("snumber",node.getIntValue("dnumber"));
-            node.setValue("dnumber",dnumber);
+            node.setValue("snumber", node.getIntValue("dnumber"));
+            node.setValue("dnumber", dnumber);
         }
         return node;
     }
@@ -482,6 +486,7 @@ public class InsRel extends MMObjectBuilder {
     * @param otype the object type of the nodes you want to have. -1 means any node.
     * @return A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
     *   according to the specified filter(s).
+    * @deprecated
     **/
     public Vector getRelatedVector(int src,int otype) {
         return getRelatedVector(src,otype,-1);
@@ -494,6 +499,7 @@ public class InsRel extends MMObjectBuilder {
      * @param rnumber Identifying number of the role (reldef)
      * @return A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
      *   according to the specified filter(s).
+    * @deprecated
      */
     public Vector getRelatedVector(int src,int otype, int rnumber) {
         Vector list=null;
