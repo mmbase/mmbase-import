@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 */
 /*
-$Id: VideoParts.java,v 1.11 2000-11-23 14:37:56 vpro Exp $
+$Id: VideoParts.java,v 1.12 2000-11-23 14:42:46 vpro Exp $
 
 $Log: not supported by cvs2svn $
 */
@@ -29,7 +29,7 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: VideoParts.java,v 1.11 2000-11-23 14:37:56 vpro Exp $
+ * @version $Id: VideoParts.java,v 1.12 2000-11-23 14:42:46 vpro Exp $
  */
 public class VideoParts extends MMObjectBuilder {
 
