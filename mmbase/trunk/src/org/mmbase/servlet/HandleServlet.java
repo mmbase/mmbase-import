@@ -16,15 +16,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.util.IECompatibleJpegInputStream;
+
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+
 
 /**
  * Base servlet for nodes with a 'handle' field. It serves as a basic implementation for more
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.10 2003-11-10 13:11:55 keesj Exp $
+ * @version $Id: HandleServlet.java,v 1.11 2003-11-10 17:20:31 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -39,8 +41,8 @@ public class HandleServlet extends BridgeServlet {
         Map a = super.getAssociations();
         // Can do the following:
         a.put("attachments", new Integer(0));
-        a.put("downloads", new Integer(20)); // good at this (because it does not determin the mime-type)
-        a.put("images", new Integer(-10)); // bad in images (no mime-type, no awareness of icaches)
+        a.put("downloads",   new Integer(20)); // good at this (because it does not determin the mime-type)
+        a.put("images",      new Integer(-10)); // bad in images (no mime-type, no awareness of icaches)
         return a;
     }
 
@@ -80,7 +82,14 @@ public class HandleServlet extends BridgeServlet {
             }
             // could also use the mime type to guess an extension!
         }
-        res.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        //StringObject fn = new StringObject(fileName);
+        //fn.replace(" ", "_");
+
+
+        // Why we don't set Content-Disposition:
+        // - IE can't handle that. (IE sucks!)
+
+        // res.setHeader("Content-Disposition", "attachment; filename=\""  + fn + "\"");
         return true;
     }
 
@@ -116,6 +125,7 @@ public class HandleServlet extends BridgeServlet {
             return true;
         } else {
             res.setHeader("Cache-Control", "public");
+            // Cache-Control public is frustrating IE?
             return false;
         }
     }
@@ -153,11 +163,12 @@ public class HandleServlet extends BridgeServlet {
          * http://www.photo.net/bboard/q-and-a-fetch-msg?msg_id=003j8d
          */
         if (mimeType.equals("image/jpeg") || mimeType.equals("image/jpg")) {
-        	bytes = IECompatibleJpegInputStream.process(bytes);
+            bytes = IECompatibleJpegInputStream.process(bytes);
         }
 
-        if (!setContent(res, node, mimeType))
+        if (!setContent(res, node, mimeType)) {
             return;
+        }
         setExpires(res, node);
         setCacheControl(res, node);
         sendBytes(res, bytes);
