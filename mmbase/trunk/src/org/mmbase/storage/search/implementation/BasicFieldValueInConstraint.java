@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueInConstraint.java,v 1.10 2004-03-15 14:54:26 robmaris Exp $
+ * @version $Id: BasicFieldValueInConstraint.java,v 1.11 2004-07-26 20:07:15 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
@@ -92,10 +92,14 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
 
     // javadoc is inherited
     public String toString() {
+        String fieldName = getField().getAlias();
+        if (fieldName == null) {
+            fieldName = getField().getFieldName();
+        }
         StringBuffer sb = new StringBuffer("FieldValueInConstraint(inverse:").
         append(isInverse()).
         append(", field:").
-        append(getField().getAlias()). // TODO RvM: handle null alias.
+        append(fieldName). 
         append(", casesensitive:").
         append(isCaseSensitive()).
         append(", values:").
