@@ -89,7 +89,6 @@ for (int i = 0; i < l.size(); i++) {
 
 <!-- Search and search results -->
 <%@ include file="inc_searchresults.jsp" %>
-<p><a name="search">&nbsp;</a></p>
 <%@ include file="inc_searchform.jsp" %>
 
 </td>
