@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.11 2002-07-10 19:41:35 michiel Exp $
+  @version $Id: list.xsl,v 1.12 2002-07-11 08:25:24 michiel Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -26,6 +26,7 @@
   <xsl:template name="style"> <!-- It can be usefull to add a style, change the title -->
     <title><xsl:value-of select="$wizardtitle" /> - <xsl:value-of select="$title" /></title>
     <link rel="stylesheet" type="text/css" href="../style.css" />
+    <xsl:call-template name="extrastyle" /> <!-- override base.xsl for this -->
   </xsl:template>
 
   <xsl:template name="body"> <!-- You can put stuff before and after then. Don't forget to call 'bodycontent' -->
