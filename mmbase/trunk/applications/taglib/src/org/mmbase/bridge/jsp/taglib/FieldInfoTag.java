@@ -122,14 +122,18 @@ public class FieldInfoTag extends NodeReferrerTag {
         if (log.isDebugEnabled()) {
             String value = "<search>";
             if (! search) {
-                value = node.getStringValue(field.getName());
+                if (node == null) {
+                    value = "<create";
+                } else {
+                    value = node.getStringValue(field.getName());
+                }
             }              
             log.debug("field " + field.getName() + " gui type: " + field.getGUIType() +
                       "value: " + value);
         }
         switch(type) {
         case Field.TYPE_BYTE:
-            show = node.getStringValue("gui()") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
+            show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
         case Field.TYPE_STRING:          
             if(! search) {
