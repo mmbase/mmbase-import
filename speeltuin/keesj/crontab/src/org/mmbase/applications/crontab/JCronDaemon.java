@@ -2,29 +2,38 @@ package org.mmbase.applications.crontab;
 
 import java.util.*;
 import org.mmbase.util.logging.*;
+
 /**
  * JCronDaemonn is a "crontab" clone written in java.
  * The daemon starts a thread that wakes up every minute
  *(it keeps sync by calculating the time to sleep)
+ * @author Kees JongenBurger
+ * @author Michiel Meeuwissen
  **/
-public class JCronDaemon implements Runnable{
+public class JCronDaemon implements Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(JCronDaemon.class);
     
     private static JCronDaemon jCronDaemon;
     private Thread cronThread;
-    private JCronEntries jCronEntries;
+    private Set jCronEntries;
     
     private JCronDaemon() {
-        jCronEntries = new JCronEntries();
+        jCronEntries = Collections.synchronizedSet(new HashSet());
         start();
     }
     
-    public void addJCronEntry(JCronEntry entry){
-        getJCronEntries().add(entry);
+    public void add(JCronEntry entry){
+        if (jCronEntries.contains(entry)) {
+            throw new RuntimeException("There is an entry  " + entry + " already");
+        }
+        jCronEntries.add(entry);
+        log.info("Added to JCronDaemon " + entry);
     }
-    private JCronEntries getJCronEntries(){
-        return jCronEntries;
+
+    public void remove(JCronEntry entry){
+        jCronEntries.remove(entry);
+        log.info("Removed from JCronDaemon " + entry);
     }
     
     public void start(){
@@ -60,21 +69,20 @@ public class JCronDaemon implements Runnable{
                 Thread.sleep(next - now); // sleep until  next minute
             } catch (InterruptedException ie) {
                 log.info("Interrupted: " + ie.getMessage());
-                return;
             }
             Date currentMinute = new Date(next);
 
-            log.debug("Checking " + currentMinute);
-            for (int z = 0 ; z < jCronEntries.size(); z ++){
-                JCronEntry entry = jCronEntries.getJCronEntry(z);
+            Iterator z = jCronEntries.iterator();
+            while (z.hasNext()) {
+                JCronEntry entry = (JCronEntry) z.next();
                 if (entry.mustRun(currentMinute)) {
                     if (entry.kick()) {
-                        log.debug(Calendar.getInstance().getTime() + ": started " + entry);
+                        log.debug("started " + entry);
                     } else {
                         log.warn("Job " + entry + " still running, so not restarting it again.");
                     }
                 } else {
-                    log.trace(Calendar.getInstance().getTime() + ": skipped " + entry);
+                    log.trace("skipped " + entry);
                 }
             }
         }
@@ -92,7 +100,7 @@ public class JCronDaemon implements Runnable{
         //entries.add(new JCronEntry("* * * 1 *","the first month of the year"));
         //entries.add(new JCronEntry("*/2 * * * *","every 2 minutes stating from 0"));
         //entries.add(new JCronEntry("1-59/2 * * * *","every 2 minutes stating from 1"));
-        d.addJCronEntry(new JCronEntry("1","*/2 5-23 * * *", "every 2 minute from 5 till 11 pm", "org.mmbase.applications.crontab.TestCronJob"));
+        d.add(new JCronEntry("1","*/2 5-23 * * *", "every 2 minute from 5 till 11 pm", "org.mmbase.applications.crontab.TestCronJob"));
         //entries.add(new JCronEntry("40-45,50-59 * * * *","test 40-45,50-60","Dummy"));
         
         try {Thread.currentThread().sleep(240 * 1000 * 60); } catch (Exception e){};
