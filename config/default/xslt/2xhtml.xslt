@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen 
-  @version: $Id: 2xhtml.xslt,v 1.11 2002-10-14 16:10:50 eduard Exp $
+  @version: $Id: 2xhtml.xslt,v 1.12 2002-11-09 01:03:34 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1" 
@@ -20,7 +20,9 @@
   
   <xsl:output method="xml" omit-xml-declaration="yes" /><!-- xhtml is a form of xml -->
 
-  <xsl:variable name="newstype">news</xsl:variable> <!-- I had an 'xmlnews' type... Can easily switch beteen them like this -->
+  <xsl:variable name="newstype">xmlnews</xsl:variable> 
+	<!-- I had an 'xmlnews' type... Can easily switch beteen them like
+             this.  Perhaps you prefer 'news' itself to contain XML fields. -->
   
    <!-- If objects is the entrance to this XML, then only handle the root child of it -->
   <xsl:template match="objects"> 
