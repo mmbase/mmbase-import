@@ -1,5 +1,21 @@
 Migratie issues
 
+2005-03-11
+
+An extra field "showtitle" is added for a number of builders. The metadata builder has changed (field value is changed from virtual to persistent). 
+
+ALTER TABLE mmb_educations ADD showtitle TINYINT(1);
+ALTER TABLE mmb_pages ADD showtitle TINYINT(1);
+ALTER TABLE mmb_learnblocks ADD showtitle TINYINT(1);
+ALTER TABLE mmb_metadata ADD value BLOB;
+
+To update the "value" field in already existing metadata, run:
+
+/migrate-2005-03-11.jsp
+
+After running this script: check log if there are metadata objects, which are not related to a metadatadefinition.
+These metadata objects should be fixed or deleted.
+
 2005-03-08
 
 The people builder has been extended, therefore we now need to update the
@@ -11,7 +27,6 @@ database:
 The portfolio folders have changed. Run
 
     /migrate-2005-03-08.jsp
-
 
 
 2005-02-13
