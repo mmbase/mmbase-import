@@ -42,7 +42,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         Node node = null;
 
         // get the parent ListRelationsTag
-        ListRelationsTag lr = (ListRelationsTag) findParentTag(ListRelationsTag.class.getName(), (String) listRelationsId.getValue(this));
+        ListRelationsTag lr = (ListRelationsTag) findParentTag(ListRelationsTag.class, (String) listRelationsId.getValue(this));
         Node otherNode    = lr.getRelatedfromNode();
         Node relationNode = lr.getNodeVar();
 

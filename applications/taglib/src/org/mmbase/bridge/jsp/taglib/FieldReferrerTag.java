@@ -49,7 +49,7 @@ public abstract class FieldReferrerTag extends NodeReferrerTag {
     *
     */	
     public FieldProvider findFieldProvider() throws JspTagException {        
-        return (FieldProvider) findParentTag("org.mmbase.bridge.jsp.taglib.FieldProvider", (String) parentFieldId.getValue(this));
+        return (FieldProvider) findParentTag(FieldProvider.class, (String) parentFieldId.getValue(this));
     }
 
 

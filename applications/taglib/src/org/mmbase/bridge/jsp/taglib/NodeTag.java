@@ -155,7 +155,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 }                
             } else {
                 // get the node from a parent element.
-                NodeProvider nodeProvider = (NodeProvider) findParentTag(NodeProvider.class.getName(), null);
+                NodeProvider nodeProvider = (NodeProvider) findParentTag(NodeProvider.class, null);
                 if (element != Attribute.NULL) {
                     node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
                 } else {
@@ -168,7 +168,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         setNodeVar(node);
 
         // if direct parent is a Formatter Tag, then communicate
-        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class.getName(), null, false);
+        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
         }
