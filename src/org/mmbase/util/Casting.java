@@ -60,7 +60,9 @@ public class Casting {
      */
     public static Writer toWriter(Writer writer, Object o) throws java.io.IOException {
         if (o == null) return writer;
-        if (o instanceof byte[]) {
+        if (o instanceof String) {
+            writer.write((String) o);
+        } else if (o instanceof byte[]) {
             writer.write(new String((byte[])o));
         } else if(o instanceof MMObjectNode) {
             writer.write("" + ((MMObjectNode)o).getNumber());
