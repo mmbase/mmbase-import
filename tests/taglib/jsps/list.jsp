@@ -12,7 +12,7 @@
     public int compare(Object o1, Object o2) {
        Node n1 = (Node) o1;
        Node n2 = (Node) o2;
-       return n2.getIntValue("number") + n2.getIntValue("otype") - n1.getIntValue("otype") - n1.getIntValue("otype");
+       return n2.getIntValue("number") + n2.getIntValue("otype") - n1.getIntValue("number") - n1.getIntValue("otype");
     }
 }
 %>

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
+import org.w3c.dom.Document;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
@@ -37,13 +38,8 @@ public class EmptyNodeTest extends NodeTest {
 
     public void testGetValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            if (fieldTypes[i].equals("byte")) {
-                byte[] bytes = (byte[]) node.getValue(fieldTypes[i] + "field");                
-                assertTrue("Empty " + fieldTypes[i] + " field did return null (should be empty byte[])", bytes != null);
-                assertTrue(bytes.length == 0);
-            } else {
-                assertTrue("Empty " + fieldTypes[i] + " field did not return null", node.getValue(fieldTypes[i] + "field") == null);
-            }
+            Object value = node.getValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field did not return null, but " + value + " a " + (value == null ? "" : value.getClass().getName()), value == null);
         }
     }
 
@@ -62,8 +58,12 @@ public class EmptyNodeTest extends NodeTest {
                 assertTrue(bytes.length == 0);
             } else if (fieldTypes[i].equals("string")) {
                 assertTrue(bytes.length == 0);
+            } else if (fieldTypes[i].equals("xml")) {
+                // I don't know..
+            } else if (fieldTypes[i].equals("node")) {
+                // undefined
             } else {
-                fail();
+                fail("Unknown fieldtype encountered " + fieldTypes[i]);
             }
         }
     }
@@ -94,6 +94,19 @@ public class EmptyNodeTest extends NodeTest {
     public void testGetStringValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             assertTrue("".equals(node.getStringValue(fieldTypes[i] + "field")));
+        }
+    }
+    public void testGetXMLValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Document value = node.getXMLValue(fieldTypes[i] + "field");
+            assertTrue("KNOWN bug. Empty XML Field not null (as javadoc sais it should) but '" + value + "'", value == null); 
+        }
+    }
+
+    public void testGetNodeValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Node value = node.getNodeValue(fieldTypes[i] + "field");
+            assertTrue("KNOWN bug. Empty Node Field not null  but '" + value + "'", value == null); 
         }
     }
 

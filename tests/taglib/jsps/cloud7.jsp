@@ -16,10 +16,11 @@
           Skipped body
       </mm:notpresent>  
     </p>
+    <mm:log>---------------------------------------------------------------------------------------</mm:log>
     <h1>Cloud rank="administrator", no method, first logging out</h1>
     <p>
       <mm:cloud method="logout" />
-      <mm:cloud rank="administrator" jspvar="cloud">
+      <mm:cloud rank="administrator" jspvar="cloud" method="asis">
         Your rank: <%=cloud.getUser().getIdentifier()%>/<%=cloud.getUser().getRank() %>
         (must be administrator)
          <mm:import id="body2" />
