@@ -161,7 +161,7 @@
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
-      <jvmarg value="-mx150m" />
+      <jvmarg value="-mx200m" />
       <classpath>        
         <pathelement path="${build.dir}/classes" />
         <fileset dir="${compile.lib.dir}">
@@ -209,7 +209,7 @@
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
-      <jvmarg value="-mx150m" />
+      <jvmarg value="-mx200m" />
       <classpath>
         <pathelement path="${build.dir}/classes" />
         <fileset dir="${compile.lib.dir}">
