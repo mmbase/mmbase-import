@@ -82,9 +82,14 @@ public class Upload extends ProcessorModule {
 			if (fname.equals("")) { 
 				fname = sp.poster.getPostParameter("file_name");
 			}
-			saveFile(fileUploadDirectory+fname,bytes);
-			log.debug("Upload module saved to disk: "+filename);
-			return true;
+			if (fname.indexOf("..")<0) {
+				saveFile(fileUploadDirectory+fname,bytes);
+				log.debug("Upload module saved to disk: "+filename);
+				return true;
+			} else {
+				log.error("Upload Filename may not contain '..'");
+				return false;
+			}
 		}
 		return false;
 	}
