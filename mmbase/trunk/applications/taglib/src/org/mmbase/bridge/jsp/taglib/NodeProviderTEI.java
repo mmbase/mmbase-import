@@ -62,11 +62,8 @@ public class NodeProviderTEI extends TagExtraInfo {
         String id = "";
         Object idObject = data.getAttribute("jspvar");
         if (idObject != null){
-            if (idObject == TagData.REQUEST_TIME_VALUE) { // then of course we cannot set a variable with that name 
-            } else {
                 id = "" + idObject;
                 nodeVariable = 1;
-            }
         }
         
         variableInfo =    new VariableInfo[nodeVariable];
