@@ -41,7 +41,7 @@ is a pattern for SimpleDateFormat.  </th></tr>
         tag will always show the beginning of the day
         (resp. month). You can also give the time in a human readable
         way, and optionally give the format for that with 'inputformat'
-   (see <a href="http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>)
+   (see <a href="http://java.sun.com/j2se/1.4/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>)
 </th></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/timetime.jsp" /></mm:formatter></pre></td>
