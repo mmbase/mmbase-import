@@ -27,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.4 2003-09-05 16:30:57 michiel Exp $
+ * @version $Id: Queries.java,v 1.5 2003-09-08 08:21:34 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -319,7 +319,7 @@ public class Queries {
      */
     protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
-        while (Character.isDigit(complete.charAt(end--)));
+        while (Character.isDigit(complete.charAt(end))) --end;
         return complete.substring(0, end + 1);
     }
 
