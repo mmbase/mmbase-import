@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.60 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: Dove.java,v 1.61 2005-03-01 15:14:23 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -517,15 +517,7 @@ public class Dove extends AbstractDove {
     }
 
     /**
-     * Handles a getrelations call, by obtaining relations for each node specified.
-     * This method accepts a DOM element, which should contain as it
-     * child nodes elements describing the nodes to retrieve the relations from.
-     * The tagname of these elements should be 'object'.
-     * Each element should have an 'number' attribute that described the number
-     * or alias of the node to retrieve.
-     * The result of this call should be a list of DOM elements with a data element for
-     * each node,which are appended to the out element. The node element's children
-     * are the relations.
+     * Handles a getconstraints call.
      *
      * @param in the element that described the <code>getconstraints</code> call.
      *           The childnodes should describe the node types to retrieve the constraints of.
