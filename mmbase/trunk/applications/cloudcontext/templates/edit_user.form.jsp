@@ -3,6 +3,9 @@
   <mm:fieldlist type="edit" fields="owner">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
   </mm:fieldlist>
+  <mm:fieldlist fields="lastlogon">
+    <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="guivalue" /></td></tr>
+  </mm:fieldlist>
   <mm:field name="username">
     <mm:compare value="<%=cloud.getUser().getIdentifier()%>" inverse="true">
     <tr>
@@ -38,7 +41,8 @@
     </tr>
     </mm:compare>
     <mm:compare value="<%=cloud.getUser().getIdentifier()%>">
-    <td><%=getPrompt(m,"groups")%></td>
+    <tr>
+      <td><%=getPrompt(m,"groups")%></td>
       <td>
         <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">
           <mm:nodeinfo type="gui" /><mm:last inverse="true">, </mm:last>
