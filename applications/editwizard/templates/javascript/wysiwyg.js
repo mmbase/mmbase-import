@@ -5,7 +5,7 @@
  * (c) Q42, 2001
  *
  * @since    MMBase-1.6
- * @version  $Id: wysiwyg.js,v 1.8 2002-08-12 08:12:05 michiel Exp $
+ * @version  $Id: wysiwyg.js,v 1.8.2.1 2003-03-05 11:46:35 pierre Exp $
  * @author   Kars Veling
  */
 
@@ -207,7 +207,7 @@ Wysiwyg.prototype.createEditBar = function () {
             s+='<td><div class="separator"><img src="../media/wysiwyg/pixel.gif" width="1" height="19" alt=""></div></td>';
             continue;
         }
-        s+='<td><a href="javascript:doExecCommand(\''+cmd+'\')" class="barbutton" id="'+cmd+'button"><img src="../media/wysiwyg/'+cmd+'.gif" width="23" height="22" alt="'+hint+'"></a></td>';
+        s+='<td><a href="javascript:doExecCommand(\''+cmd+'\')" class="barbutton" id="'+cmd+'button"><img src="../media/wysiwyg/'+cmd+'.gif" width="23" height="22" alt="'+hint+'" /></a></td>';
     }
     s+="</tr></table>";
     var div = document.createElement("div");
@@ -215,4 +215,6 @@ Wysiwyg.prototype.createEditBar = function () {
     div.innerHTML=s;
     document.body.appendChild(div);
     this.editBar=div;
+    this.editBar.style.visibility = 'hidden';
+    this.editBar.style.position = 'absolute';
 }
