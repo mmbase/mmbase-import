@@ -116,6 +116,11 @@
         <guiname xml:lang="it">Massimo di Relazioni</guiname>
         <guitype>integer</guitype>
       </gui>
+      <editor>
+        <positions>
+          <input>-1</input><list>-1</list><search>-1</search>
+        </positions>
+      </editor>
       <db>
         <name>max</name>
         <type state="persistent" notnull="false" key="false">INTEGER</type>
