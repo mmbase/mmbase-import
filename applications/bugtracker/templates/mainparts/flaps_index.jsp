@@ -3,7 +3,7 @@
 	<!-- overview flap -->
 	<mm:compare referid="flap" value="search" inverse="true">
 		<td>
-		<a href="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=search">Search</a>
+		<a href="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=search">Search</a>
 		</td>
 	</mm:compare>
 	<mm:compare referid="flap" value="search">
@@ -12,7 +12,7 @@
 
 	<!-- comments flap -->
 	<mm:compare referid="flap" value="lastchanges" inverse="true">
-		<td><a href="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=lastchanges">Last changed</a></td>
+		<td><a href="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=lastchanges">Last changed</a></td>
 	</mm:compare>
 	<mm:compare referid="flap" value="lastchanges">
 		<td class="selected">Last changed</td>
@@ -21,7 +21,7 @@
 
 	<!-- history flap -->
 	<mm:compare referid="flap" value="stats" inverse="true">
-		<td><a href="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=stats">Statistics</a></td>
+		<td><a href="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=stats">Statistics</a></td>
 	</mm:compare>
 	<mm:compare referid="flap" value="stats">
 		<td class="selected">Statistics</td>
@@ -29,7 +29,7 @@
 
 	<!-- change flap -->
 	<mm:compare referid="flap" value="mysettings" inverse="true">
-		<td><a href="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=mysettings">MySettings</a></td>
+		<td><a href="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=mysettings">MySettings</a></td>
 	</mm:compare>
 	<mm:compare referid="flap" value="mysettings">
 		<td class="selected">MySettings</td>
@@ -37,7 +37,7 @@
 
 	<!-- mybug flap -->
 	<mm:compare referid="flap" value="mybug" inverse="true">
-		<td><a href="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=mybug">MyBug</a></td>
+		<td><a href="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&flap=mybug">MyBug</a></td>
 	</mm:compare>
 	<mm:compare referid="flap" value="mybug">
 		<td class="selected">MyBug</td>

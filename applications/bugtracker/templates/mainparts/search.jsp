@@ -1,6 +1,6 @@
 <mm:import externid="portal" id="po2" jspvar="portal" />
 <mm:import externid="page" id="pa2" jspvar="page2" />
-<form action="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />" method="POST">
+<form action="index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />" method="POST">
 <table cellspacing="0" cellpadding="0" class="list" width="97%">
 <tr class="listsearch">
 	<td width="50">
@@ -47,7 +47,7 @@
 	</td>
 	<td width="300">
 	<INPUT NAME="sissue" SIZE="20">
-	<a href="/development/bugtracker/advancedsearch.jsp?portal=<%=portal%>&page=<%=page2%>">a</a>
+	<a href="advancedsearch.jsp?portal=<%=portal%>&page=<%=page2%>">a</a>
 	</td>
 	<td>
 	<INPUT TYPE="SUBMIT" VALUE="search">
@@ -146,7 +146,7 @@
 			 <mm:field name="bugreports.issue" />&nbsp;
 		</td>
 		<td>
-			<A HREF="/development/bugtracker/fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:field name="bugreports.number" />"><IMG SRC="/development/bugtracker/images/arrow-right.gif" BORDER="0" ALIGN="right"></A>
+			<A HREF="fullview.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&bugreport=<mm:field name="bugreports.number" />"><IMG SRC="images/arrow-right.gif" BORDER="0" ALIGN="right"></A>
 		</td>
 </tr>
 <mm:last>
@@ -168,7 +168,7 @@
 	%>
 	<td colspan="3" class="listpaging">
 			&nbsp;
-			<mm:compare referid="noffset" value="0" inverse="true"><a href="index.jsp?portal=<%=portal%>&page=<%=page2%>&noffset=<%=(noffseti-15)%>&where=<%=org.mmbase.util.URLEscape.escapeurl(where)%>"><img src="/development/bugtracker/images/arrow-left.gif" BORDER="0" align="right"></a></mm:compare>
+			<mm:compare referid="noffset" value="0" inverse="true"><a href="index.jsp?portal=<%=portal%>&page=<%=page2%>&noffset=<%=(noffseti-15)%>&where=<%=org.mmbase.util.URLEscape.escapeurl(where)%>"><img src="images/arrow-left.gif" BORDER="0" align="right"></a></mm:compare>
 	</td>
 	<td colspan="3" class="listpaging" align="middle">
 			<center>
@@ -180,7 +180,7 @@
 			</center>
 	</td>
 	<td colspan="2" class="listpaging">
-			<% if (((lasti+1)!=totali) && !total.equals("0")) { %><a href="index.jsp?portal=<%=portal%>&page=<%=page2%>&noffset=<%=(noffseti+15)%>&where=<%=org.mmbase.util.URLEscape.escapeurl(where)%>"><IMG SRC="/development/bugtracker/images/arrow-right.gif" BORDER="0" ALIGN="left"></a><% } %>
+			<% if (((lasti+1)!=totali) && !total.equals("0")) { %><a href="index.jsp?portal=<%=portal%>&page=<%=page2%>&noffset=<%=(noffseti+15)%>&where=<%=org.mmbase.util.URLEscape.escapeurl(where)%>"><IMG SRC="images/arrow-right.gif" BORDER="0" ALIGN="left"></a><% } %>
 		&nbsp;
 	</td>
 </tr>
@@ -193,14 +193,14 @@
 
 		<mm:present referid="user" inverse="true" >
 			<td>
-			 <center><font color="#000000">We have no idea who you are please login !<A HREF="/development/bugtracker/changeUser.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />"><IMG SRC="/development/bugtracker/images/arrow-right.gif" border="0" valign="middle"></A></font>
+			 <center><font color="#000000">We have no idea who you are please login !<A HREF="changeUser.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />"><IMG SRC="images/arrow-right.gif" border="0" valign="middle"></A></font>
 			</td>
 		</mm:present>
 		<mm:present referid="user">
 			<td colspan="1">
 			<br />
 			<mm:node number="$user">
-			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <A HREF="/development/bugtracker/changeUser.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />">change name</A> )<br /> i have a new bug and want to report it</font><A HREF="/development/bugtracker/newBug.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&user=<mm:write referid="user" />"><IMG SRC="/development/bugtracker/images/arrow-right.gif" BORDER="0" ></A>
+			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <A HREF="changeUser.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />">change name</A> )<br /> i have a new bug and want to report it</font><A HREF="newBug.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />&user=<mm:write referid="user" />"><IMG SRC="images/arrow-right.gif" BORDER="0" ></A>
 			</td>
 			</mm:node>
 		</mm:present>

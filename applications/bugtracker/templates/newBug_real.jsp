@@ -11,7 +11,7 @@
 <tr>
 	<th>
 	Type
-	</th>
+	<B/th>
 	<th>
 	Priority
 	</th>
@@ -121,7 +121,7 @@
 		</td>
 		<td>
 			<p />
-			<form action="/development/bugtracker/index.jsp?portal=<mm:write referid="portal" />&page=<mm:write referid="page" />" method="POST">
+			<form action="<mm:url referids="portal,page" page="index.jsp"  />" method="POST">
 			<CENTER>
 				<INPUT TYPE="submit" VALUE="CANCEL">
 			</form>
