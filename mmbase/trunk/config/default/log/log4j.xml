@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.18 2002-08-07 10:31:33 michiel Exp $
+   @version $Id: log4j.xml,v 1.19 2002-08-07 19:16:39 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -19,6 +19,7 @@
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
+    <!ENTITY mmlogger   "org.mmbase.util.logging.log4j2.Log4jImpl" >
     <!ENTITY mmlevel    "org.mmbase.util.logging.log4j2.Log4jLevel" >
     <!ENTITY logdir   "/tmp/" >
 ]>
@@ -33,21 +34,24 @@
   Quick introduction on how to configure log4j.
 
   In the configuration you find two kind of things: Appenders, and
-  Categories. 
+  Loggers. 
 
   The Appenders are describing the logfiles. There is only one defined
-  in this file. It is a very slow one, it is better use another
+  in this file. It is not optimized for speed now, it is better use another
   Pattern layout in a speed critical situation.
 
-  There is one special 'Category', namely 'root'. Other categories
-  inherit from this one, but can override for example the priority. 
+  There is one special 'Logger', namely 'root'. Other loggers
+  inherit from this one, but can override for example the level. 
 
-  Currently the categories are simply the complete MMBase class-names,
+  Currently the loggers are simply the complete MMBase class-names,
   with only one exception, namely 'STDERR'.
 
 -->
 
-<log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+<log4j:configuration 
+  debug="false" 
+  xmlns:log4j="http://jakarta.apache.org/log4j/"
+  >
 
   <!-- 
   The appenders of the default log4j configuration are writing to 
@@ -78,35 +82,40 @@
   <!-- categories -->
   
   <!-- examples: different level for a few subtrees -->
-  <logger name="org.mmbase.bridge" >
+  <category class="&mmlogger;" name="org.mmbase.bridge" >
     <level class="&mmlevel;" value ="info" />
-  </logger>
+  </category>
 
-  <logger name="org.mmbase.security" >
+  <category class="&mmlogger;" name="org.mmbase.security" >
     <level class="&mmlevel;" value ="info" />
-  </logger>
+  </category>
 
 
   <!-- 'page logging' goes to a different appender -->
-  <logger name="org.mmbase.PAGE"  additivity="false" >
+  <category class="&mmlogger;" name="org.mmbase.bridge.jsp.taglib.pageflow"  additivity="false" >
     <level class="&mmlevel;" value ="service" />
     <appender-ref ref="pagedebug" />
-  </logger>
+  </category>
 
   
   <!-- perhaps you use your own extensions to MMBase -->
-  <logger name="nl.omroep" >
+  <category class="&mmlogger;" name="nl.omroep" >
     <level class="&mmlevel;" value ="trace" />
-  </logger>
+  </category>
   
   <!-- 
-  STDERR is a special Logger, to wich stderr will be written
+  STDERR is a special Category, to wich stderr will be written
   (always with level 'warn' or higher)  
   -->
-  
-  <logger name="STDERR">
+
+  <category class="&mmlogger;" name="org.mmbase.servlet.TestServlet">
     <level class="&mmlevel;" value ="info" />	
-  </logger>
+  </category>
+
+  
+  <category class="&mmlogger;" name="STDERR">
+    <level class="&mmlevel;" value ="info" />	
+  </category>
   
   <root>
     <level class="&mmlevel;" value ="service" />
