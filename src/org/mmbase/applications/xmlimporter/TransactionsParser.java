@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.SAXParser;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.2 2002-02-27 16:54:27 pierre Exp $
+ * @version $Id: TransactionsParser.java,v 1.3 2002-06-18 09:19:29 pierre Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -94,7 +94,7 @@ public class TransactionsParser extends DefaultHandler {
     */
    public final String xmlHeader =
    "<?xml version='1.0'  encoding='" + ENCODING
-   + "'?>\n<!DOCTYPE transactions SYSTEM \"transactions.dtd\">\n";
+   + "'?>\n<!DOCTYPE transactions SYSTEM \"transactions_1_0.dtd\">\n";
 
     /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(
