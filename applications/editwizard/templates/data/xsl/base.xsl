@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.22 2003-12-19 11:09:34 nico Exp $
+    @version $Id: base.xsl,v 1.23 2004-01-05 11:12:34 nico Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -23,7 +23,7 @@
     encoding="utf-8"
     omit-xml-declaration="yes"
     standalone="yes"
-    indent="yes" />
+    indent="no" />
 
   <xsl:param name="cloud" />
   <xsl:param name="username">(unknown)</xsl:param>
@@ -127,14 +127,10 @@
       </head>
       <body>
         <xsl:if test="not($BodyOnLoad=&apos;&apos;)">
-          <xsl:attribute name="onload">
-            <xsl:value-of select="$BodyOnLoad" />
-          </xsl:attribute>
+          <xsl:attribute name="onload"><xsl:value-of select="$BodyOnLoad" /></xsl:attribute>
         </xsl:if>
         <xsl:if test="not($BodyOnunLoad=&apos;&apos;)">
-          <xsl:attribute name="onunload">
-            <xsl:value-of select="$BodyOnunLoad" />
-          </xsl:attribute>
+          <xsl:attribute name="onunload"><xsl:value-of select="$BodyOnunLoad" /></xsl:attribute>
         </xsl:if>
 
         <xsl:call-template name="htmlbody" />

@@ -13,7 +13,7 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.106 2004-01-02 15:21:19 nico Exp $
+    @version $Id: wizard.xsl,v 1.107 2004-01-05 11:12:35 nico Exp $
     
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -136,7 +136,7 @@
 
   <xsl:template name="htmltitle">
     <xsl:value-of select="$wizardtitle" />
-    -
+    <xsl:text> - </xsl:text>
     <xsl:call-template name="i18n">
       <xsl:with-param name="nodes" select="form[@id=/wizard/curform]/title" />
     </xsl:call-template>
@@ -240,11 +240,15 @@
 					<input type="hidden" name="cmd" value="" id="hiddencmdfield" />
 		
 					<xsl:call-template name="formwizardargs" />
+					<xsl:call-template name="formhiddenargs" />
 					<xsl:call-template name="formcontent" />
 				</form>
 			</td>
 		</tr>
   </xsl:template>
+
+	<!-- Could be used to send customized hidden input fields -->
+  <xsl:template name="formhiddenargs" />
 
   <xsl:template name="formcontent">
     <div id="stepsbar" class="stepscontent">
@@ -388,10 +392,10 @@
 				<td>
 					<!-- cancel -->
 					<xsl:call-template name="cancelbutton" />
-					-
+					<xsl:text> - </xsl:text>
 					<!-- commit  -->
 					<xsl:call-template name="savebutton" />
-					-
+					<xsl:text> - </xsl:text>
 					<!-- Saveonly  -->
 					<xsl:call-template name="saveonlybutton"/>
 				</td>
@@ -819,9 +823,7 @@
 			<option value="22">22</option>
 			<option value="23">23</option>
 		</select>
-		<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-		:
-		<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+		<xsl:text disable-output-escaping="yes">&amp;nbsp;:&amp;nbsp;</xsl:text>
 		<select
 			name="internal_{@fieldname}_minutes"
 			super="{@fieldname}">

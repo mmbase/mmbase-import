@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.15 2003-12-19 11:09:34 nico Exp $
+    @version $Id: prompts.xsl,v 1.16 2004-01-05 11:12:34 nico Exp $
     
     prompts used in this editwizard. 
     Override these prompts to change the view in your own versions.
@@ -101,7 +101,7 @@
   </xsl:template>
 
   <!-- save button prompts and tooltips -->
-  <xsl:template name="prompt_save">save&amp;close</xsl:template>
+  <xsl:template name="prompt_save">save &amp; close</xsl:template>
   <xsl:template name="prompt_save_only">save</xsl:template>
   <xsl:variable name="tooltip_save">Store all changes.</xsl:variable>
   <xsl:variable name="tooltip_save_only">Store all changes (but continue editing).</xsl:variable>
