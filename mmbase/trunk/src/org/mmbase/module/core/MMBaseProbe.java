@@ -14,76 +14,96 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-
 /**
  * MMBaseProbe is a thread-like object that gets instantiated by MMbase.
  * It calls the callback method {@link MMBase#doProbeRun} in MMbase, which in turn probes the builders.
  * After the probe has been preformed, it schedules itself to be destroyed after an alotted time (10 minutes),
  * which also clears the reference in MMBase and prompts that module to create a new probe instance.
  * This way, maintanance is scheduled to run every ten minutes.
+ * @javadoc
  *
  * @author Daniel Ockeloen
  * @author Pierer van Rooden (javadoc)
- * @version $Id: MMBaseProbe.java,v 1.6 2001-07-02 15:09:44 pierre Exp $
+ * @version $Id: MMBaseProbe.java,v 1.7 2002-03-11 10:42:36 pierre Exp $
  */
 public class MMBaseProbe implements Runnable {
 
-	Thread kicker = null;
-	MMBase parent=null;
-	String name;
-	String input;
-	int len;
-
-	/**
-	* Constructor, which ties this probe object to an MMBase module
-	*/
-	public MMBaseProbe(MMBase parent) {
-		this.parent=parent;
-		init();
-	}
+    /**
+     * @javadoc
+     * @scope private
+     */
+    Thread kicker = null;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    MMBase parent=null;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    String name;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    String input;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    int len;
 
     /**
-    * Initializes the probe and starts a probe thread.
-    */
-	public void init() {
-		this.start();
-	}
+     * Constructor, which ties this probe object to an MMBase module
+     */
+    public MMBaseProbe(MMBase parent) {
+        this.parent=parent;
+        init();
+    }
+
+    /**
+     * Initializes the probe and starts a probe thread.
+     */
+    public void init() {
+        this.start();
+    }
 
 
-	/**
-	 * Starts a thread to perform the probes.
-	 */
-	public void start() {
-		/* Start up the main thread */
-		if (kicker == null) {
-			kicker = new Thread(this,"MMBaseProbe");
-			kicker.start();
-		}
-	}
+    /**
+     * Starts a thread to perform the probes.
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            kicker = new Thread(this,"MMBaseProbe");
+            kicker.start();
+        }
+    }
 
-	/**
-	 * Stops the probing thread.
-	 * Uses deprecated methods (suspend/stop), should be changed or removed.
-	 */
-	public void stop() {
-		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);
-		kicker.suspend();
-		kicker.stop();
-		kicker = null;
-	}
+    /**
+     * Stops the probing thread.
+     * Uses deprecated methods (suspend/stop), should be changed or removed.
+     */
+    public void stop() {
+        /* Stop thread */
+        kicker.setPriority(Thread.MIN_PRIORITY);
+        kicker = null;
+    }
 
-	/**
-	 * Calls a callback method in the MMBase module.
-	 * After the maintenance is performed, it sleeps itself for ten minutes before terminating.
-	 * During this time is functions as a placeholder, preventing another probe to be started
-	 * and allowing for scheduling of the probe task.
-	 */
-	public void run() {
-		parent.doProbeRun();
-		try {
-			Thread.sleep(10*60*1000);
-		} catch (InterruptedException e) {}
-		parent.probe=null;
- 	}
+    /**
+     * Calls a callback method in the MMBase module.
+     * After the maintenance is performed, it sleeps itself for ten minutes before terminating.
+     * During this time is functions as a placeholder, preventing another probe to be started
+     * and allowing for scheduling of the probe task.
+     */
+    public void run() {
+        parent.doProbeRun();
+        if (kicker!=null) {
+            try {
+                Thread.sleep(10*60*1000);
+            } catch (InterruptedException e) {}
+        }
+        parent.probe=null;
+    }
 }

@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -22,19 +22,29 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @javadoc
+ *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.26 2002-02-22 13:04:07 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.27 2002-03-11 10:42:36 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
+    // logging
     private static Logger log = Logging.getLoggerInstance(TemporaryNodeManager.class.getName());
 
+    // MMBase module
     private MMBase mmbase;
 
+    /**
+     * @javadoc
+     */
     public TemporaryNodeManager(MMBase mmbase) {
         this.mmbase=mmbase;
     }
 
+    /**
+     * @javadoc
+     */
     public String createTmpNode(String type,String owner,String key) {
         log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
         if (owner.length()>12) owner=owner.substring(0,12);
@@ -49,7 +59,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         return key;
     }
 
-    public String createTmpRelationNode(String type,String owner,String key, String source,String destination) throws Exception {
+    /**
+     * @javadoc
+     */
+    public String createTmpRelationNode(String role,String owner,String key, String source,String destination) throws Exception {
         String bulname="";
         MMObjectNode node=null;
         MMObjectBuilder builder=null;
@@ -58,9 +71,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
         // decode type to a builder using reldef
         reldef=mmbase.getRelDef();
-        rnumber=reldef.getGuessedByName(type);
+        rnumber=reldef.getNumberByName(role,true);
         if(rnumber==-1) {
-            throw new Exception("type "+type+" is not a proper relation");
+            throw new Exception("role "+role+" is not a proper relation");
         }
         builder = reldef.getBuilder(reldef.getNode(rnumber));
         bulname=builder.getTableName();
@@ -75,6 +88,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         return key;
     }
 
+    /**
+     * @javadoc
+     */
     public String createTmpAlias(String name,String owner,String key, String destination) {
         MMObjectBuilder builder=mmbase.getOAlias();
         String bulname=builder.getTableName();
@@ -87,6 +103,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         return key;
     }
 
+    /**
+     * @javadoc
+     */
     public String deleteTmpNode(String owner,String key) {
         MMObjectBuilder b=mmbase.getMMObject("typedef");
         b.removeTmpNode(getTmpKey(owner,key));
@@ -94,6 +113,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         return key;
     }
 
+    /**
+     * @javadoc
+     */
     public MMObjectNode getNode(String owner,String key) {
         MMObjectBuilder bul=mmbase.getMMObject("typedef");
         MMObjectNode node;
@@ -115,6 +137,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         return node;
     }
 
+    /**
+     * @javadoc
+     */
     public String getObject(String owner,String key,String dbkey) {
         MMObjectBuilder bul=mmbase.getMMObject("typedef");
         MMObjectNode node;
@@ -143,6 +168,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         }
     }
 
+    /**
+     * @javadoc
+     */
     public String setObjectField(String owner,String key,String field,Object value) {
         MMObjectNode node;
         int i;float f;double d;long l;
@@ -213,7 +241,10 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         return "";
     }
 
-
+    /**
+     * @javadoc
+     * @deprecated use {@link #getObjectField}
+     */
     public String getObjectFieldAsString(String owner,String key,String field) {
         String rtn;
         MMObjectNode node;
@@ -222,11 +253,14 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
             log.error("getObjectFieldAsString(): node " + key + " not found!");
             rtn="";
         } else {
-            rtn=node.getValueAsString(field);
+            rtn=node.getStringValue(field);
         }
         return rtn;
     }
 
+    /**
+     * @javadoc
+     */
     public Object getObjectField(String owner,String key,String field) {
         Object rtn;
         MMObjectNode node;
@@ -235,11 +269,14 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
             log.error("getObjectFieldAsString(): node " + key + " not found!");
             rtn="";
         } else {
-            rtn=node.getValueAsString(field);
+            rtn=node.getStringValue(field);
         }
         return rtn;
     }
 
+    /**
+     * @javadoc
+     */
     private String getTmpKey(String owner,String key) {
         return owner+"_"+key;
     }

@@ -18,69 +18,103 @@ import java.io.*;
 /**
  * MMBaseMultiCastProbe a thread object started to handle all nofity's needed when
  * one is received.
+ * @javadoc
  *
- * @version $Revision: 1.4 $ $Date: 2001-05-04 13:48:52 $
  * @author Daniel Ockeloen
+ * @version $Id: MMBaseMultiCastProbe.java,v 1.5 2002-03-11 10:42:36 pierre Exp $
  */
 public class MMBaseMultiCastProbe implements Runnable {
 
-	Thread kicker = null;
-	MMBaseMultiCast parent=null;
-	MMObjectBuilder bul=null;
-	String machine; 
-	String id;
-	String tb;
-	String ctype;
-	boolean remote;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    Thread kicker = null;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    MMBaseMultiCast parent=null;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    MMObjectBuilder bul=null;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    String machine;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    String id;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    String tb;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    String ctype;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    boolean remote;
 
-	public MMBaseMultiCastProbe(MMBaseMultiCast parent,MMObjectBuilder bul,String machine,
-	        String id,String tb,String ctype,boolean remote) {
-		this.parent=parent;
-		this.bul=bul;
-		this.machine=machine;
-		this.id=id;
-		this.tb=tb;
-		this.ctype=ctype;
-		this.remote=remote;
-		init();
-	}
+    /**
+     * @javadoc
+     */
+    public MMBaseMultiCastProbe(MMBaseMultiCast parent,MMObjectBuilder bul,String machine,
+            String id,String tb,String ctype,boolean remote) {
+        this.parent=parent;
+        this.bul=bul;
+        this.machine=machine;
+        this.id=id;
+        this.tb=tb;
+        this.ctype=ctype;
+        this.remote=remote;
+        init();
+    }
 
-	public void init() {
-		this.start();	
-	}
+    public void init() {
+        this.start();
+    }
 
+    /**
+     * Starts the admin Thread.
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            kicker = new Thread(this,"MMBaseProbe");
+            kicker.start();
+        }
+    }
 
-	/**
-	 * Starts the admin Thread.
-	 */
-	public void start() {
-		/* Start up the main thread */
-		if (kicker == null) {
-			kicker = new Thread(this,"MMBaseProbe");
-			kicker.start();
-		}
-	}
-	
-	/**
-	 * Stops the admin Thread.
-	 */
-	public void stop() {
-		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
-		kicker.suspend();
-		kicker.stop();
-		kicker = null;
-	}
+    /**
+     * Stops the admin Thread.
+     */
+    public void stop() {
+        /* Stop thread */
+        kicker.setPriority(Thread.MIN_PRIORITY);
+        kicker = null;
+    }
 
-	/**
-	 */
-	public void run() {
-		if (remote) {
-			bul.nodeRemoteChanged(machine,id,tb,ctype);
-			parent.checkWaitingNodes(id);	
-		} else {
-			bul.nodeLocalChanged(machine,id,tb,ctype);
-			parent.checkWaitingNodes(id);	
-		}
-	}
+    /**
+     * @javadoc
+     */
+    public void run() {
+        if (remote) {
+            bul.nodeRemoteChanged(machine,id,tb,ctype);
+            parent.checkWaitingNodes(id);
+        } else {
+            bul.nodeLocalChanged(machine,id,tb,ctype);
+            parent.checkWaitingNodes(id);
+        }
+    }
 }
