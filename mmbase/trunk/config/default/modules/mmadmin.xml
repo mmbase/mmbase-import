@@ -1,12 +1,17 @@
 <?xml version="1.0"?>
 <!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<!--
+    The MMAdmin module contains procedures, callable from jsp or SCAN, which allow for
+    administration tasks, such as installing applications, monitoring cache performance,
+    or viewing module and builder properties.
+-->
 <module>
 
   <!-- <status>
 	what is the status of this builder options : active or inactive
+	This module is necessary to administrate MMbase, and should normally be active.
   -->
   <status>active</status>
-
 
   <!-- <classfile>
 	main classfile that this module is defined in
@@ -14,8 +19,9 @@
   <classfile>org.mmbase.module.tools.MMAdmin</classfile>
 
   <!-- <properties>
-     you can define properties to be used by the classfile (if used) it uses
-     a key/value system. Its a optional tag.
+     You can define properties to be used by the classfile.
+	 This module does not have any properties.
+	 This tag should be left empty, but in place.
    -->
   <properties>
   </properties>
