@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.289 2005-03-16 13:10:42 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.290 2005-03-29 13:12:22 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -83,6 +83,17 @@ version: $Id: mmbase-taglib.xml,v 1.289 2005-03-16 13:10:42 michiel Exp $
     <function-signature>void remove(java.util.Collection, java.lang.Object)</function-signature>
     <example>
       ${mm:remove(list, case)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Performs taglib-escaping.
+    </description>
+    <name>escape</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>void escape(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      &lt;a href="title="${mm:remove('text/html/attribute', node.title)}" .../&gt;
     </example>
   </function>
   
