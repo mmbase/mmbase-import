@@ -158,6 +158,10 @@
 	<option>insrel
 	<option>posrel
 	<option>rolerel
+	<option>posmboxrel
+	<option>forposrel
+	<option>forarearel
+	<option>areathreadrel
 	</select></td><td>
 <input type="submit" value="add"></td><td></td>
 </form>
@@ -354,6 +358,8 @@
   		<option <mm:compare value="INTEGER">selected</mm:compare>>INTEGER
   		<option <mm:compare value="LONG">selected</mm:compare>>LONG
   		<option <mm:compare value="BYTES">selected</mm:compare>>BYTES
+  		<option <mm:compare value="NODE">selected</mm:compare>>NODE
+  		<option <mm:compare value="XML">selected</mm:compare>>XML
 		</mm:field>
 	<select>
 	</td>
@@ -448,6 +454,7 @@
   	<option <mm:compare value="INTEGER">selected</mm:compare>>INTEGER
   	<option <mm:compare value="LONG">selected</mm:compare>>LONG
   	<option <mm:compare value="BYTES">selected</mm:compare>>BYTES
+  	<option <mm:compare value="NODE">selected</mm:compare>>NODE
 	</mm:field>
 </td>
 <td><select name="newdbstatus">
