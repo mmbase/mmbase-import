@@ -28,9 +28,10 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.17 $ $Date: 2000-11-20 14:20:51 $
+* @$Revision: 1.18 $ $Date: 2000-11-21 09:59:51 $
 */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
+	static boolean debug = false;
 
 	/**
      * gives an unique number
