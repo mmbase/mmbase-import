@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.12 2002-06-11 12:12:13 rob Exp $
+ * @version $Id: TimeTag.java,v 1.13 2002-08-16 18:18:12 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -92,7 +92,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         if (localeTag != null) {
             locale = localeTag.getLocale();
         } else {
-            locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
+            locale = org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale();
         }              
 
         // symbolic formats. Perhaps will be moved to another attribute or so.

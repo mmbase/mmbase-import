@@ -54,7 +54,7 @@ public class LocaleTag extends ContextReferrerTag  {
         if (language != null && (! language.equals(""))) {
             locale = new Locale(language, country);
         } else {
-            locale = null; // default;
+            locale = LocalContext.getCloudContext().getDefaultLocale();
         }
         return EVAL_BODY_BUFFERED;
     }
