@@ -12,7 +12,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.14 2004-01-26 10:33:38 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.15 2004-03-10 18:24:39 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -24,13 +24,13 @@ if (! ewconfig.subObjects.empty()) {
     Config.SubConfig top  = (Config.SubConfig) ewconfig.subObjects.peek();
     if (! popup) {
         if (top instanceof Config.WizardConfig) {
-            log.info("no popup");
+            log.debug("no popup");
             wizardConfig = (Config.WizardConfig) top;
         }
     } else {
         Stack stack = (Stack) top.popups.get(popupId);
         if (stack != null) {
-            log.info("popup");
+           log.debug("popup");
            wizardConfig = (Config.WizardConfig) stack.peek();
         }
     }
@@ -42,7 +42,7 @@ if (! ewconfig.subObjects.empty()) {
             log.info("found wizard is for other other object (" + checkConfig.objectNumber + "!= " + wizardConfig.objectNumber + ")");
             wizardConfig = null;
         } else {
-            log.info("processing request");
+            log.debug("processing request");
             wizardConfig.wiz.processRequest(request);
         }
     }
@@ -87,11 +87,14 @@ if (! ewconfig.subObjects.empty()) {
                 if (last > -1) {
                     fileName = fullFileName.substring(last+1);
                 }
-                wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName);
-                fileCount++;
+                if (fi.get().length > 0) { // no need uploading nothing
+                  log.debug("Setting binary " + fi.get() + " " + fi.get().length + " " +  fileName + " " + fullFileName);
+                  wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName);  
+                  fileCount++;
+                } 
             }
         }
-        out.println("Uploaded files:"+fileCount);
+        out.println("Uploaded files:" + fileCount);
         %>
             <script language="javascript">
                 try { // Mac IE doesn't always support window.opener.
