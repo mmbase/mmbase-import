@@ -1,4 +1,4 @@
-<%@ page errorPage="exception.jsp" 
+<%@ page errorPage="exception.jsp"
 %><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.7 2002-05-16 16:13:55 pierre Exp $
+     * @version  $Id: list.jsp,v 1.8 2002-05-17 07:43:50 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -36,13 +36,15 @@ boolean multilevel = listConfig.nodePath.indexOf(",") > -1;
 List fieldList     = new Vector();
 String numberField = null;
 
-StringTokenizer stok = new StringTokenizer(listConfig.fields, ",");    
+StringTokenizer stok = new StringTokenizer(listConfig.fields, ",");
+String mainObjectName =null;
 while (stok.hasMoreTokens()) {
     String token = stok.nextToken();
     fieldList.add(token);
-    if (token.indexOf(".number") > -1) {
+    int nrpos=token.indexOf(".number");
+    if (nrpos > -1) {
         numberField = token;
-
+        mainObjectName = token.substring(0,nrpos);
     }
     if (token.indexOf("number") > -1 && numberField == null) numberField=token;
 }
@@ -51,22 +53,22 @@ int nodecount=0;
 
 stok = new StringTokenizer(listConfig.nodePath, ",");
 nodecount = stok.countTokens();
-String lastobjectname=null;
+String lastObjectName=null;
 
 while (stok.hasMoreTokens()) {
-    lastobjectname = stok.nextToken();
+    lastObjectName = stok.nextToken();
 }
 
-if (lastobjectname == null) {
+if (lastObjectName == null) {
     throw new JspException("No nodepath (" + listConfig.nodePath + ") was specified on URL, nor could it be found in the session");
 }
-
+if (mainObjectName==null) mainObjectName=lastObjectName;
 
 if (numberField==null || listConfig.fields.indexOf(numberField)==-1) {
     // no numberField supplied. Let's add it ourselves and place in in front of the fields list.
     String addfield="number";
     if (multilevel) {
-        addfield = lastobjectname+"."+addfield;
+        addfield = mainObjectName+"."+addfield;
         listConfig.fields = addfield + "," + listConfig.fields;
     } else {
         listConfig.fields = "number," + listConfig.fields;
@@ -105,7 +107,7 @@ if (listConfig.age >- 1) {
         ageconstraint = "number>"+n.getStringValue("mark");
     }
 
-    if (multilevel && lastobjectname!=null) ageconstraint=lastobjectname+"."+ageconstraint;
+    if (multilevel && mainObjectName!=null) ageconstraint=mainObjectName+"."+ageconstraint;
 
     if (listConfig.constraints == null || listConfig.constraints.equals("")) {
         listConfig.constraints = ageconstraint;
@@ -131,7 +133,7 @@ if (ewconfig.wizard != null) {
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null);
     deleteprompt      = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null);
     title             = Utils.selectSingleNodeText(wiz.getSchema(), "/wizard-schema/title", null);
-    
+
 }
 
 // fire query
@@ -139,9 +141,9 @@ NodeList results;
 
 if (multilevel) {
     log.trace("this is a multilevel");
-    results = cloud.getList(listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints, 
-                            listConfig.orderBy, 
-                            listConfig.directions, "both", 
+    results = cloud.getList(listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints,
+                            listConfig.orderBy,
+                            listConfig.directions, "both",
                             listConfig.distinct);
 } else {
     log.trace("This is not a multilevel. Getting nodes from type " + listConfig.nodePath);
@@ -169,15 +171,16 @@ log.trace("Create document");
 
 org.w3c.dom.Node docel = doc.getDocumentElement();
 
-String mainmanager=lastobjectname;
-if (multilevel) {
-    if (mainmanager.charAt(mainmanager.length()-1)<='9') mainmanager=mainmanager.substring(0,mainmanager.length()-1);
-}
+String mainManager=mainObjectName;
+if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.substring(0,mainManager.length()-1);
+
+NodeManager manager=cloud.getNodeManager(mainManager);
+if (!manager.mayCreateNode()) creatable=false;
 
 for (int i=start; i< end; i++) {
     Node item = results.getNode(i);
     org.w3c.dom.Node obj = addObject(docel, item.getStringValue((String)fieldList.get(0)), (i+1)+"",
-                                     cloud.getNodeManager(mainmanager).getName());
+                                     manager.getName());
     for (int j=1; j < fieldList.size(); j++) {
         String fieldname = (String)fieldList.get(j);
         String fieldguiname=fieldname;
@@ -192,6 +195,11 @@ for (int i=start; i< end; i++) {
         }
         addField(obj, fieldguiname, item.getStringValue(fieldname));
     }
+    if (multilevel) {
+        item=item.getNodeValue(mainObjectName);
+    }
+    Utils.setAttribute(obj, "mayedit", ""+item.mayWrite());
+    Utils.setAttribute(obj, "maydelete", ""+item.mayDelete());
 }
 
 
@@ -244,7 +252,6 @@ Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params)
 log.trace("ready");
 
 %><%!
-
 
 private org.w3c.dom.Node addObject(org.w3c.dom.Node el, String number, String index, String type) {
     org.w3c.dom.Node n = el.getOwnerDocument().createElement("object");

@@ -84,5 +84,6 @@ input.submitbutton	{ background-color:#FFFFFF; color:#18248C; border-style:none;
 .itemrow-hover, .itemrow td, .itemrow-hover td
 			{ cursor:pointer; cursor:hand; color:#18248C; }
 .itemrow-hover td	{ text-decoration:underline;  }
+.itemrow-disabled, .itemrow-disabled td  { font-weight: normal; text-decoration : none; color:#CCCCCC; cursor:default;}
 
 .imageupload		{ padding:5px;}
