@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.34 2002-07-09 18:44:02 michiel Exp $
+  @version $Id: wizard.xsl,v 1.35 2002-07-10 19:41:36 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -17,6 +17,90 @@
   <xsl:variable name="defaultsearchage">7</xsl:variable>
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
+
+
+
+  <!-- ================================================================================
+       The following things can be overriden to customize the appearance of wizard
+       ================================================================================ -->
+
+  <xsl:template name="style"> <!-- It can be usefull to add a style, change the title -->
+     <title><xsl:value-of select="title" /></title>
+     <link rel="stylesheet" type="text/css" href="../style.css" />
+  </xsl:template>
+
+  <xsl:template name="body"> <!-- You can put stuff before and after then. Don't forget to call 'bodycontent' -->
+    <body 
+      bgcolor="#FFFFFF"
+      leftmargin="0"
+      topmargin="0"
+      marginwidth="0"
+      marginheight="0"
+      onload="doOnLoad_ew();" onunload="doOnUnLoad_ew();">
+      <xsl:call-template name="bodycontent" />
+    </body>
+  </xsl:template>
+
+  <xsl:template name="superhead"><!-- The first row of the the body's table -->
+    <tr>
+      <td colspan="2" align="center" valign="bottom">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+          <tr>
+            <td class="head"><nobr><xsl:value-of select="title" /></nobr></td>
+            <td class="superhead" align="right">
+              <nobr><xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if><xsl:value-of select="form[@id=/wizard/curform]/title" /></nobr>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>   
+  </xsl:template>
+
+  <xsl:template name="beforeform" />
+
+  <xsl:template name="bodycontent"> <!-- Madmen can try to override bodycontent.. -->
+    <xsl:call-template name="javascript" />
+    <xsl:call-template name="beforeform" />
+
+    <form name="form" method="post" action="{$wizardpage}" id="{/wizard/curform}"
+      message_pattern="{$message_pattern}"
+      message_required="{$message_required}"
+      message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}"
+      message_min="{$message_min}"  message_max="{$message_max}"
+      message_mindate="{$message_mindate}" message_maxdate="{$message_maxdate}"
+      message_dateformat="{$message_dateformat}"
+      message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}"
+      message_listtooshort="{$message_listtooshort}"
+      invalidlist="{/wizard/form[@id=/wizard/curform]/@invalidlist}"
+      >
+      <input type="hidden" name="curform" value="{/wizard/curform}" />
+      <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
+
+
+      <table cellspacing="0" cellpadding="3" border="0" width="100%">
+        <xsl:call-template name="superhead" />
+        <tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>
+        
+        <xsl:apply-templates select="form[@id=/wizard/curform]" />
+
+        <xsl:apply-templates select="/*/steps-validator" />
+      </table>
+    </form>
+  </xsl:template>
+
+
+  <xsl:template name="javascript"><!-- .. or this -->
+    <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
+  </xsl:template>
+
+
+  <!-- ================================================================================
+       The following is functionality. You probably don't want to override it.
+       ================================================================================ -->
+
 
   <xsl:template match="@*">
     <xsl:copy><xsl:value-of select="." /></xsl:copy>
@@ -28,67 +112,13 @@
     <xsl:apply-templates select="wizard" />
   </xsl:template>
 
-  <xsl:template name="beforeform" />
-
   <xsl:template match="wizard">
     <html>
       <head>
-        <title><xsl:value-of select="title" /></title>
-        <link rel="stylesheet" type="text/css" href="../style.css" />
+        <xsl:call-template name="style" />
       </head>
-      <body leftmargin="0"
-        topmargin="0"
-        marginwidth="0"
-        marginheight="0"
-        onload="doOnLoad_ew();" onunload="doOnUnLoad_ew();">
-        <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
-        <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
-        <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
-        <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
-
-        <xsl:call-template name="beforeform" />
-
-        <form name="form" method="post" action="{$wizardpage}" id="{/wizard/curform}"
-              message_pattern="{$message_pattern}"
-              message_required="{$message_required}"
-              message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}"
-              message_min="{$message_min}"  message_max="{$message_max}"
-              message_mindate="{$message_mindate}" message_maxdate="{$message_maxdate}"
-              message_dateformat="{$message_dateformat}"
-              message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}"
-              message_listtooshort="{$message_listtooshort}"
-              invalidlist="{/wizard/form[@id=/wizard/curform]/@invalidlist}"
-        >
-          <input type="hidden" name="curform" value="{/wizard/curform}" />
-          <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
-
-
-          <table cellspacing="0" cellpadding="3" border="0" width="100%">
-            <tr>
-              <td colspan="2" align="center" valign="bottom">
-                <table border="0" cellspacing="0" cellpadding="0" width="100%">
-                  <tr>
-                    <td class="head"><nobr><xsl:value-of select="title" /></nobr></td>
-                    <td class="superhead" align="right">
-                      <nobr><xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if><xsl:value-of select="form[@id=/wizard/curform]/title" /></nobr>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-
-            <tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>
-
-            <xsl:apply-templates select="form[@id=/wizard/curform]" />
-
-            <xsl:apply-templates select="/*/steps-validator" />
-          </table>
-
-        </form>
-
-      </body>
+      <xsl:call-template name="body" />
     </html>
-
   </xsl:template>
 
   <xsl:template match="form">
