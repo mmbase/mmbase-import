@@ -31,21 +31,19 @@ public class RelatedTag extends ListTag {
     }
 
     /**
-     * Node makes it possible to refer to another node than the direct
-     * ancestor.
+     * Override original ListTag method.
      */
-    public void setNode(String node){
-        parentNodeId = node;
+    public void setNode(String node) throws JspTagException {
+        throw new JspTagException("Node is not a supported attribute for the related tag");
     }
 
     public int doStartTag() throws JspTagException {
-        NodeProvider nodeProvider =
-          (NodeProvider)findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
+        NodeProvider nodeProvider;
+        nodeProvider = (NodeProvider)findParentTag("org.mmbase.bridge.jsp"
+                                                   + ".taglib.NodeProvider",
+                                                   parentNodeId);
         Node node=nodeProvider.getNodeVar();
         nodesString=node.getStringValue("number");
-        String nodeType=node.getNodeManager().getName();
-        // adapt the path to include the (needed) starting ndoemanager name
-        pathString= nodeType+","+pathString;
         return super.doStartTag();
     }
 }
