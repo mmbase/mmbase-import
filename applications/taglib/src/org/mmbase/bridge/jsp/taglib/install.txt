@@ -1,0 +1,14 @@
+i have tested taglib with tomcat therefore i had to add the following
+to web.xml
+----------------------------------------------------------------------
+<taglib>
+   <taglib-uri>
+      http://www.mmbase.org/mmbase-taglib
+   </taglib-uri>
+   <taglib-location>
+      /WEB-INF/mmbase-taglib.tld
+   </taglib-location>
+</taglib>
+----------------------------------------------------------------------
+you also need to put the mmbase-taglib.tld in the WEB-INF dir
+and the taglib.jar in WEB-INF/lib/
