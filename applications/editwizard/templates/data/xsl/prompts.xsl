@@ -8,7 +8,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.1 2002-05-27 09:26:32 pierre Exp $
+  @version $Id: prompts.xsl,v 1.2 2002-05-27 15:07:46 pierre Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -82,15 +82,16 @@
 <xsl:template name="prompt_video" ><img src="{$mediadir}video.gif" width="20" height="20" border="0" alt="(video)" /></xsl:template>
 <xsl:variable name="tooltip_video" >Click here to view the video clip</xsl:variable>
 <!-- search : prompts for age filter -->
-<xsl:template name="age_now" >0 days</xsl:template>
-<xsl:template name="age_day" >1 days</xsl:template>
+<xsl:template name="age_now" >today</xsl:template>
+<xsl:template name="age_day" >1 day</xsl:template>
 <xsl:template name="age_week" >7 days</xsl:template>
 <xsl:template name="age_month" >1 month</xsl:template>
 <xsl:template name="age_year" >1 year</xsl:template>
 <xsl:template name="age_any" >any age</xsl:template>
 <!-- search : other filters -->
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" width="20" height="20"/></xsl:template>
-<xsl:template name="prompt_search_title" >Content contains</xsl:template>
+<xsl:variable name="tooltip_search" >Search and add an item</xsl:variable>
+<xsl:template name="prompt_search_title" >Title contains</xsl:template>
 <xsl:template name="prompt_search_owner" >Owner is</xsl:template>
 <!-- navigation -->
 <xsl:template name="prompt_index">(index)</xsl:template>
@@ -110,7 +111,7 @@
 <xsl:variable name="tooltip_cancel_search" >Cancel</xsl:variable>
 <xsl:variable name="tooltip_end_search" >OK</xsl:variable>
 <!-- searchlist error messages for forms validation  -->
-<xsl:variable name="message_pattern" >the value {0} does not match the required pattern\n</xsl:variable>
+<xsl:variable name="message_pattern" >the value {0} does not match the required pattern</xsl:variable>
 <xsl:variable name="message_minlength" >value must be at least {0} long</xsl:variable>
 <xsl:variable name="message_maxlength" >value must be at most {0} long</xsl:variable>
 <xsl:variable name="message_min" >value must be at least {0}</xsl:variable>

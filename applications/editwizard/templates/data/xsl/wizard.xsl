@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.17 2002-05-27 09:26:33 pierre Exp $
+  @version $Id: wizard.xsl,v 1.18 2002-05-27 15:07:46 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -220,7 +220,9 @@
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
                   <img src="{$ew_imgdb}{node:function(string(@number), concat('cache(', $imagesize, ')'))}" hspace="0" vspace="0" border="0" /><br />
-                  <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"></a>
+                  <a href="{$uploadpage}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+                  <xsl:call-template name="prompt_image_upload" />
+                  </a>
                 </div>
               </div>
             </xsl:when>
@@ -411,7 +413,7 @@
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
                   <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="" style="width:175;" />
                   <img src="{$mediadir}nix.gif" width="2" height="1" hspace="0" vspace="0" border="0" alt="" />
-                  <span class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');"  >
+                  <span title="{$tooltip_search}" class="imagebutton" onclick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');"  >
                     <xsl:for-each select="@*"><xsl:copy /></xsl:for-each>
                     <xsl:call-template name="prompt_search" />
                   </span>
@@ -496,6 +498,7 @@
     <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" /><p>
           <!-- cancel -->
           <xsl:call-template name="cancelbutton" />
+           -
           <!-- commit  -->
           <xsl:call-template name="savebutton" />
         </p><hr color="#005A4A" size="1" noshade="true" /></td></tr>
@@ -567,7 +570,7 @@
             <a href="javascript:doGotoForm('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon"
              titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"
             > <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
-              <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=$schemaid]/title" /><xsl:if test="@valid='true'"><xsl:value-of select="/*/form[@id=$schemaid]/title" /></xsl:if><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
+              <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=$schemaid]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
               <xsl:call-template name="prompt_step" />
             </a>
             <span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
