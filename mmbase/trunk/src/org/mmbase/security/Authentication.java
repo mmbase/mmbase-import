@@ -10,6 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import java.util.Map;
+import org.mmbase.bridge.CloudContext;
+
+import org.mmbase.util.functions.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  *  This class is a abstract implementation of the Authentication.
@@ -18,9 +24,10 @@ import java.util.Map;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.23 2005-01-30 16:46:34 nico Exp $
+ * @version $Id: Authentication.java,v 1.24 2005-03-01 14:14:37 michiel Exp $
  */
-public abstract class Authentication extends Configurable {
+public abstract class Authentication extends Configurable implements AuthenticationData {
+    private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
     /**
      *  This method will verify the login, and give a UserContext back if the login procedure was successful.
@@ -40,10 +47,82 @@ public abstract class Authentication extends Configurable {
     public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException;
 
     /**
-     *	The method returns wether the UserContext has become invalid for some reason (change in security config?)
-     *	@param userContext The UserContext of which we want to know the rights
-     *	@return <code>true</code> when valid, otherwise <code>false</code>
-     *	@exception SecurityException When something strang happend
+     * @since MMBase-1.8
      */
-    public abstract boolean isValid(UserContext userContext) throws SecurityException;
+    public int getMethod(String m) {
+        m = m.toLowerCase();
+        if ("http".equals(m)) {
+            return METHOD_HTTP;
+        } else if ("asis".equals(m)) {
+            return METHOD_ASIS;
+        } else if ("anonymous".equals(m)) {
+            return METHOD_ANONYMOUS;
+        } else if ("logout".equals(m)) {
+            return METHOD_LOGOUT;
+        } else if ("loginpage".equals(m)) {
+            return METHOD_LOGINPAGE;
+        } else if ("delegate".equals(m)) {
+            return METHOD_DELEGATE;
+        } else if ("sessiondelegate".equals(m)) {
+            return METHOD_SESSIONDELEGATE;
+        } else if ("pagelogon".equals(m)) {
+            return METHOD_PAGELOGON;
+        } else if ("sessionlogon".equals(m)) {
+            return METHOD_SESSIONLOGON;
+        } else if ("default".equals(m)) {
+            return METHOD_DEFAULT;
+            //} else if ("given_or_anonymous".equals(m)) {
+            //    return METHOD_GIVEN_OR_ANONYMOUS;
+        } else {
+            throw new RuntimeException("Unknown value for 'method'  attribute (" + m + ")");
+        }
+    }
+
+    /**
+     * @inheritDoc
+     * @since MMBase-1.8
+     */
+    public int getDefaultMethod(String protocol) {
+        if (protocol == null || protocol.substring(0, 4).equalsIgnoreCase("HTTP")) {
+            return METHOD_HTTP;
+        } else {
+            return METHOD_DELEGATE; // leave it completely to the implementation. (using the 'class' application or the request object or so)
+        }
+    }
+
+    /**
+     * @inheritDoc
+     * @since MMBase-1.8
+     */
+    public String[] getTypes() {
+        return getTypes(METHOD_ASIS);
+    }
+    /**
+     * @inheritDoc
+     * @since MMBase-1.8
+     */
+    public String[] getTypes(int method) {
+        if (method == METHOD_ASIS) {
+            return new String[] {"anonymous", "name/password"};
+        } else {
+            return new String[] {"name/password"};
+        }
+    }
+
+    protected final Parameter[] PARAMETERS_USERS         = new Parameter[] { PARAMETER_USERNAMES, PARAMETER_RANK };
+    protected final Parameter[] PARAMETERS_ANONYMOUS     = new Parameter[] { PARAMETER_LOGOUT, PARAMETER_AUTHENTICATE};
+    protected final Parameter[] PARAMETERS_NAME_PASSWORD = new Parameter[] { PARAMETER_USERNAME, PARAMETER_PASSWORD, new Parameter.Wrapper(PARAMETERS_USERS) };
+
+    public Parameters createParameters(String application) {
+        application = application.toLowerCase();
+        if ("anonymous".equals(application)) {
+            return new ParametersImpl(PARAMETERS_ANONYMOUS);
+        } else if ("class".equals(application)) {
+            return Parameters.VOID;
+        } else if ("name/password".equals(application)) {
+            return new ParametersImpl(PARAMETERS_NAME_PASSWORD);
+        } else {
+            return new AutodefiningParameters();
+        }
+    }
 }
