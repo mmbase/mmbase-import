@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.3 2002-05-06 11:16:57 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.4 2002-05-06 14:11:12 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -323,7 +323,7 @@ public class ObjectTypes extends TypeDef {
     /**
      */
     protected  java.io.File storeBuilderFile(MMObjectNode node) {
-        log.debug("[unload builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")]");
+        log.debug("[store builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")]");
         
         java.io.File file = null;
         try {
@@ -337,14 +337,17 @@ public class ObjectTypes extends TypeDef {
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
             file = new java.io.File(getBuilderFilePath(node));
+            if(file == null) {
+                throw new RuntimeException("file was null, could not continue");
+            }
             transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
         }
         catch(javax.xml.transform.TransformerException te) {
-            throw new RuntimeException(te.toString() + Logging.stackTrace(te));
+            log.warn("failure saving configuration to disk : " + te.toString());
+            // storing the builder failed!
         }
         return file;
     }
-
 
     /**
      */
