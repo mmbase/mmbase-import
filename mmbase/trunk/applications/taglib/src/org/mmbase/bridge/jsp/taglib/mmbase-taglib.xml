@@ -134,8 +134,8 @@ one or more examplevalue tags is you want to give some example values.
   <taginterface>
     <name>condition</name>
     <info>
-      Condition tag do have a body which is evaluated or not, depending on certain attributes or
-      surrouning tags.
+      Condition tags have a body which is evaluated or not depending on certain
+      attributes or surrouning tags.
     </info>
     <attribute>
       <name>inverse</name>
@@ -191,8 +191,8 @@ one or more examplevalue tags is you want to give some example values.
   <taginterface>     
     <name>nodereferrer</name>
     <info>
-      A nodereferrer tag is a tag that can (needs to) live in the body of a nodeprovider, and uses
-      the node that that tag makes available.
+      A nodereferrer tag is a tag that can (needs to) live in the body of a node
+      provider, and uses the node provided by the node provider tag.
     </info>
     <!-- in reality noderefferer extends cloudreffer, but only few tags use that -->
     <attribute>
@@ -239,8 +239,8 @@ one or more examplevalue tags is you want to give some example values.
   <taginterface>
     <name>writer</name>
     <info>
-      A writer is a tag that can produce output. Normally the default will be to write to the page,
-      unless the tag has body.
+      A writer is a tag that can produce output. Normally the default will be to
+      write to the page, unless the tag has a body.
     </info> 
 	<see>write</see>
     <attribute>
@@ -248,8 +248,9 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-	The name of a variable to created. Normally, but not always, the scope of this variable is
-	the body of tag. This attribute never can contain context variables.
+        The name of the variable to be created. Normally, but not always, the
+        scope of this variable is the body of the tag. This attribute can never
+        contain context variables.
       </info>
     </attribute>
     <attribute>
@@ -257,8 +258,9 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-	The type of the variable to create. Ussually there is a reasonable default for this
-	attribute. This attribute never can contain context variables.
+        The type of the variable to be created. Usually there is a reasonable
+        default for this attribute. This attribute can never contain context
+        variables.
       </info>
       <possiblevalue><value>Object</value>  <info>java.lang.Object</info></possiblevalue>
       <possiblevalue><value>String</value>  <info>java.lang.String</info></possiblevalue>
@@ -277,7 +279,7 @@ one or more examplevalue tags is you want to give some example values.
       <name>write</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>Whether to write to the page or not. Normally the default value will suffice</info>
+      <info>Whether to write to the page or not. Normally the default value will suffice.</info>
       <possiblevalue><value>true</value></possiblevalue>
       <possiblevalue><value>false</value></possiblevalue>
     </attribute>
@@ -762,7 +764,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListEvenTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is an even item</info>
+    <info>Can be used in a list to determine if this is an even item</info>
   </tag>
   <tag>
     <name>odd</name>
@@ -770,7 +772,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListOddTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is an odd item</info>
+    <info>Can be used in a list to determine if this is an odd item</info>
   </tag>
   <tag>
     <name>changed</name>
@@ -778,7 +780,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListChangedTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this item has changed compared to the previous one.
+    <info>Can be used in a list to determine if this item has changed compared to the previous one.
      The criteria applies to the field(s) given in the orderby attribute of the accompanying list.
      The first item of a list is always concidered 'changed'.
      </info>
@@ -790,7 +792,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListFirstTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is the
+    <info>Can be used in a list to determine if this is the
     fist item in the list.</info>
   </tag>
   <tag>
@@ -799,7 +801,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListLastTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is the
+    <info>Can be used in a list to determine if this is the
     last item in the list.</info>
   </tag>
   <tag>
@@ -824,9 +826,9 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>The authentication name to use (account). When used together
-      e.g. the method="http" option, then validation only succeeds if
-      the username equals logon. In this case it also possible to
+      <info>The authentication name to use (account). When used together with
+      e.g. the method="http" option, validation only succeeds if
+      the username equals logon. In this case it is also possible to
       supply a list of usernames here (comma seperated)</info>
     </attribute>
     <attribute>
@@ -870,9 +872,9 @@ one or more examplevalue tags is you want to give some example values.
       <possiblevalue>
         <value>logout</value>
         <info>
-          When used `http' to logon, the browser will store name and
-          password. If you want to logon again, then you can first
-          `logout'. Then the `realm' of the http authenication will be
+          When using `http' to logon, the browser will store name and
+          password. If you want to logon again, you have to `logout' first.
+          In this case the `realm' of the http authenication will be
           changed, and you obtain a new possibility to logon after
           that. The cloud you obtain is anonymous.
         </info>
@@ -898,8 +900,8 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
       <info>
         The name the cloud must get in the session. Using this it is
-        possible to avoid keeping to have to type your password when
-        switching between two sites wich both use http
+        possible to avoid retyping your password when
+        switching between two sites which both use http
         authentication.
       </info>
     </attribute>
@@ -985,7 +987,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
-      A tag to make a node available. Normally it will enclose some field tags, but is is also
+      A tag to make a node available. Normally it will enclose some field tags, but it is also
       possible to only write to the context, or to a jsp variable.
     </info>
     <attribute>
@@ -1329,7 +1331,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CancelTag</tagclass>
     <bodycontent>empty</bodycontent>
     <info>
-      Can cancel a transaction with this.
+      The cancel tag can be used to cancel a transaction.
     </info>
     <attribute>
       <name>transaction</name>
@@ -1343,7 +1345,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CommitTag</tagclass>
     <bodycontent>empty</bodycontent>
     <info>
-      Can commit a transaction with this.
+      The commit tag can be use to commit a transaction.
     </info>
     <attribute>
       <name>transaction</name>
@@ -1380,7 +1382,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>A list of fields. A field can list inside a NodeProvider in which case the NodeManager is found by means of
+    <info>A list of fields. A fieldlist can list inside a NodeProvider in which case the NodeManager is found by means of
     the parent node. It can also be stand alone, then you have to supply the type of the node (the name of the `nodemanager').
     </info>
     <attribute>
@@ -1440,7 +1442,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
     <info>
-    This thing can be used inside a FieldListTag, or directly inside a
+    The fieldinfo tag can be used inside a FieldListTag, or directly inside a
     NodeProvider if you indicate with the field attribute about which
     field you want to have information. It can have a body, which will
     be added to the produced value, if this is not null.
@@ -1461,7 +1463,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>input</value>
     <info>
     A form entry for the field. This can only be used if the
-        FieldList was in a Noderovider tag, of if you have provided
+        FieldList was in a Noderovider tag, or if you have provided
         the `nodemanager' attribute. If the FieldList has an id, the
         names of the form entries will be prefixed with it.
         </info>
@@ -1470,7 +1472,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>useinput</value>
         <info>
     <p>
-    If you have create a form with type="input" and this form was
+    If you have created a form with type="input" and this form was
         submitted, then you can use type="useinput" under a
         NodeProvider, and it will get the request/post parameter
         produced by "input" and make the right changes to the node.
@@ -1491,7 +1493,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <possiblevalue>
         <value>usesearchinput</value>
         <info>
-    If you have create a form with type="searchinput" and this
+    If you have created a form with type="searchinput" and this
         form was submitted, then you can use this. It will produce a
         part of a where clause which you can use to construct a whole
         `where' for the list tag you are going to use.
@@ -1515,7 +1517,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
-    <info>This thing can be used inside a NodeProvider tag, to get
+    <info>The nodeinfo tag can be used inside a NodeProvider tag, to get
     certain information about the node.
     </info>
     <attribute>
@@ -1582,25 +1584,25 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
-	  <p>
-		The write tag is to `export' context variables to something
-		else. When you only specify what variable (with the `referid'
-		or `value' attribute), then this tag writes to the page
-		(therefore it is named `write'), unless it has a body, in
-		which case the information is simply available to other tags
-		in the body (like another write tag without attributes).
-	  </p>
-	  <p>
-		This is the behavior of `writer' tags, and this tag is the
-		most basic version of that. Being a `writer' tag it also
-		supports the `jspvar' attribute with which you can make a jsp
-		variable available in the body. 
-	  </p>
-	  <p>
-		In addition to this basic `writer' functionality, the `write'
-		tag itself can also write context variables to other storage
-		locations, like the session and in cookies.
-	  </p>
+      <p>
+        The write tag can be used to `export' context variables to something
+        else. When you only specify what variable (with the `referid'
+        or `value' attribute), then this tag writes to the page
+        (therefore it is named `write'), unless it has a body, in
+        which case the information is simply available to other tags
+        in the body (like another write tag without attributes).
+      </p>
+      <p>
+        This is the behavior of `writer' tags, and this tag is the
+        most basic version of that. Being a `writer' tag it also
+        supports the `jspvar' attribute with which you can make a jsp
+        variable available in the body. 
+      </p>
+      <p>
+        In addition to this basic `writer' functionality, the `write'
+        tag itself can also write context variables to other storage
+        locations, like the session and in cookies.
+      </p>
     </info>
     <see>import</see>
     <attribute>
@@ -1609,7 +1611,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <rtexprvalue>true</rtexprvalue>
     <refercontext>true</refercontext>
     <info>
-		The key of the variable to get. It it is missing (and value is
+		The key of the variable to get. If it is missing (and value is
 		missing), then the parent Writer tag is written (if it exist).
     </info>
     </attribute>
@@ -1620,7 +1622,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <refercontext>true</refercontext>
       <info>
 		The value to write. In this you can use context variables with
-		"$", the advantage above this attribute above the referid
+		"$", the advantage of this attribute above the referid
 		attribute is that you can combine variables and add some text
 		of your own. The disadvantages relate to complexitiy and
 		efficiency.
@@ -1698,8 +1700,8 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <rtexprvalue>false</rtexprvalue>
     <info>
     If this object is required to be present. If it has to be
-    present, then the present tag will always evaluate. If there
-    can nothing be found by externid and a default value in the
+    present, then the present tag will always evaluate. If nothing
+    can be found by externid and a default value in the
     body is missing too, then an exception will follow if required
     is true.
     </info>
@@ -1710,7 +1712,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <rtexprvalue>true</rtexprvalue>
     <info>
     Where to search the externid in. On default it is searched in
-    several sources, but you can limit it by this. In this way it
+    several sources, but you can limit it with this attribute. In this way it
     is also possible to get different variables with the same name
     from different sources.
     </info>
@@ -1741,7 +1743,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     If you specify `jspvar' a jsp-variable with this name will be
     created too. It is available after the closing of the
     tag. Jsp-variables can also be created with the `write'
-    tag. You have preciser scoping for them then.
+    tag. A write tag has preciser scoping possibilities.
     </info>
     </attribute>
     <attribute>
@@ -2002,7 +2004,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayDeleteTag</tagclass>
     <info>
-    Check if node may be deleted
+    Check if node may be deleted.
     </info>
   </tag>
   <tag>
@@ -2011,7 +2013,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateTag</tagclass>
     <info>
-    Check if node may be create
+    Check if node may be created.
     </info>
     <attribute>
         <name>type</name>
@@ -2024,7 +2026,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
     <info>
-    Check if node may be linked to.
+    Check if it's allowed to link to this node.
     </info>
   </tag>
   <tag>
@@ -2033,7 +2035,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayChangeContextTag</tagclass>
     <info>
-    Check if context of node may be changed
+    Check if the context of a node may be changed.
     </info>
   </tag>
   <tag>
@@ -2052,8 +2054,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
-      This tag can be used inside a node tag to show the number of relations
-      the node has.
+      Can be used inside a node tag to show the number of relations the node
+      has.
     </info>
     <attribute>
       <name>type</name>
@@ -2162,7 +2164,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Give a name to the timer to easy find it in the log.
+		Give a name to the timer to easily find it in the log.
 	  </info>
     </attribute>
 	<extends>contextreferrer</extends>   
