@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
  */
 /*
-$Id: JDBC.java,v 1.16 2001-03-27 11:02:47 vpro Exp $
+$Id: JDBC.java,v 1.17 2001-03-27 11:13:30 vpro Exp $
 
 $Log: not supported by cvs2svn $
 Revision 1.15  2000/12/30 14:00:59  daniel
@@ -66,7 +66,7 @@ import org.mmbase.util.logging.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.16 2001-03-27 11:02:47 vpro Exp $
+ * @version $Id: JDBC.java,v 1.17 2001-03-27 11:13:30 vpro Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
