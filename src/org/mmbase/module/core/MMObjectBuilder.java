@@ -377,7 +377,7 @@ public class MMObjectBuilder extends MMTable {
     *  @param number the to-be-aliased node's unique number
     *  @param alias the aliasname to associate with the object
     */
-    private void createAlias(int number,String alias) {
+    public void createAlias(int number,String alias) {
 	if (mmb.OAlias!=null) {
 		MMObjectNode node=mmb.OAlias.getNewNode("system");
 		node.setValue("name",alias);
