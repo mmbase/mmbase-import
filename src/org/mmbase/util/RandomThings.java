@@ -27,19 +27,12 @@ private static RandomPlus rnd;
 	 */
 	static public void shuffleVector(Vector v) {
 		int siz;
-		int i,j;
-		int tries=20;
+		int src,dst;
 		siz=v.size();
 
-		for (int c=0;c<siz && tries>0;c++) {
-			i=Math.abs(rnd.nextInt())%siz;
-			j=Math.abs(rnd.nextInt())%siz;
-			if (i!=j) {
-				swap(v,i,j);
-			} else {
-				c--;
-				tries--;
-			}
+		for (dst=siz-1;dst>0;dst--) {
+			src=Math.abs(rnd.nextInt())%(dst+1);
+			swap(v,src,dst);
 		}
 	}
 
@@ -59,21 +52,14 @@ private static RandomPlus rnd;
 	 */
 	static public void shuffleArray(int arr[]) {
 		int siz;
-		int tries=10;
-		int i,j,t;
+		int src,dst,t;
 		siz=arr.length;
 
-		for (int c=0;c<siz && tries>0;c++) {
-			i=Math.abs(rnd.nextInt())%siz;
-			j=Math.abs(rnd.nextInt())%siz;
-			if (i!=j) {
-				t=arr[i];
-				arr[i]=arr[j];
-				arr[j]=t;
-			} else {
-				c--;
-				tries--;
-			}
+		for (dst=siz-1;dst>0;dst--) {
+			src=Math.abs(rnd.nextInt())%(dst+1);
+			t=arr[src];
+			arr[src]=arr[dst];
+			arr[dst]=t;
 		}
 	}
 
