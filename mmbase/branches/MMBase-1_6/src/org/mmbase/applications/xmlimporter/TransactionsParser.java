@@ -20,6 +20,7 @@ import java.util.*;
 import org.mmbase.module.Module;
 import org.mmbase.module.Upload;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.module.core.TransactionManager;
 import org.mmbase.module.core.TransactionManagerInterface;
 import org.mmbase.module.core.TemporaryNodeManagerInterface;
@@ -44,7 +45,7 @@ import org.apache.xerces.parsers.SAXParser;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.3.2.1 2003-01-06 18:17:55 robmaris Exp $
+ * @version $Id: TransactionsParser.java,v 1.3.2.2 2003-03-03 16:24:54 vpro Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {
@@ -188,8 +189,8 @@ public class TransactionsParser extends DefaultHandler {
       transactionHandler
       = (TransactionHandler)TransactionHandler.getModule("transactionhandler");
       upload=(Upload)Module.getModule("upload");
-      dtdDirectory = System.getProperty("mmbase.config") + "/dtd/";
-      reportDirectory = System.getProperty("mmbase.config") + "/import/report/";
+      dtdDirectory = MMBaseContext.getConfigPath()+File.separator+"dtd"+File.separator;
+      reportDirectory = MMBaseContext.getConfigPath()+File.separator+"import"+File.separator+"report"+File.separator;
       tmpObjectManager = new TemporaryNodeManager(mmbase);
       transactionManager = new TransactionManager(mmbase,tmpObjectManager);
    }
