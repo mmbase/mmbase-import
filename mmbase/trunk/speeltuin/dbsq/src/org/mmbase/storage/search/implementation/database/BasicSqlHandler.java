@@ -1,4 +1,4 @@
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;

@@ -1,10 +1,13 @@
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
-import junit.framework.*;
-import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
+import junit.textui.TestRunner;
 import org.mmbase.storage.search.*;
+import org.mmbase.module.core.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.implementation.database.MySqlSqlHandler;
+import junit.framework.*;
+import org.mmbase.module.corebuilders.FieldDefs;
+import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -13,10 +16,10 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris
  * @version $Revision: 1.1 $
  */
-public class InformixSqlHandlerTest extends TestCase {
+public class MySqlSqlHandlerTest extends TestCase {
     
     /** Test instance. */
-    private InformixSqlHandler instance;
+    private MySqlSqlHandler instance;
     
     /** Disallowed values map. */
     private Map disallowedValues = null;
@@ -33,12 +36,12 @@ public class InformixSqlHandlerTest extends TestCase {
     /** Test query. */
     private BasicSearchQuery query = null;
     
-    public InformixSqlHandlerTest(java.lang.String testName) {
+    public MySqlSqlHandlerTest(java.lang.String testName) {
         super(testName);
     }
     
     public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
+        TestRunner.run(suite());
     }
     
     /**
@@ -52,7 +55,7 @@ public class InformixSqlHandlerTest extends TestCase {
         // Disallowed fields map.
         disallowedValues = new HashMap();
         disallowedValues.put("number", "m_number");
-        instance = new InformixSqlHandler(disallowedValues);
+        instance = new MySqlSqlHandler(disallowedValues);
         
         prefix = mmbase.getBaseName() + "_";
         
@@ -69,7 +72,7 @@ public class InformixSqlHandlerTest extends TestCase {
      */
     public void tearDown() throws Exception {}
     
-    /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.InformixSqlHandler. */
+    /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.MySqlSqlHandler. */
     public void testGetSupportLevel() throws Exception {
         // Support max number.
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
@@ -81,18 +84,18 @@ public class InformixSqlHandlerTest extends TestCase {
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
-        // Support offset only when set to default (= 0).
+        // Support offset.
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_NONE);
+        == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(0);
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
-    /** Test of getSupportLevel(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.InformixSqlHandler. */
+    /** Test of getSupportLevel2(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.MySqlSqlHandler. */
     public void testGetSupportLevel2() throws Exception {
         // Should return basic support level of constraint.
         SearchQuery query = new BasicSearchQuery();
@@ -106,9 +109,9 @@ public class InformixSqlHandlerTest extends TestCase {
         assert(instance.getSupportLevel(constraint, query) == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
-    /** Test of toSql method, of class org.mmbase.storage.search.implementation.InformixSqlHandler. */
+    /** Test of toSql method, of class org.mmbase.storage.search.implementation.database.MySqlSqlHandler. */
     public void testToSql() throws Exception {
-        // Test use of "FIRST" construct.
+        // Test use of "LIMIT" construct.
         assert(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
         "SELECT images.m_number AS m_number FROM " 
@@ -117,12 +120,25 @@ public class InformixSqlHandlerTest extends TestCase {
         query.setMaxNumber(100);
         assert(instance.toSql(query, instance), 
         instance.toSql(query, instance).equals(
-        "SELECT FIRST 100 images.m_number AS m_number FROM " 
-        + prefix + "images images WHERE images.m_number IS NULL"));
+        "SELECT images.m_number AS m_number FROM " 
+        + prefix + "images images WHERE images.m_number IS NULL LIMIT 100"));
+        
+        query.setOffset(50);
+        assert(instance.toSql(query, instance), 
+        instance.toSql(query, instance).equals(
+        "SELECT images.m_number AS m_number FROM " 
+        + prefix + "images images WHERE images.m_number IS NULL LIMIT 50,100"));
+
+        query.setMaxNumber(-1);
+        assert(instance.toSql(query, instance), 
+        instance.toSql(query, instance).equals(
+        "SELECT images.m_number AS m_number FROM " 
+        + prefix + "images images WHERE images.m_number IS NULL LIMIT 50,"
+        + Integer.MAX_VALUE));
     }
     
     public static Test suite() {
-        TestSuite suite = new TestSuite(InformixSqlHandlerTest.class);
+        TestSuite suite = new TestSuite(MySqlSqlHandlerTest.class);
         
         return suite;
     }

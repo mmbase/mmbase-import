@@ -1,16 +1,18 @@
-package org.mmbase.storage.search.implementation;
+package org.mmbase.storage.search.implementation.database;
 
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import junit.framework.*;
+import junit.textui.TestRunner;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.*;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
 import java.sql.*;
+
 
 /**
  * JUnit tests.
@@ -52,7 +54,7 @@ public class BasicQueryHandlerTest extends TestCase {
     }
     
     public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
+        TestRunner.run(suite());
     }
     
     /**
@@ -103,7 +105,7 @@ public class BasicQueryHandlerTest extends TestCase {
         }
     }
     
-    /** Test of getNodes method, of class org.mmbase.storage.search.implementation.BasicQueryHandler. */
+    /** Test of getNodes method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetNodes() throws Exception {
         // Test for real nodes.
         // TODO: add number field as well, once the queryhandler can be
@@ -189,7 +191,7 @@ public class BasicQueryHandlerTest extends TestCase {
         }
     }
     
-    /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.BasicQueryHandler. */
+    /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetSupportLevel() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
         
@@ -214,7 +216,7 @@ public class BasicQueryHandlerTest extends TestCase {
         == SearchQueryHandler.SUPPORT_OPTIMAL);
     }
     
-    /** Test of second getSupportLevel(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.BasicQueryHandler. */
+    /** Test of second getSupportLevel(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetSupportLevel2() throws Exception {
         // Should return basic support level of constraint.
         SearchQuery query = new BasicSearchQuery();

@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ImplementationSuite extends TestCase {
     
@@ -42,17 +42,13 @@ public class ImplementationSuite extends TestCase {
         suite.addTest(org.mmbase.storage.search.implementation.BasicFieldNullConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicFieldValueConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicFieldValueInConstraintTest.suite());
-        suite.addTest(org.mmbase.storage.search.implementation.BasicQueryHandlerTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicRelationStepTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicSearchQueryTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicSortOrderTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicSqlGeneratorTest.suite());
-        suite.addTest(org.mmbase.storage.search.implementation.BasicSqlHandlerTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicStepTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicStepFieldTest.suite());
-        suite.addTest(org.mmbase.storage.search.implementation.ChainedSqlHandlerTest.suite());
-        suite.addTest(org.mmbase.storage.search.implementation.InformixSqlHandlerTest.suite());
-        suite.addTest(org.mmbase.storage.search.implementation.MySqlSqlHandlerTest.suite());
+        suite.addTest(org.mmbase.storage.search.implementation.database.DatabaseSuite.suite());
         //:JUNIT--
         //This value MUST ALWAYS be returned from this function.
         return suite;

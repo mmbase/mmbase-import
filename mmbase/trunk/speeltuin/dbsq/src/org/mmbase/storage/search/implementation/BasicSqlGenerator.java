@@ -11,7 +11,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation of class that generates SQL for a query.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 // TODO: move somewhere else, now this duplicates code from BasicSqlHandler.
 // TODO remove this class, it is only used by BasicSearchQuery#toSql().
