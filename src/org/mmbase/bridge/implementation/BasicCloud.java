@@ -29,10 +29,12 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.116 2004-09-17 09:17:24 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.117 2004-09-17 09:25:44 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
+
+    private Map properties = new HashMap();
 
     // lastRequestId
     // used to generate a temporary ID number
@@ -861,5 +863,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         // are treated as the 'same' cloud. This may change in future implementations
         return (o instanceof Cloud) && cloudContext.equals(((Cloud)o).getCloudContext());
     }
+
+    public Object getProperty(Object key) {
+        return properties.get(key);
+    }
+
+    public void setProperty(Object key, Object value) {
+        properties.put(key,value);
+    }
+
 
 }

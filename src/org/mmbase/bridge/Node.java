@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.List;
+import java.util.Date;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
@@ -19,7 +20,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.47 2004-06-08 08:45:16 michiel Exp $
+ * @version $Id: Node.java,v 1.48 2004-09-17 09:23:00 michiel Exp $
  */
 public interface Node {
 
@@ -196,6 +197,16 @@ public interface Node {
     public void setStringValue(String fieldName, String value);
 
     /**
+     * @since MMBase-1.8
+     */
+    public void setDateValue(String fieldName, Date value);
+    /**
+     * // not yet working
+     * @since MMBase-1.8
+     */
+    public void setListValue(String fieldName, List value);
+
+    /**
      * Returns the value of the specified field as an object. For example a
      * field of type <code>int</code> is returned as an <code>Integer</code>.
      * The object type may vary and is dependent on how data was stored in a field.
@@ -218,7 +229,7 @@ public interface Node {
      * Returns the value of the specified field as a <code>boolean</code>.
      * If the actual value is numeric, this call returns <code>true</code>
      * if the value is a positive, non-zero, value. In other words, values '0'
-     * and '-1' are concidered <code>false</code>.
+     * and '-1' are considered <code>false</code>.
      * If the value is a string, this call returns <code>true</code> if
      * the value is "true" or "yes" (case-insensitive).
      * In all other cases (including calling byte fields), <code>false</code>
@@ -336,6 +347,17 @@ public interface Node {
      */
     public String getStringValue(String fieldName);
 
+    /**
+     * @since MMBase-1.8
+     */
+    public Date getDateValue(String fieldName);
+
+    /**
+     * not yet working
+     * @since MMBase-1.8
+     */
+    //public List getListValue(String fieldName);
+
 
     /**
      * Returns the value of the specified field as a <code>FieldValue</code> object.
@@ -416,7 +438,7 @@ public interface Node {
      * If the value cannot be converted, this method returns <code>null</code>
      *
      * @param fieldName  the name of the field to be returned
-     * @return the value of the specified field as a DOM Element or <code>null</code>
+     * @return the value of the specified field as a DOM Element or <code>null</code>cd t
      * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
      * @since MMBase-1.6
      */
