@@ -206,15 +206,23 @@ public interface Node {
     public void cancel();
 
     /**
-     * Removes the Node
+     * Removes the Node. Throws an exception if still has relations. Like delete(false).
      */
-    public void remove();
+    public void delete();
+
+    /**
+     * Removes the Node.
+     * @param deleteRelations a boolean. If true, then first all
+     * existing relations with this node will be removed.
+     */
+
+    // public void delete(boolean deleteRelations);
 
     /**
      * Converts the node to a string
      */
-     public String toString();
-
+    public String toString();
+    
     /**
      * Checks whether this node has any relations.
      *
@@ -225,7 +233,7 @@ public interface Node {
     /**
      * Removes all relation nodes attached to this node.
      */
-    public void removeRelations();
+    public void deleteRelations();
 
     /**
       * Removes all relation nodes with a certain relation manager that are
@@ -234,7 +242,7 @@ public interface Node {
      * @param relationManager  the name of the relation manager the removed
      *                         relation nodes should have
      */
-    public void removeRelations(String relationManager);
+    public void deleteRelations(String relationManager);
 
     /**
      * Returns all relation nodes attached to this node.
@@ -312,20 +320,20 @@ public interface Node {
     public List getAliases();
 
     /**
-     * Adds an alias for this node. An alias can be used to refer to a node in
+     * Create an alias for this node. An alias can be used to refer to a node in
      * addition to his number.
      *
      * @param alias             the alias to be created for this node
      * @throws BridgeException  if the alias allready exists
      */
-    public void addAlias(String alias);
+    public void createAlias(String alias);
 
     /**
-     * Remove an alias for this node.
+     * Delete an alias for this node.
      *
      * @param alias  the alias to be removed for this node
      */
-    public void removeAlias(String alias);
+    public void deleteAlias(String alias);
 
     /**
      * Adds a relation between this node and a specified node to the cloud.

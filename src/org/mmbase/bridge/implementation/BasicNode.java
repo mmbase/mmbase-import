@@ -315,11 +315,11 @@ public class BasicNode implements Node {
         }
     };
 
-    public void remove() {
-        remove(true);
+    public void delete() {
+        delete(true); // delete(false);
     };
 
-    private void remove(boolean removeRelations) {
+    private void delete(boolean deleteRelations) {
         edit(ACTION_REMOVE);
         if (isnew) {
             // remove a temporary node (no true instantion yet, no relations)
@@ -333,14 +333,14 @@ public class BasicNode implements Node {
         } else {
             // remove a node that is edited, i.e. that already exists
             // check relations first!
-            if (removeRelations) {
+            if (deleteRelations) {
                 // option set, remove relations
                 deleteRelations(-1);
             } else {
                 // option unset, fail if any relations exit
                 int relations = getNode().getRelationCount();
                 if(relations!=0) {
-                    throw new BasicBridgeException("This node cannot be removed. It has "+relations+" relations attached to it.");
+                    throw new BasicBridgeException("This node cannot be deleted. It has "+relations+" relations attached to it.");
                 }
             }
             // remove aliases
@@ -398,11 +398,11 @@ public class BasicNode implements Node {
         }
     };
 
-    public void removeRelations() {
+    public void deleteRelations() {
         deleteRelations(-1);
     }
 
-    public void removeRelations(String type) {
+    public void deleteRelations(String type) {
         RelDef reldef=mmb.getRelDef();
         int rType=reldef.getNumberByName(type);
         if (rType==-1) {
@@ -498,7 +498,7 @@ public class BasicNode implements Node {
         return aliasvector;
     };
 
-    public void addAlias(String aliasName) {
+    public void createAlias(String aliasName) {
         edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
             NodeManager aliasManager=cloud.getNodeManager("oalias");
@@ -515,7 +515,7 @@ public class BasicNode implements Node {
     }
 
     /*
-     * Delete one or all aliasses of this node
+     * Delete one or all aliases of this node
      * @param aliasName the name of the alias (null means all aliases)
      */
     private void deleteAliases(String aliasName) {
@@ -551,7 +551,7 @@ public class BasicNode implements Node {
         }
     };
 
-    public void removeAlias(String aliasName) {
+    public void deleteAlias(String aliasName) {
         deleteAliases(aliasName);
     };
 
