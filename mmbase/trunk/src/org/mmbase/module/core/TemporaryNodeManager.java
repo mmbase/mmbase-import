@@ -15,9 +15,12 @@ import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
 /*
-	$Id: TemporaryNodeManager.java,v 1.12 2000-11-13 15:33:47 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.13 2000-12-30 14:06:56 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.12  2000/11/13 15:33:47  vpro
+	Rico: added relation support, note that this must be changed when the whole relation mess changes
+	
 	Revision 1.11  2000/11/13 11:09:41  install
 	*** empty log message ***
 	
@@ -57,11 +60,11 @@ import org.mmbase.module.corebuilders.RelDef;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.12 2000-11-13 15:33:47 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.13 2000-12-30 14:06:56 daniel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
-	private boolean _debug=true;
+	private boolean _debug=false;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
 	private MMBase mmbase;

@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.11 2000-12-14 10:54:52 rico Exp $
+	$Id: TransactionManager.java,v 1.12 2000-12-30 14:05:11 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.11  2000/12/14 10:54:52  rico
+	Rico: added John Balder's changes for exception handling
+	
 	Revision 1.10  2000/11/24 13:15:33  vpro
 	Rico: fixed removeNode
 	
@@ -52,11 +55,11 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.11 2000-12-14 10:54:52 rico Exp $
+ * @version $Id: TransactionManager.java,v 1.12 2000-12-30 14:05:11 daniel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
-	private boolean _debug=true;
+	private boolean _debug=false;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
 	public static final String EXISTS_NO="no";
