@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.2 2002-09-16 15:50:37 pierre Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.3 2002-11-07 12:30:38 pierre Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
@@ -243,23 +243,16 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
     /**
      * Gives an unique number for a node to be inserted.
      * This method will work with multiple mmbases
+     * @param trans the transaction to use for obtaining the key
      * @return unique number
+     * @throws StorageException if an error occurred while obtaining the key
      */
-    public synchronized int createKey() {
-        int number =-1;
-        DatabaseTransaction trans=null;
-        try {
-            trans=createDatabaseTransaction();
-            trans.executeUpdate("UPDATE "+getFullTableName("numberTable")+" SET "+getNumberString()+" = "+getNumberString()+"+1;");
-            String sqlselect=selectSQL(getFullTableName("numberTable"),getNumberString());
-            trans.executeQuery(sqlselect);
-            number=trans.getIntegerResult();
-            trans.commit();
-        } catch (StorageException e) {
-            log.error(e.toString());
-            if (trans!=null) trans.rollback();
-        }
-        return number;
+    public synchronized int createKey(Transaction trans) throws StorageException {
+        DatabaseTransaction dbtrans = (DatabaseTransaction)trans;
+        dbtrans.executeUpdate("UPDATE "+getFullTableName("numberTable")+" SET "+getNumberString()+" = "+getNumberString()+"+1;");
+        String sqlselect=selectSQL(getFullTableName("numberTable"),getNumberString());
+        dbtrans.executeQuery(sqlselect);
+        return dbtrans.getIntegerResult();
     }
 
     /**
