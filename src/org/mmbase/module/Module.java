@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.60 2005-01-30 16:46:37 nico Exp $
+ * @version $Id: Module.java,v 1.61 2005-03-16 13:09:19 pierre Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -70,11 +70,8 @@ public abstract class Module extends FunctionProvider {
         }
     };
 
-    protected Map functions = new HashMap();
-
     String moduleName = null;
     Hashtable state = new Hashtable();
-    Hashtable mimetypes;
     Hashtable properties; // would like this to be LinkedHashMap (predictable order)
     String maintainer;
     int version;
@@ -353,7 +350,7 @@ public abstract class Module extends FunctionProvider {
                     }
                     startModules();
                     // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
-                    new ModuleProbe();
+                    new ModuleProbe().start();
                 }
             }
         }
