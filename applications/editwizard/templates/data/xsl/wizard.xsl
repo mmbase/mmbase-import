@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.53 2002-07-19 14:17:50 michiel Exp $
+  @version $Id: wizard.xsl,v 1.54 2002-07-19 14:49:04 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -66,25 +66,42 @@
   <!-- can be handy to add something to the top of your page -->
   <xsl:template name="beforeform" /> 
 
-  <!-- The body itself, probably no need overriding this -->
+  <!-- The body itself, probably no need overriding this 
+       Can use beforeform, and formcontent
+       -->
   <xsl:template name="bodycontent">
-    <xsl:call-template name="javascript" />
     <xsl:call-template name="beforeform" />
     <xsl:call-template name="bodyform" />
   </xsl:template>
 
 
-  <!-- The form-content is the lay-out of the page. You can make this different, but don't forget to add the elements present in this one,
+  <!-- 
+       The form-content is the lay-out of the page. You can make this different, but don't forget to add the elements present in this one,
        especially /*/steps-validator and form[..] 
        -->
   <xsl:template name="formcontent">
     <table class="body">
-      <xsl:call-template name="title" />
-      <xsl:call-template name="subtitle" />
+      <xsl:call-template name="title" />    <!-- see above -->
+      <xsl:call-template name="subtitle" /> <!-- see above -->
       <xsl:apply-templates select="form[@id=/wizard/curform]" /><!-- produces <tr />'s -->
       <xsl:apply-templates select="/*/steps-validator" />       <!-- produces <tr />'s -->
     </table>
   </xsl:template>
+
+
+  <!-- 
+       Besides the form, there are the 'steps, navigation and cancel/safe buttons 
+       -->
+  <xsl:template match="steps-validator">
+    <!-- when multiple steps, otherwise do nothing -->
+    <xsl:if test="count(step) &gt; 1">
+      <xsl:call-template name="steps" />
+      <xsl:call-template name="nav-buttons" />
+    </xsl:if>
+    <xsl:call-template name="buttons" />
+  </xsl:template>
+
+
 
   <!-- Buttons are (always) called in the steps-validator 
        A <tr> is expected.
@@ -111,11 +128,9 @@
   <xsl:template name="nav-buttons">
     <tr>
       <td colspan="2" align="center">
-        <!-- previous -->
-        <xsl:call-template name="previousbutton" />
+        <xsl:call-template name="previousbutton" /> <!-- previous -->
           - -
-        <!-- next -->
-        <xsl:call-template name="nextbutton" />
+        <xsl:call-template name="nextbutton" />     <!-- next -->
       </td>
     </tr>    
   </xsl:template>
@@ -132,16 +147,16 @@
         <!-- all steps -->
         <p class="step">        
         <xsl:for-each select="step">
-           <xsl:call-template name="steptemplate" />
-           <br />
+          <xsl:call-template name="steptemplate" />
+            <!-- steptemplate calls 'step', and surrounds it with some information about if the step is valid/current  -->
+            <br />
         </xsl:for-each>
         </p>
       </td>
     </tr>
   </xsl:template>
 
-
-
+  <!-- The appearance of one 'step' button -->
   <xsl:template name="step">
     <a>
       <xsl:call-template name="stepaattributes" />
@@ -151,8 +166,16 @@
   </xsl:template>
 
 
+  <!-- If you need extra javascript, then you can override this thing -->
+  <xsl:template name="extrajavascript" />
   
-  <xsl:template name="javascript"><!-- you probably don't want to override this. -->
+
+  <!-- ================================================================================
+       The following is functionality. You probably don't want to override it.
+       ================================================================================ -->
+
+
+  <xsl:template name="javascript">
     <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
     <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}"><xsl:comment>help IE</xsl:comment></script>
@@ -177,12 +200,10 @@
         </xsl:text>
       </script>      
     </xsl:if>  
+    <xsl:call-template name="extrajavascript" />
   </xsl:template>
 
 
-  <!-- ================================================================================
-       The following is functionality. You probably don't want to override it.
-       ================================================================================ -->
 
   <!-- Every wizard is based on one 'form', with a bunch of attributes and a few hidden entries.
        Those are set here -->
@@ -210,6 +231,7 @@
     <xsl:copy><xsl:value-of select="." /></xsl:copy>
   </xsl:template>
 
+  <!-- but not the name-attribute? -->
   <xsl:template match="@name"></xsl:template>
 
   <!-- Wizard is the entry template-->
@@ -217,16 +239,19 @@
     <xsl:apply-templates select="wizard" />
   </xsl:template>
 
-  <!-- we produce HTML, this could be overriden, but it does not make sense -->
+  <!-- we produce HTML, this could be overriden, but you can override bodycontent as well -->
   <xsl:template match="wizard">
     <html>
       <head>
         <xsl:call-template name="style" />
+        <xsl:call-template name="javascript" />
       </head>
       <xsl:call-template name="body" />
     </html>
   </xsl:template>
 
+
+  <!-- -->
   <xsl:template match="form">
     <xsl:for-each select="fieldset|field|list">
       <tr>
@@ -737,15 +762,6 @@
       </td>
 
     </xsl:template><!-- list -->
-    
-    <xsl:template match="steps-validator">
-      <!-- when multiple steps, otherwise do nothing -->
-      <xsl:if test="count(step) &gt; 1">
-        <xsl:call-template name="steps" />
-        <xsl:call-template name="nav-buttons" />
-      </xsl:if>
-      <xsl:call-template name="buttons" />
-    </xsl:template>
           
           
     <xsl:template name="savebutton">
