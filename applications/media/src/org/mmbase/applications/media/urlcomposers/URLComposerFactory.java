@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +30,7 @@ import java.lang.reflect.*;
  * formats to URLComposer classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.8 2003-02-11 23:16:12 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.9 2003-02-18 14:07:46 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -62,6 +63,9 @@ public class URLComposerFactory  {
         }
         boolean checkFormat(Format f) {     return format.equals(f); }
         boolean checkProtocol(String p) {   return "".equals(protocol) || protocol.equals(p); }
+
+        Class   getComposerClass() { return klass; };
+
         URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) { 
             try {
                 Constructor c = klass.getConstructor(constructorArgs);
@@ -149,6 +153,55 @@ public class URLComposerFactory  {
         return instance;
     }
 
+
+    /**
+     * You can relate template objects to media fragments. They can be
+     * processed by 'MarkupURLComposers'. For every template a
+     * MarkupURLComposers will be created (if, at least,
+     * MarkupURLComposers are configured in urlcomposers.xml).
+     */
+
+    protected List getTemplates(MMObjectNode fragment) {
+        List templates = new ArrayList();
+
+        if (fragment != null) {
+            MediaFragments bul = (MediaFragments) fragment.parent;
+            Stack stack = bul.getParentFragments(fragment);
+            Iterator i = stack.iterator();
+            while (i.hasNext()) {
+                MMObjectNode f = (MMObjectNode) i.next();
+                templates.addAll(f.getRelatedNodes("templates"));        
+            }
+        } 
+        return templates;
+    }
+
+   
+    /**
+     * Add urlcomposer to list of urlcomposers if that is possible.
+     *
+     * @return true if added, false if not.
+     */
+
+    protected boolean addURLComposer(URLComposer uc, List urls) {
+        if (log.isDebugEnabled()) {
+            log.debug("Trying to add " + uc + " to " + urls);
+        }
+        if (uc == null) {
+            log.debug("Could not make urlcomposer");
+        } else if (urls.contains(uc)) {  // avoid duplicates
+            log.debug("This URLComposer already in the list");
+        } else if (!uc.canCompose()) {
+            log.debug("This URLComposer cannot compose");
+        } else {
+            log.debug("Adding a " + uc.getClass().getName());
+            urls.add(uc);
+            return true;
+        }
+        return false;
+    }
+
+
     public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
         if (urls == null) urls = new ArrayList();
         Format format   = Format.get(source.getIntValue("format"));
@@ -159,20 +212,27 @@ public class URLComposerFactory  {
         boolean found = false;
         while (i.hasNext()) {
             ComposerConfig cc = (ComposerConfig) i.next();
-            log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
-            if (cc.checkFormat(format) && cc.checkProtocol(protocol)) {
-                URLComposer uc = cc.getInstance(provider, source, fragment, info);
-                log.debug("Trying to add " + uc + " to " + urls);
-                if (uc == null) {
-                    log.debug("Could not make urlcomposer");
-                } else if (urls.contains(uc)) {  // avoid duplicates
-                    log.debug("This URLComposer already in the list");
-                } else if (!uc.canCompose()) {
-                    log.debug("This URLComposer cannot compose");
+            if (log.isDebugEnabled()) {
+                log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
+            }
+            
+            if (cc.checkFormat(format) && cc.checkProtocol(protocol)) {                
+                if (MarkupURLComposer.class.isAssignableFrom(cc.getComposerClass())) {
+                    // markupurlcomposers need a template, and a fragment can have 0-n of those.
+                    List templates = getTemplates(fragment);
+                    Iterator ti = templates.iterator();
+                    while (ti.hasNext()) {
+                        MMObjectNode template = (MMObjectNode) ti.next();
+                        Map templateInfo = new HashMap(info);
+                        templateInfo.put("template", template);
+                        URLComposer uc = cc.getInstance(provider, source, fragment, templateInfo);
+                        addURLComposer(uc, urls);                        
+                    }
                 } else {
-                    log.debug("Adding a " + uc.getClass().getName());
-                    urls.add(uc);
-                } 
+                    // normal urlcomposers are one per fragment of course
+                    URLComposer uc = cc.getInstance(provider, source, fragment, info);
+                    addURLComposer(uc, urls);
+                }
                 found = true;
             } else {
                 log.debug(cc.checkFormat(format) + "/" + cc.checkProtocol(protocol));
