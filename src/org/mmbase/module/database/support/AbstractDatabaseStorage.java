@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.2 2002-04-09 09:47:52 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.3 2002-04-17 10:29:27 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -561,8 +561,8 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
             keyType=KEY_PRIMARY;
         } else if (field.isKey()) {
             keyType=KEY_SECONDARY;
-        // Have to find a correct way to create foreign keys
-        // best will be to add a nieuw FieldDefs type
+        } else if (type==FieldDefs.TYPE_NODE) {
+            keyType=KEY_FOREIGN;
         } else if (field.getDBNotNull()) {
             keyType=KEY_NOTNULL;
         }
@@ -781,10 +781,11 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Clears the change status of a ndoe, then broadcasts changes to the
      * node's parent builder. If the node is a relation, it also updates the relationcache and
      * broadcasts these changes to the relation' s source and destination.
+     * @todo should pass Transaction!
      * @param node the node to register
      * @param change the type of change: "n": new, "c": commit, "d": delete
      */
-    protected void registerChanged(MMObjectNode node, String change) {
+    public void registerChanged(MMObjectNode node, String change) {
         node.clearChanged();
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges) {
@@ -884,17 +885,20 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     /**
      * Delete a node
      * @param node The node to delete
+     * @return true of succesful, false otherwise
      */
-    public void delete(MMObjectNode node) {
+    public boolean delete(MMObjectNode node) {
+        boolean result=false;
         DatabaseTransaction trans=null;
         try {
             trans=createDatabaseTransaction();
-            delete(node,trans);
+            result=delete(node,trans);
             trans.commit();
         } catch (StorageException e) {
             if (trans!=null) trans.rollback();
             log.error(e.getMessage());
         }
+        return result;
     }
 
     /**
@@ -903,7 +907,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @param trans the transaction to perform the insert in
      * @throws StorageException if an error occurred during delete
      */
-    abstract public void delete(MMObjectNode node, Transaction trans) throws StorageException;
+    abstract public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;
 
     /**
      * Select a node from a specified builder

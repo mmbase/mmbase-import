@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.3 2002-04-10 09:34:11 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.4 2002-04-17 10:29:27 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -254,47 +254,54 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * Set a prepared statement field i with value of key from the given node.
      * @throws SQLException if an error occurred while filling in the fields
      */
-    public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
-        throws SQLException {
-        int type = node.getDBType(key);
-        if (type==FieldDefs.TYPE_INTEGER) {
-            stmt.setInt(i, node.getIntValue(key));
-        } else if (type==FieldDefs.TYPE_FLOAT) {
-            stmt.setFloat(i, node.getFloatValue(key));
-        } else if (type==FieldDefs.TYPE_DOUBLE) {
-            stmt.setDouble(i, node.getDoubleValue(key));
-        } else if (type==FieldDefs.TYPE_LONG) {
-            stmt.setLong(i, node.getLongValue(key));
-        } else if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
-            String tmp=node.getStringValue(key);
-            if (tmp!=null) {
-                setDBText(i, stmt,tmp);
-            } else {
-                setDBText(i, stmt,"");
-            }
-        } else if (type==FieldDefs.TYPE_BYTE) {
-            if (getStoreBinaryAsFile()) {
-                String stype=node.getBuilder().getTableName();
-                File file = new File(getBinaryFilePath()+stype);
-                try {
-                    file.mkdirs();
-                } catch(Exception e) {
-                    log.error("Can't create dir : "+getBinaryFilePath()+stype);
-                    return false;
+    public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String fieldname, int i) throws SQLException {
+        switch (node.getDBType(fieldname)) {
+            // string-type fields, use mmbase encoding
+            case FieldDefs.TYPE_INTEGER:
+                stmt.setInt(i, node.getIntValue(fieldname));
+                break;
+            case FieldDefs.TYPE_FLOAT:
+                stmt.setFloat(i, node.getFloatValue(fieldname));
+                break;
+            case FieldDefs.TYPE_DOUBLE:
+                stmt.setDouble(i, node.getDoubleValue(fieldname));
+                break;
+            case FieldDefs.TYPE_LONG:
+                stmt.setLong(i, node.getLongValue(fieldname));
+                break;
+            case FieldDefs.TYPE_STRING:;
+            case FieldDefs.TYPE_XML:
+                String stringvalue=node.getStringValue(fieldname);
+                if (stringvalue!=null) {
+                    setDBText(i, stmt,stringvalue);
+                } else {
+                    setDBText(i, stmt,"");
                 }
-                byte[] value=node.getByteValue(key);
-                writeBytesToFile(getBinaryFilePath()+stype+File.separator+node.getNumber()+"."+key,value);
-                return false;
-            } else {
-                setDBByte(i, stmt, node.getByteValue(key));
-            }
-        } else {
-            String tmp=node.getStringValue(key);
-            if (tmp!=null) {
-                stmt.setString(i, tmp);
-            } else {
-                stmt.setString(i, "");
-            }
+                break;
+            case FieldDefs.TYPE_BYTE:
+                if (getStoreBinaryAsFile()) {
+                    String stype=node.getBuilder().getTableName();
+                    File file = new File(getBinaryFilePath()+stype);
+                    try {
+                        file.mkdirs();
+                    } catch(Exception e) {
+                        log.error("Can't create dir : "+getBinaryFilePath()+stype);
+                        return false;
+                    }
+                    byte[] value=node.getByteValue(fieldname);
+                    writeBytesToFile(getBinaryFilePath()+stype+File.separator+node.getNumber()+"."+fieldname,value);
+                    return false;
+                } else {
+                    setDBByte(i, stmt, node.getByteValue(fieldname));
+                }
+                break;
+            default:
+                String value=node.getStringValue(fieldname);
+                if (value!=null) {
+                    stmt.setString(i, value);
+                } else {
+                    stmt.setString(i, "");
+                }
         }
         return true;
     }
@@ -321,7 +328,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                     node.setValue(fieldname,tmp);
                     break;
                 }
-                // Number fields (can be passed as-is: node evaluates it)
+                // Numeric fields (can be passed as-is: node evaluates it)
                 case FieldDefs.TYPE_INTEGER:;
                 case FieldDefs.TYPE_LONG:;
                 case FieldDefs.TYPE_FLOAT:;
@@ -395,10 +402,10 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             node.setValue("number",number);
         }
 
-        insertIntoTable(builder,node,(DatabaseTransaction)trans);
+        if (insertIntoTable(builder,node,(DatabaseTransaction)trans)!=-1) {
+            ((DatabaseTransaction)trans).registerChanged(node,"n");
+        };
 
-        // register change
-        registerChanged(node,"n");
         return number;
     }
 
@@ -468,10 +475,12 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
         //  precommit call, needed to convert or add things before a save
         builder.preCommit(node);
 
-        if (!commitToTable(builder,node,(DatabaseTransaction)trans)) return false;
+        if (commitToTable(builder,node,(DatabaseTransaction)trans)) {
+            ((DatabaseTransaction)trans).registerChanged(node,"c");
+            return true;
+        };
 
-        registerChanged(node,"c");
-        return true;
+        return false;
 
     }
 
@@ -480,7 +489,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @param builder the builder to commit the node to. This can be a parentbuilder of the node's actual builder
      * @param node The node to commit
      * @param trans the transaction to perform the insert in
-     * @return true of succesful, false otherwise
+     * @return true if succesful, false otherwise
      * @throws StorageException if an error occurred during commit
      */
     protected boolean commitToTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException {
@@ -527,21 +536,23 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * Delete a node within a transaction
      * @param node The node to delete
      * @param trans the transaction to perform the insert in
+     * @return true if succesful, false otherwise
      * @throws StorageException if an error occurred during delete
      */
-    public void delete(MMObjectNode node, Transaction trans) throws StorageException {
+    public boolean delete(MMObjectNode node, Transaction trans) throws StorageException {
         // determine parent
         MMObjectBuilder builder=node.getBuilder();
         int number=node.getNumber();
         if (number>-1) {
             if (node.hasRelations()) {
-                log.error("cannot delete node, relations are still attached :"+number);
-                return;
+                throw new StorageException("cannot delete node, relations are still attached :"+number);
             }
-            deleteFromTable(builder,node,(DatabaseTransaction)trans);
-            // register change once the node's parent builder is finsihed
-            registerChanged(node,"d");
+            if(deleteFromTable(builder,node,(DatabaseTransaction)trans)) {
+                ((DatabaseTransaction)trans).registerChanged(node,"d");
+                return true;
+            }
         }
+        return false;
     }
 
     /**
@@ -549,11 +560,13 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @param builder the builder to remove the node from. This can be a parentbuilder of the node's actual builder
      * @param node The node to delete
      * @param trans the transaction to perform the insert in
+     * @return true if succesful, false otherwise
      * @throws StorageException if an error occurred during delete
      */
-    public void deleteFromTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException {
+    public boolean deleteFromTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException {
         String sqldelete=deleteSQL(builder.getFullTableName(),node.getNumber());
         trans.executeUpdate(sqldelete);
+        return true;
     }
 
     /**
