@@ -207,7 +207,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
 
         log.debug("startTag " + cloud);
 
-        if ("asIs".equals(method)) {
+        if ("asis".equals(method)) {
             // this is handy. 'logon' will be ignored, the cloud is as is was in the session
             log.debug("requested the cloud 'as is'");
             logon = null;   // that means in practice, to ignore the logon name.  
