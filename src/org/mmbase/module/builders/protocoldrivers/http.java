@@ -7,18 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*$Id: http.java,v 1.7 2001-04-10 12:20:38 michiel Exp $
-$Log: not supported by cvs2svn $
-Revision 1.6  2000/12/20 16:35:34  vpro
-Davzev: added changed some debug
-
-Revision 1.5  2000/11/22 17:33:19  vpro
-davzev: Added getRemoteHost,getRemotePort and implemented toString() methods
-
-Revision 1.4  2000/11/22 14:14:36  vpro
-davzev: Added debug method and comments to the methods.
-
-*/
 package org.mmbase.module.builders.protocoldrivers;
 
 import java.lang.*;
@@ -30,10 +18,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This is the http implementation of the ProtocolDriver interface. It can signal a 
- * specific remote builder node using HTTP GET.
+ * This is the http implementation of the ProtocolDriver interface. 
+ * It can signal a specific remote builder node using HTTP GET.
  * 
- * @version $Revision: 1.7 $ $Date: 2001-04-10 12:20:38 $ 
+ * @version $Revision: 1.8 $ $Date: 2001-05-07 13:41:18 $ 
  * @author Daniel Ockeloen
  */
 public class http implements ProtocolDriver {
@@ -52,8 +40,8 @@ public class http implements ProtocolDriver {
 	 * @param remotPortt the remote port.
 	 */
 	public void init(String remoteHost,int remotePort) {
-		log.debug("init: Initializing HTTP protocoldriver with  remoteHost=" + remoteHost + 
-                  " remotePort=" + remotePort);
+		log.debug("Initializing HTTP protocoldriver with  remoteHost="+remoteHost
+		        +" remotePort=" + remotePort);
 		this.remoteHost=remoteHost;
 		this.remotePort=remotePort;
 	}
@@ -63,7 +51,7 @@ public class http implements ProtocolDriver {
 	 * @return true
 	 */
 	public boolean commitNode(String nodename,String tableName,String xml) {
-		return(true);
+		return true;
 	}
 
 	/**
@@ -97,28 +85,21 @@ public class http implements ProtocolDriver {
 	 * @return true, always...?
 	 */
 	public boolean signalRemoteNode(String number, String builder, String ctype) {
-        if (log.isDebugEnabled()) {
-            log.debug("signalRemoteNode(" + number + "," + builder + "," + ctype + "): Signalling remote machine");
-        }
+		log.debug("("+number+","+builder+","+ctype+"): Signalling remote machine");
 		try {
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
 			DataInputStream in=new DataInputStream(connect.getInputStream());
-			if (log.isDebugEnabled()) {
-                log.debug("signalRemoteNode(" + number + "," + builder + "," + ctype + 
-                          "): Requesting " + builder + " node " + number + " in XML format from " + 
-                          remoteHost + ":" + remotePort + 
-                          " using GET /remoteXML.db?" + number + "+" + builder + "+" + ctype + " HTTP/1.1\r\n");
-            }
+			log.debug("signalRemoteNode("+number+","+builder+","+ctype+"): Requesting " + builder 
+			        + " node " +number+" in XML format from " + remoteHost + ":" + remotePort
+				    +" using GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
 			out.print("GET /remoteXML.db?"+number+"+"+builder+"+"+ctype+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
 			out.print("\r\n");
 			out.flush();
 			String line=in.readLine();
-            if (log.isDebugEnabled()) {
-                log.debug("signalRemoteNode(" + number + "," + builder + "," + ctype + "): GET result, in.readLine: " + line);
-            }
+			log.debug("signalRemoteNode("+number+","+builder+","+ctype+"): Result of GET request (1stline):"+line);
 			out.close();
 		} catch(Exception e) {
 			log.error("Exception " + Logging.stackTrace(e));
