@@ -100,6 +100,7 @@
           <field name="parent" replacement="m_parent" />
           <field name="purge" replacement="m_purge"/>
           <field name="recipe" replacement="m_recipe"/>
+          <field name="references" replacement="m_references"/>
           <field name="rename" replacement="m_rename"/>
           <field name="replace" replacement="m_replace"/>
           <field name="retrieve" replacement="m_retrieve"/>
