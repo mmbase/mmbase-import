@@ -99,6 +99,8 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 			updatePackageTime(target,new Date(),newversion);	
 			target.save();
 		}
+        	step=getNextPackageStep();
+        	step.setUserFeedBack("Saving new version : "+newversion);
 	}
 
 	// do we need to send this to a publish provider ?
@@ -107,11 +109,11 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         	step=getNextPackageStep();
         	step.setUserFeedBack("publishing to provider : "+target.getPublishProvider());
         	step=getNextPackageStep();
-        	step.setUserFeedBack("sending file : "+target.getId()+" ...");
+        	step.setUserFeedBack("sending file (version "+newversion+") : "+target.getId()+" ...");
 		if (target.publish(newversion)) {
-        		step.setUserFeedBack("sending file : "+target.getId()+" ... done");
+        		step.setUserFeedBack("sending file (version "+newversion+") : "+target.getId()+" ... done");
 		} else {
-        		step.setUserFeedBack("sending file : "+target.getId()+" ... failed");
+        		step.setUserFeedBack("sending file (version "+newversion+") : "+target.getId()+" ... failed");
 		}
 	}
 
