@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.1 2003-11-30 19:53:26 nico Exp $
+    @version $Id: searchlist.xsl,v 1.2 2003-12-14 16:20:55 nico Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -20,13 +20,13 @@
   <xsl:variable name="BodyOnLoad">window.focus(); preselect(selected); doOnloadSearch(); resizeSelectTable();</xsl:variable>
 
   <xsl:template name="javascript">
-    <script language="javascript" src="{$javascriptdir}searchlist.js">
+    <script type="text/javascript" src="{$javascriptdir}searchlist.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script language="javascript" src="{$javascriptdir}tools.js">
+    <script type="text/javascript" src="{$javascriptdir}tools.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script language="javascript">
+    <script type="text/javascript">
       window.status = "<xsl:value-of select="tooltip_select_search" />";
       var listpage = "<xsl:value-of disable-output-escaping="yes" select="$listpage" />";
       var searchtype = getParameter_general("type", "objects");
@@ -38,12 +38,12 @@
     <!-- SEARCH_LIST_TYPE is defined in the base.xsl-->
     <xsl:choose>
       <xsl:when test="$SEARCH_LIST_TYPE=&apos;IFRAME&apos;">
-        <script language="javascript" src="{$javascriptdir}searchiframe.js">
+        <script type="text/javascript" src="{$javascriptdir}searchiframe.js">
           <xsl:comment>help IE</xsl:comment>
         </script>
       </xsl:when>
       <xsl:otherwise>
-        <script language="javascript" src="{$javascriptdir}searchwindow.js">
+        <script type="text/javascript" src="{$javascriptdir}searchwindow.js">
           <xsl:comment>help IE</xsl:comment>
         </script>
       </xsl:otherwise>	

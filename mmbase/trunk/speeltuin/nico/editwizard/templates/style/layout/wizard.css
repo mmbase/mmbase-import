@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.1 2003-11-30 19:53:54 nico Exp $
+  @version  $Id: wizard.css,v 1.2 2003-12-14 16:20:56 nico Exp $
 
 body
 table.head
@@ -116,6 +116,9 @@ table.buttonscontent  {
 	border-top-width: 3px;
 	width: 100%;
 }
+table.buttonscontent tr td {
+        white-space: nowrap;
+} 
 
 div.editform  {         
         overflow: auto;
