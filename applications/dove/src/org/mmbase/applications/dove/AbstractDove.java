@@ -49,14 +49,14 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.12 2003-04-01 08:43:36 michiel Exp $
+ * @version $Id: AbstractDove.java,v 1.13 2003-04-24 09:08:44 pierre Exp $
  */
 
 public abstract class AbstractDove {
 
     // dtds
-    public static final String DOCTYPE_REQUEST  = "http://www.mmbase.org/dtd/doverequest_1_0.dtd";
-    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doveresponse_1_0.dtd";
+    public static final String DOCTYPE_REQUEST  = "http://www.mmbase.org/dtd/doverequest_1_1.dtd";
+    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doveresponse_1_1.dtd";
 
     // keywords used for tags
     public static final String REQUEST = "request";
@@ -110,6 +110,8 @@ public abstract class AbstractDove {
     public static final String ELM_LANG = "xml:lang";
     public static final String ELM_XPATH = "xpath";
     public static final String ELM_WHERE = "where";
+    public static final String ELM_ORDERBY = "orderby";
+    public static final String ELM_DIRECTIONS = "directions";
     public static final String ELM_SOURCE = "source";
     public static final String ELM_HREF = "href";
 

@@ -48,7 +48,7 @@ import org.mmbase.module.core.ClusterBuilder;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.34 2003-04-02 15:10:56 michiel Exp $
+ * @version $Id: Dove.java,v 1.35 2003-04-24 09:08:44 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -656,16 +656,26 @@ public class Dove extends AbstractDove {
         Element query=getFirstElement(in);
         while (query!=null) { // select all child tags, should be 'query'
             if (query.getTagName().equals(QUERY)) {
-                String xpath = query.getAttribute(ELM_XPATH); // check id;
-                String where = query.getAttribute(ELM_WHERE); // check id;
+                String xpath = query.getAttribute(ELM_XPATH); // get xpath (nodetype);
+                String where = query.getAttribute(ELM_WHERE); // get constraints;
+                String orderby = query.getAttribute(ELM_ORDERBY); // get orderby;
+                if ("".equals(orderby)) orderby=null;
+                String directions = query.getAttribute(ELM_DIRECTIONS); // get directions;
+                if ("".equals(directions)) directions=null;
                 if (xpath.equals("")) {
                     Element err=addContentElement(ERROR,"xpath required for query",out);
                     err.setAttribute(ELM_TYPE,IS_PARSER);
                 } else {
                     Element querydata=doc.createElement(QUERY);
                     querydata.setAttribute(ELM_XPATH, xpath);
-                    if (!where .equals("")) {
+                    if (!where.equals("")) {
                         querydata.setAttribute(ELM_WHERE, where);
+                    }
+                    if (orderby!=null) {
+                        querydata.setAttribute(ELM_ORDERBY, orderby);
+                    }
+                    if (directions!=null) {
+                        querydata.setAttribute(ELM_DIRECTIONS, directions);
                     }
                     out.appendChild(querydata);
                     // get node template
@@ -678,7 +688,7 @@ public class Dove extends AbstractDove {
                         //get node data, bit stupid
                         try {
                             NodeManager nm = cloud.getNodeManager(xpath.substring(3));
-                            for(NodeIterator i =nm.getList(where,null,null).nodeIterator(); i.hasNext(); ) {
+                            for(NodeIterator i =nm.getList(where,orderby,directions).nodeIterator(); i.hasNext(); ) {
                                 org.mmbase.bridge.Node n=i.nextNode();
                                 Element data=doc.createElement(OBJECT);
                                 data.setAttribute(ELM_NUMBER, ""+n.getNumber());
