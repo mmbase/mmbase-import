@@ -172,10 +172,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
      * this method writes the content of the body back to the jsp page
      **/
     public int doAfterBody() throws JspTagException { // write the body if there was one
-        try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());        
-        } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
+        if (bodyContent != null) { 
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());        
+            } catch (IOException ioe){
+                throw new JspTagException(ioe.toString());
+            }
         }
         return SKIP_BODY;
     }
