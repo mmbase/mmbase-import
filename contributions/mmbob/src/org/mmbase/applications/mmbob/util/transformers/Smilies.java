@@ -19,33 +19,212 @@ import org.mmbase.util.transformers.*;
 import org.mmbase.applications.thememanager.*;
 
 /**
- * Replaces certain 'forbidden' words by something more decent. Of course, censoring is evil, but
- * sometimes it can be amusing too. This is only an example implementation.
+ * Replaces known smilies with their graphical version. 
+ * It uses the thememanager for defining the smilies.
  *
  * @author Gerard van Enk 
- * @since MMBob
- * @version $Id: Smilies.java,v 1.1 2004-06-13 14:30:34 daniel Exp $
+ * @version $Id: Smilies.java,v 1.2 2005-02-22 15:29:12 gerard Exp $
+ * @since MMBob-1.0
  */
-
 public class Smilies extends StringTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(Smilies.class);
 
+    /** All known smilies */
     protected static Map smilies; 
+    /** All known smileysets */ 
     protected static Map smileySets;
+    /** Smiley patterns translated into their regexp version */
     protected static Map smileyPatterns;
+    /** Compiled regexps*/
     protected static Map smileyMatchers;
     private static Pattern[] patterns;
     private static Matcher[] matchers;
     private static ImageSet is;
 
+    /**
+     * Constructor
+     */
     public Smilies() {
         smileySets = new HashMap();
         smileyPatterns = new HashMap ();
         smileyMatchers = new HashMap ();
     }
 
+    /**
+     * Initializes a specific smileySet in a specific theme.
+     *
+     * @param themeID id of of the theme to be used to access the smileyset
+     * @param smileySetID the id of the smileyset to be used to access the smiley
+     * @param smileyKey the unique key of the smileyset
+     */
+    protected void initSmileySets(String themeID, String smileySetID, String smileyKey) {
+        log.info("init smileyset:\ntheme: " + themeID 
+                + "\nsmileySetID: " + smileySetID + "\nsmileyKey: " + smileyKey);
+        Theme theme = ThemeManager.getTheme(themeID);
+        if (theme != null) {
+            ImageSet is = theme.getImageSet(smileySetID);
+            smileySets.put(smileyKey,is);
+        } else {
+            log.error("could not find smileyset (theme: " + themeID 
+                + "smileySetID: " + smileySetID + "smileyKey: " + smileyKey+")");
+        }
+    }
 
-    protected static void initSmilies() {
+    /**
+     * Initializes regexp patterns for the combination of (themeID,smileySetID,smileyKey,smilies)
+     *
+     * @param themeID id of of the theme to be used to access the smileyset
+     * @param smileySetID the id of the smileyset to be used to access the smiley
+     * @param smileyKey the id of the smiley (this is the text version of the smiley)
+     */
+    protected void initPatterns(String themeID, String smileySetID, String smileyKey) {
+        Pattern[] patterns;
+        ImageSet smileySet;
+        if (!smileySets.containsKey(smileyKey)) {
+            //init the smileyset if it hasn't been initialized already
+            initSmileySets(themeID, smileySetID, smileyKey);
+        }
+        //get the smileyset
+        smileySet = (ImageSet)smileySets.get(smileyKey);
+        //get number of smileys in this set
+        patterns = new Pattern[smileySet.getCount()];
+        if (log.isDebugEnabled()) {
+            log.debug("There are " + smileySet.getCount() + " smilies in this set (theme: " + themeID 
+                    + "smileySetID: " + smileySetID + "smileyKey: " + smileyKey+")");
+        }
+        int i = 0;
+        //get all smileys in the set and it's graphical version and add it to the patterns (and compile it)
+        for (Iterator it = smileySet.getImageIds(); it.hasNext();) {
+            patterns[i] = Pattern.compile("\\Q"+(String) it.next()+"\\E");
+            i++;
+        }
+        smileyPatterns.put(smileyKey,patterns);
+    }
+
+    /**
+     * Initializes regexp matchers for the combination of (themeID,smileySetID,smileyKey,smilies)
+     *
+     * @param themeID id of of the theme to be used to access the smileyset
+     * @param smileySetID the id of the smileyset to be used to access the smiley
+     * @param smileyKey the id of the smiley (this is the text version of the smiley)
+     */
+    protected void initMatchers(String themeID, String smileySetID, String smileyKey) {
+        Pattern [] patterns;
+        Matcher [] matchers;
+        if (!smileyPatterns.containsKey(smileyKey)) {
+            //if there are no patterns for this combination init it
+            initPatterns(themeID, smileySetID, smileyKey);
+        }
+        patterns = (Pattern[])smileyPatterns.get(smileyKey);
+        //get the matchers
+        matchers = new Matcher[patterns.length];
+        for (int i = 0; i < patterns.length; i++) {
+            matchers[i] = patterns[i].matcher("test");
+        }
+        //store the matchers for later use
+        smileyMatchers.put(smileyKey,matchers);
+    }
+
+    /**
+     * Default transform method (with no other params).
+     * It will transform the originalString into a version with the graphical version of the smilies
+     *
+     * @param originalString the string which must be transformed
+     * @return the transformed string
+     */
+    public String transform (String originalString) {
+        return transform(originalString, "default", "/thememanager/images");
+    }
+
+    /**
+     * Transform the originalString into a version with the graphical version of the smilies
+     *
+     * @param originalString the string which must be transformed
+     * @param themeID the id of the theme to be used
+     * @param imagecontext the image path to be used
+     * @return the transformed string
+     */
+    public String transform (String originalString, String themeID, String imagecontext) {
+        int replaced = 0;
+        String code = null;
+        Pattern pattern;
+        Matcher matcher;
+        boolean found = false;
+        StringBuffer resultBuffer = new StringBuffer();
+        StringBuffer tempBuffer = new StringBuffer(originalString);
+        ImageSet smileySet;
+        //get theme
+        String assignedID = ThemeManager.getAssign(themeID);
+        Theme theme = ThemeManager.getTheme(assignedID);
+        String smileySetID = "default";
+        if (theme != null) {
+            Map imageSets = theme.getImageSets("smilies");
+            Iterator i = imageSets.entrySet().iterator();
+            while(i.hasNext()) {
+                ImageSet is = (ImageSet)imageSets.get(((Map.Entry)i.next()).getKey());
+                //atm let's use the last one and hope there's only one
+                smileySetID = is.getId();
+            } 
+        } else {
+            //get default imageset somewhere?
+            log.error("theme not found");
+        }
+        String smileyKey = assignedID + "." + smileySetID;
+        log.debug("smileyKey = " +smileyKey);
+        Matcher[] matchers;
+        //get matcher or init it
+        if (!smileyMatchers.containsKey(smileyKey)) {
+            initMatchers(assignedID, smileySetID, smileyKey);
+        }
+        smileySet = (ImageSet)smileySets.get(smileyKey);
+        matchers = (Matcher[])smileyMatchers.get(smileyKey);
+        //loop through all smileys and check if they are found in the original text
+        for (int i = 0; i < matchers.length; i++) {
+            resultBuffer = new StringBuffer();
+            matchers[i].reset(tempBuffer);
+            //find next match
+            while (matchers[i].find()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("found the text \"" + matchers[i].group() +
+                              "\" starting at index " + matchers[i].start() +
+                              " and ending at index " + matchers[i].end() + ".");
+                    log.debug("bijbehorende image: "+ (String)smileySet.getImage(matchers[i].group()));
+                }
+                found = true;
+                //replace smiley with graphical version
+                matchers[i].appendReplacement(resultBuffer,"<img src=\"" + imagecontext +"/" + assignedID + "/" + smileySetID + "/"  + (String)smileySet.getImage(matchers[i].group()) + "\" />");
+            }
+
+            if (found) {
+                matchers[i].appendTail(resultBuffer);
+                tempBuffer = resultBuffer;
+                found = false;
+            } else {
+                log.debug("nothing found");
+                resultBuffer = tempBuffer;
+            }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("origalString: "+originalString);
+            log.debug("result: "+resultBuffer.toString());
+        }
+        return resultBuffer.toString();
+    }
+
+
+    public String toString() {
+        return "SMILIES";
+    }
+
+
+
+
+
+
+
+
+    /* this methods aren't used at the moment, and maybe they must be removed, but I'm not sure (GvE)
+    protected static void init() {
         smilies = new HashMap();
         //smilies.put(":)","images/smile.gif");
         String themeid="MMBaseWebsite";
@@ -62,11 +241,9 @@ public class Smilies extends StringTransformer implements CharTransformer {
 	} else {
 		log.error("Can't find theme for smilies");
 	}
-	
     }
 
-
-    public static void initSmilies(String themeID, String smileysetID) {
+    public static void init(String themeID, String smileysetID) {
         log.debug("going to get theme with id = " + themeID);
         String assignedID = ThemeManager.getAssign(themeID);
         Theme theme = ThemeManager.getTheme(assignedID);
@@ -88,169 +265,7 @@ public class Smilies extends StringTransformer implements CharTransformer {
 		log.error("Can't find theme for smilies");
 	}
 	
-    }
-
-    protected void initSmileySets(String themeID, String smileySetID, String smileyKey) {
-        log.debug("going to init smilies");
-        Theme theme = ThemeManager.getTheme(themeID);
-        if (theme != null) {
-            ImageSet is = theme.getImageSet(smileySetID);
-            smileySets.put(smileyKey,is);
-        } else {
-            log.error("couldn't find imageset");
-        }
-    }
-
-    protected void initPatterns(String themeID, String smileySetID, String smileyKey) {
-        log.debug("going to init the patterns");
-        Pattern[] patterns;
-        ImageSet smileySet;
-        if (!smileySets.containsKey(smileyKey)) {
-            initSmileySets(themeID, smileySetID, smileyKey);
-        }
-        smileySet = (ImageSet)smileySets.get(smileyKey);
-
-        patterns = new Pattern[smileySet.getCount()];
-        log.debug("er zijn: " + smileySet.getCount() + " smilies");
-        int i = 0;
-        for (Iterator it = smileySet.getImageIds(); it.hasNext();) {
-            //log.debug("smiley = " + (String) it.next());
-            patterns[i] = Pattern.compile("\\Q"+(String) it.next()+"\\E");
-            i++;
-        }
-        log.debug("added all patterns");
-        smileyPatterns.put(smileyKey,patterns);
-    }
-
-    protected void initMatchers(String themeID, String smileySetID, String smileyKey) {
-        log.debug("going to init the matchers");
-        Pattern [] patterns;
-        Matcher [] matchers;
-        if (!smileyPatterns.containsKey(smileyKey)) {
-            initPatterns(themeID, smileySetID, smileyKey);
-        }
-        patterns = (Pattern[])smileyPatterns.get(smileyKey);
-
-        matchers = new Matcher[patterns.length];
-        for (int i = 0; i < patterns.length; i++) {
-            matchers[i] = patterns[i].matcher("test");
-        }
-
-        smileyMatchers.put(smileyKey,matchers);
-    }
-
-    /*
-    protected void initMatchers() {
-        if (matchers == null) {
-            if (patterns == null) {
-                initPatterns();
-            }
-            matchers = new Matcher[patterns.length];
-            for (int i = 0; i < patterns.length; i++) {
-                matchers[i] = patterns[i].matcher("test");
-            }
-        }
-    }
-    */
-
-    public String transform (String originalString) {
-        return transform(originalString, "default", "/thememanager/images");
-    }
-
-    public String transform (String originalString, String themeID, String imagecontext) {
-        int replaced = 0;
-        String code = null;
-        Pattern pattern;
-        Matcher matcher;
-        boolean found = false;
-        StringBuffer resultBuffer = new StringBuffer();
-        StringBuffer tempBuffer = new StringBuffer(originalString);
-
-        ImageSet smileySet;
-
-        log.debug("going to get theme with id = " + themeID);
-        String assignedID = ThemeManager.getAssign(themeID);
-        Theme theme = ThemeManager.getTheme(assignedID);
-        String smileySetID = "default";
-        if (theme != null) {
-            Map imageSets = theme.getImageSets("smilies");
-            Iterator i = imageSets.entrySet().iterator();
-            while(i.hasNext()) {
-                ImageSet is = (ImageSet)imageSets.get(((Map.Entry)i.next()).getKey());
-                //atm let's use the last one and hope there's only one
-                smileySetID = is.getId();
-            } 
-        } else {
-            //get default imageset somewhere?
-        }
-        String smileyKey = assignedID + "." + smileySetID;
-        log.debug("smileyKey = " +smileyKey);
-        Matcher[] matchers;
-        if (!smileyMatchers.containsKey(smileyKey)) {
-            initMatchers(assignedID, smileySetID, smileyKey);
-        }
-        smileySet = (ImageSet)smileySets.get(smileyKey);
-        matchers = (Matcher[])smileyMatchers.get(smileyKey);
-
-        for (int i = 0; i < matchers.length; i++) {
-            resultBuffer = new StringBuffer();
-            matchers[i].reset(tempBuffer);
-            
-            while (matchers[i].find()) {
-                log.debug("I found the text \"" + matchers[i].group() +
-                               "\" starting at index " + matchers[i].start() +
-                               " and ending at index " + matchers[i].end() + ".");
-                log.debug("bijbehorende image: "+ (String)smileySet.getImage(matchers[i].group()));
-                found = true;
-                matchers[i].appendReplacement(resultBuffer,"<img src=\"" + imagecontext +"/" + assignedID + "/" + smileySetID + "/"  + (String)smileySet.getImage(matchers[i].group()) + "\" />");
-            }
-
-            if (found) {
-                matchers[i].appendTail(resultBuffer);
-                tempBuffer = resultBuffer;
-                found = false;
-            } else {
-                log.debug("helaas, niets gevonden");
-                resultBuffer = tempBuffer;
-            }
-
-            //result = originalString.replaceAll("\\(?<=.\\W|\\W.|^\\W\\)\\Q"+code+"\\E\\(?=.\\W|\\W.|\\W$\\)",(String)smilies.get(code));
-            //result = originalString.replaceAll(code,(String)smilies.get(code));
-
-        }
-        log.debug("origalString: "+originalString);
-        log.debug("result: "+resultBuffer.toString());
-        return resultBuffer.toString();
-            
-    }
-
-    /*    public Writer transform(Reader r, Writer w) {
-        int replaced = 0;
-        StringBuffer word = new StringBuffer();  // current word
-        try {
-            log.trace("Starting Smilies");
-            while (true) {
-                int c = r.read();
-                if (c == -1) break;
-                if ( Character.isWhitespace((char) c)) {
-                    if (replace(word.toString(), w)) replaced++;
-                    word.setLength(0);
-                    w.write(c);
-                } else {       
-                    word.append((char) c);
-                }
-            }
-            // write last word
-            if (replace(word.toString(), w)) replaced++;
-            log.debug("Finished Smilies. Replaced " + replaced + " words");
-        } catch (java.io.IOException e) {
-            log.error(e.toString());
-        }
-        return w;
-        }*/
+    }*/
 
 
-    public String toString() {
-        return "SMILIES";
-    }
 }
