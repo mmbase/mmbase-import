@@ -36,7 +36,7 @@
                 height="200"   
                 type="audio/x-pn-realaudio-plugin"
                 nojava="false" 
-                controls="ImageWindow" 
+                controls="ImageWindow,PositionSlider" 
                 console="Clip1" 
                 autostart="true" 
                 nologo="true"
@@ -48,11 +48,11 @@
 			<tr>
     			<td class="movie" colspan="3" width="340" height="40"><img src="images/extra.gif" width="340" height="25" alt="" border="0" usemap="#nav">
 				<map name="nav">
-				<area alt="terug" shape="circle" coords="125,10,10" href="#">
+				<area alt="terug" shape="circle" coords="125,10,10"  href="javascript:document.embeddedplayer.SetPosition(0);">
 				<area alt="play" shape="circle" coords="178,10,10" href="javascript:document.embeddedplayer.DoPlay();">
-				<area alt="stop" shape="circle" coords="242,10,10" href="javascript:document.embeddedplayer.DoPause();">
-				<area alt="pauze" shape="circle" coords="217,10,10" href="#">
-				<area alt="vooruit" shape="circle" coords="295,10,10" href="#">
+				<area alt="stop" shape="circle" coords="242,10,10" href="javascript:document.embeddedplayer.DoStop();">
+				<area alt="pauze" shape="circle" coords="217,10,10" href="javascript:document.embeddedplayer.DoPause();">
+				<area alt="vooruit" shape="circle" coords="295,10,10"  href="javascript:document.embeddedplayer.SetPosition(document.embeddedplayer.getLength());">
 				</map></td>
 			</tr>
 		</table>

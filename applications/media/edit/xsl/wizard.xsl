@@ -16,7 +16,10 @@
   <span style="width:128;">
     <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
     <xsl:apply-templates select="@*" />
-    </input><input type="button" value="get" onClick="document.forms['form'].elements['{@fieldname}'].value = parent.frames['player'].document.embeddedplayer.GetPosition();" /></nobr>
+    </input>
+    <input type="button" value="get" onClick="document.forms['form'].elements['{@fieldname}'].value = parent.frames['player'].document.embeddedplayer.GetPosition();" />
+    <input type="button" value="set" onClick="parent.frames['player'].document.embeddedplayer.setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
+    </nobr>
   </span>
   </xsl:template>
 
