@@ -467,4 +467,45 @@ public class XMLBuilderReader  {
 	return(hash);
     }
 
+
+    /**
+    * get the version of this application
+    */
+    public int getBuilderVersion() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		NamedNodeMap nm=n1.getAttributes();
+		if (nm!=null) {
+			Node n2=nm.getNamedItem("version");
+			String tmp=n2.getNodeValue();
+			try {
+				int version=Integer.parseInt(tmp);
+				return(version);
+			} catch (Exception e) {
+				return(0);
+			}
+		}
+	}
+	return(0);
+    }
+
+
+    /**
+    * get the version of this application
+    */
+    public String getBuilderMaintainer() {
+	Node n1=document.getFirstChild();
+	if (n1!=null) {
+		NamedNodeMap nm=n1.getAttributes();
+		if (nm!=null) {
+			Node n2=nm.getNamedItem("maintainer");
+			if (n2!=null) {
+				String tmp=n2.getNodeValue();
+				return(tmp);
+			}
+		}
+	}
+	return("MMBase.org");
+    }
+
 }
