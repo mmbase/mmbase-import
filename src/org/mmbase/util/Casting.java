@@ -249,9 +249,10 @@ public class Casting {
         } else if (b instanceof String) {
             // note: we don't use Boolean.valueOf() because that only captures
             // the value "true"
-            if (((String)b).equalsIgnoreCase("true") || ((String)b).equalsIgnoreCase("yes")) {
+            String s = ((String)b).toLowerCase();
+            if (s.equals("true") || s.equals("yes")) {
                 return true;
-            } else if (((String)b).equalsIgnoreCase("false") || ((String)b).equalsIgnoreCase("no")) {
+            } else if (s.equals("false") || s.equals("no")) {
                 return false;
             } else {
                 // still not yet!
@@ -259,10 +260,7 @@ public class Casting {
                 // the 'localized' values of true or yes.
                 org.mmbase.module.gui.html.MMLanguage languages = (org.mmbase.module.gui.html.MMLanguage) org.mmbase.module.Module.getModule("mmlanguage");
                 if (languages!=null) {
-                    return  ((String)b).equalsIgnoreCase(
-                                languages.getFromCoreEnglish("true")) ||
-                         ((String)b).equalsIgnoreCase(
-                                languages.getFromCoreEnglish("yes"));
+                    return s.equals(languages.getFromCoreEnglish("true")) || s.equals(languages.getFromCoreEnglish("yes"));
                 }
             }
         }
@@ -279,8 +277,10 @@ public class Casting {
      * @return the field's value as an <code>Integer</code>
      */
     static public Integer toInteger(Object i) {
-        int res=-1;
-        if (i instanceof Boolean) {
+        int res= -1;
+        if (i instanceof Integer) {
+            return (Integer) i;
+        } else if (i instanceof Boolean) {
             res=((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
             res=((Number)i).intValue();
