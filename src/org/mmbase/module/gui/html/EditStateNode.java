@@ -307,7 +307,7 @@ public class EditStateNode {
 			}
 		} else {
 			if (debug) {
-				debug("getRelation(): WOWOW= its -1");
+				debug("getRelation(): EditNodeNumber is -1");
 			}
 		}
 		return (relationTable);
