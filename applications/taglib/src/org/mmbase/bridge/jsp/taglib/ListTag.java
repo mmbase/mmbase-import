@@ -121,9 +121,9 @@ public class ListTag extends AbstractNodeListTag {
         NodeList nodes = getCloud().getList(searchNodes,
                                             pathString,
                                             fields,
-                                            whereString,
-                                            sortedString,
-                                            directionString,
+                                            constraints,
+                                            orderby,
+                                            directions,
                                             searchString,
                                             searchDistinct);
         return setReturnValues(nodes,true);

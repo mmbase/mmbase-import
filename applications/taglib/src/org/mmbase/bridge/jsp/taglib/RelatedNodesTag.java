@@ -29,13 +29,13 @@ import org.mmbase.util.logging.Logging;
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class.getName());
-    protected String typeString = null;
+    protected String type = null;
 
     /**
      * @param type a nodeManager
      */
     public void setType(String type) throws JspTagException {
-        typeString = getAttributeValue(type);
+        this.type = getAttributeValue(type);
     }
     
     /**
@@ -53,16 +53,16 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         }
         
         NodeList nodes;
-        if ( (whereString != null && !whereString.equals(""))
+        if ( (constraints != null && !constraints.equals(""))
              || 
-             (sortedString != null && !sortedString.equals(""))
+             (orderby != null && !orderby.equals(""))
              ) {
 
-            if (typeString == null) {
+            if (type == null) {
                 throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
             } 
-            NodeManager manager = getCloud().getNodeManager(typeString);
-            NodeList    initialnodes = node.getRelatedNodes(typeString);
+            NodeManager manager = getCloud().getNodeManager(type);
+            NodeList    initialnodes = node.getRelatedNodes(type);
             
             String where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
@@ -77,14 +77,14 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 nodes = initialnodes;
             } else {
                 where = "number in (" + where + ")";
-                if (whereString!=null) where= "(" + whereString + ") AND " + where;
-                nodes = manager.getList(where, sortedString, directionString);
+                if (constraints != null) where= "(" + constraints + ") AND " + where;
+                nodes = manager.getList(where, orderby, directions);
             }
         } else {
-            if (typeString==null) {
+            if (type == null) {
                 nodes = node.getRelatedNodes();
             } else {
-                nodes = node.getRelatedNodes(typeString);
+                nodes = node.getRelatedNodes(type);
             }
         }
         return setReturnValues(nodes, true);

@@ -128,11 +128,11 @@ public class TreeTag extends AbstractNodeListTag {
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
 
-        if (sortedString!=null) params.put("SORTFIELDS",sortedString);
-        if (directionString!=null) params.put("SORTDIRS",directionString);
-        if (maxdepth>-1) params.put("MAXDEPTH",""+maxdepth);
-        if (offset>0) params.put("FROMCOUNT",""+offset);
-        if (max>-1) params.put("MAXCOUNT",""+max);
+        if (orderby != null)       params.put("SORTFIELDS", orderby);
+        if (directions != null)    params.put("SORTDIRS", directions);
+        if (maxdepth >- 1)         params.put("MAXDEPTH", "" + maxdepth);
+        if (offset > 0)            params.put("FROMCOUNT", "" + offset);
+        if (max > -1)              params.put("MAXCOUNT", "" + max);
         if (startafternode>-1) {
             params.put("STARTAFTERNODE",""+startafternode);
         } else if (startaftersequence>-1) {

@@ -36,13 +36,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * Holds the list of fields to sort the list on.
      * The sort itself is implementation specific.
      */
-    protected String sortedString=null;
+    protected String orderby = null;
 
     /**
-     * Holds the direction to sort the list on (per field in {@link #sortedString}).
+     * Holds the direction to sort the list on (per field in {@link orderby}).
      * The sort itself is implementation specific.
      */
-    protected String directionString=null;
+    protected String directions = null;
 
     /**
      * Holds the clause used to filter the list.
@@ -51,7 +51,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * a MMBase database node search, preceded with the keyord MMNODE.
      * The filter itself is implementation specific (not all lists may implement this!).
      */
-    protected String whereString=null;
+    protected String constraints = null;
 
     /**
      * The maximum number of elements in a list.
@@ -66,7 +66,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected int offset   = 0;
 
     /**
-     * Determines whether a field in {@link #sortedString} changed
+     * Determines whether a field in {@link #orderby} changed
      * during iteration.
      */
     protected boolean changed = true;
@@ -99,8 +99,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param sorted A comma separated list of fields on witch the returned
      * nodes should be sorted
      */
-    public void setOrderby(String sorted) throws JspTagException {
-        this.sortedString = getAttributeValue(sorted);
+    public void setOrderby(String orderby) throws JspTagException {
+        this.orderby = getAttributeValue(orderby);
     }
 
     /**
@@ -109,7 +109,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * direction
      */
     public void setDirections(String directions) throws JspTagException {
-        this.directionString = getAttributeValue(directions);
+        this.directions = getAttributeValue(directions);
     }
 
     /**
@@ -165,7 +165,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param where the selection query
      */
     public void setConstraints(String where) throws JspTagException {
-        this.whereString = getAttributeValue(where);
+        this.constraints = getAttributeValue(where);
     }
 
 
@@ -176,7 +176,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (! (o instanceof NodeList)) {
                 throw new JspTagException("Context variable " + getReferid() + " is not a NodeList");
             }
-            if (sortedString != null) {
+            if (orderby != null) {
                 throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
             }
             if (offset != 0) {
@@ -185,10 +185,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (max != -1) {
                 throw new JspTagException("'max' attribute does not make sense with 'referid' attribute");
             }
-            if (directionString != null) {
+            if (directions != null) {
                 throw new JspTagException("'directions' attribute does not make sense with 'referid' attribute");
             }
-            if (whereString != null) {
+            if (constraints != null) {
                 throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
             }
             return setReturnValues((NodeList) o);
@@ -277,10 +277,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (returnValues.hasNext()){
             currentItemIndex ++;
             Node next = returnValues.nextNode();
-            if (sortedString != null && !sortedString.equals("")) { 
+            if (orderby != null && ! "".equals(orderby)) { 
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
-                String f = (String)stringSplitter(sortedString).get(0);
+                String f = (String)stringSplitter(orderby).get(0);
                 String value = "" + next.getValue(f); // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue !=null) {
                     if (value.equals(previousValue)) {
