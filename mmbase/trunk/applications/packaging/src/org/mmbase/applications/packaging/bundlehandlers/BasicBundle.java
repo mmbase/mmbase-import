@@ -160,8 +160,10 @@ public class BasicBundle implements BundleInterface {
 
         setProgressBar(1000); // lets have 100 steps;
         step = getNextInstallStep();
-        step.setUserFeedBack("getting the mmb bundle... ");
+        step.setUserFeedBack("getting the mmb bundle... ");	
+	provider.setInstallStep(step);	
         JarFile jf = getJarFile();
+	provider.setInstallStep(null);	
         if (jf != null) {
             step.setUserFeedBack("getting the mmb bundle...done ");
             increaseProgressBar(100); // downloading is 25%
@@ -203,7 +205,7 @@ public class BasicBundle implements BundleInterface {
                             } else {
                                 if (pkg.getDependsFailed()) {
                                 	step.setUserFeedBack("calling package installer "+name+"...skipped");
-                                    //removeInstallStep(step);
+                                    	removeInstallStep(step);
                                 } else {
                                     step.setUserFeedBack("calling package installer "+name+"...failed");
                                     return false;

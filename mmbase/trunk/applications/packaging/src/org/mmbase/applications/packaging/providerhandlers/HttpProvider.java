@@ -301,12 +301,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
         // will use the local copy instead of the remote copy keeping network
         // traffic down.
         try {
-            URL includeURL = new URL(path);
-            HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
-            BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
-            int buffersize = 10240;
-            byte[] buffer = new byte[buffersize];
-
             // create a new name in the import dir
             String localname = getImportPath() + id + "_" + version + ".mmp";
             // not a very nice way should we have sepr. extentions ?
@@ -314,13 +308,37 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
                 localname = getImportPath() + id + "_" + version + ".mmb";
             }
 
-            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(localname));
-            StringBuffer string = new StringBuffer();
-            int len;
-            while ((len = in.read(buffer, 0, buffersize)) != -1) {
-                out.write(buffer, 0, len);
-            }
-            out.close();
+	    File checkfile = new File(localname);
+	    if (!checkfile.exists()) {
+
+	        URL includeURL = new URL(path);
+       	        HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
+                BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
+                int buffersize = 10240;
+                byte[] buffer = new byte[buffersize];
+
+
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(localname));
+                StringBuffer string = new StringBuffer();
+                int len;
+		int totallen = 0;
+                while ((len = in.read(buffer, 0, buffersize)) != -1) {
+                    out.write(buffer, 0, len);
+        	    if (getInstallStep()!=null) {
+			totallen+=len;
+			String lenp=" received ";
+			if (totallen<1024) {
+				lenp+=""+totallen+" bytes";
+			} else if (totallen<(1024*1024)) {
+				lenp+=""+((float)totallen/1024)+" KB";
+			} else {
+				lenp+=""+((float)totallen/(1024*1024))+" MB";
+			}
+			getInstallStep().setUserFeedBack("getting the mmb bundle... "+lenp);
+		    }
+                }
+                out.close();
+	    }
 
             JarFile jarFile = new JarFile(localname);
             return jarFile;
