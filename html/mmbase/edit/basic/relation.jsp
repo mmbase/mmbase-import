@@ -44,7 +44,7 @@
         </a>
       </mm:previousbatches>
       <mm:size id="size" write="false" />
-      <mm:write referid="offset" />-<mm:write vartype="integer" value="${+$offset+$size}" />/<mm:write referid="totalsize"  />
+      <mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset+$size}" />/<mm:write referid="totalsize"  />
       <mm:nextbatches max="1">
         <a href='<mm:url referid="purl">
         <mm:param name="$externpageid"><mm:index /></mm:param>
