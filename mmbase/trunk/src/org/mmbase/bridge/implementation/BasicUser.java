@@ -17,15 +17,18 @@ import org.mmbase.security.MMBaseCop;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.5 2003-08-18 09:16:42 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.6 2003-11-10 16:47:14 michiel Exp $
  */
 public class BasicUser implements User {
     private MMBaseCop securityManager;
     private UserContext usercontext;
 
-    BasicUser(MMBaseCop securityManager, UserContext usercontext) {
+    private String      authenticationType;
+
+    BasicUser(MMBaseCop securityManager, UserContext usercontext, String authenticationType) {
         this.securityManager = securityManager;
         this.usercontext = usercontext;
+        this.authenticationType = authenticationType;
     }
 
     public String getRank() {
@@ -50,5 +53,9 @@ public class BasicUser implements User {
 
     public String getOwnerField() {
         return usercontext.getOwnerField();
+    }
+
+    public String getAuthenticationType() {
+        return authenticationType;
     }
 }

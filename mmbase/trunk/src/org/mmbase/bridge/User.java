@@ -18,7 +18,7 @@ package org.mmbase.bridge;
  * certain that you will receive the same User interface back !
  *
  * @author Eduard Witteveen
- * @version $Id: User.java,v 1.7 2003-08-18 09:16:41 michiel Exp $
+ * @version $Id: User.java,v 1.8 2003-11-10 16:47:14 michiel Exp $
  */
 public interface User {
 
@@ -44,8 +44,18 @@ public interface User {
 
 
     /**
+     * Return the default owner field value for new nodes created by this user.
+     *
      * @since MMBase-1.7
      */
     public String getOwnerField();
+
+    /**
+     * Returns the original authentication type as specified in getCloud
+     *
+     * @since MMBase-1.7
+     * @see   CloudContext#getCloud
+     */
+    public String getAuthenticationType();
 
 }
