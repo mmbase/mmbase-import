@@ -13,11 +13,11 @@
 	  <attribute name="defaultStorageIdentifierPrefix">m</attribute>
    -->
 		
-		<option name="database.supportsBlob" value="false" />
-		<option name="database.supportsCompositeIndex" value="false" />
+		<option name="database-supports-blob" value="false" />
+		<option name="database-supports-composite-index" value="false" />
 
-    <scheme name="create.foreign.key.scheme" >INDEX ({2})</scheme>
-    <scheme name="create.secondary.key.scheme">UNIQUE ({2})</scheme>
+    <scheme name="create-foreign-key-scheme" >INDEX ({2})</scheme>
+    <scheme name="create-secondary-key-scheme">UNIQUE ({2})</scheme>
 		
 	</attributes>
 

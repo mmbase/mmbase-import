@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.4 2003-08-18 14:42:47 pierre Exp $
+ * @version $Id: TypeMapping.java,v 1.5 2003-08-19 10:32:43 pierre Exp $
  */
 public class TypeMapping implements Comparable {
 
@@ -71,8 +71,8 @@ public class TypeMapping implements Comparable {
      * @param size the size to set
      */
     public void setFixedSize(int size) {
-        minSize = minSize;
-        maxSize = maxSize;
+        minSize = size;
+        maxSize = size;
     }
 
     public int compareTo(Object o) {
@@ -80,22 +80,22 @@ public class TypeMapping implements Comparable {
         if (!name.equals(t.name)) {
             return name.compareTo(t.name);
         } else if (minSize != t.minSize) {
-            return minSize - t.minSize;
-        } else if (t.maxSize == -1) {
-            if (maxSize == -1) {
+            return t.minSize - minSize;
+        } else if (maxSize == -1) {
+            if (t.maxSize == -1) {
                 return 0;
             } else {
                 return -1;
             }
         } else {
-            return maxSize - t.maxSize;
+            return t.maxSize - maxSize;
         }
     }
 
     public boolean equals(Object o) {
         return o instanceof TypeMapping &&
                name.equals(((TypeMapping)o).name) &&
-               (( (minSize <= ((TypeMapping)o).minSize || (((TypeMapping)o).minSize <= 0)) && 
+               (( (minSize >= ((TypeMapping)o).minSize || (((TypeMapping)o).minSize <= 0)) && 
                   (maxSize <= ((TypeMapping)o).maxSize || (((TypeMapping)o).maxSize <= 0)) ) ||
                 ( (((TypeMapping)o).minSize >= minSize || (minSize <= 0)) &&
                   (((TypeMapping)o).maxSize <= maxSize || (maxSize <= 0)) ));

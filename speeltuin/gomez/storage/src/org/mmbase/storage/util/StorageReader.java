@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.10 2003-08-18 14:42:47 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.11 2003-08-19 10:32:43 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -188,7 +188,7 @@ public class StorageReader extends DocumentReader  {
                 if (optionName != null) {
                     String optionValue = optionTag.getAttribute("set");
                     Boolean value = Boolean.TRUE;
-                    if (optionValue == null) {
+                    if (optionValue != null) {
                         value = new Boolean(optionValue);
                     }
                     attributes.put(optionName,value);
