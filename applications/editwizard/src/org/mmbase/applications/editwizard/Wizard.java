@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.58 2002-08-12 18:19:42 michiel Exp $
+ * @version $Id: Wizard.java,v 1.59 2002-08-13 06:44:48 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -557,7 +557,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
         Node wizardnode = preHtml.getDocumentElement();
 
         // copy all global wizard nodes.
-        NodeList globals = Utils.selectNodeList(wizardSchema, "title|description");
+        NodeList globals = Utils.selectNodeList(wizardSchema, "title|subtitle|description");
         Utils.appendNodeList(globals, wizardnode);
 
         // find the current step and, if appliccable, the next and previous ones.
@@ -594,7 +594,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
             wizardnode.appendChild(prehtmlform);
 
             // Add the title, description.
-            NodeList props = Utils.selectNodeList(form, "title");
+            NodeList props = Utils.selectNodeList(form, "title|subtitle|description");
             Utils.appendNodeList(props, prehtmlform);
 
             // check all fields and do the thingies
