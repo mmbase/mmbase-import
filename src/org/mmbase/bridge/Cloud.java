@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.28 2002-09-23 12:07:11 pierre Exp $
+ * @version $Id: Cloud.java,v 1.29 2002-09-23 15:57:34 pierre Exp $
  */
 public interface Cloud {
 
@@ -66,6 +66,7 @@ public interface Cloud {
      * @return                        the requested node
      * @throws NotFoundException  if the specified node could not be found
      * @throws ClassCastException  if the specified node is not a relation
+     * @since  MMBase-1.6
      */
     public Relation getRelation(int number) throws NotFoundException;
 
@@ -79,6 +80,7 @@ public interface Cloud {
      * @return          the requested node
      * @throws NotFoundException  if the specified node could not be found
      * @throws ClassCastException  if the specified node is not a relation
+     * @since  MMBase-1.6
      */
     public Relation getRelation(String number) throws NotFoundException;
 
@@ -89,6 +91,7 @@ public interface Cloud {
      *
      * @param number    the number of the node
      * @return          true if the node is available
+     * @since  MMBase-1.6
      */
     public boolean hasNode(int number);
 
@@ -100,6 +103,7 @@ public interface Cloud {
      *
      * @param number a string containing the number or alias of the requested node
      * @return          true if the node is available
+     * @since  MMBase-1.6
      */
     public boolean hasNode(String number);
 
@@ -110,6 +114,7 @@ public interface Cloud {
      *
      * @param number    the number of the node
      * @return          true if the node is available
+     * @since  MMBase-1.6
      */
     public boolean hasRelation(int number);
 
@@ -121,6 +126,7 @@ public interface Cloud {
      *
      * @param number a string containing the number or alias of the requested node
      * @return          true if the node is available
+     * @since  MMBase-1.6
      */
     public boolean hasRelation(String number);
 
@@ -149,6 +155,7 @@ public interface Cloud {
      * @param nodeManagerId       Unique ID of the NodeManager to retrieve
      * @return                    the requested node manager
      * @throws NotFoundException  if the specified node manager could not be found
+     * @since  MMBase-1.6
      */
     public NodeManager getNodeManager(int nodeManagerId) throws NotFoundException;
 
@@ -390,7 +397,8 @@ public interface Cloud {
      * @since MMBase-1.6
      */
     public void setLocale(Locale locale);
-    /**
+ 
+   /**
      * Gets the Locale assocatied with this Cloud instance.
      *
      * @since MMBase-1.6
