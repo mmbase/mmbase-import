@@ -36,6 +36,10 @@
 <%--Check if the poster is an moderator --%>
 <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
   <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
+  <mm:import id="guestwritemodetype"><mm:field name="guestwritemodetype" /></mm:import>
+  <mm:compare referid="posterid" value="-1" inverse="true">
+	<mm:import id="guestwritemodetype" reset="true">open</mm:import>
+  </mm:compare>
 </mm:nodefunction>
 
 <%-- reset the threadstate if the poster is a moderator --%>
@@ -205,6 +209,7 @@
 <mm:compare referid="lastpage" value="true">
 <mm:compare referid="threadstate" value="closed" inverse="true">
 
+<mm:compare referid="guestwritemodetype" value="open">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
   <tr><th colspan="3"><mm:write referid="mlg_Fast_reply"/></th></tr>
@@ -218,7 +223,8 @@
 		</mm:node>
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
-		<input name="poster" style="width: 100%" value="gast" >
+		<input name="poster" type="hidden" style="width: 100%" value="<mm:write referid="mlg_guest"/>" >
+		<mm:write referid="mlg_guest"/>
 		</mm:compare>
 
 		</td></tr>
@@ -228,6 +234,7 @@
 	</td></tr>
   </form>
 </table>
+</mm:compare>
 </mm:compare>
 </mm:compare>
 </div>

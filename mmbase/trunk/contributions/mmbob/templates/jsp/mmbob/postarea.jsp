@@ -40,6 +40,10 @@
 <mm:include page="path.jsp?type=postarea" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
   		  <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
+			<mm:import id="guestwritemodetype"><mm:field name="guestwritemodetype" /></mm:import>
+			<mm:compare referid="posterid" value="-1" inverse="true">
+				<mm:import id="guestwritemodetype" reset="true">open</mm:import>
+			</mm:compare>
 			<mm:import id="navline"><mm:field name="navline" /></mm:import>
 			<mm:import id="pagecount"><mm:field name="pagecount" /></mm:import>
 			<tr><th colspan="2" align="left">
@@ -111,7 +115,7 @@
 </table>
 </mm:compare>
 <table cellpadding="0" cellspacing="0" style="margin-top : 5px; margin-left : 25px" align="left">
-	<tr><td><a href="<mm:url page="newpost.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="postareaid" value="$postareaid" /></mm:url>"><img src="<mm:write referid="image_newmsg" />" border="0" /></a> 
+	<tr><td><mm:compare referid="guestwritemodetype" value="open"><a href="<mm:url page="newpost.jsp"><mm:param name="forumid" value="$forumid" /><mm:param name="postareaid" value="$postareaid" /></mm:url>"><img src="<mm:write referid="image_newmsg" />" border="0" /></a></mm:compare> 
 	</td></tr>
 </table>
 <br />
