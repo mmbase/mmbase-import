@@ -22,12 +22,52 @@ import javax.servlet.http.HttpServletResponse;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.15 2002-11-01 13:51:10 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.15.2.1 2003-03-04 20:05:31 michiel Exp $
  * @since   MMBase-1.6
  */
-public abstract class AbstractImages extends AbstractServletBuilder {
+public abstract class AbstractImages extends AbstractServletBuilder {   
 
     private static Logger log = Logging.getLoggerInstance(AbstractImages.class.getName());
+
+    /** 
+     * Cache with 'ckey' keys.
+     * @since MMBase-1.6.2
+     */
+    abstract protected static class  CKeyCache extends org.mmbase.cache.Cache {
+        protected CKeyCache(int i) {
+            super(i);
+        }
+        /**
+         * Remove all cache entries associated with a certain images node
+         * This depends now on the fact that ckeys start with the original node-number
+         */
+
+        void   remove(int originalNodeNumber) {
+            String prefix = "" + originalNodeNumber;
+            log.info("removing " + prefix);
+            java.util.Iterator keys  = keySet().iterator();
+            List removed = new ArrayList();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                log.info("checking " + key);
+                if (key.startsWith(prefix)) { 
+                    // check is obviously to crude, e.g. if node number happens to be 4, 
+                    // about one in 10 cache entries will be removed which need not be removed, 
+                    // but well, it's only a cache, it's only bad luck...
+                    // 4 would be a _very_ odd number for an Image, btw..
+                    log.info("removing " + key + " " + get(key));
+                    removed.add(key);
+                    // cannot use keys.remove(), becaus then cache.remove is not called.
+                }
+                
+            }
+            keys = removed.iterator();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                remove(key);
+            }
+        }
+    }
 
 
     protected String getAssociation() {
