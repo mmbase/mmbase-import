@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.23 $ $Date: 2000-11-06 12:51:17 $
+ * @$Revision: 1.24 $ $Date: 2000-11-08 13:31:55 $
  */
 public class INFO extends ProcessorModule {
 
@@ -311,7 +311,23 @@ public class INFO extends ProcessorModule {
 		}
 	}
 
-
+	/** This function can be called by the SCAN code by command $MOD-INFO-USER- followed by the command
+		* Valid options which could be the next command are:<br />
+		* NAME, which returns the username in SCAN<br />
+		* HOSTNAME, which returns the name of the remote host (visiting) in SCAN<br />
+		* IPNUMBER, which returns the ipnumber of the remote host(visiting) in SCAN		<br />
+		* SECLEVEL, which returns current security level in SCAN		<br />
+		* REQUEST_URI, which returns the path of the file requested in SCAN<br />
+		* BACK, which returns the name of the page visted befote the current page, notice not supported by all browsers<br />
+		* COUNTRY, which returns the country name of the remote host ( mmbase.nl -> nl; mmbase.org-> org )<br />
+		* DOMAIN, which returns the domain name where we are currently working on in SCAN<br />
+		* INDOMAIN, which returns YES when remote host has the same domain as us otherwise it returns NO in SCAN																<br />
+	 	* @param tok StringTokenizer with the rest of the cmd.
+	 	* @param sp the scanpage
+	 	* @return a String containing cmd result.
+		*	@author Eduard Witteveen 08-11-2000 
+		*/
+		// http://uk.php.net/manual/language.variables.predefined.php <-- a few defines from php
 	String doUser(scanpage sp, StringTokenizer tok) {
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
@@ -319,6 +335,7 @@ public class INFO extends ProcessorModule {
 			if (cmd.equals("NAME")) return(HttpAuth.getRemoteUser(sp.req));
 			// org.mmbase if (cmd.equals("SESSIONNAME")) return(sp.req.getSessionName());
 			if (cmd.equals("HOSTNAME")) return(sp.req.getRemoteHost());
+			if (cmd.equals("REQUEST_URI")) return(sp.req.getRequestURI());
 			if (cmd.equals("SECLEVEL")) return(sp.req.getAuthType());
 			if (cmd.equals("IPNUMBER")) return(sp.req.getRemoteAddr());
 			if (cmd.equals("BACK")) {
