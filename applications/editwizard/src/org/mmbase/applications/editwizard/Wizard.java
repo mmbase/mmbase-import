@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.102 2003-09-30 10:44:04 pierre Exp $
+ * @version $Id: Wizard.java,v 1.103 2003-10-09 14:34:40 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1243,8 +1243,29 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                if (fdatapath.length() != 0) {
                   fdatapath.append(" and ");
                }
+               // should also include types that inherit...
 
-               fdatapath.append("object/@type='").append(destination).append('\'');
+               Node con = getConstraints(destination);
+               // and then ???
+               NodeList descendants = null;
+               if (con!=null) descendants = Utils.selectNodeList(con,"descendants/descendant");
+
+               if (descendants == null || descendants.getLength() == 0) {
+                   fdatapath.append("object/@type='").append(destination).append('\'');
+               } else {
+
+                   fdatapath.append("(object/@type='").append(destination).append('\'');
+
+                   for (int desci = 0; desci < descendants.getLength();desci++) {
+                       Node descendant = descendants.item(desci);
+                       String descendantName = Utils.getAttribute(descendant, "type", null);
+                       fdatapath.append(" or object/@type='").append(descendantName).append('\'');
+                   }
+
+                   fdatapath.append(')');
+
+               }
+log.info("USE XPATH:"+fdatapath);
             }
 
             // determine searchdir
