@@ -119,12 +119,16 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      * @return false if received shared secret not equals your own shared secret
      */
     public boolean checkSharedSecret(String key) {
-        if(sharedSecret.equals(key)) {
-            return true;
-        } else {
-            log.error("the shared "+sharedSecret+"!="+key+" secrets don't match.");
-            return false;
-        }
+		if (sharedSecret!=null) {
+	        if(sharedSecret.equals(key)) {
+	            return true;
+	        } else {
+	            log.error("the shared "+sharedSecret+"!="+key+" secrets don't match.");
+	            return false;
+	        }
+		} else {
+			return(false);
+		}
     }
 
     /**
