@@ -12,9 +12,12 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.6 2000-11-24 12:15:22 vpro Exp $
+	$Id: TransactionResolver.java,v 1.7 2000-12-14 10:54:52 rico Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/11/24 12:15:22  vpro
+	Rico: fixed exist testing
+	
 	Revision 1.5  2000/11/22 13:11:25  vpro
 	Rico: added deleteObject support
 	
@@ -36,7 +39,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.6 2000-11-24 12:15:22 vpro Exp $
+ * @version $Id: TransactionResolver.java,v 1.7 2000-12-14 10:54:52 rico Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
@@ -49,11 +52,13 @@ public class TransactionResolver {
 		this.mmbase=mmbase;
 	}
 
-	public boolean resolve(Vector nodes) {
+	public boolean resolve(Vector nodes)
+		throws TransactionManagerException {
 		return(resolve(nodes,false));
 	}
 
-	public boolean resolve(Vector nodes,boolean debug) {
+	public boolean resolve(Vector nodes,boolean debug)
+		throws TransactionManagerException {
 		Hashtable numbers=new Hashtable();
 		Hashtable nnodes=new Hashtable();
 		MMObjectNode node;
