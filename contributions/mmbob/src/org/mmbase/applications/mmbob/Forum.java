@@ -234,6 +234,18 @@ public class Forum {
         return true;
     }
 
+
+    /**
+     * "Save direct" the forum
+     *
+     * @return <code>true</code>
+     */
+    public boolean saveDirect() {
+	log.info("SAVE DIRECT = "+node);
+	node.commit();
+        return true;
+    }
+
     /**
      * add the forum-node to the given syncQueue
      *
