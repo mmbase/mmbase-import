@@ -122,6 +122,7 @@
     <disallowed-field name="vacuum" replacement="m_vacuum"/>
     <disallowed-field name="verbose" replacement="m_verbose"/>
     <disallowed-field name="version" replacement="m_version"/>
+    <disallowed-field name="order" replacement="m_order"/>
   </disallowed-fields>
 
 </storage>
