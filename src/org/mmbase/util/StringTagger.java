@@ -7,6 +7,7 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+
 package org.mmbase.util;
 
 import java.util.*;
@@ -46,7 +47,6 @@ public class StringTagger {
 		tokens = new Hashtable();
 		multitokens = new Hashtable();
 		createTagger(line);
-		//System.out.println("TOKENS IN TAGGER"+tokens);
 	}
 
 	/**
@@ -57,28 +57,69 @@ public class StringTagger {
 		this(line,' ','=',',','"');
 	}
 
-	/**
-	* creates and parses the first layer of tokens
-	*/
 	void createTagger(String line) {
-    	//String line2 = Strip.DoubleQuote(line,Strip.BOTH); // added stripping daniel
-		StringTokenizer tok = new StringTokenizer(line+TagStart,""+TagSeperator);
-		String part;
-		int tagPos;
+		StringTokenizer tok2=new StringTokenizer(line+TagStart,""+TagSeperator+TagStart,true);
+		String part,tag,prevtok,tok;
+		boolean isTag,isPart,isQuoted;
 
-		String Tag=tok.nextToken();
-		while (tok.hasMoreTokens()) {
-			part=tok.nextToken();	
-			tagPos=part.lastIndexOf(TagStart);
-			if (tagPos!=-1) {
-				Tag=Tag+"="+part.substring(0,tagPos);
-				splitTag(Tag);
-				Tag=part.substring(tagPos+1);
+		isTag=true;
+		isPart=false;
+		isQuoted=false;
+		prevtok="";
+		tag=part="";
+//		System.out.println("Tagger -> |"+TagStart+"|"+TagSeperator+"|"+QuoteChar+"|");
+		while(tok2.hasMoreTokens()) {
+			tok=tok2.nextToken();
+//			System.out.println("tagger tok ("+isTag+","+isPart+","+isQuoted+") |"+tok+"|"+prevtok+"|");
+			if (tok.equals("=")) {
+				if (isTag) {
+					tag=prevtok;
+					isTag=false;
+				} else {
+					if (!isQuoted) {
+						splitTag(tag+"="+part);
+						isTag=true;
+						isPart=false;
+						part="";
+					} else {
+						part+=tok;
+					}
+				}
+			} else if (tok.equals(" ")) {
+				if (isPart) {
+					if (isQuoted) {
+						part+=tok;
+					} else {
+						if (!prevtok.equals(" ")) {
+							splitTag(tag+"="+part);
+							isTag=true;
+							isPart=false;
+							part="";
+						}
+					}
+					prevtok=tok;
+				}
 			} else {
-				Tag=Tag+"="+part;
-			}	
+				if (!isTag) isPart=true;
+//				System.out.println("isTag "+isTag+" "+isPart);
+				if (isPart) {
+					if (isQuoted) {
+						// Check end quote
+						if (tok.charAt(tok.length()-1)==QuoteChar) {
+							isQuoted=false;
+						}
+						part+=tok;
+					} else {
+						if (tok.charAt(0)==QuoteChar && !(tok.charAt(tok.length()-1)==QuoteChar)) {
+							isQuoted=true;
+						}
+						part+=tok;
+					}
+				}
+//				System.out.println("isTag "+isTag+" "+isPart+" "+isQuoted);
+				prevtok=tok;
+			}
 		}
-		//splitTag(Tag);
 	}
 
 	/**
@@ -88,6 +129,7 @@ public class StringTagger {
 		int	tagPos=Tag.indexOf(TagSeperator);
 		String name=Tag.substring(0,tagPos);
 		String result=Tag.substring(tagPos+1);
+//		System.out.println("SplitTag |"+name+"|"+result+"|");
 
 		if (result.length()>1 && result.charAt(0)==QuoteChar && result.charAt(result.length()-1)==QuoteChar) {
 			result=result.substring(1,result.length()-1);
@@ -96,6 +138,7 @@ public class StringTagger {
 		
 		StringTokenizer tok = new StringTokenizer(result,""+FieldSeperator);
 		Vector Multi = new Vector();
+		// If quoted, strip the " " from beginning and end ?
 		while (tok.hasMoreTokens()) {
 			Multi.addElement(tok.nextToken());
 		}
@@ -217,12 +260,21 @@ public class StringTagger {
 	}
 
 
-	/**
-	* returns the value (first) as string
-	*/
 	public void setValue(String token,String val) {
 		Vector newval=new Vector();
 		newval.addElement(val);
 		multitokens.put(token,newval);
+	}
+
+	public void setValues(String token,Vector values) {
+		multitokens.put(token,values);
+	}
+
+	public static void main(String args[]) {
+		StringTagger tag=new StringTagger(args[0]);
+	}
+
+	public int hashCode() {
+		return(multitokens.hashCode());
 	}
 }
