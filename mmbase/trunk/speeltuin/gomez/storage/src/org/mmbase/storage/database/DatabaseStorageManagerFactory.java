@@ -29,18 +29,18 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * A storage manager factory for database storages.
- * This factory sets up a data source for connecting to the database.
- * If you specify the data source URI in the 'dataource' property in mmbaseroot.xml configuration file,
- * the factory attempts to obtain the data source from the appplication server. If this fails, or no data source URI is given,
- * It attempts to use the connectivity offered by the JDBC Module,w hcih si then warpped in a data source.
- * Note that if you provide a data source you should make the JDBC Module inactive to prevent the module from
+ * This factory sets up a datasource for connecting to the database.
+ * If you specify the datasource URI in the 'dataource' property in mmbaseroot.xml configuration file,
+ * the factory attempts to obtain the datasource from the appplication server. If this fails, or no datasource URI is given,
+ * It attempts to use the connectivity offered by the JDBC Module,w hcih si then warpped in a datasource.
+ * Note that if you provide a datasource you should make the JDBC Module inactive to prevent the module from
  * interfering with the storage layer.
  * @todo backward compatibility with the old supportclasses should be done by creating a separate Factory
  * (LegacyStorageManagerFactory ?).
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.4 2003-07-24 10:11:04 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.5 2003-07-24 12:29:05 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -48,8 +48,8 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
     /**
-     * The data source in use by this factory.
-     * The data source is retrieved either from the application server, or by wrapping the JDBC Module in a generic data source.
+     * The datasource in use by this factory.
+     * The datasource is retrieved either from the application server, or by wrapping the JDBC Module in a generic datasource.
      */
     protected DataSource dataSource;
 
@@ -75,12 +75,12 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
 
     /**
      * Opens and reads the storage configuration document.
-     * Obtain a data source to the storage, and load configuration attributes.
+     * Obtain a datasource to the storage, and load configuration attributes.
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
     protected void load() throws StorageException {
         // get the Datasource for the database to use
-        // the data source uri (i.e. 'jdbc/xa/MMBase' )
+        // the datasource uri (i.e. 'jdbc/xa/MMBase' )
         // is stored in the mmbaseroot module configuration file
         String dataSourceURI = mmbase.getInitParameter("datasource");
         if (dataSourceURI != null) {
@@ -88,18 +88,18 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
                 Context jndiCntx = new InitialContext();
                 dataSource = (DataSource)jndiCntx.lookup(dataSourceURI);
             } catch(NamingException ne) {
-                log.warn("Datasource '"+dataSourceURI+"' nota available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
+                log.warn("Datasource '"+dataSourceURI+"' not available. ("+ne.getMessage()+"). Attempt to use JDBC Module to access database.");
             }
         }
         if (dataSource == null) {
-            // if no data source is provided, try to obtain the generic data source (which uses JDBC Module)
-            // This data source should only be needed in cases were MMBase runs without application server.
+            // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
+            // This datasource should only be needed in cases were MMBase runs without application server.
             dataSource = new GenericDataSource(mmbase);
         }
-        // store the data source as an attribute
+        // store the datasource as an attribute
         setAttribute("database.dataSource", dataSource);
 
-        // test the data source and retrieves options, 
+        // test the datasource and retrieves options, 
         // which are stored as options in the factory's attribute
         // this allows for easy retrieveal of database options
         try {
@@ -137,7 +137,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
      * Locates and opens the storage configuration document.
      * The configuration document to open is dependent on the storage type and version.
      * You can explicitly set this type in mmbasreoot (using the storage property), or let
-     * MMBase determine it using information gained from the data source, and the lookup.xml file
+     * MMBase determine it using information gained from the datasource, and the lookup.xml file
      * in the database configuration directory
      * @todo configuration path should be retrieved from the MMBase instance, rather than directly from the (static)
      * MMBaseContext class.

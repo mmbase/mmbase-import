@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.database;
 
 import java.util.Map;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import javax.sql.DataSource;
 
 import org.mmbase.module.core.*;
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.1 2003-07-24 10:11:04 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.2 2003-07-24 12:29:05 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -38,7 +37,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     protected StorageManagerFactory factory;
 
     /**
-     * The data source through which to access the database. 
+     * The datasource through which to access the database. 
      */
     protected DataSource dataSource;
 
@@ -49,7 +48,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     protected Connection activeConnection;
     
     /**
-     * True if a transaction has been started.
+     * <code>true</code> if a transaction has been started.
      * This member is for state maitenance and may be true even if the storage does not support transactions
      */
     protected boolean inTransaction = false;
@@ -137,6 +136,8 @@ public abstract class DatabaseStorageManager implements StorageManager {
             } catch (SQLException se) {
                 releaseActiveConnection();
                 throw new StorageException(se);
+            } finally {
+                releaseActiveConnection();
             }
         }
         inTransaction = true;
@@ -156,8 +157,9 @@ public abstract class DatabaseStorageManager implements StorageManager {
                 try {
                     activeConnection.commit();
                 } catch (SQLException se) {
-                    releaseActiveConnection();
                     throw new StorageException(se);
+                } finally {
+                    releaseActiveConnection();
                 }
             }
         }
@@ -180,8 +182,9 @@ public abstract class DatabaseStorageManager implements StorageManager {
                 try {
                     activeConnection.rollback();
                 } catch (SQLException se) {
-                    releaseActiveConnection();
                     throw new StorageException(se);
+                } finally {
+                    releaseActiveConnection();
                 }
             }
             return factory.supportsTransactions();
@@ -225,7 +228,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     /**
      * Commit this node to the specified builder.
      * @param node The node to commit
-     * @return true of succesful, false otherwise
+     * @return <code>true</code> of succesful, false otherwise
      * @throws StorageException if an error occurred during commit
      */
     abstract public boolean commit(MMObjectNode node) throws StorageException;
@@ -256,38 +259,78 @@ public abstract class DatabaseStorageManager implements StorageManager {
     abstract public int getNodeType(int number) throws StorageException;
 
     /**
-     * Create a storage for the specified builder.
+     * Create a storage element to store the specified builder's objects.
      * @param builder the builder to create the storage for
-     * @return true if the storage was succesfully created
+     * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation fo the table
      */
     abstract public boolean create(MMObjectBuilder builder) throws StorageException;
 
     /**
-     * Create the object storage (the storage where to register all objects).
-     * @return true if the storage was succesfully created
+     * Create the basic elements for this storage
+     * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation of the object storage
      */
-    abstract public boolean createObjectStorage() throws StorageException;
+    abstract public boolean create() throws StorageException;
 
     /**
-     * Tells if a storage for the builder already exists
-     * @param builder the builder to check
-     * @return true if storage exists, false if storage doesn't exists
+     * Queries the database metadata to test whether a given table exists.
+     * @param tableName name of the table to look for
+     * @throws StorageException when the metadata could not be retrieved
+     * @return <code>true</code> if the table exists
      */
-    abstract public boolean created(MMObjectBuilder builder);
+    protected boolean hasTable(String tableName) throws StorageException {
+        boolean result = false;
+        try {
+            getActiveConnection();
+            DatabaseMetaData metaData = activeConnection.getMetaData();
+            ResultSet res = metaData.getTables(null, null, tableName, null);
+            result = res.next();
+        } catch (Exception e) {
+            throw new StorageException(e.getMessage());
+        } finally {
+            releaseActiveConnection();
+        }
+        return result;
+    }
 
     /**
-     * Return number of objects in a builder
+     * Determine if a storage element exists for storing the given builder's objects
+     * @param builder the builder to check
+     * @return <code>true</code> if a storage element exists
+     * @throws StorageException if an error occurred while querying the storage 
+     */
+    public boolean created(MMObjectBuilder builder) throws StorageException {
+        return hasTable(builder.getFullTableName());
+    }
+
+    /**
+     * Determine if the basic storage elements exist
+     * Basic storage elements include the 'object' storage (where all objects and their types are registered).
+     * @return <code>true</code> if basic storage elements exist
+     * @throws StorageException if an error occurred while querying the storage 
+     */
+    abstract public boolean created() throws StorageException;
+
+    /**
+     * Return the number of objects of a builder in the storage
      * @param builder the builder whose objects to count
-     * @return the number of objects the builder has, or -1 if the builder does not exist.
+     * @return the number of objects the builder has
+     * @throws StorageException if the storage element for the builder does not exists
      */
     abstract public int size(MMObjectBuilder builder);
 
     /**
+     * Return the total number of objects in the storage
+     * @return the number of objects 
+     * @throws StorageException if the basic storage elements do not exist
+     */
+    abstract public int size();
+
+    /**
      * Drops the storage of this builder.
      * @param builder the builder whose storage to drop
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     abstract public boolean drop(MMObjectBuilder builder);
 
@@ -295,7 +338,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Adds a field to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to add
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     abstract public boolean addField(MMObjectBuilder builder,String fieldname);
 
@@ -303,7 +346,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Deletes a field from the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to delete
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     abstract public boolean removeField(MMObjectBuilder builder,String fieldname);
 
@@ -311,14 +354,14 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Changes a field to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to change
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     abstract public boolean changeField(MMObjectBuilder builder,String fieldname);
 
     /**
      * Changes the storage of a builder to match its new configuration.
      * @param builder the builder whose storage to change
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     abstract public boolean updateStorage(MMObjectBuilder builder);
 

@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.6 2003-07-24 10:11:04 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.7 2003-07-24 12:29:04 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -29,9 +29,9 @@ public interface StorageManagerFactory {
      * This method should be called after instantiation of the factory class.
      * It is called automatically by {@link Storage.getStorageManagerFactory()} and {@link Storage.getStorageManagerFactory(MMBase)}.
      * @param mmbase the MMBase instance to which this factory belongs
-     * @throws StorageException when something went wrong during configuration of the factory, or when the storage cannot be accessed
+     * @throws StorageError when something went wrong during configuration of the factory, or when the storage cannot be accessed
      */
-    public void init(MMBase mmbase) throws StorageException;
+    public void init(MMBase mmbase) throws StorageError;
 
     /**
      * Obtains a StorageManager from the factory.

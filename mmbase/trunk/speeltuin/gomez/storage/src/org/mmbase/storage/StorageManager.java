@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.4 2003-07-24 10:11:03 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.5 2003-07-24 12:29:04 pierre Exp $
  */
 public interface StorageManager {
 
@@ -97,7 +97,7 @@ public interface StorageManager {
     /**
      * Commit this node to the specified builder.
      * @param node The node to commit
-     * @return true of succesful, false otherwise
+     * @return <code>true</code> of succesful, false otherwise
      * @throws StorageException if an error occurred during commit
      */
     public boolean commit(MMObjectNode node) throws StorageException;
@@ -128,38 +128,55 @@ public interface StorageManager {
     public int getNodeType(int number) throws StorageException;
 
     /**
-     * Create a storage for the specified builder.
+     * Create a storage element to store the specified builder's objects.
      * @param builder the builder to create the storage for
-     * @return true if the storage was succesfully created
+     * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation fo the table
      */
     public boolean create(MMObjectBuilder builder) throws StorageException;
 
     /**
-     * Create the object storage (the storage where to register all objects).
-     * @return true if the storage was succesfully created
+     * Create the basic elements for this storage
+     * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation of the object storage
      */
-    public boolean createObjectStorage() throws StorageException;
+    public boolean create() throws StorageException;
 
     /**
-     * Tells if a storage for the builder already exists
+     * Determine if a storage element exists for storing the given builder's objects
      * @param builder the builder to check
-     * @return true if storage exists, false if storage doesn't exists
+     * @return <code>true</code> if the storage element exists, false if it doesn't
+     * @throws StorageException if an error occurred while querying the storage 
      */
-    public boolean created(MMObjectBuilder builder);
+    public boolean created(MMObjectBuilder builder) throws StorageException;
 
     /**
-     * Return number of objects in a builder
-     * @param builder the builder whose objects to count
-     * @return the number of objects the builder has, or -1 if the builder does not exist.
+     * Determine if the basic storage elements exist
+     * Basic storage elements include the 'object' storage (where all objects and their types are registered).
+     * @return <code>true</code> if basic storage elements exist
+     * @throws StorageException if an error occurred while querying the storage 
      */
-    public int size(MMObjectBuilder builder);
+    public boolean created() throws StorageException;
+
+    /**
+     * Return the number of objects of a builder in the storage
+     * @param builder the builder whose objects to count
+     * @return the number of objects the builder has
+     * @throws StorageException if the storage element for the builder does not exists
+     */
+    public int size(MMObjectBuilder builder) throws StorageException;
+
+    /**
+     * Return the total number of objects in the storage
+     * @return the number of objects 
+     * @throws StorageException if the basic storage elements do not exist
+     */
+    public int size() throws StorageException;
 
     /**
      * Drops the storage of this builder.
      * @param builder the builder whose storage to drop
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     public boolean drop(MMObjectBuilder builder);
 
@@ -167,7 +184,7 @@ public interface StorageManager {
      * Adds a field to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to add
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     public boolean addField(MMObjectBuilder builder,String fieldname);
 
@@ -175,7 +192,7 @@ public interface StorageManager {
      * Deletes a field from the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to delete
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     public boolean removeField(MMObjectBuilder builder,String fieldname);
 
@@ -183,14 +200,14 @@ public interface StorageManager {
      * Changes a field to the storage of this builder.
      * @param builder the builder whose storage to change
      * @param fieldname the name fo the field to change
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     public boolean changeField(MMObjectBuilder builder,String fieldname);
 
     /**
      * Changes the storage of a builder to match its new configuration.
      * @param builder the builder whose storage to change
-     * @return true if succesful
+     * @return <code>true</code> if succesful
      */
     public boolean updateStorage(MMObjectBuilder builder);
 
