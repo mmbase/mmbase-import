@@ -29,7 +29,7 @@ import java.lang.reflect.*;
  * formats to URLComposer classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.6 2003-02-05 11:41:25 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.7 2003-02-05 15:05:27 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -39,6 +39,7 @@ public class URLComposerFactory  {
     private static final String DEFAULT_TAG  = "default";
     private static final String COMPOSER_TAG = "urlcomposer";
     private static final String FORMAT_ATT   = "format";
+    private static final String PROTOCOL_ATT   = "protocol";
 
     private static final Class defaultComposerClass = URLComposer.class;
 
@@ -50,12 +51,17 @@ public class URLComposerFactory  {
             MMObjectNode.class, MMObjectNode.class, MMObjectNode.class, Map.class
         };
         private Format format;
+        private String protocol;
         private Class  klass;
-        ComposerConfig(Format f, Class k) {
+        ComposerConfig(Format f, Class k, String p) {
             this.format = f;
             this.klass = k;            
+            this.protocol = p;
+            if (protocol == null) protocol = "";
+            
         }
-        Format getFormat() { return format; }
+        boolean checkFormat(Format f) { return format.equals(f); }
+        boolean checkProtocol(String p) {      return "".equals(protocol) || protocol.equals(p); }
         URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) { 
             try {
                 Constructor c = klass.getConstructor(constructorArgs);
@@ -72,6 +78,7 @@ public class URLComposerFactory  {
         public String toString() {
             return "" + format + ":" + klass.getName();
         }
+        
         
     }
 
@@ -114,9 +121,9 @@ public class URLComposerFactory  {
 
         XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         try {
-            defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)));
+            defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)), null);
         } catch (java.lang.ClassNotFoundException e) {
-            defaultUrlComposer = new ComposerConfig(null, defaultComposerClass); 
+            defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null); 
             // let it be something in any case
             log.error(e.toString());
         }
@@ -125,9 +132,10 @@ public class URLComposerFactory  {
             Element element = (Element)e.nextElement();
             String  clazz   =  reader.getElementValue(element);
             Format  format  =  Format.get(element.getAttribute(FORMAT_ATT));
+            String  protocol  =  element.getAttribute(PROTOCOL_ATT);
             try {
                 log.service("Adding for format " + format + " urlcomposer " + clazz);
-                urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz)));
+                urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
             } catch (ClassNotFoundException ex) {
                 log.error("Cannot load urlcomposer " + clazz);
             } 
@@ -143,7 +151,8 @@ public class URLComposerFactory  {
 
     public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls) {
         if (urls == null) urls = new ArrayList();
-        Format format = Format.get(source.getIntValue("format"));
+        Format format   = Format.get(source.getIntValue("format"));
+        String protocol = provider.getStringValue("protocol");
         if (log.isDebugEnabled()) log.debug("Creating url-composers for provider " + provider.getNumber() + "(" + format + ")");
 
         Iterator i = urlComposerClasses.iterator();
@@ -151,10 +160,10 @@ public class URLComposerFactory  {
         while (i.hasNext()) {
             ComposerConfig cc = (ComposerConfig) i.next();
             log.debug("Trying " + cc + " for " + format);
-            if (format.equals(cc.getFormat())) {
+            if (cc.checkFormat(format) && cc.checkProtocol(protocol)) {
                 URLComposer uc = cc.getInstance(provider, source, fragment, info);
                 log.debug("Trying to add " + uc + " to " + urls);
-                if (uc != null && ! urls.contains(uc)) { // avoid duplicates
+                if (uc != null && ! urls.contains(uc) && uc.canCompose()) { // avoid duplicates, and composer which would work
                     log.debug("Adding a " + uc.getClass().getName());
                     urls.add(uc);
                 } 
