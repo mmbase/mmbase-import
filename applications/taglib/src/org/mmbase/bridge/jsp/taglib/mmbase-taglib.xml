@@ -284,6 +284,7 @@ one or more examplevalue tags is you want to give some example values.
       <name>type</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>A NodeManagers. This determines the type of object to return</info>
       <examplevalue>
         <value>mags</value>
@@ -330,12 +331,14 @@ one or more examplevalue tags is you want to give some example values.
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>The maximum number of results.</info>
     </attribute>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>The start index.</info>
     </attribute>
     <attribute>
@@ -478,6 +481,7 @@ one or more examplevalue tags is you want to give some example values.
       <name>name</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>The name of the cloud.</info>
       <examplevalue>
         <value>mmbase</value>
@@ -487,19 +491,27 @@ one or more examplevalue tags is you want to give some example values.
       <name>logon</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>The authentication name to use (account).</info>
     </attribute>
     <attribute>
       <name>rank</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>The required rank</info>
     </attribute>
     <attribute>
       <name>pwd</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>The password to use to logon to the cloud.</info>
+    </attribute>    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info></info>
     </attribute>
     <attribute>
       <name>method</name>
@@ -621,12 +633,24 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
+	<refercontext>true</refercontext>
 	<info>
 	  The nodenumber or alias identifying this node in MMBase.
 	</info>
     </attribute>
     <attribute>
         <name>id</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  With the 'id' attribute you define an unique identifier for
+	  this node. At the same time this defines an jsp 'Node'
+	  variable with this name. 
+        </info>	
+    </attribute>
+    <attribute>
+        <name>referid</name>
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
@@ -672,7 +696,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <info>
       Gets the field 'name' from node 'node' (can also be
       list).
-    </info>
+    </info>    
     <attribute>
         <name>node</name>
         <required>false</required>
@@ -1210,10 +1234,10 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
     <name>present</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.PresentTag</tagclass>
     <info>
-    Checks if a certain key is present in the parent Context tag.
+    Checks if a certain id is present in the parent Context tag.
     </info>
     <attribute>
-        <name>key</name>
+        <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
@@ -1224,10 +1248,10 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
     <name>notpresent</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.NotPresentTag</tagclass>
     <info>
-    Checks if a certain key is missing in the parent Context tag.
+    Checks if a certain id is missing in the parent Context tag.
     </info>
     <attribute>
-        <name>key</name>
+        <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
@@ -1235,9 +1259,9 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
     </attribute>
   </tag>
   <tag>
-    <name>export</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.ExportTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.ExportTEI</teiclass>
+    <name>write</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.WriteTEI</teiclass>
     <info>
     Can be used to create an jsp variable from a variable in the context.
     </info>
@@ -1250,7 +1274,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>key</name>
+        <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
@@ -1287,15 +1311,81 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
   <tag>
     <name>import</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImportTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.ImportTEI</teiclass>
     <info>
-    To put Strings in the session (Perhaps we could change it, to make
-    it possible to put other things in it too).
+    To put objects in the context.
     </info>
     <attribute>
-        <name>key</name>
-        <required>true</required>
-        <rtexprvalue>true</rtexprvalue>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+        This is the key by which the object will be registered in the
+	context. This key may not already exist. You must use the
+	remove tag first, if you need to change the value of the
+	registered object. If you do not supply this attribute, it is
+	supposed to have the same value as 'externid' which should be
+	present then.
+	</info>
+    </attribute>
+    <attribute>
+        <name>externid</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+        <p>
+	The 'externid' is the name of an attribute in the session,
+	parameter in the request, or id in the parent context. The
+	value of this thing is imported in the current context, with
+	the id given by the attribute 'id'.
+        </p>
+        <p>
+	If there is no attribute 'externid' then the value of the new
+	object in the context is taken from the body of this import
+	tag.
+        </p>	
+	</info>
+    </attribute>
+    <attribute>
+        <name>required</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
 	<info>	
+	If this object is required to be present. If it has to be
+	present, then the present tag will always evaluate. If there
+	can nothing be found by externid and a default value in the
+	body is missing too, then an exception will follow if required
+	is true.
+	</info>
+    </attribute>
+    <attribute>
+        <name>from</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	Where to search the externid in. On default it is searched in
+	several sources, but you can limit it by this. In this way it
+	is also possible to get different variables with the same name
+	from different sources.
+	</info>
+    </attribute>
+    <attribute>
+        <name>jspvar</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	If you specify 'jspvar' a jsp-variable with this name will be
+	created too. It is available after the closing of the tag.
+	</info>
+    </attribute>
+    <attribute>
+        <name>type</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	If you specify 'jspvar' you can also specify a type for
+	it. Default, this is a String, but you could e.g. also want an
+	Integer.
 	</info>
     </attribute>
   </tag>
@@ -1306,7 +1396,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
     Remove an object from the context.
     </info>
     <attribute>
-        <name>key</name>
+        <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>	
@@ -1321,29 +1411,24 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
     Returns an URL with parameters from the context.
     </info>
     <attribute>
-        <name>keys</name>
+        <name>referids</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	<refercontext>true</refercontext>
 	<info>	
 	Specify which parameters, otherwise all parameters.
 	</info>
     </attribute>
     <attribute>
-        <name>extraparameters</name>
+        <name>page</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>	
-	You can also add some new parameters like this. A list of
-        key=value.
-	</info>
-    </attribute>
-    <attribute>
-        <name>file</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>	
+	<refercontext>true</refercontext>
+	<info>
 	The url to refer to. If not specified, then it becomes the
-        result of getRequestURI.
+        result of getRequestURI. Since this attribute can refer to the
+        context with a dot, you must escape dots in a filename with a
+        backslash(\).
 	</info>
     </attribute>
     <attribute>
@@ -1351,6 +1436,22 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
 	<info>	
+	</info>
+    </attribute>   
+  </tag>
+  <tag>
+    <name>param</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.ParamTag</tagclass>
+    <info>
+    Adds a parameter to the parent URL Tag.
+    </info>
+    <attribute>
+        <name>name</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <refercontext>true</refercontext>
+	<info>	
+	The name of the parameter. The value is the body.
 	</info>
     </attribute>
   </tag>
