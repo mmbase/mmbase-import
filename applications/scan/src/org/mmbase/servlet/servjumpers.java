@@ -37,6 +37,7 @@ public class servjumpers extends JamesServlet {
      * Initializes the servlet, by obtaining a reference to the MMBase module.
      */
     public void init() {
+	super.init();
         mmbase=(MMBase)getModule("MMBASEROOT");
     }
 
