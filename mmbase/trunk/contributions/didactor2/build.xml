@@ -23,6 +23,12 @@
     <delete file="${build.dir}/webapp/WEB-INF/taglib.tld" />
     <delete file="${build.dir}/webapp/WEB-INF/web.xml" />
     <foreach list="${components}" target="build.component" inheritall="true" param="component" />
+    <replace file="${build.dir}/webapp/WEB-INF/web.xml"
+             token="$${filemanagement.data.directory}"
+             value="${filemanagement.data.directory}"/>
+    <replace file="${build.dir}/webapp/WEB-INF/web.xml"
+             token="$${filemanagement.data.url}"
+             value="${filemanagement.data.url}"/>
   </target>
 
   <target name="clean">
