@@ -39,6 +39,9 @@ import org.mmbase.util.logging.*;
  * <li><em>field</em> <b>IS</b> [<b>NOT</b>] <b>NULL</b>
  * <li><em>field</em> [<b>NOT</b>] <b>IN 
  *     (</b><em>value1</em><b>,</b> <em>value2</em><b>,</b> ..<b>)</b>
+ * <li><em>field</em> [<b>NOT</b>] <b>BETWEEN</b> <em>value1</em> <b>AND</b> <em>value2</em>
+ * <li><b>UPPER(</b><em>field</em><b>)</b> [<b>NOT</b>] <b>BETWEEN</b> <em>value1</em> <b>AND</b> <em>value2</em>
+ * <li><b>LOWER(</b><em>field</em><b>)</b> [<b>NOT</b>] <b>BETWEEN</b> <em>value1</em> <b>AND</b> <em>value2</em>
  * <li><em>field</em> <b>=</b> <em>value</em>
  * <li><em>field</em> <b>=</b> <em>field2</em>
  * <li><b>UPPER(</b><em>field</em><b>) =</b> <em>value</em>
@@ -70,7 +73,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -331,13 +334,15 @@ public class ConstraintParser {
 
         boolean inverse = false;
         if (token.equalsIgnoreCase("NOT")) {
-            // NOT LIKE/NOT IN
+            // NOT LIKE/NOT IN/NOT BETWEEN
             inverse = true;
             token = (String) iTokens.next();
             if (!token.equalsIgnoreCase("LIKE")
-                && !token.equalsIgnoreCase("IN")) {
+                && !token.equalsIgnoreCase("IN")
+                && !token.equalsIgnoreCase("BETWEEN")) {
                     throw new IllegalArgumentException(
-                        "Unexpected token (expected \"LIKE\" OR \"IN\"): \"" 
+                        "Unexpected token (expected "
+                        + "\"LIKE\" OR \"IN\" OR \"BETWEEN\"): \"" 
                         + token + "\"");
             }
         }
@@ -398,6 +403,37 @@ public class ConstraintParser {
                 } while (separator.equals(","));
             }
             result = fieldValueInConstraint;
+
+        } else if (token.equalsIgnoreCase("BETWEEN")) {
+            // BETWEEN value1 AND value2
+            Object value1 = parseValue(iTokens);
+            String separator = (String) iTokens.next();
+            if (!separator.equals("AND")) {
+                throw new IllegalArgumentException(
+                    "Unexpected token (expected \"AND\"): \""
+                    + separator + "\"");
+            }
+            Object value2 = parseValue(iTokens);
+            boolean caseSensitive = true;
+            if (function != null 
+                    && value1 instanceof String && value2 instanceof String) {
+                String strValue1 = (String) value1;
+                String strValue2 = (String) value2;
+                if ((function.equals("LOWER") 
+                    && strValue1.equals(strValue1.toLowerCase()) 
+                    && strValue2.equals(strValue2.toLowerCase()))
+                || (function.equals("UPPER") 
+                    && strValue1.equals(strValue1.toUpperCase()) 
+                    && strValue2.equals(strValue2.toUpperCase()))) {
+                        caseSensitive = false;
+                }
+            }
+
+            BasicFieldValueBetweenConstraint fieldValueBetweenConstraint 
+                = (BasicFieldValueBetweenConstraint)
+                    new BasicFieldValueBetweenConstraint(field, value1, value2)
+                        .setCaseSensitive(caseSensitive);
+            result = fieldValueBetweenConstraint;
 
         } else if (token.equals("=")) {
             token = (String) iTokens.next();
