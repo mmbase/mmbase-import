@@ -6,14 +6,14 @@
     String category=request.getParameter("category");
     String subcategory=request.getParameter("subcategory");
 %>
-<link rel="stylesheet" href="css/mmbase.css" type="text/css">
+<link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css">
 <title>Navigation Bar</title>
 </head>
 <body class="navigationbar">
 <table summary="navigation">
 <tr>
 <td width="50">
-<img src="../style/logo.gif" border="0" alt="MMBase">
+<img src="<mm:url page="/mmbase/style/logo.gif" />" border="0" alt="MMBase">
 </td>
 <td width="850" border="0">
     &nbsp;&nbsp;
