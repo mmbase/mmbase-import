@@ -1,4 +1,4 @@
-/*
+ /*
  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.module.builders;
+package org.mmbase.module.builders.media;
 
 import java.util.*;
 import java.net.URL;
@@ -40,6 +40,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  */
 public class MediaSource extends MMObjectBuilder {
+
     
     private static Logger log = Logging.getLoggerInstance(MediaSource.class.getName());
     
@@ -66,7 +67,7 @@ public class MediaSource extends MMObjectBuilder {
     private final static int STEREO = 2;
     
     // MediaProviderFilter helps by resolving the best media provider
-    private MediaProviderFilter mediaproviderfilter = new MediaProviderFilter(this);
+    private MediaProviderFilter mediaProviderFilter = new MediaProviderFilter(this);
 
 
     private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
@@ -280,12 +281,12 @@ public class MediaSource extends MMObjectBuilder {
     public String getUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
         // Find out the best media provider
         String protocol = getProtocol(mediasource.getIntValue("format")); 
-        MMObjectNode mediaprovider = mediaproviderfilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
+        MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
                
         // convert the url (response) to a wanted one, with extra information in the url etc.etc.
         // For the url the mediafragment is important....
         // Also pluggable ???
-        return protocol+mediaprovider.getStringValue("url")+"uri iets";
+        return protocol + mediaProvider.getStringValue("url")+"uri iets";
     }
     
      /**
