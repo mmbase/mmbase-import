@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.15 2003-10-30 20:14:08 keesj Exp $
+ * @version $Id: DateSupport.java,v 1.16 2003-10-31 15:15:14 keesj Exp $
  */
 public class DateSupport {
 
@@ -348,8 +348,8 @@ public class DateSupport {
         }
         Date v = new Date((long) val * 1000);
         SimpleDateFormat f = new SimpleDateFormat("dd");
-        return f.format(v)
-        }
+        return f.format(v);
+    }
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00 and returns the number of the month
@@ -371,8 +371,8 @@ public class DateSupport {
         }
         Date v = new Date((long) val * 1000);
         SimpleDateFormat f = new SimpleDateFormat("MM");
-        return f.format(v)
-        }
+        return f.format(v);
+    }
 
     /**
      * Takes an integer representing the number of seconds from 1-Jan-1970 00:00:00 and returns the year
@@ -394,8 +394,10 @@ public class DateSupport {
             val += offset;
         }
         Date v = new Date(((long) val) * 1000);
-        int m = v.getYear();
-        return "" + (m + 1900);
+        Calendar c = Calendar.getInstance();
+        c.setTime(v);
+
+        return Integer.toString(c.get(Calendar.YEAR));
     }
 
     /**
@@ -417,8 +419,9 @@ public class DateSupport {
             val += offset;
         }
         Date v = new Date((long) val * 1000);
-        int m = v.getMonth();
-        return m;
+        Calendar c = Calendar.getInstance();
+        c.setTime(v);
+        return c.get(Calendar.MONTH) + 1;
     }
 
     /**
@@ -441,8 +444,9 @@ public class DateSupport {
             val += offset;
         }
         Date v = new Date((long) val * 1000);
-        int m = v.getDay();
-        return m;
+        Calendar c = Calendar.getInstance();
+        c.setTime(v);
+        return c.get(Calendar.DAY_OF_WEEK);
     }
 
     /**
@@ -465,8 +469,9 @@ public class DateSupport {
             val += offset;
         }
         Date v = new Date((long) val * 1000);
-        int m = v.getDate();
-        return m;
+        Calendar c = Calendar.getInstance();
+        c.setTime(v);
+        return c.get(Calendar.DAY_OF_MONTH);
     }
 
     /**
@@ -702,17 +707,7 @@ public class DateSupport {
      */
     private static String dumpdate(int d) {
         Date dd = new Date((long) d * 1000);
-        StringBuffer b = new StringBuffer();
-
-        b.append(" Year " + dd.getYear());
-        b.append(" Month " + (dd.getMonth() + 1));
-        b.append(" Day " + dd.getDate());
-        b.append(" Weekday " + dd.getDay());
-        b.append(" Hours " + dd.getHours());
-        b.append(" Minutes " + dd.getMinutes());
-        b.append(" Seconds " + dd.getSeconds());
-        b.append(" Time " + dd.getTime());
-        return b.toString();
+        return dd.toString();
     }
 
     /**
