@@ -23,8 +23,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.implementation.BasicNodeList;
-
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -36,7 +34,7 @@ import org.mmbase.util.logging.Logging;
 **/
 public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, ListItemInfo{
     //this class is growing to big.. 
-    //need to look at the MMCI again. I am shure MMCI can handle more nows
+    //need to look at the MMCI again. I am sure MMCI can handle more nows
 
     
     private static Logger log = Logging.getLoggerInstance(NodeListTag.class.getName());
@@ -47,7 +45,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     private String sortedString=null;
     private String directionString=null;
     private String distinctString=null;
-    private String maxString=null;
+    private Integer max = null;
     private String searchString=null;
     private String commandString = null;
     
@@ -179,9 +177,9 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     /**
     * @param max the max number of values returned
     **/
-    public void setMax(String max){
-        this.maxString = max;
-    }
+    public void setMax(Integer max){
+        this.max = max;
+    } 
     
     /**
     * @param offset
@@ -323,33 +321,28 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
                 }
             }
         } catch (NullPointerException npe){
-            showListError(npe, nodesSearchString, nodeManagers, searchNodes, searchFields, searchWhere, searchSorted,searchDirection,searchSearch,searchDistinct,maxString,action);
+            showListError(npe, nodesSearchString, nodeManagers, searchNodes, searchFields, searchWhere, searchSorted,searchDirection,searchSearch,searchDistinct,max.toString(),action);
         }
         
         
-        if (maxString != null || offset > 0) { // for the moment max can only be here because
+        if (max != null || offset > 0) { // for the moment max can only be here because
             //there is no other way to tell the MMCI that a list sould be shorter
-            try {
-                int max = (maxString == null ? nodes.size() - 1 : Integer.parseInt(maxString));
-                int to = max + offset;
-                
-                listSize = nodes.size();
-                if (to >= listSize) {
-                    to = listSize;
-                }
-                if (offset >= listSize) {
-                    offset = listSize - 1;
-                }
-                if (offset < 0) {
-                    offset = 0;
-                }
-                nodes=nodes.subNodeList(offset, to);
-                
-                returnValues = nodes.nodeIterator();
-            } catch (NumberFormatException e){
-                throw new JspTagException ("MAX Field in tag is not a number");
-                // isn't this a little ugly?
+            int maxx = (max == null ? nodes.size() - 1 : max.intValue());
+            int to = maxx + offset;
+            
+            listSize = nodes.size();
+            if (to >= listSize) {
+                to = listSize;
             }
+            if (offset >= listSize) {
+                offset = listSize - 1;
+            }
+            if (offset < 0) {
+                offset = 0;
+            }
+            nodes=nodes.subNodeList(offset, to);
+            
+            returnValues = nodes.nodeIterator();
         } else {
             listSize = nodes.size();
             returnValues = nodes.nodeIterator();
