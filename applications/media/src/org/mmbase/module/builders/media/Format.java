@@ -17,7 +17,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.2 2003-01-08 22:42:56 michiel Exp $
+ * @version $Id: Format.java,v 1.3 2003-01-14 23:41:27 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -67,8 +67,11 @@ public final class Format {   // final class!!
     public int toInt()    { return number; }
     public String toString() { return id;     }
     public static Format get(int i) {
-        return (Format) formats.get(i);
-
+        try {
+            return (Format) formats.get(i);
+        } catch (java.lang.IndexOutOfBoundsException e) {
+            return UNKNOWN;
+        }
     }
     public static Format get(String id) {
         id = id.toLowerCase();
