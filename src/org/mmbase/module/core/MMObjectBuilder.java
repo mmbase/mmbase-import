@@ -619,12 +619,16 @@ public class MMObjectBuilder extends MMTable {
         Integer integerNumber=new Integer(number);
         MMObjectNode node=(MMObjectNode)nodeCache.get(integerNumber);
         if (node!=null) {
+			// added debug for testing cache problems.
+			//log.info("NODE "+number+" IN CACHE, node:"+node);
+
             // lets add a extra asked counter to make a smart cache
             int c=node.getIntValue("CacheCount");
             c++;
             node.setValue("CacheCount",c);
             return node;
-        }
+        } // else 
+			//log.info("NODE "+number+" NOT IN CACHE");
 
         // do the query on the database
         try {
@@ -681,6 +685,74 @@ public class MMObjectBuilder extends MMTable {
         }
     }
 
+	/**
+	 * Retrieves a node from database directly (not using nodeCache!) based on it's number (a unique key).
+	 * Implementation is the same as getNode, except not using the nodeCache.
+	 * @param number The number of the node to search for
+	 * @return <code>null</code> if the node does not exist or the key is invalid, or a
+	 *       <code>MMObjectNode</code> containign the contents of the requested node.
+	 */
+    public synchronized MMObjectNode getHardNode(int number) {
+		// test with counting
+		statCount("getnode");
+		if (number==-1) {
+			log.warn(" ("+tableName+") nodenumber == -1");
+			return null;
+		}
+
+		// do the query on the database
+		try {
+			MMObjectNode node =null;
+			String bul="typedef";
+		
+			// retrieve node's objecttype
+			int bi=getNodeType(number);		
+			if (bi!=0)
+				bul=mmb.getTypeDef().getValue(bi);
+			if (bul==null) {
+				log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
+				return null;
+			}
+
+			MultiConnection con =null;
+			Statement stmt = null;
+			try {
+				con=mmb.getConnection();
+				stmt=con.createStatement();
+				ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
+				if (rs.next()) {
+					// create a new object and add it to the result vector
+					MMObjectBuilder bu=mmb.getMMObject(bul);
+					if (bu==null) {
+						log.error("getMMObject did not return builder on : "+bul);
+						return null;
+					}
+					node=new MMObjectNode(bu);
+					ResultSetMetaData rd=rs.getMetaData();
+					String fieldname;
+					String fieldtype;
+					for (int i=1;i<=rd.getColumnCount();i++) {
+						fieldname=rd.getColumnName(i);
+						node=database.decodeDBnodeField(node,fieldname,rs,i);
+					}
+					// clear the changed signal
+					node.clearChanged();
+				} else {
+					log.warn("getNode(): Node not found "+number);
+					return null; // not found
+				}
+			} finally {
+				mmb.closeConnection(con,stmt);
+			}
+			// return the results
+			return node;
+		} catch (SQLException e) {
+			// something went wrong print it to the logs
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * Create a new temporary node and put it in the temporary _exist
 	 * node space
@@ -1340,6 +1412,7 @@ public class MMObjectBuilder extends MMTable {
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         if (node==null) {
             log.warn("getDBType(): Can't find fielddef on : "+fieldName+" builder="+tableName);
+			// try { throw new Exception("blah"); } catch (Exception e) { e.printStackTrace(); }
             return FieldDefs.TYPE_UNKNOWN;
         }
         return node.getDBType();
