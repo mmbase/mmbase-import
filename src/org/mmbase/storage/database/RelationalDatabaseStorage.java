@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.database;
 
 import java.util.*;
-import java.io.*;
 import java.sql.*;
 
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
@@ -31,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.9 2003-05-05 13:26:35 michiel Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.10 2003-05-08 15:25:54 kees Exp $
  * @todo This function contains a lot of methods which do not seem
  *       specific for a 'relational' database. They should perhaps be moved
  *        to 'abstract' databasestorage
