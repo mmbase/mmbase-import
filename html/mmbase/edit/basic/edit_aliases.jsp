@@ -1,6 +1,6 @@
 <%@ include file="page_base.jsp"
 %><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
-<mm:cloud method="$config.method" authenticate="$config.authenticate" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud" rank="$rank">
+<mm:cloud loginpage="login.jsp" sessionname="$config.session" rank="$rank">
 <mm:write referid="style" escape="none" />
 <title>Edit aliases</title>
 </head>
