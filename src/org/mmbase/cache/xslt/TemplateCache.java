@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.6 2002-05-30 11:59:16 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.7 2002-06-14 19:30:03 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -96,7 +96,7 @@ public class TemplateCache extends Cache {
     }
     
     private String getKey(Source src, URIResolver uri) {     
-        return "" + uri.hashCode() + src.getSystemId();
+        return (uri != null ? "" + uri.hashCode() : "") + src.getSystemId();
     }
 
     private int remove(File file) {
