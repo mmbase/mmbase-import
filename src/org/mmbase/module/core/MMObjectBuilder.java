@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.149 2002-08-14 12:04:38 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.150 2002-08-30 14:29:25 rob Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -489,6 +489,32 @@ public class MMObjectBuilder extends MMTable {
     public void setParentBuilder(MMObjectBuilder parent) throws StorageException {
         database.registerParentBuilder(parent,this);
         parentBuilder=parent;
+    }
+    
+    
+    /**
+     * checks if the attribute buildername is an instance of this builder.
+     * @param buildername a builder name
+     * @return <true> if the buildername is an instance of this builder, <false> otherwise.
+     *
+     * @since MMBase-1.6
+     */
+    private boolean isInstanceOfBuilder(String builderName) {
+        String bn = builderName; // Only used for logging.
+        
+        while(!builderName.equals(tableName)) {
+            
+            // See if builderName has a parent builderName
+            MMObjectBuilder builder = mmb.getMMObject(builderName);
+            if (builder.parentBuilder==null) {
+                log.debug(bn+" isInstanceOfBuilder "+tableName+" == false");
+                 return false;
+            }
+            
+            builderName = builder.parentBuilder.tableName;    
+        }
+        log.debug(bn+" isInstanceOfBuilder "+tableName+" == true");
+        return true;
     }
 
     /**
@@ -2086,6 +2112,13 @@ public class MMObjectBuilder extends MMTable {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
             o.nodeRemoteChanged(machine,number,builder,ctype);
         }
+        
+        MMObjectBuilder pb = getParentBuilder();
+        if(pb!=null && isInstanceOfBuilder(builder)) {
+            log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
+            pb.nodeRemoteChanged(machine, number, builder, ctype);
+        }
+        
         return true;
     }
 
@@ -2130,6 +2163,13 @@ public class MMObjectBuilder extends MMTable {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
             o.nodeLocalChanged(machine,number,builder,ctype);
         }
+        
+        MMObjectBuilder pb = getParentBuilder();
+        if(pb!=null && isInstanceOfBuilder(builder)) {
+            log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
+            pb.nodeLocalChanged(machine, number, builder, ctype);
+        }
+        
         return true;
     }
 
