@@ -13,7 +13,7 @@ package org.mmbase.bridge;
 import java.util.List;
 
 /**
- * A list of String'ss
+ * A list of Strings
  *
  * @author Pierre van Rooden
  */
