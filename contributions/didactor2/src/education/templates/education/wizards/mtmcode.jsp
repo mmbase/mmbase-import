@@ -963,7 +963,10 @@ function MTMFetchCookies() {
 	if(cookieString == null) {
 		setCookie(MTMCookieName, "Say-No-If-You-Use-Confirm-Cookies");
 		cookieString = getCookie(MTMCookieName);
-		MTMUA.cookieEnabled = (cookieString == null) ? false : true;
+//
+//MTMUA.cookieEnabled = (cookieString == null) ? false : true;
+//
+                MTMUA.cookieEnabled=false;
 		return;
 	}
 

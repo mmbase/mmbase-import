@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.2 2004-11-23 13:43:25 jdiepenmaat Exp $
+    @version $Id: wizard.xsl,v 1.3 2005-03-04 10:45:49 jdiepenmaat Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -386,7 +386,21 @@
   </xsl:template>
 
   <xsl:template name="savebutton">
-    <a href="javascript:doSave();" id="bottombutton-save" unselectable="on" titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}">
+        <script type="text/javascript">
+          <xsl:text disable-output-escaping="yes">
+            <![CDATA[
+          <!--
+          var willSave = true;
+          function save() {
+              if (willSave) {
+                  willSave = false;
+                  doSave();
+              }
+          }
+          -->
+          ]]></xsl:text>
+        </script>
+    <a href="javascript:save();" id="bottombutton-save" unselectable="on" titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}">
       <xsl:if test="@allowsave='true'">
         <xsl:attribute name="class">bottombutton</xsl:attribute>
         <xsl:attribute name="title"><xsl:value-of select="$tooltip_save"/></xsl:attribute>
@@ -406,7 +420,21 @@
   -->
 
   <xsl:template name="saveonlybutton">
-    <a href="javascript:doSaveOnly();" id="bottombutton-saveonly" unselectable="on" titlesave="{$tooltip_save_only}" titlenosave="{$tooltip_no_save}">
+        <script type="text/javascript">
+          <xsl:text disable-output-escaping="yes">
+            <![CDATA[
+          <!--
+          var willSaveOnly = true;
+          function saveOnly() {
+              if (willSaveOnly) {
+                  willSaveOnly = false;
+                  doSaveOnly();
+              }
+          }
+          -->
+          ]]></xsl:text>
+        </script>
+    <a href="javascript:saveOnly();" id="bottombutton-saveonly" unselectable="on" titlesave="{$tooltip_save_only}" titlenosave="{$tooltip_no_save}">
       <xsl:if test="@allowsave='true'">
         <xsl:attribute name="class">bottombutton</xsl:attribute>
         <xsl:attribute name="title"><xsl:value-of select="$tooltip_save_only"/></xsl:attribute>
