@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.112 2004-03-15 15:31:36 michiel Exp $
+ * @version $Id: MMBase.java,v 1.113 2004-03-15 16:20:45 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -370,19 +370,22 @@ public class MMBase extends ProcessorModule {
 
         machineName = getInitParameter("MACHINENAME");
 
-        log.debug("Starting JDB module");
+        log.debug("Starting JDBC module");
         // retrieve JDBC module and start it
         jdbc = (JDBCInterface) getModule("JDBC", true);
 
         try {
-            if (jdbc.getConnection(jdbc.makeUrl()) == null) {
+            MultiConnection con = jdbc.getConnection(jdbc.makeUrl());
+            if (con == null) {
                 log.info("Did get 'null' connection of JDBC module, probably MMBase is shut down. Aborting init.");
                 return;
             }
+            con.close();            
         } catch (java.sql.SQLException sqe) {
             log.error(sqe.getMessage() + "Aborting init");            
             return;
         }
+
 
         if (multicasthost != null) {
             log.debug("Starting Multicasting");
@@ -733,12 +736,14 @@ public class MMBase extends ProcessorModule {
      */
     public void closeConnection(MultiConnection con, Statement stmt) {
         try {
-            if (stmt != null)
+            if (stmt != null) {
                 stmt.close();
+            }
         } catch (Exception g) {}
         try {
-            if (con != null)
+            if (con != null) {
                 con.close();
+            }
         } catch (Exception g) {}
     }
 
