@@ -65,6 +65,7 @@ public class Encode {
         
         // a few Encoding are avaible by default:
         try {
+            register("org.mmbase.util.transformers.MD5");
             register("org.mmbase.util.transformers.Base64");
             register("org.mmbase.util.transformers.Xml");
             register("org.mmbase.util.transformers.Url");
