@@ -13,11 +13,12 @@ package org.mmbase.util.functions;
 import java.lang.reflect.*;
 
 /**
- * A function based an an abritrary method. Since the name of the parameters cannot be found by reflection, this 
- * is only of limited use. Use BeanFunction.
+ * A function based on an abritrary method. Since the name of the parameters cannot be found by
+ * reflection, this is only of limited use. Normally you would probably better use BeanFunction. A
+ * method-function can come in handy on JSP's.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.1 2003-12-21 13:25:36 michiel Exp $
+ * @version $Id: MethodFunction.java,v 1.2 2004-11-03 17:43:38 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.function.BeanFunction
@@ -53,10 +54,13 @@ public class MethodFunction extends Function {
         return new MethodFunction(method, name); // could be cached...
     }
 
-    Method method = null;
+    private Method method = null;
     public MethodFunction(Method method, String name) {
         super(name, null, null);
         this.method = method;
+        if (! Modifier.isStatic(method.getModifiers())) {
+            throw new IllegalArgumentException("The method " + method + " is not static"); // otherwise NPE in getFunctionValue
+        }
      
         Class[] parameters = method.getParameterTypes();
         Parameter[] def = new Parameter[parameters.length];

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.9 2004-11-02 18:35:32 michiel Exp $
+ * @version $Id: Parameters.java,v 1.10 2004-11-03 17:43:38 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -239,7 +239,7 @@ public class Parameters extends AbstractList implements List  {
                 return this;
             }
         }
-        throw new IllegalArgumentException("The parameter '" + arg + "' is not defined");
+        throw new IllegalArgumentException("The parameter '" + arg + "' is not defined (defined are " + toString() + ")");
     }
 
     public Parameters set(Parameter arg, Object value) {
