@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>2002-12-05</date>
-		<edition>$Id: builders.xml,v 1.10 2003-07-27 17:47:53 henk Exp $</edition>
+		<edition>$Id: builders.xml,v 1.11 2003-11-24 12:39:11 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -138,7 +138,7 @@
 			<section>
 				<anchor id="searchage" />
 				<title>&lt;searchage&gt;</title>
-				<para>The value given here is used be a number of generic editors, as a default value for the maximum age in days when searching for objects in MMBase.</para>
+				<para>The value given here is used in a number of generic editors, as a default value for the maximum age in days when searching for objects in MMBase.</para>
 				<para>Since this value is not available through the MMBase Bridge interface, this value is mostly used in older editors, that directly access the core system (such as SCAN).</para>
 				<para>The default value for a builder that extends the core builder <emphasis>object</emphasis> is <constant>1000</constant>.</para>
 				<example>
