@@ -79,7 +79,7 @@
    </table>
    </mm:node>
 <mm:write referid="group" jspvar="group" vartype="node">
- <% response.sendRedirect("index_groups.jsp?group=" + group.getNumber()); %>
+ <% response.sendRedirect(response.encodeRedirectURL("index_groups.jsp?group=" + group.getNumber())); %>
 </mm:write>
   </mm:cloud>
   </body>
