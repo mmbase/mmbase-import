@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.9 2002-10-25 13:09:52 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.10 2003-06-17 16:41:24 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class.getName());
@@ -69,6 +69,18 @@ public class MMBaseCopConfig {
                 e.printStackTrace();
             }
         }
+    }
+
+    /** Public ID of the Builder DTD version 1.0 */
+    public static final String  PUBLIC_ID_SECURITY_1_0 = "-//MMBase//DTD security config 1.0//EN";
+    private static final String PUBLIC_ID_SECURITY_1_0_FAULT = "//MMBase - security//";
+
+    /** DTD resource filename of the Builder DTD version 1.0 */
+    public static final String DTD_SECURITY_1_0 = "security_1_0.dtd";
+
+    public static void registerPublicIDs() {
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0, DTD_SECURITY_1_0, MMBaseCopConfig.class);
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0_FAULT, DTD_SECURITY_1_0, MMBaseCopConfig.class);
     }
     
     /**

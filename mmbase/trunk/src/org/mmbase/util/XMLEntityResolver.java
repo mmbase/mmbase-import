@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.34 2003-04-19 16:16:07 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.35 2003-06-17 16:42:08 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -76,6 +76,7 @@ public class XMLEntityResolver implements EntityResolver {
         XMLDatabaseReader.registerPublicIDs();
         XMLModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
+        org.mmbase.security.MMBaseCopConfig.registerPublicIDs();
         // Manually register transaction dtd
         // This has to be placed in registerPublicIDs() in the TransactionHandler class, but which one?
         // There are two:
