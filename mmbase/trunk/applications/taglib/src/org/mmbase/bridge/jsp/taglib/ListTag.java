@@ -17,7 +17,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import java.util.List;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.37 2003-12-02 10:43:27 michiel Exp $
+ * @version $Id: ListTag.java,v 1.38 2003-12-02 11:29:43 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -129,6 +129,12 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         NodeListContainer c = getListContainer();
 
 
+        String distinctString = distinct.getString(this).toLowerCase();
+        boolean searchDistinct = false;
+        if ("true".equals(distinctString) || "yes".equals(distinctString)) {
+            searchDistinct = true;
+        }
+
         if (c == null || path != Attribute.NULL) {
             // old-style, container-less working
             if (path == Attribute.NULL) {
@@ -147,11 +153,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                                           "DESTINATION, EITHER, or ALL (value found was " + searchString + ")");
             }
 
-            String distinctString = distinct.getString(this).toLowerCase();
-            boolean searchDistinct = false;
-            if ("true".equals(distinctString) || "yes".equals(distinctString)) {
-                searchDistinct = true;
-            }
+
             if (log.isDebugEnabled()) {
                 log.debug("pathstring " + path.getString(this));
                 log.debug("directions " + directions);
@@ -167,12 +169,11 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                                                 searchDistinct);
             return setReturnValues(nodes, true);
         } else {   // container found!
-            if (fields != Attribute.NULL ||
-                path != Attribute.NULL ||
-                nodes != Attribute.NULL  ||
-                distinct != Attribute.NULL ||
-                search != Attribute.NULL) {
-                throw new JspTagException("fields, path, nodes, distinct and search attributes not supported within a container.");
+            if (path != Attribute.NULL ||
+                nodes != Attribute.NULL ||
+                search != Attribute.NULL
+                ) {
+                throw new JspTagException("search, path and nodes attributes not supported within a container.");
                 // (some of these could be implemented)
             }
 
@@ -183,6 +184,15 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             if (orderby != Attribute.NULL) {
                 Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
             }
+            query.setDistinct(searchDistinct);
+            if (fields != Attribute.NULL) {
+                Iterator i = fields.getList(this).iterator();
+                while (i.hasNext()) {
+                    String fieldName = (String) i.next();
+                    query.addField(fieldName);
+                }
+            }
+
             NodeList nodes = getCloud().getList(query);
             return setReturnValues(nodes, true);
         }
