@@ -916,19 +916,21 @@ public class Playlists extends ProcessorModule implements PlaylistsInterface  {
 		boe */
 		int speed = item.speed;
 
-		if (item.format==2 && speed>=minRAspeed && speed<=maxRAspeed)
-		{
-			// speed moet 16/32/40/80 zijn ipv 16000/32000/40000/80000
-			speed = speed / 1000;
-			//debug("converted speed("+item.speed+") to newspeed("+speed+")");
+		if (item.format==2) {
+			if (speed>=minRAspeed && speed<=maxRAspeed) {
+				// speed moet 16/32/40/80 zijn ipv 16000/32000/40000/80000
+				speed = speed / 1000;
+				//debug("converted speed("+item.speed+") to newspeed("+speed+")");
+			} else {
+				debug("getBestUrl("+item.id+","+item.speed+","+item.channels+"): WARNING: speed("+speed+") from user is higher/lower than min/max("+minRAspeed+"/"+maxRAspeed+"), using users speed("+uspeed+")");
+				if (uspeed > 1000)
+					uspeed = uspeed / 1000;
+				speed = uspeed;
+			}
+		} else if (item.format==6) {
+			speed=96;
 		}
-		else 
-		{
-			debug("getBestUrl("+item.id+","+item.speed+","+item.channels+"): WARNING: speed("+speed+") from user is higher/lower than min/max("+minRAspeed+"/"+maxRAspeed+"), using users speed("+uspeed+")");
-			if (uspeed > 1000)
-				uspeed = uspeed / 1000;
-			speed = uspeed;
-		}
+
 
 		if (item.channels == 0)
 			item.channels = uchan;
