@@ -25,10 +25,10 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.25 2003-05-19 09:59:12 michiel Exp $
+ * @version $Id: Attachments.java,v 1.26 2003-11-10 21:10:51 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
-    private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Attachments.class);
 
 
     protected String getAssociation() {
@@ -65,13 +65,13 @@ public class Attachments extends AbstractServletBuilder {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
 
-            String filename = node.getStringValue("filename");
+            String fileName = node.getStringValue("filename");
             String title;
 
-            if (filename == null || filename.equals("")) {
+            if (fileName == null || fileName.equals("")) {
                 title = "[*]";
             } else {
-                title = "[" + filename + "]";
+                title = "[" + fileName + "]";
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
@@ -84,11 +84,16 @@ public class Attachments extends AbstractServletBuilder {
                 StringBuffer servlet = new StringBuffer();
                 HttpServletRequest req = (HttpServletRequest) a.get("request");
                 if (req != null) {            
-                    servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), filename));
+                    servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
                 } else {
-                    servlet.append(getServletPath(filename));
+                    servlet.append(getServletPath());
                 }
                 servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "").append(num);
+
+                if ( ! (servlet.charAt(servlet.length() - 1) == '?' ||  "".equals(fileName))) {
+                    servlet.append('/').append(fileName);
+                }
+
                 HttpServletResponse res = (HttpServletResponse) a.get("response");
                 String url;
                 if (res != null) {

@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.32 2003-05-19 09:59:13 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.33 2003-11-10 21:10:51 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -62,7 +62,7 @@ public class ImageCaches extends AbstractImages {
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) a.get("request");
         if (req != null) {            
-            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), null));
+            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
         } else {
             servlet.append(getServletPath());
         }
@@ -174,7 +174,7 @@ public class ImageCaches extends AbstractImages {
 
 	if (number == -1) {
 	    // we dont have a cachednode yet, return null	    
-	    log.debug("cached node not found for key ("+ ckey +"), returning null");
+	    log.debug("cached node not found for key (" + ckey + "), returning null");
 	    return null;
 	}
 
