@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.38 2004-01-19 11:52:29 pierre Exp $
+ * @version $Id: MMBaseContext.java,v 1.39 2004-02-19 17:33:20 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -157,20 +157,19 @@ public class MMBaseContext {
                  System.setErr(mystream);
             } catch (IOException e) {
                  outputFile = null;
-                 System.err.println("Failed to set mmbase.outputfile to '"
-                                    + outputFile + "'.");
-                 e.printStackTrace();
+                 log.error("Failed to set mmbase.outputfile to '" + outputFile + "'.");
+                 log.error(Logging.stackTrace(e));
             }
         }
     }
 
-    private static void initConfigpath(String c) throws Exception {
+    private static synchronized void initConfigpath(String c) throws Exception {
         configPath = c;
         if (configPath == null) {
             userDir = null;
             configPath = null;
             String message = "Parameter mmbase.config not set.";
-            System.err.println(message);
+            log.error(message);
             throw new Exception(message);
         }
         File fileConfigpath = new File(configPath);
@@ -185,17 +184,16 @@ public class MMBaseContext {
         if (!fileConfigpath.isDirectory()) {
             userDir = null;
             configPath = null;
-            String message = "Parameter mmbase.config is not pointing to "
-                             + "a directory("+fileConfigpath.getAbsolutePath()+").";
-            System.err.println(message);
+            String message = "Parameter mmbase.config is not pointing to a directory("+fileConfigpath.getAbsolutePath()+").";
+            log.fatal(message);
             throw new Exception(message);
         }
         if(!new File(configPath + "/security/security.xml").isFile()) {
             userDir = null;
             configPath = null;
             String message = "File 'security/security.xml' missing in "
-                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
-            System.err.println(message);
+                             + "mmbase.config directory(" + fileConfigpath.getAbsolutePath()+").";
+            log.fatal(message);
             throw new Exception(message);
         }
     /*
@@ -213,7 +211,7 @@ public class MMBaseContext {
             configPath = null;
             String message = "Directory 'builders' missing in "
                              + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
-            System.err.println(message);
+            log.fatal(message);
             throw new Exception(message);
         }
         if(!new File(configPath + "/modules").isDirectory()) {
@@ -221,7 +219,7 @@ public class MMBaseContext {
             configPath = null;
             String message = "Directory 'modules' missing in "
                              + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
-            System.err.println(message);
+            log.fatal(message);
             throw new Exception(message);
         }
         if(!new File(configPath + "/modules/mmbaseroot.xml").isFile()) {
@@ -229,7 +227,7 @@ public class MMBaseContext {
             configPath = null;
             String message = "File 'modules/mmbaseroot.xml' missing in "
                              + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
-            System.err.println(message);
+            log.fatal(message);
             throw new Exception(message);
         }
         if(!new File(configPath + "/modules/jdbc.xml").isFile()) {
@@ -237,16 +235,13 @@ public class MMBaseContext {
             configPath = null;
             String message = "File 'modules/jdbc.xml' missing in "
                              + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
-            System.err.println(message);
+            log.fatal(message);
             throw new Exception(message);
         }
         if(!new File(configPath + "/log/log.xml").isFile()) {
-            userDir = null;
-            configPath = null;
-            String message = "File 'log/log.xml' missing in "
-                             + "mmbase.config directory("+fileConfigpath.getAbsolutePath()+").";
-            System.err.println(message);
-            throw new Exception(message);
+            String message = "File 'log/log.xml' missing in mmbase.config directory(" + fileConfigpath.getAbsolutePath() + ").";
+            log.error(message);
+            //  throw new Exception(message);
         }
         if (configPath.endsWith(File.separator)) {
             configPath = configPath.substring(0, configPath.length() - 1);
@@ -285,7 +280,7 @@ public class MMBaseContext {
     public synchronized static void initHtmlRoot() throws ServletException {
         if (!initialized || sx == null) {
             String message = "The init(ServletContext) method should be called first.";
-            System.err.println(message);
+            log.error(message);
             throw new RuntimeException(message);
         }
         if (!htmlRootInitialized) {
@@ -299,7 +294,7 @@ public class MMBaseContext {
             }
             if (htmlRoot == null){
                 String message = "Parameter mmbase.htmlroot not set.";
-                System.err.println(message);
+                log.error(message);
                 throw new ServletException(message);
             } else {
                 if (userDir != null && !new File(htmlRoot).isAbsolute()) {
@@ -311,7 +306,7 @@ public class MMBaseContext {
                     htmlRoot = null;
                     String message = "Parameter mmbase.htmlroot is not pointing "
                                      + "to a directory.";
-                    System.err.println(message);
+                    log.error(message);
                     throw new ServletException(message);
                 } else {
                     if (htmlRoot.endsWith(File.separator)) {
@@ -336,7 +331,7 @@ public class MMBaseContext {
     public synchronized static ServletContext getServletContext() {
         if (!initialized) {
             String message = "The init method should be called first.";
-            System.err.println(message);
+            log.error(message);
             throw new RuntimeException(message);
         }
         return sx;
@@ -354,23 +349,23 @@ public class MMBaseContext {
             String config = System.getProperty("mmbase.config");
             if (config == null) {
                 String message = "The init method should be called first (or start with mmbase.config parameter)";
-                System.err.println(message);
+                log.error(message);
                 throw new RuntimeException(message);
             } else {
                 File configDir = new File(config);
                 if(!configDir.exists()) {
                     String message = "Config directory could not be found, does it exist? (" + configDir.getAbsolutePath()  + ")";
-                    System.err.println(message);
+                    log.error(message);
                     throw new RuntimeException(message);
                 }
                 if(!configDir.canRead()) {
                     String message = "Config directory could not be read, is it readable? (" + configDir.getAbsolutePath()  + ")";
-                    System.err.println(message);
+                    log.error(message);
                     throw new RuntimeException(message);
                 }
                 if(!configDir.isDirectory()) {
                     String message = "Config directory is not a directory (" + configDir.getAbsolutePath()  + ")";
-                    System.err.println(message);
+                    log.error(message);
                     throw new RuntimeException(message);
                 }
                 return config;
@@ -390,7 +385,7 @@ public class MMBaseContext {
     public synchronized static String getHtmlRoot() {
         if (!htmlRootInitialized) {
             String message = "The initHtmlRoot method should be called first.";
-            System.err.println(message);
+            log.error(message);
             throw new RuntimeException();
         }
        return htmlRoot;
@@ -408,7 +403,7 @@ public class MMBaseContext {
     public synchronized static String getOutputFile() {
         if (!initialized) {
             String message = "The init method should be called first.";
-            System.err.println(message);
+            log.error(message);
             throw new RuntimeException(message);
         }
         return outputFile;
@@ -452,7 +447,7 @@ public class MMBaseContext {
             log.info("Finding root url");
             if (! initialized) {
                 String message = "The init method should be called first.";
-                System.err.println(message);
+                log.error(message);
                 throw new RuntimeException(message);
             }
             if (sx == null) { // no serlvetContext -> not htmlRootUrlPath
