@@ -40,7 +40,7 @@
 					<br />
 					</mm:compare>
 			<b>Area name</b> : <mm:field name="name" /> <b>Topics</b> : <mm:field name="postthreadcount" /> <b>Messages</b> : <mm:field name="postcount" /> <b>Views</b> : <mm:field name="viewcount" /><br />
-			<b>Laatste bijdrage</b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b>door</b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1">nog geen bericten</mm:compare></mm:field><br />
+			<b>Laatste bijdrage</b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b>door</b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1">nog geen berichten</mm:compare></mm:field><br />
 			<mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
                         <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
 		  </mm:nodefunction>
