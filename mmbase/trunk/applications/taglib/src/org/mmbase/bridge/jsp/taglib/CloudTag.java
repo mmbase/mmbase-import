@@ -126,7 +126,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     public CloudContext getDefaultCloudContext() throws JspTagException {
         if (cloudContext == null){
             cloudContext = ContextProvider.getCloudContext(cloudURI.getString(this));
-//            cloudContext = ContextProvider.getDefaultCloudContext();
         }
         return cloudContext;
     }
