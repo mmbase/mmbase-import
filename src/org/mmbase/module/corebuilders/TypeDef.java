@@ -29,8 +29,7 @@ public class TypeDef extends MMObjectBuilder {
 	Hashtable numberCache=new Hashtable(); 		// typedef name -> object number
 	Hashtable descriptionCache; 				// object number -> typedef description
 	public boolean broadcastChanges=false;
-	// ROB -> There are different typedefs loaded!!!
-	static private Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
+	private Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
 
 	public TypeDef() {
 	}
@@ -294,7 +293,6 @@ public class TypeDef extends MMObjectBuilder {
             String cmd=tok.nextToken();
 
             if (cmd.equals("builders")) {
-		
 				Enumeration e = activeBuilders().elements();
 				while (e.hasMoreElements()) {
 					System.out.println("activeBuilder -> "+e.nextElement());	
