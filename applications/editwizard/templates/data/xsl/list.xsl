@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.30 2003-05-28 11:45:38 pierre Exp $
+  @version $Id: list.xsl,v 1.31 2003-06-05 14:37:28 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -81,8 +81,8 @@
 							</xsl:if>
 							<td valign="top">
 								<form action="list.jsp">
-									<span class="header"><xsl:call-template name="prompt_search_list" /> <xsl:value-of select="$title"/>:</span>
-									<br/>
+									<span class="header"><xsl:call-template name="prompt_search_list" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><xsl:value-of select="$title"/>:</span>
+									<br />
 									
 									<xsl:choose>
 									  <xsl:when test="$searchagetype='edit'">
@@ -136,12 +136,8 @@
 									<input type="text" name="searchvalue" value="{$searchvalue}" class="input" style="width:200px;"/>
                                     <input type="image" src="{$mediadir}search.gif" width="20" height="20" align="absmiddle" alt="" hspace="2" border="0"/>
                                     <br/><span class="subscript"> (<xsl:call-template name="prompt_age" />)(<xsl:call-template name="prompt_search_term" />)</span>
-									<br/>
 								</form>
 							</td>
-						</tr>
-						<tr>
-							<td colspan="2"><hr /></td>
 						</tr>
 					</table>
 				</td>
