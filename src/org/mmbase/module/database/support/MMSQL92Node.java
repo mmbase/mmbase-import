@@ -20,14 +20,15 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
-* MMSQL92Node implements the MMJdbc2NodeInterface for
-* sql92 types of database this is the class used to abstact the query's
-* needed for mmbase for each database.
-*
-* @author Daniel Ockeloen
-* @author Pierre van Rooden
-* @version $Id: MMSQL92Node.java,v 1.55 2002-02-22 12:26:24 michiel Exp $
-*/
+ * MMSQL92Node implements the MMJdbc2NodeInterface for
+ * sql92 types of database this is the class used to abstact the query's
+ * needed for mmbase for each database.
+ *
+ * @author Daniel Ockeloen
+ * @author Pierre van Rooden
+ * @author Kees Jongenburger
+ * @version $Id: MMSQL92Node.java,v 1.56 2002-02-22 16:01:39 kees Exp $
+ */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
     /**
@@ -782,6 +783,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
         } else {
             if (number!=-1) {
+		//first alway's remove the "requested" object from the table it belongs to
                 try {
                     MultiConnection con=mmb.getConnection();
                     Statement stmt=con.createStatement();
@@ -791,6 +793,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 } catch (SQLException e) {
                     log.error(Logging.stackTrace(e));
                 }
+		//during the OO->relational mapping it wat decided that all relations should remain
+		//in the insrel table. If the node requested to delete is a relation node and it is not insrel
+		//we need to also remove it from the insrel table
                 if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
                     try {
                         MultiConnection con=mmb.getConnection();
@@ -802,7 +807,32 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         log.error(Logging.stackTrace(e));
                     }
                 }
+		//due to optimalisation when one requests the "relations" that a node has the layer
+		//returns relations of type insrel. If you then call "delete" on that insrel it might
+		//be that case that at this point in the stage of delete that there are still fields
+		//in for example a posrel tables. We need to find out if the object we are trying to delete
+		//is keeps it's information somewhere else so this only happens when the builder when the builder 
+		//is InsRel and the table is insrel but the real tables is not insrel
 
+		//if insrel but otype != insrel
+		String otypeString = mmb.getTypeDef().getValue(node.getOType());
+                if (node.parent!=null && (node.parent instanceof InsRel) && bul.tableName.equals("insrel") && !otypeString.equals("insrel")
+		    ) {
+		    log.debug("deleting row in subtable of insrel the subtable is of type("+ otypeString +") and the object number is="+ number);
+		    try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate("delete from "+mmb.baseName+"_"+otypeString+" where "+getNumberString()+"="+number);
+			stmt.close();
+			con.close();
+		    } catch (SQLException e) {
+			log.error(Logging.stackTrace(e));
+		    }
+		}
+
+
+		//during the OO->relational mapping the object table is not anymore "automaticatly" updated
+		//so we also need to remove the object from the object table
                 try {
                     MultiConnection con=mmb.getConnection();
                     Statement stmt=con.createStatement();
