@@ -12,10 +12,10 @@
 </head>
 <body class="basic" >
 <table summary="databases">
-<tr>
-<th class="header" colspan="5">Database Overview
-</th>
-</tr>
+<% 
+   java.util.Map params = new java.util.Hashtable();
+if( org.mmbase.module.core.MMBase.getMMBase().getStorageManagerFactory() == null) { %>
+<tr><th class="header" colspan="5">Database Overview</th></tr>
 <tr>
   <td class="multidata" colspan="5">
   <p>This overview lists all database systems supported by this system, as well as
@@ -33,7 +33,6 @@
 </tr>
 <%
    Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
-   java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
 
    NodeList databases=mmAdmin.getList("DATABASES",params,request,response);
@@ -52,6 +51,8 @@
 <% } %>
 
 <tr><td>&nbsp;</td></tr>
+
+<% } %>
 
 <tr>
   <th class="header" colspan="2">Pool Name</th>
