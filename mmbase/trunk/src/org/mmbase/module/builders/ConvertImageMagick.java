@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.37 2002-06-05 16:26:36 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.38 2002-06-06 21:18:10 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -297,6 +297,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     } catch (java.io.UnsupportedEncodingException e) {
                         log.error(e.toString());
                     }
+                } else if (type.equals("draw")) {
+                    try {
+                        cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1"); // can be some text in the draw command
+                    } catch (java.io.UnsupportedEncodingException e) {
+                        log.error(e.toString());
+                    }                                                      
                 } else if (type.equals("font")) {
                     if (cmd.startsWith("mm:")) {
                         // recognize MMBase config dir, so that it is easy to put the fonts there.
