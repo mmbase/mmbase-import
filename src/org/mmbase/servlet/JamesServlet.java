@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.11 2000-05-11 11:18:12 wwwtech Exp $
+$Id: JamesServlet.java,v 1.12 2000-05-12 15:10:11 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2000/05/11 11:18:12  wwwtech
+- (marcel) Added extra feature in getCookie to determine why certain browsers dont honor domain-wide cookies
+
 Revision 1.10  2000/05/10 13:26:05  wwwtech
 - (marcel) Made displaying of address when new cookie is requested more advanced, because we use a proxy (which would turn up every time as the requesting host
 
@@ -42,7 +45,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.11 2000-05-11 11:18:12 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.12 2000-05-12 15:10:11 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -67,7 +70,7 @@ class DebugServlet {
 	
 public class JamesServlet extends HttpServlet {
     public String classname = getClass().getName();
-    public boolean debug = true;
+    public boolean debug = false;
     public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	// org.mmbase
 
@@ -170,7 +173,8 @@ public class JamesServlet extends HttpServlet {
 
 		// somehow client has a cookie but does not return it in getHeader(COOKIE)
 		// this will explain why :)
-		
+	
+/*	
 		if( debug ) {
 			debug("getCookie(): header of client:");
 			debug("getCookie(): -----------------");
@@ -209,7 +213,7 @@ public class JamesServlet extends HttpServlet {
 			debug("getCookie():");
 			debug("getCookie():--------");
 		}
-
+*/
 		String cookies = req.getHeader(HEADERNAME); // Returns 1 or more cookie NAME=VALUE pairs seperated with a ';'.
 
 		if ((cookies!= null) && (cookies.indexOf(MMBASE_COOKIENAME) != -1)) {
