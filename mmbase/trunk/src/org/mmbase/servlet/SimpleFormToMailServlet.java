@@ -1,17 +1,12 @@
-/**
- * File 		: SimpleFormServlet.java
- *
- * Description	: 
- * 
- * 	This servlet will mail a form to a (set of) specified user(s). 
- *  Inherit from it (its abstract), specify the methods:
- *  	public abstract String getSubject();
- *  	public abstract String getToEmailAddress();
- *  and the form will be mailed.
- *
- * @author  marmaa@vpro.nl (Marcel Maatkamp) 
- * @version 2.0.1  
- */
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 
 package org.mmbase.servlet;
 
@@ -23,15 +18,22 @@ import java.util.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.*;
-
+import org.mmbase.util.logging.*;
 
 /**
  * 	Post Servlet a example of how to use different Post methods
+ *
+ * 	This servlet will mail a form to a (set of) specified user(s). 
+ *  Inherit from it (its abstract), specify the methods:
+ *  	public abstract String getSubject();
+ *  	public abstract String getToEmailAddress();
+ *  and the form will be mailed.
+ *
+ * @author  marmaa@vpro.nl (Marcel Maatkamp) 
+ * @version 2.0.1  
  */
-
-public abstract class SimpleFormToMailServlet extends JamesServlet 
-{
-	private boolean debug = false;
+public abstract class SimpleFormToMailServlet extends JamesServlet {
+    static Logger log = Logging.getLoggerInstance(performance.class.getName());
 
 	protected SendMailInterface sendmail;
 	boolean first=true;
@@ -41,10 +43,9 @@ public abstract class SimpleFormToMailServlet extends JamesServlet
 	public void init() {
 		sendmail=(SendMailInterface)Module.getModule("sendmail");
 		if( sendmail == null ) {
-			debug("init(): sendmail is null!!!");
+			log.error("SimpleFormToMailServlet - init(): sendmail is null!!!");
 		} else {
-			if( debug ) 
-				debug("init(): successfully initialized.");
+			log.debug("SimpleFormToMailServlet - init(): successfully initialized.");
 		}
 	}
 
@@ -54,10 +55,9 @@ public abstract class SimpleFormToMailServlet extends JamesServlet
 	public void reload() {
 		sendmail=(SendMailInterface)Module.getModule("sendmail");
 		if( sendmail == null ) {
-			debug("reload(): sendmail is null!!!");
+			log.error("SimpleFormToMailServlet - reload(): sendmail is null!!!");
 		} else {
-			if( debug ) 
-				debug("reload(): successfully reloaded.");
+			log.debug("SimpleFormToMailServlet - reload(): successfully reloaded.");
 		}
 	}
 
@@ -79,10 +79,10 @@ public abstract class SimpleFormToMailServlet extends JamesServlet
 		text			= getentries( hp );
 
 		if ( !sendmail( from, to, subject, text) ) {
-			debug("service(): ERROR: mail from("+from+"), to("+to+"), subject("+subject+"), text("+text+"): not mailed!");
+			log.error("SimpleFormToMailServlet - service(): ERROR: mail from("+from+"), to("+to+"), subject("+subject+"), text("+text+"): not mailed!");
 			displayErrorMail(res);
 		} else {
-			debug("service(): mail from("+from+"), to("+to+"), subject("+subject+"), text("+text+"): mailed!");
+			log.debug("SimpleFormToMailServlet - service(): mail from("+from+"), to("+to+"), subject("+subject+"), text("+text+"): mailed!");
 			displaySuccess(res);
 		}
 	}
@@ -166,7 +166,9 @@ public abstract class SimpleFormToMailServlet extends JamesServlet
 			result += message;
 			result += getHtmlFooter();
 			out.println( result );
-		} catch( Exception e ) { debug("displayResults(): ERROR: " + e ); }
+		} catch( Exception e ) { 
+			log.debug("displayResults(): ERROR: " + e ); 
+		}
 	}
 
 	private void displaySuccess( HttpServletResponse res ) {
@@ -204,7 +206,7 @@ public abstract class SimpleFormToMailServlet extends JamesServlet
 	 * @returns true when send, false otherwise
 	 */
 	private boolean sendmail( String from, String to, String subject, String text ) {
-		debug("sendmail(): from("+from+"), to("+to+"), subject("+subject+"), text("+text+")");
+		log.debug("SimpleFormToMailServlet - sendmail(): from("+from+"), to("+to+"), subject("+subject+"), text("+text+")");
 
 		boolean result = false;
 		Mail mail = new Mail(to, from);
