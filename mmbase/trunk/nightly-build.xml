@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.10 2003-04-09 17:25:11 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.11 2003-04-09 19:46:42 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -50,19 +50,35 @@
   <property name="cvs.mmbase.module" value="all"/>
 
   <property name="cvsroot" value=":pserver:guest@www.mmbase.org:/usr/local/cvs" />
-  <property name="checkoutcommand" value="checkout -D ${date} " />
+  <property name="checkoutcommand" value="checkout -D ${date} all" />
   <property name="updatecommand" value="update -d -P  -D ${date} " />
 
-  <target name="cvs">
+  <target name="init.cvs">
+    <available property="checkout.available" file="${source.dir}"/>
+  </target>
+
+  <target name="checkout" depends="init.cvs" unless="checkout.available">
+    <property name="just.checked.out" value="yes"/>
     <echo>Doing an anonymous CVS login</echo>
     <cvspass cvsroot="${cvsroot}" password="guest" />
 		
     <!-- get config from cvs -->
     <mkdir dir="${nbuild.dir}/cvs"/>
     <cvs cvsRoot="${cvsroot}"
+      command="${checkoutcommand}"
+      dest="${nbuild.dir}/cvs"
+      />
+  </target>
+
+  <target name="cvs" depends="checkout" unless="just.checked.out">
+    <cvs cvsRoot="${cvsroot}"
       command="${updatecommand}"
       dest="${source.dir}"
       />
+  </target>
+
+  <target name="cvs.clean" depends="init.cvs" if="checkout.available">
+    <delete dir="${source.dir}"/>
   </target>
   
 
@@ -150,8 +166,8 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
 
     <copy file="${mmbase.release.lib.dir}/mmbase.jar" tofile="${jarpackage.path}"/>
     <copy file="${build.dir}/mmbase/rmmci.jar"  tofile="${rmmcipackage.path}"/>
-    <copy todir="${destinination.dir}">
-			<fileset dir="${applications.build.dir}"/>
+    <copy todir="${destination.dir}">
+        <fileset dir="${applications.build.dir}"/>
     </copy>
 
     <!-- the libs we used -->
@@ -181,7 +197,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   
   
   <!-- clean for a new compile -->
-  <target name="clean">
+  <target name="clean" depends="init.cvs" if="checkout.available">
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="clean" />
   </target>
   
