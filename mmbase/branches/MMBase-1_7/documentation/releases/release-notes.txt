@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.3 - Release Notes
+                     MMBase 1.7.4 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.7.3, relative to the previous release of MMBase (1.6).
+release of MMBase 1.7.4, relative to the previous release of MMBase (1.6).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
