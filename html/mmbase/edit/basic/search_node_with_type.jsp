@@ -130,7 +130,6 @@
     </mm:context>
    </tr>
 </table>
-</mm:context>
 </mm:import>
 
 <mm:write referid="pager" escape="none" />
