@@ -7,7 +7,7 @@
 
 		<date>2003-08-20</date>
 
-		<edition>$Id: index.xml,v 1.2 2004-02-05 14:05:23 pierre Exp $</edition>
+		<edition>$Id: index.xml,v 1.3 2004-03-08 12:18:48 rob Exp $</edition>
 
 		<authorgroup>
 			<author>
@@ -26,7 +26,7 @@
 		</revhistory>
 
 		<abstract>
-			<para>The Storage layer is a set of classes that provide a transaparent interface for MMBase to store and retrieve data.</para>
+			<para>The Storage layer is a set of classes that provide a transparent interface for MMBase to store and retrieve data.</para>
 		</abstract>
 
 		<legalnotice>
@@ -42,7 +42,7 @@
 		<title>Introduction</title>
 		<para>The Storage layer is a set of classes that provide a transaparent interface for MMBase to store and retrieve data.</para>
 		<para>The interface was created after the old model (the MMJDBC2NodeInterface) proved unsatisfactory. The storage layer is set up to discourage direct reference of database-specific code.</para>
-		<para>The layer is ment to be device independent. A storage will most often refer to a database. However, the outer interface is set up in such a way that it will be possible to provide alternate 'storages', such as storing data in files (i.e. xml), in memory, or across servers.</para>
+		<para>The layer is meant to be device independent. A storage will most often refer to a database. However, the outer interface is set up in such a way that it will be possible to provide alternative 'storages', such as storing data in files (i.e. xml), in memory, or across servers.</para>
 		<para>Aside from transparency, the storage layer allows for the use of transactions. While not every storage implementation will actually implement transactions, the setup for the storage layer allows for it.</para>
 	</section>
 
@@ -56,7 +56,7 @@
 	<section id="installation">
 		<title>Installation</title>
 		<para>The storage classes will be included in the MMBase core, so no additional software need be installed.</para>
-		<para>You will, however, need to tell the MMbase system that you intend to use the (new) storage layer. In the default configuration, the system allready uses the new storage layer. When upgrading older systems, you need to make changes as outlined below.</para>
+		<para>You will, however, need to tell the MMBase system that you intend to use the (new) storage layer. In the default configuration, the system allready uses the new storage layer. When upgrading older systems, you need to make changes as outlined below.</para>
 		<para>The following steps need to be taken:</para>
 
 		<section>
@@ -72,7 +72,7 @@
 			<para>We now need to set up how the storage layer accesses the database. There are two ways of doing this.</para>
 			<para>The first, and obviously easiest way for older systems, is to use the JDBC module. If you use this method, you do not need to change anything in your setup. See the <ulink url="configuration.html">configuration document</ulink> for how to configure the JDBC module.</para>
 			<para>The second method is to leave database access and maintenance of such elements as connection pools to the application server.</para>
-			<para>This is a more elegant way of accessing the database, but requires some knowledge of how to set up an application server's data-sources (a class that provides a databse connection). Information on setting up datasources can be found in the documentation of your application server. See the <ulink url="configuration.html">configuration document</ulink> for an example.</para>
+			<para>This is a more elegant way of accessing the database, but requires some knowledge of how to set up an application server's data-sources (a class that provides a database connection). Information on setting up datasources can be found in the documentation of your application server. See the <ulink url="configuration.html">configuration document</ulink> for an example.</para>
 			<para>After setting up the datasource, you need to specify a JNDI pointer to it. This pointer is an identifier equal to one of the 'location' identifiers specified for the datasource. We recommend using the 'ejb-location' identifier ('dbc/HsqldbDS' in the example), as that will provide connection pooling, which speeds up the storage layer.</para>
 			<para>The datasource is once again a property set in the mmbaseroot.xml file:</para>
 			<programlisting format="linespecific"><![CDATA[<property name="datasource">jdbc/HsqldbDS</property>]]></programlisting>
