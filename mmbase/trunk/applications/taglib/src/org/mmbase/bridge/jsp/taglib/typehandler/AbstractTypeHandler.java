@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.24 2004-01-05 13:48:24 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.25 2004-03-09 13:47:04 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -148,11 +148,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected String prefix(String s) throws JspTagException {
         String id = tag.findFieldProvider().getId();
         if (id == null) id = "";
-        if (id.equals("") ) {
-            return "_" + s;
-        } else {
-            return id + "_" + s;
-        }
+        return id + "_" + s;
     }
 
 
