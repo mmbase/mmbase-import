@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storable.java,v 1.1 2003-07-28 10:19:20 pierre Exp $
+ * @version $Id: Storable.java,v 1.2 2003-07-28 12:57:41 pierre Exp $
  */
 public interface Storable {
 
@@ -38,7 +38,13 @@ public interface Storable {
      * {@link StorageMagagerFactory.getStorageIdentifier()} when it is first instantiated.
      * @return the identifier
      */
-    Object getStorageIdentifier() throws StorageException;
+    public Object getStorageIdentifier() throws StorageException;
 
+    /**
+     * Returns whether an object is kept in the storage (iow: is persistent).
+     * Virtual fields or builders should return <code>false</code>. 
+     * @return <code>true</code> if the object is kept in the storage
+     */
+    public boolean inStorage();
 
 }
