@@ -96,7 +96,7 @@ Change directory to ${build.dir}/orion and run:
   <property name="build.dir" value="${source.dir}/build"/>
   <property name="download.dir" value="${build.dir}/download"/>
   <property name="expand.dir" value="${download.dir}/expanded"/>
-  <property name="build.compiler" value="classic"/>
+  <property name="build.compiler" value="jikes"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="off"/>
   <property name="deprecation" value="off"/>
@@ -115,7 +115,7 @@ Change directory to ${build.dir}/orion and run:
     <tstamp/>
     <mkdir dir="${build.dir}"/>
     <property name="name" value="mmbase"/>
-    <property name="version" value="${DSTAMP}"/>
+    <property name="version" value="1.4-rc1"/>
   </target>
 
 
@@ -139,38 +139,38 @@ Change directory to ${build.dir}/orion and run:
   <!-- Create the source distribution                                      -->
   <!-- =================================================================== -->
   <target name="srcdist" description="Create the source distribution"
-          depends="init">
+          depends="init,bindist">
     <!-- copy the java-sources -->
-    <mkdir dir="${build.dir}/mmbase-src/src"/>
-    <copy todir="${build.dir}/mmbase-src/src">
+    <mkdir dir="${build.dir}/mmbase/src"/>
+    <copy todir="${build.dir}/mmbase/src">
       <fileset dir="${source-src.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the config files -->
-    <mkdir dir="${build.dir}/mmbase-src/config"/>
-    <copy todir="${build.dir}/mmbase-src/config">
+    <mkdir dir="${build.dir}/mmbase/config"/>
+    <copy todir="${build.dir}/mmbase/config">
       <fileset dir="${source-config.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the html files -->
-    <mkdir dir="${build.dir}/mmbase-src/html"/>
-    <copy todir="${build.dir}/mmbase-src/html">
+    <mkdir dir="${build.dir}/mmbase/html"/>
+    <copy todir="${build.dir}/mmbase/html">
       <fileset dir="${source-html.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the build file -->
     <copy file="${source-src.dir}/org/mmbase/scripts/build.xml"
-          todir="${build.dir}/mmbase-src"/>
+          todir="${build.dir}/mmbase"/>
     <copy file="${source-src.dir}/org/mmbase/scripts/build-from-srcdist.properties"
-          tofile="${build.dir}/mmbase-src/build.properties"/>
+          tofile="${build.dir}/mmbase/build.properties"/>
     <!-- copy the readme -->
     <!-- not in cvs yet -->
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-src-${version}.zip"
-         basedir="${build.dir}/mmbase-src"/>
+         basedir="${build.dir}/mmbase"/>
   </target>
 
 
@@ -178,7 +178,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- Clean the source distribution                                       -->
   <!-- =================================================================== -->
   <target name="clean.srcdist" description="Clean the source distribution">
-    <delete dir="${build.dir}/mmbase-src"/>
+    <delete dir="${build.dir}/mmbase"/>
   </target>
 
 
