@@ -57,7 +57,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public Object getCurrent() {
         return currentField;
     }
-    
+
     public boolean isChanged() {
         return true;
     }
@@ -93,7 +93,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public Node getNodeVar() throws JspTagException {
         if (nodeManagerString != null) {
             return null;
-        }       
+        }
         nodeProvider = findNodeProvider();
         return nodeProvider.getNodeVar();
     }
@@ -131,17 +131,17 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         // if we get a result from the query
         // evaluate the body , else skip the body
         if (returnValues.hasNext())
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         return SKIP_BODY;
     }
 
     public int doAfterBody() throws JspTagException {
         if (getId() != null) {
             getContextTag().unRegister(getId());
-        }  
+        }
         if (returnValues.hasNext()){
             doInitBody();
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_AGAIN;
         } else {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -156,7 +156,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextTag().register(getId(), returnList);
-        }        
+        }
         return  EVAL_PAGE;
     }
 
@@ -166,7 +166,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             currentField = returnValues.nextField();
             if (getId() != null) {
                 getContextTag().register(getId(), currentField);
-            }      
+            }
         }
     }
 }

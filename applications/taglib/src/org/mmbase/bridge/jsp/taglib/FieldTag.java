@@ -164,7 +164,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             getContextTag().register(getId(), helper.getValue());
         }
 
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     /**
