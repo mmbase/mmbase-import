@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.2 2003-07-25 14:47:26 pierre Exp $
+ * @version $Id: Scheme.java,v 1.3 2003-07-28 10:19:21 pierre Exp $
  */
 public final class Scheme extends MessageFormat {
 
@@ -53,25 +53,26 @@ public final class Scheme extends MessageFormat {
      * Resolves an object (passed as a parameter) to a value that can be applied in a pattern.
      * It returns:
      * <ul>
+     *  <li>For MMBase: the object storage element identifier as a String (fully expanded table name)</li>
      *  <li>For MMObjectBuilder: the builder storage element identifier as a String (fully expanded table name)</li>
      *  <li>For MMObjectNode: the object number as an Integer</li>
      *  <li>For FieldDefs: a storage-compatible field name as a String (if no such name exists a StorageException is thrown)</li>
      * </ul>
      * Other object types are returned as is, leaving them to be handled by MessageFormat's formatting code.
      *
+     * @todo MMBase, FieldDefs, MMObjectNode, and MMObjectBuilder should be enriched with a Storable interface, which
+     *       can be used instead
      * @param param the object to resolve
      * @return the resolved value
      * @throws StorageException if the object cannot be resolved
      */
     protected Object resolveParameter(Object param) throws StorageException {
-        if (param instanceof MMObjectBuilder) {
-            return ((MMObjectBuilder)param).getFullTableName();
-        } else if (param instanceof MMObjectNode) {
-            return ((MMObjectNode)param).getIntegerValue("number");
-        } else if (param instanceof FieldDefs) {
-            return factory.mapField(((FieldDefs)param).getDBName());
-        } else {
+        if (param instanceof String || param instanceof Number) {
             return param;
+        } else if (param instanceof Storable) {
+            return ((Storable)param).getStorageIdentifier();
+        } else {
+            return factory.getStorageIdentifier(param);
         }
     }
     
