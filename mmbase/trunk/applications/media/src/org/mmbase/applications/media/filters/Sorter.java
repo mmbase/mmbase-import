@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class Sorter implements Comparable, Filter {
+abstract public class Sorter implements Comparator, Filter {
 
     /**
      * Implement this.
@@ -40,9 +40,9 @@ abstract public class Sorter implements Comparable, Filter {
         return compareURLComposer(ri1, ri2);
     }
 
-    public List filter(List responseInfos) {
-        Collections.sort(responseInfos, this);
-        return responseInfos;
+    public List filter(List urlcomposers) {
+        Collections.sort(urlcomposers, this);
+        return urlcomposers;
     }
 }
 
