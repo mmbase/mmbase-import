@@ -48,6 +48,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
+    
   
     private static Logger log = Logging.getLoggerInstance(FieldInfoTag.class.getName()); 
 
@@ -224,7 +226,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case Field.TYPE_BYTE:
             show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
-            //case Field.TYPE_XML:
+         //case Field.TYPE_XML:
         case Field.TYPE_STRING:          
             if(! search) {
                 if(field.getMaxLength() > 2048)  {

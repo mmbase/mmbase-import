@@ -34,11 +34,6 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         value =  getAttributeValue(v);
     }
 
-    private String writerid = null;
-    public void setWriter(String w) throws JspTagException {
-        writerid = getAttributeValue(w);
-        
-    }
     private String referid2 = null;
     public void setReferid2(String r) throws JspTagException {
         referid2 = getAttributeValue(r);
@@ -63,8 +58,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
     public int doStartTag() throws JspTagException {
         Object compare1;
         if (getReferid() == null) {
-            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", writerid);
-            compare1 =  w.getWriterValue();
+            compare1 =  findWriter().getWriterValue();
             if (compare1 == null) compare1 = "";
         } else {
             compare1 = getObject(getReferid());

@@ -41,6 +41,7 @@ public class IndexTag extends ListReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
 
     private int offset = 1; // start counting at 1 on default.
 

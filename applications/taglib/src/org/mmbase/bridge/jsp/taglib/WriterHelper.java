@@ -85,11 +85,13 @@ public class WriterHelper {
     private   Boolean overridewrite    = null;
     private   int     vartype          = TYPE_UNSET;
     private   BodyContent  bodyContent;
+    private   boolean hasBody          = false;
 
     /**
      * For implementation of the write attribute.
      */
     public void setWrite(Boolean w) {
+        log.debug("Setting write to " + w);
         write = w;
     }
 
@@ -104,11 +106,12 @@ public class WriterHelper {
     public boolean  isWrite() {
         if (write == null) {
             if (log.isDebugEnabled()) {
-                log.debug("write is unset, using default with body == '" + bodyContent.getString() + "'");
+                log.debug("write is unset, using default " + overridewrite + " with body == '" + bodyContent.getString() + "' and hasBody (which is determined by childs) = " + hasBody);
             }
             if (overridewrite != null) return overridewrite.booleanValue();            
-            return "".equals(bodyContent.getString());
+            return "".equals(bodyContent.getString()) && (! hasBody);
         } else {
+            log.debug("Write: " + write);
             return write.booleanValue();        
         }
     }
@@ -239,6 +242,13 @@ public class WriterHelper {
         }
         return value.toString();
     }
+
+    /**
+     *
+     */
+    public void haveBody() {
+        hasBody = true;
+    }
     
     /**
      * A basic afterbody for Writers.
@@ -250,13 +260,17 @@ public class WriterHelper {
             String body = bodyContent.getString();
             if (isWrite()) {
                 bodyContent.clearBody();
+                log.debug("writing to page");
                 bodyContent.print(getPageString() + body);
+            } else {
+                log.debug("not writing to page");
             }
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }            
-        overridewrite = null;
+        overridewrite = null; // for use next time
+        hasBody       = false;
         return javax.servlet.jsp.tagext.BodyTagSupport.SKIP_BODY;
     }
 

@@ -47,6 +47,7 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
 
     private StringList     returnList;
     private StringIterator returnValues;

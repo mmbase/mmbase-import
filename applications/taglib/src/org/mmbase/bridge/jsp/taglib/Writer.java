@@ -25,7 +25,7 @@ public interface Writer {
 
     /**
      * Wether to write to page or not. This has to default to 'false'
-     * if the tag has a body, and to 'true' if is hasn't.
+     * if the tag has a body, and to 'true' if it hasn't.
      *
      */
     public void setWrite(String t) throws JspTagException;
@@ -45,7 +45,14 @@ public interface Writer {
      * Subtags of 'Writer' tag can request the value.
      */
 
-    public Object getWriterValue() throws JspTagException ;
-    
+    public Object getWriterValue() throws JspTagException;
+
+    /**
+     *  To be used by child tags. If they are present, they say to the
+     *  writer tag that it has body, which it can use to determine a
+     *  default for the write property.
+     */
+    public void haveBody();
+
 
 }

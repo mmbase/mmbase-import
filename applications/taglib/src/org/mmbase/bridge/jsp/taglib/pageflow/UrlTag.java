@@ -48,6 +48,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     public Object getWriterValue() throws JspTagException {
         return getUrl();
     }
+    public void haveBody() { helper.haveBody(); }
            
     private   Vector  referids = null;
     private   HashMap extraParameters = null;

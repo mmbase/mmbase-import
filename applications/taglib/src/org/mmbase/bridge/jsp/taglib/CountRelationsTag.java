@@ -37,6 +37,7 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() { helper.haveBody(); }
 
     private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());
     private String type;   

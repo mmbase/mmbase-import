@@ -16,9 +16,15 @@ import javax.servlet.jsp.JspTagException;
  **/
 
 public interface WriterReferrer {
+
     /**
-     * Which writer to use
+     * A WriterReferrer has a 'writer' attribute.
      */
-    public void setWriter(String t) throws JspTagException;
+    public void setWriter(String w) throws JspTagException;
+
+    /**
+     * Returns the parent writer;
+     */
+    public Writer findWriter() throws JspTagException;
 
 }
