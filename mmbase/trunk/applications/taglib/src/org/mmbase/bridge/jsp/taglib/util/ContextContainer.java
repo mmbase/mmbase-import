@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.17 2003-11-18 19:01:33 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.18 2003-11-20 11:11:06 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -38,27 +38,32 @@ public class ContextContainer extends HashMap {
     public static final int LOCATION_SESSION        = 30;
     public static final int LOCATION_COOKIE         = 40;
     public static final int LOCATION_ATTRIBUTES     = 50;
+    public static final int LOCATION_THIS           = 60; // current value, if there is one
+
 
     public static int stringToLocation(String s) throws JspTagException {
         int location;
-        if ("parent".equalsIgnoreCase(s)) {
+        s = s.toLowerCase();
+        if ("parent".equals(s)) {
             location = LOCATION_PARENT;
-        } else if ("page".equalsIgnoreCase(s)) {
+        } else if ("page".equals(s)) {
             location = LOCATION_PAGE;
-        } else if ("session".equalsIgnoreCase(s)) {
+        } else if ("session".equals(s)) {
             location = LOCATION_SESSION;
-        } else if ("parameters".equalsIgnoreCase(s)) {
+        } else if ("parameters".equals(s)) {
             location = LOCATION_PARAMETERS;
-        } else if ("parameter".equalsIgnoreCase(s)) {
+        } else if ("parameter".equals(s)) {
             location = LOCATION_PARAMETERS;
-        } else if ("postparameters".equalsIgnoreCase(s)) { // backward compatible
+        } else if ("postparameters".equals(s)) { // backward compatible
             location = LOCATION_MULTIPART;
-        } else if ("multipart".equalsIgnoreCase(s)) {
+        } else if ("multipart".equals(s)) {
             location = LOCATION_MULTIPART;
-        } else if ("cookie".equalsIgnoreCase(s)) {
+        } else if ("cookie".equals(s)) {
             location = LOCATION_COOKIE;
-        } else if ("attributes".equalsIgnoreCase(s)) {
+        } else if ("attributes".equals(s)) {
             location = LOCATION_ATTRIBUTES;
+        } else if ("this".equals(s)) {
+            location = LOCATION_THIS;
         } else {
             throw new JspTagException("Unknown location '" + s + "'");
         }
@@ -74,6 +79,7 @@ public class ContextContainer extends HashMap {
         case LOCATION_MULTIPART:   return "multipart";
         case LOCATION_COOKIE:      return "cookie";
         case LOCATION_ATTRIBUTES:  return "attributes";
+        case LOCATION_THIS:        return "this";
         default:                   return "<>";
         }
     }
@@ -516,11 +522,13 @@ public class ContextContainer extends HashMap {
             }
             break;
         case LOCATION_PAGE:
-            //result = pageContext.getAttribute(referid);
+            result = pageContext.getAttribute(referid);
             break;
         case LOCATION_ATTRIBUTES:
-
             result = ((HttpServletRequest) pageContext.getRequest()).getAttribute(referid);
+            break;
+        case LOCATION_THIS:
+            result = simpleGet(referid, false);
             break;
         default:
             result = null;
@@ -538,7 +546,7 @@ public class ContextContainer extends HashMap {
         Object result;
         result = find(pageContext, LOCATION_PARENT, externid);
         if (result != null) return result;
-        log.debug("searching in parameters");
+        log.debug("searching in attributes");
         result = find(pageContext, LOCATION_ATTRIBUTES, externid);
         if (result != null) return result;
         log.debug("searching in parameters");
@@ -560,7 +568,7 @@ public class ContextContainer extends HashMap {
      * Searches a key in request, postparameters, session, parent
      * context and registers it in this one.
      *
-     *  Returns null if it could not be found.
+     * Returns null if it could not be found.
      */
     public Object findAndRegister(PageContext pageContext, int from, String referid, String newid) throws JspTagException {
         return findAndRegister(pageContext, from, referid, newid, true);
