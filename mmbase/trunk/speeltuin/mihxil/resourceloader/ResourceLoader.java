@@ -96,7 +96,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.12 2004-10-18 19:12:34 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.13 2004-10-19 18:44:58 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -356,6 +356,7 @@ public class ResourceLoader extends ClassLoader {
      * The URL relative to which this class-loader resolves. Cannot be <code>null</code>.
      */
     private URL context;
+    private ResourceLoader parent = null;
 
 
     /**
@@ -393,11 +394,12 @@ public class ResourceLoader extends ClassLoader {
         this.resourceRoots    = cl.resourceRoots;
         this.classLoaderRoots = cl.classLoaderRoots;
         this.typeValues       = cl.typeValues;
+        this.parent           = cl;
     }
 
     /**
-     * If name starts with '/' the root resourceloader is used.
-     * If name starts with <protocol>: a new {@link java.net.URL} will be created.
+     * If name starts with '/' or 'mm:/' the 'parent' resourceloader is used.
+     *
      * Otherwise the name is resolved relatively. (For the root ResourceLoader that it the same as starting with /)
      * 
      * {@inheritDoc}
@@ -406,6 +408,8 @@ public class ResourceLoader extends ClassLoader {
         try {
             if (name.startsWith("/")) {
                 return newURL(PROTOCOL + ":" + name);
+            } else if (name.startsWith(PROTOCOL + ":")) {
+                return newURL(name);
             } else {
                 return new URL(context, name);
             }
@@ -427,6 +431,15 @@ public class ResourceLoader extends ClassLoader {
      */
     public URL getContext() {
         return context;
+    }
+
+    
+    /**
+     * Returns the 'parent' ResourceLoader. Or <code>null</code> if this ClassLoader has no parent. You can create a ResourceLoader with a parent by 
+     * the {@link ResourceLoader(ResourceLoader, String)} constructor.
+     */
+    public ResourceLoader getParentResourceLoader() {        
+        return parent;
     }
 
     /**
@@ -842,13 +855,24 @@ public class ResourceLoader extends ClassLoader {
 
 
     public String toString() {
-        return "" + context.getPath()  + " fileroots:" + fileRoots + " resourceroots: " + resourceRoots + " classloaderroots: " + classLoaderRoots;
+        return 
+            "" + context.getPath() + " in "  +
+            (resourceBuilder == null ? "[no resource builder]" : " [resource nodes where type in " + typeValues  + "]") + 
+            ", fileroots:" + fileRoots + 
+            ", resourceroots: " + resourceRoots +
+            ", classloaderroots: " + classLoaderRoots;
     }
 
     public boolean equals(Object o) {
+        if(this == o) { // if same object, true!
+            return true;
+        }
+        if (parent == null) { // if this is a 'root' loader, then the only equal object should be the object itself!
+            return false;
+        }
         if (o instanceof ResourceLoader) {
             ResourceLoader rl = (ResourceLoader) o;
-            return rl.context.sameFile(context);            
+            return rl.parent == parent && rl.context.sameFile(context);            
         } else {
             return false;
         }
