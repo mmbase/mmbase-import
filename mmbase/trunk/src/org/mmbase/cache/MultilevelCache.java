@@ -17,12 +17,21 @@ import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.*;
 
 /**
- * This cache handles  multilevel query results from the bridge.
+ * This cache handles multilevel query results from the bridge.  A
+ * SearchQuery object serves as key, so ideally, this cache could
+ * simply work for <em>all</em> select queries done by MMBase (because
+ * the should all be performed via a SearchQuery object).
+ *
+ * But currently it is only used for the 'getList' functions of BasicCloud
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCache.java,v 1.1 2003-04-25 22:33:02 michiel Exp $
+ * @version $Id: MultilevelCache.java,v 1.2 2003-05-02 21:17:47 michiel Exp $
+ * @see   org.mmbase.bridge.implementation.BasicCloud
  */
+
+// This used to be implemented in MultilevelCacheHandler, MultilevelCacheEntry and MultilevelSubscribeNode. See CVS history for old implemention.
+
 public class MultilevelCache extends Cache {
 
     private static Logger log = Logging.getLoggerInstance(MultilevelCache.class.getName());
@@ -71,6 +80,12 @@ public class MultilevelCache extends Cache {
         return super.put(query, queryResult);        
     }
     
+    /**
+     * Remove an object from the cache. It also remove the watch from
+     * the observers which are watching this entry.
+     * 
+     * @param key A SearchQuery object.
+     */
     public synchronized Object remove(Object key) {
         Object result = super.remove(key);
         
@@ -130,7 +145,8 @@ public class MultilevelCache extends Cache {
                 if (log.isDebugEnabled()) {
                     log.debug("replaced the type: " + type + " with type:" + newType);
                 }
-                type = newType;            }
+                type = newType;            
+            }
             mmb.addLocalObserver (type, this);
             mmb.addRemoteObserver(type, this);
         }
