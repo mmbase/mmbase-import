@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.6 2002-04-16 16:41:49 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.7 2002-05-01 21:03:30 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -129,7 +129,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
     
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
         helper.setValue(evaluateTime());
         helper.setJspvar(pageContext); 
@@ -140,7 +140,7 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         time = null; // time variable is set without use of setTime,
                      // precautionally we set it to null here. I don't
                      // think it is really needed.
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
     
     public void release () {

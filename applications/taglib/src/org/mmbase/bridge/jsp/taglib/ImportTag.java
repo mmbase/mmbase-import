@@ -33,12 +33,11 @@ public class ImportTag extends WriteTag {
     private static Logger log = Logging.getLoggerInstance(ImportTag.class.getName()); 
 
     protected boolean required     = false;
-    //protected String  defaultValue = null;
     protected int     from         = ContextTag.LOCATION_NOTSET;
 
     protected String externid      = null;
 
-    private boolean found = false;
+    private   boolean found = false;
     
 
     /**
@@ -116,12 +115,12 @@ public class ImportTag extends WriteTag {
 
     }
 
-    public int doAfterBody() throws JspTagException {  
+    public int doEndTag() throws JspTagException {  
         if (externid != null) {
             if (! found ) {
                 if (log.isDebugEnabled()) log.debug("External Id " + externid + " not found");
                 // try to find a default value in the body.
-                Object body = bodyContent.getString();
+                Object body = bodyContent != null ? bodyContent.getString() : "";
                 if (! "".equals(body)) { // hey, there is a body content!
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
@@ -132,7 +131,7 @@ public class ImportTag extends WriteTag {
                 }                
             }
         } else { // get value from the body of the tag.
-            helper.setValue(bodyContent.getString());
+            helper.setValue(bodyContent != null ? bodyContent.getString() : "");
             if (id != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + id + " to " + helper.getValue());
@@ -145,13 +144,10 @@ public class ImportTag extends WriteTag {
             }
         }
         found = false; // for use next time
-        return SKIP_BODY;
-    }
-
-    public int doEndTag() throws JspTagException {
         helper.setJspvar(pageContext);
         id = null;
         return EVAL_PAGE;
     }
+
 
 }

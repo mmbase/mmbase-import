@@ -17,9 +17,9 @@ import javax.servlet.jsp.JspTagException;
 */
 public class RemoveTag extends ContextReferrerTag {
     
-       public int doAfterBody() throws JspTagException {
+       public int doEndTag() throws JspTagException {
            getContextTag().unRegister(getReferid());
-           return SKIP_BODY;
+           return EVAL_PAGE;
        }
     
 }

@@ -35,19 +35,19 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
-
     public int doAfterBody() throws JspTagException {
         try{
             if(bodyContent != null)
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            return SKIP_BODY;
         } catch(java.io.IOException e){
             throw new JspTagException("IO Error: " + e.getMessage());
         }
-        return EVAL_PAGE;
     }
 
-    public int doEndTag() throws JspTagException {
+    public int doEndTag() throws JspTagException {     
         inverse = false;
         return EVAL_PAGE;
     }
+
 }

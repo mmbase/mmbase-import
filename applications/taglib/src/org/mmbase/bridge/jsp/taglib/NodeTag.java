@@ -146,30 +146,32 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         if (f!= null && f.wantXML()) {
             f.getGenerator().addNode(node);
         }
+        
+        fillVars();
         //log.debug("found node " + node.getValue("gui()"));
         return EVAL_BODY_BUFFERED;
     }
 
-    public void doInitBody() throws JspTagException {
-        log.debug("fillvars");
-        fillVars();
-        if (id != null) {
-            getContextTag().registerNode(id, getNodeVar());
-        }
-
+    public void doInitBody() throws JspTagException { // in case it is called, do nothing.
     }
 
     /**
      * this method writes the content of the body back to the jsp page
      **/
-    public int doAfterBody() throws JspTagException {
-        super.doAfterBody();
+    public int doAfterBody() throws JspTagException { // write the body if there was one
         try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            bodyContent.writeOut(bodyContent.getEnclosingWriter());        
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }
         return SKIP_BODY;
+    }
+
+
+    public int doEndTag() throws JspTagException {
+        super.doAfterBody(); // if modified
+        super.doEndTag();
+        return EVAL_PAGE;
     }
 
 }

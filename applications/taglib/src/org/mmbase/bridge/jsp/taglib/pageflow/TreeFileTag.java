@@ -48,7 +48,7 @@ public class TreeFileTag extends UrlTag {
         return super.doStartTag();
     }
 
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         th.setCloud(getCloud());
         
         String orgpage = page;
@@ -56,7 +56,7 @@ public class TreeFileTag extends UrlTag {
         log.debug("Retrieving page '" + page + "'");
         if (page == null) throw new JspTagException("Could not find page " + orgpage);
         // Let UrlTag do the rest
-        return super.doAfterBody();
+        return super.doEndTag();
     }
     
     /**

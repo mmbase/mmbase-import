@@ -120,9 +120,9 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 
 }
