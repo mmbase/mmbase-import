@@ -527,6 +527,7 @@ public class MMBase extends ProcessorModule  {
 		String objectname=builder; // should this allow override in file ?
 		int searchage=parser.getSearchAge();
 		String classname=parser.getClassFile();
+		Hashtable properties=parser.getProperties();
 
 		String status=parser.getStatus();
 		if (status.equals("active")) {
@@ -555,6 +556,7 @@ public class MMBase extends ProcessorModule  {
 				bul.setPluralNames(parser.getPluralNames());
 				bul.setClassName(classname);
 				bul.setSearchAge(""+searchage);
+				bul.setInitParameters(properties);
 				bul.setXMLValues(parser.getFieldDefs()); // temp  ?
 				//bul.init();
 				// bul.getEditFields();

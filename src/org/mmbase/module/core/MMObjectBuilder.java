@@ -34,7 +34,8 @@ import org.mmbase.module.database.MultiConnection;
  * normally these are only defined as Dummy object or in org.mmase.builders.*
  * 
  * @author Daniel Ockeloen
- * @version 14 Sept 1997
+ * @author Rob Vermeulen
+ * @version 18 juni 2000
  */
 public class MMObjectBuilder extends MMTable {
 	private String classname = getClass().getName();
@@ -70,6 +71,7 @@ public class MMObjectBuilder extends MMTable {
 	private Vector qlist=new Vector();
 	Hashtable nameCache=new Hashtable();
 	private boolean isXmlConfig=false;
+	private Hashtable properties = null; // Properties of a specific Builder.
 
 	/**
 	* base object, should not be used
@@ -1724,5 +1726,31 @@ public class MMObjectBuilder extends MMTable {
 
 	public boolean isXMLConfig() {
 		return(isXmlConfig);
+	}
+
+	/**
+	 * set all builder properties
+	 * by using this method properties will not be saved!
+	 * @param properties the properties to set
+	 */
+	public void setInitParameters(Hashtable properties) {
+		this.properties=properties;
+	}
+
+	/**
+	 * set a single builder property
+	 * by using this method the propertie will not be saved!
+	 * @param name name of the property
+	 * @param value value of the property
+	public void setInitParamete(String name, String Value) {
+		properties.put(name,value);
+	}
+
+	/**
+	 * get a specific property
+	 * @param name the name of the property to get
+	 */
+	public String getInitParameter(String name) {
+		return (String)properties.get(name);	
 	}
 }
