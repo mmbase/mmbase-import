@@ -39,7 +39,7 @@ public class LocaleTag extends ContextReferrerTag  {
     }
 
     public void setCountry(String c) throws JspTagException {
-        country = getAttributeValue(country);
+        country = getAttributeValue(c);
     }
 
     /**
