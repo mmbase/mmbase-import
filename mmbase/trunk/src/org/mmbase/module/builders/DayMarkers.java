@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.20 2001-04-25 15:17:35 daniel Exp $
+ * @version $Id: DayMarkers.java,v 1.21 2001-12-03 15:47:07 vpro Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -319,7 +319,9 @@ public class DayMarkers extends MMObjectBuilder {
 				ival=fetchIntValue(command);
 				int delta=fetchIntValue(command);
 				rtn=""+getDayCount(getDayCountDeltaMonth(ival,delta));
-			} else {
+			} else if (token.equals("TIMETOOBJECTNUMBER")){
+				ival=fetchIntValue(command);
+				rtn=""+getDayCount(ival/86400);			} else {
 				rtn="UnknownCommand";
 			}
         }
