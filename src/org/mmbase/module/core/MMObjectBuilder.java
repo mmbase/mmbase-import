@@ -28,6 +28,8 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.support.*;
 import org.mmbase.module.database.MultiConnection;
 
+import org.mmbase.util.logging.*;
+
 /**
  * This class is the base class for all builders.
  * It offers a list of routines which are useful in maintaining the nodes in the MMBase
@@ -92,11 +94,18 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * If true, debug messages are send to the MMBase log
+    * @deprecated : use Logger routines instead
     */
     public boolean debug=false;
+	
+	/**
+	* Logger routine
+	*/
+	private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
 
     /**
     * Sets debugging on or off
+    * @deprecated : use Logger routines instead
     */
     public void setDebug(boolean state) { debug=state; }
 
@@ -250,7 +259,7 @@ public class MMObjectBuilder extends MMTable {
         database=mmb.getDatabase();
 
         if (!created()) {
-            if (debug) debug("init(): Create "+tableName);
+            log.info("init(): Create "+tableName);
             create();
         }
         if (!tableName.equals("object") && mmb.TypeDef!=null) {
@@ -267,7 +276,7 @@ public class MMObjectBuilder extends MMTable {
             }
         } else {
             if(!tableName.equals("typedef")) {
-                debug("init(): for tablename("+tableName+") -> can't get to typeDef");
+                log.warn("init(): for tablename("+tableName+") -> can't get to typeDef");
             }
         }
         // hack to override the hard  fields by database (bootstrap)
@@ -326,8 +335,7 @@ public class MMObjectBuilder extends MMTable {
  	    if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
         } catch(Exception e) {
-            debug("ERROR INSERT PROBLEM !");
-            debug("Error node="+node);
+            log.error("ERROR INSERT PROBLEM ! Error node="+node);
             e.printStackTrace();
             return -1;
         }
@@ -580,7 +588,7 @@ public class MMObjectBuilder extends MMTable {
         MMObjectNode node = null;
 
         if( key == null ) {
-            debug("getNode(null): ERROR: for tablename("+tableName+"): key is null!");
+            log.error("getNode(null): ERROR: for tablename("+tableName+"): key is null!");
             return null;
         }
 
@@ -612,12 +620,11 @@ public class MMObjectBuilder extends MMTable {
         // test with counting
         statCount("getnode");
         if (number==-1) {
-            debug(" ("+tableName+") nodenumber == -1");
+            log.warn(" ("+tableName+") nodenumber == -1");
             return null;
         }
 
         // cache setup
-        MultiConnection con;
         Integer integerNumber=new Integer(number);
         MMObjectNode node=(MMObjectNode)nodeCache.get(integerNumber);
         if (node!=null) {
@@ -638,39 +645,43 @@ public class MMObjectBuilder extends MMTable {
             	bul=mmb.getTypeDef().getValue(bi);
              }
             if (bul==null) {
-                debug("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
+                log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
                 return null;
             }
 
-            con=mmb.getConnection();
-            Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
-            if (rs.next()) {
-                // create a new object and add it to the result vector
-                MMObjectBuilder bu=mmb.getMMObject(bul);
-                if (bu==null) debug("getMMObject did not return builder on : "+bul);
-                node=new MMObjectNode(bu);
-                ResultSetMetaData rd=rs.getMetaData();
-                String fieldname;
-                String fieldtype;
-                for (int i=1;i<=rd.getColumnCount();i++) {
-                    fieldname=rd.getColumnName(i);
-                    node=database.decodeDBnodeField(node,fieldname,rs,i);
+            MultiConnection con =null;
+            Statement stmt = null;
+
+            try {
+                con=mmb.getConnection();
+                stmt=con.createStatement();
+                ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
+                if (rs.next()) {
+                    // create a new object and add it to the result vector
+                    MMObjectBuilder bu=mmb.getMMObject(bul);
+                    if (bu==null) {
+                        log.error("getMMObject did not return builder on : "+bul);
+                        return null;
+                    }
+                    node=new MMObjectNode(bu);
+                    ResultSetMetaData rd=rs.getMetaData();
+                    String fieldname;
+                    String fieldtype;
+                    for (int i=1;i<=rd.getColumnCount();i++) {
+                        fieldname=rd.getColumnName(i);
+                        node=database.decodeDBnodeField(node,fieldname,rs,i);
+                    }
+                    nodeCache.put(integerNumber,node);
+                    // clear the changed signal
+                    node.clearChanged();
+                } else {
+                    log.warn("getNode(): Node not found "+number);
+                    return null; // not found
                 }
-                nodeCache.put(integerNumber,node);
-                stmt.close();
-                con.close();
-                // clear the changed signal
-                node.clearChanged();
-            } else {
-                stmt.close();
-                con.close();
-                debug("getNode(): Node not found "+number);
-                node=null; // not found
+            } finally {
+                mmb.closeConnection(con,stmt);
             }
-
             // return the results
-
             return node;
         } catch (SQLException e) {
             // something went wrong print it to the logs
@@ -709,7 +720,7 @@ public class MMObjectBuilder extends MMTable {
 		MMObjectNode node=null;
 		node=(MMObjectNode)TemporaryNodes.get(key);
 		if (node==null) {
-			if (debug) debug("getTmpNode(): node not found "+key);
+			log.debug("getTmpNode(): node not found "+key);
 		}
 		return node;
 	}
@@ -721,7 +732,7 @@ public class MMObjectBuilder extends MMTable {
 	public void removeTmpNode(String key) {
 		MMObjectNode node;
 		node=(MMObjectNode)TemporaryNodes.remove(key);
-		if (node==null) debug("removeTmpNode): node with "+key+" didn't exists");
+		if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
 	}
 
     /**
@@ -790,15 +801,8 @@ public class MMObjectBuilder extends MMTable {
             return results;
         } catch (Exception e) {
             // something went wrong print it to the logs
-            debug("basicSearch(): ERROR in search "+query);
-            try {
-                if (stmt!=null) stmt.close();
-            } catch(Exception g) {}
-
-            try {
-                if (con!=null) con.close();
-            } catch(Exception g) {}
-            //e.printStackTrace();
+            log.error("basicSearch(): ERROR in search "+query);
+            mmb.closeConnection(con,stmt);
         }
 
         return (new Vector()); // Return an empty Vector
@@ -1203,11 +1207,14 @@ public class MMObjectBuilder extends MMTable {
     * @return the field's type.
     */
     public int getDBType(String fieldName) {
-        if (fields==null) debug("getDBType(): fielddefs are null on object : "+tableName);
+        if (fields==null) {
+            log.error("getDBType(): fielddefs are null on object : "+tableName);
+            return FieldDefs.TYPE_UNKNOWN;
+        }
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         if (node==null) {
-            if (debug) debug("getDBType(): PROBLEM Can't find fielddef on : "+fieldName+" builder="+tableName);
-            return -1;
+            log.warn("getDBType(): Can't find fielddef on : "+fieldName+" builder="+tableName);
+            return FieldDefs.TYPE_UNKNOWN;
         }
         return node.getDBType();
     }
@@ -1223,9 +1230,9 @@ public class MMObjectBuilder extends MMTable {
     * @return the field's type.
     */
     public int getDBState(String fieldName) {
-        if (fields==null) return 2;
+        if (fields==null) return FieldDefs.DBSTATE_PERSISTENT;
         FieldDefs node=(FieldDefs)fields.get(fieldName);
-        if (node==null) return -1;
+        if (node==null) return FieldDefs.DBSTATE_UNKNOWN;
         return(node.getDBState());
     }
 
@@ -1233,6 +1240,8 @@ public class MMObjectBuilder extends MMTable {
     * What should a GUI display for this node.
     * Default is the first non system field (first field after owner).
     * Override this to display your own choice (see Images.java).
+    * @param node The node to display
+    * @return the display of the node as a <code>String</code>
     */
     public String getGUIIndicator(MMObjectNode node) {
 
@@ -1254,6 +1263,11 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * What should a GUI display for this node/field combo.
+    * Default is null (indicating to display the field as is)
+    * Override this to display your own choice.
+    * @param node The node to display
+    * @param field the name field of the field to display
+    * @return the display of the node's field as a <code>String</code>, null if not specified
     */
     public String getGUIIndicator(String field,MMObjectNode node) {
         return null;
@@ -1365,7 +1379,6 @@ public class MMObjectBuilder extends MMTable {
     * @return the result of the 'function', or null if no valid functions could be determined.
     */
     public Object getValue(MMObjectNode node,String field) {
-        //		if (debug) debug("getValue() "+node+" --- "+field);
         Object rtn=null;
         int pos2,pos1=field.indexOf('(');
         String name,function,val;
@@ -1374,7 +1387,7 @@ public class MMObjectBuilder extends MMTable {
             if (pos2!=-1) {
                 name=field.substring(pos1+1,pos2);
                 function=field.substring(0,pos1);
-                debug("function= "+function+", fieldname ="+name);
+                log.debug("function= "+function+", fieldname ="+name);
                 rtn=executeFunction(node,function,name);
             }
         }
@@ -1469,7 +1482,10 @@ public class MMObjectBuilder extends MMTable {
     */
     public Vector getRelations_main(int src) {
         InsRel bul=(InsRel)mmb.getMMObject("insrel");
-        if (bul==null) debug("getMMObject(): InsRel not yet loaded");
+        if (bul==null) {
+            log.error("getMMObject(): InsRel not yet loaded");
+            return null;
+        }
         return(bul.getRelationsVector(src));
     }
 
@@ -1640,7 +1656,7 @@ public class MMObjectBuilder extends MMTable {
                     nodeCache.remove(i);
                 }
             } catch (Exception e) {
-                debug("nodeRemoteChanged(): Not a number");
+                log.error("nodeRemoteChanged(): Not a number");
             }
         } else if (ctype.equals("r")) {
             try {
@@ -1654,7 +1670,6 @@ public class MMObjectBuilder extends MMTable {
         }
 
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
-        // System.out.println("DEBUG OBSERVERS="+remoteObservers.size());
         for (Enumeration e=remoteObservers.elements();e.hasMoreElements();) {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
             o.nodeRemoteChanged(number,builder,ctype);
@@ -1703,7 +1718,7 @@ public class MMObjectBuilder extends MMTable {
     * @return always <code>true</code>
     */
     public boolean fieldLocalChanged(String number,String builder,String field,String value) {
-        debug("FLC="+number+" BUL="+builder+" FIELD="+field+" value="+value);
+        log.debug("FLC="+number+" BUL="+builder+" FIELD="+field+" value="+value);
         return true;
     }
 
@@ -1736,7 +1751,7 @@ public class MMObjectBuilder extends MMTable {
     *  @deprecated Will be removed?
     */
     public MMObjectNode getDefaultTeaser(MMObjectNode node,MMObjectNode tnode) {
-        debug("getDefaultTeaser(): Generate Teaser,Should be overridden");
+        log.warn("getDefaultTeaser(): Generate Teaser,Should be overridden");
         return tnode;
     }
 
@@ -1769,7 +1784,7 @@ public class MMObjectBuilder extends MMTable {
     * @return the result value as a <code>String</code>
     */
     public String replace(scanpage sp, StringTokenizer tok) {
-        debug("replace(): replace called should be overridden");
+        log.warn("replace(): replace called should be overridden");
         return "";
     }
 
@@ -1797,9 +1812,9 @@ public class MMObjectBuilder extends MMTable {
     * @return the SQL clause as a <code>String</code>
     */
     public String convertMMNode2SQL(String where) {
-        if (debug) debug("convertMMNode2SQL(): "+where);
+        log.debug("convertMMNode2SQL(): "+where);
         String result="WHERE "+database.getMMNodeSearch2SQL(where,this);
-        if (debug) debug("convertMMNode2SQL(): results : "+result);
+        log.debug("convertMMNode2SQL(): results : "+result);
         return result;
     }
 
@@ -1842,21 +1857,21 @@ public class MMObjectBuilder extends MMTable {
                                                 sortedDBLayout.addElement(dbname);
                                             }
                                         } else
-                                            debug("setDBLayout(): ERROR: 'dbname' not defined (while reading defines?)");
+                                            log.error("setDBLayout(): 'dbname' not defined (while reading defines?)");
                                     } else
-                                        debug("setDBLayout(): ERROR: 'dbstate' not defined (while reading defines?)");
+                                        log.error("setDBLayout(): 'dbstate' not defined (while reading defines?)");
                                 } else
-                                    debug("setDBLayout(): ERROR: 'guisearch' not defined (while reading defines?)");
+                                    log.error("setDBLayout(): 'guisearch' not defined (while reading defines?)");
                             } else
-                                debug("setDBLayout(): ERROR: 'guilist' not defined (while reading defines?)");
+                                log.error("setDBLayout(): 'guilist' not defined (while reading defines?)");
                         } else
-                            debug("setDBLayout(): ERROR: 'guipos' not defined (while reading defines?)");
+                            log.error("setDBLayout(): 'guipos' not defined (while reading defines?)");
                     } else
-                        debug("setDBLayout(): ERROR: 'guitype' not defined (while reading defines?)");
+                        log.error("setDBLayout(): 'guitype' not defined (while reading defines?)");
                 } else
-                    debug("setDBLayout(): ERROR: 'guiname' not defined (while reading defines?)");
+                    log.error("setDBLayout(): 'guiname' not defined (while reading defines?)");
             } else
-                debug("setDBLayout(): ERROR: 'dbname' not defined (while reading defines?)");
+                log.error("setDBLayout(): 'dbname' not defined (while reading defines?)");
         }
     }
 
@@ -1996,7 +2011,7 @@ public class MMObjectBuilder extends MMTable {
         // we need to find out what the DBState is of this field so we know
         // who to notify of this change
         int state=getDBState(fieldname);
-        debug("Changed field="+fieldname+" dbstate="+state);
+        log.debug("Changed field="+fieldname+" dbstate="+state);
 
         // still a large hack need to figure out remote changes
         if (state==0) {}
