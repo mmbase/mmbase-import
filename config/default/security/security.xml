@@ -9,7 +9,7 @@
 		valid values are: "true" and "false"
 
  -->
-<security active="true">
+<security active="false">
 
 	<!--
 		tag authentication:
