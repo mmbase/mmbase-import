@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.3.2.8 2005-02-14 14:05:12 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.3.2.9 2005-02-14 14:46:11 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -203,12 +203,12 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         if (writer != null) return writer;
         
         if (outputStream != null) {
-            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(getOutputStream(), characterEncoding)));
+            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, characterEncoding)));
             return writer;            
             //throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
         string = new StringWriter();
-        writer  = new PrintWriter(string);
+        writer = new PrintWriter(string);
         return writer;
     }
 
@@ -263,7 +263,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Return all data that has been written to the PrintWriter.
      */
     public String toString() {
-        if (writer != null) {
+        if (string != null) {
             return string.toString();
         } else if (outputStream != null) {
             try {
