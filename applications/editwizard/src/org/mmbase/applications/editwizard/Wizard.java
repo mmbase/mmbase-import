@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard;
 
 import org.mmbase.bridge.Cloud;
@@ -5,16 +14,17 @@ import org.w3c.dom.*;
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
-//import org.mmbase.applications.dove.*;
 import org.mmbase.util.logging.*;
 
 /**
  * Title:        EditWizard
  * Description:
- * Copyright:    Copyright (c) 2001
- * Company:      Q42
  * @author Kars Veling
- * @version 1.0
+ * @author Michiel Meeuwissen
+ *
+ * @since   MMBase-1.6
+ * @version $Id:
+ * 
  */
 public class Wizard {
     private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
@@ -22,62 +32,78 @@ public class Wizard {
     public final static short ERROR   = 1;
     public final static short WARNING = 2;
     // Some of these variables are placed public, for debugging reasons.
-    public Document preform;
+    private Document preform;
 
-    // turn debugging variable on if you want all kind of debugdata sent to the Logs.
-    public boolean debugging = false;
-
+    private Cloud cloud;
+    
     // the username and password are stored here.
-    public String user="";
-    public String pass="";
-    public boolean loggedIn = false;
+    private String user="";
+    private String pass="";
+    private boolean loggedIn = false;
 
     // basepath where all data files reside. Will be set from the jsp files.
     public String path="";
 
     // schema / session data
-    public String name;
-    public String objectnumber;
-    public String lastCommand;
+    private String name;
+    private String objectnumber;
+    private String lastCommand;
 
     // the wizard (file) name. Eg.: samples/jumpers will choose the file $path/samples/jumpers.xml
-    public String wizardName;
-    public String wizardDataid;
+    private String wizardName;
+
+    /**
+     * @scope private
+     */
+    public  String wizardDataid;
 
     // stores the current formid
-    public String currentformid;
+    private String currentformid;
 
     // expanded filename of the wizard
-    public String wizardSchemaFilename;
+    private String wizardSchemaFilename;
 
     // filename of the stylesheet which should be used to make the html form.
-    public String wizardStylesheetFilename;
+    private String wizardStylesheetFilename;
 
+    /**
+     *
+     * @scope private
+     */
     // public xmldom's: the schema, the data and the originaldata is stored.
     public Document schema;
     public Document data;
     public Document originaldata;
 
     // not yet committed uploads are stored in there hashmaps
-    public HashMap uploads;
-    public HashMap uploadnames;
-    public HashMap uploadpaths;
+    private HashMap uploads;
+    private HashMap uploadnames;
+    private HashMap uploadpaths;
 
     // in the wizards, variables can be used. Values of the variables are stored here.
-    public Hashtable variables;
+    private Hashtable variables;
 
     // the constraints received from mmbase are stored + cached in this xmldom
-    public Document constraints;
+    private Document constraints;
 
     // Seconds.
-    public long listQueryTimeOut = 60 * 60;
+    private long listQueryTimeOut = 60 * 60;
 
     // the database connector handles communition with mmbase. the instance is stored here.
-    public WizardDatabaseConnector dbconn;
+    private WizardDatabaseConnector dbconn;
 
+    /**
+     *
+     * @scope private
+     */
     // this boolean tells the jsp that the wizard may be closed, as far as he is concerned.
     public boolean mayBeClosed = false;
 
+
+    /**
+     *
+     * @scope private
+     */
     // this list stores all errors and warnings occured
     public Vector errors;
 
@@ -148,8 +174,7 @@ public class Wizard {
         - Creates a work document (to contain all data)
         - Loads data (new or existing)
     */
-    public void initialize(String wizardname, String dataid, String user, String pass, Cloud cloud) throws WizardException, SecurityException
-    {
+    public void initialize(String wizardname, String dataid, String user, String pass, Cloud cl) throws WizardException, SecurityException {
         wizardName = wizardname;
         wizardDataid = dataid;
         wizardSchemaFilename = path + "/" + wizardName + ".xml";
@@ -164,8 +189,9 @@ public class Wizard {
 
         // initialize database connector
         dbconn = new WizardDatabaseConnector();
-        dbconn.debugging = this.debugging;
         dbconn.init(path);
+
+        cloud = cl;
         if (cloud!=null) {
             // add username + password to variables
             dbconn.setUserInfo(cloud);
@@ -272,7 +298,31 @@ public class Wizard {
             String name = (String)list.nextElement();
             String[] ids = processFormName(name);
             if (ids!=null) {
-                storeValue(ids[0], ids[1], req.getParameter(name));
+                String formEncoding = req.getCharacterEncoding();
+                     if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
+                     String result;
+                    if (formEncoding == null) { 
+                         log.debug("request did not mention coding");
+                         // The form encoding was not known, so probable the local was used or ISO-8859-1
+                         // lets make sure it is right:
+                         try {
+                             if (cloud != null) {
+                                 log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
+                                 result = new String(req.getParameter(name).getBytes(), 
+                                                     cloud.getCloudContext().getDefaultCharacterEncoding());
+                             } else { // no cloud? I don't know how to get default char encoding then.
+                                 // suppose it utf-8
+                                 log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
+                                 result = new String(req.getParameter(name).getBytes(), "UTF-8");                                
+                             }
+                         } catch (java.io.UnsupportedEncodingException e) {
+                             log.warn(e.toString());
+                             result = req.getParameter(name);
+                         }
+                    } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.                            
+                         result = req.getParameter(name);
+                     }                    
+                    storeValue(ids[0], ids[1], result);
             }
         }
     }
@@ -429,7 +479,7 @@ public class Wizard {
                 try{
                     queryresult = dbconn.getList(query);
                     queryresult = Utils.selectSingleNode(queryresult,"/getlist/query");
-                }catch (Exception e){
+                } catch (Exception e){
                     // Bad luck, tell the user and try the next list.
                     log.debug("Error during query, proceeding with next list: " + e.toString());
                     Element option = list.getOwnerDocument().createElement("option");
@@ -763,7 +813,9 @@ public class Wizard {
                 try {
                     // Determine the orderby value and store it.
                     orderbyvalue = Utils.selectSingleNodeText(datacontext, orderby, "");
-                } catch (RuntimeException e) {}
+                } catch (RuntimeException e) {
+                    log.error(Logging.stackTrace(e));
+                }
                 Utils.setAttribute(datacontext, "orderby", orderbyvalue);
             }
             sorteddatalist.put(orderbyvalue,datacontext);
@@ -895,7 +947,9 @@ public class Wizard {
             } else {
                 theValue = datanode.getFirstChild().getNodeValue();
             }
-        } catch (RuntimeException e) {}
+        } catch (RuntimeException e) {
+            log.error(Logging.stackTrace(e));
+        }
         // if this is a relation, we want the value of the dnumber field
         if (ftype.equals("relation")) {
             theValue = Utils.getAttribute(newfield, "destination");
@@ -982,7 +1036,7 @@ public class Wizard {
         @param  value   The (String) value what should be stored in the data.
     */
     private void storeValue(String did, String fid, String value) {
-        if (debugging) Utils.printXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']"));
+        if (log.isDebugEnabled()) Utils.printXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']"));
         String ftype = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@ftype").getNodeValue();
         Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
         boolean ok = false;
