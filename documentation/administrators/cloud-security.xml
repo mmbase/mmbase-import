@@ -3,18 +3,23 @@
 <article>
   <articleinfo >
     <title>Cloud Security Configuration</title>
-    <date>8 april 2003</date>
-    <edition>$Id: cloud-security.xml,v 1.2 2004-06-07 16:25:03 michiel Exp $</edition>
+    <date>2004-06-07</date>
+    <edition>$Id: cloud-security.xml,v 1.3 2004-06-07 16:31:18 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
         <surname>Hangyi</surname>
       </author>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
     </authorgroup>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>
-        The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license" >http://www.mmbase.org/license</ulink>
+        The license (Mozilla version 1.0) can be read at the MMBase site. See 
+        <ulink url="http://www.mmbase.org/license" >http://www.mmbase.org/license</ulink>
       </para>
     </legalnotice>
     <revhistory>
@@ -23,17 +28,27 @@
         <date>4 April 2003</date>
         <authorinitials>HH</authorinitials>
       </revision>
+      <revision>
+        <revnumber>0.2</revnumber>
+        <date>2004-06-07</date>
+        <authorinitials>MM</authorinitials>
+      </revision>
     </revhistory>
   </articleinfo>
   <section>
     <title>A security implementation that uses the cloud</title>
     <para>
-      Cloud security uses the object mmbaseusers to store information used for authorisation and
+      Cloud security uses the object mmbaseusers to store information used for authorization and
       authentication of users. The two main advantages of this security implementation are that the user
-      administration can be carried out by using a webbrowser (instead of editing a file on the
-      filesystem) and that the users of your MMBase installation are available as objects in the
+      administration can be carried out by using a web-browser (instead of editing a file on the
+      file system) and that the users of your MMBase installation are available as objects in the
       cloud. For instance, it is possible to create groups of users, which are allowed to carry out
       certain tasks. This document gives an overview on how to install and use the cloud security.
+    </para>
+    <para>
+      This is not the only cloud security implementation available. Since MMBase 1.7 there is also a
+      'cloud context' security implementation available, which combines the advantages of this cloud
+      security with the power of 'context' security. It can be downloaded separately.
     </para>
   </section>
   <section>
@@ -41,10 +56,11 @@
     <para>
       Users are stored in the object 'mmbaseusers'. Users can be added by the user
       'admin' (default password: 'admin2k'). The passwords are stored with an MD5
-      encryption, and can only be changed by the user itselve, or by the 'admin'.
+      encryption, and can only be changed by the user itself, or by the 'admin'.
     </para>
     <para>
-      Admin has the admin rank, users that are not logged in have the rank anonymous, all other users have rank 'basic user'.
+      Admin has the rank 'administrator', users that are not logged in have the rank 'anonymous',
+      all other users have rank 'basic user'.
     </para>
     <para >For every node in the system the following rules apply:</para>
     <itemizedlist>
@@ -86,7 +102,7 @@
       </listitem>
       <listitem>
         <para>
-          set the authentication and authorization class in the file config\security\security.xml.
+          set the authentication and authorization class in the file &lt;config dir&gt;/security/security.xml.
         </para>
         <programlisting>
           &#60;authentication class='org.mmbase.security.implementation.cloud.Authenticate' url='' /&#62;
