@@ -233,9 +233,9 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 							currentObjectArgumentNode = nm3.getNamedItem("par");
 							if (currentObjectArgumentNode != null)
 								fieldName = currentObjectArgumentNode.getNodeValue();
-							currentObjectArgumentNode = nm3.getNamedItem("val");
-							if (currentObjectArgumentNode != null)
-								fieldValue = currentObjectArgumentNode.getNodeValue();
+							Node setFieldValue = fieldContext.getFirstChild();
+                            fieldValue = setFieldValue.getNodeValue();
+                            if (_debug) System.out.println("setFieldValue = "+setFieldValue);
 							executeFieldContext(oId, fieldName, fieldValue);
 					}
 				}
