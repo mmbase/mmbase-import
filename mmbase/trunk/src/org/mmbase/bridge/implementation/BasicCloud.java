@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.113 2004-05-03 14:55:28 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.114 2004-06-11 17:14:33 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -805,26 +805,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         return getList(query);
     }
 
-    /**
-     * set the Context of the current Node
-     */
-    void setContext(int nodeNumber, String context) {
-        mmbaseCop.getAuthorization().setContext(userContext.getUserContext(), nodeNumber, context);
-    }
-
-    /**
-     * get the Context of the current Node
-     */
-    String getContext(int nodeNumber) {
-        return mmbaseCop.getAuthorization().getContext(userContext.getUserContext(), nodeNumber);
-    }
-
-    /**
-     * get the Contextes which can be set to this specific node
-     */
-    StringList getPossibleContexts(int nodeNumber) {
-        return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
-    }
 
     public void setLocale(Locale l) {
         if (l == null) {
