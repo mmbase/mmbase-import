@@ -421,16 +421,21 @@ public class PostThread {
     public boolean remove() {
         if (postings == null) readPostings();
 
-        Enumeration e = postings.elements();
+        // need to clone the vector, because the postings change while we're removing the thread
+        Vector v = (Vector) postings.clone();
+        Enumeration e = v.elements();
+        
+        // remove the postings
         while (e.hasMoreElements()) {
             Posting p = (Posting) e.nextElement();
             if (!p.remove()) {
                 log.error("Can't remove Posting : " + p.getId());
                 return false;
             }
-            postings.remove(p);
         }
+
         ForumManager.nodeDeleted(node);
+
         return true;
     }
 
