@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.47 2004-03-23 21:42:46 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.48 2004-06-03 17:08:51 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -59,6 +59,7 @@ public class WriterHelper extends BodyTagSupport {
     static final int TYPE_TRANSACTION   = 22;
     static final int TYPE_FIELD   = 23;
     static final int TYPE_FIELDVALUE   = 24;
+    static final int TYPE_BOOLEAN   = 25;
 
 
     static final int stringToType(String tt) {
@@ -95,6 +96,8 @@ public class WriterHelper extends BodyTagSupport {
             return TYPE_FIELD;
         } else if ("fieldvalue".equals(t)) {
             return TYPE_FIELDVALUE;
+        } else if ("boolean".equals(t)) {
+            return TYPE_BOOLEAN;
         } else {
             return TYPE_UNKNOWN;
         }
@@ -341,6 +344,13 @@ public class WriterHelper extends BodyTagSupport {
         case TYPE_DATE:
             if (! (v instanceof Date)) {
                 value = Casting.toDate(v);
+                setJspvar();
+                return;
+            }
+            break;
+        case TYPE_BOOLEAN:
+            if (! (v instanceof Boolean)) {
+                value = new Boolean(Casting.toBoolean(v));
                 setJspvar();
                 return;
             }
