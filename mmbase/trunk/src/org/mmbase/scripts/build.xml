@@ -31,15 +31,17 @@ about the Ant build tool.
     <!-- Location of MMBase's mode, needed for config-test -->
     <property name="mmbase.mode" value="mmbase"/>
 
-    <!-- Classpath settings, needed for config-test -->
-    <property name="servlet.classpath" value="/usr/local/lib/java/servlet.jar"/>
+    <!-- Classpath settings  -->
+    <!-- jdbc-driver, only needed for config-test -->
     <property name="jdbc.classpath" value="/usr/local/lib/java/mysql.jar"/>   
     <property name="classpath" value="
         ${top.dir}/lib/mmbase.jar:
         ${top.dir}/lib/xerces.jar:
         ${top.dir}/lib/xalan.jar:
         ${top.dir}/lib/ant.jar:
-        ${servlet.classpath}:
+        ${top.dir}/lib/servlet.jar:
+        ${top.dir}/lib/jai_core.jar:
+        ${top.dir}/lib/jai_codec.jar:
         ${jdbc.classpath}"/>
 
     <!-- Source directory -->     
@@ -73,7 +75,7 @@ about the Ant build tool.
     <available property="xalan.present"
                classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
     <available property="jai.present"
-               classname="javax.jai.JAI"/>
+               classname="javax.media.jai.JAI"/>
 
     <!-- only needed for runnning MMBase with Apache Tomcat -->
     <available property="tomcat.present" 
@@ -124,7 +126,7 @@ about the Ant build tool.
   <target name="check.needed.servlet" unless="servlet.present">
     <echo message=""/>
     <echo message="Error: Missing needed package javax.servlet."/>
-    <echo message="You first need to add javax.servlet to your classpath,"/>
+    <echo message="You first need to add servlet.jar to your classpath,"/>
     <echo message="before you can compile and use MMBase."/>
     <echo message="You'll probably find it somewhere in your servlet-engine dir."/>
     <echo message=""/>
@@ -148,7 +150,7 @@ about the Ant build tool.
     <echo message="Warning: Missing optional package javax.jai."/>
     <echo message="You can't use the java based Image-Converter without this package,"/> 
     <echo message="you've got to use ImageMagick."/>
-    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
+    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/."/>
 	<echo message="MMBase will compile and run without this package."/>
     <echo message=""/>
   </target>
@@ -271,8 +273,7 @@ about the Ant build tool.
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
 
-  <!--<target name="dist" depends="compile,jar,javadocs">-->
-<target name="dist" depends="compile,jar">
+  <target name="dist" depends="compile,jar,javadocs">
 
     <mkdir dir="${dist.root}"/>
     <mkdir dir="${dist.dir}"/>
