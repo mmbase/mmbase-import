@@ -59,6 +59,7 @@
     <mm:present referid="createcontext">
       <mm:import externid="contextname" /> 
       <mm:createnode type="mmbasecontexts">
+        <mm:setfield name="name"><mm:write referid="contextname" /></mm:setfield>
       </mm:createnode>
     </mm:present>
    <%@include file="commitGroupOrUserRights.jsp" %>
