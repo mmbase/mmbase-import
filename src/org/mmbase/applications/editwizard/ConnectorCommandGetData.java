@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetData.java,v 1.3 2002-03-15 09:52:36 pierre Exp $
+ * @version $Id: ConnectorCommandGetData.java,v 1.4 2002-03-18 17:13:06 eduard Exp $
  */
 
 public class ConnectorCommandGetData extends ConnectorCommand {
@@ -25,7 +25,7 @@ public class ConnectorCommandGetData extends ConnectorCommand {
     /**
      * @javadoc
      */
-    public ConnectorCommandGetData(String aobjectnumber, NodeList queryfields) {
+    public ConnectorCommandGetData(String aobjectnumber, NodeList queryfields) throws WizardException {
         super("getdata");
         addObject(aobjectnumber, queryfields);
     }
@@ -33,7 +33,7 @@ public class ConnectorCommandGetData extends ConnectorCommand {
     /**
      * @javadoc
      */
-    private void addObject(String objectnumber, NodeList queryfields) {
+    private void addObject(String objectnumber, NodeList queryfields) throws WizardException {
         String nr = objectnumber;
         Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
         if (queryfields!=null) {

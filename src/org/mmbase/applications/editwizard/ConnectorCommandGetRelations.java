@@ -17,17 +17,17 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetRelations.java,v 1.3 2002-03-15 09:52:37 pierre Exp $
+ * @version $Id: ConnectorCommandGetRelations.java,v 1.4 2002-03-18 17:13:07 eduard Exp $
  */
 
 public class ConnectorCommandGetRelations extends ConnectorCommand {
 
-    public ConnectorCommandGetRelations(String aobjectnumber, NodeList queryrelations) {
+    public ConnectorCommandGetRelations(String aobjectnumber, NodeList queryrelations) throws WizardException {
         super("getrelations");
         addObject(aobjectnumber, queryrelations);
     }
 
-    public void addObject(String objectnumber, NodeList queryrelations) {
+    public void addObject(String objectnumber, NodeList queryrelations) throws WizardException {
         String nr = objectnumber;
         Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
 

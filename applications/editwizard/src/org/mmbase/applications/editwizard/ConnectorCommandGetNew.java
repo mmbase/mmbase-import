@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNew.java,v 1.3 2002-03-15 09:52:37 pierre Exp $
+ * @version $Id: ConnectorCommandGetNew.java,v 1.4 2002-03-18 17:13:07 eduard Exp $
  */
 
 public class ConnectorCommandGetNew extends ConnectorCommand {
@@ -25,7 +25,7 @@ public class ConnectorCommandGetNew extends ConnectorCommand {
     /**
      * @javadoc
      */
-     public ConnectorCommandGetNew(String objecttype) {
+     public ConnectorCommandGetNew(String objecttype) throws WizardException {
          super("getnew");
          addCommandAttr("type", objecttype);
      }

@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.8 2002-03-15 09:52:37 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.9 2002-03-18 17:13:07 eduard Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -794,7 +794,7 @@ public class WizardDatabaseConnector {
      * @param       rel             The new relation
      * @return     True if the relations are different, false if they are the same.
      */
-    private boolean checkRelationFieldsChanged(Node origrel, Node rel) {
+    private boolean checkRelationFieldsChanged(Node origrel, Node rel) throws WizardException{
         NodeList origflds = Utils.selectNodeList(origrel, "field");
         NodeList newflds = Utils.selectNodeList(rel, "field");
         Document tmp = Utils.parseXML("<tmp><n1><r/></n1><n2><r/></n2></tmp>");
