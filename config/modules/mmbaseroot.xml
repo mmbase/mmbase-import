@@ -141,8 +141,8 @@
 
 	<!--
 	name="xmlbuilderwriterdir"
-	If specified, MMBase will write xml cinfigurauin files  to this directory when loading builders.
-	This can be useful if you want to convert old format builder xmld to the new format.
+	If specified, MMBase will write xml configuration files  to this directory when loading builders.
+	This can be useful if you want to convert old format builder xmls to the new format.
 
 	-->
 	<!-- property name="xmlbuilderwriterdir">/home/guest/schooltv/tmpbul/</property -->
