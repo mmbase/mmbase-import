@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.87 2004-02-13 13:11:35 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.88 2004-02-24 17:51:11 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -416,10 +416,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             cloud = getDefaultCloudContext().getCloud(getName(), "anonymous", logoutInfo);
             cloud.setLocale(locale);
             return true;
-        } catch (Exception e) {
-            log.debug("Could not create anonymous cloud because " + e.toString());
+        } catch (java.lang.SecurityException e) {
+            // login failed for anymous ?! That's odd, provide null.
+            log.info("Could not create anonymous cloud because " + e.toString());
             cloud = null;
             return false;
+        } catch (Throwable t) {
+            throw new TaglibException("Could not create anonymous cloud because " + t.getMessage(), t);
         }
     }
 
@@ -956,7 +959,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 }
             }
             return EVAL_BODY;
-        } catch (BridgeException e) {
+        } catch (java.lang.SecurityException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Failed to log in with " + user + " because " + e.toString());
             }
