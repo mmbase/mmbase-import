@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManagerInterface.java,v 1.8 2000-11-13 10:44:53 install Exp $
+	$Id: TemporaryNodeManagerInterface.java,v 1.9 2000-11-13 15:33:47 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/11/13 10:44:53  install
+	Rob: added temporary Relation in interface
+	
 	Revision 1.7  2000/11/08 16:24:13  vpro
 	Rico: fixed key bussiness
 	
@@ -43,11 +46,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManagerInterface.java,v 1.8 2000-11-13 10:44:53 install Exp $
+ * @version $Id: TemporaryNodeManagerInterface.java,v 1.9 2000-11-13 15:33:47 vpro Exp $
  */
 public interface TemporaryNodeManagerInterface {
 	public String createTmpNode(String type,String owner,String key);
-	public String createTmpRelation(String type,String owner,String source, String destination);
+	public String createTmpRelationNode(String type,String owner,String key, String source,String destination);
 	public String deleteTmpNode(String owner,String key);
 	public MMObjectNode getNode(String owner,String key);
 	public String getObject(String owner,String key,String dbkey);
