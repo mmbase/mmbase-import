@@ -26,7 +26,6 @@ public class g2encoders extends RemoteBuilder {
 
 	private boolean debug = true;
 	private g2encoderInterface impl;
-	private String classname;
 	StringTagger tagger;
 
 	public void init(MMProtocolDriver con,String servicefile) {
@@ -101,14 +100,17 @@ public class g2encoders extends RemoteBuilder {
 		commit();
 	}
 
+	/**
+	 * Loads the implemention for the g2encoders service using the properties.
+	 */
 	void getConfig() {
-		classname=(String)props.get("implementation");
-		if( debug ) debug("getConfig(): loading("+classname+")");
+		String implClassName=(String)props.get("implementation");
+		if( debug ) debug("getConfig(): loading("+implClassName+")");
 		try {
-			Class newclass=Class.forName(classname);
+			Class newclass=Class.forName(implClassName);
 			impl = (g2encoderInterface)newclass.newInstance();
 		} catch (Exception f) {
-			debug("getConfig(): ERROR: Can't load class("+classname+")");
+			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
 		}
 	}
 
