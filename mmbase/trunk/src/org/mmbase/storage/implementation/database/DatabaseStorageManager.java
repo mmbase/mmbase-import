@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.5 2003-08-25 12:27:29 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.6 2003-08-26 08:05:49 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1229,38 +1229,52 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void create(FieldDefs field) throws StorageException {
-        // test if you can make changes
-        // test if this is a field to add (persistent/nobinary)
-        // if the field is a key, remove the composite key : Scheme: DROP_INDEX
-        // get the field,
-        // get the field index
-        // add the field and its index  Scheme: ADD_FIELD
-        // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
-        throw new StorageException("Operation not (yet) supported");
+        if ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
+            (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
+            Scheme scheme = factory.getScheme(Schemes.CREATE_FIELD_SCHEME, Schemes.CREATE_FIELD_SCHEME_DEFAULT);
+            if (scheme !=null) {
+                throw new StorageException("Operation not (yet) supported");
+                // test if this is a field to add (persistent/nobinary)
+                // if the field is a key, remove the composite key : Scheme: DROP_INDEX
+                // get the field,
+                // get the field index
+                // add the field and its index  Scheme: ADD_FIELD
+                // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
+            }
+        }
     }
 
     // javadoc is inherited
     public void change(FieldDefs field) throws StorageException {
-        // test if you can make changes
-        // test if this is a field to remove (persistent/nobinary)
-        // if the field is a key, remove the composite key Scheme: DROP_INDEX
-        // get the field,
-        // get the field index
-        // remove the field and its index  Scheme: DROP_FIELD
-        // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
-        throw new StorageException("Operation not (yet) supported");
+        if ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
+            (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
+            Scheme scheme = factory.getScheme(Schemes.CHANGE_FIELD_SCHEME, Schemes.CHANGE_FIELD_SCHEME_DEFAULT);
+            if (scheme !=null) {
+                throw new StorageException("Operation not (yet) supported");
+                // if the field is a key, remove the composite key Scheme: DROP_INDEX
+                // get the field,
+                // get the field index
+                // change the field and its index  Scheme: CHANGE_FIELD
+                // if the field is a key, select all key fields and add the composite key  Scheme: ADD_INDEX
+            }
+        }
     }
 
     // javadoc is inherited
     public void delete(FieldDefs field) throws StorageException {
-        // test if you can make changes
-        // remove the composite key (in case the key property has changed) Scheme: DROP_INDEX
-        // get the field
-        // get the field index
-        // change the field and its index  Scheme: CHANGE_FIELD
-        // select all key fields and add the composite key  Scheme: ADD_INDEX
-        throw new StorageException("Operation not (yet) supported");
+        if ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
+            (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
+            Scheme scheme = factory.getScheme(Schemes.DELETE_FIELD_SCHEME, Schemes.DELETE_FIELD_SCHEME_DEFAULT);
+            if (scheme !=null) {
+                throw new StorageException("Operation not (yet) supported");
+                // remove the composite key (in case the key property has changed) Scheme: DROP_INDEX
+                // get the field
+                // get the field index
+                // change the field and its index  Scheme: CHANGE_FIELD
+                // remove the field and its index  Scheme: DROP_FIELD
+                // select all key fields and add the composite key  Scheme: ADD_INDEX
+            }
+        }
     }
-
 }
 

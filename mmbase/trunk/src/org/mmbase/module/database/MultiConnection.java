@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.26 2003-08-20 12:57:08 pierre Exp $
+ * @version $Id: MultiConnection.java,v 1.27 2003-08-26 08:05:48 pierre Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -45,10 +45,10 @@ public class MultiConnection implements Connection {
     public final static int CON_BUSY = 1;
     public final static int CON_FINISHED = 2;
     public final static int CON_FAILED = 3;
-    
+
     // logging
     private static Logger log = Logging.getLoggerInstance(MultiConnection.class.getName());
-    
+
     /**
      * @javadoc
      */
@@ -129,7 +129,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareStatement(sql);
     }
-    
+
     /**
      * prepareCall create a pre-compiled SQL statement that is
      * a call on a stored procedure.
@@ -138,7 +138,7 @@ public class MultiConnection implements Connection {
         setLastSQL(sql);
         return con.prepareCall(sql);
     }
-    
+
     /**
      *  Convert the given generic SQL statement to the drivers native SQL.
      */
@@ -146,7 +146,7 @@ public class MultiConnection implements Connection {
         setLastSQL(query);
         return con.nativeSQL(query);
     }
-    
+
     /**
      * If "autoCommit" is true, then all subsequent SQL statements will
      * be executed and committed as individual transactions.  Otherwise
@@ -158,29 +158,28 @@ public class MultiConnection implements Connection {
     public void setAutoCommit(boolean enableAutoCommit) throws SQLException {
         con.setAutoCommit(enableAutoCommit);
     }
-    
-    
+
     /**
      * get AutoCommit mode
      */
     public boolean getAutoCommit() throws SQLException {
         return con.getAutoCommit();
     }
-    
+
     /**
      * Perform commit
      */
     public void commit() throws SQLException {
         con.commit();
     }
-    
+
     /**
      * Perform rollback
      */
     public void rollback() throws SQLException {
         con.rollback();
     }
-    
+
     /**
      * Close connections
      */
@@ -222,7 +221,7 @@ public class MultiConnection implements Connection {
     public boolean isClosed() throws SQLException {
         return con.isClosed();
     }
-    
+
     /**
      * Advanced features:
      * You can obtain a DatabaseMetaData object to get information
@@ -231,7 +230,7 @@ public class MultiConnection implements Connection {
     public DatabaseMetaData getMetaData() throws SQLException {
         return con.getMetaData();
     }
-    
+
     /**
      * You can put a connection in read-only mode as a hint to enable
      * database optimizations.  Note that setReadOnly cannot be called
@@ -240,28 +239,28 @@ public class MultiConnection implements Connection {
     public void setReadOnly(boolean readOnly) throws SQLException {
         con.setReadOnly(readOnly);
     }
-    
+
     /**
      * Is this database readonly ?
      */
     public boolean isReadOnly() throws SQLException {
         return con.isReadOnly();
     }
-    
+
     /**
      * The "catalog" selects a sub-space of the target database.
      */
     public void setCatalog(String catalog) throws SQLException {
         con.setCatalog(catalog);
     }
-    
+
     /**
      * The "catalog" name
      */
     public String getCatalog() throws SQLException {
         return con.getCatalog();
     }
-    
+
     /**
      * You can call the following method to try to change the transaction
      * isolation level on a newly opened connection, using one of the
@@ -273,14 +272,14 @@ public class MultiConnection implements Connection {
     public void setTransactionIsolation(int level) throws SQLException {
         con.setTransactionIsolation(level);
     }
-    
+
     /**
      * @javadoc
      */
     public int getTransactionIsolation() throws SQLException {
         return con.getTransactionIsolation();
     }
-    
+
     /**
      * getWarnings will return any warning information related to
      * the current connection.  Note that SQLWarning may be a chain.
@@ -288,22 +287,22 @@ public class MultiConnection implements Connection {
     public SQLWarning getWarnings() throws SQLException {
         return con.getWarnings();
     }
-    
+
     /**
      * clear Warnings
      */
     public void clearWarnings() throws SQLException {
         con.clearWarnings();
     }
-    
+
     /**
      * @javadoc
      */
     public boolean checkSQLError(Exception e) {
-        log.error("JDBC CHECK ERROR="+e.toString());
+        log.error("JDBC CHECK ERROR=" + e.toString());
         return true;
     }
-    
+
     /**
      * @javadoc
      */
@@ -311,83 +310,82 @@ public class MultiConnection implements Connection {
         usage++;
         startTimeMillis = System.currentTimeMillis();
     }
-    
+
     /**
      * @javadoc
      */
     public void release() {
-        startTimeMillis=0;
+        startTimeMillis = 0;
     }
-    
+
     /**
      * @javadoc
      */
     public int getUsage() {
         return usage;
     }
-    
+
     /**
      * @javadoc
      */
     public int getStartTime() {
-        return (int)(startTimeMillis/1000);
+        return (int) (startTimeMillis / 1000);
     }
-    
+
     /**
      * @javadoc
      */
     public long getStartTimeMillis() {
         return startTimeMillis;
     }
-    
-    
+
     /**
      * @javadoc
      */
     public String toString() {
-        return "'"+getLastSQL()+"'@"+hashCode();
+        return "'" + getLastSQL() + "'@" + hashCode();
     }
-    
+
     /**
      * prepareCall create a pre-compiled SQL statement that is
      * a call on a stored procedure.
      */
     public CallableStatement prepareCall(String sql, int i, int y) throws SQLException {
         setLastSQL(sql);
-        return con.prepareCall(sql,i,y);
+        return con.prepareCall(sql, i, y);
     }
-    
+
     /**
      * @javadoc
      */
     public void setTypeMap(Map mp) throws SQLException {
         con.setTypeMap(mp);
     }
-    
+
     /**
      * @javadoc
      */
     public Map getTypeMap() throws SQLException {
         return con.getTypeMap();
     }
-    
+
     /**
      * createStatement returns an SQL Statement object
      */
-    public Statement createStatement(int i,int y) throws SQLException {
-        return new MultiStatement(this,con.createStatement(i,y));
+    public Statement createStatement(int i, int y) throws SQLException {
+        return new MultiStatement(this, con.createStatement(i, y));
     }
-    
+
     /**
      * prepareStatement creates a pre-compiled SQL PreparedStatement object.
      */
-    public PreparedStatement prepareStatement(String sql,int i, int y) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int i, int y) throws SQLException {
         setLastSQL(sql);
-        return con.prepareStatement(sql,i,y);
+        return con.prepareStatement(sql, i, y);
     }
-    
+
     // Note: JDBC 1.4 methods
-    
+
     /**
      * Changes the holdability of ResultSet objects created using this Connection
      * object to the given holdability.
@@ -396,10 +394,9 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public void setHoldability(int holdability) throws SQLException {
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         con.setHoldability(holdability);
+        con.setHoldability(holdability);
     }
-    
+
     /**
      * Retrieves the current holdability of ResultSet objects created using this Connection object.
      * @return the holdability, one of ResultSet.HOLD_CURSORS_OVER_COMMIT or ResultSet.CLOSE_CURSORS_AT_COMMIT
@@ -407,10 +404,9 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public int getHoldability() throws SQLException {
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.getHoldability();
+        return con.getHoldability();
     }
-    
+
     /**
      * Creates an unnamed savepoint in the current transaction and returns the new
      * Savepoint object that represents it.
@@ -418,10 +414,9 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public Savepoint setSavepoint() throws SQLException {
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.setSavepoint();
+        return con.setSavepoint();
     }
-    
+
     /**
      * Creates a savepoint with the given name in the current transaction and
      * returns the new Savepoint object that represents it.
@@ -430,10 +425,9 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public Savepoint setSavepoint(String name) throws SQLException {
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.setSavepoint(name);
+        return con.setSavepoint(name);
     }
-    
+
     /**
      * Undoes all changes made after the given Savepoint object was set.
      * This method should be used only when auto-commit has been disabled.
@@ -441,10 +435,9 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public void rollback(Savepoint savepoint) throws SQLException {
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         con.rollback(savepoint);
+        con.rollback(savepoint);
     }
-    
+
     /**
      * Removes the given Savepoint object from the current transaction.
      * Any reference to the savepoint after it have been removed will cause an SQLException to be thrown
@@ -452,10 +445,9 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         con.releaseSavepoint(savepoint);
+        con.releaseSavepoint(savepoint);
     }
-    
+
     /**
      * Creates a Statement object that will generate ResultSet objects with the given type,
      * concurrency, and holdability.
@@ -468,12 +460,10 @@ public class MultiConnection implements Connection {
      * @return a new Statement object
      * @since MMBase 1.5, JDBC 1.4
      */
-    public Statement createStatement(int type, int concurrency, int holdability)
-    throws SQLException {
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //        return new MultiStatement(this,con.createStatement(type, concurrency,holdability));
+    public Statement createStatement(int type, int concurrency, int holdability) throws SQLException {
+        return new MultiStatement(this, con.createStatement(type, concurrency, holdability));
     }
-    
+
     /**
      * Creates a PreparedStatement object that will generate ResultSet objects with the given type,
      * concurrency, and holdability.
@@ -487,13 +477,11 @@ public class MultiConnection implements Connection {
      * @return a new PreparedStatement object
      * @since MMBase 1.5, JDBC 1.4
      */
-    public PreparedStatement prepareStatement(String sql, int type, int concurrency, int holdability)
-    throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int type, int concurrency, int holdability) throws SQLException {
         setLastSQL(sql);
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.prepareStatement(sql, type, concurrency, holdability);
+        return con.prepareStatement(sql, type, concurrency, holdability);
     }
-    
+
     /**
      * Creates a CallableStatement object that will generate ResultSet objects with the given type,
      * concurrency, and holdability.
@@ -507,13 +495,11 @@ public class MultiConnection implements Connection {
      * @return a new CallableStatement object
      * @since MMBase 1.5, JDBC 1.4
      */
-    public CallableStatement prepareCall(String sql, int type, int concurrency, int holdability)
-    throws SQLException {
+    public CallableStatement prepareCall(String sql, int type, int concurrency, int holdability) throws SQLException {
         setLastSQL(sql);
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.prepareCall(sql, type, concurrency, holdability);
+        return con.prepareCall(sql, type, concurrency, holdability);
     }
-    
+
     /**
      * Creates a default PreparedStatement object that has the capability to retrieve auto-generated keys.
      * The given constant tells the driver whether it should make auto-generated keys available for retrieval.
@@ -525,10 +511,9 @@ public class MultiConnection implements Connection {
      */
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
         setLastSQL(sql);
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.prepareStatement(sql, autoGeneratedKeys);
+        return con.prepareStatement(sql, autoGeneratedKeys);
     }
-    
+
     /**
      * Creates a default PreparedStatement object capable of returning the auto-generated keys designated by
      * the given array. This array contains the indexes of the columns in the target table that contain
@@ -541,10 +526,9 @@ public class MultiConnection implements Connection {
      */
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
         setLastSQL(sql);
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.prepareStatement(sql, columnIndexes);
+        return con.prepareStatement(sql, columnIndexes);
     }
-    
+
     /**
      * Creates a default PreparedStatement object capable of returning the auto-generated keys designated by
      * the given array. This array contains the names of the columns in the target table that contain the
@@ -557,19 +541,6 @@ public class MultiConnection implements Connection {
      */
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
         setLastSQL(sql);
-        throw new UnsupportedOperationException("only available in JDBC 1.4");
-        //         return con.prepareStatement(sql, columnNames);
-    }
-    
-    /**
-     * Inner Class for the sole us of enabling the code to compile using jdk 1.3 or lower.
-     * In order to compile using jdk1.4 and JDBC 3.0, you need to comment this class out.
-     * @deprecated this inner class may be removed or commented-out in future releases.
-     *              do not use!
-     * @since MMBase 1.5
-     */
-    private class Savepoint {
+        return con.prepareStatement(sql, columnNames);
     }
 }
-
-
