@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.2 2004-12-17 16:01:11 pierre Exp $
+ * @version $Id: Lucene.java,v 1.3 2004-12-21 12:07:25 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -72,6 +72,7 @@ public class Lucene extends Module implements MMBaseObserver {
                                                 new Parameter("index",String.class),
                                                 new Parameter("offset",Integer.class),
                                                 new Parameter("max",Integer.class),
+                                                new Parameter("extraconstraints",String.class),
                                                 Parameter.CLOUD },
                               ReturnType.LIST) {
         public Object getFunctionValue(Parameters arguments) {
@@ -86,7 +87,8 @@ public class Lucene extends Module implements MMBaseObserver {
             int max = -1;
             Integer maxParameter = (Integer)arguments.get("max");
             if (maxParameter != null) max = maxParameter.intValue();
-            return search(value, index, offset, max);
+            String extraConstraints = arguments.getString("extraconstraints");
+            return search(value, index, extraConstraints, offset, max);
         }
     };
 
@@ -97,12 +99,14 @@ public class Lucene extends Module implements MMBaseObserver {
      protected Function searchSizeFunction = new AbstractFunction("searchsize",
                               new Parameter[] { new Parameter("value",String.class),
                                                 new Parameter("index",String.class),
+                                                new Parameter("extraconstraints",String.class),
                                                 Parameter.CLOUD },
                               ReturnType.INTEGER) {
         public Object getFunctionValue(Parameters arguments) {
             String value = arguments.getString("value");
             String index = arguments.getString("index");
-            return new Integer(searchSize(value, index));
+            String extraConstraints = arguments.getString("extraconstraints");
+            return new Integer(searchSize(value, index, extraConstraints));
         }
     };
 
@@ -236,12 +240,12 @@ public class Lucene extends Module implements MMBaseObserver {
         return searcher;
     }
 
-    public List search(String value, String indexName, int offset, int max) {
-        return getSearcher(indexName).search(value, offset, max);
+    public List search(String value, String indexName, String extraConstraints, int offset, int max) {
+        return getSearcher(indexName).search(value, Searcher.createQuery(extraConstraints), offset, max);
     }
 
-    public int searchSize(String value, String indexName) {
-        return getSearcher(indexName).searchSize(value);
+    public int searchSize(String value, String indexName, String extraConstraints) {
+        return getSearcher(indexName).searchSize(value, Searcher.createQuery(extraConstraints));
     }
 
     public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
