@@ -25,12 +25,21 @@
         </mm:listnodes>
       </mm:functioncontainer>
       <hr />
+      <%-- 
       <mm:functioncontainer>
         <mm:param name="template" value="s(100x100)" />
         <mm:listnodes type="news" max="5">
           <mm:function  name="gui" /><br />
         </mm:listnodes>
       </mm:functioncontainer>
+      --%>
+      <hr />
+      <mm:listnodes type="pools" max="1">
+        <mm:import id="max">100</mm:import>
+        <mm:nodelistfunction referids="max" name="function1">
+          -- <mm:field name="number" /><br />
+        </mm:nodelistfunction>
+      </mm:listnodes>
     </mm:cloud>
   </body>
 </html>

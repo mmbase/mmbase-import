@@ -26,8 +26,9 @@
   </mm:previousbatches>
 
   <mm:previousbatches max="5"  indexoffset="$indexoffset"> 
-    <mm:index /><mm:last inverse="true">, </mm:last>
+    <mm:first> ---</mm:first><mm:index /><mm:last inverse="true">, </mm:last>
   </mm:previousbatches>
+
   <font color="green"><mm:write value="${+$offset / $max + $indexoffset}" vartype="integer" /></font><!-- current page -->
   <mm:nextbatches max="5" indexoffset="$indexoffset">
     <mm:index /><mm:last inverse="true">, </mm:last>
