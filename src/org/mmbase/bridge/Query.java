@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.22 2003-12-09 22:51:38 michiel Exp $
+ * @version $Id: Query.java,v 1.23 2004-02-17 09:43:41 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -84,6 +84,12 @@ public interface Query extends SearchQuery, Cloneable {
      * Adds a field by string
      */
     StepField addField(String field);
+
+
+    /**
+     * Removes all fields from the Query object.
+     */
+    void removeFields();
 
     /**
      * Creates a StepField object withouth adding it (needed for aggregated queries).
