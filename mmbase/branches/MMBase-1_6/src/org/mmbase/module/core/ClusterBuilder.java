@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.18.2.5 2003-04-03 17:18:15 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18.2.6 2003-06-16 08:42:09 vpro Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -91,7 +91,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } else if ("EITHER".equals(search)) {
             return SEARCH_EITHER;
         } else {
-            throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
+            throw  new IllegalArgumentException("'" + search + "' cannot be converted to a search-direction constant");
         }
 
     }
@@ -320,8 +320,8 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         // Get ALL tables (including missing reltables)
+        if (tables==null || tables.size()==0) throw new IllegalArgumentException("Nodepath was not specified or invalid.");
         alltables=getAllTables(tables,roles);
-        if (alltables==null) return null;
 
         // Get the destination select string;
         // if the requested set is not DISTINCT, the
@@ -329,11 +329,11 @@ public class ClusterBuilder extends VirtualBuilder {
         // involved.
         // Possibly, we want to turn this off or on, i.e. by using another
         // value for the distinct parameter (such as "BYREFERENCE")
-        // Note that due to teh problems with distinct result sets, this is not
-        // yet an optimal sollution for the multilevel authorization problem
+        // Note that due to the problems with distinct result sets, this is not
+        // yet an optimal solution for the multilevel authorization problem
 
         select=getSelectString(alltables,tables,fields,!isdistinct);
-        if (select==null) return null;
+        if (select==null) throw new IllegalArgumentException("Fields were not specified or invalid.");
 
         // Get the tables names corresponding to the fields (for the mapping)
         selectTypes=getSelectTypes(alltables,select);
@@ -358,7 +358,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 if (!str.equals("-1")) {
                     basenode=getNode(str);
                     if (basenode==null) {
-                        throw new RuntimeException("Cannot find node: "+str);
+                        throw new IllegalArgumentException("Cannot find node: "+str);
                     }
                     snodes.setElementAt(""+basenode.getNumber(), i);
                 }
@@ -499,7 +499,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 if (rnumber==-1) {
                     String msg = "Specified builder "+curtable+" does not exist.";
                     log.error(msg);
-                    throw new RuntimeException(msg);
+                    throw new IllegalArgumentException(msg);
                 } else {
                     bul=mmb.getInsRel(); // dummy
                     roles.put(orgtable,new Integer(rnumber));
@@ -718,8 +718,10 @@ public class ClusterBuilder extends VirtualBuilder {
             val=(String)direction.elementAt(pos);
             if (val.equalsIgnoreCase("DOWN")) {
                 direction.setElementAt("DESC",pos); // DOWN is DESC
-            } else {
+            } else if (val.equalsIgnoreCase("UP")) {
                 direction.setElementAt("ASC",pos);  // UP is ASC
+            } else {
+                throw new IllegalArgumentException("Parameter directions contains an invalid value ("+direction+"), should be UP or DOWN.");
             }
         }
 
@@ -893,7 +895,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 // needed query.
                 // A full qyery for 'a,rel,b' looks like:
                 //   (a.number=rel.snumber and b.number=rel.dnumber) or (a.number=rel.dnumber and b.number=rel.snumber and rel.dir<>1)
-                // If the 'allowed' relations limit how teh relation can be made,
+                // If the 'allowed' relations limit how the relation can be made,
                 // this can be simplified to
                 //   a.number=rel.snumber and b.number=rel.dnumber
                 // or
