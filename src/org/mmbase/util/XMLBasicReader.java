@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.12 2001-10-30 14:28:44 eduard Exp $
+ * @version $Id: XMLBasicReader.java,v 1.13 2001-11-21 16:21:44 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -56,6 +56,9 @@ public class XMLBasicReader  {
     private String xmlFilePath;
 
     public XMLBasicReader(String path) {
+        if (log.isDebugEnabled()) {
+            log.debug("Reading XML file " + path);
+        }
         try {
             if(useJavaxXML) {
                 xmlFilePath=path; // save for debug
@@ -72,7 +75,8 @@ public class XMLBasicReader  {
                 document = parser.getDocument();
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            log.error("Error reading " + path);
+            log.error(Logging.stackTrace(e));
         }
     }
 
@@ -112,6 +116,9 @@ public class XMLBasicReader  {
      * @return Leaf element of the path
      */
     public Element getElementByPath(String path) {
+        if (document == null) {
+            log.error("Document is not defined, cannot get " + path);
+        }
         return getElementByPath(document.getDocumentElement(),path);
     }
 
