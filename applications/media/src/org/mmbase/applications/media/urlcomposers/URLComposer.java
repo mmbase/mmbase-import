@@ -9,10 +9,12 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.media.urlcomposers;
+
 import org.mmbase.applications.media.builders.MediaProviders;
 import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.Format;
+
 import java.util.Map;
 import java.util.Locale;
 import java.util.List;
@@ -38,23 +40,19 @@ public class URLComposer  {
 
     public URLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
         this(provider, source, info, cacheExpireObjects); // no fragment necessary on default
-
-	if(cacheExpireObjects!=null) {
-	synchronized (cacheExpireObjects) {
-		if (!cacheExpireObjects.contains(provider)) {
-			cacheExpireObjects.add(provider);
-		}
-		if (!cacheExpireObjects.contains(source)) {
-			cacheExpireObjects.add(source);
-		}
-		if (!cacheExpireObjects.contains(fragment)) {
-			cacheExpireObjects.add(fragment);
-		}
-	}
-	}
     }
 
     protected URLComposer(MMObjectNode provider, MMObjectNode source, Map info, List cacheExpireObjects) { 
+	if(cacheExpireObjects!=null) {
+        synchronized (cacheExpireObjects) {
+                if (!cacheExpireObjects.contains(provider)) {
+                        cacheExpireObjects.add(provider);
+                }
+                if (!cacheExpireObjects.contains(source)) {
+                        cacheExpireObjects.add(source);
+                }
+	}
+
         if (source   == null) throw new RuntimeException("Source may not be null in a URLComposer object");
         if (provider == null) throw new RuntimeException("Provider may not be null in a URLComposer object");
         this.provider = provider;
