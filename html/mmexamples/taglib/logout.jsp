@@ -1,6 +1,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
-<%@ page session="false" %>
+%><%@ page session="false" %><html>
+<head>
+<title>Log out</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+</head>
 <body>
 <table>
 <tr valign="top">

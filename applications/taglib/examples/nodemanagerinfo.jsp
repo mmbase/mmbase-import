@@ -5,7 +5,8 @@
 <html>
 
 <head>
-  <title>Taglib examples</title>
+  <title>Node manager info</title>
+  <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
 </head>
 
 <body>
