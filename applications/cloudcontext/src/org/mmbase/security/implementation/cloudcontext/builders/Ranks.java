@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.1 2003-05-22 17:14:03 michiel Exp $
+ * @version $Id: Ranks.java,v 1.2 2003-05-23 12:05:13 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -42,7 +42,10 @@ public class Ranks extends MMObjectBuilder {
         return (Ranks) MMBase.getMMBase().getBuilder("mmbaseranks");
     }
 
-    public boolean init() {        
+    // javadoc inherited
+    public boolean init() {
+        mmb.addLocalObserver(getTableName(),  CacheInvalidator.getInstance());
+        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
         return super.init();
     }
 

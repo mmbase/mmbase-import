@@ -23,11 +23,19 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.1 2003-05-22 17:14:03 michiel Exp $
+ * @version $Id: Groups.java,v 1.2 2003-05-23 12:05:13 michiel Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Groups.class.getName());
+
+    // javadoc inherited
+    public boolean init() {
+        mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
+        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
+        return super.init();
+    }
+
 
     /**
      * @return the MMObjectBuilder mmbasegroups casted to a Groups
@@ -48,7 +56,6 @@ public class Groups extends MMObjectBuilder {
     /**
      * Checks wether group or user identified by number is contained by group.
      */
-
     protected boolean contains(MMObjectNode group, int number)  {
         if (log.isDebugEnabled()) {
             log.debug("Checking if user/group " + number + " is contained by group " + group + "(" + group.getNumber() + ")");
