@@ -34,6 +34,7 @@ public class PostAreaConfig {
    private static Logger log = Logging.getLoggerInstance(ForumManager.class);
    private String defaultaccount, defaultpassword;
    private String id="unkown";
+   private String guestreadmodetype,guestwritemodetype;
 
     public PostAreaConfig(XMLBasicReader reader,Element n) {
 	decodeConfig(reader,n);
@@ -87,6 +88,10 @@ public class PostAreaConfig {
                                 org.mmbase.applications.mmbob.generate.Handler.setGenerateFile(role, dfile, tokenizer);
                             }
                         }
+
+
+                        guestreadmodetype = getAttributeValue(reader,n,"guestreadmode","type");
+                        guestwritemodetype = getAttributeValue(reader,n,"guestwritemode","type");
 
 			/*
                         for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
@@ -142,6 +147,29 @@ public class PostAreaConfig {
   
    public String getId() {
 	return id;
+   }
+
+
+   private String getAttributeValue(XMLBasicReader reader,Element n,String itemname,String attribute) {
+       for (Enumeration ns2 = reader.getChildElements(n, itemname); ns2.hasMoreElements();) {
+           Element n2 = (Element) ns2.nextElement();
+           NamedNodeMap nm = n2.getAttributes();
+           if (nm != null) {
+                  org.w3c.dom.Node n3 = nm.getNamedItem(attribute);
+                  if (n3 != null) {
+                          return n3.getNodeValue();
+                  }
+          }
+      }	
+      return null;
+   }
+
+   public String getGuestReadModeType() {
+        return guestreadmodetype;
+   }
+
+   public String getGuestWriteModeType() {
+        return guestwritemodetype;
    }
 
 
