@@ -23,7 +23,7 @@ import javax.servlet.RequestDispatcher;
 import org.mmbase.bridge.*;
 import org.mmbase.security.Rank; // hmm, not from bridge, but we do need it anyway
 
-import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.util.StringSplitter;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
