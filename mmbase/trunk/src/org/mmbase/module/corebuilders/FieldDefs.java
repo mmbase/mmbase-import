@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.30 2002-10-24 12:56:07 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.31 2002-11-21 15:17:27 robmaris Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -288,7 +288,9 @@ public class FieldDefs implements Comparable {
     }
 
     /**
-     * Retrieve the basic MMBase type of the field.
+     * Retrieves the basic MMBase type of the field.
+     *
+     * @return The type, this is one of the values defined in this class.
      */
     public int getDBType() {
         return DBType;
