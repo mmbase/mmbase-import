@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.110 $ $Date: 2001-11-27 10:27:00 $
+ * @version $Revision: 1.111 $ $Date: 2001-12-07 11:48:08 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -565,6 +565,9 @@ public class MMObjectBuilder extends MMTable {
             }
             nodeCache.remove(new Integer(node.getNumber()));
             res=node.commit();
+            if (res) {
+                nodeCache.put(new Integer(node.getNumber()),node);
+            };
         } finally {
             synchronized(nodeCache) {
                 cacheLocked--;
@@ -590,6 +593,9 @@ public class MMObjectBuilder extends MMTable {
                 username=node.getStringValue("owner");
             }
             res=node.insert(username);
+            if (res > -1) {
+                nodeCache.put(new Integer(res),node);
+            }
         } finally {
             synchronized(nodeCache) {
                 cacheLocked--;
