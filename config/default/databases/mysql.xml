@@ -37,10 +37,14 @@
      	  <type-mapping mmbase-type="LONG">bigint</type-mapping>
      	  <type-mapping mmbase-type="FLOAT">float</type-mapping>
      	  <type-mapping mmbase-type="INTEGER">integer</type-mapping>
-       	  <type-mapping mmbase-type="STRING" min-size="1" max-size="255">varchar(size)</type-mapping>
-       	
+
+       	  <type-mapping mmbase-type="STRING" min-size="1" max-size="255">varchar(size)</type-mapping>       	
        	  <type-mapping mmbase-type="STRING" min-size="256" max-size="65535">blob</type-mapping>
        	  <type-mapping mmbase-type="STRING" min-size="65536" max-size="16777216">mediumblob</type-mapping>
+
+       	  <type-mapping mmbase-type="XML" min-size="1" max-size="255">varchar(size)</type-mapping>       	
+       	  <type-mapping mmbase-type="XML" min-size="256" max-size="65535">blob</type-mapping>
+       	  <type-mapping mmbase-type="XML" min-size="65536" max-size="16777216">mediumblob</type-mapping>
        	
        	  <type-mapping mmbase-type="BYTE" min-size="1" max-size="65535">blob</type-mapping>
        	  <type-mapping mmbase-type="BYTE" min-size="65536" max-size="16777216">mediumblob</type-mapping>
