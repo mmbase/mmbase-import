@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.21 2002-07-24 10:59:46 pierre Exp $
+ * @version $Id: Dove.java,v 1.22 2002-10-04 22:22:31 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -380,7 +380,7 @@ public class Dove extends AbstractDove {
             try {
                 out.setAttribute(ELM_TYPE,nodemanagername);
                 NodeManager nm =cloud.getNodeManager(nodemanagername);
-                org.mmbase.bridge.Node n=nm.createNode();
+                org.mmbase.bridge.Node n = nm.createNode();
                 try {
                     Element data=doc.createElement(OBJECT);
                     int number=n.getNumber();
@@ -388,7 +388,7 @@ public class Dove extends AbstractDove {
                     out.appendChild(data);
                     getDataNode(null,data,n);
                 } finally {
-                    n.cancel();  // have to cancel node !
+                    n.cancel();  // have to cancel node ! It will only be really made in the putNewNode function
                 }
             } catch (RuntimeException e) {
                 Element err=addContentElement(ERROR,"node type does not exist",out);
@@ -422,7 +422,7 @@ public class Dove extends AbstractDove {
                 out.setAttribute(ELM_DESTINATION, destination);
                 out.setAttribute(ELM_SOURCE, source);
                 RelationManager nm =cloud.getRelationManager(rolename);
-                org.mmbase.bridge.Node n=nm.createNode();
+                org.mmbase.bridge.Node n = nm.createNode();
                 try {
                     Element data=doc.createElement(RELATION);
                     int number=n.getNumber();
@@ -432,7 +432,7 @@ public class Dove extends AbstractDove {
                     data.setAttribute(ELM_ROLE,rolename);
                     out.appendChild(data);
                     getDataNode(null,data,n);
-                } finally {
+                } finally  {
                     n.cancel();  // have to cancel node !
                 }
             } catch (RuntimeException e) {
@@ -893,17 +893,18 @@ public class Dove extends AbstractDove {
      * @return true if succesful, false if an error ocurred
      */
     protected boolean putNewNode(String alias, Map values, Map aliases, Map nodesadded, Element out, Cloud cloud) {
-        String type=(String)values.get("_otype");
+        String type = (String) values.get("_otype");
         try {
-            NodeManager nm=cloud.getNodeManager(type);
-            org.mmbase.bridge.Node newnode=nm.createNode();
+            NodeManager nm = cloud.getNodeManager(type);
+            org.mmbase.bridge.Node newnode = nm.createNode();
 
-            Element objectelement=doc.createElement(OBJECT);
-            objectelement.setAttribute(ELM_TYPE,type);
-            fillFields(alias,newnode,objectelement,values);
+            Element objectelement = doc.createElement(OBJECT);
+            objectelement.setAttribute(ELM_TYPE, type);
+            fillFields(alias,newnode,objectelement, values);
             try {
                 newnode.commit();
-                int number=newnode.getNumber();
+                int number = newnode.getNumber();
+                if (log.isServiceEnabled()) log.service("Created new node " + number);
                 aliases.put(alias,new Integer(number));
                 objectelement.setAttribute(ELM_NUMBER,""+number);
                 objectelement.setAttribute(ELM_OLDNUMBER, alias);
@@ -917,9 +918,9 @@ public class Dove extends AbstractDove {
                 Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias + "(" + e.toString() + ")",out);
                 err.setAttribute(ELM_TYPE,IS_SERVER);
             }
-        } catch (RuntimeException e) {
+        } catch (BridgeException e) {
             // give error this cloud doesn't support this type
-            Element err=addContentElement(ERROR,"Cloud does not support type : " + type + "(" + e.toString() + ")",out);
+            Element err = addContentElement(ERROR, Logging.stackTrace(e), out);
             err.setAttribute(ELM_TYPE,IS_SERVER);
         }
         return false;
@@ -955,8 +956,9 @@ public class Dove extends AbstractDove {
             fillFields(alias,newnode,relationelement,values);
             try {
                 newnode.commit();
-                int number=newnode.getNumber();
-                aliases.put(alias,new Integer(number));
+                int number = newnode.getNumber();
+                if (log.isServiceEnabled()) log.service("Created new relation " + number);
+                aliases.put(alias, new Integer(number));
                 // keep in transaction for later update...
                 relationsadded.put(newnode,relationelement);
                 // add node to response
