@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.10 2003-02-20 15:54:07 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.11 2003-02-20 16:41:51 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -225,6 +225,17 @@ public class MediaSources extends MMObjectBuilder {
     protected Format getFormat(MMObjectNode source) {
         return Format.get(source.getIntValue("format"));
     }
+
+
+    protected  String getFormat(MMObjectNode source, Map info)   {
+        log.debug("Getting format of a source.");        
+        List urls = getFilteredURLs(source, null, info);
+        if (urls.size() > 0) {
+            return ((URLComposer) urls.get(0)).getFormat().toString();
+        } else {
+            return ""; //no sources 
+        }
+    }
     
     /**
      * The codec field is an integer, this function returns a string-presentation
@@ -290,7 +301,7 @@ public class MediaSources extends MMObjectBuilder {
             }
             return Boolean.FALSE;
         } else if (FUNCTION_FORMAT.equals(function)) {
-            return getFormat(node).toString();
+            return getFormat(node, MediaFragments.translateURLArguments(args, null));
         } else if (FUNCTION_CODEC.equals(function)) {
             return getCodec(node);
         } else if (FUNCTION_MIMETYPE.equals(function)) {
@@ -320,7 +331,11 @@ public class MediaSources extends MMObjectBuilder {
                 } else if (args.get(0).equals("codec")) {
                     return getCodec(node);
                 } else if (args.get(0).equals("format")) {
-                    return getFormat(node);
+                    Locale locale =  new Locale(mmb.getLanguage(), "");
+                    if(args.size() > 1) {
+                        locale = new Locale((String) args.get(1), "");
+                    } 
+                    return getFormat(node).getGUIIndicator(locale);
                 } else if (args.get(0).equals("")) {
                     return super.executeFunction(node, function, args); // call getGUIIndicoato
                 } else {

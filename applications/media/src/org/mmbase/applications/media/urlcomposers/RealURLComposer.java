@@ -20,7 +20,7 @@ import java.util.Hashtable;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealURLComposer.java,v 1.6 2003-02-19 20:50:25 michiel Exp $
+ * @version $Id: RealURLComposer.java,v 1.7 2003-02-20 16:41:52 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -57,7 +57,7 @@ public class RealURLComposer extends FragmentURLComposer  {
             // real...
             String title = fragment.getStringValue("title");
             args.append(sep).append("title=").append(title);
-        }
+        } 
         return args;
     }
     

@@ -1,4 +1,8 @@
-<%@include file="server.jsp" %><mm:context id="config">
+<%-- Need to know the real servername sometimes --%><%!
+String  getHost() { return org.mmbase.applications.media.urlcomposers.Config.host; }
+String thisServer(javax.servlet.http.HttpServletRequest request, String url) { 
+    return "http://" + getHost() + request.getContextPath() + url;
+} %><mm:context id="config">
  <mm:import id="configsubmitted" externid="config" from="parameters" />
  <mm:present referid="configsubmitted">
     <%-- for config-page --%>

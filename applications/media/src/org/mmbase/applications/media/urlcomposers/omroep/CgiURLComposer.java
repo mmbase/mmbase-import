@@ -23,7 +23,7 @@ import java.text.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.2 2003-02-19 20:50:25 michiel Exp $
+ * @version $Id: CgiURLComposer.java,v 1.3 2003-02-20 16:41:52 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiURLComposer extends RamURLComposer {
@@ -67,6 +67,10 @@ public class CgiURLComposer extends RamURLComposer {
         StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + provider.getStringValue("rootpath"));
         addURL(buff, source.getStringValue("url"));
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title, als
+        if (fragment == null) {
+            // cgi script does not work without title (for wm)?
+            buff.append('?').append("title=geen beschrijving");
+        }
         return buff;            
     }
 
