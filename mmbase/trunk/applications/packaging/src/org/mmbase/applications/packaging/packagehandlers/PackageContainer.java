@@ -366,7 +366,7 @@ public class PackageContainer implements PackageInterface {
      * @return    The versions value
      */
     public Iterator getVersions() {
-        return versions.values().iterator();
+        return ((HashMap)versions.clone()).values().iterator();
     }
 
 

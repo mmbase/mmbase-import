@@ -231,7 +231,8 @@ public class BundleManager {
         // this checks all the bundles if they are still found at their
         // providers, this is done by checking the last provider update
         // against the last bundle update
-        Iterator e = bundles.values().iterator();
+	HashMap mm = (HashMap)bundles.clone();
+        Iterator e = mm.values().iterator();
         while (e.hasNext()) {
             BundleContainer pc = (BundleContainer)e.next();
             Iterator e2 = pc.getVersions();
