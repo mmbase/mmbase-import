@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.23 $ $Date: 2001-01-02 20:07:25 $
+ * @version $Revision: 1.24 $ $Date: 2001-01-12 10:24:03 $
  */
 public abstract class Module {
 
@@ -167,10 +167,17 @@ public abstract class Module {
 
 
 	/**
- 	 * Gets all the modules of the Environment that this worker may access. If allowed.
+ 	 * Returns an iterator of all the modules that are currently active.
+ 	 * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
+ 	 * Unlike {@link #getModule}, this method does not automatically load modules if this hadn't occurred yet.
+	 * @return an <code>Iterator</code> with all active modules
  	 */
-	protected final Object getModules() {
-		return(null);
+	public static final Iterator getModules() {
+	    if (modules==null) {
+	        return null;
+	    } else {
+	        return modules.values().iterator();
+	    }
 	}
 
 
@@ -228,8 +235,12 @@ public abstract class Module {
 	*/
 
 
+	/**
+	 *  Returns the name of the module
+	 * @return the module name
+	 */
 	public final String getName() {
-		return(null); // org.mmbase
+		return moduleName; // org.mmbase
 	}
 
 	/** 
