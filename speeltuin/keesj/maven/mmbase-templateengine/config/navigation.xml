@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<!DOCTYPE navigation SYSTEM "navigation.dtd">
+<navigation name="sites" id="1" visible="false">
+  <!--
+  <navigation name="Web" id="4032058">
+    <property name="template">/frontend/web/index.jsp</property>
+  </navigation>
+  <navigation name="Tv" id="3788353">
+    <property name="template">/frontend/tv/index.jsp</property>
+  </navigation>
+  <navigation name="Radio" id="3769557">
+    <property name="template">/frontend/radio/index.jsp</property>
+  </navigation>
+  <navigation name="Backstage" id="3788358">
+    <property name="template">/frontend/backstage/index.jsp</property>
+  </navigation>
+  <navigation name="Gids" id="10824338">
+    <property name="template">/frontend/gids/index.jsp</property>
+  </navigation>
+  <navigation name="Winkel" id="10824338">
+    <property name="template">/frontend/winkel/index.jsp</property>
+  </navigation>
+  <navigation name="Vragen" id="3788383">
+    <property name="template">/frontend/vragen/index.jsp</property>
+  </navigation>
+  -->
+  <navigation name="programma" id="programma">
+    <entrypoint class="org.mmbase.applications.templateengine.ProgrammasitesNavigationControl">
+      <navigationparam class="org.mmbase.applications.templateengine.ProgrammaSiteMMBaseNavigation" type="tesites" field="path" guifield="name">
+        <property name="type">episodeshomepage</property>
+        <navigation name="admin" id="edit">
+          <property name="template">/te/edit/index.jsp</property>
+          <property name="visible">false</property>
+        </navigation>
+        <navigation name="edit" id="edit">
+          <property name="type">wizardpage</property>
+          <property name="visible">false</property>
+        </navigation>
+        <navigation id="episodes" name="Afleveringen">
+          <property name="type">episodespage</property>
+          <navigation name="admin" id="edit">
+            <property name="template">/te/edit/index.jsp</property>
+            <property name="visible">false</property>
+          </navigation>
+          <navigation name="edit" id="episodes">
+            <property name="template">/te/edit/editwizards/wizardjump.jsp</property>
+            <property name="visible">false</property>
+          </navigation>
+          <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="episodes" field="number" guifield="title">
+            <property name="type">episodepage</property>
+            <navigation id="audio" name="Audio">
+              <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="audiofragments" field="number" guifield="title">
+                <property name="type">audiopage</property>
+              </navigationparam>
+            </navigation>
+            <navigation name="admin" id="edit">
+              <property name="template">/te/edit/index.jsp</property>
+              <property name="visible">false</property>
+            </navigation>
+            <navigation name="edit" id="episodes">
+              <property name="template">/te/edit/editwizards/wizardjump.jsp</property>
+              <property name="visible">false</property>
+            </navigation>
+            <navigation id="items" name="Items">
+              <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="items" field="number" guifield="title">
+                <property name="type">itempage</property>
+                <navigation id="audio" name="Audio">
+                  <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="audiofragments" field="number" guifield="title">
+                    <property name="type">audiopage</property>
+                  </navigationparam>
+                </navigation>
+                <navigation name="admin" id="edit">
+                  <property name="template">/te/edit/index.jsp</property>
+                  <property name="visible">false</property>
+                </navigation>
+                <navigation name="edit" id="edit">
+                  <property name="template">/te/edit/editwizards/overview.jsp</property>
+                  <property name="visible">false</property>
+                </navigation>
+              </navigationparam>
+            </navigation>
+          </navigationparam>
+        </navigation>
+        <navigation id="binders" name="Dossiers">
+          <property name="type">binderspage</property>
+          <navigation id="audio" name="Audio">
+            <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="audiofragments" field="number" guifield="title">
+              <property name="type">audiopage</property>
+            </navigationparam>
+          </navigation>
+          <navigation name="admin" id="edit">
+            <property name="template">/te/edit/index.jsp</property>
+            <property name="visible">false</property>
+          </navigation>
+          <navigation name="edit" id="binders">
+            <property name="template">/te/edit/editwizards/wizardjump.jsp</property>
+            <property name="visible">false</property>
+          </navigation>
+          <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="binders" field="number" guifield="title">
+            <property name="type">binderpage</property>
+            <navigation name="admin" id="edit">
+              <property name="template">/te/edit/index.jsp</property>
+              <property name="visible">false</property>
+            </navigation>
+          </navigationparam>
+        </navigation>
+        <navigation id="magazines" name="Artikelen">
+          <property name="type">magazinespage</property>
+          <navigation name="admin" id="edit">
+            <property name="template">/te/edit/index.jsp</property>
+            <property name="visible">false</property>
+          </navigation>
+          <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="news" field="number" guifield="title">
+            <property name="type">newspage</property>
+            <navigation id="audio" name="Audio">
+              <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="audiofragments" field="number" guifield="title">
+                <property name="type">audiopage</property>
+              </navigationparam>
+            </navigation>
+            <navigation name="admin" id="edit">
+              <property name="template">/te/edit/index.jsp</property>
+              <property name="visible">false</property>
+            </navigation>
+            <navigation name="edit" id="edit">
+              <property name="template">/te/edit/editwizards/overview.jsp</property>
+              <property name="visible">false</property>
+            </navigation>
+          </navigationparam>
+        </navigation>
+        <navigation name="Forum" id="forum">
+          <property name="type">forumpage</property>
+        </navigation>
+        <navigation name="Zoeken" id="search">
+          <property name="type">searchpage</property>
+          <property name="visible">false</property>
+        </navigation>
+        <navigation name="Service info" id="serviceinfo">
+          <property name="visible">false</property>
+          <navigationparam class="org.mmbase.applications.templateengine.MMBaseNavigation" type="serviceinfo" field="number" guifield="title">
+            <property name="type">serviceinfopage</property>
+            <navigation name="admin" id="edit">
+              <property name="template">/te/edit/index.jsp</property>
+            </navigation>
+          </navigationparam>
+        </navigation>
+      </navigationparam>
+    </entrypoint>
+    <navigation name="admin" id="admin">
+      <property name="template">/te/admin/index.jsp</property>
+    </navigation>
+  </navigation>
+</navigation>
