@@ -452,8 +452,9 @@ public class Controller {
 		virtual.setValue("quotaunusednumber",t-u);
 		virtual.setValue("quotausedbar",ub);
 
-		if (up>59) {
-			if (up>79) {
+		log.info("U="+u+" FSW="+ForumManager.getQuotaSoftWarning()+" FW="+ForumManager.getQuotaWarning());
+		if (u>ForumManager.getQuotaSoftWarning()) {
+			if (u>ForumManager.getQuotaWarning()) {
 				virtual.setValue("quotawarning","red");
 			} else {
 				virtual.setValue("quotawarning","orange");
@@ -1151,7 +1152,9 @@ public class Controller {
 		if (f!=null) {
 			Poster po=f.getPoster(account);
 			if (po!=null) {
-				if (po.getPassword().equals(password)) {
+				org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
+				String md5passwd = md5.transform(password);
+				if (po.getPassword().equals(password) || po.getPassword().equals(md5passwd)) {
 					virtual.setValue("state","passed");
 					virtual.setValue("posterid",po.getId());
 				} else {
