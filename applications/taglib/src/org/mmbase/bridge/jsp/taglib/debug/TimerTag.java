@@ -130,7 +130,9 @@ public class TimerTag extends ContextReferrerTag {
         log.info(result);
 
         try {
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            if (bodyContent != null) {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            }
             return SKIP_BODY;
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
