@@ -9,13 +9,12 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+import java.util.*;
+
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.util.logging.*;
-
-import java.util.*;
 
 /**
  * 'Basic' implementation of bridge NodeQuery. Wraps a Query with all and only fields of one
@@ -32,7 +31,7 @@ import java.util.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.7 2003-08-27 21:23:45 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.8 2003-08-29 12:12:29 keesj Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */

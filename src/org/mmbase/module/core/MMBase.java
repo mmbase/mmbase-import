@@ -9,28 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.util.*;
 import java.io.File;
 import java.sql.*;
+import java.util.*;
 
-import org.mmbase.util.*;
-import org.mmbase.util.xml.BuilderWriter;
-import org.mmbase.util.xml.BuilderReader;
-import org.mmbase.util.platform.setUser;
 import org.mmbase.module.*;
-import org.mmbase.module.builders.*; // Vwms, VwmTasks, DayMarkers, Versions
+import org.mmbase.module.builders.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.JDBCInterface;
-import org.mmbase.module.database.MultiConnection;
+import org.mmbase.module.database.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
-
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.implementation.database.JDBC2NodeWrapper;
 import org.mmbase.storage.search.SearchQueryException;
-
-import org.mmbase.storage.Storage;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.platform.setUser;
+import org.mmbase.util.xml.*;
 
 /**
  * The module which provides access to the MMBase database defined
@@ -42,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.98 2003-08-21 17:26:55 pierre Exp $
+ * @version $Id: MMBase.java,v 1.99 2003-08-29 12:12:29 keesj Exp $
  */
 public class MMBase extends ProcessorModule {
 

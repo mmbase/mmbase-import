@@ -12,23 +12,13 @@ package org.mmbase.bridge.jsp.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.BodyTag;
-import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.*;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-
-import org.mmbase.util.StringSplitter;
-import org.mmbase.bridge.jsp.taglib.util.*;
-
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-import java.util.Map;
-import java.util.HashMap;
+import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.StringSplitter;
+import org.mmbase.util.logging.*;
 
 /**
  * AbstractNodeListTag, provides basic functionality for listing objects
@@ -37,7 +27,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.52 2003-08-27 21:33:28 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.53 2003-08-29 12:12:25 keesj Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {

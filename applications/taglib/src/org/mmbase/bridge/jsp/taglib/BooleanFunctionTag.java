@@ -9,13 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.containers.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -24,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.3 2003-08-27 21:33:29 michiel Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.4 2003-08-29 12:12:25 keesj Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
 

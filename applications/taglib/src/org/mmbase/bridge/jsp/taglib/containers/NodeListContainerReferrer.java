@@ -10,13 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.containers;
 
 
-import javax.servlet.jsp.JspTagException;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListContainerReferrer.java,v 1.2 2003-08-11 15:26:36 michiel Exp $
+ * @version $Id: NodeListContainerReferrer.java,v 1.3 2003-08-29 12:12:24 keesj Exp $
  */
 public interface NodeListContainerReferrer extends ContainerReferrer {
 

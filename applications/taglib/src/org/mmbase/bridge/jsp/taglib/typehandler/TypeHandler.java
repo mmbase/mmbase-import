@@ -10,14 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
-import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-
-import java.util.*;
-import org.mmbase.bridge.Query;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.storage.search.Constraint;
 
 /**
@@ -25,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.6 2003-08-08 12:11:12 michiel Exp $
+ * @version $Id: TypeHandler.java,v 1.7 2003-08-29 12:12:28 keesj Exp $
  */
 
 public interface TypeHandler {

@@ -9,9 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import org.mmbase.module.core.MMBase;
-import org.mmbase.util.xml.DatabaseReader;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.DatabaseReader;
 import org.xml.sax.InputSource;
 
 
@@ -26,7 +25,7 @@ import org.xml.sax.InputSource;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLDatabaseReader.java,v 1.21 2003-07-21 12:19:06 pierre Exp $
+ * @version $Id: XMLDatabaseReader.java,v 1.22 2003-08-29 12:12:30 keesj Exp $
  */
 public class XMLDatabaseReader extends DatabaseReader  {
     // logger

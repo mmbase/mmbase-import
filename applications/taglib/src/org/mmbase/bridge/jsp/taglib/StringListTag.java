@@ -9,25 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.*;
-
 import java.io.IOException;
 import java.util.*;
 
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.*;
 
-import org.mmbase.bridge.*;
-
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.8 2003-08-27 21:33:37 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.9 2003-08-29 12:12:25 keesj Exp $ 
  * @since MMBase-1.7
  */
 

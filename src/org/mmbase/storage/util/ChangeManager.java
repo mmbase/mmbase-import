@@ -9,19 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.util;
 
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * 
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.1 2003-08-21 09:59:31 pierre Exp $
+ * @version $Id: ChangeManager.java,v 1.2 2003-08-29 12:12:26 keesj Exp $
  */
 public final class ChangeManager {
 
