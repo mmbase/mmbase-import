@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.85 2002-10-02 21:19:54 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.86 2002-11-12 16:57:48 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -505,7 +505,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // get mapped into a real value. this saves speed and memory
         // because every blob/text mapping is a extra request to the
         // database
-        if (tmp.indexOf("$SHORTED") == 0) {            
+        if (tmp.indexOf("$SHORTED") == 0) {
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for
             // multiple database support.
@@ -596,7 +596,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // try to get the value from the values table
         // it might be using a prefix to allow multilevel
         // nodes to work (if not duplicate can not be stored)
-        
+
         // call below also allows for byte[] type of
         // formatting functons.
         Object obj=getValue(fieldName);
@@ -702,8 +702,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Get a value of a certain field.
-     * @see getValue
-     * @see Casting.toLongValue
+     * @see #getValue
+     * @see Casting#toLong
      * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>long</code>
      */
@@ -1152,6 +1152,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return getByteSize(new org.mmbase.util.SizeOf());
     }
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
-        return sizeof.sizeof(values) + sizeof.sizeof(relations); 
+        return sizeof.sizeof(values) + sizeof.sizeof(relations);
     }
 }

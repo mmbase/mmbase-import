@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.39 2002-06-28 09:25:37 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.40 2002-11-12 16:57:50 pierre Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -57,7 +57,7 @@ public class JamesServlet extends MMBaseServlet {
      * Creates the module if it hasn't been created yet (but does not initialize).
      * @todo type returned should be Module
      * @param name the name of the module to retrieve
-     * @return the {@link Module}, or <code>null</code> if it doesn't exist.
+     * @return the {@link org.mmbase.module.Module}, or <code>null</code> if it doesn't exist.
      */
     protected final Object getModule(String name) {
         return org.mmbase.module.Module.getModule(name);

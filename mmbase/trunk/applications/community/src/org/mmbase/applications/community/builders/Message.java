@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.15 2002-10-14 15:41:42 pierre Exp $
+ * @version $Id: Message.java,v 1.16 2002-11-12 16:57:47 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -263,7 +263,7 @@ public class Message extends MMObjectBuilder {
      * @param body The body of the message.
      * @param channel The channel in which the message has to get posted.
      * @param chatter The usernumber of the user that has written the message.
-     * @return {@link POST_OK} on success, otherwise an error number.
+     * @return {@link #POST_OK} on success, otherwise an error number.
      *         The number can be used with getPostError() to get the errormessage.
      * @return <code>true</code. if the message was posted, <code>false</code> if the post failed
      */
@@ -277,7 +277,7 @@ public class Message extends MMObjectBuilder {
      * @param body The body of the message.
      * @param channel The channel in which the message has to get posted.
      * @param chatter The usernumber of the user that has written the message.
-     * @return {@link POST_OK} on success, otherwise an error number.
+     * @return {@link #POST_OK} on success, otherwise an error number.
      *         The number can be used with getPostError() to get the errormessage.
      */
     public int post(String body, int channel, int chatter, String chatterName) {
@@ -404,7 +404,7 @@ public class Message extends MMObjectBuilder {
      * @param subject The subject of the message.
      * @param body The body of the message.
      * @param number The message node's number.
-     * @return {@link POST_OK} on success, otherwise an error number.
+     * @return {@link #POST_OK} on success, otherwise an error number.
      *         The number can be used with getPostError() to get the errormessage.
      */
     public int update(String chatterName, String subject, String body, int number) {
@@ -421,7 +421,7 @@ public class Message extends MMObjectBuilder {
      * @param subject The subject of the message.
      * @param body The body of the message.
      * @param number The message node's number.
-     * @return {@link POST_OK} on success, otherwise an error number.
+     * @return {@link #POST_OK} on success, otherwise an error number.
      *         The number can be used with getPostError() to get the errormessage.
      */
     public int update(String chatterName, int chatter, String subject, String body, int number) {
