@@ -676,7 +676,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     	public synchronized void stop() {
         	kicker = null;
 			finished = true;
-			notify();
+			this.notify();
     	}
 
 		/**
@@ -686,7 +686,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     	public void run () {
 			try {
 				synchronized(this) {
-					wait(timeout*1000);
+					this.wait(timeout*1000);
 				}
 			} catch (InterruptedException e) {
 			}		
