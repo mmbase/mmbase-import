@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.38 2003-09-25 16:05:31 michiel Exp $
+ * @version $Id: InsRel.java,v 1.39 2003-11-03 13:12:53 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -40,7 +40,7 @@ public class InsRel extends MMObjectBuilder {
     /**
      * Hold the relnumber to use when creating a node of this builder.
      */
-    public int relnumber=-1;
+    public int relnumber = -1;
 
     /**
      *  Cache system, holds the relations from the 25
@@ -277,9 +277,12 @@ public class InsRel extends MMObjectBuilder {
                 if (nodenr == src) {
                     nodenr = node.getIntValue("dnumber");
                 }
-                MMObjectBuilder nodeBuilder = mmb.getBuilder(typedef.getValue(getNodeType(nodenr)));
-                if (nodeBuilder != null && (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder))) {
-                    list.add(node);
+                String tableName = typedef.getValue(getNodeType(nodenr));
+                if (tableName != null) {
+                    MMObjectBuilder nodeBuilder = mmb.getBuilder(tableName);
+                    if (nodeBuilder != null && (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder))) {
+                        list.add(node);
+                    }
                 }
             }
             return list.elements();
@@ -294,7 +297,7 @@ public class InsRel extends MMObjectBuilder {
      * @return <code>true</code> if any relations exist, <code>false</code> otherwise.
      */
     public boolean hasRelations(int src) {
-        return count("WHERE snumber="+src+" OR dnumber="+src)!=0;
+        return count("WHERE snumber=" + src + " OR dnumber=" + src) != 0;
     }
 
     /**
