@@ -9,7 +9,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: JCronEntry.java,v 1.9 2004-04-19 14:30:52 michiel Exp $
+ * @version $Id: JCronEntry.java,v 1.10 2004-04-19 15:03:18 michiel Exp $
  */
 
 public class JCronEntry {
@@ -179,7 +179,7 @@ public class JCronEntry {
             try {
                 super.run();
             } catch (Throwable t) {
-                log.error("Error during cron-job " + JCronEntry.this + " : " + t.getMessage());
+                log.error("Error during cron-job " + JCronEntry.this + " : " + t.getClass().getName() + " " + t.getMessage() + "\n" + Logging.stackTrace(t));
             }
         }
 

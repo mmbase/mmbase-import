@@ -14,7 +14,7 @@ public class TestCronJob implements Runnable {
 
     public void run() {
         //Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); // testing Class Security
-        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", null, null);
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "anonymous", null);
         log.info("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank());        
         try {
             log.info("sleeping");

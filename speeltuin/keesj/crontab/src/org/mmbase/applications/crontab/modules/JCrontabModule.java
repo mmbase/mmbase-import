@@ -12,7 +12,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  */
-public class JCrontabModule extends ReloadableModule {
+public class JCrontabModule extends WatchedReloadableModule {
     private static final Logger log = Logging.getLoggerInstance(JCrontabModule.class);
     protected JCronDaemon jCronDaemon = null;
     
