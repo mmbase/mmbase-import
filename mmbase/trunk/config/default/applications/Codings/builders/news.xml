@@ -243,36 +243,6 @@ a key/value system. Its a optional tag.
 			<type state="persistent" size="64000" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
-
-	<!-- POS 7 : <field> 'date'  -->
-	<field>
-		<!-- gui related -->
-		<gui>
-			<guiname xml:lang="nl">Datum</guiname>
-			<guiname xml:lang="en">Date</guiname>
-			<guiname xml:lang="us">Date</guiname>
-			<guitype>eventtime</guitype>
-		</gui>
-		<!-- editor related  -->
-		<editor>
-			<positions>
-				<!-- position in the input area of the editor -->
-				<input>5</input>
-				<!-- position in list area of the editor -->
-				<list>-1</list>
-				<!-- position in search area of the editor -->
-				<search>5</search>
-			</positions>
-		</editor>
-		<!-- database related  -->
-		<db>
-			<!-- name of the field in the database -->
-			<name>date</name>
-			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
-		</db>
-	</field>
-
 </fieldlist>
 
 </builder>
