@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.101 2003-09-17 09:34:53 michiel Exp $
+ * @version $Id: Wizard.java,v 1.102 2003-09-30 10:44:04 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -566,7 +566,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                          log.debug("Found in post '" + req.getParameter(name) +  "' -> '" + result + "'");
                      }
 
-                     
+
                   } catch (java.io.UnsupportedEncodingException e) {
                      log.warn(e.toString());
                      result = req.getParameter(name);
@@ -1173,7 +1173,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             } else {
                if ("number".equals(name)) {
                    Utils.setAttribute(singleNode, "ftype", "data");
-                   
+
                    // the number field may of course never be edited
                    fdatapath = "@number";
                } else {
@@ -1208,9 +1208,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          }
 
          String searchString = Utils.getAttribute(singleNode, "searchdir", null);
-         
+
          StringBuffer fdatapath = null;
-         { 
+         {
              String tmp = Utils.getAttribute(singleNode, "fdatapath", null);
              if (tmp != null) fdatapath = new StringBuffer(tmp);
          }
@@ -1231,7 +1231,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                   "It does not make sense to specify 'fdatapath' _and_ 'destinationtype' attributes");
             }
          } else {
-            // determine role                
+            // determine role
             fdatapath = new StringBuffer();
 
             if (role != null) {
@@ -1504,7 +1504,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
       if ((hiddenCommands.indexOf("|add-item|") == -1) &&
             ((maxoccurs == -1) || (maxoccurs > nrOfItems)) &&
-            (Utils.selectSingleNode(fieldlist, "action[@type='create']") != null)) {
+            ( Utils.selectSingleNode(fieldlist, "action[@type='create']") != null ||
+              Utils.selectSingleNode(fieldlist, "action[@type='add']") != null )) {
          String defaultpath = ".";
 
          if (fieldlist.getParentNode().getNodeName().equals("item")) {
@@ -1554,7 +1555,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       form.appendChild(newField);
 
       {
-         List exceptAttrs = new ArrayList(); // what is this?           
+         List exceptAttrs = new ArrayList(); // what is this?
          exceptAttrs.add("fid");
 
          // copy all attributes from data to new pre-html field def
@@ -1605,7 +1606,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // test whether this number may be created
             // we can't do this now, as we cannot determine the type of node
             // unless we load the wizard.
-            // This may be added in a later stage, when loading of wizard templates is 
+            // This may be added in a later stage, when loading of wizard templates is
             // moved to a seperate module
             mayEdit = true;
          } else {
@@ -2200,12 +2201,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                "action[@type='create']/relation");
       }
 
-      // deprecated code below!, supported for old xsls
-      if (objectdef == null) {
-         objectdef = Utils.selectSingleNode(listnode,
-               "item[@displaymode='add']/action/relation");
-      }
-
       if (objectdef == null) { // still null?
          throw new WizardException(
             "Could not find action (add or create) to add a item to list with id " +
@@ -2594,7 +2589,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          String order1 = n1.getAttribute("orderby");
          String order2 = n2.getAttribute("orderby");
 
-         //this means it we want evaludate the value as a number 
+         //this means it we want evaludate the value as a number
          if (compareByNumber) {
             try {
                return Double.valueOf(order1).compareTo(Double.valueOf(order2));
