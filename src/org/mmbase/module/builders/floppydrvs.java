@@ -1,4 +1,5 @@
 /*
+$Id: floppydrvs.java,v 1.2 2000-03-17 12:38:56 wwwtech Exp $
 
 VPRO (C)
 
@@ -6,6 +7,7 @@ This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders;
 
@@ -22,7 +24,7 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author David V van Zeventer
- * @version 25 Jan 1999
+ * @version $Revision: 1.2 $ $Date: 2000-03-17 12:38:56 $
  */
 public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 
@@ -729,7 +731,6 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 			String val=newnode.getStringValue("info");
 			System.out.println(buildername+": getValue: val="+val);
 			return(val);
-		}
-		return(null);
+		} else return super.getValue( node, field );
 	}
 }
