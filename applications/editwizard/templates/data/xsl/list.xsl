@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.19 2002-07-18 14:48:08 michiel Exp $
+  @version $Id: list.xsl,v 1.20 2002-07-18 15:43:34 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -55,7 +55,7 @@
         <td class="left"></td>
         <td class="listcanvas">
           <div title="{$tooltip_edit_list}" class="subhead">
-            <nobr><xsl:value-of select="$title" />(<xsl:value-of select="@count" /> items)</nobr>
+            <nobr><xsl:call-template name="prompt_edit_list" /></nobr>
           </div>
           <br />
           <xsl:call-template name="dolist" />
