@@ -425,7 +425,7 @@ public class Forum {
             anode.setStringValue("description", description);
             anode.commit();
 
-            RelationManager rm = ForumManager.getCloud().getRelationManager("forums", "postareas", "related");
+            RelationManager rm = ForumManager.getCloud().getRelationManager("forums", "postareas", "forarearel");
             if (rm != null) {
                 Node rel = rm.createRelation(node, anode);
                 rel.commit();
@@ -433,7 +433,7 @@ public class Forum {
                 postareas.put("" + anode.getNumber(), area);
                 return anode.getNumber();
             } else {
-                log.error("Forum can't load relation nodemanager forums/postareas/related");
+                log.error("Forum can't load relation nodemanager forums/postareas/forarearel");
             }
         } else {
             log.error("Forum can't load postareas nodemanager");
