@@ -22,26 +22,14 @@ import org.mmbase.util.*;
  */
 public class AuthRel extends InsRel {
 
-	
-	int relnumber=-1;
-	
 	/**
 	* setDefaults for a node
 	*/
 	public void setDefaults(MMObjectNode node) {
+	    super.setDefaults(node);
 		node.setValue("creat",1);
 		node.setValue("us",1);
 		node.setValue("look",1);
-		if (relnumber==-1) {
-			RelDef bul=(RelDef)mmb.getMMObject("reldef");
-			if (bul!=null) {
-				relnumber=bul.getGuessedByName(tableName);
-				if (relnumber==-1) System.out.println("AuthRel-> Can not guess name");
-			} else {
-				System.out.println("AuthRel-> Can not reach RelDef");
-			}
-		}
-		node.setValue("rnumber",relnumber);
 	}
 
 

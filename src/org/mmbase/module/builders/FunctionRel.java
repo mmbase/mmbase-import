@@ -27,25 +27,6 @@ public class FunctionRel extends InsRel {
 	}
 	
 	/**
-	* setDefaults for a node
-	*/
-	int relnumber=-1;
-
-	public void setDefaults(MMObjectNode node) {
-		node.setValue("task",1);
-		if (relnumber==-1) {
-			RelDef bul=(RelDef)mmb.getMMObject("reldef");
-			if (bul!=null) {
-				relnumber=bul.getGuessedByName(tableName);
-				if (relnumber==-1) System.out.println("FunctionRel-> Can not guess name");
-			} else {
-				System.out.println("FunctionRel-> Can not reach RelDef");
-			}
-		}
-		node.setValue("rnumber",relnumber);
-	}
-
-	/**
 	* get GUIIndicator
 	*/
 	public String getGUIIndicator(String field,MMObjectNode node) {
