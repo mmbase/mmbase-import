@@ -1,4 +1,4 @@
-/*
+t/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -43,7 +43,7 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * List of known builders.
      */
-    private Vector typedefsLoaded = new Vector();    // Contains the names of all active builders
+    private Vector typedefsLoaded = new Vector();     // Contains the names of all active builders
 
     /**
      * Constructor
@@ -106,7 +106,7 @@ public class TypeDef extends MMObjectBuilder {
      * Remove a node from the cloud, when the represented builder was active
      * it will also be unloaded
      * @param node The node to remove.
-     * @throw RuntimeException When the operation could not be performed
+     * @throws RuntimeException When the operation could not be performed
      */
     public void removeNode(MMObjectNode node) {
         Integer number=node.getIntegerValue("number");
@@ -401,6 +401,8 @@ public class TypeDef extends MMObjectBuilder {
                 if (rtn == null) return super.executeFunction(node, function, args);
                 return rtn;
             }
+        } else if (function.equals("defaultsearchage")) {
+            return new Integer(getBuilder(node).getSearchAge());
         } else {
             return super.executeFunction(node, function, args);
         }
