@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.BufferedOutputStream;
 
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.bridge.*;
 
 import org.mmbase.util.RFC1123;
 
@@ -29,11 +28,11 @@ import java.util.Date;
 
 /**
  *
- * @version $Id: AttachmentServlet.java,v 1.1 2002-06-27 12:57:44 michiel Exp $
+ * @version $Id: AttachmentServlet.java,v 1.2 2002-06-27 14:03:11 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
-public class AttachmentServlet extends  MMBaseServlet {
+public class AttachmentServlet extends BridgeServlet {
     private static Logger log;
 
 
@@ -45,6 +44,7 @@ public class AttachmentServlet extends  MMBaseServlet {
     }
 
     public void init() throws ServletException {
+        super.init();
         log = Logging.getLoggerInstance(AttachmentServlet.class.getName());
 
         String expiresParameter = getInitParameter("expire");
@@ -76,15 +76,21 @@ public class AttachmentServlet extends  MMBaseServlet {
         if (query == null) { // also possible to use /attachments/<number>
             query = new java.io.File(req.getRequestURI()).getName();
         }
-        MMObjectBuilder bul=mmbase.getTypeDef(); // just to have some builder.        
-        MMObjectNode node = bul.getNode(query);
+                
+        Node node;
 
-        if (node == null) { // can this happen?
-            res.sendError(res.SC_NOT_FOUND, "Cannot find node " + query);
+        try {
+            node = cloud.getNode(query);
+        } catch (org.mmbase.bridge.NotFoundException e) {
+            res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist");
+            return;
+        } catch (Exception e) {
+            res.sendError(res.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
             return;
         }
+        log.info("Node " + node);
 
-        byte[] bytes = node.getByteValue("handle");
+        byte[] bytes = node.getByteValue("handle"); 
         if (bytes == null) {
             res.sendError(res.SC_NOT_FOUND, "No handle found in node " + query);
             return;
