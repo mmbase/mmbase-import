@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
-<module>
-  <status>active</status>
-  <classfile>org.mmbase.module.tools.MMAdmin</classfile>
-  <properties>
-  </properties>
-
-</module>
