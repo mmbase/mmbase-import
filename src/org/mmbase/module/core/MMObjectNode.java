@@ -35,7 +35,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.108 2003-09-02 20:04:42 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.109 2003-09-03 14:37:56 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -178,13 +178,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
         }
         // so, this given clusternode can be considered a 'real' node, put this realisation into
-        // nodeCache (otherwise it would not make it there, and it will be rerequested often).
-        Integer number = (Integer) values.get("number");
-        if (number != null) {
-            NodeCache cache = NodeCache.getCache();
-            cache.put(number, this);
-        } else {
-            log.warn("Could not find number of wrapped ClusterNode " + node);
+        // nodeCache,  (otherwise it would not make it there, and it will be rerequested often).
+        Integer otype  = (Integer) values.get("otype");
+
+        if (otype != null && otype.intValue() ==  parent.getObjectType()) { // only if it also the right type
+            Integer number = (Integer) values.get("number");       
+            if (number != null) {
+                NodeCache cache = NodeCache.getCache();
+                cache.put(number, this);
+            } else {
+                log.warn("Could not find number of wrapped ClusterNode " + node);
+            }
         }
     }
 
@@ -1039,7 +1043,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public Enumeration getRelations() {
         if (relations==null) {
-            relations=parent.getRelations_main(getNumber());
+            relations = parent.getRelations_main(getNumber());
             relation_cache_miss++;
 
         } else {
