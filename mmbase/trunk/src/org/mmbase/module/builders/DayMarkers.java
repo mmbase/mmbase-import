@@ -19,17 +19,20 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * @javadoc
+ * Daymarkers are used to calculate the age of MMBase objects.
+ * Every day a daymarker is added to the daymarks table. Such an entry
+ * consists of a daycount (number of days from 1970), and a count 
+ * (current object number of that day). 
+ *
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.28 2003-07-01 15:14:37 keesj Exp $
+ * @version $Id: DayMarkers.java,v 1.29 2003-08-26 09:59:55 vpro Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(DayMarkers.class.getName());
+    private static Logger log = Logging.getLoggerInstance(DayMarkers.class);
 
     private int day = 0; // current day number/count
-    //private Hashtable daycache = new Hashtable(); 	// day -> mark
     private TreeMap daycache = new TreeMap();           // day -> mark, but ordered
 
     public static String FIELD_DAYCOUNT =   "daycount";
@@ -48,15 +51,16 @@ public class DayMarkers extends MMObjectBuilder {
     }
 
     /**
-     * @javadoc
+     * set the current day. This is the number of days from 1970.
      */
     public DayMarkers() {
         day = currentDay();
-
     }
 
     /**
-     * @javadoc
+     * Calculate smallestMark, and smallestDay.
+     * smallestMark is the smallest object number for which a daymark exists.
+     * smallestDay is the first daymarker that was set.
      * @sql
      */
     public boolean init() {
@@ -92,9 +96,8 @@ public class DayMarkers extends MMObjectBuilder {
     /**
      * The current time in days since 1-1-1970
      */
-
     private int currentDay() {
-        return (int)(System.currentTimeMillis()/(1000*60*60*24));
+        return (int)(DateSupport.currentTimeMillis()/(1000*60*60*24));
     }
 
 
@@ -102,7 +105,6 @@ public class DayMarkers extends MMObjectBuilder {
      * Creates a mark in the database, if necessary.
      * @sql
      */
-
     private void createMarker() {
         int max  = -1;
         int mday = -1;
@@ -152,7 +154,7 @@ public class DayMarkers extends MMObjectBuilder {
 
     /**
      * This gets called every hour to see if the day has past.
-    */
+     */
     public void probe() {
         int newday;
         newday=currentDay();
@@ -168,7 +170,6 @@ public class DayMarkers extends MMObjectBuilder {
      * class. It converts a node number (which is like a mark) to a day.
      * @sql
      */
-
     public int getAge(MMObjectNode node) {
 
         int nodeNumber = node.getIntValue("number");
@@ -228,7 +229,8 @@ public class DayMarkers extends MMObjectBuilder {
     }
 
     /**
-     * The current day count, that is, the time in days, of today.
+     * The current day count.
+     * @return the number of days from 1970 of today.
      **/
     public int getDayCount() {
         return day;
@@ -237,21 +239,18 @@ public class DayMarkers extends MMObjectBuilder {
     /**
      * Given an age, this function returns a mark, _not a day count_.
      * @param daysold a time in days ago.
+     * @return the smallest object number of all objects that are younger than given parameter daysold.
      **/
-
     public int getDayCountAge(int daysold) {
         int wday = day - daysold;
         return getDayCount(wday);
     }
 
-
     /**
-     * This function has nothing to do with getDayCount().
-     * @javadoc
-     * @sql
      *
-     * @param day A time in days
-     * @return    The mark on that day
+     * @sql
+     * @param wday number of days from 1970
+     * @return the smallest object number of all objects that are younger than given parameter daysold.
      */
     private int getDayCount(int wday) {
 
@@ -305,9 +304,15 @@ public class DayMarkers extends MMObjectBuilder {
     }
 
     /**
-     * Scan. Knows the tokens, COUNT, COUNTAGE, COUNTMONTH, COUNTPREVMONTH, COUNTNEXTMONTH
-     * etc.
-     *
+     * Scan. Known tokens are: 
+     * COUNT-X gets an object number of X days after 1970
+     * COUNTAGE-X gets an object number of X days old
+     * COUNTMONTH-X gets an object number of X months after 1970 
+     * COUNTNEXTMONTH-X gets an object number of X+1 months after 1970
+     * COUNTPREVMONTH-X gets an object number of X-1 months after 1970
+     * COUNTPREVDELTAMONTH-X-Y gets an object number of X-Y months after 1970
+     * COUNTNEXTDELTAMONTH-X-Y gets an object number of X+Y months after 1970
+     * TIMETOOBJECTNUMBER gets an object number of X seconds after 1970
      **/
     public String replace(scanpage sp, StringTokenizer command) {
         String rtn="";
@@ -366,8 +371,10 @@ public class DayMarkers extends MMObjectBuilder {
         return ival;
     }
 
-    /**
-     * @javadoc
+    /** 
+     * get a Calendar
+     * @param months number of months from 1970
+     * @return calendar with date specified in months from 1970
      */
     private Calendar getCalendarMonths(int months) {
         int year,month;
