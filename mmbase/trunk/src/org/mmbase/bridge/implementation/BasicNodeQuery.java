@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.13 2003-12-21 19:58:25 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.14 2004-01-16 15:11:29 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
@@ -87,10 +87,11 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     // overridden from BasicQuery (a node query does not have '.' in its field names)
     public StepField createStepField(String fieldName) {
         if (fieldName.indexOf('.') == -1) { 
-            BasicStepField stepField = (BasicStepField) createStepField(step, fieldName);
-            stepField.setAlias(fieldName);
+            BasicStepField stepField = (BasicStepField) getStepField(getNodeManager().getField(fieldName));
+            // stepField.setAlias(fieldName);
             return stepField;
         } else {
+            // It does contain dot? Perhaps one of the other steps.
             return super.createStepField(fieldName);
         }
     }
