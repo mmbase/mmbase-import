@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.5 2004-10-07 10:06:26 michiel Exp $
+#  $Id: cvsmail,v 1.6 2004-10-07 10:12:30 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -74,7 +74,7 @@ if ($child = fork()) {
 
     # do the mailing
     if (1) {
-	my $mail = new FileHandle("|mutt -s \"$subject\" $toaddress");
+	my $mail = new FileHandle("|/usr/local/bin/mutt -s \"$subject\" $toaddress");
 	
 	print $mail $message."\n";
 	
