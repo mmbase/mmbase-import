@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: list.css,v 1.4 2002-07-18 16:20:29 michiel Exp $
+  @version  $Id: list.css,v 1.5 2002-07-19 13:14:22 michiel Exp $
   
 */
 
@@ -17,12 +17,12 @@
 body {
 }
 
-table.list {
+table.body {
  width: 80%;
  cell-spacing: 0;
 }
 
-table.list table {
+table.body table {
  width: 100%;
 }
 
@@ -70,12 +70,13 @@ td.number {
   width: 6ex;
 }
 
-th {
+td.listcanvas table th {
    text-align: left;
-    color:#CCCCCC; 
-	font-weight:900; 
+   color:#CCC; 
+   font-weight:900; 
+   font-size:15px; 
 }
 
-th.number {
+td.listcanvas table th.number {
    text-align: center;
 }

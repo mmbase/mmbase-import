@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: base.css,v 1.7 2002-07-18 16:20:29 michiel Exp $
+  @version  $Id: base.css,v 1.8 2002-07-19 13:14:22 michiel Exp $
   
 */
 
@@ -12,24 +12,22 @@
 /* General appearance */
 
 body,
+table,
 td,
-p,
-div,
-span,
 input,
 select,
 option,
 textarea { 
-     font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; 
-     font-size:13px; 
-     letter-spacing:0.05em; 
-     font-weight:400; 
-     color:#000000; 
-     margin: 0;
-}
+  font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; 
+  letter-spacing:0.05em; 
+  font-weight:400; 
+  font-size: 13px;
+}	 
 
 body {
- background-color: white;
+  color:#000000; 
+  margin: 0;
+  background-color: white;
 }
 
 
@@ -61,23 +59,21 @@ a.pagenav:hover	{
 .imagebutton		{ cursor:pointer; cursor:hand; xpadding:0; xmargin:0 1 1 0; width:20; height:20; border-style:none; border-width:0; }
 .imagebutton_down	{ cursor:pointer; cursor:hand; xpadding:0; xmargin:1 0 0 1; width:20; height:20; border-style:none; border-width:0; }
 
-.superhead	{ font-family:Arial, Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:20px; letter-spacing:0em; color:#000000; }
 
-.head		{ font-family:"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:16px; letter-spacing:0em; color:#000000; }
+
+table.body tr th {
+   font-family:"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
+   font-weight:900; 
+   font-size:16px; 
+   letter-spacing:0em; 
+   color:#000; 
+}
+
+table.body tr th span.title { /* the wizard's title */
+   float: right;
+}
+
 .subhead	{ font-family:"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; font-weight:900; font-size:14px; letter-spacing:0em; color:#000000; }
-
-.valid		{ 
-  font-weight:bold; 
-  color:#009900; 
-}
-.notvalid	{ 
-  font-weight:bold; 
-  color:#CC0000;
-}
-
-
-.divider	{ background-color:#CCCCCC; }
-.listmeta	{ font-size:11px; color:#999999; }
 
 
 .tooltip	{
