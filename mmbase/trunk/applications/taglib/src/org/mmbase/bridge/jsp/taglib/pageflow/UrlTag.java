@@ -44,7 +44,7 @@ public class UrlTag extends ContextReferrerTag {
     }
 
     public void setJspvar(String jv) {
-        jv = jspvar;
+        jspvar = jv;
     }
     
     public int doStartTag() throws JspTagException {  
