@@ -47,6 +47,8 @@
 <mm:import externid="type"/>
 <mm:import externid="folder"/>
 
+<mm:import externid="action_commit"/>
+<mm:present referid="action_commit">
 <mm:present referid="rule"><mm:isempty referid="rule" inverse="true">
     <mm:node number="$user">
 	<mm:relatednodes type="mailboxes" constraints="m_type=0" max="1">
@@ -57,12 +59,21 @@
 	    <mm:setfield name="rule"><mm:write referid="rule"/></mm:setfield>
 	</mm:createrelation>
     </mm:node>
-    <mm:redirect page="/email/mailrule.jsp" referids="$referids"/>
+    <mm:redirect page="/email/mailrule.jsp" referids="$referids">
+        <mm:param name="callerpage">/email/mailrule.jsp</mm:param>
+    </mm:redirect>
   </mm:isempty>
 </mm:present>
+</mm:present>
 
+<mm:import externid="action_back"/>
+<mm:present referid="action_back">
+<mm:redirect page="/email/mailrule.jsp" referids="$referids">
+    <mm:param name="callerpage">/email/mailrule.jsp</mm:param>
+</mm:redirect>
 
-<mm:notpresent referid="rule">
+</mm:present>
+
     <form action="editmailrule.jsp" method="POST">
     <table class="Font">
 	<tr>
@@ -89,11 +100,10 @@
 		</select>
 	    </td>
 	</tr>
-	<tr><td></td><td><input type="submit" value="Ok" class="formbutton"></td></tr>
+	<tr><td></td><td><input class="formbutton" type="submit" name="action_back" value="<fmt:message key="BACK"/>"/> <input type="submit" name="action_commit" value="Ok" class="formbutton"></td></tr>
     </table>
     </form>
 		
-</mm:notpresent>
 
   </div>
 </div>
