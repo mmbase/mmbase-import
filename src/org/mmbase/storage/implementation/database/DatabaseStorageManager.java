@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.35 2004-01-08 15:03:57 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.36 2004-01-09 23:04:35 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -619,7 +619,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (textValue instanceof String) {
                     setStringValue(statement, index, (String)textValue, field);
                 } else {
-                    setStringValue(statement, index, null, field);
+                    setStringValue(statement, index, Casting.toString(textValue), field);
                 }
                 break;
                 // Store binary data
