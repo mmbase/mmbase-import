@@ -138,7 +138,7 @@ public class ImageCaches extends MMObjectBuilder {
 			rtn=b.getBytes();
 		}
 		if (rtn==null) {
-			debug("getCkeyNode: empty array returned for ckey "+ckey);
+			if (debug) debug("getCkeyNode: empty array returned for ckey "+ckey);
 		}
 		return(rtn);
 	}
