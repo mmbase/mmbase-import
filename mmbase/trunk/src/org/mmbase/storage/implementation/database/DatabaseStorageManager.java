@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.24 2003-09-18 12:20:26 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.25 2003-09-19 09:59:42 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -227,6 +227,7 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException("The sequence table is empty.");
             }
         } catch (SQLException se) {
+            log.error(Logging.stackTrace(se));
             throw new StorageException(se);
         } finally {
             releaseActiveConnection();
@@ -1032,7 +1033,9 @@ public class DatabaseStorageManager implements StorageManager {
                 String query = rowtypeScheme.format(new Object[] { this, builder, createFields.toString(), parentBuilder });
                 // remove parenthesis with empty field definitions -
                 // unfortunately Schems don't take this into account
-                query = query.replaceAll("\\(\\s*\\)","");
+                if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
+                    query = query.replaceAll("\\(\\s*\\)","");
+                }
                 Statement s = activeConnection.createStatement();
                 logQuery(query);
                 s.executeUpdate(query);
@@ -1046,13 +1049,17 @@ public class DatabaseStorageManager implements StorageManager {
                                                         parentBuilder });
             // remove parenthesis with empty field definitions -
             // unfortunately Schemes don't take this into account
-            query = query.replaceAll("\\(\\s*\\)","");
+            if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
+                query = query.replaceAll("\\(\\s*\\)","");
+            }
+
             Statement s = activeConnection.createStatement();
             logQuery(query);
             s.executeUpdate(query);
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
         } catch (SQLException se) {
+            log.error(Logging.stackTrace(se));
             throw new StorageException(se);
         } finally {
             releaseActiveConnection();
@@ -1382,9 +1389,9 @@ public class DatabaseStorageManager implements StorageManager {
                         log.error("VERIFY: no parent builder defined in storage for builder " + builder.getTableName());
                     }
                 } catch (java.lang.AbstractMethodError ae) {
-                    // ignore: the method is not implemented by the JDBC Driver,
+                    // ignore: the method is not implemented by the JDBC Driver, (i.e. postgresql)
                     // so no results can be retrieved
-                    log.warn("VERIFY: Driver does not fully implement the 3.0 API, skipping inheritance consistency tests.");
+                    log.debug("VERIFY: Driver does not fully implement the 3.0 API, skipping inheritance consistency tests.");
                 }
             }
             ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
@@ -1438,7 +1445,7 @@ public class DatabaseStorageManager implements StorageManager {
                             // compare size
                             int size = ((Integer)colInfo.get("COLUMN_SIZE")).intValue();
                             int cursize = field.getDBSize();
-                            if (cursize != -1 && size != cursize) {
+                            if (cursize != -1 && size != -1 && size != cursize) {
                                 if (size < cursize || cursize <= 255) {
                                     // only correct if storage is more restrictive
                                     field.setDBSize(size);
