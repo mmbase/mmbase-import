@@ -76,85 +76,94 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
             step = getNextInstallStep();
             step.setUserFeedBack("receiving package ..");
             JarFile jf = getJarFile();
-            step.setUserFeedBack("receiving package ... done (" + jf + ")");
-            increaseProgressBar(100);
-            // downloading is 20%
-
-            // step 3
-            step = getNextInstallStep();
-            step.setUserFeedBack("checking dependencies ..");
-            if (dependsInstalled(jf, step)) {
-                step.setUserFeedBack("checking dependencies ... done");
+            if (jf != null) {
+                step.setUserFeedBack("receiving package ... done (" + jf + ")");
                 increaseProgressBar(100);
-                // downloading is 30%
+                // downloading is 20%
 
-                // step 5
+                // step 3
                 step = getNextInstallStep();
-                step.setUserFeedBack("Opening model.xml file ..");
-                XMLBasicReader reader = getModelReader(jf);
-                if (reader != null) {
-                    step.setUserFeedBack("Opening model.xml file ... done");
-
-                    step = getNextInstallStep();
-                    step.setUserFeedBack("updating builders..");
+                step.setUserFeedBack("checking dependencies ..");
+                if (dependsInstalled(jf, step)) {
+                    step.setUserFeedBack("checking dependencies ... done");
                     increaseProgressBar(100);
-                    // downloading is 40%
-                    if (installNeededBuilders(jf, reader, step)) {
-                        step.setUserFeedBack("updating builders... done");
-                        increaseProgressBar(100);
-                        // downloading is 50%
-                    } else {
-                        step.setUserFeedBack("updating builders... failed");
-                        step = getNextInstallStep();
-                        step.setUserFeedBack("cloud/model installer ended");
-                        return false;
-                    }
-
-                    step = getNextInstallStep();
-                    step.setUserFeedBack("updating relation defs..");
-                    increaseProgressBar(100);
-                    // downloading is 60%
-                    if (installNeededRelDefs(jf, reader, step)) {
-                        step.setUserFeedBack("updating relation defs... done");
-                        increaseProgressBar(100);
-                        // downloading is 70%
-                    } else {
-                        step.setUserFeedBack("updating relation defs... failed");
-                        step.setType(installStep.TYPE_ERROR);
-                        step = getNextInstallStep();
-                        step.setUserFeedBack("cloud/model installer ended");
-                        return false;
-                    }
-
-                    increaseProgressBar(100);
-                    // downloading is 80%
-
-                    step = getNextInstallStep();
-                    step.setUserFeedBack("updating allowed relations");
-                    installAllowedRelations(jf, reader, step);
-                    step = getNextInstallStep();
-                    step.setUserFeedBack("updating allowed relations done");
-
-                    increaseProgressBar(100);
-                    // downloading is 90%
+                    // downloading is 30%
 
                     // step 5
                     step = getNextInstallStep();
-                    step.setUserFeedBack("updating mmbase registry ..");
-                    updateRegistryInstalled();
-                    step.setUserFeedBack("updating mmbase registry ... done");
-                    increaseProgressBar(100);
-                    // downloading is 100%
-                } else {
-                    step.setUserFeedBack("Opening model.xml file ... failed");
-                    step.setType(installStep.TYPE_ERROR);
-                }
+                    step.setUserFeedBack("Opening model.xml file ..");
+                    XMLBasicReader reader = getModelReader(jf);
+                    if (reader != null) {
+                        step.setUserFeedBack("Opening model.xml file ... done");
 
+                        step = getNextInstallStep();
+                        step.setUserFeedBack("updating builders..");
+                        increaseProgressBar(100);
+                        // downloading is 40%
+                        if (installNeededBuilders(jf, reader, step)) {
+                            step.setUserFeedBack("updating builders... done");
+                            increaseProgressBar(100);
+                            // downloading is 50%
+                        } else {
+                            step.setUserFeedBack("updating builders... failed");
+                            step = getNextInstallStep();
+                            step.setUserFeedBack("cloud/model installer ended");
+                            return false;
+                        }
+
+                        step = getNextInstallStep();
+                        step.setUserFeedBack("updating relation defs..");
+                        increaseProgressBar(100);
+                        // downloading is 60%
+                        if (installNeededRelDefs(jf, reader, step)) {
+                            step.setUserFeedBack("updating relation defs... done");
+                            increaseProgressBar(100);
+                            // downloading is 70%
+                        } else {
+                            step.setUserFeedBack("updating relation defs... failed");
+                            step.setType(installStep.TYPE_ERROR);
+                            step = getNextInstallStep();
+                            step.setUserFeedBack("cloud/model installer ended");
+                            return false;
+                        }
+
+                        increaseProgressBar(100);
+                        // downloading is 80%
+
+                        step = getNextInstallStep();
+                        step.setUserFeedBack("updating allowed relations");
+                        installAllowedRelations(jf, reader, step);
+                        step = getNextInstallStep();
+                        step.setUserFeedBack("updating allowed relations done");
+
+                        increaseProgressBar(100);
+                        // downloading is 90%
+
+                        // step 5
+                        step = getNextInstallStep();
+                        step.setUserFeedBack("updating mmbase registry ..");
+                        updateRegistryInstalled();
+                        step.setUserFeedBack("updating mmbase registry ... done");
+                        increaseProgressBar(100);
+                        // downloading is 100%
+                    } else {
+                        step.setUserFeedBack("Opening model.xml file ... failed");
+                        step.setType(installStep.TYPE_ERROR);
+                    }
+
+                } else {
+                    step.setUserFeedBack("checking dependencies ... failed");
+                    step.setType(installStep.TYPE_ERROR);
+                    result = false;
+                }
             } else {
-                step.setUserFeedBack("checking dependencies ... failed");
+                step.setUserFeedBack("getting the mmp package...failed (server down or removed disk ? )");
                 step.setType(installStep.TYPE_ERROR);
-                result = false;
+                try {
+                    Thread.sleep(2000);
+                } catch(Exception ee) {}
             }
+
 
             // step 6
             step = getNextInstallStep();

@@ -61,42 +61,52 @@ public class DisplayHtmlPackage extends BasicPackage implements PackageInterface
             step = getNextInstallStep();
             step.setUserFeedBack("receiving package ..");
             JarFile jf = getJarFile();
-            step.setUserFeedBack("receiving package ... done (" + jf + ")");
-
-            increaseProgressBar(100);
-            // downloading is 10%
-
-            // step 3
-            step = getNextInstallStep();
-            step.setUserFeedBack("checking dependencies ..");
-            if (dependsInstalled(jf, step)) {
+            if (jf != null) {
+                step.setUserFeedBack("receiving package ... done (" + jf + ")");
 
                 increaseProgressBar(100);
-                // downloading is 20%
+                // downloading is 10%
 
-                step.setUserFeedBack("checking dependencies ... done");
-
-                // step 4
+                // step 3
                 step = getNextInstallStep();
-                step.setUserFeedBack("installing html pages ..");
-                installPages(jf, step);
-                step.setUserFeedBack("installing html pages ... done");
+                step.setUserFeedBack("checking dependencies ..");
+                if (dependsInstalled(jf, step)) {
 
-                increaseProgressBar(100);
-                // downloading is 80%
+                    increaseProgressBar(100);
+                    // downloading is 20%
 
-                // step 5
-                step = getNextInstallStep();
-                step.setUserFeedBack("updating mmbase registry ..");
-                updateRegistryInstalled();
-                increaseProgressBar(100);
-                // downloading is 90%
-                step.setUserFeedBack("updating mmbase registry ... done");
+                    step.setUserFeedBack("checking dependencies ... done");
+
+                    // step 4
+                    step = getNextInstallStep();
+                    step.setUserFeedBack("installing html pages ..");
+                    installPages(jf, step);
+                    step.setUserFeedBack("installing html pages ... done");
+
+                    increaseProgressBar(100);
+                    // downloading is 80%
+
+                    // step 5
+                    step = getNextInstallStep();
+                    step.setUserFeedBack("updating mmbase registry ..");
+                    updateRegistryInstalled();
+                    increaseProgressBar(100);
+                    // downloading is 90%
+                    step.setUserFeedBack("updating mmbase registry ... done");
+                } else {
+                    step.setUserFeedBack("checking dependencies ... failed");
+                    setState("failed");
+                    result = false;
+                }
             } else {
-                step.setUserFeedBack("checking dependencies ... failed");
-                setState("failed");
-                result = false;
+                step.setUserFeedBack("getting the mmp package...failed (server down or removed disk ? )");
+                step.setType(installStep.TYPE_ERROR);
+                try {
+                    Thread.sleep(2000);
+                } catch(Exception ee) {}
             }
+
+
             // step 6
             step = getNextInstallStep();
             step.setUserFeedBack("display/html installer ended");
