@@ -2,7 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
     <!ENTITY mmlevel    "org.mmbase.util.logging.log4j.Log4jLevel" >
-    <!ENTITY logdir     "." >
+    <!ENTITY logdir     "./" >
 ]>
 <!-- simple file logger that rols every day -->
 <log4j:configuration 
