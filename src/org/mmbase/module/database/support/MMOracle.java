@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOracle.java,v 1.5 2001-03-09 09:12:04 pierre Exp $
+$Id: MMOracle.java,v 1.5.4.1 2002-11-06 22:43:08 robmaris Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2001/03/09 09:12:04  pierre
+pierre: added directionality support to databse support classes. also added logging.
+Someone please test the Informix database!
+
 Revision 1.4  2001/03/03 23:11:32  daniel
 updated for table changes
 
@@ -189,7 +193,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.5 $ $Date: 2001-03-09 09:12:04 $
+* @$Revision: 1.5.4.1 $ $Date: 2002-11-06 22:43:08 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -197,7 +201,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
     * Logging instance
     */
 	private static Logger log = Logging.getLoggerInstance(MMOracle.class.getName());
-	
+
 	public String name="oracle";
 	XMLDatabaseReader parser;
 	Hashtable typeMapping = new Hashtable();
@@ -223,7 +227,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		allowed2disallowed=getReverseHash(disallowed2allowed);
 		// map the default types
 		mapDefaultFields(disallowed2allowed);
-		// Check if the numbertable exists, if not one will be created. 
+		// Check if the numbertable exists, if not one will be created.
 		checkNumberTable();
 	}
 
@@ -246,14 +250,14 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		switch (type) {
 			case FieldDefs.TYPE_STRING:
 				String tmp=rs.getString(i);
-				if (tmp==null) { 
+				if (tmp==null) {
 					// temp fix try if its a clob !!
 					tmp=getDBText(rs,i);
 					if (tmp!=null) {
 						node.setValue(prefix+fieldname,tmp);
 					} else {
 						node.setValue(prefix+fieldname,"");
-					}	
+					}
 				} else {
 					node.setValue(prefix+fieldname,tmp);
 				}
@@ -296,7 +300,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			String cmd=null;
 			if (parser.hasMoreTokens()) {
 				cmd=parser.nextToken();
-			} 
+			}
 			// if (log.isDebugEnabled()) log.trace("CMD="+cmd+" PART="+part);
 			// do we have a type prefix (example episodes.title==) ?
 			int pos=part.indexOf('.');
@@ -304,7 +308,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				part=part.substring(pos+1);
 			}
 			// if (log.isDebugEnabled()) log.trace("PART="+part);
-			
+
 			// remove fieldname  (example title==) ?
 			pos=part.indexOf('=');
 			if (pos!=-1) {
@@ -342,7 +346,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			case '=':
 			case 'E':
 				// EQUAL
-				if (like) {	
+				if (like) {
 					result+="lower("+fieldname+") LIKE '%"+value+"%'";
 				} else {
 					result+="lower("+fieldname+") LIKE '%"+value+"%'";
@@ -474,7 +478,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 			//siz=inp.available(); // DIRTY
 			siz=(int)c.length();
-	
+
 			if (siz==0 || siz==-1) return("");
 			input=new DataInputStream(inp);
 			isochars=new byte[siz];
@@ -552,7 +556,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 			int j=2;
 			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
-				String key = (String)e.nextElement();	
+				String key = (String)e.nextElement();
 				int DBState = node.getDBState(key);
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 				  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
@@ -650,7 +654,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		node.setValue("number",number);
 		node.clearChanged();
 		//if (log.isDebugEnabled()) log.trace("INSERTED="+node);
-		return(number);	
+		return(number);
 	}
 
 
@@ -707,7 +711,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				key=(String)e.nextElement();
 				// a extra check should be added to filter temp values
 				// like properties
-				
+
 				// is this key disallowed ? ifso map it back
 				if (disallowed2allowed.containsKey(key)) {
 					key=(String)disallowed2allowed.get(key);
@@ -770,65 +774,6 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 		return(true);
-	}
-
-
-	/**
-	* removeNode
-	*/
-	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
-		int number=node.getIntValue("number");
-		if(log.isDebugEnabled()) {
-			log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-			log.trace("SAVECOPY "+node.toString());
-		}
-		Vector rels=bul.getRelations_main(number);
-		if (rels!=null && rels.size()>0) {
-			log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-		} else {
-		if (number!=-1) {
-			try {
-				MultiConnection con=mmb.getConnection();
-				Statement stmt=con.createStatement();
-				stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-				stmt.close();
-				con.close();
-			} catch (SQLException e) {
-				log.error(Logging.stackTrace(e));
-			}
-			if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
-				try {
-					MultiConnection con=mmb.getConnection();
-					Statement stmt=con.createStatement();
-					stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where "+getNumberString()+"="+number);
-					stmt.close();
-					con.close();
-				} catch (SQLException e) {
-					log.error(Logging.stackTrace(e));
-				}
-			}
-
-			try {
-				MultiConnection con=mmb.getConnection();
-				Statement stmt=con.createStatement();
-				stmt.executeUpdate("delete from "+mmb.baseName+"_object where "+getNumberString()+"="+number);
-				stmt.close();
-				con.close();
-			} catch (SQLException e) {
-				log.error(Logging.stackTrace(e));
-			}
-		}
-		}
-		if (bul.broadcastChanges) {
-			mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"d");
-			if (bul instanceof InsRel) {
-				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
-				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
-			}
-		}
-
 	}
 
 	/**
@@ -938,7 +883,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			int i=-1;
 			while(rs.next()) {
 				i=rs.getInt(1);
-			}	
+			}
 			stmt.close();
 			con.close();
 			return i;
@@ -977,7 +922,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				// this is weird why is "" seen as empty ???
 				setDBText(i, stmt," ");
 			}
-		} else if (type==FieldDefs.TYPE_BYTE) {	
+		} else if (type==FieldDefs.TYPE_BYTE) {
 				setDBByte(i, stmt, node.getByteValue(key));
 		} else {
 			String tmp=node.getStringValue(key);
@@ -999,15 +944,15 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 	* will be removed once the xml setup system is done
 	*/
 	public boolean create_real(MMObjectBuilder bul,String tableName) {
-	
+
 		if (!bul.isXMLConfig()) return(false);
-	
+
 		// use the builder to get the fields are create a
 		// valid create SQL string
 		String result=null;
 
 		Vector sfields=bul.sortedDBLayout;
-	
+
 		if (sfields!=null) {
 			for (Enumeration e=sfields.elements();e.hasMoreElements();) {
 				String name=(String)e.nextElement();
@@ -1018,7 +963,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 						result=part;
 					} else {
 						result+=", "+part;
-					}	
+					}
 				}
 			}
 		}
@@ -1079,7 +1024,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		log.info("Starting a updateTable on : "+bul.getTableName());
 
 		String tableName=bul.getTableName();
-		
+
 		if (create_real(bul,tableName+"_tmp")) {
 			log.info("created tmp  table : "+tableName+"_tmp");
 			/*
@@ -1132,7 +1077,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 
 	public String convertXMLType(FieldDefs def) {
-		
+
 		// get the wanted mmbase type
 		int type=def.getDBType();
 		// get the wanted mmbase type
@@ -1161,9 +1106,9 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 			return(result);
 		}
-	}	
+	}
 
-	
+
 	String matchType(int type, int size, boolean notnull) {
 		String result=null;
 		if (typeMapping!=null) {
@@ -1184,7 +1129,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 							} else {
 								result=mapSize(typ.dbType,size);
 							}
-						}	
+						}
 					} else if (typ.maxSize!=-1) {
 						if (size<=typ.maxSize) {
 							result=mapSize(typ.dbType,size);
@@ -1193,7 +1138,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 						result=typ.dbType;
 					}
 				}
-			} 
+			}
 		}
 		return(result);
 	}
@@ -1221,7 +1166,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			Object value = in.get(key);
 			out.put(value,key);
 		}
-		return(out);	
+		return(out);
 	}
 
 
@@ -1244,7 +1189,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
 		return(con);
 	}
-	
+
 	private void mapDefaultFields(Hashtable disallowed2allowed) {
 		if (disallowed2allowed.containsKey("number")) {
 			numberString=(String)disallowed2allowed.get("number");
