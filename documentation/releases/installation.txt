@@ -32,7 +32,7 @@ MMBase running, you must do the following:
    Servlet Engine if you want to auto-install builders. 
 
 7. Start servlet-engine if you want to use the default MMBase-config
-   (uses a hsqldb-database), or goto step 9 for changing default
+   (uses a hsqldb-database), or goto step 10 for changing default
    configuration. 
 
 8. Check if mmbase is running using the following url:
@@ -41,7 +41,7 @@ MMBase running, you must do the following:
 9. If this is running, goto <http://localhost:port> to see an infopage
    about MMBase and links to editors, admin, examples, etc. Use
    admin/admin2k when you're asked to login (see notes below how to
-   change this).`
+   change this).
 
 10. Edit jdbc.xml and mmbaseroot.xml (both are in
    <mmbase-webapp/WEB-INF/config/modules>) for using a different

@@ -11,33 +11,35 @@ build.properties            default build properties for ant, you may
                             add your own properties
 config/                     MMBase config dir
   applications/             Applications that can be installed
-  builders/                 All builders that can be used, including core
-                            builders and optional builders. Not all
-                            builders are activated by default.
+  builders/                    
+    core/                   Core builders that are needed to run MMBase 
+    applications/           When builders are being installed from an
+                            application they are copied to this
+                            directory. 
   databases/                Databaseconfig for databases that can be used
                             with MMBase
-  dtd/                      Dtd's for the config-files
+  dtd/                      A few richtext dtds
   log/                      Logging configuration
   modules/                  All modules that can be used, including
                             core modules and optional modules. Not all
-			    modules are activated by default 
+			                modules are activated by default 
   security/                 Configuration for the security
   xslt/                     Some xslt's for displaying config files in
                             adminpages
 docs/                       
   apidocs/                  Apidocs for MMBase-sources
 html/                       Html-directory
-  mmadmin/                  (scan) Admin pages
+  mmadmin/                  (scan) Admin pages (deprecated)
     jsp/                    (jsp) Admin pages
   mmapps/                   Directory for jsp's/html/etc for MMBase-applications
     xmlimporter             Jsp's needed by xmlimporter
   mmdocs/                   Some documentation about MMBase-features
-  mmeditors/                (scan) Editors
+  mmeditors/                (scan) Editors (deprecated)
     jsp/                    (jsp) Editors
   mmexamples/               Examples directory
     share/                  Directory for shared files between examples
     jsp/                    Jsp-examples
-    scan/                   Scan-examples
+    scan/                   Scan-examples (deprecated)
 src/                        Src-dir
   org/
     mmbase/
