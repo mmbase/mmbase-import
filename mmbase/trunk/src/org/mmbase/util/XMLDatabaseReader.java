@@ -39,6 +39,7 @@ public class XMLDatabaseReader extends XMLBasicReader  {
 
     /**
      * Returns the name of the database.
+     * @return the name as a string
      */
     public String getName() {
         return getElementValue("database.name");
@@ -54,12 +55,13 @@ public class XMLDatabaseReader extends XMLBasicReader  {
 
 
     /**
-     * getBlobDataDir
+     * Retrieves the file path where binary objects are to be stored.
+     * If this value is set, binary objects are stored as files, not in the databse.
+     * @return the path, or the empty string if not specified
      */
     public String getBlobDataDir() {
         return getElementValue("database.blobdatadir");
     }
-
 
     /**
      * Get the max drop size for this database.
@@ -77,10 +79,10 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     }
 
     /**
-     * Retrieve a list of fieldnames that are disallowed for this database.
-     * Eacht entry in the hashtable has as its key the disallowed name, and as
+     * Retrieve a map of fieldnames that are disallowed (i.e reserved words) for this database.
+     * Each entry in the map has as its key the disallowed name, and as
      * its value the name with which it needs to be replaced.
-     * @return the hashtable with the disallowed fields
+     * @return the map with the disallowed fields
      */
     public Hashtable getDisallowedFields() {
         Hashtable results=new Hashtable();
@@ -102,36 +104,62 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     }
 
     /**
-     *
+     * Retrieves the create scheme
+     * @return the create scheme, or the empty string if not available
      */
     public String getCreateScheme() {
         return getElementValue("database.scheme.create");
     }
 
     /**
-     *
+     * Retrieves the create scheme for extending tables.
+     * @since MMBase 1.6
+     * @return the create extended scheme, or the empty string if not available
+     */
+    public String getCreateExtendedScheme() {
+        return getElementValue("database.scheme.create-extended");
+    }
+
+    /**
+     * Retrieves the primary key scheme.
+     * @return the primary key scheme, or the empty string if not available
      */
     public String getPrimaryKeyScheme() {
         return getElementValue("database.scheme.primary-key");
     }
 
     /**
-     *
+     * Retrieves the foreign key scheme.
+     * @since MMBase 1.6
+     * @return the foreign key scheme, or the empty string if not available
+     */
+    public String getForeignKeyScheme() {
+        return getElementValue("database.scheme.foreign-key");
+    }
+
+    /**
+     * Retrieves the key scheme.
+     * @return the key scheme, or the empty string if not available
      */
     public String getKeyScheme() {
         return getElementValue("database.scheme.key");
     }
 
-
     /**
-     *
+     * Retrieves the not null scheme.
+     * @return the not null scheme, or the empty string if not available
      */
     public String getNotNullScheme() {
         return getElementValue("database.scheme.not-null");
     }
 
     /**
-    */
+     * Obtains the type map.
+     * The type map is used to convert MMBase types to database types (needed for creating tables).
+     * The kyes in the map are Integer object whos evalues match the MMBase object types as
+     * defined in {@link FieldDefs}.The value are {@link dtTypeInfos} objects.
+     * @return a Map of MMBase types and their database type.
+     */
     public Hashtable getTypeMapping() {
         Hashtable results=new Hashtable();
         Element n2=getElementByPath("database.mapping");
