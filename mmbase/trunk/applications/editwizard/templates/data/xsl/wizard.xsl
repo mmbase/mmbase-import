@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.112 2004-01-14 14:35:28 pierre Exp $
+    @version $Id: wizard.xsl,v 1.113 2004-01-18 12:08:51 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -549,11 +549,7 @@
 
     <xsl:choose>
       <xsl:when test="@ftype=&apos;startwizard&apos;">
-        <span class="imgbutton">
-          <a href="javascript:doStartWizard('{../../../@fid}','{../../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
-            <xsl:call-template name="prompt_edit_wizard"/>
-          </a>
-        </span>
+        <xsl:call-template name="ftype-startwizard"/>
       </xsl:when>
       <xsl:when test="@ftype=&apos;function&apos;">
         <xsl:call-template name="ftype-function"/>
@@ -592,7 +588,7 @@
         <xsl:call-template name="ftype-realposition"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="ftype-other"/>
+        <xsl:call-template name="ftype-unknown"/>
       </xsl:otherwise>
     </xsl:choose>
 
@@ -605,6 +601,14 @@
   -->
   <xsl:template match="prefix|postfix">
     <xsl:value-of select="."/>
+  </xsl:template>
+
+  <xsl:template name="ftype-startwizard">
+		<span class="imgbutton">
+			<a href="javascript:doStartWizard('{../../../@fid}','{../../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+				<xsl:call-template name="prompt_edit_wizard"/>
+			</a>
+		</span>
   </xsl:template>
 
   <xsl:template name="ftype-function">
@@ -914,10 +918,8 @@
             <span>
               <xsl:value-of select="upload/@name"/>
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                                                        (
-                                                        <xsl:value-of select="round((upload/@size) div 100) div 10"/>
-                                                        K)
-                                                </span>
+              (<xsl:value-of select="round((upload/@size) div 100) div 10"/>K)
+            </span>
             <br/>
             <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
               <xsl:call-template name="prompt_image_upload"/>
@@ -979,6 +981,10 @@
 
   <xsl:template name="ftype-realposition">
     <xsl:call-template name="realposition"/>
+  </xsl:template>
+
+  <xsl:template name="ftype-unknown">
+  	<xsl:call-template name="ftype-other"/>
   </xsl:template>
 
   <xsl:template name="ftype-other">
@@ -1087,10 +1093,6 @@
         <xsl:if test="command[@name=&apos;startwizard&apos;]">
           <xsl:for-each select="command[@name=&apos;startwizard&apos;]">
             <!-- The prompts.xsl adds this as a tooltip -->
-            <xsl:if test="prompt">
-              <xsl:value-of select="prompt"/>
-            </xsl:if>
-
             <!-- Moved prompt to the "prompt_add_wizard" template as a tooltip -->
             <xsl:if test="@inline=&apos;true&apos;">
               <a href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);">

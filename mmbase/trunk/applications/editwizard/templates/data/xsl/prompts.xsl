@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.18 2004-01-12 22:07:12 nico Exp $
+    @version $Id: prompts.xsl,v 1.19 2004-01-18 12:08:51 nico Exp $
     
     prompts used in this editwizard. 
     Override these prompts to change the view in your own versions.
@@ -33,6 +33,9 @@
   
   <xsl:variable name="tooltip_add_wizard">Nieuw</xsl:variable>
   <xsl:template name="prompt_add_wizard">
+		<xsl:if test="prompt">
+			<xsl:value-of select="prompt"/>
+		</xsl:if>
     <img src="{$mediadir}new.gif" class="imgbutton">
       <xsl:choose>
         <xsl:when test="prompt">
