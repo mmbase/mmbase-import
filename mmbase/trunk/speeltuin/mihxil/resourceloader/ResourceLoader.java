@@ -88,10 +88,12 @@ When you want to place a configuration file then you have several options, wich 
  * <p>If you want to check beforehand if a resource can be changed, then something like <code>resourceLoader.getResource().openConnection().getDoOutput()</code> can be used.</p>
  * <p>That is also valid if you want to check for existance. <code>resourceLoader.getResource().openConnection().getDoInput()</code>.</p>
  * <p>If you want to remove a resource, you must write <code>null</code> to all URL's returned by {@link #findResources} (Do for every URL:<code>url.openConnection().getOutputStream().write(null);</code>)</p>
- *
+ * <h3>Encodings</h3>
+ * <p>ResourceLoader is well aware of encodings. You can open XML's as Reader, and this will be done using the encoding specified in the XML itself. When saving an XML using a Writer, this will also be done using the encoding specified in the XML.</p>
+ * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.18 2004-10-29 17:42:42 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.19 2004-10-29 21:35:22 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -745,7 +747,7 @@ public class ResourceLoader extends ClassLoader {
             URLConnection con = cf.openConnection(name);
             if (con.getDoInput()) {
                 long lm = con.getLastModified();
-                if (lm  > 0 && lastModified > 0 && lm > lastModified) {
+                if (lm  > 0 && usedUrl != null  && lastModified > 0 && lm > lastModified) {
                     log.warn("File " + con.getURL() + " is newer then " + usedUrl + " but shadowed by it");
                 }
                 if (usedUrl == null) {
@@ -996,7 +998,7 @@ public class ResourceLoader extends ClassLoader {
             if (ResourceLoader.resourceBuilder != null) {
             try {
                 NodeSearchQuery query = new NodeSearchQuery(ResourceLoader.resourceBuilder);
-                BasicFieldValueConstraint typeConstraint  = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)), new Integer(type));
+                BasicFieldValueConstraint typeConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.TYPE_FIELD)), new Integer(type));
                 BasicFieldValueConstraint nameConstraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(Resources.RESOURCENAME_FIELD)), ResourceLoader.this.context.getPath().substring(1) + "%");
                 nameConstraint.setOperator(FieldCompareConstraint.LIKE);
 

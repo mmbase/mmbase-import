@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.9 2004-10-29 13:45:29 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.10 2004-10-29 21:35:22 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -47,20 +47,22 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      * Considers all resource-watchers. Perhaps onChange must be called, because there is node for this resource available now.
      */
     static void setResourceBuilder() {
-        Iterator i = resourceWatchers.iterator();
-        while (i.hasNext()) {
-            ResourceWatcher rw = (ResourceWatcher) i.next();
-            if (rw.running) {
-                rw.observe();
-            }
-            Iterator j = rw.resources.iterator();
-            while (j.hasNext()) {
-                String resource = (String) j.next();
-                if (rw.mapNodeNumber(resource)) {
-                    log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
-                    rw.onChange(resource);
-
-                }                
+        synchronized(resourceWatchers) {
+            Iterator i = resourceWatchers.iterator();
+            while (i.hasNext()) {
+                ResourceWatcher rw = (ResourceWatcher) i.next();
+                if (rw.running) {
+                    rw.observe();
+                }
+                Iterator j = rw.resources.iterator();
+                while (j.hasNext()) {
+                    String resource = (String) j.next();
+                    if (rw.mapNodeNumber(resource)) {
+                        log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
+                        rw.onChange(resource);
+                        
+                    }                
+                }
             }
         }
         resourceWatchers = null; // no need to store those any more.
@@ -105,7 +107,9 @@ public abstract class ResourceWatcher implements MMBaseObserver {
     protected ResourceWatcher(ResourceLoader rl) {
         resourceLoader = rl;
         if (resourceWatchers != null) {
-            resourceWatchers.add(this);
+            synchronized(resourceWatchers) {
+                resourceWatchers.add(this);
+            }
         }
     }
     /** 
@@ -147,8 +151,9 @@ public abstract class ResourceWatcher implements MMBaseObserver {
                 }
             } else {
                 MMObjectNode node = ResourceLoader.resourceBuilder.getNode(number);
-                String name = node.getStringValue(Resources.RESOURCENAME_FIELD).substring(resourceLoader.getContext().getPath().length() - 1);
-                if (resources.contains(name)) {
+                int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
+                String name = node.getStringValue(Resources.RESOURCENAME_FIELD);
+                if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
                     if (ctype.equals("n")) {
                         log.service("Resource " + name + " changed (node added)");
                         nodeNumberToResourceName.put(number, name);
@@ -162,7 +167,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
                 }
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e + Logging.stackTrace(e));
         }
 
         return true;
