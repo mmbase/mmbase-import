@@ -73,7 +73,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -289,6 +289,86 @@ public class ConstraintParser {
     StepField getField(String token) {
         return getField(token, steps);
     }
+
+    /**
+     * Parses <em>SQL-search-condition</em> string from list of tokens, and 
+     * produces a corresponding <code>BasicConstraint</code> object.
+     * <p>
+     * See {@link ConstraintParser above} for the format of a 
+     * <em>SQL-search-condition</em>
+     *
+     * @param iTokens Tokens iterator, must be positioned before the (first)
+     *        token representing the condition.
+     * @return The constraint.
+     */
+    // package visibility!
+    BasicConstraint parseCondition(ListIterator iTokens) {
+        BasicCompositeConstraint composite = null;
+        BasicConstraint constraint= null;
+        while (iTokens.hasNext()) {
+            boolean inverse = false;
+            String token = (String) iTokens.next();
+            if (token.equalsIgnoreCase("NOT")) {
+                // NOT.
+                inverse = true;
+                token = (String) iTokens.next();
+            }
+
+            if (token.equals("(")) {
+                // Start of (simple or composite) constraint 
+                // between parenthesis.
+                constraint = parseCondition(iTokens);
+            } else {
+                // Simple condition.
+                iTokens.previous();
+                constraint = parseSimpleCondition(iTokens);
+            }
+            if (inverse) {
+                constraint.setInverse(!constraint.isInverse());
+            }
+            if (composite != null) {
+                composite.addChild(constraint);
+            }
+            
+            if (iTokens.hasNext()) {
+                token = (String) iTokens.next();
+                if (token.equals(")")) {
+                    // Start of (simple or composite) constraint 
+                    // between parenthesis.
+                    break;
+                }
+                int logicalOperator = 0;
+                if (token.equalsIgnoreCase("OR")) {
+                    logicalOperator = CompositeConstraint.LOGICAL_OR;
+                } else if (token.equalsIgnoreCase("AND")) {
+                    logicalOperator = CompositeConstraint.LOGICAL_AND;
+                } else {
+                    throw new IllegalArgumentException(
+                    "Unexpected token (expected \"AND\" or \"OR\"): \""
+                    + token + "\"");
+                }
+                if (composite == null) {
+                    composite = new BasicCompositeConstraint(logicalOperator).
+                    addChild(constraint);
+                }
+                
+                if (composite.getLogicalOperator() != logicalOperator) {
+                    composite = new BasicCompositeConstraint(logicalOperator).
+                    addChild(composite);
+                }
+                
+                if (!iTokens.hasNext()) {
+                    throw new IllegalArgumentException(
+                    "Unexpected end of tokens after \"" + token + "\"");
+                }
+            }
+        }
+        if (composite != null) {
+            return composite;
+        } else {
+            return constraint;
+        }
+    }
     
     /**
      * Parses a <em>simple-SQL-search-condition</em> string from list of tokens, 
@@ -306,6 +386,11 @@ public class ConstraintParser {
         BasicConstraint result = null;
         
         String token = (String) iTokens.next();
+        if (token.equalsIgnoreCase("StringSearch")) {
+            // StringSearch constraint.
+            return parseStringSearchCondition(iTokens);
+        }
+        
         String function = token.toUpperCase();
         if (function.equals("LOWER") || function.equals("UPPER")) {
             if (iTokens.next().equals("(")) {
@@ -590,83 +675,178 @@ public class ConstraintParser {
     }
     
     /**
-     * Parses <em>SQL-search-condition</em> string from list of tokens, and 
-     * produces a corresponding <code>BasicConstraint</code> object.
+     * Parses a <em>stringsearch-condition</em> string from list of tokens, 
+     * and produces a corresponding <code>BasicStringSearchConstraint</code> object.
      * <p>
      * See {@link ConstraintParser above} for the format of a 
-     * <em>SQL-search-condition</em>
+     * <em>stringsearch-condition</em>
      *
-     * @param iTokens Tokens iterator, must be positioned before the (first)
-     *        token representing the condition.
+     * @param iTokens Tokens iterator, must be positioned after the (first)
+     *        token representing the condition (e.g. after "StringSearch").
      * @return The constraint.
      */
-    // package visibility!
-    BasicConstraint parseCondition(ListIterator iTokens) {
-        BasicCompositeConstraint composite = null;
-        BasicConstraint constraint= null;
+    private BasicStringSearchConstraint parseStringSearchCondition(
+            ListIterator iTokens) {
+        
+        BasicStringSearchConstraint result = null;
+        
+        String token = (String) iTokens.next();
+        if (!token.equals("(")) {
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \")\"): \""
+                + token + "\"");
+        }
+        
+        // Field
+        token = (String) iTokens.next();
+        StepField field = getField(token);
+        
+        token = (String) iTokens.next();
+        if (!token.equals(",")) {
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \",\"): \""
+                + token + "\"");
+        }
+        
+        // Searchtype
+        int searchType;
+        token = (String) iTokens.next();
+        if (token.equalsIgnoreCase("PHRASE")) {
+            searchType = StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED;
+        } else if (token.equalsIgnoreCase("PROXIMITY")) {
+            searchType = StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED;
+        } else if (token.equalsIgnoreCase("WORD")) {
+            searchType = StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED;
+        } else {
+            throw new IllegalArgumentException(
+                "Invalid searchtype (expected \"PHRASE\", \"PROXIMITY\" "
+                + "or \"WORD\": \"" + token + "\"");
+        }
+        
+        token = (String) iTokens.next();
+        if (!token.equals(",")) {
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \",\"): \""
+                + token + "\"");
+        }
+        
+        // Matchtype
+        int matchType;
+        token = (String) iTokens.next();
+        if (token.equalsIgnoreCase("FUZZY")) {
+            matchType = StringSearchConstraint.MATCH_TYPE_FUZZY;
+        } else if (token.equalsIgnoreCase("LITERAL")) {
+            matchType = StringSearchConstraint.MATCH_TYPE_LITERAL;
+        } else if (token.equalsIgnoreCase("SYNONYM")) {
+            matchType = StringSearchConstraint.MATCH_TYPE_SYNONYM;
+        } else {
+            throw new IllegalArgumentException(
+                "Invalid matchtype (expected \"FUZZY\", \"LITERAL\" "
+                + "or \"SYNONYM\": \"" + token + "\"");
+        }
+        
+        token = (String) iTokens.next();
+        if (!token.equals(",")) {
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \",\"): \""
+                + token + "\"");
+        }
+        
+        // SearchTerms
+        String searchTerms;
+        token = (String) iTokens.next();
+        if (!token.equals("'")) {
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \"'\" or \"\"\"): \""
+                + token + "\"");
+        }
+        searchTerms = (String) iTokens.next();
+        token = (String) iTokens.next();
+        if (!token.equals("'")) {
+            throw new IllegalArgumentException(
+            "Unexpected token (expected \"'\" or \"\"\"): \""
+            + token + "\"");
+        }
+        
+        token = (String) iTokens.next();
+        if (!token.equals(",")) {
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \",\"): \""
+                + token + "\"");
+        }
+        
+        // CaseSensitive property
+        boolean caseSensitive;
+        token = (String) iTokens.next();
+        if (token.equalsIgnoreCase("true")) {
+            caseSensitive = true;
+        } else if (token.equalsIgnoreCase("false")) {
+            caseSensitive = false;
+        } else {
+            throw new IllegalArgumentException(
+                "Invalid caseSensitive value (expected \"true\" "
+                + "or \"false\": \"" + token + "\"");
+        }
+        
+        token = (String) iTokens.next();
+        if (!token.equals(")")) {
+            throw new IllegalArgumentException(
+                "Unexpected token (expected \")\"): \""
+                + token + "\"");
+        }
+        
+        result = (BasicStringSearchConstraint)
+            new BasicStringSearchConstraint(
+                field, searchType, matchType, searchTerms)
+                    .setCaseSensitive(caseSensitive);
+
+        // .set(parametername, value)
         while (iTokens.hasNext()) {
-            boolean inverse = false;
-            String token = (String) iTokens.next();
-            if (token.equalsIgnoreCase("NOT")) {
-                // NOT.
-                inverse = true;
-                token = (String) iTokens.next();
+            token = (String) iTokens.next();
+            if (!token.equalsIgnoreCase(".set")) {
+                iTokens.previous();
+                break;
             }
 
-            if (token.equals("(")) {
-                // Start of (simple or composite) constraint 
-                // between parenthesis.
-                constraint = parseCondition(iTokens);
-            } else {
-                // Simple condition.
-                iTokens.previous();
-                constraint = parseSimpleCondition(iTokens);
-            }
-            if (inverse) {
-                constraint.setInverse(!constraint.isInverse());
-            }
-            if (composite != null) {
-                composite.addChild(constraint);
+            token = (String) iTokens.next();
+            if (!token.equals("(")) {
+                throw new IllegalArgumentException(
+                    "Unexpected token (expected \"(\"): \""
+                    + token + "\"");
             }
             
-            if (iTokens.hasNext()) {
-                token = (String) iTokens.next();
-                if (token.equals(")")) {
-                    // Start of (simple or composite) constraint 
-                    // between parenthesis.
-                    break;
-                }
-                int logicalOperator = 0;
-                if (token.equalsIgnoreCase("OR")) {
-                    logicalOperator = CompositeConstraint.LOGICAL_OR;
-                } else if (token.equalsIgnoreCase("AND")) {
-                    logicalOperator = CompositeConstraint.LOGICAL_AND;
-                } else {
-                    throw new IllegalArgumentException(
-                    "Unexpected token (expected \"AND\" or \"OR\"): \""
+            String parameterName = (String) iTokens.next();
+            
+            token = (String) iTokens.next();
+            if (!token.equals(",")) {
+                throw new IllegalArgumentException(
+                    "Unexpected token (expected \",\"): \""
                     + token + "\"");
-                }
-                if (composite == null) {
-                    composite = new BasicCompositeConstraint(logicalOperator).
-                    addChild(constraint);
-                }
-                
-                if (composite.getLogicalOperator() != logicalOperator) {
-                    composite = new BasicCompositeConstraint(logicalOperator).
-                    addChild(composite);
-                }
-                
-                if (!iTokens.hasNext()) {
-                    throw new IllegalArgumentException(
-                    "Unexpected end of tokens after \"" + token + "\"");
-                }
+            }
+        
+            String parameterValue = (String) iTokens.next();
+            
+            token = (String) iTokens.next();
+            if (!token.equals(")")) {
+                throw new IllegalArgumentException(
+                    "Unexpected token (expected \")\"): \""
+                    + token + "\"");
+            }
+
+            if (parameterName.equalsIgnoreCase("FUZZINESS")) {
+                result.setParameter(StringSearchConstraint.PARAM_FUZZINESS, 
+                    new Float(parameterValue));
+            } else if (parameterName.equalsIgnoreCase("PROXIMITY_LIMIT")) {
+                result.setParameter(
+                    StringSearchConstraint.PARAM_PROXIMITY_LIMIT,
+                        new Integer(parameterValue));
+            } else {
+                throw new IllegalArgumentException(
+                    "Invalid parameter name (expected \"FUZZINESS\" "
+                    + "or \"PROXIMITY\": \"" + parameterName + "\"");
             }
         }
-        if (composite != null) {
-            return composite;
-        } else {
-            return constraint;
-        }
+
+        return result;
     }
-    
 }
