@@ -27,55 +27,129 @@ import org.mmbase.module.core.*;
 public interface NodeManager {
 
     /**
-    * Creates a new initialized node.
-    * The returned node will not be visible in the cloud until the commit() method is called on this node.
+    * Creates a new node. The returned node will not be visible in the cloud
+    * until the commit() method is called on this node. Until then it will have
+    * a temporary node number.
+    *
     * @return the new <code>Node</code>
     */
     public Node createNode();
  	
- 	/**
-     * Retrieves the Cloud to which this manager belongs
+    /**
+     * Returns the cloud to which this manager belongs.
+     *
+     * @return the cloud to which this manager belongs
      */
     public Cloud getCloud();
 
-	/**
-     * Retrieve the identifying name of the NodeManager
+    /**
+     * Returns the name of this node manager. This name is a unique name.
+     *
+     * @return the name of this node manager.
      */
     public String getName();
  	
-	/**
-     * Retrieve the descriptive name of the NodeManager (in the default language defined in mmbaseroot.xml)
+    /**
+     * Returns the descriptive name of this node manager. This name will be in
+     * the default language (defined in mmbaseroot.xml).
+     *
+     * @return the descriptive name of this node manager
      */
     public String getGUIName();
 
-	/** 
-	 * Retrieve the description of the NodeManager.
-	 */
-	public String getDescription();
-
-	/**
-	 * Retrieve all field types of this NodeManager.
-	 * @return a <code>List</code> of <code>FieldType</code> objects
-	 */
-	public FieldTypeList getFieldTypes();
-
-	/**
-	 * Retrieve the field type for a given fieldname.
-	 * @param fieldName name of the field to retrieve
-	 * @return the requested <code>FieldType</code>
-	 */
-	public FieldType getFieldType(String fieldName);
-	
-	/**
-     * Search nodes beloingin to this NodeManager.
-     * @param where The contraint. this is in essence a SQL where clause.
-     *      Examples: "email IS NOT NULL", "lastname='admin' OR lastname = 'sa'"
-     * @param order the fieldname on which you want to sort.
-     *      Examples: 'lastname', 'number'
-     * @param direction indicates whether the sort is ascending (true) or descending (false).
-     * @return a <code>List</code> of found nodes
+    /** 
+     * Returns the description of this node manager.
+     *
+     * @return the description of this node manager
      */
-    public NodeList getList(String where, String sorted, boolean direction);
+    public String getDescription();
+
+    /**
+     * Returns a list of all fields defined for this node manager.
+     *
+     * @return a list of all fields defined for this node manager
+     */
+    public FieldList getFields();
+
+    /**
+     * Returns the field with the specified name.
+     *
+     * @param name  the name of the field to be returned
+     * @return      the field with the requested name
+     */
+    public Field getField(String name);
+	
+    /**
+     * Returns a list of nodes belonging to this node manager. Constraints can
+     * be given to exclude nodes from the returned list. These constraints
+     * follow the syntax of the SQL where clause. It's a good practice to use
+     * uppercase letters for the operators and lowercase letters for the
+     * fieldnames. Example constraints are:
+     *
+     * <pre>
+     * "number = 100" (!=, <, >, <= and >= can also be used)
+     * "name = 'admin'",
+     * "email IS NULL" (indicating the email field is empty)
+     * "email LIKE '%.org'" (indication the email should end with .org)
+     * "number BETWEEN 99 AND 101"
+     * "name IN ('admin', 'anonymous')"
+     * </pre>
+     *
+     * The NOT operator can be used to get the opposite result like:
+     *
+     * <pre>
+     * "NOT (number = 100)"
+     * "NOT (name = 'admin')",
+     * "email IS NOT NULL"
+     * "email NOT LIKE '%.org'" (indication the email should end with .org)
+     * "number NOT BETWEEN 99 AND 101"
+     * "name NOT IN ('admin', 'anonymous')"
+     * <pre>
+     *
+     * Some special functions (not part of standard SQL, but most databases
+     * support them) can be used like:
+     *
+     * <pre>
+     * "LOWER(name) = 'admin'" (to also allow 'Admin' to be selected)
+     * "LENGTH(name) > 5" (to only select names longer then 5 characters)
+     * </pre>
+     *
+     * Constraints can be linked together using AND and OR:
+     *
+     * <pre>
+     * "((number=100) OR (name='admin') AND email LIKE '%.org')"
+     * </pre>
+     *
+     * The single quote can be escaped using it twice for every single
+     * occurence:
+     *
+     * <pre>
+     * "name='aaa''bbb'" (if we want to find the string aaa'bbb)
+     * </pre>
+     *
+     * For more info consult a SQL tutorial like
+     * <a href="http://w3.one.net/~jhoffman/sqltut.htm">this one</a>. 
+     *
+     * @param constraints   Contraints to prevent nodes from being
+     *                      included in the resulting list which would normally
+     *                      by included or null if no contraints should be
+     *                      applied .
+     * @param orderby       A comma separated list of field names on which the
+     *                      returned list should be sorted or null if
+     *                      the order of the returned virtual nodes doesn't
+     *                      matter.
+     * @param directions    A comma separated list of the values UP and DOWN
+     *                      indicating wether the sort on the
+     *                      corresponding field in the <code>orderby</code>
+     *                      parameter should be up (ascending) or down
+     *                      (descending) or null if sorting for all fields
+     *                      should be up. If less values are supplied
+     *                      then there are fields in the <code>orderby</code>
+     *                      parameter, the first value in the list is used for
+     *                      the remainig fields.
+     */
+    public NodeList getList(String constraints, String orderby,
+                            String directions);
 
 	/**
 	 * Retrieve info from a node manager based on a command string.

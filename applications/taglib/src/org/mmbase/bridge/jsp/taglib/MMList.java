@@ -223,8 +223,9 @@ public class MMList extends MMTaglib
 		    }
 		    action = "search relations with start node (" + nodesString + ") using a search";
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
-		    boolean direction = ("UP".equals(searchDirection))? true: false;
-		    nodes= nodeManager.getList(searchWhere,null,direction);
+//		    boolean direction = ("UP".equals(searchDirection))? true: false;
+//		    nodes= nodeManager.getList(searchWhere,null,direction);
+		    nodes= nodeManager.getList(searchWhere,null,searchDirection);
 		} else if (hasNode){
 		    action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
 		    try {
@@ -238,8 +239,9 @@ public class MMList extends MMTaglib
 		} else { 
 		    action = "list all objects of type("+ typeString + ")";
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
-		    boolean direction = ("UP".equals(searchDirection))? true: false;
-		    nodes= nodeManager.getList(null,null,direction);
+//		    boolean direction = ("UP".equals(searchDirection))? true: false;
+//		    nodes= nodeManager.getList(null,null,direction);
+		    nodes= nodeManager.getList(null,null,searchDirection);
 		}
 	    }
 	} catch (NullPointerException npe){
