@@ -16,6 +16,7 @@ import javax.servlet.jsp.JspTagException;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.StringSplitter;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.12 2003-08-27 21:33:05 michiel Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.13 2003-09-03 19:40:03 michiel Exp $ 
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -75,32 +76,11 @@ public class ListNodesTag extends AbstractNodeListTag {
             return nodes;
         } else {
             NodeQuery query = (NodeQuery) c.getQuery();
-            nodeManager = query.getNodeManager();
             // following code will also be necessary in list-tag, so need perhaps be available in AbstractNodeListTag
 
-            if (constraints != Attribute.NULL) {
-                Constraint newConstraint = query.createConstraint(constraints.getString(this));
-                Constraint constraint = query.getConstraint();
-                if (constraint != null) {
-                    log.debug("compositing constraint");
-                    newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
-                }
-                query.setConstraint(newConstraint);
-            }
-            
-            List order = StringSplitter.split(orderby.getString(this));
-            List dirs  = StringSplitter.split(directions.getString(this));
-            for (int i = 0; i < order.size(); i++) {
-                int or;
-                if (dirs.size() > i &&  "down".equalsIgnoreCase((String) dirs.get(i)))  {                    
-                    or =  SortOrder.ORDER_DESCENDING;
-                } else {
-                    or =  SortOrder.ORDER_ASCENDING;
-                }
-                StepField orderField = query.createStepField((String) order.get(i));
-                query.addSortOrder(orderField, or);
-            }
-            
+            Queries.addConstraints(query, (String) constraints.getValue(this));
+            Queries.addSortOrders(query, (String) orderby.getValue(this), (String) directions.getValue(this));
+
             NodeList nodes = getCloud().getList(query);
             return nodes;
         }        

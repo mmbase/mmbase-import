@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Query;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.11 2003-08-29 12:12:24 keesj Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.12 2003-09-03 19:40:04 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -103,13 +103,18 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     public static FieldConstraint addConstraint(Query query, String field, int operator, String stringValue, String stringValue2) throws JspTagException {
         Object compareValue;
-        if (operator < FieldCompareConstraint.LIKE) {
+
+        StepField stepField = query.createStepField(field);
+        Cloud cloud = query.getCloud();        
+        int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
+
+        if (fieldType != Field.TYPE_STRING && fieldType != Field.TYPE_XML && operator < FieldCompareConstraint.LIKE) {
             compareValue = getNumberValue(stringValue);     
         } else {
             compareValue = stringValue;
         }
         FieldConstraint newConstraint;
-        StepField stepField = query.createStepField(field);
+
         log.debug(stepField);
         if (stepField == null) log.warn("Could not create stepfield with '" + field + "'");
         if (operator > 0) {
