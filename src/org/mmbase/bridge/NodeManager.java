@@ -114,7 +114,7 @@ public interface NodeManager {
      * "NOT (number = 100)"
      * "NOT (name = 'admin')",
      * "email IS NOT NULL"
-     * "email NOT LIKE '%.org'" (indication the email should end with .org)
+     * "email NOT LIKE '%.org'" (indication the email should not end with .org)
      * "number NOT BETWEEN 99 AND 101"
      * "name NOT IN ('admin', 'anonymous')"
      * </pre>
