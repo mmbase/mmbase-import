@@ -401,15 +401,17 @@ public class scancache extends Module implements scancacheInterface {
 	String getWriteHeaders(String value, String mimeType) {
 		if ((mimeType==null) || mimeType.equals("") || mimeType.equals("text/html"))
 			mimeType = "text/html; charset=iso-8859-1";
+		String now = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()));
+		String expireTime = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()+15000));
 		String body="Status: 200 OK\n";
 		body+="Server: OrionCache\n";
 		body+="Content-type: "+mimeType+"\n";
 		body+="Content-length: "+value.length()+"\n";
-		body+="Expires: Fri, 15 Oct 1999 10:44:47 GMT\n";
-		body+="Date: Fri, 15 Oct 1999 12:44:47 GMT\n";
+		body+="Expires: "+expireTime+"\n";
+		body+="Date: "+now+"\n";
 		body+="Cache-Control: no-cache\n";
 		body+="Pragma: no-cache\n";
-		body+="Last-Modified: Fri, 15 Oct 1999 12:44:47 GMT\n\n";
+		body+="Last-Modified: "+now+"\n\n";
 		return(body);
 	}
 	
