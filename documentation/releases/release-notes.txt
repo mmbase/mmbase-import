@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.1 - Release Notes
+                     MMBase 1.7.2 - Release Notes
 ===================================================================
 
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.7.1, relative to the previous release of MMBase (1.6).
+release of MMBase 1.7.2, relative to the previous release of MMBase (1.6).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -139,6 +139,7 @@ Taglib New Features:
 Editwizards New Features:
 -------------------------
 [1.7.2]
+- Optionlists can be multilingual
 - Extending the (search)list of the editwizards to show more than 10
   pages and to show more paging information (i.e. number of items on
   page and number of pages found). 
