@@ -20,7 +20,10 @@ MMBase running, you must do the following:
 
 5. If ImageMagick's convert isn't in your path, edit
    <mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
-   for the location of this tool. 
+   (if you haven't installed the Resources application) or 
+   <mmbase-webapp/WEB-INF/config/builders/applications/builders/images.xml>
+   (if you already installed the Resources applications) for the
+   location of this tool.
 
 6. Start servlet-engine if you want to use the default MMBase-config
    (uses a hsqldb-database), or goto step 9 for changing default
@@ -49,8 +52,8 @@ MMBase running, you must do the following:
     <http://localhost:8080/mmbase-webapp/mmdocs/administrators/configuration.html>
 
 11. If you have any kind of problem goto:
-   website: <http://www.mmbase.org/>
-   irc: #mmbase at slashnet
+    website: <http://www.mmbase.org/>
+    irc: #mmbase at slashnet
 
 
 Some final notes:
@@ -71,7 +74,7 @@ just a try-out.
 If you are not going to use MMBase security, you should not leave
 jsp-editors and admin pages unprotected (by e.g. tomcat or apache
 security). Remove them altogether if unsure (the /mmbase/edit/ and
-/mmbase/mmadmin directories).
+/mmbase/admin directories).
 
 The same goes for editwizards if you are going to install those.
 
@@ -89,7 +92,10 @@ ImageMagick:
 Imagemagick does work with Windows 98/ME, but MMBase is not able to
 use it. You have to use Jai (Java Advanced Imaging API). You can do
 this by changing the properties in
-<mmbase-webapp/WEB-INF/config/builders/images.xml> into:
+<mmbase-webapp/WEB-INF/config/builders/applications/images.xml> (if
+you've already installed the Resources application) or 
+<mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+(if you haven't installed the Resources applications) into:
 
 <properties> 
   <property name="ImageConvertClass">org.mmbase.module.builders.ConvertJAI</property> 
