@@ -15,47 +15,54 @@
 <mm:import externid="owner"      />
 <mm:import externid="searchvalue"/>
 
-
-<mm:import id="ownerconstraints"><mm:write referid="owner"><mm:isnotempty><mm:write referid="type" />.owner LIKE '%<mm:write />%'</mm:isnotempty></mm:write></mm:import>
-
-<mm:import id="textconstraints"><mm:write referid="searchvalue"><mm:isnotempty><mm:isnotempty referid="ownerconstraints"> AND </mm:isnotempty><mm:write referid="type" />.title LIKE '%<mm:write />%'</mm:isnotempty></mm:write></mm:import>
-
-
-
 <body  onload="init('search');">
   <table>
     <tr><th colspan="3">Result of type <mm:write value="$type" /></th></tr> 
     <tr><th>Titel</th><th>Items en URL's</th><th>Eigenaar</th></tr>
-  <mm:list nodes="$origin" path="pools,$type" max="100" orderby="${type}.number" directions="down" constraints="$ownerconstraints $textconstraints">
-  <mm:context>
-  <mm:node  id="fragment" element="$type">
-   <mm:nodeinfo id="actualtype" type="type" write="false" />
-   <tr class="view"><td><img src="<mm:url page="../media/${actualtype}.gif" />" alt="" /><mm:field name="gui()" /> 
-                   </td>
-      <td>      
-        <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
-      <mm:context>
-      <mm:relatednodes  id="fragment" type="mediafragments" role="posrel" searchdir="destination">
-          <br /><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
-          <ul>
-      <mm:related  path="posrel,mediafragments2" fields="posrel.pos" orderby="posrel.pos" searchdir="destination" >
-          <mm:context>
-         <mm:node id="fragment" element="mediafragments2">
-             <li><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a></li>
-          </mm:node>
-       </mm:context>
-       </mm:related>
-          </ul>
-       </mm:relatednodes>
-       </mm:context>
-      </td>
-      <td>
-        <mm:field name="owner" />
-      </td>
-  </tr>
-  </mm:node>
-  </mm:context>
-  </mm:list>
+    <mm:listnodescontainer path="pools,$type" element="$type">
+      <mm:maxnumber value="100" />
+      <mm:write referid="origin">
+        <mm:isnotempty>
+          <mm:constraint field="pools.number" value="$_" />
+       </mm:isnotempty>
+      </mm:write>
+      <mm:constraint field="owner" operator="LIKE" value="%$owner%" />
+      <mm:composite operator="OR">
+        <mm:constraint field="title" operator="LIKE" value="%$searchvalue%" />
+        <mm:constraint field="subtitle" operator="LIKE" value="%$searchvalue%" />
+        <mm:constraint field="intro" operator="LIKE" value="%$searchvalue%" />
+        <mm:constraint field="body" operator="LIKE" value="%$searchvalue%" />
+      </mm:composite>
+      <mm:sortorder  field="number" direction="down" />
+      <mm:listnodes id="fragment">
+        <mm:nodeinfo id="actualtype" type="type" write="false" />
+        <tr class="view">
+          <td>
+            <img src="<mm:url page="../media/${actualtype}.gif" />" alt="" /> <mm:field name="gui()" /> 
+          </td>
+          <td>      
+            <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
+            <mm:context>
+              <mm:relatednodes  id="fragment" type="mediafragments" role="posrel" searchdir="destination">
+                <br /><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a>
+                <ul>
+                  <mm:related  path="posrel,mediafragments2" fields="posrel.pos" orderby="posrel.pos" searchdir="destination" >
+                    <mm:context>
+                      <mm:node id="fragment" element="mediafragments2">
+                        <li><mm:field name="title" /> <a href="<mm:url referids="fragment" page="showurls.jsp" />">URL's</a></li>
+                      </mm:node>
+                    </mm:context>
+                  </mm:related>
+                </ul>
+              </mm:relatednodes>
+            </mm:context>
+          </td>
+          <td>
+            <mm:field name="owner" />
+          </td>
+        </tr>
+      </mm:listnodes>
+    </mm:listnodescontainer>
   </table>
   <!-- p id="colofon">
     <img src="../images/mmbase.png" />
