@@ -461,10 +461,8 @@ public class BasicCloud implements Cloud, Cloneable {
      * database supported fields.
      * XXX: todo: escape characters for '[' and ']'.
      */
-    String convertClauseToDBS(String constraints) {
+    private String convertClausePartToDBS(String constraints) {
         // obtain dbs for fieldname checks
-        if (constraints.startsWith("MMNODE")) return constraints;
-        if (constraints.startsWith("WHERE ")) return constraints;
         MMJdbc2NodeInterface dbs=cloudContext.mmb.getDatabase();
         String result="";
         int posa=constraints.indexOf('[');
@@ -486,7 +484,30 @@ public class BasicCloud implements Cloud, Cloneable {
                 posa=constraints.indexOf('[');
             }
         }
-        result="WHERE "+result+constraints;
+        result=result+constraints;
+        return result;
+    }
+
+    /**
+     * Converts a constraint by turning all 'quoted' fields into
+     * database supported fields.
+     * XXX: todo: escape characters for '[' and ']'.
+     */
+    String convertClauseToDBS(String constraints) {
+        String result="";
+        int posa=constraints.indexOf('\'');
+        while (posa>-1) {
+            int posb=constraints.indexOf('\'',1);
+            if (posb==-1) {
+                posa=-1;
+            } else {
+                String part=constraints.substring(0,posa);
+                result+=convertClausePartToDBS(part)+constraints.substring(posa,posb+1);
+                constraints=constraints.substring(posb+1);
+                posa=constraints.indexOf('\'');
+            }
+        }
+        result="WHERE "+result+convertClausePartToDBS(constraints);
         return result;
     }
 
