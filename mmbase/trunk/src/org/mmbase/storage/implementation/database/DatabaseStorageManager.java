@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.62 2004-03-23 14:13:09 rob Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63 2004-03-29 09:57:19 rob Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -346,7 +346,7 @@ public class DatabaseStorageManager implements StorageManager {
         } else {
             untrimmedResult = result.getString(index);
         }
-        if(factory.hasOption(Attributes.TRIM_STRINGS)) {
+        if(untrimmedResult!=null && factory.hasOption(Attributes.TRIM_STRINGS)) {
              return untrimmedResult.trim();
         }
         return untrimmedResult;
