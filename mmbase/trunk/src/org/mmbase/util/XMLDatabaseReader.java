@@ -38,12 +38,14 @@ public class XMLDatabaseReader  {
             parser.parse(filename);
             document = parser.getDocument();
 
+	    /*
 	    System.out.println("*** START XML CONFIG READER FOR : "+filename);	
 	    System.out.println("database name="+getName());	
 	    System.out.println("database type-mapping="+getTypeMapping());	
 	    System.out.println("database create="+getCreateScheme());	
 	    System.out.println("database not-null="+getNotNullScheme());	
 	    System.out.println("*** END XML CONFIG READER FOR : "+filename);	
+	    */
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}

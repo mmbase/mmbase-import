@@ -37,6 +37,7 @@ public class XMLBuilderReader  {
             parser.parse(filename);
             document = parser.getDocument();
 
+	    /*
 	    System.out.println("*** START XML CONFIG READER FOR : "+filename);	
 	    System.out.println("builder status="+getStatus());	
 	    System.out.println("builder classfile="+getClassFile());	
@@ -47,6 +48,7 @@ public class XMLBuilderReader  {
 	    System.out.println("builder descriptions="+getDescriptions());	
 	    System.out.println("builder searchage="+getSearchAge());	
 	    System.out.println("*** END XML CONFIG READER FOR : "+filename);	
+	    */
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
