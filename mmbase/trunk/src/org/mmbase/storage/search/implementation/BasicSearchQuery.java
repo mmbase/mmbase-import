@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.15 2003-12-02 13:54:01 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.16 2003-12-09 22:49:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -66,18 +66,35 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         this(false);
     }
 
+
+    public final static int COPY_NORMAL = 0;
+    public final static int COPY_AGGREGATING = 1;
+    public final static int COPY_WITHOUTFIELDS = 2;
+
     /**
      * A deep copy, but sets also aggregating, and clear fields if aggregating is true then.
      */
 
-    public BasicSearchQuery(SearchQuery q, boolean aggregating) {
-        this(q);
-        this.aggregating = aggregating;
-        if (aggregating) {
-            fields.clear();
-            sortOrders.clear();
-            offset = DEFAULT_OFFSET;
-            maxNumber = DEFAULT_MAX_NUMBER;
+    public BasicSearchQuery(SearchQuery q, int copyMethod) {
+        distinct  = q.isDistinct();
+        copySteps(q);
+        Constraint c = q.getConstraint();
+        if (c != null) {
+            setConstraint(copyConstraint(q, c));
+        }
+        switch(copyMethod) {
+        case COPY_NORMAL:
+            copyFields(q);
+        case COPY_WITHOUTFIELDS:
+            copySortOrders(q);
+            maxNumber = q.getMaxNumber();
+            offset    = q.getOffset();
+            aggregating = false;
+            break;
+        case COPY_AGGREGATING:
+            aggregating = true;
+            break;
+            
         }
     }
 
@@ -88,18 +105,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @see org.mmbase.bridge.Query#clone 
      */
     public BasicSearchQuery(SearchQuery q) {
-        distinct  = q.isDistinct();
-        maxNumber = q.getMaxNumber();
-        offset    = q.getOffset();
-
-        copySteps(q);
-        copyFields(q);
-        copySortOrders(q);
-
-        Constraint c = q.getConstraint();
-        if (c != null) {
-            setConstraint(copyConstraint(q, c));
-        }
+        this(q, COPY_NORMAL);
     }
 
 
@@ -119,6 +125,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             throw new InternalError(e.toString());
         }
     }
+
 
     protected void copySteps(SearchQuery q) {
         MMBase mmb = MMBase.getMMBase();
