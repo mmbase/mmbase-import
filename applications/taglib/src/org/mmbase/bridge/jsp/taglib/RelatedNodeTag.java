@@ -58,16 +58,11 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         }
         node = getCloud().getNode(number);
         setNodeVar(node);
+        fillVars();
         return EVAL_BODY_BUFFERED;
     }
 
     public void doInitBody() throws JspTagException {
-        log.debug("fillvars");
-        fillVars();
-        if (id != null) {
-            getContextTag().registerNode(id, getNodeVar());
-        }
-
     }
 
     /**
