@@ -13,6 +13,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.StringSplitter;
 
@@ -25,18 +26,23 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.2 2003-08-27 21:33:39 michiel Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.3 2003-09-03 19:40:04 michiel Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements NodeListContainer {
 
     private static final Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
 
-    private Query   query     = null;
-    private Attribute path = Attribute.NULL;
+    private Query     query      = null;
+    private Attribute path       = Attribute.NULL;
+    private Attribute searchDirs = Attribute.NULL;
 
 
     public void setPath(String t) throws JspTagException {
         path = getAttribute(t);
+    }
+
+    public void setSearchdirs(String s) throws JspTagException {
+        searchDirs = getAttribute(s);
     }
 
     public Query getQuery() {
@@ -56,24 +62,8 @@ public class RelatedContainerTag extends NodeReferrerTag implements NodeListCont
         Step step = query.addStep(node.getNodeManager());
         query.addNode(step, node);
 
-        Iterator i = StringSplitter.split(path.getString(this)).iterator();
-        NodeManager previous = null;
-        if (i.hasNext()) {
-            previous = cloud.getNodeManager((String) i.next());
-            query.addStep(previous);
-        }       
-        
-        while (i.hasNext()) {
-            String t = (String) i.next();
-            if (cloud.hasNodeManager(t)) {
-                NodeManager current  = cloud.getNodeManager(t);
-                query.addRelationStep(current);
-            } else {
-                NodeManager current = cloud.getNodeManager((String) i.next());
-                RelationManager rm = cloud.getRelationManager(previous, current, t);
-                query.addRelationStep(rm);                
-            }
-        }
+        Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+
          
         return EVAL_BODY_BUFFERED;
     }

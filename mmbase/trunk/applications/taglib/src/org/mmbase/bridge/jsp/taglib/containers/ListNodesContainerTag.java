@@ -12,38 +12,75 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.6 2003-08-29 12:12:24 keesj Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.7 2003-09-03 19:40:04 michiel Exp $
  */
-public class ListNodesContainerTag extends CloudReferrerTag implements NodeListContainer {
+public class ListNodesContainerTag extends NodeReferrerTag implements NodeListContainer { 
+             // nodereferrer because RelatedNodesContainer extension
 
 
     private static final Logger log = Logging.getLoggerInstance(ListNodesContainerTag.class);
 
-    private NodeQuery   query     = null;
-    private Attribute nodeManager = Attribute.NULL;
+    protected NodeQuery   query       = null;
+    protected Attribute   path        = Attribute.NULL;
+    protected Attribute   searchDirs  = Attribute.NULL;
+    protected Attribute   nodeManager = Attribute.NULL;
+    protected  Attribute   element     = Attribute.NULL;
 
 
     public void setType(String t) throws JspTagException {
         nodeManager = getAttribute(t);
     }
 
+    public void setPath(String t) throws JspTagException {
+        path = getAttribute(t);
+    }
+    public void setSearchdirs(String s) throws JspTagException {
+        searchDirs = getAttribute(s);
+    }
+
+    public void setElement(String e) throws JspTagException {
+        element = getAttribute(e);
+    }
+
+
     public Query getQuery() {
         if (query.isUsed()) query = (NodeQuery) query.clone();
         return query;
     }
 
+    public int doStartTag() throws JspTagException {
+        if (nodeManager != Attribute.NULL) {
+            query = getCloud().getNodeManager(nodeManager.getString(this)).createQuery();
+            if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
+            if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
+        } else {
+            if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
 
-
-    public int doStartTag() throws JspTagException {        
-        query = getCloud().getNodeManager(nodeManager.getString(this)).createQuery();
+            query = getCloud().createNodeQuery();
+            Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+            
+            if (element != Attribute.NULL) {
+                String alias = element.getString(this);
+                Step nodeStep = query.getStep(alias);
+                if (nodeStep == null) { 
+                    throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
+                }
+                query.setNodeStep(nodeStep);
+            } else {
+                // default to first step
+                query.setNodeStep((Step) query.getSteps().get(0));
+            }
+        }
         return EVAL_BODY_BUFFERED;
     }
     // if EVAL_BODY == EVAL_BODY_BUFFERED
