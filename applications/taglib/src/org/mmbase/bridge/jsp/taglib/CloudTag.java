@@ -74,6 +74,8 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
 
     public  static String DEFAULT_CLOUD_NAME = "mmbase";   
 
+    private static final String REALM = "cloud_realm";
+
     private static CloudContext cloudContext;
     
     private String cloudName  = DEFAULT_CLOUD_NAME;
@@ -181,7 +183,19 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
     private int deny(String message) throws JspTagException {
         log.debug("sending deny");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setHeader("WWW-Authenticate", "Basic realm=\"www\"");
+        
+        String realm = (String) session.getAttribute(REALM);      
+        if (realm == null) {
+            // in the Realm is the time, this makes it unique, and is used by browser to 
+            // store the name password.
+            // if you throw away the realm name from the session, then the browser does 
+            // not know the password anymore. 
+            // this is how 'logout' works.
+            realm = "MMBase@" + request.getServerName() + "." + java.util.Calendar.getInstance().getTime().getTime();;
+        }
+        session.setAttribute(REALM, realm);
+        response.setHeader("WWW-Authenticate", "Basic realm=\"" + realm + "\"");
+
         //res.setHeader("Authorization", logon);   would ne nice...
         //keesj:look at the php3 tutorial for an example
 
@@ -195,6 +209,10 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         }
         return SKIP_BODY; 
     }
+
+    private void logout() {
+        session.removeAttribute(REALM);
+    }
     
     private void setAnonymousCloud(String name) {
         log.debug("using a anonymous cloud");
@@ -207,11 +225,10 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         }
         // check if cloud was expired:
         if (! cloud.getUser().isValid()) {
-            log.debug("cloud was expired, create a new one");
+            log.debug("anonymous cloud was expired, creating a new one");
             cloud = getDefaultCloudContext().getCloud(cloudName);
             anonymousClouds.put(cloudName, cloud);
         }
-        pageContext.setAttribute("cloud", cloud);        
     }
 
     
@@ -227,6 +244,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
               method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
             setAnonymousCloud(cloudName);            
+            pageContext.setAttribute(getId(), cloud);        
             return EVAL_BODY_TAG;
         }
         
@@ -238,8 +256,9 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         log.debug("startTag " + cloud);
 
         if (method == METHOD_LOGOUT) {
-            log.debug("request to log out, put an anonymous cloud in the session");
-            logon = null; cloud = null;
+            log.debug("request to log out, put an anonymous cloud in the session");           
+            logout();
+            setAnonymousCloud(cloudName);
         }
 
         if (method == METHOD_ASIS) {
@@ -304,6 +323,12 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
             // check how to log on:
             if (method == METHOD_HTTP) {
                 log.debug("with http");
+
+                if (session.getAttribute(REALM) == null) {
+                    log.debug("no realm found, need to log on again");
+                    return deny("<h2>Need to log in again</h2> You logged out");
+                }
+                log.debug("authent: " + request.getHeader("WWW-Authenticate"));
                 // find logon, password with http authentication       
                 String username = null;
                 String password = null;
@@ -325,19 +350,21 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                 if (log.isDebugEnabled()) {
                     log.debug("u " + username + " p " + password);
                 }
-                if (logon != null) { // if there was a username specified as well, it must be the same
-                    log.debug("http with username");
-                    if (! logon.equals(username)) {
-                        log.debug("username not correct");
-                        return deny("<h2>Wrong username</h2> must be " + logon + "");
+                if (method == METHOD_HTTP) {
+                    if (logon != null) { // if there was a username specified as well, it must be the same
+                        log.debug("http with username");
+                        if (! logon.equals(username)) {
+                            log.debug("username not correct");
+                            return deny("<h2>Wrong username</h2> must be " + logon + "");
+                        }
+                    } else { // logon == null
+                        log.debug("http without username");
+                        if (username == null) { // there must be at least known a username...
+                            log.debug("no username known");
+                            return deny("<h2>No username given</h2>");
+                        }
+                        logon = username;
                     }
-                } else { // logon == null
-                    log.debug("http without username");
-                    if (username == null) { // there must be at least known a username...
-                        log.debug("no username known");
-                        return deny("<h2>No username given</h2>");
-                    }
-                    logon = username;
                 }
                 pwd = password;
             } // http
@@ -350,7 +377,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                 user.put("password", pwd);
                 try {
                     cloud = getDefaultCloudContext().getCloud(cloudName, authenticate, user);
-                } catch (BridgeException e) { 
+                } catch (BridgeException e) {                     
                     // did not succeed, so problably the password was wrong.
                     if (method == METHOD_HTTP) { // give a deny, people can retry the password then.
                         return deny("<h2>This page requires authentication</h2>");                    
@@ -358,7 +385,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                         throw new JspTagException("Logon of user " + logon + " failed." + 
                             (pwd == null ? " (no password given)" : " (wrong password)"));
                     }
-                }
+                }                 
             } else {          
                 log.debug("no login given, creating anonymous cloud");
                 // no logon, create an anonymous cloud.
