@@ -8,13 +8,14 @@
 	<property name="project.package"   value="org/mmbase/applications/editwizard" />
 	<property name="project.target.templates.dir"   value="edit/wizard" />
 
+	&base;
+
 	<!-- jakarta commons FileUpload -->
 	<property name="fileupload.file" value="commons-fileupload-1.0" />
 	<property name="fileupload.url" value="http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}.tar.gz" />
 	<property name="fileupload.jar" value="${expand.dir}/commons-fileupload-1.0/commons-fileupload-1.0.jar" />
 	<property name="project.extra.path" location="../dove/build/mmbase-dove.jar" />
 
-	&base;
 
 	<target name="init.get">
 		<available property="fileupload.present" file="${download.dir}/${fileupload.file}.tar.gz" />
@@ -27,7 +28,7 @@
 		<ant dir="${applications.dir}/dove" inheritAll="false" />
 	</target>
 
-	<target name="dependent.jar" depends="dove,jar" />
+	<target name="dependent.jar" depends="dove,fileupload,jar" />
 
 
 	<target name="dependent.package" depends="dependent.jar,fileupload,package" />
