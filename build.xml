@@ -226,7 +226,7 @@ builddate=${builddate}
           tofile="${build.dir}/mmbase-src/LICENSE"/>
 
     <!-- zip -->
-    <zip zipfile="${build.dir}/${name}-src-${builddate}.zip">
+    <zip zipfile="${build.dir}/${name}-src-${distro.version}.${builddate}.zip">
      <zipfileset dir="${build.dir}/mmbase-src" prefix="${name}-src-${builddate}"
        includes="**" />
     </zip>
@@ -260,7 +260,7 @@ builddate=${builddate}
           tofile="${build.dir}/mmbase/LICENSE"/>
 
     <!-- zip -->
-    <zip zipfile="${build.dir}/${name}-${builddate}.zip">
+    <zip zipfile="${build.dir}/${name}-${distro.version}.${builddate}.zip">
      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${builddate}"
        includes="**" />
     </zip>
