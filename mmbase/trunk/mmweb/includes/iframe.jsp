@@ -10,9 +10,9 @@
 <script language="javascript">
 	newwin = window.open('<mm:field name="urls.url"/>','documentation');;setTimeout('newwin.focus();',250);
 </script>     
+<h3>The <a href="<mm:field name="urls.url"/>">documentation</a> will be opened in a new window.</h3>
 </mm:list>
 
-<h3>The documentation will be opened in a new window.</h3>
 
 </td>
 
