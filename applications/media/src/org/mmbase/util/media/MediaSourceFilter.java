@@ -74,7 +74,7 @@ public class MediaSourceFilter {
         mediaFragmentBuilder = mf;
         mediaSourceBuilder = ms;
         
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "mediasourcefilter.xml");
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "media" + File.separator + "mediasourcefilter.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
             return;

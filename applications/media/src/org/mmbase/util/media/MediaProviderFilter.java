@@ -75,7 +75,7 @@ public class MediaProviderFilter {
     public MediaProviderFilter(MediaSources ms) {
         mediasourcebuilder = ms;
         
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "mediaproviderfilter.xml");
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "media" + File.separator + "mediaproviderfilter.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for mediaproviderfilter " + configFile + " does not exist");
             return;
