@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.50 2002-03-10 14:35:26 kees Exp $
+ * @version $Id: MMBase.java,v 1.51 2002-03-14 16:01:28 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -436,13 +436,20 @@ public class MMBase extends ProcessorModule  {
     }
 
     /**
+     * Retrieves the MMBase module('mmbaseroot').
+     * @return the active MMBase module
+     */
+    static public MMBase getMMBase() {
+        return (MMBase) getModule("mmbaseroot");
+    }
+
+    /**
      * Retrieves the loaded security manager(MMBaseCop).
      * @return the loaded security manager(MMBaseCop)
      */
     public MMBaseCop getMMBaseCop() {
         return mmbaseCop;
     }
-
 
     /**
      * Retrieves the loaded builders.
