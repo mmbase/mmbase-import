@@ -23,20 +23,17 @@ import java.io.File;
 import java.lang.Integer;
 
 /**
- * The MainFilter is involved in finding the appropriate media source 
- * given a certain media fragment. The choice of the media source depends on 
- * the configuration files configured, and the information an user is passing 
- * through the info variable.
+ * This is the main class for the filter process. It maintains list of
+ * Filters (which content can be configured by the 'filters.xml'
+ * configuration file. It does not do any filtering itself, it is only
+ * the access to the actual filters, so filtering is completably
+ * configurable.
  *
- * The appropriate mediasource will be found by passing the mediasources through a
- * set of mediasource filters. These filters can be specified in the
- * mediasourcefilter configuration file.
+ * Since there can be only one 'main' filter this class is a
+ * Singleton, and its one instance can be gotten by the getInstance
+ * function (and this is done by the Media builders when they need url
+ * representations to the stream they describe).
  *
- * One standard filters is provided:
- * 1) preferredSource, this is a list of media formats. The first found format is
- * returned.
- *
- * @todo javadoc outdated
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
