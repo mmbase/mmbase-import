@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.19 $ $Date: 2000-12-24 23:16:18 $
+ * @version $Revision: 1.20 $ $Date: 2000-12-27 19:55:24 $
  */
 public abstract class Module {
 
@@ -48,6 +48,8 @@ public abstract class Module {
 	static ModuleProbe mprobe;
 	static boolean debug=false;
 	public static boolean xmlinstalled=false;
+	String maintainer;
+	int    version;	
 
 		
 	/**
@@ -393,5 +395,21 @@ public abstract class Module {
 			return(null);
 		}
 	}	
+
+	public String getMaintainer() {
+		return(maintainer);
+	}
+
+	public void setMaintainer(String m) {
+		maintainer=m;
+	}
+
+	public void setVersion(int v) {
+		version=v;
+	}
+
+	public int getVersion() {
+		return(version);
+	}
 
 }

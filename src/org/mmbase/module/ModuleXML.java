@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.16 $ $Date: 2000-12-24 23:17:04 $
+ * @version $Revision: 1.17 $ $Date: 2000-12-27 19:58:35 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -72,7 +72,7 @@ public abstract class ModuleXML extends Module {
                 String bname=files[i];
                 if (bname.endsWith(".xml")) {
                      bname=bname.substring(0,bname.length()-4);
- 		     XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
+		     XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
 		     if (parser!=null) {		
 			if (parser.getStatus().equals("active")) {
 				String cname=parser.getClassFile();
@@ -86,6 +86,8 @@ public abstract class ModuleXML extends Module {
                     				if (modprops!=null) {
 			                       	 ((Module)mod).properties=modprops;
                     				}
+						((Module)mod).setMaintainer(parser.getModuleMaintainer());
+						((Module)mod).setVersion(parser.getModuleVersion());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
