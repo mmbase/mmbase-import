@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.6 2003-09-18 12:20:26 pierre Exp $
+ * @version $Id: Attributes.java,v 1.7 2003-09-19 09:59:42 pierre Exp $
  */
 public final class Attributes {
 
@@ -89,6 +89,20 @@ public final class Attributes {
      */
     public static final String SUPPORTS_DATA_DEFINITION = "database-supports-data-definition";
 
+    /**
+     * Option: <code>database-remove-empty-definitions</code>.
+     * If this option is true, empty parenthesis in a table definition are removed.
+     * When you create a new table that extends form another table, but which doesn't add fields,
+     * you may get a statement that looks like: <br />
+     * <code>CREATE TABLE table1 () UNDER table2</code><br />
+     * This statement will fail udner a database such as Informix, which does not accept empty
+     * parenthesis, but instead expects: <br />
+     * <code>CREATE TABLE table1 UNDER table2</code><br />
+     * On the other hand, a database such as Postgresql DOES expect the parenthesis (and fails if
+     * they are ommitted.)
+     * The default is <code>false</code>
+     */
+    public static final String REMOVE_EMPTY_DEFINITIONS = "database-remove-empty-definitions";
 
 
 }

@@ -34,7 +34,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.6 2003-09-18 12:20:27 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.7 2003-09-19 09:59:43 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -184,6 +184,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
             con.close();
         } catch (SQLException se) {
+            log.fatal(Logging.stackTrace(se));
             throw new StorageInaccessibleException(se);
         }
 
