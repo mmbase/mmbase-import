@@ -15,7 +15,7 @@
 
     <servlet>
         <servlet-name>images</servlet-name>
-        <servlet-class>org.mmbase.servlet.servdb</servlet-class>
+        <servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
