@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.8 2004-12-21 17:22:24 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.9 2004-12-21 18:21:40 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -133,16 +133,12 @@ abstract public class QueryResultCache extends Cache {
         Iterator i = query.getSteps().iterator();
         while (i.hasNext()) {
             Step step = (Step) i.next();
-            String type = step.getTableName();
-
-            // log.info(step.getClass().getName());
             if(step instanceof RelationStep) {
                 continue;
             }
+            String type = step.getTableName();
 
-            Observer o;
-            o = (Observer) observers.get(type);
-
+            Observer o = (Observer) observers.get(type);
             if (o == null) {
                 o = new Observer(type);
                 observers.put(type, o);
