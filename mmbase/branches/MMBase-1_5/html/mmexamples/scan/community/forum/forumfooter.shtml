@@ -1,7 +1,9 @@
 <IF $PARAM2==0>
  <td class="data" colspan="2">(First page)</td>
 <ELSE>
- <td class="navigate" align="left"><a href="forum.shtml?$PARAM1+$MOD-CALC-$PARAM2-1^" ><img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" /></a></td>
+ <td class="navigate" align="left"><a href="forum.shtml?$PARAM1+$MOD-CALC-$PARAM2-1^" >
+<img src="../../../share/community/images/back.gif" alt="back" border="0" align="left" />
+</a></td>
  <td class="data">Previous page</td>
 </IF>
 <IF $SESSION-NOTLASTPAGE^==>

@@ -10,11 +10,11 @@
 <tr align="left">
   <th class="header" colspan="4">$MOD-MMBASE-FIELD-$PARAM1-name</th>
 </tr>
-<IF $MOD-communityprc-$PARAM1-ISOPEN^=Nreadonly>
+<IF $MOD-communityprc-CHANNEL-$PARAM1-ISOPEN^=Nreadonly>
 <tr>
 <td class="data" colspan="3">Start new thread</td>
 <td class="navigate" align="right"><a href="createnewthread.shtml?$MOD-MMBASE-FIELD-$PARAM1-number^" >
-<img src="../../../share/community/images/next.gif" alt="reply" border="0" align="left" /></a></td>
+<img src="../../../share/community/images/next.gif" alt="create new thread" border="0" align="left" /></a></td>
 </tr>
 </IF>
 <tr>
@@ -23,14 +23,20 @@
 <LIST TREE PROCESSOR="communityprc" MAXCOUNT="30" NODE="$MOD-MMBASE-FIELD-$PARAM1-number^" FIELDS="listhead,listtail,number,html(subject),getinfovalue(name),replycount,day(timestampsec),month(timestampsec),year(timestampsec),depth" VERSION="2.0">
 <ELSE>
 <LIST TREE PROCESSOR="communityprc" MAXCOUNT="30" FROMCOUNT="$MOD-CALC-$PARAM2*30^" NODE="$MOD-MMBASE-FIELD-$PARAM1-number^" FIELDS="listhead,listtail,number,html(subject),getinfovalue(name),replycount,day(timestampsec),month(timestampsec),year(timestampsec),depth" VERSION="2.0" >
+
 </IF>
+
     <LISTLOOP>
   $ITEM1
      <li><a href="message.shtml?$MOD-MMBASE-FIELD-$PARAM1-number^+$ITEM3">$ITEM4</a> ($ITEM6)
           <em>by $ITEM5 on $ITEM7 $ITEM8 $ITEM9</em></li>
   $ITEM2
+
     </LISTLOOP>
-    <DO SESSION-NOTLASTPAGE=1>
+    <LIF $ITEML=N0>
+      <DO SESSION-NOTLASTPAGE=1>
+    </IF>
+
 </LIST>
   &nbsp;
 </td></tr>
