@@ -95,7 +95,7 @@ public class HttpAuth {
 	        java.io.BufferedOutputStream outstream = new java.io.BufferedOutputStream(socket.getOutputStream());
 
                 // vpro???
-	        write(outstream,"GET "+remoteAuthenticationPage+" HTTP/1.0\nContent-Type: vpro/ballyhoo\nUser-Agent: VPRO/James remote password check\nAuthorization: "+password+"\n\n");
+	        write(outstream,"GET "+remoteAuthenticationPage+" HTTP/1.0\nContent-Type: vpro/ballyhoo\nUser-Agent: VPRO/James remote password check\nAuthorization: "+mimeline+"\n\n");
 	        String result = read(instream);
                 if (result.indexOf("401") < 0) {
                     // 401 not found, thus granted..
