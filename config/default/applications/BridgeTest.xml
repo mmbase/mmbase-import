@@ -6,11 +6,13 @@
     <builder maintainer="mmbase.org" version="0">aa</builder>
     <builder maintainer="mmbase.org" version="0">bb</builder>
     <builder maintainer="mmbase.org" version="0">cc</builder>
+    <builder maintainer="mmbase.org" version="0">insrel</builder>
+    <builder maintainer="mmbase.org" version="0">posrel</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
-    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
-    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel(Parent)" guitargetname="PosRel(Child)" />
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel(Parent)" guitargetname="PosRel(Child)" builder="posrel" />
   </neededreldeflist>
 
   <allowedrelationlist>
