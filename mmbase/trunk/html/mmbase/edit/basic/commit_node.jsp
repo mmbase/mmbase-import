@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp" 
-%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
+%><mm:cloud method="http" sessionname="$SESSION" jspvar="cloud">
 <title>Committing node</title>
 
 <mm:context id="commit_node">
