@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.8 2003-08-27 19:25:55 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.9 2003-09-02 20:08:24 michiel Exp $
  */
 public class ClusterNode extends VirtualNode {
 
@@ -51,6 +51,7 @@ public class ClusterNode extends VirtualNode {
      */
     public boolean initializing = true;
 
+    
     /**
      * Main contructor.
      * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
@@ -67,6 +68,7 @@ public class ClusterNode extends VirtualNode {
     public ClusterNode(MMObjectBuilder parent, int nrofnodes) {
         super(parent);
         nodes = new Hashtable(nrofnodes);
+
     }
 
     /**
@@ -128,7 +130,7 @@ public class ClusterNode extends VirtualNode {
     protected void storeValue(String fieldName, Object fieldValue) {
         MMObjectNode node = (MMObjectNode)nodes.get(getBuilderName(fieldName));
         if (node != null) {
-            node.values.put(((ClusterBuilder)parent).getFieldNameFromField(fieldName), fieldValue);
+            node.values.put(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
         } else {
             values.put(fieldName, fieldValue);
         }
@@ -147,14 +149,18 @@ public class ClusterNode extends VirtualNode {
         // Circument interference by the database during initial loading of the node
         // This is not pretty, but the alternative is rewriting all support classes...
         if (initializing) {
-            values.put(fieldName, fieldValue);
+            if (! (parent instanceof ClusterBuilder)) {
+                values.put(ClusterBuilder.getFieldNameFromField(fieldName), fieldValue);
+            } else {
+                values.put(fieldName, fieldValue);
+            }
             return true;
         }
         String builderName = getBuilderName(fieldName);
 
         MMObjectNode n     = getRealNode(builderName);
         if (n != null) {
-            String realFieldName = ((ClusterBuilder)parent).getFieldNameFromField(fieldName);
+            String realFieldName = ClusterBuilder.getFieldNameFromField(fieldName);
             n.setValue(realFieldName, fieldValue);
             values.remove(fieldName);
             return true;
@@ -257,6 +263,7 @@ public class ClusterNode extends VirtualNode {
         // return the found value
         return tmp;
     }
+
 
     /**
      * Get a binary value of a certain field.
