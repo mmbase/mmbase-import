@@ -10,7 +10,7 @@
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
 
 <body class="basic" <mm:present referid="node_type"><mm:compare referid="config.hide_search" value="false"> onLoad="document.search.elements[0].focus();"</mm:compare></mm:present>>
-    <table summary="node editors" width="100%" cellspacing="1" cellpadding="0" border="0">
+    <table summary="node editors" width="100%" class="super">
     	<tr align="left">
     	    <th width="20%"><%=m.getString("search_node.search")%></th>
     	    <mm:present referid="node_type">
@@ -25,6 +25,8 @@
     	<tr valign="top">
     	    <td><!-- node manager overview -->
              <mm:timer name="node_managers">
+                    <!-- quick search by number/alias: -->
+    	    	    <form method="post" action="<mm:url page="change_node.jsp"/>">
     	    	<table summary="node managers" width="100%" cellspacing="1" cellpadding="3" border="0">
 		    <% // functionality for listing nodemanagers is not (yet?) in taglib, using MMCI.
                      NodeManagerList l = cloud.getNodeManagers();
@@ -37,15 +39,15 @@
       	    	    	<td class="navigate">
                         <% if (nt.mayCreateNode()) { %>
 			    <a href="<mm:url page="create_node.jsp"><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>" >
-                    	       <img src="images/create.gif" alt="[create]" border="0" width="20" height="20" align="right" />
-             	    	    </a>
+                  <span class="create"></span><span class="alt">[create]</span>
+             	  </a>
                        <% } else { %>&nbsp;<% } %>
       	    	    	</td>												
       	    	    	<td class="navigate">
 			    <% if (! nt.getName().equals(node_type)) { %>
-            	    	    <a href='<mm:url><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>' >
-			    	<img src="images/select.gif" alt="[list]" width="20" height="20" border="0" />
-			    </a>
+            	 <a href="<mm:url><mm:param name="node_type"><%=nt.getName()%></mm:param></mm:url>">
+                  <span class="select"></span><span class="alt">[list]</span>
+               </a>
 			    <% } else { %>
 			    &nbsp;
 			    <% } %>
@@ -54,14 +56,12 @@
 		    <%
     	    	    } 
 		    %>
-                    <!-- quick search by number/alias: -->
-    	    	    <form method="post" action="<mm:url page="change_node.jsp"/>">
     	    	    	<tr>
 			    <td class="data"><%=m.getString("alias")%></td><td class="data" width="100%"><input class="small" type="text" size="5" name="node_number" /></td>
 			    <td colspan="2" class="navigate"><input type="submit"  name="change" value="--&gt;" /></td>
 			</tr>
-    	    	    </form>
     	    	</table>
+    	    	 </form>
             </mm:timer>
     	    </td>
     	    <td><!-- right collum, present search result (if clicked on node manager)-->  
@@ -76,7 +76,7 @@
 	      	    	    	<td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
 	      	    	    	<td class="navigate">
 	      	    	    	    <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
-                    	    		<img src="images/create.gif" alt="[create]" border="0" width="20" height="20" align="right" />
+                             <span class="create"></span><span class="alt">[create]</span>
              	    	    	</a>
               	    	    </td>
 	      	    	    </tr>
