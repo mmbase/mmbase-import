@@ -2,7 +2,7 @@
 <div class="group">
 <div class="environment">
  <p class="current">
-    <%=m.getString("current_context")%>: <mm:nodeinfo type="gui" /> (<mm:field name="number" />)
+    <%=m.getString("current_context")%>: <mm:nodeinfo type="gui" />
  </p>
 
 <div class="rights">
