@@ -17,25 +17,28 @@ import javax.servlet.jsp.JspException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import org.mmbase.util.functions.Parameters;
+
 import java.util.*;
 import java.io.IOException;
+import javax.servlet.http.*;
 
 /**
- * The Function tag can be used as a child of a 'NodeProvider' tag (but not on clusternodes?). It
- * can call functions on the node.
+ * A function tag for functions returning a list. The result is iterated.
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.4 2003-11-19 16:57:42 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.5 2003-12-21 13:27:50 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer {
 
     private static final Logger log = Logging.getLoggerInstance(ListFunctionTag.class);
 
-    protected  List    returnList;
+    // implementation of ListProvider
+
+    protected List    returnList;
     protected Iterator iterator;
     protected int      currentItemIndex= -1;
-
 
     private   ContextCollector collector;
     protected Attribute  comparator = Attribute.NULL;
@@ -68,18 +71,16 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
     }
 
     public int doStartTag() throws JspTagException {        
-        Object value = getFunctionValue();
 
-        if (! (value instanceof List)) {
-            throw new JspTagException("Function result '" + value + "' is not of type List");
-        }
+        List list = (List) getFunctionValue();;
+
         collector = new ContextCollector(getContextProvider().getContextContainer());
 
         helper.overrideWrite(false); // default behavior is not to write to page
         
         currentItemIndex= -1;  // reset index
         
-        returnList = (List) value;
+        returnList = list;
         ListSorter.sort(returnList, (String) comparator.getValue(this), pageContext);
         iterator = returnList.iterator();
         if (iterator.hasNext()) {

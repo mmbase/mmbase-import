@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.58 2003-12-17 20:53:59 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.59 2003-12-21 13:27:50 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -123,7 +123,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     /**
      * Sets the fields to sort on.
-     * @param sorted A comma separated list of fields on witch the returned
+     * @param sorted A comma separated list of fields on which the returned
      * nodes should be sorted
      */
     public void setOrderby(String orderby) throws JspTagException {
@@ -371,7 +371,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 }
             }
         } else {
-            if (orderby!=Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
+            if (orderby != Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
         }
 
         if (nodeIterator.hasNext()) {

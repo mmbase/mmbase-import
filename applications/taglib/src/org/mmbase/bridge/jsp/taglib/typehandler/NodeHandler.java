@@ -19,16 +19,24 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.util.Encode;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
- * @javadoc
+ * Taglibs handler for Node typed fields.
+ *
+ * Currently this recognized node manager names for the guitype (produces dropdowns). If gui-type is not another builder,
+ * this falls back to 'AbstractTypeHandler'.
  *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.23 2003-11-25 21:31:55 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.24 2003-12-21 13:27:51 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
+
+    private static final Logger log = Logging.getLoggerInstance(NodeHandler.class);
 
     /**
      * Constructor for NodeHandler.
@@ -50,7 +58,7 @@ public class NodeHandler extends AbstractTypeHandler {
     // (a nodemanager used for creating relations)
     private boolean isRelationBuilder(Node n) throws JspTagException {
         try {
-            NodeManager nm=tag.getCloud().getNodeManager(n.getStringValue("name"));
+            NodeManager nm = tag.getCloud().getNodeManager(n.getStringValue("name"));
             // not a really good way to check, but it wil work for now
             // better is to use some property like
             //    NodeManager.getNodeClass()
@@ -66,8 +74,10 @@ public class NodeHandler extends AbstractTypeHandler {
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
+        log.info("hoi");
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
         if(tag.getCloud().hasNodeManager(field.getGUIType())) {
+            log.info("Generating list for " + field.getGUIType());
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select name=\"" + prefix(field.getName()) + "\"");
@@ -76,6 +86,8 @@ public class NodeHandler extends AbstractTypeHandler {
             // list all our nodes of the specified builder here...
             String value = "0";
             if (node != null) value = node.getStringValue(field.getName());
+
+            log.info("node : " + node);
 
             // args for gui function
             List args = new ArrayList();
@@ -86,6 +98,8 @@ public class NodeHandler extends AbstractTypeHandler {
             //args.add(tag.pageContext.getResponse());
 
             NodeIterator nodes = tag.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
+
+            log.info(" nodes " + tag.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null));
             SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
 
             // If this is the 'builder' field of the reldef builder, we need to filter
@@ -93,7 +107,7 @@ public class NodeHandler extends AbstractTypeHandler {
             // Since there is no facility to filter this, we need to 'hard code' this.
             // Not so nice, but since it involves a core builder, this may work for now.
             // possibly in the future we need to define a new typehandler.
-            boolean reldefFilter=field.getName().equals("builder") && field.getNodeManager().getName().equals("reldef");
+            boolean reldefFilter = field.getName().equals("builder") && field.getNodeManager().getName().equals("reldef");
 
             while(nodes.hasNext()) {
                 Node n = nodes.nextNode();

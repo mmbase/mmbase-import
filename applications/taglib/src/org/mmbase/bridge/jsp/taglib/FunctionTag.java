@@ -13,31 +13,27 @@ import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.Function;
 
 /**
- * The Function tag can be used as a child of a 'NodeProvider' tag (but not on clusternodes?). It
- * can call functions on the node.
+ * A 'Writer' function tag. The result of the function is available as String and can be written to
+ * the page (or the body of the tag can be used to compare it and so 
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.8 2003-11-19 16:57:41 michiel Exp $
+ * @version $Id: FunctionTag.java,v 1.9 2003-12-21 13:27:50 michiel Exp $
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 
     private static final Logger log = Logging.getLoggerInstance(FunctionTag.class);
 
-
     public int doStartTag() throws JspTagException {     
-        
         helper.setValue(getFunctionValue());
         return EVAL_BODY_BUFFERED;
     }
-
-
     public int doAfterBody() throws JspException {
         return helper.doAfterBody();
-    }
-       
+    }       
     public int doEndTag() throws JspTagException {
         return helper.doEndTag();
     }
