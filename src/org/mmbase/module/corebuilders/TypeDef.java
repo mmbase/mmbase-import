@@ -34,7 +34,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.45 2004-11-25 12:36:31 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.46 2004-11-25 12:58:53 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -664,7 +664,7 @@ public class TypeDef extends MMObjectBuilder {
         String pathInBuilderDir = mmb.getBuilderPath(node.getStringValue("name"), "");
         if (pathInBuilderDir != null) {
             // return the file path,..
-            String file = "builders/"  + pathInBuilderDir;
+            String file = pathInBuilderDir;
             if (log.isDebugEnabled()) {
                 log.debug("builder file:" + file);
             }
