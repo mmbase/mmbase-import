@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.10 2002-11-23 23:53:33 daniel Exp $
+ * @version $Id: BuilderWriter.java,v 1.11 2002-11-25 17:35:26 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -164,18 +164,19 @@ public class BuilderWriter extends DocumentWriter  {
                 parentField=parent.getField(fieldname);
             }
             // check guidata
-            Element guielm=null;
+            Element descelm=null;
             datamap=fielddef.getDescriptions();
             for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
                 Map.Entry em= (Map.Entry)i.next();
                 String language=(String)em.getKey();
                 String description=(String)em.getValue();
                 if ((parentField==null) || !(description.equals(parentField.getDescription(language)))) {
-                    if (guielm==null) guielm=document.createElement("descriptions");
-                    Element elm=addContentElement("description",description,guielm);
+                    if (descelm==null) descelm=document.createElement("descriptions");
+                    Element elm=addContentElement("description",description,descelm);
                     elm.setAttribute("xml:lang",language);
                 }
             }
+            Element guielm=null;
             datamap=fielddef.getGUINames();
             for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
                 Map.Entry em= (Map.Entry)i.next();
@@ -241,7 +242,6 @@ public class BuilderWriter extends DocumentWriter  {
                     addComment("builder.field.db.type",db);
                     Element dbtype=addContentElement("type",sType,db);
                     String sState = FieldDefs.getDBStateDescription(fielddef.getDBState());
-		    sState=sState.toLowerCase();
                     dbtype.setAttribute("state",sState);
                     int size=fielddef.getDBSize();
                     if (size>-1) {
