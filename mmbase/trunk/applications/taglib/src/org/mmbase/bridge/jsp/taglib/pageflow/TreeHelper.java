@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.6 2003-08-27 21:33:41 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.7 2004-01-20 10:07:12 johannes Exp $
  */
 
 public class TreeHelper {
@@ -64,70 +64,114 @@ public class TreeHelper {
      * @param session The session context can contain version information (used in getVerion).
      */
     protected String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
-        String nudePage = includePage;
-        if (nudePage.indexOf('?') != -1) {
-            nudePage = nudePage.substring(0, nudePage.indexOf('?'));
-        }
-        
-        // Create a list with object numbers (or aliases)
-        StringTokenizer st = new StringTokenizer(objectlist, ",");
-        int numberTokens = st.countTokens();
-        String objectNumbers[] = new String[numberTokens];
-        for (int i = 0; i < numberTokens; i++) {
-            objectNumbers[i] = "" + st.nextToken();
-        }
-        
-        // Try to find the best file (so starting with the best option)
-        for (int i = numberTokens; i >= 0; i--) {
-            String middle = "/";
-            for (int u = 0; u < numberTokens; u++) {
-                if(u < i) {
-                    String smartpath = getSmartPath(objectNumbers[u], middle, session);
-                    if (smartpath == null || smartpath.equals("")) {
-                        // If smartpath doesn't exist use object number
-                        middle += objectNumbers[u] + File.separator;
-                    } else {
-                        // The smartpath overrides all previous smartpaths
-                        middle = smartpath;
-                    }
-                } else {
-                    // Use the object type name
-                    middle += getBuilderName(objectNumbers[u]) + File.separator;
-                }
-            }
-            // make sure the middle url ends with a file separator or not
-            // double file separators, or none, leads to errors.
-            // I choice here to be sure the middle ends always with a file separator
-            // This means that the page attribute in the jsp page can cannot start with a file separator
-            if (!middle.endsWith(File.separator)) {
-                middle += File.separator;
-            }
-            
-            // Make sure that during concatenation of root+path, they are seperated with a File.seperator
-            String extraSep = "";
-            if (!htmlroot.endsWith(File.separator) && !middle.startsWith(File.separator) ) {
-                extraSep = File.separator;
+    	String lf = ""; 
+    	if ("".equals(objectlist)) {
+    		return encodedPath(includePage);
+    	}
+        lf = getLeafFile("/", objectlist, includePage, true, session);
+        log.debug("findLeafFile = [" + lf + "]");
+        return encodedPath(lf);
+	}
+
+    /**
+     * Return the path to the include file. This path will start with the given prefix, appended by data calculated using
+     * the objectlist. If mayStartpath is true, then smartpath() will be called on objects in the objectlist,
+     * otherwise only their buildernames will be used.
+     * @param includePage The page to include (relative path, may include URL parameters)
+     * @param objectlist The list of objectnumbers (comma-seperated) that is used to find the correct file to include
+     * @param session The session context can contain version information (used in getVerion).
+     * @param maySmartpath Boolean indicating whether or not getLeafFile may call a 'getSmartpath' on the given objects
+     * @param prefix The path that was already established by previous calls to getLeafFile, deeper in the recursion tree.
+     */
+    protected String getLeafFile(String prefix, String objectlist, String includePage, boolean maySmartpath, HttpSession session) throws JspTagException {
+        if (objectlist.equals("")) {
+            String nudePage = includePage;
+            if (nudePage.indexOf('?') != -1) {
+                nudePage = nudePage.substring(0, nudePage.indexOf('?'));
             }
 
-            // Check if the file exists
-            log.debug("Check file: " + htmlroot + extraSep + middle + nudePage);
-            if (new File(htmlroot + extraSep + middle + nudePage).exists()) {
-                // Make sure that the path is correctly encoded, if it contains spaces these must be
-                // changed into '%20' etc.
-                return encodedPath(middle + includePage); 
+            String filename = concatpath(prefix, nudePage);
+            log.debug("Check file: " + filename + " in root " + htmlroot);
+
+            if ((new File(concatpath(htmlroot, filename))).exists()) {
+                // make sure that the path we return starts with a 'file.separator'
+                return concatpath(prefix, includePage);
+            } else {
+                return null;
             }
+        }
+
+        int firstComma = objectlist.indexOf(',');
+        String firstObject = null;
+        String otherObjects = null;
+
+        if (firstComma > 0) {
+            firstObject = objectlist.substring(0, firstComma);
+            otherObjects = objectlist.substring(firstComma + 1, objectlist.length());
+            log.debug("Splitting '" + objectlist + "' into '" + firstObject + "' and '" + otherObjects + "'");
+        } else {
+            firstObject = objectlist;
+            otherObjects = "";
+            log.debug("Only one object left: '" + firstObject + "'");
+        }
+
+        String finalfile = null;
+
+        // It can be the case that the first object here is not a number,
+        // but a intermediate path. In that case we concatenate this intermediate
+        // path with the path we already have (prefix) and continue with the recursive
+        // loop
+        try {
+            cloud.getNode(firstObject);
+        } catch (org.mmbase.bridge.NotFoundException e) {
+            log.debug("'" + firstObject + "' is not an object; seeing it as a path)");
+            return getLeafFile (concatpath(prefix, firstObject), otherObjects, includePage, maySmartpath, session);
+        }
+
+        // Try to find the best file (so starting with the best option)
+        // We walk the first object in the objectlist, and evaluate its
+        // smartpath. We will append that to the prefix, and continue recursively.
+
+        if (maySmartpath) {
+            String newprefix = prefix;
+            String smartpath = getSmartPath(firstObject, newprefix, session);
+            log.debug("getSmartPath(" + firstObject + "," + newprefix + "," + session + ") = " + smartpath);
+            if (!(smartpath == null || smartpath.equals(""))) {
+                newprefix = smartpath;
+                finalfile = getLeafFile(newprefix, otherObjects, includePage, true, session);
+            }
+        }
+
+        // In case the recursive call failed, or the 'maySmartPath' was false,
+        // we create a list of buildernames for this object; the builder of the 
+        // object with the parents of that builder. We then recurse again for
+        // all these names, but we put the 'maySmartpath' to false for these
+        // recursive calls. 
+
+        if (finalfile == null || "".equals(finalfile)) {
+            NodeManager nm = cloud.getNode(firstObject).getNodeManager();
+            while (nm != null) {
+                finalfile = getLeafFile(concatpath(prefix, nm.getName()) + File.separator, otherObjects, includePage, false, session);
+                if (!(finalfile == null || "".equals(finalfile)))
+                    return finalfile;
+                try {
+                    nm = nm.getParent();
+                } catch (NotFoundException e) {
+                    nm = null;
+                }
+            }
+        } else {
+            return finalfile;
         }
         return null;
     }
-    
-    
-    
     
     /**
      * Method to find the file to 'TreeInclude' given a list of objectnumbers
      * @param includePage The page to include (relative path, may include URL parameters)
      * @param objectlist The list of objectnumbers (comma-seperated) that is used to find the correct file to include
      * @param session The session context can contain version information (used in getVerion).
+     * TODO: add support for 'intermediate paths' as LeafInclude has.
      */
     protected String findTreeFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
         if (cloud == null)
@@ -211,7 +255,7 @@ public class TreeHelper {
      * @return a versionnumber, or an empty string otherwise.
      */
     private String getVersion(String objectnumber, HttpSession session) throws JspTagException {
-        if(session==null) {
+        if (session == null) {
             // No session variable set
             return "";
         }
@@ -263,4 +307,25 @@ public class TreeHelper {
         return result;        
     }
 
+    /**
+     * Concatenate two paths; possibly adding or removing File.separator characters
+     * Return path1/path2
+     */
+    private String concatpath(String path1, String path2) {
+        if (path1 == null && path2 == null) {
+            return "";
+        } else if (path1 == null) {
+            return path2;
+        } else if (path2 == null) {
+            return path1;
+        }
+        if (path1.endsWith(File.separator) && path2.startsWith(File.separator)) {
+            // we remove the File.separator from the 2nd path element
+			return path1 + path2.substring(File.separator.length());
+        } else if (!path1.endsWith(File.separator) && !path2.startsWith(File.separator)) {
+            return path1 + File.separator + path2;
+        } else {
+            return path1 + path2;
+        }
+	}
 }
