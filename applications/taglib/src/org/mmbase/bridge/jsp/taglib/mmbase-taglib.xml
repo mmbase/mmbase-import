@@ -510,8 +510,11 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
     <attribute>
       <name>type</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <requirednote>
+        You cannot use 'orderby' or 'constraints' if you do not use 'type'.
+      </requirednote>
     </attribute>
     <attribute>
       <name>fields</name>
@@ -521,11 +524,17 @@ one or more examplevalue tags is you want to give some example values.
     <attribute>
       <name>constraints</name>
       <required>false</required>
+      <requirednote>
+        You also need to supply 'type'.
+      </requirednote>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>orderby</name>
       <required>false</required>
+      <requirednote>
+        You also need to supply 'type'.
+      </requirednote>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
@@ -1263,7 +1272,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>cancel</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CancelTag</tagclass>
-    <bodycontent>none</bodycontent>
+    <bodycontent>empty</bodycontent>
     <info>
       Can cancel a transaction with this.
     </info>
@@ -1277,7 +1286,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>commit</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CommitTag</tagclass>
-    <bodycontent>none</bodycontent>
+    <bodycontent>empty</bodycontent>
     <info>
       Can commit a transaction with this.
     </info>
@@ -1686,7 +1695,8 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 &lt;mm:import id="hoi"&gt;hello&lt;/mm:import&gt;</example>
 
 
-<example>&lt;!-- Create a variable `hoi'. The value will come from an external source, like the parameter list or the session (whereever it is availabe) --&gt;
+<example>&lt;!-- Create a variable `hoi'. The value will come from an external source,
+like the parameter list or the session (whereever it is availabe) --&gt;
 &lt;mm:import externid="hoi" /&gt;</example>
 
   </tag>
