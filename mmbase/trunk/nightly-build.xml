@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.14 2003-04-28 08:42:29 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.15 2003-04-29 18:46:49 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -208,12 +208,12 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   </target>
 
   <target name="run.tests" depends="cvs">
-    <ant antfile="${testsscript}" dir="${testsscript.dir}" target="run.all" />
+    <ant antfile="${testsscript}" dir="${testsscript.dir}" target="run.all" output="${build.dir}/tests-results.log" />
   </target>
   
   <!-- ================================================================================
   The default target is 'full': do a nightly build.
   -->  
-  <target name="full" depends="clean,storesource,storebuild,storejavadocs,storedistro">
+  <target name="full" depends="clean,storesource,storebuild,storejavadocs,storedistro,run.tests">
   </target>
 </project>
