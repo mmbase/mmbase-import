@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.2 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ResourceWatcher.java,v 1.3 2005-03-16 19:04:48 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -193,11 +193,11 @@ public abstract class ResourceWatcher implements MMBaseObserver {
      */
     public synchronized void add(String resourceName) {
         if (resourceName == null || resourceName.equals("")) {
-            log.warn("Cannot watch resource " + resourceName);
+            log.warn("Cannot watch resource '" + resourceName + "'");
             return;
         }
         resources.add(resourceName);
-        log.service("Started watching '" + resourceName + "' for resource loader " + resourceLoader);
+        log.service("Started watching '" + resourceName + "' for resource loader " + resourceLoader + "(now watching " + resources + ")");
         if (running) {
             createFileWatcher(resourceName);
             mapNodeNumber(resourceName);
