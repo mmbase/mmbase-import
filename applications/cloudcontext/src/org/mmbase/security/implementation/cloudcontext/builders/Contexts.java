@@ -30,13 +30,20 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.9 2003-08-05 21:26:33 michiel Exp $
+ * @version $Id: Contexts.java,v 1.10 2003-08-05 21:40:07 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class);
-    private boolean readAll = true;
+    /**
+     * @javadoc
+     */
+    static final String DEFAULT_CONTEXT = "admin";
+
+
+    static final int DEFAULT_MAX_CONTEXTS_IN_QUERY = 50;
+
 
     protected static Cache contextCache = new Cache(30) { // 30 'contexts' (organisations or so)
             public String getName()        { return "CCS:ContextCache"; }
@@ -51,19 +58,21 @@ public class Contexts extends MMObjectBuilder {
 
     protected static Map  invalidableObjects = new HashMap();
 
-    /**
-     * @javadoc
-     */
-    static final String DEFAULT_CONTEXT = "admin";
+    private boolean readAll = false;
+    private int     maxContextsInQuery = DEFAULT_MAX_CONTEXTS_IN_QUERY;
 
 
-    static final int MAX_CONTEXTS_IN_QUERY = 50;
     /**
      * @javadoc
      */
     public boolean init() {
         String s = (String) getInitParameters().get("readall");
         readAll = "true".equals(s);
+
+        s = (String) getInitParameters().get("maxcontextsinquery");
+        if (! "".equals(s) && s != null) {
+            maxContextsInQuery = Integer.parseInt(s);
+        }
 
         contextCache.putCache();
         allowingContextsCache.putCache();
@@ -289,7 +298,7 @@ public class Contexts extends MMObjectBuilder {
                 }
                 
                 List steps = query.getSteps();
-                if (steps.size() * ac.contexts.size() < MAX_CONTEXTS_IN_QUERY) { 
+                if (steps.size() * ac.contexts.size() < maxContextsInQuery) { 
                     Iterator i = steps.iterator();
                     Constraint constraint = null;
                     while (i.hasNext()) {
