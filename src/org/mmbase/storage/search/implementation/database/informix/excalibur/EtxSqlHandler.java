@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.search.implementation.database.vts;
+package org.mmbase.storage.search.implementation.database.informix.excalibur;
 
 import java.io.*;
 import java.util.*;
@@ -21,29 +21,29 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
- * The Vts query handler adds support for Verity Text Search constraints,
- * when used with an Informix database and a Verity Text Search datablade.
+ * The Etx query handler adds support for Excalibur Text Search constraints,
+ * when used with an Informix database and an Excalibur Text Search datablade.
  * This class is provided as a coding example of a ChainedSqlHandler.
  * <p>
- * On initialization, the handler reads a list of vts-indices from a 
+ * On initialization, the handler reads a list of etx-indices from a 
  * configuration file.
- * The configurationfile must be named <em>vtsindices.xml</em> and located
+ * This configurationfile must be named <em>etxindices.xml</em> and located
  * inside the <em>databases</em> configuration directory. 
  * It's dtd is located in the directory 
- * <code>org.mmbase.storage.search.implementation.database.vts.resources</code>
+ * <code>org.mmbase.storage.search.implementation.database.informix.excalibur.resources</code>
  * in the MMBase source tree and 
- * <a href="http://www.mmbase.org/dtd/vtsindices.dtd">here</a> online. 
+ * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online. 
  *
  * @author Rob van Maris
- * @version $Id: VtsSqlHandler.java,v 1.5 2003-03-10 11:51:03 pierre Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.1 2003-12-23 11:03:04 robmaris Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
-public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
+public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
     
     /** Logger instance. */
     private static Logger log
-    = Logging.getLoggerInstance(VtsSqlHandler.class.getName());
+    = Logging.getLoggerInstance(EtxSqlHandler.class.getName());
     
     /** 
      * The indexed fields, stored as {@link #BuilderField BuilderField}
@@ -51,8 +51,12 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
      */
     private Set indexedFields = new HashSet();
     
-    /** Creates a new instance of VtsQueryHandler */
-    public VtsSqlHandler(SqlHandler successor) throws IOException {
+    /** 
+     * Creates a new instance of EtxueryHandler.
+     *
+     * @param successor Successor in chain or responsibility.
+     */
+    public EtxSqlHandler(SqlHandler successor) throws IOException {
         super(successor);
         init();
     }
@@ -66,7 +70,7 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
 
         if (constraint instanceof StringSearchConstraint) {
             // TODO: test for support, else throw exception
-            // TODO: support maxNumber for query with vts constraint.
+            // TODO: support maxNumber for query with etx constraint.
             StringSearchConstraint stringSearchConstraint 
                 = (StringSearchConstraint) constraint;
             StepField field = stringSearchConstraint.getField();
@@ -77,19 +81,29 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
             if (overallInverse) {
                 sb.append("NOT ");
             }
-            sb.append("vts_contains(").
+            sb.append("etx_contains(").
             append(getAllowedValue(field.getStep().getAlias())).
             append(".").
             append(getAllowedValue(field.getFieldName())).
-            append(", ROW('");
+            append(", Row('");
 
+            Iterator iSearchTerms 
+                = stringSearchConstraint.getSearchTerms().iterator();
+            while (iSearchTerms.hasNext()) {
+                String searchTerm = (String) iSearchTerms.next();
+                sb.append(searchTerm);
+                if (iSearchTerms.hasNext()) {
+                    sb.append(" ");
+                }
+            }
+            sb.append("', '");
             switch (stringSearchConstraint.getSearchType()) {
                 case StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED:
-                    sb.append("<ACCRUE>(");
+                    sb.append("SEARCH_TYPE = WORD");
                     break;
                     
                 case StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED:
-                    sb.append("<MANY><PHRASE>(");
+                    sb.append("SEARCH_TYPE = PHRASE_EXACT");
                     break;
                     
                 case StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED:
@@ -101,27 +115,36 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
                         "Parameter PARAM_PROXIMITY_LIMIT not set " +
                         "while trying to perform proximity oriented search.");
                     }
-                    sb.append("<NEAR/").append(proximityLimit).append(">(");
+                    sb.append("SEARCH_TYPE = PROX_SEARCH(").append(proximityLimit).append(")");
                     break;
                     
                 default:
-                    throw new IllegalStateException("valid searchtype must be selected");
+                    throw new IllegalStateException("Invalid searchtype value: " 
+                        + stringSearchConstraint.getSearchType());
             }
             
-            int matchType = stringSearchConstraint.getMatchType();
-            Float fuzziness = 
-                (Float) parameters.get(StringSearchConstraint.PARAM_FUZZINESS);
-            Iterator iSearchTerms 
-                = stringSearchConstraint.getSearchTerms().iterator();
-            while (iSearchTerms.hasNext()) {
-                String searchTerm = (String) iSearchTerms.next();
-                appendSearchTerm(sb, searchTerm, matchType, fuzziness);
-                if (iSearchTerms.hasNext()) {
-                    sb.append(",");
-                }
+            switch(stringSearchConstraint.getMatchType()) {
+                case StringSearchConstraint.MATCH_TYPE_FUZZY:
+                    Float fuzziness =
+                        (Float) parameters.get(StringSearchConstraint.PARAM_FUZZINESS);
+                    int wordScore = Math.round(100 * fuzziness.floatValue());
+                    sb.append(" & PATTERN_ALL & WORD_SCORE = ").append(wordScore);
+                    break;
+                    
+                case StringSearchConstraint.MATCH_TYPE_LITERAL:
+                    break;
+                    
+                case StringSearchConstraint.MATCH_TYPE_SYNONYM:
+                    log.warn("Synonym matching not supported. Executing this query with literal matching instead: " + query);
+                    break;
+                    
+                default:
+                    throw new IllegalStateException("Invalid matchtype value: " 
+                        + stringSearchConstraint.getMatchType());
             }
-            sb.append(")', 'CUTOFFSCORE=00'))");
             
+            sb.append("'))");
+           
         } else {
             getSuccessor().appendConstraintToSql(sb, constraint, query,
             inverse, inComposite);
@@ -131,40 +154,46 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int support;
-        featureswitch:
-            switch (feature) {
-                case SearchQueryHandler.FEATURE_MAX_NUMBER:
-                    // optimal with VTS index on field, and constraint is
-                    // StringSearchConstraint, with no additonal constraints.
-                    Constraint constraint = query.getConstraint();
-                    if (constraint != null
-                    && constraint instanceof StringSearchConstraint
-                    && hasVtsIndex(((StringSearchConstraint) constraint).getField())
-                    && !hasAdditionalConstraints(query)) {
-                        support=SearchQueryHandler.SUPPORT_OPTIMAL;
-                    } else {
-                        support = getSuccessor().getSupportLevel(feature, query);
-                    }
-                    break;
-                default:
+        switch (feature) {
+            case SearchQueryHandler.FEATURE_MAX_NUMBER:
+                // optimal with etx index on field, and constraint is
+                // StringSearchConstraint, with no additonal constraints.
+                Constraint constraint = query.getConstraint();
+                if (constraint != null
+                        && constraint instanceof StringSearchConstraint
+                        && hasEtxIndex(((StringSearchConstraint) constraint).getField())
+                        && !hasAdditionalConstraints(query)) {
+                    support=SearchQueryHandler.SUPPORT_OPTIMAL;
+                } else {
                     support = getSuccessor().getSupportLevel(feature, query);
-            }
-            return support;
+                }
+                break;
+            default:
+                support = getSuccessor().getSupportLevel(feature, query);
+        }
+        return support;
     }
     
     // javadoc is inherited
-    public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException {
+    public int getSupportLevel(Constraint constraint, SearchQuery query) 
+    throws SearchQueryException {
         int support;
         
         if (constraint instanceof StringSearchConstraint
-        && hasVtsIndex(((StringSearchConstraint) constraint).getField())) {
-            // StringSearchConstraint on field with VTS index:
-            // - weak support if other stringsearch constraints are present
-            // - optimal support if no other stringsearch constraints are present
-            if (containsOtherStringSearchConstraints(query.getConstraint(),
-            (StringSearchConstraint) constraint)) {
+                && hasEtxIndex(((StringSearchConstraint) constraint).getField())) {
+            StringSearchConstraint stringSearchConstraint = 
+                (StringSearchConstraint) constraint;
+            // StringSearchConstraint on field with etx index:
+            // - none if matchtype = MATCH_TYPE_SYNONYM
+            // - otherwise: weak support if other stringsearch constraints are present
+            // - otherwise: optimal support
+            if (stringSearchConstraint.getMatchType() 
+                    == StringSearchConstraint.MATCH_TYPE_SYNONYM) {
+                support = SearchQueryHandler.SUPPORT_NONE;
+            } else if (containsOtherStringSearchConstraints(
+                    query.getConstraint(), stringSearchConstraint)) {
                 support = SearchQueryHandler.SUPPORT_WEAK;
-            } else {
+            } else  {
                 support = SearchQueryHandler.SUPPORT_OPTIMAL;
             }
         } else {
@@ -174,13 +203,13 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     }
     
     /**
-     * Tests if a Verity Text Search index has been made for this field.
+     * Tests if an Excelibur Text Search index has been made for this field.
      *
      * @param field the field.
-     * @return true if a Verity Text Search index has been made for this field,
+     * @return true if an Excelibur Text Search index has been made for this field,
      *         false otherwise.
      */
-    public boolean hasVtsIndex(StepField field) {
+    public boolean hasEtxIndex(StepField field) {
         boolean result = false;
         if (field.getType() == FieldDefs.TYPE_STRING
         || field.getType() == FieldDefs.TYPE_XML) {
@@ -191,7 +220,8 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     }
     
     /**
-     * Tests if the query contains additional constraints on relation or nodes.
+     * Tests if the query contains additional constraints, i.e. on relations
+     * or nodes.
      *
      * @param query the query.
      * @return true if the query containts additional constraints,
@@ -201,8 +231,7 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
         Iterator iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
             Step step = (Step) iSteps.next();
-            if (step instanceof RelationStep
-            || step.getNodes().size() > 0) {
+            if (step instanceof RelationStep || step.getNodes().size() > 0) {
                 // Additional constraints on relations or nodes.
                 return true;
             }
@@ -252,40 +281,40 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     }
     
     /** 
-     * Initializes the handler by reading the vtsindices configuration file
-     * to determine which fields have a vts index.
+     * Initializes the handler by reading the etxindices configuration file
+     * to determine which fields have a etx index.
      * <p>
-     * The configurationfile must be named <em>vtsindices.xml</em> and located
+     * The configurationfile must be named <em>etxindices.xml</em> and located
      * inside the <em>databases</em> configuration directory.
      * 
      * @throw IOException When a failure occurred while trying to read the 
      *        configuration file.
      */
     private void init() throws IOException {
-        File vtsConfigFile = new File(
-            MMBaseContext.getConfigPath() + "/databases/vtsindices.xml");
-        XmlVtsIndicesReader configReader = 
-            new XmlVtsIndicesReader(
+        File etxConfigFile = new File(
+            MMBaseContext.getConfigPath() + "/databases/etxindices.xml");
+        XmlEtxIndicesReader configReader = 
+            new XmlEtxIndicesReader(
                 new InputSource(
                     new BufferedReader(
-                        new FileReader(vtsConfigFile))));
+                        new FileReader(etxConfigFile))));
         
         Enumeration eSbspaces = configReader.getSbspaceElements();
         while (eSbspaces.hasMoreElements()) {
             Element sbspace = (Element) eSbspaces.nextElement();
-            Enumeration eVtsIndices = configReader.getVtsindexElements(sbspace);
-            while (eVtsIndices.hasMoreElements()) {
-                Element vtsIndex = (Element) eVtsIndices.nextElement();
-                String table = configReader.getVtsindexTable(vtsIndex);
-                String field = configReader.getVtsindexField(vtsIndex);
-                String index = configReader.getVtsindexValue(vtsIndex);
+            Enumeration eEtxIndices = configReader.getEtxindexElements(sbspace);
+            while (eEtxIndices.hasMoreElements()) {
+                Element etxIndex = (Element) eEtxIndices.nextElement();
+                String table = configReader.getEtxindexTable(etxIndex);
+                String field = configReader.getEtxindexField(etxIndex);
+                String index = configReader.getEtxindexValue(etxIndex);
                 try {
                     String builderField = toBuilderField(table, field);
                     indexedFields.add(builderField);
-                    log.service("Registered vts index \"" + index + 
+                    log.service("Registered etx index \"" + index + 
                     "\" for builderfield " + builderField);
                 } catch (IllegalArgumentException e) {
-                    log.error("Failed to register vts index \"" + 
+                    log.error("Failed to register etx index \"" + 
                     index + "\": " + e);
                 }
             }
@@ -302,6 +331,7 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     static String toBuilderField(String dbTable, String dbField) {
+        // package visibility!
         MMBase mmbase = MMBase.getMMBase();
         MMJdbc2NodeInterface database = mmbase.getDatabase();
         String tablePrefix = mmbase.getBaseName() + "_";
@@ -337,64 +367,6 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
         throw new IllegalArgumentException(
         "No field corresponding to database field \"" + dbField 
         + "\" found in builder \"" + builderName + "\".");
-    }
-    
-    /**
-     * Adds part to query representing one searchterm.
-     *
-     * @param sb The stringbuffer.
-     * @param searchTerm The searchterm.
-     * @param matchType The match type.
-     * @param fuzziness The value of the fuzziness parameter supplied with 
-     *        the string search constraint (may be null).
-     */
-    private void appendSearchTerm(StringBuffer sb, String searchTerm, 
-        int matchType, Float fuzziness) {
-            
-        // Replace wildcards
-        searchTerm = searchTerm.replace('%', '*');
-        searchTerm = searchTerm.replace('_', '?');
-        
-        switch (matchType) {
-            case StringSearchConstraint.MATCH_TYPE_FUZZY:
-                if (fuzziness == null) {
-                    throw new IllegalStateException(
-                    "Parameter PARAM_FUZZINESS not set " +
-                    "while trying to perform fuzzy matching.");
-                }
-                int margin = (int) (searchTerm.length()*fuzziness.floatValue());
-                if (margin > 0) {
-                    // typo, can not be combined with <MANY>
-                    sb.append("<TYPO/" + margin + ">").append(searchTerm);
-                } else if (searchTerm.indexOf('*') > -1 
-                || searchTerm.indexOf('?') > -1) {
-                    // wildcard
-                    sb.append("<MANY><WILDCARD>").append(searchTerm);
-                } else {
-                    // margin too small, literal
-                    sb.append("<MANY><WORD>").append(searchTerm);
-                }
-                break;
-                
-            case StringSearchConstraint.MATCH_TYPE_LITERAL:
-                if (searchTerm.indexOf('*') > -1 
-                || searchTerm.indexOf('?') > -1) {
-                    // wildcard
-                    sb.append("<MANY><WILDCARD>").append(searchTerm);
-                } else {
-                    sb.append("<MANY><WORD>").append(searchTerm);
-                }
-                break;
-                
-            case StringSearchConstraint.MATCH_TYPE_SYNONYM:
-                // niet te combineren met <MANY>
-                sb.append("<THESAURUS>").append(searchTerm);
-                break;
-                
-            default:
-                throw new IllegalStateException(
-                "valid matchtype must be selected");
-        }
     }
     
 }
