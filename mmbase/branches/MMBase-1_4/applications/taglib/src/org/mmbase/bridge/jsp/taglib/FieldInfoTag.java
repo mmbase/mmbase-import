@@ -287,13 +287,21 @@ public class FieldInfoTag extends NodeReferrerTag {
     private String useHtmlInput(Node node, Field field) throws JspTagException {       
         String fieldName  = field.getName();
         int type = field.getType(); // not to be confused with the attribute 'type' of this tag.
-        
-        log.debug("using html form input for field " + fieldName);
+        if (log.isDebugEnabled()) {
+            log.debug("using html form input for field " + fieldName + " of " + node.getNumber());
+        }
 
         switch(type) {
-        case Field.TYPE_BYTE:
-            node.setByteValue(fieldName, getContextTag().getBytes(prefix(fieldName)));
+        case Field.TYPE_BYTE: {
+            byte [] bytes  = getContextTag().getBytes(prefix(fieldName));
+            if (bytes.length > 0) {
+                log.debug("Setting bytes of");
+                node.setByteValue(fieldName, getContextTag().getBytes(prefix(fieldName)));
+            } else { // not changed
+                log.info("Not setting bytes");
+            }
             break;
+        }
         case Field.TYPE_INTEGER:             
             if (field.getGUIType().equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
