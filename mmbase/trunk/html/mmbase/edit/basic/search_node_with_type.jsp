@@ -70,7 +70,7 @@
   <mm:import id="where"><mm:context><mm:fieldlist id="search_form" nodetype="$node_type" type="search"><mm:fieldinfo type="usesearchinput"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:notpresent referid="notfirst"><mm:import id="notfirst">yes</mm:import></mm:notpresent><mm:write /></mm:isnotempty></mm:fieldinfo></mm:fieldlist><mm:write referid="minage_constraint"><mm:isnotempty><mm:present referid="notfirst"> AND <mm:import id="notfirst">yes</mm:import></mm:present><mm:write /></mm:isnotempty></mm:write><mm:write referid="maxage_constraint"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:write /></mm:isnotempty></mm:write></mm:context></mm:import>
     <!-- -everything on one line, to avoid pollution of $where with spaces.
          -context is used to avoid pollution of current context with used id's. --> 
-  <mm:log><mm:write referid="where" /></mm:log>
+  <mm:log>where: <mm:write referid="where" /></mm:log>
              
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
 
@@ -89,7 +89,7 @@
                 jspvar="sn"
                 constraints="$where">
   <tr>
-        <td class="listdata"><mm:field name="gui()" />&nbsp;</td>
+        <td class="listdata"><mm:nodeinfo type="gui" />&nbsp;</td>
   <mm:fieldlist type="list">
         <td class="listdata"><mm:fieldinfo type="guivalue" />&nbsp;</td>
    </mm:fieldlist>
