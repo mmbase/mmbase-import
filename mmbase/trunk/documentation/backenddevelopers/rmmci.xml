@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>Remote MMBase Cloud Interface</title>
 		<date>2001</date>
-		<edition>$Id: rmmci.xml,v 1.4 2003-01-14 13:54:53 kees Exp $</edition>
+		<edition>$Id: rmmci.xml,v 1.5 2003-01-20 09:15:09 kees Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kees</firstname>
@@ -31,27 +31,27 @@
 			<title>The current MMBase MMCI architecture</title>
 			<para>The MMCI interface provides access to the MMBase cloud. The MMCI interface is defined in the package org.mmbase.bridge. Examples of such definitions are the <ulink url="http://www.mmbase.org/api/1.5.1/org/mmbase/bridge/Cloud.html">org.mbase.bridge.Cloud</ulink> and the <ulink url="http://www.mmbase.org/api/1.5.1/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink> interface.  Depending on your configuration a security model is chosen. the MMCI implementation (LocalContext) interfaces with the core MMBase classes.</para>
 			<programlisting>
-	---------------------
-	|MMCI interface     |
-	---------------------
-					 | uses
-	---------------------
-	|MMCI implementation|
-	---------------------
-					 | uses
-	---------------------
-	|  security         |
-	---------------------
-					 | uses
-	---------------------
-	|MMbase cloud       |
-	---------------------
-					 | uses
-	---------------------
-	|database support   |
-	---------------------
-		|           |
-database    file system
+        ---------------------
+        |MMCI interface     |
+        ---------------------
+                | uses
+        ---------------------
+        |MMCI implementation|
+        ---------------------
+                | uses
+        ---------------------
+        |  security         |
+        ---------------------
+                | uses
+        ---------------------
+        |MMbase cloud       |
+        ---------------------
+                | uses
+        ---------------------
+        |database support   |
+        ---------------------
+            |          |
+         database    file system
 			</programlisting>
 			<para>RMMCI adds a network layer to the MMCI by reimplementing the MMCI and using the current MMCI implementation.</para>
 			</section>
@@ -120,23 +120,23 @@ public class RemoteCloud_Impl implements Cloud  {
 			<para>The last class implements the original interface and uses the RemoteInterface for network traffic. The RemoteCloud_Rmi should be compiled using the java rmic</para>
 			<para>The final picture looks like this:</para>
 			<programlisting>
-	org.mmbase.bridge.remote.implementation.RemoteCloud
-				|                  |
-				|                  | uses
-				|                 \ /
-				| implements       org.mmbase.bridge.remote.rmi.RemoteCloud_Stub
-				|                                 |
-				|                                 | implements
-			 \ /                               \ /
+        org.mmbase.bridge.remote.implementation.RemoteCloud
+                                |                  |
+                                |                  | uses
+                                |                 \ /
+                                | implements       org.mmbase.bridge.remote.rmi.RemoteCloud_Stub
+                                |                                 |
+                                |                                 | implements
+                         \ /                               \ /
 org.mmbase.bridge.Cloud &lt;--looks like-- org.mmbase.bridge.remote.RemoteCloud
-			 / \                               / \
-				|                                 | implements
-				|                                 |
-				| implements      org.mmbase.bridge.remote.rmi.RemoteClound_Skel
-				|                 |
-				|                 | uses
-				|                \ /
-	org.mmbase.bridge.implementation.BasicCloud
+                         / \                               / \
+                                |                                 | implements
+                                |                                 |
+                                | implements      org.mmbase.bridge.remote.rmi.RemoteClound_Skel
+                                |                 |
+                                |                 | uses
+                                |                \ /
+        org.mmbase.bridge.implementation.BasicCloud
 			</programlisting>
 			<para>We now have 2 implementation of the MMCI org.mmbase.bridge.implementation that uses MMBase core classes and org.mmbase.bridge.remote.implementation that uses the RMI classes and the org.mmbase.bridge.implementation classes.</para>
 		</section>
