@@ -21,7 +21,7 @@ import java.io.Writer;
  * @since MMBase-1.7
  */
 
-public class InverseCharTransformer extends AbstractCharTransformer implements CharTransformer {
+public class InverseCharTransformer implements CharTransformer {
 
     private CharTransformer ct;
 
@@ -35,13 +35,28 @@ public class InverseCharTransformer extends AbstractCharTransformer implements C
         ct = c;
     }
 
-    public Writer transformBack(Reader r, Writer w) {
-        return ct.transform(r, w);
+    public String transform(String s) {
+        return ct.transformBack(s);
+    }
+
+    public String transformBack(String s) {
+        return ct.transform(s);
+    }
+
+    public Writer transform(Reader r) {
+        return ct.transformBack(r);
+    }
+    public Writer transformBack(Reader r) {
+        return ct.transform(r);
     }
 
     public Writer transform(Reader r, Writer w) {
         return ct.transformBack(r, w);
     }
+    public Writer transformBack(Reader r, Writer w) {
+        return ct.transform(r, w);
+    }
+
 
     public String toString() {
         return "INVERSE "  + ct;

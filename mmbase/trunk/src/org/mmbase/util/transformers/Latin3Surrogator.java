@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
-public class Latin3Surrogator extends ConfigurableCharTransformer implements CharTransformer {
+public class Latin3Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(Latin3Surrogator.class.getName());
 
     // esperanto 

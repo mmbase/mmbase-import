@@ -15,10 +15,10 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.9 2003-05-08 14:12:43 kees Exp $
+ * @version $Id: XmlField.java,v 1.10 2003-05-10 22:23:52 michiel Exp $
  */
 
-public class XmlField extends ConfigurableCharTransformer implements CharTransformer {
+public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(XmlField.class.getName());
 
@@ -497,17 +497,6 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
             "mmxf_mmxf".toUpperCase(),
             new Config(XmlField.class, XML, "Only validates the XML with the DTD (when decoding)"));
         return h;
-    }
-
-    /**
-     * Takes an object, normally a string
-     */
-    public Writer transform(Reader r, Writer w) {
-        return transformUtil(r, w);
-    }
-
-    public Writer transformBack(Reader r, Writer w) {
-        return transformBackUtil(r, w);
     }
 
     public String transform(String data) {
