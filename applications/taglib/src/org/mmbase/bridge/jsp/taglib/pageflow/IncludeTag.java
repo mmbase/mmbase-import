@@ -51,8 +51,8 @@ public class IncludeTag extends UrlTag {
      * Opens an Http Connection, retrieves the page, and returns the result.
      **/
 
-    private void external(BodyContent bodyContent, String absoluteUrl, HttpServletRequest request) throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("Efound url: >" + absoluteUrl + "<");
+    private void external(BodyContent bodyContent, String absoluteUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
+        if (log.isDebugEnabled()) log.debug("External: found url: >" + absoluteUrl + "<");
         debugStart(absoluteUrl);     
         try {
             URL includeURL = new URL(absoluteUrl); 
@@ -75,20 +75,49 @@ public class IncludeTag extends UrlTag {
                 }
             }
             
-            BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream()));                
-            int buffersize=10240;
+
+
+            BufferedReader in;
+            String coding = connection.getContentEncoding();
+            // I don't understand really why this explicit treatment of the encoding is necessary,
+            // but anyhow it didn't work without this in sun jdk 1.3.1/orion 1.5.3
+            // it almost seems a hack like this.
+
+            if (log.isDebugEnabled()) log.debug("found content encoding " + coding);
+            if (coding == null) {
+                // default, steal from current response.
+                coding = response.getCharacterEncoding(); 
+            }
+            if (coding == null) { // stil null?
+                in = new BufferedReader(new InputStreamReader (connection.getInputStream()));
+            } else {
+                in = new BufferedReader(new InputStreamReader (connection.getInputStream(), coding));
+            }
+
+            int buffersize = 10240;
             char[] buffer = new char[buffersize];
             StringBuffer string = new StringBuffer();
-            int len=0;
-            while ((len = in.read(buffer,0,buffersize))!=-1) {
-                string.append(buffer,0,len);
-            }
+            int len;
+            while ((len = in.read(buffer, 0, buffersize)) != -1) {
+                string.append(buffer, 0, len);
+            }            
             bodyContent.print(string);
+            
+            if (log.isDebugEnabled()) log.debug("found string: " + bodyContent.getString());
             debugEnd(absoluteUrl);
+
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            
-        } 
-        
+        }         
+    }
+
+    /**
+     *
+     */
+    private void externalRelative(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
+        external(bodyContent,
+                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + relativeUrl, 
+                 request, response);
     }
 
     /**
@@ -98,6 +127,7 @@ public class IncludeTag extends UrlTag {
      */
     private void internal(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse resp) throws JspTagException {
         try {
+            if (log.isDebugEnabled()) log.debug("Internal: found url: >" + relativeUrl + "<");
             debugStart(relativeUrl);
             bodyContent.getEnclosingWriter().flush();
             ResponseWrapper response = new ResponseWrapper(resp);
@@ -143,15 +173,13 @@ public class IncludeTag extends UrlTag {
             }
 	    if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            //javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletRequest)pageContext.getResponse();
+            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
 
      
             if (nudeUrl.indexOf('/') == 0) { // absolute on servercontex
                 urlString = nudeUrl + params;
-                external(bodyContent,
-                         request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                         +  request.getContextPath() + urlString, request);
-                //internal(bodyContent, urlString, request, response);
+                //externalRelative(bodyContent, request.getContextPath() + urlString, request, response);
+                internal(bodyContent, urlString, request, response);
             } else if (nudeUrl.indexOf(':') == -1) { // relative
 		log.debug("URL was relative");
                 urlString =
@@ -168,14 +196,12 @@ public class IncludeTag extends UrlTag {
 		if (colIndex == -1) {
 		    urlString += params;
 		} else {
-		    urlString = urlString.substring(colIndex+1) + params;
+		    urlString = urlString.substring(colIndex + 1) + params;
 		}
-                external(bodyContent,
-                         request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
-                         urlString, request);
-                //internal(bodyContent, urlString, request, response);
+                //externalRelative(bodyContent, urlString, request, response);
+                internal(bodyContent, urlString, request, response);
             } else { // really absolute
-                external(bodyContent, gotUrl, null); // null: no need to give cookies to external url
+                external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
             }
                           
             if (getId() != null) {
@@ -212,7 +238,8 @@ public class IncludeTag extends UrlTag {
      */
 
     protected String getThisName() {
-        return this.getClass().getName();
+        String clazz = this.getClass().getName();
+        return clazz.substring(clazz.lastIndexOf(".") + 1);
     }
     
   
@@ -243,53 +270,59 @@ public class IncludeTag extends UrlTag {
             log.error(e.toString());
         }
     }
+
 }
 
 /**
- * These classes are used by the 'internal' function. It is still experimental, and not used now.
- * It will be switched on when it works satisfactory....
+ * These classes are used by the 'internal' function. It is still
+ * experiment, though it seems to work.
+ *
+ * Should perhaps be moved to an util dir. 
+ *
  */
 
 class StreamWrapper extends ServletOutputStream {
-     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
-
-     private java.io.CharArrayWriter buffer = null;
-     
-     protected StreamWrapper() {
-         // blablabal
-     }
-     
-     protected StreamWrapper(java.io.CharArrayWriter buffer) {
-         this.buffer = buffer;
-     }
-     
-     public void write(int i) {
-         log.debug("writeint" + i);
-         log.debug("writeint " + (char) i);
-         buffer.write(i);
-     }
-     public void write(char[] b) {
-         log.debug("writing ");
-         
-     }
-     public void write(String s) {
-         log.debug("writing " + s);
-         //buffer.write(s);
-     }
-     
-     public String toString() {
-         return buffer.toString();
-     }
+    private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
+    
+    private java.io.ByteArrayOutputStream buffer;
+    private String coding;
+    protected StreamWrapper(HttpServletResponse resp) {
+        coding = resp.getCharacterEncoding();
+        this.buffer = new java.io.ByteArrayOutputStream();
+    }
+    
+    public void write(int i) {
+        try {
+            buffer.write(i);
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+    }
+    
+    public String toString() {
+        try {
+            return new String(buffer.toByteArray(), coding);
+        } catch (Exception e) {
+            return e.toString();
+        }
+    }
+    java.io.PrintWriter getWriter() {
+        return new java.io.PrintWriter(buffer);
+    }
+    
  }
+
+/**
+ * Wrapper around the response. It collects the part which is written to it, so you can get it with 'toString'.
+ */
 
 class ResponseWrapper extends HttpServletResponseWrapper {
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName());
 
-    private java.io.CharArrayWriter buffer = new java.io.CharArrayWriter();
-    private StreamWrapper stream = new StreamWrapper(buffer);
-    
+    private StreamWrapper stream;
     public ResponseWrapper(HttpServletResponse resp) {
         super(resp);
+        stream = new StreamWrapper(resp);
         log.debug("getting " + resp.getCharacterEncoding());
     }
     
@@ -302,11 +335,13 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     
    
     public String toString() {
-        return stream.toString();
+        String test = stream.toString();
+        return test;
     }
     
-    public java.io.PrintWriter  getWriter() {
-        return new java.io.PrintWriter(buffer);
+    public java.io.PrintWriter getWriter() {
+        log.debug("Getting the writer");
+        return stream.getWriter();
     }
 
 }
