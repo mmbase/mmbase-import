@@ -38,7 +38,7 @@ public class DateSupport {
 		dooffset = true;
 		offset = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET))/ 1000;
 		offset = 0;
-		System.out.println("Using offset " + offset);
+		//System.out.println("Using offset " + offset);
 	}
 
 	/**
