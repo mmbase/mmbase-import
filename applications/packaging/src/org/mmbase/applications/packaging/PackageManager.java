@@ -230,6 +230,21 @@ public class PackageManager {
     }
 
 
+    public static boolean upgradeAvailable(PackageInterface p) {
+        try {
+            int newversion = Integer.parseInt(p.getVersion());
+            int oldversion = getInstalledVersion(p.getId());
+	    if (oldversion!=-1 && newversion > oldversion) {
+		return true;
+	    }
+        } catch(Exception e) {
+        	log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
+            return false;
+        }
+        return false;
+    }
+
+
 
     public static boolean updateRegistryInstalled(PackageInterface p) { 
         try {
