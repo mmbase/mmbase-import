@@ -52,25 +52,32 @@ public class TransactionHandler
 	
 	private MMBase mmbase;
 	private UserTransactionInfo user;
+	private TransactionManagerInterface transactionManager;
+	private TemporaryNodeManagerInterface tmpObjectManager;
 	
 	public TransactionHandler() {
 	}
 	
 	/**
-	 * Inits the module (startup final step 2).
-	 * This is called second on startup, the module is expected
-	 * to read the environment variables it needs. Startup threads,
-	 * open connections etc.
+	 * init
 	 */
 	public void init(){
 		if (_debug) debug(">> init TransactionHandler Module ", 0);
 		mmbase=(MMBase)getModule("MMBASEROOT");
+		transactionManager = new TransactionManager(mmbase);
+		tmpObjectManager = new TemporaryNodeManager(mmbase);
 	}
-	
+
+	/**	
+	 * onLoad
+	 */	
 	public void onload(){
 		if (_debug) debug(">> onload TransactionHandler Module ", 0);
 	}
 
+	/**
+	 * xmlHeader
+	 */
 	private final String xmlHeader =
 	"<?xml version='1.0'?> <!DOCTYPE TRANSACTION SYSTEM \"Transactions.dtd\">";
 	
@@ -85,34 +92,33 @@ public class TransactionHandler
 		
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(template));
-		// Resolve user.
+		// get handle to transactions of user
 		String user = session.getCookie();
 		UserTransactionInfo uti = userInfo(user); 
 		parse(null, is, uti);
 	}
 
-
+	/**
+	 * Begin parsing the document
+	 */	
 	private void parse(String xFile, InputSource iSource, UserTransactionInfo userTransactionInfo) {
-		
 		Document document;
 		Element docRootElement;
 		NodeList transactionContextList;
-		Node currentTransactionArgumentNode;
-		Node transactionContext;
-		Node currentObjectArgumentNode;
-		Node objectContext;
-		NodeList fieldContextList;
 		
 		DOMParser parser = new DOMParser();
 		
 		try {
-			if (xFile ==  null) {
-		   		if (_debug) debug("parsing input: " + iSource.toString(), 0);
-		   		parser.parse(iSource);
-		   	}
-			if (iSource ==  null) {
+			if (xFile !=  null) {
 		   		if (_debug) debug("parsing file: " + xFile, 0);
 		   		parser.parse(xFile);
+		   	} else {
+				if (iSource !=  null) {
+		   			if (_debug) debug("parsing input: " + iSource.toString(), 0);
+		   			parser.parse(iSource);
+				} else {
+		   			debug("No xFile and no iSource file received!", 0);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,115 +134,242 @@ public class TransactionHandler
 		
 			// do for all transaction contexts (create-, open-, commit- and deleteTransaction)
 			transactionContextList = docRootElement.getChildNodes();
-			for (int i = 0; i < transactionContextList.getLength(); i++) {
-				String id = null, commit = null, time = null;
-				//boolean noId = true;
-				currentTransactionArgumentNode = null;
-
-				transactionContext = transactionContextList.item(i);
-				String tName = transactionContext.getNodeName();
-				if (tName.equals("#text")) continue;
-			
-				//get attributes for transaction
-				NamedNodeMap nm = transactionContext.getAttributes();
-				if (nm != null) {
-					//id
-					currentTransactionArgumentNode = nm.getNamedItem("id");
-					if (currentTransactionArgumentNode != null) {
-						id = currentTransactionArgumentNode.getNodeValue();
-					}
-					if (id == null) {
-						//noId = true;
-						userTransactionInfo.anonymousTransaction = true;
-						id = uniqueId();
-					} else {
-						//noId = false;
-						userTransactionInfo.anonymousTransaction = false;
-					}
-					//commitOnClose
-					currentTransactionArgumentNode = nm.getNamedItem("commitOnClose");
-					if (currentTransactionArgumentNode != null) {
-						commit = currentTransactionArgumentNode.getNodeValue();
-					}
-					if (commit==null) commit="true";
-					//timeOut
-					currentTransactionArgumentNode = nm.getNamedItem("timeOut");
-					if (currentTransactionArgumentNode != null) {
-						time = currentTransactionArgumentNode.getNodeValue();
-					}
-					if (time==null) time="6";
-				}
-			initTransactionContext(tName, id, commit, time, userTransactionInfo);
-			
-			//do for all object contexts (create-, open-, get- and deleteObject)
-			NodeList objectContextList = transactionContext.getChildNodes();
-			for (int j = 0; j < objectContextList.getLength(); j++) {
-				String oId = null, oType = null, oMmbaseId = null;
-				//boolean noOId = true;
-				currentObjectArgumentNode = null;
-				
-				objectContext = objectContextList.item(j);
-				String oName = objectContext.getNodeName();
-
-				if (oName.equals("#text")) continue;
-				
-				//get attributes
-				NamedNodeMap nm2 = objectContext.getAttributes();
-				if (nm2 != null) {
-					//oId
-					currentObjectArgumentNode = nm2.getNamedItem("id");
-					if (currentObjectArgumentNode != null) oId = currentObjectArgumentNode.getNodeValue();
-					if (oId == null) {
-						//noOId = true;
-						oId = uniqueId();
-						userTransactionInfo.anonymousObject = true;
-					} else {
-						//noOId = false;
-						userTransactionInfo.anonymousObject = false;
-					}
-					//type
-					currentObjectArgumentNode = nm2.getNamedItem("type");
-					if (currentObjectArgumentNode != null) oType = currentObjectArgumentNode.getNodeValue();
-					//mmbaseId
-					currentObjectArgumentNode = nm2.getNamedItem("mmbaseId");
-					if (currentObjectArgumentNode != null) oMmbaseId = currentObjectArgumentNode.getNodeValue();
-				}
-				initObjectContext(oName, oId, oType, oMmbaseId, userTransactionInfo);
-				
-				//do for all field contexts (setField)
-				fieldContextList = objectContext.getChildNodes();
-				for (int k = 0; k < fieldContextList.getLength(); k++) {
-					String fieldName = null, fieldValue = "";
-					
-					Node fieldContext = fieldContextList.item(k);
-					if (fieldContext.getNodeName().equals("#text")) continue;
-					//get attributes
-					NamedNodeMap nm3 = fieldContext.getAttributes();
-					if (nm3 != null) {
-							currentObjectArgumentNode = nm3.getNamedItem("par");
-							if (currentObjectArgumentNode != null) {
-								fieldName = currentObjectArgumentNode.getNodeValue();
-							}
-							Node setFieldValue = fieldContext.getFirstChild();
-							if(setFieldValue!=null) {
-								fieldValue = setFieldValue.getNodeValue();
-							}
-							executeFieldContext(oId, fieldName, fieldValue, userTransactionInfo);
-					}
-				}
-				
-				exitObjectContext(oName, oId, oType, oMmbaseId, userTransactionInfo);
-			}
-			
-			exitTransactionContext(tName, id, commit, time, userTransactionInfo);
-		}
+			// evaluate all these transactions
+			evaluateTransactions(transactionContextList, userTransactionInfo);
 		
 		} catch (TransactionHandlerException t) {
-			System.out.println(t);
-			System.out.println("parsing stopped");
+			debug(""+t,0);
+			debug("parsing stopped",0);
 		}
-	if (_debug) debug("exiting parse method",0);
+		if (_debug) debug("exiting parse method",0);
 	}
+
+
+	private void evaluateTransactions(NodeList transactionContextList, UserTransactionInfo userTransactionInfo) 
+		throws TransactionHandlerException {
+		Node currentTransactionArgumentNode;
+		String currentTransactionContext;
+		boolean anonymousTransaction = true;
+		Node transactionContext;
+
+		for (int i = 0; i < transactionContextList.getLength(); i++) {
+			currentTransactionArgumentNode = null;
+			currentTransactionContext = null;
+			String id = null, commit = null, time = null;
+
+			transactionContext = transactionContextList.item(i);
+			String tName = transactionContext.getNodeName();
+			if (tName.equals("#text")) continue;
+			
+			//get attributes for transaction
+			NamedNodeMap nm = transactionContext.getAttributes();
+			if (nm != null) {
+				//id
+				currentTransactionArgumentNode = nm.getNamedItem("id");
+				if (currentTransactionArgumentNode != null) {
+					id = currentTransactionArgumentNode.getNodeValue();
+				}
+				//commitOnClose
+				currentTransactionArgumentNode = nm.getNamedItem("commitOnClose");
+				if (currentTransactionArgumentNode != null) {
+					commit = currentTransactionArgumentNode.getNodeValue();
+				}
+				//timeOut
+				currentTransactionArgumentNode = nm.getNamedItem("timeOut");
+				if (currentTransactionArgumentNode != null) {
+					time = currentTransactionArgumentNode.getNodeValue();
+				}
+			}
+			if (id == null) {
+				anonymousTransaction = true;
+				id = uniqueId();
+			} else {
+				anonymousTransaction = false;
+			}
+			if (commit==null) commit="true";
+			if (time==null) time="6";
+
+			if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
+		
+			// create transaction
+			if (tName.equals("createTransaction")) {
+				// Check if the transaction already exists.
+				if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
+					throw new TransactionHandlerException(tName + " transaction already exists id = " + id);
+				}
+				// actually create and administrate if not anonymous
+				currentTransactionContext = transactionManager.create(userTransactionInfo.user, id);
+				if (!anonymousTransaction) {
+					userTransactionInfo.knownTransactionContexts.put(id, currentTransactionContext);
+				}
+			} 
+			if (tName.equals("openTransaction")) { // no-op we only need currentTransactionContext
+			}
+			if (tName.equals("commitTransaction")) { //no-op, we do on exit
+			} 
+			if (tName.equals("deleteTransaction")) {
+				transactionManager.cancel(userTransactionInfo.user, id);
+				currentTransactionContext = null;
+				userTransactionInfo.knownTransactionContexts.remove(id);
+			} 
+
+
+			// DO OBJECTS
+			//do for all object contexts (create-, open-, get- and deleteObject)
+			NodeList objectContextList = transactionContext.getChildNodes();
+			// Evaluate all objects
+			evaluateObjects(objectContextList, userTransactionInfo, currentTransactionContext);
+
+
+			// ENDING TRANSACTION		
+			if (tName.equals("deleteTransaction")) {
+			} 
+			if (tName.equals("createTransaction") || tName.equals("openTransaction")) {
+				if(commit.equals("true")) {
+					transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
+				}
+			} 
+			if (tName.equals("commitTransaction")) {
+				transactionManager.commit(userTransactionInfo.user, currentTransactionContext);
+			} 
+			if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
+		}
+	}
+
+
+	private void evaluateObjects(NodeList objectContextList, UserTransactionInfo userTransactionInfo, String currentTransactionContext) 
+		throws TransactionHandlerException {
+		Node currentObjectArgumentNode = null; 
+		Node objectContext;
+		NodeList fieldContextList;
+		String currentObjectContext;
+		boolean anonymousObject = true;
+
+		for (int j = 0; j < objectContextList.getLength(); j++) {
+			String id = null, type = null, oMmbaseId = null;
+			currentObjectContext = null;
+			
+				
+			objectContext = objectContextList.item(j);
+			String oName = objectContext.getNodeName();
+
+			if (oName.equals("#text")) continue;
+				
+			//get attributes
+			NamedNodeMap nm2 = objectContext.getAttributes();
+			if (nm2 != null) {
+				currentObjectArgumentNode = nm2.getNamedItem("id");
+				if (currentObjectArgumentNode != null) id = currentObjectArgumentNode.getNodeValue();
+				//type
+				currentObjectArgumentNode = nm2.getNamedItem("type");
+				if (currentObjectArgumentNode != null) type = currentObjectArgumentNode.getNodeValue();
+				//mmbaseId
+				currentObjectArgumentNode = nm2.getNamedItem("mmbaseId");
+				if (currentObjectArgumentNode != null) oMmbaseId = currentObjectArgumentNode.getNodeValue();
+			}
+			if (id == null) {
+				id = uniqueId();
+				anonymousObject = true;
+			} else {
+				anonymousObject = false;
+			}
+
+			if (_debug) debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
+
+			// create object, if no Id create one, remember it's anonymous
+			if (oName.equals("createObject")) {
+				// check for existence
+				if (userTransactionInfo.knownObjectContexts.get(id) != null) {
+					throw new TransactionHandlerException(oName + " Object id already exists: " + id);
+				}
+				// actually create and administrate if not anonymous
+				currentObjectContext = tmpObjectManager.createTmpNode(type, userTransactionInfo.user.getName(), id);
+				if (!anonymousObject) {
+					userTransactionInfo.knownObjectContexts.put(id, currentObjectContext);
+				}
+				// add to tmp cloud
+				transactionManager.addNode(currentTransactionContext, currentObjectContext);
+			} 
+			if (oName.equals("getObject")) {
+				// check for existence
+				if (userTransactionInfo.knownObjectContexts.get(id) != null) {
+					throw new TransactionHandlerException(oName + " Object id already exists: " + id);
+				}
+				if (oMmbaseId == null) {
+					throw new TransactionHandlerException(oName + " no MMbase id: ");
+				}
+				// actually get and administrate if not anonymous
+				currentObjectContext = tmpObjectManager.getObject(oMmbaseId, userTransactionInfo.user.getName() + id);
+				//get Node succeed?
+				if (!anonymousObject)
+					userTransactionInfo.knownObjectContexts.put(id, currentObjectContext);
+				// add to tmp cloud
+				transactionManager.addNode(currentTransactionContext, currentObjectContext);
+			}
+			if (oName.equals("openObject")) {
+				// no-op we only need current object context
+			}
+			if (oName.equals("deleteObject")) {
+				//delete from temp cloud
+				transactionManager.removeNode(currentTransactionContext, currentObjectContext);
+				// destroy
+				tmpObjectManager.deleteTmpNode(currentObjectContext);
+				currentObjectContext = null;
+				userTransactionInfo.knownObjectContexts.remove(id);
+			}
+			
+
+			// DO FIELDS
+			//do for all field contexts (setField)
+			fieldContextList = objectContext.getChildNodes();
+			// Evaluate Fields
+			evaluateFields(fieldContextList, userTransactionInfo, id ,currentObjectContext);
+
+
+			if (oName.equals("deleteObject")) {
+			}
+			if (oName.equals("createObject")) {
+			}
+			if (oName.equals("openObject")) {
+			}
+			if (oName.equals("getObject")) {
+			} 
+			
+			if (_debug) debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
+		}
+	}
+
+	private void evaluateFields(NodeList fieldContextList, UserTransactionInfo userTransactionInfo, String oId, String currentObjectContext)
+		throws TransactionHandlerException {
+
+		for (int k = 0; k < fieldContextList.getLength(); k++) {
+			String fieldName = null;
+			String fieldValue = "";
+					
+			Node fieldContext = fieldContextList.item(k);
+			if (fieldContext.getNodeName().equals("#text")) continue;
+
+			//get attributes
+			NamedNodeMap nm3 = fieldContext.getAttributes();
+			if (nm3 != null) {
+				Node currentObjectArgumentNode = nm3.getNamedItem("par");
+				if (currentObjectArgumentNode != null) {
+					fieldName = currentObjectArgumentNode.getNodeValue();
+				}
+				Node setFieldValue = fieldContext.getFirstChild();
+				if(setFieldValue!=null) {
+					fieldValue = setFieldValue.getNodeValue();
+				}
+				if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3);
+		
+				//check that we are inside object context
+				if (currentObjectContext == null) throw
+					new TransactionHandlerException(oId + " set field " + fieldName + " to " + fieldValue);
+				tmpObjectManager.setObjectField(currentObjectContext, fieldName, fieldValue);
+			}
+		}
+	}
+
 	
 	private UserTransactionInfo userInfo(String user) {
 		if (!cashUser.containsKey(user)) {
@@ -244,8 +377,6 @@ public class TransactionHandler
 			// make acess to all variables indexed by user;
 			UserTransactionInfo uti = new UserTransactionInfo();
 			cashUser.put(user, uti);
-			uti.transactionManager = new TransactionManager(mmbase);
-			uti.tmpObjectManager = new TemporaryNodeManager(mmbase);
 			uti.user = new User(user);
 		} else {
 			if (_debug) debug("UserTransactionInfo already known for user "+user,0);
@@ -254,187 +385,6 @@ public class TransactionHandler
 	}
 		
 		
-	private void initTransactionContext(String tName, String id, String commit, String time, UserTransactionInfo userTransactionInfo)
-		throws TransactionHandlerException {
-			
-		if (_debug) debug("-> " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
-		
-		// create transaction
-		if (tName.equals("createTransaction")) {
-			// check for existence
-			if (userTransactionInfo.knownTransactionContexts.get(id) != null) {
-				throw new TransactionHandlerException(tName + " transaction id already exists: " + id);
-			}
-			// actually create and administrate if not anonymous
-			userTransactionInfo.currentTransactionContext =
-				userTransactionInfo.transactionManager.create(userTransactionInfo.user, id);
-			if (!userTransactionInfo.anonymousTransaction)
-				userTransactionInfo.knownTransactionContexts.put(id, userTransactionInfo.currentTransactionContext);
-			return;
-		} // end createTransaction
-		
-		// except for create (above), all (open commit, cancel) need existing id
-		if (id == null) throw 
-				new TransactionHandlerException("id is null for " + tName);
-		userTransactionInfo.currentTransactionContext = (String) userTransactionInfo.knownTransactionContexts.get(id);
-		if (userTransactionInfo.currentTransactionContext == null) throw 
-				new TransactionHandlerException(tName + "id is not known " + id);
-				
-		if (tName.equals("openTransaction")) {
-			// no-op we only need userTransactionInfo.currentTransactionContext
-		} // end openTransaction
-		
-		if (tName.equals("commitTransaction")) {
-			//no-op, we do on exit
-		} // end commitTransaction
-		
-		if (tName.equals("deleteTransaction")) {
-			userTransactionInfo.transactionManager.cancel(userTransactionInfo.user, id);
-			userTransactionInfo.currentTransactionContext = null;
-			userTransactionInfo.knownTransactionContexts.remove(id);
-		} // end deleteTransaction
-	} 
-	
-	private void initObjectContext(String oName, String id, String type, String oMmbaseId, UserTransactionInfo userTransactionInfo)
-		throws TransactionHandlerException {
-			
-		if (_debug) debug("-> " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
-		// check if we are inside transaction context, if not error
-		if (userTransactionInfo.currentTransactionContext == null) throw
-				new TransactionHandlerException(oName + " id " + id + " : not in tansaction context");
-		// create object, if no Id create one, remember it's anonymous
-		if (oName.equals("createObject")) {
-			// check for existence
-			if (userTransactionInfo.knownObjectContexts.get(id) != null) {
-				throw new TransactionHandlerException(oName + " Object id already exists: " + id);
-			}
-			// actually create and administrate if not anonymous
-
-			userTransactionInfo.currentObjectContext =
-				userTransactionInfo.tmpObjectManager.createTmpNode(type, userTransactionInfo.user.getName(), id);
-			if (!userTransactionInfo.anonymousObject)
-				userTransactionInfo.knownObjectContexts.put(id, userTransactionInfo.currentObjectContext);
-			// add to tmp cloud
-			userTransactionInfo.transactionManager.addNode(userTransactionInfo.currentTransactionContext, userTransactionInfo.currentObjectContext);
-			return;
-		} // end createObject
-		
-		if (oName.equals("getObject")) {
-			if (id == null) {
-				id = uniqueId();
-				userTransactionInfo.anonymousObject = true;
-			}
-			else {
-				userTransactionInfo.anonymousObject = false;
-			}
-			// check for existence
-			if (userTransactionInfo.knownObjectContexts.get(id) != null) {
-				throw new TransactionHandlerException(oName + " Object id already exists: " + id);
-			}
-			if (oMmbaseId == null) {
-				throw new TransactionHandlerException(oName + " no MMbase id: ");
-			}
-			// actually get and administrate if not anonymous
-			//MMObjectNode m  = userTransactionInfo.tmpObjectManager.getNode(oMmbaseId);
-			userTransactionInfo.currentObjectContext =
-				userTransactionInfo.tmpObjectManager.getObject(oMmbaseId, userTransactionInfo.user.getName() + id);
-			//get Node succeed?
-			if (userTransactionInfo.currentObjectContext==null) throw 
-				new TransactionHandlerException("could not get MMbase object id:  " + oMmbaseId);
-			if (!userTransactionInfo.anonymousObject)
-				userTransactionInfo.knownObjectContexts.put(id, userTransactionInfo.currentObjectContext);
-			// add to tmp cloud
-			userTransactionInfo.transactionManager.addNode(userTransactionInfo.currentTransactionContext, userTransactionInfo.currentObjectContext);
-			return;
-		} // end getObject
-		
-		// except for create, get (above), all (open, delete) need existing id
-		if (id == null) throw 
-				new TransactionHandlerException("id is null for " + oName);
-		userTransactionInfo.currentObjectContext = (String) userTransactionInfo.knownObjectContexts.get(id);
-		if (userTransactionInfo.currentObjectContext == null) throw 
-				new TransactionHandlerException(oName + "id is not known " + id);
-				
-		if (oName.equals("openObject")) {
-			// no-op we only need current object context
-		} // end openObject
-		
-		if (oName.equals("deleteObject")) {
-			//delete from temp cloud
-			userTransactionInfo.transactionManager.removeNode(userTransactionInfo.currentTransactionContext, userTransactionInfo.currentObjectContext);
-			// destroy
-			userTransactionInfo.tmpObjectManager.deleteTmpNode(userTransactionInfo.currentObjectContext);
-			userTransactionInfo.currentObjectContext = null;
-			userTransactionInfo.knownObjectContexts.remove(id);
-		} // end deleteObject
-		
-	}
-	
-	private void exitTransactionContext(String tName, String id, String commit, String time, UserTransactionInfo userTransactionInfo) 
-		throws TransactionHandlerException {
-			
-		if (tName.equals("deleteTransaction")) {
-			return;
-		} // end deleteTransaction
-
-		// we're supposed to have a 'userTransactionInfo.currentTransactionContext', so check
-		if (userTransactionInfo.currentTransactionContext == null) throw 
-				new TransactionHandlerException(tName + " no current transaction for " + id);
-			
-		if ((tName.equals("createTransaction")) || (tName.equals("openTransaction"))) {
-			if (commit.equals("true")) {
-				userTransactionInfo.transactionManager.commit(userTransactionInfo.user, userTransactionInfo.currentTransactionContext);
-			}
-		} // end createTransaction & openTransaction
-		
-		if (tName.equals("commitTransaction")) {
-				userTransactionInfo.transactionManager.commit(userTransactionInfo.user, userTransactionInfo.currentTransactionContext);
-		} // end commitTransaction
-		
-		
-		//out of context now
-		if (_debug) debug("<- " + tName + " id(" + id + ") commit(" + commit + ") time(" + time + ")", 1);
-		userTransactionInfo.currentTransactionContext = null;
- }
-	
-	private void exitObjectContext(String oName, String id, String type, String oMmbaseId, UserTransactionInfo userTransactionInfo) 
-		throws TransactionHandlerException {
-		
-		if (oName.equals("deleteObject")) {
-			return;
-		} // end deleteTransaction
-		
-		// we're supposed to have a 'userTransactionInfo.currentObjectContext' for the others, so check
-		if (userTransactionInfo.currentObjectContext == null) throw 
-				new TransactionHandlerException(oName + " no current object context for " + id);
-			
-		if (oName.equals("createObject")) {
-		} // end createObject
-		if (oName.equals("openObject")) {
-		} // end openObject
-		
-		if (oName.equals("getObject")) {
-		} // end getObject
-		
-		//out of context now
-		if (_debug) debug("<- " + oName + " id(" + id + ") type(" + type + ") oMmbaseId(" + oMmbaseId + ")", 2);
-		userTransactionInfo.currentObjectContext = null;
-
-	}
-	
-	private void executeFieldContext(String oId, String fieldName, String fieldValue, UserTransactionInfo userTransactionInfo) throws
-		TransactionHandlerException {
-
-		if (_debug) debug("-X Object " + oId + ": [" + fieldName + "] set to: " + fieldValue, 3);
-		
-		//check that we are inside object context
-		if (userTransactionInfo.currentObjectContext == null) throw
-				new TransactionHandlerException(oId + " set field " + fieldName + " to " + fieldValue);
-		
-		userTransactionInfo.tmpObjectManager.setObjectField(userTransactionInfo.currentObjectContext, fieldName, fieldValue);
-	}
-	
-
 	/**	
  	 * create unique number
 	 */
@@ -483,19 +433,11 @@ public class TransactionHandler
 	 * container class for info per user for thread safety
 	 */
 	class UserTransactionInfo {
-		// the Managers for this user
-		public TransactionManagerInterface transactionManager;
-		public TemporaryNodeManagerInterface tmpObjectManager;
-		
-		// parsing variables
-		public boolean anonymousTransaction = true;
-		public String currentTransactionContext = null;
-		public Hashtable knownTransactionContexts = new Hashtable();
-		
-		public boolean anonymousObject = true;
-		public String currentObjectContext = null;
-		public Hashtable knownObjectContexts = new Hashtable();
-
-		public User user = null;
+		// Handle to all (not timedout) transactions of a user
+		public Hashtable knownTransactionContexts = new Hashtable(); 
+		// All objects that have to remembered (this is going to change)
+		public Hashtable knownObjectContexts = new Hashtable();	
+		// The user
+		public User user = null;		// ID van gebruiker
 	}
 }
