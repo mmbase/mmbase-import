@@ -18,16 +18,16 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.7 2003-05-06 20:45:37 michiel Exp $
+ * @version $Id: Xml.java,v 1.8 2003-05-07 21:25:44 michiel Exp $
  */
 
-public class Xml extends AbstractTransformer implements CharTransformer {
+public class Xml extends ConfigurableCharTransformer implements CharTransformer {
 
-    private final static int ESCAPE           = 1;
-    private final static int ESCAPE_ATTRIBUTE = 2;
-    private final static int ESCAPE_ATTRIBUTE_DOUBLE = 3;
-    private final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
-    private final static int ESCAPE_ATTRIBUTE_HTML = 5;
+    public final static int ESCAPE           = 1;
+    public final static int ESCAPE_ATTRIBUTE = 2;
+    public final static int ESCAPE_ATTRIBUTE_DOUBLE = 3;
+    public final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
+    public final static int ESCAPE_ATTRIBUTE_HTML = 5;
 
     /**
      * Used when registering this class as a possible Transformer
@@ -178,12 +178,10 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         return sb.toString();
     }
 
-    public Writer transform(Reader r) {
-        throw new UnsupportedOperationException("transform(Reader) is not yet supported");
+    public Writer transform(Reader r, Writer w) {
+        return transformUtil(r, w);
     }
-    public Writer transformBack(Reader r) {
-        throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
-    }
+
 
     public String transform(String r) {
         switch(to){
@@ -192,7 +190,7 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         case ESCAPE_ATTRIBUTE_DOUBLE: return XMLAttributeEscape(r, '"');
         case ESCAPE_ATTRIBUTE_SINGLE: return XMLAttributeEscape(r, '\'');
         case ESCAPE_ATTRIBUTE_HTML: return removeNewlines(XMLAttributeEscape(r));
-        default: throw new UnsupportedOperationException("Cannot transform");
+        default: throw new UnknownCodingException(getClass(), "transform", to);
         }
     }
     public String transformBack(String r) {
@@ -205,7 +203,7 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         case ESCAPE_ATTRIBUTE_HTML:
             // we can only try, the removing of newlines cannot be undone.
             return XMLUnescape(r);
-        default: throw new UnsupportedOperationException("Cannot transform");
+        default: throw new UnknownCodingException(getClass(), "transformBack",  to);
         }
     }
     public String getEncoding() {
@@ -215,11 +213,7 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         case ESCAPE_ATTRIBUTE_DOUBLE:   return "ESCAPE_XML_ATTRIBUTE_DOUBLE";
         case ESCAPE_ATTRIBUTE_SINGLE:   return "ESCAPE_XML_ATTRIBUTE_SINGLE";
         case ESCAPE_ATTRIBUTE_HTML:     return "ESCAPE_HTML_ATTRIBUTE";
-        default: throw new UnsupportedOperationException("unknown encoding");
+        default: throw new UnknownCodingException(getClass(), "getEncoding",  to);
         }
-    }
-
-    public String toString() {
-        return getEncoding();
     }
 }
