@@ -6,7 +6,7 @@
     <articleinfo>
     <title>MMBase Configuration documentation</title>
     <date>4 december 2002</date>
-    <edition>$Id: configuration.xml,v 1.16 2003-02-26 18:34:08 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.17 2003-03-11 17:01:21 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -398,13 +398,16 @@
   <section id="databases">
     <title>Databases</title>
     <para>
-      In the databases subdirectory of the configuration you find the xml's describing the supported
-      databases. In an actual installation, all but one can be removed. It must correspond to the
-      `database' property in config/modules/mmbaseroot.xml, if this
-      property is present. You can also remove the database property from
-      mmbaseroot.xml, then the 'lookup.xml' file will be used to
-      determin the right database configuration XML (so perhaps it is
-     better te leave them) using the available driver.
+      In the databases subdirectory of the configuration you find the
+      xml's describing the supported databases. In an actual
+      installation, all but one can be removed. It must correspond to
+      the `database' property in config/modules/mmbaseroot.xml, if
+      this property is present. You can also remove the database
+      property from mmbaseroot.xml (I would advice that, because then
+      all database configuration is in jdbc.xml), then the
+      'lookup.xml' file will be used to determin the right database
+      configuration XML (so perhaps it is better te leave them) using
+      the available driver.
     </para>
     <para>
       It is important to make the right driver available, anyhow. This is
@@ -451,11 +454,11 @@
   <classfile>org.mmbase.module.database.JDBC</classfile>
   <properties>  
     <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
-    <property name="driver">org.gjt.mm.mysql.Driver</property>
-    <property name="url">jdbc:mysql://localhost/$DBM?user=mmbase&amp;password=abcdef</property>
-    <property name="user">url</property>
-    <property name="password">url</property>
-    <property name="database">bbol2_db</property>
+    <property name="driver">com.mysql.jdbc.Driver</property>
+    <propertyn ame="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
+    <property name="user">mmbase</property>
+    <property name="password">mypassword</property>
+    <property name="database">mmbase_db</property>
     <property name="host">localhost</property>
     <property name="port">3306</property>
     <property name="connections">20</property> <!-- size of connection pool -->
