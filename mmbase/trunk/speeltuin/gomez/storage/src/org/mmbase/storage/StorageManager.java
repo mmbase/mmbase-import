@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.7 2003-07-31 07:49:53 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.8 2003-07-31 09:53:36 pierre Exp $
  */
 public interface StorageManager {
 
@@ -131,11 +131,10 @@ public interface StorageManager {
 
     /**
      * Create a storage element to store the specified builder's objects.
-     * @param builder the builder to create the storage for
-     * @return <code>true</code> if the storage was succesfully created
-     * @throws StorageException if an error occurred during the creation fo the table
+     * @param builder the builder to create the storage element for
+     * @throws StorageException if an error occurred during the creation of the storage element
      */
-    public boolean create(MMObjectBuilder builder) throws StorageException;
+    public void create(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Create the basic elements for this storage
