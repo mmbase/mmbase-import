@@ -9,12 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
+import org.mmbase.applications.dove.Dove;
+
 /**
  * EditWizard
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetNew.java,v 1.5 2003-03-04 13:27:09 nico Exp $
+ * @version $Id: ConnectorCommandGetNew.java,v 1.6 2003-06-13 13:30:36 pierre Exp $
  */
 
 public class ConnectorCommandGetNew extends ConnectorCommand {
@@ -23,7 +25,7 @@ public class ConnectorCommandGetNew extends ConnectorCommand {
      * @javadoc
      */
      public ConnectorCommandGetNew(String objecttype) throws WizardException {
-         super("getnew");
-         addCommandAttr("type", objecttype);
+         super(Dove.GETNEW);
+         addCommandAttr(Dove.ELM_TYPE, objecttype);
      }
 }

@@ -9,12 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
+import org.mmbase.applications.dove.Dove;
+
 /**
  * EditWizard
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetConstraints.java,v 1.5 2003-03-04 13:27:08 nico Exp $
+ * @version $Id: ConnectorCommandGetConstraints.java,v 1.6 2003-06-13 13:30:36 pierre Exp $
  */
 
 public class ConnectorCommandGetConstraints extends ConnectorCommand {
@@ -23,8 +25,8 @@ public class ConnectorCommandGetConstraints extends ConnectorCommand {
      * @javadoc
      */
     public ConnectorCommandGetConstraints(String objecttype) throws WizardException {
-        super("getconstraints");
-        addCommandAttr("type",objecttype);
+        super(Dove.GETCONSTRAINTS);
+        addCommandAttr(Dove.ELM_TYPE,objecttype);
     }
 
 

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
+import org.mmbase.applications.dove.Dove;
 import org.w3c.dom.*;
 
 /**
@@ -16,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetList.java,v 1.5 2003-03-04 13:27:08 nico Exp $
+ * @version $Id: ConnectorCommandGetList.java,v 1.6 2003-06-13 13:30:36 pierre Exp $
  */
 
 public class ConnectorCommandGetList extends ConnectorCommand {
@@ -25,7 +26,7 @@ public class ConnectorCommandGetList extends ConnectorCommand {
      * @javadoc
      */
     public ConnectorCommandGetList(Node query) throws WizardException {
-        super("getlist");
+        super(Dove.GETLIST);
         addQuery(query);
     }
 
