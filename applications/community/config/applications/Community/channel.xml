@@ -13,6 +13,7 @@
 		<intro></intro>
 	</node>
 
+<!--
 	<node number="574" owner="admin" alias="Chat">
 		<maxusers>-1</maxusers>
 		<state>0</state>
@@ -24,5 +25,6 @@
 		<subtitle></subtitle>
 		<intro></intro>
 	</node>
+-->
 
 </channel>
