@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.73 2003-04-02 11:33:16 michiel Exp $
+ * @version $Id: Images.java,v 1.74 2003-05-04 11:48:02 kees Exp $
  */
 public class Images extends AbstractImages {
 
@@ -74,10 +74,10 @@ public class Images extends AbstractImages {
         String tmp;
         int itmp;
         String imageConvertClass  = DEFAULT_IMAGECONVERTCLASS.getName();
-        tmp = getInitParameter("imageConvertClass");
+        tmp = getInitParameter("ImageConvertClass");
         if (tmp != null) imageConvertClass = tmp;
         getimageConvertParams(getInitParameters());
-        tmp = getInitParameter("maxConcurrentRequests");
+        tmp = getInitParameter("MaxConcurrentRequests");
         if (tmp!=null) {
             try {
                 itmp=Integer.parseInt(tmp);
