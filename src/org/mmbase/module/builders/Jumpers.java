@@ -210,34 +210,37 @@ public class Jumpers extends MMObjectBuilder {
 
     /**
      * Handles changes made to a node by a remote server.
+	 * @param machine Name of the machine that changed the node.
      * @param number the number of the node that was added, removed, or changed.
      * @param builder the name of the builder of the changed node (should be 'jumpers')
      * @param ctype the type of change
      */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-        super.nodeRemoteChanged(number,builder,ctype);
-        return nodeChanged(number,builder,ctype);
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine,number,builder,ctype);
+        return nodeChanged(machine,number,builder,ctype);
     }
 
     /**
      * Handles changes made to a node by this server.
+	 * @param machine Name of the machine that changed the node.
      * @param number the number of the node that was added, removed, or changed.
      * @param builder the name of the builder of the changed node (should be 'jumpers')
      * @param ctype the type of change
      */
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
-        return nodeChanged(number,builder,ctype);
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine,number,builder,ctype);
+        return nodeChanged(machine,number,builder,ctype);
     }
 
     /**
      * Clears the jump cache if a jumper was added, removed, or changed.
+	 * @param machine Name of the machine that changed the node.
      * @param number the number of the node that was added, removed, or changed.
      * @param builder the name of the builder of the changed node (should be 'jumpers')
      * @param ctype the type of change
      */
-    public boolean nodeChanged(String number,String builder,String ctype) {
-        log.debug("Jumpers="+builder+" no="+number+" "+ctype);
+    public boolean nodeChanged(String machine,String number,String builder,String ctype) {
+        log.debug("Jumpers="+machine+" " +builder+" no="+number+" "+ctype);
         jumpCache.clear();
         return true;
     }

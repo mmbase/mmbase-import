@@ -112,8 +112,8 @@ public class Netfiles extends MMObjectBuilder {
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
      */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-        super.nodeRemoteChanged(number,builder,ctype);
+    public boolean nodeRemoteChanged(String machine, String number,String builder,String ctype) {
+        super.nodeRemoteChanged(machine, number,builder,ctype);
         // vpro-thingy, has to go
         if (mmb.getMachineName().equals("twohigh")) {
             log.debug("Change : "+number+" "+builder+" "+ctype);
@@ -138,8 +138,8 @@ public class Netfiles extends MMObjectBuilder {
      * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
      * @return <code>true</code> if maintenance was performed, <code>false</code> (the default) otherwise
      */
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
+    public boolean nodeLocalChanged(String machine, String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine, number,builder,ctype);
         // vpro-thingy, has to go
         if (mmb.getMachineName().equals("twohigh")) {
             log.debug("Change : "+number+" "+builder+" "+ctype);

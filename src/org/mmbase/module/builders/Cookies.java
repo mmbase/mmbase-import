@@ -98,8 +98,8 @@ public class Cookies extends MMObjectBuilder {
 	* cookie nodes has changed, update the different caches
 	* in cookies,users,people and even sessions
 	*/
-	public boolean nodeChanged(String number,String builder,String ctype) {
-		// System.out.println("NUMBER="+number+" BUILDER="+builder+" TYPE="+ctype);
+	public boolean nodeChanged(String machine,String number,String builder,String ctype) {
+		// System.out.println("MACHINE="+machine+" NUMBER="+number+" BUILDER="+builder+" TYPE="+ctype);
 
 		// its a new cookie lets put it in the cache
 		if (ctype.equals("n")) {
@@ -127,9 +127,9 @@ public class Cookies extends MMObjectBuilder {
 	/**
 	* local change on a cookie object detected
 	*/
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
 	/**

@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.3  2001/04/10 12:20:38  michiel
+michiel: new logging system.
+
 Revision 1.2  2001/02/01 16:05:12  vpro
 Davzev: Added removeRaws to automatically delete rawaudio/videos when audio/videoparts are deleted, implemented through nodeLocalChanged signals
 
@@ -16,7 +19,7 @@ Revision 1.1  2000/12/14 16:19:22  vpro
 davzev: Created MediaParts builder (no table version yet, only java), AudioParts and VideoParts now extend MediaParts.
 
 
-$Id: MediaParts.java,v 1.3 2001-04-10 12:20:38 michiel Exp $
+$Id: MediaParts.java,v 1.4 2001-05-04 16:19:43 vpro Exp $
 */
 package org.mmbase.module.builders;
 
@@ -56,7 +59,7 @@ import org.mmbase.module.builders.*;
  * immediately.
  * 
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.3 2001-04-10 12:20:38 michiel Exp $
+ * @version $Id: MediaParts.java,v 1.4 2001-05-04 16:19:43 vpro Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
 
@@ -84,15 +87,16 @@ public abstract class MediaParts extends MMObjectBuilder {
 		
 	/**
     * Called when a node was changed on a local server.
+	* @param machine Name of the node that was changed.
     * @param number the object number of the node that was changed.
     * @param builder the buildername of the object that was changed
     * @param ctype the node changed type
     * @return true, always
     */
-    public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        super.nodeLocalChanged(machine,number,builder,ctype);
 		if (log.isDebugEnabled()) {
-            log.debug("nodeLocalChanged(" + number + "," + builder + "," + ctype + ") ctype:" + ctype);	
+            log.debug("nodeLocalChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);	
         }
 		if (ctype.equals("c"))
 			removeFromUrlCache(number);
@@ -112,15 +116,16 @@ public abstract class MediaParts extends MMObjectBuilder {
 
 	/**
     * Called when a node was changed by a remote server.
+	* @param machine Name of the node that was changed.
     * @param number the object number of the node that was changed.
     * @param builder the buildername of the object that was changed
     * @param ctype the node changed type
     * @return true, always
     */
-    public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		super.nodeRemoteChanged(number,builder,ctype);
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
 		if (log.isDebugEnabled()) {
-            log.debug("nodeRemoteChanged(" + number + "," + builder + "," + ctype + ") ctype:" + ctype);	
+            log.debug("nodeRemoteChanged("+machine+","+number + "," + builder + "," + ctype + ") ctype:" + ctype);	
         }
 		if (ctype.equals("c"))
 			removeFromUrlCache(number);
