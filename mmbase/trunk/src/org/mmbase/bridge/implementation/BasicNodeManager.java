@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.68 2003-11-10 18:22:24 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.69 2003-11-20 16:22:00 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -205,25 +205,37 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public String getGUIName() {
-        return getGUIName(1);
+        return getGUIName(NodeManager.GUI_SINGULAR);
     }
 
     public String getGUIName(int plurality) {
+        return getGUIName(plurality, null);
+    }
+
+    public String getGUIName(int plurality, Locale locale) {
+        if (locale==null) locale = cloud.getLocale();
         if (builder!=null) {
-            if (plurality==1) {
-                return builder.getSingularName(cloud.getLocale().getLanguage());
+            if (plurality == NodeManager.GUI_SINGULAR) {
+                return builder.getSingularName(locale.getLanguage());
             } else {
-                return builder.getPluralName(cloud.getLocale().getLanguage());
+                return builder.getPluralName(locale.getLanguage());
             }
+        } else {
+            return getName();
         }
-        return getName();
     }
 
     public String getDescription() {
+        return getDescription(null);
+    }
+
+    public String getDescription(Locale locale) {
+        if (locale==null) locale = cloud.getLocale();
         if (builder!=null) {
-            return builder.getDescription(cloud.getLocale().getLanguage());
+            return builder.getDescription(locale.getLanguage());
+        } else {
+            return "";
         }
-        return "";
     }
 
     public FieldList getFields() {
