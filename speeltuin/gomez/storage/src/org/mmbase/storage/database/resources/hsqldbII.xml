@@ -62,6 +62,7 @@
     <disallowed-field name="column" replacement="m_column"/>
     <disallowed-field name="order" replacement="m_order"/>
     <disallowed-field name="references" replacement="m_references"/>
+    <disallowed-field name="max" replacement="m_max"/>
 	</disallowed-fields>
 
 </storage>

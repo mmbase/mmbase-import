@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.14 2003-08-19 10:32:42 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.15 2003-08-19 14:18:31 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -50,20 +50,20 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
     // standard sql reserved words
     private final static String STANDARD_SQL_KEYWORDS =
-      "ABSOLUTE,ACTION,ADD,ALL,ALLOCATE,ALTER,AND,ANY,ARE,AS,ASC,ASSERTION,AT,AUTHORIZATION,AVG,BEGIN,BETWEEN,BIT,BIT_LENGTH,"+
-      "BOTH,BY,CASCADE,CASCADED,CASE,CAST,CATALOG,CHAR,CHARACTER,CHAR_LENGTH,CHARACTER_LENGTH,CHECK,CLOSE,COALESCE,COLLATE,COLLATION,"+
-      "COLUMN,COMMIT,CONNECT,CONNECTION,CONSTRAINT,CONSTRAINTS,CONTINUE,CONVERT,CORRESPONDING,COUNT,CREATE,CROSS,CURRENT,CURRENT_DATE,"+
-      "CURRENT_TIME,CURRENT_TIMESTAMP,CURRENT_USER,CURSOR,DATE,DAY,DEALLOCATE,DEC,DECIMAL,DECLARE,DEFAULT,DEFERRABLE,DEFERRED,DELETE,"+
-      "DESC,DESCRIBE,DESCRIPTOR,DIAGNOSTICS,DISCONNECT,DISTINCT,DOMAIN,DOUBLE,DROP,ELSE,END,END-EXEC,ESCAPE,EXCEPT,EXCEPTION,EXEC,"+
-      "EXECUTE,EXISTS,EXTERNAL,EXTRACT,FALSE,FETCH,FIRST,FLOAT,FOR,FOREIGN,FOUND,FROM,FULL,GET,GLOBAL,GO,GOTO,GRANT,GROUP,HAVING,HOUR,"+
-      "IDENTITY,IMMEDIATE,IN,INDICATOR,INITIALLY,INNER,INPUT,INSENSITIVE,INSERT,INT,INTEGER,INTERSECT,INTERVAL,INTO,IS,ISOLATION,JOIN,"+
-      "KEY,LANGUAGE,LAST,LEADING,LEFT,LEVEL,LIKE,LOCAL,LOWER,MATCH,MAX,MIN,MINUTE,MODULE,MONTH,NAMES,NATIONAL,NATURAL,NCHAR,NEXT,NO,"+
-      "NOT,NULL,NULLIF,NUMERIC,OCTET_LENGTH,OF,ON,ONLY,OPEN,OPTION,OR,ORDER,OUTER,OUTPUT,OVERLAPS,PAD,PARTIAL,POSITION,PRECISION,"+
-      "PREPARE,PRESERVE,PRIMARY,PRIOR,PRIVILEGES,PROCEDURE,PUBLIC,READ,REAL,REFERENCES,RELATIVE,RESTRICT,REVOKE,RIGHT,ROLLBACK,ROWS,"+
-      "SCHEMA,SCROLL,SECOND,SECTION,SELECT,SESSION,SESSION_USER,SET,SIZE,SMALLINT,SOME,SPACE,SQL,SQLCODE,SQLERROR,SQLSTATE,SUBSTRING,"+
-      "SUM,SYSTEM_USER,TABLE,TEMPORARY,THEN,TIME,TIMESTAMP,TIMEZONE_HOUR,TIMEZONE_MINUTE,TO,TRAILING,TRANSACTION,TRANSLATE,TRANSLATION,"+
-      "TRIM,TRUE,UNION,UNIQUE,UNKNOWN,UPDATE,UPPER,USAGE,USER,USING,VALUE,VALUES,VARCHAR,VARYING,VIEW,WHEN,WHENEVER,WHERE,WITH,WORK,"+
-      "WRITE,YEAR,ZONE";
+      "absolute,action,add,all,allocate,alter,and,any,are,as,asc,assertion,at,authorization,avg,begin,between,bit,bit_length,"+
+      "both,by,cascade,cascaded,case,cast,catalog,char,character,char_length,character_length,check,close,coalesce,collate,collation,"+
+      "column,commit,connect,connection,constraint,constraints,continue,convert,corresponding,count,create,cross,current,current_date,"+
+      "current_time,current_timestamp,current_user,cursor,date,day,deallocate,dec,decimal,declare,default,deferrable,deferred,delete,"+
+      "desc,describe,descriptor,diagnostics,disconnect,distinct,domain,double,drop,else,end,end-exec,escape,except,exception,exec,"+
+      "execute,exists,external,extract,false,fetch,first,float,for,foreign,found,from,full,get,global,go,goto,grant,group,having,hour,"+
+      "identity,immediate,in,indicator,initially,inner,input,insensitive,insert,int,integer,intersect,interval,into,is,isolation,join,"+
+      "key,language,last,leading,left,level,like,local,lower,match,max,min,minute,module,month,names,national,natural,nchar,next,no,"+
+      "not,null,nullif,numeric,octet_length,of,on,only,open,option,or,order,outer,output,overlaps,pad,partial,position,precision,"+
+      "prepare,preserve,primary,prior,privileges,procedure,public,read,real,references,relative,restrict,revoke,right,rollback,rows,"+
+      "schema,scroll,second,section,select,session,session_user,set,size,smallint,some,space,sql,sqlcode,sqlerror,sqlstate,substring,"+
+      "sum,system_user,table,temporary,then,time,timestamp,timezone_hour,timezone_minute,to,trailing,transaction,translate,translation,"+
+      "trim,true,union,unique,unknown,update,upper,usage,user,using,value,values,varchar,varying,view,when,whenever,where,with,work,"+
+      "write,year,zone";
     
     // Default query handler class.
     private final static Class DEFAULT_QUERY_HANDLER_CLASS =
@@ -157,7 +157,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             }
             // get the extra reserved sql keywords (according to the JDBC driver)
             // not sure what case these are in ???
-            String sqlKeywords = (""+metaData.getSQLKeywords()).toUpperCase();
+            String sqlKeywords = (""+metaData.getSQLKeywords()).toLowerCase();
             tokens = new StringTokenizer(sqlKeywords,", ");
             while (tokens.hasMoreTokens()) {
                 String tok = tokens.nextToken();
@@ -222,6 +222,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 }
             }
             // get configuration
+            log.service("Use for storage configuration :"+databaseResourcePath);
             InputStream stream = DatabaseStorageManagerFactory.class.getResourceAsStream(databaseResourcePath);
             InputSource in = new InputSource(stream);
             reader = new StorageReader(this, in);

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.11 2003-08-19 10:32:43 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.12 2003-08-19 14:18:32 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -210,6 +210,7 @@ public class StorageReader extends DocumentReader  {
         if (disallowedFieldsList.getLength()>0) {
             Element disallowedFieldsTag = (Element)disallowedFieldsList.item(0);
             attributes.put(Attributes.DISALLOWED_FIELD_CASE_SENSITIVE, Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive")));
+            attributes.put(Attributes.ENFORCE_DISALLOWED_FIELDS, Boolean.valueOf(disallowedFieldsTag.getAttribute("enforce")));
         }
         return attributes;
     }
@@ -224,17 +225,17 @@ public class StorageReader extends DocumentReader  {
         Map disallowedFields = new HashMap();
         Element root = document.getDocumentElement();
         NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
-        if (disallowedFieldsList.getLength()>0) {
+        if (disallowedFieldsList.getLength() > 0) {
             Element disallowedFieldsTag = (Element)disallowedFieldsList.item(0);
             boolean casesensitive = Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive")).booleanValue();
             NodeList fieldTagList = disallowedFieldsTag.getElementsByTagName("disallowed-field");
-            for (int i=0; i<fieldTagList.getLength(); i++) {
+            for (int i = 0; i < fieldTagList.getLength(); i++) {
                 Element fieldTag = (Element)fieldTagList.item(i);
                 String fieldName = fieldTag.getAttribute("name");
                 // require a field name. 
                 // if not given, skip the option.
                 if (fieldName != null) {
-                    if (!casesensitive) fieldName = fieldName.toUpperCase(); 
+                    if (!casesensitive) fieldName = fieldName.toLowerCase(); 
                     String replacement = fieldTag.getAttribute("replacement");
                     disallowedFields.put(fieldName,replacement);
                 }
