@@ -950,7 +950,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		tables.addElement("maps");
 		tables.addElement("programs");
 		tables.addElement("groups");
-		tables.addElement("categorie");
+		tables.addElement("categories");
 		fields=new Vector();
 		fields.addElement("portals.number");
 		fields.addElement("maps.number");
