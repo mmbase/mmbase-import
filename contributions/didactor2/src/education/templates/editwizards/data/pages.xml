@@ -78,7 +78,7 @@
         <field name="name" >
             <prompt>Naam</prompt>
         </field>
-        <field name="text" ftype="text" rows="8">
+        <field name="text" ftype="html">
             <prompt>Tekst</prompt>
         </field>
         <field name="layout" ftype="enum">
