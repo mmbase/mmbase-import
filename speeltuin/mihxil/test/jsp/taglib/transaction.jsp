@@ -51,7 +51,8 @@ transaction was commited, following should result anything:
 </mm:cloud>
 You should see this.
 <hr />
-<a href="<mm:url page="node.jsp" />">node.jsp</a>
+<a href="<mm:url page="node.jsp" />">node.jsp</a><br />
+   <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <hr />
 </body>
 </html>
