@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.45 2002-07-08 14:57:11 pierre Exp $
+ * @version $Id: Wizard.java,v 1.46 2002-07-08 15:21:12 pierre Exp $
  *
  */
 public class Wizard {
@@ -1066,7 +1066,18 @@ public class Wizard {
 
         // resolve special attributes
         if (ftype.equals("startwizard")) {
-            String objectNumber = Utils.getAttribute(newfield,"objectnumber", "new");
+            String objectNumber = Utils.getAttribute(newfield,"objectnumber", null);
+            // if no objectnumber is found, assign teh numbe rof teh currebnt field.
+            // exception is when teh direct parent is a form.
+            // in that acse, wee are editting teh current object, so indtead asisgn new
+            // note: this latter does not take into account fieldsets!
+            if (objectNumber==null) {
+                if (form.getNodeName().equals("form")) {
+                    objectNumber="new";
+                } else {
+                    objectNumber=Utils.getAttribute(newfield, "number", "new");
+                }
+            }
             objectNumber = Utils.transformAttribute(datanode, objectNumber);
             Utils.setAttribute(newfield, "objectnumber", objectNumber);
         }
@@ -1741,6 +1752,11 @@ public class Wizard {
         if (required.equals("true")) {
             // should be required (according to MMBase)
             dtrequired="true";
+        }
+
+        // fix for old format type 'wizard'
+        if (ftype.equals("wizard")) {
+            ftype="startwizard";
         }
 
         // store new attributes in fielddef
