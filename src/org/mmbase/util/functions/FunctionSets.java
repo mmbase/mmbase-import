@@ -35,7 +35,7 @@ import org.mmbase.bridge.implementation.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 
- * @version $Id: FunctionSets.java,v 1.4 2004-11-02 18:35:32 michiel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.5 2004-11-26 14:15:41 michiel Exp $ 
  */
 public class FunctionSets {
 
@@ -62,7 +62,19 @@ public class FunctionSets {
      */
     private static void readSets() {
 	init = true;
-        XMLBasicReader reader = new XMLBasicReader("functions/functionsets.xml", FunctionSets.class);
+        org.xml.sax.InputSource source;
+        try {
+            source = ResourceLoader.getConfigurationRoot().getInputSource("functions/functionsets.xml");
+        } catch (Exception e) {
+            log.warn(e);
+            return;
+        }
+        if (source == null) {
+            log.info("No resource functions/functionsets.xml");
+            return;
+        }
+        
+        XMLBasicReader reader = new XMLBasicReader(source, FunctionSets.class);
         functionSets.clear();
         for(Enumeration ns = reader.getChildElements("functionsets", "functionset"); ns.hasMoreElements(); ) {
             Element n = (Element)ns.nextElement();
