@@ -17,15 +17,20 @@ import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
+/**
+ * @javadoc
+ * @version $Id: XMLDynamicFlashReader.java,v 1.6.2.1 2005-02-24 16:00:25 michiel Exp $
+ */
+
 public class XMLDynamicFlashReader {
 
-    private static Logger log = Logging.getLoggerInstance(XMLDynamicFlashReader.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(XMLDynamicFlashReader.class);
 
     Document document;
 
     public XMLDynamicFlashReader(String filename) {
         try {
-            document = XMLBasicReader.getDocumentBuilder().parse(new java.io.File(filename));
+            document = XMLBasicReader.getDocumentBuilder(false).parse(new java.io.File(filename));
 
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
@@ -34,7 +39,7 @@ public class XMLDynamicFlashReader {
 
     public XMLDynamicFlashReader(CharArrayReader reader) {
         try {
-            document = XMLBasicReader.getDocumentBuilder().parse(new InputSource(reader));
+            document = XMLBasicReader.getDocumentBuilder(false).parse(new InputSource(reader));
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }
