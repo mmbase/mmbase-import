@@ -41,7 +41,7 @@ public class ImageTag extends FieldTag {
         node = null;
         Node node = getNodeVar();
         if (!node.getNodeManager().hasField("handle")) {
-            throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
+            throw new JspTagException("Found parent node '" + node.getNumber() + "' of type " + node.getNodeManager().getName() + " does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
 
         // some servlet implementation's 'init' cannot determin this theirselves, help them a little:
