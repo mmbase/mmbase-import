@@ -4,23 +4,23 @@
  <title>About generic mmbase taglib editors</title>
 </head>
 <body class="basic">
-<table summary="taglib editors" width="100%" cellspacing="1" cellpadding="10" border="0">
+<table summary="taglib editors">
 <tr><th>The MMBase taglib editors</th></tr>
 <tr><td class="data">
 <p>
 These are the <a href="http://www.mmbase.org/" target="_blank">MMBase</a> generic editors, based on 
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+3747+projects" target="_blank">
-MMCI</a> (version 1.0) with usage of 
+MMCI</a> (version 1.2) with usage of 
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+6176+projects" target="_blank">
-MMBase Taglib</a> (version 1.0), created by 
+MMBase Taglib</a> (version 1.0.1), created by 
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+547+427+organization" target="_blank">NOS Internet</a> under the 
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+541+3649+documentation" target="_blank">Mozilla License 1.0</a>
 </p>
 <p>
-  version of the editors: 2002-08-29
+  version of the editors: 2003-04
 </p>
 <p>
-  These editors were tested with application servers orion 1.6.0 and tomcat 4.0.
+  These editors were tested with application servers orion 1.6.0 and tomcat 4.1.
 </p>
 <p>
   The tested browsers are Mozilla 1.0, Netscape 4.7, Opera 5 (all ok)
