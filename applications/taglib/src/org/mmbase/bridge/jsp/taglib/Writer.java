@@ -55,7 +55,7 @@ public interface Writer {
      *
      * @since MMBase-1.6
      */
-    public void haveBody();
+    public void haveBody() throws JspTagException;
 
 
 }
