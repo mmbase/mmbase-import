@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.4.2.2 2004-12-16 18:37:24 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.4.2.3 2005-02-03 09:23:26 michiel Exp $
  **/
 
 public class MultiPart {
@@ -146,13 +146,11 @@ public class MultiPart {
     static public class MMultipartRequest {
         private static final Logger log = Logging.getLoggerInstance(MultiPart.class);
         private org.mmbase.util.HttpPost o = null;
-        private String coding = null;
 
         MMultipartRequest(HttpServletRequest req, String c) {
             log.debug("Creating HttpPost instance");
             o = new org.mmbase.util.HttpPost(req);
-            coding = c;
-            log.debug("Created with encoding = "+coding);
+
         }
 
         /**
@@ -187,36 +185,17 @@ public class MultiPart {
         }
 
         /**
-         * Method to retrieve the parameter
+         * Method to retrieve the bytes of an uploaded file as a string using eitehr the encoding specified in the file or
+         * the default encoding.
          * @param param The name of the parameter
-         * @return <code>null</code> if parameter not found, when a single occurence of the parameter
-         * the result as a <code>String</code> using the encoding specified. When if was a MulitParameter parameter, it will return
-         * a <code>Vector</code> of <code>String</code>'s
+         * @return <code>null</code> if parameter not found, otherwise the bytes from the parameter
          */
-        public Object getParameterValues(String param) throws JspTagException {
-            // this method will return null, if the parameter is not set...
-            if (!o.getPostParameters().containsKey(param)) {
-                return null;
-            }
-            // if it is a PostMultiParameter, return it..
-            if (o.checkPostMultiParameter(param)) {
-                log.debug("This is a multiparameter!");
-                return o.getPostMultiParameter(param, coding);
-            }
-
-            // get the info as String...
-            byte[] data = getBytes(param);
-            if (data == null) {
-                throw new JspTagException("retrieved no data for parameter:" + param);
-            }
-
-            String encoding = coding;
-            // determine encoding
+        protected String encodeBytesAsString(byte[] data) throws JspTagException {
+            String encoding = "ISO-8859-1";
             // get first 60 bytes to determine if this is a xml type
             byte[] xmlbytes = new byte[60];
             int sz = data.length;
-            if (sz > 60)
-                sz = 60;
+            if (sz > 60) sz = 60;
             System.arraycopy((byte[])data, 0, xmlbytes, 0, sz);
             String xmltext = new String(xmlbytes);
             if (xmltext.startsWith("<?xml")) {
@@ -238,9 +217,36 @@ public class MultiPart {
             try {
                 return new String(data, encoding);
             } catch (java.io.UnsupportedEncodingException e) {
-                log.warn(Logging.stackTrace(e));
                 throw new TaglibException(e);
             }
+        }
+
+
+        /**
+         * Method to retrieve the parameter
+         * @param param The name of the parameter
+         * @return <code>null</code> if parameter not found, when a single occurence of the parameter
+         * the result as a <code>String</code> using the encoding specified. When if was a MulitParameter parameter, it will return
+         * a <code>Vector</code> of <code>String</code>'s
+         */
+        public Object getParameterValues(String param) throws JspTagException {
+            // this method will return null, if the parameter is not set...
+            if (!o.getPostParameters().containsKey(param)) {
+                return null;
+            }
+            // if it is a PostMultiParameter, return it..
+            if (o.checkPostMultiParameter(param)) {
+                log.debug("This is a multiparameter!");
+                return o.getPostMultiParameter(param, "ISO-8859-1");
+            }
+
+            // get the info as String...
+            byte[] data = getBytes(param);
+            if (data == null) {
+                throw new JspTagException("retrieved no data for parameter:" + param);
+            }
+            return encodeBytesAsString(data);
+            
         }
 
         public Enumeration getParameterNames() {
