@@ -234,9 +234,8 @@
   <!-- ================================================================================ -->
   <!-- Main documentation Target                                                        -->
   <!-- ================================================================================ -->
-  <target name="documentation"
-          depends="documentation.html,documentation.pdf">
-    <delete dir="${documentation.temp.dir}"/>
+  <target name="documentation" depends="documentation.html,documentation.pdf">
+    <!-- delete dir="${documentation.temp.dir}"/ -->
   </target>
  
   <!-- clean everything -->
