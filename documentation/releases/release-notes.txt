@@ -133,6 +133,9 @@ Taglib Bug Fixes:
 [1.7.0]
  - Working with resin now
 
+ - The fields parameter of the list tags (related, list, etc) now no longer accepts fields that do not exist.
+   Note that this means that some pages may give errors now if they specified wrong fieldnames.
+
  - Lots of small attributes-related things, like emulating complete absence of the the attribute
    when its value is empty. Some attributes (like the 'id' attribute) did not yet accept taglib
    variables ($-variables), which also has been fixed on several places.
@@ -171,16 +174,19 @@ Upgrade:
    - The editwizard jsp and xsls are shipped in /mmbase/edit/wizard (used to be
      /mmapps/editwizard). You can also download them seperately in mmbase-editwizard.zip now.
 
-- remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead: 
+- remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead:
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
   </taglib>
-  Note that the taglib is not any more present in mmbase.jar itself. So if you	
+  Note that the taglib is not any more present in mmbase.jar itself. So if you
   wrote mmbase.jar here in web.xml you have to change it.
 
 - Clean the working directory of your app-server (to recompile jsp's)
 
+- The fields parameter of the MMBase taglib list tags (related, list, etc) now no longer accepts
+  fields that do not exist. Some pages may give errors now if they specified wrong fieldnames,
+  so you are advised to check your site's pages for this error.
 
 ========================
 Know Issues and Problems:
