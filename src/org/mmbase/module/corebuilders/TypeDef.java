@@ -32,26 +32,8 @@ public class TypeDef extends MMObjectBuilder {
 	public TypeDef() {
 	}
 
-	/*
-	public TypeDef(MMBase m) {
-		this.mmb=m;
-		this.tableName="typedef";
-		sortedDBLayout = new Vector();
-		sortedDBLayout.addElement("otype");
-		sortedDBLayout.addElement("owner");
-		sortedDBLayout.addElement("name");
-		sortedDBLayout.addElement("description");
-		init();
-		// check if we are in the database ourselfs !
-		if (!checkRootNode()) insertRootNode();
-		m.mmobjs.put(tableName,this);
-		readCache(); // read type info into the caches
-	}
-	*/
-
 	public boolean init() {
 		super.init();
-		if (!checkRootNode()) insertRootNode();
 		mmb.mmobjs.put(tableName,this);
 		readCache(); // read type info into the caches
 		return(true);
@@ -106,20 +88,6 @@ public class TypeDef extends MMObjectBuilder {
 		return(false);
 	}
 	
-	/**
-	* insert a new object, normally not used (only subtables are used)
-	*/
-	private void insertRootNode() {
-		//System.out.println("WANT TO INSERT ROOT NODE !");
-		int number=0;
-		MMObjectNode node=getNewNode("system");
-		node.setValue("number",0);
-		node.setValue("name","typedef");
-		node.setValue("description","The main type definition builder");
-		node.insert("system");
-		//System.out.println("INSERT ROOT NODE DONE");
-	}
-
 
 	/**
 	* obtain the type value of the requested type, returns -1 if not defined. 
