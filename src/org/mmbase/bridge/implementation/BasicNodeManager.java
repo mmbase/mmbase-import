@@ -130,18 +130,15 @@ public class BasicNodeManager implements NodeManager {
 	    return f;
 	}
 	
-    public NodeList getList(String constraints, String orderby,String directions) {
-        // "String directions" isn't used yet!!
-        String where = constraints;
-        String sorted = orderby;
-        boolean direction = !"DOWN".equals(directions);
-
-  		Vector v;
-  		if ((where!=null) && (!where.trim().equals(""))) {
-		    where="WHERE "+where;
+    public NodeList getList(String constraints, String orderby,
+            String directions) {
+        String where = null;
+  		if ((constraints != null) && (!constraints.trim().equals(""))) {
+		    where = "WHERE " + constraints;
   		}
-  		if ((sorted!=null) && (!sorted.trim().equals(""))) {
-		    v = builder.searchVector(where,sorted,direction);
+  		Vector v;
+  		if (orderby != null) {
+            v = builder.searchVector(where, orderby, directions);
 	    } else {
 		    v = builder.searchVector(where);
 	    }
