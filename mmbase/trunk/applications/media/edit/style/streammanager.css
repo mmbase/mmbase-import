@@ -84,8 +84,8 @@ td {
   margin: 0;
   font-size : 10px;
   color: #000000;
-  valign: top;
-  align: left;
+  vertical-align: top;
+  text-align: left;
 }
 
 
