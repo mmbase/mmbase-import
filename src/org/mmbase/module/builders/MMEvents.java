@@ -15,12 +15,14 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
  */
 public class MMEvents extends MMObjectBuilder {
+    private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
 	MMEventsProbe probe;
 	DateStrings datestrings;
 
@@ -98,9 +100,9 @@ public class MMEvents extends MMObjectBuilder {
 		// the queue is really a bad idea have to make up
 		// a better way.
 		Vector also=new Vector();
-		System.out.println("MMEvent probe CALL");
+		log.debug("MMEvent probe CALL");
 		int now=(int)(DateSupport.currentTimeMillis()/1000);
-		System.out.println("NOW="+now);
+		log.debug("The currenttime in seconds NOW="+now);
 		MMObjectNode snode=null,enode=null;
 		Enumeration e=search("WHERE start>"+now+" AND start<"+(now+(3600*2))+" ORDER BY start");
 		if (e.hasMoreElements()) {
@@ -138,8 +140,12 @@ public class MMEvents extends MMObjectBuilder {
 		}
 	
 		if (sleeptime!=-1) {	
-			System.out.println("SLEEPTIME="+(sleeptime-now)+" wnode="+wnode+" also="+also);
-			try {Thread.sleep((sleeptime-now)*1000);} catch (InterruptedException f){}
+			log.debug("SLEEPTIME="+(sleeptime-now)+" wnode="+wnode+" also="+also);
+			try {
+				Thread.sleep((sleeptime-now)*1000);
+			} catch (InterruptedException f) {
+				log.error("interrupted while sleeping");
+			}
 			wnode.commit();	
 			Enumeration g=also.elements();
 			while (g.hasMoreElements()) {
@@ -147,7 +153,11 @@ public class MMEvents extends MMObjectBuilder {
 				if ((wnode.getIntValue("start")==sleeptime) || (wnode.getIntValue("stop")==sleeptime)) wnode.commit();
 			}
 		} else {	
-			try {Thread.sleep(300*1000);} catch (InterruptedException f){}
+			try {
+				Thread.sleep(300*1000);
+			} catch (InterruptedException f) {
+				log.error("interrupted while sleeping");
+			}
 		}
 	}
 

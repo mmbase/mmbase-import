@@ -7,39 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-
-$Id: MMServers.java,v 1.11 2000-09-16 14:50:29 daniel Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.10  2000/04/15 21:35:40  wwwtech
-daniel: turned debug off
-
-Revision 1.9  2000/03/30 13:11:32  wwwtech
-Rico: added license
-
-Revision 1.8  2000/03/29 10:59:23  wwwtech
-Rob: Licenses changed
-
-Revision 1.7  2000/03/21 15:37:31  wwwtech
-- (marcel) Removed debug (globally declared in MMOBjectNode)
-
-Revision 1.6  2000/03/20 13:17:29  wwwtech
-Rico: added super.getValue for global function support
-
-Revision 1.5  2000/03/13 10:41:11  wwwtech
-Rico: increased service timeout to 15 minutes
-
-Revision 1.4  2000/03/07 16:54:37  wwwtech
-Rico: added extra debug
-
-Revision 1.3  2000/03/07 16:25:25  wwwtech
-Rico: added extra debug
-
-Revision 1.2  2000/02/24 14:03:24  wwwtech
-- (marcel) Changed System.out into debug and added headers
-
-*/
 
 package org.mmbase.module.builders;
 
@@ -52,17 +19,15 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.protocoldrivers.*;
+import org.mmbase.util.logging.*;
 
 /**
- * @author  $Author: daniel $
- * @version $Revision: 1.11 $ $Date: 2000-09-16 14:50:29 $
+ * @author  $Author: install $
+ * @version $Revision: 1.12 $ $Date: 2001-03-26 09:34:37 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
-	private String  classname = getClass().getName();
-	private boolean debug	  = false;
-	// private void	debug(String msg){System.out.println(classname+":"+msg);}
-
+    private static Logger log = Logging.getLoggerInstance(MMServers.class.getName());
 	private int serviceTimeout=60*15; // 15 minutes
 	private String javastr;
 	private String osstr;
@@ -120,7 +85,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 		boolean imoke=false;
 		String machineName=mmb.getMachineName();
 		host=mmb.getHost();
-		if (debug) debug("probeCall(): machine="+machineName);
+		log.debug("probeCall(): machine="+machineName);
 		Enumeration e=search("");
 		while (e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
@@ -142,14 +107,14 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 		String tmphost=node.getStringValue("host");
 		/* Why ?
 		if (!tmphost.equals(host)) {
-			debug("MMServers-> Running on a new HOST possible problem");
+			log.warning("MMServers-> Running on a new HOST possible problem");
 		}
 		*/
-		if (debug) debug("checkMySelf() updating timestamp");
+		log.debug("checkMySelf() updating timestamp");
 		node.setValue("state",1);
 		node.setValue("atime",(int)(System.currentTimeMillis()/1000));
 		node.commit();	
-		if (debug) debug("checkMySelf() updating timestamp done");
+		log.debug("checkMySelf() updating timestamp done");
 		return(state);
 	}	
 
@@ -158,7 +123,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 		int then=node.getIntValue("atime");
 		if ((now-then)>(serviceTimeout)) {
 			if (node.getIntValue("state")!=2) {
-				if (debug) debug("checkOther() updating state for "+node.getStringValue("host"));
+				log.debug("checkOther() updating state for "+node.getStringValue("host"));
 				node.setValue("state",2);
 				node.commit();
 				
@@ -182,13 +147,13 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
 	private void setServicesDown(MMObjectNode node) {
 		Enumeration f=possibleServices.elements();
-		if (debug) debug("setServicesDown() for "+node);
+		log.debug("setServicesDown() for "+node);
 		while (f.hasMoreElements()) {
 			String type=(String)f.nextElement();
 			Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),type);
 			while (e.hasMoreElements()) {
 				MMObjectNode node2=(MMObjectNode)e.nextElement();
-				debug("setServicesDown(): downnode("+node2+") REMOVING node");
+				log.info("setServicesDown(): downnode("+node2+") REMOVING node");
 				node2.parent.removeRelations(node2);
 				node2.parent.removeNode(node2);
 			
@@ -196,7 +161,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 				//node2.commit();
 			}		
 		}
-		if (debug) debug("setServicesDown() for "+node+" done");
+		log.debug("setServicesDown() for "+node+" done");
 	}
 
 
@@ -258,9 +223,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 						pd.init(host,port);
 						url2driver.put(url,pd);
 						name2driver.put(name,pd);
-						debug("startProtocolDrivers(): started driver("+pd+")");
+						log.debug("startProtocolDrivers(): started driver("+pd+")");
 					} catch (Exception f) {
-						debug("startProtocolDrivers(): ERROR: Can't load protocolclass("+protocol+")");
+						log.error("startProtocolDrivers(): ERROR: Can't load protocolclass("+protocol+")");
 						//f.printStackTrace();
 					}
 				}
