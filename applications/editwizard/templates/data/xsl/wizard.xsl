@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.73 2002-08-23 21:56:08 michiel Exp $
+  @version $Id: wizard.xsl,v 1.74 2002-09-03 16:30:00 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -502,7 +502,7 @@
               <nobr><input type="hidden" name="{@fieldname}" value="YES" />
                 <xsl:choose>
                   <xsl:when test="not(upload)"><xsl:call-template name="prompt_no_file" /><br />
-                  <a target="_blank" href="{node:function(cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a><br />
+                  <a target="_blank" href="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a><br />
                   </xsl:when>
                   <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)<br />
                   </xsl:otherwise>
