@@ -1,4 +1,4 @@
-<%@page session="false" language="java" contentType="text/html;charset=utf-8" 
+<%@page session="false" language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:content language="en" type="text/html">
 <mm:cloud>

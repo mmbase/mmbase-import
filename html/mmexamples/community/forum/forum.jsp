@@ -22,8 +22,11 @@
 <mmcommunity:testchannel condition="readonly" reverse="true">
 <p>[ <a href="<mm:url page="createnewthread.jsp" referids="channel" />" >Start a new Thread</a> ]</p>
 </mmcommunity:testchannel>
+
+<mm:context>
+Deep:
 <mmcommunity:tree thread="$number" max='<%="" + pagesize%>' maxdepth="5" offset='<%="" + thispage*pagesize%>' id="thread">
-  <mm:field name="listhead" />
+  <mm:field id="ha" name="listhead" />
      <li><a href="<mm:url page="message.jsp" referids="channel,thread" />"><mm:field name="html(subject)" /></a> (<mm:field name="replycount" />)
      <mmcommunity:getinfo key="name">
      <mm:isnotempty>
@@ -36,7 +39,42 @@
      <% count++; %>
   <mm:field name="listtail" />
 </mmcommunity:tree>
+</mm:context>
 &nbsp;
+<mm:context>
+Shallow:
+<mmcommunity:tree thread="$number" max='<%="" + pagesize%>' maxdepth="1" offset='<%="" + thispage*pagesize%>' id="thread">
+  <mm:field id="ha" name="listhead" />
+     <li><a href="<mm:url page="message.jsp" referids="channel,thread" />"><mm:field name="html(subject)" /></a> (<mm:field name="replycount" />)
+     <mmcommunity:getinfo key="name">
+     <mm:isnotempty>
+     <em>by <mm:write /> on
+        <mm:field name="day(timestampsec)" />
+        <mm:field name="month(timestampsec)" />
+        <mm:field name="year(timestampsec)" /></em>
+     </mm:isnotempty>
+     </mmcommunity:getinfo></li>
+     <% count++; %>
+  <mm:field name="listtail" />
+</mmcommunity:tree>
+</mm:context>
+<mm:context>
+Only entries
+<mmcommunity:tree thread="$number" max='<%="" + pagesize%>' maxdepth="0" offset='<%="" + thispage*pagesize%>' id="thread">
+  <mm:field id="ha" name="listhead" />
+     <li><a href="<mm:url page="message.jsp" referids="channel,thread" />"><mm:field name="html(subject)" /></a> (<mm:field name="replycount" />)
+     <mmcommunity:getinfo key="name">
+     <mm:isnotempty>
+     <em>by <mm:write /> on
+        <mm:field name="day(timestampsec)" />
+        <mm:field name="month(timestampsec)" />
+        <mm:field name="year(timestampsec)" /></em>
+     </mm:isnotempty>
+     </mmcommunity:getinfo></li>
+     <% count++; %>
+  <mm:field name="listtail" />
+</mmcommunity:tree>
+</mm:context>
 <% if (thispage>0) { %>
 [ <a href="<mm:url page="forum.jsp" referids="channel" ><mm:param name="page"><%=thispage-1%></mm:param></mm:url>" >Previous Page</a> ]
 <% }

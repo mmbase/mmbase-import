@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Application <%=app%></title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="../../style/css/mmbase.css" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -38,7 +38,7 @@
   <form action="<mm:url page="result.jsp" />" method="POST">
    <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="LOAD" />
-   <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+   <input type="image" src="../../style/images/ok.gif" alt="OK" border="0"  />
   </form>
  </td>
 </tr>
@@ -62,7 +62,7 @@
  <td class="linkdata" >
    <input type="hidden" name="application" value="<%=app%>" />
    <input type="hidden" name="cmd" value="SAVE" />
-   <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+   <input type="image" src="../../style/images/ok.gif" alt="OK" border="0"  />
  </td>
 </tr>
 </form>
@@ -91,7 +91,7 @@
 <%  } %>
     <input type="hidden" name="config" value="applications" />
     <input type="hidden" name="target" value="<%=app%>" />
-    <input type="image" src="../../images/search.gif" alt="view" border="0"  />
+    <input type="image" src="../../style/images/search.gif" alt="view" border="0"  />
   </form>
  </td>
 </tr>
@@ -108,13 +108,13 @@
     <input type="hidden" name="cmd" value="APPTOOL" />
     <input type="hidden" name="application" value="<%=app%>" />
     <input type="hidden" name="APPTOOL" value="<%=app%>" />
-    <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+    <input type="image" src="../../style/images/ok.gif" alt="OK" border="0"  />
   </form>
  </td>
 </tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../applications.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../applications.jsp" />"><img src="../../style/images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Application Overview</td>
 </tr>
 </table>

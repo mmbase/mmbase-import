@@ -13,7 +13,7 @@
 <table summary="navigation">
 <tr>
 <td width="50">
-<img src="images/logo.gif" border="0" alt="MMBase">
+<img src="../style/logo.gif" border="0" alt="MMBase">
 </td>
 <td width="850" border="0">
     &nbsp;&nbsp;

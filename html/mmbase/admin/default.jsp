@@ -45,7 +45,7 @@ scrolling="no" marginwidth="1" marginheight="0" />
 <table summary="navigation">
 
 <tr>
-  <td class="data"><img src="images/logo.gif" border="0" alt="MMBase">
+  <td class="data"><img src="../style/logo.gif" border="0" alt="MMBase">
 </tr>
 
 <tr><td>&nbsp;</td></tr>
