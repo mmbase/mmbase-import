@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "//MMBase - application//" "http://www.mmbase.org/dtd/application.dtd">
+<application name="CloudSecurity" maintainer="cloud.security.mmbase.omroep.nl" version="1" auto-deploy="false">
+  <neededbuilderlist>
+	<builder maintainer="mmbase.org" version="1">mmbaseusers</builder>
+  </neededbuilderlist>
+  
+  <neededreldeflist>
+  </neededreldeflist>
+  
+  <allowedrelationlist>
+  </allowedrelationlist>
+  
+  <datasourcelist>
+	<datasource builder="mmbaseusers" path="CloudSecurity/mmbaseusers.xml" />
+  </datasourcelist>
+  
+  <relationsourcelist>
+  </relationsourcelist>
+  
+  <contextsourcelist>
+  </contextsourcelist>
+  
+  <description>
+    Installs the admin account
+  </description>
+  
+  <install-notice>
+    You have installed the admin account.
+  </install-notice>
+</application>
