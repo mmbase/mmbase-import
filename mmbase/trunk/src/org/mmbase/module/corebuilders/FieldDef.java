@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: FieldDef.java,v 1.6 2000-04-15 21:10:34 wwwtech Exp $
+	$Id: FieldDef.java,v 1.7 2000-06-20 09:27:56 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/04/15 21:10:34  wwwtech
+	new FieldDef
+	
 	Revision 1.5  2000/03/30 13:11:41  wwwtech
 	Rico: added license
 	
@@ -39,10 +42,15 @@ import org.mmbase.module.database.support.*;
  *
  *
  * @author Daniel Ockeloen
- * @version $Id: FieldDef.java,v 1.6 2000-04-15 21:10:34 wwwtech Exp $
+ * @version $Id: FieldDef.java,v 1.7 2000-06-20 09:27:56 wwwtech Exp $
  */
 public class FieldDef extends MMObjectBuilder {
 
+
+	public FieldDef() {
+	}
+
+	/*
 	public FieldDef(MMBase m) {
 		this.mmb=m;
 		this.tableName="fielddef";
@@ -50,6 +58,7 @@ public class FieldDef extends MMObjectBuilder {
 		init();
 		m.mmobjs.put(tableName,this);
 	}
+	*/
 
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("dbtable")) {
