@@ -36,32 +36,36 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.42 2003-07-18 14:16:37 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.43 2003-08-07 14:31:17 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Search for all valid relations.
      * When searching relations, return both relations from source to deastination and from destination to source,
-     * provided directionality allows
+     * provided there is an allowed relation in that directon.
      */
-    public static final int SEARCH_BOTH= 0;
+    public static final int SEARCH_BOTH = 0;
+
     /**
      * Search for destinations,
      * When searching relations, return only relations from source to deastination.
      */
-    public static final int SEARCH_DESTINATION= 1;
+
+    public static final int SEARCH_DESTINATION = 1;
+
     /**
      * Seach for sources.
      * When searching a multilevel, return only relations from destination to source, provided directionality allows
      */
-    public static final int SEARCH_SOURCE= 2;
+    public static final int SEARCH_SOURCE = 2;
+
     /**
-     * Search for all relations.
-     * When searching a multilevel, return both relations from source to deastination and from destination to source.
-     * Directionality is not checked - ALL relations are used.
+     * Search for all relations.  When searching a multilevel, return both relations from source to
+     * deastination and from destination to source.  Allowed relations are not checked - ALL
+     * relations are used. This makes more inefficient queries, but it is not really wrong.
      */
-    public static final int SEARCH_ALL= 3;
+    public static final int SEARCH_ALL = 3;
 
     /**
      * Search for either destination or source.
@@ -206,12 +210,11 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param fieldname the name of the field
      * @return the name of the field's builder
      */
-    public String getBuilderNameFromField(String fieldname) {
-        String bulname= "";
-        int pos= fieldname.indexOf(".");
+    public String getBuilderNameFromField(String fieldName) {
+        int pos = fieldName.indexOf(".");
         if (pos != -1) {
-            bulname= fieldname.substring(0, pos);
-            return getTrueTableName(bulname);
+            String bulName = fieldName.substring(0, pos);
+            return getTrueTableName(bulName);
         }
         return "";
     }
@@ -235,9 +238,9 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the field
      */
     public FieldDefs getField(String fieldName) {
-        String buildername= getBuilderNameFromField(fieldName);
-        if (buildername.length() > 0) {
-            MMObjectBuilder bul= mmb.getMMObject(buildername);
+        String builderName = getBuilderNameFromField(fieldName);
+        if (builderName.length() > 0) {
+            MMObjectBuilder bul = mmb.getMMObject(builderName);
             return bul.getField(getFieldNameFromField(fieldName));
         }
         return null;
@@ -1616,7 +1619,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package visibility!
-    void addRelationDirections(BasicSearchQuery query, int searchdir, Map roles) {
+    void addRelationDirections(BasicSearchQuery query, int searchDir, Map roles) {
 
         Iterator iSteps = query.getSteps().iterator();
         BasicStep sourceStep = (BasicStep)iSteps.next();
@@ -1627,15 +1630,6 @@ public class ClusterBuilder extends VirtualBuilder {
             }
             BasicRelationStep relationStep= (BasicRelationStep)iSteps.next();
             destinationStep= (BasicStep)iSteps.next();
-
-            // Check directionality is requested and supported.
-            if (searchdir != SEARCH_ALL && InsRel.usesdir) {
-                relationStep.setCheckedDirectionality(true);
-            }
-
-            // Determine in what direction(s) this relation can be followed:
-            boolean destinationToSource = false;
-            boolean sourceToDestination = false;
 
             // Determine typedef number of the source-type.
             int sourceType = sourceStep.getBuilder().getObjectType();
@@ -1653,32 +1647,16 @@ public class ClusterBuilder extends VirtualBuilder {
             } else {
                 roleInt = -1;
             }
-            sourceToDestination = searchdir != SEARCH_SOURCE      && mmb.getTypeRel().contains(sourceType, destinationType, roleInt, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
-            destinationToSource = searchdir != SEARCH_DESTINATION && mmb.getTypeRel().contains(destinationType, sourceType, roleInt, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
-
-            if (destinationToSource && sourceToDestination && (searchdir == SEARCH_EITHER)) { // support old
-                destinationToSource= false;
-            }
-
-            if (destinationToSource) {
-                // there is a typed relation from destination to src
-                if (sourceToDestination) {
-                    // there is ALSO a typed relation from src to destination - make a more complex query
-                    relationStep.setDirectionality(RelationStep.DIRECTIONS_BOTH);
+            
+            if (!mmb.getTypeRel().optimizeRelationStep(relationStep, sourceType, destinationType, roleInt, searchDir)) {
+                if (searchDir != SEARCH_SOURCE && searchDir != SEARCH_DESTINATION) {
+                    log.warn("No relation defined between " + sourceStep.getTableName() + " and " + destinationStep.getTableName() + " using " + relationStep + " with direction(s) " + getSearchDirString(searchDir) + ". Searching in 'destination' direction now, but perhaps the query should be fixed, because this should always result nothing.");
                 } else {
-                    // there is ONLY a typed relation from destination to src - optimized query
-                    relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-                }
-            } else {
-                if (sourceToDestination) {
-                    // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-                } else {
-                    // no results possible...
-                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-                    log.warn("No relation defined between " + sourceStep.getTableName() + " and " + destinationStep.getTableName() + " using " + relationStep + " with direction(s) " + getSearchDirString(searchdir) + ". Searching in 'destination' direction now, but perhaps the query should be fixed, because this should always result nothing.");
+                    log.warn("No relation defined between " + sourceStep.getTableName() + " and " + destinationStep.getTableName() + " using " + relationStep + " with direction(s) " + getSearchDirString(searchDir) + ". Trying anyway, but perhaps the query should be fixed, because this should always result nothing.");
+
                 }
             }
+
         }
     }
 
