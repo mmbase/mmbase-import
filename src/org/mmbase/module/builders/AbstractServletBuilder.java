@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.7 2002-07-24 19:48:03 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.8 2002-09-23 10:59:05 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -176,34 +176,49 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * Overrides the executeFunction of MMObjectBuilder with a function to get the servletpath
      * associated with this builder. The field can optionally be the number field to obtain a full
      * path to the served object.
+     *
+     *
      */
 
     protected Object executeFunction(MMObjectNode node, String function, String field) {
         if (function.equals("servletpath")) {
-
-            log.debug("getting servletpath with args " + field);
+            
+            
             Vector args = getFunctionParameters(field);
-            log.debug("parsed " + args);
 
+            if (log.isDebugEnabled()) {
+                log.debug("getting servletpath with args " + field);
+                log.debug("parsed " + args);
+            }
+
+            // first argument, in which session variable the cloud is (optional, but needed for read-protected nodes)
             String session = "";
-            if(args.size() > 0){                
+            if(args.size() > 0) {                
                 session = (String) args.remove(0);
-            }            
+            }
+
+            // second argument, which field to use, can for example be 'number' (optional)
             String f = "";
-            if(args.size() > 0 ){
+            if(args.size() > 0 ) {
                 f = (String) args.remove(0);
-            }            
+            }
+
+            // third argument, the servlet context, should not be needed, but shouldn't harm either.
             String context = null; // hack to be able to supply the context, should be superflouous.
             if (args.size() > 0) {
                 context = (String) args.remove(0);
             }
+
+            // ok, make the path.
             String servlet;
             if (context == null) { // context argument is the last, for easy removal later
                 servlet = getServletPath();
             } else {
                 servlet = getServletPath(context, null);
             }
-            if (usesBridgeServlet && ! session.equals("")) servlet += "session=" + session + "+";
+            if (usesBridgeServlet && ! session.equals("")) {
+                servlet += "session=" + session + "+";
+            }
             
             if ("".equals(f)) {
                 return servlet;
