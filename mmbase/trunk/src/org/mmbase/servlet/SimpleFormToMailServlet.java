@@ -1,15 +1,13 @@
 /**
  * File 		: SimpleFormServlet.java
- * Date			: 25 novemer 1998 
  *
  * Description	: 
  * 
  * 	This servlet will mail a form to a (set of) specified user(s). 
- * 	It's quite handy sometimes, but beware that using html like we
- *  do in this example is just plain wrong. Parameters like email and 
- * 	name in this example should have been checked with <IF> statements 
- * 	in the shtml-pages instead of here! But to be absolutely sure that 
- * 	it cannot be abused, it will be checked a second time here.
+ *  Inherit from it (its abstract), specify the methods:
+ *  	public abstract String getSubject();
+ *  	public abstract String getToEmailAddress();
+ *  and the form will be mailed.
  *
  * @author  marmaa@vpro.nl (Marcel Maatkamp) 
  * @version 2.0.1  
@@ -133,8 +131,6 @@ public abstract class SimpleFormToMailServlet extends HttpServlet
 	public String getHtmlFooter() {
 		StringBuffer b = new StringBuffer();
         b.append( "         </FONT></B></CENTER></P>\n"							);
-        b.append( "         <P><CENTER><B><FONT SIZE=\"+1\" FACE=\"Arial\">De antwoorden\n"	);
-        b.append( "         staan eind december op de site.</FONT></B></CENTER>\n"			);
         b.append( "      </TD></TR>\n"											);
         b.append( "</TABLE></CENTER></P>\n"										);
         b.append( "</BODY>\n"													);
@@ -164,7 +160,7 @@ public abstract class SimpleFormToMailServlet extends HttpServlet
 
 	private void displaySuccess( HttpServletResponse res ) {
 		String titel = "Formulier is verstuurd";
-		String body  = "Uw antwoorden zijn verstuurd naar het NWO.<BR>\n";
+		String body  = "Uw formulier is verstuurd.<BR>\n";
 			   body += "Bedankt voor het meedoen aan deze quiz!";
 		displayResult(res, titel, body);
 	}
