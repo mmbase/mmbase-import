@@ -21,7 +21,7 @@ import org.xml.sax.*;
  * The Vts query handler adds support for Verity Text Search constraints.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 // TODO: (later) add javadoc, elaborate on overwritten methods.
 public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
@@ -48,7 +48,6 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
     //    throws SearchQueryException {
     //        if (constraint instanceof StringSearchConstraint) {
     //            // TODO: support maxNumber for query with vts constraint.
-    //            // TODO: test if vts index is created for the tested field.
     //            // TODO: implement.
     //            sb.append("vts search not implemented yet!");
     //        } else {
@@ -184,7 +183,7 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
      * Initializes the handler by reading the vtsindices configuration file
      * to determine which fields have a vts index.
      */
-    // TODO: provide a way to configure the location vtsindices.xml config file.
+    // TODO: provide a way to configure the location of the vtsindices.xml config file.
     private void init() throws IOException {
         XmlVtsIndicesReader configReader = new XmlVtsIndicesReader(
             new InputSource(

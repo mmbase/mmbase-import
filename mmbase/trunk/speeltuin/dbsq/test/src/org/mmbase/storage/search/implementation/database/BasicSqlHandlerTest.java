@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -116,21 +116,21 @@ public class BasicSqlHandlerTest extends TestCase {
         String strSql = instance.toSql(query, instance);
         assert(strSql, strSql.equals(
         "SELECT m_images.m_title AS m_title "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         // Set step alias.
         step1.setAlias("i");
         strSql = instance.toSql(query, instance);
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_title "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Set field alias.
         field1a.setAlias("imageTitle");
         strSql = instance.toSql(query, instance);
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Add second field (default alias).
         FieldDefs imagesNumber = images.getField("number");
@@ -139,7 +139,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS m_number "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Set alias for second field.
         field1b.setAlias("imageNumber");
@@ -147,7 +147,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Set distinct true.
         query.setDistinct(true);
@@ -155,7 +155,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Add sortorder (default direction).
         BasicSortOrder sortOrder1a = query.addSortOrder(field1a);
@@ -163,7 +163,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set constraint.
@@ -173,7 +173,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -189,7 +189,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -199,7 +199,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle DESC"));
         
@@ -209,7 +209,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT DISTINCT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -219,7 +219,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -229,7 +229,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_number IN (123) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
@@ -240,7 +240,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
@@ -252,7 +252,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -265,7 +265,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
@@ -277,7 +277,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
@@ -289,7 +289,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -303,7 +303,7 @@ public class BasicSqlHandlerTest extends TestCase {
         "SELECT m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -318,7 +318,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -333,7 +333,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -348,7 +348,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -363,7 +363,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) AND insrel.m_number IN (789) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -388,7 +388,7 @@ public class BasicSqlHandlerTest extends TestCase {
         String strSql = sb.toString();
         assert(strSql, strSql.equals(
         "m_images.m_title AS m_title "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         // Set step alias.
         step1.setAlias("i");
@@ -397,7 +397,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_title "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Set field alias.
         field1a.setAlias("imageTitle");
@@ -406,7 +406,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Add second field (default alias).
         FieldDefs imagesNumber = images.getField("number");
@@ -417,7 +417,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS m_number "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Set alias for second field.
         field1b.setAlias("imageNumber");
@@ -427,7 +427,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Set distinct true.
         query.setDistinct(true);
@@ -437,7 +437,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i"));
+        + "FROM " + prefix + "images m_i"));
         
         // Add sortorder (default direction).
         BasicSortOrder sortOrder1a = query.addSortOrder(field1a);
@@ -447,7 +447,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "ORDER BY m_imageTitle ASC"));
         
         // Set constraint.
@@ -459,7 +459,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -477,7 +477,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -489,7 +489,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle DESC"));
         
@@ -501,7 +501,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -513,7 +513,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_title='abd' AND m_i.m_number=123 "
         + "ORDER BY m_imageTitle ASC"));
         
@@ -525,7 +525,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_number IN (123) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
@@ -538,7 +538,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i "
+        + "FROM " + prefix + "images m_i "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC"));
@@ -552,7 +552,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -567,7 +567,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
@@ -581,7 +581,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
@@ -595,7 +595,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -611,7 +611,7 @@ public class BasicSqlHandlerTest extends TestCase {
         "m_i.m_title AS m_imageTitle,"
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -628,7 +628,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -645,7 +645,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -662,7 +662,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -679,7 +679,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_i.m_number AS imageNumber,"
         + "insrel.rnumber AS rnumber,"
         + "pools.name AS name "
-        + "FROM " + prefix + "m_images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
+        + "FROM " + prefix + "images m_i," + prefix + "insrel insrel," + prefix + "pools pools "
         + "WHERE m_i.m_number IN (123,456) AND insrel.m_number IN (789) "
         + "AND ((m_i.m_number=insrel.m_dnumber AND pools.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
@@ -696,7 +696,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assert(strSql, strSql.equals(
         "COUNT(m_images.m_title) AS m_title "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAggregationType(
         AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
@@ -705,7 +705,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assert(strSql, strSql.equals(
         "COUNT(DISTINCT m_images.m_title) AS m_title "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MIN);
         sb.setLength(0);
@@ -713,7 +713,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assert(strSql, strSql.equals(
         "MIN(m_images.m_title) AS m_title "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MAX);
         sb.setLength(0);
@@ -721,7 +721,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assert(strSql, strSql.equals(
         "MAX(m_images.m_title) AS m_title "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4a.setAlias("maxTitle");
         sb.setLength(0);
@@ -729,7 +729,7 @@ public class BasicSqlHandlerTest extends TestCase {
         strSql = sb.toString();
         assert(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         BasicAggregatedField field4b = query.addAggregatedField(
         step1, imagesNumber, AggregatedField.AGGREGATION_TYPE_COUNT);
@@ -739,7 +739,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle,"
         + "COUNT(m_images.m_number) AS m_number "
-        + "FROM " + prefix + "m_images m_images"));
+        + "FROM " + prefix + "images m_images"));
         
         field4b.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
         sb.setLength(0);
@@ -748,7 +748,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle,"
         + "m_images.m_number AS m_number "
-        + "FROM " + prefix + "m_images m_images "
+        + "FROM " + prefix + "images m_images "
         + "GROUP BY m_number"));
 
         field4b.setAlias("imageNumber");
@@ -758,7 +758,7 @@ public class BasicSqlHandlerTest extends TestCase {
         assert(strSql, strSql.equals(
         "MAX(m_images.m_title) AS maxTitle,"
         + "m_images.m_number AS imageNumber "
-        + "FROM " + prefix + "m_images m_images "
+        + "FROM " + prefix + "images m_images "
         + "GROUP BY imageNumber"));
     }
     

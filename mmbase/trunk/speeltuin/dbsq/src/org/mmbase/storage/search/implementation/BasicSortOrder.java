@@ -8,7 +8,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicSortOrder implements SortOrder {
     
@@ -26,8 +26,7 @@ public class BasicSortOrder implements SortOrder {
      * @param field The associated stepfield.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    // package visibility!
-    BasicSortOrder(StepField field) {
+    public BasicSortOrder(StepField field) {
         if (field == null) {
             throw new IllegalArgumentException(
             "Invalid field value: " + field);
