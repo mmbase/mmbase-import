@@ -325,7 +325,7 @@ function OpenMenuClick(){
 	status=this.LinkTxt}
 
 function CloseMenu(){
-	if(!Load||!Creatd) return;
+	if(!Loadd||!Creatd) return;
 	if(!KeepHilite){
 		var HP=Nav4?this.LowLyr:this;
 		LowItem(HP)}
