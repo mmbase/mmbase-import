@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.30 2003-12-09 22:51:38 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.31 2003-12-21 17:40:58 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -211,6 +211,7 @@ public class BasicQuery implements Query  {
 
 
     public RelationStep addRelationStep(NodeManager otherNodeManager, String role, String direction) {
+        if ("".equals(role)) role = null;
         return addRelationStep(otherNodeManager, role, direction, true);
     }
 
