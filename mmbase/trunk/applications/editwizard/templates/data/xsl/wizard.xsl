@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.117 2004-01-20 21:38:43 michiel Exp $
+    @version $Id: wizard.xsl,v 1.118 2004-01-21 12:51:53 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -626,6 +626,9 @@
     <xsl:choose>
       <xsl:when test="@dttype=&apos;datetime&apos;">
         <xsl:value-of select="date:format(string(value), $date-pattern)" disable-output-escaping="yes"/>
+      </xsl:when>
+      <xsl:when test="@dttype=&apos;millisecondsdatetime&apos;">
+        <xsl:value-of select="date:format(string(value), $date-pattern, 1)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="value" mode="line"/>
