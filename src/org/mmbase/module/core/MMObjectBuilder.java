@@ -29,7 +29,7 @@ import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.module.database.MultiConnection;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 
-import org.mmbase.module.gui.html.EditState;  //argh 
+import org.mmbase.module.gui.html.EditState;  //argh
 
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.*;
@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.214 2003-03-06 17:32:14 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.215 2003-03-06 17:45:13 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -86,7 +86,7 @@ public class MMObjectBuilder extends MMTable {
         };
         typeCache.putCache();
     }
-    
+
     /**
      * The cache that contains the X last requested nodes
      */
@@ -272,10 +272,10 @@ public class MMObjectBuilder extends MMTable {
      */
     private int maxNodesFromQuery = -1;
 
-	/**
-	* Max length of a query, informix = 32.0000 so we assume a bit less for other databases
-	*/
-	private static final int MAX_QUERY_SIZE = 20000;
+        /**
+        * Max length of a query, informix = 32.0000 so we assume a bit less for other databases
+        */
+        private static final int MAX_QUERY_SIZE = 20000;
 
     /**
      * The string that can be used inside the builder.xml as property,
@@ -362,16 +362,16 @@ public class MMObjectBuilder extends MMTable {
         checkAddTmpField("_number");
         checkAddTmpField("_exists");
 
-	// get property dof maximum number of queries..
-	String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
-	if(property != null) {
-	    try {
-		maxNodesFromQuery = Integer.parseInt(property);
-		log.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
-	    } catch(NumberFormatException nfe) {
-		log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERTY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
-	    }
-	}
+        // get property dof maximum number of queries..
+        String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
+        if(property != null) {
+            try {
+                maxNodesFromQuery = Integer.parseInt(property);
+                log.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
+            } catch(NumberFormatException nfe) {
+                log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERTY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
+            }
+        }
         return true;
     }
 
@@ -433,7 +433,7 @@ public class MMObjectBuilder extends MMTable {
             // do we really wanna catch our exceptions here?
             // the only purpose now to catch them here, is to log
             // failures of inserts..
-	        String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
+                String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
             log.error(msg);
             throw e;
         }
@@ -525,16 +525,16 @@ public class MMObjectBuilder extends MMTable {
      * Gives the list of parent-builders.
      *
      * @since MMBase-1.6.2
-     
+
      */
     protected List  getAncestors() {
         return ancestors;
     }
 
     /**
-     * Creates list of descendant-builders. 
+     * Creates list of descendant-builders.
      *
-     * @since MMBase-1.6.2     
+     * @since MMBase-1.6.2
      */
     public List getDescendants() {
         ArrayList result = new ArrayList();
@@ -547,7 +547,7 @@ public class MMObjectBuilder extends MMTable {
         }
         return result;
     }
-   
+
 
     /**
      * Sets the builder that this builder extends, and registers it in the database layer.
@@ -560,13 +560,13 @@ public class MMObjectBuilder extends MMTable {
         ancestors.addAll(parent.getAncestors());
         ancestors.push(parent);
     }
-    
+
     /**
      * Checks wether this builder is an extension of the argument builder
      *
      * @since MMBase-1.6.2
      */
-    public boolean isExtensionOf(MMObjectBuilder o) {    
+    public boolean isExtensionOf(MMObjectBuilder o) {
         return ancestors.contains(o);
     }
 
@@ -597,13 +597,13 @@ public class MMObjectBuilder extends MMTable {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-	if (oType != node.getOType()) {
-	    // fixed comment's below..??
-	    // prevent from making database inconsistent(say remove nodes from inactive builder)
-	    // the builder we are in is not the actual builder!!
-	    // ? why not an node.remove()
-	    throw new RuntimeException("Builder with name:" + getTableName() + "("+oType+") is not the actual builder.");
-	}
+        if (oType != node.getOType()) {
+            // fixed comment's below..??
+            // prevent from making database inconsistent(say remove nodes from inactive builder)
+            // the builder we are in is not the actual builder!!
+            // ? why not an node.remove()
+            throw new RuntimeException("Builder with name:" + getTableName() + "("+oType+") is not the actual builder.");
+        }
 
         // removes the node FROM THIS BUILDER
         // seems not a very logical call, as node.parent is the node's actual builder,
@@ -733,8 +733,8 @@ public class MMObjectBuilder extends MMTable {
      * @sql
      */
     public int getNodeType(int number) {
-	// assertment
-	if(number < 0 ) throw new RuntimeException("node number was invalid("+ number+")" );
+        // assertment
+        if(number < 0 ) throw new RuntimeException("node number was invalid("+ number+")" );
 
         int otype=-1;
         MultiConnection con = null;
@@ -751,7 +751,7 @@ public class MMObjectBuilder extends MMTable {
                 // first get the otype to select the correct builder
                 con   = mmb.getConnection();
                 stmt2 = con.createStatement();
-		String sql = "SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number;
+                String sql = "SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number;
                 ResultSet rs=stmt2.executeQuery(sql);
                 if (rs.next()) {
                     otype=rs.getInt(1);
@@ -1088,9 +1088,9 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Counts number of nodes matching a specified constraint. 
+     * Counts number of nodes matching a specified constraint.
      *
-     * @param where The constraint, can be a SQL where-clause, a MMNODE 
+     * @param where The constraint, can be a SQL where-clause, a MMNODE
      *        expression or an altavista-formatted expression.
      * @return The number of nodes, or -1 when failing to retrieve the data.
      * @deprecated Use {@link #count(NodeSearchQuery) count(NodeSearchQuery)}
@@ -1110,9 +1110,9 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Counts number of nodes matching a specified constraint. 
+     * Counts number of nodes matching a specified constraint.
      * The constraint is specified by a query that selects nodes of
-     * a specified type, which must be the nodetype corresponding 
+     * a specified type, which must be the nodetype corresponding
      * to this builder.
      *
      * @param query The query.
@@ -1128,7 +1128,7 @@ public class MMObjectBuilder extends MMTable {
             "Wrong builder for query on '" + query.getBuilder().getTableName()
             + "'-table: " + this.getTableName());
         }
-        
+
         // Wrap in modifiable query, replace fields by one count field.
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
         Step step = (Step) query.getSteps().get(0);
@@ -1138,9 +1138,9 @@ public class MMObjectBuilder extends MMTable {
         List newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
-        
+
         // Execute query, return result.
-        List results = mmb.getDatabase().getNodes(modifiedQuery, 
+        List results = mmb.getDatabase().getNodes(modifiedQuery,
             new ResultBuilder(mmb, modifiedQuery));
         ResultNode result = (ResultNode) results.get(0);
         return result.getIntValue("number");
@@ -1151,7 +1151,7 @@ public class MMObjectBuilder extends MMTable {
      * Enumerate all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where) {
@@ -1163,7 +1163,7 @@ public class MMObjectBuilder extends MMTable {
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where,String sort) {
@@ -1177,7 +1177,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where,String sort,boolean direction) {
@@ -1188,7 +1188,7 @@ public class MMObjectBuilder extends MMTable {
      * Returns a vector containing all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where) {
@@ -1212,7 +1212,7 @@ public class MMObjectBuilder extends MMTable {
      * @param sorted      a comma separated list of field names on wich the
      *                    returned list should be sorted
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where,String sorted) {
@@ -1226,7 +1226,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where,String sorted,boolean direction) {
@@ -1259,7 +1259,7 @@ public class MMObjectBuilder extends MMTable {
      *                    value.
      * @return            a vector containing all the objects that apply in the
      *                    requested order
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where, String sorted, String directions) {
@@ -1276,13 +1276,13 @@ public class MMObjectBuilder extends MMTable {
         }
         return result;
     }
-    
+
     /**
      * As searchVector. Differences are:
      * - Throws exception on SQL errors
      * - returns List rather then Vector.
      * @since MMBase-1.6
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
@@ -1304,17 +1304,17 @@ public class MMObjectBuilder extends MMTable {
      * - throws Exception on error
      * - returns List
      *
-     * @param where Constraint, represented by scan MMNODE expression, 
+     * @param where Constraint, represented by scan MMNODE expression,
      *        AltaVista format or SQL "where"-clause.
      * @param sorted Comma-separated list of names of fields to sort on.
-     * @param directions Comma-separated list of sorting directions ("UP" 
+     * @param directions Comma-separated list of sorting directions ("UP"
      *        or "DOWN") of the fields to sort on.
      * @since MMBase-1.6
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
-    public List searchList(String where, String sorted, String directions) 
+    public List searchList(String where, String sorted, String directions)
     throws SQLException {
         // In order to support this method:
         // - Exceptions of type SearchQueryExceptions are wrapped
@@ -1335,7 +1335,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6
      * @sql
      * @deprecated Use <code>getSearchQuery(String)</code> instead.
-     * @deprecated-now This method no longer serves a purpose and is called 
+     * @deprecated-now This method no longer serves a purpose and is called
      *                  from nowhere.
      */
     protected String getQuery(String where) {
@@ -1348,13 +1348,13 @@ public class MMObjectBuilder extends MMTable {
         }
         return "SELECT * FROM " + getFullTableName() + " " + where;
     }
-    
+
     /**
-     * Creates search query that retrieves nodes matching a specified 
-     * constraint. 
+     * Creates search query that retrieves nodes matching a specified
+     * constraint.
      *
-     * @param where The constraint, can be a SQL where-clause, a MMNODE 
-     *        expression, an altavista-formatted expression, empty or 
+     * @param where The constraint, can be a SQL where-clause, a MMNODE
+     *        expression, an altavista-formatted expression, empty or
      *        <code>null</code>.
      * @return The query.
      * @since MMBase-1.7
@@ -1362,7 +1362,7 @@ public class MMObjectBuilder extends MMTable {
     // package visibility!
     NodeSearchQuery getSearchQuery(String where) {
         NodeSearchQuery query;
-        
+
         if (where != null && where.startsWith("MMNODE ")) {
             // MMNODE expression.
             query = convertMMNodeSearch2Query(where);
@@ -1376,15 +1376,15 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Creates search query that retrieves a sorted list of nodes,
-     * matching a specified constraint. 
+     * matching a specified constraint.
      *
-     * @param where The constraint, can be a SQL where-clause, a MMNODE 
+     * @param where The constraint, can be a SQL where-clause, a MMNODE
      *        expression or an altavista-formatted expression.
      * @param sorted Comma-separated list of names of fields to sort on.
-     * @param directions Comma-separated list of sorting directions ("UP" 
+     * @param directions Comma-separated list of sorting directions ("UP"
      *        or "DOWN") of the fields to sort on.
      *        If the number of sorting directions is less than the number of
-     *        fields to sort on, the last specified direction is applied to 
+     *        fields to sort on, the last specified direction is applied to
      *        the remaining fields.
      * @since MMBase-1.7
      */
@@ -1397,7 +1397,7 @@ public class MMObjectBuilder extends MMTable {
         StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
         StringTokenizer directionsTokenizer
         = new StringTokenizer(directions, ",");
-        
+
         String direction = "UP";
         while (sortedTokenizer.hasMoreElements()) {
             String fieldName = sortedTokenizer.nextToken().trim();
@@ -1420,7 +1420,7 @@ public class MMObjectBuilder extends MMTable {
         }
         return query;
     }
-    
+
     /**
      * Adds nodenumbers to be included to query retrieving nodes.
      *
@@ -1445,7 +1445,7 @@ public class MMObjectBuilder extends MMTable {
      * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
      * @param query The SQL query
      * @return A Vector which contains all nodes that were found
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     private Vector basicSearch(String query) {
@@ -1468,7 +1468,7 @@ public class MMObjectBuilder extends MMTable {
      * - Throws exception on error
      * - Returns List
      * @since MMBase-1.6
-     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
@@ -1483,7 +1483,7 @@ public class MMObjectBuilder extends MMTable {
             con = mmb.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            
+
             for (int counter = 0; rs.next(); counter++) {
                 // check if we are allowed to do this iteration...
                 if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
@@ -1508,16 +1508,16 @@ public class MMObjectBuilder extends MMTable {
         } finally {
             mmb.closeConnection(con,stmt);
         }
-        
+
         // Process and return the results.
         processSearchResults(results);
         return results;
     }
 
     /**
-     * Returns nodes matching a specified constraint. 
+     * Returns nodes matching a specified constraint.
      * The constraint is specified by a query that selects nodes of
-     * a specified type, which must be the nodetype corresponding 
+     * a specified type, which must be the nodetype corresponding
      * to this builder.
      *
      * @param query The query.
@@ -1526,7 +1526,7 @@ public class MMObjectBuilder extends MMTable {
      *         by the query is not the nodetype corresponding to this builder.
      * @since MMBase-1.7
      */
-    public List getNodes(NodeSearchQuery query) 
+    public List getNodes(NodeSearchQuery query)
     throws SearchQueryException {
         // Test if nodetype corresponds to builder.
         if (query.getBuilder() != this) {
@@ -1534,23 +1534,23 @@ public class MMObjectBuilder extends MMTable {
             "Wrong builder for query on '" + query.getBuilder().getTableName()
             + "'-table: " + this.getTableName());
         }
-        
+
         // TODO (later): implement maximum set by maxNodesFromQuery?
-        
+
         // Execute query.
         List results = mmb.getDatabase().getNodes(query, this);
-        
+
         // Perform necessary postprocessing.
         processSearchResults(results);
 
         return results;
     }
-    
+
      /**
      * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
      * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchNumbers(String where) {
@@ -1568,11 +1568,11 @@ public class MMObjectBuilder extends MMTable {
         List newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
-        
+
         try {
-            List resultNodes = mmb.getDatabase().getNodes(modifiedQuery, 
+            List resultNodes = mmb.getDatabase().getNodes(modifiedQuery,
                 new ResultBuilder(mmb, modifiedQuery));
-            
+
             // Extract the numbers from the result.
             Iterator iResultNodes = resultNodes.iterator();
             while (iResultNodes.hasNext()) {
@@ -1592,7 +1592,7 @@ public class MMObjectBuilder extends MMTable {
      * @param sorted order in which to return the objects
      * @param in lost of node numbers to filter on
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String sort,String in) {
@@ -1604,7 +1604,7 @@ public class MMObjectBuilder extends MMTable {
      * @param where where clause that the objects need to fulfill
      * @param in lost of node numbers to filter on
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String in) {
@@ -1619,7 +1619,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String sort,boolean direction,String in) {
@@ -1633,7 +1633,7 @@ public class MMObjectBuilder extends MMTable {
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
      * @sql
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVectorIn(String in) {
@@ -1660,14 +1660,14 @@ public class MMObjectBuilder extends MMTable {
         }
         return result;
     }
-    
+
     /*
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      * @sql
      */
@@ -1704,7 +1704,7 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVectorIn(String where,String sorted,String in) {
@@ -1720,12 +1720,12 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      * @sql
      */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
-        
+
         if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
             // Nodenumbers specified as query:
             // do the query on the database
@@ -1765,9 +1765,9 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.6
      * @sql
      * @deprecated Use <code>getSearchQuery(String,String,String)</code>
-     *             instead - specifying direction "UP" or 
+     *             instead - specifying direction "UP" or
      *             "DOWN" as appropriate.
-     * @deprecated-now This method no longer serves a purpose and is called 
+     * @deprecated-now This method no longer serves a purpose and is called
      *                 from nowhere.
      */
 
@@ -1798,7 +1798,7 @@ public class MMObjectBuilder extends MMTable {
      * @sql
      * @deprecated Use <code>getSearchQuery(String,String,String)</code>
      *             instead.
-     * @deprecated-now This method no longer serves a purpose and is called 
+     * @deprecated-now This method no longer serves a purpose and is called
      *                 from nowhere.
      */
     protected String getQuery(String where, String sorted, String directions) {
@@ -1843,7 +1843,7 @@ public class MMObjectBuilder extends MMTable {
      * the where clause.
      * @param where SQL WHERE-clause without the leading "WHERE ".
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      *             The performance gain is negligible and does not justify
      *             another method.
@@ -1853,12 +1853,12 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Performs some necessary postprocessing on nodes retrieved from a 
+     * Performs some necessary postprocessing on nodes retrieved from a
      * search query.
      * This consists of the following actions:
      * <ul>
      * <li>Stores retrieved nodes in the {@link #nodeCache nodecache}, or
-     * <li>Replaces nodes by cached nodes (if cached node available, and 
+     * <li>Replaces nodes by cached nodes (if cached node available, and
      *     {@link #REPLACE_CACHE REPLACE_CACHE} is set to false).
      * <li>Replace partially retrieved nodes in the result by complete nodes.
      *     Nodes are partially retrieved when their type is a inheriting type
@@ -1866,8 +1866,8 @@ public class MMObjectBuilder extends MMTable {
      *     additional queries are performed to retrieve the complete nodes.
      * <li>Removes nodes with invalid node number from the result.
      * </ul>
-     * 
-     * @param results The nodes. After returning, partially retrieved nodes 
+     *
+     * @param results The nodes. After returning, partially retrieved nodes
      *        in the result are replaced <em>in place</em> by complete nodes.
      */
     protected void processSearchResults(List results) {
@@ -1876,11 +1876,11 @@ public class MMObjectBuilder extends MMTable {
         int convertedCount = 0;
         int cacheGetCount = 0;
         int cachePutCount = 0;
-        
+
         ListIterator iResults = results.listIterator();
         while (iResults.hasNext()) {
             MMObjectNode node = (MMObjectNode) iResults.next();
-        
+
             Integer number = new Integer(node.getNumber());
             if(number.intValue() < 0) {
                 // never happend to me, and never should!
@@ -1890,7 +1890,7 @@ public class MMObjectBuilder extends MMTable {
                 iResults.remove();
                 continue;
             }
-                
+
             boolean fromCache = false;
             // only active when builder loaded (oType != -1)
             // maybe we got the wrong node typeback, if so
@@ -1945,14 +1945,14 @@ public class MMObjectBuilder extends MMTable {
                 cachePutCount++;
             }
         }
-        
+
         if(CORRECT_NODE_TYPES && convert.size() > 0){
             // retieve the nodes from the builders....
             // and put them into one big hashmap (integer/node)
             // after that replace all the nodes in result, that
             // were invalid.
             Map convertedNodes = new HashMap();
-            
+
             // process all the different types (builders)
             Iterator types = convert.entrySet().iterator();
             while(types.hasNext()){
@@ -1987,7 +1987,7 @@ public class MMObjectBuilder extends MMTable {
                     if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
                     // now query the correct builder  for the missing nodes...
                     // TODO RvM: use getNodes(NodeSearchQuery) instead.
-                    Enumeration enum = builder.searchWithWhere("WHERE " + mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
+                    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
                     while(enum.hasMoreElements()) {
                         MMObjectNode current = (MMObjectNode)enum.nextElement();
                         convertedNodes.put(new Integer(current.getNumber()), current);
@@ -1995,7 +1995,7 @@ public class MMObjectBuilder extends MMTable {
                 }
                 else throw new RuntimeException("how can the numbers string be null?");
             }
-            
+
             // insert all the corrected nodes that were found into the list..
             for(int i=0; i<results.size(); i++) {
                 MMObjectNode current = (MMObjectNode) results.get(i);
@@ -2034,7 +2034,7 @@ public class MMObjectBuilder extends MMTable {
      * @vpro replace with a way to sort nodes.
      * @param rs The resultset containing the nodes
      * @return The SortedVector which holds the data
-     * @deprecated Use {@link #getNodes(NodeSearchQuery) 
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
      *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public SortedVector readSearchResults(ResultSet rs, SortedVector sv) {
@@ -2271,12 +2271,12 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-     * Gets the field definitions for the editor, sorted according 
+     * Gets the field definitions for the editor, sorted according
      * to the specified order, and excluding the fields that have
      * not been assigned a valid position (valid is >= 0).
      * This method makes an explicit sort (it does not use a cached list).
      *
-     * @param sortorder One of the sortorders defined in 
+     * @param sortorder One of the sortorders defined in
      *        {@link org.mmbase.module.corebuilders.FieldDefs FieldDefs}
      * @return The ordered list of field definitions.
      */
@@ -2434,9 +2434,9 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Parses string containing function parameters.
      * The parameters must be separated by ',' or ';' and may be functions
-     * themselves (i.e. a functionname, followed by a parameter list between 
+     * themselves (i.e. a functionname, followed by a parameter list between
      * parenthesis).
-     * 
+     *
      * @param fields The string, containing function parameters.
      * @return List of function parameters (may be functions themselves).
      * @deprecated use executeFunction(node, function, list)
@@ -2487,13 +2487,13 @@ public class MMObjectBuilder extends MMTable {
     final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
 
         Object rtn = null;
-        if (arguments == null) arguments = new Vector();        
+        if (arguments == null) arguments = new Vector();
         // for backwards compatibility (calling with string function with more then one argument)
         if (arguments.size() == 1 && arguments.get(0) instanceof String) {
             String arg = (String) arguments.get(0);
             rtn =  executeFunction(node, function, arg);
             if (rtn != null) return rtn;
-            arguments = getFunctionParameters(arg);            
+            arguments = getFunctionParameters(arg);
         }
         return executeFunction(node, function, arguments);
 
@@ -2503,7 +2503,7 @@ public class MMObjectBuilder extends MMTable {
      * Executes a function on the field of a node, and returns the result.
      * This method is called by the builder's {@link #getValue} method.
      * Derived builders should override this method to provide additional functions.
-    * 
+    *
      * @since MMBase-1.6
      * @throw IllegalArgumentException if the argument List does not
      * fit the function
@@ -3062,7 +3062,7 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Converts an MMNODE expression to an SQL expression. Returns the 
+     * Converts an MMNODE expression to an SQL expression. Returns the
      * result as an SQL where-clause (including the leading "WHERE ").
      * <p>
      * The syntax of an MMNODE expression is defined as follows:
@@ -3071,9 +3071,9 @@ public class MMObjectBuilder extends MMTable {
      * <li><em>fieldexpressions</em> is one field expression, or several
      *     field expressions combined with logical operators
      * <li><em>field expression</em>: "fieldXXvalue"
-     * <li><em>field</em> is a fieldname (may be prefixed as in 
+     * <li><em>field</em> is a fieldname (may be prefixed as in
            "prefix.fieldname")
-     * <li><em>XX</em> is a 2 letter comparison operator: "==" (equal), 
+     * <li><em>XX</em> is a 2 letter comparison operator: "==" (equal),
      *     "=E" (equal), "=N" (not equal), "=G" (greater than),
      *     "=g" (greater than or equal), "=S" (less than),
      *     "=s" (less than or equal).
@@ -3096,7 +3096,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Creates query based on an MMNODE expression.
-     * 
+     *
      * @param expr The MMNODE expression.
      * @return The query.
      * @throws IllegalArgumentException when an invalid argument is supplied.
@@ -3108,21 +3108,21 @@ public class MMObjectBuilder extends MMTable {
         BasicCompositeConstraint constraints
             = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
         String logicalOperator = null;
-        
-        // Strip leading string "MMNODE " from expression, parse 
+
+        // Strip leading string "MMNODE " from expression, parse
         // fieldexpressions and logical operators.
         // (legacy: eol characters '\n' and '\r' are interpreted as "AND NOT")
-        StringTokenizer tokenizer 
+        StringTokenizer tokenizer
             = new StringTokenizer(expr.substring(7), "+-\n\r", true);
         while (tokenizer.hasMoreTokens()) {
             String fieldExpression = tokenizer.nextToken();
-            
+
             // Remove prefix if present (example episodes.title==).
             int pos = fieldExpression.indexOf('.');
             if (pos != -1) {
                 fieldExpression = fieldExpression.substring(pos + 1);
             }
-            
+
             // Break up field expression in fieldname, comparison operator
             // and value.
             pos = fieldExpression.indexOf('=');
@@ -3130,7 +3130,7 @@ public class MMObjectBuilder extends MMTable {
                 String fieldName = fieldExpression.substring(0, pos);
                 char comparison = fieldExpression.charAt(pos + 1);
                 String value = fieldExpression.substring(pos + 2);
-                
+
                 // Add corresponding constraint to constraints.
                 FieldDefs fieldDefs = getField(fieldName);
                 if (fieldDefs == null) {
@@ -3138,10 +3138,10 @@ public class MMObjectBuilder extends MMTable {
                         "Invalid MMNODE expression: " + expr);
                 }
                 StepField field = query.getField(fieldDefs);
-                BasicConstraint constraint 
+                BasicConstraint constraint
                     = parseFieldPart(field, comparison, value);
                 constraints.addChild(constraint);
-                
+
                 // Set to inverse if preceded by a logical operator that is
                 // not equal to "+".
                 if (logicalOperator != null && !logicalOperator.equals("+")) {
@@ -3152,13 +3152,13 @@ public class MMObjectBuilder extends MMTable {
                 throw new IllegalArgumentException(
                     "Invalid MMNODE expression: " + expr);
             }
-            
+
             // Read next logical operator.
             if (tokenizer.hasMoreTokens()) {
                 logicalOperator = tokenizer.nextToken();
             }
         }
-        
+
         List childs = constraints.getChilds();
         if (childs.size() == 1) {
             query.setConstraint((FieldValueConstraint) childs.get(0));
@@ -3170,12 +3170,12 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Creates a {@link org.mmbase.storage.search.FieldCompareConstraint
-     * FieldCompareConstraint}, based on parts of a field expression in a 
+     * FieldCompareConstraint}, based on parts of a field expression in a
      * MMNODE expression.
-     * 
+     *
      * @param fieldName The field name.
      * @param comparison The second character of the comparison operator.
-     * @param strValue The value to compare with, represented as 
+     * @param strValue The value to compare with, represented as
      *        <code>String<code>.
      * @return The constraint.
      * @since MMBase-1.7
@@ -3183,26 +3183,26 @@ public class MMObjectBuilder extends MMTable {
     // package visibility!
     BasicFieldValueConstraint parseFieldPart(
             StepField field, char comparison, String strValue) {
-        
+
         Object value = strValue;
-        
+
         // For numberical fields, convert string representation to Double.
         if (field.getType() != FieldDefs.TYPE_STRING &&
             field.getType() != FieldDefs.TYPE_XML &&
             field.getType() != FieldDefs.TYPE_UNKNOWN) {
                 value = Double.valueOf(strValue);
         }
-                
-        BasicFieldValueConstraint constraint = 
+
+        BasicFieldValueConstraint constraint =
             new BasicFieldValueConstraint(field, value);
-        
+
         switch (comparison) {
             case '=':
             case 'E':
                 // EQUAL (string field)
                 if (field.getType() == FieldDefs.TYPE_STRING ||
                     field.getType() == FieldDefs.TYPE_XML) {
-                    // Strip first and last character of value, when 
+                    // Strip first and last character of value, when
                     // equal to '*'.
                     String str = (String) value;
                     int length = str.length();
@@ -3221,11 +3221,11 @@ public class MMObjectBuilder extends MMTable {
                     constraint.setOperator(FieldCompareConstraint.EQUAL);
                 }
                 break;
-                
+
             case 'N':
                 constraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
                 break;
-                
+
             case 'G':
                 constraint.setOperator(FieldCompareConstraint.GREATER);
                 break;
@@ -3241,7 +3241,7 @@ public class MMObjectBuilder extends MMTable {
             case 's':
                 constraint.setOperator(FieldCompareConstraint.LESS_EQUAL);
                 break;
-            
+
             default:
                 throw new IllegalArgumentException(
                     "Invalid comparison character: '" + comparison + "'");
@@ -3929,21 +3929,21 @@ public class MMObjectBuilder extends MMTable {
      * @param builderName the name of the builder
      * @return a String containing the fields in the database separated by a comma
      * @since  MMBase-1.6.2
-     * 
+     *
      **/
     private String getNonByteArrayFields(){
         StringBuffer sb = new StringBuffer();
         Iterator fieldIter = getFields(FieldDefs.ORDER_CREATE).iterator();
-        
+
         boolean first = true;
-        
+
         while(fieldIter.hasNext()){
             FieldDefs def = (FieldDefs)fieldIter.next();
             if (def.getDBType() != FieldDefs.TYPE_BYTE && (def.getDBState() == FieldDefs.DBSTATE_PERSISTENT || def.getDBState() == FieldDefs.DBSTATE_SYSTEM)){
                 if (! first) {
                     sb.append(",");
                 }
-                
+
                 sb.append(getFullTableName() + "." + database.getAllowedField(def.getDBName()));
                 first = false;
             }
