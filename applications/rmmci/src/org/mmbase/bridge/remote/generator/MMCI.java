@@ -114,6 +114,7 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueInConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueBetweenConstraint",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.LegacyConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
 				//why???
