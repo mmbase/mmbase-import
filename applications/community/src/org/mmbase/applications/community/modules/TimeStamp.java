@@ -15,20 +15,45 @@ import java.util.Date;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Creates a timestamp value out of two integer values.
+ * Supposedly needed because the Informix setup had no configuration
+ * for long values (in which the timestamps are expressed), which
+ * means they need be store as two integers instead.
+ * @deprecated Do not use this class. Store timestamps as Long or Date instead.
+ *
+ * @author Dirk-Jan Hoekstra
+ * @author Pierre van Rooden
+ * @version 28 May 2001
+ */
+
 public class TimeStamp extends Date
 {
 
     private static Logger log = Logging.getLoggerInstance(TimeStamp.class.getName()); 
 
-	private int low = 0;
+    /**
+     * the 16 least significant bits of the timestamp value
+     */
+    private int low = 0;
+    /**
+    * the 16 most significant bits of the timestamp value
+    */
 	private int high = 0;
 
-	public TimeStamp()
+    /**
+    * Creates a TimeStamp based on the current time.
+    */
+    public TimeStamp()
 	{ /* POST: Creates a TimeStamp with the current time.
 	   */ 
 		this(System.currentTimeMillis());
 	}
 
+    /**
+    * Creates a TimeStamp based on a specified time.
+    * @param time the time in milliseconds since 1/1/1970
+    */
 	public TimeStamp(long time)
 	{
 		setTime(time);
@@ -36,6 +61,12 @@ public class TimeStamp extends Date
 		high = (int)(time >>> 32);
 	}
 
+     /**
+     * Creates a TimeStamp based on a specified time.
+     * @param low the 16 least significant bits of a time value (a long
+     *      representing milliseconds since 1/1/1970
+     * @param high the 16 most significant bits of the time value
+     */
 	public TimeStamp(Integer low, Integer high)
 	{
 		this(); // Create this with currenttime
@@ -48,6 +79,12 @@ public class TimeStamp extends Date
 		setTimeLowHigh(low, high);
 	}
 	
+    /**
+    * Creates a TimeStamp based on a specified time.
+    * @param low the 16 least significant bits of a time value (a long
+    *      representing milliseconds since 1/1/1970
+    * @param high the 16 most significant bits of the time value
+    */
 	private void setTimeLowHigh(int low, int high) 
 	{ /* PRE:  Low has to contain the 16 least significant bits and high the 16 most significant bits of a long value.
 	   *       The long value is interpeted as the milliseconds passed since January 1, 1970, 00:00:00 GMT.\
@@ -68,12 +105,19 @@ public class TimeStamp extends Date
 		setTime(time);
 	}
 
-
+    /**
+    * Retrieve the 16 least significant bits of a time value (a long
+    * representing milliseconds since 1/1/1970.
+    */
 	public int lowIntegerValue()
 	{
         return low;
 	}
 
+    /**
+    * Retrieve the 16 most significant bits of a time value (a long
+    * representing milliseconds since 1/1/1970.
+    */
 	public int highIntegerValue()
 	{ 
         return high;
