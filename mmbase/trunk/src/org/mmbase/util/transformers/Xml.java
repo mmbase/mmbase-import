@@ -14,6 +14,9 @@ public class Xml extends AbstractTransformer implements CharTransformer {
     
     private final static int ESCAPE           = 1;     
     private final static int ESCAPE_ATTRIBUTE = 2;
+    private final static int ESCAPE_ATTRIBUTE_DOUBLE = 3;
+    private final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
+    private final static int ESCAPE_ATTRIBUTE_HTML = 5;
 
     /**
      * Used when registering this class as a possible Transformer
@@ -21,10 +24,13 @@ public class Xml extends AbstractTransformer implements CharTransformer {
 
     public HashMap transformers() {
         HashMap h = new HashMap();
-        h.put("escape_xml".toUpperCase(),  new Config(Xml.class, ESCAPE));
-        h.put("escape_html".toUpperCase(), new Config(Xml.class, ESCAPE));
-        h.put("escape_wml".toUpperCase(),  new Config(Xml.class, ESCAPE));
-        h.put("escape_xml_attribute".toUpperCase(), new Config(Xml.class, ESCAPE_ATTRIBUTE, "Escaping in attributes only involves quotes. This is for double quotes."));
+        h.put("escape_xml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Escapes >, < & and \""));
+        h.put("escape_html".toUpperCase(), new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
+        h.put("escape_wml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
+        h.put("escape_xml_attribute".toUpperCase(), new Config(Xml.class, ESCAPE_ATTRIBUTE, "Escaping in attributes only involves quotes. This simply escapes both types (which is little too much)."));
+        h.put("escape_xml_attribute_double".toUpperCase(), new Config(Xml.class, ESCAPE_ATTRIBUTE_DOUBLE, "Escaping in attributes only involves quotes. This is for double quotes."));
+        h.put("escape_xml_attribute_single".toUpperCase(), new Config(Xml.class, ESCAPE_ATTRIBUTE_SINGLE, "Escaping in attributes only involves quotes. This is for single quotes."));
+        h.put("escape_html_attribute".toUpperCase(), new Config(Xml.class, ESCAPE_ATTRIBUTE_HTML, "This escapes all quotes, and also newlines. Handly in some html tags."));
         return h;
     }
 
@@ -56,7 +62,20 @@ public class Xml extends AbstractTransformer implements CharTransformer {
 	return sb.toString();
     }
     public static String XMLAttributeEscape(String att) {
-        return XMLAttributeEscape(att, '"');
+        StringBuffer sb = new StringBuffer();
+	char[] data = att.toCharArray();
+	char c;
+	for (int i =0 ; i < data.length; i++){
+	    c = data[i];
+            if (c == '"') {
+                sb.append("&quot;");
+            } else if (c == '\'')  {
+                sb.append("&apos;");
+            } else {
+    	    	sb.append(c);
+    	    }
+	}
+	return sb.toString();        
     }
    
     /**
@@ -166,14 +185,23 @@ public class Xml extends AbstractTransformer implements CharTransformer {
         switch(to){
         case ESCAPE:           return XMLEscape(r);
         case ESCAPE_ATTRIBUTE: return XMLAttributeEscape(r);
-        default: return null;
+        case ESCAPE_ATTRIBUTE_DOUBLE: return XMLAttributeEscape(r, '"');
+        case ESCAPE_ATTRIBUTE_SINGLE: return XMLAttributeEscape(r, '\'');
+        case ESCAPE_ATTRIBUTE_HTML: return removeNewlines(XMLAttributeEscape(r));
+        default: throw new UnsupportedOperationException("Cannot transform");
         }
     }
     public String transformBack(String r) {
+        // the attribute unescape will do a little to much, I think.
         switch(to){
-        case ESCAPE:           return XMLUnescape(r);
-        case ESCAPE_ATTRIBUTE: return r;
-        default: return null;
+        case ESCAPE:
+        case ESCAPE_ATTRIBUTE:
+        case ESCAPE_ATTRIBUTE_DOUBLE:
+        case ESCAPE_ATTRIBUTE_SINGLE: return XMLUnescape(r);
+        case ESCAPE_ATTRIBUTE_HTML: 
+            // we can only try, the removing of newlines cannot be undone.
+            return XMLUnescape(r);
+        default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
 
