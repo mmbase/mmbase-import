@@ -1,7 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud sessionname="forum" username="admin" password="admin2k">
+<mm:cloud>
+<mm:import id="dac"><mm:function set="mmbob" name="getDefaultAccount" /></mm:import>
+<mm:import id="dpw"><mm:function set="mmbob" name="getDefaultPassword" /></mm:import>
+</mm:cloud>
+<mm:cloud sessionname="forum" username="$dac" password="$dpw">
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 
 <%@ include file="thememanager/loadvars.jsp" %>
@@ -62,7 +66,7 @@
 										      
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%" align="center">
 <mm:present referid="mailed">
 <form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
 <tr><th align="left" ><p />
