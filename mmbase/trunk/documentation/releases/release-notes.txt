@@ -22,7 +22,7 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
-
+[1.7.0]
 - Storing blobs (e.g. images) on disk has changed. 
   Blobs are now stored as follows:
   The number of the object containing the blob is broken up in
@@ -77,7 +77,6 @@ General New Features:
 MMCI (bridge) New Features:
 -------------------------
 [1.7.0]
-
 - All interfaces of the new org.mmbase.storage.search package are part
   of the 'bridge' now.  There is also a new 'Query' object in
   org.mmbase.bridge, which allows for query creation and modification
@@ -96,9 +95,7 @@ MMCI (bridge) New Features:
 -------------------
 Taglib New Features:
 -------------------
-
 [1.7.0]
-
 - Content-Tag, which provides default escaping behaviour,
   postprocessing functionality, and content-type information. 
 
@@ -126,8 +123,6 @@ Taglib New Features:
   variables. In practice this means that inner context tags (or
   'remove' tags) will not be needed any more. 
 
-...
-
 
 ==========================
 BUG FIXES AND IMPROVEMENTS:
@@ -136,7 +131,6 @@ BUG FIXES AND IMPROVEMENTS:
 -------------------
 Generic Improvement:
 -------------------
-
 [1.7.0]
 - Several tags in builder xmls are no longer mandatory, and sensible
   defaults will be used instead  (for example in the editor section)
@@ -196,82 +190,32 @@ Taglib Bug Fixes:
  - URL-tag not a Writer any more.
 
 
------------------
-Example Bug Fixes:
------------------
-[1.7.0]
-
-========
-Upgrade:
-========
-[1.7.0]
-- Replace mmbase.jar with the new jars.
-  - if you used editwizards, place mmbase-editwizard.jar (from
-    mmbase-editwizard.zip) 
-  - if you used community, place mmbase-community.jar (from
-    mmbase-community.zip). You can remove mmcommunity-taglib.tld too
-    and place this in web.xml instead of:
-    <taglib>
-      <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
-      <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
-    </taglib>
-
--  Replace and/org install all shipped jsps too.
-   - generic editors are now shipped under /mmbase/edit/basic. You can
-     follow this new convention and remove /mmeditors.  Or you
-     copy/move the content to the original location /mmeditors/jsp 
-
-   - For admin pages goes the same. They are now in /mmbase/admin
-     (used to be /mmadmin/jsp).
-
-   - If you need the examples you could replace /mmexamples by the new
-     content of /mmexamples
-
-   - The editwizard jsp and xsls are shipped in /mmbase/edit/wizard
-     (used to be /mmapps/editwizard). You can also download them
-     seperately in mmbase-editwizard.zip now.
-
-- remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead:
-  <taglib>
-    <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
-    <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
-  </taglib>
-  Note that the taglib is not any more present in mmbase.jar
-  itself. So if you wrote mmbase.jar here in web.xml you have to
-  change it. 
-
-- Clean the working directory of your app-server (to recompile jsp's)
-
-- The fields parameter of the MMBase taglib list tags (related, list,
-  etc) now no longer accepts fields that do not exist. Some pages may
-  give errors now if they specified wrong fieldnames, so you are
-  advised to check your site's pages for this error. 
-
-- If needed, convert the data directory where mmbase stored binary
-  data. 
-
 ========================
 Know Issues and Problems:
 ========================
 
-- If your app-server supports JSP2.0 (e.g. tomcat5 with a 'new' web.xml or resin 3), then the new EL
-  (Expression Language) syntax collides with the Expression language of mmbase taglib.
+- If your app-server supports JSP2.0 (e.g. tomcat5 with a 'new'
+  web.xml or resin 3), then the new EL (Expression Language) syntax
+  collides with the Expression language of mmbase taglib. 
 
-  MMBase Taglib JSP's using the ${} syntax might not work then. Often the {} can be avoided,
-  otherwise the only option is to add <%@page isELIgnored="true" %> to the page.
+  MMBase Taglib JSP's using the ${} syntax might not work then. Often
+  the {} can be avoided, otherwise the only option is to add <%@page
+  isELIgnored="true" %> to the page. 
 
-  The generic JSP-editors in /mmbase/edit/basic could not be fixed to work with and without EL. When
-  you want to use these editors in a EL environment isELIgnored must manually be added to
-  /mmbase/edit/basic/page_base_functionality.jsp (Unfortunately it cannot always be present, because
-  this setting can cause errors in a JSP1 environment).
+  The generic JSP-editors in /mmbase/edit/basic could not be fixed to
+  work with and without EL. When you want to use these editors in a EL
+  environment isELIgnored must manually be added to
+  /mmbase/edit/basic/page_base_functionality.jsp (Unfortunately it
+  cannot always be present, because this setting can cause errors in a
+  JSP1 environment). 
 
-  The EL and MMBase Taglib expressions languages are actually very similar to each other. We will
-  try to make MMBase Taglib compatible (perhaps optionally so) with EL in a next release.
+  The EL and MMBase Taglib expressions languages are actually very
+  similar to each other. We will try to make MMBase Taglib compatible
+  (perhaps optionally so) with EL in a next release. 
 
-
-- Orion doesn't support the final servlet api 2.3, because of this the
-  jumpersFilter will not work. You will need to remove the following
-  lines from <WEB-INF/web.xml>:
+- Orion version < 2.x doesn't support the final servlet api 2.3,
+  because of this the jumpersFilter will not work. You will need to
+  remove the following lines from <WEB-INF/web.xml>:
 
     <!-- Filter for jumpers -->
     <filter>
@@ -351,7 +295,7 @@ Requirements:
 MMBase needs an servlet engine which supports the servlet api 2.3 and
 jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
 
-The 'bin' distro does include a hsql database and driver.
+The 'bin' distro does include a hsqldb database and driver.
 
 
 =========
@@ -392,8 +336,7 @@ Application servers
 
 These are the applications servers on which MMBase was tested.
 
-- Tomcat 4.0.4
-- Tomcat 4.1.12, 4.1.21
+- Tomcat 4.1.29
 - Tomcat 5.0.19
 - Orion 1.5.2, 1.5.4, 1.6.0, 2.0.3
 - Jetty 4.0.0
@@ -408,5 +351,6 @@ Databases
         Ver 11.15 Distrib 3.23.41
   for pc-linux-gnu (i686)
 - Postgresql
+- Informix
 
 
