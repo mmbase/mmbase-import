@@ -15,12 +15,29 @@ import java.util.Enumeration;
  *
  * @author Rob Vermeulen
  */
-public interface RelationInterface {
-	NodeInterface getSource();
-	NodeInterface getDestination();
-	int getDirection();
-	String getForwardRole();
-	String getReciprocalRole();
+public interface RelationInterface extends NodeInterface {
 
-	//cardinaliteiten ?
+	/** 
+	 * get the source of the relation
+	 * @return the source Node
+	 */
+	public NodeInterface getSource();
+
+	/**
+	 * get the destination of the relation
+	 * @return the destination Node
+	 */
+	public NodeInterface getDestination();
+
+	/** 
+	 * set the source of the relation
+	 * @param the source Node
+	 */
+	public void setSource(NodeInterface node);
+
+	/**
+	 * set the destination of the relation
+	 * @param the destination Node
+	 */
+	public void setDestination(NodeInterface node);
 }
