@@ -1,3 +1,7 @@
+
+
+
+
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
@@ -264,6 +268,166 @@ var menu = new MTMenu();
 
 
 
+
+
+
+
+
+<mm:compare referid="education_top_menu" value="tests">
+   <% //----------------------- Tests came from here ----------------------- %>
+
+   menu.addItem("<fmt:message key="tests"/>","<mm:write referid="listjsp"/>?wizard=tests&nodepath=tests&orderby=name",null,"");
+   var teststree = new MTMenu();
+
+   <%-- create new test --%>
+      teststree.addItem("<fmt:message key="createNewTest"/>",
+                       "<mm:write referid="wizardjsp"/>?wizard=tests_&objectnumber=new",
+                       null,
+                       "<fmt:message key="createNewTestDescription"/>",
+                       "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+
+
+
+   <mm:listnodes type="tests" orderby="tests.name">
+      <mm:remove referid="testNumber"/>
+
+      <%
+         String treeName = new String();
+      %>
+      <mm:field id="testNumber" name="number" write="false" jspvar="sTreeName" vartype="String">
+         <%
+            treeName = "tree" + sTreeName + "z";
+         %>
+      </mm:field>
+
+         teststree.addItem("<mm:field name="name" /></a>",
+                           "<mm:write referid="wizardjsp"/>?wizard=tests&objectnumber=<mm:field name="number" />",
+                           null,
+                           "<fmt:message key="treatTest"/>",
+                           "<mm:treefile write="true" page="/education/wizards/gfx/learnblock.gif" objectlist="$includePath" />");
+
+      var <%= treeName %> = new MTMenu();
+
+      <%@include file="newfromtree.jsp" %>
+
+
+
+       <mm:remove referid="questionamount" />
+       <mm:import id="mark_error" reset="true"></mm:import>
+       <mm:field name="questionamount" id="questionamount">
+           <mm:isgreaterthan value="0">
+               <mm:countrelations type="questions">
+                   <mm:islessthan value="$questionamount">
+                       <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er gesteld moeten worden.</mm:import>
+                   </mm:islessthan>
+               </mm:countrelations>
+           </mm:isgreaterthan>
+           <mm:remove referid="requiredscore" />
+           <mm:field name="requiredscore" id="requiredscore">
+             <mm:countrelations type="questions">
+                 <mm:islessthan value="$requiredscore">
+                     <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
+                 </mm:islessthan>
+             </mm:countrelations>
+             <mm:isgreaterthan referid="questionamount" value="0">
+                 <mm:islessthan referid="questionamount" value="$requiredscore">
+                   <mm:import id="mark_error" reset="true">Er worden minder vragen gesteld dan er goed beantwoord moeten worden.</mm:import>
+                 </mm:islessthan>
+             </mm:isgreaterthan>
+           </mm:field>
+       </mm:field>
+
+
+
+      <mm:relatednodes type="mcquestions">
+
+         <mm:import id="mark_error" reset="true">Een multiple-choice vraag moet minstens 1 goed antwoord hebben</mm:import>
+         <mm:relatednodes type="mcanswers" constraints="mcanswers.correct > '0'" max="1">
+            <mm:import id="mark_error" reset="true"></mm:import>
+         </mm:relatednodes>
+
+            tree<mm:write referid="testNumber"/>z.addItem("<mm:field name="title" /><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty>",
+                                                          "<mm:write referid="wizardjsp"/>?wizard=mcquestions&objectnumber=<mm:field name="number" />",
+                                                          null,
+                                                          "bewerk object",
+                                                          "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="$includePath" />");
+      </mm:relatednodes>
+
+
+
+
+      <mm:relatednodes type="couplingquestions">
+            tree<mm:write referid="testNumber"/>z.addItem("<mm:field name="title" /></a>",
+                                                          "<mm:write referid="wizardjsp"/>?wizard=couplingquestions&objectnumber=<mm:field name="number" />",
+                                                          null,
+                                                          "bewerk object",
+                                                          "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="$includePath" />");
+      </mm:relatednodes>
+
+
+
+      <mm:relatednodes type="dropquestions">
+            tree<mm:write referid="testNumber"/>z.addItem("<mm:field name="title" /></a>",
+                                                          "<mm:write referid="wizardjsp"/>?wizard=dropquestions&objectnumber=<mm:field name="number" />",
+                                                          null,
+                                                          "bewerk object",
+                                                          "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="$includePath" />");
+      </mm:relatednodes>
+
+
+
+      <mm:relatednodes type="hotspotquestions">
+            tree<mm:write referid="testNumber"/>z.addItem("<mm:field name="title" /></a>",
+                                                          "<mm:write referid="wizardjsp"/>?wizard=hotspotquestions&objectnumber=<mm:field name="number" />",
+                                                          null,
+                                                          "bewerk object",
+                                                          "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="$includePath" />");
+      </mm:relatednodes>
+
+
+
+      <mm:relatednodes type="openquestions">
+            tree<mm:write referid="testNumber"/>z.addItem("<mm:field name="title" /></a>",
+                                                          "<mm:write referid="wizardjsp"/>?wizard=openquestions&objectnumber=<mm:field name="number" />",
+                                                          null,
+                                                          "bewerk object",
+                                                          "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="$includePath" />");
+      </mm:relatednodes>
+
+
+
+      <mm:relatednodes type="rankingquestions">
+            tree<mm:write referid="testNumber"/>z.addItem("<mm:field name="title" /></a>",
+                                                          "<mm:write referid="wizardjsp"/>?wizard=rankingquestions&objectnumber=<mm:field name="number" />",
+                                                          null,
+                                                          "bewerk object",
+                                                          "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="$includePath" />");
+      </mm:relatednodes>
+
+
+      <mm:relatednodes type="valuequestions">
+            tree<mm:write referid="testNumber"/>z.addItem("<mm:field name="title" /></a>",
+                                                          "<mm:write referid="wizardjsp"/>?wizard=valuequestions&objectnumber=<mm:field name="number" />",
+                                                          null,
+                                                          "bewerk object",
+                                                          "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="$includePath" />");
+      </mm:relatednodes>
+
+
+
+
+      teststree.makeLastSubmenu(<%= treeName %>, true);
+   </mm:listnodes>
+
+   menu.makeLastSubmenu(teststree, true);
+
+</mm:compare>
+
+
+
+
+
+
 <mm:compare referid="education_top_menu" value="educations">
    <% //----------------------- Educations came from here ----------------------- %>
    menu.addItem("<fmt:message key="educations"/>","<mm:write referid="listjsp"/>?wizard=educations&nodepath=educations&fields=name&orderby=name",null,"<mm:treefile write="true" page="/education/wizards/gfx/edit_education.gif" objectlist="$includePath" />");
@@ -303,7 +467,7 @@ var menu = new MTMenu();
                <% //Show current education from here %>
                <mm:node element="educations">
                      <%@include file="whichimage.jsp"%>
-                     edutree.addItem("<mm:field name="name" /><mm:present referid="pdfurl"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
+                     edutree.addItem("<mm:field name="name" /><mm:present referid="pdfurl"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
                                      "<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />",
                                      null,
                                      "<fmt:message key="editEducation"/>",
@@ -349,7 +513,7 @@ var menu = new MTMenu();
                                     </mm:field>
                                  </mm:field>
                               </mm:compare>
-                                         edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl" />&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'><img src='gfx/icpdf.gif' border='0' alt='(PDF)'/></mm:compare></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
+                                         edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl" />&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
                                                                          "<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />",
                                                                          null,
                                                                          "<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />",
