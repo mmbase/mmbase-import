@@ -123,6 +123,23 @@
             <a href="<%= baseUrl %>/<mm:write referid="filename"/>"><mm:write referid="filename"/></a> 
         </td>
         <td>
+        <%
+        String[] managers = {"audiotapes","videotapes","urls"};
+            for (int i = 0; i < managers.length; i++) {
+                NodeIterator ni = cloud.getNodeManager(managers[i]).getList("url='"+baseUrl+"/"+file.getName()+"'",null,null).nodeIterator();
+                if (ni.hasNext()) {
+                    %><%= managers[i] %><%
+                    break;
+                }
+            }
+        %>
+        </td>
+        <td>
+        <%=
+            (file.length() / 1025)
+        %> Kb
+        </td>
+        <td>
             <a href="index.jsp?deletefile=<mm:write referid="filename"/>" onclick="return confirm('Wis <mm:write referid="filename"/>?');">Wis</a>
         </td>
         </tr>
