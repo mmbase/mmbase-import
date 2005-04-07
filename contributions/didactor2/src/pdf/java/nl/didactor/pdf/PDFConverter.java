@@ -44,6 +44,7 @@ public class PDFConverter {
             tidy.setMakeBare(true);
             tidy.setFixBackslash(true);
             tidy.setFixComments(true);
+            tidy.setHideComments(true);
             tidy.setFixUri(true);
             tidy.setTrimEmptyElements(true);
             tidy.setDropEmptyParas(true);

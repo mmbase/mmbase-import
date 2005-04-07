@@ -40,7 +40,7 @@
 
 <mm:present referid="display">
 
-    <%= "<h"+level.toString()+">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
+    <%= "<h"+level.toString()+" style=\"font-size: "+((5-level.intValue())*2+10)+"px\">" %><mm:field name="title"/><mm:field name="name"/><%= "</h"+level.toString()+">" %>
     <br/>
     <mm:import jspvar="text" reset="true"><mm:field name="intro" escape="none"/><mm:field name="text" escape="none"/></mm:import>
  <%

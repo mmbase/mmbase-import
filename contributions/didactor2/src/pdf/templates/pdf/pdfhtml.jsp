@@ -7,13 +7,14 @@
 <fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 <mm:import externid="number" required="true"/>
 <html>
-<head><title></title>
-</head>
+<head><title></title></head>
 <body>
+<div style="font-size: 10px;">
 <mm:treeinclude page="/pdf/pdfpart.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="partnumber"><mm:write referid="number"/></mm:param>
     <mm:param name="level">1</mm:param>
 </mm:treeinclude>
+</div>
 </body>
 </html>
 </fmt:bundle>
