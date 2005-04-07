@@ -44,7 +44,10 @@
                    </mm:relatednodes>
                </mm:node>
                <mm:node element="learnobjects1">
-                  <%@include file="newfromtree.jsp" %>
+                  <mm:import id="objecttype" reset="true"><mm:nodeinfo type="type" /></mm:import>
+                  <mm:compare referid="objecttype" valueset="tests,couplingquestions,dropquestions,hotspotquestions,mcquestions,openquestions,rankingquestions,valuequestions" inverse="true">
+                     <%@include file="newfromtree.jsp" %>
+                  </mm:compare>
                </mm:node>
             <% } %>
             <%@include file="showlearnobject.jsp" %>
