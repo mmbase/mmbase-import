@@ -43,8 +43,8 @@ public class ForumConfig {
     private String privateMessagesEnabled = "true";
     private int postingsPerPage = -1;
     private String fromEmailAddress = "";
-    private String htmlHeaderPath = "";
-    private String htmlFooterPath = "";
+    private String htmlHeaderPath = "header.jsp";
+    private String htmlFooterPath = "footer.jsp";
 
 
     private int quotamax = 100;
@@ -107,12 +107,12 @@ public class ForumConfig {
                             org.w3c.dom.NodeList layoutList = n2.getElementsByTagName("footer");
                             if (layoutList.getLength() > 0) {
                                 Element footerNode = (Element)layoutList.item(0);
-                                htmlHeaderPath = footerNode.getAttribute("path");
+                                htmlFooterPath = footerNode.getAttribute("path");
                             }
                             layoutList = n2.getElementsByTagName("header");
                             if (layoutList.getLength() > 0) {
                                 Element headerNode = (Element)layoutList.item(0);
-                                htmlFooterPath = headerNode.getAttribute("path");
+                                htmlHeaderPath = headerNode.getAttribute("path");
                             }
                         }
 
