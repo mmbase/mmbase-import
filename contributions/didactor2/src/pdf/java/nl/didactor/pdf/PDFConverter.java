@@ -12,9 +12,10 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Image;
 import com.lowagie.text.html.HtmlParser;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
+import org.w3c.tidy.Tidy;
+
 
 public class PDFConverter {
     
@@ -33,8 +34,26 @@ public class PDFConverter {
             }
 
             HtmlParser parser = new HtmlParser();
-            parser.parse(pdf,url.openStream());
-        
+            Tidy tidy = new Tidy();
+            tidy.setXHTML(true);
+            tidy.setInputEncoding("UTF8");
+            tidy.setOutputEncoding("UTF8");
+            tidy.setIndentContent(false);
+            tidy.setWraplen(0);
+            tidy.setMakeClean(true);
+            tidy.setMakeBare(true);
+            tidy.setFixBackslash(true);
+            tidy.setFixComments(true);
+            tidy.setFixUri(true);
+            tidy.setTrimEmptyElements(true);
+            tidy.setDropEmptyParas(true);
+            tidy.setDropProprietaryAttributes(true);
+            tidy.setWord2000(true);
+            tidy.setDocType("omit");
+            PipedOutputStream pipeout = new PipedOutputStream();
+            PipedInputStream pipein = new PipedInputStream(pipeout);
+            tidy.parse(url.openStream(),pipeout);
+            parser.parse(pdf,pipein);
             pdf.close();        
         }
         catch ( DocumentException e ) {
