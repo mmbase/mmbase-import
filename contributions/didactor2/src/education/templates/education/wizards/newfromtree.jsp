@@ -1,3 +1,5 @@
+<%@ page import = "java.util.HashSet" %>
+
 <mm:nodeinfo type="type" jspvar="sNodeType" vartype="String">
 
    <%
