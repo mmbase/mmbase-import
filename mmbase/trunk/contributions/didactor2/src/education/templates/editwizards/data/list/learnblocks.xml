@@ -6,7 +6,7 @@
       <prompt>Naam</prompt>
       <description>Naam van het leerblok</description>
     </field>
-    <field fdatapath="field[@name='pos']" ftype="data" />
+    <field fdatapath="field[@name='pos']"  ftype="line" />
     <field wizardname="learnblocks" ftype="startwizard" />
   </item>
 

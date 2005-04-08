@@ -69,7 +69,8 @@
                     <prompt>Tekst</prompt>
                     <description>De antwoord tekst</description>
                 </field>
-      <field wizardname="valueanswers" ftype="startwizard"/>
+                <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
+                <field wizardname="valueanswers" ftype="startwizard"/>
             </item>
 
             <!-- deze is voor de 'command name="insert"' -->

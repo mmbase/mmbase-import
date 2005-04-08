@@ -4,15 +4,16 @@
     <title>Bijbehorende Afbeeldingen</title>
 
     <item>
-   <field name="title" ftype="data">
+       <field name="title" ftype="data">
             <prompt>Titel</prompt>
         </field>
+        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
         <field ftype="data" name="description">
             <prompt>Omschrijving</prompt>
         </field>
         <field ftype="image" name="title">
             <prompt>Afbeelding</prompt>
-"      </field>
+       </field>
        <field ftype="line" name="width" fdatapath="field[@name='width']">
             <prompt>Breedte</prompt>
         </field>

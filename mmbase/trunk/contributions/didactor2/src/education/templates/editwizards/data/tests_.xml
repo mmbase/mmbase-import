@@ -93,11 +93,8 @@
                     <prompt>Titel</prompt>
                     <description>Titel van de vraag</description>
                 </field>
-                <field fdatapath="field[@name='pos']" ftype="data">
-                    <prompt>Positie</prompt>
-                    <description>Positie van de vraag in de toets</description>
-                </field>
-      </item>
+                <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
+            </item>
 
             <action type="create">
                 <relation role="posrel" destinationtype="questions">
@@ -153,7 +150,6 @@
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
             <title>Zoeken op metadata</title>
             <item displaytype="none"></item>
-
             <action type="create">
                 <relation role="posrel" destinationtype="questions">
                   <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
