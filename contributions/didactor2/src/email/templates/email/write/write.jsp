@@ -348,21 +348,33 @@
               </td>
             </tr>
             <tr>
-              <td><fmt:message key="ATTACHMENTS" /> :&nbsp;</td>
+              <td style="vertical-align: top"><fmt:message key="ATTACHMENTS" /> :&nbsp;</td>
               <td>
+              <div class="attachment">
+              <table border="0" class="Font">
 	      <mm:present referid="emailNode">
 	      <mm:node number="$emailNode">
 	      <mm:relatednodes type="attachments">
-		<div class="attachment">
+              <mm:first><tr><td>naam</td><td>wis</td></tr></mm:first>
+              <tr>
+               <td>
+		<a href="<mm:attachment/>"><mm:field name="title"/></a>
+                </td>
+              <td>
 		<input type="checkbox" name="delete_attachments" value="<mm:field name="number"/>">
-		<a href="<mm:attachment/>"><mm:field name="title"/></a></div>
+                </td>
+ 
+                </tr>
 	      </mm:relatednodes>
 	      </mm:node>
 	      </mm:present>
-		  <div class="attachment">
+              <tr><td colspan="2">
                     <input type="file" class="formInput" name="att_handle" class="formbutton">
-		    <input type="submit" name="att_attachment_action" value="<di:translate id="updateattachments">bijwerken</di:translate>" class="formbutton">
-                  </div>
+                </td><td>
+		    <input type="submit" name="att_attachment_action" value="<di:translate id="updateattachments">toevoegen/verwijderen</di:translate>" class="formbutton">
+            </td></tr>
+            </table>
+            </div>
               </td>
             </tr>
             <tr>
