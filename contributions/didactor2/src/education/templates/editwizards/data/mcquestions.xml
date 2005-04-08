@@ -72,6 +72,7 @@
                     <prompt>Tekst</prompt>
                     <description>De antwoord tekst</description>
                 </field>
+                <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
                 <field name="correct" ftype="enum">
                     <prompt>Correct</prompt>
                     <optionlist select="correctlist" />

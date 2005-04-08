@@ -6,7 +6,7 @@
             <prompt>Titel</prompt>
             <description>Titel van het nieuwsbericht</description>
         </field>
-        <field fdatapath="field[@name='pos']" ftype="data" />
+        <field fdatapath="field[@name='pos']"  ftype="line" />
    <field wizardname="news" ftype="startwizard" />
     </item>
 

@@ -6,7 +6,7 @@
             <prompt>Naam</prompt>
             <description>Naam van de klas</description>
         </field>
-   <field fdatapath="field[@name='pos']" ftype="data" />
+   <field fdatapath="field[@name='pos']"  ftype="line" />
     </item>
 
     <action type="create">

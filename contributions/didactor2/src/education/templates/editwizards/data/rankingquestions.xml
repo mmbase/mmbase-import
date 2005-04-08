@@ -71,7 +71,8 @@
                     <prompt>Tekst</prompt>
                     <description>De antwoord tekst</description>
                 </field>
-      <field wizardname="rankinganswers" ftype="startwizard"/>
+                <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
+                <field wizardname="rankinganswers" ftype="startwizard"/>
             </item>
 
             <!-- deze is voor de 'command name="insert"' -->

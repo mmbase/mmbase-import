@@ -4,9 +4,10 @@
     <title>Sleep-Afbeeldingen</title>
 
     <item>
-   <field name="title" ftype="line">
+        <field name="title" ftype="line">
             <prompt>Titel</prompt>
         </field>
+        <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
         <field name="description" rows="8">
             <prompt>Omschrijving</prompt>
         </field>
