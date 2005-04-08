@@ -78,6 +78,11 @@
 
   </div>
 </div>
+<div class="mainContent">
+  <div class="contentHeader">
+
+  </div>
+  <div class="contentBodywit">
 
 
 <form action="<mm:treefile page="/email/mailrule.jsp" objectlist="$includePath" referids="$referids"/>" method="POST">
