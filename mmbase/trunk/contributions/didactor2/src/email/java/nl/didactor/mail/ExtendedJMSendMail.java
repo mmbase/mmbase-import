@@ -69,7 +69,7 @@ public class ExtendedJMSendMail extends JMSendMail {
             NodeList attachments = n.getRelatedNodes("attachments");
             if (attachments.size() != 0) {
                 MimeBodyPart bodypart = new MimeBodyPart();
-                MimeMultipart mmp = new MimeMultipart("alternative");
+                MimeMultipart mmp = new MimeMultipart("mixed");
 
                 bodypart.setText(body);
                 mmp.addBodyPart(bodypart);
