@@ -40,7 +40,7 @@
   <div class="contentSubHeader">
    
   </div>
-  <div class="contentBody">
+  <div class="contentBodywit">
 
   
 <mm:import externid="rule"/>
@@ -108,7 +108,6 @@
   </div>
 </div>
 </div>
-</form>
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
 
 </fmt:bundle>
