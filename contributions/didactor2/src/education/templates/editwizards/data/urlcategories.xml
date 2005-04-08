@@ -37,10 +37,7 @@
                     <prompt>Naam</prompt>
                     <description>Naam van de link</description>
                 </field>
-               <field fdatapath="field[@name='pos']" ftype="data">
-                  <prompt>Positie</prompt>
-                  <description>Positie van de link in de lijst</description>
-                </field>
+                <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
             </item>
 
             <action type="create">
