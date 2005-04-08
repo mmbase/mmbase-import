@@ -150,7 +150,7 @@ var menu = new MTMenu();
 
 
 <mm:compare referid="education_top_menu" value="filemanagement">
-   <di:hasrole role="filemanager">
+   <di:hasrole role="courseeditor">
       menu.addItem("<fmt:message key="filemanagement"/>",
                    "<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />",
                    null,
