@@ -202,9 +202,7 @@
 
 <mm:listnodes id="node_number" directions="$directions"  orderby="$orderby" jspvar="sn">
   <tr>
-    <td 
-     <%@include file="node_title.jsp" %>
-     class="listdata"><mm:nodeinfo type="gui" />&nbsp;<%-- (<mm:function name="age" />)--%></td>
+    <td <%@include file="node_title.jsp" %> class="listdata"><mm:nodeinfo type="gui" />&nbsp;<%-- (<mm:function name="age" />)--%></td>
    <mm:fieldlist nodetype="$node_type" type="list">
      <td class="listdata"><mm:fieldinfo type="guivalue" /> &nbsp;</td>
    </mm:fieldlist>
