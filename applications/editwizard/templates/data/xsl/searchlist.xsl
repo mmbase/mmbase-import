@@ -5,12 +5,12 @@
   xmlns:node="org.mmbase.bridge.util.xml.NodeFunction">
   <!--
     searchlist.xls
-    
+
     @since  MMBase-1.6
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.19 2004-09-15 13:04:51 jaco Exp $
+    @version $Id: searchlist.xsl,v 1.20 2005-04-11 07:30:39 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -46,7 +46,7 @@
         <script type="text/javascript" src="{$javascriptdir}searchwindow.js">
           <xsl:comment>help IE</xsl:comment>
         </script>
-      </xsl:otherwise>	
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
@@ -64,7 +64,7 @@
 
   <xsl:template name="body">
     <tr>
-  	  <td>
+      <td>
     <xsl:apply-templates select="list" />
       </td>
     </tr>
@@ -177,29 +177,37 @@
         </tr>
         <tr>
           <td>
-            <input
-              type="button"
-              name="cancel"
-              value="{$tooltip_cancel_search}"
-              onclick="closeSearch();"
-              class="button" />
+            <xsl:call-template name="searchcancelbutton" />
           </td>
-          <td align="right" valign="top">
-            <input
-              type="button"
-              name="ok"
-              value="{$tooltip_end_search}"
-              onclick="dosubmit();"
-              class="button" />
+          <td align="right" valign="top" class="button">
+            <xsl:call-template name="searchokbutton" />
           </td>
         </tr>
       </table>
     </div>
   </xsl:template>
 
+  <xsl:template name="searchcancelbutton">
+    <input
+      type="button"
+      name="cancel"
+      value="{$tooltip_cancel_search}"
+      onclick="closeSearch();"
+      class="button" />
+  </xsl:template>
+
+  <xsl:template name="searchokbutton">
+    <input
+      type="button"
+      name="ok"
+      value="{$tooltip_end_search}"
+      onclick="dosubmit();"
+      class="button" />
+  </xsl:template>
+
   <xsl:template match="field">
     <td>
-			<xsl:call-template name="writeCurrentField" />
+      <xsl:call-template name="writeCurrentField" />
     </td>
   </xsl:template>
 
