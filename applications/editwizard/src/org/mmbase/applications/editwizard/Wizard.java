@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.135 2005-03-01 20:05:30 nico Exp $
+ * @version $Id: Wizard.java,v 1.136 2005-04-11 07:27:41 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1413,6 +1413,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                                               "title|description|action|command");
 
         Utils.appendNodeList(props, newlist);
+
+        // Add the title, description from the item as attributes
+        NodeList itemTitle = Utils.selectNodeList(fieldlist, "item/title|item/description");
+
+        for (int i=0; i<itemTitle.getLength(); i++) {
+            Utils.setAttribute(newlist, "item" + itemTitle.item(i).getNodeName(), Utils.getText(itemTitle.item(i)));
+        }
 
         // expand attribute 'startnodes' for search command
         Node command = Utils.selectSingleNode(newlist, "command[@name='search']");
