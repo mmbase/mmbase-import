@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:node="org.mmbase.bridge.util.xml.NodeFunction" xmlns:date="org.mmbase.bridge.util.xml.DateFormat" extension-element-prefixes="node date">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction" 
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat" 
+  extension-element-prefixes="node date">
   <!--
     wizard.xsl
 
@@ -10,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.143 2005-03-01 09:55:36 pierre Exp $
+    @version $Id: wizard.xsl,v 1.144 2005-04-11 14:24:45 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
