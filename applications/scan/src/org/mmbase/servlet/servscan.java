@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.43 2005-02-24 15:58:59 michiel Exp $
+ * @version $Id: servscan.java,v 1.44 2005-04-12 15:04:59 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -195,7 +195,7 @@ public class servscan extends JamesServlet {
                                 }                                
                             } else {
                             	// last-modification date and expire will be set to default
-                                setHeaders(sp, res, sp.body.length(),0,0);
+                                setHeaders(sp, res, sp.body,0,0);
                                 if (out == null) {
                                     out = res.getWriter();
                                 }                                
@@ -205,7 +205,7 @@ public class servscan extends JamesServlet {
                     } else {
                         sp.body = "<TITLE>Servscan</TITLE>handle_line returned null<BR>";
                     	// last-modification date and expire will be set to default
-                        setHeaders(sp, res, sp.body.length(),0,0);
+                        setHeaders(sp, res, sp.body,0,0);
                         if (out == null) {
                             out = res.getWriter();
                         }                        
@@ -244,14 +244,26 @@ public class servscan extends JamesServlet {
     /**
      * Set some generic headers for the response based on the scanpage
      * This method is 3 times as large as it could be, this should be cleaned!
+     * @param len String which will be used to determin the length of the response
      */
-    private final void setHeaders(scanpage sp, HttpServletResponse res, int len, long lastModDate, long expireDate) {
+    private final void setHeaders(scanpage sp, HttpServletResponse res, String len, long lastModDate, long expireDate) {
         res.reset();
+            
         res.setContentType(addCharSet(sp.mimetype));
+        
         
         // Guess this will be set by the app server if we don't set it.
         // mm: guessed wrong.
-        res.setContentLength(len);
+        if (sp.mimetype.equals(SHTML_CONTENTTYPE)) {  
+            try {
+                res.setContentLength(len.getBytes(charSet).length);
+            } catch (java.io.UnsupportedEncodingException uee) {
+                // could not happen
+            }
+        } else {
+            res.setContentLength(len.getBytes().length);
+        }
+        
         
 
     	Date lastmod = null;
@@ -407,7 +419,7 @@ public class servscan extends JamesServlet {
                     long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
                     long expireDate = parser.scancache.getExpireDate(sp.wantCache, req_line, sp.body.substring(start, end).trim());
 
-                    setHeaders(sp, res,rst.length(),lastModDate, expireDate);
+                    setHeaders(sp, res, rst, lastModDate, expireDate);
                     // org.mmbase res.writeHeaders();
                     try {                        
                         if (out == null) {
@@ -441,7 +453,7 @@ public class servscan extends JamesServlet {
                 if (rst != null && !sp.reload) {
                     long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
                         
-                    setHeaders(sp, res,rst.length(),lastModDate,0);
+                    setHeaders(sp, res,rst,lastModDate,0);
                     // org.mmbase res.writeHeaders();
                     try {
                         
