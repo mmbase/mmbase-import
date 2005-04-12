@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.291 2005-03-29 16:33:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.292 2005-04-12 17:49:13 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -91,7 +91,7 @@ version: $Id: mmbase-taglib.xml,v 1.291 2005-03-29 16:33:47 michiel Exp $
     </description>
     <name>escape</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
-    <function-signature>java.lang.String escape(java.lang.String, java.lang.Object)</function-signature>
+    <function-signature>java.lang.String escape(java.lang.String, java.lang.String)</function-signature>
     <example>
       &lt;a href="title="${mm:escape('text/html/attribute', node.title)}" .../&gt;
     </example>
@@ -409,7 +409,6 @@ version: $Id: mmbase-taglib.xml,v 1.291 2005-03-29 16:33:47 michiel Exp $
       </examplevalue>
 
     </attribute>
-
     <see tag="listreferrer" />
   </taginterface>
   <taginterface>
@@ -3701,6 +3700,29 @@ like the parameter list or the session (where ever it is available) --&gt;
         <info>Fit to 100x100 if it is bigger</info>
       </examplevalue>
     </attribute>
+    <attribute>
+      <name>mode</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        <p>
+          What to produce.
+        </p>
+      </info>
+      <possiblevalue>
+        <value>url</value>
+        <info>An URL to the image (default)</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>attributes</value>
+        <info>The attributes 'src' 'height' and 'width' for the img-tag of HTML.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>img</value>
+        <info>A img-tag of HTML</info>
+      </possiblevalue>
+    </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
         &lt;img src="&lt;mm:image template="s(100)" /&gt;" width="100" border="0"&gt;
@@ -6046,6 +6068,18 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
         This tag can only reuse Lists, so you have to use this attribute.
       </info>
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The maximum number of times to iterate.</info>
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>How many items must be skipped before iterating</info>
     </attribute>
   </tag>
 
