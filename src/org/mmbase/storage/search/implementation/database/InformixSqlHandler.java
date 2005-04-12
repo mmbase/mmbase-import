@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.8.2.7 2004-10-12 09:05:36 mark Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8.2.8 2005-04-12 13:57:58 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -43,8 +43,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
     /**
      * Logger instance.
      */
-    private static Logger log
-            = Logging.getLoggerInstance(InformixSqlHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(InformixSqlHandler.class);
 
     /**
      * MMBase instance.
@@ -266,7 +265,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         log.trace("Base field part of query : " + sb);
 
         // vector to save OR-Elements (Searchdir=BOTH) for migration to UNION-query
-        Vector orElements = new Vector();
+        List orElements = new ArrayList();
 
         // save AND-Elements from relationString for migration to UNION-query
         StringBuffer andElements = new StringBuffer();
@@ -567,7 +566,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                 unionConstraints.insert(0, " AND ");
             }
 
-            Vector combinedElements = new Vector();
+            List combinedElements = new ArrayList();
             boolean skipCombination = false;
             for (int counter = 0; counter < orElements.size(); counter++) {
                 for (int counter2 = counter; counter2 < orElements.size(); counter2++) {
@@ -583,13 +582,13 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     if (counter != counter2 && orElements.size() > 2) {
                         // also add the additinal constraints
                         if (skipCombination==false ) {
-                            combinedElements.addElement(orElements.elementAt(counter) + " AND " + orElements.elementAt(counter2) + unionConstraints);
+                            combinedElements.add(orElements.get(counter) + " AND " + orElements.get(counter2) + unionConstraints);
                         }
                     } else {
                         // If there's just one OR (two OR-elements), add the elements seperately
                         // also add the additinal constraints
                         if (counter == counter2 && orElements.size() <= 2) {
-                            combinedElements.addElement(orElements.elementAt(counter) + "" + unionConstraints);
+                            combinedElements.add(orElements.get(counter) + "" + unionConstraints);
                         }
                     }
                 }
@@ -599,7 +598,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                3) Here we're going to create a new BaseQuery,
                   we need that in order to re-use that for every union
             */
-            Enumeration e = combinedElements.elements();
+            Iterator e = combinedElements.iterator();
             String combinedElement = "";
             int teller = 1;
 
@@ -616,8 +615,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             log.trace("Base query including fields and tables : " + sb);
 
             // now add the combined relation-constraints as UNIONS
-            while (e.hasMoreElements()) {
-                combinedElement = (String) e.nextElement();
+            while (e.hasNext()) {
+                combinedElement = (String) e.next();
                 if (teller != 1) {
                     if (sb.indexOf("COUNT") > -1) {
                         unionRelationConstraints.append(" UNION ALL ").append(baseQuery);
@@ -682,7 +681,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
 
                     // Loop through the fields until we find a match
-
+                    boolean found = false;                    
                     for (int i = 0; i < query.getFields().size(); i++) {
                         StepField sf = (StepField) query.getFields().get(i);
                         String field = sf.getStep().getAlias() + "." + sf.getFieldName();
@@ -691,9 +690,13 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                         if (field.equals(orderByField.toString())) {
                             // match found
                             sb.append((i + 1) + " ");
+                            found = true;
                             // prevent that the field is listed twice in this order-by
-                            i = query.getFields().size();
+                            break;
                         }
+                    }
+                    if (! found) {
+                        throw new RuntimeException("Could not find the field " + orderByField + " in " + query.getFields() + " !");
                     }
 
                     // Sort direction.
