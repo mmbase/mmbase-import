@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.26.2.3 2005-01-26 14:57:10 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.26.2.4 2005-04-12 13:56:02 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -63,7 +63,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results;
         MultiConnection con = null;
         Statement stmt = null;
-
+        String sqlString = null;        
         try {
             // Flag, set if offset must be supported by skipping results.
             boolean mustSkipResults =
@@ -81,7 +81,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 log.debug("Database max support = " + sqlHandlerSupportsMaxNumber);
             }
 
-            String sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
+            sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
 
             // Execute the SQL
             MMJdbc2NodeInterface database = mmbase.getDatabase();
@@ -126,7 +126,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
             if (log.isDebugEnabled()) {
                 log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
             }
-            throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new SearchQueryException("Query '" + sqlString == null ? "" + query : sqlString + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
         } finally {
             mmbase.closeConnection(con, stmt);
         }
