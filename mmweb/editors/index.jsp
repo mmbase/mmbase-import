@@ -4,10 +4,10 @@
 <head>
 <title>MMBase editors (ingelogd als <%= cloud.getUser().getIdentifier() %>)</title>
 </head>
-<FRAMESET COLS="250,*" FRAMEBORDER=0 BORDER=0>
+<frameset cols="250,*" frameborder="0" border="0">
 	<frame src="nav.jsp" name="nav">
-	<FRAMESET ROWS="90,*" FRAMEBORDER=0 BORDER=0 name="page">
-		<frame src="select.jsp" name="search" scrolling=no>
+	<frameset rows="90,*" frameborder="0" border="0" name="page">
+		<frame src="select.jsp" name="search" scrolling="no">
 		<frame src="empty.jsp" name="wizard">
 	</frameset>
 </frameset>

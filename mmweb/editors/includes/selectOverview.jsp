@@ -1,17 +1,19 @@
-<%-- Author: H.Hangyi / 26.06.2002 / www.mmatch.nl --%>
-	
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title></title>
-<link rel="stylesheet" type="text/css" href="css/editors.css">
-
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/mmmbase.css" />
 </head>
-<body bgcolor="#EFEFEF">
-
-<table width="100%" height="50%" cellpadding="0" cellspacing="0" border="0">
-<tr>
-	<td><div align="center"><img src="media/logo-groen.gif" border="0"></div></td>
-</tr></table>
+<body>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td>
+                <div id="windowopen">
+                    <img src="/mmbase/style/logo.gif" alt="MMBase" />
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
-
 </html>
