@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.14 2004-12-14 11:39:53 pierre Exp $
+  @version $Id: prompts.xsl,v 1.15 2005-04-13 11:37:33 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -49,7 +49,7 @@
 <xsl:template name="prompt_down"><img src="{$mediadir}down.gif" border="0" alt="Omlaag" title="{$tooltip_down}" /></xsl:template>
 
 <!-- new button prompts and tooltips -->
-<xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" alt="Nieuw"/></xsl:template>
+<xsl:template name="prompt_new"><img src="{$mediadir}new.gif" border="0" title="Nieuw" alt="Nieuw"/></xsl:template>
 <xsl:variable name="tooltip_new">Voeg een nieuw item toe aan de lijst</xsl:variable>
 <!-- remove button prompts and tooltips (for relations) -->
 <xsl:template name="prompt_remove"><img src="{$mediadir}remove.gif" border="0"  alt="Verwijder"/></xsl:template>
