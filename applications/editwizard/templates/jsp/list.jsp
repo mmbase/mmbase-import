@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.54 2005-04-13 11:37:33 michiel Exp $
+     * @version  $Id: list.jsp,v 1.55 2005-04-13 11:53:01 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -286,6 +286,7 @@ params.put("popupid",  popupId);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
+if (createprompt!=null) params.put("createprompt", createprompt);
 if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
 }
