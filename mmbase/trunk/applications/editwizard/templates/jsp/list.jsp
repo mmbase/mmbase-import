@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.53 2004-12-14 11:39:54 pierre Exp $
+     * @version  $Id: list.jsp,v 1.54 2005-04-13 11:37:33 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -96,6 +96,7 @@ boolean deletable = false;
 boolean creatable = false;
 String deletedescription = "";
 String deleteprompt = "";
+String createprompt = "";
 org.w3c.dom.NodeList titles = null;
 if (listConfig.wizard != null) {
 
@@ -106,6 +107,7 @@ if (listConfig.wizard != null) {
 
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null, cloud);
     deleteprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null, cloud);
+    createprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='create']/prompt", null, cloud);
     titles            = Utils.selectNodeList(wiz.getSchema(), "/wizard-schema/title");
 
 }

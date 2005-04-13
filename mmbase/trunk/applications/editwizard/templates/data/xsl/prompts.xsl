@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.26 2005-01-17 17:19:00 michiel Exp $
+    @version $Id: prompts.xsl,v 1.27 2005-04-13 11:37:33 michiel Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -91,7 +91,10 @@
   <!-- new button prompts and tooltips -->
   <xsl:variable name="tooltip_new">Add a new item to the list</xsl:variable>
   <xsl:template name="prompt_new">
-    <img src="{$mediadir}new.gif" alt="{$tooltip_new}" class="imgbutton"/>
+    <img src="{$mediadir}new.gif"
+         alt="{$tooltip_new}" 
+         title="{$tooltip_new}" 
+         class="imgbutton"/>
   </xsl:template>
 
   <!-- remove button prompts and tooltips (for relations) -->
