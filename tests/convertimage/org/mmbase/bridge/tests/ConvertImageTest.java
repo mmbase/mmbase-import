@@ -3,7 +3,6 @@ package org.mmbase.bridge.tests;
 import org.mmbase.bridge.*;
 import java.io.*;
 
-import org.mmbase.util.functions.DataType;
 import org.mmbase.util.functions.Function;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
@@ -12,7 +11,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests for convertimage-interface implementation.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.3 2005-01-31 21:13:22 keesj Exp $
+ * @version $Id: ConvertImageTest.java,v 1.4 2005-04-14 17:10:09 keesj Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
     private final static Logger log = Logging.getLoggerInstance(ConvertImageTest.class);
