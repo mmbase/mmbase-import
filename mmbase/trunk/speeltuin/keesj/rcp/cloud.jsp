@@ -4,7 +4,7 @@
 <%@page import="org.mmbase.bridge.*"%>
 <%@page import="org.mmbase.util.*"%>
 <result>
-<mm:cloud name="mmbase" jspvar="cloud">
+<mm:cloud name="mmbase" method="http" rank="basic user" jspvar="cloud">
 <nodemanagers>
 <%
   NodeManagerList nodeManagers = cloud.getNodeManagers();
