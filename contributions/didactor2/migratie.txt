@@ -1,5 +1,16 @@
 Migratie issues
 
+2005-04-14
+
+Two fields have been added to the flashpages object. Run the following code to
+update the database.
+
+
+    ALTER TABLE mmb_flashpages ADD text BLOB;
+    ALTER TABLE mmb_flashpages ADD layout INT(11);
+    UPDATE mmb_flashpages SET layout=-1;
+
+
 2005-03-31
 
 The email domain (for mail sent from the didactor instance) is now configurable
