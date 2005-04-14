@@ -8,7 +8,6 @@
  String imageName = "";
  String sAltText = "";
  String startnode = request.getParameterValues("startnode")[0];
- String parenttree = request.getParameterValues("parenttree")[0];
 
  int [] offset = new int[10];
  for(int d=0; d<offset.length; d++) offset[d]= 0;
@@ -19,56 +18,85 @@
 
  int depth = 1;
  boolean subLearnobjectFound = false;
+ boolean[] branches = {true, true, true, true, true, true, true, true, true, true};
 
- String treeName = "lbTree" + startnode + "z";
  %>
+    <mm:import reset="true" id="the_last_element">true</mm:import>
     <mm:node number="<%= startnode %>">
-       var  <%= treeName %> = new MTMenu();
+       <mm:relatednodes type="learnobjects" searchdir="destination" max="1">
+          <mm:import reset="true" id="the_last_element">false</mm:import>
+       </mm:relatednodes>
+       <mm:import reset="true" id="the_last_parent"><%= request.getParameter("the_last_parent")%></mm:import>
        <%@include file="newfromtree.jsp" %>
     </mm:node>
-    edutree0.makeLastSubmenu(<%= treeName %>, true);
  <%
 
- while((depth>0||subLearnobjectFound)&&depth<10) {
+ branches = new boolean[10];
+
+
+ while( (depth > 0 || subLearnobjectFound) && depth < 10)
+ {
      subLearnobjectFound = false;
-     %><mm:list nodes="<%= lastLearnObject[depth-1] %>" path="learnobjects1,posrel,learnobjects2"
-         searchdir="destination" orderby="posrel.pos" directions="UP" max="1" offset="<%= ""+ offset[depth] %>">
-         <mm:field name="learnobjects2.number" jspvar="learnobjects2_number" vartype="String" write="false">
-            <%
-            treeName = "lbTree" + lastLearnObject[depth-1] + "z";
-            if(offset[depth]==0) { %>
-               var  <%= treeName %> = new MTMenu();
-               <mm:node number="component.pdf" notfound="skip">
-                   <mm:relatednodes type="providers" constraints="providers.number=$provider">
-                       <mm:import id="pdfurl" reset="true"><mm:treefile write="true" page="/pdf/pdfchooser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
-                   </mm:relatednodes>
-               </mm:node>
-               <mm:node element="learnobjects1">
-                  <mm:import id="objecttype" reset="true"><mm:nodeinfo type="type" /></mm:import>
-                  <mm:compare referid="objecttype" valueset="tests,couplingquestions,dropquestions,hotspotquestions,mcquestions,openquestions,rankingquestions,valuequestions" inverse="true">
-                     <%@include file="newfromtree.jsp" %>
-                  </mm:compare>
-               </mm:node>
-            <% } %>
-            <%@include file="showlearnobject.jsp" %>
-            <%
-               subLearnobjectFound= true;
-               offset[depth]++;
-               lastLearnObject[depth] = learnobjects2_number;
-               depth ++;
-            %>
-         </mm:field>
-     </mm:list><%
-     if(!subLearnobjectFound) { // go one layer back
-         if(offset[depth]!=0) {
-            if(depth>1) { %>
-               lbTree<%= lastLearnObject[depth-2] %>z.makeLastSubmenu(lbTree<%= lastLearnObject[depth-1] %>z, true);
-            <% } else { %>
-               edutree0.makeLastSubmenu(lbTree<%= startnode %>z, true);
-            <% }
-         }
-         offset[depth]=0;
-         depth--;
+     %>
+        <mm:list nodes="<%= lastLearnObject[depth-1] %>" path="learnobjects1,posrel,learnobjects2" searchdir="destination" orderby="posrel.pos" directions="UP" max="1" offset="<%= ""+ offset[depth] %>">
+           <mm:field name="learnobjects2.number" jspvar="learnobjects2_number" vartype="String" write="false">
+              <%
+                 if(offset[depth]==0)
+                 {
+                    %>
+                       <mm:node number="component.pdf" notfound="skip">
+                           <mm:relatednodes type="providers" constraints="providers.number=$provider">
+                               <mm:import id="pdfurl" reset="true"><mm:treefile write="true" page="/pdf/pdfchooser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+                           </mm:relatednodes>
+                       </mm:node>
+                    <%
+                 }
+
+                 subLearnobjectFound= true;
+                 offset[depth]++;
+              %>
+              <mm:import reset="true" id="the_last_leaf_in_this_level">true</mm:import>
+              <%
+                 branches[depth - 1] = false;
+              %>
+              <mm:list nodes="<%= lastLearnObject[depth-1] %>" path="learnobjects1,posrel,learnobjects2" searchdir="destination" orderby="posrel.pos" directions="UP" max="1" offset="<%= ""+ offset[depth] %>">
+                 <mm:import reset="true" id="the_last_leaf_in_this_level">false</mm:import>
+                 <%
+                    branches[depth - 1] = true;
+                 %>
+              </mm:list>
+
+              <%@include file="showlearnobject.jsp" %>
+
+              <%
+                 lastLearnObject[depth] = learnobjects2_number;
+                 depth ++;
+              %>
+
+           </mm:field>
+        </mm:list>
+
+     <%
+
+     if(!subLearnobjectFound)
+     { // go one layer back
+        %>
+           <mm:node number="<%= lastLearnObject[depth-1] %>">
+              <mm:import id="objecttype" reset="true"><mm:nodeinfo type="type" /></mm:import>
+              <mm:compare referid="objecttype" valueset="learnblocks">
+                 <%
+                    if(depth > 1)
+                    {// We haven't to close the last level. There is </div> in code.jsp
+                       %>
+                          </div>
+                       <%
+                    }
+                 %>
+              </mm:compare>
+           </mm:node>
+        <%
+        offset[depth]=0;
+        depth--;
      }
  }
 %>

@@ -1,126 +1,90 @@
 <%@ page import = "java.util.HashSet" %>
 
-<mm:nodeinfo type="type" jspvar="sNodeType" vartype="String">
+<mm:remove referid="type_of_node"/>
+<mm:nodeinfo id="type_of_node" type="type" jspvar="sNodeType" vartype="String">
 
-   <%
-      HashSet hsetAllowedChildren = new HashSet();
+   <mm:compare referid="type_of_node" value="learnblocks">
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <mm:compare referid="the_last_parent" value="true" inverse="true">
+               <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+            <mm:compare referid="the_last_parent" value="true">
+               <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
 
-      if(sNodeType.equals("learnblocks"))
-      {
-         hsetAllowedChildren.add("learnblocks");
-         hsetAllowedChildren.add("pages");
-         hsetAllowedChildren.add("tests");
-         hsetAllowedChildren.add("flashpages");
-      }
-      if(sNodeType.equals("tests"))
-      {
-         hsetAllowedChildren.add("mcquestions");
-         hsetAllowedChildren.add("openquestions");
-         hsetAllowedChildren.add("rankingquestions");
-         hsetAllowedChildren.add("valuequestions");
-         hsetAllowedChildren.add("couplingquestions");
-         hsetAllowedChildren.add("hotspotquestions");
-         hsetAllowedChildren.add("dropquestions");
-      }
-      if(hsetAllowedChildren.contains("learnblocks")){
-         %>
-            <%= treeName %>.addItem("nieuwe leerblok",
-                                     "<mm:write referid="wizardjsp"/>?wizard=learnblocks&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("pages")){
-         %>
-            <%= treeName %>.addItem("nieuwe pagina",
-                                     "<mm:write referid="wizardjsp"/>?wizard=pages&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("tests")){
-         %>
-            <%= treeName %>.addItem("nieuwe toets",
-                                     "<mm:write referid="wizardjsp"/>?wizard=tests&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("flashpages")){
-         %>
-            <%= treeName %>.addItem("nieuwe flash-pagina",
-                                     "<mm:write referid="wizardjsp"/>?wizard=flashpages&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("mcquestions")){
-         %>
-            <%= treeName %>.addItem("nieuwe multiple-choice vraag",
-                                     "<mm:write referid="wizardjsp"/>?wizard=mcquestions&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("openquestions")){
-         %>
-            <%= treeName %>.addItem("nieuwe open vraag",
-                                     "<mm:write referid="wizardjsp"/>?wizard=openquestions&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("rankingquestions")){
-         %>
-            <%= treeName %>.addItem("nieuwe rangorde vraag",
-                                     "<mm:write referid="wizardjsp"/>?wizard=rankingquestions&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("valuequestions")){
-         %>
-            <%= treeName %>.addItem("nieuwe waarde vraag",
-                                     "<mm:write referid="wizardjsp"/>?wizard=valuequestions&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("couplingquestions")){
-         %>
-            <%= treeName %>.addItem("nieuwe koppel vraag",
-                                     "<mm:write referid="wizardjsp"/>?wizard=couplingquestions&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("hotspotquestions")){
-         %>
-            <%= treeName %>.addItem("nieuwe hotspot vraag",
-                                     "<mm:write referid="wizardjsp"/>?wizard=hotspotquestions&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-      if(hsetAllowedChildren.contains("dropquestions")){
-         %>
-            <%= treeName %>.addItem("nieuwe drag-en-drop vraag",
-                                     "<mm:write referid="wizardjsp"/>?wizard=dropquestions&objectnumber=new&origin=<mm:field name="number"/>",
-                                     null,
-                                     "",
-                                     "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
-         <%
-      }
-   %>
+
+            <%@include file="tree_shift_child.jsp" %>
+
+
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=learnblocks&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe leerblok</a></nobr></td>
+         </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <mm:compare referid="the_last_parent" value="true" inverse="true">
+               <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+            <mm:compare referid="the_last_parent" value="true">
+               <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+
+
+            <%@include file="tree_shift_child.jsp" %>
+
+
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=pages&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe pagina</a></nobr></td>
+         </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <mm:compare referid="the_last_parent" value="true" inverse="true">
+               <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+            <mm:compare referid="the_last_parent" value="true">
+               <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+
+            <%@include file="tree_shift_child.jsp" %>
+
+
+
+            <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
+            <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=tests&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe toets</a></nobr></td>
+         </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <mm:compare referid="the_last_parent" value="true" inverse="true">
+               <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_vertline.gif" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+            <mm:compare referid="the_last_parent" value="true">
+               <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+
+
+            <%@include file="tree_shift_child.jsp" %>
+
+
+            <mm:compare referid="the_last_element" value="true" inverse="true">
+               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+            <mm:compare referid="the_last_element" value="true">
+               <td><img src="gfx/tree_leaflast.gif" border="0" align="center" valign="middle"/></td>
+            </mm:compare>
+            <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
+            <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>?wizard=flashpages&objectnumber=new&origin=<mm:field name="number"/>' title='<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />' target="text">nieuwe flash-pagina</a></nobr></td>
+         </tr>
+      </table>
+   </mm:compare>
 
 </mm:nodeinfo>
