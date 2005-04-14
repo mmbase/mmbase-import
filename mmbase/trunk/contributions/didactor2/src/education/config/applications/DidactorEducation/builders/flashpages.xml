@@ -24,5 +24,70 @@
     <property name="max-nodes-from-query">200</property>
   </properties>
 
-  <fieldlist />
+  <fieldlist>
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Tekst, met eventueel HTML opmaak</description>
+        <description xml:lang="en">Text, possibly containt HTML layout</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Tekst</guiname>
+        <guiname xml:lang="en">Text</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>1</input>
+          <!-- position in list area of the editor -->
+          <list>1</list>
+          <!-- position in search area of the editor -->
+          <search>1</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>text</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="65535" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Layout</description>
+        <description xml:lang="en">Layout</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Layout</guiname>
+        <guiname xml:lang="en">Layout</guiname>
+        <guitype>integer</guitype>
+        </gui>
+        <editor>
+        <positions>
+        <!-- position in the input area of the editor -->
+        <input>2</input>
+        <!-- position in list area of the editor -->
+        <list>2</list>
+        <!-- position in search area of the editor -->
+        <search>2</search>
+        </positions>
+        </editor>
+        <!-- database related  -->
+        <db>
+        <!-- name of the field in the database -->
+        <name>layout</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true">INTEGER</type>
+        </db>
+        </field>
+
+
+  </fieldlist>
 </builder>
