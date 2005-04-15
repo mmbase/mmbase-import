@@ -11,6 +11,16 @@
 <mm:import externid="mailbox">-1</mm:import>
 <mm:import externid="email">-1</mm:import>
 <%@include file="/shared/setImports.jsp" %>
+
+<mm:node number="$email" notfound="skip">
+      <mm:field name="type" write="false">
+        <mm:compare value="2">
+            <mm:setfield name="type">0</mm:setfield>
+        </mm:compare>
+      </mm:field>
+</mm:node> 
+
+
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
   <mm:param name="extraheader">
     <title>Webmail</title>
@@ -74,7 +84,8 @@
         <br />
         <img src="<mm:write referid="gfx_attachment"/>"/> <a href="<mm:attachment/>"><mm:field name="title"/></a>
       </mm:relatednodes>
-    </mm:node>
+
+   </mm:node>
   </div>
 </div>
 </div>

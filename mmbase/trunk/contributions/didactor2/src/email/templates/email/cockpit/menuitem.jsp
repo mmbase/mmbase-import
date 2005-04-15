@@ -14,17 +14,20 @@
 <mm:compare referid="type" value="option">
   <option value="<mm:treefile page="/email/index.jsp" objectlist="$includePath" referids="$referids" />" class="menubar">
 </mm:compare>
+    <% int total = 0; %>
     <fmt:message key="EMAILTITLE" />
     <mm:node number="$user">
       <mm:relatednodescontainer type="mailboxes">
-        <mm:constraint field="type" value="0" operator="=" /> <%-- find the inbox --%>
         <mm:relatednodes>
           <mm:relatednodescontainer type="emails">
-            (<mm:size />)
+            <mm:constraint field="type" value="2" operator="=" /> <%-- find new mails --%>
+            <mm:import id="size" jspvar="size" vartype="Integer"><mm:size /></mm:import>
+            <% total+=size.intValue(); %>
           </mm:relatednodescontainer>
         </mm:relatednodes>
       </mm:relatednodescontainer>  
     </mm:node>
+    (<%= total %>)
 <mm:compare referid="type" value="div">
     </a>
   </div>

@@ -27,7 +27,6 @@
     <mm:node number="$mailbox" notfound="skip">
         <mm:import id="mailboxtype"><mm:field name="type"/></mm:import>
       <mm:relatednodescontainer type="emails">
-
         <mm:import id="gfx_attachment"><mm:treefile page="/email/gfx/attachment.gif" objectlist="$includePath" referids="$referids" /></mm:import>
 
         <di:table maxitems="10">
@@ -45,6 +44,16 @@
             <di:headercell sortfield="date" default="true">Datum</di:headercell>
           </di:row>
           <mm:relatednodes>
+
+            <mm:remove referid="isnew"/>
+            <mm:field name="type" write="false">
+                <mm:compare value="2">
+                    <mm:import id="isnew">true</mm:import>
+                </mm:compare>
+            </mm:field>
+
+            
+          
             <mm:import id="link">
               <a href="<mm:treefile page="/email/mailbox/email.jsp" objectlist="$includePath" referids="$referids">
                 <mm:param name="mailbox"><mm:write referid="mailbox" /></mm:param>
@@ -58,6 +67,22 @@
                   <mm:first><img src="<mm:write referid="gfx_attachment"/>"/></mm:first>
                 </mm:relatednodes>
               </di:cell>
+
+              <mm:present referid="isnew">
+              <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="subject" /></b></a></di:cell>
+              <mm:compare referid="mailboxtype" value="1">
+                  <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="to" /></b></a></di:cell>
+
+              </mm:compare>
+              <mm:compare referid="mailboxtype" value="1" inverse="true">
+                    <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="from" /></b></a></di:cell>
+              </mm:compare>
+              <di:cell><mm:write escape="none" referid="link"/><b><mm:field name="gui(date)" /></b></a></di:cell>
+ 
+              </mm:present>
+
+              <mm:notpresent referid="isnew">
+              
               <di:cell><mm:write escape="none" referid="link"/><mm:field name="subject" /></a></di:cell>
               <mm:compare referid="mailboxtype" value="1">
                   <di:cell><mm:write escape="none" referid="link"/><mm:field name="to" /></a></di:cell>
@@ -67,6 +92,7 @@
                     <di:cell><mm:write escape="none" referid="link"/><mm:field name="from" /></a></di:cell>
               </mm:compare>
               <di:cell><mm:write escape="none" referid="link"/><mm:field name="gui(date)" /></a></di:cell>
+              </mm:notpresent>
             </di:row>
             <mm:remove referid="link" />
           </mm:relatednodes>
