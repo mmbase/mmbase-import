@@ -1,96 +1,64 @@
-/* The class of the table in which the entire calendar is shown */
-/*.calendar {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
-}*/
-
-/* The class of the <th> element which contains the month name + year */
-
-.calDay tr td {
-    font-size: 10px;
+.cal{
+   BORDER-left: #000000 2px solid;BORDER-right: #000000 2px solid; BORDER-TOP: #000000 2px solid;BORDER-bottom: #000000 2px solid;
 }
-
-.calDayThisMonth, 
-.calDayNotThisMonth, 
-.calDayNotThisMonthHighlight, 
-.calDayToday {
-    border: 1px solid #606060;
+.calDay TR TD {
+	FONT-SIZE: 10px; font-family:tahoma,verdana,arial; 
 }
-
-
-
-.calHeader {
-  text-align: center;
-  text-decoration: bold;
-}
-
-.calMonth {
-    font-size: 10px;
-}
-
-/* The class of the <td> elements that give the table some spacing on the
-   left and right side */
-.calDaySpacing {
-  width: 8px;
-}
-
-/* The class of the <td> elements that contain the names of the days of
-   the week */
-.calWeekdayHeader {
-  
-}
-
-/* Days that fall outside the current month */
-.calDayNotThisMonth {
-   cursor: pointer;
-   color: #888888;
-}
-
-td.calDayNotThisMonth:hover {
-    background-color: #aaaaaa;
-    color: #444444;
-}
-
-/* Days that fall inside the current month */
 .calDayThisMonth {
-  background-color: #ffffff;
-   cursor: pointer;
- color: #444444;
+	BORDER-RIGHT: #606060 1px dotted; BORDER-TOP: #606060 1px dotted; 
 }
-
-td.calDayThisMonth:hover {
-    background-color: #888888;
+.calDayNotThisMonth {
+	BORDER-RIGHT: #606060 1px dotted; BORDER-TOP: #606060 1px dotted; 
 }
-
-/* Days that are highlighted (because events are happening), but they
-   fall outside the current month */
 .calDayNotThisMonthHighlight {
-  background-color: #bb0000;
-  color: #444444;
-   cursor: pointer;
+	BORDER-RIGHT: #606060 1px dotted; BORDER-TOP: #606060 1px dotted;
 }
-
-td.calDayNotThisMonthHighlight:hover {
-    background-color: #bb8888; 
+.calDayToday {
+	BORDER-RIGHT: #606060 1px dotted; BORDER-TOP: #606060 1px dotted; 
 }
-
-/* Days that are highlighed, and they fall inside the current month */
+.calHeader {
+	TEXT-ALIGN: center;; FONT-SIZE: 10px; font-family:tahoma,verdana,arial;
+}
+.calMonth {
+	FONT-SIZE: 11px; font-family:tahoma,verdana,arial; BORDER-bottom: #000000 2px solid; text-transform: uppercase;
+}
+.calDaySpacing {
+	WIDTH: 8px;BORDER-RIGHT: #606060 1px dotted; BORDER-TOP: #606060 1px dotted; 
+}
+.calWeekdayHeader {
+	
+}
+.calWeek {
+ FONT-SIZE: 10px; font-family:tahoma,verdana,arial; text-align: left; padding-left: 2px; padding-right: 5px;padding-bottom: 3px; padding-top: 3px; text-transform: uppercase;
+	
+}
+.calDayNotThisMonth {
+	CURSOR: pointer; COLOR: #888888
+}
+TD.calDayNotThisMonth:hover {
+	COLOR: #444444; BACKGROUND-COLOR: #aaaaaa
+}
+.calDayThisMonth {
+	CURSOR: pointer; COLOR: #444444; BACKGROUND-COLOR: #ffffff
+}
+TD.calDayThisMonth:hover {
+	BACKGROUND-COLOR: #888888
+}
+.calDayNotThisMonthHighlight {
+	CURSOR: pointer; COLOR: #444444; BACKGROUND-COLOR: #bb0000
+}
+TD.calDayNotThisMonthHighlight:hover {
+	BACKGROUND-COLOR: #bb8888
+}
 .calDayThisMonthHighlight {
-  background-color: #ff0000;
-  color: #000000;
-   cursor: pointer;
+	CURSOR: pointer; COLOR: #000000; BACKGROUND-COLOR: #ff0000
 }
-
-td.calDayThisMonthHighlight:hover {
-    background-color: #ff8888;
+TD.calDayThisMonthHighlight:hover {
+	BACKGROUND-COLOR: #ff8888
 }
-
-/* Today */
 .calToday {
-    cursor: pointer;
-    font-weight: bold;
+	FONT-WEIGHT: bold; color: #191970 CURSOR: pointer; BORDER-bottom: #191970 1px solid;
 }
-
-td.calToday:hover {
-     background-color: #888888;
+calToday:hover {
+ FONT-WEIGHT: bold; color: #D2691E CURSOR: pointer; BORDER-bottom: #D2691E 1px solid;
 }
-
