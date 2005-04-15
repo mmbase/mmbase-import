@@ -39,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.49 2005-03-29 16:31:24 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.50 2005-04-15 14:40:11 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -63,7 +63,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             return "" + i;
         }
     }
-    private Counter  counter; // times that formatter was called in this page, can be usefull for some transformations to know.
+    private Counter  counter; // times that formatter was called in this page, can be useful for some transformations to know.
 
     // formats that needs XML input, when setting these 'wantXML' will be true, and a DOM Document will be created.
 
@@ -140,7 +140,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     protected int getFormat() throws JspTagException {
         String fs = format.getString(this).toLowerCase();
         if ("".equals(fs)) {
-            return FORMAT_NONE;
+            return FORMAT_UNSET;
         } else if ("none".equals(fs)) {
             return FORMAT_NONE;
         } else if ("xhtml".equals(fs)) {
@@ -286,7 +286,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
-                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)));
+                    javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+                    doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
+                                                pageContext.getServletContext().getResource(request.getServletPath()).toString()
+                                                );
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + body, e);
                 }
@@ -493,7 +496,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         try {
             Source source = getFactory().getURIResolver().resolve(xsl, null);
             if (source == null) {
-                throw new TaglibException("Could not find XSL for " + xsl);
+                throw new TaglibException("Could not find XSL for " + xsl + " with uri-resolver " + getFactory().getURIResolver());
             }
             return xslTransform(doc, source);
          } catch (javax.xml.transform.TransformerException e) {
