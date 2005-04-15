@@ -393,6 +393,10 @@
 		<translation language="nl" value="Login informatie is verzonden naar " />
 		<translation language="df" value="Login information was sent to" />
 	</keyword>
+        <keyword name="Login_mail_sent">
+                <translation language="nl" value="Login informatie is verzonden naar uw e-mail adres" />
+                <translation language="df" value="Login information was sent to your emailaddress" />
+        </keyword>
 	<keyword name="Change_existing_area">
 		<translation language="nl" value="Bestaand gebied wijzigen" />
 		<translation language="df" value="Change existing area" />
