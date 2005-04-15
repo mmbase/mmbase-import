@@ -91,7 +91,7 @@
 <mm:present referid="mailed">
 <form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
 <tr><th align="left" ><p />
-<mm:write referid="mlg.Login_mail_sent_to" /> : <mm:write referid="wemail" />, <br />
+<mm:write referid="mlg.Login_mail_sent" />. <br />
 <%--<mm:write referid="wpassword" /> - <mm:write referid="feedback"/>--%>
 </th></tr>
 <tr><td>
