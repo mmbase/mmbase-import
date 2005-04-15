@@ -83,11 +83,11 @@
 <html>
 <head>
 <title>File manager</title>
-<link href="../../editwizards/style/layout/wizard.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 <mm:import externid="deletefile" jspvar="deletefile"/>
-<table>
+<table border="1">
+<tr><th>Naam</th><th>Type</th><th>Grootte</th><th>Bestandsextensie</th></tr>
 <%
     File dir = new File(directory);
     File[] farray = dir.listFiles();
@@ -118,6 +118,7 @@
             continue;
         }
         %><mm:import id="filename" reset="true"><%= file.getName() %></mm:import>
+          <mm:import id="ext" reset="true"><%= file.getName().replaceAll(".*?\\.","") %></mm:import>
         <tr>
         <td>
             <a href="<%= baseUrl %>/<mm:write referid="filename"/>"><mm:write referid="filename"/></a> 
@@ -139,6 +140,7 @@
             (file.length() / 1025)
         %> Kb
         </td>
+        <td><mm:write referid="ext"/></td>
         <td>
             <a href="index.jsp?deletefile=<mm:write referid="filename"/>" onclick="return confirm('Wis <mm:write referid="filename"/>?');">Wis</a>
         </td>
